@@ -1,3 +1,6 @@
 # file folder
 /upload_folder
 /download_folder
+para_sen_api.py
+
+__pycache__
