@@ -1,36 +1,66 @@
 import os
-from repositories.sentence_tokenise import AnuvaadEngTokenizer
 import json
 from flask_restful import reqparse, Resource
 from flask.json import jsonify
+from src.resources.services import Tokenisation
+from src.kafka.producer import Producer
+from src.kafka.consumer import Consumer
+from src.utilities.utils import File_operation
+import werkzeug
+from werkzeug.utils import secure_filename
+import uuid
+from time import sleep
 
 # sentence tokenisation
+file_operation = File_operation()
+#UPLOAD_FOLDER = file_operation.upload_folder()
+#print(UPLOAD_FOLDER)
+UPLOAD_FOLDER = '/home/amit/Desktop/Project_anuvaad/anuvaad/anuvaad-etl/anuvaad-extractor/sentence/upload_folder'
 parser = reqparse.RequestParser(bundle_errors=True)
-parser.add_argument('paragraphs',action = 'append', required = True)
+parser.add_argument('file', type = werkzeug.datastructures.FileStorage, location = 'files', required = True)
+# DOWNLOAD_FOLDER =file_operation.download_folder()
+DOWNLOAD_FOLDER = '/home/amit/Desktop/Project_anuvaad/anuvaad/anuvaad-etl/anuvaad-extractor/sentence/download_folder'
 
 class sen_tokenise(Resource):
     
     def post(self):
-        args    = parser.parse_args()
-        print()
-        if 'paragraphs' not in args or args['paragraphs'] is None or not isinstance(args['paragraphs'],list):
+        uploaded_file = parser.parse_args()
+        file_data = uploaded_file['file']
+        filename = secure_filename(file_data.filename)
+        print(filename)
+        if filename == "" or filename is None:
              return jsonify({
                 'status': {
                     'code' : 400,
-                    'message' : 'data missing'
+                    'message' : 'file not found'
                 }
             })
         else:
-            lines = list()
-            for paragraph in args['paragraphs']:
-                sentence_data = AnuvaadEngTokenizer().tokenize(paragraph)
-                for sentence in sentence_data:
-                    lines.append(sentence)
-                    print(sentence)
+            file_data.save(os.path.join(UPLOAD_FOLDER, filename))
+            input_filepath = os.path.join(UPLOAD_FOLDER, filename)
+            output_filepath = os.path.join(DOWNLOAD_FOLDER, 'tokenised_file_' + str(uuid.uuid1()) + '.txt')
+            input_file_data = file_operation.read_file(input_filepath)
+            producer_feed_data = {
+                'paragraphs' : input_file_data
+            }
+            producer_paragraph = Producer('txt_paragraph','localhost:9092')
+            producer_paragraph.producer_fn(producer_feed_data)
+
+            consumer_paragraph = Consumer('txt_paragraph', 'tokenisation', 'localhost:9092')
+            consumer_recieved_data = consumer_paragraph.consumer_fn()
+            for item in consumer_recieved_data:
+                data = item.value
+                break
+            print("recieved data from consumer")
+
+            tokenisation = Tokenisation()
+            tokenisation.tokenisation(data, output_filepath)
             return jsonify({
                 'status' : {
                     'code' : 200,
                     'message' : 'api successful'
                 },
-                'sentences' : lines
+                'output' : 'file saved successfully'
             })
+
+    

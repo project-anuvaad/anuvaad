@@ -1,7 +1,7 @@
 from flask import Flask
 from flask.blueprints import Blueprint
 from flask_cors import CORS
-import routes
+from src import routes
 import config
 
 tok_app  = Flask(__name__)
