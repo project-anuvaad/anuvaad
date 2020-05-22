@@ -13,13 +13,10 @@ from time import sleep
 
 # sentence tokenisation
 file_operation = File_operation()
-#UPLOAD_FOLDER = file_operation.upload_folder()
-#print(UPLOAD_FOLDER)
-UPLOAD_FOLDER = '/home/amit/Desktop/Project_anuvaad/anuvaad/anuvaad-etl/anuvaad-extractor/sentence/upload_folder'
+UPLOAD_FOLDER = file_operation.file_upload()
 parser = reqparse.RequestParser(bundle_errors=True)
 parser.add_argument('file', type = werkzeug.datastructures.FileStorage, location = 'files', required = True)
-# DOWNLOAD_FOLDER =file_operation.download_folder()
-DOWNLOAD_FOLDER = '/home/amit/Desktop/Project_anuvaad/anuvaad/anuvaad-etl/anuvaad-extractor/sentence/download_folder'
+DOWNLOAD_FOLDER =file_operation.file_download()
 
 class sen_tokenise(Resource):
     
