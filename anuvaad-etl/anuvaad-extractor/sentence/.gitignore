@@ -2,7 +2,6 @@
 /upload_folder
 /download_folder
 para_sen_api.py
-/__pycache__/
-/.vscode
-/src/kafka/__pycache__/
-server.log
+*__pycache__
+*.vscode
+*.log

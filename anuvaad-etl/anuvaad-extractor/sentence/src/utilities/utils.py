@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-class File_operation(object):
+class FileOperation(object):
 
     def __init__(self):
         self.upload_folder = None
