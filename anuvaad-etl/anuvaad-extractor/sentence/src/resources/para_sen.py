@@ -5,6 +5,7 @@ from flask.json import jsonify
 from src.resources.services import Tokenisation
 from src.kafka.producer import Producer
 from src.kafka.consumer import Consumer
+# from src.resources.services import ConsumerRunning
 from src.utilities.utils import File_operation
 import werkzeug
 from werkzeug.utils import secure_filename
@@ -13,10 +14,10 @@ from time import sleep
 
 # sentence tokenisation
 file_operation = File_operation()
-UPLOAD_FOLDER = file_operation.file_upload()
+UPLOAD_FOLDER = file_operation.file_upload('upload_folder')
 parser = reqparse.RequestParser(bundle_errors=True)
 parser.add_argument('file', type = werkzeug.datastructures.FileStorage, location = 'files', required = True)
-DOWNLOAD_FOLDER =file_operation.file_download()
+DOWNLOAD_FOLDER =file_operation.file_download('download_folder')
 
 class sen_tokenise(Resource):
     
@@ -45,11 +46,18 @@ class sen_tokenise(Resource):
 
             consumer_paragraph = Consumer('txt_paragraph', 'tokenisation', 'localhost:9092')
             consumer_recieved_data = consumer_paragraph.consumer_fn()
+            print("consumer done!!")
             for item in consumer_recieved_data:
+                print("extracting value from consumer")
                 data = item.value
                 break
             print("recieved data from consumer")
-
+            # try:
+            #     consumer = ConsumerRunning()
+            #     t1 = threading.Thread(target=consumer.consumer_running(output_filepath), name='keep_on_running')
+            #     t1.start()
+            # except Exception as e:
+            #     print("error para_sen: ", e)
             tokenisation = Tokenisation()
             tokenisation.tokenisation(data, output_filepath)
             return jsonify({
