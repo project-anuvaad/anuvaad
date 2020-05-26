@@ -22,6 +22,20 @@ class FileOperation(object):
             os.makedirs(download_dir)
         return download_dir
 
+    def check_path_exists(self, dir):
+        if dir is not None and os.path.exists(dir) is True:
+            return True
+        else:
+            return False
+
+    def check_file_extension(self, filename):
+        allowed_extensions = ['txt']
+        ext = os.path.splitext(filename)[-1].lower()
+        if ext in allowed_extensions:
+            return True
+        else:
+            return False
+
     def output_path(self, DOWNLOAD_FOLDER):
         output_filenname = 'tokenised_file_' + str(uuid.uuid1()) + '.txt'
         output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filenname)

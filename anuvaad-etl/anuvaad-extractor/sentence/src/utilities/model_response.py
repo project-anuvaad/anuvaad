@@ -8,6 +8,10 @@ class Status(enum.Enum):
         'status': {'code': 400, 'message' : 'File empty'}}
     ERR_FILE_NOT_FOUND = {'ok': False, 
         'status': {'code': 400, 'message' : 'File not found'}}
+    ERR_DIR_NOT_FOUND = {'ok': False, 
+        'status': {'code': 400, 'message' : 'Upload/Download directory not found'}}
+    ERR_EXT_NOT_FOUND = {'ok': False, 
+        'status': {'code': 400, 'message' : 'This filetype is not allowed. Please upload .txt file.'}}
 
 class CustomResponse():
     def __init__(self, status_code, data):

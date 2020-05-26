@@ -15,11 +15,11 @@ import config
 from time import sleep
 
 # sentence tokenisation
-file_operation = FileOperation()
-UPLOAD_FOLDER = file_operation.file_upload(config.upload_folder)
+file_ops = FileOperation()
+UPLOAD_FOLDER = file_ops.file_upload(config.upload_folder)
 parser = reqparse.RequestParser(bundle_errors=True)
 parser.add_argument('file', type = werkzeug.datastructures.FileStorage, location = 'files', required = True)
-DOWNLOAD_FOLDER =file_operation.file_download(config.download_folder)
+DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
 
 class SenTokenisePost(Resource):
     
@@ -31,11 +31,17 @@ class SenTokenisePost(Resource):
         if filename == "" or filename is None:
             response = CustomResponse(Status.ERR_FILE_NOT_FOUND.value, None)
             return response.get_response()
+        elif file_ops.check_file_extension(filename) is False:
+            response = CustomResponse(Status.ERR_EXT_NOT_FOUND.value, None)
+            return response.get_response()
+        elif file_ops.check_path_exists(UPLOAD_FOLDER) is False or file_ops.check_path_exists(DOWNLOAD_FOLDER) is False:
+            response = CustomResponse(Status.ERR_DIR_NOT_FOUND.value, None)
+            return response.get_response()
         else:
             file_data.save(os.path.join(UPLOAD_FOLDER, filename))
             input_filepath = os.path.join(UPLOAD_FOLDER, filename)
-            output_filepath = file_operation.output_path(DOWNLOAD_FOLDER)
-            input_file_data = file_operation.read_file(input_filepath)
+            output_filepath = file_ops.output_path(DOWNLOAD_FOLDER)
+            input_file_data = file_ops.read_file(input_filepath)
             if len(input_file_data) == 0:
                 response = CustomResponse(Status.ERR_EMPTY_FILE.value, None)
                 return response.get_response()
