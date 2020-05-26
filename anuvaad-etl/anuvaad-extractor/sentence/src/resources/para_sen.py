@@ -2,10 +2,9 @@ import os
 import json
 from flask_restful import reqparse, Resource
 from flask.json import jsonify
-from src.resources.services import Tokenisation
+from src.services.service import Tokenisation
 from src.kafka.producer import Producer
 from src.kafka.consumer import Consumer
-# from src.resources.services import ConsumerRunning
 from src.utilities.utils import FileOperation
 from src.utilities.model_response import Status
 from src.utilities.model_response import CustomResponse

@@ -1,6 +1,6 @@
 from kafka import KafkaConsumer
 from json import loads
-from src.resources.services import Tokenisation
+from src.services.service import Tokenisation
 import logging
 
 log = logging.getLogger('file')
