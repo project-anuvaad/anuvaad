@@ -35,7 +35,7 @@ class SenTokenisePost(Resource):
         else:
             file_data.save(os.path.join(UPLOAD_FOLDER, filename))
             input_filepath = os.path.join(UPLOAD_FOLDER, filename)
-            output_filepath = os.path.join(DOWNLOAD_FOLDER, config.output_filenname)
+            output_filepath = file_operation.output_path(DOWNLOAD_FOLDER)
             input_file_data = file_operation.read_file(input_filepath)
             if len(input_file_data) == 0:
                 response = CustomResponse(Status.ERR_EMPTY_FILE.value, None)
@@ -44,22 +44,9 @@ class SenTokenisePost(Resource):
             producer_feed_data = tokenisation.producer_input(input_file_data)
             producer_paragraph = Producer(config.sen_topic, config.kf_server)
             producer_paragraph.producer_fn(producer_feed_data)
-            consumer_paragraph = Consumer(config.sen_topic, config.kf_group, config.kf_server)
-            consumer_recieved_data = consumer_paragraph.consumer_fn()
-            # log print("consumer done!!")
-            for item in consumer_recieved_data:
-                # print("extracting value from consumer")
-                data = item.value
-                break
-            # print("recieved data from consumer")
-            # try:
-            #     consumer = ConsumerRunning()
-            #     t1 = threading.Thread(target=consumer.consumer_running(output_filepath), name='keep_on_running')
-            #     t1.start()
-            # except Exception as e:
-            #     print("error para_sen: ", e)
-            tokenisation.tokenisation(data, output_filepath)
-            response_true = CustomResponse(Status.SUCCESS.value, None)
+            consumer = Consumer(config.sen_topic, config.kf_group, config.kf_server)
+            consumer.consumer_fn(output_filepath)
+            response_true = CustomResponse(Status.SUCCESS.value, output_filepath)
             return response_true.get_response()
 
     

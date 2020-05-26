@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import uuid
 
 class FileOperation(object):
 
@@ -20,6 +21,11 @@ class FileOperation(object):
         if download_dir.exists() is False:
             os.makedirs(download_dir)
         return download_dir
+
+    def output_path(self, DOWNLOAD_FOLDER):
+        output_filenname = 'tokenised_file_' + str(uuid.uuid1()) + '.txt'
+        output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filenname)
+        return output_filepath
     
     def read_file(self, input_filepath):
         with open(input_filepath, 'r') as f:
