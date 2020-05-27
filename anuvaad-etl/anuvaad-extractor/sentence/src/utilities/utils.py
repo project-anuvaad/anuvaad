@@ -29,7 +29,7 @@ class FileOperation(object):
             return False
 
     def check_file_extension(self, filename):
-        allowed_extensions = ['txt']
+        allowed_extensions = ['.txt']
         ext = os.path.splitext(filename)[-1].lower()
         if ext in allowed_extensions:
             return True
