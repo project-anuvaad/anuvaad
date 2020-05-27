@@ -47,9 +47,9 @@ class SenTokenisePost(Resource):
                 return response.get_response()
             tokenisation = Tokenisation()
             producer_feed_data = tokenisation.producer_input(input_file_data)
-            producer_paragraph = Producer(config.sen_topic, config.kf_server)
+            producer_paragraph = Producer(config.sen_topic, config.kf_server)  # Producer
             producer_paragraph.producer_fn(producer_feed_data)
-            consumer = Consumer(config.sen_topic, config.kf_group, config.kf_server)
+            consumer = Consumer(config.sen_topic, config.kf_group, config.kf_server) #Consumer
             consumer.consumer_fn(output_filepath)
             response_true = CustomResponse(Status.SUCCESS.value, output_filepath)
             return response_true.get_response()
