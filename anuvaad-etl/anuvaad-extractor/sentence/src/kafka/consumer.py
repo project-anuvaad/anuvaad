@@ -1,6 +1,5 @@
 from kafka import KafkaConsumer
 from json import loads
-from src.services.service import Tokenisation
 import logging
 
 log = logging.getLogger('file')
@@ -16,19 +15,4 @@ class Consumer(object):
                                 enable_auto_commit=True, value_deserializer=lambda x: loads(x.decode('utf-8')))
         return consumer
 
-    def consumer_fn(self, output_filepath):
-        consumer = self.consumer_instantiate()
-        service = Tokenisation()
-        log.info("Consumer running!!!")
-        try:
-            data = {}
-            for msg in consumer:
-                log.info("Consuming from the Kafka Queue.")
-                data = msg.value
-                break
-            service.tokenisation(data, output_filepath)
-        except Exception as e:
-            log.error("Exception while consuming: " + str(e))
-        finally:
-            consumer.close()
 

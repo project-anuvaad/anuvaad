@@ -2,9 +2,8 @@ import os
 import json
 from flask_restful import reqparse, Resource
 from flask.json import jsonify
+from flask import Flask, request
 from src.services.service import Tokenisation
-from src.kafka.producer import Producer
-from src.kafka.consumer import Consumer
 from src.utilities.utils import FileOperation
 from src.utilities.model_response import Status
 from src.utilities.model_response import CustomResponse
@@ -16,42 +15,46 @@ from time import sleep
 
 # sentence tokenisation
 file_ops = FileOperation()
-UPLOAD_FOLDER = file_ops.file_upload(config.upload_folder)
-parser = reqparse.RequestParser(bundle_errors=True)
-parser.add_argument('file', type = werkzeug.datastructures.FileStorage, location = 'files', required = True)
 DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
 
 class SenTokenisePost(Resource):
     
     def post(self):
-        uploaded_file = parser.parse_args()
-        file_data = uploaded_file['file']
-        filename = secure_filename(file_data.filename)
-        # log
-        if filename == "" or filename is None:
-            response = CustomResponse(Status.ERR_FILE_NOT_FOUND.value, None)
+        json_data = request.get_json(force = True)
+        input_filepath, in_file_type, in_locale, jobid = file_ops.json_input_format(json_data)
+        output_filepath = file_ops.output_path(DOWNLOAD_FOLDER)
+        out_file_type, out_locale = in_file_type, in_locale
+        if input_filepath == "" or input_filepath is None:
+            response = CustomResponse(Status.ERR_FILE_NOT_FOUND.value, jobid, config.taskid,
+                                        input_filepath,output_filepath,in_file_type,out_file_type,in_locale,out_locale)
             return response.get_response()
-        elif file_ops.check_file_extension(filename) is False:
-            response = CustomResponse(Status.ERR_EXT_NOT_FOUND.value, None)
+        elif file_ops.check_file_extension(in_file_type) is False:
+            response = CustomResponse(Status.ERR_EXT_NOT_FOUND.value, jobid, config.taskid, 
+                                        input_filepath,output_filepath,in_file_type,out_file_type,in_locale,out_locale)
             return response.get_response()
-        elif file_ops.check_path_exists(UPLOAD_FOLDER) is False or file_ops.check_path_exists(DOWNLOAD_FOLDER) is False:
-            response = CustomResponse(Status.ERR_DIR_NOT_FOUND.value, None)
+        elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(DOWNLOAD_FOLDER) is False:
+            response = CustomResponse(Status.ERR_DIR_NOT_FOUND.value, jobid, config.taskid,
+                                        input_filepath,output_filepath,in_file_type,out_file_type,in_locale,out_locale)
+            return response.get_response()
+        elif in_locale == "" or in_locale is None:
+            response = CustomResponse(Status.ERR_locale_NOT_FOUND.value, jobid, config.taskid,
+                                        input_filepath,output_filepath,in_file_type,out_file_type,in_locale,out_locale)
+            return response.get_response()
+        elif jobid == "" or jobid is None:
+            response = CustomResponse(Status.ERR_jobid_NOT_FOUND.value, jobid, config.taskid,
+                                        input_filepath,output_filepath,in_file_type,out_file_type,in_locale,out_locale)
             return response.get_response()
         else:
-            file_data.save(os.path.join(UPLOAD_FOLDER, filename))
-            input_filepath = os.path.join(UPLOAD_FOLDER, filename)
-            output_filepath = file_ops.output_path(DOWNLOAD_FOLDER)
+            tokenisation = Tokenisation()
             input_file_data = file_ops.read_file(input_filepath)
             if len(input_file_data) == 0:
-                response = CustomResponse(Status.ERR_EMPTY_FILE.value, None)
+                response = CustomResponse(Status.ERR_EMPTY_FILE.value, jobid, config.taskid,
+                                                input_filepath,output_filepath,in_file_type,out_file_type,in_locale,out_locale)
                 return response.get_response()
-            tokenisation = Tokenisation()
-            producer_feed_data = tokenisation.producer_input(input_file_data)
-            producer_paragraph = Producer(config.sen_topic, config.kf_server)  # Producer
-            producer_paragraph.producer_fn(producer_feed_data)
-            consumer = Consumer(config.sen_topic, config.kf_group, config.kf_server) #Consumer
-            consumer.consumer_fn(output_filepath)
-            response_true = CustomResponse(Status.SUCCESS.value, output_filepath)
-            return response_true.get_response()
+            else: 
+                tokenisation.tokenisation(input_file_data, output_filepath)
+                response_true = CustomResponse(Status.SUCCESS.value, jobid, config.taskid,
+                                                input_filepath,output_filepath,in_file_type,out_file_type,in_locale,out_locale)
+                return response_true.get_response()
 
     

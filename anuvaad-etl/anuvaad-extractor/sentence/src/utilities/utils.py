@@ -28,10 +28,9 @@ class FileOperation(object):
         else:
             return False
 
-    def check_file_extension(self, filename):
-        allowed_extensions = ['.txt']
-        ext = os.path.splitext(filename)[-1].lower()
-        if ext in allowed_extensions:
+    def check_file_extension(self, file_type):
+        allowed_extensions = ['txt']
+        if file_type in allowed_extensions:
             return True
         else:
             return False
@@ -45,3 +44,10 @@ class FileOperation(object):
         with open(input_filepath, 'r') as f:
             input_file_data = f.readlines()
         return input_file_data
+
+    def json_input_format(self, json_data):
+        input_filepath = json_data['filepath']
+        file_type = json_data['type']
+        locale = json_data['locale']
+        jobid = json_data['jobID']
+        return input_filepath, file_type, locale, jobid

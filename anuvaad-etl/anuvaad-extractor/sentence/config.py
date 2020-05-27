@@ -9,13 +9,17 @@ PORT = 5000
 ENABLE_CORS = False
 
 # kafka
-sen_topic = 'txt_paragraph'
+sen_topic = 'paragraph_file'
 kf_server = 'localhost:9092'
 kf_group = 'tokenisation'
+tok_topic = 'tokenise_sentence'
 
 #folders
 upload_folder = 'upload_folder'
 download_folder = 'download_folder'
+
+#process id
+taskid = '123456'
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),
