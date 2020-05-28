@@ -25,7 +25,7 @@ def searchjobs(job_id):
 
 
 # REST endpoint to fetch workflow jobs.
-@app.route(context_path + '/wf-manager/update', methods=["GET"])
+@app.route(context_path + '/wf-manager/jobs/search', methods=["GET"])
 def searchjobs(job_id):
     response = {"status": "START"}
     return jsonify(response)
