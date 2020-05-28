@@ -3,16 +3,18 @@ import os
 
 DEBUG = True
 API_URL_PREFIX = "/api/v0"
-HOST = 'localhost'
-PORT = 5000
+HOST = '0.0.0.0'
+PORT = 5001
 
 ENABLE_CORS = False
 
 # kafka
 sen_topic = 'paragraph_file'
-kf_server = 'localhost:9092'
+kf_local_server = 'localhost:9092'
 kf_group = 'tokenisation'
 tok_topic = 'tokenise_sentence'
+kafka_ip_host = 'KAFKA_IP_HOST'
+bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 
 #folders
 upload_folder = 'upload_folder'

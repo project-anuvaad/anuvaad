@@ -30,7 +30,7 @@ def process_tokenization_kf():
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
     output_filepath = file_ops.output_path(DOWNLOAD_FOLDER)
     tokenisation = Tokenisation()
-    consumer = Consumer(config.sen_topic, config.kf_group, config.kf_server)
+    consumer = Consumer(config.sen_topic, config.kf_group, config.bootstrap_server)
     consumer = consumer.consumer_instantiate() #Consumer
     try:
         for msg in consumer:
@@ -40,7 +40,7 @@ def process_tokenization_kf():
             tokenisation.tokenisation(input_file_data, output_filepath)
             out_file_type, out_locale, jobid = data['type'], data['locale'], data['jobID']
             producer_feed_data = tokenisation.producer_input(output_filepath, out_file_type, out_locale, jobid)
-            producer_tokenise = Producer(config.tok_topic, config.kf_server) 
+            producer_tokenise = Producer(config.tok_topic, config.bootstrap_server) 
             producer_tokenise.producer_fn(producer_feed_data)
     except Exception as e:
         print("error",e)
