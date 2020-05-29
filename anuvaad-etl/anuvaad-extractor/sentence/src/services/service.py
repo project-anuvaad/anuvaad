@@ -30,8 +30,10 @@ def process_tokenization_kf():
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
     output_filepath = file_ops.output_path(DOWNLOAD_FOLDER)
     tokenisation = Tokenisation()
+    print("getting data from producer")
     consumer = Consumer(config.sen_topic, config.kf_group, config.bootstrap_server)
     consumer = consumer.consumer_instantiate() #Consumer
+    print("consumer running",consumer)
     try:
         for msg in consumer:
             data = msg.value
