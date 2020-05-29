@@ -24,4 +24,4 @@ except Exception as e:
     logging.info('ERROR WHILE RUNNING CUSTOM THREADS '+str(e))
 
 if __name__ == "__main__":
-    tok_app.run(host=config.HOST, port=config.PORT, debug=True)
+    tok_app.run(host=config.HOST, port=config.PORT, debug=False)

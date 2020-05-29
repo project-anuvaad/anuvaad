@@ -6,3 +6,5 @@ para_sen_api.py
 *.vscode
 *.log
 /upload
+uwsgi.ini
+wsgi_test.py

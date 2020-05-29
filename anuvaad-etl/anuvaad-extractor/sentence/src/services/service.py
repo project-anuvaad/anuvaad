@@ -35,6 +35,7 @@ def process_tokenization_kf():
     try:
         for msg in consumer:
             data = msg.value
+            print("consumer data received",data)
             in_filepath  = data['filepath']
             input_filepath = file_ops.input_path(in_filepath)
             input_file_data = file_ops.read_file(input_filepath)
