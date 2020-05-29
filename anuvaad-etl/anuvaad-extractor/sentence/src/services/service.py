@@ -36,7 +36,8 @@ def process_tokenization_kf():
         for msg in consumer:
             data = msg.value
             in_filepath  = data['filepath']
-            input_file_data = file_ops.read_file(in_filepath)
+            input_filepath = file_ops.input_path(in_filepath)
+            input_file_data = file_ops.read_file(input_filepath)
             tokenisation.tokenisation(input_file_data, output_filepath)
             out_file_type, out_locale, jobid = data['type'], data['locale'], data['jobID']
             producer_feed_data = tokenisation.producer_input(output_filepath, out_file_type, out_locale, jobid)

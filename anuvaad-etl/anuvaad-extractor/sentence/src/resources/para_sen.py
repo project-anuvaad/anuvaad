@@ -21,10 +21,11 @@ class SenTokenisePost(Resource):
     
     def post(self):
         json_data = request.get_json(force = True)
-        input_filepath, in_file_type, in_locale, jobid = file_ops.json_input_format(json_data)
+        input_filename, in_file_type, in_locale, jobid = file_ops.json_input_format(json_data)
+        input_filepath = file_ops.input_path(input_filename)
         output_filepath = file_ops.output_path(DOWNLOAD_FOLDER)
         out_file_type, out_locale = in_file_type, in_locale
-        if input_filepath == "" or input_filepath is None:
+        if input_filename == "" or input_filename is None:
             response = CustomResponse(Status.ERR_FILE_NOT_FOUND.value, jobid, config.taskid,
                                         input_filepath,output_filepath,in_file_type,out_file_type,in_locale,out_locale)
             return response.get_response()

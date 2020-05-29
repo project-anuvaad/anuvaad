@@ -35,6 +35,10 @@ class FileOperation(object):
         else:
             return False
 
+    def input_path(self, input_filename):
+        input_filepath = os.path.join('upload', input_filename)
+        return input_filepath
+
     def output_path(self, DOWNLOAD_FOLDER):
         output_filenname = 'tokenised_file_' + str(uuid.uuid1()) + '.txt'
         output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filenname)

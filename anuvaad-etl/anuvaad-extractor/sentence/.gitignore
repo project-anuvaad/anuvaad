@@ -5,3 +5,4 @@ para_sen_api.py
 *__pycache__
 *.vscode
 *.log
+/upload
