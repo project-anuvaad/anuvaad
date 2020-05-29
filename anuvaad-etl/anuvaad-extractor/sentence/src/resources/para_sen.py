@@ -23,7 +23,7 @@ class SenTokenisePost(Resource):
     def post(self):
         loging.info("request received")
         json_data = request.get_json(force = True)
-        logging.info("data processed")
+        logging.info("data processed",json_data)
         input_filename, in_file_type, in_locale, jobid = file_ops.json_input_format(json_data)
         input_filepath = file_ops.input_path(input_filename)
         output_filepath = file_ops.output_path(DOWNLOAD_FOLDER)
