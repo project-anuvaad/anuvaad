@@ -27,7 +27,6 @@ class WFMService:
                 tokeniser.initiate_tok_task()
             if tool is "ALIGNER":
                 aligner.initiate_ali_task()
-
             if order["endState"] is True:
                 break
 

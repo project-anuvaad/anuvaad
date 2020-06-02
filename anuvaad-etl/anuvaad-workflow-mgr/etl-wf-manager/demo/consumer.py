@@ -4,18 +4,17 @@ import traceback
 
 from kafka import KafkaConsumer
 import os
+from demo import Demo
 
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
 consumer_poll_interval = os.environ.get('CONSUMER_POLL_INTERVAL', 10)
-anu_etl_wfm_topic = "anu-etl-wfm"
-#anu_etl_wfm_topic = os.environ.get('ANU_ETL_WF_TOPIC', 'laser-align-job-register')
 anu_etl_wfm_consumer_grp = os.environ.get('ANU_ETL_WF_CONSUMER_GRP', 'anu-etl-wfm-consumer-group')
 
 # Method to instantiate the kafka consumer
-def instantiate():
-    consumer = KafkaConsumer(anu_etl_wfm_topic,
+def instantiate(topics):
+    consumer = KafkaConsumer(topics,
                              bootstrap_servers=[cluster_details],
                              api_version=(1, 0, 0),
                              group_id=anu_etl_wfm_consumer_grp,
@@ -28,7 +27,11 @@ def instantiate():
 
 # Method to read and process the requests from the kafka queue
 def consume():
-    consumer = instantiate()
+    demo = Demo()
+    configs = demo.get_all_configs()
+    topics = demo.fetch_output_topics(configs)
+    topics.append["anu-etl-wf-initiate"]
+    consumer = instantiate(topics)
     log.info("Consumer running.......")
     try:
         data = {}
@@ -36,6 +39,10 @@ def consume():
             log.info("Consuming from the Kafka Queue......")
             data = msg.value
             break
+        if msg.topic is "anu-etl-wf-initiate":
+            demo.initiate(data)
+        else:
+            demo.manage(data)
     except Exception as e:
         log.error("Exception while consuming: " + str(e))
         traceback.print_exc()
