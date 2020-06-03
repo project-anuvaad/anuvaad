@@ -1,0 +1,17 @@
+{
+    "taskID": "<task_code>-<13 digit epoch>",
+    "jobID": "<usecase_code>-<13 digit epoch>",
+    "stepOrder": [0,1,2,3,4],
+    "tool": ["TOKENISER", "INGESTOR", "EXCTRACTOR", "ALIGNER"],
+    "input":{
+
+    },
+    "output":{
+
+    },
+    "taskStartTime": 1591161431000,
+    "taskEndTime": 1591161431000,
+    "status": ["SUCCESS", "FAILED"],
+    "state": ["INGESTED", "PARAGRAPH-EXCTRACTED", "PARAGRAPH-TOKENISED", "SETENCES-ALIGNED"],
+    "error": {}
+}

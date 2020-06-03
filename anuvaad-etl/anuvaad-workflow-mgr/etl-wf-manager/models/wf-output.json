@@ -1,0 +1,45 @@
+{
+    "input":{
+        "workflowCode":"DP_WFLOW_<tools_involved>",
+        "files": [
+          {
+            "path":"0032374903",
+            "type":"txt",
+            "locale":"en"
+          },
+          {
+            "path":"0032374904",
+            "type":"txt",
+            "locale":"hi"
+          }
+        ]
+    },
+    "output":{
+    },
+    "startTime": 1591161431000,
+    "endTime": 1593753431000,
+    "jobID": "<usecase_code>-<13 digit epoch>",
+    "status": ["STARTED", "INPROGRESS", "COMPLETED", "FAILED", "INTERRUPTED"],
+    "state": ["INGESTED", "PARAGRAPH-EXCTRACTED", "PARAGRAPH-TOKENISED", "SETENCES-ALIGNED"],
+    "taskDetails":[
+        {
+            "order":0,
+            "tool": ["TOKENISER", "INGESTOR", "EXCTRACTOR", "ALIGNER"],
+            "taskID": "<task_code>-<13 digit epoch>",
+            "input":{
+
+            },
+            "output":{
+
+            },
+            "taskStartTime": 1591161431000,
+            "taskEndTime": 1591161431000,
+            "status": ["SUCCESS", "FAILED"],
+            "state": ["INGESTED", "PARAGRAPH-EXCTRACTED", "PARAGRAPH-TOKENISED", "SETENCES-ALIGNED"]
+
+        }
+    ],
+    "error":{
+
+    }
+  }
