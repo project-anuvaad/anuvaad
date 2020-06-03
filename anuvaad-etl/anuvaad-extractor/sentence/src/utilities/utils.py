@@ -1,19 +1,11 @@
 import os
 from pathlib import Path
-import uuid
+import time
 
 class FileOperation(object):
 
     def __init__(self):
-        self.upload_folder = None
         self.download_folder = None
-
-    def file_upload(self, uploading_folder):
-        self.upload_folder = uploading_folder
-        upload_dir = Path(os.path.join(os.curdir,self.upload_folder))
-        if upload_dir.exists() is False:
-            os.makedirs(upload_dir)
-        return upload_dir
 
     def file_download(self, downloading_folder):
         self.download_folder = downloading_folder
@@ -29,7 +21,7 @@ class FileOperation(object):
             return False
 
     def check_file_extension(self, file_type):
-        allowed_extensions = ['txt']
+        allowed_extensions = ['txt','csv']
         if file_type in allowed_extensions:
             return True
         else:
@@ -39,19 +31,43 @@ class FileOperation(object):
         input_filepath = os.path.join('upload', input_filename)
         return input_filepath
 
-    def output_path(self, DOWNLOAD_FOLDER):
-        output_filenname = 'tokenised_file_' + str(uuid.uuid1()) + '.txt'
-        output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filenname)
-        return output_filepath
+    def output_path(self,i, DOWNLOAD_FOLDER):
+        output_filename = 'tokenised_file_%d_'%i + str(int(time.time())) + '.txt'
+        output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filename)
+        return output_filepath , output_filename
     
-    def read_file(self, input_filepath):
+    def read_file(self, input_filename):
+        input_filepath = self.input_path(input_filename)
         with open(input_filepath, 'r') as f:
             input_file_data = f.readlines()
         return input_file_data
 
+    def producer_input(self, input_filepath, in_file_type, in_locale, jobid):
+        producer_feed_data = {
+            "filepath": input_filepath,
+            "type": in_file_type,
+            "locale": in_locale,
+            "jobID": jobid
+        }
+        return producer_feed_data
+
     def json_input_format(self, json_data):
-        input_filepath = json_data['filepath']
-        file_type = json_data['type']
-        locale = json_data['locale']
+        input_files = json_data['files']
+        workflow_id = json_data['workflowCode']
+        #file_type = json_data['files']['type']
+        #locale = json_data['files']['locale']
         jobid = json_data['jobID']
-        return input_filepath, file_type, locale, jobid
+        return input_files, workflow_id, jobid
+
+    def accessing_files(self,files):
+        filepath = files['path']
+        file_type = files['type']
+        locale = files['locale']
+        return filepath, file_type, locale
+
+    def one_filename_response(self, input_filename, output_filename):
+        file_res = {
+            "input" : input_filename,
+            "output" : output_filename
+        }
+        return file_res

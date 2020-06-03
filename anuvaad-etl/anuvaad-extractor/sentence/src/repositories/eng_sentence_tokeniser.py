@@ -45,7 +45,6 @@ class AnuvaadEngTokenizer(object):
         self._tokenizer = PunktSentenceTokenizer(train_text=punkt_param,lang_vars=SentenceEndLangVars())
 
     def tokenize(self, text):
-        print('--------------Process started-------------')
         text = self.serialize_dates(text)
         text = self.serialize_with_abbrevations(text)
         text = self.serialize_table_points(text)
@@ -70,7 +69,6 @@ class AnuvaadEngTokenizer(object):
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
             output.append(se.strip())
-        print('--------------Process finished-------------')
         return output
 
     def serialize_bullet_points(self, text):

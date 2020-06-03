@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 
 DEBUG = True
 API_URL_PREFIX = "/api/v0"
@@ -21,7 +22,7 @@ download_folder = 'upload'
 
 
 #process id
-taskid = '123456'
+taskid = str("TOK-" + str(int(time.time())))
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),
