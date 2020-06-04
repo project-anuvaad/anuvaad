@@ -9,14 +9,14 @@ WorkflowConfigs:
       - name: TOKENISER
         description: Accepts pdfs/images and converts using pdf2html or ocr.
         kafka-input:
-        - topic: anuvaad-dp-tools-transformer-input
+        - topic: anuvaad-dp-tools-tokeniser-input
           partitions: 2
-          keys: trandformer-input-key-one, trandformer-input-key-two
+          keys: tokeniser-input-key-one, tokeniser-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-transformer-output
+        - topic: anuvaad-dp-tools-tokeniser-output
           partitions: 2
-          keys: trandformer-output-key-one, trandformer-output-key-two
+          keys: tokeniser-output-key-one, tokeniser-output-key-two
           assignment: round-robin
       interruptenable: true
       endState: false
@@ -25,14 +25,14 @@ WorkflowConfigs:
       - name: ALIGNER
         description: Accepts html/ocr outputs and extracts paragraphs.
         kafka-input:
-        - topic: anuvaad-dp-tools-extractor-input
+        - topic: anuvaad-dp-tools-aligner-input
           partitions: 2
-          keys: extractor-input-key-one, extractor-input-key-two
+          keys: aligner-input-key-one, aligner-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-extractor-output
+        - topic: anuvaad-dp-tools-aligner-output
           partitions: 2
-          keys: extractor-output-key-one, extractor-output-key-two
+          keys: aligner-output-key-one, aligner-output-key-two
           assignment: round-robin
       interruptenable: true
       endState: false

@@ -50,9 +50,9 @@ class Demo:
             sequence = config["sequence"]
             for step in sequence:
                 output_topic = step["tool"][0]["kafka-output"][0]["topic"]
-                input_topic = step["tool"][0]["kafka-input"][0]["topic"]
+                #input_topic = step["tool"][0]["kafka-input"][0]["topic"]
                 topics.append(output_topic)
-                topics.append(input_topic)
+                #topics.append(input_topic)
 
         return topics
 
