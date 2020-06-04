@@ -1,15 +1,27 @@
 #!/bin/python
 import logging
 import os
+import threading
 
 from flask import Flask, jsonify, request
 import datetime as dt
 from logging.config import dictConfig
-from demo import Demo
-from producer import Producer
+from demo.demo import Demo
+from demo.producer import Producer
+from demo.consumer import consume
 
 app = Flask(__name__)
+log = logging.getLogger('file')
 context_path = os.environ.get('WFM_CONTEXT_PATH', '/etl-wfm')
+
+
+def start_consumer():
+    print("Consumer starting")
+    try:
+        t1 = threading.Thread(target=consume, name='keep_on_running')
+        t1.start()
+    except Exception as e:
+        print('ERROR WHILE RUNNING CUSTOM THREADS ' + str(e))
 
 
 # REST endpoint to initiate the workflow.
@@ -38,8 +50,8 @@ def health():
 def produce(object_in):
     producer = Producer()
     topic = "anu-etl-wf-initiate"
+    print("Pushing to the queue....")
     producer.push_to_queue(object_in, topic)
-
 
 def get_response(object_in):
     demo = Demo()
@@ -47,9 +59,14 @@ def get_response(object_in):
     object_in["jobID"] = jobid
     object_in["status"] = "STARTED"
     object_in["state"] = "INITIATED"
-    object_in["currentStep"] = 0
+    object_in["stepOrder"] = 0
 
     return object_in
+
+
+if __name__ == '__main__':
+    start_consumer()
+    app.run(host='127.0.0.1', port=5000)
 
 
 
@@ -86,6 +103,3 @@ dictConfig({
         'handlers': ['info', 'console']
     }
 })
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002)

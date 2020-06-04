@@ -1,0 +1,38 @@
+WorkflowConfigs:
+
+  - workflowCode: DP_WFLOW_TA
+    description: tokenises into sentences, aligns the corp.    
+    useCase: TOK-ALIGN
+    sequence:
+    - order: 0
+      tool:
+      - name: TOKENISER
+        description: Accepts pdfs/images and converts using pdf2html or ocr.
+        kafka-input:
+        - topic: anuvaad-dp-tools-transformer-input
+          partitions: 2
+          keys: trandformer-input-key-one, trandformer-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-transformer-output
+          partitions: 2
+          keys: trandformer-output-key-one, trandformer-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 1
+      tool:
+      - name: ALIGNER
+        description: Accepts html/ocr outputs and extracts paragraphs.
+        kafka-input:
+        - topic: anuvaad-dp-tools-extractor-input
+          partitions: 2
+          keys: extractor-input-key-one, extractor-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-extractor-output
+          partitions: 2
+          keys: extractor-output-key-one, extractor-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false

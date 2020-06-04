@@ -27,6 +27,7 @@ class Producer:
     # Method to push records to a topic in the kafka queue
     def push_to_queue(self, object_in, topic):
         producer = self.instantiate()
+        print("Pushing to the Kafka Queue......")
         log.info("Pushing to the Kafka Queue......")
         try:
             log.info(object_in)

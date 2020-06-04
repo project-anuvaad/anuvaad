@@ -1,0 +1,6 @@
+[2020-06-03 14:53:28,592] {producer.py:37} Thread-1 ERROR in producer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
+[2020-06-03 14:56:54,561] {producer.py:37} Thread-1 ERROR in producer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
+[2020-06-03 15:04:07,106] {consumer.py:38} keep_on_running INFO in consumer: Consumer running.......
+[2020-06-03 15:09:07,070] {consumer.py:38} keep_on_running INFO in consumer: Consumer running.......
+[2020-06-03 15:22:32,322] {consumer.py:35} keep_on_running INFO in consumer: ['anuvaad-dp-tools-transformer-output', 'anuvaad-dp-tools-transformer-input', 'anuvaad-dp-tools-extractor-output', 'anuvaad-dp-tools-extractor-input']
+[2020-06-03 15:34:09,242] {consumer.py:35} keep_on_running INFO in consumer: ['anuvaad-dp-tools-transformer-output', 'anuvaad-dp-tools-transformer-input', 'anuvaad-dp-tools-extractor-output', 'anuvaad-dp-tools-extractor-input']

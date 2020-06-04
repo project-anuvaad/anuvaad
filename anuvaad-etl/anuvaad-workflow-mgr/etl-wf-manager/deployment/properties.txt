@@ -1,16 +1,6 @@
-SA_DIRECTORY_PATH = r'C:\Users\Vishal\Desktop\anuvaad\Facebook LASER\resources\Input'
-LASER_PATH = http://127.0.0.1:8050/vectorize
-TWO_FILES = True
-WORD_LENGTH = 200
-FILE_ENCODING = utf-16
-FILE_UPLOAD_URL = http://auth.anuvaad.org/upload
-FILE_PATH_DELIMITER = /
-NO_OF_PROCESSES = 2
+ETL_WFM_CONFIG_FILE = r'C:\Users\Vishal\Desktop\new-repo\example.yml'
 KAFKA_CLUSTER_DETAILS = localhost:1234
-ALIGN_JOB_TOPIC = laser-align-job-register
-ALIGN_JOB_TOPIC_PARTITIONS = 2
-ALIGN_JOB_CONSUMER_GRP = laser-align-job-consumer-group
 MONGO_CLIENT = mongodb://localhost:27017/
-MONGO_ALIGNMENT_DB = anuvaad-laser-alignment
-MONGO_ALIGNMENT_COL = alignment-job
+MONGO_ALIGNMENT_DB = anuvaad-etl
+MONGO_ALIGNMENT_COL = anu-etl-wf-jobs
 

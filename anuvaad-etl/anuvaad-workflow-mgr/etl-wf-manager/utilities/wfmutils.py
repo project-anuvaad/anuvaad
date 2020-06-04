@@ -37,9 +37,6 @@ class WFMUtils:
 
             return config_dict, topics
 
-    # Utility to generate a unique random job ID
-    def generate_job_id(self, usecase):
-        return usecase + "-" + str(time.time()).replace('.', '')
 
     # Based on a given config, this method returns a dict of order of execution.
     def get_order_of_exc(self, config):

@@ -1,18 +1,31 @@
 {
-    "workflowCode":"DP_WFLOW_<tools_involved>",
-    "jobID":"<usecase_code>-<13 digit epoch>",
-    "tool":["TOKENISER", "INGESTOR", "EXCTRACTOR", "ALIGNER"],
-    "stepOrder":[0,1,2,3,4],
+  "workflowCode": "DP_WFLOW_<tools_involved>",
+  "jobID": "<usecase_code>-<13 digit epoch>",
+  "tool": [
+    "TOKENISER",
+    "INGESTOR",
+    "EXCTRACTOR",
+    "ALIGNER"
+  ],
+  "stepOrder": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "input": {
     "files": [
       {
-        "path":"0032374903",
-        "type":"txt",
-        "locale":"en"
+        "path": "0032374903",
+        "type": "txt",
+        "locale": "en"
       },
       {
-        "path":"0032374904",
-        "type":"txt",
-        "locale":"hi"
+        "path": "0032374904",
+        "type": "txt",
+        "locale": "hi"
       }
     ]
   }
+}
