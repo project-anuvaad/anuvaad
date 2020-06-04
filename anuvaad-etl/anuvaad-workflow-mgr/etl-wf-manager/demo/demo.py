@@ -1,7 +1,6 @@
 import logging
 import time
 import traceback
-import urllib
 
 import requests
 
