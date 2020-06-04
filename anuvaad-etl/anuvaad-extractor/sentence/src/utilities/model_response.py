@@ -60,11 +60,11 @@ class CustomResponse():
         self.status_code['workflowCode'] = workflow_id
         self.status_code['taskStarttime'] = task_start_time
         self.status_code['taskendTime'] = task_end_time
-        self.filename_response = filename_response
+        self.status_code['files'] = filename_response
 
     def get_response(self):
-        self.status_code['files'] = self.filename_response
         return jsonify(self.status_code)
+
 
 def checking_file_response(jobid, workflow_id, task_id, task_starttime, input_files, DOWNLOAD_FOLDER):
     file_ops = FileOperation()
@@ -101,14 +101,13 @@ def checking_file_response(jobid, workflow_id, task_id, task_starttime, input_fi
                 response = CustomResponse(Status.ERR_EMPTY_FILE.value, jobid, workflow_id, task_id, task_starttime, task_endtime, filename_response)
                 return response.get_response()
             else:
+                tokenisation = Tokenisation()
                 if in_locale == "en":
-                    tokenisation = Tokenisation()
                     input_file_data = file_ops.read_file(input_filename)
                     output_filepath , output_en_filename = file_ops.output_path(i, DOWNLOAD_FOLDER)
                     tokenisation.eng_tokenisation(input_file_data, output_filepath)
                     file_res['output'] = output_en_filename
                 elif in_locale == "hi":
-                    tokenisation = Tokenisation()
                     input_file_data = file_ops.read_file(input_filename)
                     output_filepath , output_hi_filename = file_ops.output_path(i, DOWNLOAD_FOLDER)
                     tokenisation.hin_tokenisation(input_file_data, output_filepath)

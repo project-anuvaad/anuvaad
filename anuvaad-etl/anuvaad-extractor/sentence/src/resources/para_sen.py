@@ -35,4 +35,5 @@ class SenTokenisePost(Resource):
             response = CustomResponse(Status.ERR_Workflow_id_NOT_FOUND.value, jobid, workflow_id, task_id, task_starttime, task_endtime, input_files)
             return response.get_response()
         else:
-            return checking_file_response(jobid, workflow_id, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
+            file_value_response = checking_file_response(jobid, workflow_id, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
+            return file_value_response
