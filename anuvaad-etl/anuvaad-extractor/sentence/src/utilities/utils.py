@@ -52,12 +52,12 @@ class FileOperation(object):
         return producer_feed_data
 
     def json_input_format(self, json_data):
-        input_files = json_data['files']
+        input_files = json_data['input']['files']
         workflow_id = json_data['workflowCode']
-        #file_type = json_data['files']['type']
-        #locale = json_data['files']['locale']
         jobid = json_data['jobID']
-        return input_files, workflow_id, jobid
+        tool_name = json_data['tool']
+        step_order = json_data['stepOrder']
+        return input_files, workflow_id, jobid, tool_name, step_order
 
     def accessing_files(self,files):
         filepath = files['path']
