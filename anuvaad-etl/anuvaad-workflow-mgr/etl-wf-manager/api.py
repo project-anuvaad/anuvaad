@@ -27,16 +27,19 @@ def start_consumer():
 # REST endpoint to initiate the workflow.
 @app.route(context_path + '/wf-manager/initiate', methods=["POST"])
 def initiate_workflow():
+    demo = Demo()
     data = request.get_json()
     response = get_response(data)
+    demo.update_job_details(response, True)
     produce(response)
     return response
 
 
 # REST endpoint to fetch workflow jobs.
-@app.route(context_path + '/wf-manager/jobs/search', methods=["GET"])
+@app.route(context_path + '/wf-manager/jobs/search/<job_id>', methods=["GET"])
 def searchjobs(job_id):
-    response = {"status": "START"}
+    demo = Demo()
+    response = demo.get_jobs(job_id)
     return jsonify(response)
 
 

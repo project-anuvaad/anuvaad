@@ -4,3 +4,4 @@
 [2020-06-03 15:09:07,070] {consumer.py:38} keep_on_running INFO in consumer: Consumer running.......
 [2020-06-03 15:22:32,322] {consumer.py:35} keep_on_running INFO in consumer: ['anuvaad-dp-tools-transformer-output', 'anuvaad-dp-tools-transformer-input', 'anuvaad-dp-tools-extractor-output', 'anuvaad-dp-tools-extractor-input']
 [2020-06-03 15:34:09,242] {consumer.py:35} keep_on_running INFO in consumer: ['anuvaad-dp-tools-transformer-output', 'anuvaad-dp-tools-transformer-input', 'anuvaad-dp-tools-extractor-output', 'anuvaad-dp-tools-extractor-input']
+[2020-06-04 12:41:36,217] {producer.py:36} Thread-1 INFO in producer: Done.

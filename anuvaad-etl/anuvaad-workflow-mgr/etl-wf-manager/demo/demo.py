@@ -1,6 +1,10 @@
 import logging
 import time
 import traceback
+import urllib
+
+import requests
+
 from .producer import Producer
 from .repository import WFMRepository
 
@@ -12,22 +16,27 @@ producer = Producer()
 wfmrepo = WFMRepository()
 configs_global = {}
 
-config_fiile = os.environ.get('ETL_WFM_CONFIG_FILE', r'C:\Users\Vishal\Desktop\new-repo\example.yml')
+config_file_url = os.environ.get('ETL_WFM_CONFIG_FILE_URL',
+            'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/config/example.yml')
+yaml_file_loc = os.environ.get('ETL_CONFIG_FILE_LOC', r'C:\Users\Vishal\Desktop\new-repo')
+yaml_file_name = os.environ.get('ETL_CONFIG_FILE', 'configfile.yml')
+
 
 class Demo:
     def __init__(self):
         pass
 
     def fetch_all_configs(self):
-        with open(config_fiile, 'r') as stream:
+        file = requests.get(config_file_url, allow_redirects=True)
+        open(yaml_file_loc + yaml_file_name, 'wb').write(file.content)
+        with open(yaml_file_loc + yaml_file_name, 'r') as stream:
             try:
                 parsed = yaml.safe_load(stream)
                 configs = parsed['WorkflowConfigs']
                 for obj in configs:
                     key = obj['workflowCode']
                     configs_global[key] = obj
-
-            except yaml.YAMLError as exc:
+            except Exception as exc:
                 log.error("Exception while consuming: " + str(exc))
                 traceback.print_exc()
 
@@ -44,7 +53,6 @@ class Demo:
                 input_topic = step["tool"][0]["kafka-input"][0]["topic"]
                 topics.append(output_topic)
                 topics.append(input_topic)
-
 
         return topics
 
@@ -110,10 +118,14 @@ class Demo:
 
     def update_job_details(self, state_details, iscreate):
         if iscreate:
+            print("Creating job entry..")
             wfmrepo.create_job(state_details)
+            del state_details["_id"]
         else:
+            print("Updating job entry..")
             jobID = state_details["jobID"]
             wfmrepo.update_job(state_details, jobID)
+            del state_details["_id"]
 
     def get_job_details_obj(self, input, status, state, output):
         obj = {"input": input,
@@ -122,10 +134,10 @@ class Demo:
                "state": state,
                "status": status
                }
+
         return obj
 
     def initiate(self, object_in):
-        self.update_job_details(object_in, True)
         print("Job initiated for the job: " + object_in["jobID"])
         config = self.get_all_configs()
         config_to_be_used = config[object_in["worflowCode"]]
@@ -145,8 +157,6 @@ class Demo:
 
 
     def manage(self, object_in):
-        self.update_job_details()
-        self.update_task_details()
         if object_in["status"] is not "FAILED":
             state_details = self.get_job_details_obj(object_in, "INPROGRESS", object_in["state"], object_in["output"])
             self.update_job_details(state_details, False)
