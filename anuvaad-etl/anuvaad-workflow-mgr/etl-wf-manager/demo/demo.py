@@ -175,6 +175,10 @@ class Demo:
                 state_details = self.get_job_details_obj(object_in, "SUCCESS", object_in["state"], object_in["output"])
                 self.update_job_details(state_details, False)
                 print("Job completed.")
+        else:
+            state_details = self.get_job_details_obj(object_in, "FAILED", object_in["state"], object_in["output"])
+            self.update_job_details(state_details, False)
+
 
 
     def get_jobs(self, job_id):
