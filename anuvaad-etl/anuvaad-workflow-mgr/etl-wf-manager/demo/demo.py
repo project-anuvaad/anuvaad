@@ -2,13 +2,14 @@ import logging
 import time
 import traceback
 from .producer import Producer
+from .repository import WFMRepository
 
 import yaml
 import os
 
-
 log = logging.getLogger('file')
 producer = Producer()
+wfmrepo = WFMRepository()
 configs_global = {}
 
 config_fiile = os.environ.get('ETL_WFM_CONFIG_FILE', r'C:\Users\Vishal\Desktop\new-repo\example.yml')
@@ -107,13 +108,24 @@ class Demo:
 
         return obj
 
-    def update_job_details(self):
-        pass
+    def update_job_details(self, state_details, iscreate):
+        if iscreate:
+            wfmrepo.create_job(state_details)
+        else:
+            jobID = state_details["jobID"]
+            wfmrepo.update_job(state_details, jobID)
 
-    def update_task_details(self):
-        pass
+    def get_job_details_obj(self, input, status, state, output):
+        obj = {"input": input,
+               "output": output,
+               "jobID": input["jobID"],
+               "state": state,
+               "status": status
+               }
+        return obj
 
     def initiate(self, object_in):
+        self.update_job_details(object_in, True)
         print("Job initiated for the job: " + object_in["jobID"])
         config = self.get_all_configs()
         config_to_be_used = config[object_in["worflowCode"]]
@@ -123,6 +135,8 @@ class Demo:
         tool_name = tool["name"]
         input_topic = tool["kafka-input"][0]["topic"]
         obj = self.get_tool_input(tool_name, config_to_be_used, object_in)
+        state_details = self.get_job_details_obj(object_in, "INPROGRESS", "INITATED", None)
+        self.update_job_details(state_details, False)
         producer.push_to_queue(obj, input_topic)
         print("Workflow initiated for workflow: " + object_in["workflowCode"])
         print("TOOL 0: " + tool_name)
@@ -134,6 +148,8 @@ class Demo:
         self.update_job_details()
         self.update_task_details()
         if object_in["status"] is not "FAILED":
+            state_details = self.get_job_details_obj(object_in, "INPROGRESS", object_in["state"], object_in["output"])
+            self.update_job_details(state_details, False)
             next_step = self.get_next_step(object_in)
             if next_step is not None:
                 obj = next_step[0]
@@ -146,4 +162,13 @@ class Demo:
                 obj["stepOrder"] = current_step + 1
                 producer.push_to_queue(obj, topic)
             else:
+                state_details = self.get_job_details_obj(object_in, "SUCCESS", object_in["state"], object_in["output"])
+                self.update_job_details(state_details, False)
                 print("Job completed.")
+
+
+    def get_jobs(self, job_id):
+        return wfmrepo.search_job(job_id)
+
+
+
