@@ -136,6 +136,40 @@ class Demo:
 
         return obj
 
+    def get_wf_update_obj(self, wf_input, task_output, isfinal, isstart):
+        wf_details = self.get_jobs(wf_input["jobID"])
+        wf_output = {}
+        if wf_details is not None:
+            task_details = []
+            if task_output is not None:
+                task_details = [task_output]
+            wf_output = {
+                "input": wf_input,
+                "jobID": wf_input["jobID"],
+                "state": task_output["state"],
+                "taskDetails": task_details
+                }
+        else:
+            task_details = wf_details["taskDetails"]
+            task_details.append(task_output)
+            wf_details["taskDetails"] = task_details
+            wf_details["state"] = task_output["state"]
+            wf_output = wf_details
+
+        if isfinal:
+            wf_output["status"] = "COMPLETED"
+            wf_output["output"] = task_output
+
+        elif isstart:
+            wf_output["status"] = "STARTED"
+            wf_output["output"] = None
+
+        else:
+            wf_output["status"] = "INPROGRESS"
+            wf_output["output"] = task_output
+
+        return wf_output
+
     def initiate(self, object_in):
         print("Job initiated for the job: " + object_in["jobID"])
         config = self.get_all_configs()
@@ -146,7 +180,7 @@ class Demo:
         tool_name = tool["name"]
         input_topic = tool["kafka-input"][0]["topic"]
         obj = self.get_tool_input(tool_name, config_to_be_used, object_in)
-        state_details = self.get_job_details_obj(object_in, "INPROGRESS", "INITATED", None)
+        state_details = self.get_wf_update_obj(object_in, None, False, False)
         self.update_job_details(state_details, False)
         producer.push_to_queue(obj, input_topic)
         print("Workflow initiated for workflow: " + object_in["workflowCode"])
@@ -157,10 +191,10 @@ class Demo:
 
     def manage(self, object_in):
         if object_in["status"] is not "FAILED":
-            state_details = self.get_job_details_obj(object_in, "INPROGRESS", object_in["state"], object_in["output"])
-            self.update_job_details(state_details, False)
             next_step = self.get_next_step(object_in)
             if next_step is not None:
+                state_details = self.get_wf_update_obj(None, object_in, False, False)
+                self.update_job_details(state_details, False)
                 obj = next_step[0]
                 tool = next_step[1]
                 topic = tool["kafka-input"][0]["topic"]
@@ -171,7 +205,7 @@ class Demo:
                 obj["stepOrder"] = current_step + 1
                 producer.push_to_queue(obj, topic)
             else:
-                state_details = self.get_job_details_obj(object_in, "SUCCESS", object_in["state"], object_in["output"])
+                state_details = self.get_wf_update_obj(None, object_in, True, False)
                 self.update_job_details(state_details, False)
                 print("Job completed.")
         else:
