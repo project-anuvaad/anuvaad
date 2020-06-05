@@ -153,10 +153,12 @@ class Demo:
                 "taskDetails": task_details
                 }
         else:
+            wf_details = wf_details[0]
             task_details = wf_details["taskDetails"]
-            task_details.append(task_output)
+            if task_output is not None:
+                task_details.append(task_output)
+                wf_details["state"] = task_output["state"]
             wf_details["taskDetails"] = task_details
-            wf_details["state"] = task_output["state"]
             wf_output = wf_details
 
         if isfinal:
