@@ -148,7 +148,7 @@ class Demo:
             wf_output = {
                 "input": wf_input,
                 "jobID": wf_input["jobID"],
-                "state": task_output["state"],
+                "workflowCode": wf_input["workflowCode"],
                 "taskDetails": task_details
                 }
         else:
@@ -164,6 +164,7 @@ class Demo:
 
         elif isstart:
             wf_output["status"] = "STARTED"
+            wf_output["state"] = "INITIATED"
             wf_output["output"] = None
 
         else:
