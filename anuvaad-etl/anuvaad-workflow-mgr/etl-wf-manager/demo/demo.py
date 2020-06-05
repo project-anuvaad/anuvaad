@@ -137,8 +137,11 @@ class Demo:
         return obj
 
     def get_wf_update_obj(self, wf_input, task_output, isfinal, isstart):
-        wf_details = self.get_jobs(wf_input["jobID"])
-        wf_output = {}
+        if wf_input is not None:
+            wf_details = self.get_jobs(wf_input["jobID"])
+        else:
+            wf_details = self.get_jobs(task_output["jobID"])
+            
         if wf_details is not None:
             task_details = []
             if task_output is not None:
