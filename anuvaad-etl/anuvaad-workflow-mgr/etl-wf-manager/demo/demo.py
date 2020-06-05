@@ -98,7 +98,8 @@ class Demo:
             obj = self.get_tool_input(tool_name, object_in)
             return obj, tool
         except Exception as e:
-            log.info("Exception while fetching next step: " + e)
+            print("Exception while fetching next step: " + str(e))
+            log.info("Exception while fetching next step: " + str(e))
             traceback.print_exc()
             return None
 
