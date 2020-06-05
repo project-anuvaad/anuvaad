@@ -132,7 +132,7 @@ class Demo:
 
         return obj
 
-    def get_wf_update_obj(self, wf_input, task_output, isfinal, isstart):
+    def get_wf_update_obj(self, wf_input, task_output, isfinal):
         if wf_input is not None:
             wf_details = self.get_jobs(wf_input["jobID"])
         else:
@@ -150,6 +150,8 @@ class Demo:
                 "jobID": wf_input["jobID"],
                 "workflowCode": wf_input["workflowCode"],
                 "stepOrder": wf_input["stepOrder"],
+                "status" : "STARTED",
+                "state" : "INITIATED",
                 "taskDetails": task_details
                 }
         else:
@@ -157,22 +159,16 @@ class Demo:
             task_details = wf_details["taskDetails"]
             if task_output is not None:
                 task_details.append(task_output)
+                wf_details["output"] = task_output
                 wf_details["state"] = task_output["state"]
             wf_details["taskDetails"] = task_details
             wf_output = wf_details
 
         if isfinal:
             wf_output["status"] = "COMPLETED"
-            wf_output["output"] = task_output
-
-        elif isstart:
-            wf_output["status"] = "STARTED"
-            wf_output["state"] = "INITIATED"
-            wf_output["output"] = None
 
         else:
             wf_output["status"] = "INPROGRESS"
-            wf_output["output"] = task_output
 
         return wf_output
 
@@ -186,7 +182,7 @@ class Demo:
         tool_name = tool["name"]
         input_topic = tool["kafka-input"][0]["topic"]
         obj = self.get_tool_input(tool_name, object_in)
-        state_details = self.get_wf_update_obj(object_in, None, False, False)
+        state_details = self.get_wf_update_obj(object_in, None, False)
         self.update_job_details(state_details, False)
         producer.push_to_queue(obj, input_topic)
         print("Workflow initiated for workflow: " + object_in["workflowCode"])
@@ -197,7 +193,7 @@ class Demo:
         if object_in["status"] is not "FAILED":
             next_step = self.get_next_step(object_in)
             if next_step is not None:
-                state_details = self.get_wf_update_obj(None, object_in, False, False)
+                state_details = self.get_wf_update_obj(None, object_in, False)
                 self.update_job_details(state_details, False)
                 obj = next_step[0]
                 tool = next_step[1]
@@ -210,7 +206,7 @@ class Demo:
                 producer.push_to_queue(obj, topic)
             else:
                 print("Current State: " + object_in["state"])
-                state_details = self.get_wf_update_obj(None, object_in, True, False)
+                state_details = self.get_wf_update_obj(None, object_in, True)
                 self.update_job_details(state_details, False)
                 print("Job completed.")
         else:

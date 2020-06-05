@@ -30,7 +30,7 @@ def initiate_workflow():
     demo = Demo()
     data = request.get_json()
     response = get_response(data)
-    state_details = demo.get_wf_update_obj(response, None, False, True)
+    state_details = demo.get_wf_update_obj(response, None, False)
     demo.update_job_details(state_details, True)
     produce(state_details)
     return state_details
