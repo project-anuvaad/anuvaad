@@ -3,7 +3,7 @@ WorkflowConfigs:
 
   - workflowCode: DP_WFLOW_T
     description: tokenises into sentences, aligns the corp.    
-    useCase: TOK-ALIGN
+    useCase: TOK
     sequence:
     - order: 0
       tool:
