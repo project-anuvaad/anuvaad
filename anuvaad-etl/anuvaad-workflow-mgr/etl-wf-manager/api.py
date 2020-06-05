@@ -33,7 +33,7 @@ def initiate_workflow():
     state_details = demo.get_wf_update_obj(response, None, False, True)
     demo.update_job_details(state_details, True)
     produce(state_details)
-    return response
+    return state_details
 
 
 # REST endpoint to fetch workflow jobs.

@@ -123,7 +123,6 @@ class Demo:
             print("Updating job entry..")
             jobID = state_details["jobID"]
             wfmrepo.update_job(state_details, jobID)
-            del state_details["_id"]
 
     def get_job_details_obj(self, input, status, state, output):
         obj = {"input": input,
