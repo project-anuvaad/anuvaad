@@ -52,7 +52,7 @@ class FileOperation(object):
         return producer_feed_data
 
     def json_input_format(self, json_data):
-        input_files = json_data['input']['files']
+        input_files = json_data['files']
         workflow_id = json_data['workflowCode']
         jobid = json_data['jobID']
         tool_name = json_data['tool']
