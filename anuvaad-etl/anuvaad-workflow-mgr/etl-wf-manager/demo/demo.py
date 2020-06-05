@@ -176,7 +176,7 @@ class Demo:
     def initiate(self, object_in):
         print("Job initiated for the job: " + object_in["jobID"])
         config = self.get_all_configs()
-        config_to_be_used = config[object_in["worflowCode"]]
+        config_to_be_used = config[object_in["workflowCode"]]
         orderofexc = self.get_order_of_exc(config_to_be_used)
         first_step_details = orderofexc[0]
         tool = first_step_details["tool"][0]
