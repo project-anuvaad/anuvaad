@@ -38,15 +38,13 @@ def consume():
     print("Consumer Running..........")
     print(topics)
     try:
-        data = {}
         for msg in consumer:
             data = msg.value
-            break
-        print("Received on topic: " + msg.topic)
-        if msg.topic == "anu-etl-wf-initiate":
-            demo.initiate(data)
-        else:
-            demo.manage(data)
+            print("Received on topic: " + msg.topic)
+            if msg.topic == "anu-etl-wf-initiate":
+                demo.initiate(data)
+            else:
+                demo.manage(data)
     except Exception as e:
         log.error("Exception while consuming: " + str(e))
         traceback.print_exc()
