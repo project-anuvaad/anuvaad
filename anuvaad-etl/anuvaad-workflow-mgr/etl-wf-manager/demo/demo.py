@@ -68,15 +68,15 @@ class Demo:
         return order_of_exc_dict
 
     def get_tok_input(self, tool_input, object_in):
-        input = {"files": object_in["files"]}
+        input = {"files": object_in["input"]["files"]}
         tool_input["input"] = input
         tool_input["tool"] = "TOKENISER"
         return tool_input
 
     def get_ali_input(self, tool_input, object_in):
         input = {
-                 "source": object_in["files"][0],
-                  "target":  object_in["files"][1]
+                 "source": object_in["input"]["files"][0],
+                  "target":  object_in["input"]["files"][1]
                 }
         tool_input["input"] = input
         tool_input["tool"] = "ALIGNER"
