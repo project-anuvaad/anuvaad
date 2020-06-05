@@ -1,5 +1,27 @@
 WorkflowConfigs:
 
+
+  - workflowCode: DP_WFLOW_T
+    description: tokenises into sentences, aligns the corp.    
+    useCase: TOK-ALIGN
+    sequence:
+    - order: 0
+      tool:
+      - name: TOKENISER
+        description: Tokenises a given file with paragraphs
+        kafka-input:
+        - topic: anuvaad-dp-tools-tokeniser-input
+          partitions: 2
+          keys: tokeniser-input-key-one, tokeniser-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-tokeniser-output
+          partitions: 2
+          keys: tokeniser-output-key-one, tokeniser-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
   - workflowCode: DP_WFLOW_TA
     description: tokenises into sentences, aligns the corp.    
     useCase: TOK-ALIGN

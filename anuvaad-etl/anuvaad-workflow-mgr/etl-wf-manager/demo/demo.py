@@ -141,7 +141,7 @@ class Demo:
             wf_details = self.get_jobs(wf_input["jobID"])
         else:
             wf_details = self.get_jobs(task_output["jobID"])
-            
+
         if wf_details is not None:
             task_details = []
             if task_output is not None:
