@@ -141,7 +141,7 @@ class Demo:
         else:
             wf_details = self.get_jobs(task_output["jobID"])
 
-        if wf_details is None:
+        if wf_details is None or len(wf_details) == 0:
             task_details = []
             if task_output is not None:
                 task_details = [task_output]
@@ -149,6 +149,7 @@ class Demo:
                 "input": wf_input,
                 "jobID": wf_input["jobID"],
                 "workflowCode": wf_input["workflowCode"],
+                "stepOrder": wf_input["stepOrder"],
                 "taskDetails": task_details
                 }
         else:
