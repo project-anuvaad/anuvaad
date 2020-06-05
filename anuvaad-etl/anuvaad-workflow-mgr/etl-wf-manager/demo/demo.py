@@ -142,11 +142,8 @@ class Demo:
             task_details = []
             if task_output is not None:
                 task_details = [task_output]
-            client_data = wf_input
-            del client_data["jobID"]
-            del client_data["stepOrder"]
             wf_output = {
-                "input": client_data,
+                "input": wf_input,
                 "jobID": wf_input["jobID"],
                 "workflowCode": wf_input["workflowCode"],
                 "stepOrder": wf_input["stepOrder"],
