@@ -181,7 +181,7 @@ class Demo:
         tool = first_step_details["tool"][0]
         tool_name = tool["name"]
         input_topic = tool["kafka-input"][0]["topic"]
-        obj = self.get_tool_input(tool_name, config_to_be_used, object_in)
+        obj = self.get_tool_input(tool_name, object_in)
         state_details = self.get_wf_update_obj(object_in, None, False, False)
         self.update_job_details(state_details, False)
         producer.push_to_queue(obj, input_topic)
