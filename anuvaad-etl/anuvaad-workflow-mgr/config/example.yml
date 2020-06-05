@@ -10,12 +10,12 @@ WorkflowConfigs:
       - name: TOKENISER
         description: Tokenises a given file with paragraphs
         kafka-input:
-        - topic: anuvaad-dp-tools-tokeniser-input
+        - topic: anuvaad-dp-tools-tokeniser-input_1
           partitions: 2
           keys: tokeniser-input-key-one, tokeniser-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-tokeniser-output
+        - topic: anuvaad-dp-tools-tokeniser-output_2
           partitions: 2
           keys: tokeniser-output-key-one, tokeniser-output-key-two
           assignment: round-robin
