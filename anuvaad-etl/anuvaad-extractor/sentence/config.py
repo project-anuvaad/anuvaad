@@ -10,10 +10,10 @@ PORT = 5001
 ENABLE_CORS = False
 
 # kafka
-sen_topic = 'exp_3_paragraph_file'
+sen_topic = 'anuvaad-dp-tools-tokeniser-input'
 kf_local_server = 'localhost:9092'
 # kf_group = 'exp_tokenisation'
-tok_topic = 'exp_2_tokenise_sentence'
+tok_topic = 'anuvaad-dp-tools-tokeniser-output'
 kafka_ip_host = 'KAFKA_IP_HOST'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 

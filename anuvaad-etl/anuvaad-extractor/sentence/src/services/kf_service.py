@@ -15,12 +15,13 @@ def process_tokenization_kf():
     try:
         for msg in consumer:
             data = msg.value
-            input_files, workflow_id, jobid = file_ops.json_input_format(data)
+            input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             task_id = str("TOK-" + str(int(time.time())))
             task_starttime = int(time.time()) 
-            file_value_response = checking_file_response(jobid, workflow_id, task_id, task_starttime, input_files, DOWNLOAD_FOLDER).response[0].decode('ascii')
-            print("response kf",file_value_response)
+            file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
             producer_tokenise = Producer(config.tok_topic, config.bootstrap_server) 
-            producer_tokenise.producer_fn(file_value_response)
+            producer_tokenise.producer_fn(file_value_response.status_code)
+            print("producer flushed")
+            
     except Exception as e:
         print("error 1",e)

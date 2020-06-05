@@ -1,6 +1,6 @@
 import os
 import json
-from flask_restful import reqparse, Resource
+from flask_restful import Resource
 from flask.json import jsonify
 from flask import Flask, request
 from src.services.service import Tokenisation
@@ -45,4 +45,4 @@ class SenTokenisePost(Resource):
             return response.get_response()
         else:
             file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
-            return file_value_response
+            return file_value_response.get_response()
