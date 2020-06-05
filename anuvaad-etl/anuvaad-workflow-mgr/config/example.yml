@@ -2,7 +2,7 @@ WorkflowConfigs:
 
 
   - workflowCode: DP_WFLOW_T
-    description: tokenises into sentences, aligns the corp.    
+    description: tokenises paragraphs into sentences.    
     useCase: TOK
     sequence:
     - order: 0
