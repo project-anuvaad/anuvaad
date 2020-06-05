@@ -35,26 +35,21 @@ def consume():
     log.info(topics)
     topics.append("anu-etl-wf-initiate")
     consumer = instantiate(topics)
+    print("Consumer Running..........")
     print(topics)
     try:
         data = {}
         for msg in consumer:
-            print("Consuming from the Kafka Queue......")
             data = msg.value
             break
+        print("Received on topic: " + msg.topic)
         if msg.topic == "anu-etl-wf-initiate":
-            print("initate")
             demo.initiate(data)
         else:
-            print("update")
             demo.manage(data)
     except Exception as e:
         log.error("Exception while consuming: " + str(e))
         traceback.print_exc()
-    finally:
-        print("Closinggg")
-        consumer.close()
-
 
 # Method that provides a deserialiser for the kafka record.
 def handle_json(x):

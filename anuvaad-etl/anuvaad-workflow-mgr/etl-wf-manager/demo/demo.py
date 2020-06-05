@@ -116,11 +116,9 @@ class Demo:
 
     def update_job_details(self, state_details, iscreate):
         if iscreate:
-            print("Creating job entry..")
             wfmrepo.create_job(state_details)
             del state_details["_id"]
         else:
-            print("Updating job entry..")
             jobID = state_details["jobID"]
             wfmrepo.update_job(state_details, jobID)
 
@@ -144,8 +142,11 @@ class Demo:
             task_details = []
             if task_output is not None:
                 task_details = [task_output]
+            client_data = wf_input
+            del client_data["jobID"]
+            del client_data["stepOrder"]
             wf_output = {
-                "input": wf_input,
+                "input": client_data,
                 "jobID": wf_input["jobID"],
                 "workflowCode": wf_input["workflowCode"],
                 "stepOrder": wf_input["stepOrder"],
@@ -190,7 +191,6 @@ class Demo:
         producer.push_to_queue(obj, input_topic)
         print("Workflow initiated for workflow: " + object_in["workflowCode"])
         print("TOOL 0: " + tool_name)
-        print(obj)
 
 
     def manage(self, object_in):
@@ -209,6 +209,7 @@ class Demo:
                 obj["stepOrder"] = current_step + 1
                 producer.push_to_queue(obj, topic)
             else:
+                print("Current State: " + object_in["state"])
                 state_details = self.get_wf_update_obj(None, object_in, True, False)
                 self.update_job_details(state_details, False)
                 print("Job completed.")

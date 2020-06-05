@@ -54,15 +54,12 @@ def health():
 def produce(object_in):
     producer = Producer()
     topic = "anu-etl-wf-initiate"
-    print("Job initiated")
     producer.push_to_queue(object_in, topic)
 
 def get_response(object_in):
     demo = Demo()
     jobid = demo.generate_job_id(object_in["workflowCode"])
     object_in["jobID"] = jobid
-    object_in["status"] = "STARTED"
-    object_in["state"] = "INITIATED"
     object_in["stepOrder"] = 0
 
     return object_in
