@@ -22,7 +22,7 @@ download_folder = 'upload'
 
 
 #process id
-taskid = str("TOK-" + str(int(time.time())))
+#taskid = str("TOK-" + str(int(time.time())))
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),

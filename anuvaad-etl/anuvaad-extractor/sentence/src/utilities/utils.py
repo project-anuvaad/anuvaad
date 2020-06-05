@@ -32,7 +32,7 @@ class FileOperation(object):
         return input_filepath
 
     def output_path(self,i, DOWNLOAD_FOLDER):
-        output_filename = 'tokenised_file_%d_'%i + str(int(time.time())) + '.txt'
+        output_filename = 'tokenised_file_%d_'%i + str(time.time()).replace('.', '') + '.txt'
         output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filename)
         return output_filepath , output_filename
     

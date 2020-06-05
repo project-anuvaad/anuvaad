@@ -85,7 +85,7 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
     filename_response = list()
     output_file_response = {"files" : filename_response}
     if len(input_files) == 0 or not isinstance(input_files, list):
-        task_endtime = int(time.time())
+        task_endtime = str(time.time()).replace('.', '')
         response = CustomResponse(Status.ERR_EMPTY_FILE_LIST.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, input_files, output_file_response)
         return response
     else:
@@ -95,23 +95,23 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
             file_res = file_ops.one_filename_response(input_filename, output_filename)
             filename_response.append(file_res)
             if input_filename == "" or input_filename is None:
-                task_endtime = int(time.time())
+                task_endtime = str(time.time()).replace('.', '')
                 response = CustomResponse(Status.ERR_FILE_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, input_files, output_file_response)
                 return response
             elif file_ops.check_file_extension(in_file_type) is False:
-                task_endtime = int(time.time())
+                task_endtime = str(time.time()).replace('.', '')
                 response = CustomResponse(Status.ERR_EXT_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, input_files, output_file_response)
                 return response
             elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(DOWNLOAD_FOLDER) is False:
-                task_endtime = int(time.time())
+                task_endtime = str(time.time()).replace('.', '')
                 response = CustomResponse(Status.ERR_DIR_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, input_files, output_file_response)
                 return response
             elif in_locale == "" or in_locale is None:
-                task_endtime = int(time.time())
+                task_endtime = str(time.time()).replace('.', '')
                 response = CustomResponse(Status.ERR_locale_NOT_FOUND.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, input_files, output_file_response)
                 return response
             elif len(file_ops.read_file(input_filename)) == 0:
-                task_endtime = int(time.time())
+                task_endtime = str(time.time()).replace('.', '')
                 response = CustomResponse(Status.ERR_EMPTY_FILE.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, input_files, output_file_response)
                 return response
             else:
@@ -126,6 +126,6 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
                     output_filepath , output_hi_filename = file_ops.output_path(i, DOWNLOAD_FOLDER)
                     tokenisation.hin_tokenisation(input_file_data, output_filepath)
                     file_res['output'] = output_hi_filename
-                task_endtime = int(time.time())
+                task_endtime = str(time.time()).replace('.', '')
         response_true = CustomResponse(Status.SUCCESS.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, input_files, output_file_response)
         return response_true
