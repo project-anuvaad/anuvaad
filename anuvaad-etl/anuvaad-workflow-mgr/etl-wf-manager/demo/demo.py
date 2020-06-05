@@ -49,9 +49,8 @@ class Demo:
             sequence = config["sequence"]
             for step in sequence:
                 output_topic = step["tool"][0]["kafka-output"][0]["topic"]
-                #input_topic = step["tool"][0]["kafka-input"][0]["topic"]
-                topics.append(output_topic)
-                #topics.append(input_topic)
+                if output_topic not in topics:
+                    topics.append(output_topic)
 
         return topics
 
@@ -108,10 +107,10 @@ class Demo:
                "workflowCode": object_in["workflowCode"],
                "stepOrder " : object_in["stepOrder"]}
 
-        if tool_name is "TOKENISER":
+        if tool_name == "TOKENISER":
             obj = self.get_tok_input(obj, object_in)
 
-        if tool_name is "ALIGNER":
+        if tool_name == "ALIGNER":
             obj = self.get_ali_input(obj, object_in)
 
         return obj
@@ -189,7 +188,6 @@ class Demo:
         producer.push_to_queue(obj, input_topic)
         print("Workflow initiated for workflow: " + object_in["workflowCode"])
         print("TOOL 0: " + tool_name)
-        print("OBJ: ")
         print(obj)
 
 

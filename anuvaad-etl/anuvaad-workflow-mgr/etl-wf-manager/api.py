@@ -53,6 +53,7 @@ def health():
 def produce(object_in):
     producer = Producer()
     topic = "anu-etl-wf-initiate"
+    print("Job initiated")
     producer.push_to_queue(object_in, topic)
 
 def get_response(object_in):

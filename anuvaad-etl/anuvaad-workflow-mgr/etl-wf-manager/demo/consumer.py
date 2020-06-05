@@ -35,7 +35,6 @@ def consume():
     log.info(topics)
     topics.append("anu-etl-wf-initiate")
     consumer = instantiate(topics)
-    print("Consumer running.......")
     print(topics)
     try:
         data = {}
@@ -43,11 +42,11 @@ def consume():
             print("Consuming from the Kafka Queue......")
             data = msg.value
             break
-        if msg.topic is "anu-etl-wf-initiate":
-            print("anu topic")
+        if msg.topic == "anu-etl-wf-initiate":
+            print("initate")
             demo.initiate(data)
         else:
-            print("usecase topic")
+            print("update")
             demo.manage(data)
     except Exception as e:
         log.error("Exception while consuming: " + str(e))
