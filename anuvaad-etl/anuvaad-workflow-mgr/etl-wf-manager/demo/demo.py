@@ -142,8 +142,12 @@ class Demo:
             task_details = []
             if task_output is not None:
                 task_details = [task_output]
+            input = {
+                "wokflowCode": wf_input["workflowCode"],
+                "files": wf_input["files"]
+            }
             wf_output = {
-                "input": wf_input,
+                "input": input,
                 "jobID": wf_input["jobID"],
                 "workflowCode": wf_input["workflowCode"],
                 "stepOrder": wf_input["stepOrder"],
@@ -156,7 +160,7 @@ class Demo:
             task_details = wf_details["taskDetails"]
             if task_output is not None:
                 task_details.append(task_output)
-                wf_details["output"] = task_output
+                wf_details["output"] = task_output["output"]
                 wf_details["state"] = task_output["state"]
             wf_details["taskDetails"] = task_details
             wf_output = wf_details
