@@ -104,7 +104,7 @@ class Demo:
     def get_tool_input(self, tool_name, object_in):
         obj = {"jobID": object_in["jobID"],
                "workflowCode": object_in["workflowCode"],
-               "stepOrder " : object_in["stepOrder"]}
+               "stepOrder" : object_in["stepOrder"]}
 
         if tool_name == "TOKENISER":
             obj = self.get_tok_input(obj, object_in)
