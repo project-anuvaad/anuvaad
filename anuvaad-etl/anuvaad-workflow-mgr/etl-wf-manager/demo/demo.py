@@ -65,8 +65,7 @@ class Demo:
         sequence = config["sequence"]
         for step in sequence:
             order_of_exc_dict[step["order"]] = step
-
-        return sorted(order_of_exc_dict)
+        return order_of_exc_dict
 
     def get_tok_input(self, tool_input, object_in):
         input = {"files": object_in["files"]}
