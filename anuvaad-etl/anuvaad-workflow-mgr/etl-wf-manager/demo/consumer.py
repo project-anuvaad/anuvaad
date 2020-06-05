@@ -50,6 +50,9 @@ def consume():
     except Exception as e:
         log.error("Exception while consuming: " + str(e))
         traceback.print_exc()
+    finally:
+        print("Closing....")
+        consumer.close()
 
 # Method that provides a deserialiser for the kafka record.
 def handle_json(x):
