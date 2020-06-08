@@ -15,7 +15,6 @@ def process_tokenization_kf():
     try:
         for msg in consumer:
             data = msg.value
-            print("data",data)
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             task_id = str("TOK-" + str(time.time()).replace('.', ''))
             task_starttime = str(time.time()).replace('.', '')
