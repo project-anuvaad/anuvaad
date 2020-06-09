@@ -1,59 +1,106 @@
 import logging
+import os
+import time
 import traceback
-from datetime import time
 
+import requests
 import yaml
 
+from tools.aligner import Aligner
+from tools.ingestor import Ingestor
+from tools.extractor import Extractor
+from tools.tokeniser import Tokeniser
+from tools.transformer import Transformer
+
+
+aligner = Aligner()
+ingestor = Ingestor()
+extractor = Extractor()
+tokeniser = Tokeniser()
+transformer = Transformer()
+
 log = logging.getLogger('file')
+configs_global = {}
+
+config_file_url = os.environ.get('ETL_WFM_CONFIG_FILE_URL',
+            'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/config/example.yml')
+yaml_file_loc = os.environ.get('ETL_CONFIG_FILE_LOC', r'C:\Users\Vishal\Desktop\new-repo')
+yaml_file_name = os.environ.get('ETL_CONFIG_FILE', 'configfile.yml')
+
 
 class WFMUtils:
     def __init__(self):
         pass
 
-    # Function to read all the yaml files.
-    # Prepare a dict of configs against workflow code
-    # List all the kafka topics involved.
-    def fetch_all_configs(self):
-        file = r'C:\Users\Vishal\Desktop\new-repo\example.yml'
-        config_dict = {}
-        topics = []
-        with open(file, 'r') as stream:
+    # Reads config yaml file located at a remote location.
+    # Converts the configs into dict, makes it available for the entire app.
+    def read_all_configs(self):
+        file = requests.get(config_file_url, allow_redirects=True)
+        open(yaml_file_loc + yaml_file_name, 'wb').write(file.content)
+        with open(yaml_file_loc + yaml_file_name, 'r') as stream:
             try:
                 parsed = yaml.safe_load(stream)
                 configs = parsed['WorkflowConfigs']
                 for obj in configs:
                     key = obj['workflowCode']
-                    config_dict[key] = obj
-                    sequence = obj["sequence"]
-                    for step in sequence:
-                        input_topic = step["tool"][0]["kafka-input"][0]["topic"]
-                        output_topic = step["tool"][0]["kafka-output"][0]["topic"]
-                        topics.append(input_topic)
-                        topics.append(output_topic)
-
-            except yaml.YAMLError as exc:
+                    configs_global[key] = obj
+            except Exception as exc:
                 log.error("Exception while consuming: " + str(exc))
                 traceback.print_exc()
 
-            return config_dict, topics
+    # Method that returns configs
+    def get_configs(self):
+        return configs_global
 
+    # Method to pick all the output topics from the config
+    # This includes all the workflows defined in that file.
+    # The WFM consumer will listen to these topics only.
+    def fetch_output_topics(self, all_configs):
+        topics = []
+        for key in all_configs:
+            config = all_configs[key]
+            sequence = config["sequence"]
+            for step in sequence:
+                output_topic = step["tool"][0]["kafka-output"][0]["topic"]
+                if output_topic not in topics:
+                    topics.append(output_topic)
 
-    # Based on a given config, this method returns a dict of order of execution.
-    def get_order_of_exc(self, config):
+        return topics
+
+    # Generates unique job id.
+    # Format: <use_case>-<13_digit_epoch>
+    def generate_job_id(self, workflowCode):
+        config = self.get_configs()
+        config_to_be_used = config[workflowCode]
+        usecase = config_to_be_used["useCase"]
+        return usecase + "-" + str(time.time()).replace('.', '')
+
+    # Fetches the order of execution for a given workflow.
+    def get_order_of_exc(self, workflowCode):
         order_of_exc_dict = {}
-        sequence = config["sequence"]
+        config = self.get_configs()
+        config_to_be_used = config[workflowCode]
+        sequence = config_to_be_used["sequence"]
         for step in sequence:
             order_of_exc_dict[step["order"]] = step
-        return sorted(order_of_exc_dict)
+        return order_of_exc_dict
 
-    def upload_file(self):
-        pass
+    # Returns the input required for the current tool to execute.
+    # current_tool = The tool of which the input is to be computed.
+    # previous tool = Previous tool which got executed and produced 'task_output'.
+    # wf_input = Input received during initiation of wf.
+    def get_tool_input(self, current_tool, previous_tool, task_output, wf_input):
+        tool_input = {}
+        if wf_input is None:
+            if current_tool == "ALIGNER":
+                tool_input = aligner.get_aligner_input(task_output, previous_tool)
+            if current_tool == "TOKENISER":
+                tool_input = tokeniser.get_tokeniser_input(task_output, previous_tool)
+        else:
+            if current_tool == "ALIGNER":
+                tool_input = aligner.get_aligner_input_wf(wf_input)
+            if current_tool == "TOKENISER":
+                tool_input = tokeniser.get_tokeniser_input(wf_input)
 
-    def download_file(self):
-        pass
+        return tool_input
 
-    def read_file(self):
-        pass
-
-    def write_file(self):
-        pass
