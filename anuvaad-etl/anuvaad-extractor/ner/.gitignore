@@ -1,6 +1,6 @@
 **__pycache__
 *.vscode
 *.log
-/upload
+
 exp_result.py
 #
