@@ -11,11 +11,11 @@ import time
 
 ner_app  = Flask(__name__)
 
-# try:
-#     t1 = threading.Thread(target=process_annotation_kf, name='keep_on_running')
-#     t1.start()
-# except Exception as e:
-#     logging.info('ERROR WHILE RUNNING CUSTOM THREADS '+str(e))
+try:
+    t1 = threading.Thread(target=process_annotation_kf, name='keep_on_running')
+    t1.start()
+except Exception as e:
+    logging.info('ERROR WHILE RUNNING CUSTOM THREADS '+str(e))
 
 if config.ENABLE_CORS:
     cors    = CORS(ner_app, resources={r"/api/*": {"origins": "*"}})
