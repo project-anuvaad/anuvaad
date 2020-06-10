@@ -9,13 +9,13 @@ info:
 
 schemes:
   - https
-basePath: '/anuvaad-etl/anuvaad-extractor/sentence'
+basePath: '/anuvaad-etl/anuvaad-extractor/tokeniser'
 
 
 
 
 paths: 
-  /api/v0/tokenisation:
+  /v1/sentence/tokenise:
     post:
       summary: REST API to extract sentences from paragraph (sentence-tokenisation).
       description: This API accepts list of text files of paragraphs and tokenise sentences from file. This is an async process.
@@ -70,9 +70,10 @@ definitions:
   FileInput:
     type: object
     properties:
-      type: object
-      description: Details of the source file.
-      $ref: '#/definitions/File'        
+      source:
+        type: object
+        description: Details of the source file.
+        $ref: '#/definitions/File'        
 
         
   FileOutput:
@@ -92,10 +93,9 @@ definitions:
     type: object
     properties:
       input:
-        files:
-          type: object
-          description: Details of the source and target files of which a parallel corp has to be generated
-          $ref: '#/definitions/FileInput'
+        type: object
+        description: Details of the source and target files of which a parallel corp has to be generated
+        $ref: '#/definitions/FileInput'
       jobID:   
         type: string
         description: A unique job ID generated for complete workflow. i.e.received from previous operation.  
@@ -119,7 +119,7 @@ definitions:
         enum:
           - TOKENISER
       stepOrder:
-        type: int
+        type: integer
         description: Current steporder of workflow received from previous operation.
 
         
@@ -144,10 +144,9 @@ definitions:
         enum:
           - SENTENCE-TOKENISED
       output:
-        files:
-          type: object
-          description: Final output of this process.
-          $ref: '#/definitions/FileOutput'
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/FileOutput'
       workflowCode:
         type: string
         description: Received from previous operation. Code of the workflow that has to be picked to process this input. 
@@ -158,7 +157,7 @@ definitions:
         enum:
           - TOKENISER
       stepOrder:
-        type: int
+        type: integer
         description: Current steporder of workflow received from previous operation.
       error:
         type: object
