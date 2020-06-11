@@ -6,6 +6,7 @@ from flask import Flask, jsonify, request
 import datetime as dt
 from logging.config import dictConfig
 from service.wfmservice import WFMService
+from validator.wfmvalidator import WFMValidator
 
 wfmapp = Flask(__name__)
 context_path = os.environ.get('ANU_ETL_WFM_CONTEXT_PATH', '/anuvaad-etl/wf-manager')
@@ -15,7 +16,11 @@ context_path = os.environ.get('ANU_ETL_WFM_CONTEXT_PATH', '/anuvaad-etl/wf-manag
 @wfmapp.route(context_path + '/v1/workflow/initiate', methods=["POST"])
 def initiate_workflow():
     service = WFMService()
+    validator = WFMValidator()
     data = request.get_json()
+    error = validator.validate_input(data)
+    if error is not None:
+        return error
     response = service.register_job(data)
     return response
 

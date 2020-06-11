@@ -68,6 +68,19 @@ class WFMUtils:
 
         return topics
 
+    # Helper method to fetch tools involved in a given workflow.
+    def get_tools_of_wf(self, workflowCode):
+        configs = self.get_configs()
+        config = configs[workflowCode]
+        sequence = config["sequence"]
+        tools = []
+        for step in sequence:
+            tool = step["tool"][0]["name"]
+            tools.append(tool)
+        return tools
+
+
+
     # Generates unique job id.
     # Format: <use_case>-<13_digit_epoch>
     def generate_job_id(self, workflowCode):
