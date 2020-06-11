@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 import traceback
 
 from utilities.wfmutils import WFMUtils
@@ -99,7 +100,6 @@ class WFMService:
             wf_details = self.get_job_details(wf_input["jobID"])
         else:
             wf_details = self.get_job_details(task_output["jobID"])
-
         if wf_details is None or len(wf_details) == 0:
             task_details = []
             if task_output is not None:
@@ -108,14 +108,8 @@ class WFMService:
                 "workflowCode": wf_input["workflowCode"],
                 "files": wf_input["files"]
             }
-            client_output = {
-                "input": client_input,
-                "jobID": wf_input["jobID"],
-                "workflowCode": wf_input["workflowCode"],
-                "status": "STARTED",
-                "state": "INITIATED",
-                "taskDetails": task_details
-            }
+            client_output = {"input": client_input, "jobID": wf_input["jobID"], "workflowCode": wf_input["workflowCode"],
+                "status": "STARTED", "state": "INITIATED", "startTime": eval(str(time.time()).replace('.', '')), "taskDetails": task_details}
         else:
             wf_details = wf_details[0]
             task_details = wf_details["taskDetails"]
@@ -127,12 +121,12 @@ class WFMService:
             client_output = wf_details
             if isfinal:
                 client_output["status"] = "COMPLETED"
+                client_output["endTime"] = eval(str(time.time()).replace('.', ''))
             else:
                 client_output["status"] = "INPROGRESS"
             if error is not None:
                 client_output["status"] = "FAILED"
                 client_output["error"] = error
-
 
         return client_output
 

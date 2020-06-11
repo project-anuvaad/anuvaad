@@ -27,14 +27,14 @@ class Aligner:
         target = {}
         if predecessor == "TOKENISER":
             source = {
-                "filepath": task_output["output"]["files"][0]["path"],
-                "locale": task_output["output"]["files"][0]["locale"],
-                "type": task_output["output"]["files"][0]["type"]
+                "filepath": task_output["output"]["files"][0]["outputFile"],
+                "locale": task_output["output"]["files"][0]["outputLocale"],
+                "type": task_output["output"]["files"][0]["outputType"]
             }
             target = {
-                "filepath": task_output["output"]["files"][1]["path"],
-                "locale": task_output["output"]["files"][1]["locale"],
-                "type": task_output["output"]["files"][1]["type"]
+                "filepath": task_output["output"]["files"][1]["outputFile"],
+                "locale": task_output["output"]["files"][1]["outputLocale"],
+                "type": task_output["output"]["files"][1]["outputType"]
             }
 
         tool_input = {
