@@ -92,7 +92,7 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
         for i, item in enumerate(input_files):
             input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
             input_filepath = file_ops.input_path(input_filename) #
-            file_res = file_ops.one_filename_response(input_filename, output_filename)
+            file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
             filename_response.append(file_res)
             if input_filename == "" or input_filename is None:
                 task_endtime = str(time.time()).replace('.', '')

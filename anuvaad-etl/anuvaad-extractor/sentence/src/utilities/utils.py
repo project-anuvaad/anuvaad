@@ -66,9 +66,11 @@ class FileOperation(object):
         locale = files['locale']
         return filepath, file_type, locale
 
-    def one_filename_response(self, input_filename, output_filename):
+    def one_filename_response(self, input_filename, output_filename, in_locale, in_file_type):
         file_res = {
             "input" : input_filename,
-            "output" : output_filename
+            "output" : output_filename,
+            "locale" : in_locale,
+            "type" : in_file_type
         }
         return file_res
