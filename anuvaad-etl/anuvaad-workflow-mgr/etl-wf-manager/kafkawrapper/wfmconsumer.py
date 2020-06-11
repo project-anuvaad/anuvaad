@@ -4,7 +4,8 @@ import traceback
 
 from kafka import KafkaConsumer
 import os
-from .demo import Demo
+from utilities.wfmutils import WFMUtils
+from service.wfmservice import WFMService
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
@@ -29,23 +30,23 @@ def instantiate(topics):
 
 # Method to read and process the requests from the kafka queue
 def consume():
-    demo = Demo()
-    demo.fetch_all_configs()
-    configs = demo.get_all_configs()
-    topics = demo.fetch_output_topics(configs)
+    wfmutils = WFMUtils()
+    wfmservice = WFMService()
+    wfmutils.read_all_configs()
+    configs = wfmutils.get_configs()
+    topics = wfmutils.fetch_output_topics(configs)
     log.info(topics)
     topics.append(anu_etl_wfm_core_topic)
     consumer = instantiate(topics)
-    print("Consumer Running..........")
-    print(topics)
+    print("WFM Consumer Running..........")
     try:
         for msg in consumer:
             data = msg.value
             print("Received on topic: " + msg.topic)
             if msg.topic == anu_etl_wfm_core_topic:
-                demo.initiate(data)
+                wfmservice.initiate(data)
             else:
-                demo.manage(data)
+                wfmservice.manage(data)
     except Exception as e:
         log.error("Exception while consuming: " + str(e))
         traceback.print_exc()

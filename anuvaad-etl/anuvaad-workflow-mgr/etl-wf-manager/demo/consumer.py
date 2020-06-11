@@ -35,7 +35,7 @@ def consume():
     log.info(topics)
     topics.append("anu-etl-wf-initiate")
     consumer = instantiate(topics)
-    print("Consumer Running..........")
+    print("WFM-DEMO Consumer Running..........")
     print(topics)
     try:
         for msg in consumer:

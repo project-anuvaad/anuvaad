@@ -1,2 +1,2 @@
 #!/bin/bash
-python api.py
+python app.py

@@ -3,7 +3,7 @@ import os
 import traceback
 
 from utilities.wfmutils import WFMUtils
-from kafkawrapper.producer import Producer
+from kafkawrapper.wfmproducer import Producer
 from repository.wfmrepository import WFMRepository
 
 log = logging.getLogger('file')
@@ -23,7 +23,7 @@ class WFMService:
     def register_job(self, wf_input):
         #validate
         wf_input["jobID"] = wfmutils.generate_job_id(wf_input["workflowCode"])
-        client_output = self.get_wf_details(wf_input, None, False)
+        client_output = self.get_wf_details(wf_input, None, False, None)
         self.update_job_details(client_output, True)
         producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
         print("Job registered for the job: " + wf_input["jobID"])

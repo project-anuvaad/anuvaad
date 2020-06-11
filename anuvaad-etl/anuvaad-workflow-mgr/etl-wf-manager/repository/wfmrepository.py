@@ -5,7 +5,6 @@ import pymongo
 mongo_client = os.environ.get('MONGO_CLIENT', 'mongodb://localhost:27017/')
 mongo_alignment_db = os.environ.get('MONGO_ALIGNMENT_DB', 'anuvaad-etl-dataflow-pipeline')
 mongo_alignment_col_jobs = os.environ.get('MONGO_WFMJOBS_COL', 'anuvaad-etl-wfm-jobs')
-mongo_alignment_col_tasks = os.environ.get('MONGO_WFMTASKS_COL', 'anuvaad-etl-wfm-tasks')
 
 
 class WFMRepository:
