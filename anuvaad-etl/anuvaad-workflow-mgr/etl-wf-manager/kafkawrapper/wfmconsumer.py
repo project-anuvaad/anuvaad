@@ -4,6 +4,7 @@ import traceback
 
 from kafka import KafkaConsumer
 import os
+from logging.config import dictConfig
 from utilities.wfmutils import WFMUtils
 from service.wfmservice import WFMService
 
@@ -38,11 +39,11 @@ def consume():
     log.info(topics)
     topics.append(anu_etl_wfm_core_topic)
     consumer = instantiate(topics)
-    print("WFM Consumer Running..........")
+    log.info("WFM Consumer Running..........")
     try:
         for msg in consumer:
             data = msg.value
-            print("Received on topic: " + msg.topic)
+            log.info("Received on topic: " + msg.topic)
             if msg.topic == anu_etl_wfm_core_topic:
                 wfmservice.initiate(data)
             else:
@@ -58,6 +59,43 @@ def handle_json(x):
     try:
         return json.loads(x.decode('utf-8'))
     except Exception as e:
+        print("Exception while deserialising: " + str(e))
         log.error("Exception while deserialising: " + str(e))
         traceback.print_exc()
         return {}
+
+
+
+
+# Log config
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] {%(filename)s:%(lineno)d} %(threadName)s %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {
+        'info': {
+            'class': 'logging.FileHandler',
+            'level': 'DEBUG',
+            'formatter': 'default',
+            'filename': 'info.log'
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'formatter': 'default',
+            'stream': 'ext://sys.stdout',
+        }
+    },
+    'loggers': {
+        'file': {
+            'level': 'DEBUG',
+            'handlers': ['info', 'console'],
+            'propagate': ''
+        }
+    },
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['info', 'console']
+    }
+})

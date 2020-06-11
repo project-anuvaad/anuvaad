@@ -2,6 +2,7 @@
 import logging
 import os
 import threading
+import traceback
 
 from flask import Flask
 from logging.config import dictConfig
@@ -15,15 +16,17 @@ app_port = os.environ.get('ANU_ETL_WFM_PORT', 5000)
 
 
 def start_consumer():
-    print("Consumer starting")
     try:
         t1 = threading.Thread(target=consume, name='keep_on_running')
         t1.start()
     except Exception as e:
         print('ERROR WHILE RUNNING CUSTOM THREADS ' + str(e))
+        log.error('ERROR WHILE RUNNING CUSTOM THREADS ' + str(e))
+        traceback.printexc()
 
 
 if __name__ == '__main__':
+    log.info("Firing the system......")
     start_consumer()
     wfmapp.run(host=app_host, port=app_port)
 

@@ -26,14 +26,14 @@ class WFMService:
         client_output = self.get_wf_details(wf_input, None, False, None)
         self.update_job_details(client_output, True)
         producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
-        print("Job registered for the job: " + wf_input["jobID"])
+        log.info("Job registered for the job: " + wf_input["jobID"])
         return client_output
 
     # Method to initiate the workflow.
     # This fetches the first step of workflow and starts the job.
     def initiate(self, wf_input):
-        print("Job initiated for the job: " + wf_input["jobID"])
-        print("Workflow: " + wf_input["workflowCode"])
+        log.info("Job initiated for the job: " + wf_input["jobID"])
+        log.info("Workflow: " + wf_input["workflowCode"])
         order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
         first_step_details = order_of_execution[0]
         first_tool = first_step_details["tool"][0]
@@ -41,7 +41,7 @@ class WFMService:
         first_tool_input = wfmutils.get_tool_input(first_tool["name"], None, None, wf_input)
         first_tool_input["stepOrder"] = 0
         producer.push_to_queue(first_tool_input, input_topic)
-        print("TOOL 0: " + first_tool["name"])
+        log.info("TOOL 0: " + first_tool["name"])
 
     # This method manages the workflow by tailoring the predecessor and successor tools for the workflow.
     def manage(self, task_output):
@@ -53,15 +53,15 @@ class WFMService:
                 next_step_input = next_step_details[0]
                 next_tool = next_step_details[1]
                 step_completed = task_output["stepOrder"]
-                print("Current State of the WF: " + task_output["state"])
-                print("TOOL " + (step_completed + 1) + ": " + next_tool["name"])
+                log.info("Current State of the WF: " + task_output["state"])
+                log.info("TOOL " + (step_completed + 1) + ": " + next_tool["name"])
                 next_step_input["stepOrder"] = step_completed + 1
                 producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
             else:
-                print("Current State of the WF: " + task_output["state"])
+                log.info("Current State of the WF: " + task_output["state"])
                 client_output = self.get_wf_details(None, task_output, True)
                 self.update_job_details(client_output, False)
-                print("Job completed.")
+                log.info("Job completed.")
         else:
             client_output = self.get_wf_details(None, task_output, True, task_output["error"])
             self.update_job_details(client_output, False)
@@ -78,8 +78,7 @@ class WFMService:
             next_task_input = wfmutils.get_tool_input(next_tool["name"], task_output["tool"], task_output, None)
             return next_task_input, next_tool
         except Exception as e:
-            print("Exception while fetching next step: " + str(e))
-            log.info("Exception while fetching next step: " + str(e))
+            log.error("Exception while fetching next step: " + str(e))
             traceback.print_exc()
             return None
 
