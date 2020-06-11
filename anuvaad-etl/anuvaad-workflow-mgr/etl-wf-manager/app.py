@@ -11,7 +11,7 @@ from controller.wfmcontroller import wfmapp
 
 log = logging.getLogger('file')
 app_host = os.environ.get('ANU_ETL_WFM_HOST', '0.0.0.0')
-app_port = os.environ.get('ANU_ETL_WFM_PORT', 5000)
+app_port = os.environ.get('ANU_ETL_WFM_PORT', 5002)
 
 
 
@@ -26,7 +26,6 @@ def start_consumer():
 
 
 if __name__ == '__main__':
-    log.info("Firing the system......")
     start_consumer()
     wfmapp.run(host=app_host, port=app_port)
 
