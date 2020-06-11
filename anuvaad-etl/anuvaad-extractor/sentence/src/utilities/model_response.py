@@ -120,12 +120,12 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
                     input_file_data = file_ops.read_file(input_filename)
                     output_filepath , output_en_filename = file_ops.output_path(i, DOWNLOAD_FOLDER)
                     tokenisation.eng_tokenisation(input_file_data, output_filepath)
-                    file_res['output'] = output_en_filename
+                    file_res['outputFile'] = output_en_filename
                 elif in_locale == "hi":
                     input_file_data = file_ops.read_file(input_filename)
                     output_filepath , output_hi_filename = file_ops.output_path(i, DOWNLOAD_FOLDER)
                     tokenisation.hin_tokenisation(input_file_data, output_filepath)
-                    file_res['output'] = output_hi_filename
+                    file_res['outputFile'] = output_hi_filename
                 task_endtime = str(time.time()).replace('.', '')
         response_true = CustomResponse(Status.SUCCESS.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
         return response_true
