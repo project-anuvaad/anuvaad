@@ -17,6 +17,8 @@ class Aligner:
                 return False
             if file["locale"] is None:
                 return False
+        return True
+
 
 
     # Returns a json of the format accepted by Aligner based on the wf-input.

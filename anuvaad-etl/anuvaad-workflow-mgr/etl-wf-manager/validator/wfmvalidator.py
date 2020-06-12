@@ -55,23 +55,23 @@ class WFMValidator:
     def validate_files(self, wf_input):
         tools = wfmutils.get_tools_of_wf(wf_input["workflowCode"])
         if "TOKENISER" in tools:
-            valid = tokeniser.validate_tok_input(wf_input)
+            valid = tokeniser.validate_tokeniser_input(wf_input)
             if not valid:
                 return self.get_error("TOKENISER_INPUT_ERROR", "Tokeniser is a part of this workflow. The given input is insufficient for that step.")
         if "ALIGNER" in tools:
-            valid = aligner.validate_tok_input(wf_input)
+            valid = aligner.validate_aligner_input(wf_input)
             if not valid:
                 return self.get_error("ALIGNER_INPUT_ERROR", "Aligner is a part of this workflow. The given input is insufficient for that step.")
         if "INGESTOR" in tools:
-            valid = aligner.validate_tok_input(wf_input)
+            valid = ingestor.validate_ingestor_input(wf_input)
             if not valid:
                 return self.get_error("INGESTOR_INPUT_ERROR", "Ingestor is a part of this workflow. The given input is insufficient for that step.")
         if "EXTRACTOR" in tools:
-            valid = aligner.validate_tok_input(wf_input)
+            valid = extractor.validate_extractor_input(wf_input)
             if not valid:
                 return self.get_error("EXTRACTOR_INPUT_ERROR", "Extractor is a part of this workflow. The given input is insufficient for that step.")
         if "TRANSFORMER" in tools:
-            valid = aligner.validate_tok_input(wf_input)
+            valid = transformer.validate_transformer_input(wf_input)
             if not valid:
                 return self.get_error("TRANSFORMER_INPUT_ERROR", "Transformer is a part of this workflow. The given input is insufficient for that step.")
 

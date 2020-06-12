@@ -7,7 +7,7 @@ class Transformer:
         pass
 
     # Method to validate if the wf-input contains all the fields reqd by Transformer.
-    def validate_tok_input(self, wf_input):
+    def validate_transformer_input(self, wf_input):
         for file in wf_input["files"]:
             if file["path"] is None:
                 return False
@@ -15,6 +15,7 @@ class Transformer:
                 return False
             if file["locale"] is None:
                 return False
+        return True
 
     def get_input(self, jobID, wf_input):
         files = wf_input["files"]

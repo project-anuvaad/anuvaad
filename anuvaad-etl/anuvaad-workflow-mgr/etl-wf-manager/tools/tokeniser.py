@@ -7,7 +7,7 @@ class Tokeniser:
         pass
 
     # Method to validate if the wf-input contains all the fields reqd by Tokeniser.
-    def validate_tok_input(self, wf_input):
+    def validate_tokeniser_input(self, wf_input):
         for file in wf_input["files"]:
             if file["path"] is None:
                 return False
@@ -15,6 +15,8 @@ class Tokeniser:
                 return False
             if file["locale"] is None:
                 return False
+        return True
+
 
     # Returns a json of the format accepted by Tokeniser.
     def get_tokeniser_input_wf(self, wf_input):
