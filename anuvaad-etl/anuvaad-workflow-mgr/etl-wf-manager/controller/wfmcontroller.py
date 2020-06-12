@@ -2,6 +2,7 @@
 import logging
 import os
 
+import flask
 from flask import Flask, jsonify, request
 import datetime as dt
 from logging.config import dictConfig
@@ -19,7 +20,7 @@ def initiate_workflow():
     data = request.get_json()
     error = validator.validate_input(data)
     if error is not None:
-        return error
+        return error, 400
     response = service.register_job(data)
     return response
 

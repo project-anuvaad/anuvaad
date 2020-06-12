@@ -37,8 +37,12 @@ class WFMValidator:
         else:
             if len(data["files"]) == 0:
                 return self.get_error("FILES_NOT_FOUND", "Input files are mandatory")
-        self.validate_config(data["workflowCode"])
-        self.validate_files(data)
+        error = self.validate_config(data["workflowCode"])
+        if error is not None:
+            return error
+        error = self.validate_files(data)
+        if error is not None:
+            return error
         log.info("Validation Complete.")
 
     # Validates the workflowCode provided in the request.
@@ -73,6 +77,6 @@ class WFMValidator:
 
     # Error formatter
     def get_error(self, code, message):
-        return jsonify({"status": "ERROR", "code": code, "message": message})
+        return jsonify({"status": "INPUT_ERROR", "code": code, "message": message})
 
 

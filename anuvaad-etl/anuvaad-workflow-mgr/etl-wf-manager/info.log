@@ -655,3 +655,69 @@ AttributeError: 'str' object has no attribute 'keys'
 [2020-06-12 14:08:29,278] {wfmproducer.py:34} Thread-1 ERROR in wfmproducer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
 [2020-06-12 14:08:29,340] {wfmservice.py:30} Thread-1 INFO in wfmservice: Job registered for the job: TOK-1591951049122984
 [2020-06-12 14:08:29,342] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:08:29] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 14:31:06,704] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:31:06,986] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 14:32:18,270] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:32:18,585] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 14:32:22,428] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 14:32:22,430] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 41, in validate_input
+    self.validate_files(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 55, in validate_files
+    tools = wfmutils.get_tools_of_wf(wf_input["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 73, in get_tools_of_wf
+    config = configs[workflowCode]
+KeyError: 'DP_WFLOW_X'
+[2020-06-12 14:32:22,441] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:32:22] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 14:33:58,042] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:33:58,661] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 14:34:03,278] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 14:34:03,293] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:34:03] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 14:34:27,076] {wfmvalidator.py:32} Thread-2 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 14:34:27,086] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:34:27] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 14:34:37,006] {wfmvalidator.py:32} Thread-3 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 14:34:37,007] {_internal.py:113} Thread-3 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:34:37] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 14:38:26,901] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:38:27,240] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 14:38:32,225] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 14:38:32,230] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 23, in initiate_workflow
+    flask.abort(error, 400)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\werkzeug\exceptions.py", line 822, in abort
+    return _aborter(status, *args, **kwargs)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\werkzeug\exceptions.py", line 806, in __call__
+    raise LookupError("no exception for %r" % code)
+LookupError: no exception for <Response 122 bytes [200 OK]>
+[2020-06-12 14:38:32,281] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:38:32] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 14:40:15,133] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:40:15,727] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 14:40:24,598] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 14:40:24,599] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:40:24] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
