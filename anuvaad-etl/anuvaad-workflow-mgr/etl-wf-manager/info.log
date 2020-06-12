@@ -788,3 +788,47 @@ TypeError: config_reload() missing 1 required positional argument: 'job_id'
 [2020-06-12 16:09:19,204] {wfmproducer.py:34} Thread-1 ERROR in wfmproducer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
 [2020-06-12 16:09:19,217] {wfmservice.py:30} Thread-1 INFO in wfmservice: Job registered with the ID: TOK-1591958299143421
 [2020-06-12 16:09:19,227] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:09:19] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 16:17:35,553] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:27:25,318] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:27:36,836] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:27:36,837] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:27:36] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:27:37,577] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:28:25,550] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:28:31,099] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:28:31,101] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:28:31] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:28:31,165] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:28:39,813] {wfmvalidator.py:32} Thread-2 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:28:39,817] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:28:39] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:28:40,175] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:29:08,013] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:29:08,413] {wfmvalidator.py:32} Thread-3 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:29:08,414] {_internal.py:113} Thread-3 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:29:08] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:30:13,274] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:30:16,639] {wfmcontroller.py:26} Thread-1 INFO in wfmcontroller: Loading configs
+[2020-06-12 16:30:19,334] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:30:19,652] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:30:19,655] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:30:19] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:30:45,577] {wfmcontroller.py:26} Thread-2 INFO in wfmcontroller: Loading configs
+[2020-06-12 16:30:48,227] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:30:48,586] {wfmvalidator.py:32} Thread-2 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:30:48,588] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:30:48] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:35:23,443] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:35:27,410] {wfmcontroller.py:26} Thread-1 INFO in wfmcontroller: Loading configs
+[2020-06-12 16:35:30,841] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:38:08,190] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:38:11,299] {wfmcontroller.py:26} Thread-1 INFO in wfmcontroller: Loading configs
+[2020-06-12 16:38:14,137] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:38:59,168] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:38:59,169] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:38:59] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:39:29,878] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:39:33,685] {wfmcontroller.py:26} Thread-1 INFO in wfmcontroller: Loading configs
+[2020-06-12 16:39:36,158] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:40:48,146] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:40:48,147] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:40:48] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:46:41,493] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:46:52,592] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:46:56,943] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:46:56,943] {wfmvalidator.py:46} Thread-1 INFO in wfmvalidator: Validation Complete.
+[2020-06-12 16:47:57,012] {wfmproducer.py:34} Thread-1 ERROR in wfmproducer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
+[2020-06-12 16:47:57,028] {wfmservice.py:30} Thread-1 INFO in wfmservice: Job registered with the ID: TOK-15919606169447315
+[2020-06-12 16:47:57,030] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:47:57] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
