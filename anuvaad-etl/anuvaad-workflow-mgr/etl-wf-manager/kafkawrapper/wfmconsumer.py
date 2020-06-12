@@ -36,7 +36,6 @@ def consume():
     wfmutils.read_all_configs()
     configs = wfmutils.get_configs()
     topics = wfmutils.fetch_output_topics(configs)
-    log.info(topics)
     topics.append(anu_etl_wfm_core_topic)
     consumer = instantiate(topics)
     log.info("WFM Consumer Running..........")

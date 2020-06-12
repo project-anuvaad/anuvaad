@@ -17,10 +17,9 @@ app_port = os.environ.get('ANU_ETL_WFM_PORT', 5002)
 
 def start_consumer():
     try:
-        t1 = threading.Thread(target=consume, name='keep_on_running')
+        t1 = threading.Thread(target=consume, name='WFMKafkaConsumer-Thread')
         t1.start()
     except Exception as e:
-        print('ERROR WHILE RUNNING CUSTOM THREADS ' + str(e))
         log.error('ERROR WHILE RUNNING CUSTOM THREADS ' + str(e))
         traceback.printexc()
 

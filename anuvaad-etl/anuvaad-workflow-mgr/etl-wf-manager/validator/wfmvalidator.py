@@ -1,5 +1,7 @@
 #!/bin/python
+import ast
 import codecs
+import json
 import logging
 import os
 
@@ -27,6 +29,7 @@ class WFMValidator:
 
     # Validator that validates the input request for initiating the alignment job
     def validate_input(self, data):
+        log.info("Workflow initiation request received.")
         if 'workflowCode' not in data.keys():
             return self.get_error("WOFKLOWCODE_NOT_FOUND", "workflowCode is mandatory")
         if 'files' not in data.keys():
@@ -34,14 +37,17 @@ class WFMValidator:
         else:
             if len(data["files"]) == 0:
                 return self.get_error("FILES_NOT_FOUND", "Input files are mandatory")
-        self.validate_input(data["workflowCode"])
+        self.validate_config(data["workflowCode"])
         self.validate_files(data)
+        log.info("Validation Complete.")
 
+    # Validates the workflowCode provided in the request.
     def validate_config(self, workflowCode):
         configs = wfmutils.get_configs()
         if workflowCode not in configs.keys():
             return self.get_error("WORKFLOW_NOT_FOUND", "There's no workflow configured against this workflowCode")
 
+    # Validates tool specific requirements of the input.
     def validate_files(self, wf_input):
         tools = wfmutils.get_tools_of_wf(wf_input["workflowCode"])
         if "TOKENISER" in tools:

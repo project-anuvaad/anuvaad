@@ -44,9 +44,8 @@ class WFMUtils:
                 for obj in configs:
                     key = obj['workflowCode']
                     configs_global[key] = obj
-                log.info("Config files has been parsed an stored.")
             except Exception as exc:
-                log.error("Exception while consuming: " + str(exc))
+                log.error("Exception while reading configs: " + str(exc))
                 traceback.print_exc()
 
     # Method that returns configs

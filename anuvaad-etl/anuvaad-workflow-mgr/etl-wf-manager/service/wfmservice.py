@@ -27,14 +27,13 @@ class WFMService:
         client_output = self.get_wf_details(wf_input, None, False, None)
         self.update_job_details(client_output, True)
         producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
-        log.info("Job registered for the job: " + wf_input["jobID"])
+        log.info("Job registered with the ID: " + wf_input["jobID"])
         return client_output
 
     # Method to initiate the workflow.
     # This fetches the first step of workflow and starts the job.
     def initiate(self, wf_input):
-        log.info("Job initiated for the job: " + wf_input["jobID"])
-        log.info("Workflow: " + wf_input["workflowCode"])
+        log.info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"])
         order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
         first_step_details = order_of_execution[0]
         first_tool = first_step_details["tool"][0]
@@ -126,6 +125,7 @@ class WFMService:
                 client_output["status"] = "INPROGRESS"
             if error is not None:
                 client_output["status"] = "FAILED"
+                client_output["endTime"] = eval(str(time.time()).replace('.', ''))
                 client_output["error"] = error
 
         return client_output
