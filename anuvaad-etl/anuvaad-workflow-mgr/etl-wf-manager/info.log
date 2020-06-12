@@ -721,3 +721,5 @@ LookupError: no exception for <Response 122 bytes [200 OK]>
 [2020-06-12 14:40:15,727] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
 [2020-06-12 14:40:24,598] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
 [2020-06-12 14:40:24,599] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:40:24] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 14:55:45,844] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:55:46,297] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)

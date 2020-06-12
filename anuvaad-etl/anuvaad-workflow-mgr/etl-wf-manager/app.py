@@ -6,7 +6,6 @@ import traceback
 
 from flask import Flask
 from logging.config import dictConfig
-from kafkawrapper.wfmconsumer import consume
 from controller.wfmcontroller import wfmapp
 
 log = logging.getLogger('file')
@@ -14,21 +13,8 @@ app_host = os.environ.get('ANU_ETL_WFM_HOST', '0.0.0.0')
 app_port = os.environ.get('ANU_ETL_WFM_PORT', 5002)
 
 
-
-def start_consumer():
-    try:
-        t1 = threading.Thread(target=consume, name='WFMKafkaConsumer-Thread')
-        t1.start()
-    except Exception as e:
-        log.error('ERROR WHILE RUNNING CUSTOM THREADS ' + str(e))
-        traceback.printexc()
-
-
 if __name__ == '__main__':
-    start_consumer()
     wfmapp.run(host=app_host, port=app_port)
-
-
 
 
 # Log config
