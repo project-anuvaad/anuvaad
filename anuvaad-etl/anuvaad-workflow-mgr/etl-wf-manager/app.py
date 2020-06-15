@@ -8,9 +8,7 @@ import traceback
 from flask import Flask
 from logging.config import dictConfig
 from controller.wfmcontroller import wfmapp
-from utilities.wfmutils import WFMUtils
 from kafkawrapper.wfmconsumer import consume
-
 
 
 log = logging.getLogger('file')
@@ -20,10 +18,6 @@ app_port = os.environ.get('ANU_ETL_WFM_PORT', 5002)
 
 # Starts the kafka consumer in a different thread
 def start_consumer():
-    wfmutils = WFMUtils()
-    configs = wfmutils.get_configs()
-    if len(configs.keys()) > 0:
-        return
     try:
         t1 = threading.Thread(target=consume, name='WFMKafkaConsumer-Thread')
         t1.start()
@@ -31,7 +25,7 @@ def start_consumer():
         log.error("Exception while starting the kafka consumer: " + str(e))
         traceback.print_exc()
     finally:
-        time.sleep(5)
+        time.sleep(1)
 
 if __name__ == '__main__':
     start_consumer()

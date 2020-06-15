@@ -832,3 +832,10 @@ TypeError: config_reload() missing 1 required positional argument: 'job_id'
 [2020-06-12 16:47:57,012] {wfmproducer.py:34} Thread-1 ERROR in wfmproducer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
 [2020-06-12 16:47:57,028] {wfmservice.py:30} Thread-1 INFO in wfmservice: Job registered with the ID: TOK-15919606169447315
 [2020-06-12 16:47:57,030] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:47:57] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 16:49:32,356] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:49:37,505] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:49:51,760] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:49:51,760] {wfmvalidator.py:46} Thread-1 INFO in wfmvalidator: Validation Complete.
+[2020-06-12 16:50:51,800] {wfmproducer.py:34} Thread-1 ERROR in wfmproducer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
+[2020-06-12 16:50:51,820] {wfmservice.py:30} Thread-1 INFO in wfmservice: Job registered with the ID: TOK-15919607917624786
+[2020-06-12 16:50:51,831] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:50:51] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
