@@ -29,7 +29,6 @@ class WFMValidator:
 
     # Validator that validates the input request for initiating the alignment job
     def validate_input(self, data):
-        log.info("Workflow initiation request received.")
         if 'workflowCode' not in data.keys():
             return self.get_error("WOFKLOWCODE_NOT_FOUND", "workflowCode is mandatory")
         if 'files' not in data.keys():
@@ -43,7 +42,6 @@ class WFMValidator:
         error = self.validate_files(data)
         if error is not None:
             return error
-        log.info("Validation Complete.")
 
     # Validates the workflowCode provided in the request.
     def validate_config(self, workflowCode):

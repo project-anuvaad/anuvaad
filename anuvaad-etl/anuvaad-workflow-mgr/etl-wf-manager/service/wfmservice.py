@@ -33,38 +33,46 @@ class WFMService:
     # Method to initiate the workflow.
     # This fetches the first step of workflow and starts the job.
     def initiate(self, wf_input):
-        log.info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"])
-        order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
-        first_step_details = order_of_execution[0]
-        first_tool = first_step_details["tool"][0]
-        input_topic = first_tool["kafka-input"][0]["topic"]
-        first_tool_input = wfmutils.get_tool_input(first_tool["name"], None, None, wf_input)
-        first_tool_input["stepOrder"] = 0
-        producer.push_to_queue(first_tool_input, input_topic)
-        log.info("TOOL 0: " + first_tool["name"])
+        try:
+            order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
+            first_step_details = order_of_execution[0]
+            first_tool = first_step_details["tool"][0]
+            input_topic = first_tool["kafka-input"][0]["topic"]
+            first_tool_input = wfmutils.get_tool_input(first_tool["name"], None, None, wf_input)
+            first_tool_input["stepOrder"] = 0
+            producer.push_to_queue(first_tool_input, input_topic)
+            log.info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"])
+            log.info("TOOL 0: " + first_tool["name"])
+        except Exception as e:
+            log.exception("Exception while initiating workflow: " + str(e))
+            traceback.print_exc()
 
     # This method manages the workflow by tailoring the predecessor and successor tools for the workflow.
     def manage(self, task_output):
-        if task_output["status"] is not "FAILED":
-            client_output = self.get_wf_details(None, task_output, False)
-            self.update_job_details(client_output, False)
-            next_step_details = self.get_next_step_details(task_output)
-            if next_step_details is not None:
-                next_step_input = next_step_details[0]
-                next_tool = next_step_details[1]
-                step_completed = task_output["stepOrder"]
-                log.info("Current State of the WF: " + task_output["state"])
-                log.info("TOOL " + (step_completed + 1) + ": " + next_tool["name"])
-                next_step_input["stepOrder"] = step_completed + 1
-                producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
-            else:
-                log.info("Current State of the WF: " + task_output["state"])
-                client_output = self.get_wf_details(None, task_output, True)
+        try:
+            if task_output["status"] is not "FAILED":
+                client_output = self.get_wf_details(None, task_output, False)
                 self.update_job_details(client_output, False)
-                log.info("Job completed.")
-        else:
-            client_output = self.get_wf_details(None, task_output, True, task_output["error"])
-            self.update_job_details(client_output, False)
+                next_step_details = self.get_next_step_details(task_output)
+                if next_step_details is not None:
+                    next_step_input = next_step_details[0]
+                    next_tool = next_step_details[1]
+                    step_completed = task_output["stepOrder"]
+                    log.info("Current State of the WF: " + task_output["state"])
+                    log.info("TOOL " + (step_completed + 1) + ": " + next_tool["name"])
+                    next_step_input["stepOrder"] = step_completed + 1
+                    producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
+                else:
+                    log.info("Current State of the WF: " + task_output["state"])
+                    client_output = self.get_wf_details(None, task_output, True)
+                    self.update_job_details(client_output, False)
+                    log.info("Job completed.")
+            else:
+                client_output = self.get_wf_details(None, task_output, True, task_output["error"])
+                self.update_job_details(client_output, False)
+        except Exception as e:
+            log.exception("Exception while managing the workflow: " + str(e))
+            traceback.print_exc()
 
 
     # This method computes the input to the next step based on the step just completed.

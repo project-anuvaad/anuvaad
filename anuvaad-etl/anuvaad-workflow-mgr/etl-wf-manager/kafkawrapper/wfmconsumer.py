@@ -48,7 +48,7 @@ def consume():
             else:
                 wfmservice.manage(data)
     except Exception as e:
-        log.error("Exception while consuming: " + str(e))
+        log.exception("Exception while consuming: " + str(e))
         traceback.print_exc()
     finally:
         consumer.close()

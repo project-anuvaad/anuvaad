@@ -40,10 +40,8 @@ class WFMUtils:
     def read_all_configs(self):
         try:
             file = requests.get(config_file_url, allow_redirects=True)
-            log.info("read from git")
             file_path = yaml_file_loc + yam_file_path_delimiter + yaml_file_name
             open(file_path, 'wb').write(file.content)
-            log.info("Downloaded")
             with open(file_path, 'r') as stream:
                 parsed = yaml.safe_load(stream)
                 configs = parsed['WorkflowConfigs']
@@ -119,7 +117,7 @@ class WFMUtils:
             if current_tool == "ALIGNER":
                 tool_input = aligner.get_aligner_input_wf(wf_input)
             if current_tool == "TOKENISER":
-                tool_input = tokeniser.get_tokeniser_input(wf_input)
+                tool_input = tokeniser.get_tokeniser_input_wf(wf_input)
 
         return tool_input
 
