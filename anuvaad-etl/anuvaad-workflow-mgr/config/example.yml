@@ -22,30 +22,15 @@ WorkflowConfigs:
       interruptenable: true
       endState: true
 
-  - workflowCode: DP_WFLOW_TA
-    description: tokenises into sentences, aligns the corp.    
-    useCase: TOK-ALIGN
+
+  - workflowCode: DP_WFLOW_A
+    description: Aligns the input files. 
+    useCase: ALIGN
     sequence:
     - order: 0
       tool:
-      - name: TOKENISER
-        description: Accepts pdfs/images and converts using pdf2html or ocr.
-        kafka-input:
-        - topic: anuvaad-dp-tools-tokeniser-input
-          partitions: 2
-          keys: tokeniser-input-key-one, tokeniser-input-key-two
-          assignment: round-robin
-        kafka-output:
-        - topic: anuvaad-dp-tools-tokeniser-output
-          partitions: 2
-          keys: tokeniser-output-key-one, tokeniser-output-key-two
-          assignment: round-robin
-      interruptenable: true
-      endState: false
-    - order: 1
-      tool:
       - name: ALIGNER
-        description: Accepts html/ocr outputs and extracts paragraphs.
+        description: Accepts 2 parallel files and alings them into parallel corp for training
         kafka-input:
         - topic: anuvaad-dp-tools-aligner-input
           partitions: 2
@@ -57,4 +42,42 @@ WorkflowConfigs:
           keys: aligner-output-key-one, aligner-output-key-two
           assignment: round-robin
       interruptenable: true
+      endState: true
+
+
+  - workflowCode: DP_WFLOW_TA
+    description: tokenises into sentences, aligns the corp.    
+    useCase: TOK-ALIGN
+    sequence:
+    - order: 0
+      tool:
+      - name: TOKENISER
+        description: Tokenises a given file with paragraphs
+        kafka-input:
+        - topic: anuvaad-dp-tools-tokeniser-input_1
+          partitions: 2
+          keys: tokeniser-input-key-one, tokeniser-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-tokeniser-output_2
+          partitions: 2
+          keys: tokeniser-output-key-one, tokeniser-output-key-two
+          assignment: round-robin
+      interruptenable: true
       endState: false
+    - order: 1
+      tool:
+      - name: ALIGNER
+        description: Accepts 2 parallel files and alings them into parallel corp for training
+        kafka-input:
+        - topic: anuvaad-dp-tools-aligner-input
+          partitions: 2
+          keys: aligner-input-key-one, aligner-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-aligner-output
+          partitions: 2
+          keys: aligner-output-key-one, aligner-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
