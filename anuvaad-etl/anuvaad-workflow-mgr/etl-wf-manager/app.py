@@ -18,7 +18,6 @@ app_port = os.environ.get('ANU_ETL_WFM_PORT', 5002)
 
 # Starts the kafka consumer in a different thread
 def start_consumer():
-    log.info("Starting Kafka Consumer........")
     try:
         t1 = threading.Thread(target=consume, name='WFMKafkaConsumer-Thread')
         t1.start()

@@ -26,7 +26,6 @@ def instantiate(topics):
                              max_poll_records=1,
                              value_deserializer=lambda x: handle_json(x))
     #consumer.poll(consumer_poll_interval)
-    log.info("Cons prepared")
     return consumer
 
 

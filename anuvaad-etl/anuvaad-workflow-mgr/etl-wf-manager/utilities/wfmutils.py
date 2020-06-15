@@ -36,10 +36,9 @@ class WFMUtils:
     # Reads config yaml file located at a remote location.
     # Converts the configs into dict, makes it available for the entire app.
     def read_all_configs(self):
-        log.info("reading configss....")
         try:
             file = requests.get(config_file_url, allow_redirects=True)
-            open(yaml_file_loc + yaml_file_name, 'wb').write(file.content)
+            open(yaml_file_loc + yam_file_path_delimiter + yaml_file_name, 'wb').write(file.content)
             with open(yaml_file_loc + yam_file_path_delimiter + yaml_file_name, 'r') as stream:
                 parsed = yaml.safe_load(stream)
                 configs = parsed['WorkflowConfigs']
