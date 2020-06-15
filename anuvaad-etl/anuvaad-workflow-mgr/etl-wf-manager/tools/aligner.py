@@ -23,9 +23,19 @@ class Aligner:
 
     # Returns a json of the format accepted by Aligner based on the wf-input.
     def get_aligner_input_wf(self, wf_input):
+        source = {
+            "filepath": wf_input["input"]["files"][0]["path"],
+            "locale": wf_input["input"]["files"][0]["locale"],
+            "type": wf_input["input"]["files"][0]["type"]
+        }
+        target = {
+            "filepath": wf_input["input"]["files"][1]["path"],
+            "locale": wf_input["input"]["files"][1]["locale"],
+            "type": wf_input["input"]["files"][1]["type"]
+        }
         tool_input = {
-                "source": wf_input["input"]["files"][0],
-                "target":  wf_input["input"]["files"][1]
+                "source": source,
+                "target":  target
             }
         tok_input = {
             "jobID": wf_input["jobID"],
