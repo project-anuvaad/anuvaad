@@ -25,6 +25,7 @@ configs_global = {}
 config_file_url = os.environ.get('ETL_WFM_CONFIG_FILE_URL',
             'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/config/example.yml')
 yaml_file_loc = os.environ.get('ETL_CONFIG_FILE_LOC', r'C:\Users\Vishal\Desktop\new-repo')
+yam_file_path_delimiter = "/"
 yaml_file_name = os.environ.get('ETL_CONFIG_FILE', 'configfile.yml')
 
 
@@ -38,23 +39,19 @@ class WFMUtils:
         log.info("reading configss....")
         try:
             file = requests.get(config_file_url, allow_redirects=True)
-            log.info("File path: " + str(yaml_file_loc + yaml_file_name))
             open(yaml_file_loc + yaml_file_name, 'wb').write(file.content)
-            log.info("Downloaded")
-            with open(yaml_file_loc + yaml_file_name, 'r') as stream:
+            with open(yaml_file_loc + yam_file_path_delimiter + yaml_file_name, 'r') as stream:
                 parsed = yaml.safe_load(stream)
                 configs = parsed['WorkflowConfigs']
                 for obj in configs:
                     key = obj['workflowCode']
                     configs_global[key] = obj
-                log.info("Configs read.")
         except Exception as exc:
             log.error("Exception while reading configs: " + str(exc))
             traceback.print_exc()
 
     # Method that returns configs
     def get_configs(self):
-        log.info("Fetching configs...")
         return configs_global
 
     # Method to pick all the output topics from the config
