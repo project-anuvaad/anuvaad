@@ -26,7 +26,7 @@ config_file_url = os.environ.get('ETL_WFM_CONFIG_FILE_URL',
             'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/config/example.yml')
 #yaml_file_loc = os.environ.get('ETL_CONFIG_FILE_LOC', r'C:\Users\Vishal\Desktop\new-repo')
 #yaml_file_name = os.environ.get('ETL_CONFIG_FILE', 'wfconfig.yml')
-yaml_file_loc = "/configs"
+yaml_file_loc = "/app/configs"
 yam_file_path_delimiter = "/"
 yaml_file_name = "wfconfig.yml"
 
@@ -51,7 +51,7 @@ class WFMUtils:
                     key = obj['workflowCode']
                     configs_global[key] = obj
         except Exception as exc:
-            log.error("Exception while reading configs: " + str(exc))
+            log.exception("Exception while reading configs: " + str(exc))
             traceback.print_exc()
 
     # Method that returns configs
