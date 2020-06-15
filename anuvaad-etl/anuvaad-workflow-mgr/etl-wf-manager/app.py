@@ -22,12 +22,12 @@ def start_consumer():
     try:
         t1 = threading.Thread(target=consume, name='WFMKafkaConsumer-Thread')
         t1.start()
-        log.info("Done")
+        time.sleep(3)
     except Exception as e:
+        log.info("error: " + str(e))
         log.error("Exception while starting the kafka consumer: " + str(e))
         traceback.print_exc()
-    finally:
-        time.sleep(1)
+
 
 if __name__ == '__main__':
     start_consumer()

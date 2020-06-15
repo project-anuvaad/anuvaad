@@ -26,17 +26,21 @@ def instantiate(topics):
                              max_poll_records=1,
                              value_deserializer=lambda x: handle_json(x))
     #consumer.poll(consumer_poll_interval)
+    log.info("Cons prepared")
     return consumer
 
 
 # Method to read and process the requests from the kafka queue
 def consume():
+    log.info("Consumer....")
     wfmutils = WFMUtils()
     wfmservice = WFMService()
     wfmutils.read_all_configs()
+    log.info("Configs ready")
     configs = wfmutils.get_configs()
     topics = wfmutils.fetch_output_topics(configs)
     topics.append(anu_etl_wfm_core_topic)
+    log.info("Topics Ready")
     consumer = instantiate(topics)
     log.info("WFM Consumer Running..........")
     try:
@@ -48,6 +52,7 @@ def consume():
             else:
                 wfmservice.manage(data)
     except Exception as e:
+        log.info("cons error: " + str(e))
         log.error("Exception while consuming: " + str(e))
         traceback.print_exc()
     finally:
