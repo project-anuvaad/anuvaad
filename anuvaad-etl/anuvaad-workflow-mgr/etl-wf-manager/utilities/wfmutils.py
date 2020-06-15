@@ -24,9 +24,11 @@ configs_global = {}
 
 config_file_url = os.environ.get('ETL_WFM_CONFIG_FILE_URL',
             'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/config/example.yml')
-yaml_file_loc = os.environ.get('ETL_CONFIG_FILE_LOC', r'C:\Users\Vishal\Desktop\new-repo')
+#yaml_file_loc = os.environ.get('ETL_CONFIG_FILE_LOC', r'C:\Users\Vishal\Desktop\new-repo')
+#yaml_file_name = os.environ.get('ETL_CONFIG_FILE', 'wfconfig.yml')
+yaml_file_loc = "/configs"
 yam_file_path_delimiter = "/"
-yaml_file_name = os.environ.get('ETL_CONFIG_FILE', 'configfile.yml')
+yaml_file_name = "wfconfig.yml"
 
 
 class WFMUtils:
@@ -38,8 +40,11 @@ class WFMUtils:
     def read_all_configs(self):
         try:
             file = requests.get(config_file_url, allow_redirects=True)
-            open(yaml_file_loc + yam_file_path_delimiter + yaml_file_name, 'wb').write(file.content)
-            with open(yaml_file_loc + yam_file_path_delimiter + yaml_file_name, 'r') as stream:
+            log.info("read from git")
+            file_path = yaml_file_loc + yam_file_path_delimiter + yaml_file_name
+            open(file_path, 'wb').write(file.content)
+            log.info("Downloaded")
+            with open(file_path, 'r') as stream:
                 parsed = yaml.safe_load(stream)
                 configs = parsed['WorkflowConfigs']
                 for obj in configs:
