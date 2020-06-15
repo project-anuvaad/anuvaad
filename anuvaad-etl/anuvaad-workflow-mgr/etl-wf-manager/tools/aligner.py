@@ -30,8 +30,8 @@ class Aligner:
         tok_input = {
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
-            "stepOrder": wf_input["stepOrder"],
-            "tool": "TOKENISER",
+            "stepOrder": 0,
+            "tool": "ALIGNER",
             "input": tool_input
         }
         return tok_input

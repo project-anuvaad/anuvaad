@@ -26,7 +26,7 @@ class Tokeniser:
         tok_input = {
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
-            "stepOrder" : wf_input["stepOrder"],
+            "stepOrder" : 0,
             "tool": "TOKENISER",
             "input": tool_input
         }

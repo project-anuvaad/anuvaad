@@ -39,7 +39,6 @@ class WFMService:
             first_tool = first_step_details["tool"][0]
             input_topic = first_tool["kafka-input"][0]["topic"]
             first_tool_input = wfmutils.get_tool_input(first_tool["name"], None, None, wf_input)
-            first_tool_input["stepOrder"] = 0
             producer.push_to_queue(first_tool_input, input_topic)
             log.info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"])
             log.info("TOOL 0: " + first_tool["name"])
@@ -86,7 +85,7 @@ class WFMService:
             next_task_input = wfmutils.get_tool_input(next_tool["name"], task_output["tool"], task_output, None)
             return next_task_input, next_tool
         except Exception as e:
-            log.error("Exception while fetching next step: " + str(e))
+            log.exception("Exception while fetching next step: " + str(e))
             traceback.print_exc()
             return None
 
