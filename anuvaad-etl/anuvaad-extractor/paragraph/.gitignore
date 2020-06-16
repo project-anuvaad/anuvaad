@@ -1,4 +1,10 @@
-/src
 exp.py
 /naked
 /PyExecJS
+**_pycache__
+src/repositories/exp_para_extraction.js
+src/repositories/html_to_text.js
+src/repositories/image_processing.js
+src/repositories/package-lock.json
+src/repositories/pdf_parser.js
+src/repositories/pdf_to_html.js
