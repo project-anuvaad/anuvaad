@@ -52,10 +52,10 @@ class WFMService:
     def manage(self, task_output):
         try:
             if task_output["status"] is not "FAILED":
-                client_output = self.get_wf_details(None, task_output, False)
-                self.update_job_details(client_output, False)
                 next_step_details = self.get_next_step_details(task_output)
                 if next_step_details is not None:
+                    client_output = self.get_wf_details(None, task_output, False, None)
+                    self.update_job_details(client_output, False)
                     next_step_input = next_step_details[0]
                     next_tool = next_step_details[1]
                     step_completed = task_output["stepOrder"]
@@ -65,7 +65,7 @@ class WFMService:
                     producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
                 else:
                     log.info("Current State of the WF: " + task_output["state"])
-                    client_output = self.get_wf_details(None, task_output, True)
+                    client_output = self.get_wf_details(None, task_output, True, None)
                     self.update_job_details(client_output, False)
                     log.info("Job completed.")
             else:
