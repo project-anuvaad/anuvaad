@@ -40,6 +40,8 @@ class WFMService:
             input_topic = first_tool["kafka-input"][0]["topic"]
             first_tool_input = wfmutils.get_tool_input(first_tool["name"], None, None, wf_input)
             producer.push_to_queue(first_tool_input, input_topic)
+            client_output = self.get_wf_details(wf_input, None, False, None)
+            self.update_job_details(client_output, False)
             log.info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"])
             log.info("TOOL 0: " + first_tool["name"])
         except Exception as e:
@@ -118,12 +120,12 @@ class WFMService:
                 "status": "STARTED", "state": "INITIATED", "startTime": eval(str(time.time()).replace('.', '')), "taskDetails": task_details}
         else:
             wf_details = wf_details[0]
-            task_details = wf_details["taskDetails"]
             if task_output is not None:
+                task_details = wf_details["taskDetails"]
                 task_details.append(task_output)
                 wf_details["output"] = task_output["output"]
                 wf_details["state"] = task_output["state"]
-            wf_details["taskDetails"] = task_details
+                wf_details["taskDetails"] = task_details
             client_output = wf_details
             if isfinal:
                 client_output["status"] = "COMPLETED"
