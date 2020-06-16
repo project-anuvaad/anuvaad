@@ -2,13 +2,10 @@ from kafka import KafkaConsumer
 from json import loads
 import logging
 
-log = logging.getLogger('file')
-
 # Kafka consumer class
 class Consumer(object):
     def __init__(self,topic_name, server_address):
         self.topic_name = topic_name
-        #self.group_id = group_id
         self.server_address = server_address
 
     # Consumer initialisation to consume message from queue

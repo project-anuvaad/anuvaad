@@ -45,5 +45,5 @@ class SenTokenisePost(Resource):
             return response.get_response()
         else:
             file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
-            print("tokenisation done!!!!")
+            logging.info("Tokenisation completed!!!")
             return file_value_response.get_response()

@@ -1,22 +1,26 @@
 from src.utilities.model_response import checking_file_response
 from src.utilities.utils import FileOperation
-from src.kafka.producer import Producer
-from src.kafka.consumer import Consumer
+from src.Kafka_module.producer import Producer
+from src.Kafka_module.consumer import Consumer
 import time
 import config
+import logging
+
 
 def process_tokenization_kf():
     file_ops = FileOperation()
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
     task_id = str("TOK-" + str(time.time()).replace('.', ''))
     task_starttime = str(time.time()).replace('.', '')
-    consumer = Consumer(config.sen_topic, config.bootstrap_server)
-    consumer = consumer.consumer_instantiate() #Consumer
-    print("--- consumer running -----")
+    try:
+        consumer = Consumer(config.sen_topic, config.bootstrap_server)
+        consumer = consumer.consumer_instantiate() #Consumer
+        print("--- consumer running -----")
+    except Exception as e:
+        print("consumer error %s"%e)
     try:
         for msg in consumer:
             data = msg.value
-            print("value from massage recieved   ")
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             task_id = str("TOK-" + str(time.time()).replace('.', ''))
             task_starttime = str(time.time()).replace('.', '')
@@ -26,4 +30,4 @@ def process_tokenization_kf():
             print("producer flushed")
             
     except Exception as e:
-        print("error 1",e)
+        print("error occured during consumer running or flushing data to another queue %s"%e)

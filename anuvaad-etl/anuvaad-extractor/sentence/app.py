@@ -1,6 +1,6 @@
 from src.services.kf_service import process_tokenization_kf
 from src.utilities.model_response import checking_file_response
-from flask import Flask
+from flask import Flask, current_app
 from flask.blueprints import Blueprint
 from flask_cors import CORS
 from src import routes
@@ -26,4 +26,4 @@ for blueprint in vars(routes).values():
 
 
 if __name__ == "__main__":
-    tok_app.run(host=config.HOST, port=config.PORT, debug=False)
+    tok_app.run(host=config.HOST, port=config.PORT, debug=True)
