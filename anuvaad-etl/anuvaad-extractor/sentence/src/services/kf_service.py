@@ -12,12 +12,9 @@ def process_tokenization_kf():
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
     task_id = str("TOK-" + str(time.time()).replace('.', ''))
     task_starttime = str(time.time()).replace('.', '')
-    try:
-        consumer = Consumer(config.sen_topic, config.bootstrap_server)
-        consumer = consumer.consumer_instantiate() #Consumer
-        print("--- consumer running -----")
-    except Exception as e:
-        print("consumer error %s"%e)
+    consumer = Consumer(config.sen_topic, config.bootstrap_server)
+    consumer = consumer.consumer_instantiate() #Consumer
+    print("--- consumer running -----")
     try:
         for msg in consumer:
             data = msg.value
@@ -31,3 +28,4 @@ def process_tokenization_kf():
             
     except Exception as e:
         print("error occured during consumer running or flushing data to another queue %s"%e)
+    print("--kf done--")
