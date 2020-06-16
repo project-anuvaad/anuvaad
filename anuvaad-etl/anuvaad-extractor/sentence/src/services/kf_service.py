@@ -12,9 +12,11 @@ def process_tokenization_kf():
     task_starttime = str(time.time()).replace('.', '')
     consumer = Consumer(config.sen_topic, config.bootstrap_server)
     consumer = consumer.consumer_instantiate() #Consumer
+    print("--- consumer running -----")
     try:
         for msg in consumer:
             data = msg.value
+            print("value from massage recieved   ")
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             task_id = str("TOK-" + str(time.time()).replace('.', ''))
             task_starttime = str(time.time()).replace('.', '')
