@@ -18,6 +18,7 @@ import time
 # NER annotation
 file_ops = FileOperation()
 DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
+log = logging.getLogger('file')
 
 class NERresources(Resource):
     
@@ -45,4 +46,5 @@ class NERresources(Resource):
             return response.get_response()
         else:
             file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
+            log.info("response generated for rest service")
             return file_value_response.get_response()

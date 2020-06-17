@@ -4,6 +4,7 @@ from src.utilities.utils import FileOperation
 import config
 from src.services.service import Annotation
 import time
+import logging
 
 class Status(enum.Enum):
     SUCCESS = {
@@ -77,6 +78,7 @@ class CustomResponse():
     def get_response(self):
         return jsonify(self.status_code)
 
+log = logging.getLogger('file')
 
 def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER):
     file_ops = FileOperation()
@@ -124,4 +126,5 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
                     file_res['output'] = "Hindi NER facility is not available right now."
                 task_endtime = str(time.time()).replace('.', '')
         response_true = CustomResponse(Status.SUCCESS.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+        log.info("response generated")
         return response_true

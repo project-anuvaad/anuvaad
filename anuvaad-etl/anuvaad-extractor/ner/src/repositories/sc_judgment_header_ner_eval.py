@@ -5,6 +5,9 @@ import spacy
 from spacy.util import minibatch, compounding
 from ast import literal_eval
 import os.path
+import logging
+
+log = logging.getLogger('file')
 
 class ScNerAnnotation(object):
     # model paths for judgment order and mix of both
@@ -77,12 +80,11 @@ class ScNerAnnotation(object):
             middle_page_tag = ['O_CORAM','O_HEARING_DATE','O_CONDONATION_DELAY_EXEMPTION','O_COURT_COUNSEL_HEARING','O_COUNSEL_NAME']
             if self.condition_check(first_page_tag, pagewise_tags) is True or self.condition_check(middle_page_tag, pagewise_tags) is True or self.condition_check(last_page_tag, pagewise_tags):
                 result_ner = self.order_tagged_data()
-                print("NER done!!")
+                log.info("NER done!!")
                 return result_ner
             else:
                 result_ner = self.judgment_tagged_data()
-                print("NER done!!")
+                log.info("NER done!!")
                 return result_ner
         except Exception as e:
-            return e
-
+            log.error("error occured during ner operation %s"%e)
