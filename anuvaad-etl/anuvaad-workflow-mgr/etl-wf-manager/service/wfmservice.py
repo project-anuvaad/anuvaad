@@ -59,7 +59,7 @@ class WFMService:
                     next_step_input = next_step_details[0]
                     next_tool = next_step_details[1]
                     step_completed = task_output["stepOrder"]
-                    log.info("TOOL " + (step_completed + 1) + ": " + next_tool["name"])
+                    log.info("TOOL " + str(step_completed + 1) + ": " + next_tool["name"])
                     next_step_input["stepOrder"] = step_completed + 1
                     producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
                 else:

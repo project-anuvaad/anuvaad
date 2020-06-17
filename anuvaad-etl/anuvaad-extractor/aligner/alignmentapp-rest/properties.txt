@@ -1,0 +1,8 @@
+KAFKA_CLUSTER_DETAILS = localhost:1234
+ALIGN_JOB_TOPIC = laser-align-job-register
+ALIGN_JOB_TOPIC_PARTITIONS = 2
+ALIGN_JOB_CONSUMER_GRP = laser-align-job-consumer-group
+MONGO_CLIENT = mongodb://localhost:27017/
+MONGO_ALIGNMENT_DB = anuvaad-laser-alignment
+MONGO_ALIGNMENT_COL = alignment-job
+
