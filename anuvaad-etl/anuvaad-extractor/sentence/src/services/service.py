@@ -2,7 +2,7 @@ from src.repositories.eng_sentence_tokeniser import AnuvaadEngTokenizer
 from src.repositories.hin_sentence_tokeniser import AnuvaadHinTokenizer
 import logging
 
-logging.basicConfig(filename='tokenisation_logs.log', level=logging.INFO)
+log = logging.getLogger('file')
 
 class Tokenisation(object):
     def __init__(self):
@@ -15,7 +15,7 @@ class Tokenisation(object):
             for sentence in sentence_data:
                 write_file.write("%s\n"%sentence)
         write_file.close()
-        logging.info("File write for english tokenised sentence completed")
+        log.info("File write for english tokenised sentence completed")
 
     def hin_tokenisation(self, data, output_filepath):
         write_file = open(output_filepath, 'w')
@@ -24,4 +24,4 @@ class Tokenisation(object):
             for sentence in sentence_data:
                 write_file.write("%s\n"%sentence)
         write_file.close()
-        logging.info("file write for hindi tokenised sentences completed")
+        log.info("file write for hindi tokenised sentences completed")

@@ -18,6 +18,7 @@ import time
 # sentence tokenisation
 file_ops = FileOperation()
 DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
+log = logging.getLogger('file')
 
 class SenTokenisePost(Resource):
     
@@ -45,5 +46,5 @@ class SenTokenisePost(Resource):
             return response.get_response()
         else:
             file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
-            logging.info("Tokenisation completed!!!")
+            log.info("Tokenisation completed!!!")
             return file_value_response.get_response()
