@@ -101,11 +101,13 @@ class FileOperation(object):
                 item_child = item.child
                 if len(item_child) != 0:
                     text = item_child[0].text
-                    html_node_p_tag = self.output_html_node_format(page_no, x, y, tag_class_id, tag_class_style, tag_style, text)
+                    bold_nature = self.find_bold_nature(item_child[0])
+                    html_node_p_tag = self.output_html_node_format(page_no, x, y, tag_class_id, tag_class_style, tag_style, text, bold_nature)
                     html_nodes_per_page.append(html_node_p_tag)
                 else:
                     text = item.text
-                    html_node_p_tag = self.output_html_node_format(page_no ,x, y, tag_class_id, tag_class_style, tag_style, text)
+                    bold_nature = self.find_bold_nature(item)
+                    html_node_p_tag = self.output_html_node_format(page_no ,x, y, tag_class_id, tag_class_style, tag_style, text, bold_nature)
                     html_nodes_per_page.append(html_node_p_tag)
         return html_nodes_per_page
 
@@ -119,7 +121,7 @@ class FileOperation(object):
         page_no = re.findall(r'[0-9]', page_no_id)
         return page_no[0]
 
-    def output_html_node_format(self,page_no, x, y, class_id, class_style, style, p_tag_text):
+    def output_html_node_format(self,page_no, x, y, class_id, class_style, style, p_tag_text, bold_nature):
         html_node = {
             "page_no" : page_no,
             "x" : x,
@@ -127,10 +129,17 @@ class FileOperation(object):
             "class" : class_id,
             "class_style" : class_style,
             "style" : style,
-            "text" : p_tag_text
-            #"is_bold" : bold_nature
+            "text" : p_tag_text,
+            "is_bold" : bold_nature
         }
         return html_node
+
+    def find_bold_nature(self, item_attr_child):
+        if item_attr_child.tag == 'b':
+           bold_nature = True
+        else:
+            bold_nature = False
+        return bold_nature
 
     def extracting_values_of_class_styles(self ,tag_class, class_styles):
         for item in class_styles:
