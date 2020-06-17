@@ -29,7 +29,7 @@ def process_tokenization_kf():
             producer = producer_tokenise.producer_fn()
             producer.send(config.tok_topic, value = file_value_response.status_code)
             producer.flush()
-            log.info("producer flushed")
+            log.info("producer flushed value on topic %s"%(config.tok_topic))
     except Exception as e:
         log.error("error occured during consumer running or flushing data to another queue %s"%e)
 
