@@ -38,7 +38,7 @@ class FileOperation(object):
     
     def read_file(self, input_filename):
         input_filepath = self.input_path(input_filename)
-        with open(input_filepath, 'r') as f:
+        with open(input_filepath, 'r', encoding='utf-16') as f:
             input_file_data = f.readlines()
         return input_file_data
 
