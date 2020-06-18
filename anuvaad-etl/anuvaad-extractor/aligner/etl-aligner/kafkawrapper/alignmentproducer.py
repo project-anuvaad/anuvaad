@@ -8,10 +8,9 @@ from kafka import KafkaProducer
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9095')
-align_job_topic = "laser-align-job-register-b"
-#align_job_topic = os.environ.get('ALIGN_JOB_TOPIC', 'laser-align-job-register')
-anu_dp_wf_aligner_out_topic = os.environ.get('ANU_DP_WF_ALIGNER_OUT_TOPIC', 'anuvaad-dp-tools-aligner-output')
-align_job_topic_partitions = os.environ.get('ALIGN_JOB_TOPIC_PARTITIONS', 2)
+align_job_topic = "etl-align-job-register"
+anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-input"
+align_job_consumer_grp = "anuvaad-dp-tools-aligner-output"
 
 
 class Producer:
@@ -31,7 +30,6 @@ class Producer:
     def push_to_queue(self, object_in, iswf):
         producer = self.instantiate()
         try:
-            log.info(object_in)
             if iswf:
                 producer.send(anu_dp_wf_aligner_out_topic, value=object_in)
                 log.info("Pushed to the topic: " + anu_dp_wf_aligner_out_topic)
@@ -40,5 +38,4 @@ class Producer:
                 log.info("Pushed to the topic: " + align_job_topic)
             producer.flush()
         except Exception as e:
-            log.error("Exception while producing: " + str(e))
-            traceback.print_exc()
+            log.exception("Exception while producing: " + str(e))

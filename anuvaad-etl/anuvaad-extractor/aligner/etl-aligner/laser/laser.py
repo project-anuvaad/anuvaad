@@ -9,7 +9,7 @@ import multiprocessing
 
 log = logging.getLogger('file')
 laser_url = os.environ.get('LASER_PATH', 'http://127.0.0.1:8050/vectorize')
-no_of_processes = os.environ.get('NO_OF_PROCESSES', 3)
+no_of_processes = 2
 
 class Laser:
 

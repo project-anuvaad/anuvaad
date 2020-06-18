@@ -12,14 +12,15 @@ from laser.laser import Laser
 from utilities.alignmentutils import AlignmentUtils
 from repository.alignmentrepository import AlignmentRepository
 from validator.alignmentvalidator import AlignmentValidator
-from kafkawrapper.producer import Producer
+from kafkawrapper.alignmentproducer import Producer
 
 log = logging.getLogger('file')
 directory_path = os.environ.get('SA_DIRECTORY_PATH', r'C:\Users\Vishal\Desktop\anuvaad\Facebook LASER\resources\Input\length-wise')
 res_suffix = 'response-'
 man_suffix = 'manual-'
 nomatch_suffix = 'nomatch-'
-file_path_delimiter = os.environ.get('FILE_PATH_DELIMITER', '/')
+file_path_delimiter = '/'
+
 alignmentutils = AlignmentUtils()
 repo = AlignmentRepository()
 laser = Laser()
@@ -116,13 +117,10 @@ class AlignmentService:
             for key in match_dict:
                 source_reformatted.append(source[key])
                 target_refromatted.append(target_corp[match_dict[key][0]])
-            log.info("Match Bucket Filled.")
             if len(manual_dict.keys()) > 0:
                 for key in manual_dict:
                     manual_src.append(source[key])
                     manual_trgt.append(target_corp[manual_dict[key][0]])
-            log.info("Manual Bucket Filled.")
-            log.info("No Match Bucket Filled.")
             try:
                 output_dict = self.generate_output(source_reformatted, target_refromatted, manual_src, manual_trgt,
                                            lines_with_no_match, path, path_indic)

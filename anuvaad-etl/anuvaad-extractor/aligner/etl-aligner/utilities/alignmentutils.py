@@ -11,9 +11,9 @@ import numpy as np
 import csv
 
 log = logging.getLogger('file')
-two_files = os.environ.get('TWO_FILES', True)
-no_of_words = os.environ.get('WORD_LENGTH', 200)
-file_encoding = os.environ.get('FILE_ENCODING', 'utf-16')
+two_files = True
+no_of_words = 200
+file_encoding = 'utf-16'
 upload_url = os.environ.get('FILE_UPLOAD_URL', 'https://auth.anuvaad.org/upload')
 
 class AlignmentUtils:

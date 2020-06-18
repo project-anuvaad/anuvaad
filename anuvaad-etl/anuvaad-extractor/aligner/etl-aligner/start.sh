@@ -1,1 +1,1 @@
-python alignmentconsumer.py
+python app.py

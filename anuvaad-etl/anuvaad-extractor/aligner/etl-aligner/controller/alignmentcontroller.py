@@ -1,23 +1,19 @@
 #!/bin/python
-import logging
 import os
 
 from flask import Flask, jsonify, request
 import datetime as dt
 from service.alignmentservice import AlignmentService
 from validator.alignmentvalidator import AlignmentValidator
-from utilities.alignmentutils import AlignmentUtils
 from logging.config import dictConfig
 
 alignapp = Flask(__name__)
-context_path = os.environ.get('SA_CONTEXT_PATH', '/sentence-alignment')
-
+context_path = os.environ.get('SA_CONTEXT_PATH', '/anuvaad-etl/extractor/aligner')
 
 # REST endpoint to align files
-@alignapp.route(context_path + '/alignment/align/async', methods=["POST"])
+@alignapp.route('/sentences/align', methods=["POST"])
 def createalignmentjob():
     service = AlignmentService()
-    util = AlignmentUtils()
     validator = AlignmentValidator()
     data = request.get_json()
     error = validator.validate_input(data)
@@ -27,7 +23,7 @@ def createalignmentjob():
 
 
 # REST endpoint to fetch job status
-@alignapp.route(context_path + '/alignment/jobs/get/<job_id>', methods=["GET"])
+@alignapp.route('/alignment/jobs/get/<job_id>', methods=["GET"])
 def searchjobs(job_id):
     service = AlignmentService()
     response = service.search_jobs(job_id)

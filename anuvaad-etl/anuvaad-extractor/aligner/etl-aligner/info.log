@@ -8,3 +8,4 @@
 [2020-05-08 13:54:41,090] {alignmentservice.py:50} MainThread INFO in alignmentservice: Alignment process starts for job: 15889250265440123
 [2020-05-08 13:54:41,101] {consumer.py:44} MainThread ERROR in consumer: Exception while consuming: can only concatenate str (not "dict") to str
 [2020-05-08 13:54:41,121] {consumer.py:45} MainThread ERROR in consumer: None
+[2020-06-18 12:33:40,850] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
