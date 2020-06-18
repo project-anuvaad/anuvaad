@@ -12,7 +12,7 @@ log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
 consumer_poll_interval = os.environ.get('CONSUMER_POLL_INTERVAL', 10)
 align_job_topic = "etl-align-job-register"
-anu_dp_wf_aligner_in_topic = "anuvaad-dp-tools-aligner-input"
+anu_dp_wf_aligner_in_topic = "anuvaad-dp-tools-aligner-input-new"
 align_job_consumer_grp = "anuvaad-etl-aligner-consumer-group"
 
 
