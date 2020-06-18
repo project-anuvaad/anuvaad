@@ -115,6 +115,22 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
         task_endtime = str(time.time()).replace('.', '')
         response = CustomResponse(Status.ERR_EMPTY_FILE_LIST.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
         return response
+    elif jobid == "" or jobid is None:
+        task_endtime = str(time.time()).replace('.', '')
+        response = CustomResponse(Status.ERR_jobid_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+        return response
+    elif workflow_id == "" or workflow_id is None:
+        task_endtime = str(time.time()).replace('.', '')
+        response = CustomResponse(Status.ERR_Workflow_id_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+        return response
+    elif tool_name == "" or tool_name is None:
+        task_endtime = str(time.time()).replace('.', '')
+        response = CustomResponse(Status.ERR_Tool_Name_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+        return response
+    elif step_order == "" or step_order is None:
+        task_endtime = str(time.time()).replace('.', '')
+        response = CustomResponse(Status.ERR_step_order_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+        return response
     else:
         for i, item in enumerate(input_files):
             input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
