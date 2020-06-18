@@ -9,7 +9,7 @@ class Annotation(object):
         pass       
 
     def storing_tagged_data(self,data, output_filepath):
-        write_file = open(output_filepath, 'w')
+        write_file = open(output_filepath, 'w', encoding='utf-16')
         log.info("NER operation started")
         for text in data:
             tagged_data = ScNerAnnotation(config.model_dir_judgment, config.model_dir_order, config.mix_model_dir, text).main()
