@@ -1,4 +1,6 @@
 from src.utilities.model_response import checking_file_response
+from src.utilities.model_response import CustomResponse
+from src.utilities.model_response import Status
 from src.utilities.utils import FileOperation
 from src.Kafka_module.producer import Producer
 from src.Kafka_module.consumer import Consumer
@@ -32,6 +34,11 @@ def process_tokenization_kf():
             log.info("producer flushed value on topic %s"%(config.tok_topic))
     except Exception as e:
         log.error("error occured during consumer running or flushing data to another queue %s"%e)
+        task_end_time = str(time.time()).replace('.', '')
+        output_file_response = ""
+        response = CustomResponse(Status.ERR_EMPTY_FILE_LIST.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_end_time, output_file_response)
+        return response
+        
 
 dictConfig({
     'version': 1,
