@@ -75,6 +75,6 @@ class WFMValidator:
 
     # Error formatter
     def get_error(self, code, message):
-        return jsonify({"status": "INPUT_ERROR", "code": code, "message": message})
+        return jsonify({"status": "ERROR", "code": code, "message": message})
 
 
