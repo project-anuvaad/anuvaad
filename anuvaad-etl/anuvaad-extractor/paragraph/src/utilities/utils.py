@@ -4,6 +4,10 @@ from pathlib import Path
 import json
 import requests
 import re
+import logging
+import config
+
+log = logging.getLogger('file')
 
 class FileOperation(object):
 
@@ -18,10 +22,10 @@ class FileOperation(object):
         return str(download_dir)
 
     def get_uploaded_image_filepath(self, local_image_path):
-        api_url_base = 'https://auth.anuvaad.org/upload'
+        api_url_base = config.base_url_path + '/upload'
         data = open(local_image_path, 'rb')
         try:
-            print('uploading : %s'%local_image_path)
+            log.info('uploading : %s'%local_image_path)
             r = requests.post(url = api_url_base, data = data, headers = {'Content-Type': 'application/x-www-form-urlencoded'})
             r.raise_for_status()
         except requests.exceptions.HTTPError as e:

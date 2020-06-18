@@ -21,8 +21,8 @@ ENABLE_CORS = False
 download_folder = 'upload'
 
 
-#process id
-#taskid = str("TOK-" + str(int(time.time())))
+#urls
+base_url_path = 'https://auth.anuvaad.org'
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),
