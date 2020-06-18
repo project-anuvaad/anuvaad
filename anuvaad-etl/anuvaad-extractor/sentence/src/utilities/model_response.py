@@ -13,52 +13,80 @@ class Status(enum.Enum):
     ERR_EMPTY_FILE = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
+        "code" : "File content error",
         "error": "File do not have any content"
     }
     ERR_EMPTY_FILE_LIST = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
-        "error": "DO not receiving any input files."
+        "code" : "Input file list error",
+        "error": "DO not receive any input files."
     }
     ERR_FILE_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
+        "code" : "File error",
         "error": "File not found."
     }
     ERR_DIR_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
+        "code" : "Directory error",
         "error": "There is no input/output Directory."
     }
     ERR_EXT_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
-        "error": "This file type is not allowed."
+        "code" : "File type error",
+        "error": "This file type is not allowed. Currently, support only txt file."
     }
     ERR_locale_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
+        "code" : "locale error",
         "error": "No language input"
     }
     ERR_jobid_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
+        "code" : "jobID error",
         "error": "jobID is not given."
     }
     ERR_Workflow_id_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
+        "code" : "workflowCode error",
         "error": "workflowCode is not given."
     }
     ERR_Tool_Name_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
+        "code" : "Toolname error",
         "error": "toolname is not given"
     }
     ERR_step_order_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
+        "code" : "step order error",
         "error": "step order is not given."
+    }
+    ERR_tokenisation = {
+        "status" : "FAILED",
+        "state" : "SENTENCE-TOKENISED",
+        "code" : "Tokenisation error",
+        "error" : "Tokenisation failed due to wrong entry"
+    }
+    ERR_Consumer = {
+        "status" : "FAILED",
+        "state" : "SENTENCE-TOKENISED",
+        "code" : "Kafka consumer error",
+        "error" : "can not listen from consumer."
+    }
+    ERR_Producer = {
+        "status" : "FAILED",
+        "state" : "SENTENCE-TOKENISED",
+        "code" : "Kafka consumer error",
+        "error" : "can not send massage from producer."
     }
 
 
@@ -70,7 +98,6 @@ class CustomResponse():
         self.status_code['workflowCode'] = workflow_id
         self.status_code['taskStarttime'] = task_start_time
         self.status_code['taskendTime'] = task_end_time
-        #self.status_code['input'] = input_data
         self.status_code['output'] = filename_response
         self.status_code['tool'] = tool_name
         self.status_code['stepOrder'] = step_order
@@ -117,15 +144,25 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
             else:
                 tokenisation = Tokenisation()
                 if in_locale == "en":
-                    input_file_data = file_ops.read_file(input_filename)
-                    output_filepath , output_en_filename = file_ops.output_path(i, DOWNLOAD_FOLDER)
-                    tokenisation.eng_tokenisation(input_file_data, output_filepath)
-                    file_res['outputFile'] = output_en_filename
+                    try:
+                        input_file_data = file_ops.read_file(input_filename)
+                        output_filepath , output_en_filename = file_ops.output_path(i, DOWNLOAD_FOLDER)
+                        tokenisation.eng_tokenisation(input_file_data, output_filepath)
+                        file_res['outputFile'] = output_en_filename
+                    except:
+                        task_endtime = str(time.time()).replace('.', '')
+                        response = CustomResponse(Status.ERR_tokenisation.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+                        return response
                 elif in_locale == "hi":
-                    input_file_data = file_ops.read_file(input_filename)
-                    output_filepath , output_hi_filename = file_ops.output_path(i, DOWNLOAD_FOLDER)
-                    tokenisation.hin_tokenisation(input_file_data, output_filepath)
-                    file_res['outputFile'] = output_hi_filename
+                    try:
+                        input_file_data = file_ops.read_file(input_filename)
+                        output_filepath , output_hi_filename = file_ops.output_path(i, DOWNLOAD_FOLDER)
+                        tokenisation.hin_tokenisation(input_file_data, output_filepath)
+                        file_res['outputFile'] = output_hi_filename
+                    except:
+                        task_endtime = str(time.time()).replace('.', '')
+                        response = CustomResponse(Status.ERR_tokenisation.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+                        return response
                 task_endtime = str(time.time()).replace('.', '')
         response_true = CustomResponse(Status.SUCCESS.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
         return response_true
