@@ -1,3 +1,9 @@
+Service name: anuvaad-etl-aligner
+Port number: 5003
+Nginx access: Yes
+Apigateway access: Yes
+Volume mount: Yes
+
 context path = /anuvaad-etl/extractor/aligner
 SA_DIRECTORY_PATH = /opt/share/sentence-alignment/upload:/app/upload
 LASER_PATH = http://127.0.0.1:8050/vectorize

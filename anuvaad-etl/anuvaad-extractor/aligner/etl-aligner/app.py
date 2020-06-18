@@ -13,7 +13,7 @@ from kafkawrapper.alignmentconsumer import consume
 
 log = logging.getLogger('file')
 app_host = os.environ.get('ANU_ETL_WFM_HOST', '0.0.0.0')
-app_port = os.environ.get('ANU_ETL_WFM_PORT', 5002)
+app_port = os.environ.get('ANU_ETL_WFM_PORT', 5003)
 
 
 # Starts the kafka consumer in a different thread
