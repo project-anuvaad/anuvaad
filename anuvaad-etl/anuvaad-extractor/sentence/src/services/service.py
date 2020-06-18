@@ -9,7 +9,7 @@ class Tokenisation(object):
         pass       
 
     def eng_tokenisation(self,data, output_filepath):
-        write_file = open(output_filepath, 'w')
+        write_file = open(output_filepath, 'w', encoding='utf-16')
         for item in data:
             sentence_data = AnuvaadEngTokenizer().tokenize(item)
             for sentence in sentence_data:
@@ -18,7 +18,7 @@ class Tokenisation(object):
         log.info("File write for english tokenised sentence completed")
 
     def hin_tokenisation(self, data, output_filepath):
-        write_file = open(output_filepath, 'w')
+        write_file = open(output_filepath, 'w', encoding='utf-16')
         for item in data:
             sentence_data = AnuvaadHinTokenizer().tokenize(item)
             for sentence in sentence_data:
