@@ -1,1 +1,0 @@
-python alignmentconsumer.py

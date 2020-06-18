@@ -1,14 +1,6 @@
 #!/bin/python
-import binascii
-import codecs
-import json
 import os
 import pymongo
-
-import requests
-import numpy as np
-import csv
-import time
 
 mongo_client = os.environ.get('MONGO_CLIENT', 'mongodb://localhost:27017/')
 mongo_alignment_db = os.environ.get('MONGO_ALIGNMENT_DB', 'anuvaad-laser-alignment')
@@ -31,7 +23,7 @@ class AlignmentRepository:
         col = self.instantiate()
         col.insert_one(object_in)
 
-    # Updates the object into mongo collection
+    # Searches Job from a mongo collection
     def search_job(self, job_id):
         col = self.instantiate()
         query = {"jobID" : job_id}
@@ -40,3 +32,11 @@ class AlignmentRepository:
         for record in res:
             result.append(record)
         return result
+
+    # Updates the object in the mongo collection
+    def update_job(self, object_in, job_id):
+        col = self.instantiate()
+        col.replace_one(
+            {"jobID" : job_id},
+            object_in
+        )

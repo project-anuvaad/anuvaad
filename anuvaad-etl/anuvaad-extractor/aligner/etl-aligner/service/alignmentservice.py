@@ -10,6 +10,8 @@ from scipy.spatial import distance
 from flask import jsonify
 from laser.laser import Laser
 from utilities.alignmentutils import AlignmentUtils
+from repository.alignmentrepository import AlignmentRepository
+from validator.alignmentvalidator import AlignmentValidator
 from kafkawrapper.producer import Producer
 
 log = logging.getLogger('file')
@@ -19,13 +21,26 @@ man_suffix = 'manual-'
 nomatch_suffix = 'nomatch-'
 file_path_delimiter = os.environ.get('FILE_PATH_DELIMITER', '/')
 alignmentutils = AlignmentUtils()
+repo = AlignmentRepository()
 laser = Laser()
 producer = Producer()
+util = AlignmentUtils()
+validator = AlignmentValidator()
 
 
 class AlignmentService:
     def __init__(self):
         pass
+
+    # Service method to register the alignment job
+    def register_job(self, object_in):
+        job_id = util.generate_job_id()
+        response = {"input": object_in, "jobID": job_id, "status": "START"}
+        repo.create_job(response)
+        log.info("JOB ID: " + str(object_in["jobID"]))
+        del object_in['_id']
+        producer.push_to_queue(object_in)
+        return response
 
     # Service layer to fetch vectors for all the source and target sentences.
     def build_index(self, source, target_corp, src_loc, trgt_loc):
@@ -46,26 +61,31 @@ class AlignmentService:
             return min_index, min_distance, "ALMOST-MATCH"
 
     # Wrapper to build response compatibile with the anuvaad etl wf manager
-    def getwfresponse(self, result, object_in, iserror):
-        wfresponse = {"taskID": object_in["taskID"], "jobID": object_in["jobID"], "input": result["input"],
-                      "output": result["output"], "workflowCode": object_in["workflowCode"],
-                      "stepOrder": object_in["stepOrder"]}
-        if iserror:
-            wfresponse["status"] = "FAILED"
+    def getwfresponse(self, result, object_in, error):
+        if error is not None:
+            wfresponse = {"taskID": object_in["taskID"], "jobID": object_in["jobID"], "workflowCode": object_in["workflowCode"],
+                      "stepOrder": object_in["stepOrder"], "status": "FAILED", "state": "SENTENCES-ALIGNED", "error": error}
         else:
-            wfresponse["status"] = "SUCCESS"
-
-        wfresponse["state"] = "SENTENCES-ALIGNED"
-        wfresponse["taskStartTime"] = result["startTime"]
-        wfresponse["taskEndTime"] = result["endTime"]
+            wfresponse = {"taskID": object_in["taskID"], "jobID": object_in["jobID"], "input": result["input"],
+                          "output": result["output"], "workflowCode": object_in["workflowCode"],
+                          "stepOrder": object_in["stepOrder"], "status": "SUCCESS", "state": "SENTENCES-ALIGNED",
+                          "taskStartTime": result["startTime"], "taskEndTime": result["endTime"]}
 
         return wfresponse
+
+
+    # Wrapper method between consumer and service
+    def process_input(self, object_in, iswf):
+        if iswf:
+            util = AlignmentUtils()
+            object_in["taskID"] = util.generate_task_id()
+            self.process(object_in, iswf)
+        else:
+            self.process(object_in, iswf)
 
     # Wrapper method to categorise sentences into MATCH, ALMOST-MATCH and NO-MATCH
     def process(self, object_in, iswf):
         log.info("Alignment process starts for job: " + str(object_in["jobID"]))
-        if iswf:
-            log.info(object_in)
         source_reformatted = []
         target_refromatted = []
         manual_src = []
@@ -76,19 +96,19 @@ class AlignmentService:
         full_path_indic = directory_path + file_path_delimiter + path_indic
         object_in["status"] = "INPROGRESS"
         object_in["startTime"] = str(dt.datetime.now())
-        parsed_in = self.parse_in(full_path, full_path_indic, object_in)
+        parsed_in = self.parse_in(full_path, full_path_indic, object_in, iswf)
         if parsed_in is not None:
-            source = parsed_in[0]
+            source = parsed_in[0],
             target_corp = parsed_in[1]
         else:
             return {}
-        embeddings = self.build_embeddings(source, target_corp, object_in)
+        embeddings = self.build_embeddings(source, target_corp, object_in, iswf)
         if embeddings is not None:
             source_embeddings = embeddings[0]
             target_embeddings = embeddings[1]
         else:
             return {}
-        alignments = self.get_alignments(source_embeddings, target_embeddings, source, object_in)
+        alignments = self.get_alignments(source_embeddings, target_embeddings, source, object_in, iswf)
         if alignments is not None:
             match_dict = alignments[0]
             manual_dict = alignments[1]
@@ -109,39 +129,49 @@ class AlignmentService:
 
                 result = self.build_final_response(path, path_indic, output_dict, object_in)
                 if iswf:
-                    wf_res = self.getwfresponse(result, object_in, False)
+                    wf_res = self.getwfresponse(result, object_in, None)
                     producer.push_to_queue(wf_res, True)
             except Exception as e:
                 log.error("Exception while writing the output: ", str(e))
-
+                if iswf:
+                    error = validator.get_error("OUTPUT_ERROR", "Exception while writing the output: " + str(e))
+                    wf_res = self.getwfresponse(None, object_in, error)
+                    producer.push_to_queue(wf_res, True)
+                return {}
             log.info("Sentences aligned Successfully! JOB ID: " + str(object_in["jobID"]))
         else:
             return {}
 
     # Service layer to parse the input file
-    def parse_in(self, full_path, full_path_indic, object_in):
+    def parse_in(self, full_path, full_path_indic, object_in, iswf):
         try:
             source, target_corp = alignmentutils.parse_input_file(full_path, full_path_indic)
             return source, target_corp
         except Exception as e:
-            log.error("Exception while parsing the input: " + str(e))
-            traceback.print_exc()
+            log.exception("Exception while parsing the input: " + str(e))
+            if iswf:
+                error = validator.get_error("INPUT_ERROR", "Exception while parsing the input: " + str(e))
+                wf_res = self.getwfresponse(None, object_in, error)
+                producer.push_to_queue(wf_res, True)
             return None
 
     # Wrapper to build sentence embeddings
-    def build_embeddings(self, source, target_corp, object_in):
+    def build_embeddings(self, source, target_corp, object_in, iswf):
         try:
             src_loc = object_in["input"]["source"]["locale"]
             trgt_loc = object_in["input"]["target"]["locale"]
             source_embeddings, target_embeddings = self.build_index(source, target_corp, src_loc, trgt_loc)
             return source_embeddings, target_embeddings
         except Exception as e:
-            log.error("Exception while vectorising sentences: " + str(e))
-            traceback.print_exc()
+            log.exception("Exception while vectorising sentences: " + str(e))
+            if iswf:
+                error = validator.get_error("LASER_ERROR", "Exception while vectorising sentences: " + str(e))
+                wf_res = self.getwfresponse(None, object_in, error)
+                producer.push_to_queue(wf_res, True)
             return None
 
     # Wrapper method to align and categorise sentences
-    def get_alignments(self, source_embeddings, target_embeddings, source, object_in):
+    def get_alignments(self, source_embeddings, target_embeddings, source, object_in, iswf):
         match_dict = {}
         manual_dict = {}
         lines_with_no_match = []
@@ -157,8 +187,11 @@ class AlignmentService:
                     lines_with_no_match.append(source[i])
             return match_dict, manual_dict, lines_with_no_match
         except Exception as e:
-            log.error("Exception while aligning sentences: " + str(e))
-            traceback.print_exc()
+            log.exception("Exception while aligning sentences: " + str(e))
+            if iswf:
+                error = validator.get_error("ALIGNEMENT_ERROR", "Exception while aligning sentences: " + str(e))
+                wf_res = self.getwfresponse(None, object_in, error)
+                producer.push_to_queue(wf_res, True)
             return None
 
 
@@ -213,4 +246,9 @@ class AlignmentService:
                   }}
 
         return result
+
+
+    # Service method to fetch job details from the mongo collection
+    def search_jobs(self, job_id):
+        return repo.search_job(job_id)
 

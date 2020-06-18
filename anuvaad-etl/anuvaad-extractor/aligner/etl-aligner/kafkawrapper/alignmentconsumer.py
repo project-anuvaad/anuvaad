@@ -8,14 +8,14 @@ from service.alignmentservice import AlignmentService
 from utilities.alignmentutils import AlignmentUtils
 from logging.config import dictConfig
 
-
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
 consumer_poll_interval = os.environ.get('CONSUMER_POLL_INTERVAL', 10)
 align_job_topic = "laser-align-job-register-b"
-#align_job_topic = os.environ.get('ALIGN_JOB_TOPIC', 'laser-align-job-register')
+# align_job_topic = os.environ.get('ALIGN_JOB_TOPIC', 'laser-align-job-register')
 anu_dp_wf_aligner_in_topic = os.environ.get('ANU_DP_WF_ALIGNER_IN_TOPIC', 'anuvaad-dp-tools-aligner-input')
 align_job_consumer_grp = os.environ.get('ALIGN_JOB_CONSUMER_GRP', 'laser-align-job-consumer-group')
+
 
 # Method to instantiate the kafka consumer
 def instantiate():
@@ -31,30 +31,27 @@ def instantiate():
     consumer.poll(consumer_poll_interval)
     return consumer
 
+
 # Method to read and process the requests from the kafka queue
 def consume():
     consumer = instantiate()
     service = AlignmentService()
     log.info("Consumer running.......")
-    try:
-        data = {}
-        topic = None
-        for msg in consumer:
-            log.info("Consuming from the Kafka Queue......")
-            data = msg.value
-            topic = msg.topic
-            log.info("Received on Topic: " + topic)
-            break
-        if topic == anu_dp_wf_aligner_in_topic:
-            util = AlignmentUtils()
-            data["taskID"] = util.generate_task_id()
-            service.process(data, True)
-        else:
-            service.process(data, False)
-    except Exception as e:
-        log.exception("Exception while consuming: " + str(e))
-    finally:
-        consumer.close()
+    while True:
+        try:
+            data = {}
+            topic = None
+            for msg in consumer:
+                data = msg.value
+                topic = msg.topic
+                log.info("Received on Topic: " + topic)
+                break
+            if topic == anu_dp_wf_aligner_in_topic:
+                service.process_input(data, True)
+            else:
+                service.process_input(data, False)
+        except Exception as e:
+            log.exception("Exception while consuming: " + str(e))
 
 # Method that provides a deserialiser for the kafka record.
 def handle_json(x):
@@ -64,6 +61,7 @@ def handle_json(x):
         log.error("Exception while deserialising: " + str(e))
         traceback.print_exc()
         return {}
+
 
 # Log config
 dictConfig({
@@ -97,7 +95,6 @@ dictConfig({
         'handlers': ['info', 'console']
     }
 })
-
 
 if __name__ == '__main__':
     while True:

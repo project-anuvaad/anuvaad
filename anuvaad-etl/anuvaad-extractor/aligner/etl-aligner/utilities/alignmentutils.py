@@ -102,3 +102,7 @@ class AlignmentUtils:
     # Utility to generate a unique random task ID
     def generate_task_id(self):
         return "ALIGN-" + str(time.time()).replace('.', '')
+
+    # Utility to generate a unique random job ID
+    def generate_job_id(self):
+        return str(time.time()).replace('.', '')

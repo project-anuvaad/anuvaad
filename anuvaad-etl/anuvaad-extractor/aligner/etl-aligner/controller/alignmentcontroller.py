@@ -5,6 +5,7 @@ import os
 from flask import Flask, jsonify, request
 import datetime as dt
 from service.alignmentservice import AlignmentService
+from validator.alignmentvalidator import AlignmentValidator
 from utilities.alignmentutils import AlignmentUtils
 from logging.config import dictConfig
 
@@ -17,14 +18,12 @@ context_path = os.environ.get('SA_CONTEXT_PATH', '/sentence-alignment')
 def createalignmentjob():
     service = AlignmentService()
     util = AlignmentUtils()
+    validator = AlignmentValidator()
     data = request.get_json()
-    error = service.validate_input(data)
+    error = validator.validate_input(data)
     if error is not None:
         return error
-    job_id = util.generate_job_id()
-    response = {"input": data, "jobID": job_id, "status": "START"}
-    service.register_job(response)
-    return response
+    return service.register_job(data)
 
 
 # REST endpoint to fetch job status

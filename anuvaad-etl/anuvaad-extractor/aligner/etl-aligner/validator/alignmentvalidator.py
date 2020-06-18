@@ -3,28 +3,12 @@ import codecs
 import logging
 import os
 
-import datetime as dt
 from flask import jsonify
-from utilities.alignmentutils import AlignmentUtils
-from repository.alignmentrepository import AlignmentRepository
-from kafkawrapper.producer import Producer
-
-log = logging.getLogger('file')
-alignmentutils = AlignmentUtils()
-repo = AlignmentRepository()
-producer = Producer()
 
 
-class AlignmentService:
+class AlignmentValidator:
     def __init__(self):
         pass
-
-    # Service method to register the alignment job
-    def register_job(self, object_in):
-        repo.create_job(object_in)
-        log.info("JOB ID: " + str(object_in["jobID"]))
-        del object_in['_id']
-        producer.push_to_queue(object_in)
 
     # Validator that validates the input request for initiating the alignment job
     def validate_input(self, data):
@@ -49,8 +33,5 @@ class AlignmentService:
     def get_error(self, code, message):
         return jsonify({"status": "ERROR", "code": code, "message": message})
 
-    # Service method to fetch job details from the mongo collection
-    def search_jobs(self, job_id):
-        return repo.search_job(job_id)
 
 
