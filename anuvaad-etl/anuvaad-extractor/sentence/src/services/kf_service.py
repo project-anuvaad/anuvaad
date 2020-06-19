@@ -36,8 +36,18 @@ def process_tokenization_kf():
         log.error("error occured during consumer running or flushing data to another queue %s"%e)
         task_end_time = str(time.time()).replace('.', '')
         output_file_response = ""
-        response = CustomResponse(Status.ERR_EMPTY_FILE_LIST.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_end_time, output_file_response)
-        return response
+        for msg in consumer:
+            log.info("value received from consumer")
+            data = msg.value
+            input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+            task_id = str("TOK-" + str(time.time()).replace('.', ''))
+            task_starttime = str(time.time()).replace('.', '')
+            response = CustomResponse(Status.ERR_EMPTY_FILE_LIST.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_end_time, output_file_response)
+            producer_tokenise = Producer(config.bootstrap_server) 
+            producer = producer_tokenise.producer_fn()
+            producer.send(config.tok_topic, value = response.status_code)
+            producer.flush()
+            log.info("error in kafka opertation producer flushed value on topic %s"%(config.tok_topic))
         
 
 dictConfig({

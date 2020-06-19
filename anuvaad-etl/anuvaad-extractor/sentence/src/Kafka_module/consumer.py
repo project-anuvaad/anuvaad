@@ -18,6 +18,5 @@ class Consumer(object):
             return consumer
         except Exception as e:
             log.error("error occured for consumer topic: %s is %s"%(self.topic_name, e))
-            return None
 
 
