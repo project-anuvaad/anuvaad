@@ -42,15 +42,6 @@ class FileOperation(object):
             input_file_data = f.readlines()
         return input_file_data
 
-    def producer_input(self, input_filepath, in_file_type, in_locale, jobid):
-        producer_feed_data = {
-            "filepath": input_filepath,
-            "type": in_file_type,
-            "locale": in_locale,
-            "jobID": jobid
-        }
-        return producer_feed_data
-
     def json_input_format(self, json_data):
         input_files = json_data["input"]['files']
         workflow_id = json_data['workflowCode']
