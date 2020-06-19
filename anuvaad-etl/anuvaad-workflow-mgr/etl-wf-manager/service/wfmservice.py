@@ -27,7 +27,6 @@ class WFMService:
         client_output = self.get_wf_details(wf_input, None, False, None)
         self.update_job_details(client_output, True)
         producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
-        log.info("Job registered with the ID: " + wf_input["jobID"])
         return client_output
 
     # Method to initiate the workflow.
@@ -43,7 +42,6 @@ class WFMService:
             client_output = self.get_wf_details(wf_input, None, False, None)
             self.update_job_details(client_output, False)
             log.info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"])
-            log.info("TOOL 0: " + first_tool["name"])
         except Exception as e:
             log.exception("Exception while initiating workflow: " + str(e))
             traceback.print_exc()
@@ -79,6 +77,8 @@ class WFMService:
         wf_code = task_output["workflowCode"]
         step_completed = task_output["stepOrder"]
         order_of_execution = wfmutils.get_order_of_exc(wf_code)
+        log.info("ORDER OF EXECUTION")
+        log.info(order_of_execution)
         try:
             next_step_details = order_of_execution[step_completed + 1]
             next_tool = next_step_details["tool"][0]
