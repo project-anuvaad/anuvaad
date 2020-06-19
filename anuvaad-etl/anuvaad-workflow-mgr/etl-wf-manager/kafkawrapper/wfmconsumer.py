@@ -42,7 +42,7 @@ def consume():
     try:
         for msg in consumer:
             data = msg.value
-            log.info("Received on topic: " + msg.topic)
+            log.info("Kafka - CONSUMING from: " + msg.topic)
             if msg.topic == anu_etl_wfm_core_topic:
                 wfmservice.initiate(data)
             else:

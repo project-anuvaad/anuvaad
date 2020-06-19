@@ -28,7 +28,7 @@ class Producer:
         producer = self.instantiate()
         try:
             producer.send(topic, value=object_in)
-            log.info("Pushed to the topic: " + topic)
+            log.info("Kafka - PRODUCING to: " + topic)
             producer.flush()
         except Exception as e:
             log.error("Exception while producing: " + str(e))

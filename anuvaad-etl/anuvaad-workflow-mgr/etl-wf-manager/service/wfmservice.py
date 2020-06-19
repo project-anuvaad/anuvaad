@@ -22,7 +22,6 @@ class WFMService:
     # Generates job ID, creates entry to the DB, passes the request to further processing
     # Returns client-readable job status
     def register_job(self, wf_input):
-        #validate
         wf_input["jobID"] = wfmutils.generate_job_id(wf_input["workflowCode"])
         client_output = self.get_wf_details(wf_input, None, False, None)
         self.update_job_details(client_output, True)
@@ -57,7 +56,6 @@ class WFMService:
                     next_step_input = next_step_details[0]
                     next_tool = next_step_details[1]
                     step_completed = task_output["stepOrder"]
-                    log.info("TOOL " + str(step_completed + 1) + ": " + next_tool["name"])
                     next_step_input["stepOrder"] = step_completed + 1
                     producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
                 else:
@@ -77,16 +75,12 @@ class WFMService:
         wf_code = task_output["workflowCode"]
         step_completed = task_output["stepOrder"]
         order_of_execution = wfmutils.get_order_of_exc(wf_code)
-        log.info("ORDER OF EXECUTION")
-        log.info(order_of_execution)
         try:
             next_step_details = order_of_execution[step_completed + 1]
             next_tool = next_step_details["tool"][0]
             next_task_input = wfmutils.get_tool_input(next_tool["name"], task_output["tool"], task_output, None)
             return next_task_input, next_tool
         except Exception as e:
-            log.exception("Exception while fetching next step: " + str(e))
-            traceback.print_exc()
             return None
 
     # Method to update the status of job.
