@@ -14,26 +14,12 @@ class FileOperation(object):
     def __init__(self):
         self.download_folder = None
 
-    def file_download(self, downloading_folder):
+    def create_file_download_dir(self, downloading_folder):
         self.download_folder = downloading_folder
         download_dir = Path(os.path.join(os.getcwd(), self.download_folder))
         if download_dir.exists() is False:
             os.makedirs(download_dir)
         return str(download_dir)
-
-    # def get_uploaded_filepath(self, local_filepath):
-    #     api_url_base = config.base_url_path + '/upload'
-    #     data = open(local_filepath, 'rb')
-    #     try:
-    #         log.info('uploading : %s'%local_filepath)
-    #         r = requests.post(url = api_url_base, data = data, headers = {'Content-Type': 'application/x-www-form-urlencoded'})
-    #         r.raise_for_status()
-    #         log.info("file uploaded successfully")
-    #     except requests.exceptions.HTTPError as e:
-    #         log.error("file not uploaded due to %s"%(e.response.text))
-    #         return None
-    #     obj        = json.loads(r.text)
-    #     return obj['data']
 
     def input_format(self, json_data):
         input_files = json_data["input"]['files']
@@ -53,10 +39,11 @@ class FileOperation(object):
         input_filepath = os.path.join('upload', input_filename)
         return input_filepath
 
-    def one_filename_response(self, input_filename, output_filepath, in_locale, in_file_type):
+    def one_filename_response(self, input_filename, output_htmlfiles_path, output_pngfiles_path, in_locale, in_file_type):
         file_res = {
             "inputFile" : input_filename,
-            "outputFolderPath" : output_filepath,
+            "outputHtmlFilePath" : output_htmlfiles_path,
+            "outputImageFilePath" : output_pngfiles_path,
             "outputLocale" : in_locale,
             "outputType" : in_file_type
         }

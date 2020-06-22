@@ -9,6 +9,6 @@ class Pdf2HtmlService(object):
         pass
 
     def pdf2html(self,DOWNLOAD_folder, input_pdf_file):
-        output_path = pdf_ops.pdf_to_html(DOWNLOAD_folder, input_pdf_file)
+        output_htmlfiles_path, output_pngfiles_path = pdf_ops.pdf_to_html(DOWNLOAD_folder, input_pdf_file)
         log.info("successfully received output filepath for HTML and PNG files")
-        return output_path
+        return output_htmlfiles_path, output_pngfiles_path

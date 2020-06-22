@@ -14,7 +14,7 @@ import time
 
 para_extraction_service = Pdf2HtmlService()
 file_ops = FileOperation()
-DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
+DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
 log = logging.getLogger('file')
 
 class Pdf2HtmlConversion(Resource):

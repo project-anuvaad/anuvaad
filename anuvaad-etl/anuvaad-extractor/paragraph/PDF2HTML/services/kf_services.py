@@ -12,9 +12,7 @@ log = logging.getLogger('file')
 
 def process_pdf_kf():
     file_ops = FileOperation()
-    DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
-    task_id = str("TOK-" + str(time.time()).replace('.', ''))
-    task_starttime = str(time.time()).replace('.', '')
+    DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
     consumer_class = Consumer(config.pdf_topic, config.bootstrap_server)
     consumer = consumer_class.consumer_instantiate() #Consumer
     log.info("--- consumer running -----")
@@ -22,13 +20,13 @@ def process_pdf_kf():
         log.info("trying to receive value from consumer ")
         for msg in consumer:
             log.info("value received from consumer")
+            task_starttime = str(time.time()).replace('.', '')
+            task_id = str("PDF2HTML-" + str(time.time()).replace('.', ''))
             data = msg.value
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.input_format(data)
-            task_id = str("TOK-" + str(time.time()).replace('.', ''))
-            task_starttime = str(time.time()).replace('.', '')
             file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
-            producer_tokenise = Producer(config.bootstrap_server) 
-            producer = producer_tokenise.producer_fn()
+            producer_pdf2html = Producer(config.bootstrap_server) 
+            producer = producer_pdf2html.producer_fn()
             producer.send(config.html_topic, value = file_value_response.status_code)
             producer.flush()
             log.info("producer flushed value on topic %s"%(config.html_topic))
@@ -38,13 +36,13 @@ def process_pdf_kf():
         output_file_response = ""
         for msg in consumer:
             log.info("value received from consumer")
+            task_starttime = str(time.time()).replace('.', '')
+            task_id = str("PDF2HTML-" + str(time.time()).replace('.', ''))
             data = msg.value
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.input_format(data)
-            task_id = str("TOK-" + str(time.time()).replace('.', ''))
-            task_starttime = str(time.time()).replace('.', '')
             response = CustomResponse(Status.ERR_EMPTY_FILE_LIST.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_end_time, output_file_response)
-            producer_tokenise = Producer(config.bootstrap_server) 
-            producer = producer_tokenise.producer_fn()
+            producer_pdf2html = Producer(config.bootstrap_server) 
+            producer = producer_pdf2html.producer_fn()
             producer.send(config.html_topic, value = response.status_code)
             producer.flush()
             log.info("error in kafka opertation producer flushed value on topic %s"%(config.html_topic))
