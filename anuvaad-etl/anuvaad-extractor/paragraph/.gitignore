@@ -9,3 +9,4 @@ src/repositories/package-lock.json
 src/repositories/pdf_parser.js
 src/repositories/pdf_to_html.js
 *.log
+/HTML2JSON
