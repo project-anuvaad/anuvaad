@@ -18,12 +18,12 @@ app_port = os.environ.get('ANU_ETL_WFM_PORT', 5003)
 
 # Starts the kafka consumer in a different thread
 def start_consumer():
-    try:
-        t1 = threading.Thread(target=consume, name='AlignerKafka-Thread')
-        t1.start()
-    except Exception as e:
-        log.error("Exception while starting the kafka consumer: " + str(e))
-        traceback.print_exc()
+    with alignapp.test_request_context():
+        try:
+            t1 = threading.Thread(target=consume, name='AlignerKafka-Thread')
+            t1.start()
+        except Exception as e:
+            log.exception("Exception while starting the kafka consumer: " + str(e))
 
 
 if __name__ == '__main__':
