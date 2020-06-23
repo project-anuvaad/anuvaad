@@ -1,0 +1,23 @@
+{#
+    json2html macro
+
+    renders json elements into compact html
+
+    attrs with values that evaluate to None are rendered as properties
+
+#}
+{%- macro json2html(element) -%}
+<{{ element.tag }}
+
+    {%- for key, val in element.attr.items() -%}
+        {{ ' ' + key }}{% if val %}="{{ val }}"{% endif %}
+    {%- endfor -%}>{{ element.text }}
+
+    {%- for ch in element.child -%}
+    {{ json2html(ch) }}
+    {%- endfor -%}
+
+</{{ element.tag }}>
+{%- endmacro -%}
+
+{{ json2html(root) }}
