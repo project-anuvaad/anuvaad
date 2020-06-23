@@ -9,7 +9,7 @@ from kafka import KafkaProducer
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9095')
 align_job_topic = "etl-align-job-register"
-anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-input-new"
+anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-output-new"
 align_job_consumer_grp = "anuvaad-dp-tools-aligner-output"
 
 
