@@ -40,7 +40,7 @@ def process_pdf_kf():
             task_id = str("PDF2HTML-" + str(time.time()).replace('.', ''))
             data = msg.value
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.input_format(data)
-            response = CustomResponse(Status.ERR_EMPTY_FILE_LIST.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_end_time, output_file_response)
+            response = CustomResponse(Status.ERR_Producer.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_end_time, output_file_response)
             producer_pdf2html = Producer(config.bootstrap_server) 
             producer = producer_pdf2html.producer_fn()
             producer.send(config.html_topic, value = response.status_code)

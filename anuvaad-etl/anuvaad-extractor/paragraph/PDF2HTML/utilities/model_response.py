@@ -83,7 +83,7 @@ class Status(enum.Enum):
         "status" : "FAILED",
         "state" : "PDF-TO-HTML-PROCESSING",
         "code" : "Kafka consumer error",
-        "error" : "can not send massage from producer."
+        "error" : "error occured while listening message from consumer or flushing data to another queue"
     }
 
 
