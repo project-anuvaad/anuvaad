@@ -14,7 +14,9 @@ log = logging.getLogger('file')
 two_files = True
 no_of_words = 200
 file_encoding = 'utf-16'
-upload_url = os.environ.get('FILE_UPLOAD_URL', 'https://auth.anuvaad.org/upload')
+#upload_url = os.environ.get('FILE_UPLOAD_URL', 'https://auth.anuvaad.org/upload')
+upload_url = "https://auth.anuvaad.org/upload"
+
 
 class AlignmentUtils:
 
@@ -78,14 +80,10 @@ class AlignmentUtils:
 
     # Utility to upload files to anuvaad's upload service
     def upload_file_binary(self, file):
-        log.info("file: " + file)
-        log.info("upload_url: " + upload_url)
         data = open(file, 'rb')
         response = requests.post(url = upload_url, data = data,
                                  headers = {'Content-Type': 'application/x-www-form-urlencoded'})
         if response is not None:
-            log.info(response)
-            log.info(response.text)
             data = json.loads(response.text)
             for key, value in data.items():
                 if key == "data":
