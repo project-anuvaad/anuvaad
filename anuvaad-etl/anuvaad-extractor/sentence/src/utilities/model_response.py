@@ -4,6 +4,9 @@ from src.utilities.utils import FileOperation
 import config
 from src.services.service import Tokenisation
 import time
+import logging
+
+log = logging.getLogger('file')
 
 class Status(enum.Enum):
     SUCCESS = {
@@ -76,6 +79,12 @@ class Status(enum.Enum):
         "code" : "Tokenisation error",
         "error" : "Tokenisation failed due to wrong entry"
     }
+    ERR_file_encodng = {
+        "status" : "FAILED",
+        "state" : "SENTENCE-TOKENISED",
+        "code" : "Encoding error",
+        "error" : "Tokenisation failed due to encoding. Service supports only utf-16 encoded file."
+    }
     ERR_Consumer = {
         "status" : "FAILED",
         "state" : "SENTENCE-TOKENISED",
@@ -137,6 +146,13 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
             input_filepath = file_ops.input_path(input_filename) #
             file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
             filename_response.append(file_res)
+            try:
+                input_file_data = file_ops.read_file(input_filename)
+            except Exception as e:
+                log.error("service supports only utf-16 encoded file. %s"%e)
+                task_endtime = str(time.time()).replace('.', '')
+                response = CustomResponse(Status.ERR_file_encodng.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+                return response
             if input_filename == "" or input_filename is None:
                 task_endtime = str(time.time()).replace('.', '')
                 response = CustomResponse(Status.ERR_FILE_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
@@ -153,7 +169,7 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
                 task_endtime = str(time.time()).replace('.', '')
                 response = CustomResponse(Status.ERR_locale_NOT_FOUND.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
                 return response
-            elif len(file_ops.read_file(input_filename)) == 0:
+            elif len(input_file_data) == 0:
                 task_endtime = str(time.time()).replace('.', '')
                 response = CustomResponse(Status.ERR_EMPTY_FILE.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
                 return response
@@ -161,7 +177,6 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
                 tokenisation = Tokenisation()
                 if in_locale == "en":
                     try:
-                        input_file_data = file_ops.read_file(input_filename)
                         output_filepath , output_en_filename = file_ops.output_path(i, DOWNLOAD_FOLDER)
                         tokenisation.eng_tokenisation(input_file_data, output_filepath)
                         file_res['outputFile'] = output_en_filename
@@ -171,7 +186,6 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
                         return response
                 elif in_locale == "hi":
                     try:
-                        input_file_data = file_ops.read_file(input_filename)
                         output_filepath , output_hi_filename = file_ops.output_path(i, DOWNLOAD_FOLDER)
                         tokenisation.hin_tokenisation(input_file_data, output_filepath)
                         file_res['outputFile'] = output_hi_filename
