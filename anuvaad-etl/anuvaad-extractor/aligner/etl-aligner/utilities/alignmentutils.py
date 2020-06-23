@@ -84,6 +84,8 @@ class AlignmentUtils:
         response = requests.post(url = upload_url, data = data,
                                  headers = {'Content-Type': 'application/x-www-form-urlencoded'})
         if response is not None:
+            log.info(response)
+            log.info(response.text)
             data = json.loads(response.text)
             for key, value in data.items():
                 if key == "data":
