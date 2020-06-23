@@ -156,9 +156,9 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
                     html2json_response = html2json_service.html2json(DOWNLOAD_FOLDER, input_filepath) 
                     file_res['outputHtmlFilePath'] = html2json_response
                 except:
-                        task_endtime = str(time.time()).replace('.', '')
-                        response = CustomResponse(Status.ERR_Html2json.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
-                        return response
+                    task_endtime = str(time.time()).replace('.', '')
+                    response = CustomResponse(Status.ERR_Html2json.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+                    return response
                 task_endtime = str(time.time()).replace('.', '')
         response_true = CustomResponse(Status.SUCCESS.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
         log.info("response generated from model response")
