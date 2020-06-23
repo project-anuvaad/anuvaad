@@ -50,8 +50,6 @@ class AlignmentService:
 
     # Service layer to fetch target sentence for a given source sentence.
     def get_target_sentence(self, target_embeddings, source_embedding, src_sent):
-        log.info("get_target_sentence")
-        log.info(src_sent)
         data = np.array(target_embeddings)
         data = data.reshape(data.shape[0], data.shape[2])
         distances = distance.cdist(np.array(source_embedding), data, "cosine")[0]
@@ -112,8 +110,9 @@ class AlignmentService:
         else:
             return {}
         log.info("process")
-        log.info(source)
-        alignments = self.get_alignments(source_embeddings, target_embeddings, source, object_in, iswf)
+        log.info(type(source))
+        log.info(source[0])
+        alignments = self.get_alignments(source_embeddings, target_embeddings, source[0], object_in, iswf)
         if alignments is not None:
             match_dict = alignments[0]
             manual_dict = alignments[1]
@@ -179,8 +178,6 @@ class AlignmentService:
         lines_with_no_match = []
         try:
             for i, embedding in enumerate(source_embeddings):
-                log.info("get_alignments")
-                log.info(source[i])
                 trgt = self.get_target_sentence(target_embeddings, embedding, source[i])
                 if trgt is not None:
                     if trgt[2] is "MATCH":
