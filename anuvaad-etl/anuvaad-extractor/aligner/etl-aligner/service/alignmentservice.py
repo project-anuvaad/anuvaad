@@ -109,9 +109,6 @@ class AlignmentService:
             target_embeddings = embeddings[1]
         else:
             return {}
-        log.info("process")
-        log.info(type(source))
-        log.info(source[0])
         alignments = self.get_alignments(source_embeddings, target_embeddings, source[0], object_in, iswf)
         if alignments is not None:
             match_dict = alignments[0]
@@ -127,8 +124,8 @@ class AlignmentService:
             try:
                 output_dict = self.generate_output(source_reformatted, target_refromatted, manual_src, manual_trgt,
                                            lines_with_no_match, path, path_indic)
-
-                result = self.build_final_response(path, path_indic, output_dict, object_in)
+                if output_dict is not None:
+                    result = self.build_final_response(path, path_indic, output_dict, object_in)
                 if iswf:
                     wf_res = self.getwfresponse(result, object_in, None)
                     producer.push_to_queue(wf_res, True)
@@ -198,29 +195,37 @@ class AlignmentService:
 
     # Service layer to generate output
     def generate_output(self, source_reformatted, target_refromatted, manual_src, manual_trgt, nomatch_src, path, path_indic):
-        output_source = directory_path + file_path_delimiter + res_suffix + path
-        output_target = directory_path + file_path_delimiter + res_suffix + path_indic
-        output_manual_src = directory_path + file_path_delimiter + man_suffix + path
-        output_manual_trgt = directory_path + file_path_delimiter + man_suffix + path_indic
-        output_nomatch = directory_path + file_path_delimiter + nomatch_suffix + path
-        alignmentutils.write_output(source_reformatted, output_source)
-        alignmentutils.write_output(target_refromatted, output_target)
-        alignmentutils.write_output(manual_src, output_manual_src)
-        alignmentutils.write_output(manual_trgt, output_manual_trgt)
-        alignmentutils.write_output(nomatch_src, output_nomatch)
-        return self.get_response_paths(output_source, output_target,
-                                       output_manual_src, output_manual_trgt, output_nomatch)
+        try:
+            output_source = directory_path + file_path_delimiter + res_suffix + path
+            output_target = directory_path + file_path_delimiter + res_suffix + path_indic
+            output_manual_src = directory_path + file_path_delimiter + man_suffix + path
+            output_manual_trgt = directory_path + file_path_delimiter + man_suffix + path_indic
+            output_nomatch = directory_path + file_path_delimiter + nomatch_suffix + path
+            alignmentutils.write_output(source_reformatted, output_source)
+            alignmentutils.write_output(target_refromatted, output_target)
+            alignmentutils.write_output(manual_src, output_manual_src)
+            alignmentutils.write_output(manual_trgt, output_manual_trgt)
+            alignmentutils.write_output(nomatch_src, output_nomatch)
+            return self.get_response_paths(output_source, output_target,
+                                           output_manual_src, output_manual_trgt, output_nomatch)
+        except Exception as e:
+            log.exception("Exception while writing output to files: " + str(e))
+            return None
 
     # Service layer to upload the files generated as output to the alignment process
     def get_response_paths(self, output_src, output_trgt, output_manual_src, output_manual_trgt, output_nomatch):
-        output_src = alignmentutils.upload_file_binary(output_src)
-        output_trgt = alignmentutils.upload_file_binary(output_trgt)
-        output_manual_src = alignmentutils.upload_file_binary(output_manual_src)
-        output_manual_trgt = alignmentutils.upload_file_binary(output_manual_trgt)
-        output_nomatch = alignmentutils.upload_file_binary(output_nomatch)
-        output_dict = {"source": output_src, "target": output_trgt, "manual_src": output_manual_src,
-                       "manual_trgt": output_manual_trgt, "nomatch": output_nomatch }
-        return output_dict
+        try:
+            output_src = alignmentutils.upload_file_binary(output_src)
+            output_trgt = alignmentutils.upload_file_binary(output_trgt)
+            output_manual_src = alignmentutils.upload_file_binary(output_manual_src)
+            output_manual_trgt = alignmentutils.upload_file_binary(output_manual_trgt)
+            output_nomatch = alignmentutils.upload_file_binary(output_nomatch)
+            output_dict = {"source": output_src, "target": output_trgt, "manual_src": output_manual_src,
+                           "manual_trgt": output_manual_trgt, "nomatch": output_nomatch}
+            return output_dict
+        except Exception as e:
+            log.exception("Exception while uploading output files: " + str(e))
+            return None
 
     # Response formatter
     def build_final_response(self, source, target, output, object_in):

@@ -81,10 +81,14 @@ class AlignmentUtils:
         data = open(file, 'rb')
         response = requests.post(url = upload_url, data = data,
                                  headers = {'Content-Type': 'application/x-www-form-urlencoded'})
-        data = json.loads(response.text)
-        for key, value in data.items():
-            if key == "data":
-                return value["filepath"]
+        if response is not None:
+            log.info(response)
+            data = json.loads(response.text)
+            for key, value in data.items():
+                if key == "data":
+                    return value["filepath"]
+        else:
+            log.error("Upload Failed!")
 
     # Utility to decide (min,max) cs thresholds based on length of setences.
     def get_cs_on_sen_cat(self, sentence):
