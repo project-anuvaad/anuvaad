@@ -109,7 +109,13 @@ class AlignmentService:
             target_embeddings = embeddings[1]
         else:
             return {}
-        alignments = self.get_alignments(source_embeddings, target_embeddings, source[0], object_in, iswf)
+        log.info(type(source))
+        log.info(type(target_corp))
+        source = source[0]
+        target_corp = target_corp[0]
+        log.info(source)
+        log.info(target_corp)
+        alignments = self.get_alignments(source_embeddings, target_embeddings, source, object_in, iswf)
         if alignments is not None:
             match_dict = alignments[0]
             manual_dict = alignments[1]
@@ -126,9 +132,14 @@ class AlignmentService:
                                            lines_with_no_match, path, path_indic)
                 if output_dict is not None:
                     result = self.build_final_response(path, path_indic, output_dict, object_in)
-                if iswf:
-                    wf_res = self.getwfresponse(result, object_in, None)
-                    producer.push_to_queue(wf_res, True)
+                    if iswf:
+                        wf_res = self.getwfresponse(result, object_in, None)
+                        producer.push_to_queue(wf_res, True)
+                else:
+                    if iswf:
+                        error = validator.get_error("OUTPUT_ERROR", "Exception while writing the output: " + str(e))
+                        wf_res = self.getwfresponse(None, object_in, error)
+                        producer.push_to_queue(wf_res, True)
             except Exception as e:
                 log.error("Exception while writing the output: ", str(e))
                 if iswf:
