@@ -10,18 +10,15 @@ PORT = 5001
 ENABLE_CORS = False
 
 # kafka
-sen_topic = 'anuvaad-dp-tools-tokeniser-input_1'
+tok_input_topic = 'anuvaad-dp-tools-tokeniser-input_1'
 kf_local_server = 'localhost:9092'
-tok_topic = 'anuvaad-dp-tools-tokeniser-output_2'
+tok_output_topic = 'anuvaad-dp-tools-tokeniser-output_2'
 kafka_ip_host = 'KAFKA_IP_HOST'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 
 #folders and file path
 download_folder = 'upload'
 
-
-#process id
-#taskid = str("TOK-" + str(int(time.time())))
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),

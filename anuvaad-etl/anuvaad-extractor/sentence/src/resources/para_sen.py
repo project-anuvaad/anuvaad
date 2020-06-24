@@ -23,10 +23,11 @@ log = logging.getLogger('file')
 class SenTokenisePost(Resource):
     
     def post(self):
+        log.info("Tokenisation service started")
         task_id = str("TOK-" + str(time.time()).replace('.', ''))
         task_starttime = str(time.time()).replace('.', '')
         json_data = request.get_json(force = True)
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(json_data)
         file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
         log.info("Tokenisation completed!!!")
-        return file_value_response.status_code
+        return file_value_response.get_response()
