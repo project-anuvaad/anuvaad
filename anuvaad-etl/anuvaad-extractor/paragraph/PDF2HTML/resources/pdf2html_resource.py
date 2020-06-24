@@ -27,5 +27,5 @@ class Pdf2HtmlConversion(Resource):
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.input_format(json_data)
         file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
         log.info("Conversion completed")
-        return file_value_response.status_code
+        return file_value_response.get_response()
         

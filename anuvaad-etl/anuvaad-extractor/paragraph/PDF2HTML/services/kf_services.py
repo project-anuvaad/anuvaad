@@ -13,9 +13,18 @@ log = logging.getLogger('file')
 def process_pdf_kf():
     file_ops = FileOperation()
     DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
-    consumer_class = Consumer(config.pdf_topic, config.bootstrap_server)
-    consumer = consumer_class.consumer_instantiate() #Consumer
-    log.info("--- consumer running -----")
+    try:
+        consumer_class = Consumer(config.pdf2html_output_topic, config.bootstrap_server)
+        consumer = consumer_class.consumer_instantiate() 
+        log.info("--- consumer running -----")
+    except:
+        response = Status.ERR_Consumer.value
+        producer_pdf2html = Producer(config.bootstrap_server) 
+        producer = producer_pdf2html.producer_fn()
+        producer.send(config.pdf2html_output_topic, value = response)
+        producer.flush()
+        log.error("can not listen message from consumer on topic %s"%(config.pdf2html_input_topic))
+        log.info("error in kafka opertation producer flushed value on topic %s"%(config.pdf2html_output_topic))
     try:
         log.info("trying to receive value from consumer ")
         for msg in consumer:
@@ -27,9 +36,9 @@ def process_pdf_kf():
             file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
             producer_pdf2html = Producer(config.bootstrap_server) 
             producer = producer_pdf2html.producer_fn()
-            producer.send(config.html_topic, value = file_value_response.status_code)
+            producer.send(config.pdf2html_output_topic, value = file_value_response.status_code)
             producer.flush()
-            log.info("producer flushed value on topic %s"%(config.html_topic))
+            log.info("producer flushed value on topic %s"%(config.pdf2html_output_topic))
     except Exception as e:
         log.error("error occured during consumer running or flushing data to another queue %s"%e)
         task_end_time = str(time.time()).replace('.', '')
@@ -43,9 +52,9 @@ def process_pdf_kf():
             response = CustomResponse(Status.ERR_Producer.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_end_time, output_file_response)
             producer_pdf2html = Producer(config.bootstrap_server) 
             producer = producer_pdf2html.producer_fn()
-            producer.send(config.html_topic, value = response.status_code)
+            producer.send(config.pdf2html_output_topic, value = response.status_code)
             producer.flush()
-            log.info("error in kafka opertation producer flushed value on topic %s"%(config.html_topic))
+            log.info("error in kafka opertation producer flushed value on topic %s"%(config.pdf2html_output_topic))
         
 
 dictConfig({

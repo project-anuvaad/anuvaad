@@ -10,9 +10,9 @@ PORT = 5001
 ENABLE_CORS = False
 
 # kafka
-pdf_topic = 'anuvaad-dp-tools-pdf-html-input_1'
+pdf2html_input_topic = 'anuvaad-dp-tools-pdf-html-input_1'
 kf_local_server = 'localhost:9092'
-html_topic = 'anuvaad-dp-tools-pdf-converted-files-dir-output_2'
+pdf2html_output_topic = 'anuvaad-dp-tools-pdf-converted-files-dir-output_2'
 kafka_ip_host = 'KAFKA_IP_HOST'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 
