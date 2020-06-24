@@ -31,7 +31,7 @@ class AlignmentValidator:
 
     # Error formatter
     def get_error(self, code, message):
-        return jsonify({"status": "ERROR", "code": code, "message": message})
+        return {"status": "ERROR", "code": code, "message": message}
 
 
 
