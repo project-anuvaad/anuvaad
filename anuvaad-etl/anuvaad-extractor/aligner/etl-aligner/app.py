@@ -33,10 +33,9 @@ def start_consumer():
             log.exception("Exception while starting the kafka consumer: " + str(e))
 
 
-
 if __name__ == '__main__':
-    alignapp.run(host=app_host, port=app_port)
     start_consumer()
+    alignapp.run(host=app_host, port=app_port)
 
 
 # Log config
