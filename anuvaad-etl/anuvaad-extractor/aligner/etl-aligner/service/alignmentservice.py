@@ -149,8 +149,6 @@ class AlignmentService:
     # Service layer to parse the input file
     def parse_in(self, full_path, full_path_indic, object_in, iswf):
         try:
-            a = 10 * 1/0
-            print(a)
             source, target_corp = alignmentutils.parse_input_file(full_path, full_path_indic)
             return source, target_corp
         except Exception as e:
