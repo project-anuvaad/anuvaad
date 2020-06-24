@@ -7,7 +7,7 @@ class FileOperation(object):
     def __init__(self):
         self.download_folder = None
 
-    def file_download(self, downloading_folder):
+    def create_file_upload_dir(self, downloading_folder):
         self.download_folder = downloading_folder
         download_dir = Path(os.path.join(os.curdir,self.download_folder))
         if download_dir.exists() is False:
