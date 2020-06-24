@@ -9,3 +9,19 @@
 [2020-05-08 13:54:41,101] {consumer.py:44} MainThread ERROR in consumer: Exception while consuming: can only concatenate str (not "dict") to str
 [2020-05-08 13:54:41,121] {consumer.py:45} MainThread ERROR in consumer: None
 [2020-06-18 12:33:40,850] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-24 14:55:10,979] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5003/ (Press CTRL+C to quit)
+[2020-06-24 14:57:09,083] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5003/ (Press CTRL+C to quit)
+[2020-06-24 14:57:49,924] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5003/ (Press CTRL+C to quit)
+[2020-06-24 14:59:01,687] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5003/ (Press CTRL+C to quit)
+[2020-06-24 15:00:13,954] {app.py:29} MainThread INFO in app: Starting
+[2020-06-24 15:00:13,955] {alignmentconsumer.py:40} AlignerKafka-Thread INFO in alignmentconsumer: Consumer
+[2020-06-24 15:00:14,807] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5003/ (Press CTRL+C to quit)
+[2020-06-24 15:02:29,647] {app.py:29} MainThread INFO in app: Starting
+[2020-06-24 15:02:30,511] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5003/ (Press CTRL+C to quit)
+[2020-06-24 15:03:25,030] {app.py:29} MainThread INFO in app: Starting
+[2020-06-24 15:03:25,035] {alignmentconsumer.py:42} AlignerKafka-Thread INFO in alignmentconsumer: Consumer running.......
+[2020-06-24 15:03:25,883] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5003/ (Press CTRL+C to quit)
+[2020-06-24 15:04:38,075] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5003/ (Press CTRL+C to quit)
+[2020-06-24 15:04:55,103] {alignmentconsumer.py:42} AlignerKafka-Thread INFO in alignmentconsumer: Consumer running.......
+[2020-06-24 15:05:33,022] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5003/ (Press CTRL+C to quit)
+[2020-06-24 15:05:56,558] {alignmentconsumer.py:42} AlignerKafka-Thread INFO in alignmentconsumer: Consumer running.......
