@@ -18,7 +18,7 @@ class PdfOperation(object):
             new_foldername_html_png_files = str(time.time()).replace('.', '')
             output_html_filepath = file_ops.create_file_download_dir(DOWNLOAD_FOLDER + '/' + new_foldername_html_png_files)
             os.system('pdftohtml -p -c {} {}'.format(input_pdf_file, output_html_filepath + '/html'))
-            log.info("pdf to html with pdftohtml command completed")
+            log.info("files received after pdf2html operation: {}".format(os.listdir(output_html_filepath)))
             dest_html, dest_png = self.segregate_png_html(output_html_filepath, DOWNLOAD_FOLDER, new_foldername_html_png_files)
             return dest_html, dest_png
         except Exception as e:
