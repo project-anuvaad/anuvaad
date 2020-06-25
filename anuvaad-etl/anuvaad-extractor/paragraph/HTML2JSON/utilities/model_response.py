@@ -5,6 +5,7 @@ from services.service import Html2JsonService
 import config
 import time
 import logging
+import os
 
 log = logging.getLogger('file')
 
@@ -85,6 +86,12 @@ class Status(enum.Enum):
         "code" : "Kafka consumer error",
         "error" : "error occured while listening message from consumer or flushing data to another queue"
     }
+    ERR_Empty_dir = {
+        "status" : "FAILED",
+        "state" : "HTML-TO-JSON-PROCESSING",
+        "code" : "Files error",
+        "error" : "error occured due to empty directory."
+    }
 
 
 class CustomResponse():
@@ -131,7 +138,7 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
     else:
         for item in input_files:
             input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
-            input_filepath = file_ops.input_path(input_filename) #
+            input_filepath = file_ops.input_path(input_filename) #with upload dir
             file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale)
             filename_response.append(file_res)
             if input_filename == "" or input_filename is None:
@@ -149,6 +156,10 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
             elif in_locale == "" or in_locale is None:
                 task_endtime = str(time.time()).replace('.', '')
                 response = CustomResponse(Status.ERR_locale_NOT_FOUND.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+                return response
+            elif len(os.listdir(input_filepath)) == 0:
+                task_endtime = str(time.time()).replace('.', '')
+                response = CustomResponse(Status.ERR_Empty_dir.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
                 return response
             else:
                 html2json_service = Html2JsonService()
