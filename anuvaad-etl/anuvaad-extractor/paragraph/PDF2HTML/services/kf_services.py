@@ -14,7 +14,7 @@ def process_pdf_kf():
     file_ops = FileOperation()
     DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
     try:
-        consumer_class = Consumer(config.pdf2html_output_topic, config.bootstrap_server)
+        consumer_class = Consumer(config.pdf2html_input_topic, config.bootstrap_server)
         consumer = consumer_class.consumer_instantiate() 
         log.info("--- consumer running -----")
     except:
