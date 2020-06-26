@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 commit_id=$(git rev-parse --short HEAD)
 echo $commit_id> commit_id.txt
 docker build -t anuvaadio/$image_name:$commit_id .
