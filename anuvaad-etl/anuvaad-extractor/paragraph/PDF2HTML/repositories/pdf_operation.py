@@ -18,7 +18,7 @@ class PdfOperation(object):
             new_foldername_html_png_files = str(time.time()).replace('.', '')
             output_html_filepath = file_ops.create_file_download_dir(DOWNLOAD_FOLDER + '/' + new_foldername_html_png_files)
             os.system('pdftohtml -p -c {} {}'.format(input_pdf_file, output_html_filepath + '/html'))
-            log.info("files received after pdf2html operation: {}".format(os.listdir(output_html_filepath)))
+            log.info("files received after pdf2html operation.")
             dest_html, dest_png = self.segregate_png_html(output_html_filepath, DOWNLOAD_FOLDER, new_foldername_html_png_files)
             return dest_html, dest_png
         except Exception as e:
@@ -36,7 +36,7 @@ class PdfOperation(object):
                     shutil.move(source_file, destination_png)
                 elif item.endswith('.html'):
                     shutil.move(source_file, destination_html)
-            log.info("html and pmg files segregation completed")
+            log.info("html and png files segregation completed")
             return des_html, des_png
         except Exception as e:
             log.error("Error occured during segregation of html and png files %s"%e)
