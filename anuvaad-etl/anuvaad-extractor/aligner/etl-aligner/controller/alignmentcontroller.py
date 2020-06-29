@@ -11,7 +11,7 @@ alignapp = Flask(__name__)
 context_path = os.environ.get('SA_CONTEXT_PATH', '/anuvaad-etl/extractor/aligner')
 
 # REST endpoint to align files
-@alignapp.route('/sentences/align', methods=["POST"])
+@alignapp.route(context_path + '/sentences/align', methods=["POST"])
 def createalignmentjob():
     service = AlignmentService()
     validator = AlignmentValidator()
@@ -23,7 +23,7 @@ def createalignmentjob():
 
 
 # REST endpoint to fetch job status
-@alignapp.route('/alignment/jobs/get/<job_id>', methods=["GET"])
+@alignapp.route(context_path + '/alignment/jobs/get/<job_id>', methods=["GET"])
 def searchjobs(job_id):
     service = AlignmentService()
     response = service.search_jobs(job_id)
