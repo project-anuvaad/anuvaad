@@ -38,7 +38,7 @@ class AlignmentService:
         job_id = util.generate_job_id()
         response = {"input": object_in, "jobID": job_id, "status": "START"}
         self.update_job_details(response, True)
-        producer.push_to_queue(response)
+        producer.push_to_queue(response, False)
         return response
 
     # Method to update the status of job.
