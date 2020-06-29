@@ -13,6 +13,7 @@ from utilities.alignmentutils import AlignmentUtils
 from repository.alignmentrepository import AlignmentRepository
 from validator.alignmentvalidator import AlignmentValidator
 from kafkawrapper.alignmentproducer import Producer
+from .alignwflowservice import AlignWflowService
 
 log = logging.getLogger('file')
 directory_path = os.environ.get('SA_DIRECTORY_PATH', r'C:\Users\Vishal\Desktop\anuvaad\Facebook LASER\resources\Input\length-wise')
@@ -20,6 +21,8 @@ res_suffix = 'response-'
 man_suffix = 'manual-'
 nomatch_suffix = 'nomatch-'
 file_path_delimiter = '/'
+align_job_topic = "etl-align-job-register"
+
 
 alignmentutils = AlignmentUtils()
 repo = AlignmentRepository()
@@ -27,6 +30,7 @@ laser = Laser()
 producer = Producer()
 util = AlignmentUtils()
 validator = AlignmentValidator()
+wflowservice = AlignWflowService()
 
 
 class AlignmentService:
@@ -38,7 +42,7 @@ class AlignmentService:
         job_id = util.generate_job_id()
         response = {"input": object_in, "jobID": job_id, "status": "START"}
         self.update_job_details(response, True)
-        producer.push_to_queue(response, False)
+        producer.push_to_queue(response, align_job_topic)
         return response
 
     # Method to update the status of job.
@@ -76,28 +80,6 @@ class AlignmentService:
         elif min_cs <= min_distance < max_cs:
             return min_index, min_distance, "ALMOST-MATCH"
 
-    # Wrapper to build response compatibile with the anuvaad etl wf manager
-    def getwfresponse(self, result, object_in, error):
-        if error is not None:
-            wfresponse = {"taskID": object_in["taskID"], "jobID": object_in["jobID"], "workflowCode": object_in["workflowCode"],
-                      "stepOrder": object_in["stepOrder"], "status": "FAILED", "state": "SENTENCES-ALIGNED", "error": error}
-        else:
-            wfresponse = {"taskID": object_in["taskID"], "jobID": object_in["jobID"], "input": result["input"],
-                          "output": result["output"], "workflowCode": object_in["workflowCode"],
-                          "stepOrder": object_in["stepOrder"], "status": "SUCCESS", "state": "SENTENCES-ALIGNED",
-                          "taskStartTime": result["startTime"], "taskEndTime": result["endTime"]}
-
-        return wfresponse
-
-
-    # Wrapper method between consumer and service
-    def process_input(self, object_in, iswf):
-        if iswf:
-            util = AlignmentUtils()
-            object_in["taskID"] = util.generate_task_id()
-            self.process(object_in, iswf)
-        else:
-            self.process(object_in, iswf)
 
     # Wrapper method to categorise sentences into MATCH, ALMOST-MATCH and NO-MATCH
     def process(self, object_in, iswf):
@@ -143,23 +125,20 @@ class AlignmentService:
                                            lines_with_no_match, path, path_indic)
                 if output_dict is not None:
                     result = self.build_final_response(path, path_indic, output_dict, object_in)
-                    if iswf:
-                        wf_res = self.getwfresponse(result, object_in, None)
-                        producer.push_to_queue(wf_res, True)
                     self.update_job_details(result, False)
+                    if iswf:
+                        wflowservice.update_wflow_details(result, object_in, None)
                 else:
                     self.update_job_status("FAILED", object_in, "Exception while writing the output")
                     if iswf:
                         error = validator.get_error("OUTPUT_ERROR", "Exception while writing the output")
-                        wf_res = self.getwfresponse(None, object_in, error)
-                        producer.push_to_queue(wf_res, True)
+                        wflowservice.update_wflow_details(None, object_in, error)
             except Exception as e:
                 log.error("Exception while writing the output: ", str(e))
                 self.update_job_status("FAILED", object_in, "Exception while writing the output")
                 if iswf:
                     error = validator.get_error("OUTPUT_ERROR", "Exception while writing the output: " + str(e))
-                    wf_res = self.getwfresponse(None, object_in, error)
-                    producer.push_to_queue(wf_res, True)
+                    wflowservice.update_wflow_details(None, object_in, error)
                 return {}
             log.info("Sentences aligned Successfully! JOB ID: " + str(object_in["jobID"]))
         else:
@@ -175,8 +154,7 @@ class AlignmentService:
             self.update_job_status("FAILED", object_in, "Exception while parsing the input")
             if iswf:
                 error = validator.get_error("INPUT_ERROR", "Exception while parsing the input: " + str(e))
-                wf_res = self.getwfresponse(None, object_in, error)
-                producer.push_to_queue(wf_res, True)
+                wflowservice.update_wflow_details(None, object_in, error)
             return None
 
     # Wrapper to build sentence embeddings
@@ -191,8 +169,7 @@ class AlignmentService:
             self.update_job_status("FAILED", object_in, "Exception while vectorising sentences")
             if iswf:
                 error = validator.get_error("LASER_ERROR", "Exception while vectorising sentences: " + str(e))
-                wf_res = self.getwfresponse(None, object_in, error)
-                producer.push_to_queue(wf_res, True)
+                wflowservice.update_wflow_details(None, object_in, error)
             return None
 
     # Wrapper method to align and categorise sentences
@@ -216,8 +193,7 @@ class AlignmentService:
             self.update_job_status("FAILED", object_in, "Exception while aligning sentences")
             if iswf:
                 error = validator.get_error("ALIGNEMENT_ERROR", "Exception while aligning sentences: " + str(e))
-                wf_res = self.getwfresponse(None, object_in, error)
-                producer.push_to_queue(wf_res, True)
+                wflowservice.update_wflow_details(None, object_in, error)
             return None
 
 

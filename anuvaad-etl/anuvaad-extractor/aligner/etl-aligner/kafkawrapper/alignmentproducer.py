@@ -8,9 +8,6 @@ from kafka import KafkaProducer
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9095')
-align_job_topic = "etl-align-job-register"
-anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-output-new"
-align_job_consumer_grp = "anuvaad-dp-tools-aligner-output"
 
 
 class Producer:
@@ -27,15 +24,11 @@ class Producer:
         return producer
 
     # Method to push records to a topic in the kafka queue
-    def push_to_queue(self, object_in, iswf):
+    def push_to_queue(self, object_in, topic):
         producer = self.instantiate()
         try:
-            if iswf:
-                producer.send(anu_dp_wf_aligner_out_topic, value=object_in)
-                log.info("Pushed to the topic: " + anu_dp_wf_aligner_out_topic)
-            else:
-                producer.send(align_job_topic, value=object_in)
-                log.info("Pushed to the topic: " + align_job_topic)
+            producer.send(topic, value=object_in)
+            log.info("Pushed to the topic: " + topic)
             producer.flush()
         except Exception as e:
             log.exception("Exception while producing: " + str(e))

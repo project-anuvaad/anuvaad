@@ -4,7 +4,9 @@ import os
 from flask import Flask, jsonify, request
 import datetime as dt
 from service.alignmentservice import AlignmentService
+from service.alignwflowservice import AlignWflowService
 from validator.alignmentvalidator import AlignmentValidator
+
 from logging.config import dictConfig
 
 alignapp = Flask(__name__)
@@ -20,6 +22,14 @@ def createalignmentjob():
     if error is not None:
         return error
     return service.register_job(data)
+
+
+# REST endpoint to align files through wflow
+@alignapp.route(context_path + '/sentences/wflow/align', methods=["POST"])
+def createalignmentjob():
+    service = AlignWflowService()
+    data = request.get_json()
+    return service.wf_process(data)
 
 
 # REST endpoint to fetch job status

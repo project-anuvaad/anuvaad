@@ -5,6 +5,7 @@ import traceback
 from kafka import KafkaConsumer
 import os
 from service.alignmentservice import AlignmentService
+from service.alignwflowservice import AlignWflowService
 from utilities.alignmentutils import AlignmentUtils
 from logging.config import dictConfig
 
@@ -38,7 +39,6 @@ class Consumer:
     # Method to read and process the requests from the kafka queue
     def consume(self):
         consumer = self.instantiate()
-        service = AlignmentService()
         log.info("Consumer running.......")
         while True:
             try:
@@ -50,9 +50,11 @@ class Consumer:
                     log.info("Received on Topic: " + topic)
                     break
                 if topic == anu_dp_wf_aligner_in_topic:
-                    service.process_input(data, True)
+                    wflowservice = AlignWflowService
+                    wflowservice.wf_process(data)
                 else:
-                    service.process_input(data, False)
+                    service = AlignmentService()
+                    service.process(data, False)
             except Exception as e:
                 log.exception("Exception while consuming: " + str(e))
 
