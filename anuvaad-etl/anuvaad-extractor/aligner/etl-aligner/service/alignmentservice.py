@@ -37,11 +37,26 @@ class AlignmentService:
     def register_job(self, object_in):
         job_id = util.generate_job_id()
         response = {"input": object_in, "jobID": job_id, "status": "START"}
-        repo.create_job(response)
-        log.info("JOB ID: " + str(object_in["jobID"]))
-        del object_in['_id']
-        producer.push_to_queue(object_in)
+        self.update_job_details(response, True)
+        producer.push_to_queue(response)
         return response
+
+    # Method to update the status of job.
+    def update_job_details(self, object_in, iscreate):
+        if iscreate:
+            repo.create_job(object_in)
+            del object_in["_id"]
+        else:
+            jobID = object_in["jobID"]
+            repo.update_job(object_in, jobID)
+
+    # Service layer to update job status
+    def update_job_status(self, status, object_in, cause):
+        object_in["status"] = status
+        object_in["endTime"] = str(dt.datetime.now())
+        if cause is not None:
+            object_in["cause"] = cause
+        self.update_job_details(object_in, False)
 
     # Service layer to fetch vectors for all the source and target sentences.
     def build_index(self, source, target_corp, src_loc, trgt_loc):
@@ -97,6 +112,7 @@ class AlignmentService:
         full_path_indic = directory_path + file_path_delimiter + path_indic
         object_in["status"] = "INPROGRESS"
         object_in["startTime"] = str(dt.datetime.now())
+        self.update_job_details(object_in, False)
         parsed_in = self.parse_in(full_path, full_path_indic, object_in, iswf)
         if parsed_in is not None:
             source = parsed_in[0],
@@ -130,13 +146,16 @@ class AlignmentService:
                     if iswf:
                         wf_res = self.getwfresponse(result, object_in, None)
                         producer.push_to_queue(wf_res, True)
+                    self.update_job_details(result, False)
                 else:
+                    self.update_job_status("FAILED", object_in, "Exception while writing the output")
                     if iswf:
                         error = validator.get_error("OUTPUT_ERROR", "Exception while writing the output")
                         wf_res = self.getwfresponse(None, object_in, error)
                         producer.push_to_queue(wf_res, True)
             except Exception as e:
                 log.error("Exception while writing the output: ", str(e))
+                self.update_job_status("FAILED", object_in, "Exception while writing the output")
                 if iswf:
                     error = validator.get_error("OUTPUT_ERROR", "Exception while writing the output: " + str(e))
                     wf_res = self.getwfresponse(None, object_in, error)
@@ -153,6 +172,7 @@ class AlignmentService:
             return source, target_corp
         except Exception as e:
             log.exception("Exception while parsing the input: " + str(e))
+            self.update_job_status("FAILED", object_in, "Exception while parsing the input")
             if iswf:
                 error = validator.get_error("INPUT_ERROR", "Exception while parsing the input: " + str(e))
                 wf_res = self.getwfresponse(None, object_in, error)
@@ -168,6 +188,7 @@ class AlignmentService:
             return source_embeddings, target_embeddings
         except Exception as e:
             log.exception("Exception while vectorising sentences: " + str(e))
+            self.update_job_status("FAILED", object_in, "Exception while vectorising sentences")
             if iswf:
                 error = validator.get_error("LASER_ERROR", "Exception while vectorising sentences: " + str(e))
                 wf_res = self.getwfresponse(None, object_in, error)
@@ -192,6 +213,7 @@ class AlignmentService:
             return match_dict, manual_dict, lines_with_no_match
         except Exception as e:
             log.exception("Exception while aligning sentences: " + str(e))
+            self.update_job_status("FAILED", object_in, "Exception while aligning sentences")
             if iswf:
                 error = validator.get_error("ALIGNEMENT_ERROR", "Exception while aligning sentences: " + str(e))
                 wf_res = self.getwfresponse(None, object_in, error)
