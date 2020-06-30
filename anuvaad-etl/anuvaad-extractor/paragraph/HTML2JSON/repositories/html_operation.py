@@ -95,14 +95,23 @@ class HTMLOperation(object):
                 item_child = item.child
                 if len(item_child) != 0:
                     text = item_child[0].text
-                    bold_nature = self.find_bold_nature(item_child[0])
-                    html_node_p_tag = self.output_html_node_format(page_no, x, y, tag_class_id, tag_class_style, tag_style, text, bold_nature)
-                    html_nodes_per_page.append(html_node_p_tag)
+                    if item_child[0].tag == 'i':
+                        text_child = item_child[0].child[0].text
+                        if text_child != "":
+                            bold_nature = self.find_bold_nature(item_child[0].child[0])
+                            html_node_i_tag = self.output_html_node_format(page_no, x, y, tag_class_id, tag_class_style, tag_style, text_child, bold_nature)
+                            html_nodes_per_page.append(html_node_i_tag)
+                    else:
+                        if text != "":
+                            bold_nature = self.find_bold_nature(item_child[0])
+                            html_node_p_tag = self.output_html_node_format(page_no, x, y, tag_class_id, tag_class_style, tag_style, text, bold_nature)
+                            html_nodes_per_page.append(html_node_p_tag)
                 else:
                     text = item.text
-                    bold_nature = self.find_bold_nature(item)
-                    html_node_p_tag = self.output_html_node_format(page_no ,x, y, tag_class_id, tag_class_style, tag_style, text, bold_nature)
-                    html_nodes_per_page.append(html_node_p_tag)
+                    if text != "":
+                        bold_nature = self.find_bold_nature(item)
+                        html_node_p_tag = self.output_html_node_format(page_no ,x, y, tag_class_id, tag_class_style, tag_style, text, bold_nature)
+                        html_nodes_per_page.append(html_node_p_tag)
         return html_nodes_per_page
 
     def left_top_position(self, json_attr_style_data):
