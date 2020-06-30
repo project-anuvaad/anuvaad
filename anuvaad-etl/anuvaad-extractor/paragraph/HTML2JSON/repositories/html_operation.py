@@ -95,7 +95,7 @@ class HTMLOperation(object):
                 item_child = item.child
                 if len(item_child) != 0:
                     text = item_child[0].text
-                    if item_child[0].tag == 'i':
+                    if item_child[0].tag == 'i' and len(item_child[0].child) != 0:
                         text_child = item_child[0].child[0].text
                         if text_child != "":
                             bold_nature = self.find_bold_nature(item_child[0].child[0])
