@@ -64,9 +64,10 @@ class HTMLOperation(object):
         for item in re_text:
             fo_text = re.search(r"^ft", item)
             if fo_text is not None:
+                class_style_no = item[item.find("ft")+2:item.find("{")]
                 class_style_text= item[item.find("{")+1:item.find("}")]
                 splitted_class_style_json = self.making_json_of_class_styles(class_style_text)
-                class_style_id = "ft" + str('%02d'%i)
+                class_style_id = "ft" + str(class_style_no)
                 class_style_pagewise.append({"class" : class_style_id , "class_style" : splitted_class_style_json})
                 i+=1
         return class_style_pagewise
@@ -136,7 +137,7 @@ class HTMLOperation(object):
 
     def extracting_values_of_class_styles(self ,tag_class, class_styles):
         for item in class_styles:
-            if tag_class == item['class']: 
+            if tag_class == item['class']:
                 tag_class_id = item['class'] 
                 tag_class_style = item['class_style']
                 return tag_class_id, tag_class_style
