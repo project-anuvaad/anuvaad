@@ -1,10 +1,10 @@
 swagger: "2.0"
 info:
   version: 1.0.0
-  title: Anuvaad ETL Aligner - Common Contract
-  description: This files contains structure of the common objects shared between modules of the pipeline
+  title: Anuvaad ETL - Common Contract
+  description: This file contains structure of the common objects shared between modules of the pipeline
   contact:
-    name: Vishal Mahui
+    name: Vishal Mahuli
     email: vishal.mahuli@tarento.com
 
 

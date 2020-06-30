@@ -18,7 +18,7 @@ context_path = os.environ.get('ANU_ETL_WFM_CONTEXT_PATH', '/anuvaad-etl/wf-manag
 
 
 # REST endpoint to initiate the workflow.
-@wfmapp.route('/v1/workflow/initiate', methods=["POST"])
+@wfmapp.route(context_path + '/v1/workflow/initiate', methods=["POST"])
 def initiate_workflow():
     service = WFMService()
     validator = WFMValidator()
@@ -31,7 +31,7 @@ def initiate_workflow():
 
 
 # REST endpoint to fetch workflow jobs.
-@wfmapp.route('/v1/workflow/jobs/search/<job_id>', methods=["GET"])
+@wfmapp.route(context_path + '/v1/workflow/jobs/search/<job_id>', methods=["GET"])
 def searchjobs(job_id):
     service = WFMService()
     response = service.get_job_details(job_id)
