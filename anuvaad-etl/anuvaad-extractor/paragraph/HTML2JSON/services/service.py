@@ -16,10 +16,7 @@ class Html2JsonService(object):
         output_filepath, output_filename = file_ops.output_path(DOWNLOAD_FOLDER)
         write_file = open(output_filepath, 'w', encoding='utf-16')
         log.info("json output file writing started")
-        json_output = list()
-        for item in response_html2json:
-            json_output.append(item)
-        json_data = json.dumps(json_output)
+        json_data = json.dumps(response_html2json)
         write_file.write("%s"%json_data)
         write_file.close()
         log.info("successfully craeted json file for html to json response")

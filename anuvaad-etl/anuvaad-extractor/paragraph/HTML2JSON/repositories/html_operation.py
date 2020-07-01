@@ -16,8 +16,8 @@ class HTMLOperation(object):
         try:
             html_files = self.segregate_png_html(input_html_filepath)
             sorted_html_files = self.sorting_html_list(html_files, "html")
-            response_htmlTOjson = list()
-            for item in sorted_html_files:
+            response_htmlTOjson = dict()
+            for i, item in enumerate(sorted_html_files):
                 html_filepath = os.path.join(input_html_filepath,item)
                 with open(html_filepath,'r', encoding='utf-8') as f:
                     data = f.read()
@@ -25,7 +25,8 @@ class HTMLOperation(object):
                     element = Element("<html>")
                     json_data = element.parse(data_wo_br_tag)
                     data_html_nodes = self.making_html_nodes(json_data)
-                    response_htmlTOjson.append({"html_nodes" : data_html_nodes})
+                    dict_html_per_page = {str(i) : {"html_nodes" : data_html_nodes}}
+                    response_htmlTOjson.update(dict_html_per_page)
                     log.info("--------page done----------")
             log.info("html to json completed")
             return response_htmlTOjson     
