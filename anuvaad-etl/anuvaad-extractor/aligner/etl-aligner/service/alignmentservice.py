@@ -165,7 +165,7 @@ class AlignmentService:
             source_embeddings, target_embeddings = self.build_index(source, target_corp, src_loc, trgt_loc)
             return source_embeddings, target_embeddings
         except Exception as e:
-            log.exception("Exception while vectorising sentences: " + str(e))
+            log.exception("Exception while vectorising the sentences: " + str(e))
             self.update_job_status("FAILED", object_in, "Exception while vectorising sentences")
             if iswf:
                 error = validator.get_error("LASER_ERROR", "Exception while vectorising sentences: " + str(e))
