@@ -48,7 +48,7 @@ class WFMService:
     # This method manages the workflow by tailoring the predecessor and successor tools for the workflow.
     def manage(self, task_output):
         try:
-            if task_output["status"] is not "FAILED":
+            if task_output["status"] != "FAILED":
                 next_step_details = self.get_next_step_details(task_output)
                 if next_step_details is not None:
                     client_output = self.get_wf_details(None, task_output, False, None)
@@ -63,7 +63,7 @@ class WFMService:
                     self.update_job_details(client_output, False)
                     log.info("Job completed: " + task_output["jobID"])
             else:
-                client_output = self.get_wf_details(None, task_output, True, task_output["error"])
+                client_output = self.get_wf_details(None, task_output, False, task_output["error"])
                 self.update_job_details(client_output, False)
         except Exception as e:
             log.exception("Exception while managing the workflow: " + str(e))
