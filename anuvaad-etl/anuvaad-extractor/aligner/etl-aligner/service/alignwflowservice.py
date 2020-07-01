@@ -8,7 +8,6 @@ import numpy as np
 import datetime as dt
 from scipy.spatial import distance
 from utilities.alignmentutils import AlignmentUtils
-from .alignmentservice import AlignmentService
 from repository.alignmentrepository import AlignmentRepository
 from validator.alignmentvalidator import AlignmentValidator
 from kafkawrapper.alignmentproducer import Producer
@@ -20,7 +19,6 @@ repo = AlignmentRepository()
 producer = Producer()
 util = AlignmentUtils()
 validator = AlignmentValidator()
-service = AlignmentService()
 
 anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-output-new"
 
@@ -30,12 +28,6 @@ class AlignWflowService:
     def __init__(self):
         pass
 
-    # Service method to register the alignment job
-    def wf_process(self, object_in):
-        object_in["taskID"] = util.generate_task_id()
-        service.update_job_details(object_in, True)
-        result = service.process(object_in, True)
-        return result
 
     # Wrapper to build response compatibile with the anuvaad etl wf manager
     def getwfresponse(self, result, object_in, error):

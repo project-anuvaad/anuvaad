@@ -26,8 +26,8 @@ def createalignmentjob():
 
 # REST endpoint to align files through wflow
 @alignapp.route(context_path + '/v1/sentences/wflow/align', methods=["POST"])
-def createalignmentjob():
-    service = AlignWflowService()
+def createalignmentwflowjob():
+    service = AlignmentService()
     data = request.get_json()
     return service.wf_process(data)
 
