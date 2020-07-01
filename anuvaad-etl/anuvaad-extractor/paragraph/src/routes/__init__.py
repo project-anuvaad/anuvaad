@@ -1,1 +1,0 @@
-from .para_extraction_routes import PARA_BLUEPRINT
