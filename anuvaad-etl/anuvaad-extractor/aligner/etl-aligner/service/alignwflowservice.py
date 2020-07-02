@@ -20,7 +20,7 @@ producer = Producer()
 util = AlignmentUtils()
 validator = AlignmentValidator()
 
-anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-output-new"
+anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-output"
 
 
 
