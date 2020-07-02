@@ -10,9 +10,9 @@ PORT = 5001
 ENABLE_CORS = False
 
 # kafka
-tok_input_topic = 'anuvaad-dp-tools-tokeniser-input_1'
+tok_input_topic = 'anuvaad-dp-tools-tokeniser-input'
 kf_local_server = 'localhost:9092'
-tok_output_topic = 'anuvaad-dp-tools-tokeniser-output_2'
+tok_output_topic = 'anuvaad-dp-tools-tokeniser-output'
 kafka_ip_host = 'KAFKA_IP_HOST'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 

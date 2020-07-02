@@ -16,86 +16,114 @@ class Status(enum.Enum):
     ERR_EMPTY_FILE = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
-        "code" : "File content error",
-        "error": "File do not have any content"
+        "error": {
+            "code" : "EMPTY_FILE",
+            "message" : "File do not have any content"
+        }
     }
     ERR_EMPTY_FILE_LIST = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
-        "code" : "Input file list error",
-        "error": "DO not receive any input files."
+        "error": {
+            "code" : "NO_INPUT_FILES",
+            "message" : "DO not receive any input files."
+        }
     }
     ERR_FILE_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
-        "code" : "File error",
-        "error": "File not found."
+        "error": {
+            "code" : "FILENAME_ERROR",
+            "message" : "No Filename given in input files."
+        }
     }
     ERR_DIR_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
-        "code" : "Directory error",
-        "error": "There is no input/output Directory."
+        "error": {
+            "code" : "DIRECTORY_ERROR",
+            "message" : "There is no input/output Directory."
+        }
     }
     ERR_EXT_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
-        "code" : "File type error",
-        "error": "This file type is not allowed. Currently, support only txt file."
+        "error": {
+            "code" : "FILE_TYPE_ERROR",
+            "message" : "This file type is not allowed. Currently, support only txt file."
+        }
     }
     ERR_locale_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
-        "code" : "locale error",
-        "error": "No language input"
+        "error": {
+            "code" : "LOCALE_ERROR",
+            "message" : "No language input or unsupported language input."
+        }
     }
     ERR_jobid_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
-        "code" : "jobID error",
-        "error": "jobID is not given."
+        "error": {
+            "code" : "JOBID_ERROR",
+            "message" : "jobID is not given."
+        }
     }
     ERR_Workflow_id_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
-        "code" : "workflowCode error",
-        "error": "workflowCode is not given."
+        "error": {
+            "code" : "WORKFLOWCODE_ERROR",
+            "message" : "workflowCode is not given."
+        }
     }
     ERR_Tool_Name_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
-        "code" : "Toolname error",
-        "error": "toolname is not given"
+        "error": {
+            "code" : "TOOLNAME_ERROR",
+            "message" : "toolname is not given"
+        }
     }
     ERR_step_order_NOT_FOUND = {
         "status": "FAILED",
         "state": "SENTENCE-TOKENISED",
-        "code" : "step order error",
-        "error": "step order is not given."
+        "error": {
+            "code" : "STEPORDER_ERROR",
+            "message" : "step order is not given"
+        }
     }
     ERR_tokenisation = {
         "status" : "FAILED",
         "state" : "SENTENCE-TOKENISED",
-        "code" : "Tokenisation error",
-        "error" : "Tokenisation failed due to wrong entry"
+        "error": {
+            "code" : "TOKENISATION_ERROR",
+            "message" : "Tokenisation failed. Something went wrong."
+        }
     }
     ERR_file_encodng = {
         "status" : "FAILED",
         "state" : "SENTENCE-TOKENISED",
-        "code" : "Encoding error",
-        "error" : "Tokenisation failed due to encoding. Service supports only utf-16 encoded file."
+        "error": {
+            "code" : "ENCODING_ERROR",
+            "message" : "Tokenisation failed due to encoding. Service supports only utf-16 encoded file."
+        }
     }
     ERR_Consumer = {
         "status" : "FAILED",
         "state" : "SENTENCE-TOKENISED",
-        "code" : "Kafka consumer error",
-        "error" : "can not listen from consumer."
+        "error": {
+            "code" : "KAFKA_CONSUMER_ERROR",
+            "message" : "can not listen from consumer."
+        }
     }
     ERR_Producer = {
         "status" : "FAILED",
         "state" : "SENTENCE-TOKENISED",
-        "code" : "Kafka consumer error",
-        "error" : "No value received from consumer."
+        "error": {
+            "code" : "KAFKA_PRODUCER_ERROR",
+            "message" : "No value received from consumer."
+        }
     }
 
 
