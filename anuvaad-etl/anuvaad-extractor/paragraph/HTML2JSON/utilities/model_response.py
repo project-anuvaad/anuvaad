@@ -17,80 +17,106 @@ class Status(enum.Enum):
     ERR_EMPTY_FILE_LIST = {
         "status": "FAILED",
         "state": "HTML-TO-JSON-PROCESSING",
-        "code" : "Input file list error",
-        "error": "DO not receive any input files."
+        "error": {
+            "code" : "NO_INPUT_FILES",
+            "message" : "DO not receive any input files."
+        }
     }
     ERR_FILE_NOT_FOUND = {
         "status": "FAILED",
         "state": "HTML-TO-JSON-PROCESSING",
-        "code" : "File error",
-        "error": "File not found."
+        "error": {
+            "code" : "FILENAME_ERROR",
+            "message" : "No Filename given in input files."
+        }
     }
     ERR_DIR_NOT_FOUND = {
         "status": "FAILED",
         "state": "HTML-TO-JSON-PROCESSING",
-        "code" : "Directory error",
-        "error": "There is no input/output Directory."
+        "error": {
+            "code" : "DIRECTORY_ERROR",
+            "message" : "There is no input/output Directory."
+        }
     }
     ERR_EXT_NOT_FOUND = {
         "status": "FAILED",
         "state": "HTML-TO-JSON-PROCESSING",
-        "code" : "File type error",
-        "error": "This file type is not allowed. Currently, support only txt file."
+        "error": {
+            "code" : "INPUT_FILE_TYPE_ERROR",
+            "message" : "This file type is not allowed. Currently, support only folder path which contains Html files."
+        }
     }
     ERR_locale_NOT_FOUND = {
         "status": "FAILED",
         "state": "HTML-TO-JSON-PROCESSING",
-        "code" : "locale error",
-        "error": "No language input"
+        "error": {
+            "code" : "LOCALE_ERROR",
+            "message" : "No language input or unsupported language input."
+        }
     }
     ERR_jobid_NOT_FOUND = {
         "status": "FAILED",
         "state": "HTML-TO-JSON-PROCESSING",
-        "code" : "jobID error",
-        "error": "jobID is not given."
+        "error": {
+            "code" : "JOBID_ERROR",
+            "message" : "jobID is not given."
+        }
     }
     ERR_Workflow_id_NOT_FOUND = {
         "status": "FAILED",
         "state": "HTML-TO-JSON-PROCESSING",
-        "code" : "workflowCode error",
-        "error": "workflowCode is not given."
+        "error": {
+            "code" : "WORKFLOWCODE_ERROR",
+            "message" : "workflowCode is not given."
+        }
     }
     ERR_Tool_Name_NOT_FOUND = {
         "status": "FAILED",
         "state": "HTML-TO-JSON-PROCESSING",
-        "code" : "Toolname error",
-        "error": "toolname is not given"
+        "error": {
+            "code" : "TOOLNAME_ERROR",
+            "message" : "toolname is not given"
+        }
     }
     ERR_step_order_NOT_FOUND = {
         "status": "FAILED",
         "state": "HTML-TO-JSON-PROCESSING",
-        "code" : "step order error",
-        "error": "step order is not given."
+        "error": {
+            "code" : "STEPORDER_ERROR",
+            "message" : "step order is not given"
+        }
     }
     ERR_Html2json = {
         "status" : "FAILED",
         "state" : "HTML-TO-JSON-PROCESSING",
-        "code" : "Html to Json error",
-        "error" : "Html to Json conversion failed due to wrong entry"
+        "error": {
+            "code" : "HTML2JSON_ERROR",
+            "message" : "HTML2JSON failed. Something went wrong."
+        }
     }
     ERR_Consumer = {
         "status" : "FAILED",
         "state" : "HTML-TO-JSON-PROCESSING",
-        "code" : "Kafka consumer error",
-        "error" : "can not listen from consumer."
+        "error": {
+            "code" : "KAFKA_CONSUMER_ERROR",
+            "message" : "can not listen from consumer."
+        }
     }
     ERR_Producer = {
         "status" : "FAILED",
         "state" : "HTML-TO-JSON-PROCESSING",
-        "code" : "Kafka consumer error",
-        "error" : "error occured while listening message from consumer or flushing data to another queue"
+        "error": {
+            "code" : "KAFKA_PRODUCER_ERROR",
+            "message" : "No value received from consumer or Can not send message to producer."
+        }
     }
     ERR_Empty_dir = {
         "status" : "FAILED",
         "state" : "HTML-TO-JSON-PROCESSING",
-        "code" : "Files error",
-        "error" : "error occured due to empty directory."
+        "error": {
+            "code" : "HTML_FILES_DIRECTORY_ERROR",
+            "message" : "Html files are not in the given directory."
+        }
     }
 
 
