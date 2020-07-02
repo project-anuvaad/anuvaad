@@ -8,10 +8,14 @@ import yaml
 
 from tools.aligner import Aligner
 from tools.tokeniser import Tokeniser
+from tools.pdftohtml import PDFTOHTML
+from tools.htmltojson import HTMLTOJSON
 
 
 aligner = Aligner()
 tokeniser = Tokeniser()
+pdftohtml = PDFTOHTML()
+htmltojson = HTMLTOJSON()
 
 log = logging.getLogger('file')
 configs_global = {}
@@ -107,11 +111,19 @@ class WFMUtils:
                 tool_input = aligner.get_aligner_input(task_output, previous_tool)
             if current_tool == "TOKENISER":
                 tool_input = tokeniser.get_tokeniser_input(task_output, previous_tool)
+            if current_tool == "PDFTOHTML":
+                tool_input = pdftohtml.get_pdftohtml_input(task_output, previous_tool)
+            if current_tool == "HTMLTOJSON":
+                tool_input = htmltojson.get_htmltojson_input(task_output, previous_tool)
         else:
             if current_tool == "ALIGNER":
                 tool_input = aligner.get_aligner_input_wf(wf_input)
             if current_tool == "TOKENISER":
                 tool_input = tokeniser.get_tokeniser_input_wf(wf_input)
+            if current_tool == "PDFTOHTML":
+                tool_input = pdftohtml.get_pdftohtml_input_wf(wf_input)
+            if current_tool == "HTMLTOJSON":
+                tool_input = htmltojson.get_htmltojson_input_wf(wf_input)
 
         return tool_input
 

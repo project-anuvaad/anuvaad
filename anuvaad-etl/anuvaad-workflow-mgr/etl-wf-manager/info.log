@@ -864,3 +864,10 @@ TypeError: config_reload() missing 1 required positional argument: 'job_id'
 [2020-06-15 14:02:18,212] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
 [2020-06-15 14:33:19,235] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
 [2020-06-15 14:33:19,789] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-07-02 09:55:12,557] {wfmutils.py:46} WFMKafkaConsumer-Thread ERROR in wfmutils: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 38, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-07-02 09:55:12,566] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-07-02 09:55:12,991] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)

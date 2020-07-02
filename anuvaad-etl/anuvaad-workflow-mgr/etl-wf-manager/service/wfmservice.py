@@ -6,11 +6,13 @@ import traceback
 from utilities.wfmutils import WFMUtils
 from kafkawrapper.wfmproducer import Producer
 from repository.wfmrepository import WFMRepository
+from validator.wfmvalidator import WFMValidator
 
 log = logging.getLogger('file')
 producer = Producer()
 wfmrepo = WFMRepository()
 wfmutils = WFMUtils()
+validator = WFMValidator()
 
 anu_etl_wfm_core_topic = os.environ.get('ANU_ETL_WFM_CORE_TOPIC', 'anu-etl-wf-initiate')
 
@@ -37,13 +39,17 @@ class WFMService:
             first_tool = first_step_details["tool"][0]
             input_topic = first_tool["kafka-input"][0]["topic"]
             first_tool_input = wfmutils.get_tool_input(first_tool["name"], None, None, wf_input)
+            if first_tool_input is None:
+                error = validator.get_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.")
+                client_output = self.get_wf_details(wf_input, None, True, error)
+                self.update_job_details(client_output, False)
+                return None
             producer.push_to_queue(first_tool_input, input_topic)
             client_output = self.get_wf_details(wf_input, None, False, None)
             self.update_job_details(client_output, False)
             log.info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"])
         except Exception as e:
             log.exception("Exception while initiating workflow: " + str(e))
-            traceback.print_exc()
 
     # This method manages the workflow by tailoring the predecessor and successor tools for the workflow.
     def manage(self, task_output):
@@ -54,6 +60,11 @@ class WFMService:
                     client_output = self.get_wf_details(None, task_output, False, None)
                     self.update_job_details(client_output, False)
                     next_step_input = next_step_details[0]
+                    if next_step_input is None:
+                        error = validator.get_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.")
+                        client_output = self.get_wf_details(None, task_output, True, error)
+                        self.update_job_details(client_output, False)
+                        return None
                     next_tool = next_step_details[1]
                     step_completed = task_output["stepOrder"]
                     next_step_input["stepOrder"] = step_completed + 1
@@ -67,7 +78,6 @@ class WFMService:
                 self.update_job_details(client_output, False)
         except Exception as e:
             log.exception("Exception while managing the workflow: " + str(e))
-            traceback.print_exc()
 
 
     # This method computes the input to the next step based on the step just completed.
@@ -130,6 +140,7 @@ class WFMService:
                 client_output["error"] = error
 
         return client_output
+
 
     # Method to search jobs.
     def get_job_details(self, job_id):
