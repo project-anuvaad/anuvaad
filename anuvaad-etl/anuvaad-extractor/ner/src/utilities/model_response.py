@@ -14,76 +14,114 @@ class Status(enum.Enum):
     ERR_EMPTY_FILE = {
         "status": "FAILED",
         "state": "NER PROCESSING",
-        "error": "File do not have any content"
+        "error": {
+            "code" : "EMPTY_FILE",
+            "message" : "File do not have any content"
+        }
     }
     ERR_EMPTY_FILE_LIST = {
         "status": "FAILED",
         "state": "NER PROCESSING",
-        "error": "DO not receiving any input files."
+        "error": {
+            "code" : "NO_INPUT_FILES",
+            "message" : "DO not receive any input files."
+        }
     }
     ERR_FILE_NOT_FOUND = {
         "status": "FAILED",
         "state": "NER PROCESSING",
-        "error": "File not found."
+        "error": {
+            "code" : "FILENAME_ERROR",
+            "message" : "No Filename given in input files."
+        }
     }
     ERR_DIR_NOT_FOUND = {
         "status": "FAILED",
         "state": "NER PROCESSING",
-        "error": "There is no input/output Directory/File."
+        "error": {
+            "code" : "DIRECTORY_ERROR",
+            "message" : "There is no input/output Directory."
+        }
     }
     ERR_EXT_NOT_FOUND = {
         "status": "FAILED",
         "state": "NER PROCESSING",
-        "error": "This file type is not allowed."
+        "error": {
+            "code" : "FILE_TYPE_ERROR",
+            "message" : "This file type is not allowed. Currently, support only txt file."
+        }
     }
     ERR_locale_NOT_FOUND = {
         "status": "FAILED",
         "state": "NER PROCESSING",
-        "error": "No language input"
+        "error": {
+            "code" : "LOCALE_ERROR",
+            "message" : "No language input or unsupported language input."
+        }
     }
     ERR_jobid_NOT_FOUND = {
         "status": "FAILED",
         "state": "NER PROCESSING",
-        "error": "jobID is not given."
+        "error": {
+            "code" : "JOBID_ERROR",
+            "message" : "jobID is not given."
+        }
     }
     ERR_Workflow_id_NOT_FOUND = {
         "status": "FAILED",
         "state": "NER PROCESSING",
-        "error": "workflowCode is not given."
+        "error": {
+            "code" : "WORKFLOWCODE_ERROR",
+            "message" : "workflowCode is not given."
+        }
     }
     ERR_Tool_Name_NOT_FOUND = {
         "status": "FAILED",
         "state": "NER PROCESSING",
-        "error": "toolname is not given"
+        "error": {
+            "code" : "TOOLNAME_ERROR",
+            "message" : "toolname is not given"
+        }
     }
     ERR_step_order_NOT_FOUND = {
         "status": "FAILED",
         "state": "NER PROCESSING",
-        "error": "step order is not given."
+        "error": {
+            "code" : "STEPORDER_ERROR",
+            "message" : "step order is not given"
+        }
     }
     ERR_NER_annotation = {
         "status" : "FAILED",
         "state" : "NER PROCESSING",
-        "code" : "NER error",
-        "error" : "NER failed due to wrong entry"
+        "error": {
+            "code" : "NER_ERROR",
+            "message" : "NER failed. Something went wrong."
+        }
     }
     ERR_file_encodng = {
         "status" : "FAILED",
         "state" : "NER PROCESSING",
-        "code" : "Encoding error",
-        "error" : "NER failed due to encoding. Service supports only utf-16 encoded file."
+        "error": {
+            "code" : "ENCODING_ERROR",
+            "message" : "NER failed due to encoding. Service supports only utf-16 encoded file."
+        }
     }
     ERR_Consumer = {
         "status" : "FAILED",
         "state" : "NER PROCESSING",
-        "code" : "Kafka consumer error",
-        "error" : "can not listen from consumer."
+        "error": {
+            "code" : "KAFKA_CONSUMER_ERROR",
+            "message" : "can not listen from consumer."
+        }
     }
     ERR_Producer = {
         "status" : "FAILED",
         "state" : "NER PROCESSING",
-        "code" : "Kafka consumer error",
-        "error" : "can not send massage from producer."
+        "error": {
+            "code" : "KAFKA_PRODUCER_ERROR",
+            "message" : "No value received from consumer."
+        }
     }
 
 class CustomResponse():

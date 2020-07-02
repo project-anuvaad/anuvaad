@@ -13,9 +13,9 @@ model_dir_judgment = '/opt/share/python/upload/models/exp_3_judgment/'
 ENABLE_CORS = False
 
 # kafka
-ner_input_topic = 'anuvaad-dp-tools-tokeniser-input_1'
+ner_input_topic = 'anuvaad-dp-tools-ner-input'
 kf_local_server = 'localhost:9092'
-ner_output_topic = 'anuvaad-dp-tools-ner-output_2'
+ner_output_topic = 'anuvaad-dp-tools-ner-output'
 kafka_ip_host = 'KAFKA_IP_HOST'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 
