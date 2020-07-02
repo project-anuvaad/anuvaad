@@ -2,12 +2,9 @@
 import logging
 import os
 import threading
-import time
-import traceback
 
 from logging.config import dictConfig
 from controller.wfmcontroller import wfmapp
-from future.utils.surrogateescape import fn
 from kafkawrapper.wfmconsumer import consume
 
 

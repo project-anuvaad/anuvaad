@@ -7,17 +7,11 @@ import requests
 import yaml
 
 from tools.aligner import Aligner
-from tools.ingestor import Ingestor
-from tools.extractor import Extractor
 from tools.tokeniser import Tokeniser
-from tools.transformer import Transformer
 
 
 aligner = Aligner()
-ingestor = Ingestor()
-extractor = Extractor()
 tokeniser = Tokeniser()
-transformer = Transformer()
 
 log = logging.getLogger('file')
 configs_global = {}

@@ -11,17 +11,11 @@ from flask import jsonify
 log = logging.getLogger('file')
 from utilities.wfmutils import WFMUtils
 from tools.aligner import Aligner
-from tools.ingestor import Ingestor
-from tools.extractor import Extractor
 from tools.tokeniser import Tokeniser
-from tools.transformer import Transformer
 
 wfmutils = WFMUtils()
 aligner = Aligner()
-ingestor = Ingestor()
-extractor = Extractor()
 tokeniser = Tokeniser()
-transformer = Transformer()
 
 class WFMValidator:
     def __init__(self):
@@ -60,18 +54,6 @@ class WFMValidator:
             valid = aligner.validate_aligner_input(wf_input)
             if not valid:
                 return self.get_error("ALIGNER_INPUT_ERROR", "Aligner is a part of this workflow. The given input is insufficient for that step.")
-        if "INGESTOR" in tools:
-            valid = ingestor.validate_ingestor_input(wf_input)
-            if not valid:
-                return self.get_error("INGESTOR_INPUT_ERROR", "Ingestor is a part of this workflow. The given input is insufficient for that step.")
-        if "EXTRACTOR" in tools:
-            valid = extractor.validate_extractor_input(wf_input)
-            if not valid:
-                return self.get_error("EXTRACTOR_INPUT_ERROR", "Extractor is a part of this workflow. The given input is insufficient for that step.")
-        if "TRANSFORMER" in tools:
-            valid = transformer.validate_transformer_input(wf_input)
-            if not valid:
-                return self.get_error("TRANSFORMER_INPUT_ERROR", "Transformer is a part of this workflow. The given input is insufficient for that step.")
 
     # Error formatter
     def get_error(self, code, message):
