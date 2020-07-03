@@ -12,7 +12,7 @@ ENABLE_CORS = False
 # kafka
 html_input_topic = 'anuvaad-dp-tools-html-json-input'
 kf_local_server = 'localhost:9092'
-html_output_topic = 'anuvaad-dp-tools-json-files-dir-output'
+html_output_topic = 'anuvaad-dp-tools-html-json-output'
 kafka_ip_host = 'KAFKA_IP_HOST'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 
