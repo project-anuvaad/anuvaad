@@ -11,6 +11,7 @@ from controller.sentencecontroller import sentenceapp
 from kafkawrapper.sentenceconsumer import Consumer
 
 
+
 log = logging.getLogger('file')
 app_host = os.environ.get('ANU_ETL_WFM_HOST', '0.0.0.0')
 app_port = os.environ.get('ANU_ETL_WFM_PORT', 5003)
