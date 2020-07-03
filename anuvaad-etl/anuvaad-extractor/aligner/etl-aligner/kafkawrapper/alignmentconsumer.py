@@ -29,7 +29,7 @@ class Consumer:
                                  bootstrap_servers=[cluster_details],
                                  api_version=(1, 0, 0),
                                  group_id=align_job_consumer_grp,
-                                 auto_offset_reset='earliest',
+                                 auto_offset_reset='latest',
                                  enable_auto_commit=True,
                                  max_poll_records=1,
                                  value_deserializer=lambda x: self.handle_json(x))
