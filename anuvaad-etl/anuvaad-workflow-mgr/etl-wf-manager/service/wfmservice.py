@@ -74,6 +74,7 @@ class WFMService:
                     self.update_job_details(client_output, False)
                     log.info("Job completed: " + task_output["jobID"])
             else:
+                log.info("Job FAILED: " + task_output["jobID"])
                 client_output = self.get_wf_details(None, task_output, False, task_output["error"])
                 self.update_job_details(client_output, False)
         except Exception as e:

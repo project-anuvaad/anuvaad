@@ -36,7 +36,7 @@ class HTMLTOJSON:
                 req_file = {
                     "path": file["outputHtmlFilePath"],
                     "locale": file["outputLocale"],
-                    "type": file["outputType"]
+                    "type": "folder"
                 }
                 files.append(req_file)
         else:
