@@ -61,6 +61,8 @@ class Aligner:
                 "locale": task_output["output"]["files"][1]["outputLocale"],
                 "type": task_output["output"]["files"][1]["outputType"]
             }
+        else:
+            return None
 
         tool_input = {
                 "source": source,

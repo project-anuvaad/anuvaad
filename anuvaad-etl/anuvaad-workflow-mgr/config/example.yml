@@ -10,12 +10,12 @@ WorkflowConfigs:
       - name: TOKENISER
         description: Tokenises a given file with paragraphs
         kafka-input:
-        - topic: anuvaad-dp-tools-tokeniser-input_1
+        - topic: anuvaad-dp-tools-tokeniser-input
           partitions: 2
           keys: tokeniser-input-key-one, tokeniser-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-tokeniser-output_2
+        - topic: anuvaad-dp-tools-tokeniser-output
           partitions: 2
           keys: tokeniser-output-key-one, tokeniser-output-key-two
           assignment: round-robin
@@ -32,12 +32,12 @@ WorkflowConfigs:
       - name: ALIGNER
         description: Accepts 2 parallel files and alings them into parallel corp for training
         kafka-input:
-        - topic: anuvaad-dp-tools-aligner-input-new
+        - topic: anuvaad-dp-tools-aligner-input
           partitions: 2
           keys: aligner-input-key-one, aligner-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-aligner-output-new
+        - topic: anuvaad-dp-tools-aligner-output
           partitions: 2
           keys: aligner-output-key-one, aligner-output-key-two
           assignment: round-robin
@@ -54,12 +54,12 @@ WorkflowConfigs:
       - name: TOKENISER
         description: Tokenises a given file with paragraphs
         kafka-input:
-        - topic: anuvaad-dp-tools-tokeniser-input_1
+        - topic: anuvaad-dp-tools-tokeniser-input
           partitions: 2
           keys: tokeniser-input-key-one, tokeniser-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-tokeniser-output_2
+        - topic: anuvaad-dp-tools-tokeniser-output
           partitions: 2
           keys: tokeniser-output-key-one, tokeniser-output-key-two
           assignment: round-robin
@@ -70,14 +70,96 @@ WorkflowConfigs:
       - name: ALIGNER
         description: Accepts 2 parallel files and alings them into parallel corp for training
         kafka-input:
-        - topic: anuvaad-dp-tools-aligner-input-new
+        - topic: anuvaad-dp-tools-aligner-input
           partitions: 2
           keys: aligner-input-key-one, aligner-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-aligner-output-new
+        - topic: anuvaad-dp-tools-aligner-output
           partitions: 2
           keys: aligner-output-key-one, aligner-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
+  - workflowCode: DP_WFLOW_P2H
+    description: Converts a pdf into html and image files.    
+    useCase: P2H
+    sequence:
+    - order: 0
+      tool:
+      - name: PDFTOHTML
+        description: Converts a pdf into html and image files
+        kafka-input:
+        - topic: anuvaad-dp-tools-pdf-html-input
+          partitions: 2
+          keys: pdf-html-input-key-one, pdf-html-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-pdf-html-output
+          partitions: 2
+          keys: pdf-html-output-key-one, pdf-html-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
+  - workflowCode: DP_WFLOW_H2J
+    description: Converts a html files to json 
+    useCase: H2J
+    sequence:
+    - order: 0
+      tool:
+      - name: HTMLTOJSON
+        description: Converts a html files to json
+        kafka-input:
+        - topic: anuvaad-dp-tools-html-json-input
+          partitions: 2
+          keys: html-json-input-key-one, html-json-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-html-json-output
+          partitions: 2
+          keys: html-json-output-key-one, html-json-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
+  - workflowCode: DP_WFLOW_P2H2J
+    description: Converts a pdf into json.  
+    useCase: P2H-H2J
+    sequence:
+    - order: 0
+      tool:
+      - name: PDFTOHTML
+        description: Converts a pdf into html and image files
+        kafka-input:
+        - topic: anuvaad-dp-tools-pdf-html-input
+          partitions: 2
+          keys: pdf-html-input-key-one, pdf-html-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-pdf-html-output
+          partitions: 2
+          keys: pdf-html-output-key-one, pdf-html-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 1
+      tool:
+      - name: HTMLTOJSON
+        description: Converts a html files to json
+        kafka-input:
+        - topic: anuvaad-dp-tools-html-json-input
+          partitions: 2
+          keys: html-json-input-key-one, html-json-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-html-json-output
+          partitions: 2
+          keys: html-json-output-key-one, html-json-output-key-two
           assignment: round-robin
       interruptenable: true
       endState: true

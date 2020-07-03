@@ -12,10 +12,14 @@ log = logging.getLogger('file')
 from utilities.wfmutils import WFMUtils
 from tools.aligner import Aligner
 from tools.tokeniser import Tokeniser
+from tools.pdftohtml import PDFTOHTML
+from tools.htmltojson import HTMLTOJSON
 
 wfmutils = WFMUtils()
 aligner = Aligner()
 tokeniser = Tokeniser()
+pdftohtml = PDFTOHTML()
+htmltojson = HTMLTOJSON()
 
 class WFMValidator:
     def __init__(self):
@@ -54,6 +58,15 @@ class WFMValidator:
             valid = aligner.validate_aligner_input(wf_input)
             if not valid:
                 return self.get_error("ALIGNER_INPUT_ERROR", "Aligner is a part of this workflow. The given input is insufficient for that step.")
+        if "PDFTOHTML" in tools:
+            valid = pdftohtml.validate_pdftohtml_input(wf_input)
+            if not valid:
+                return self.get_error("PDFTOHTML_INPUT_ERROR", "PDFTOHTML is a part of this workflow. The given input is insufficient for that step.")
+        if "HTMLTOJSON" in tools:
+            valid = htmltojson.validate_htmltojson_input(wf_input)
+            if not valid:
+                return self.get_error("HTMLTOJSON_INPUT_ERROR", "HTMLTOJSON is a part of this workflow. The given input is insufficient for that step.")
+
 
     # Error formatter
     def get_error(self, code, message):

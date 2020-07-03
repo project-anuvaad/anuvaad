@@ -36,7 +36,8 @@ class Tokeniser:
     def get_tokeniser_input(self, task_output, predecessor):
         if predecessor == "EXTRACTOR":
             files = task_output["output"]["files"]
-
+        else:
+            return None
         tool_input = {
             "files": files
         }

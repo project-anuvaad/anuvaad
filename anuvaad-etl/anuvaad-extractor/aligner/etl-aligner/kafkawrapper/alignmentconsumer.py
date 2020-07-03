@@ -13,7 +13,7 @@ log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
 consumer_poll_interval = os.environ.get('CONSUMER_POLL_INTERVAL', 10)
 align_job_topic = "etl-align-job-register"
-anu_dp_wf_aligner_in_topic = "anuvaad-dp-tools-aligner-input-new"
+anu_dp_wf_aligner_in_topic = "anuvaad-dp-tools-aligner-input"
 align_job_consumer_grp = "anuvaad-etl-aligner-consumer-group"
 
 
@@ -29,7 +29,7 @@ class Consumer:
                                  bootstrap_servers=[cluster_details],
                                  api_version=(1, 0, 0),
                                  group_id=align_job_consumer_grp,
-                                 auto_offset_reset='earliest',
+                                 auto_offset_reset='latest',
                                  enable_auto_commit=True,
                                  max_poll_records=1,
                                  value_deserializer=lambda x: self.handle_json(x))
