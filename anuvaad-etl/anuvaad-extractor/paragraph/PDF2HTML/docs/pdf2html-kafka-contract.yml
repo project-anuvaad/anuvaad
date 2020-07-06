@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   version: 1.0.0
   title: Anuvaad Pdf to Html - Kafka Contract 
-  description: A python based microservice to trigger and orchestrate the . This service will expose REST APIs for workflow related activities on the other hand will also be plugged into the system as a consumer that picks records posted onto the Kafka Queue in order to perform workflow related activities.
+  description: A python based microservice to trigger and orchestrate the PDF to HTML part of anuvaad-extractor. This service will expose REST APIs for workflow related activities on the other hand will also be plugged into the system as a consumer that picks records posted onto the Kafka Queue in order to perform workflow related activities.
   contact:
     name: Kumar Deepak
     email: kumar.deepak@tarento.com
