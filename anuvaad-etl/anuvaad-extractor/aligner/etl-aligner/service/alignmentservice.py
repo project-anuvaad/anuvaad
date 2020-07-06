@@ -6,6 +6,7 @@ import traceback
 
 import numpy as np
 import datetime as dt
+import time
 from scipy.spatial import distance
 from flask import jsonify
 from laser.laser import Laser
@@ -65,7 +66,7 @@ class AlignmentService:
     # Service layer to update job status
     def update_job_status(self, status, object_in, cause):
         object_in["status"] = status
-        object_in["endTime"] = str(dt.datetime.now())
+        object_in["endTime"] = eval(str(time.time()).replace('.', ''))
         if cause is not None:
             object_in["cause"] = cause
         self.update_job_details(object_in, False)
@@ -101,7 +102,7 @@ class AlignmentService:
         full_path = directory_path + file_path_delimiter + path
         full_path_indic = directory_path + file_path_delimiter + path_indic
         object_in["status"] = "INPROGRESS"
-        object_in["startTime"] = str(dt.datetime.now())
+        object_in["startTime"] = eval(str(time.time()).replace('.', ''))
         self.update_job_details(object_in, False)
         parsed_in = self.parse_in(full_path, full_path_indic, object_in, iswf)
         if parsed_in is not None:
@@ -244,7 +245,7 @@ class AlignmentService:
         result = {"status": "COMPLETED",
                   "jobID": object_in["jobID"],
                   "startTime": object_in["startTime"],
-                  "endTime": str(dt.datetime.now()),
+                  "endTime": eval(str(time.time()).replace('.', '')),
                   "input": {
                       "source": source,
                       "target": target
