@@ -110,4 +110,4 @@ class AlignmentUtils:
 
     # Utility to generate a unique random job ID
     def generate_job_id(self):
-        return str(time.time()).replace('.', '')
+        return "ALIGN-" + str(time.time()).replace('.', '')
