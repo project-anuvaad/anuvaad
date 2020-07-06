@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   version: 1.0.0
   title: Anuvaad Html to Json - Kafka Contract 
-  description: A python based microservice to trigger and orchestrate the . This service will expose REST APIs for workflow related activities on the other hand will also be plugged into the system as a consumer that picks records posted onto the Kafka Queue in order to perform workflow related activities.
+  description: A python based microservice to trigger and orchestrate the HTML to JSON part of anuvaad-extractor. This service will expose REST APIs for workflow related activities on the other hand will also be plugged into the system as a consumer that picks records posted onto the Kafka Queue in order to perform workflow related activities.
   contact:
     name: Kumar Deepak
     email: kumar.deepak@tarento.com
@@ -10,12 +10,12 @@ info:
     
 usecase:
   intiate-html2json:
-    input-topic: anuvaad-dp-tools-html-json-input_1
+    input-topic: anuvaad-dp-tools-html-json-input
     description: In order to get the input for html2json tool asynchronously, the below mentioned JSON has to be listened from the above mentioned topic. The html2json will consume this data and trigger the html2json operation.
     $ref: '#/definitions/HTML-to-JSONRequest'
     
   complete-html2json:
-    input-topic: anuvaad-dp-tools-json-files-dir-output_2
+    input-topic: anuvaad-dp-tools-html-json-output
     description: In order to get the output for html2json tool asynchronously, the below mentioned JSON has to be pushed to the above mentioned topic.
     $ref: '#/definitions/HTML-to-JSONResponse'
     
@@ -67,7 +67,7 @@ definitions:
     properties:
       input:
         type: object
-        description: Details of the source file of which a Json file of json data for each html file has to be generated
+        description: Details of the source file of which a Json file of json data for each html file has to be generated.
         $ref: '#/definitions/FileInput'
       jobID:   
         type: string
@@ -161,8 +161,14 @@ definitions:
         description: Received from previous operation. Code of the workflow that has to be picked to process this input.
                       These workflows are configured at the application level.
       error:
-        type: string
-        description: This is the cause of the error in a user understandable format that is defined by the developer.
+        type: object
+        properties:
+          code:
+            type: string
+            description: This is the cause of the error.
+          message:
+            type: string
+            description: User understandable message.
       startTime:
         type: number
         description: 13 digit epoch of the start time.
