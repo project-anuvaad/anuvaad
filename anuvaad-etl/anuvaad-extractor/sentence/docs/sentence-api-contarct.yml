@@ -94,7 +94,7 @@ definitions:
     properties:
       input:
         type: object
-        description: Details of the source and target files of which a parallel corp has to be generated
+        description: Details of the source files of which tokenised sentences has to be generated
         $ref: '#/definitions/FileInput'
       jobID:   
         type: string
@@ -188,9 +188,15 @@ definitions:
         type: string
         description: Received from previous operation. Code of the workflow that has to be picked to process this input. 
                       These workflows are configured at the application level.
-      cause:
-        type: string
-        description: This is the cause of the error in a user understandable format that is defined by the developer.
+      error:
+        type: object
+        properties:
+          code:
+            type: string
+            description: This is the cause of the error.
+          message:
+            type: string
+            description: User understandable message.
       startTime:
         type: number
         description: 13 digit epoch of the start time.
