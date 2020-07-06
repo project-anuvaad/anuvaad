@@ -22,7 +22,7 @@ res_suffix = 'response-'
 man_suffix = 'manual-'
 nomatch_suffix = 'nomatch-'
 file_path_delimiter = '/'
-align_job_topic = "etl-align-job-register"
+align_job_topic = "anuvaad-etl-align-job-register"
 
 
 alignmentutils = AlignmentUtils()
