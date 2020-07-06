@@ -30,8 +30,8 @@ class FileOperation(object):
         return input_files, workflow_id, jobid, tool_name, step_order   
 
     def accessing_files(self,files):
-        html_filepath = files['HtmlFolderPath']
-        image_folderpath = files['ImageFolderPath']
+        html_filepath = files['htmlFolderPath']
+        image_folderpath = files['imageFolderPath']
         file_type = files['type']
         locale = files['locale']
         return html_filepath, image_folderpath, file_type, locale
@@ -43,7 +43,7 @@ class FileOperation(object):
     def one_filename_response(self, input_filename, output_image_folderpath, output_html2json_filepath, in_locale):
         file_res = {
             "inputFile" : input_filename,
-            "outputImageFolderPath" : output_image_folderpath,
+            "inputImageFolderPath" : output_image_folderpath,
             "outputHtml2JsonFilePath" : output_html2json_filepath,
             "outputLocale" : in_locale,
             "outputType" : "json"

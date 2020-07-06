@@ -126,8 +126,8 @@ class CustomResponse():
         self.status_code['jobID'] = jobid
         self.status_code['taskID'] = taskid
         self.status_code['workflowCode'] = workflow_id
-        self.status_code['taskStarttime'] = task_start_time
-        self.status_code['taskendTime'] = task_end_time
+        self.status_code['taskStartTime'] = task_start_time
+        self.status_code['taskEndTime'] = task_end_time
         self.status_code['output'] = filename_response
         self.status_code['tool'] = tool_name
         self.status_code['stepOrder'] = step_order
