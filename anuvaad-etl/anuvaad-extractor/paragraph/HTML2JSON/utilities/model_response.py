@@ -163,9 +163,9 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
         return response
     else:
         for item in input_files:
-            input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+            input_filename, input_image_folderpath, in_file_type, in_locale = file_ops.accessing_files(item)
             input_filepath = file_ops.input_path(input_filename) #with upload dir
-            file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale)
+            file_res = file_ops.one_filename_response(input_filename, input_image_folderpath, output_filename, in_locale)
             filename_response.append(file_res)
             if input_filename == "" or input_filename is None:
                 task_endtime = str(time.time()).replace('.', '')
@@ -191,7 +191,7 @@ def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, t
                 html2json_service = Html2JsonService()
                 try:
                     html2json_response = html2json_service.html2json(DOWNLOAD_FOLDER, input_filepath) 
-                    file_res['outputHtmlFilePath'] = html2json_response
+                    file_res['outputHtml2JsonFilePath'] = html2json_response
                 except:
                     task_endtime = str(time.time()).replace('.', '')
                     response = CustomResponse(Status.ERR_Html2json.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
