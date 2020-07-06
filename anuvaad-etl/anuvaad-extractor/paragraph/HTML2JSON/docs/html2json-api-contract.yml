@@ -15,7 +15,7 @@ basePath: '/anuvaad-etl/anuvaad-extractor/paragraph/HTML2JSON'
 
 
 paths: 
-   /v1/htmltojson/convert:
+  /v1/htmltojson/convert:
     post:
       summary: REST API to convert HTML files into JSON of each HTML file.
       description: This API accepts list of directory path of HTML files and convert these Html files into Json data of each Html file. This is an async process.
