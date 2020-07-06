@@ -161,8 +161,14 @@ definitions:
         description: Received from previous operation. Code of the workflow that has to be picked to process this input.
                       These workflows are configured at the application level.
       error:
-        type: string
-        description: This is the cause of the error in a user understandable format that is defined by the developer.
+        type: object
+        properties:
+          code:
+            type: string
+            description: This is the cause of the error.
+          message:
+            type: string
+            description: User understandable message.
       startTime:
         type: number
         description: 13 digit epoch of the start time.
