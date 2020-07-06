@@ -1,4 +1,4 @@
-import pytesseract
+ import pytesseract
 from pytesseract import Output
 import cv2
 from pdf2image import convert_from_path
