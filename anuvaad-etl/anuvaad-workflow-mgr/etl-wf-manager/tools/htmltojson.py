@@ -34,7 +34,8 @@ class HTMLTOJSON:
             html_files = task_output["output"]["files"]
             for file in html_files:
                 req_file = {
-                    "path": file["outputHtmlFilePath"],
+                    "htmlFolderPath": file["outputHtmlFilePath"],
+                    "imageFolderPath": file["outputImageFilePath"],
                     "locale": file["outputLocale"],
                     "type": "folder"
                 }
