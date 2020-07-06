@@ -10,12 +10,12 @@ info:
     
 usecase:
   intiate-pdf2html:
-    input-topic: anuvaad-dp-tools-pdf-html-input_1
+    input-topic: anuvaad-dp-tools-pdf-html-input
     description: In order to get the input for pdf2html tool asynchronously, the below mentioned JSON has to be listened from the above mentioned topic. The pdf2html will consume this data and trigger the pdf2html operation.
     $ref: '#/definitions/PDF2HTMLInitiate'
     
   complete-pdf2html:
-    input-topic: anuvaad-dp-tools-pdf-html-output_2
+    input-topic: anuvaad-dp-tools-pdf-html-output
     description: In order to get the output for pdf2html tool asynchronously, the below mentioned JSON has to be pushed to the above mentioned topic.
     $ref: '#/definitions/PDF2HTMLResponse'
     
@@ -67,7 +67,7 @@ definitions:
     properties:
       input:
         type: object
-        description: Details of the source file of which a html and inage files has to be generated
+        description: Details of the source file of which a html and inage files has to be generated.
         $ref: '#/definitions/FileInput'
       jobID:   
         type: string
