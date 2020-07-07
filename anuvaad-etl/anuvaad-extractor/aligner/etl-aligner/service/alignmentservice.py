@@ -110,6 +110,12 @@ class AlignmentService:
             target_corp = parsed_in[1]
         else:
             return {}
+
+        print("SOURCE")
+        print(source[0])
+        print("TARGET")
+        print(target_corp)
+
         embeddings = self.build_embeddings(source, target_corp, object_in, iswf)
         if embeddings is not None:
             source_embeddings = embeddings[0]
@@ -214,6 +220,20 @@ class AlignmentService:
             output_manual_src = directory_path + file_path_delimiter + man_suffix + path
             output_manual_trgt = directory_path + file_path_delimiter + man_suffix + path_indic
             output_nomatch = directory_path + file_path_delimiter + nomatch_suffix + path
+
+            print("SOURCE RE")
+            print(source_reformatted)
+            print("TARGET RE")
+            print(target_refromatted)
+            print("M SOURCE")
+            print(manual_src)
+            print("M TARGET")
+            print(manual_trgt)
+            print("NM")
+            print(nomatch_src)
+
+
+
             alignmentutils.write_output(source_reformatted, output_source)
             alignmentutils.write_output(target_refromatted, output_target)
             alignmentutils.write_output(manual_src, output_manual_src)
