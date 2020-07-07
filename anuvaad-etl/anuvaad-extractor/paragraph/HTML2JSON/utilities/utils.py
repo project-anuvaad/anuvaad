@@ -62,8 +62,3 @@ class FileOperation(object):
             return True
         else:
             return False
-
-    def output_path(self, DOWNLOAD_FOLDER):
-        output_filename = str(time.time()).replace('.', '') + '.json'
-        output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filename)
-        return output_filepath , output_filename
