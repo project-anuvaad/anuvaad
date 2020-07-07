@@ -86,6 +86,10 @@ class HTMLOperation(object):
         html_nodes_per_page = list()
         page_no = self.page_no_of_file(child_tag_data)
         for item in child_tag_data.child:
+            if item.tag == 'img':
+                item_attr = item.attr
+                page_height = item_attr['height']
+                page_width = item_attr['width']
             if item.tag == 'p':
                 item_attr = item.attr
                 tag_style = item_attr['style']
@@ -102,7 +106,7 @@ class HTMLOperation(object):
                             bold_nature = self.find_bold_nature(item_child[0].child[0])
                             text_child = text_child.replace("</b>", "")
                             text_child = text_child.replace("<b>", "")
-                            html_node_i_tag = self.output_html_node_format(page_no, x, y, tag_class_id, tag_class_style, tag_style, text_child, bold_nature)
+                            html_node_i_tag = self.output_html_node_format(page_no, page_height, page_width, x, y, tag_class_id, tag_class_style, tag_style, text_child, bold_nature)
                             html_nodes_per_page.append(html_node_i_tag)
                     else:
                         if text != "":
@@ -111,7 +115,7 @@ class HTMLOperation(object):
                             text = text.replace("<b>", "")
                             text = text.replace("<i>", "")
                             text = text.replace("</i>", "")
-                            html_node_p_tag = self.output_html_node_format(page_no, x, y, tag_class_id, tag_class_style, tag_style, text, bold_nature)
+                            html_node_p_tag = self.output_html_node_format(page_no, page_height, page_width, x, y, tag_class_id, tag_class_style, tag_style, text, bold_nature)
                             html_nodes_per_page.append(html_node_p_tag)
                 else:
                     text = item.text
@@ -121,7 +125,7 @@ class HTMLOperation(object):
                         text = text.replace("<b>", "")
                         text = text.replace("<i>", "")
                         text = text.replace("</i>", "")
-                        html_node_p_tag = self.output_html_node_format(page_no ,x, y, tag_class_id, tag_class_style, tag_style, text, bold_nature)
+                        html_node_p_tag = self.output_html_node_format(page_no, page_height, page_width, x, y, tag_class_id, tag_class_style, tag_style, text, bold_nature)
                         html_nodes_per_page.append(html_node_p_tag)
         return html_nodes_per_page
 
@@ -135,9 +139,11 @@ class HTMLOperation(object):
         page_no = re.findall(r'[0-9]', page_no_id)
         return page_no[0]
 
-    def output_html_node_format(self,page_no, x, y, class_id, class_style, style, p_tag_text, bold_nature):
+    def output_html_node_format(self,page_no, page_height, page_width, x, y, class_id, class_style, style, p_tag_text, bold_nature):
         html_node = {
             "page_no" : page_no,
+            "page_height" : page_height,
+            "page_width" : page_width,
             "x" : x,
             "y" : y,
             "class" : class_id,
