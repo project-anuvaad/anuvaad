@@ -84,6 +84,7 @@ class AlignmentService:
         min_index = np.argmin(distances)
         min_distance = 1 - distances[min_index]
         min_cs, max_cs = alignmentutils.get_cs_on_sen_cat(src_sent)
+        print("cos dist: " + str(min_distance))
         if min_distance >= max_cs:
             return min_index, min_distance, "MATCH"
         elif min_cs <= min_distance < max_cs:
@@ -185,6 +186,7 @@ class AlignmentService:
         try:
             for i, embedding in enumerate(source_embeddings):
                 trgt = self.get_target_sentence(target_embeddings, embedding, source[i])
+                print(trgt)
                 if trgt is not None:
                     if trgt[2] is "MATCH":
                         match_dict[i] = trgt[0], trgt[1]
