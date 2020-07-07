@@ -87,9 +87,6 @@ class AlignmentService:
         min_index = np.argmin(distances)
         min_distance = 1 - distances[min_index]
         min_cs, max_cs = alignmentutils.get_cs_on_sen_cat(src_sent)
-        print("min: " + str(min_cs))
-        print("min: " + str(max_cs))
-        print("cos dist: " + str(min_distance))
         if min_distance >= max_cs:
             return min_index, min_distance, "MATCH"
         elif min_cs <= min_distance < max_cs:
@@ -110,22 +107,20 @@ class AlignmentService:
         object_in["status"] = "INPROGRESS"
         object_in["startTime"] = eval(str(time.time()).replace('.', ''))
         self.update_job_details(object_in, False)
-        parsed_in = self.parse_in(full_path, full_path_indic, object_in, iswf)
-        if parsed_in is not None:
-            source = parsed_in[0],
-            target_corp = parsed_in[1]
-            print("process")
-            print(source)
-            print(target_corp)
-        else:
+        source, target_corp = self.parse_in(full_path, full_path_indic, object_in, iswf)
+        if source is None:
             return {}
+        print(source)
+        print(target_corp)
         embeddings = self.build_embeddings(source, target_corp, object_in, iswf)
         if embeddings is not None:
             source_embeddings = embeddings[0]
             target_embeddings = embeddings[1]
         else:
             return {}
+        print("Length sourceeeee: " + str(len(source)))
         source = source[0]
+        print("Length source[0]: " + str(len(source[0])))
         alignments = self.get_alignments(source_embeddings, target_embeddings, source, object_in, iswf)
         if alignments is not None:
             match_dict = alignments[0]
@@ -166,10 +161,7 @@ class AlignmentService:
     def parse_in(self, full_path, full_path_indic, object_in, iswf):
         try:
             source, target_corp = alignmentutils.parse_input_file(full_path, full_path_indic)
-            print("parse_in")
-            print(type(source))
-            print(type(target_corp))
-
+            print("Length sourceX: " + str(len(source)))
             return source, target_corp
         except Exception as e:
             log.exception("Exception while parsing the input: " + str(e))
@@ -177,7 +169,7 @@ class AlignmentService:
             if iswf:
                 error = validator.get_error("INPUT_ERROR", "Exception while parsing the input: " + str(e))
                 wflowservice.update_wflow_details(None, object_in, error)
-            return None
+            return None, None
 
     # Wrapper to build sentence embeddings
     def build_embeddings(self, source, target_corp, object_in, iswf):
@@ -202,12 +194,6 @@ class AlignmentService:
         try:
             for i, embedding in enumerate(source_embeddings):
                 trgt = self.get_target_sentence(target_embeddings, embedding, source[i])
-
-                print("SOURCE SENT")
-                print(source[i])
-                print("TARGET SENT")
-                print(trgt)
-
                 if trgt is not None:
                     if trgt[2] is "MATCH":
                         match_dict[i] = trgt[0], trgt[1]

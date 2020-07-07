@@ -46,9 +46,7 @@ class AlignmentUtils:
                         source.append(row[0])
                         target_corp.append(row[1])
         log.info("Done.")
-        print(type(source))
-        print(type(target_corp))
-
+        print("Length source: " + str(len(source)))
         return source, target_corp
 
     # Utility to write the output to a file
