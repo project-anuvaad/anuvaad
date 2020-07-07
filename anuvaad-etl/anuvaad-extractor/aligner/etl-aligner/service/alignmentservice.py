@@ -74,6 +74,9 @@ class AlignmentService:
     # Service layer to fetch vectors for all the source and target sentences.
     def build_index(self, source, target_corp, src_loc, trgt_loc):
         source_embeddings, target_embeddings = laser.vecotrize_sentences(source, target_corp, src_loc, trgt_loc)
+        print("source_embeddings: " + str(len(source_embeddings)))
+        print("target_embeddings: " + str(len(target_embeddings)))
+
         return source_embeddings, target_embeddings
 
     # Service layer to fetch target sentence for a given source sentence.
@@ -111,6 +114,9 @@ class AlignmentService:
         if parsed_in is not None:
             source = parsed_in[0],
             target_corp = parsed_in[1]
+            print("process")
+            print(source)
+            print(target_corp)
         else:
             return {}
         embeddings = self.build_embeddings(source, target_corp, object_in, iswf)
@@ -160,6 +166,10 @@ class AlignmentService:
     def parse_in(self, full_path, full_path_indic, object_in, iswf):
         try:
             source, target_corp = alignmentutils.parse_input_file(full_path, full_path_indic)
+            print("parse_in")
+            print(type(source))
+            print(type(target_corp))
+
             return source, target_corp
         except Exception as e:
             log.exception("Exception while parsing the input: " + str(e))
