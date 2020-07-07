@@ -19,8 +19,6 @@ class Laser:
     # Method to make REST calls to LASER and fetch sentence embeddings
     def get_vect(self, query_tuple, lang):
         query_in = query_tuple[1]
-        print("SENT FOR VECT")
-        print(query_in)
         params = {"q": query_in, "lang": lang}
         resp = requests.get(url=laser_url, params=params).json()
         return query_tuple[0], resp["embedding"]

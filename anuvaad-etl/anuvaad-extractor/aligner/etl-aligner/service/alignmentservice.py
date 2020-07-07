@@ -74,9 +74,6 @@ class AlignmentService:
     # Service layer to fetch vectors for all the source and target sentences.
     def build_index(self, source, target_corp, src_loc, trgt_loc):
         source_embeddings, target_embeddings = laser.vecotrize_sentences(source, target_corp, src_loc, trgt_loc)
-        print("source_embeddings: " + str(len(source_embeddings)))
-        print("target_embeddings: " + str(len(target_embeddings)))
-
         return source_embeddings, target_embeddings
 
     # Service layer to fetch target sentence for a given source sentence.
@@ -118,9 +115,7 @@ class AlignmentService:
             target_embeddings = embeddings[1]
         else:
             return {}
-        print("Length sourceeeee: " + str(len(source)))
         source = source[0]
-        print("Length source[0]: " + str(len(source[0])))
         alignments = self.get_alignments(source_embeddings, target_embeddings, source, object_in, iswf)
         if alignments is not None:
             match_dict = alignments[0]
@@ -161,7 +156,6 @@ class AlignmentService:
     def parse_in(self, full_path, full_path_indic, object_in, iswf):
         try:
             source, target_corp = alignmentutils.parse_input_file(full_path, full_path_indic)
-            print("Length sourceX: " + str(len(source)))
             return source, target_corp
         except Exception as e:
             log.exception("Exception while parsing the input: " + str(e))
@@ -219,20 +213,6 @@ class AlignmentService:
             output_manual_src = directory_path + file_path_delimiter + man_suffix + path
             output_manual_trgt = directory_path + file_path_delimiter + man_suffix + path_indic
             output_nomatch = directory_path + file_path_delimiter + nomatch_suffix + path
-
-            print("SOURCE RE")
-            print(source_reformatted)
-            print("TARGET RE")
-            print(target_refromatted)
-            print("M SOURCE")
-            print(manual_src)
-            print("M TARGET")
-            print(manual_trgt)
-            print("NM")
-            print(nomatch_src)
-
-
-
             alignmentutils.write_output(source_reformatted, output_source)
             alignmentutils.write_output(target_refromatted, output_target)
             alignmentutils.write_output(manual_src, output_manual_src)
