@@ -1,0 +1,11 @@
+ANU_ETL_WFM_CONTEXT_PATH = /anuvaad-etl/wf-manager
+ANU_ETL_WFM_HOST = 0.0.0.0
+ANU_ETL_WFM_PORT = 5002
+ETL_WFM_CONFIG_FILE_URL = https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/config/example.yml
+ETL_CONFIG_FILE_LOC = /opt/share/anuvaad-etl-wf-manager/upload:/app/upload
+ETL_CONFIG_FILE = configfile.yml
+KAFKA_CLUSTER_DETAILS = <kafka-host>
+MONGO_CLIENT = <mongo-host>
+MONGO_ANUVAADETL_WF_DB = anuvaad-etl_wf_db
+MONGO_ANUETL_WF_JOBS_COL = anu-etl-wf-jobs
+
