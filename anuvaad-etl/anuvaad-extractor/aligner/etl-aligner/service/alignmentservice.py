@@ -18,9 +18,9 @@ from .alignwflowservice import AlignWflowService
 
 log = logging.getLogger('file')
 directory_path = os.environ.get('SA_DIRECTORY_PATH', r'C:\Users\Vishal\Desktop\anuvaad\Facebook LASER\resources\Input\length-wise')
-res_suffix = 'response-'
-man_suffix = 'manual-'
-nomatch_suffix = 'nomatch-'
+res_suffix = 'match-'
+man_suffix = 'almost-'
+nomatch_suffix = 'no-'
 file_path_delimiter = '/'
 align_job_topic = "anuvaad-etl-align-job-register"
 
@@ -84,6 +84,9 @@ class AlignmentService:
         min_index = np.argmin(distances)
         min_distance = 1 - distances[min_index]
         min_cs, max_cs = alignmentutils.get_cs_on_sen_cat(src_sent)
+        print("min: " + str(min_cs))
+        print("min: " + str(max_cs))
+        print("cos dist: " + str(min_distance))
         if min_distance >= max_cs:
             return min_index, min_distance, "MATCH"
         elif min_cs <= min_distance < max_cs:
@@ -110,12 +113,6 @@ class AlignmentService:
             target_corp = parsed_in[1]
         else:
             return {}
-
-        print("SOURCE")
-        print(source[0])
-        print("TARGET")
-        print(target_corp)
-
         embeddings = self.build_embeddings(source, target_corp, object_in, iswf)
         if embeddings is not None:
             source_embeddings = embeddings[0]
@@ -195,6 +192,12 @@ class AlignmentService:
         try:
             for i, embedding in enumerate(source_embeddings):
                 trgt = self.get_target_sentence(target_embeddings, embedding, source[i])
+
+                print("SOURCE SENT")
+                print(source[i])
+                print("TARGET SENT")
+                print(trgt)
+
                 if trgt is not None:
                     if trgt[2] is "MATCH":
                         match_dict[i] = trgt[0], trgt[1]
