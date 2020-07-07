@@ -107,15 +107,12 @@ class AlignmentService:
         source, target_corp = self.parse_in(full_path, full_path_indic, object_in, iswf)
         if source is None:
             return {}
-        print(source)
-        print(target_corp)
         embeddings = self.build_embeddings(source, target_corp, object_in, iswf)
         if embeddings is not None:
             source_embeddings = embeddings[0]
             target_embeddings = embeddings[1]
         else:
             return {}
-        source = source[0]
         alignments = self.get_alignments(source_embeddings, target_embeddings, source, object_in, iswf)
         if alignments is not None:
             match_dict = alignments[0]
