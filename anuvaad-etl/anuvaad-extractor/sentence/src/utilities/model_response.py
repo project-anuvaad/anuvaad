@@ -211,7 +211,7 @@ class CheckingResponse(object):
                     task_endtime = str(time.time()).replace('.', '')
                     response = CustomResponse(Status.ERR_tokenisation.value, jobid, workflow_id,  tool_name, step_order,
                                                     self.task_id, self.task_starttime, task_endtime, output_file_response)
-                    return response.status_code
+                    return response
             elif in_locale == "hi":
                 try:
                     output_filepath , output_hi_filename = file_ops.output_path(index, DOWNLOAD_FOLDER)
@@ -260,8 +260,9 @@ class CheckingResponse(object):
                     return response
                 else:
                     output_filename = self.service_response(jobid, workflow_id, tool_name, step_order,input_filename, in_locale, output_file_response, i)
-                    if isinstance(output_filename, dict):
-                        return output_filename
+                    if not isinstance(output_filename, str):
+                        if isinstance(output_filename.status_code, dict):
+                            return output_filename
                     else:
                         file_res['outputFile'] = output_filename
         task_endtime = str(time.time()).replace('.', '')
