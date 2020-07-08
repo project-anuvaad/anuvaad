@@ -1,4 +1,4 @@
-from utilities.model_response import checking_file_response
+from utilities.model_response import CheckingResponse
 from utilities.model_response import CustomResponse
 from utilities.model_response import Status
 from utilities.utils import FileOperation
@@ -31,13 +31,13 @@ def process_HTML_kf():
         for msg in consumer:
             log.info("value received from consumer")
             data = msg.value
-            input_files, workflow_id, jobid, tool_name, step_order = file_ops.input_format(data)
             task_id = str("HTML2JSON-" + str(time.time()).replace('.', ''))
             task_starttime = str(time.time()).replace('.', '')
-            file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
+            checking_response = CheckingResponse(data, task_id, task_starttime, DOWNLOAD_FOLDER)
+            file_value_response = checking_response.main_response_wf()
             producer_html2json = Producer(config.bootstrap_server) 
             producer = producer_html2json.producer_fn()
-            producer.send(config.html_output_topic, value = file_value_response.status_code)
+            producer.send(config.html_output_topic, value = file_value_response)
             producer.flush()
             log.info("producer flushed value on topic %s"%(config.html_output_topic))
     except Exception as e:
