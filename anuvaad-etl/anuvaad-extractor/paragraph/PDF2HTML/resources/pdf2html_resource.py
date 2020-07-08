@@ -1,31 +1,36 @@
-import os
-import json
 from flask_restful import Resource
 from flask.json import jsonify
 from flask import request
-from services.service import Pdf2HtmlService
 from utilities.utils import FileOperation
-from utilities.model_response import checking_file_response
-import werkzeug
-from werkzeug.utils import secure_filename
+from utilities.model_response import CheckingResponse
 import config
 import logging
 import time
 
-para_extraction_service = Pdf2HtmlService()
 file_ops = FileOperation()
 DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
 log = logging.getLogger('file')
 
-class Pdf2HtmlConversion(Resource):
+class Pdf2HtmlConversionWF(Resource):
 
     def post(self):
         log.info("Pdf to HTML conversion started")
         task_id = str("Pdf2Html-" + str(time.time()).replace('.', ''))
         task_starttime = str(time.time()).replace('.', '')
         json_data = request.get_json(force = True)
-        input_files, workflow_id, jobid, tool_name, step_order = file_ops.input_format(json_data)
-        file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
+        checking_response = CheckingResponse(json_data, task_id, task_starttime, DOWNLOAD_FOLDER)
+        file_value_response = checking_response.main_response_wf()
         log.info("Conversion completed")
-        return file_value_response.get_response()
-        
+        return jsonify(file_value_response)
+
+
+class Pdf2HtmlConversion(Resource):
+
+    def post(self):
+        log.info("Individual operation of tokenisation service strated.")
+        json_data = request.get_json(force=True)
+        task_id, task_starttime = "", ""
+        checking_response = CheckingResponse(json_data, task_id, task_starttime, DOWNLOAD_FOLDER)
+        file_only_response = checking_response.main_response_files_only()
+        log.info("response successfully generated.")
+        return jsonify(file_only_response)

@@ -5,7 +5,6 @@ import routes
 import config
 import threading
 import logging
-from logging.config import dictConfig
 from services.kf_services import process_pdf_kf
 import time
 

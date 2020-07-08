@@ -1,4 +1,4 @@
-from utilities.model_response import checking_file_response
+from utilities.model_response import CheckingResponse
 from utilities.model_response import CustomResponse
 from utilities.model_response import Status
 from utilities.utils import FileOperation
@@ -32,11 +32,11 @@ def process_pdf_kf():
             task_starttime = str(time.time()).replace('.', '')
             task_id = str("PDF2HTML-" + str(time.time()).replace('.', ''))
             data = msg.value
-            input_files, workflow_id, jobid, tool_name, step_order = file_ops.input_format(data)
-            file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
+            checking_response = CheckingResponse(data, task_id, task_starttime, DOWNLOAD_FOLDER)
+            file_value_response = checking_response.main_response_wf()
             producer_pdf2html = Producer(config.bootstrap_server) 
             producer = producer_pdf2html.producer_fn()
-            producer.send(config.pdf2html_output_topic, value = file_value_response.status_code)
+            producer.send(config.pdf2html_output_topic, value = file_value_response)
             producer.flush()
             log.info("producer flushed value on topic %s"%(config.pdf2html_output_topic))
     except Exception as e:
