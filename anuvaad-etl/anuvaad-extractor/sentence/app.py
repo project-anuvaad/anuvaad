@@ -1,13 +1,11 @@
 from src.services.kf_service import process_tokenization_kf
-from src.utilities.model_response import checking_file_response
-from flask import Flask, current_app
+from flask import Flask
 from flask.blueprints import Blueprint
 from flask_cors import CORS
 from src import routes
 import config
 import threading
 import logging
-from logging.config import dictConfig
 import time
 
 log = logging.getLogger('file')

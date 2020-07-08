@@ -1,4 +1,4 @@
-from src.utilities.model_response import checking_file_response
+from src.utilities.model_response import CheckingResponse
 from src.utilities.model_response import CustomResponse
 from src.utilities.model_response import Status
 from src.utilities.utils import FileOperation
@@ -21,8 +21,8 @@ def process_tokenization_kf():
         log.info("--- consumer running -----")
     except:
         response = Status.ERR_Consumer.value
-        producer_html2json = Producer(config.bootstrap_server) 
-        producer = producer_html2json.producer_fn()
+        producer_tok = Producer(config.bootstrap_server) 
+        producer = producer_tok.producer_fn()
         producer.send(config.tok_output_topic, value = response)
         producer.flush()
         log.error("error in kafka opertation while listening to consumer on topic %s"%(config.tok_input_topic))
@@ -32,13 +32,13 @@ def process_tokenization_kf():
         for msg in consumer:
             log.info("value received from consumer")
             data = msg.value
-            input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             task_id = str("TOK-" + str(time.time()).replace('.', ''))
             task_starttime = str(time.time()).replace('.', '')
-            file_value_response = checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER)
+            checking_response = CheckingResponse(data, task_id, task_starttime, DOWNLOAD_FOLDER)
+            file_value_response = checking_response.main_response_wf()
             producer_tokenise = Producer(config.bootstrap_server) 
             producer = producer_tokenise.producer_fn()
-            producer.send(config.tok_output_topic, value = file_value_response.status_code)
+            producer.send(config.tok_output_topic, value = file_value_response)
             producer.flush()
             log.info("producer flushed value on topic %s"%(config.tok_output_topic))
     except Exception as e:
