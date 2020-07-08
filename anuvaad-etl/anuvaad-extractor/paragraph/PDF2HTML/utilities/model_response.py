@@ -170,7 +170,6 @@ class CheckingResponse(object):
         try:
             output_htmlfiles_path, output_pngfiles_path = pdf_html_service.pdf2html(self.DOWNLOAD_FOLDER, input_filepath)
             outputfilepath = [output_htmlfiles_path, output_pngfiles_path]
-            print(outputfilepath)
             return outputfilepath 
         except:
             task_endtime = str(time.time()).replace('.', '')
@@ -213,7 +212,6 @@ class CheckingResponse(object):
                     return response
                 else:
                     output_filepath = self.service_response(jobid, workflow_id, tool_name, step_order,input_filepath, output_file_response)
-                    print("filepaths", output_filepath)
                     if not isinstance(output_filepath, list):
                         if isinstance(output_filepath.status_code, dict):
                             return output_filepath
