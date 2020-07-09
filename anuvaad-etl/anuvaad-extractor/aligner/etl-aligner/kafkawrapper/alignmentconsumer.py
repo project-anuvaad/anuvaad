@@ -44,7 +44,6 @@ class Consumer:
                     topic = msg.topic
                     log.info("Received on Topic: " + topic)
                     break
-                log.info(data)
                 service.process(data, False)
             except Exception as e:
                 log.exception("Exception while consuming: " + str(e))
