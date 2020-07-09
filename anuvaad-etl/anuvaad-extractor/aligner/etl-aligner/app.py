@@ -9,6 +9,8 @@ from flask import copy_current_request_context
 from logging.config import dictConfig
 from controller.alignmentcontroller import alignapp
 from kafkawrapper.alignmentconsumer import Consumer
+from kafkawrapper.alignmentwflowconsumer import WflowConsumer
+
 
 
 log = logging.getLogger('file')
@@ -16,19 +18,16 @@ app_host = os.environ.get('ANU_ETL_WFM_HOST', '0.0.0.0')
 app_port = os.environ.get('ANU_ETL_WFM_PORT', 5003)
 
 
-#@copy_current_request_context
-def context_consume():
-    consumer = Consumer()
-    consumer.consume()
-
-
 # Starts the kafka consumer in a different thread
 def start_consumer():
     with alignapp.app_context():
         consumer = Consumer()
+        wflowconsumer = WflowConsumer()
         try:
-            t1 = threading.Thread(target=consumer.consume, name='AlignerKafka-Thread')
-            t1.start()
+            alignConsumerThread = threading.Thread(target=consumer.consume, name='AlignerConsumer-Thread')
+            alignWflowConsumerThread = threading.Thread(target=wflowconsumer.consume, name='AlignerWflowConsumer-Thread')
+            alignConsumerThread.start()
+            alignWflowConsumerThread.start()
         except Exception as e:
             log.exception("Exception while starting the kafka consumer: " + str(e))
 

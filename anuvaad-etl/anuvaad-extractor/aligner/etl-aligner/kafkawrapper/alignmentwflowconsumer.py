@@ -4,23 +4,23 @@ import traceback
 
 from kafka import KafkaConsumer
 import os
-from service.alignmentservice import AlignmentService
+from service.alignwflowservice import AlignWflowService
 from logging.config import dictConfig
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
-align_job_topic = "anuvaad-etl-alignment-jobs"
+anu_dp_wf_aligner_in_topic = "anuvaad-dp-tools-aligner-input-v2"
 align_job_consumer_grp = "anuvaad-etl-consumer-group"
 
 
-class Consumer:
+class WflowConsumer:
 
     def __init__(self):
         pass
 
     # Method to instantiate the kafka consumer
     def instantiate(self):
-        topics = [align_job_topic]
+        topics = [anu_dp_wf_aligner_in_topic]
         consumer = KafkaConsumer(*topics,
                                  bootstrap_servers=[cluster_details],
                                  api_version=(1, 0, 0),
@@ -34,8 +34,8 @@ class Consumer:
     # Method to read and process the requests from the kafka queue
     def consume(self):
         consumer = self.instantiate()
-        service = AlignmentService()
-        log.info("Align Consumer running.......")
+        wflowservice = AlignWflowService
+        log.info("Align WFM Consumer running.......")
         while True:
             try:
                 data = {}
@@ -44,7 +44,7 @@ class Consumer:
                     topic = msg.topic
                     log.info("Received on Topic: " + topic)
                     break
-                service.process(data, False)
+                wflowservice.wf_process(data)
             except Exception as e:
                 log.exception("Exception while consuming: " + str(e))
             finally:

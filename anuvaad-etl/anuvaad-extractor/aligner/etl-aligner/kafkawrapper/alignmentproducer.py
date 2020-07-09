@@ -28,7 +28,7 @@ class Producer:
         producer = self.instantiate()
         try:
             producer.send(topic, value=object_in)
-            log.info("Pushed to the topic: " + topic)
+            log.info("Pushed to topic: " + topic)
             producer.flush()
         except Exception as e:
             log.exception("Exception while producing: " + str(e))

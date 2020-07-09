@@ -6,6 +6,7 @@ import threading
 from logging.config import dictConfig
 from controller.wfmcontroller import wfmapp
 from kafkawrapper.wfmconsumer import consume
+from kafkawrapper.wfmcoreconsumer import core_consume
 
 
 log = logging.getLogger('file')
@@ -17,8 +18,10 @@ app_port = os.environ.get('ANU_ETL_WFM_PORT', 5002)
 def start_consumer():
     with wfmapp.test_request_context():
         try:
-            t1 = threading.Thread(target=consume, name='WFMKafkaConsumer-Thread')
-            t1.start()
+            wfmConsumerThread = threading.Thread(target=consume, name='WFMConsumer-Thread')
+            wfmCoreConsumerThread = threading.Thread(target=core_consume, name='WFMCoreConsumer-Thread')
+            wfmConsumerThread.start()
+            wfmCoreConsumerThread.start()
         except Exception as e:
             log.exception("Exception while starting the kafka consumer: " + str(e))
 

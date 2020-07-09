@@ -5,17 +5,17 @@ import traceback
 from kafka import KafkaConsumer
 import os
 from logging.config import dictConfig
-from utilities.wfmutils import WFMUtils
 from service.wfmservice import WFMService
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
 anu_etl_wfm_core_topic = os.environ.get('ANU_ETL_WFM_CORE_TOPIC', 'anu-etl-wf-initiate')
-anu_etl_wfm_consumer_grp = os.environ.get('ANU_ETL_WF_CONSUMER_GRP', 'anu-etl-wfm-consumer-group')
+anu_etl_wfm_consumer_grp = os.environ.get('ANU_ETL_WF_CONSUMER_GRP', 'anu-etl-consumer-group')
 
 
 # Method to instantiate the kafka consumer
-def instantiate(topics):
+def instantiate():
+    topics = [anu_etl_wfm_core_topic]
     consumer = KafkaConsumer(*topics,
                              bootstrap_servers=[cluster_details],
                              api_version=(1, 0, 0),
@@ -28,14 +28,10 @@ def instantiate(topics):
 
 
 # Method to read and process the requests from the kafka queue
-def consume():
-    wfmutils = WFMUtils()
+def core_consume():
     wfmservice = WFMService()
-    wfmutils.read_all_configs()
-    configs = wfmutils.get_configs()
-    topics = wfmutils.fetch_output_topics(configs)
-    consumer = instantiate(topics)
-    log.info("WFM Consumer Running..........")
+    consumer = instantiate()
+    log.info("WFM Core Consumer Running..........")
     while True:
         try:
             data = None
@@ -43,11 +39,12 @@ def consume():
                 data = msg.value
                 log.info("Received on topic: " + msg.topic)
                 break
-            wfmservice.manage(data)
+            wfmservice.initiate(data)
         except Exception as e:
             log.exception("Exception while consuming: " + str(e))
         finally:
             consumer.close()
+
 
 # Method that provides a deserialiser for the kafka record.
 def handle_json(x):

@@ -3,7 +3,6 @@ import logging
 import traceback
 
 import os
-import datetime as dt
 from kafka import KafkaProducer
 
 log = logging.getLogger('file')
@@ -28,7 +27,7 @@ class Producer:
         producer = self.instantiate()
         try:
             producer.send(topic, value=object_in)
-            log.info("PRODUCING to: " + topic)
+            log.info("Pushing to topic: " + topic)
             producer.flush()
         except Exception as e:
             log.error("Exception while producing: " + str(e))

@@ -22,7 +22,7 @@ res_suffix = 'match-'
 man_suffix = 'almost-'
 nomatch_suffix = 'no-'
 file_path_delimiter = '/'
-align_job_topic = "anuvaad-etl-align-job-register"
+align_job_topic = "anuvaad-etl-alignment-jobs"
 
 
 alignmentutils = AlignmentUtils()

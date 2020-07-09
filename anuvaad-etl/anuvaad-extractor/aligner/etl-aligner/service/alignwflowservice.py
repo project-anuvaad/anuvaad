@@ -1,12 +1,6 @@
 #!/bin/python
-import codecs
 import logging
-import os
-import traceback
 
-import numpy as np
-import datetime as dt
-from scipy.spatial import distance
 from utilities.alignmentutils import AlignmentUtils
 from repository.alignmentrepository import AlignmentRepository
 from validator.alignmentvalidator import AlignmentValidator
@@ -20,7 +14,7 @@ producer = Producer()
 util = AlignmentUtils()
 validator = AlignmentValidator()
 
-anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-output"
+anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-output-v2"
 
 
 

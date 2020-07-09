@@ -7,7 +7,7 @@ wf_error_topic = "anuvaad-etl-error"
 
 def post_error(code, message, cause):
     error = {
-        "errorId": generate_error_id(),
+        "errorID": generate_error_id(),
         "code": code,
         "message": message,
         "timeStamp": eval(str(time.time()).replace('.', ''))
@@ -21,7 +21,7 @@ def post_error(code, message, cause):
 
 def post_error_wf(code, message, jobId, taskId, state, status, cause):
     error = {
-        "errorId": generate_error_id(),
+        "errorID": generate_error_id(),
         "code": code,
         "message": message,
         "timeStamp": eval(str(time.time()).replace('.', '')),
