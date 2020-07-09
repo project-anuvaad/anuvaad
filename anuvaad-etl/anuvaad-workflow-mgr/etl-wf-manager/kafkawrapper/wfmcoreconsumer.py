@@ -9,8 +9,10 @@ from service.wfmservice import WFMService
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
-anu_etl_wfm_core_topic = os.environ.get('ANU_ETL_WFM_CORE_TOPIC', 'anu-etl-wf-initiate')
+#anu_etl_wfm_core_topic = os.environ.get('ANU_ETL_WFM_CORE_TOPIC', 'anu-etl-wf-initiate')
 anu_etl_wfm_consumer_grp = os.environ.get('ANU_ETL_WF_CONSUMER_GRP', 'anu-etl-consumer-group')
+anu_etl_wfm_core_topic = 'anu-etl-wf-initiate-v2'
+
 
 
 # Method to instantiate the kafka consumer

@@ -14,7 +14,8 @@ wfmrepo = WFMRepository()
 wfmutils = WFMUtils()
 validator = WFMValidator()
 
-anu_etl_wfm_core_topic = os.environ.get('ANU_ETL_WFM_CORE_TOPIC', 'anu-etl-wf-initiate')
+#anu_etl_wfm_core_topic = os.environ.get('ANU_ETL_WFM_CORE_TOPIC', 'anu-etl-wf-initiate-v2')
+anu_etl_wfm_core_topic = 'anu-etl-wf-initiate-v2'
 
 class WFMService:
     def __init__(self):
