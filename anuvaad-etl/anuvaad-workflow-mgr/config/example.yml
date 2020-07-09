@@ -32,12 +32,12 @@ WorkflowConfigs:
       - name: ALIGNER
         description: Accepts 2 parallel files and alings them into parallel corp for training
         kafka-input:
-        - topic: anuvaad-dp-tools-aligner-input
+        - topic: anuvaad-dp-tools-aligner-input-v2
           partitions: 2
           keys: aligner-input-key-one, aligner-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-aligner-output
+        - topic: anuvaad-dp-tools-aligner-output-v2
           partitions: 2
           keys: aligner-output-key-one, aligner-output-key-two
           assignment: round-robin
@@ -70,12 +70,12 @@ WorkflowConfigs:
       - name: ALIGNER
         description: Accepts 2 parallel files and alings them into parallel corp for training
         kafka-input:
-        - topic: anuvaad-dp-tools-aligner-input
+        - topic: anuvaad-dp-tools-aligner-input-v2
           partitions: 2
           keys: aligner-input-key-one, aligner-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-aligner-output
+        - topic: anuvaad-dp-tools-aligner-output-v2
           partitions: 2
           keys: aligner-output-key-one, aligner-output-key-two
           assignment: round-robin
