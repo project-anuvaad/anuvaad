@@ -30,11 +30,6 @@ class FileOperation(object):
     def input_path(self, input_filename):
         input_filepath = os.path.join('upload', input_filename)
         return input_filepath
-
-    def output_path(self,i, DOWNLOAD_FOLDER):
-        output_filename = '%d-'%i + str(time.time()).replace('.', '') + '.json'
-        output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filename)
-        return output_filepath , output_filename
     
     def read_file(self, input_filename):
         input_filepath = self.input_path(input_filename)
@@ -56,9 +51,11 @@ class FileOperation(object):
         locale = files['locale']
         return filepath, file_type, locale
 
-    def one_filename_response(self, input_filename, output_filename):
+    def one_filename_response(self, input_filename, output_filename, in_locale, in_file_type):
         file_res = {
-            "input" : input_filename,
-            "output" : output_filename
+            "inputFile" : input_filename,
+            "outputFile" : output_filename,
+            "outputLocale" : in_locale,
+            "outputType" : in_file_type
         }
         return file_res

@@ -6,6 +6,9 @@ from src.services.service import Annotation
 import time
 import logging
 
+log = logging.getLogger('file')
+file_ops = FileOperation()
+
 class Status(enum.Enum):
     SUCCESS = {
         "status": "SUCCESS",
@@ -123,6 +126,14 @@ class Status(enum.Enum):
             "message" : "No value received from consumer."
         }
     }
+    ERR_request_input_format = {
+        "status" : "FAILED",
+        "state" : "NER PROCESSING",
+        "error": {
+            "code" : "REQUEST_FORMAT_ERROR",
+            "message" : "Json provided by user is not in proper format."
+        }
+    }
 
 class CustomResponse():
     def __init__(self, status_code, jobid, workflow_id, tool_name, step_order, taskid, task_start_time, task_end_time, filename_response):
@@ -136,84 +147,202 @@ class CustomResponse():
         self.status_code['tool'] = tool_name
         self.status_code['stepOrder'] = step_order
 
-    def get_response(self):
-        return jsonify(self.status_code)
 
-log = logging.getLogger('file')
+class CheckingResponse(object):
 
-def checking_file_response(jobid, workflow_id, tool_name, step_order, task_id, task_starttime, input_files, DOWNLOAD_FOLDER):
-    file_ops = FileOperation()
-    output_filename = ""
-    filename_response = list()
-    output_file_response = {"files" : filename_response}
-    if len(input_files) == 0 or not isinstance(input_files, list):
-        task_endtime = str(time.time()).replace('.', '')
-        response = CustomResponse(Status.ERR_EMPTY_FILE_LIST.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+    def __init__(self, json_data, task_id, task_starttime, DOWNLOAD_FOLDER):
+        self.json_data = json_data
+        self.task_id = task_id
+        self.task_starttime = task_starttime
+        self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
+
+    def wf_keyerror(self, jobid, workflow_id, tool_name, step_order, output_file_response):
+        if jobid == "" or jobid is None:
+            task_endtime = str(time.time()).replace('.', '')
+            response = CustomResponse(Status.ERR_jobid_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
+                                            self.task_id, self.task_starttime, task_endtime, output_file_response)
+            return response
+        elif workflow_id == "" or workflow_id is None:
+            task_endtime = str(time.time()).replace('.', '')
+            response = CustomResponse(Status.ERR_Workflow_id_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
+                                            self.task_id, self.task_starttime, task_endtime, output_file_response)
+            return response
+        elif tool_name == "" or tool_name is None:
+            task_endtime = str(time.time()).replace('.', '')
+            response = CustomResponse(Status.ERR_Tool_Name_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
+                                            self.task_id, self.task_starttime, task_endtime, output_file_response)
+            return response
+        elif step_order == "" or step_order is None:
+            task_endtime = str(time.time()).replace('.', '')
+            response = CustomResponse(Status.ERR_step_order_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
+                                            self.task_id, self.task_starttime, task_endtime, output_file_response)
+            return response
+        response = False
         return response
-    elif jobid == "" or jobid is None:
-        task_endtime = str(time.time()).replace('.', '')
-        response = CustomResponse(Status.ERR_jobid_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
-        return response.get_response()
-    elif workflow_id == "" or workflow_id is None:
-        task_endtime = str(time.time()).replace('.', '')
-        response = CustomResponse(Status.ERR_Workflow_id_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
-        return response.get_response()
-    elif tool_name == "" or tool_name is None:
-        task_endtime = str(time.time()).replace('.', '')
-        response = CustomResponse(Status.ERR_Tool_Name_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
-        return response.get_response()
-    elif step_order == "" or step_order is None:
-        task_endtime = str(time.time()).replace('.', '')
-        response = CustomResponse(Status.ERR_step_order_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
-        return response.get_response()
-    else:
-        for i, item in enumerate(input_files):
-            input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
-            input_filepath = file_ops.input_path(input_filename) 
-            file_res = file_ops.one_filename_response(input_filename, output_filename)
-            filename_response.append(file_res)
-            if input_filename == "" or input_filename is None:
+
+    def file_encoding_error(self, jobid, workflow_id, tool_name, step_order, input_filename, output_file_response):
+        try:
+            input_file_data = file_ops.read_file(input_filename)
+            if len(input_file_data) == 0:
                 task_endtime = str(time.time()).replace('.', '')
-                response = CustomResponse(Status.ERR_FILE_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+                response = CustomResponse(Status.ERR_EMPTY_FILE.value, jobid, workflow_id,  tool_name, step_order,
+                                                self.task_id, self.task_starttime, task_endtime, output_file_response)
                 return response
-            elif file_ops.check_file_extension(in_file_type) is False:
-                task_endtime = str(time.time()).replace('.', '')
-                response = CustomResponse(Status.ERR_EXT_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
-                return response
-            elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(DOWNLOAD_FOLDER) is False:
-                task_endtime = str(time.time()).replace('.', '')
-                response = CustomResponse(Status.ERR_DIR_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
-                return response
-            elif in_locale == "" or in_locale is None:
-                task_endtime = str(time.time()).replace('.', '')
-                response = CustomResponse(Status.ERR_locale_NOT_FOUND.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
-                return response
-            else:
+        except Exception as e:
+            log.error("service supports only utf-16 encoded file. %s"%e)
+            task_endtime = str(time.time()).replace('.', '')
+            response = CustomResponse(Status.ERR_file_encodng.value, jobid, workflow_id, tool_name, step_order,
+                                            self.task_id, self.task_starttime, task_endtime, output_file_response)
+            return response
+        return input_file_data
+
+    def service_response(self, jobid, workflow_id, tool_name, step_order,input_filename, in_locale, output_file_response, index):
+        annotation = Annotation()
+        response_input_file_data = self.file_encoding_error(jobid, workflow_id, tool_name, step_order, input_filename, output_file_response)
+        if isinstance(response_input_file_data, list):
+            if in_locale == "en":
                 try:
-                    input_file_data = file_ops.read_file(input_filename)
-                    if len(input_file_data) == 0:
-                        task_endtime = str(time.time()).replace('.', '')
-                        response = CustomResponse(Status.ERR_EMPTY_FILE.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
-                        return response
-                except Exception as e:
-                    log.error("service supports only utf-16 encoded file. %s"%e)
-                    task_endtime = str(time.time()).replace('.', '')
-                    response = CustomResponse(Status.ERR_file_encodng.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
-                    return response
-                try:
-                    annotation = Annotation()
-                    if in_locale == "en":
-                        input_file_data = file_ops.read_file(input_filename)
-                        output_filepath , output_en_filename = file_ops.output_path(i, DOWNLOAD_FOLDER)
-                        annotation.storing_tagged_data(input_file_data, output_filepath)
-                        file_res['output'] = output_en_filename
-                    elif in_locale == "hi":
-                        file_res['output'] = "Hindi NER facility is not available right now."
-                    task_endtime = str(time.time()).replace('.', '')
+                    response_ner = annotation.storing_tagged_data(response_input_file_data)
+                    return response_ner 
                 except:
                     task_endtime = str(time.time()).replace('.', '')
-                    response = CustomResponse(Status.ERR_NER_annotation.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
+                    response = CustomResponse(Status.ERR_NER_annotation.value, jobid, workflow_id,  tool_name, step_order,
+                                                    self.task_id, self.task_starttime, task_endtime, output_file_response)
                     return response
-        response_true = CustomResponse(Status.SUCCESS.value, jobid, workflow_id,  tool_name, step_order, task_id, task_starttime, task_endtime, output_file_response)
-        log.info("response generated")
+            else:
+                task_endtime = str(time.time()).replace('.', '')
+                response = CustomResponse(Status.ERR_locale_NOT_FOUND.value, jobid, workflow_id,  tool_name, step_order,
+                                                self.task_id, self.task_starttime, task_endtime, output_file_response)
+                return response
+        else:
+            return response_input_file_data
+
+    def input_file_response(self, jobid, workflow_id, tool_name, step_order, input_files, output_file_response, filename_response):
+        output_filename = ""
+        if len(input_files) == 0 or not isinstance(input_files, list):
+            task_endtime = str(time.time()).replace('.', '')
+            response = CustomResponse(Status.ERR_EMPTY_FILE_LIST.value, jobid, workflow_id, tool_name, step_order,
+                                            self.task_id, self.task_starttime, task_endtime, output_file_response)
+            return response
+        else:
+            for i, item in enumerate(input_files):
+                input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                input_filepath = file_ops.input_path(input_filename) #
+                file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
+                filename_response.append(file_res)
+                if input_filename == "" or input_filename is None:
+                    task_endtime = str(time.time()).replace('.', '')
+                    response = CustomResponse(Status.ERR_FILE_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
+                                                    self.task_id, self.task_starttime, task_endtime, output_file_response)
+                    return response
+                elif file_ops.check_file_extension(in_file_type) is False:
+                    task_endtime = str(time.time()).replace('.', '')
+                    response = CustomResponse(Status.ERR_EXT_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
+                                                    self.task_id, self.task_starttime, task_endtime, output_file_response)
+                    return response
+                elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
+                    task_endtime = str(time.time()).replace('.', '')
+                    response = CustomResponse(Status.ERR_DIR_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
+                                                    self.task_id, self.task_starttime, task_endtime, output_file_response)
+                    return response
+                elif in_locale == "" or in_locale is None:
+                    task_endtime = str(time.time()).replace('.', '')
+                    response = CustomResponse(Status.ERR_locale_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
+                                                    self.task_id, self.task_starttime, task_endtime, output_file_response)
+                    return response
+                else:
+                    output_filename = self.service_response(jobid, workflow_id, tool_name, step_order,input_filename, in_locale, output_file_response, i)
+                    try:
+                        if isinstance(output_filename.status_code, dict):
+                            return output_filename
+                    except:
+                        file_res['outputFile'] = output_filename
+        task_endtime = str(time.time()).replace('.', '')
+        response_true = CustomResponse(Status.SUCCESS.value, jobid, workflow_id, tool_name, step_order, self.task_id, self.task_starttime,
+                                                task_endtime, output_file_response)
         return response_true
+
+    def only_input_file_response(self, input_files):
+        output_filename = ""
+        filename_response = list()
+        if len(input_files) == 0 or not isinstance(input_files, list):
+            response = Status.ERR_EMPTY_FILE_LIST.value
+            return response
+        else:
+            for item in input_files:
+                input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                input_filepath = file_ops.input_path(input_filename) #
+                file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
+                filename_response.append(file_res)
+                if input_filename == "" or input_filename is None:
+                    response = Status.ERR_FILE_NOT_FOUND.value
+                    return response
+                elif file_ops.check_file_extension(in_file_type) is False:
+                    response = Status.ERR_EXT_NOT_FOUND.value
+                    return response
+                elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
+                    response = Status.ERR_DIR_NOT_FOUND.value
+                    return response
+                elif in_locale == "" or in_locale is None:
+                    response = Status.ERR_locale_NOT_FOUND.value
+                    return response
+                else:
+                    try:
+                        input_file_data = file_ops.read_file(input_filename)
+                        if len(input_file_data) == 0:
+                            response = Status.ERR_EMPTY_FILE.value
+                            return response
+                    except Exception as e:
+                        log.error("service supports only utf-16 encoded file. %s"%e)
+                        response = Status.ERR_file_encodng.value
+                        return response
+                    annotation = Annotation()
+                    if in_locale == "en":
+                        try:
+                            response_ner = annotation.storing_tagged_data(input_file_data)
+                            file_res['outputFile'] = response_ner
+                        except:
+                            log.error("ner failed")
+                            response = Status.ERR_NER_annotation.value
+                            return response
+                    else:
+                        log.error("ner failed")
+                        response = Status.ERR_locale_NOT_FOUND.value
+                        return response
+            response_true = {
+                "status": "SUCCESS",
+                "state": "NER PROCESSED",
+                "files" : filename_response
+            }
+            return response_true
+
+    def main_response_wf(self):
+        log.info("Response generation started")
+        keys_checked = {'workflowCode','jobID','input','tool','stepOrder'}
+        if self.json_data.keys() >= keys_checked:
+            log.info("workflow request initiated.")
+            input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
+            filename_response = list()
+            output_file_response = {"files" : filename_response}
+            response_error = self.wf_keyerror(jobid, workflow_id, tool_name, step_order, output_file_response)
+            if response_error is not False:
+                log.error("workflow keys error")
+                return response_error.status_code
+            else:
+                response_file = self.input_file_response(jobid, workflow_id, tool_name, step_order, input_files, output_file_response, filename_response)
+                log.info("file response for wf generated")
+                return response_file.status_code
+        else:
+            log.error("Input format is not correct")
+            return Status.ERR_request_input_format.value
+
+    def main_response_files_only(self):
+        if self.json_data.keys() == {'files'}:
+            log.info("request accepted")
+            input_files = self.json_data['files']
+            response = self.only_input_file_response(input_files)
+            log.info("request processed")
+            return response
+        else:
+            log.error("request format is not right.")
+            return Status.ERR_request_input_format.value

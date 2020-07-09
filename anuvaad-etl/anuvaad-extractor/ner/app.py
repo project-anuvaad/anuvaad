@@ -1,5 +1,4 @@
 from src.services.kf_service import process_annotation_kf
-from src.utilities.model_response import checking_file_response
 from flask import Flask
 from flask.blueprints import Blueprint
 from flask_cors import CORS
@@ -8,7 +7,6 @@ import config
 import threading
 import logging
 import time
-from logging.config import dictConfig
 
 ner_app  = Flask(__name__)
 log = logging.getLogger('file')

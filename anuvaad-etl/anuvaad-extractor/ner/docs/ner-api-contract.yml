@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   version: 1.0.0
   title: Anuvaad NER - API Contract
-  description: A python based microservice to trigger and orchestrate the Named Entity Recognition (NER) part of anuvaad-extractor. This service will expose REST APIs for tokenisation activity on the other hand will also be plugged into the system as a consumer that picks records posted onto the Kafka Queue in order to perform NER activity.
+  description: A python based microservice to trigger and orchestrate the Named Entity Recognition (NER) part of anuvaad-extractor. This service will expose REST APIs for ner activity on the other hand will also be plugged into the system as a consumer that picks records posted onto the Kafka Queue in order to perform NER activity.
   contact:
     name: Kumar Deepak
     email: kumar.deepak@tarento.com
@@ -130,16 +130,16 @@ definitions:
         description: A unique job ID generated for the complete workflow.
       taskID:
         type: string
-        description: A unique task ID generated for the current on-going task of the tokeniser.
+        description: A unique task ID generated for the current on-going task of the ner.
       status:
         type: string
-        description: Current status of the tokenisation part of workflow.
+        description: Current status of the ner part of workflow.
         enum:
           - SUCCESS
           - FAILED
       state:
         type: string
-        description: Current state of the tokenisation part of workflow.
+        description: Current state of the ner part of workflow.
         enum:
           - NER PROCESSED
       output:

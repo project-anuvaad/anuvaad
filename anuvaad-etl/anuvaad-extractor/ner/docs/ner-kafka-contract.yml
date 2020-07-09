@@ -104,16 +104,16 @@ definitions:
         description: A unique job ID generated for the complete workflow.
       taskID:
         type: string
-        description: A unique task ID generated for the current on-going task of the tokeniser.
+        description: A unique task ID generated for the current on-going task of the ner.
       status:
         type: string
-        description: Current status of the tokenisation part of workflow.
+        description: Current status of the ner part of workflow.
         enum:
           - SUCCESS
           - FAILED
       state:
         type: string
-        description: Current state of the tokenisation part of workflow.
+        description: Current state of the ner part of workflow.
         enum:
           - NER PROCESSED
       output:
