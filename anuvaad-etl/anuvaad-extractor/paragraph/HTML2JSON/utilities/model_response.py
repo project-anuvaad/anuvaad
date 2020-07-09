@@ -121,7 +121,7 @@ class Status(enum.Enum):
     }
     ERR_request_input_format = {
         "status" : "FAILED",
-        "state" : "PDF-TO-HTML-PROCESSING",
+        "state" : "HTML-TO-JSON-PROCESSING",
         "error": {
             "code" : "REQUEST_FORMAT_ERROR",
             "message" : "Json provided by user is not in proper format."
@@ -225,12 +225,11 @@ class CheckingResponse(object):
                     return response
                 else:
                     output_filepath = self.service_response(jobid, workflow_id, tool_name, step_order,input_filepath, output_file_response)
-                    if isinstance(output_filepath, object):
-                        try:
-                            if isinstance(output_filepath.status_code, dict):
-                                return output_filepath
-                        except:
-                            file_res['outputHtml2JsonFilePath'] = output_filepath
+                    try:
+                        if isinstance(output_filepath.status_code, dict):
+                            return output_filepath
+                    except:
+                        file_res['outputHtml2JsonFilePath'] = output_filepath
         task_endtime = str(time.time()).replace('.', '')
         response_true = CustomResponse(Status.SUCCESS.value, jobid, workflow_id, tool_name, step_order, self.task_id, self.task_starttime,
                                                 task_endtime, output_file_response)
@@ -274,7 +273,7 @@ class CheckingResponse(object):
             log.info("response generated from model response")
             response_true = {
                 "status": "SUCCESS",
-                "state": "SENTENCE-TOKENISED",
+                "state": "HTML-TO-JSON-PROCESSED",
                 "files" : filename_response
             }
             return response_true
