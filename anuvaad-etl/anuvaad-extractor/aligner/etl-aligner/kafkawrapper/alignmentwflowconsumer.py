@@ -47,8 +47,6 @@ class WflowConsumer:
                 wflowservice.wf_process(data)
             except Exception as e:
                 log.exception("Exception while consuming: " + str(e))
-            finally:
-                consumer.close()
 
     # Method that provides a deserialiser for the kafka record.
     def handle_json(self, x):

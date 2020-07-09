@@ -9,7 +9,7 @@ from logging.config import dictConfig
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
-align_job_topic = "anuvaad-etl-alignment-jobs-v2"
+align_job_topic = "anuvaad-etl-alignment-jobs-v3"
 align_job_consumer_grp = "anuvaad-etl-consumer-group"
 
 
@@ -48,8 +48,6 @@ class Consumer:
                 service.process(data, False)
             except Exception as e:
                 log.exception("Exception while consuming: " + str(e))
-            finally:
-                consumer.close()
 
     # Method that provides a deserialiser for the kafka record.
     def handle_json(self, x):

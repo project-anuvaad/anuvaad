@@ -42,8 +42,6 @@ def core_consume():
             wfmservice.initiate(data)
         except Exception as e:
             log.exception("Exception while consuming: " + str(e))
-        finally:
-            consumer.close()
 
 
 # Method that provides a deserialiser for the kafka record.

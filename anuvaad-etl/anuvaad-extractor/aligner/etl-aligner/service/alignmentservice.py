@@ -1,14 +1,10 @@
 #!/bin/python
-import codecs
 import logging
 import os
-import traceback
 
 import numpy as np
-import datetime as dt
 import time
 from scipy.spatial import distance
-from flask import jsonify
 from laser.laser import Laser
 from utilities.alignmentutils import AlignmentUtils
 from repository.alignmentrepository import AlignmentRepository
@@ -22,7 +18,7 @@ res_suffix = 'match-'
 man_suffix = 'almost-'
 nomatch_suffix = 'no-'
 file_path_delimiter = '/'
-align_job_topic = "anuvaad-etl-alignment-jobs-v2"
+align_job_topic = "anuvaad-etl-alignment-jobs-v3"
 
 
 alignmentutils = AlignmentUtils()
