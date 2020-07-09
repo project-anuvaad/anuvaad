@@ -33,6 +33,7 @@ class WFMService:
     # Method to initiate the workflow.
     # This fetches the first step of workflow and starts the job.
     def initiate(self, wf_input):
+        log.info(wf_input)
         try:
             order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
             first_step_details = order_of_execution[0]
