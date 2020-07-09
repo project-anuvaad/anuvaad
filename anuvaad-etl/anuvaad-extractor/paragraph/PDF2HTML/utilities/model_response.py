@@ -258,7 +258,7 @@ class CheckingResponse(object):
             log.info("response generated from model response")
             response_true = {
                 "status": "SUCCESS",
-                "state": "SENTENCE-TOKENISED",
+                "state": "PDF-TO-HTML-PROCESSED",
                 "files" : filename_response
             }
             return response_true

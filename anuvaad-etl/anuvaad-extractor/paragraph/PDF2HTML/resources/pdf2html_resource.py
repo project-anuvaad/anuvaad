@@ -27,7 +27,7 @@ class Pdf2HtmlConversionWF(Resource):
 class Pdf2HtmlConversion(Resource):
 
     def post(self):
-        log.info("Individual operation of tokenisation service strated.")
+        log.info("Individual operation of Pdf2Html service strated.")
         json_data = request.get_json(force=True)
         task_id, task_starttime = "", ""
         checking_response = CheckingResponse(json_data, task_id, task_starttime, DOWNLOAD_FOLDER)
