@@ -36,7 +36,7 @@ def core_consume():
     log.info("WFM Core Consumer Running..........")
     while True:
         try:
-            data = None
+            data = {}
             for msg in consumer:
                 data = msg.value
                 log.info("Received on topic: " + msg.topic)
