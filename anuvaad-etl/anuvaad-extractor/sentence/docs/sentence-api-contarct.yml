@@ -39,10 +39,6 @@ paths:
           description: On input errors causing a failure in the job.
           schema:
             $ref: '#/definitions/Error'
-        500:
-          description: On system level errors causing failure in the job.
-          schema:
-            $ref: '#/definitions/Error'
 
   
   /v1/sentence/tokenise:
