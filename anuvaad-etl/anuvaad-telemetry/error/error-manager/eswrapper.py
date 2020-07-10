@@ -1,10 +1,10 @@
 import logging
-from datetime import datetime
+import os
 from elasticsearch import Elasticsearch
 
 log = logging.getLogger('file')
 
-es_url = "https://user:secret@localhost:443"
+es_url = os.environ.get('ES_URL', 'https://user:secret@localhost:443')
 es_error_index_test = "anuvaad-etl-errors-test"
 es_error_index = "anuvaad-etl-errors"
 es_error_wf_type = "wf-errors"
