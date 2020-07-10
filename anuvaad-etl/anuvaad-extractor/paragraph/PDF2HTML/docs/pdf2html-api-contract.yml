@@ -82,7 +82,7 @@ definitions:
               type: string
               description: type of the file.
               enum:
-                - txt
+                - pdf
             locale:
               type: string
               description: The locale of the file. Meaning, in which language is the uploaded file. For instance, 'en' for English, 'hi' for Hindi etc.
@@ -109,7 +109,7 @@ definitions:
               type: string
               description: type of the file.
               enum:
-                - txt
+                - directory
             locale:
               type: string
               description: The locale of the file. Meaning, in which language is the uploaded file. For instance, 'en' for English, 'hi' for Hindi etc.

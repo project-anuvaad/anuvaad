@@ -45,7 +45,7 @@ class FileOperation(object):
             "outputHtmlFilePath" : output_htmlfiles_path,
             "outputImageFilePath" : output_pngfiles_path,
             "outputLocale" : in_locale,
-            "outputType" : in_file_type
+            "outputType" : "directory"
         }
         return file_res     
 
