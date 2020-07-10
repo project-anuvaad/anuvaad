@@ -15,7 +15,7 @@ basePath: '/anuvaad-etl/anuvaad-extractor/paragraph/HTML2JSON'
 
 
 paths: 
-  /v1/htmltojson/convert:
+  /v1/htmltojson-wf/convert:
     post:
       summary: REST API to convert HTML files into JSON of each HTML file.
       description: This API accepts list of directory path of HTML files and convert these Html files into Json data of each Html file. This is an async process.
@@ -43,6 +43,36 @@ paths:
           description: On system level errors causing failure in the job.
           schema:
             $ref: '#/definitions/Error'
+
+
+  /v1/htmltojson/convert:
+    post:
+      summary: REST API to trigger an html to json conversion job
+      description: This API accepts html files.  
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/HTML-to-JSONRequest/properties/input'
+            
+      tags:
+      - HTML-to-JSON
+
+      responses:
+        202:
+          description: On successful initiation of the job.
+          schema:
+            $ref: '#/definitions/HTML-to-JSONResponse/properties/output'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error/error'
+        500:
+          description: On system level errors causing failure in the job.
+          schema:
+            $ref: '#/definitions/Error/error'
 
 
 
