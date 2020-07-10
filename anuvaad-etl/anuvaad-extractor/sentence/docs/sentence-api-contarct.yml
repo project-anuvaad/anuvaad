@@ -15,10 +15,10 @@ basePath: '/anuvaad-etl/anuvaad-extractor/tokeniser'
 
 
 paths: 
-  /v1/sentence/tokenise:
+  /v1/sentence/tokenise-wf:
     post:
       summary: REST API to extract sentences from paragraph (sentence-tokenisation).
-      description: This API accepts list of text files of paragraphs and tokenise sentences from file. This is an async process.
+      description: This API accepts list of text files of paragraphs and tokenise sentences from paragraphs. This is an async process.
       parameters:
         - name: request
           in: body
@@ -32,7 +32,7 @@ paths:
 
       responses:
         202:
-          description: On successful initiation of the job.
+          description: On successful completion of the job.
           schema:
             $ref: '#/definitions/TokenisationResponse'
         400:
@@ -43,6 +43,36 @@ paths:
           description: On system level errors causing failure in the job.
           schema:
             $ref: '#/definitions/Error'
+
+  
+  /v1/sentence/tokenise:
+    post:
+      summary: REST API to trigger a tokenisation job.
+      description: This API accepts txt file of paragraphs and tokenise sentences from paragraphs.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/TokenisationRequest/properties/input'
+            
+      tags:
+      - tokenisation
+
+      responses:
+        202:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/TokenisationResponse/properties/output'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error/error'
+        500:
+          description: On system level errors causing failure in the job.
+          schema:
+            $ref: '#/definitions/Error/error'
 
 
 
