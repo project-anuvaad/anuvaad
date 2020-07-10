@@ -55,6 +55,12 @@ class WFMService:
     # This method manages the workflow by tailoring the predecessor and successor tools for the workflow.
     def manage(self, task_output):
         try:
+            job_id = task_output["jobID"]
+            job_details = self.get_job_details(job_id)
+            if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED":
+                log.info("The job is already completed/failed, jobID: " + job_id)
+                return None
+
             if task_output["status"] != "FAILED":
                 next_step_details = self.get_next_step_details(task_output)
                 if next_step_details is not None:
@@ -147,5 +153,21 @@ class WFMService:
     # Method to search jobs.
     def get_job_details(self, job_id):
         return wfmrepo.search_job(job_id)
+
+
+    # This function is called upon receiving an error on the error topic.
+    # The error will be posted to the topic by one of the downstream services upon any error/exception in those services
+    # This function will receive the error and update the status of the job.
+    def update_errors(self, error):
+        try:
+            job_id = error["jobID"]
+            job_details = self.get_job_details(job_id)
+            job_details["status"] = "FAILED"
+            job_details["endTime"] = eval(str(time.time()).replace('.', ''))
+            job_details["error"] = error
+            self.update_job_details(job_details, False)
+        except Exception as e:
+            log.exception("Failed to update error")
+
 
 

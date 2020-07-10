@@ -22,7 +22,7 @@ def push_to_queue(object_in, topic):
     producer = instantiate()
     try:
         producer.send(topic, value=object_in)
-        log.info("PRODUCING to: " + topic)
+        log.info("Pushing to the topic: " + topic)
         producer.flush()
     except Exception as e:
         log.error("Exception while producing: " + str(e))

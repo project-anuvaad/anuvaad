@@ -7,6 +7,7 @@ from logging.config import dictConfig
 from controller.wfmcontroller import wfmapp
 from kafkawrapper.wfmconsumer import consume
 from kafkawrapper.wfmcoreconsumer import core_consume
+from kafkawrapper.wfmerrorconsumer import error_consume
 
 
 log = logging.getLogger('file')
@@ -20,8 +21,10 @@ def start_consumer():
         try:
             wfmConsumerThread = threading.Thread(target=consume, name='WFMConsumer-Thread')
             wfmCoreConsumerThread = threading.Thread(target=core_consume, name='WFMCoreConsumer-Thread')
+            wfmErrorConsumerThread = threading.Thread(target=error_consume, name='WFMErrorConsumer-Thread')
             wfmConsumerThread.start()
             wfmCoreConsumerThread.start()
+            wfmErrorConsumerThread.start()
         except Exception as e:
             log.exception("Exception while starting the kafka consumer: " + str(e))
 

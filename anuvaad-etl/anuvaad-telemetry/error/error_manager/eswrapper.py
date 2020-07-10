@@ -16,15 +16,14 @@ def instantiate_es_client():
     return es_client
 
 
-def index_to_es(self, index_obj):
-    es = self.instantiate_es_client()
+def index_to_es(index_obj):
+    es = instantiate_es_client()
     try:
         id = index_obj["errorID"]
         if index_obj["errorType"] == "core-error":
             in_type = es_error_core_type
         else:
             in_type = es_error_wf_type
-        es.index(index=es_error_index_test, type=in_type, id=id, body=index_obj)
-
+        es.index(index=es_error_index_test, doc_type=in_type, id=id, body=index_obj)
     except Exception as e:
         log.exception("Indexing FAILED for errorID: " + index_obj["errorID"])

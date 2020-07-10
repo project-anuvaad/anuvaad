@@ -1,6 +1,7 @@
 import time
-from kafkawrapper.emproducer import push_to_queue
-from elasticsearchwrapper.eswrapper import index_to_es
+import uuid
+from .emproducer import push_to_queue
+from .eswrapper import index_to_es
 
 
 wf_error_topic = "anuvaad-etl-error"
@@ -42,5 +43,5 @@ def post_error_wf(code, message, jobId, taskId, state, status, cause):
 
 
 def generate_error_id():
-    return "error-" + str(time.time()).replace('.', '')
+    return uuid.uuid4()
 

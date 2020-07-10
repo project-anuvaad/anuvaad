@@ -4,6 +4,10 @@ import logging
 import os
 
 from flask import jsonify
+from error_manager.emservice import post_error
+from utilities.alignmentutils import AlignmentUtils
+
+util = AlignmentUtils()
 
 
 class AlignmentValidator:
@@ -13,25 +17,25 @@ class AlignmentValidator:
     # Validator that validates the input request for initiating the alignment job
     def validate_input(self, data):
         if 'source' not in data.keys():
-            return self.get_error("SOURCE_NOT_FOUND", "Details of the source not available")
+            return util.error_handler("SOURCE_NOT_FOUND", "Details of the source not available", None, False)
         else:
             source = data["source"]
             if 'filepath' not in source.keys():
-                return self.get_error("SOURCE_FILE_NOT_FOUND", "Details of the source file not available")
+                return util.error_handler("SOURCE_FILE_NOT_FOUND", "Details of the source file not available",
+                                          None, False)
             elif 'locale' not in source.keys():
-                return self.get_error("SOURCE_LOCALE_NOT_FOUND", "Details of the source locale not available")
+                return util.error_handler("SOURCE_LOCALE_NOT_FOUND", "Details of the source locale not available",
+                                          None, False)
         if 'target' not in data.keys():
-            return self.get_error("TARGET_NOT_FOUND", "Details of the target not available")
+            return util.error_handler("TARGET_NOT_FOUND", "Details of the target not available", None, False)
         else:
             target = data["target"]
             if 'filepath' not in target.keys():
-                return self.get_error("TARGET_FILE_NOT_FOUND", "Details of the target file not available")
+                return util.error_handler("TARGET_FILE_NOT_FOUND", "Details of the target file not available",
+                                          None, False)
             elif 'locale' not in target.keys():
-                return self.get_error("TARGET_LOCALE_NOT_FOUND", "Details of the target locale not available")
-
-    # Error formatter
-    def get_error(self, code, message):
-        return {"status": "ERROR", "code": code, "message": message}
+                return util.error_handler("TARGET_LOCALE_NOT_FOUND", "Details of the target locale not available",
+                                          None, False)
 
 
 

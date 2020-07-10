@@ -9,12 +9,14 @@ import time
 import requests
 import numpy as np
 import csv
+from error_manager.emservice import post_error
+from error_manager.emservice import post_error_wf
 
 log = logging.getLogger('file')
 two_files = True
 no_of_words = 200
 file_encoding = 'utf-16'
-#upload_url = os.environ.get('FILE_UPLOAD_URL', 'https://auth.anuvaad.org/upload')
+# upload_url = os.environ.get('FILE_UPLOAD_URL', 'https://auth.anuvaad.org/upload')
 upload_url = "https://auth.anuvaad.org/upload"
 
 
@@ -81,8 +83,8 @@ class AlignmentUtils:
     # Utility to upload files to anuvaad's upload service
     def upload_file_binary(self, file):
         data = open(file, 'rb')
-        response = requests.post(url = upload_url, data = data,
-                                 headers = {'Content-Type': 'application/x-www-form-urlencoded'})
+        response = requests.post(url=upload_url, data=data,
+                                 headers={'Content-Type': 'application/x-www-form-urlencoded'})
         if response is not None:
             data = json.loads(response.text)
             for key, value in data.items():
@@ -95,13 +97,13 @@ class AlignmentUtils:
     def get_cs_on_sen_cat(self, sentence):
         sen_len = len(sentence.split())
         if 0 < sen_len <= 10:
-            #SMALL
+            # SMALL
             return 0.7, 0.75
         elif 10 < sen_len <= 20:
-            #MEDIUM
+            # MEDIUM
             return 0.75, 0.8
         else:
-            #LARGE
+            # LARGE
             return 0.75, 0.8
 
     # Utility to generate a unique random task ID
@@ -111,3 +113,15 @@ class AlignmentUtils:
     # Utility to generate a unique random job ID
     def generate_job_id(self):
         return "ALIGN-" + str(time.time()).replace('.', '')
+
+    # Builds the error and passes it to error_manager
+    def error_handler(self, code, message, object_in, iswf):
+        if iswf:
+            job_id = object_in["jobID"]
+            task_id = object_in["taskID"]
+            state = "SENTENCES-ALIGNED"
+            status = "FAILED"
+            post_error_wf(code, message, job_id, task_id, state, status, None)
+        else:
+            error = post_error(code, message, None)
+            return error

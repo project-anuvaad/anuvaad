@@ -12,6 +12,7 @@ from validator.alignmentvalidator import AlignmentValidator
 from kafkawrapper.alignmentproducer import Producer
 from .alignwflowservice import AlignWflowService
 
+
 log = logging.getLogger('file')
 directory_path = os.environ.get('SA_DIRECTORY_PATH', r'C:\Users\Vishal\Desktop\anuvaad\Facebook LASER\resources\Input\length-wise')
 res_suffix = 'match-'
@@ -128,18 +129,16 @@ class AlignmentService:
                     result = self.build_final_response(path, path_indic, output_dict, object_in)
                     self.update_job_details(result, False)
                     if iswf:
-                        wflowservice.update_wflow_details(result, object_in, None)
+                        wflowservice.update_wflow_details(result, object_in)
                 else:
                     self.update_job_status("FAILED", object_in, "Exception while writing the output")
                     if iswf:
-                        error = validator.get_error("OUTPUT_ERROR", "Exception while writing the output")
-                        wflowservice.update_wflow_details(None, object_in, error)
+                        util.error_handler("OUTPUT_ERROR", "Exception while writing the output", object_in, True)
             except Exception as e:
                 log.error("Exception while writing the output: ", str(e))
                 self.update_job_status("FAILED", object_in, "Exception while writing the output")
                 if iswf:
-                    error = validator.get_error("OUTPUT_ERROR", "Exception while writing the output: " + str(e))
-                    wflowservice.update_wflow_details(None, object_in, error)
+                    util.error_handler("OUTPUT_ERROR", "Exception while writing the output", object_in, True)
                 return {}
             log.info("Sentences aligned Successfully! JOB ID: " + str(object_in["jobID"]))
         else:
@@ -154,8 +153,7 @@ class AlignmentService:
             log.exception("Exception while parsing the input: " + str(e))
             self.update_job_status("FAILED", object_in, "Exception while parsing the input")
             if iswf:
-                error = validator.get_error("INPUT_ERROR", "Exception while parsing the input: " + str(e))
-                wflowservice.update_wflow_details(None, object_in, error)
+                util.error_handler("INPUT_ERROR", "Exception while parsing the input: " + str(e), object_in, True)
             return None, None
 
     # Wrapper to build sentence embeddings
@@ -169,8 +167,7 @@ class AlignmentService:
             log.exception("Exception while vectorising the sentences: " + str(e))
             self.update_job_status("FAILED", object_in, "Exception while vectorising sentences")
             if iswf:
-                error = validator.get_error("LASER_ERROR", "Exception while vectorising sentences: " + str(e))
-                wflowservice.update_wflow_details(None, object_in, error)
+                util.error_handler("LASER_ERROR", "Exception while vectorising sentences: " + str(e), object_in, True)
             return None
 
     # Wrapper method to align and categorise sentences
@@ -193,8 +190,7 @@ class AlignmentService:
             log.exception("Exception while aligning sentences: " + str(e))
             self.update_job_status("FAILED", object_in, "Exception while aligning sentences")
             if iswf:
-                error = validator.get_error("ALIGNEMENT_ERROR", "Exception while aligning sentences: " + str(e))
-                wflowservice.update_wflow_details(None, object_in, error)
+                util.error_handler("ALIGNMENT_ERROR", "Exception while aligning sentences: " + str(e), object_in, True)
             return None
 
 
@@ -262,4 +258,5 @@ class AlignmentService:
     # Service method to fetch job details from the mongo collection
     def search_jobs(self, job_id):
         return repo.search_job(job_id)
+
 
