@@ -15,7 +15,7 @@ basePath: '/anuvaad-etl/anuvaad-extractor/paragraph/PDF2HTML'
 
 
 paths: 
-  /v1/paragraph/PDF2HTML:
+  /v1/paragraph/pdf2html-wf/convert:
     post:
       summary: REST API to convert PDF files into HTML and Image files.
       description: This API accepts list of pdf files and convert these files into html and image files. This is an async process.
@@ -44,6 +44,35 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
+
+  /v1/pdf2html/convert:
+    post:
+      summary: REST API to trigger an pdf to html and image file extraction job.
+      description: This API accepts pdf files.  
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/PDF-to-HTMLRequest/properties/input'
+            
+      tags:
+      - PDF-to-HTML
+
+      responses:
+        202:
+          description: On successful initiation of the job.
+          schema:
+            $ref: '#/definitions/PDF-to-HTMLResponse/properties/output'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error/error'
+        500:
+          description: On system level errors causing failure in the job.
+          schema:
+            $ref: '#/definitions/Error/error'
 
 
 definitions:
