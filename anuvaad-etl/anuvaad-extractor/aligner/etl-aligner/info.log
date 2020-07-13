@@ -63,3 +63,6 @@ Traceback (most recent call last):
     return func(*args, params=params, headers=headers, **kwargs)
 TypeError: index() got an unexpected keyword argument 'type'
 [2020-07-10 14:50:57,202] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [10/Jul/2020 14:50:57] "[37mPOST /anuvaad-etl/extractor/aligner/v1/sentences/align HTTP/1.1[0m" 200 -
+[2020-07-13 12:20:33,899] {alignmentconsumer.py:38} AlignerConsumer-Thread INFO in alignmentconsumer: Align Consumer running.......
+[2020-07-13 12:20:33,901] {alignmentwflowconsumer.py:38} AlignerWflowConsumer-Thread INFO in alignmentwflowconsumer: Align WFM Consumer running.......
+[2020-07-13 12:20:33,924] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5003/ (Press CTRL+C to quit)
