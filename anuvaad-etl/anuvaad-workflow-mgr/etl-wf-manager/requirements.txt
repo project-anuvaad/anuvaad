@@ -9,7 +9,7 @@ Flask==1.1.2
 flask-mongoengine==0.9.5
 Flask-WTF==0.14.3
 future==0.18.2
-elasticsearch=7.8.0
+elasticsearch==7.8.0
 idna==2.9
 isort==4.3.21
 itsdangerous==1.1.0
