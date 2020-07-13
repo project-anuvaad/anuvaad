@@ -17,8 +17,8 @@ def instantiate_es_client():
 
 
 def index_to_es(index_obj):
-    es = instantiate_es_client()
     try:
+        es = instantiate_es_client()
         id = index_obj["errorID"]
         if index_obj["errorType"] == "core-error":
             in_type = es_error_core_type
