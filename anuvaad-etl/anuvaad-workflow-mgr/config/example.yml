@@ -1,6 +1,7 @@
 WorkflowConfigs:
 
 
+
   - workflowCode: DP_WFLOW_T
     description: tokenises paragraphs into sentences.    
     useCase: TOK
