@@ -45,5 +45,5 @@ def post_error_wf(code, message, jobId, taskId, state, status, cause):
 
 
 def generate_error_id():
-    return uuid.uuid4()
+    return str(uuid.uuid4())
 
