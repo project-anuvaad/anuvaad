@@ -7,6 +7,8 @@ import os
 
 import datetime as dt
 from flask import jsonify
+from error_manager.emservice import post_error
+
 
 log = logging.getLogger('file')
 from utilities.wfmutils import WFMUtils
@@ -28,12 +30,12 @@ class WFMValidator:
     # Validator that validates the input request for initiating the alignment job
     def validate_input(self, data):
         if 'workflowCode' not in data.keys():
-            return self.get_error("WOFKLOWCODE_NOT_FOUND", "workflowCode is mandatory")
+            return post_error("WOFKLOWCODE_NOT_FOUND", "workflowCode is mandatory", None)
         if 'files' not in data.keys():
-            return self.get_error("FILES_NOT_FOUND", "files are mandatory")
+            return post_error("FILES_NOT_FOUND", "files are mandatory", None)
         else:
             if len(data["files"]) == 0:
-                return self.get_error("FILES_NOT_FOUND", "Input files are mandatory")
+                return post_error("FILES_NOT_FOUND", "Input files are mandatory", None)
         error = self.validate_config(data["workflowCode"])
         if error is not None:
             return error
@@ -45,7 +47,7 @@ class WFMValidator:
     def validate_config(self, workflowCode):
         configs = wfmutils.get_configs()
         if workflowCode not in configs.keys():
-            return self.get_error("WORKFLOW_NOT_FOUND", "There's no workflow configured against this workflowCode")
+            return post_error("WORKFLOW_NOT_FOUND", "There's no workflow configured against this workflowCode", None)
 
     # Validates tool specific requirements of the input.
     def validate_files(self, wf_input):
@@ -53,23 +55,22 @@ class WFMValidator:
         if "TOKENISER" in tools:
             valid = tokeniser.validate_tokeniser_input(wf_input)
             if not valid:
-                return self.get_error("TOKENISER_INPUT_ERROR", "Tokeniser is a part of this workflow. The given input is insufficient for that step.")
+                return post_error("TOKENISER_INPUT_ERROR", "Tokeniser is a part of this workflow. The given input is "
+                                                           "insufficient for that step.", None)
         if "ALIGNER" in tools:
             valid = aligner.validate_aligner_input(wf_input)
             if not valid:
-                return self.get_error("ALIGNER_INPUT_ERROR", "Aligner is a part of this workflow. The given input is insufficient for that step.")
+                return post_error("ALIGNER_INPUT_ERROR", "Aligner is a part of this workflow. The given input is "
+                                                         "insufficient for that step.", None)
         if "PDFTOHTML" in tools:
             valid = pdftohtml.validate_pdftohtml_input(wf_input)
             if not valid:
-                return self.get_error("PDFTOHTML_INPUT_ERROR", "PDFTOHTML is a part of this workflow. The given input is insufficient for that step.")
+                return post_error("PDFTOHTML_INPUT_ERROR", "PDFTOHTML is a part of this workflow. The given input is "
+                                                           "insufficient for that step.", None)
         if "HTMLTOJSON" in tools:
             valid = htmltojson.validate_htmltojson_input(wf_input)
             if not valid:
-                return self.get_error("HTMLTOJSON_INPUT_ERROR", "HTMLTOJSON is a part of this workflow. The given input is insufficient for that step.")
-
-
-    # Error formatter
-    def get_error(self, code, message):
-        return jsonify({"status": "ERROR", "code": code, "message": message})
+                return post_error("HTMLTOJSON_INPUT_ERROR", "HTMLTOJSON is a part of this workflow. The given input "
+                                                            "is insufficient for that step.", None)
 
 

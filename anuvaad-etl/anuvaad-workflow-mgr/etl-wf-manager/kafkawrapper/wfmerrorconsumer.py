@@ -6,6 +6,8 @@ from kafka import KafkaConsumer
 import os
 from logging.config import dictConfig
 from service.wfmservice import WFMService
+from error_manager.emservice import post_error
+
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
@@ -43,6 +45,8 @@ def error_consume():
             wfmservice.update_errors(data)
         except Exception as e:
             log.exception("Exception while consuming: " + str(e))
+            post_error("WFLOW_ERROR_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+
 
 
 # Method that provides a deserialiser for the kafka record.

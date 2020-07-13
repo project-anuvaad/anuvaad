@@ -4,7 +4,6 @@ import logging
 import os
 
 from flask import jsonify
-from error_manager.emservice import post_error
 from utilities.alignmentutils import AlignmentUtils
 
 util = AlignmentUtils()

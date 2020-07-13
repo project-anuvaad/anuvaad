@@ -4,6 +4,7 @@ import traceback
 
 import os
 from kafka import KafkaProducer
+from error_manager.emservice import post_error
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
@@ -31,4 +32,4 @@ class Producer:
             producer.flush()
         except Exception as e:
             log.error("Exception while producing: " + str(e))
-            traceback.print_exc()
+            post_error("WFLOW_PRODUCER_ERROR", "Exception while producing: " + str(e), None)

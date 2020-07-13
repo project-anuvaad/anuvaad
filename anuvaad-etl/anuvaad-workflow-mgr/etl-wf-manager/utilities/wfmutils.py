@@ -5,6 +5,7 @@ import traceback
 
 import requests
 import yaml
+from error_manager.emservice import post_error
 
 from tools.aligner import Aligner
 from tools.tokeniser import Tokeniser
@@ -48,7 +49,8 @@ class WFMUtils:
                     configs_global[key] = obj
         except Exception as exc:
             log.exception("Exception while reading configs: " + str(exc))
-            traceback.print_exc()
+            post_error("CONFIG_READ_ERROR", "Exception while reading configs: " + str(exc), None)
+
 
     # Method that returns configs
     def get_configs(self):
