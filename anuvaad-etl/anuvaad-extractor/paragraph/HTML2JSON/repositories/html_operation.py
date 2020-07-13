@@ -104,27 +104,20 @@ class HTMLOperation(object):
                         text_child = item_child[0].child[0].text
                         if text_child != "":
                             bold_nature = self.find_bold_nature(item_child[0].child[0])
-                            text_child = text_child.replace("</b>", "")
-                            text_child = text_child.replace("<b>", "")
+                            text_child = self.text_cleaning(text_child)
                             html_node_i_tag = self.output_html_node_format(page_no, page_height, page_width, x, y, tag_class_id, tag_class_style, tag_style, text_child, bold_nature)
                             html_nodes_per_page.append(html_node_i_tag)
                     else:
                         if text != "":
                             bold_nature = self.find_bold_nature(item_child[0])
-                            text = text.replace("</b>", "")
-                            text = text.replace("<b>", "")
-                            text = text.replace("<i>", "")
-                            text = text.replace("</i>", "")
+                            text = self.text_cleaning(text)
                             html_node_p_tag = self.output_html_node_format(page_no, page_height, page_width, x, y, tag_class_id, tag_class_style, tag_style, text, bold_nature)
                             html_nodes_per_page.append(html_node_p_tag)
                 else:
                     text = item.text
                     if text != "":
                         bold_nature = self.find_bold_nature(item)
-                        text = text.replace("</b>", "")
-                        text = text.replace("<b>", "")
-                        text = text.replace("<i>", "")
-                        text = text.replace("</i>", "")
+                        text = self.text_cleaning(text)
                         html_node_p_tag = self.output_html_node_format(page_no, page_height, page_width, x, y, tag_class_id, tag_class_style, tag_style, text, bold_nature)
                         html_nodes_per_page.append(html_node_p_tag)
         return html_nodes_per_page
@@ -167,3 +160,12 @@ class HTMLOperation(object):
                 tag_class_id = item['class'] 
                 tag_class_style = item['class_style']
                 return tag_class_id, tag_class_style
+
+    def text_cleaning(self, text):
+        text = text.replace("</b>", "")
+        text = text.replace("<b>", "")
+        text = text.replace("<i>", "")
+        text = text.replace("</i>", "")
+        text = text.replace("</a>", "")
+        text = re.sub(r"([<][a].{1,}[>])", "", text)
+        return text
