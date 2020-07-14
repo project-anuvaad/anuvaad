@@ -47,7 +47,7 @@ Returns directory path which have html and image files.
             "outputHtmlFilePath": "directory containing html files",
             "outputImageFilePath": "directory containing image files",
             "outputLocale": "en",
-            "outputType": "pdf"
+            "outputType": "directory"
         },
         {....},
         {....}
