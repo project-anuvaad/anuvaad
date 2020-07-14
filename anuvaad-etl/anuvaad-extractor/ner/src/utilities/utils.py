@@ -56,6 +56,6 @@ class FileOperation(object):
             "inputFile" : input_filename,
             "outputFile" : output_filename,
             "outputLocale" : in_locale,
-            "outputType" : in_file_type
+            "outputType" : "json"
         }
         return file_res
