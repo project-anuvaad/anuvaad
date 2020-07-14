@@ -20,13 +20,18 @@ This service is used to tokenise sentences from a paragraph. After initiating th
 hit: ```http://0.0.0.0:5001/api/v0/tokenisation```
 ### Request Format
 ```json
+POST/tokenisation
+Accept list of files
+
 {
         "files": [
             {
                 "locale": "en",
                 "path": "text file which contains paragraphs",
                 "type": "txt"
-            }
+            },
+            {...},
+            {...}
         ]}
 ```
 ### Response
@@ -41,7 +46,9 @@ Returns txt file which have tokenised sentences
             "outputFile": "text file conaining tokenised sentences",
             "outputLocale": "en",
             "outputType": "txt"
-        }
+        },
+        {....},
+        {....}
     ],
     "state": "SENTENCE-TOKENISED",
     "status": "SUCCESS"
