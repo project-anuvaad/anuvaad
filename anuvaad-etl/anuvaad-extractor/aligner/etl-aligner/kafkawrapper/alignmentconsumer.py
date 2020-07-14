@@ -45,24 +45,29 @@ class Consumer:
         consumer = self.instantiate(topics)
         service = AlignmentService()
         log.info("Align Consumer running.......")
+        last_offset = 0
+        topic = ""
         while True:
-            iteration = 0
-            log.info("ITERATION: " + str(iteration))
+            if last_offset != 0:
+                print(last_offset)
+                print(topic)
+                partitions = consumer.partitions_for_topic(topic)
+                options = {}
+                for partition in partitions:
+                    options[partition] = OffsetAndMetadata(last_offset + 1, None)
+                consumer.commit(options)
+
             for msg in consumer:
-                log.info("Consumer ITERATION: " + str(iteration))
                 try:
                     data = msg.value
                     log.info("Received on Topic: " + msg.topic)
+                    last_offset = msg.offset
+                    topic = msg.topic
                     service.process(data, False)
-                    meta = consumer.partitions_for_topic(msg.topic)
-                    options = {0: OffsetAndMetadata(msg.offset + 1, meta)}
-                    consumer.commit(options)
-                    iteration = iteration + 1
-                    continue
+                    break
                 except Exception as e:
                     log.exception("Exception while consuming: " + str(e))
-                    #post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
-                    continue
+                    post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
 
     # Method that provides a deserialiser for the kafka record.
     def handle_json(self, x):
