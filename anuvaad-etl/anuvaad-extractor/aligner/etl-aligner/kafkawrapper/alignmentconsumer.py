@@ -38,13 +38,10 @@ class Consumer:
         log.info("Align Consumer running.......")
         while True:
             try:
-                data = {}
                 for msg in consumer:
                     data = msg.value
-                    topic = msg.topic
-                    log.info("Received on Topic: " + topic)
-                    break
-                service.process(data, False)
+                    log.info("Received on Topic: " + msg.topic)
+                    service.process(data, False)
             except Exception as e:
                 log.exception("Exception while consuming: " + str(e))
 

@@ -39,12 +39,10 @@ def consume():
     log.info("WFM Consumer Running..........")
     while True:
         try:
-            data = None
             for msg in consumer:
                 data = msg.value
                 log.info("Received on topic: " + msg.topic)
-                break
-            wfmservice.manage(data)
+                wfmservice.manage(data)
         except Exception as e:
             log.exception("Exception while consuming: " + str(e))
             post_error("WFLOW_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)

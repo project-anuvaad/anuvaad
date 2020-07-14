@@ -38,13 +38,10 @@ class WflowConsumer:
         log.info("Align WFM Consumer running.......")
         while True:
             try:
-                data = {}
                 for msg in consumer:
                     data = msg.value
-                    topic = msg.topic
-                    log.info("Received on Topic: " + topic)
-                    break
-                wflowservice.wf_process(data)
+                    log.info("Received on Topic: " + msg.topic)
+                    wflowservice.wf_process(data)
             except Exception as e:
                 log.exception("Exception while consuming: " + str(e))
 
