@@ -1,8 +1,7 @@
 import json
 import logging
-import traceback
 
-from kafka import KafkaConsumer
+from kafka import KafkaConsumer, OffsetAndMetadata
 import os
 from service.alignmentservice import AlignmentService
 from logging.config import dictConfig
@@ -38,14 +37,16 @@ class Consumer:
         consumer = self.instantiate()
         service = AlignmentService()
         log.info("Align Consumer running.......")
-        try:
-            for msg in consumer:
+        for msg in consumer:
+            try:
                 data = msg.value
                 log.info("Received on Topic: " + msg.topic)
                 service.process(data, False)
-        except Exception as e:
-            log.exception("Exception while consuming: " + str(e))
-            post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+                consumer.commit(OffsetAndMetadata(msg.offset + 1, None))
+            except Exception as e:
+                log.exception("Exception while consuming: " + str(e))
+                post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+                continue
 
     # Method that provides a deserialiser for the kafka record.
     def handle_json(self, x):
