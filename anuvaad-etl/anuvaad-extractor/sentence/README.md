@@ -30,8 +30,8 @@ Accept list of files
                 "path": "text file which contains paragraphs",
                 "type": "txt"
             },
-            {...},
-            {...}
+            {....},
+            {....}
         ]}
 ```
 ### Response
