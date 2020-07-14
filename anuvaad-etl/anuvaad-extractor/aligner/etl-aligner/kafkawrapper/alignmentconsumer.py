@@ -54,13 +54,14 @@ class Consumer:
                     data = msg.value
                     log.info("Received on Topic: " + msg.topic)
                     service.process(data, False)
-                    partitions = consumer.partitions_for_topic(msg.topic)
-                    consumer.commit(OffsetAndMetadata(msg.offset, partitions))
+                    meta = consumer.partitions_for_topic(msg.topic)
+                    options = {0: OffsetAndMetadata(msg.offset + 1, meta)}
+                    consumer.commit(options)
                     iteration = iteration + 1
                     continue
                 except Exception as e:
                     log.exception("Exception while consuming: " + str(e))
-                    post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+                    #post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
                     continue
 
     # Method that provides a deserialiser for the kafka record.
