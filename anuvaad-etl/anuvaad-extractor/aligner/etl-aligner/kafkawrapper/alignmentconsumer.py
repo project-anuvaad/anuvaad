@@ -10,7 +10,7 @@ from error_manager.emservice import post_error
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
-align_job_topic = "anuvaad-etl-alignment-jobs-v3"
+align_job_topic = "anuvaad-etl-alignment-jobs-v4"
 align_job_consumer_grp = "anuvaad-etl-consumer-group"
 
 class Consumer:
@@ -54,12 +54,14 @@ class Consumer:
                     data = msg.value
                     log.info("Received on Topic: " + msg.topic)
                     service.process(data, False)
+                    partitions = consumer.partitions_for_topic(msg.topic)
+                    consumer.commit(OffsetAndMetadata(msg.offset, partitions))
+                    iteration = iteration + 1
+                    continue
                 except Exception as e:
                     log.exception("Exception while consuming: " + str(e))
                     post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
-                partitions = consumer.partitions_for_topic(msg.topic)
-                consumer.commit(OffsetAndMetadata(msg.offset, partitions))
-                iteration = iteration + 1
+                    continue
 
     # Method that provides a deserialiser for the kafka record.
     def handle_json(self, x):
