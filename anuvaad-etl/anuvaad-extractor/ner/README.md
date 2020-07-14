@@ -1,6 +1,6 @@
 # NER
 
-NER service annotate the text as per .
+NER service annotate the text data.
 
 ## Prerequisites
 - python 3.7
