@@ -35,17 +35,14 @@ def error_consume():
     wfmservice = WFMService()
     consumer = instantiate()
     log.info("WFM Error Consumer Running..........")
-    while True:
-        try:
-            for msg in consumer:
-                data = msg.value
-                log.info("Received on topic: " + msg.topic)
-                wfmservice.update_errors(data)
-        except Exception as e:
-            log.exception("Exception while consuming: " + str(e))
-            post_error("WFLOW_ERROR_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
-
-
+    try:
+        for msg in consumer:
+            data = msg.value
+            log.info("Received on topic: " + msg.topic)
+            wfmservice.update_errors(data)
+    except Exception as e:
+        log.exception("Exception while consuming: " + str(e))
+        post_error("WFLOW_ERROR_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
 
 # Method that provides a deserialiser for the kafka record.
 def handle_json(x):

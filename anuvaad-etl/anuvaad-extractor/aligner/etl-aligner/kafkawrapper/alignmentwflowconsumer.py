@@ -6,6 +6,8 @@ from kafka import KafkaConsumer
 import os
 from service.alignwflowservice import AlignWflowService
 from logging.config import dictConfig
+from error_manager.emservice import post_error
+
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
@@ -36,14 +38,15 @@ class WflowConsumer:
         consumer = self.instantiate()
         wflowservice = AlignWflowService
         log.info("Align WFM Consumer running.......")
-        while True:
-            try:
-                for msg in consumer:
-                    data = msg.value
-                    log.info("Received on Topic: " + msg.topic)
-                    wflowservice.wf_process(data)
-            except Exception as e:
-                log.exception("Exception while consuming: " + str(e))
+        try:
+            for msg in consumer:
+                data = msg.value
+                log.info("Received on Topic: " + msg.topic)
+                wflowservice.wf_process(data)
+        except Exception as e:
+            log.exception("Exception while consuming: " + str(e))
+            post_error("ALIGNER_WFM_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+
 
     # Method that provides a deserialiser for the kafka record.
     def handle_json(self, x):
