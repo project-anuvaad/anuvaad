@@ -2,7 +2,7 @@ import json
 import logging
 import traceback
 
-from kafka import KafkaConsumer
+from kafka import KafkaConsumer, TopicPartition
 import os
 from logging.config import dictConfig
 from service.wfmservice import WFMService
@@ -17,32 +17,46 @@ anu_etl_wf_error_topic = 'anuvaad-etl-wf-errors'
 
 
 # Method to instantiate the kafka consumer
-def instantiate():
-    topics = [anu_etl_wf_error_topic]
-    consumer = KafkaConsumer(*topics,
-                             bootstrap_servers=[cluster_details],
+def instantiate(topics):
+    topic_partitions = get_topic_paritions(topics)
+    consumer = KafkaConsumer(bootstrap_servers=[cluster_details],
                              api_version=(1, 0, 0),
                              group_id=anu_etl_wfm_consumer_grp,
                              auto_offset_reset='latest',
                              enable_auto_commit=True,
                              max_poll_records=1,
                              value_deserializer=lambda x: handle_json(x))
+    consumer.assign(topic_partitions)
     return consumer
+
+
+# For all the topics, returns a list of TopicPartition Objects
+def get_topic_paritions(topics):
+    topic_paritions = []
+    for topic in topics:
+        tp = TopicPartition(topic, 0)  # for now the partition is hardocoded
+        topic_paritions.append(tp)
+    return topic_paritions
 
 
 # Method to read and process the requests from the kafka queue
 def error_consume():
     wfmservice = WFMService()
-    consumer = instantiate()
+    topics = [anu_etl_wf_error_topic]
+    consumer = instantiate(topics)
     log.info("WFM Error Consumer Running..........")
-    try:
+    while True:
         for msg in consumer:
-            data = msg.value
-            log.info("Received on topic: " + msg.topic)
-            wfmservice.update_errors(data)
-    except Exception as e:
-        log.exception("Exception while consuming: " + str(e))
-        post_error("WFLOW_ERROR_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+            try:
+                data = msg.value
+                log.info("Received on Topic: " + msg.topic)
+                wfmservice.update_errors(data)
+                break
+            except Exception as e:
+                log.exception("Exception while consuming: " + str(e))
+                post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+                break
+
 
 # Method that provides a deserialiser for the kafka record.
 def handle_json(x):
