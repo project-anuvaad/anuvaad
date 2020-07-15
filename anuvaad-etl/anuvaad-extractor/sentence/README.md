@@ -54,5 +54,6 @@ Returns txt file which have tokenised sentences
     "status": "SUCCESS"
 }
 ```
+For more information about api documentation, please check @ ```https://github.com/project-anuvaad/anuvaad/blob/dev-sentence/anuvaad-etl/anuvaad-extractor/sentence/docs/sentence-api-contarct.yml```
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
