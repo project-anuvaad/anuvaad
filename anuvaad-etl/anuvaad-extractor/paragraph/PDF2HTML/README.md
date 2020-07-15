@@ -56,5 +56,6 @@ Returns directory path which have html and image files.
     "status": "SUCCESS"
 }
 ```
+For more information about api documentation, please check @ ```https://github.com/project-anuvaad/anuvaad/blob/dev-sentence/anuvaad-etl/anuvaad-extractor/paragraph/PDF2HTML/docs/pdf2html-api-contract.yml```
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
