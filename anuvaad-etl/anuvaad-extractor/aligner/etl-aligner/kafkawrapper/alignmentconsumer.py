@@ -1,7 +1,7 @@
 import json
 import logging
 
-from kafka import KafkaConsumer, OffsetAndMetadata, TopicPartition
+from kafka import KafkaConsumer, TopicPartition
 import os
 from service.alignmentservice import AlignmentService
 from logging.config import dictConfig
@@ -25,7 +25,7 @@ class Consumer:
                                  api_version=(1, 0, 0),
                                  group_id=align_job_consumer_grp,
                                  auto_offset_reset='latest',
-                                 enable_auto_commit=False,
+                                 enable_auto_commit=True,
                                  max_poll_records=1,
                                  value_deserializer=lambda x: self.handle_json(x))
         consumer.assign(topic_partitions)
@@ -45,29 +45,17 @@ class Consumer:
         consumer = self.instantiate(topics)
         service = AlignmentService()
         log.info("Align Consumer running.......")
-        last_offset = 0
-        topic = ""
         while True:
-            if last_offset != 0:
-                log.info(last_offset)
-                log.info(topic)
-                partitions = consumer.partitions_for_topic(topic)
-                options = {}
-                for partition in partitions:
-                    options[partition] = OffsetAndMetadata(last_offset + 1, None)
-                consumer.commit(options)
-
             for msg in consumer:
                 try:
                     data = msg.value
                     log.info("Received on Topic: " + msg.topic)
-                    last_offset = msg.offset
-                    topic = msg.topic
                     service.process(data, False)
                     break
                 except Exception as e:
                     log.exception("Exception while consuming: " + str(e))
                     post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+                    break
 
     # Method that provides a deserialiser for the kafka record.
     def handle_json(self, x):
