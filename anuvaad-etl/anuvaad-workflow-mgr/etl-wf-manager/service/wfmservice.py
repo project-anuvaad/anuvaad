@@ -25,7 +25,7 @@ class WFMService:
 
     # Method to register the job.
     # Generates job ID, creates entry to the DB, passes the request to further processing
-    # Returns client-readable job status
+    # Returns client-readable job status.
     def register_job(self, wf_input):
         wf_input["jobID"] = wfmutils.generate_job_id(wf_input["workflowCode"])
         client_output = self.get_wf_details(wf_input, None, False, None)

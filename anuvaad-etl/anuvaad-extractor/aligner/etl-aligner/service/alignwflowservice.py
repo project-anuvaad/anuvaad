@@ -21,7 +21,7 @@ class AlignWflowService:
     def __init__(self):
         pass
 
-    # Wrapper to build response compatibile with the anuvaad etl wf manager
+    # Wrapper to build response compatibile with the anuvaad etl wf manager.
     def getwfresponse(self, result, object_in):
         wfresponse = {"taskID": object_in["taskID"], "jobID": object_in["jobID"], "input": result["input"],
                       "output": result["output"], "workflowCode": object_in["workflowCode"],

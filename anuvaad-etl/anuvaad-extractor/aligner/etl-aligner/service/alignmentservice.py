@@ -35,7 +35,7 @@ class AlignmentService:
     def __init__(self):
         pass
 
-    # Service method to register the alignment job
+    # Service method to register the alignment job.
     def register_job(self, object_in):
         job_id = util.generate_job_id()
         response = {"input": object_in, "jobID": job_id, "status": "START"}
