@@ -25,7 +25,7 @@ class Consumer:
                                  api_version=(1, 0, 0),
                                  group_id=align_job_consumer_grp,
                                  auto_offset_reset='latest',
-                                 enable_auto_commit=True,
+                                 enable_auto_commit=False,
                                  max_poll_records=1,
                                  value_deserializer=lambda x: self.handle_json(x))
         consumer.assign(topic_partitions)
@@ -49,8 +49,8 @@ class Consumer:
         topic = ""
         while True:
             if last_offset != 0:
-                print(last_offset)
-                print(topic)
+                log.info(last_offset)
+                log.info(topic)
                 partitions = consumer.partitions_for_topic(topic)
                 options = {}
                 for partition in partitions:
