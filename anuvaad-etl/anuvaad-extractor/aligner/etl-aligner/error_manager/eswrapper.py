@@ -1,5 +1,7 @@
 import logging
 import os
+import time
+
 from elasticsearch import Elasticsearch
 
 log = logging.getLogger('file')
@@ -24,6 +26,15 @@ def index_to_es(index_obj):
             in_type = es_error_core_type
         else:
             in_type = es_error_wf_type
+        index_obj = add_timestamp_field(index_obj)
         es.index(index=es_error_index_test, doc_type=in_type, id=id, body=index_obj)
     except Exception as e:
         log.exception("Indexing FAILED for errorID: " + index_obj["errorID"])
+
+
+def add_timestamp_field(error):
+    date_format = "%Y-%m-%d'T'%H:%M:%S.%f'Z'"
+    epoch = error["timeStamp"]
+    final_date = time.strftime(date_format, time.gmtime(epoch / 1000.))
+    error["@timestamp"] = final_date
+    return error
