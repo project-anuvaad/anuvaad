@@ -60,6 +60,7 @@ class WFMService:
         try:
             job_id = task_output["jobID"]
             job_details = self.get_job_details(job_id)
+            job_details = job_details[0]
             if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED":
                 log.info("The job is already completed/failed, jobID: " + job_id)
                 return None
