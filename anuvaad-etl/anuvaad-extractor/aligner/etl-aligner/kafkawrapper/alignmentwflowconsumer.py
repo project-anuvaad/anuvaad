@@ -4,7 +4,7 @@ import traceback
 
 from kafka import KafkaConsumer, TopicPartition
 import os
-from service.alignwflowservice import AlignWflowService
+from service.alignmentservice import AlignmentService
 from logging.config import dictConfig
 from error_manager.emservice import post_error
 
@@ -46,14 +46,14 @@ class WflowConsumer:
     def consume(self):
         topics = [anu_dp_wf_aligner_in_topic]
         consumer = self.instantiate(topics)
-        wflowservice = AlignWflowService
+        service = AlignmentService()
         log.info("Align WFM Consumer running.......")
         while True:
             for msg in consumer:
                 try:
                     data = msg.value
                     log.info("Received on Topic: " + msg.topic)
-                    wflowservice.wf_process(data)
+                    service.wf_process(data)
                     break
                 except Exception as e:
                     log.exception("Exception while consuming: " + str(e))
