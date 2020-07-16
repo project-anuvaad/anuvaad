@@ -166,6 +166,7 @@ class WFMService:
         try:
             job_id = error["jobID"]
             job_details = self.get_job_details(job_id)
+            job_details = job_details[0]
             job_details["status"] = "FAILED"
             job_details["endTime"] = eval(str(time.time()).replace('.', ''))
             job_details["error"] = error

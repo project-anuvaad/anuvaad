@@ -21,8 +21,9 @@ def post_error(code, message, cause):
     if cause is not None:
         error["cause"] = cause
 
-    log.info("Posting error to the es index...")
     index_to_es(error)
+    log.info("Error posted to the es index.")
+
     return error
 
 
@@ -40,10 +41,10 @@ def post_error_wf(code, message, jobId, taskId, state, status, cause):
     }
     if cause is not None:
         error["cause"] = cause
-    log.info("Posting error to the wf error topic...")
     push_to_queue(error, anu_etl_wf_error_topic)
-    log.info("Posting error to the es index...")
+    log.info("Error pushed to the wf error topic.")
     index_to_es(error)
+    log.info("Error posted to the es index.")
     return error
 
 
