@@ -5,8 +5,9 @@ import traceback
 from kafka import KafkaConsumer, TopicPartition
 import os
 from service.alignmentservice import AlignmentService
+from utilities.alignmentutils import AlignmentUtils
 from logging.config import dictConfig
-from error_manager.emservice import post_error
+from error_manager.emservice import post_error_wf
 
 
 log = logging.getLogger('file')
@@ -47,9 +48,11 @@ class WflowConsumer:
         topics = [anu_dp_wf_aligner_in_topic]
         consumer = self.instantiate(topics)
         service = AlignmentService()
+        util = AlignmentUtils()
         log.info("Align WFM Consumer running.......")
         while True:
             for msg in consumer:
+                data = {}
                 try:
                     data = msg.value
                     log.info("Received on Topic: " + msg.topic)
@@ -57,7 +60,8 @@ class WflowConsumer:
                     break
                 except Exception as e:
                     log.exception("Exception while consuming: " + str(e))
-                    post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+                    data["taskID"] = "taskID"
+                    util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming", data, True)
                     break
 
     # Method that provides a deserialiser for the kafka record.
