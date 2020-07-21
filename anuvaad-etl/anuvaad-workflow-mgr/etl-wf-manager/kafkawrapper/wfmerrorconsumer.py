@@ -6,7 +6,7 @@ from kafka import KafkaConsumer, TopicPartition
 import os
 from logging.config import dictConfig
 from service.wfmservice import WFMService
-from error_manager.emservice import post_error
+from anuvaad_etl_error_manager.emservice import post_error
 
 
 log = logging.getLogger('file')

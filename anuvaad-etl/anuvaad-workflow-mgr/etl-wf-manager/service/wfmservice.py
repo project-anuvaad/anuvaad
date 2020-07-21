@@ -7,7 +7,7 @@ from utilities.wfmutils import WFMUtils
 from kafkawrapper.wfmproducer import Producer
 from repository.wfmrepository import WFMRepository
 from validator.wfmvalidator import WFMValidator
-from error_manager.emservice import post_error
+from anuvaad_etl_error_manager.emservice import post_error
 
 
 log = logging.getLogger('file')

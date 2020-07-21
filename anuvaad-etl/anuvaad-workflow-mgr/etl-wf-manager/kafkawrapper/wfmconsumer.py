@@ -7,7 +7,7 @@ import os
 from logging.config import dictConfig
 from utilities.wfmutils import WFMUtils
 from service.wfmservice import WFMService
-from error_manager.emservice import post_error
+from anuvaad_etl_error_manager.emservice import post_error
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')

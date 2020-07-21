@@ -1,13 +1,7 @@
 #!/bin/python
-import ast
-import codecs
-import json
 import logging
-import os
 
-import datetime as dt
-from flask import jsonify
-from error_manager.emservice import post_error
+from anuvaad_etl_error_manager.emservice import post_error
 
 
 log = logging.getLogger('file')

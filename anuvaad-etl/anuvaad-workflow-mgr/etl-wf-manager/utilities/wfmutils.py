@@ -5,7 +5,7 @@ import traceback
 
 import requests
 import yaml
-from error_manager.emservice import post_error
+from anuvaad_etl_error_manager.emservice import post_error
 
 from tools.aligner import Aligner
 from tools.tokeniser import Tokeniser
