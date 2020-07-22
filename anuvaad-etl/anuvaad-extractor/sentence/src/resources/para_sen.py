@@ -21,7 +21,7 @@ class SenTokenisePostWF(Resource):
         task_starttime = str(time.time()).replace('.', '')
         json_data = request.get_json(force = True)
         checking_response = CheckingResponse(json_data, task_id, task_starttime, DOWNLOAD_FOLDER)
-        file_value_response = checking_response.main_response_wf()
+        file_value_response = checking_response.main_response_wf(rest_request=True)
         log.info("Tokenisation completed!!!")
         return jsonify(file_value_response)
 

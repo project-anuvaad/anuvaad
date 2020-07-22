@@ -36,14 +36,16 @@ def process_tokenization_kf():
             task_starttime = str(time.time()).replace('.', '')
             checking_response = CheckingResponse(data, task_id, task_starttime, DOWNLOAD_FOLDER)
             file_value_response = checking_response.main_response_wf()
-            producer_tokenise = Producer(config.bootstrap_server) 
-            producer = producer_tokenise.producer_fn()
-            producer.send(config.tok_output_topic, value = file_value_response)
-            producer.flush()
-            log.info("producer flushed value on topic %s"%(config.tok_output_topic))
+            try:
+                producer_tokenise = Producer(config.bootstrap_server) 
+                producer = producer_tokenise.producer_fn()
+                producer.send(config.tok_output_topic, value = file_value_response)
+                producer.flush()
+                log.info("producer flushed value on topic %s"%(config.tok_output_topic))
+            except:
+                log.info("error occured in file operation of workflow and it is pushed to error queue")
     except Exception as e:
         log.error("error occured during consumer running or flushing data to another queue %s"%e)
-        task_end_time = str(time.time()).replace('.', '')
         output_file_response = ""
         for msg in consumer:
             log.info("value received from consumer")
@@ -51,12 +53,9 @@ def process_tokenization_kf():
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             task_id = str("TOK-" + str(time.time()).replace('.', ''))
             task_starttime = str(time.time()).replace('.', '')
-            response = CustomResponse(Status.ERR_Producer.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_end_time, output_file_response)
-            producer_tokenise = Producer(config.bootstrap_server) 
-            producer = producer_tokenise.producer_fn()
-            producer.send(config.tok_output_topic, value = response.status_code)
-            producer.flush()
-            log.info("error in kafka opertation producer flushed value on topic %s"%(config.tok_output_topic))
+            response_custom = CustomResponse(Status.ERR_Producer.value, jobid, task_id)
+            file_ops.error_handler(response_custom.status_code, True)
+            log.info("error in kafka opertation producer flushed value on error topic")
         
 
 dictConfig({
