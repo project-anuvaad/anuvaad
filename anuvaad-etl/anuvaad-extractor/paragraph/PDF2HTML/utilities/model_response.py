@@ -174,7 +174,7 @@ class CheckingResponse(object):
             error_response = file_ops.error_handler(response_custom.status_code, True)
             return error_response
 
-    def input_file_response(self, jobid, workflow_id, tool_name, step_order, input_files, output_file_response, filename_response):
+    def input_file_response(self, jobid, workflow_id, tool_name, step_order, input_files, filename_response):
         output_htmlfiles_path, output_pngfiles_path = "", ""
         if len(input_files) == 0 or not isinstance(input_files, list):
             task_endtime = str(time.time()).replace('.', '')
@@ -270,7 +270,6 @@ class CheckingResponse(object):
             log.info("workflow request initiated.")
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.input_format(self.json_data)
             filename_response = list()
-            output_file_response = {"files" : filename_response}
             response_wfkey_error = self.wf_keyerror(jobid, workflow_id, tool_name, step_order)
             if response_wfkey_error is not False:
                 log.error("workflow keys error")
@@ -279,11 +278,11 @@ class CheckingResponse(object):
             else:
                 if rest_request is True:
                     log.info("file response generated")
-                    response_file = self.input_file_response(jobid, workflow_id, tool_name, step_order, input_files, output_file_response, filename_response)
+                    response_file = self.input_file_response(jobid, workflow_id, tool_name, step_order, input_files, filename_response)
                     log.info("file response for wf generated")
                     return response_file
                 else:
-                    response_file = self.input_file_response(jobid, workflow_id, tool_name, step_order, input_files, output_file_response, filename_response)
+                    response_file = self.input_file_response(jobid, workflow_id, tool_name, step_order, input_files, filename_response)
                     if 'errorID' in response_file.keys():
                         log.info("error returned to error queue")
                     else:
