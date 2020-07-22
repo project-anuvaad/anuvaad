@@ -6,6 +6,8 @@ import requests
 import re
 import logging
 import config
+from error_manager.emservice import post_error
+from error_manager.emservice import post_error_wf
 
 log = logging.getLogger('file')
 
@@ -61,3 +63,19 @@ class FileOperation(object):
             return True
         else:
             return False
+
+    def error_handler(self, object_in, iswf):
+        if iswf:
+                job_id = object_in["jobID"]
+                task_id = object_in["taskID"]
+                state = object_in['state']
+                status = object_in['status']
+                code = object_in['error']['code']
+                message = object_in['error']['message']
+                error = post_error_wf(code, message, job_id, task_id, state, status, None)
+                return error
+        else:
+            code = object_in['error']['code']
+            message = object_in['error']['message']
+            error = post_error(code, message, None)
+            return error

@@ -34,27 +34,25 @@ def process_pdf_kf():
             data = msg.value
             checking_response = CheckingResponse(data, task_id, task_starttime, DOWNLOAD_FOLDER)
             file_value_response = checking_response.main_response_wf()
-            producer_pdf2html = Producer(config.bootstrap_server) 
-            producer = producer_pdf2html.producer_fn()
-            producer.send(config.pdf2html_output_topic, value = file_value_response)
-            producer.flush()
-            log.info("producer flushed value on topic %s"%(config.pdf2html_output_topic))
+            try:
+                producer_pdf2html = Producer(config.bootstrap_server) 
+                producer = producer_pdf2html.producer_fn()
+                producer.send(config.pdf2html_output_topic, value = file_value_response)
+                producer.flush()
+                log.info("producer flushed value on topic %s"%(config.pdf2html_output_topic))
+            except:
+                log.info("error occured in file operation of workflow and it is pushed to error queue")
     except Exception as e:
         log.error("error occured during consumer running or flushing data to another queue %s"%e)
-        task_end_time = str(time.time()).replace('.', '')
-        output_file_response = ""
         for msg in consumer:
             log.info("value received from consumer")
             task_starttime = str(time.time()).replace('.', '')
             task_id = str("PDF2HTML-" + str(time.time()).replace('.', ''))
             data = msg.value
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.input_format(data)
-            response = CustomResponse(Status.ERR_Producer.value, jobid, workflow_id, tool_name, step_order, task_id, task_starttime, task_end_time, output_file_response)
-            producer_pdf2html = Producer(config.bootstrap_server) 
-            producer = producer_pdf2html.producer_fn()
-            producer.send(config.pdf2html_output_topic, value = response.status_code)
-            producer.flush()
-            log.info("error in kafka opertation producer flushed value on topic %s"%(config.pdf2html_output_topic))
+            response_custom = CustomResponse(Status.ERR_Producer.value, jobid, task_id)
+            file_ops.error_handler(response_custom.status_code, True)
+            log.info("error in kafka opertation producer flushed value on error topic")
         
 
 dictConfig({
