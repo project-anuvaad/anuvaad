@@ -181,7 +181,7 @@ class CheckingResponse(object):
         response = False
         return response
 
-    def file_encoding_error(self, jobid, workflow_id, tool_name, step_order, input_filename, output_file_response):
+    def file_encoding_error(self, jobid, workflow_id, tool_name, step_order, input_filename):
         try:
             input_file_data = file_ops.read_file(input_filename)
             if len(input_file_data) == 0:
@@ -195,9 +195,9 @@ class CheckingResponse(object):
             return response_error
         return input_file_data
 
-    def service_response(self, jobid, workflow_id, tool_name, step_order,input_filename, in_locale, output_file_response, index):
+    def service_response(self, jobid, workflow_id, tool_name, step_order,input_filename, in_locale, index):
         tokenisation = Tokenisation()
-        response_input_file_data = self.file_encoding_error(jobid, workflow_id, tool_name, step_order, input_filename, output_file_response)
+        response_input_file_data = self.file_encoding_error(jobid, workflow_id, tool_name, step_order, input_filename)
         if isinstance(response_input_file_data, list):
             if in_locale == "en":
                 try:
@@ -220,7 +220,7 @@ class CheckingResponse(object):
         else:
             return response_input_file_data
 
-    def input_file_response(self, jobid, workflow_id, tool_name, step_order, input_files, output_file_response, filename_response):
+    def input_file_response(self, jobid, workflow_id, tool_name, step_order, input_files, filename_response):
         output_filename = ""
         if len(input_files) == 0 or not isinstance(input_files, list):
             response_custom = CustomResponse(Status.ERR_EMPTY_FILE_LIST.value, jobid, self.task_id)
@@ -249,7 +249,7 @@ class CheckingResponse(object):
                     response_error = file_ops.error_handler(response_custom.status_code, True)
                     return response_error
                 else:
-                    output_filename = self.service_response(jobid, workflow_id, tool_name, step_order,input_filename, in_locale, output_file_response, i)
+                    output_filename = self.service_response(jobid, workflow_id, tool_name, step_order,input_filename, in_locale, i)
                     if not isinstance(output_filename, str):
                         if isinstance(output_filename, dict):
                             return output_filename
@@ -336,7 +336,6 @@ class CheckingResponse(object):
             log.info("workflow request initiated.")
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
             filename_response = list()
-            output_file_response = {"files" : filename_response}
             response_wfkey_error = self.wf_keyerror(jobid, workflow_id, tool_name, step_order)
             if response_wfkey_error is not False:
                 log.error("workflow keys error")
@@ -345,11 +344,11 @@ class CheckingResponse(object):
             else:
                 if rest_request is True:
                     log.info("file response generation started")
-                    response_file = self.input_file_response(jobid, workflow_id, tool_name, step_order, input_files, output_file_response, filename_response)
+                    response_file = self.input_file_response(jobid, workflow_id, tool_name, step_order, input_files, filename_response)
                     log.info("file response for wf generated")
                     return response_file
                 else:
-                    response_file = self.input_file_response(jobid, workflow_id, tool_name, step_order, input_files, output_file_response, filename_response)
+                    response_file = self.input_file_response(jobid, workflow_id, tool_name, step_order, input_files, filename_response)
                     if 'errorID' in response_file.keys():
                         log.info("error returned to error queue")
                     else:

@@ -46,7 +46,6 @@ def process_tokenization_kf():
                 log.info("error occured in file operation of workflow and it is pushed to error queue")
     except Exception as e:
         log.error("error occured during consumer running or flushing data to another queue %s"%e)
-        output_file_response = ""
         for msg in consumer:
             log.info("value received from consumer")
             data = msg.value
