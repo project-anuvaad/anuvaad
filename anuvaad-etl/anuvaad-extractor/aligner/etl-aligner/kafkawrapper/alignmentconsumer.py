@@ -5,7 +5,7 @@ from kafka import KafkaConsumer, TopicPartition
 import os
 from service.alignmentservice import AlignmentService
 from logging.config import dictConfig
-from error_manager.emservice import post_error
+from utilities.alignmentutils import AlignmentUtils
 
 
 log = logging.getLogger('file')
@@ -44,6 +44,7 @@ class Consumer:
         topics = [align_job_topic]
         consumer = self.instantiate(topics)
         service = AlignmentService()
+        util = AlignmentUtils()
         log.info("Align Consumer running.......")
         while True:
             for msg in consumer:
@@ -54,7 +55,7 @@ class Consumer:
                     break
                 except Exception as e:
                     log.exception("Exception while consuming: " + str(e))
-                    post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+                    util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None, False)
                     break
 
     # Method that provides a deserialiser for the kafka record.

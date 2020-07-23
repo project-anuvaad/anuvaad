@@ -7,7 +7,6 @@ import os
 from service.alignmentservice import AlignmentService
 from utilities.alignmentutils import AlignmentUtils
 from logging.config import dictConfig
-from error_manager.emservice import post_error_wf
 
 
 log = logging.getLogger('file')

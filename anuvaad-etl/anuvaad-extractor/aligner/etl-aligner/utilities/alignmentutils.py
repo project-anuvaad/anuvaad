@@ -9,8 +9,8 @@ import time
 import requests
 import numpy as np
 import csv
-from error_manager.emservice import post_error
-from error_manager.emservice import post_error_wf
+from anuvaad_em.emservice import post_error
+from anuvaad_em.emservice import post_error_wf
 
 log = logging.getLogger('file')
 two_files = True

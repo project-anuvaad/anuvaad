@@ -4,7 +4,7 @@ import traceback
 
 import os
 from kafka import KafkaProducer
-from anuvaad_etl_error_manager.emservice import post_error
+from anuvaad_em.emservice import post_error
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')

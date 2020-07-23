@@ -1,7 +1,7 @@
 #!/bin/python
 import logging
 
-from anuvaad_etl_error_manager.emservice import post_error
+from anuvaad_em.emservice import post_error
 
 
 log = logging.getLogger('file')

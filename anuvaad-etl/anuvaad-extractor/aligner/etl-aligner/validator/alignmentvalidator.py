@@ -1,9 +1,4 @@
 #!/bin/python
-import codecs
-import logging
-import os
-
-from flask import jsonify
 from utilities.alignmentutils import AlignmentUtils
 
 util = AlignmentUtils()
