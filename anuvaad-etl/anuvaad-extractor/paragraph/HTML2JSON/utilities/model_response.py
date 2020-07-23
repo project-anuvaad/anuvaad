@@ -130,17 +130,19 @@ class Status(enum.Enum):
 
 
 class CustomResponse():
-    def __init__(self, status_code, jobid, workflow_id, tool_name, step_order, taskid, task_start_time, task_end_time, filename_response):
+    def __init__(self, status_code, jobid, taskid):
         self.status_code = status_code
         self.status_code['jobID'] = jobid
         self.status_code['taskID'] = taskid
+
+    def success_response(self, workflow_id, task_start_time, task_end_time, tool_name, step_order, filename_response):
         self.status_code['workflowCode'] = workflow_id
-        self.status_code['taskStartTime'] = task_start_time
-        self.status_code['taskEndTime'] = task_end_time
+        self.status_code['taskStarttime'] = task_start_time
+        self.status_code['taskendTime'] = task_end_time
         self.status_code['output'] = filename_response
         self.status_code['tool'] = tool_name
         self.status_code['stepOrder'] = step_order
-
+        return self.status_code
 
 class CheckingResponse(object):
 
@@ -150,48 +152,42 @@ class CheckingResponse(object):
         self.task_starttime = task_starttime
         self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
 
-    def wf_keyerror(self, jobid, workflow_id, tool_name, step_order, output_file_response):
+    def wf_keyerror(self, jobid, workflow_id, tool_name, step_order):
         if jobid == "" or jobid is None:
-            task_endtime = str(time.time()).replace('.', '')
-            response = CustomResponse(Status.ERR_jobid_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
-                                            self.task_id, self.task_starttime, task_endtime, output_file_response)
+            response_custom = CustomResponse(Status.ERR_jobid_NOT_FOUND.value, jobid, self.task_id)
+            response = file_ops.error_handler(response_custom.status_code, True)
             return response
         elif workflow_id == "" or workflow_id is None:
-            task_endtime = str(time.time()).replace('.', '')
-            response = CustomResponse(Status.ERR_Workflow_id_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
-                                            self.task_id, self.task_starttime, task_endtime, output_file_response)
+            response_custom = CustomResponse(Status.ERR_Workflow_id_NOT_FOUND.value, jobid, self.task_id)
+            response = file_ops.error_handler(response_custom.status_code, True)
             return response
         elif tool_name == "" or tool_name is None:
-            task_endtime = str(time.time()).replace('.', '')
-            response = CustomResponse(Status.ERR_Tool_Name_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
-                                            self.task_id, self.task_starttime, task_endtime, output_file_response)
+            response_custom = CustomResponse(Status.ERR_Tool_Name_NOT_FOUND.value, jobid, self.task_id)
+            response = file_ops.error_handler(response_custom.status_code, True)
             return response
         elif step_order == "" or step_order is None:
-            task_endtime = str(time.time()).replace('.', '')
-            response = CustomResponse(Status.ERR_step_order_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
-                                            self.task_id, self.task_starttime, task_endtime, output_file_response)
+            response_custom = CustomResponse(Status.ERR_step_order_NOT_FOUND.value, jobid, self.task_id)
+            response = file_ops.error_handler(response_custom.status_code, True)
             return response
         response = False
         return response
 
-    def service_response(self, jobid, workflow_id, tool_name, step_order,input_filepath, output_file_response):
+    def service_response(self, jobid, workflow_id, tool_name, step_order,input_filepath):
         html2json_service = Html2JsonService()
         try:
             html2json_response = html2json_service.html2json(self.DOWNLOAD_FOLDER, input_filepath) 
             return html2json_response
         except:
-            task_endtime = str(time.time()).replace('.', '')
-            response = CustomResponse(Status.ERR_Html2json.value, jobid, workflow_id,  tool_name, step_order,
-                                            self.task_id, self.task_starttime, task_endtime, output_file_response)
-            return response
+            response_custom = CustomResponse(Status.ERR_Html2json.value, jobid, self.task_id)
+            response_error = file_ops.error_handler(response_custom.status_code, True)
+            return response_error
 
-    def input_file_response(self, jobid, workflow_id, tool_name, step_order, input_files, output_file_response, filename_response):
+    def input_file_response(self, jobid, workflow_id, tool_name, step_order, input_files, filename_response):
         output_filename = ""
         if len(input_files) == 0 or not isinstance(input_files, list):
-            task_endtime = str(time.time()).replace('.', '')
-            response = CustomResponse(Status.ERR_EMPTY_FILE_LIST.value, jobid, workflow_id, tool_name, step_order,
-                                            self.task_id, self.task_starttime, task_endtime, output_file_response)
-            return response
+            response_custom = CustomResponse(Status.ERR_EMPTY_FILE_LIST.value, jobid, self.task_id)
+            response_error = file_ops.error_handler(response_custom.status_code, True)
+            return response_error
         else:
             for item in input_files:
                 input_filename, input_image_folderpath, in_file_type, in_locale = file_ops.accessing_files(item)
@@ -199,48 +195,44 @@ class CheckingResponse(object):
                 file_res = file_ops.one_filename_response(input_filename, input_image_folderpath, output_filename, in_locale)
                 filename_response.append(file_res)
                 if input_filename == "" or input_filename is None:
-                    task_endtime = str(time.time()).replace('.', '')
-                    response = CustomResponse(Status.ERR_FILE_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
-                                                    self.task_id, self.task_starttime, task_endtime, output_file_response)
-                    return response
+                    response_custom = CustomResponse(Status.ERR_FILE_NOT_FOUND.value, jobid, self.task_id)
+                    response_error = file_ops.error_handler(response_custom.status_code, True)
+                    return response_error
                 elif file_ops.check_file_extension(in_file_type) is False:
-                    task_endtime = str(time.time()).replace('.', '')
-                    response = CustomResponse(Status.ERR_EXT_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
-                                                    self.task_id, self.task_starttime, task_endtime, output_file_response)
-                    return response
+                    response_custom = CustomResponse(Status.ERR_EXT_NOT_FOUND.value, jobid, self.task_id)
+                    response_error = file_ops.error_handler(response_custom.status_code, True)
+                    return response_error
                 elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
-                    task_endtime = str(time.time()).replace('.', '')
-                    response = CustomResponse(Status.ERR_DIR_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
-                                                    self.task_id, self.task_starttime, task_endtime, output_file_response)
-                    return response
+                    response_custom = CustomResponse(Status.ERR_DIR_NOT_FOUND.value, jobid, self.task_id)
+                    response_error = file_ops.error_handler(response_custom.status_code, True)
+                    return response_error
                 elif in_locale == "" or in_locale is None:
-                    task_endtime = str(time.time()).replace('.', '')
-                    response = CustomResponse(Status.ERR_locale_NOT_FOUND.value, jobid, workflow_id, tool_name, step_order,
-                                                    self.task_id, self.task_starttime, task_endtime, output_file_response)
-                    return response
+                    response_custom = CustomResponse(Status.ERR_locale_NOT_FOUND.value, jobid, self.task_id)
+                    response_error = file_ops.error_handler(response_custom.status_code, True)
+                    return response_error
                 elif len(os.listdir(input_filepath)) == 0:
-                    task_endtime = str(time.time()).replace('.', '')
-                    response = CustomResponse(Status.ERR_Empty_dir.value, jobid, workflow_id,  tool_name, step_order,
-                                                    self.task_id, self.task_starttime, task_endtime, output_file_response)
-                    return response
+                    response_custom = CustomResponse(Status.ERR_Empty_dir.value, jobid, self.task_id)
+                    response_error = file_ops.error_handler(response_custom.status_code, True)
+                    return response_error
                 else:
-                    output_filepath = self.service_response(jobid, workflow_id, tool_name, step_order,input_filepath, output_file_response)
+                    output_filepath = self.service_response(jobid, workflow_id, tool_name, step_order,input_filepath)
                     try:
                         if isinstance(output_filepath.status_code, dict):
                             return output_filepath
                     except:
                         file_res['outputHtml2JsonFilePath'] = output_filepath
         task_endtime = str(time.time()).replace('.', '')
-        response_true = CustomResponse(Status.SUCCESS.value, jobid, workflow_id, tool_name, step_order, self.task_id, self.task_starttime,
-                                                task_endtime, output_file_response)
-        return response_true
+        response_custom = CustomResponse(Status.SUCCESS.value, jobid, self.task_id)
+        response_success = response_custom.success_response(workflow_id, self.task_starttime, task_endtime, tool_name, step_order, filename_response)
+        return response_success
 
     def only_input_file_response(self, input_files):
         output_filename = ""
         filename_response = list()
         if len(input_files) == 0 or not isinstance(input_files, list):
             response = Status.ERR_EMPTY_FILE_LIST.value
-            return response
+            response_error = file_ops.error_handler(response, False)
+            return response_error
         else:
             for item in input_files:
                 input_filename, input_image_folderpath, in_file_type, in_locale = file_ops.accessing_files(item)
@@ -249,19 +241,24 @@ class CheckingResponse(object):
                 filename_response.append(file_res)
                 if input_filename == "" or input_filename is None:
                     response = Status.ERR_FILE_NOT_FOUND.value
-                    return response
+                    response_error = file_ops.error_handler(response, False)
+                    return response_error
                 elif file_ops.check_file_extension(in_file_type) is False:
                     response = Status.ERR_EXT_NOT_FOUND.value
-                    return response
+                    response_error = file_ops.error_handler(response, False)
+                    return response_error
                 elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
                     response = Status.ERR_DIR_NOT_FOUND.value
-                    return response
+                    response_error = file_ops.error_handler(response, False)
+                    return response_error
                 elif in_locale == "" or in_locale is None:
                     response = Status.ERR_locale_NOT_FOUND.value
-                    return response
+                    response_error = file_ops.error_handler(response, False)
+                    return response_error
                 elif len(os.listdir(input_filepath)) == 0:
                     response = Status.ERR_Empty_dir.value
-                    return response
+                    response_error = file_ops.error_handler(response, False)
+                    return response_error
                 else:
                     html2json_service = Html2JsonService()
                     try:
@@ -269,7 +266,8 @@ class CheckingResponse(object):
                         file_res['outputHtml2JsonFilePath'] = html2json_response
                     except:
                         response = Status.ERR_Html2json.value
-                        return response
+                        response_error = file_ops.error_handler(response, False)
+                        return response_error
             log.info("response generated from model response")
             response_true = {
                 "status": "SUCCESS",
@@ -278,7 +276,7 @@ class CheckingResponse(object):
             }
             return response_true
 
-    def main_response_wf(self):
+    def main_response_wf(self, rest_request=False):
         log.info("Response generation started")
         keys_checked = {'workflowCode','jobID','input','tool','stepOrder'}
         if self.json_data.keys() >= keys_checked:
@@ -286,14 +284,24 @@ class CheckingResponse(object):
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.input_format(self.json_data)
             filename_response = list()
             output_file_response = {"files" : filename_response}
-            response_error = self.wf_keyerror(jobid, workflow_id, tool_name, step_order, output_file_response)
-            if response_error is not False:
+            response_wfkey_error = self.wf_keyerror(jobid, workflow_id, tool_name, step_order)
+            if response_wfkey_error is not False:
                 log.error("workflow keys error")
-                return response_error.status_code
+                if rest_request is True:
+                    return response_wfkey_error
             else:
-                response_file = self.input_file_response(jobid, workflow_id, tool_name, step_order, input_files, output_file_response, filename_response)
-                log.info("file response for wf generated")
-                return response_file.status_code
+                if rest_request is True:
+                    log.info("file response generated")
+                    response_file = self.input_file_response(jobid, workflow_id, tool_name, step_order, input_files, filename_response)
+                    log.info("file response for wf generated")
+                    return response_file
+                else:
+                    response_file = self.input_file_response(jobid, workflow_id, tool_name, step_order, input_files, filename_response)
+                    if 'errorID' in response_file.keys():
+                        log.info("error returned to error queue")
+                    else:
+                        log.info("response for kafka queue")
+                        return response_file
         else:
             log.error("Input format is not correct")
             return Status.ERR_request_input_format.value

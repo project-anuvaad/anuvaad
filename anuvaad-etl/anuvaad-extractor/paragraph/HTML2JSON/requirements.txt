@@ -21,3 +21,4 @@ soupsieve==2.0
 wcwidth==0.1.9
 webencodings==0.5.1
 zipp==3.1.0
+anuvaad-em==0.0.2
