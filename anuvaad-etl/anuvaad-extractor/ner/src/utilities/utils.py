@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 import time
-from error_manager.emservice import post_error
-from error_manager.emservice import post_error_wf
+from anuvaad_em.emservice import post_error
+from anuvaad_em.emservice import post_error_wf
 
 class FileOperation(object):
 
