@@ -134,11 +134,15 @@ class AlignmentService:
                     self.update_job_status("FAILED", object_in, "Exception while writing the output")
                     if iswf:
                         util.error_handler("OUTPUT_ERROR", "Exception while writing the output", object_in, True)
+                    else:
+                        util.error_handler("OUTPUT_ERROR", "Exception while writing the output", None, False)
             except Exception as e:
                 log.error("Exception while writing the output: ", str(e))
                 self.update_job_status("FAILED", object_in, "Exception while writing the output")
                 if iswf:
                     util.error_handler("OUTPUT_ERROR", "Exception while writing the output", object_in, True)
+                else:
+                    util.error_handler("OUTPUT_ERROR", "Exception while writing the output", None, False)
                 return {}
             log.info("Sentences aligned Successfully! JOB ID: " + str(object_in["jobID"]))
         else:
@@ -154,6 +158,8 @@ class AlignmentService:
             self.update_job_status("FAILED", object_in, "Exception while parsing the input")
             if iswf:
                 util.error_handler("INPUT_ERROR", "Exception while parsing the input: " + str(e), object_in, True)
+            else:
+                util.error_handler("INPUT_ERROR", "Exception while parsing the input: " + str(e), None, False)
             return None, None
 
     # Wrapper to build sentence embeddings
@@ -168,6 +174,9 @@ class AlignmentService:
             self.update_job_status("FAILED", object_in, "Exception while vectorising sentences")
             if iswf:
                 util.error_handler("LASER_ERROR", "Exception while vectorising sentences: " + str(e), object_in, True)
+            else:
+                util.error_handler("LASER_ERROR", "Exception while vectorising sentences: " + str(e), None, False)
+
             return None
 
     # Wrapper method to align and categorise sentences
@@ -191,6 +200,8 @@ class AlignmentService:
             self.update_job_status("FAILED", object_in, "Exception while aligning sentences")
             if iswf:
                 util.error_handler("ALIGNMENT_ERROR", "Exception while aligning sentences: " + str(e), object_in, True)
+            else:
+                util.error_handler("ALIGNMENT_ERROR", "Exception while aligning sentences: " + str(e), None, False)
             return None
 
 
