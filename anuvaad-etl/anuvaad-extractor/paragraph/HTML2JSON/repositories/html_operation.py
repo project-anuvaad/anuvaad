@@ -130,7 +130,8 @@ class HTMLOperation(object):
     def page_no_of_file(self, data):
         page_no_id = data.attr['id']
         page_no = re.findall(r'[0-9]', page_no_id)
-        return page_no[0]
+        page_no = int(''.join(page_no))
+        return page_no
 
     def output_html_node_format(self,page_no, page_height, page_width, x, y, class_id, class_style, style, p_tag_text, bold_nature):
         html_node = {

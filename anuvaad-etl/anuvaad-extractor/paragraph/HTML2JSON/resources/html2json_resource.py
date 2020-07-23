@@ -25,7 +25,7 @@ class Html2JsonConversionWF(Resource):
         checking_response = CheckingResponse(json_data, task_id, task_starttime, DOWNLOAD_FOLDER)
         file_value_response = checking_response.main_response_wf(rest_request=True)
         log.info("Conversion completed")
-        return jsonify(file_value_response)
+        return file_value_response
 
 class Html2JsonConversion(Resource):
 
@@ -36,5 +36,5 @@ class Html2JsonConversion(Resource):
         checking_response = CheckingResponse(json_data, task_id, task_starttime, DOWNLOAD_FOLDER)
         file_only_response = checking_response.main_response_files_only()
         log.info("response successfully generated.")
-        return jsonify(file_only_response)
+        return file_only_response
         

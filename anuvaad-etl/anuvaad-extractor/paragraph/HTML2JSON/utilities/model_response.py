@@ -283,7 +283,6 @@ class CheckingResponse(object):
             log.info("workflow request initiated.")
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.input_format(self.json_data)
             filename_response = list()
-            output_file_response = {"files" : filename_response}
             response_wfkey_error = self.wf_keyerror(jobid, workflow_id, tool_name, step_order)
             if response_wfkey_error is not False:
                 log.error("workflow keys error")
