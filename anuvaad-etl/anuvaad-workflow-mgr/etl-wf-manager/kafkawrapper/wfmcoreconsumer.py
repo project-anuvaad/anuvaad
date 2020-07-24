@@ -55,7 +55,7 @@ def core_consume():
                 break
             except Exception as e:
                 log.exception("Exception while consuming: " + str(e))
-                post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+                post_error("WFMCORE_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
                 break
 
 

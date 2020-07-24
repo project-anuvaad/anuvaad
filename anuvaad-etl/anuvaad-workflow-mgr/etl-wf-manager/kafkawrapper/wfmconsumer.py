@@ -49,6 +49,7 @@ def consume():
     consumer = instantiate(topics)
     log.info("WFM Consumer Running..........")
     while True:
+        log.info("Waiting for the record..")
         for msg in consumer:
             try:
                 data = msg.value
@@ -57,7 +58,7 @@ def consume():
                 break
             except Exception as e:
                 log.exception("Exception while consuming: " + str(e))
-                post_error("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+                post_error("WFM_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
                 break
 
 # Method that provides a deserialiser for the kafka record.
