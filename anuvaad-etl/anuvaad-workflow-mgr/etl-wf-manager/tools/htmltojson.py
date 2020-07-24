@@ -31,7 +31,7 @@ class HTMLTOJSON:
     def get_htmltojson_input(self, task_output, predecessor):
         files = []
         if predecessor == "PDFTOHTML":
-            html_files = task_output["output"]["files"]
+            html_files = task_output["output"]
             for file in html_files:
                 req_file = {
                     "htmlFolderPath": file["outputHtmlFilePath"],
