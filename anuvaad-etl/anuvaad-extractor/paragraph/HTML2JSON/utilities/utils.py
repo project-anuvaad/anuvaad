@@ -3,6 +3,7 @@ from pathlib import Path
 import logging
 from anuvaad_em.emservice import post_error
 from anuvaad_em.emservice import post_error_wf
+import time
 
 log = logging.getLogger('file')
 
@@ -36,6 +37,11 @@ class FileOperation(object):
     def input_path(self, input_filename):
         input_filepath = os.path.join('upload', input_filename)
         return input_filepath
+
+    def output_path(self,index, DOWNLOAD_FOLDER):
+        output_filename = '%d-'%index + str(time.time()).replace('.', '') + '.json'
+        output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filename)
+        return output_filepath , output_filename
 
     def one_filename_response(self, input_filename, output_image_folderpath, output_html2json_filepath, in_locale):
         file_res = {

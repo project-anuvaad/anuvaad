@@ -172,11 +172,12 @@ class CheckingResponse(object):
         response = False
         return response
 
-    def service_response(self, jobid, workflow_id, tool_name, step_order,input_filepath):
+    def service_response(self, jobid, workflow_id, tool_name, step_order,input_filepath, index):
         html2json_service = Html2JsonService()
         try:
-            html2json_response = html2json_service.html2json(self.DOWNLOAD_FOLDER, input_filepath) 
-            return html2json_response
+            output_filepath , output_filename = file_ops.output_path(index, self.DOWNLOAD_FOLDER)
+            html2json_service.html2json(self.DOWNLOAD_FOLDER, input_filepath, output_filepath) 
+            return output_filename
         except:
             response_custom = CustomResponse(Status.ERR_Html2json.value, jobid, self.task_id)
             response_error = file_ops.error_handler(response_custom.status_code, True)
@@ -189,7 +190,7 @@ class CheckingResponse(object):
             response_error = file_ops.error_handler(response_custom.status_code, True)
             return response_error
         else:
-            for item in input_files:
+            for i, item in enumerate(input_files):
                 input_filename, input_image_folderpath, in_file_type, in_locale = file_ops.accessing_files(item)
                 input_filepath = file_ops.input_path(input_filename) #with upload dir
                 file_res = file_ops.one_filename_response(input_filename, input_image_folderpath, output_filename, in_locale)
@@ -215,7 +216,7 @@ class CheckingResponse(object):
                     response_error = file_ops.error_handler(response_custom.status_code, True)
                     return response_error
                 else:
-                    output_filepath = self.service_response(jobid, workflow_id, tool_name, step_order,input_filepath)
+                    output_filepath = self.service_response(jobid, workflow_id, tool_name, step_order,input_filepath, i)
                     try:
                         if isinstance(output_filepath.status_code, dict):
                             return output_filepath
