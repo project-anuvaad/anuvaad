@@ -8,6 +8,7 @@ class Tokenisation(object):
     def __init__(self):
         pass       
 
+    # after successful tokenisation writting tokenised sentences into a text file
     def eng_tokenisation(self,data, output_filepath):
         log.info("File write for english tokenised sentence started")
         write_file = open(output_filepath, 'w', encoding='utf-16')
@@ -18,6 +19,7 @@ class Tokenisation(object):
         write_file.close()
         log.info("File write for english tokenised sentence completed")
 
+    # after successful tokenisation writting tokenised sentences into a text file
     def hin_tokenisation(self, data, output_filepath):
         log.info("File write for hindi tokenised sentence started")
         write_file = open(output_filepath, 'w', encoding='utf-16')

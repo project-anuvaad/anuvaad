@@ -9,6 +9,7 @@ class FileOperation(object):
     def __init__(self):
         self.download_folder = None
 
+    # creating directory if it is not existed before.
     def file_download(self, downloading_folder):
         self.download_folder = downloading_folder
         download_dir = Path(os.path.join(os.curdir,self.download_folder))
@@ -16,12 +17,14 @@ class FileOperation(object):
             os.makedirs(download_dir)
         return download_dir
 
+    # checking directory exists or not
     def check_path_exists(self, dir):
         if dir is not None and os.path.exists(dir) is True:
             return True
         else:
             return False
 
+    # checking file extension of received file type
     def check_file_extension(self, file_type):
         allowed_extensions = ['txt','csv']
         if file_type in allowed_extensions:
@@ -29,10 +32,12 @@ class FileOperation(object):
         else:
             return False
 
+    # generating input filepath for input filename
     def input_path(self, input_filename):
         input_filepath = os.path.join('upload', input_filename)
         return input_filepath
 
+    # generating output filepath for output filename
     def output_path(self,i, DOWNLOAD_FOLDER):
         output_filename = '%d-'%i + str(time.time()).replace('.', '') + '.txt'
         output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filename)
@@ -44,6 +49,7 @@ class FileOperation(object):
             input_file_data = f.readlines()
         return input_file_data
 
+    # extracting data from received json input
     def json_input_format(self, json_data):
         input_files = json_data["input"]['files']
         workflow_id = json_data['workflowCode']
@@ -52,12 +58,14 @@ class FileOperation(object):
         step_order = json_data['stepOrder']
         return input_files, workflow_id, jobid, tool_name, step_order
 
+    # extracting input file features
     def accessing_files(self,files):
         filepath = files['path']
         file_type = files['type']
         locale = files['locale']
         return filepath, file_type, locale
 
+    # output format for individual pdf file
     def one_filename_response(self, input_filename, output_filename, in_locale, in_file_type):
         file_res = {
             "inputFile" : input_filename,
@@ -67,6 +75,7 @@ class FileOperation(object):
         }
         return file_res
 
+    # error manager integration 
     def error_handler(self, object_in, iswf):
         if iswf:
                 job_id = object_in["jobID"]

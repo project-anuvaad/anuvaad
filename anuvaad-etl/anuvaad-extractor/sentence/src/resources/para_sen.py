@@ -13,8 +13,10 @@ file_ops = FileOperation()
 DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
 log = logging.getLogger('file')
 
+# rest request for tokenisation workflow service
 class SenTokenisePostWF(Resource):
     
+    # reading json request and reurnung final response
     def post(self):
         log.info("Tokenisation service started")
         task_id = str("TOK-" + str(time.time()).replace('.', ''))
@@ -26,8 +28,10 @@ class SenTokenisePostWF(Resource):
         return jsonify(file_value_response)
 
 
+# rest request for tokenisation individual service
 class SentenceTokenise(Resource):
 
+    # reading json request and reurnung final response
     def post(self):
         log.info("Individual operation of tokenisation service strated.")
         json_data = request.get_json(force=True)

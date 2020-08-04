@@ -10,11 +10,13 @@ import logging
 from logging.config import dictConfig
 log = logging.getLogger('file')
 
+# main function for async process
 def process_tokenization_kf():
     file_ops = FileOperation()
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
     task_id = str("TOK-" + str(time.time()).replace('.', ''))
     task_starttime = str(time.time()).replace('.', '')
+    # instatiation of consumer for respective topic
     try:
         consumer_class = Consumer(config.tok_input_topic, config.bootstrap_server)
         consumer = consumer_class.consumer_instantiate()
