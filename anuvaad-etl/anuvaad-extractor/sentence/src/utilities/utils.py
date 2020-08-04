@@ -43,6 +43,7 @@ class FileOperation(object):
         output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filename)
         return output_filepath , output_filename
     
+    # reading content of input text file
     def read_file(self, input_filename):
         input_filepath = self.input_path(input_filename)
         with open(input_filepath, 'r', encoding='utf-16') as f:
