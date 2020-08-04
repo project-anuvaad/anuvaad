@@ -15,8 +15,10 @@ file_ops = FileOperation()
 DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
 log = logging.getLogger('file')
 
+# rest request for html2json workflow service
 class Html2JsonConversionWF(Resource):
 
+    # reading json request and reurnung final response
     def post(self):
         log.info("HTML to JSON conversion started")
         task_id = str("Html2Json-" + str(time.time()).replace('.', ''))
@@ -27,8 +29,10 @@ class Html2JsonConversionWF(Resource):
         log.info("Conversion completed")
         return file_value_response
 
+# rest request for html2json individual service
 class Html2JsonConversion(Resource):
 
+    # reading json request and reurnung final response
     def post(self):
         log.info("Individual operation of Html2Json service strated.")
         json_data = request.get_json(force=True)

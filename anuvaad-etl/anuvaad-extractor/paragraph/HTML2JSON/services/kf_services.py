@@ -10,11 +10,13 @@ import logging
 from logging.config import dictConfig
 log = logging.getLogger('file')
 
+# main function for async process
 def process_HTML_kf():
     file_ops = FileOperation()
     DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
     task_id = str("HTML2JSON-" + str(time.time()).replace('.', ''))
     task_starttime = str(time.time()).replace('.', '')
+    # instatiation of consumer for respective topic
     try:
         consumer_class = Consumer(config.html_input_topic, config.bootstrap_server)
         consumer = consumer_class.consumer_instantiate() #Consumer

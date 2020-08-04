@@ -11,6 +11,8 @@ class Html2JsonService(object):
     def __init__(self):
         pass
 
+    # after successful html to json conversion returning json filename
+    # writing json object into json file 
     def html2json(self,DOWNLOAD_FOLDER, output_htmlfiles_dir, output_filepath):
         response_html2json = HTMl_ops.html_to_json(output_htmlfiles_dir)
         with open(output_filepath, 'w') as f:

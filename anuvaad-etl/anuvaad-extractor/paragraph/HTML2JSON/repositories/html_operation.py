@@ -7,14 +7,16 @@ import config
 
 log = logging.getLogger('file')
 
+# we are using html2json opensource code to convert html files into json object.
 class HTMLOperation(object):
 
     def __init__(self):
         pass
 
+    # main function that is reading html file and converting it to json using html2json library.
     def html_to_json(self, input_html_filepath):
         try:
-            html_files = self.segregate_png_html(input_html_filepath)
+            html_files = self.listing_html_files(input_html_filepath)
             sorted_html_files = self.sorting_html_list(html_files, "html")
             response_htmlTOjson = dict()
             for i, item in enumerate(sorted_html_files):
@@ -33,12 +35,14 @@ class HTMLOperation(object):
         except Exception as e:
             log.error("Error occured while converting html to json: %s"%e)
 
-    def segregate_png_html(self, input_dir_html):
+    # listing html files from given directory
+    def listing_html_files(self, input_dir_html):
         html_items = list()
         for item in os.listdir(input_dir_html):
             html_items.append(item)
         return html_items
 
+    # sort the html file list so we can convert these files pagewise
     def sorting_html_list(self, list_data, data_tag):
         iteration_no = len(list_data)
         output_list = list()
@@ -49,6 +53,7 @@ class HTMLOperation(object):
                 output_list.append(filename)
         return output_list
 
+    # Standardizing converted json data into our use case json
     def making_html_nodes(self, data):
         child_data = data.child
         child_data_for_class_style = child_data[0].child[2].text
@@ -57,6 +62,7 @@ class HTMLOperation(object):
         html_nodes_pagewise = self.replacing_class_style_inside_child_child(child_data_for_tags, class_style_list)
         return html_nodes_pagewise
 
+    # Extracting all class styles of a page from converted json object of that page
     def finding_class_styles(self, text):
         pattern = r"\."
         re_text = re.split(pattern, text)
@@ -73,6 +79,7 @@ class HTMLOperation(object):
                 i+=1
         return class_style_pagewise
 
+    # converting each class style string into dictionary object
     def making_json_of_class_styles(self, text):
         splitted_text = re.split(r"\;", text)
         class_style_wo_id = dict()
@@ -82,6 +89,8 @@ class HTMLOperation(object):
                 class_style_wo_id.update({str(key_value_split[0]): str(key_value_split[1])})
         return class_style_wo_id
 
+    # replacing class style code with class style dictionary object inside every p tag of this page
+    # creating final desirable json object of each page.
     def replacing_class_style_inside_child_child(self, child_tag_data, tag_class_style_list):
         html_nodes_per_page = list()
         page_no = self.page_no_of_file(child_tag_data)
@@ -122,17 +131,20 @@ class HTMLOperation(object):
                         html_nodes_per_page.append(html_node_p_tag)
         return html_nodes_per_page
 
+    # finding left and top position of each p tag
     def left_top_position(self, json_attr_style_data):
         x = re.sub(r'[a-z]', "", json_attr_style_data['left'])
         y = re.sub(r'[a-z]', "", json_attr_style_data['top'])
         return x, y
 
+    # extracting page number from converted json object
     def page_no_of_file(self, data):
         page_no_id = data.attr['id']
         page_no = re.findall(r'[0-9]', page_no_id)
         page_no = int(''.join(page_no))
         return page_no
 
+    # statndard json format of each p tag
     def output_html_node_format(self,page_no, page_height, page_width, x, y, class_id, class_style, style, p_tag_text, bold_nature):
         html_node = {
             "page_no" : page_no,
@@ -148,6 +160,7 @@ class HTMLOperation(object):
         }
         return html_node
 
+    # checking if p tag has bold character or not
     def find_bold_nature(self, item_attr_child):
         if item_attr_child.tag == 'b':
            bold_nature = True
@@ -155,6 +168,7 @@ class HTMLOperation(object):
             bold_nature = False
         return bold_nature
 
+    # extracting class style and id of each tag so that we can replace that class id with class style dictionary object of respective class id.
     def extracting_values_of_class_styles(self ,tag_class, class_styles):
         for item in class_styles:
             if tag_class == item['class']:
@@ -162,6 +176,7 @@ class HTMLOperation(object):
                 tag_class_style = item['class_style']
                 return tag_class_id, tag_class_style
 
+    # cleaning text data of each p tag
     def text_cleaning(self, text):
         text = text.replace("</b>", "")
         text = text.replace("<b>", "")
