@@ -12,8 +12,10 @@ file_ops = FileOperation()
 DOWNLOAD_FOLDER =file_ops.create_file_upload_dir(config.download_folder)
 log = logging.getLogger('file')
 
+# rest request for entity annotation workflow service
 class NERresourcesWF(Resource):
     
+    # reading json request and reurnung final response
     def post(self):
         log.info("NER service started")
         task_id = str("NER-" + str(time.time()).replace('.', ''))
@@ -24,8 +26,10 @@ class NERresourcesWF(Resource):
         log.info("NER response generated for rest service")
         return jsonify(file_value_response)
 
+# rest request for entity annotation individual service
 class NERresources(Resource):
 
+    # reading json request and reurnung final response
     def post(self):
         log.info("Individual operation of NER service strated.")
         json_data = request.get_json(force=True)

@@ -11,9 +11,11 @@ from logging.config import dictConfig
 
 log = logging.getLogger('file')
 
+# main function for async process
 def process_annotation_kf():
     file_ops = FileOperation()
     DOWNLOAD_FOLDER =file_ops.create_file_upload_dir(config.download_folder)
+    # instatiation of consumer for respective topic
     try:
         consumer_class = Consumer(config.ner_input_topic, config.bootstrap_server)
         consumer = consumer_class.consumer_instantiate()

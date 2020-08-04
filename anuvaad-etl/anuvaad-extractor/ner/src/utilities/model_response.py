@@ -9,6 +9,7 @@ import logging
 log = logging.getLogger('file')
 file_ops = FileOperation()
 
+# standard error formats
 class Status(enum.Enum):
     SUCCESS = {
         "status": "SUCCESS",
@@ -135,6 +136,7 @@ class Status(enum.Enum):
         }
     }
 
+# response object
 class CustomResponse():
     def __init__(self, status_code, jobid, taskid):
         self.status_code = status_code
@@ -151,6 +153,7 @@ class CustomResponse():
         return self.status_code
 
 
+# main class to generate success and error responses
 class CheckingResponse(object):
 
     def __init__(self, json_data, task_id, task_starttime, DOWNLOAD_FOLDER):
@@ -159,6 +162,7 @@ class CheckingResponse(object):
         self.task_starttime = task_starttime
         self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
 
+    # workflow related key value errors
     def wf_keyerror(self, jobid, workflow_id, tool_name, step_order):
         if jobid == "" or jobid is None:
             response_custom = CustomResponse(Status.ERR_jobid_NOT_FOUND.value, jobid, self.task_id)
@@ -179,6 +183,7 @@ class CheckingResponse(object):
         response = False
         return response
 
+    # checking whether file is utf-16 encoded or not
     def file_encoding_error(self, jobid, workflow_id, tool_name, step_order, input_filename):
         try:
             input_file_data = file_ops.read_file(input_filename)
@@ -193,6 +198,7 @@ class CheckingResponse(object):
             return response_error
         return input_file_data
 
+    # calling service function to extract entities from paragragh
     def service_response(self, jobid, workflow_id, tool_name, step_order,input_filename, in_locale):
         annotation = Annotation()
         response_input_file_data = self.file_encoding_error(jobid, workflow_id, tool_name, step_order, input_filename)
@@ -212,6 +218,7 @@ class CheckingResponse(object):
         else:
             return response_input_file_data
 
+    # creating response for work flow requested list of input files
     def input_file_response(self, jobid, workflow_id, tool_name, step_order, input_files, filename_response):
         output_filename = ""
         if len(input_files) == 0 or not isinstance(input_files, list):
@@ -252,6 +259,7 @@ class CheckingResponse(object):
         response_success = response_true.success_response(workflow_id, self.task_starttime, task_endtime, tool_name, step_order, filename_response)
         return response_success
 
+    # creating response for indiviual rest service list of files
     def only_input_file_response(self, input_files):
         output_filename = ""
         filename_response = list()
@@ -315,6 +323,7 @@ class CheckingResponse(object):
             }
             return response_true
 
+    # combining above functions of this class to gnerate final output that is used for both sync and async process.
     def main_response_wf(self, rest_request=False):
         log.info("Response generation started")
         keys_checked = {'workflowCode','jobID','input','tool','stepOrder'}
@@ -344,6 +353,7 @@ class CheckingResponse(object):
             log.error("Input format is not correct")
             return Status.ERR_request_input_format.value
 
+    # individual service response based on "only_input_file_response" function.
     def main_response_files_only(self):
         if self.json_data.keys() == {'files'}:
             log.info("request accepted")

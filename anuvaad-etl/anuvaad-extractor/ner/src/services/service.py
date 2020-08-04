@@ -9,6 +9,7 @@ class Annotation(object):
     def __init__(self):
         pass       
 
+    # after successful entity annotation creating json object of annotation tag and tagged value
     def storing_tagged_data(self,data):
         response_ner = dict()
         log.info("NER operation started")
