@@ -98,10 +98,10 @@ class AlignmentUtils:
         sen_len = len(sentence.split())
         if 0 < sen_len <= 10:
             # SMALL
-            return 0.7, 0.75
+            return 0.65, 0.75
         elif 10 < sen_len <= 20:
             # MEDIUM
-            return 0.75, 0.8
+            return 0.7, 0.8
         else:
             # LARGE
             return 0.75, 0.8
