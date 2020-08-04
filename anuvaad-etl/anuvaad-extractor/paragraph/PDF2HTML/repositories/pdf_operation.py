@@ -8,11 +8,13 @@ import shutil
 file_ops = FileOperation()
 log = logging.getLogger('file')
 
+# pdf2html conversion
 class PdfOperation(object):
 
     def __init__(self):
         pass
 
+    # using pdf2html system install to convert pdf files into html and image files.
     def pdf_to_html(self,DOWNLOAD_FOLDER, input_pdf_file):
         try:
             new_foldername_html_png_files = str(time.time()).replace('.', '')
@@ -24,10 +26,11 @@ class PdfOperation(object):
         except Exception as e:
             log.error("Error occured while converting pdf to html: %s"%e)
 
+    # segregating html and image files into respective directories
     def segregate_png_html(self, output_pdf2html_dir, DOWNLOAD_FOLDER, folder_name):
         try:
-            des_html = folder_name + '/html_files'
-            des_png = folder_name + '/png_files'
+            des_html = folder_name + '/html_files'   # html file directory
+            des_png = folder_name + '/png_files'     #image file directory
             destination_png = file_ops.create_file_download_dir(os.path.join(DOWNLOAD_FOLDER, des_png))
             destination_html = file_ops.create_file_download_dir(os.path.join(DOWNLOAD_FOLDER, des_html))
             for item in os.listdir(output_pdf2html_dir):

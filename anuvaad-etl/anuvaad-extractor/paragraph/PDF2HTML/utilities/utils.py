@@ -11,11 +11,13 @@ from anuvaad_em.emservice import post_error_wf
 
 log = logging.getLogger('file')
 
+# file utilities class
 class FileOperation(object):
 
     def __init__(self):
         self.download_folder = None
 
+    # creating directory if it is not existed before.
     def create_file_download_dir(self, downloading_folder):
         self.download_folder = downloading_folder
         download_dir = Path(os.path.join(os.getcwd(), self.download_folder))
@@ -23,6 +25,7 @@ class FileOperation(object):
             os.makedirs(download_dir)
         return str(download_dir)
 
+    # extracting data from received json input
     def input_format(self, json_data):
         input_files = json_data["input"]['files']
         workflow_id = json_data['workflowCode']
@@ -31,16 +34,19 @@ class FileOperation(object):
         step_order = json_data['stepOrder']
         return input_files, workflow_id, jobid, tool_name, step_order   
 
+    # extracting input file features
     def accessing_files(self,files):
         filepath = files['path']
         file_type = files['type']
         locale = files['locale']
         return filepath, file_type, locale
 
+    # generating input filepath for input filename
     def input_path(self, input_filename):
         input_filepath = os.path.join('upload', input_filename)
         return input_filepath
 
+    # output format for individual pdf file
     def one_filename_response(self, input_filename, output_htmlfiles_path, output_pngfiles_path, in_locale, in_file_type):
         file_res = {
             "inputFile" : input_filename,
@@ -51,6 +57,7 @@ class FileOperation(object):
         }
         return file_res     
 
+    # checking file extension of received file type
     def check_file_extension(self, file_type):
         allowed_extensions = ['pdf']
         if file_type in allowed_extensions:
@@ -58,12 +65,14 @@ class FileOperation(object):
         else:
             return False
 
+    # checking directory exists or not
     def check_path_exists(self, dir):
         if dir is not None and os.path.exists(dir) is True:
             return True
         else:
             return False
 
+    # error manager integration 
     def error_handler(self, object_in, iswf):
         if iswf:
                 job_id = object_in["jobID"]
