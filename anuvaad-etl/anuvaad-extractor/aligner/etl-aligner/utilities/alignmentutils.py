@@ -101,7 +101,7 @@ class AlignmentUtils:
             return 0.7, 0.75
         elif 10 < sen_len <= 20:
             # MEDIUM
-            return 0.7, 0.8
+            return 0.75, 0.8
         else:
             # LARGE
             return 0.75, 0.8
