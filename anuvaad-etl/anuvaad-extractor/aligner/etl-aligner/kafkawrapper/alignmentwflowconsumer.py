@@ -7,6 +7,8 @@ import os
 from service.alignmentservice import AlignmentService
 from utilities.alignmentutils import AlignmentUtils
 from logging.config import dictConfig
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_exception
 
 
 log = logging.getLogger('file')
@@ -48,17 +50,17 @@ class WflowConsumer:
         consumer = self.instantiate(topics)
         service = AlignmentService()
         util = AlignmentUtils()
-        log.info("Align WFM Consumer running.......")
+        log_info("consume", "Align WFM Consumer running.......", None)
         while True:
             for msg in consumer:
                 data = {}
                 try:
                     data = msg.value
-                    log.info("Received on Topic: " + msg.topic)
+                    log_info("consume", "Received on Topic: " + msg.topic, data["jobID"])
                     service.wf_process(data)
                     break
                 except Exception as e:
-                    log.exception("Exception while consuming: " + str(e))
+                    log_exception("consume", "Exception while consuming: ", data["jobID"], e)
                     data["taskID"] = "taskID"
                     util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming", data, True)
                     break
@@ -68,7 +70,7 @@ class WflowConsumer:
         try:
             return json.loads(x.decode('utf-8'))
         except Exception as e:
-            log.exception("Exception while deserialising: " + str(e))
+            log_exception("handle_json", "Exception while deserialising: ", None, e)
             return {}
 
     # Log config

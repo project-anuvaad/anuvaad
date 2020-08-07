@@ -9,8 +9,10 @@ import time
 import requests
 import numpy as np
 import csv
-from anuvaad_em.emservice import post_error
-from anuvaad_em.emservice import post_error_wf
+from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.errorhandler import post_error_wf
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
 
 log = logging.getLogger('file')
 two_files = True
@@ -29,7 +31,7 @@ class AlignmentUtils:
     def parse_input_file(self, path_eng, path_indic):
         source = []
         target_corp = []
-        log.info("Parsing Input Files.....")
+        log_info("parse_input_file", "Parsing Input Files.....", None)
         if two_files:
             with codecs.open(path_eng, 'r', file_encoding) as txt_file:
                 for row in txt_file:
@@ -47,7 +49,7 @@ class AlignmentUtils:
                     if len(row) != 0:
                         source.append(row[0])
                         target_corp.append(row[1])
-        log.info("Done.")
+        log_info("parse_input_file", "Done.", None)
         return source, target_corp
 
     # Utility to write the output to a file
@@ -91,7 +93,7 @@ class AlignmentUtils:
                 if key == "data":
                     return value["filepath"]
         else:
-            log.error("Upload Failed!")
+            log_error("upload_file_binary", "Upload Failed!", None, None)
 
     # Utility to decide (min,max) cs thresholds based on length of setences.
     def get_cs_on_sen_cat(self, sentence):

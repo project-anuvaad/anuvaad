@@ -6,6 +6,8 @@ import os
 from service.alignmentservice import AlignmentService
 from logging.config import dictConfig
 from utilities.alignmentutils import AlignmentUtils
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_exception
 
 
 log = logging.getLogger('file')
@@ -45,16 +47,16 @@ class Consumer:
         consumer = self.instantiate(topics)
         service = AlignmentService()
         util = AlignmentUtils()
-        log.info("Align Consumer running.......")
+        log_info("consume", "Align Consumer running.......", None)
         while True:
             for msg in consumer:
                 try:
                     data = msg.value
-                    log.info("Received on Topic: " + msg.topic)
+                    log_info("consume", "Received on Topic: " + msg.topic, data["jobID"])
                     service.process(data, False)
                     break
                 except Exception as e:
-                    log.exception("Exception while consuming: " + str(e))
+                    log_exception("consume", "Exception while consuming: ", None, e)
                     util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None, False)
                     break
 
@@ -63,7 +65,7 @@ class Consumer:
         try:
             return json.loads(x.decode('utf-8'))
         except Exception as e:
-            log.exception("Exception while deserialising: " + str(e))
+            log_exception("handle_json", "Exception while deserialising: ", None, e)
             return {}
 
     # Log config

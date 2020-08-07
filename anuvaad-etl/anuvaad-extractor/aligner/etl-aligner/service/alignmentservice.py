@@ -11,6 +11,8 @@ from repository.alignmentrepository import AlignmentRepository
 from validator.alignmentvalidator import AlignmentValidator
 from kafkawrapper.alignmentproducer import Producer
 from .alignwflowservice import AlignWflowService
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_exception
 
 
 log = logging.getLogger('file')
@@ -89,7 +91,7 @@ class AlignmentService:
 
     # Wrapper method to categorise sentences into MATCH, ALMOST-MATCH and NO-MATCH
     def process(self, object_in, iswf):
-        log.info("Alignment process starts for job: " + str(object_in["jobID"]))
+        log_info("process", "Alignment process starts for job: " + str(object_in["jobID"]), object_in["jobID"])
         source_reformatted = []
         target_refromatted = []
         manual_src = []
@@ -137,14 +139,14 @@ class AlignmentService:
                     else:
                         util.error_handler("OUTPUT_ERROR", "Exception while writing the output", None, False)
             except Exception as e:
-                log.error("Exception while writing the output: ", str(e))
+                log_exception("process", "Exception while writing the output: ", object_in["jobID"], e)
                 self.update_job_status("FAILED", object_in, "Exception while writing the output")
                 if iswf:
                     util.error_handler("OUTPUT_ERROR", "Exception while writing the output", object_in, True)
                 else:
                     util.error_handler("OUTPUT_ERROR", "Exception while writing the output", None, False)
                 return {}
-            log.info("Sentences aligned Successfully! JOB ID: " + str(object_in["jobID"]))
+            log_info("process", "Sentences aligned Successfully! JOB ID: " + str(object_in["jobID"]), object_in["jobID"])
         else:
             return {}
 
@@ -154,7 +156,7 @@ class AlignmentService:
             source, target_corp = alignmentutils.parse_input_file(full_path, full_path_indic)
             return source, target_corp
         except Exception as e:
-            log.exception("Exception while parsing the input: " + str(e))
+            log_exception("parse_in", "Exception while parsing the input: ", object_in["jobID"], e)
             self.update_job_status("FAILED", object_in, "Exception while parsing the input")
             if iswf:
                 util.error_handler("INPUT_ERROR", "Exception while parsing the input: " + str(e), object_in, True)
@@ -170,7 +172,7 @@ class AlignmentService:
             source_embeddings, target_embeddings = self.build_index(source, target_corp, src_loc, trgt_loc)
             return source_embeddings, target_embeddings
         except Exception as e:
-            log.exception("Exception while vectorising the sentences: " + str(e))
+            log_exception("build_embeddings", "Exception while vectorising the sentences: ", object_in["jobID"], e)
             self.update_job_status("FAILED", object_in, "Exception while vectorising sentences")
             if iswf:
                 util.error_handler("LASER_ERROR", "Exception while vectorising sentences: " + str(e), object_in, True)
@@ -196,7 +198,7 @@ class AlignmentService:
                     lines_with_no_match.append(source[i])
             return match_dict, manual_dict, lines_with_no_match
         except Exception as e:
-            log.exception("Exception while aligning sentences: " + str(e))
+            log_exception("get_alignments", "Exception while aligning sentences: ", object_in["jobID"], e)
             self.update_job_status("FAILED", object_in, "Exception while aligning sentences")
             if iswf:
                 util.error_handler("ALIGNMENT_ERROR", "Exception while aligning sentences: " + str(e), object_in, True)
@@ -221,7 +223,7 @@ class AlignmentService:
             return self.get_response_paths(output_source, output_target,
                                            output_manual_src, output_manual_trgt, output_nomatch)
         except Exception as e:
-            log.exception("Exception while writing output to files: " + str(e))
+            log_exception("generate_output", "Exception while writing output to files: ", None, e)
             return None
 
     # Service layer to upload the files generated as output to the alignment process
@@ -236,7 +238,7 @@ class AlignmentService:
                            "manual_trgt": output_manual_trgt, "nomatch": output_nomatch}
             return output_dict
         except Exception as e:
-            log.exception("Exception while uploading output files: " + str(e))
+            log_exception("get_response_paths", "Exception while uploading output files: ", None, e)
             return None
 
     # Response formatter
