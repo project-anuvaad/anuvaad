@@ -5,7 +5,10 @@ import traceback
 
 import requests
 import yaml
-from anuvaad_em.emservice import post_error
+from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_exception
+
 
 from tools.aligner import Aligner
 from tools.tokeniser import Tokeniser
@@ -48,7 +51,7 @@ class WFMUtils:
                     key = obj['workflowCode']
                     configs_global[key] = obj
         except Exception as exc:
-            log.exception("Exception while reading configs: " + str(exc))
+            log_exception("read_all_configs", "Exception while reading configs: ", None, exc)
             post_error("CONFIG_READ_ERROR", "Exception while reading configs: " + str(exc), None)
 
 

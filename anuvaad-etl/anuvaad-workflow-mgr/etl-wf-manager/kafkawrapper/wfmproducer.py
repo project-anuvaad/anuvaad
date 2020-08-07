@@ -4,7 +4,9 @@ import traceback
 
 import os
 from kafka import KafkaProducer
-from anuvaad_em.emservice import post_error
+from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_exception
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
@@ -28,8 +30,8 @@ class Producer:
         producer = self.instantiate()
         try:
             producer.send(topic, value=object_in)
-            log.info("Pushing to topic: " + topic)
+            log_info("push_to_queue", "Pushing to topic: " + topic, object_in["jobID"])
             producer.flush()
         except Exception as e:
-            log.exception("Exception while producing: " + str(e))
+            log_exception("push_to_queue", "Exception while producing: ", object_in["jobID"], e)
             post_error("WFLOW_PRODUCER_ERROR", "Exception while producing: " + str(e), None)
