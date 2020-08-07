@@ -6,7 +6,9 @@ from kafka import KafkaConsumer, TopicPartition
 import os
 from logging.config import dictConfig
 from service.wfmservice import WFMService
-from anuvaad_em.emservice import post_error
+from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_exception
 
 
 log = logging.getLogger('file')
@@ -45,16 +47,16 @@ def core_consume():
     wfmservice = WFMService()
     topics = [anu_etl_wfm_core_topic]
     consumer = instantiate(topics)
-    log.info("WFM Core Consumer Running..........")
+    log_info("core_consume", "WFM Core Consumer Running..........", None)
     while True:
         for msg in consumer:
             try:
                 data = msg.value
-                log.info("Received on Topic: " + msg.topic)
+                log_info("core_consume", "Received on Topic: " + msg.topic, data["jobID"])
                 wfmservice.initiate(data)
                 break
             except Exception as e:
-                log.exception("Exception while consuming: " + str(e))
+                log_exception("core_consume", "Exception while consuming: ", None, e)
                 post_error("WFMCORE_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
                 break
 
@@ -64,9 +66,7 @@ def handle_json(x):
     try:
         return json.loads(x.decode('utf-8'))
     except Exception as e:
-        print("Exception while deserialising: " + str(e))
-        log.error("Exception while deserialising: " + str(e))
-        traceback.print_exc()
+        log_exception("handle_json", "Exception while deserialising: ", None, e)
         return {}
 
 

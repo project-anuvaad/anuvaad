@@ -41,3 +41,4 @@ Werkzeug==1.0.0
 wrapt==1.11.2
 WTForms==2.2.1
 anuvaad-em==0.0.2
+anuvaad-auditor==0.0.2

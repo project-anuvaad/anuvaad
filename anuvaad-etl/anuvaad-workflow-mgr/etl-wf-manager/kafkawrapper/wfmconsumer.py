@@ -7,7 +7,9 @@ import os
 from logging.config import dictConfig
 from utilities.wfmutils import WFMUtils
 from service.wfmservice import WFMService
-from anuvaad_em.emservice import post_error
+from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_exception
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
@@ -47,17 +49,17 @@ def consume():
     configs = wfmutils.get_configs()
     topics = wfmutils.fetch_output_topics(configs)
     consumer = instantiate(topics)
-    log.info("WFM Consumer Running..........")
+    log_info("consume", "WFM Consumer Running..........", None)
     while True:
-        log.info("Waiting for the record..")
+        log_info("consume", "Waiting for the record..", None)
         for msg in consumer:
             try:
                 data = msg.value
-                log.info("Received on Topic: " + msg.topic)
+                log_info("consume", "Received on Topic: " + msg.topic, data["jobID"])
                 wfmservice.manage(data)
                 break
             except Exception as e:
-                log.exception("Exception while consuming: " + str(e))
+                log_exception("consume", "Exception while consuming: ", None, e)
                 post_error("WFM_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
                 break
 
@@ -66,9 +68,7 @@ def handle_json(x):
     try:
         return json.loads(x.decode('utf-8'))
     except Exception as e:
-        print("Exception while deserialising: " + str(e))
-        log.error("Exception while deserialising: " + str(e))
-        traceback.print_exc()
+        log_exception("handle_json", "Exception while deserializing: ", None, e)
         return {}
 
 
