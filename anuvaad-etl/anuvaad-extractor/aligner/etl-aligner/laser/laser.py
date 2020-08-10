@@ -34,7 +34,7 @@ class Laser:
         source_list = pool.map_async(func, processed_source).get()
         log_info("vecotrize_sentences", "Done.", None)
         log_info("vecotrize_sentences", "Vectorizing Target.......", None)
-        log.info("vecotrize_sentences", "Text Locale: " + trgt_loc, None)
+        log_info("vecotrize_sentences", "Text Locale: " + trgt_loc, None)
         processed_target = self.convert_to_list_of_tuples(target)
         func = partial(self.get_vect, lang = trgt_loc)
         target_list = pool.map_async(func, processed_target).get()
