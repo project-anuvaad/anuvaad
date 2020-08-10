@@ -12,7 +12,7 @@ from anuvaad_auditor.loghandler import log_exception
 
 log = logging.getLogger('file')
 cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
-align_job_topic = "anuvaad-etl-alignment-jobs-v4"
+align_job_topic = "anuvaad-etl-alignment-jobs-v5"
 align_job_consumer_grp = "anuvaad-etl-consumer-group"
 
 class Consumer:
