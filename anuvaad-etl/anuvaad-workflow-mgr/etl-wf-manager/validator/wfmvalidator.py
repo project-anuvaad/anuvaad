@@ -1,8 +1,7 @@
 #!/bin/python
 import logging
 
-from anuvaad_em.emservice import post_error
-
+from anuvaad_auditor.errorhandler import post_error
 
 log = logging.getLogger('file')
 from utilities.wfmutils import WFMUtils

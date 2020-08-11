@@ -6,7 +6,6 @@ import traceback
 import requests
 import yaml
 from anuvaad_auditor.errorhandler import post_error
-from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
 
