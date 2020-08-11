@@ -11,7 +11,6 @@ import time
 
 # sentence block merging
 file_ops = FileOperation()
-DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
 log = logging.getLogger('file')
 
 # rest request for block merging workflow service
@@ -20,8 +19,14 @@ class BlockMergerWF(Resource):
     # reading json request and reurnung final response
     def post(self):
         log.info("BlockMerger service started")
+        task_id = str("BM-" + str(time.time()).replace('.', ''))
+        task_starttime = str(time.time()).replace('.', '')
+        json_data = request.get_json(force=True)
+        block_merger = BlockMerging()
+        check_response = CheckingResponse(json_data, task_id, task_starttime, block_merger)
+        workflow_response = check_response.main_response_wf(rest_request=True)
         log.info("BlockMerger completed!!!")
-        return jsonify({"status":"SUCCESS"})
+        return jsonify(workflow_response)
 
 
 # rest request for block merging individual service
@@ -32,6 +37,8 @@ class BlockMerger(Resource):
         log.info("Individual operation of block merging service strated.")
         json_data = request.get_json(force=True)
         block_merger = BlockMerging()
-        output = block_merger.merge_blocks(json_data)
+        task_id, task_starttime = "", ""
+        check_response = CheckingResponse(json_data, task_id, task_starttime, block_merger)
+        individual_response = check_response.main_response_files_only()
         log.info("response successfully generated.")
-        return jsonify(output)
+        return jsonify(individual_response)

@@ -4,6 +4,7 @@ from src.utilities.model_response import Status
 from src.utilities.utils import FileOperation
 from src.Kafka_module.producer import Producer
 from src.Kafka_module.consumer import Consumer
+from src.services.service import BlockMerging
 import time
 import config
 import logging
@@ -11,40 +12,40 @@ from logging.config import dictConfig
 log = logging.getLogger('file')
 
 # main function for async process
-def process_tokenization_kf():
+def process_merger_kf():
     file_ops = FileOperation()
-    DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
-    task_id = str("TOK-" + str(time.time()).replace('.', ''))
+    task_id = str("BM-" + str(time.time()).replace('.', ''))
     task_starttime = str(time.time()).replace('.', '')
     # instatiation of consumer for respective topic
     try:
-        consumer_class = Consumer(config.tok_input_topic, config.bootstrap_server)
+        consumer_class = Consumer(config.input_topic, config.bootstrap_server)
         consumer = consumer_class.consumer_instantiate()
         log.info("--- consumer running -----")
     except:
         response = Status.ERR_Consumer.value
-        producer_tok = Producer(config.bootstrap_server) 
-        producer = producer_tok.producer_fn()
-        producer.send(config.tok_output_topic, value = response)
+        producer_merger = Producer(config.bootstrap_server) 
+        producer = producer_merger.producer_fn()
+        producer.send(config.output_topic, value = response)
         producer.flush()
-        log.error("error in kafka opertation while listening to consumer on topic %s"%(config.tok_input_topic))
-        log.info("response send to topic %s"%(config.tok_output_topic))
+        log.error("error in kafka opertation while listening to consumer on topic %s"%(config.input_topic))
+        log.info("response send to topic %s"%(config.output_topic))
     try:
         log.info("trying to receive value from consumer ")
         if consumer is not None:
             for msg in consumer:
                 log.info("value received from consumer")
                 data = msg.value
-                task_id = str("TOK-" + str(time.time()).replace('.', ''))
+                task_id = str("BM-" + str(time.time()).replace('.', ''))
                 task_starttime = str(time.time()).replace('.', '')
-                checking_response = CheckingResponse(data, task_id, task_starttime, DOWNLOAD_FOLDER)
+                block_merger = BlockMerging()
+                checking_response = CheckingResponse(data, task_id, task_starttime, block_merger)
                 file_value_response = checking_response.main_response_wf()
                 try:
-                    producer_tokenise = Producer(config.bootstrap_server) 
-                    producer = producer_tokenise.producer_fn()
-                    producer.send(config.tok_output_topic, value = file_value_response)
+                    producer_merge = Producer(config.bootstrap_server) 
+                    producer = producer_merge.producer_fn()
+                    producer.send(config.output_topic, value = file_value_response)
                     producer.flush()
-                    log.info("producer flushed value on topic %s"%(config.tok_output_topic))
+                    log.info("producer flushed value on topic %s"%(config.output_topic))
                 except:
                     log.info("error occured in file operation of workflow and it is pushed to error queue")
     except Exception as e:
@@ -53,7 +54,7 @@ def process_tokenization_kf():
             log.info("value received from consumer")
             data = msg.value
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
-            task_id = str("TOK-" + str(time.time()).replace('.', ''))
+            task_id = str("BM-" + str(time.time()).replace('.', ''))
             task_starttime = str(time.time()).replace('.', '')
             response_custom = CustomResponse(Status.ERR_Producer.value, jobid, task_id)
             file_ops.error_handler(response_custom.status_code, True)

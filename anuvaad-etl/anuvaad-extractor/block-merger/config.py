@@ -10,9 +10,9 @@ PORT = 5001
 ENABLE_CORS = False
 
 # kafka
-tok_input_topic = 'anuvaad-dp-tools-block-merger-input'
+input_topic = 'anuvaad-dp-tools-block-merger-input'
 kf_local_server = 'localhost:9092'
-tok_output_topic = 'anuvaad-dp-tools-block-merger-output'
+output_topic = 'anuvaad-dp-tools-block-merger-output'
 kafka_ip_host = 'KAFKA_IP_HOST'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 
