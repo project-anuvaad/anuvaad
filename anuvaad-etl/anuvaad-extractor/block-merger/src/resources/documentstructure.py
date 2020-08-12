@@ -5,7 +5,6 @@ from flask import send_file
 import os
 import logging
 import uuid
-import magic
 from src.services.main import DocumentStructure
 
 #ALLOWED_FILE_TYPES  = AppConfig.get_supported_upload_file_types()
