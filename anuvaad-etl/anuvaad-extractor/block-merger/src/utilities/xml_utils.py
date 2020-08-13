@@ -92,6 +92,8 @@ def get_xmltree(filepath, parse='xml'):
         with open(filepath,'r') as file:
             xml_string    = file.read()
             return etree.fromstring(bytes(xml_string, encoding='utf-8'))
+        
+
     return None
 
 def check_html_element_is(element, type_char):

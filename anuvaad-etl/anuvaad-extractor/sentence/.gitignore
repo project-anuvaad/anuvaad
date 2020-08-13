@@ -1,10 +1,8 @@
 # file folder
-/upload_folder
-/download_folder
 para_sen_api.py
 **__pycache__
 *.vscode
 *.log
-/upload
+/etl-tokenisation/upload
 uwsgi.ini
 wsgi_test.py
