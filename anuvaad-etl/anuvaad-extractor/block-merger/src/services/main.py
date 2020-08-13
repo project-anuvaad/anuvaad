@@ -4,6 +4,7 @@ import base64
 import config
 
 from src.services import get_xml
+from src.services.service import BlockMerging
 from src.services.left_right_on_block import left_right_margin
 from src.services.preprocess import prepocess_pdf_rgions
 
@@ -103,6 +104,8 @@ def DocumentStructure(file_name):
         final_json = get_response(p_df, img_df, file_index, page_width, page_height)
         response['result'].append(final_json)
 
-    return response
+    block_merger = BlockMerging()
+    output_data = block_merger.merge_blocks(response['result'])
+    return output_data
 
 
