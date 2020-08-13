@@ -32,9 +32,9 @@ class BlockMerging(object):
             data[page_index]['blocks']  = page_blocks
         return data
 
-    def merge_blocks(self, data):
+    def merge_blocks(self, in_data):
         log.info("Block Merging started ===>")
-        data = self.get_block(data['result'])
+        out_data = self.get_block(in_data)
         log.info("Block Merging completed")
-        return data
+        return out_data
 
