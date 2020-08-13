@@ -1,23 +1,22 @@
-from src.services.kf_service import process_tokenization_kf
+from Kafka_module.kf_service import process_tokenization_kf
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
 from flask import Flask
 from flask.blueprints import Blueprint
 from flask_cors import CORS
-from src import routes
+import routes
 import config
 import threading
-import logging
-import time
 
-log = logging.getLogger('file')
 tok_app  = Flask(__name__)
 
 def start_kafka():
     try:
         t1 = threading.Thread(target=process_tokenization_kf, name='keep_on_running')
         t1.start()
-        log.info("kafka running")
+        log_info("multithread", "Kafka running on multithread", None)
     except Exception as e:
-        log.error('ERROR WHILE RUNNING CUSTOM THREADS '+str(e))
+        log_error("multithread", "Error while running custom threads", None, e)
 
 if config.ENABLE_CORS:
     cors    = CORS(tok_app, resources={r"/api/*": {"origins": "*"}})

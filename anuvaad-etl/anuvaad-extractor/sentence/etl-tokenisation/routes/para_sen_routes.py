@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_restful import Api
-from src.resources.para_sen import SenTokenisePostWF
-from src.resources.para_sen import SentenceTokenise
+from resources.para_sen import SenTokenisePostWF
+from resources.para_sen import SentenceTokenise
 
 # end-point for independent service
 TOK_BLUEPRINT = Blueprint("sentence_extraction", __name__)
