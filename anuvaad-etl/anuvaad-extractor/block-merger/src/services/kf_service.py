@@ -2,8 +2,8 @@ from src.utilities.model_response import CheckingResponse
 from src.utilities.model_response import CustomResponse
 from src.utilities.model_response import Status
 from src.utilities.utils import FileOperation
-from src.Kafka_module.producer import Producer
-from src.Kafka_module.consumer import Consumer
+from src.kafka_module.producer import Producer
+from src.kafka_module.consumer import Consumer
 from src.services.service import BlockMerging
 import time
 import config
