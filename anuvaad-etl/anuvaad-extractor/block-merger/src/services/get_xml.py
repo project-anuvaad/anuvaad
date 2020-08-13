@@ -27,19 +27,19 @@ def xml_dfs(base_dir, filename):
 
     pdf_image_dir  = extract_image_from_pdf(pdf_filepath, working_dir)
     pdf_xml_dir    = extract_xml_from_digital_pdf(pdf_filepath, working_dir)
+    os.system('pdftohtml -c ' + pdf_filepath + ' ' + working_dir + '/')
 
     xml_files      = read_directory_files(pdf_xml_dir, pattern='*.xml')
     image_files    = read_directory_files(pdf_image_dir, pattern='*-*.jpg')
     xml_dfs, page_width, page_height = get_xml_info(xml_files[0])
     img_dfs, page_width, page_height = get_xml_image_info(xml_files[0])
 
-    return img_dfs,xml_dfs, image_files, page_width, page_height
+    return img_dfs,xml_dfs, image_files, page_width, page_height ,working_dir
     
         
-def get_vdf(xml_dfs,image_files,document_configs, file_index,header_region , footer_region,multiple_pages):
+def get_vdf(page_df,image_files,document_configs, file_index,header_region , footer_region,multiple_pages):
     img_filepath   = image_files[file_index]
-    df             = xml_dfs[file_index]
-    in_df   = df.loc[:]
+    in_df   = page_df.loc[:]
     if multiple_pages :
         in_df   = tag_heaader_footer_attrib(header_region , footer_region,in_df)
 
