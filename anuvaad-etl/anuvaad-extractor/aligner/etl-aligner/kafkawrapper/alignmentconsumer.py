@@ -35,6 +35,7 @@ class Consumer:
 
     # For all the topics, returns a list of TopicPartition Objects
     def get_topic_paritions(self, topics):
+
         topic_paritions = []
         for topic in topics:
             tp = TopicPartition(topic, 0) #for now the partition is hardocoded

@@ -162,6 +162,11 @@ class WFMService:
         return wfmrepo.search_job(job_id)
 
 
+    # Method to search jobs.
+    def get_job_details_bulk(self, criteria):
+        return wfmrepo.search_job(job_id)
+
+
     # This function is called upon receiving an error on the error topic.
     # The error will be posted to the topic by one of the downstream services upon any error/exception in those services
     # This function will receive the error and update the status of the job.

@@ -32,7 +32,14 @@ def initiate_workflow():
 
 # REST endpoint to fetch workflow jobs.
 @wfmapp.route(context_path + '/v1/workflow/jobs/search/<job_id>', methods=["GET"])
-def searchjobs(job_id):
+def search_jobs(job_id):
+    service = WFMService()
+    response = service.get_job_details(job_id)
+    return jsonify(response)
+
+# REST endpoint to fetch workflow jobs.
+@wfmapp.route(context_path + '/v1/workflow/jobs/search/bulk', methods=["GET"])
+def search_all_jobs(job_id):
     service = WFMService()
     response = service.get_job_details(job_id)
     return jsonify(response)
