@@ -94,10 +94,11 @@ def get_xmltree(filepath, parse='xml'):
         return tree
     else:
         with open(filepath,'r') as file:
-            #xml_string    = file.read()
+            xml_string    = file.read()
             #xml_string = etree.tostring(file, encoding='utf-8', method='xml')
-            xml_tree  = etree.parse(file)
-            return xml_tree
+            #xml_tree  = etree.parse(file)
+            return etree.fromstring(bytes(xml_string, encoding='utf-8'))
+
         
 
     return None
