@@ -87,7 +87,6 @@ def get_xml_tree(xml_string):
     return etree.fromstring(xml_string)
 
 def get_xmltree(filepath, parse='xml'):
-    print(filepath)
     if parse == 'html':
         parser = etree.HTMLParser()
         tree   = etree.parse(open(filepath, mode='r', encoding='utf-8'), parser)
@@ -95,8 +94,6 @@ def get_xmltree(filepath, parse='xml'):
     else:
         with open(filepath,'r') as file:
             xml_string    = file.read()
-            #xml_string = etree.tostring(file, encoding='utf-8', method='xml')
-            #xml_tree  = etree.parse(file)
             return etree.fromstring(bytes(xml_string, encoding='utf-8'))
 
         
