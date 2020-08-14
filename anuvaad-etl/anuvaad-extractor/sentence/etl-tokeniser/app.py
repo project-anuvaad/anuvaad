@@ -1,4 +1,4 @@
-from Kafka_module.kf_service import process_tokenization_kf
+from kafka_module.kf_service import process_tokenization_kf
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 from flask import Flask
