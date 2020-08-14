@@ -7,6 +7,8 @@ from src.services import get_xml
 from src.services.service import BlockMerging
 from src.services.left_right_on_block import left_right_margin
 from src.services.preprocess import prepocess_pdf_rgions
+from src.services.get_tables import page_num_correction , get_text_table_line_df
+
 
 def process_page_blocks(page_df, configs,block_configs, debug=False):
     cols      = page_df.columns.values.tolist()
@@ -57,12 +59,15 @@ def df_to_json(p_df):
                         block[key] = int(block[key])
                     except :
                         pass
-            if 'children' in list(block.keys()):
-                if block['children'] == None :
-                    pass
-                else :
-                    block['text'] = None
-                    block['children'] = df_to_json(pd.read_json(row['children']))
+            if block['attrib'] == "TABLE":
+                pass
+            else :
+                if 'children' in list(block.keys()):
+                    if block['children'] == None :
+                        pass
+                    else :
+                        block['text'] = None
+                        block['children'] = df_to_json(pd.read_json(row['children']))
             page_data.append(block)
         
     return page_data
@@ -85,7 +90,7 @@ def process_image_df(myDict,img_df):
     
 def DocumentStructure(file_name):
     
-    img_dfs,xml_dfs, image_files, page_width, page_height = get_xml.xml_dfs(config.BASE_DIR, file_name)
+    img_dfs,xml_dfs, image_files, page_width, page_height,working_dir    = get_xml.xml_dfs(config.BASE_DIR, file_name)
     multiple_pages = False
     if len(xml_dfs) > 1:
         multiple_pages =True
@@ -97,8 +102,12 @@ def DocumentStructure(file_name):
     response = {'result':[]}
     for file_index in range(Total_Page):
         img_df = img_dfs[file_index]
+        table_image = working_dir + '/' + page_num_correction(file_index , 3) + '.png'
+
+        in_df, table_df, line_df = get_text_table_line_df(table_image, xml_dfs[file_index])
+l
         #v_df = Get_XML.get_vdf(xml_dfs, image_files,config.document_configs,file_index,header_region , footer_region,multiple_pages)
-        v_df = get_xml.get_vdf(xml_dfs, image_files, config.DOCUMENT_CONFIGS, file_index,header_region , footer_region, multiple_pages)
+        v_df = get_xml.get_vdf(in_df, image_files, config.DOCUMENT_CONFIGS, file_index,header_region , footer_region, multiple_pages)
         p_df = process_page_blocks(v_df, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)
         p_df = p_df.reset_index(drop=True)
         final_json = get_response(p_df, img_df, file_index, page_width, page_height)
