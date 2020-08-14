@@ -2,10 +2,9 @@ import os
 import shutil
 import glob
 import pdf2image
-#from lxml import etree
+from lxml import etree
 import base64
-import codecs
-import xml.etree.ElementTree as etree
+#import xml.etree.ElementTree as etree
 
 
 
@@ -31,7 +30,7 @@ def get_pdf_image_at_page(filepath, workspace_output_dir, page_index):
 
 # Execute pdftohtml to extract XML file of digital PDF
 def extract_xml_from_digital_pdf(filepath, workspace_output_dir):
-    working_dir    = os.path.join(workspace_output_dir, 'pdttohtml')
+    working_dir    = os.path.join(workspace_output_dir, 'pdftohtml')
     
     create_directory(working_dir)
     shutil.copy(filepath, os.path.join(working_dir, os.path.basename(filepath)))
@@ -88,6 +87,7 @@ def get_xml_tree(xml_string):
     return etree.fromstring(xml_string)
 
 def get_xmltree(filepath, parse='xml'):
+    print(filepath)
     if parse == 'html':
         parser = etree.HTMLParser()
         tree   = etree.parse(open(filepath, mode='r', encoding='utf-8'), parser)
