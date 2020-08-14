@@ -91,7 +91,7 @@ def get_xmltree(filepath, parse='xml'):
     else:
         with open(filepath,'r',encoding='latin-1') as file:
             xml_string    = file.read()
-            return etree.fromstring(bytes(xml_string, encoding='utf-8'))
+            return etree.fromstring(bytes(xml_string, encoding='latin-1'))
         
 
     return None
