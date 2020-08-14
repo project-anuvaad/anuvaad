@@ -82,7 +82,7 @@ def extract_and_delete_region(page_df, table_df):
                     text_df, page_df = edit(cell, page_df)
                     table_df['children'][index][indx]['text'] = text_df
             else:
-                text_df, page_df = edit(cell, page_df)
+                text_df, page_df = edit(row, page_df)
                 table_df['text'] = text_df
 
     return page_df, table_df

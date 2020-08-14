@@ -59,12 +59,15 @@ def df_to_json(p_df):
                         block[key] = int(block[key])
                     except :
                         pass
-            if 'children' in list(block.keys()):
-                if block['children'] == None :
-                    pass
-                else :
-                    block['text'] = None
-                    block['children'] = df_to_json(pd.read_json(row['children']))
+            if block['attrib'] == "TABLE":
+                pass
+            else :
+                if 'children' in list(block.keys()):
+                    if block['children'] == None :
+                        pass
+                    else :
+                        block['text'] = None
+                        block['children'] = df_to_json(pd.read_json(row['children']))
             page_data.append(block)
         
     return page_data
@@ -102,7 +105,7 @@ def DocumentStructure(file_name):
         table_image = working_dir + '/' + page_num_correction(file_index , 3) + '.png'
 
         in_df, table_df, line_df = get_text_table_line_df(table_image, xml_dfs[file_index])
-
+        
         #v_df = Get_XML.get_vdf(xml_dfs, image_files,config.document_configs,file_index,header_region , footer_region,multiple_pages)
         v_df = get_xml.get_vdf(in_df, image_files, config.DOCUMENT_CONFIGS, file_index,header_region , footer_region, multiple_pages)
         p_df = process_page_blocks(v_df, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)
