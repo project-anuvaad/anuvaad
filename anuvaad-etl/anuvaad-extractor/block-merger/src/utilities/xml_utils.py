@@ -2,8 +2,12 @@ import os
 import shutil
 import glob
 import pdf2image
-from lxml import etree
+#from lxml import etree
 import base64
+import codecs
+import xml.etree.ElementTree as etree
+
+
 
 # extract pdf to image
 def extract_image_from_pdf(filepath, workspace_output_dir):
@@ -89,10 +93,11 @@ def get_xmltree(filepath, parse='xml'):
         tree   = etree.parse(open(filepath, mode='r', encoding='utf-8'), parser)
         return tree
     else:
-        with open(filepath,'r', encoding='utf-8') as file:
+        with open(filepath,'r') as file:
             #xml_string    = file.read()
             #xml_string = etree.tostring(file, encoding='utf-8', method='xml')
-            return etree.parse(file)
+            xml_tree  = etree.parse(file)
+            return xml_tree
         
 
     return None
