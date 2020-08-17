@@ -30,26 +30,32 @@ def process_block(children, block_configs):
     dfs = left_right_margin(children, block_configs)
     return dfs
 
-def get_response(p_df,img_df,page_no,page_width,page_height):
+def get_response(p_df,img_df,table_df,page_no,page_width,page_height):
 
     p_df['block_id'] = range(len(p_df))
-    myDict = {'page_no': page_no,'page_width': page_width,'page_height':page_height,'images':{},'blocks':{}}
+    myDict = {'page_no': page_no,'page_width': page_width,'page_height':page_height,'tables':[],'images':{},'blocks':{}}
     image_data = process_image_df(myDict,img_df)
+    table_data = process_table_df(myDict,table_df)
     myDict['images']=image_data
+    myDict['tables']=table_data
     page_data = df_to_json(p_df)
     myDict['blocks']=page_data
     return myDict
 
+def drop_cols(df):
+    drop_col = ['index', 'xml_index','level_0']
+    
+    for col in drop_col:
+        if col in df.columns:
+            df = df.drop(columns=[col])
+    return df
 
 def df_to_json(p_df):
     page_data = []
     p_df  = p_df.where(p_df.notnull(), None)
     if len(p_df) > 0 :
+        p_df = drop_cols(p_df)
         
-        drop_col = ['index', 'xml_index','level_0']  
-        for col in drop_col:
-            if col in p_df.columns:
-                p_df=p_df.drop(columns=[col])
 
         for index ,row in p_df.iterrows():
             block = row.to_dict()
@@ -76,9 +82,7 @@ def process_image_df(myDict,img_df):
     image_data = []
     if len(img_df)>0:
         drop_col = ['index', 'xml_index','level_0']  
-        for col in drop_col:
-            if col in img_df.columns:
-                img_df=img_df.drop(columns=[col])
+        img_df = drop_cols(img_df)
                 
         for index ,row in img_df.iterrows():
             block = row.to_dict()
@@ -87,6 +91,25 @@ def process_image_df(myDict,img_df):
         return image_data
     else:
         return None
+
+def process_table_df(myDict,table_df):
+    table_data = []
+    if len(table_df)>0:
+        table_df = drop_cols(table_df)
+
+        for index ,row in table_df.iterrows():
+            block = row.to_dict()
+            block['children'] = row['children']
+            for child in row['children']:
+                for sub_child in child['text']:
+                    if 'xml_index' in sub_child.keys():
+                        sub_child.pop('xml_index')
+
+            table_data.append(block)
+        return table_data
+    else:
+        return None
+
     
 def DocumentStructure(file_name):
     
@@ -103,17 +126,17 @@ def DocumentStructure(file_name):
     for file_index in range(Total_Page):
         img_df = img_dfs[file_index]
         table_image = working_dir + '/' + page_num_correction(file_index , 3) + '.png'
-        
+
         in_df, table_df, line_df = get_text_table_line_df(table_image, xml_dfs[file_index])
-        #v_df = Get_XML.get_vdf(xml_dfs, image_files,config.document_configs,file_index,header_region , footer_region,multiple_pages)
         v_df = get_xml.get_vdf(in_df, image_files, config.DOCUMENT_CONFIGS, file_index,header_region , footer_region, multiple_pages)
         p_df = process_page_blocks(v_df, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)
         p_df = p_df.reset_index(drop=True)
-        final_json = get_response(p_df, img_df, file_index, page_width, page_height)
+        final_json = get_response(p_df, img_df,table_df, file_index, page_width, page_height)
         response['result'].append(final_json)
 
     block_merger = BlockMerging()
     output_data = block_merger.merge_blocks(response['result'])
+    
     return output_data
 
 
