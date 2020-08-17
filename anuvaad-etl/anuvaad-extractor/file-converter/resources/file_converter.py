@@ -1,10 +1,10 @@
 from flask_restful import Resource
 from flask.json import jsonify
 from flask import request
-from src.models.response import CustomResponse
-from src.models.status import Status
-from src.services.libre_converter import LibreOfficeError, convert_to
-from src.common.errors import RestAPIError, InternalServerErrorError
+from models.response import CustomResponse
+from models.status import Status
+from services.libre_converter import LibreOfficeError, convert_to
+from common.errors import RestAPIError, InternalServerErrorError
 from subprocess import TimeoutExpired
 import config
 import logging
