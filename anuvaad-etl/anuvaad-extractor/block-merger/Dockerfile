@@ -3,7 +3,6 @@ FROM ubuntu:18.04
 COPY / /app
 WORKDIR /app
 RUN apt update
-RUN gcc -v
 RUN apt install python3-pip -y
 RUN pip3 install -r requirements.txt
 RUN apt update && apt install -y poppler-utils libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev
