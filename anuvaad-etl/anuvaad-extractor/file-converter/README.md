@@ -44,6 +44,6 @@ Returns file path for generated pdf file
   "why": "request successful"
 }
 ```
-For more information about api documentation, please check @ ```https://github.com/project-anuvaad/anuvaad/blob/dev-sentence/anuvaad-etl/anuvaad-extractor/file-converter/docs/pdf-converter-api-contarct.yml```
+For more information about api documentation, please check @ ```https://github.com/project-anuvaad/anuvaad/blob/dev-sentence/anuvaad-etl/anuvaad-extractor/file-converter/docs/pdf-converter-api-contract.yml```
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
