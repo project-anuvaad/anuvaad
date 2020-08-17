@@ -6,14 +6,14 @@ import os
 from service.alignmentservice import AlignmentService
 from logging.config import dictConfig
 from utilities.alignmentutils import AlignmentUtils
+from configs.alignerconfig import kafka_bootstrap_server_host
+from configs.alignerconfig import align_job_consumer_grp
+from configs.alignerconfig import align_job_topic
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
 
 log = logging.getLogger('file')
-cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
-align_job_topic = "anuvaad-etl-alignment-jobs-v5"
-align_job_consumer_grp = "anuvaad-etl-consumer-group"
 
 class Consumer:
 
@@ -23,7 +23,7 @@ class Consumer:
     # Method to instantiate the kafka consumer
     def instantiate(self, topics):
         topic_partitions = self.get_topic_paritions(topics)
-        consumer = KafkaConsumer(bootstrap_servers=[cluster_details],
+        consumer = KafkaConsumer(bootstrap_servers=[kafka_bootstrap_server_host],
                                  api_version=(1, 0, 0),
                                  group_id=align_job_consumer_grp,
                                  auto_offset_reset='latest',

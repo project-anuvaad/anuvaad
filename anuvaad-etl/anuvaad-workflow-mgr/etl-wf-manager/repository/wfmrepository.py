@@ -2,9 +2,10 @@
 import os
 import pymongo
 
-mongo_client = os.environ.get('MONGO_CLIENT', 'mongodb://localhost:27017/')
-mongo_alignment_db = os.environ.get('MONGO_ALIGNMENT_DB', 'anuvaad-etl-dataflow-pipeline')
-mongo_alignment_col_jobs = os.environ.get('MONGO_WFMJOBS_COL', 'anuvaad-etl-wfm-jobs')
+from configs.wfmconfig import mongo_server_host
+from configs.wfmconfig import mongo_alignment_db
+from configs.wfmconfig import mongo_alignment_col_jobs
+
 
 
 class WFMRepository:
@@ -14,7 +15,7 @@ class WFMRepository:
 
     # Initialises and fetches mongo client
     def instantiate(self):
-        client = pymongo.MongoClient(mongo_client)
+        client = pymongo.MongoClient(mongo_server_host)
         db = client[mongo_alignment_db]
         col = db[mongo_alignment_col_jobs]
         return col

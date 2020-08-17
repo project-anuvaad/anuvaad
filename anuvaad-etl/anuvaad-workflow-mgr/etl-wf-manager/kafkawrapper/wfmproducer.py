@@ -1,15 +1,13 @@
 import json
 import logging
-import traceback
 
-import os
 from kafka import KafkaProducer
+from configs.wfmconfig import kafka_bootstrap_server_host
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
 log = logging.getLogger('file')
-cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
 
 
 class Producer:
@@ -20,7 +18,7 @@ class Producer:
     # Method to instantiate producer
     # Any other method that needs a producer will get it from her
     def instantiate(self):
-        producer = KafkaProducer(bootstrap_servers=[cluster_details],
+        producer = KafkaProducer(bootstrap_servers=[kafka_bootstrap_server_host],
                                  api_version=(1, 0, 0),
                                  value_serializer=lambda x: json.dumps(x).encode('utf-8'))
         return producer

@@ -2,15 +2,13 @@
 import os
 
 from flask import Flask, jsonify, request
-import datetime as dt
+from configs.alignerconfig import context_path
 from service.alignmentservice import AlignmentService
-from service.alignwflowservice import AlignWflowService
 from validator.alignmentvalidator import AlignmentValidator
 
 from logging.config import dictConfig
 
 alignapp = Flask(__name__)
-context_path = os.environ.get('SA_CONTEXT_PATH', '/anuvaad-etl/extractor/aligner')
 
 # REST endpoint to align files
 @alignapp.route(context_path + '/v1/sentences/align', methods=["POST"])

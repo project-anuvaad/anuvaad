@@ -9,6 +9,7 @@ import time
 import requests
 import numpy as np
 import csv
+from configs.alignerconfig import upload_url
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
 from anuvaad_auditor.loghandler import log_info
@@ -18,8 +19,6 @@ log = logging.getLogger('file')
 two_files = True
 no_of_words = 200
 file_encoding = 'utf-16'
-# upload_url = os.environ.get('FILE_UPLOAD_URL', 'https://auth.anuvaad.org/upload')
-upload_url = "https://auth.anuvaad.org/upload"
 
 
 class AlignmentUtils:

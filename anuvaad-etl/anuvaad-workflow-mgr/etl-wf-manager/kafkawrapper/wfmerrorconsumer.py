@@ -6,22 +6,21 @@ from kafka import KafkaConsumer, TopicPartition
 import os
 from logging.config import dictConfig
 from service.wfmservice import WFMService
+from configs.wfmconfig import anu_etl_wfm_consumer_grp
+from configs.wfmconfig import kafka_bootstrap_server_host
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
 
 log = logging.getLogger('file')
-cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
-anu_etl_wfm_consumer_grp = os.environ.get('ANU_ETL_WF_CONSUMER_GRP', 'anu-etl-consumer-group')
-#anu_etl_wf_error_topic = os.environ.get('ANU_ETL_WF_ERROR_TOPIC', 'anuvaad-etl-wf-errors')
 anu_etl_wf_error_topic = 'anuvaad-etl-wf-errors'
 
 
 # Method to instantiate the kafka consumer
 def instantiate(topics):
     topic_partitions = get_topic_paritions(topics)
-    consumer = KafkaConsumer(bootstrap_servers=[cluster_details],
+    consumer = KafkaConsumer(bootstrap_servers=[kafka_bootstrap_server_host],
                              api_version=(1, 0, 0),
                              group_id=anu_etl_wfm_consumer_grp,
                              auto_offset_reset='latest',

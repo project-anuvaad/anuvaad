@@ -11,10 +11,11 @@ import datetime as dt
 from logging.config import dictConfig
 from service.wfmservice import WFMService
 from validator.wfmvalidator import WFMValidator
+from configs.wfmconfig import context_path
 
 wfmapp = Flask(__name__)
 log = logging.getLogger('file')
-context_path = os.environ.get('ANU_ETL_WFM_CONTEXT_PATH', '/anuvaad-etl/wf-manager')
+
 
 
 # REST endpoint to initiate the workflow.

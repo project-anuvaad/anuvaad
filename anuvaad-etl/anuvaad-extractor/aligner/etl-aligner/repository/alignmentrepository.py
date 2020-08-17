@@ -2,9 +2,10 @@
 import os
 import pymongo
 
-mongo_client = os.environ.get('MONGO_CLIENT', 'mongodb://localhost:27017/')
-mongo_alignment_db = os.environ.get('MONGO_ETL_ALIGNMENT_DB', 'anuvaad-etl')
-mongo_alignment_col = os.environ.get('MONGO_ETL_ALIGNMENT_COL', 'extractor-aligner')
+from configs.alignerconfig import mongo_server_host
+from configs.alignerconfig import mongo_alignment_db
+from configs.alignerconfig import mongo_alignment_col
+
 
 class AlignmentRepository:
 
@@ -13,7 +14,7 @@ class AlignmentRepository:
 
     # Initialises and fetches mongo client
     def instantiate(self):
-        client = pymongo.MongoClient(mongo_client)
+        client = pymongo.MongoClient(mongo_server_host)
         db = client[mongo_alignment_db]
         col = db[mongo_alignment_col]
         return col

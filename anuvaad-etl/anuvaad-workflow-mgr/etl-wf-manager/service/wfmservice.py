@@ -1,12 +1,11 @@
 import logging
-import os
 import time
-import traceback
 
 from utilities.wfmutils import WFMUtils
 from kafkawrapper.wfmproducer import Producer
 from repository.wfmrepository import WFMRepository
 from validator.wfmvalidator import WFMValidator
+from configs.wfmconfig import anu_etl_wfm_core_topic
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
@@ -18,8 +17,6 @@ wfmrepo = WFMRepository()
 wfmutils = WFMUtils()
 validator = WFMValidator()
 
-#anu_etl_wfm_core_topic = os.environ.get('ANU_ETL_WFM_CORE_TOPIC', 'anu-etl-wf-initiate-v2')
-anu_etl_wfm_core_topic = 'anu-etl-wf-initiate-v2'
 
 class WFMService:
     def __init__(self):

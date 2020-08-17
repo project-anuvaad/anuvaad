@@ -7,14 +7,14 @@ import os
 from service.alignmentservice import AlignmentService
 from utilities.alignmentutils import AlignmentUtils
 from logging.config import dictConfig
+from configs.alignerconfig import kafka_bootstrap_server_host
+from configs.alignerconfig import align_job_consumer_grp
+from configs.alignerconfig import anu_dp_wf_aligner_in_topic
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
 
 log = logging.getLogger('file')
-cluster_details = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
-anu_dp_wf_aligner_in_topic = "anuvaad-dp-tools-aligner-input-v2"
-align_job_consumer_grp = "anuvaad-etl-consumer-group"
 
 
 class WflowConsumer:
@@ -25,7 +25,7 @@ class WflowConsumer:
     # Method to instantiate the kafka consumer
     def instantiate(self, topics):
         topic_partitions = self.get_topic_paritions(topics)
-        consumer = KafkaConsumer(bootstrap_servers=[cluster_details],
+        consumer = KafkaConsumer(bootstrap_servers=[kafka_bootstrap_server_host],
                                  api_version=(1, 0, 0),
                                  group_id=align_job_consumer_grp,
                                  auto_offset_reset='earliest',

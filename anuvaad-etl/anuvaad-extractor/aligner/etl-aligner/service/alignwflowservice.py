@@ -1,6 +1,7 @@
 #!/bin/python
 import logging
 
+from configs.alignerconfig import anu_dp_wf_aligner_out_topic
 from utilities.alignmentutils import AlignmentUtils
 from repository.alignmentrepository import AlignmentRepository
 from validator.alignmentvalidator import AlignmentValidator
@@ -13,8 +14,6 @@ repo = AlignmentRepository()
 producer = Producer()
 util = AlignmentUtils()
 validator = AlignmentValidator()
-
-anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-output-v2"
 
 
 class AlignWflowService:

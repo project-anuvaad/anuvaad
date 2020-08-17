@@ -5,6 +5,7 @@ import traceback
 
 import requests
 import yaml
+from configs.wfmconfig import config_file_url
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_exception
 
@@ -23,10 +24,6 @@ htmltojson = HTMLTOJSON()
 log = logging.getLogger('file')
 configs_global = {}
 
-config_file_url = os.environ.get('ETL_WFM_CONFIG_FILE_URL',
-            'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/config/example.yml')
-#yaml_file_loc = os.environ.get('ETL_CONFIG_FILE_LOC', r'C:\Users\Vishal\Desktop\new-repo')
-#yaml_file_name = os.environ.get('ETL_CONFIG_FILE', 'wfconfig.yml')
 yaml_file_loc = "/app/configs"
 yam_file_path_delimiter = "/"
 yaml_file_name = "wfconfig.yml"
@@ -83,8 +80,6 @@ class WFMUtils:
             tool = step["tool"][0]["name"]
             tools.append(tool)
         return tools
-
-
 
     # Generates unique job id.
     # Format: <use_case>-<13_digit_epoch>

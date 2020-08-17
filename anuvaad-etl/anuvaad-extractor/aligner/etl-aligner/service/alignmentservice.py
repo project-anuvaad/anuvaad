@@ -11,17 +11,17 @@ from repository.alignmentrepository import AlignmentRepository
 from validator.alignmentvalidator import AlignmentValidator
 from kafkawrapper.alignmentproducer import Producer
 from .alignwflowservice import AlignWflowService
+from configs.alignerconfig import directory_path
+from configs.alignerconfig import align_job_topic
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
 
 log = logging.getLogger('file')
-directory_path = os.environ.get('SA_DIRECTORY_PATH', r'C:\Users\Vishal\Desktop\anuvaad\Facebook LASER\resources\Input\length-wise')
 res_suffix = 'match-'
 man_suffix = 'almost-'
 nomatch_suffix = 'no-'
 file_path_delimiter = '/'
-align_job_topic = "anuvaad-etl-alignment-jobs-v5"
 
 
 alignmentutils = AlignmentUtils()
