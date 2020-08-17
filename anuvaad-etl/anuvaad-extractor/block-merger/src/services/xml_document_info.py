@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from src.utilities.xml_utils import (extract_image_from_pdf, extract_xml_from_digital_pdf,
+from src.utilities.xml_utils import (extract_image_paths_from_pdf, extract_xml_from_digital_pdf, extract_html_bg_images_from_digital_pdf,
                         create_directory, read_directory_files, get_subdirectories,
                         get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered,
                        get_page_text_element_attrib, get_page_image_element_attrib

@@ -1,5 +1,5 @@
 import pandas as pd
-from src.utilities.xml_utils import (extract_image_from_pdf, extract_xml_from_digital_pdf, create_directory, read_directory_files, get_subdirectories,
+from src.utilities.xml_utils import (extract_image_paths_from_pdf, extract_xml_from_digital_pdf, create_directory, read_directory_files, get_subdirectories,
                         get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered, get_page_text_element_attrib, get_ngram)
 
 from src.services.box_horizontal_evalutions import (are_hlines,are_hlines_superscript)

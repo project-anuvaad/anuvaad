@@ -10,6 +10,7 @@ from services.service import Tokenisation
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import time
+import copy
 
 file_ops = FileOperation()
 
@@ -37,31 +38,36 @@ class Response(object):
             task_endtime = str(time.time()).replace('.', '')
             response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
             response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
+            response = copy.deepcopy(response_success)
             log_info("workflow_response", "successfully generated response for workflow", jobid)
-            return response_success
+            return response
         except WorkflowkeyError as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
             response = file_ops.error_handler(response_custom.status_code, "WORKFLOWKEY-ERROR", True)
             log_exception("workflow_response", "workflow key error: key value missing", jobid, e)
+            response = copy.deepcopy(response)
             return response
         except FileErrors as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = e.message
             response = file_ops.error_handler(response_custom.status_code, e.code, True)
             log_exception("workflow_response", "some error occured while validating file", jobid, e)
+            response = copy.deepcopy(response)
             return response
         except FileEncodingError as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
             response = file_ops.error_handler(response_custom.status_code, "ENCODING_ERROR", True)
             log_exception("workflow_response", "service supports only utf-16 encoded file", jobid, e)
+            response = copy.deepcopy(response)
             return response
         except ServiceError as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
             response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
             log_exception("workflow_response", "Error occured during tokenisation or file writing", jobid, e)
+            response = copy.deepcopy(response)
             return response
 
     def nonwf_response(self):
