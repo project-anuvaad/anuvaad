@@ -3,6 +3,6 @@ para_sen_api.py
 **__pycache__
 *.vscode
 *.log
-/etl-tokenisation/upload
+#/etl-tokenisation/upload/*.txt
 uwsgi.ini
 wsgi_test.py
