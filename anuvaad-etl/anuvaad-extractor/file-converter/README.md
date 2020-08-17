@@ -1,10 +1,11 @@
-# TOKENISATION
+# FILE CONVERTER
 
-Tokenisation service Converts a paragraph into sentences.
+This Service converts different file format supported by Libreoffice to PDF.
 
 ## Prerequisites
 - python 3.7
-- ubuntu 16.04
+- ubuntu 17.04
+- libreoffice
 
 You need to install some libraries. I have specified the names and versions of python libraries in requirements.txt
 ```bash
@@ -17,43 +18,32 @@ After successful installation of prerequisites, you will have to run app.py
 python app.py
 ```
 This service is used to tokenise sentences from a paragraph. After initiating this service,
-hit: ```http://0.0.0.0:5001/api/v0/tokenisation```
+hit: ```http://0.0.0.0:5001/api/v0/convert-pdf```
 ### Request Format
 ```json
-POST/tokenisation
-Accept list of files
+POST/convert-pdf
+Accept single filename
 
 {
-        "files": [
-            {
-                "locale": "en",
-                "path": "text file which contains paragraphs",
-                "type": "txt"
-            },
-            {....},
-            {....}
-        ]}
+	"filename":"file id"
+}
+
 ```
 ### Response
 ```
-POST/tokenisation
-Returns txt file which have tokenised sentences
+POST/convert-pdf
+Returns file path for generated pdf file
 
 {
-    "files": [
-        {
-            "inputFile": "input txt file",
-            "outputFile": "text file conaining tokenised sentences",
-            "outputLocale": "en",
-            "outputType": "txt"
-        },
-        {....},
-        {....}
-    ],
-    "state": "SENTENCE-TOKENISED",
-    "status": "SUCCESS"
+  "count": 0,
+  "data": "cd95c0c8-aba9-4660-a9c7-9b041b1c937e.pdf",
+  "http": {
+    "status": 200
+  },
+  "ok": true,
+  "why": "request successful"
 }
 ```
-For more information about api documentation, please check @ ```https://github.com/project-anuvaad/anuvaad/blob/dev-sentence/anuvaad-etl/anuvaad-extractor/sentence/docs/sentence-api-contarct.yml```
+For more information about api documentation, please check @ ```https://github.com/project-anuvaad/anuvaad/blob/dev-sentence/anuvaad-etl/anuvaad-extractor/file-converter/docs/pdf-converter-api-contarct.yml```
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
