@@ -1,4 +1,4 @@
-pip==20.1
+#pip==20.1
 nltk==3.5
 kafka-python==2.0.1
 flask==1.1.2
@@ -9,7 +9,7 @@ anuvaad-em==0.0.2
 numpy==1.18.1
 pandas==1.0.3
 pdf2image==1.12.1
-PyMuPDF==1.17.3
+#PyMuPDF==1.17.3
 pytesseract==0.3.4
 python-utils==2.4.0
 redis==3.5.3

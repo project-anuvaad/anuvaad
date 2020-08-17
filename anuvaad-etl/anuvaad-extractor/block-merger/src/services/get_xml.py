@@ -1,6 +1,6 @@
 import os
 import uuid 
-from src.utilities.xml_utils import (extract_image_from_pdf, extract_xml_from_digital_pdf,
+from src.utilities.xml_utils import (extract_image_paths_from_pdf, extract_xml_from_digital_pdf,
                        create_directory, read_directory_files, get_subdirectories,
                        get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered,
                        get_page_text_element_attrib, get_ngram
@@ -25,12 +25,12 @@ def xml_dfs(base_dir, filename):
 
     ret            = create_directory(working_dir)
 
-    pdf_image_dir  = extract_image_from_pdf(pdf_filepath, working_dir)
+    image_files  = extract_image_paths_from_pdf(pdf_filepath, working_dir)
     pdf_xml_dir    = extract_xml_from_digital_pdf(pdf_filepath, working_dir)
     os.system('pdftohtml -c ' + pdf_filepath + ' ' + working_dir + '/')
 
     xml_files      = read_directory_files(pdf_xml_dir, pattern='*.xml')
-    image_files    = read_directory_files(pdf_image_dir, pattern='*-*.jpg')
+    #image_files    = read_directory_files(pdf_image_dir, pattern='*-*.jpg')
     xml_dfs, page_width, page_height = get_xml_info(xml_files[0])
     img_dfs, page_width, page_height = get_xml_image_info(xml_files[0])
 

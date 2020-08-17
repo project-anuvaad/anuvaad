@@ -4,35 +4,41 @@ import glob
 import pdf2image
 from lxml import etree
 import base64
+#import xml.etree.ElementTree as etree
 
 # extract pdf to image
-def extract_image_from_pdf(filepath, workspace_output_dir):
+def extract_image_paths_from_pdf(filepath, workspace_output_dir):
     working_dir = os.path.join(workspace_output_dir, 'images')
     image_filename = os.path.splitext(os.path.basename(filepath))[0]
     
     create_directory(working_dir)
-    images = pdf2image.convert_from_path(filepath, dpi=300, output_file=image_filename, output_folder=working_dir, fmt='jpg')
-    return working_dir
-
-def get_pdf_image_at_page(filepath, workspace_output_dir, page_index):
-    working_dir = os.path.join(workspace_output_dir, 'images')
-    image_filename = os.path.splitext(os.path.basename(filepath))[0]
-    
-    create_directory(working_dir)
-    images = pdf2image.convert_from_path(filepath, dpi=300, 
-                                         output_file=image_filename, output_folder=working_dir, 
-                                         fmt='jpg', paths_only=True,
-                                         first_page=page_index, last_page=page_index)
-    return images[0]
+    images = pdf2image.convert_from_path(filepath, dpi=300, output_file=image_filename, output_folder=working_dir, fmt='jpg', paths_only=True)
+    return images
 
 # Execute pdftohtml to extract XML file of digital PDF
 def extract_xml_from_digital_pdf(filepath, workspace_output_dir):
-    working_dir    = os.path.join(workspace_output_dir, 'pdttohtml')
-    
+    working_dir    = os.path.join(workspace_output_dir, 'pdftohtml')
     create_directory(working_dir)
+
+    working_dir     = os.path.join(working_dir, 'xml')
+    create_directory(working_dir)
+
     shutil.copy(filepath, os.path.join(working_dir, os.path.basename(filepath)))
     
     cmd = ('pdftohtml -xml %s' % (os.path.join(working_dir, os.path.basename(filepath))))
+    os.system(cmd)
+    return working_dir
+
+def extract_html_bg_images_from_digital_pdf(filepath, workspace_output_dir):
+    working_dir    = os.path.join(workspace_output_dir, 'pdftohtml')
+    create_directory(working_dir)
+
+    working_dir     = os.path.join(working_dir, 'html')
+    create_directory(working_dir)
+
+    shutil.copy(filepath, os.path.join(working_dir, os.path.basename(filepath)))
+    
+    cmd = ('pdftohtml -c %s' % (os.path.join(working_dir, os.path.basename(filepath))))
     os.system(cmd)
     return working_dir
 
@@ -89,9 +95,10 @@ def get_xmltree(filepath, parse='xml'):
         tree   = etree.parse(open(filepath, mode='r', encoding='utf-8'), parser)
         return tree
     else:
-        with open(filepath,'r',encoding='latin-1') as file:
+        with open(filepath,'r') as file:
             xml_string    = file.read()
-            return etree.fromstring(bytes(xml_string, encoding='latin-1'))
+            return etree.fromstring(bytes(xml_string, encoding='utf-8'))
+
         
 
     return None
