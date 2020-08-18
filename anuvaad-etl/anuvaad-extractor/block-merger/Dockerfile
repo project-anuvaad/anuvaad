@@ -1,4 +1,4 @@
-FROM anuvaadio/python3.6-opencv-4.1.0:1
+FROM anuvaadio/python3.6-opencv-4.1.0:2
 COPY / /app
 WORKDIR /app
 RUN apk update && apk add -U \
