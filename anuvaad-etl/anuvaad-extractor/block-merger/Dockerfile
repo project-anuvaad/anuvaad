@@ -16,5 +16,5 @@ RUN apk update && apk add -U \
         clang-dev \
         linux-headers
 RUN pip install -r requirements.txt
-RUN apk update && apk add poppler-utils 
-CMD ["python", "/app/app.py"]
+RUN apk update && apk add poppler-utils
+ENTRYPOINT ["sh","/usr/bin/start.sh"]
