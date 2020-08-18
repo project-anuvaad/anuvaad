@@ -112,7 +112,7 @@ def add_attrib(page_df, region_to_change, attrib, margin=3):
     return page_df
 
 
-def prepocess_pdf_rgions(xml_dfs,page_height,config =preprocess_config ):
+def prepocess_pdf_regions(xml_dfs,page_height,config =preprocess_config ):
     #header_region = None
     footer_region =None
     #if len(xml_dfs) > 1 :
