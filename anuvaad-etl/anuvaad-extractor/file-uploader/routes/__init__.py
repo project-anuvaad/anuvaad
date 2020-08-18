@@ -1,0 +1,1 @@
+from .file_uploader_routes import FILE_UPLOADER_BLUEPRINT
