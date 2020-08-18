@@ -1,6 +1,7 @@
 import os
-from pathlib import Path
+import json
 import time
+from pathlib import Path
 from anuvaad_em.emservice import post_error
 from anuvaad_em.emservice import post_error_wf
 
@@ -26,7 +27,7 @@ class FileOperation(object):
 
     # checking file extension of received file type
     def check_file_extension(self, file_type):
-        allowed_extensions = ['txt','csv']
+        allowed_extensions = ['txt','json']
         if file_type in allowed_extensions:
             return True
         else:
@@ -38,17 +39,25 @@ class FileOperation(object):
         return input_filepath
 
     # generating output filepath for output filename
-    def output_path(self,i, DOWNLOAD_FOLDER):
-        output_filename = '%d-'%i + str(time.time()).replace('.', '') + '.txt'
+    def output_path(self,i, DOWNLOAD_FOLDER, out_filetype):
+        output_filename = '%d-'%i + str(time.time()).replace('.', '') + out_filetype
         output_filepath = os.path.join(DOWNLOAD_FOLDER, output_filename)
         return output_filepath , output_filename
     
     # reading content of input text file
-    def read_file(self, input_filename):
-        input_filepath = self.input_path(input_filename)
-        with open(input_filepath, 'r', encoding='utf-16') as f:
+    def read_txt_file(self, input_filename,):
+        input_txt_filepath = self.input_path(input_filename)
+        with open(input_txt_filepath, 'r', encoding='utf-16') as f:
             input_file_data = f.readlines()
         return input_file_data
+
+    #reading content from json file
+    def read_json_file(self, input_filename):
+        input_json_filepath = self.input_path(input_filename)
+        with open(input_json_filepath, 'r', encoding='utf-8') as f:
+            #json_data = f.readlines()
+            data = json.loads(f.read())
+        return data
 
     # extracting data from received json input
     def json_input_format(self, json_data):
