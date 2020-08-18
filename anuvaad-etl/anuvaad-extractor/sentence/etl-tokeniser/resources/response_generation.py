@@ -30,9 +30,15 @@ class Response(object):
             output_file_response = list()
             for i, item in enumerate(input_files):
                 input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
-                input_file_data = file_ops.read_file(input_filename)
-                error_validator.file_encoding_error(input_file_data)
-                output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
+                if in_file_type == "txt":
+                    input_file_data = file_ops.read_txt_file(input_filename)
+                    error_validator.file_encoding_error(input_file_data)
+                    output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
+                elif in_file_type == "json":
+                    input_jsonfile_data = file_ops.read_json_file(input_filename)
+                    input_jsonfile_data['response'] = [tokenisation.adding_tokenised_text_blockmerger(item) 
+                                                        for item in input_jsonfile_data['response']]
+                    output_filename = tokenisation.writing_json_file_blockmerger(i, input_jsonfile_data)
                 file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
                 output_file_response.append(file_res)
             task_endtime = str(time.time()).replace('.', '')
@@ -80,7 +86,7 @@ class Response(object):
             output_file_response = list()
             for i, item in enumerate(input_files):
                 input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
-                input_file_data = file_ops.read_file(input_filename)
+                input_file_data = file_ops.read_txt_file(input_filename)
                 error_validator.file_encoding_error(input_file_data)
                 output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
                 file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
