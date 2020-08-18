@@ -15,6 +15,7 @@ RUN apk update && apk add -U \
         libwebp-dev \
         clang-dev \
         linux-headers
+RUN sed -i 's/v3.10/v3.12/g' /etc/apk/repositories 
 RUN pip install -r requirements.txt
 RUN apk update && apk add poppler-utils
 COPY start.sh /usr/bin/start.sh
