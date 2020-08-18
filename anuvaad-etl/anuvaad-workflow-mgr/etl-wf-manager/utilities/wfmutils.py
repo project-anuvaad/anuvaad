@@ -6,6 +6,12 @@ import traceback
 import requests
 import yaml
 from configs.wfmconfig import config_file_url
+from configs.wfmconfig import tool_blockmerger
+from configs.wfmconfig import tool_tokeniser
+from configs.wfmconfig import tool_pdftohtml
+from configs.wfmconfig import tool_htmltojson
+from configs.wfmconfig import tool_fileconverter
+from configs.wfmconfig import tool_aligner
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_exception
 
@@ -14,12 +20,16 @@ from tools.aligner import Aligner
 from tools.tokeniser import Tokeniser
 from tools.pdftohtml import PDFTOHTML
 from tools.htmltojson import HTMLTOJSON
+from tools.file_converter import FileConverter
+from tools.block_merger import BlockMerger
 
 
 aligner = Aligner()
 tokeniser = Tokeniser()
 pdftohtml = PDFTOHTML()
 htmltojson = HTMLTOJSON()
+file_converter = FileConverter()
+block_merger = BlockMerger()
 
 log = logging.getLogger('file')
 configs_global = {}
@@ -106,23 +116,31 @@ class WFMUtils:
     def get_tool_input(self, current_tool, previous_tool, task_output, wf_input):
         tool_input = {}
         if wf_input is None:
-            if current_tool == "ALIGNER":
+            if current_tool == tool_aligner:
                 tool_input = aligner.get_aligner_input(task_output, previous_tool)
-            if current_tool == "TOKENISER":
+            if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input(task_output, previous_tool)
-            if current_tool == "PDFTOHTML":
+            if current_tool == tool_pdftohtml:
                 tool_input = pdftohtml.get_pdftohtml_input(task_output, previous_tool)
-            if current_tool == "HTMLTOJSON":
+            if current_tool == tool_htmltojson:
                 tool_input = htmltojson.get_htmltojson_input(task_output, previous_tool)
+            if current_tool == tool_fileconverter:
+                tool_input = file_converter.get_fc_input(task_output, previous_tool)
+            if current_tool == tool_blockmerger:
+                tool_input = block_merger.get_bm_input(task_output, previous_tool)
         else:
-            if current_tool == "ALIGNER":
+            if current_tool == tool_aligner:
                 tool_input = aligner.get_aligner_input_wf(wf_input)
-            if current_tool == "TOKENISER":
+            if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input_wf(wf_input)
-            if current_tool == "PDFTOHTML":
+            if current_tool == tool_pdftohtml:
                 tool_input = pdftohtml.get_pdftohtml_input_wf(wf_input)
-            if current_tool == "HTMLTOJSON":
+            if current_tool == tool_htmltojson:
                 tool_input = htmltojson.get_htmltojson_input_wf(wf_input)
+            if current_tool == tool_fileconverter:
+                tool_input = file_converter.get_fc_input_wf(wf_input)
+            if current_tool == tool_blockmerger:
+                tool_input = block_merger.get_bm_input_wf(wf_input)
 
         return tool_input
 

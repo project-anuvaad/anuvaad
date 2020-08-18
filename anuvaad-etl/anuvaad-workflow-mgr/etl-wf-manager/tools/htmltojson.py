@@ -1,3 +1,9 @@
+
+
+from configs.wfmconfig import tool_htmltojson
+from configs.wfmconfig import tool_pdftohtml
+
+
 class HTMLTOJSON:
     def __init__(self):
         pass
@@ -22,7 +28,7 @@ class HTMLTOJSON:
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
             "stepOrder": 0,
-            "tool": "HTMLTOJSON",
+            "tool": tool_htmltojson,
             "input": tool_input
         }
         return tok_input
@@ -30,7 +36,7 @@ class HTMLTOJSON:
     # Returns a json of the format accepted by Pdf2html based on the predecessor.
     def get_htmltojson_input(self, task_output, predecessor):
         files = []
-        if predecessor == "PDFTOHTML":
+        if predecessor == tool_pdftohtml:
             html_files = task_output["output"]
             for file in html_files:
                 req_file = {
@@ -48,7 +54,7 @@ class HTMLTOJSON:
             "jobID": task_output["jobID"],
             "workflowCode": task_output["workflowCode"],
             "stepOrder": task_output["stepOrder"],
-            "tool": "HTMLTOJSON",
+            "tool": tool_htmltojson,
             "input": tool_input
         }
         return tok_input

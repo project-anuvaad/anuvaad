@@ -1,6 +1,7 @@
 
 
-
+from configs.wfmconfig import tool_aligner
+from configs.wfmconfig import tool_tokeniser
 
 class Aligner:
     def __init__(self):
@@ -41,7 +42,7 @@ class Aligner:
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
             "stepOrder": 0,
-            "tool": "ALIGNER",
+            "tool": tool_aligner,
             "input": tool_input
         }
         return tok_input
@@ -50,7 +51,7 @@ class Aligner:
     def get_aligner_input(self, task_output, predecessor):
         source = {}
         target = {}
-        if predecessor == "TOKENISER":
+        if predecessor == tool_tokeniser:
             source = {
                 "filepath": task_output["output"]["files"][0]["outputFile"],
                 "locale": task_output["output"]["files"][0]["outputLocale"],
@@ -72,7 +73,7 @@ class Aligner:
             "jobID": task_output["jobID"],
             "workflowCode": task_output["workflowCode"],
             "stepOrder": task_output["stepOrder"],
-            "tool": "TOKENISER",
+            "tool": tool_aligner,
             "input": tool_input
         }
         return tok_input

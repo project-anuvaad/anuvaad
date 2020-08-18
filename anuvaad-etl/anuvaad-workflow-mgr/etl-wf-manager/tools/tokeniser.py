@@ -1,6 +1,7 @@
 
 
-
+from configs.wfmconfig import tool_blockmerger
+from configs.wfmconfig import tool_tokeniser
 
 class Tokeniser:
     def __init__(self):
@@ -27,14 +28,14 @@ class Tokeniser:
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
             "stepOrder" : 0,
-            "tool": "TOKENISER",
+            "tool": tool_tokeniser,
             "input": tool_input
         }
         return tok_input
 
     # Returns a json of the format accepted by Tokeniser based on the predecessor.
     def get_tokeniser_input(self, task_output, predecessor):
-        if predecessor == "EXTRACTOR":
+        if predecessor == tool_blockmerger:
             files = task_output["output"]["files"]
         else:
             return None
@@ -45,7 +46,7 @@ class Tokeniser:
             "jobID": task_output["jobID"],
             "workflowCode": task_output["workflowCode"],
             "stepOrder": task_output["stepOrder"],
-            "tool": "TOKENISER",
+            "tool": tool_tokeniser,
             "input": tool_input
         }
         return tok_input

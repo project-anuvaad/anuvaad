@@ -11,6 +11,12 @@ file_upload_url = os.environ.get('FILE_UPLOAD_URL', 'https://auth.anuvaad.org/up
 #MODULE-SPECIFIC-CONFIGS
 #common-variables
 anu_etl_wfm_core_topic = 'anu-etl-wf-initiate-v2'
+tool_tokeniser = "TOKENISER"
+tool_aligner = "ALIGNER"
+tool_pdftohtml = "PDF-TO-HTML"
+tool_htmltojson = "HTML-TO-JSON"
+tool_fileconverter = "FILE-CONVERTER"
+tool_blockmerger = "BLOCK-MERGER"
 
 #kafka-configs
 anu_etl_wfm_consumer_grp = os.environ.get('ANU_ETL_WF_CONSUMER_GRP', 'anu-etl-wfm-consumer-group')

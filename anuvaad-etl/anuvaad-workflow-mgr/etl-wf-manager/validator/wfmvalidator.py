@@ -2,19 +2,30 @@
 import logging
 
 from anuvaad_auditor.errorhandler import post_error
+from configs.wfmconfig import tool_blockmerger
+from configs.wfmconfig import tool_tokeniser
+from configs.wfmconfig import tool_pdftohtml
+from configs.wfmconfig import tool_htmltojson
+from configs.wfmconfig import tool_fileconverter
+from configs.wfmconfig import tool_aligner
 
 log = logging.getLogger('file')
 from utilities.wfmutils import WFMUtils
 from tools.aligner import Aligner
 from tools.tokeniser import Tokeniser
 from tools.pdftohtml import PDFTOHTML
+from tools.file_converter import FileConverter
+from tools.block_merger import BlockMerger
 from tools.htmltojson import HTMLTOJSON
+
 
 wfmutils = WFMUtils()
 aligner = Aligner()
 tokeniser = Tokeniser()
 pdftohtml = PDFTOHTML()
 htmltojson = HTMLTOJSON()
+file_converter = FileConverter()
+block_merger = BlockMerger()
 
 class WFMValidator:
     def __init__(self):
@@ -45,25 +56,37 @@ class WFMValidator:
     # Validates tool specific requirements of the input.
     def validate_files(self, wf_input):
         tools = wfmutils.get_tools_of_wf(wf_input["workflowCode"])
-        if "TOKENISER" in tools:
+        if tool_tokeniser in tools:
             valid = tokeniser.validate_tokeniser_input(wf_input)
             if not valid:
                 return post_error("TOKENISER_INPUT_ERROR", "Tokeniser is a part of this workflow. The given input is "
                                                            "insufficient for that step.", None)
-        if "ALIGNER" in tools:
+        if tool_aligner in tools:
             valid = aligner.validate_aligner_input(wf_input)
             if not valid:
                 return post_error("ALIGNER_INPUT_ERROR", "Aligner is a part of this workflow. The given input is "
                                                          "insufficient for that step.", None)
-        if "PDFTOHTML" in tools:
+        if tool_pdftohtml in tools:
             valid = pdftohtml.validate_pdftohtml_input(wf_input)
             if not valid:
                 return post_error("PDFTOHTML_INPUT_ERROR", "PDFTOHTML is a part of this workflow. The given input is "
                                                            "insufficient for that step.", None)
-        if "HTMLTOJSON" in tools:
+        if tool_htmltojson in tools:
             valid = htmltojson.validate_htmltojson_input(wf_input)
             if not valid:
                 return post_error("HTMLTOJSON_INPUT_ERROR", "HTMLTOJSON is a part of this workflow. The given input "
+                                                            "is insufficient for that step.", None)
+
+        if tool_fileconverter in tools:
+            valid = file_converter.validate_fc_input(wf_input)
+            if not valid:
+                return post_error("FILE_CONVERTER_INPUT_ERROR", "FILE_CONVERTER is a part of this workflow. The given input "
+                                                            "is insufficient for that step.", None)
+
+        if tool_blockmerger in tools:
+            valid = block_merger.validate_bm_input(wf_input)
+            if not valid:
+                return post_error("BLOCK_MERGER_INPUT_ERROR", "BLOCK_MERGER is a part of this workflow. The given input "
                                                             "is insufficient for that step.", None)
 
 
