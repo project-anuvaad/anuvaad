@@ -7,10 +7,10 @@ import routes
 import config
 import logging
 import time
+from db.conmgr_mongo import connectmongo
 
 log = logging.getLogger('file')
 tok_app  = Flask(__name__)
-
 
 if config.ENABLE_CORS:
     cors    = CORS(tok_app, resources={r"/api/*": {"origins": "*"}})
@@ -21,5 +21,6 @@ for blueprint in vars(routes).values():
 
 
 if __name__ == "__main__":
+    connectmongo()
     tok_app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
     

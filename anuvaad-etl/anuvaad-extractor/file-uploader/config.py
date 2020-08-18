@@ -2,7 +2,7 @@ import logging
 import os
 import time
 
-DEBUG = True
+DEBUG = False
 API_URL_PREFIX = "/api/v0"
 HOST = '0.0.0.0'
 PORT = 5001
@@ -14,6 +14,14 @@ download_folder = 'upload'
 
 ALLOWED_FILE_TYPES = ['application/msword','application/pdf','image/x-ms-bmp','image/jpeg','image/jpg','image/png','text/plain','application/vnd.openxmlformats-officedocument.wordprocessingml.document']
 
+
+#mongo
+MONGO_IP = 'MONGO_IP'
+DEFAULT_VALUE = 'localhost'
+MONGO_DB_IDENTIFIER = 'MONGO_DB'
+DEFAULT_MONGO_DB_IDENTIFIER = 'preprocessing'
+MONGO_SERVER_URL = os.environ.get(MONGO_IP, DEFAULT_VALUE)
+MONGO_DB = os.environ.get(MONGO_DB_IDENTIFIER, DEFAULT_MONGO_DB_IDENTIFIER)
 
 
 logging.basicConfig(
