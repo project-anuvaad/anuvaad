@@ -1,9 +1,22 @@
-FROM ubuntu:18.04
-#FROM python:3.6.9-slim
+FROM anuvaadio/python3.6-opencv-4.1.0:2
 COPY / /app
 WORKDIR /app
-RUN apt update
-RUN apt install python3-pip -y
-RUN pip3 install -r requirements.txt
-RUN apt update && apt install -y poppler-utils libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev
-CMD ["python", "/app/app.py"]
+RUN apk update && apk add -U \
+      --virtual .build-dependencies \
+        build-base \
+        openblas-dev \
+        unzip \
+        wget \
+        cmake \
+        libjpeg-turbo-dev \
+        libpng-dev \
+        jasper-dev \
+        tiff-dev \
+        libwebp-dev \
+        clang-dev \
+        linux-headers
+RUN pip install -r requirements.txt
+RUN apk update && apk add poppler-utils
+COPY start.sh /usr/bin/start.sh
+RUN chmod +x /usr/bin/start.sh
+ENTRYPOINT ["sh","/usr/bin/start.sh"]
