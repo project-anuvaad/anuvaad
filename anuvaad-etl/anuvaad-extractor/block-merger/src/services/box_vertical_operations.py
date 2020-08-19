@@ -9,7 +9,7 @@ from src.services.box_grouping import arrange_grouped_line_indices
 
 def merge_vertical_blocks(in_df, configs, debug=False):
     df = in_df.copy(deep=True)
-    df.sort_values('text_top', axis=0, ascending=True, inplace=True)
+    # df.sort_values('text_top', axis=0, ascending=True, inplace=True)
     df = df.reset_index(drop=True)
     df.reset_index(inplace=True)
 
