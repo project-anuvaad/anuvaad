@@ -47,5 +47,11 @@ BLOCK_CONFIGS = {
     "space_multiply_factor": 1.8
 }
 
+TABLE_CONFIGS = {
+    "remove_background" : True ,
+    "background_threshold" : 50
+
+}
+
 PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.15 ,'repeat_threshold' :0.95}
 DROP_TEXT          =  ['SUPERSCRIPT']
