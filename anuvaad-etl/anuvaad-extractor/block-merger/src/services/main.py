@@ -32,13 +32,13 @@ def process_block(children, block_configs):
 def get_response(p_df,img_df,table_df,page_no,page_width,page_height):
 
     p_df['block_id'] = range(len(p_df))
-    myDict           = {'page_no': page_no,'page_width': page_width,'page_height':page_height,'tables':[],'images':[],'blocks':[]}
+    myDict           = {'page_no': page_no,'page_width': page_width,'page_height':page_height,'tables':[],'images':[],'text_blocks':[]}
     image_data       = process_image_df(myDict, img_df)
     table_data       = process_table_df(myDict, table_df)
     myDict['images'] = image_data
     myDict['tables'] = table_data
     page_data        = df_to_json(p_df)
-    myDict['blocks'] = page_data
+    myDict['text_blocks'] = page_data
 
     return myDict
 
@@ -123,7 +123,9 @@ def get_page_dfs(pages,xml_dfs,working_dir,image_files,header_region , footer_re
 
         in_df, table_df, line_df = get_text_table_line_df(table_image, xml_dfs[page_index])
 
-        v_df = get_xml.get_vdf(in_df, image_files, config.DOCUMENT_CONFIGS, page_index,header_region , footer_region, multiple_pages)
+        h_df    = get_xml.get_hdf(in_df, image_files, config.DOCUMENT_CONFIGS, page_index,header_region , footer_region, multiple_pages)
+        v_df    = get_xml.get_vdf(h_df, config.DOCUMENT_CONFIGS)
+        
         p_df = process_page_blocks(v_df, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)
         merger_df = block_merger.merge_blocks(p_df,config.DROP_TEXT)
 

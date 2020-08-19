@@ -22,10 +22,10 @@ def xml_dfs(base_dir, filename):
 
     pdf_filepath   = os.path.join(base_dir, filename)
     working_dir    = os.path.join(output_dir, os.path.splitext(filename)[0]+'_'+str(uuid.uuid1()))
-
+    
     ret            = create_directory(working_dir)
 
-    image_files  = extract_image_paths_from_pdf(pdf_filepath, working_dir)
+    image_files    = extract_image_paths_from_pdf(pdf_filepath, working_dir)
     pdf_xml_dir    = extract_xml_from_digital_pdf(pdf_filepath, working_dir)
     os.system('pdftohtml -c ' + pdf_filepath + ' ' + working_dir + '/')
 
@@ -36,14 +36,20 @@ def xml_dfs(base_dir, filename):
 
     return img_dfs,xml_dfs, image_files, page_width, page_height ,working_dir
     
+def get_vdf(h_df, document_configs, debug=False):
+
+    v_df    = merge_vertical_blocks(h_df, document_configs, debug=False)
+
+    return v_df
+
         
-def get_vdf(page_df,image_files,document_configs, file_index,header_region , footer_region,multiple_pages):
+def get_hdf(page_df,image_files,document_configs, file_index,header_region , footer_region,multiple_pages):
     img_filepath   = image_files[file_index]
     in_df   = page_df.loc[:]
     if multiple_pages :
         in_df   = tag_heaader_footer_attrib(header_region , footer_region,in_df)
 
     h_df    = merge_horizontal_blocks(in_df, document_configs, debug=False)
-    v_df    = merge_vertical_blocks(h_df, document_configs, debug=False)
+    #v_df    = merge_vertical_blocks(h_df, document_configs, debug=False)
 
-    return v_df
+    return h_df
