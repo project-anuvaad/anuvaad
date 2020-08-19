@@ -1,7 +1,9 @@
 import  pandas as pd
+import cv2
+import numpy as np
+import config
 from src.utilities.table.table import TableRepositories
 from src.utilities.table.line import  RectRepositories
-
 
 def page_num_correction(file_index, num_size=None):
     padding = '0'
@@ -89,6 +91,9 @@ def extract_and_delete_region(page_df, table_df):
 
 
 def get_text_table_line_df(table_image, in_df):
+    if config.TABLE_CONFIGS['remove_background']:
+        table_image = cv2.imread(table_image, 0)
+        table_image = (table_image > config.TABLE_CONFIGS['background_threshold']).astype(np.uint8)
     tables = TableRepositories(table_image).response['response']['tables']
     Rects = RectRepositories(table_image)
     lines, _ = Rects.get_tables_and_lines()
