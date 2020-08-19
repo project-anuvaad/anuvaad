@@ -54,11 +54,11 @@ def consume():
         log_info("consume", "Waiting for the record..", None)
         for msg in consumer:
             try:
-                data = msg.value
-                log.info(data)
-                log_info("consume", "Received on Topic: " + msg.topic, data["jobID"])
-                wfmservice.manage(data)
-                break
+                if msg:
+                    data = msg.value
+                    log_info("consume", "Received on Topic: " + msg.topic, data["jobID"])
+                    wfmservice.manage(data)
+                    break
             except Exception as e:
                 log_exception("consume", "Exception while consuming: ", None, e)
                 post_error("WFM_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)

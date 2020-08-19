@@ -27,9 +27,9 @@ class Producer:
     def push_to_queue(self, object_in, topic):
         producer = self.instantiate()
         try:
-            producer.send(topic, value=object_in)
-            log.info(object_in)
-            log_info("push_to_queue", "Pushing to topic: " + topic, object_in["jobID"])
+            if object_in:
+                producer.send(topic, value=object_in)
+                log_info("push_to_queue", "Pushing to topic: " + topic, object_in["jobID"])
             producer.flush()
         except Exception as e:
             log_exception("push_to_queue", "Exception while producing: ", object_in["jobID"], e)

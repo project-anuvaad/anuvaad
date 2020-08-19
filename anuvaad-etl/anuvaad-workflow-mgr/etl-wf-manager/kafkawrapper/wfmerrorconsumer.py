@@ -49,10 +49,11 @@ def error_consume():
     while True:
         for msg in consumer:
             try:
-                data = msg.value
-                log_info("error_consume", "Received on Topic: " + msg.topic, data["jobID"])
-                wfmservice.update_errors(data)
-                break
+                if msg:
+                    data = msg.value
+                    log_info("error_consume", "Received on Topic: " + msg.topic, data["jobID"])
+                    wfmservice.update_errors(data)
+                    break
             except Exception as e:
                 log_exception("error_consume", "Exception while consuming: ", None, e)
                 post_error("WFMERROR_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)

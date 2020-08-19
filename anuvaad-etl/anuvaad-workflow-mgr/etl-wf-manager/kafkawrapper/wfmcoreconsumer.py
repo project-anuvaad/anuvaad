@@ -49,11 +49,11 @@ def core_consume():
     while True:
         for msg in consumer:
             try:
-                data = msg.value
-                log.info(data)
-                log_info("core_consume", "Received on Topic: " + msg.topic, data["jobID"])
-                wfmservice.initiate(data)
-                break
+                if msg:
+                    data = msg.value
+                    log_info("core_consume", "Received on Topic: " + msg.topic, data["jobID"])
+                    wfmservice.initiate(data)
+                    break
             except Exception as e:
                 log_exception("core_consume", "Exception while consuming: ", None, e)
                 post_error("WFMCORE_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
