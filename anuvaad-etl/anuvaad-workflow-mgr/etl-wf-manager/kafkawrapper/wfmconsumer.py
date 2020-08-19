@@ -55,6 +55,7 @@ def consume():
         for msg in consumer:
             try:
                 data = msg.value
+                log.info(data)
                 log_info("consume", "Received on Topic: " + msg.topic, data["jobID"])
                 wfmservice.manage(data)
                 break

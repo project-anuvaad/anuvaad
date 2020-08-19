@@ -10,7 +10,7 @@ file_upload_url = os.environ.get('FILE_UPLOAD_URL', 'https://auth.anuvaad.org/up
 
 #MODULE-SPECIFIC-CONFIGS
 #common-variables
-anu_etl_wfm_core_topic = 'anu-etl-wf-initiate-v2'
+anu_etl_wfm_core_topic = 'anu-etl-wf-initiate-v3'
 tool_tokeniser = "TOKENISER"
 tool_aligner = "ALIGNER"
 tool_pdftohtml = "PDF-TO-HTML"

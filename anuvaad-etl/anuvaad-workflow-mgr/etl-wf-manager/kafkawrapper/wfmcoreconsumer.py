@@ -50,6 +50,7 @@ def core_consume():
         for msg in consumer:
             try:
                 data = msg.value
+                log.info(data)
                 log_info("core_consume", "Received on Topic: " + msg.topic, data["jobID"])
                 wfmservice.initiate(data)
                 break
