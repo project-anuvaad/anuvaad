@@ -1,5 +1,10 @@
 from utilities.utils import FileOperation
 from services.service import Pdf2HtmlService
+from utilities.model_response import CustomResponse
+from utilities.model_response import Status
+from errors.errors_exception import WorkflowkeyError
+from errors.errors_exception import FileErrors
+from errors.errors_exception import ServiceError
 from errors.error_validator import ValidationResponse
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
@@ -25,7 +30,8 @@ class Response(object):
             output_file_response = list()
             for item in input_files:
                 input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
-                output_htmlfiles_path, output_pngfiles_path = pdf_html_service.pdf2html(self.DOWNLOAD_FOLDER, input_filepath, jobid)
+                input_filepath = file_ops.input_path(input_filename)
+                output_htmlfiles_path, output_pngfiles_path = pdf_html_service.pdf2html(input_filepath, jobid)
                 file_res = file_ops.one_filename_response(input_filename, output_htmlfiles_path, output_pngfiles_path, in_locale, in_file_type)
                 output_file_response.append(file_res)
             task_endtime = str(time.time()).replace('.', '')
