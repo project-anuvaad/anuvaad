@@ -1,6 +1,7 @@
 
 
 from configs.wfmconfig import tool_blockmerger
+from configs.wfmconfig import tool_fileconverter
 
 class BlockMerger:
 
@@ -32,6 +33,28 @@ class BlockMerger:
         }
         return bm_input
 
-    # Returns a json of the format accepted by Block merger.
-    def get_bm_input(self, task_output):
-        return None
+    # Returns a json of the format accepted by Block merger based on a predecessor.
+    def get_bm_input(self, task_output, predecessor):
+        files = []
+        if predecessor == tool_fileconverter:
+            output = task_output["output"]
+            for op_file in output:
+                file = {
+                    "path": op_file["outputFile"],
+                    "locale": op_file["outputLocale"],
+                    "type": op_file["outputType"]
+                }
+                files.append(file)
+        else:
+            return None
+        tool_input = {
+            "files": files
+        }
+        bm_input = {
+            "jobID": task_output["jobID"],
+            "workflowCode": task_output["workflowCode"],
+            "stepOrder": task_output["stepOrder"],
+            "tool": tool_blockmerger,
+            "input": tool_input
+        }
+        return bm_input
