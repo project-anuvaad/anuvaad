@@ -42,11 +42,9 @@ def process_fc_kf():
         consumer = consumer_validator()
         log_info("process_fc_kf", "trying to receive value from consumer ", None)
         for msg in consumer:
-            print("request came for kafka")
             log_info("process_fc_kf", "value received from consumer", None)
             data = msg.value
             task_id = str("FC-" + str(time.time()).replace('.', ''))
-            print(task_id)
             task_starttime = str(time.time()).replace('.', '')
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             response_gen = Response(data, DOWNLOAD_FOLDER)
