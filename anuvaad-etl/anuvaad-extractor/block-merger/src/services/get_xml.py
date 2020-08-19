@@ -28,7 +28,7 @@ def xml_dfs(base_dir, filename):
 
     image_files    = extract_image_paths_from_pdf(pdf_filepath, working_dir)
     pdf_xml_dir    = extract_xml_from_digital_pdf(pdf_filepath, working_dir)
-    os.system('pdftohtml -c ' + pdf_filepath + ' ' + working_dir + '/')
+    os.system('pdftohtml -c ' + str(pdf_filepath) + ' ' + str(working_dir) + '/')
 
     xml_files      = read_directory_files(pdf_xml_dir, pattern='*.xml')
     #image_files    = read_directory_files(pdf_image_dir, pattern='*-*.jpg')
