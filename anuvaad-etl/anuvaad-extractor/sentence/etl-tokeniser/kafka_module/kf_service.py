@@ -11,6 +11,7 @@ from anuvaad_auditor.loghandler import log_exception
 import time
 import config
 
+# validating consumer is it working or not
 def consumer_validator():
     try:
         consumer_class = Consumer(config.input_topic, config.bootstrap_server)
@@ -21,6 +22,7 @@ def consumer_validator():
         log_exception("consumer_validator", "error in kafka opertation while listening to consumer on topic %s"%(config.input_topic), None, None)
         raise KafkaConsumerError(400, "Can not connect to consumer.")
 
+# pushing output to output kafka queue
 def push_output(producer, topic_name, output, jobid, task_id):
     try:
         producer.push_data_to_queue(topic_name, output)
