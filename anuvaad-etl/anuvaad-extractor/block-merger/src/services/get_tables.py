@@ -1,7 +1,9 @@
 import  pandas as pd
+import cv2
+import numpy as np
+import config
 from src.utilities.table.table import TableRepositories
 from src.utilities.table.line import  RectRepositories
-
 
 def page_num_correction(file_index, num_size=None):
     padding = '0'
@@ -58,15 +60,21 @@ def get_table_df(tables):
     return table_df
 
 
-def edit(dic, df):
+def edit(dic, df, extract_by='starting_point'):
     left_key = 'text_left'
     top_key = 'text_top'
     width_key = 'text_width'
     height_key = 'text_height'
 
-    region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
+    if extract_by == 'Intersection':
+        region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
                 (df[top_key] + df[height_key]) <= (dic[top_key] + dic[height_key])) & (
                          (df[left_key] + df[width_key]) <= (dic[left_key] + dic[width_key]))
+
+    if extract_by == 'starting_point':
+        region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
+                (df[top_key]) <= (dic[top_key] + dic[height_key])) & (
+                         (df[left_key]) <= (dic[left_key] + dic[width_key]))
 
     text_df = df[region].to_dict('records')
     df = df[~region]
@@ -89,6 +97,9 @@ def extract_and_delete_region(page_df, table_df):
 
 
 def get_text_table_line_df(table_image, in_df):
+    if config.TABLE_CONFIGS['remove_background']:
+        table_image = cv2.imread(table_image, 0)
+        table_image = (table_image > config.TABLE_CONFIGS['background_threshold']).astype(np.uint8)
     tables = TableRepositories(table_image).response['response']['tables']
     Rects = RectRepositories(table_image)
     lines, _ = Rects.get_tables_and_lines()
