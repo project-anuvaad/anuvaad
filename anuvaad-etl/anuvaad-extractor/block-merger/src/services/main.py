@@ -134,9 +134,9 @@ def get_page_dfs(pages,xml_dfs,working_dir,image_files,header_region , footer_re
 
     return page_dfs, table_dfs
 
-def DocumentStructure(file_name):
+def DocumentStructure(file_name,base_dir=config.BASE_DIR):
     
-    img_dfs,xml_dfs, image_files, page_width, page_height,working_dir  = get_xml.xml_dfs(config.BASE_DIR, file_name)
+    img_dfs,xml_dfs, image_files, page_width, page_height,working_dir  = get_xml.xml_dfs(base_dir, file_name)
     multiple_pages = False
     if len(xml_dfs) > 1:
         multiple_pages =True

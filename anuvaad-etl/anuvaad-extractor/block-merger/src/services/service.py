@@ -38,15 +38,15 @@ class BlockMerging(object):
                     sub2_block_children   =  pd.read_json(sub_df['children'])
                     sub2_block_children   =  sub2_block_children.reset_index(drop=True)
                     sub2_block_children   =  sub2_block_children.sort_values('text_left')
-
+                    sub2_block_children   =  sub2_block_children.where(sub2_block_children.notnull(), None)
                     for sub2_block_index in range(len(sub2_block_children)):
                         if 'attrib' in sub2_block_children.columns:
                             if self.drop_text_regards_attrib(sub2_block_children['attrib'][sub2_block_index],drop_lis):
                                 continue
                             else:
-                                text = text+" " + sub2_block_children['text'][sub2_block_index]
+                                text = text+" " + str(sub2_block_children['text'][sub2_block_index])
                         else:
-                            text = text+" " + sub2_block_children['text'][sub2_block_index]
+                            text = text+" " + str(sub2_block_children['text'][sub2_block_index])
                             
             return text
 
