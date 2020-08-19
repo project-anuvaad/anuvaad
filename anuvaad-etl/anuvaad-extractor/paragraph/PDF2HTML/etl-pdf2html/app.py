@@ -10,12 +10,13 @@ import threading
 
 pdf2html_app  = Flask(__name__)
 
-try:
-    t1 = threading.Thread(target=process_pdf_kf, name='keep_on_running')
-    t1.start()
-    log_info("multithread", "Kafka running on multithread", None)
-except Exception as e:
-    log_error("threading", "ERROR WHILE RUNNING CUSTOM THREADS ", None, e)
+def start_kafka():
+    try:
+        t1 = threading.Thread(target=process_pdf_kf, name='keep_on_running')
+        t1.start()
+        log_info("multithread", "Kafka running on multithread", None)
+    except Exception as e:
+        log_error("threading", "ERROR WHILE RUNNING CUSTOM THREADS ", None, e)
 
 if config.ENABLE_CORS:
     cors    = CORS(pdf2html_app, resources={r"/api/*": {"origins": "*"}})
@@ -25,4 +26,5 @@ for blueprint in vars(routes).values():
         pdf2html_app.register_blueprint(blueprint, url_prefix=config.API_URL_PREFIX)
 
 if __name__ == "__main__":
-    pdf2html_app.run(host=config.HOST, port=config.PORT, debug=True)
+    start_kafka()
+    pdf2html_app.run(host=config.HOST, port=config.PORT, debug=False)
