@@ -49,8 +49,8 @@ BLOCK_CONFIGS = {
 
 TABLE_CONFIGS = {
     "remove_background" : True ,
-    "background_threshold" : 50
-
+    "background_threshold" : 50,
+    "extract_by"           : 'starting_point'
 }
 
 PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.15 ,'repeat_threshold' :0.95}

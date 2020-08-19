@@ -60,15 +60,21 @@ def get_table_df(tables):
     return table_df
 
 
-def edit(dic, df):
+def edit(dic, df, extract_by='starting_point'):
     left_key = 'text_left'
     top_key = 'text_top'
     width_key = 'text_width'
     height_key = 'text_height'
 
-    region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
+    if extract_by == 'Intersection':
+        region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
                 (df[top_key] + df[height_key]) <= (dic[top_key] + dic[height_key])) & (
                          (df[left_key] + df[width_key]) <= (dic[left_key] + dic[width_key]))
+
+    if extract_by == 'starting_point':
+        region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
+                (df[top_key]) <= (dic[top_key] + dic[height_key])) & (
+                         (df[left_key]) <= (dic[left_key] + dic[width_key]))
 
     text_df = df[region].to_dict('records')
     df = df[~region]
