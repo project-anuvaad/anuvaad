@@ -23,7 +23,7 @@ class FileOperation(object):
         return str(download_dir)
 
     # extracting data from received json input
-    def input_format(self, json_data):
+    def json_input_format(self, json_data):
         input_files = json_data["input"]['files']
         workflow_id = json_data['workflowCode']
         jobid = json_data['jobID']
@@ -70,13 +70,13 @@ class FileOperation(object):
             return False
 
     # error manager integration 
-    def error_handler(self, object_in, iswf):
+    def error_handler(self, object_in, code, iswf):
         if iswf:
                 job_id = object_in["jobID"]
                 task_id = object_in["taskID"]
                 state = object_in['state']
                 status = object_in['status']
-                code = object_in['error']['code']
+                code = code
                 message = object_in['error']['message']
                 error = post_error_wf(code, message, job_id, task_id, state, status, None)
                 return error

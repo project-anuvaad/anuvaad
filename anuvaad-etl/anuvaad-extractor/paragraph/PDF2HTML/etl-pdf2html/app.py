@@ -27,4 +27,4 @@ for blueprint in vars(routes).values():
 
 if __name__ == "__main__":
     start_kafka()
-    pdf2html_app.run(host=config.HOST, port=config.PORT, debug=False)
+    pdf2html_app.run(host=config.HOST, port=config.PORT, debug=True)
