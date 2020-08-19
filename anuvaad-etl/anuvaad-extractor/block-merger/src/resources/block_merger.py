@@ -4,13 +4,13 @@ from flask import request
 from src.utilities.utils import FileOperation
 from src.utilities.model_response import CustomResponse
 from src.utilities.model_response import CheckingResponse
-from src.services.service import BlockMerging
 import config
 import logging
 import time
 
 # sentence block merging
 file_ops = FileOperation()
+DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
 log = logging.getLogger('file')
 
 # rest request for block merging workflow service
@@ -22,8 +22,7 @@ class BlockMergerWF(Resource):
         task_id = str("BM-" + str(time.time()).replace('.', ''))
         task_starttime = str(time.time()).replace('.', '')
         json_data = request.get_json(force=True)
-        block_merger = BlockMerging()
-        check_response = CheckingResponse(json_data, task_id, task_starttime, block_merger)
+        check_response = CheckingResponse(json_data, task_id, task_starttime, DOWNLOAD_FOLDER)
         workflow_response = check_response.main_response_wf(rest_request=True)
         log.info("BlockMerger completed!!!")
         return jsonify(workflow_response)
