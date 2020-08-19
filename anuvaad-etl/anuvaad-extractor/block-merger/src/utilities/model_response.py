@@ -1,6 +1,7 @@
 from flask import jsonify
 import enum
 from src.utilities.utils import FileOperation 
+from src.services.main import DocumentStructure
 import config
 import time
 import logging
@@ -21,6 +22,38 @@ class Status(enum.Enum):
         "error": {
             "code" : "NO_INPUT_DATA",
             "message" : "DO not receive any input files."
+        }
+    }
+    ERR_FILE_NOT_FOUND = {
+        "status": "FAILED",
+        "state": "HTML-TO-JSON-PROCESSING",
+        "error": {
+            "code" : "FILENAME_ERROR",
+            "message" : "No Filename given in input files."
+        }
+    }
+    ERR_DIR_NOT_FOUND = {
+        "status": "FAILED",
+        "state": "HTML-TO-JSON-PROCESSING",
+        "error": {
+            "code" : "DIRECTORY_ERROR",
+            "message" : "There is no input/output Directory."
+        }
+    }
+    ERR_EXT_NOT_FOUND = {
+        "status": "FAILED",
+        "state": "HTML-TO-JSON-PROCESSING",
+        "error": {
+            "code" : "INPUT_FILE_TYPE_ERROR",
+            "message" : "This file type is not allowed. Currently, support only folder path which contains Html files."
+        }
+    }
+    ERR_locale_NOT_FOUND = {
+        "status": "FAILED",
+        "state": "HTML-TO-JSON-PROCESSING",
+        "error": {
+            "code" : "LOCALE_ERROR",
+            "message" : "No language input or unsupported language input."
         }
     }
     ERR_jobid_NOT_FOUND = {
@@ -99,7 +132,7 @@ class CustomResponse():
     def success_response(self, workflow_id, task_start_time, task_end_time, tool_name, step_order, output_json_data):
         self.status_code['workflowCode'] = workflow_id
         self.status_code['taskStarttime'] = task_start_time
-        self.status_code['taskendTime'] = task_end_time
+        self.status_code['taskEndTime'] = task_end_time
         self.status_code['output'] = output_json_data
         self.status_code['tool'] = tool_name
         self.status_code['stepOrder'] = step_order
@@ -109,11 +142,11 @@ class CustomResponse():
 # main class to generate success and error responses
 class CheckingResponse(object):
 
-    def __init__(self, json_data, task_id, task_starttime, block_merger):
+    def __init__(self, json_data, task_id, task_starttime, DOWNLOAD_FOLDER):
         self.json_data = json_data
         self.task_id = task_id
         self.task_starttime = task_starttime
-        self.block_merger = block_merger
+        self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
 
     # workflow related key value errors
     def wf_keyerror(self, jobid, workflow_id, tool_name, step_order):
@@ -137,9 +170,9 @@ class CheckingResponse(object):
         return response
 
     # calling service function to merge the blocks
-    def service_response(self, jobid, workflow_id, tool_name, step_order,input_data):
+    def service_response(self, jobid, workflow_id, tool_name, step_order,input_pdf_file):
         try:
-            output_data = self.block_merger.merge_blocks(input_data)
+            output_data = DocumentStructure(input_pdf_file)
             return output_data 
         except:
             response_custom = CustomResponse(Status.ERR_block_merger.value, jobid, self.task_id)
@@ -153,15 +186,36 @@ class CheckingResponse(object):
             response_error = file_ops.error_handler(response_custom.status_code, True)
             return response_error
         else:
-            output_result = self.service_response(jobid, workflow_id, tool_name, step_order,input_data)
-            print(type(output_result))
-            if not isinstance(output_result, list):
-                if isinstance(output_result, dict):
-                    return output_result
+            filename_response = list()
+            for i, item in enumerate(input_data):
+                input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                input_filepath = file_ops.input_path(input_filename) #
+                if input_filename == "" or input_filename is None:
+                    response_custom = CustomResponse(Status.ERR_FILE_NOT_FOUND.value, jobid, self.task_id)
+                    response_error = file_ops.error_handler(response_custom.status_code, True)
+                    return response_error
+                elif file_ops.check_file_extension(in_file_type) is False:
+                    response_custom = CustomResponse(Status.ERR_EXT_NOT_FOUND.value, jobid, self.task_id)
+                    response_error = file_ops.error_handler(response_custom.status_code, True)
+                    return response_error
+                elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
+                    response_custom = CustomResponse(Status.ERR_DIR_NOT_FOUND.value, jobid, self.task_id)
+                    response_error = file_ops.error_handler(response_custom.status_code, True)
+                    return response_error
+                elif in_locale == "" or in_locale is None:
+                    response_custom = CustomResponse(Status.ERR_locale_NOT_FOUND.value, jobid, self.task_id)
+                    response_error = file_ops.error_handler(response_custom.status_code, True)
+                    return response_error
+                else:
+                    output_result = self.service_response(jobid, workflow_id, tool_name, step_order,input_filename)
+                    if "errorID" in output_result.keys():
+                        return output_result
+                    output_filename_json = file_ops.writing_json_file(i, output_result, self.DOWNLOAD_FOLDER)
+                    file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
+                    filename_response.append(file_res)
         task_endtime = str(time.time()).replace('.', '')
         response_true = CustomResponse(Status.SUCCESS.value, jobid, self.task_id)
-        response_success = response_true.success_response(workflow_id, self.task_starttime, task_endtime, tool_name, step_order, output_result)
-        print(response_success)
+        response_success = response_true.success_response(workflow_id, self.task_starttime, task_endtime, tool_name, step_order, filename_response)
         return response_success
 
     # creating response for indiviual rest service list of files
@@ -172,7 +226,7 @@ class CheckingResponse(object):
             return response_error
         else:
             try:
-                output_result = self.block_merger.merge_blocks(input_data)
+                output_result = DocumentStructure(input_data['path'])
             except:
                 response = Status.ERR_block_merger.value
                 response_error = file_ops.error_handler(response, False)

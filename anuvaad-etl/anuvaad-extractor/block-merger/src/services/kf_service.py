@@ -14,6 +14,7 @@ log = logging.getLogger('file')
 # main function for async process
 def process_merger_kf():
     file_ops = FileOperation()
+    DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
     task_id = str("BM-" + str(time.time()).replace('.', ''))
     task_starttime = str(time.time()).replace('.', '')
     # instatiation of consumer for respective topic
@@ -38,7 +39,7 @@ def process_merger_kf():
                 task_id = str("BM-" + str(time.time()).replace('.', ''))
                 task_starttime = str(time.time()).replace('.', '')
                 block_merger = BlockMerging()
-                checking_response = CheckingResponse(data, task_id, task_starttime, block_merger)
+                checking_response = CheckingResponse(data, task_id, task_starttime, DOWNLOAD_FOLDER)
                 file_value_response = checking_response.main_response_wf()
                 try:
                     producer_merge = Producer(config.bootstrap_server) 
