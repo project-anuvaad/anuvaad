@@ -24,14 +24,14 @@ class FileConverter:
         tool_input = {
             "files": wf_input["input"]["files"]
         }
-        bm_input = {
+        fc_input = {
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
             "stepOrder": 0,
             "tool": tool_fileconverter,
             "input": tool_input
         }
-        return bm_input
+        return fc_input
 
     # Returns a json of the format accepted by File converter.
     def get_fc_input(self, task_output):

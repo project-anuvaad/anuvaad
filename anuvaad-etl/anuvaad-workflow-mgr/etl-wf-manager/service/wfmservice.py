@@ -8,6 +8,7 @@ from validator.wfmvalidator import WFMValidator
 from configs.wfmconfig import anu_etl_wfm_core_topic
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
 from anuvaad_auditor.loghandler import log_exception
 
 
@@ -45,6 +46,7 @@ class WFMService:
                 error = validator.get_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.")
                 client_output = self.get_wf_details(wf_input, None, True, error)
                 self.update_job_details(client_output, False)
+                log_error("initiate", "The workflow contains incompatible steps.", wf_input["jobID"], None)
                 return None
             producer.push_to_queue(first_tool_input, input_topic)
             client_output = self.get_wf_details(wf_input, None, False, None)

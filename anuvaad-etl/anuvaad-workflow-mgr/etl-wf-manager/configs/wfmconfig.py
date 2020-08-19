@@ -31,4 +31,11 @@ context_path = os.environ.get('ANU_ETL_WFM_CONTEXT_PATH', '/anuvaad-etl/wf-manag
 config_file_url = os.environ.get('ETL_WFM_CONFIG_FILE_URL',
             'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/config/example.yml')
 
+#module-wise-topics
+tokeniser = 'anuvaad-dp-tools-tokeniser-input', 'anuvaad-dp-tools-tokeniser-output'
+aligner = 'anuvaad-dp-tools-aligner-input-v2', 'anuvaad-dp-tools-aligner-output-v2'
+file_converter = 'anuvaad-dp-tools-fc-input', 'anuvaad-dp-tools-fc-output'
+pdftohtml = 'anuvaad-dp-tools-pdf-html-input', 'anuvaad-dp-tools-pdf-html-output'
+htmltojson = 'anuvaad-dp-tools-html-json-input', 'anuvaad-dp-tools-html-json-output'
+
 
