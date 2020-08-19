@@ -174,14 +174,14 @@ WorkflowConfigs:
       - name: BLOCK-MERGER
         description: extracts different blocks from a pdf file.
         kafka-input:
-        - topic: anuvaad-dp-tools-bm-input
+        - topic: anuvaad-dp-tools-block-merger-input
           partitions: 2
-          keys: anuvaad-dp-tools-bm-input-key-one, anuvaad-dp-tools-bm-input-key-two
+          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-bm-output
+        - topic: anuvaad-dp-tools-block-merger-output
           partitions: 2
-          keys: anuvaad-dp-tools-bm-output-key-one, anuvaad-dp-tools-bm-output-key-two
+          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
           assignment: round-robin
       interruptenable: true
       endState: true
@@ -212,14 +212,14 @@ WorkflowConfigs:
       - name: BLOCK-MERGER
         description: extracts different blocks from a pdf file.
         kafka-input:
-        - topic: anuvaad-dp-tools-bm-input
+        - topic: anuvaad-dp-tools-block-merger-input
           partitions: 2
-          keys: anuvaad-dp-tools-bm-input-key-one, anuvaad-dp-tools-bm-input-key-two
+          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-bm-output
+        - topic: anuvaad-dp-tools-block-merger-output
           partitions: 2
-          keys: anuvaad-dp-tools-bm-output-key-one, anuvaad-dp-tools-bm-output-key-two
+          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
           assignment: round-robin
       interruptenable: true
       endState: true
@@ -250,14 +250,14 @@ WorkflowConfigs:
       - name: BLOCK-MERGER
         description: extracts different blocks from a pdf file.
         kafka-input:
-        - topic: anuvaad-dp-tools-bm-input
+        - topic: anuvaad-dp-tools-block-merger-input
           partitions: 2
-          keys: anuvaad-dp-tools-bm-input-key-one, anuvaad-dp-tools-bm-input-key-two
+          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-bm-output
+        - topic: anuvaad-dp-tools-block-merger-output
           partitions: 2
-          keys: anuvaad-dp-tools-bm-output-key-one, anuvaad-dp-tools-bm-output-key-two
+          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
           assignment: round-robin
       interruptenable: true
       endState: false
