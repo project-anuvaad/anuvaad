@@ -18,7 +18,7 @@ TASK_STAT = 'FILE-CONVERTED'
 tok_input_topic = 'anuvaad-dp-tools-fc-input'
 kf_local_server = 'localhost:9092'
 tok_output_topic = 'anuvaad-dp-tools-fc-output'
-kafka_ip_host = 'KAFKA_SERVER_URL'
+kafka_ip_host = 'KAFKA_CLUSTER_DETAILS'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 
 
