@@ -2,8 +2,8 @@ import os
 
 
 #CROSS-MODULE-COMMON-CONFIGS
-kafka_bootstrap_server_host = os.environ.get('KAFKA_CLUSTER_DETAILS', 'localhost:9092')
-mongo_server_host = os.environ.get('MONGO_CLIENT', 'mongodb://localhost:27017/')
+kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
+mongo_server_host = os.environ.get('MONGO_SERVER_HOST', 'mongodb://localhost:27017/')
 file_upload_url = os.environ.get('FILE_UPLOAD_URL', 'https://auth.anuvaad.org/upload')
 
 
