@@ -53,5 +53,5 @@ TABLE_CONFIGS = {
     "extract_by"           : 'starting_point'
 }
 
-PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.15 ,'repeat_threshold' :0.95}
+PREPROCESS_CONFIGS = {'header_cut':0.0  , 'footer_cut' :0.0 ,'repeat_threshold' :0.95}
 DROP_TEXT          =  ['SUPERSCRIPT']
