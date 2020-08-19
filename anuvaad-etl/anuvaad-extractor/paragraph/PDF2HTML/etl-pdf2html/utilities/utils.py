@@ -4,12 +4,9 @@ from pathlib import Path
 import json
 import requests
 import re
-import logging
 import config
 from anuvaad_em.emservice import post_error
 from anuvaad_em.emservice import post_error_wf
-
-log = logging.getLogger('file')
 
 # file utilities class
 class FileOperation(object):

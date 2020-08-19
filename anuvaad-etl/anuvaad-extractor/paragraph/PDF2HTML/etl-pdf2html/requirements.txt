@@ -5,3 +5,4 @@ requests==2.24.0
 kafka-python==2.0.1
 elasticsearch==7.8.0
 anuvaad-em==0.0.2
+anuvaad-auditor==0.0.3

@@ -2,28 +2,37 @@ from flask_restful import Resource
 from flask.json import jsonify
 from flask import request
 from utilities.utils import FileOperation
-from utilities.model_response import CheckingResponse
+from resources.response_generation import Response
+from errors.error_validator import ValidationResponse
+from errors.errors_exception import FormatError
+from utilities.model_response import Status
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
 import config
-import logging
 import time
 
 file_ops = FileOperation()
 DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
-log = logging.getLogger('file')
 
 # rest request for pdf2html workflow service
 class Pdf2HtmlConversionWF(Resource):
 
     # reading json request and reurnung final response
     def post(self):
-        log.info("Pdf to HTML conversion started")
-        task_id = str("Pdf2Html-" + str(time.time()).replace('.', ''))
+        log_info("Resource SenTokenisePostWF", "Tokenisation service started", None)
+        task_id = str("TOK-" + str(time.time()).replace('.', ''))
         task_starttime = str(time.time()).replace('.', '')
         json_data = request.get_json(force = True)
-        checking_response = CheckingResponse(json_data, task_id, task_starttime, DOWNLOAD_FOLDER)
-        file_value_response = checking_response.main_response_wf(rest_request=True)
-        log.info("Conversion completed")
-        return jsonify(file_value_response)
+        try:
+            error_validator = ValidationResponse(DOWNLOAD_FOLDER)
+            if error_validator.format_error(json_data) is True:
+                response_gen = Response(json_data, DOWNLOAD_FOLDER)
+                response = response_gen.workflow_response(task_id, task_starttime)
+                log_info("Resource SenTokenisePostWF", "Tokenisation api response completed", None)
+                return jsonify(response)
+        except FormatError as e:
+            log_error("Resource SenTokenisePostWF", "Input json format is not correct or dict_key is missing", None, e)
+            return Status.ERR_request_input_format.value
 
 
 # rest request for pdf2html individual service
@@ -31,10 +40,15 @@ class Pdf2HtmlConversion(Resource):
 
     # reading json request and reurnung final response
     def post(self):
-        log.info("Individual operation of Pdf2Html service strated.")
+        log_info("Resource SenTokenisePost", "Tokenisation service started", None)
         json_data = request.get_json(force=True)
-        task_id, task_starttime = "", ""
-        checking_response = CheckingResponse(json_data, task_id, task_starttime, DOWNLOAD_FOLDER)
-        file_only_response = checking_response.main_response_files_only()
-        log.info("response successfully generated.")
-        return jsonify(file_only_response)
+        try:
+            error_validator = ValidationResponse(DOWNLOAD_FOLDER)
+            if error_validator.format_error(json_data) is True:
+                response_gen = Response(json_data, DOWNLOAD_FOLDER)
+                response = response_gen.nonwf_response()
+                log_info("Resource SenTokenisePost", "Tokenisation api response completed", None)
+                return jsonify(response)
+        except FormatError as e:
+            log_error("Resource SenTokenisePostWF", "Input json format is not correct or dict_key is missing", None, e)
+            return Status.ERR_request_input_format.value
