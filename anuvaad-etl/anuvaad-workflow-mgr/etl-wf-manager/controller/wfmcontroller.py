@@ -27,6 +27,7 @@ def initiate_workflow():
     error = validator.validate_input(data)
     if error is not None:
         return error, 400
+    data = add_headers(data, request)
     response = service.register_job(data)
     return response
 
@@ -40,9 +41,10 @@ def search_jobs(job_id):
 
 # REST endpoint to fetch workflow jobs.
 @wfmapp.route(context_path + '/v1/workflow/jobs/search/bulk', methods=["GET"])
-def search_all_jobs(job_id):
+def search_all_jobs():
     service = WFMService()
-    response = service.get_job_details(job_id)
+    req_criteria = request.get_json()
+    response = service.get_job_details_bulk(req_criteria)
     return jsonify(response)
 
 
@@ -51,6 +53,18 @@ def search_all_jobs(job_id):
 def health():
     response = {"code": "200", "status": "ACTIVE"}
     return jsonify(response)
+
+
+# Fetches required headers from the request and adds it to the body.
+def add_headers(data, api_request):
+    log.info(api_request.headers)
+    headers = {
+        "userID": api_request.headers["ad-userid"],
+        "sessionID": api_request.headers["ad-requestID"],
+        "receivedAt": eval(str(time.time()).replace('.', ''))
+    }
+    data["metadata"] = headers
+    return data
 
 
 # Log config

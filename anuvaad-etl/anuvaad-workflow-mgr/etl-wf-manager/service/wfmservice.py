@@ -133,7 +133,8 @@ class WFMService:
                 "files": wf_input["files"]
             }
             client_output = {"input": client_input, "jobID": wf_input["jobID"], "workflowCode": wf_input["workflowCode"],
-                "status": "STARTED", "state": "INITIATED", "startTime": eval(str(time.time()).replace('.', '')), "taskDetails": task_details}
+                "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
+                "startTime": eval(str(time.time()).replace('.', '')), "taskDetails": task_details}
         else:
             wf_details = wf_details[0]
             if task_output is not None:
@@ -152,17 +153,25 @@ class WFMService:
                 client_output["status"] = "FAILED"
                 client_output["endTime"] = eval(str(time.time()).replace('.', ''))
                 client_output["error"] = error
+            client_output["metadata"] = task_output["metadata"]
 
         return client_output
 
 
-    # Method to search jobs.
+    # Method to search jobs on job id
     def get_job_details(self, job_id):
-        return wfmrepo.search_job(job_id)
+        query = {"jobID": job_id}
+        return wfmrepo.search_job(query)
 
-
-    # Method to search jobs.
-    def get_job_details_bulk(self, criteria):
+    # Method to search jobs on multiple criteria.
+    def get_job_details_bulk(self, req_criteria):
+        criteria = {}
+        if req_criteria["jobIDs"] is not None:
+            if req_criteria["jobID"]:
+                criteria["jobID"] = {"$in": req_criteria["jobIDs"]}
+        if req_criteria["userID"] is not None:
+            if req_criteria["userIDs"]:
+                criteria["metadata.userID"] = {"$in": req_criteria["userIDs"]}
         return wfmrepo.search_job(criteria)
 
 

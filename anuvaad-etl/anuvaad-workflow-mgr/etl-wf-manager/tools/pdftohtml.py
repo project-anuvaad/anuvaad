@@ -1,6 +1,7 @@
 
 
 from configs.wfmconfig import tool_pdftohtml
+from configs.wfmconfig import tool_fileconverter
 
 
 class PDFTOHTML:
@@ -30,10 +31,34 @@ class PDFTOHTML:
             "workflowCode": wf_input["workflowCode"],
             "stepOrder": 0,
             "tool": tool_pdftohtml,
-            "input": tool_input
+            "input": tool_input,
+            "metadata": wf_input["metadata"]
         }
         return tok_input
 
     # Returns a json of the format accepted by Pdf2html based on the predecessor.
     def get_pdftohtml_input(self, task_output, predecessor):
-        return None
+        files = []
+        if predecessor == tool_fileconverter:
+            output = task_output["output"]
+            for op_file in output:
+                file = {
+                    "path": op_file["outputFile"],
+                    "locale": op_file["outputLocale"],
+                    "type": op_file["outputType"]
+                }
+                files.append(file)
+        else:
+            return None
+        tool_input = {
+            "files": files
+        }
+        bm_input = {
+            "jobID": task_output["jobID"],
+            "workflowCode": task_output["workflowCode"],
+            "stepOrder": task_output["stepOrder"],
+            "tool": tool_pdftohtml,
+            "input": tool_input,
+            "metadata": task_output["metadata"]
+        }
+        return bm_input

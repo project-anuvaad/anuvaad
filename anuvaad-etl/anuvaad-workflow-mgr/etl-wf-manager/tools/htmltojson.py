@@ -29,7 +29,8 @@ class HTMLTOJSON:
             "workflowCode": wf_input["workflowCode"],
             "stepOrder": 0,
             "tool": tool_htmltojson,
-            "input": tool_input
+            "input": tool_input,
+            "metadata": wf_input["metadata"]
         }
         return tok_input
 
@@ -55,6 +56,7 @@ class HTMLTOJSON:
             "workflowCode": task_output["workflowCode"],
             "stepOrder": task_output["stepOrder"],
             "tool": tool_htmltojson,
-            "input": tool_input
+            "input": tool_input,
+            "metadata": task_output["metadata"]
         }
         return tok_input

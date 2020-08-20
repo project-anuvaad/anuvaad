@@ -43,14 +43,13 @@ class Aligner:
             "workflowCode": wf_input["workflowCode"],
             "stepOrder": 0,
             "tool": tool_aligner,
-            "input": tool_input
+            "input": tool_input,
+            "metadata": wf_input["metadata"]
         }
         return tok_input
 
     # Returns a json of the format accepted by Aligner based on the predecessor.
     def get_aligner_input(self, task_output, predecessor):
-        source = {}
-        target = {}
         if predecessor == tool_tokeniser:
             source = {
                 "filepath": task_output["output"]["files"][0]["outputFile"],
@@ -74,6 +73,7 @@ class Aligner:
             "workflowCode": task_output["workflowCode"],
             "stepOrder": task_output["stepOrder"],
             "tool": tool_aligner,
-            "input": tool_input
+            "input": tool_input,
+            "metadata": task_output["metadata"]
         }
         return tok_input

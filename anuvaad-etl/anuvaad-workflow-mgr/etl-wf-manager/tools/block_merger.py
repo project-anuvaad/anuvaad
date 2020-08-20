@@ -29,7 +29,8 @@ class BlockMerger:
             "workflowCode": wf_input["workflowCode"],
             "stepOrder": 0,
             "tool": tool_blockmerger,
-            "input": tool_input
+            "input": tool_input,
+            "metadata": wf_input["metadata"]
         }
         return bm_input
 
@@ -55,6 +56,7 @@ class BlockMerger:
             "workflowCode": task_output["workflowCode"],
             "stepOrder": task_output["stepOrder"],
             "tool": tool_blockmerger,
-            "input": tool_input
+            "input": tool_input,
+            "metadata": task_output["metadata"]
         }
         return bm_input

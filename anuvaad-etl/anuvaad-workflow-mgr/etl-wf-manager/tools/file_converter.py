@@ -29,7 +29,8 @@ class FileConverter:
             "workflowCode": wf_input["workflowCode"],
             "stepOrder": 0,
             "tool": tool_fileconverter,
-            "input": tool_input
+            "input": tool_input,
+            "metadata": wf_input["metadata"]
         }
         return fc_input
 
