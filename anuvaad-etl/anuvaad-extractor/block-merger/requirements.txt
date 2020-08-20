@@ -22,3 +22,4 @@ urllib3==1.25.8
 uuid==1.30
 xmltodict==0.12.0
 #opencv_python==4.1.0.25  already installed in custom base image
+anuvaad-auditor==0.0.3
