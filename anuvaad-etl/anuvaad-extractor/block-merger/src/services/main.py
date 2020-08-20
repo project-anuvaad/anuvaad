@@ -112,7 +112,7 @@ def process_table_df(myDict, table_df):
     else:
         return None
 
-def get_page_dfs(pages,xml_dfs,working_dir,image_files,header_region , footer_region, multiple_pages):
+def get_page_dfs(pages,xml_dfs,working_dir,image_files,header_region , footer_region, multiple_pages,img_dfs):
     
     page_dfs     = []
     table_dfs    = []
@@ -121,7 +121,7 @@ def get_page_dfs(pages,xml_dfs,working_dir,image_files,header_region , footer_re
     for page_index in range(pages):
         table_image = os.path.join(working_dir, (page_num_correction(page_index , 3) + '.png'))
 
-        in_df, table_df, line_df = get_text_table_line_df(table_image, xml_dfs[page_index])
+        in_df, table_df, line_df = get_text_table_line_df(table_image, xml_dfs[page_index],img_dfs[page_index])
 
         h_df    = get_xml.get_hdf(in_df, image_files, config.DOCUMENT_CONFIGS, page_index,header_region , footer_region, multiple_pages)
         v_df    = get_xml.get_vdf(h_df, config.DOCUMENT_CONFIGS)
@@ -144,7 +144,7 @@ def DocumentStructure(file_name,base_dir=config.BASE_DIR):
     header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
     
     pages               = len(xml_dfs)
-    page_dfs, table_dfs = get_page_dfs(pages,xml_dfs,working_dir,image_files,header_region , footer_region, multiple_pages)
+    page_dfs, table_dfs = get_page_dfs(pages,xml_dfs,working_dir,image_files,header_region , footer_region, multiple_pages,img_dfs)
 
     response = {'result':[]}
     for page_index in range(pages):

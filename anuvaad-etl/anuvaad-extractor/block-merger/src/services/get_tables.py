@@ -96,10 +96,18 @@ def extract_and_delete_region(page_df, table_df):
     return page_df, table_df
 
 
-def get_text_table_line_df(table_image, in_df):
-    if config.TABLE_CONFIGS['remove_background']:
-        table_image = cv2.imread(table_image, 0)
-        table_image = (table_image > config.TABLE_CONFIGS['background_threshold']).astype(np.uint8)
+def get_text_table_line_df(table_image, in_df,img_df):
+    # if config.TABLE_CONFIGS['remove_background']:
+    #     table_image = cv2.imread(table_image, 0)
+    #     table_image = (table_image > config.TABLE_CONFIGS['background_threshold']).astype(np.uint8)
+
+    table_image = cv2.imread(table_image, 0)
+
+    if len(img_df) > 0:
+        for index, row in img_df.iterrows():
+            row_bottom = row['text_top'] + row['text_height']
+            row_right = row['text_left'] + row['text_width']
+            table_image[row['text_top']: row_bottom, row['text_left']: row_right] = 255
     tables = TableRepositories(table_image).response['response']['tables']
     Rects = RectRepositories(table_image)
     lines, _ = Rects.get_tables_and_lines()
