@@ -8,6 +8,9 @@ from src.services.service import BlockMerging
 from src.services.left_right_on_block import left_right_margin
 from src.services.preprocess import prepocess_pdf_regions
 from src.services.get_tables import page_num_correction , get_text_table_line_df
+from anuvaad_auditor.loghandler import log_exception
+from anuvaad_auditor.loghandler import log_info
+from src.errors.errors_exception import ServiceError
 
 
 def process_page_blocks(page_df, configs,block_configs, debug=False):
@@ -134,27 +137,28 @@ def get_page_dfs(pages,xml_dfs,working_dir,image_files,header_region , footer_re
 
     return page_dfs, table_dfs
 
-def DocumentStructure(file_name,base_dir=config.BASE_DIR):
+def DocumentStructure(jobid, file_name, base_dir=config.BASE_DIR):
+    try:
+        img_dfs,xml_dfs, image_files, page_width, page_height,working_dir  = get_xml.xml_dfs(base_dir, file_name)
+        multiple_pages = False
+        if len(xml_dfs) > 1:
+            multiple_pages =True
+
+        header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
     
-    img_dfs,xml_dfs, image_files, page_width, page_height,working_dir  = get_xml.xml_dfs(base_dir, file_name)
-    multiple_pages = False
-    if len(xml_dfs) > 1:
-        multiple_pages =True
+        pages               = len(xml_dfs)
+        page_dfs, table_dfs = get_page_dfs(pages,xml_dfs,working_dir,image_files,header_region , footer_region, multiple_pages,img_dfs)
 
-    header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
-    
-    pages               = len(xml_dfs)
-    page_dfs, table_dfs = get_page_dfs(pages,xml_dfs,working_dir,image_files,header_region , footer_region, multiple_pages,img_dfs)
+        response = {'result':[]}
+        for page_index in range(pages):
+            img_df     = img_dfs[page_index]
+            page_df    = page_dfs[page_index]
+            table_df   = table_dfs[page_index]
 
-    response = {'result':[]}
-    for page_index in range(pages):
-        img_df     = img_dfs[page_index]
-        page_df    = page_dfs[page_index]
-        table_df   = table_dfs[page_index]
-
-        final_json = get_response(page_df, img_df,table_df, page_index, page_width, page_height)
-        response['result'].append(final_json)
-
-    return response
-
-
+            final_json = get_response(page_df, img_df,table_df, page_index, page_width, page_height)
+            response['result'].append(final_json)
+        log_info("DocumentStructure","successfully received blocks in json response", jobid)
+        return response
+    except:
+        log_exception("DocumentStructure","Error occured during pdf to blocks conversion", jobid, None)
+        raise ServiceError(400, "documentstructure failed. Something went wrong during pdf to blocks conversion.")
