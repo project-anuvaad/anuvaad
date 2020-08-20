@@ -19,7 +19,7 @@ def xml_dfs(base_dir, filename):
     #os.system('mkdir -p {0}'.format(input_dir))
     if not os.path.exists(output_dir):
         os.system('mkdir -p {0}'.format(output_dir))
-    print("base", base_dir, "filename", filename)
+    
     pdf_filepath   = os.path.join(base_dir, filename)
     working_dir    = os.path.join(output_dir, os.path.splitext(filename)[0]+'_'+str(uuid.uuid1()))
     
