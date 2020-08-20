@@ -1,5 +1,6 @@
 from kafka import KafkaConsumer
 from json import loads
+from errors.errors_exception import KafkaConsumerError
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
@@ -16,7 +17,6 @@ class Consumer(object):
                                     enable_auto_commit=True, value_deserializer=lambda x: loads(x.decode('utf-8')))
             log_info("consumer_instantiate", "Consumer returned for topic: %s"%(self.topic_name), None)
             return consumer
-        except Exception as e:
-            log_exception("consumer_instantiate", "error occured for consumer topic: %s"%(self.topic_name), None, e)
-
-
+        except:
+            log_exception("consumer_instantiate", "error occured for consumer topic: %s"%(self.topic_name), None, None)
+            raise KafkaConsumerError(400, "Can not connect to consumer.")
