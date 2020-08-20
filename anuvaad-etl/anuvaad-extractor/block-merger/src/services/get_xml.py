@@ -1,6 +1,5 @@
 import os
 import uuid 
-from pathlib import Path
 from src.utilities.xml_utils import (extract_image_paths_from_pdf, extract_xml_from_digital_pdf,
                        create_directory, read_directory_files, get_subdirectories,
                        get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered,
@@ -20,9 +19,9 @@ def xml_dfs(base_dir, filename):
     #os.system('mkdir -p {0}'.format(input_dir))
     if not os.path.exists(output_dir):
         os.system('mkdir -p {0}'.format(output_dir))
-
-    pdf_filepath   = Path(os.path.join(base_dir, filename))
-    working_dir    = Path(os.path.join(output_dir, os.path.splitext(filename)[0]+'_'+str(uuid.uuid1())))
+    print("base", base_dir, "filename", filename)
+    pdf_filepath   = os.path.join(base_dir, filename)
+    working_dir    = os.path.join(output_dir, os.path.splitext(filename)[0]+'_'+str(uuid.uuid1()))
     
     ret            = create_directory(working_dir)
 
