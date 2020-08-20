@@ -10,6 +10,8 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import time
 import config
+import logging
+from logging.config import dictConfig
 
 # main function for async process
 def process_pdf_kf():
@@ -44,3 +46,36 @@ def process_pdf_kf():
         response_custom['message'] = e.message      
         file_ops.error_handler(response_custom, "KAFKA_PRODUCER_ERROR", True)
         log_exception("process_pdf_kf", "response send to topic %s"%(config.output_topic), response_custom['jobID'], e)
+
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] {%(filename)s:%(lineno)d} %(threadName)s %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {
+        'info': {
+            'class': 'logging.FileHandler',
+            'level': 'DEBUG',
+            'formatter': 'default',
+            'filename': 'info.log'
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'formatter': 'default',
+            'stream': 'ext://sys.stdout',
+        }
+    },
+    'loggers': {
+        'file': {
+            'level': 'DEBUG',
+            'handlers': ['info', 'console'],
+            'propagate': ''
+        }
+    },
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['info', 'console']
+    }
+})
