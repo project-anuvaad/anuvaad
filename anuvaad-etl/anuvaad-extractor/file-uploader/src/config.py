@@ -12,7 +12,7 @@ ENABLE_CORS = False
 #folders and file path
 download_folder = 'upload'
 
-ALLOWED_FILE_TYPES = ['application/msword','application/pdf','image/x-ms-bmp','image/jpeg','image/jpg','image/png','text/plain','application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+ALLOWED_FILE_TYPES = ['application/octet-stream','application/msword','application/pdf','image/x-ms-bmp','image/jpeg','image/jpg','image/png','text/plain','application/vnd.openxmlformats-officedocument.wordprocessingml.document']
 
 
 #mongo
