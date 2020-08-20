@@ -11,37 +11,16 @@ from anuvaad_auditor.loghandler import log_exception
 import time
 import config
 
-# validating consumer is it working or not
-def consumer_validator():
-    try:
-        consumer_class = Consumer(config.input_topic, config.bootstrap_server)
-        consumer = consumer_class.consumer_instantiate()
-        log_info("consumer_validator","--- consumer running -----", None)
-        return consumer
-    except:
-        log_exception("consumer_validator", "error in kafka opertation while listening to consumer on topic %s"%(config.input_topic), None, None)
-        raise KafkaConsumerError(400, "Can not connect to consumer.")
-
-# pushing output to output kafka queue
-def push_output(producer, topic_name, output, jobid, task_id):
-    try:
-        producer.push_data_to_queue(topic_name, output)
-        log_info("push_output", "producer flushed value on topic %s"%(topic_name), jobid)
-    except:
-        response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-        log_exception("push_output", "Response can't be pushed to queue %s"%(topic_name), jobid, None)
-        raise KafkaProducerError(response_custom, "data Not pushed to queue: %s"%(topic_name))
-
 # main function for async process
 def process_tokenization_kf():
     file_ops = FileOperation()
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
     task_id = str("TOK-" + str(time.time()).replace('.', ''))
     task_starttime = str(time.time()).replace('.', '')
-    producer_tok = Producer(config.bootstrap_server)
     # instatiation of consumer for respective topic
     try:
-        consumer = consumer_validator()
+        consumer_class = Consumer(config.input_topic, config.bootstrap_server)
+        consumer = consumer_class.consumer_instantiate()
         log_info("process_tokenization_kf", "trying to receive value from consumer ", None)
         for msg in consumer:
             data = msg.value
@@ -51,9 +30,8 @@ def process_tokenization_kf():
             response_gen = Response(data, DOWNLOAD_FOLDER)
             file_value_response = response_gen.workflow_response(task_id, task_starttime)
             if "errorID" not in file_value_response.keys():
-                producer = Producer(config.bootstrap_server)
-                push_output(producer, config.output_topic, file_value_response, jobid, task_id)
-                log_info("process_tokenization_kf", "response send to topic %s"%(config.output_topic), None)
+                producer = Producer()
+                producer.push_data_to_queue(config.output_topic, file_value_response, jobid, task_id)
             else:
                 log_info("process_tokenization_kf", "error send to error handler", jobid)
     except KafkaConsumerError as e:
