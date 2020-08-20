@@ -4,6 +4,7 @@ from kafka import KafkaProducer
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from utilities.model_response import Status
+from errors.errors_exception import KafkaProducerError
 from utilities.model_response import CustomResponse
 import config
 
