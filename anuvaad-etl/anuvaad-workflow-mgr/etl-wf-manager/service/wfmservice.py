@@ -7,6 +7,7 @@ from repository.wfmrepository import WFMRepository
 from validator.wfmvalidator import WFMValidator
 from configs.wfmconfig import anu_etl_wfm_core_topic
 from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.errorhandler import post_error_wf
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 from anuvaad_auditor.loghandler import log_exception
@@ -54,7 +55,8 @@ class WFMService:
             log_info("initiate", "Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"], wf_input["jobID"])
         except Exception as e:
             log_exception("initiate", "Exception while initiating workflow: ", wf_input["jobID"], e)
-            post_error("WFLOW_INITIATE_ERROR", "Exception while initiating workflow: " + str(e), None)
+            post_error_wf("WFLOW_INITIATE_ERROR", "Exception while initiating workflow: " + str(e),
+                          wf_input["jobID"], None, None, None, None)
 
     # This method manages the workflow by tailoring the predecessor and successor tools for the workflow.
     def manage(self, task_output):
@@ -90,7 +92,8 @@ class WFMService:
                 self.update_job_details(client_output, False)
         except Exception as e:
             log_exception("manage", "Exception while managing the workflow: ", task_output["jobID"], e)
-            post_error("WFLOW_MANAGE_ERROR", "Exception while managing workflow: " + str(e), None)
+            post_error_wf("WFLOW_MANAGE_ERROR", "Exception while managing workflow: " + str(e),
+                          task_output["jobID"], None, None, None, None)
 
 
     # This method computes the input to the next step based on the step just completed.
@@ -153,7 +156,6 @@ class WFMService:
                 client_output["status"] = "FAILED"
                 client_output["endTime"] = eval(str(time.time()).replace('.', ''))
                 client_output["error"] = error
-            client_output["metadata"] = task_output["metadata"]
 
         return client_output
 

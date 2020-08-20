@@ -57,7 +57,6 @@ def health():
 
 # Fetches required headers from the request and adds it to the body.
 def add_headers(data, api_request):
-    log.info(api_request.headers)
     headers = {
         "userID": api_request.headers["ad-userid"],
         "sessionID": api_request.headers["ad-requestID"],
