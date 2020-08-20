@@ -19,8 +19,8 @@ class Pdf2HtmlConversionWF(Resource):
 
     # reading json request and reurnung final response
     def post(self):
-        log_info("Resource SenTokenisePostWF", "Tokenisation service started", None)
-        task_id = str("TOK-" + str(time.time()).replace('.', ''))
+        log_info("Resource Pdf2HtmlConversionWF", "pdf2html service started", None)
+        task_id = str("PDF2HTML-" + str(time.time()).replace('.', ''))
         task_starttime = str(time.time()).replace('.', '')
         json_data = request.get_json(force = True)
         try:
@@ -28,10 +28,10 @@ class Pdf2HtmlConversionWF(Resource):
             if error_validator.format_error(json_data) is True:
                 response_gen = Response(json_data, DOWNLOAD_FOLDER)
                 response = response_gen.workflow_response(task_id, task_starttime)
-                log_info("Resource SenTokenisePostWF", "Tokenisation api response completed", None)
+                log_info("Resource Pdf2HtmlConversionWF", "pdf2html api response completed", None)
                 return jsonify(response)
         except FormatError as e:
-            log_error("Resource SenTokenisePostWF", "Input json format is not correct or dict_key is missing", None, e)
+            log_error("Resource Pdf2HtmlConversionWF", "Input json format is not correct or dict_key is missing", None, e)
             return Status.ERR_request_input_format.value
 
 
@@ -40,15 +40,15 @@ class Pdf2HtmlConversion(Resource):
 
     # reading json request and reurnung final response
     def post(self):
-        log_info("Resource SenTokenisePost", "Tokenisation service started", None)
+        log_info("Resource Pdf2HtmlConversion", "pdf2html service started", None)
         json_data = request.get_json(force=True)
         try:
             error_validator = ValidationResponse(DOWNLOAD_FOLDER)
             if error_validator.format_error(json_data) is True:
                 response_gen = Response(json_data, DOWNLOAD_FOLDER)
                 response = response_gen.nonwf_response()
-                log_info("Resource SenTokenisePost", "Tokenisation api response completed", None)
+                log_info("Resource Pdf2HtmlConversion", "pdf2html api response completed", None)
                 return jsonify(response)
         except FormatError as e:
-            log_error("Resource SenTokenisePostWF", "Input json format is not correct or dict_key is missing", None, e)
+            log_error("Resource Pdf2HtmlConversion", "Input json format is not correct or dict_key is missing", None, e)
             return Status.ERR_request_input_format.value

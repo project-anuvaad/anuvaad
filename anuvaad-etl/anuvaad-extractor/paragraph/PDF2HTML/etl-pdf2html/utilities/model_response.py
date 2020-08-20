@@ -6,15 +6,15 @@ import enum
 class Status(enum.Enum):
     SUCCESS = {
         "status": "SUCCESS",
-        "state": "SENTENCE-TOKENISED"
+        "state": "PDF-HTML-PROCESSED"
     }
     ERR_STATUS = {
         "status": "FAILED",
-        "state": "SENTENCE-TOKENISED",
+        "state": "PDF-HTML-PROCESSING",
     }
     ERR_request_input_format = {
         "status" : "FAILED",
-        "state" : "SENTENCE-TOKENISED",
+        "state" : "PDF-HTML-PROCESSING",
         "code" : "REQUEST_FORMAT_ERROR",
         "message" : "Json provided by user is not in proper format."
     }

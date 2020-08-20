@@ -1,11 +1,11 @@
-from utilities.model_response import CustomResponse
-from utilities.model_response import Status
-from utilities.utils import FileOperation
-from kafka_module.producer import Producer
-from kafka_module.consumer import Consumer
-from resources.response_generation import Response
-from errors.errors_exception import KafkaConsumerError
-from errors.errors_exception import KafkaProducerError
+from src.utilities.model_response import CustomResponse
+from src.utilities.model_response import Status
+from src.utilities.utils import FileOperation
+from src.kafka_module.producer import Producer
+from src.kafka_module.consumer import Consumer
+from src.resources.response_gen import Response
+from src.errors.errors_exception import KafkaConsumerError
+from src.errors.errors_exception import KafkaProducerError
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import time
@@ -14,19 +14,19 @@ import logging
 from logging.config import dictConfig
 
 # main function for async process
-def process_pdf_kf():
+def process_merger_kf():
     file_ops = FileOperation()
     DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
-    task_id = str("PDF2HTML-" + str(time.time()).replace('.', ''))
+    task_id = str("BM-" + str(time.time()).replace('.', ''))
     task_starttime = str(time.time()).replace('.', '')
     # instatiation of consumer for respective topic
     try:
         consumer_class = Consumer(config.input_topic, config.bootstrap_server)
         consumer = consumer_class.consumer_instantiate()
-        log_info("process_pdf_kf", "trying to receive value from consumer ", None)
+        log_info("process_merger_kf", "trying to receive value from consumer ", None)
         for msg in consumer:
             data = msg.value
-            task_id = str("PDF2HTML-" + str(time.time()).replace('.', ''))
+            task_id = str("BM-" + str(time.time()).replace('.', ''))
             task_starttime = str(time.time()).replace('.', '')
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             response_gen = Response(data, DOWNLOAD_FOLDER)
@@ -35,7 +35,7 @@ def process_pdf_kf():
                 producer = Producer()
                 producer.push_data_to_queue(config.output_topic, file_value_response, jobid, task_id)
             else:
-                log_info("process_pdf_kf", "error send to error handler", jobid)
+                log_info("process_merger_kf", "error send to error handler", jobid)
     except KafkaConsumerError as e:
         response_custom = CustomResponse(Status.ERR_STATUS.value, None, None)
         response_custom['message'] = str(e)
