@@ -156,6 +156,7 @@ class WFMService:
                 client_output["status"] = "FAILED"
                 client_output["endTime"] = eval(str(time.time()).replace('.', ''))
                 client_output["error"] = error
+            client_output["metadata"] = wf_details["metadata"]
 
         return client_output
 
