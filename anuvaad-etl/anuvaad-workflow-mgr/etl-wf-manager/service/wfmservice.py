@@ -161,10 +161,11 @@ class WFMService:
         return client_output
 
 
-    # Method to search jobs on job id
+    # Method to search jobs on job id for internal logic.
     def get_job_details(self, job_id):
         query = {"jobID": job_id}
-        return wfmrepo.search_job(query)
+        exclude = {'_id': False}
+        return wfmrepo.search_job(query, exclude)
 
     # Method to search jobs on multiple criteria.
     def get_job_details_bulk(self, req_criteria):
@@ -176,7 +177,14 @@ class WFMService:
             if req_criteria["userIDs"]:
                 criteria["metadata.userID"] = {"$in": req_criteria["userIDs"]}
 
-        return wfmrepo.search_job(criteria)
+        exclude = {'_id': False}
+        if 'taskDetails' not in req_criteria.keys():
+            exclude["taskDetails"] = False
+        else:
+            if req_criteria["taskDetails"] is False:
+                exclude["taskDetails"] = False
+
+        return wfmrepo.search_job(criteria, exclude)
 
 
     # This function is called upon receiving an error on the error topic.

@@ -34,9 +34,9 @@ class WFMRepository:
         )
 
     # Searches the object into mongo collection
-    def search_job(self, query):
+    def search_job(self, query, exclude):
         col = self.instantiate()
-        res = col.find(query, {'_id': False})
+        res = col.find(query, exclude)
         result = []
         for record in res:
             result.append(record)
