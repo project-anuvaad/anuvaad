@@ -168,12 +168,13 @@ class WFMService:
     # Method to search jobs on multiple criteria.
     def get_job_details_bulk(self, req_criteria):
         criteria = {}
-        if req_criteria["jobIDs"] is not None:
-            if req_criteria["jobID"]:
+        if 'jobIDs' in req_criteria.keys():
+            if req_criteria["jobIDs"]:
                 criteria["jobID"] = {"$in": req_criteria["jobIDs"]}
-        if req_criteria["userID"] is not None:
+        if 'userIDs' in req_criteria.keys():
             if req_criteria["userIDs"]:
                 criteria["metadata.userID"] = {"$in": req_criteria["userIDs"]}
+
         return wfmrepo.search_job(criteria)
 
 

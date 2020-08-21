@@ -41,14 +41,3 @@ class WFMRepository:
         for record in res:
             result.append(record)
         return result
-
-    # Searches the object into mongo collection
-    def search_job_bulk(self, job_id):
-        col = self.instantiate()
-        query = {"jobID" : job_id}
-        res = col.find(query, {'_id': False})
-        result = []
-
-        for record in res:
-            result.append(record)
-        return result
