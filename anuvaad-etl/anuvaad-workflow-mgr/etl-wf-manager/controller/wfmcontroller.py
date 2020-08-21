@@ -40,7 +40,7 @@ def search_jobs(job_id):
     return jsonify(response)
 
 # REST endpoint to fetch workflow jobs.
-@wfmapp.route(context_path + '/v1/workflow/jobs/search/bulk', methods=["GET"])
+@wfmapp.route(context_path + '/v1/workflow/jobs/search/bulk', methods=["POST"])
 def search_all_jobs():
     service = WFMService()
     req_criteria = request.get_json()
