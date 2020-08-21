@@ -25,8 +25,7 @@ class AlignWflowService:
         wfresponse = {"taskID": object_in["taskID"], "jobID": object_in["jobID"], "input": result["input"],
                       "output": result["output"], "workflowCode": object_in["workflowCode"],
                       "stepOrder": object_in["stepOrder"], "status": "SUCCESS", "state": "SENTENCES-ALIGNED",
-                      "taskStartTime": result["startTime"], "taskEndTime": result["endTime"],
-                      "metadata": object_in["metadata"]}
+                      "taskStartTime": result["startTime"], "taskEndTime": result["endTime"]}
 
         return wfresponse
 
