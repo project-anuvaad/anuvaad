@@ -4,6 +4,7 @@ from src.utilities.table.line import  RectRepositories
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 import os
+import cv2
 
 def page_num_correction(file_index, num_size=None):
     padding = '0'
@@ -108,8 +109,8 @@ def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs):
 
         if len(img_df) > 0:
             for index, row in img_df.iterrows():
-                row_bottom = row['text_top'] + row['text_height']
-                row_right = row['text_left'] + row['text_width']
+                row_bottom = int(row['text_top']) + int(row['text_height'])
+                row_right  = int(row['text_left']) + int(row['text_width'])
                 table_image[row['text_top']: row_bottom, row['text_left']: row_right] = 255
 
         try :

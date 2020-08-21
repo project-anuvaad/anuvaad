@@ -5,10 +5,12 @@ import config
 from src.services import get_xml
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
+from src.errors.errors_exception import ServiceError
+from anuvaad_auditor.loghandler import log_exception
 from src.services.preprocess import prepocess_pdf_regions
 from src.services.get_tables import  get_text_table_line_df
 from src.services.child_text_unify_to_parent import ChildTextUnify
-from src.services.get_response import process_image_df,  process_table_df, df_to_json
+from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df
 
 def doc_pre_processing(filename):
     '''

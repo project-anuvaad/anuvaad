@@ -28,23 +28,24 @@ def create_pdf_processing_paths(filename):
     ret         = create_directory(data_dir)
     if ret == False:
         #logging.error('directory creation failed :%s' % (data_dir))
-        log_info('directory creation failed :%s' % (data_dir))
+        log_info('Service get_xml','data directory creation failed', None)
         return False
     
     output_dir  = Path(os.path.join(data_dir, 'output'))
     ret         = create_directory(output_dir)
     if ret == False:
         #logging.error('directory creation failed :%s' % (output_dir))
-        log_info('directory creation failed :%s' % (output_dir))
+        log_info('Service get_xml','output directory creation failed', None)
         return False
     working_dir = Path(os.path.join(output_dir, os.path.splitext(filename)[0]+'_'+str(uuid.uuid1())))
     ret         = create_directory(working_dir)
     if ret == False:
         #logging.error('directory creation failed :%s' % (working_dir))
-        log_info('directory creation failed :%s' % (working_dir))
+        log_info('Service get_xml','working directory creation failed', None)
         return False
     #logging.debug('created processing directories successfully')
-    log_info('created processing directories successfully')
+    log_info('Service get_xml','created processing directories successfully', None)
+    
     return working_dir, True
 
 def extract_pdf_metadata(filename, working_dir):
@@ -70,8 +71,8 @@ def extract_pdf_metadata(filename, working_dir):
     bg_files            = read_directory_files(pdf_bg_image_dir, pattern='*.png')
     #logging.debug("Extracted xml, background images of file: %s" % (filename))
     #logging.debug('Extraction time (%f) average extraction time (%f)' % (extraction_time, extraction_time/len(bg_files)))
-    log_info("Extracted xml, background images of file: %s" % (filename))
-    log_info('Extraction time (%f) average extraction time (%f)' % (extraction_time, extraction_time/len(bg_files)))
+    log_info('Service get_xml','Successfully extracted xml, background images of file:', None)
+    
     return xml_files,  bg_files
 
 def process_input_pdf(filename):
@@ -84,13 +85,13 @@ def process_input_pdf(filename):
     working_dir, ret = create_pdf_processing_paths(filename)
     if ret == False:
         #logging.error('extract_pdf_processing_paths failed')
-        log_info('extract_pdf_processing_paths failed')
+        log_info('Service get_xml','extract_pdf_processing_paths failed', None)
         return False
     
     xml_file ,bg_files   = extract_pdf_metadata(filename, working_dir)
     if xml_file == None or len(xml_file)==0:
         #logging.error('cannot extract metadata from file %s' % (filename))
-        log_info('cannot extract xml metadata from pdf file %s' % (filename))
+        log_info('Service get_xml','cannot extract xml metadata from pdf file', None)
         return False
     '''
         - parse xml to create df per page for text and table block.
