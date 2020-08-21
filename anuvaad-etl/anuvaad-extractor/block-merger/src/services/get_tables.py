@@ -4,6 +4,10 @@ import numpy as np
 import config
 from src.utilities.table.table import TableRepositories
 from src.utilities.table.line import  RectRepositories
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
+
+
 
 def page_num_correction(file_index, num_size=None):
     padding = '0'
@@ -100,17 +104,32 @@ def get_text_table_line_df(table_image, in_df,img_df):
     # if config.TABLE_CONFIGS['remove_background']:
     #     table_image = cv2.imread(table_image, 0)
     #     table_image = (table_image > config.TABLE_CONFIGS['background_threshold']).astype(np.uint8)
+    log_info("Service TableExtractor", "TableExtractor service started", None)
 
-    table_image = cv2.imread(table_image, 0)
+
+    try :
+        table_image = cv2.imread(table_image, 0)
+    except Exception as e :
+        log_error("Service TableExtractor", "Error in loading background html image", None, e)
 
     if len(img_df) > 0:
         for index, row in img_df.iterrows():
             row_bottom = row['text_top'] + row['text_height']
             row_right = row['text_left'] + row['text_width']
             table_image[row['text_top']: row_bottom, row['text_left']: row_right] = 255
-    tables = TableRepositories(table_image).response['response']['tables']
-    Rects = RectRepositories(table_image)
-    lines, _ = Rects.get_tables_and_lines()
+
+    try :
+        tables = TableRepositories(table_image).response['response']['tables']
+    except  Exception as e :
+        log_error("Service TableExtractor", "Error in finding tables", None, e)
+
+    try :
+        Rects = RectRepositories(table_image)
+        lines, _ = Rects.get_tables_and_lines()
+    except  Exception as e :
+        log_error("Service TableExtractor", "Error in finding lines", None, e)
+
+
 
     line_df = get_line_df(lines)
     tables_df = get_table_df(tables)
