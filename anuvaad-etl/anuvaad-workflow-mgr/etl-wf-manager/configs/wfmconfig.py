@@ -38,4 +38,9 @@ file_converter = 'anuvaad-dp-tools-fc-input', 'anuvaad-dp-tools-fc-output'
 pdftohtml = 'anuvaad-dp-tools-pdf-html-input', 'anuvaad-dp-tools-pdf-html-output'
 htmltojson = 'anuvaad-dp-tools-html-json-input', 'anuvaad-dp-tools-html-json-output'
 
+#general-log-messages
+log_msg_start = " process started."
+log_msg_end = " process ended."
+log_msg_error = " has encountered an exception, job ended."
+
 
