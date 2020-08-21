@@ -29,4 +29,4 @@ class Producer(object):
         except:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             log_exception("push_data_to queue", "Response can't be pushed to queue %s"%(topic_name), jobid, None)
-            raise KafkaProducerError(response_custom, "data Not pushed to queue: %s"%(topic_name))
+            raise KafkaProducerError(response_custom.status_code, "data Not pushed to queue: %s"%(topic_name))
