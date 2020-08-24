@@ -2,163 +2,123 @@ import os
 import pandas as pd
 import base64
 import config
-
 from src.services import get_xml
-from src.services.service import BlockMerging
-from src.services.left_right_on_block import left_right_margin
-from src.services.preprocess import prepocess_pdf_regions
-from src.services.get_tables import page_num_correction , get_text_table_line_df
-from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
 from src.errors.errors_exception import ServiceError
+from anuvaad_auditor.loghandler import log_exception
+from src.services.preprocess import prepocess_pdf_regions
+from src.services.get_tables import  get_text_table_line_df
+from src.services.child_text_unify_to_parent import ChildTextUnify
+from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df
 
+def doc_pre_processing(filename):
+    '''
+        Preprocessing on input pdf to get:
+            - xml files
+            - images 
+            - background images 
+            - header and footer regions
 
-def process_page_blocks(page_df, configs,block_configs, debug=False):
+    '''
+    log_info("Service main", "document preprocessing started  ===>", None)
 
-    cols        = page_df.columns.values.tolist()
-    df          = pd.DataFrame(columns=cols)
-    block_index = 0
-    for index, row in page_df.iterrows():
-        if row['children'] == None:
-            df = df.append(page_df.iloc[index])
-        else:
-            dfs = process_block(page_df.iloc[index], block_configs)
-            df  = df.append(dfs)
-    return df
+    img_dfs,bg_files,xml_dfs, page_width, page_height,working_dir  = get_xml.process_input_pdf(filename)
+    multiple_pages = False
+    pages          = len(xml_dfs)
+    if pages > 1:
+        multiple_pages =True
+    try:
+        header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
+    except Exception as e :
+            log_error("Service prepocess", "Error in finding footer and header region", None, e)
 
+    log_info("Service main", "document preprocessing successfully completed", None)
 
-def process_block(children, block_configs):
+    return img_dfs,bg_files,xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height
+
+def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages):
     
-    dfs = left_right_margin(children, block_configs)
-    return dfs
+    '''
+        Document structure analysis to get:
+            - in_dfs
+            - table_dfs
+            - line_dfs
+            - h_dfs
+            - v_dfs
+            - p_dfs
+            - text_block_dfs
 
-def get_response(p_df,img_df,table_df,page_no,page_width,page_height):
+    '''
+    log_info("Service main", "document structure analysis started  ===>", None)
+    
+    text_merger = ChildTextUnify()
+    in_dfs, table_dfs, line_dfs = get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs)
+    h_dfs          = get_xml.get_hdfs(pages, in_dfs, config.DOCUMENT_CONFIGS,header_region , footer_region, multiple_pages)
+    v_dfs          = get_xml.get_vdfs(pages, h_dfs, config.DOCUMENT_CONFIGS)
+    p_dfs          = get_xml.get_pdfs(pages, v_dfs, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)
+    text_block_dfs = text_merger.unify_child_text_blocks(pages, p_dfs, config.DROP_TEXT)
+
+    log_info("Service main", "document structure analysis successfully completed", None)
+
+    return text_block_dfs, table_dfs, line_dfs
+
+def doc_structure_response(pages,img_dfs, text_block_dfs,table_dfs,line_dfs,page_width, page_height):
+
+    '''
+        To build required response in json format;
+            -  page level information:
+                    - page_no
+                    - page_width
+                    - page_height
+                    - images
+                    - tables
+                    - text_blocks
+            -  convert dataframe into proper json format:
+                    - img_df
+                    - text_df
+                    - tabel_df
+    '''
+    log_info("Service main", "document structure response started  ===>", None)
+
+    response = { 'result' : [] }
+    for page_index in range(pages):
+        img_df     = img_dfs[page_index]
+        text_df    = text_block_dfs[page_index]
+        table_df   = table_dfs[page_index]
+        line_df    = line_dfs[page_index]
+        page_json  = response_per_page(text_df, img_df,table_df,line_df, page_index, page_width, page_height)
+        response['result'].append(page_json)
+    
+    log_info("Service main", "document structure response successfully completed", None)
+
+    return response
+
+def response_per_page(p_df,img_df,table_df,line_df,page_no,page_width,page_height):
 
     p_df['block_id'] = range(len(p_df))
-    myDict           = {'page_no': page_no,'page_width': page_width,'page_height':page_height,'tables':[],'images':[],'text_blocks':[]}
+    myDict           = {'page_no': page_no,'page_width': page_width,'page_height':page_height,'lines':[],'tables':[],'images':[],'text_blocks':[]}
     image_data       = process_image_df(myDict, img_df)
     table_data       = process_table_df(myDict, table_df)
+    line_data        = process_line_df(myDict,line_df)
+    text_data        = df_to_json(p_df)
     myDict['images'] = image_data
     myDict['tables'] = table_data
-    page_data        = df_to_json(p_df)
-    myDict['text_blocks'] = page_data
+    myDict['lines']  = line_data
+    myDict['text_blocks'] = text_data
 
     return myDict
 
-def drop_cols(df):
-    drop_col = ['index', 'xml_index','level_0']
-    
-    for col in drop_col:
-        if col in df.columns:
-            df = df.drop(columns=[col])
-    return df
-
-def df_to_json(p_df):
-    page_data = []
-    p_df      = p_df.where(p_df.notnull(), None)
-    if len(p_df) > 0 :
-        p_df = drop_cols(p_df)
-        
-
-        for index ,row in p_df.iterrows():
-            block = row.to_dict()
-            for key in block.keys():
-                if key in ['text']:
-                    block[key] = block[key]
-                if key not in ['text', 'children']:
-                    try :
-                        block[key] = int(block[key])
-                    except :
-                        pass
-                
-            if block['attrib'] == "TABLE":
-                pass
-            else :
-                if 'children' in list(block.keys()):
-                    if block['children'] == None :
-                        pass
-                    else :
-                        block['children'] = df_to_json(pd.read_json(row['children']))
-            page_data.append(block)
-        
-    return page_data
-
-def process_image_df(myDict,img_df):
-    image_data = []
-    if len(img_df)>0:
-        drop_col = ['index', 'xml_index','level_0']  
-        img_df   = drop_cols(img_df)
-                
-        for index ,row in img_df.iterrows():
-            block           = row.to_dict()
-            block['base64'] = block['base64'].decode('ascii')
-            image_data.append(block)
-        return image_data
-    else:
-        return None
-
-def process_table_df(myDict, table_df):
-    table_data = []
-    if len(table_df)>0:
-        table_df = drop_cols(table_df)
-
-        for index ,row in table_df.iterrows():
-            block             = row.to_dict()
-            block['children'] = row['children']
-            for child in row['children']:
-                for sub_child in child['text']:
-                    if 'xml_index' in sub_child.keys():
-                        sub_child.pop('xml_index')
-
-            table_data.append(block)
-        return table_data
-    else:
-        return None
-
-def get_page_dfs(pages,xml_dfs,working_dir,image_files,header_region , footer_region, multiple_pages,img_dfs):
-    
-    page_dfs     = []
-    table_dfs    = []
-    block_merger = BlockMerging()
-
-    for page_index in range(pages):
-        table_image = os.path.join(working_dir, (page_num_correction(page_index , 3) + '.png'))
-
-        in_df, table_df, line_df = get_text_table_line_df(table_image, xml_dfs[page_index],img_dfs[page_index])
-
-        h_df    = get_xml.get_hdf(in_df, image_files, config.DOCUMENT_CONFIGS, page_index,header_region , footer_region, multiple_pages)
-        v_df    = get_xml.get_vdf(h_df, config.DOCUMENT_CONFIGS)
-        
-        p_df = process_page_blocks(v_df, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)
-        merger_df = block_merger.merge_blocks(p_df,config.DROP_TEXT)
-
-        page_dfs.append(merger_df)
-        table_dfs.append(table_df)
-
-    return page_dfs, table_dfs
-
-def DocumentStructure(jobid, file_name, base_dir=config.BASE_DIR):
+def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR):
     try:
-        img_dfs,xml_dfs, image_files, page_width, page_height,working_dir  = get_xml.xml_dfs(base_dir, file_name)
-        multiple_pages = False
-        if len(xml_dfs) > 1:
-            multiple_pages =True
+        img_dfs,bg_files, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height = doc_pre_processing(file_name)
 
-        header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
-    
-        pages               = len(xml_dfs)
-        page_dfs, table_dfs = get_page_dfs(pages,xml_dfs,working_dir,image_files,header_region , footer_region, multiple_pages,img_dfs)
+        text_block_dfs, table_dfs, line_dfs = doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages)
 
-        response = {'result':[]}
-        for page_index in range(pages):
-            img_df     = img_dfs[page_index]
-            page_df    = page_dfs[page_index]
-            table_df   = table_dfs[page_index]
-
-            final_json = get_response(page_df, img_df,table_df, page_index, page_width, page_height)
-            response['result'].append(final_json)
+        response   =  doc_structure_response(pages, img_dfs, text_block_dfs, table_dfs,line_dfs,page_width, page_height)
         log_info("DocumentStructure","successfully received blocks in json response", jobid)
         return response
+
     except:
         log_exception("DocumentStructure","Error occured during pdf to blocks conversion", jobid, None)
         raise ServiceError(400, "documentstructure failed. Something went wrong during pdf to blocks conversion.")

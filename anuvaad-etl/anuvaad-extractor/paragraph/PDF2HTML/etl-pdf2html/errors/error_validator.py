@@ -34,11 +34,10 @@ class ValidationResponse(object):
                     raise FileErrors("LOCALE_ERROR", "No language input or unsupported language input.")
 
     def format_error(self, json_data):
-        try:
-            keys_checked = {'workflowCode','jobID','input','tool','stepOrder'}
-            if json_data.keys() == {'files'}:
-                return True
-            elif json_data.keys() >= keys_checked:
-                return True 
-        except:
+        keys_checked = {'workflowCode','jobID','input','tool','stepOrder'}
+        if json_data.keys() == {'files'}:
+            return True
+        elif json_data.keys() >= keys_checked:
+            return True 
+        else:
             raise FormatError(400, "Wrong input format") 

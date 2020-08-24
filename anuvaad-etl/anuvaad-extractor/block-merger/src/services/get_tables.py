@@ -1,9 +1,10 @@
 import  pandas as pd
-import cv2
-import numpy as np
-import config
 from src.utilities.table.table import TableRepositories
 from src.utilities.table.line import  RectRepositories
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
+import os
+import cv2
 
 def page_num_correction(file_index, num_size=None):
     padding = '0'
@@ -60,21 +61,15 @@ def get_table_df(tables):
     return table_df
 
 
-def edit(dic, df, extract_by='starting_point'):
+def edit(dic, df):
     left_key = 'text_left'
     top_key = 'text_top'
     width_key = 'text_width'
     height_key = 'text_height'
 
-    if extract_by == 'Intersection':
-        region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
+    region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
                 (df[top_key] + df[height_key]) <= (dic[top_key] + dic[height_key])) & (
                          (df[left_key] + df[width_key]) <= (dic[left_key] + dic[width_key]))
-
-    if extract_by == 'starting_point':
-        region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
-                (df[top_key]) <= (dic[top_key] + dic[height_key])) & (
-                         (df[left_key]) <= (dic[left_key] + dic[width_key]))
 
     text_df = df[region].to_dict('records')
     df = df[~region]
@@ -96,25 +91,47 @@ def extract_and_delete_region(page_df, table_df):
     return page_df, table_df
 
 
-def get_text_table_line_df(table_image, in_df,img_df):
-    # if config.TABLE_CONFIGS['remove_background']:
-    #     table_image = cv2.imread(table_image, 0)
-    #     table_image = (table_image > config.TABLE_CONFIGS['background_threshold']).astype(np.uint8)
+def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs):
 
-    table_image = cv2.imread(table_image, 0)
+    #log_info("Service TableExtractor", "TableExtractor service started", None)
+    
+    in_dfs    = []
+    table_dfs = []
+    line_dfs  = []
+    for page_index in range(pages):
+        in_df  = xml_dfs[page_index]
+        img_df = img_dfs[page_index]
+        table_image = os.path.join(working_dir, (page_num_correction(page_index , 3) + '.png'))
+        try :
+            table_image = cv2.imread(table_image, 0)
+        except Exception as e :
+            log_error("Service TableExtractor", "Error in loading background html image", None, e)
 
-    if len(img_df) > 0:
-        for index, row in img_df.iterrows():
-            row_bottom = row['text_top'] + row['text_height']
-            row_right = row['text_left'] + row['text_width']
-            table_image[row['text_top']: row_bottom, row['text_left']: row_right] = 255
-    tables = TableRepositories(table_image).response['response']['tables']
-    Rects = RectRepositories(table_image)
-    lines, _ = Rects.get_tables_and_lines()
+        if len(img_df) > 0:
+            for index, row in img_df.iterrows():
+                row_bottom = int(row['text_top']) + int(row['text_height'])
+                row_right  = int(row['text_left']) + int(row['text_width'])
+                table_image[row['text_top']: row_bottom, row['text_left']: row_right] = 255
 
-    line_df = get_line_df(lines)
-    tables_df = get_table_df(tables)
-    filtered_in_df, table_df = extract_and_delete_region(in_df, tables_df)
+        try :
+            tables = TableRepositories(table_image).response['response']['tables']
+        except  Exception as e :
+            log_error("Service TableExtractor", "Error in finding tables", None, e)
+        
+        try :
+            Rects = RectRepositories(table_image)
+            lines, _ = Rects.get_tables_and_lines()
+        except  Exception as e :
+            log_error("Service TableExtractor", "Error in finding lines", None, e)
+        
 
-    return filtered_in_df, table_df, line_df
+        line_df = get_line_df(lines)
+        tables_df = get_table_df(tables)
+        filtered_in_df, table_df = extract_and_delete_region(in_df, tables_df)
+
+        in_dfs.append(filtered_in_df)
+        table_dfs.append(table_df)
+        line_dfs.append(line_df)
+
+    return in_dfs, table_dfs, line_dfs
 

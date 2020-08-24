@@ -38,8 +38,8 @@ def process_tokenization_kf():
                 log_info("process_tokenization_kf", "error send to error handler", jobid)
     except KafkaConsumerError as e:
         response_custom = CustomResponse(Status.ERR_STATUS.value, None, None)
-        response_custom['message'] = str(e)
-        file_ops.error_handler(response_custom, "KAFKA_CONSUMER_ERROR", True)
+        response_custom.status_code['message'] = str(e)
+        file_ops.error_handler(response_custom.status_code, "KAFKA_CONSUMER_ERROR", True)
         log_exception("process_tokenization_kf", "Consumer didn't instantiate", None, e)
     except KafkaProducerError as e:
         response_custom = e.code
