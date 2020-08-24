@@ -5,12 +5,14 @@ from models.response import CustomResponse
 from models.status import Status
 from services.libre_converter import LibreOfficeError, convert_to
 from common.errors import RestAPIError, InternalServerErrorError
+from models.user_files import UserFiles
 from subprocess import TimeoutExpired
 import config
 import logging
 import time
 import os
 from uuid import uuid4
+from datetime import datetime
 from shutil import copyfile
 
 log = logging.getLogger('file')
@@ -28,6 +30,9 @@ class FileConverter(Resource):
         try:
             result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=15)
             copyfile(result, os.path.join(config.download_folder, upload_id+'.pdf'))
+            userfile = UserFiles(created_by=request.headers.get('ad-userid'),
+                                            filename=upload_id+'.pdf', created_on=datetime.now())
+            userfile.save()
         except LibreOfficeError:
             raise InternalServerErrorError({'message': 'Error when converting file to PDF'})
         except TimeoutExpired:
