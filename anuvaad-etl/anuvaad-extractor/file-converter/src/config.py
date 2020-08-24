@@ -14,6 +14,14 @@ download_folder = 'upload'
 
 TASK_STAT = 'FILE-CONVERTED'
 
+#mongo
+MONGO_IP = 'MONGO_IP'
+DEFAULT_VALUE = 'localhost'
+MONGO_DB_IDENTIFIER = 'MONGO_DB'
+DEFAULT_MONGO_DB_IDENTIFIER = 'preprocessing'
+MONGO_SERVER_URL = os.environ.get(MONGO_IP, DEFAULT_VALUE)
+MONGO_DB = os.environ.get(MONGO_DB_IDENTIFIER, DEFAULT_MONGO_DB_IDENTIFIER)
+
 # kafka
 tok_input_topic = 'anuvaad-dp-tools-fc-input'
 kf_local_server = 'localhost:9092'

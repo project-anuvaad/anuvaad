@@ -9,6 +9,7 @@ import config
 import logging
 import time
 import threading
+from db.conmgr_mongo import connectmongo
 
 log = logging.getLogger('file')
 tok_app  = Flask(__name__)
@@ -31,5 +32,6 @@ for blueprint in vars(routes).values():
 
 if __name__ == "__main__":
     start_kafka()
+    connectmongo()
     tok_app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
     
