@@ -12,7 +12,7 @@ from src.services.get_tables import  get_text_table_line_df
 from src.services.child_text_unify_to_parent import ChildTextUnify
 from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df
 
-def doc_pre_processing(filename):
+def doc_pre_processing(filename, base_dir):
     '''
         Preprocessing on input pdf to get:
             - xml files
@@ -23,7 +23,7 @@ def doc_pre_processing(filename):
     '''
     log_info("Service main", "document preprocessing started  ===>", None)
 
-    img_dfs,bg_files,xml_dfs, page_width, page_height,working_dir  = get_xml.process_input_pdf(filename)
+    img_dfs,bg_files,xml_dfs, page_width, page_height,working_dir  = get_xml.process_input_pdf(filename, base_dir)
     multiple_pages = False
     pages          = len(xml_dfs)
     if pages > 1:
@@ -111,7 +111,7 @@ def response_per_page(p_df,img_df,table_df,line_df,page_no,page_width,page_heigh
 
 def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR):
     try:
-        img_dfs,bg_files, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height = doc_pre_processing(file_name)
+        img_dfs,bg_files, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height = doc_pre_processing(file_name,base_dir)
 
         text_block_dfs, table_dfs, line_dfs = doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages)
 

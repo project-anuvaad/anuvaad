@@ -32,8 +32,10 @@ def children_condition(block_df,children_df,index,children_flag):
         top          = children_df['text_top'].min()
         left         = children_df['text_left'].min()
         width        = children_df[['text_left', 'text_width']].sum(axis=1).max() - left
-        height       = int(sum(children_df['text_height'])/ len(children_df['text_height']))
+        avg_line_height       = int(sum(children_df['text_height'])/ len(children_df['text_height']))
+        height       = (children_df.iloc[-1]['text_top'] + children_df.iloc[-1]['text_height']) - children_df['text_top'].min()
         block_df.at[index, 'text_top']     = top
+        block_df.at[index, 'avg_line_height']     = avg_line_height
         block_df.at[index, 'text_left']    = left
         block_df.at[index, 'text_height']  = height
         block_df.at[index, 'text_width']   = width
@@ -196,7 +198,9 @@ def left_right_margin(children, block_configs):
                 if len(children_df) != len(df):
                     children_flag = True
                     
-                block_df, block_index = children_condition(block_df,children_df,block_index,children_flag) 
+                block_df, block_index = children_condition(block_df,children_df,block_index,children_flag)
+        block_df.loc[block_df['avg_line_height'].isnull(),'avg_line_height'] = block_df['text_height']
+        
     except Exception as e :
             log_error("Service left_right_on_block", "Error in left right margin", None, e)        
     

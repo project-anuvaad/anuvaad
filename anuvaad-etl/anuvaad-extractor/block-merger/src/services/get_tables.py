@@ -15,9 +15,9 @@ def page_num_correction(file_index, num_size=None):
 
 def change_keys(table):
     table_row = {}
-    table_row['text_top'] = table['y']
-    table_row['text_left'] = table['x']
-    table_row['text_width'] = table['w']
+    table_row['text_top']    = table['y']
+    table_row['text_left']   = table['x']
+    table_row['text_width']  = table['w']
     table_row['text_height'] = table['h']
     return table_row
 

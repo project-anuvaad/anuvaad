@@ -22,35 +22,32 @@ from src.services.preprocess import  tag_heaader_footer_attrib
 from src.services.left_right_on_block import left_right_margin
 
 
-def create_pdf_processing_paths(filename):
-    base_dir    = config.BASE_DIR
+def create_pdf_processing_paths(filename, base_dir):
     data_dir    = Path(os.path.join(base_dir, 'data'))
     ret         = create_directory(data_dir)
     if ret == False:
-        #logging.error('directory creation failed :%s' % (data_dir))
         log_info('Service get_xml','data directory creation failed', None)
         return False
     
     output_dir  = Path(os.path.join(data_dir, 'output'))
     ret         = create_directory(output_dir)
     if ret == False:
-        #logging.error('directory creation failed :%s' % (output_dir))
         log_info('Service get_xml','output directory creation failed', None)
         return False
     working_dir = Path(os.path.join(output_dir, os.path.splitext(filename)[0]+'_'+str(uuid.uuid1())))
     ret         = create_directory(working_dir)
     if ret == False:
-        #logging.error('directory creation failed :%s' % (working_dir))
+        
         log_info('Service get_xml','working directory creation failed', None)
         return False
-    #logging.debug('created processing directories successfully')
+    
     log_info('Service get_xml','created processing directories successfully', None)
     
     return working_dir, True
 
-def extract_pdf_metadata(filename, working_dir):
+def extract_pdf_metadata(filename, working_dir, base_dir):
     start_time          = time.time()
-    pdf_filepath        = Path(os.path.join(config.BASE_DIR, filename))
+    pdf_filepath        = Path(os.path.join(base_dir, filename))
     try:
         pdf_xml_dir         = extract_xml_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e :
@@ -69,28 +66,25 @@ def extract_pdf_metadata(filename, working_dir):
     extraction_time     = end_time - start_time
     xml_files           = read_directory_files(pdf_xml_dir, pattern='*.xml')
     bg_files            = read_directory_files(pdf_bg_image_dir, pattern='*.png')
-    #logging.debug("Extracted xml, background images of file: %s" % (filename))
-    #logging.debug('Extraction time (%f) average extraction time (%f)' % (extraction_time, extraction_time/len(bg_files)))
+    
     log_info('Service get_xml','Successfully extracted xml, background images of file:', None)
     
     return xml_files,  bg_files
 
-def process_input_pdf(filename):
+def process_input_pdf(filename, base_dir):
     '''
         - from the input extract following details
             - xml
             - images present in xml
             - background image present in each page
     '''
-    working_dir, ret = create_pdf_processing_paths(filename)
+    working_dir, ret = create_pdf_processing_paths(filename, base_dir)
     if ret == False:
-        #logging.error('extract_pdf_processing_paths failed')
         log_info('Service get_xml','extract_pdf_processing_paths failed', None)
         return False
     
-    xml_file ,bg_files   = extract_pdf_metadata(filename, working_dir)
+    xml_file ,bg_files   = extract_pdf_metadata(filename, working_dir,base_dir)
     if xml_file == None or len(xml_file)==0:
-        #logging.error('cannot extract metadata from file %s' % (filename))
         log_info('Service get_xml','cannot extract xml metadata from pdf file', None)
         return False
     '''
@@ -150,11 +144,14 @@ def get_pdfs(pages, page_dfs, configs,block_configs, debug=False):
             df          = pd.DataFrame(columns=cols)
             for index, row in page_df.iterrows():
                 if row['children'] == None:
-                    df = df.append(page_df.iloc[index])
+                    d_tmp = page_df.iloc[index]
+                    d_tmp['avg_line_height'] = int(d_tmp['text_height'])
+                    df = df.append(d_tmp)
                 else:
                     dfs = process_block(page_df.iloc[index], block_configs)
                     df  = df.append(dfs)
 
+            
             p_dfs.append(df)
     except Exception as e :
             log_error("Service get_xml", "Error in creating p_dfs", None, e)
