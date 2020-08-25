@@ -45,7 +45,7 @@ def search_all_jobs():
 
 # REST endpoint to fetch configs
 @wfmapp.route(context_path + '/v1/workflow/configs/search', methods=["GET"])
-def search_all_jobs():
+def search_wf_configs():
     service = WFMService()
     response = service.get_wf_configs()
     return jsonify(response)
