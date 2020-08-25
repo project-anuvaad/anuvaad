@@ -1,13 +1,8 @@
 #!/bin/python
 import logging
-import os
-import threading
 import time
-import traceback
 
-import flask
 from flask import Flask, jsonify, request
-import datetime as dt
 from logging.config import dictConfig
 from service.wfmservice import WFMService
 from validator.wfmvalidator import WFMValidator
@@ -44,7 +39,15 @@ def search_jobs(job_id):
 def search_all_jobs():
     service = WFMService()
     req_criteria = request.get_json()
+    req_criteria["userIDs"] = [request.headers["ad-userid"]]
     response = service.get_job_details_bulk(req_criteria)
+    return jsonify(response)
+
+# REST endpoint to fetch configs
+@wfmapp.route(context_path + '/v1/workflow/configs/search', methods=["POST"])
+def search_all_jobs():
+    service = WFMService()
+    response = service.get_wf_configs()
     return jsonify(response)
 
 

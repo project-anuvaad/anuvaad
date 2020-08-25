@@ -164,9 +164,7 @@ class WFMService:
                 client_output["endTime"] = eval(str(time.time()).replace('.', ''))
                 client_output["error"] = error
             client_output["metadata"] = wf_details["metadata"]
-
         return client_output
-
 
     # Method to search jobs on job id for internal logic.
     def get_job_details(self, job_id):
@@ -183,16 +181,20 @@ class WFMService:
         if 'userIDs' in req_criteria.keys():
             if req_criteria["userIDs"]:
                 criteria["metadata.userID"] = {"$in": req_criteria["userIDs"]}
-
+        if 'workflowCodes' in req_criteria.keys():
+            if req_criteria["workflowCodes"]:
+                criteria["workflowCode"] = {"$in": req_criteria["workflowCodes"]}
         exclude = {'_id': False}
         if 'taskDetails' not in req_criteria.keys():
             exclude["taskDetails"] = False
         else:
             if req_criteria["taskDetails"] is False:
                 exclude["taskDetails"] = False
-
         return wfmrepo.search_job(criteria, exclude)
 
+    # Method to get wf configs from the remote yaml file.
+    def get_wf_configs(self):
+        return wfmutils.get_configs()
 
     # This function is called upon receiving an error on the error topic.
     # The error will be posted to the topic by one of the downstream services upon any error/exception in those services
