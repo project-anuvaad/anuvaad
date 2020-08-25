@@ -37,6 +37,7 @@ class Response(object):
                 upload_id = str(uuid4())
                 input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
                 filepath = os.path.join(config.download_folder, input_filename)
+                log_info("workflow_response", "input filename received", input_filename)
                 result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=15)
                 copyfile(result, os.path.join(config.download_folder, upload_id+'.pdf'))
                 file_res = file_ops.one_filename_response(input_filename, upload_id+'.pdf', in_locale, 'pdf')
@@ -80,5 +81,5 @@ class Response(object):
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
             response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
-            log_exception("workflow_response", "Error occured during tokenisation or file writing", jobid, e)
+            log_exception("workflow_response", "Error occured during file conversion or file writing", jobid, e)
             return response

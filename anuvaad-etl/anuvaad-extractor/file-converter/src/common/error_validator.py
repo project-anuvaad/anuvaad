@@ -28,8 +28,8 @@ class ValidationResponse(object):
                 input_filepath = file_ops.input_path(input_filename)
                 if input_filename == "" or input_filename is None:
                     raise FileErrors("FILENAME_ERROR", "Filename not found or its empty")
-                elif file_ops.check_file_extension(in_file_type) is False:
-                    raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only txt file.")
+                # elif file_ops.check_file_extension(in_file_type) is False:
+                    # raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only txt file.")
                 elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
                     raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory.")
                 elif in_locale == "" or in_locale is None:
@@ -41,7 +41,7 @@ class ValidationResponse(object):
             if len(input_file_data) == 0 or not isinstance(input_file_data, list):
                 raise FileErrors("EMPTY_FILE", "No Data inside txt file or it is not converted into list.")
         except:
-            raise FileEncodingError( 400, "Tokenisation failed due to encoding. Service supports only utf-16 encoded file.")
+            raise FileEncodingError( 400, "FC failed due to encoding. Service supports only utf-16 encoded file.")
 
     def format_error(self, json_data):
         try:
