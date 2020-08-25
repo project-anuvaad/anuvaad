@@ -46,15 +46,15 @@ class Response(object):
             response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
             log_info("workflow_response", "successfully generated response for workflow", jobid)
             return response_success
-        except LibreOfficeError:
+        except LibreOfficeError as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            response_custom.status_code['message'] = str(e)
+            response_custom.status_code['message'] = 'LibreOfficeError'
             response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
             log_exception("workflow_response", "Error when converting file to PDF", jobid, e)
             return response
-        except TimeoutExpired:
+        except TimeoutExpired as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            response_custom.status_code['message'] = str(e)
+            response_custom.status_code['message'] = 'TimeoutExpired'
             response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
             log_exception("workflow_response", "Timeout when converting file to PDF", jobid, e)
             return response
