@@ -11,11 +11,11 @@ class BlockMerger:
     # Method to validate if the wf-input contains all the fields reqd by Block merger.
     def validate_bm_input(self, wf_input):
         for file in wf_input["files"]:
-            if file["path"] is None:
+            if not file["path"]:
                 return False
-            if file["type"] is None:
+            if not file["type"]:
                 return False
-            if file["locale"] is None:
+            if not file["locale"]:
                 return False
         return True
 
@@ -32,6 +32,7 @@ class BlockMerger:
             "input": tool_input,
             "metadata": wf_input["metadata"]
         }
+        bm_input["metadata"]["module"] = tool_blockmerger
         return bm_input
 
     # Returns a json of the format accepted by Block merger based on a predecessor.
@@ -59,4 +60,5 @@ class BlockMerger:
             "input": tool_input,
             "metadata": task_output["metadata"]
         }
+        bm_input["metadata"]["module"] = tool_blockmerger
         return bm_input

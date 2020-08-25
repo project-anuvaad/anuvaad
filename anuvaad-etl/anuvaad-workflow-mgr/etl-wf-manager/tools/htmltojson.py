@@ -11,11 +11,11 @@ class HTMLTOJSON:
     # Method to validate if the wf-input contains all the fields reqd by htmltojson.
     def validate_htmltojson_input(self, wf_input):
         for file in wf_input["files"]:
-            if file["path"] is None:
+            if not file["path"]:
                 return False
-            if file["type"] is None:
+            if not file["type"]:
                 return False
-            if file["locale"] is None:
+            if not file["locale"]:
                 return False
         return True
 
@@ -24,7 +24,7 @@ class HTMLTOJSON:
         tool_input = {
             "files": wf_input["input"]["files"]
         }
-        tok_input = {
+        h2j_input = {
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
             "stepOrder": 0,
@@ -32,7 +32,8 @@ class HTMLTOJSON:
             "input": tool_input,
             "metadata": wf_input["metadata"]
         }
-        return tok_input
+        h2j_input["metadata"]["module"] = tool_htmltojson
+        return h2j_input
 
     # Returns a json of the format accepted by Pdf2html based on the predecessor.
     def get_htmltojson_input(self, task_output, predecessor):
@@ -51,7 +52,7 @@ class HTMLTOJSON:
             return None
 
         tool_input = {"files": files}
-        tok_input = {
+        h2j_input = {
             "jobID": task_output["jobID"],
             "workflowCode": task_output["workflowCode"],
             "stepOrder": task_output["stepOrder"],
@@ -59,4 +60,5 @@ class HTMLTOJSON:
             "input": tool_input,
             "metadata": task_output["metadata"]
         }
-        return tok_input
+        h2j_input["metadata"]["module"] = tool_htmltojson
+        return h2j_input

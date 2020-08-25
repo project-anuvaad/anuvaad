@@ -12,11 +12,11 @@ class Aligner:
         if len(wf_input["files"]) != 2:
             return False
         for file in wf_input["files"]:
-            if file["path"] is None:
+            if not file["path"]:
                 return False
-            if file["type"] is None:
+            if not file["type"]:
                 return False
-            if file["locale"] is None:
+            if not file["locale"]:
                 return False
         return True
 
@@ -46,6 +46,7 @@ class Aligner:
             "input": tool_input,
             "metadata": wf_input["metadata"]
         }
+        tok_input["metadata"]["module"] = tool_tokeniser
         return tok_input
 
     # Returns a json of the format accepted by Aligner based on the predecessor.
@@ -68,6 +69,7 @@ class Aligner:
                 "source": source,
                 "target":  target
             }
+
         tok_input = {
             "jobID": task_output["jobID"],
             "workflowCode": task_output["workflowCode"],
@@ -76,4 +78,5 @@ class Aligner:
             "input": tool_input,
             "metadata": task_output["metadata"]
         }
+        tok_input["metadata"]["module"] = tool_tokeniser
         return tok_input

@@ -10,11 +10,11 @@ class Tokeniser:
     # Method to validate if the wf-input contains all the fields reqd by Tokeniser.
     def validate_tokeniser_input(self, wf_input):
         for file in wf_input["files"]:
-            if file["path"] is None:
+            if not file["path"]:
                 return False
-            if file["type"] is None:
+            if not file["type"]:
                 return False
-            if file["locale"] is None:
+            if not file["locale"]:
                 return False
         return True
 
@@ -32,6 +32,7 @@ class Tokeniser:
             "input": tool_input,
             "metadata": wf_input["metadata"]
         }
+        tok_input["metadata"]["module"] = tool_tokeniser
         return tok_input
 
     # Returns a json of the format accepted by Tokeniser based on the predecessor.
@@ -51,5 +52,6 @@ class Tokeniser:
             "input": tool_input,
             "metadata": task_output["metadata"]
         }
+        tok_input["metadata"]["module"] = tool_tokeniser
         return tok_input
 

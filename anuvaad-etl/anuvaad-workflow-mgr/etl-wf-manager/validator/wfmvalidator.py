@@ -40,6 +40,14 @@ class WFMValidator:
         else:
             if len(data["files"]) == 0:
                 return post_error("FILES_NOT_FOUND", "Input files are mandatory", None)
+            else:
+                for file in data["files"]:
+                    if not file["path"]:
+                        return post_error("FILES_PATH_NOT_FOUND", "Path is mandatory for all files in the input", None)
+                    if not file["type"]:
+                        return post_error("FILES_TYPE_NOT_FOUND", "Type is mandatory for all files in the input", None)
+                    if not file["locale"]:
+                        return post_error("FILES_LOCALE_NOT_FOUND", "Locale is mandatory for all files in the input", None)
         error = self.validate_config(data["workflowCode"])
         if error is not None:
             return error
