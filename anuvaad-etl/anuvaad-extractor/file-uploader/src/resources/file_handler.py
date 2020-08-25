@@ -11,6 +11,7 @@ import uuid
 from datetime import datetime
 import magic
 from models.user_files import UserFiles
+import json
 
 ALLOWED_FILE_TYPES = config.ALLOWED_FILE_TYPES
 parser = reqparse.RequestParser(bundle_errors=True)
@@ -59,6 +60,24 @@ class FileDownloader(Resource):
             else:
                 res = CustomResponse(Status.ERROR_NOTFOUND_FILE.value, None)
                 return res.getresjson(), 400
+        else:
+            res = CustomResponse(Status.ERROR_NOTFOUND_FILE.value, None)
+            return res.getresjson(), 400
+
+
+class FileServe(Resource):
+
+    def get(self):
+        parse = reqparse.RequestParser()
+        parse.add_argument('filename', type=str, location='args',help='Filename is required', required=True)
+        args = parse.parse_args()
+        filename = args['filename']
+        filepath = os.path.join(config.download_folder, filename)
+        if(os.path.exists(filepath)):
+            with open(filepath) as json_file:
+                data = json.load(json_file)
+                res = CustomResponse(Status.SUCCESS.value, data)
+                return res.getres()
         else:
             res = CustomResponse(Status.ERROR_NOTFOUND_FILE.value, None)
             return res.getresjson(), 400
