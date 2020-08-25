@@ -19,7 +19,7 @@ python app.py
 Details of the APIs can be found here:
 https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/docs/etl-wf-manager-api-contract.yml
 
-Details of the requests flowing in and out through kafka cane be found here:
+Details of the requests flowing in and out through kafka can be found here:
 https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/docs/etl-wf-manager-kafka-contract.yml
 
 ## Configs
