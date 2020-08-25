@@ -14,15 +14,17 @@ class AnuvaadHinTokenizer(object):
     """
     Default abbrevations
     """
-    # _abbrevations_with_space_pattern = [r'^W[.]E[.]F[.][ ]|[ ]W[.]E[.]F[.][ ]',r'^O[.]A[.][ ]|[ ]O[.]A[.][ ]',r'^Sr[.][ ]|[ ]Sr[.][ ]',r'^NO[.][ ]|[ ]NO[.][ ]',r'^Pvt[.][ ]|[ ]Pvt[.][ ]', r'^NOS[.][ ]|[ ]NOS[.][ ]',r'^Smt[.][ ]|[ ]Smt[.][ ]',r'^Sec[.][ ]|[ ]Sec[.][ ]',r'^Spl[.][ ]|[ ]Spl[.][ ]',r'^Mr[.][ ]|[ ]Mr[.][ ]',r'^ft[.][ ]|[ ]ft[.][ ]',r'^kgs[.][ ]|[ ]kgs[.][ ]',r'^kg[.][ ]|[ ]kg[.][ ]',r'^Dr[.][ ]|[ ]Dr[.][ ]',r'^Ms[.][ ]|[ ]Ms[.][ ]',r'^Ltd[.][ ]|[ ]Ltd[.][ ]',r'^Pty[.][ ]|[ ]Pty[.][ ]',r'^Assn[.][ ]|[ ]Assn[.][ ]',r'^St[.][ ]|[ ]St[.][ ]',r'^Vol[.][ ]|[ ]Vol[.][ ]',r'^pp[.][ ]|[ ]pp[.][ ]',r'^Co[.][ ]|[ ]Co[.][ ]',r'^Pty[.][ ]|[ ]Pty[.][ ]',r'^rs[.][ ]|[ ]rs[.][ ]',r'^Sh[.][ ]|[ ]Sh[.][ ]',r'^M/S[.][ ]|[ ]M/S[.][ ]',r'^Mrs[.][ ]|[ ]Mrs[.][ ]',r'^Vs[.][ ]|[ ]Vs[.][ ]',r'^viz[.][ ]|[ ]viz[.][ ]',r'^ex[.][ ]|[ ]ex[.][ ]',r'^etc[.][ ]|[ ]etc[.][ ]',r'^i[.]e[.][ ]|[ ]i[.]e[.][ ]']
-    # _abbrevations_with_space = ['W.E.F. ','O.A. ','Sr. ','NO. ','Pvt. ', 'NOS. ','Smt. ','Sec. ','Spl. ','Mr. ','ft. ','kgs. ','kg. ','Dr. ','Ms. ','Ltd. ','Pty. ','Assn. ','St. ','Vol. ','pp. ','Co. ','Pty. ','Rs. ','Sh. ','M/S. ','Mrs. ','Vs. ','viz. ','ex. ','etc. ','i.e. ']
-    # _abbrevations_without_space = ['Crl.']
+    _abbrevations_with_space_pattern = [r'[ ]ऐ[.]',r'[ ]बी[.]',r'[ ]सी[.]',r'[ ]डी[.]',r'[ ]ई[.]',r'[ ]एफ[.]',r'[ ]जी[.]',r'[ ]एच[.]',r'[ ]आइ[.]',r'[ ]जे[.]',r'[ ]के[.]',r'[ ]एल[.]',r'[ ]एम[.]',r'[ ]एन[.]',r'[ ]ओ[.]',r'[ ]पी[.]',r'[ ]क्यू[.]',r'[ ]आर[.]',r'[ ]एस[.]',r'[ ]टी[.]',r'[ ]यू[.]',r'[ ]वी[.]',r'[ ]डब्लू[.]',r'[ ]एक्स[.]',r'[ ]वायी[.]',r'[ ]ज़ेड[.]']
+    _abbrevations_with_space = [' ऐ.',' बी.',' सी.',' डी.',' ई.',' एफ.',' जी.',' एच.',' आइ.',' जे.',' के.',' एल.',' एम.',' एन.',' ओ.',' पी.',' क्यू.',' आर.',' एस.',' टी.',' यू.',' वी.',' डब्लू.',' एक्स.',' वायी.',' ज़ेड.']
+    _abbrevations_without_space_pattern = [r'डॉ[.]',r'पं[.]']
+    _abbrevations_without_space = ['डॉ.','पं.']
     _tokenizer = None
     _regex_search_texts = []
     _date_abbrevations  = []
     _table_points_abbrevations = []
     _brackets_abbrevations = []
     _decimal_abbrevations = []
+    _url_abbrevations = []
     _dot_with_char_abbrevations = []
     _dot_with_quote_abbrevations = []
     _dot_with_number_abbrevations = []
@@ -39,13 +41,16 @@ class AnuvaadHinTokenizer(object):
         self._dot_with_char_abbrevations = []
         self._dot_with_number_abbrevations = []
         self._decimal_abbrevations = []
+        self._url_abbrevations = []
         self._dot_with_beginning_number_abbrevations = []
         self._tokenizer = PunktSentenceTokenizer(lang_vars=SentenceEndLangVars())
 
     def tokenize(self, text):
-        # text = self.serialize_with_abbrevations(text)
+        print('--------------Process started-------------')
+        text = self.serialize_with_abbrevations(text)
         text = self.serialize_dates(text)
         text = self.serialize_table_points(text)
+        text = self.serialize_url(text)
         text = self.serialize_pattern(text)
         text = self.serialize_end(text)
         text = self.serialize_dots(text)
@@ -61,6 +66,7 @@ class AnuvaadHinTokenizer(object):
         for se in sentences:
             se = self.deserialize_dates(se)
             se = self.deserialize_pattern(se)
+            se = self.deserialize_url(se)
             se = self.deserialize_end(se)
             se = self.deserialize_dots(se)
             se = self.deserialize_decimal(se)
@@ -68,14 +74,35 @@ class AnuvaadHinTokenizer(object):
             se = self.deserialize_dot_with_number(se)
             se = self.deserialize_dot_with_number_beginning(se)
             se = self.deserialize_quotes_with_number(se)
-            # se = self.deserialize_with_abbrevations(se)
+            se = self.deserialize_with_abbrevations(se)
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
             output.append(se.strip())
+        print('--------------Process finished-------------')
         return output
 
+    def serialize_url(self, text):
+        patterns = re.findall(r'(?:(?:https?):?:(?:(?://)|(?:\\\\))+(?:(?:[\w\d:#@%/;$()~_?\+-=\\\.&](?:#!)?))*)',text)
+        index = 0
+        if patterns is not None and isinstance(patterns, list):
+            for pattern in patterns:
+                pattern_obj = re.compile(re.escape(pattern))
+                self._url_abbrevations.append(pattern)
+                text = pattern_obj.sub('URL_'+str(index)+'_URL', text)
+                index+=1
+        return text
+
+    def deserialize_url(self, text):
+        index = 0
+        if self._url_abbrevations is not None and isinstance(self._url_abbrevations, list):
+            for pattern in self._url_abbrevations:
+                pattern_obj = re.compile(re.escape('URL_'+str(index)+'_URL'), re.IGNORECASE)
+                text = pattern_obj.sub(pattern, text)
+                index+=1
+        return text
+
     def serialize_decimal(self, text):
-        patterns = re.findall(r'(?:[ ][0-9]{1,}[.][0-9]{1,}[ ])',text)
+        patterns = re.findall(r'(?:(?:[ ]|[(]|[-])[0-9]{1,}[.][0-9]{1,}(?:[ ]|[)]|[%]))',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -280,10 +307,10 @@ class AnuvaadHinTokenizer(object):
         index_for_without_space = 0
         for abbrev in self._abbrevations_with_space_pattern:
             pattern = re.compile(abbrev, re.IGNORECASE)
-            text = pattern.sub(' #'+str(index)+'# ', text)
+            text = pattern.sub(' #'+str(index)+'#', text)
             index += 1
-        for abbrev in self._abbrevations_without_space:
-            pattern = re.compile(re.escape(abbrev), re.IGNORECASE)
+        for abbrev in self._abbrevations_without_space_pattern:
+            pattern = re.compile(abbrev, re.IGNORECASE)
             text = pattern.sub('#'+str(index_for_without_space)+'##', text)
             index_for_without_space += 1
         return text
@@ -291,29 +318,28 @@ class AnuvaadHinTokenizer(object):
     def deserialize_with_abbrevations(self, text):
         index = 0
         index_for_without_space = 0
-        for abbrev in self._abbrevations_with_space:
-            pattern = re.compile(re.escape('#'+str(index)+'# '), re.IGNORECASE)
-            text = pattern.sub(abbrev, text)
-            index += 1
         for abbrev in self._abbrevations_without_space:
             pattern = re.compile(re.escape('#'+str(index_for_without_space)+'##'), re.IGNORECASE)
             text = pattern.sub(abbrev, text)
             index_for_without_space += 1
+        for abbrev in self._abbrevations_with_space:
+            pattern = re.compile(re.escape(' #'+str(index)+'#'), re.IGNORECASE)
+            text = pattern.sub(abbrev, text)
+            index += 1
         return text
 
 
 class SentenceEndLangVars(PunktLanguageVars):
     text = []
-    with open('repositories/tokenizer_data/end.txt', encoding='utf8') as f:
+    with open('utils/tokenizer_data/end.txt', encoding='utf8') as f:
         text = f.read()
     sent_end_chars = text.split('\n')
     
     # # punkt = PunktTrainer()
     # # punkt.train(text,finalize=False, verbose=False)
     # # punkt.finalize_training(verbose=True)
-# text = 'वाशिंगटन: दुनिया के सबसे (शक्तिशाली. देश) के राष्ट्रपति बराक ओबामा ने प्रधानमंत्री नरेंद्र मोदी के संदर्भ में \'टाइम\' पत्रिका में लिखा, "नरेंद्र मोदी ने अपने बाल्यकाल में अपने परिवार की सहायता करने के लिए अपने पिता की चाय बेचने में मदद की थी। आज वह दुनिया के सबसे बड़े लोकतंत्र के नेता हैं और गरीबी से प्रधानमंत्री तक की उनकी जिंदगी की कहानी भारत के उदय की गतिशीलता और क्षमता को परिलक्षित करती है।'
+# text = "जिन मुख्य जिन्स समूहों  के मूल्यों में अप्रैल 2020 में अप्रैल 2019 की तुलना में नकारात्मक वृद्धि दर्ज की गई वो हैं- रत्न और आभूषण (-98.74%), चमड़ा और चमड़े के उत्पाद (-93.28%), "
 # # with open('data5.txt', encoding='utf8') as f:
 # #     text = f.read()
 # tokenizer = AnuvaadHinTokenizer()
 # print(tokenizer.tokenize(text))
-    
