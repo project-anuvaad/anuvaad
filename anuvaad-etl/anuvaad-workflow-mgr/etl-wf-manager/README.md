@@ -26,5 +26,8 @@ https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuv
 Wokflows have to be configured in a .yaml file as shown in the following document:
 https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/anuvaad-workflow-mgr/config/etl-wf-manager-config.yml
 
+## Postman Collection
+Inorder to play around with the APIs and some hands on, Use this collecion on Postman: https://www.getpostman.com/collections/11b7d2bc4e5aa37d04c8
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
