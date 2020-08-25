@@ -184,6 +184,9 @@ class WFMService:
         if 'workflowCodes' in req_criteria.keys():
             if req_criteria["workflowCodes"]:
                 criteria["workflowCode"] = {"$in": req_criteria["workflowCodes"]}
+        if 'statuses' in req_criteria.keys():
+            if req_criteria["statuses"]:
+                criteria["status"] = {"$in": req_criteria["statuses"]}
         exclude = {'_id': False}
         if 'taskDetails' not in req_criteria.keys():
             exclude["taskDetails"] = False
