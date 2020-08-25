@@ -1,9 +1,7 @@
 import json
 import logging
-import traceback
 
 from kafka import KafkaConsumer, TopicPartition
-import os
 from logging.config import dictConfig
 from utilities.wfmutils import WFMUtils
 from service.wfmservice import WFMService
@@ -49,18 +47,17 @@ def consume():
     configs = wfmutils.get_configs()
     topics = wfmutils.fetch_output_topics(configs)
     consumer = instantiate(topics)
-    log_info("consume", "WFM Consumer Running..........", None)
+    log_info("WFM Consumer Running..........", None)
     while True:
-        log_info("consume", "Waiting for the record..", None)
         for msg in consumer:
             try:
                 if msg:
                     data = msg.value
-                    log_info("consume", "Received on Topic: " + msg.topic, data["jobID"])
+                    log_info("Received on Topic: " + msg.topic, data)
                     wfmservice.manage(data)
                     break
             except Exception as e:
-                log_exception("consume", "Exception while consuming: ", None, e)
+                log_exception("Exception while consuming: ", None, e)
                 post_error("WFM_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
                 break
 
@@ -69,7 +66,7 @@ def handle_json(x):
     try:
         return json.loads(x.decode('utf-8'))
     except Exception as e:
-        log_exception("handle_json", "Exception while deserializing: ", None, e)
+        log_exception("Exception while deserializing: ", None, e)
         return {}
 
 

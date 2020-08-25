@@ -29,8 +29,8 @@ class Producer:
         try:
             if object_in:
                 producer.send(topic, value=object_in)
-                log_info("push_to_queue", "Pushing to topic: " + topic, object_in["jobID"])
+                log_info("Pushing to topic: " + topic, object_in)
             producer.flush()
         except Exception as e:
-            log_exception("push_to_queue", "Exception while producing: ", object_in["jobID"], e)
+            log_exception("Exception while producing: ", object_in, e)
             post_error("WFLOW_PRODUCER_ERROR", "Exception while producing: " + str(e), None)

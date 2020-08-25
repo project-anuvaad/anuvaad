@@ -45,18 +45,18 @@ def error_consume():
     wfmservice = WFMService()
     topics = [anu_etl_wf_error_topic]
     consumer = instantiate(topics)
-    log_info("error_consume", "WFM Error Consumer Running..........", None)
+    log_info("WFM Error Consumer Running..........", None)
     while True:
         for msg in consumer:
             try:
                 if msg:
                     data = msg.value
-                    log_info("error_consume", "Received on Topic: " + msg.topic, data["jobID"])
+                    log_info("Received on Topic: " + msg.topic, data)
                     wfmservice.update_errors(data)
                     break
             except Exception as e:
-                log_exception("error_consume", "Exception while consuming: ", None, e)
-                post_error("WFMERROR_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+                log_exception("Exception while consuming: ", None, e)
+                post_error("WFM_ERROR_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
                 break
 
 
@@ -65,7 +65,7 @@ def handle_json(x):
     try:
         return json.loads(x.decode('utf-8'))
     except Exception as e:
-        log_exception("handle_json", "Exception while deserialising: ", None, e)
+        log_exception("Exception while deserialising: ", None, e)
         return {}
 
 

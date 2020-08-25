@@ -49,17 +49,16 @@ class WFMService:
                 error = validator.get_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.")
                 client_output = self.get_wf_details(wf_input, None, True, error)
                 self.update_job_details(client_output, False)
-                log_error("initiate", "The workflow contains incompatible steps.", wf_input["jobID"], None)
+                log_error("The workflow contains incompatible steps.", wf_input, None)
                 return None
             producer.push_to_queue(first_tool_input, input_topic)
             client_output = self.get_wf_details(wf_input, None, False, None)
             self.update_job_details(client_output, False)
-            log_info("initiate", "Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"], wf_input["jobID"])
-            log_info("initiate", first_tool["name"] + log_msg_start, wf_input["jobID"])
+            log_info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"], wf_input)
+            log_info(first_tool["name"] + log_msg_start, wf_input)
         except Exception as e:
-            log_exception("initiate", "Exception while initiating workflow: ", wf_input["jobID"], e)
-            post_error_wf("WFLOW_INITIATE_ERROR", "Exception while initiating workflow: " + str(e),
-                          wf_input["jobID"], None, None, None, None)
+            log_exception("Exception while initiating workflow: ", wf_input, e)
+            post_error_wf("WFLOW_INITIATE_ERROR", "Exception while initiating workflow: " + str(e), wf_input, e)
 
     # This method manages the workflow by tailoring the predecessor and successor tools for the workflow.
     def manage(self, task_output):
@@ -68,10 +67,10 @@ class WFMService:
             job_details = self.get_job_details(job_id)
             job_details = job_details[0]
             if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED":
-                log_info("manage", "The job is already completed/failed, jobID: " + job_id, job_id)
+                log_info("The job is already completed/failed, jobID: " + job_id, task_output)
                 return None
             if task_output["status"] != "FAILED":
-                log_info("manage", task_output["tool"] + log_msg_end, task_output["jobID"])
+                log_info(task_output["tool"] + log_msg_end, task_output)
                 next_step_details = self.get_next_step_details(task_output)
                 if next_step_details is not None:
                     client_output = self.get_wf_details(None, task_output, False, None)
@@ -86,21 +85,20 @@ class WFMService:
                     step_completed = task_output["stepOrder"]
                     next_step_input["stepOrder"] = step_completed + 1
                     producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
-                    log_info("manage", next_tool["name"] + log_msg_start, task_output["jobID"])
+                    log_info(next_tool["name"] + log_msg_start, task_output)
                 else:
-                    log_info("manage", task_output["tool"] + log_msg_end, task_output["jobID"])
+                    log_info(task_output["tool"] + log_msg_end, task_output)
                     client_output = self.get_wf_details(None, task_output, True, None)
                     self.update_job_details(client_output, False)
-                    log_info("manage", "Job completed: " + task_output["jobID"], task_output["jobID"])
+                    log_info("Job completed: " + task_output["jobID"], task_output)
             else:
-                log_info("manage", task_output["tool"] + log_msg_end, task_output["jobID"])
-                log_info("manage", "Job FAILED: " + task_output["jobID"], task_output["jobID"])
+                log_info(task_output["tool"] + log_msg_end, task_output)
+                log_info("Job FAILED: " + task_output["jobID"], task_output)
                 client_output = self.get_wf_details(None, task_output, False, task_output["error"])
                 self.update_job_details(client_output, False)
         except Exception as e:
-            log_exception("manage", "Exception while managing the workflow: ", task_output["jobID"], e)
-            post_error_wf("WFLOW_MANAGE_ERROR", "Exception while managing workflow: " + str(e),
-                          task_output["jobID"], None, None, None, None)
+            log_exception("Exception while managing the workflow: ", task_output, e)
+            post_error_wf("WFLOW_MANAGE_ERROR", "Exception while managing workflow: " + str(e), task_output, e)
 
 
     # This method computes the input to the next step based on the step just completed.
@@ -114,7 +112,7 @@ class WFMService:
             next_task_input = wfmutils.get_tool_input(next_tool["name"], task_output["tool"], task_output, None)
             return next_task_input, next_tool
         except Exception as e:
-            log_exception("get_next_step_details", "No next step found: ", task_output["jobID"], e)
+            log_exception("No next step found: ", task_output, e)
             return None
 
     # Method to update the status of job.
@@ -212,7 +210,7 @@ class WFMService:
             job_details["error"] = error
             self.update_job_details(job_details, False)
         except Exception as e:
-            log_exception("update_errors", "Failed to update tool error: ", error["jobID"], e)
+            log_exception("Failed to update tool error: ", error, e)
             post_error("TOOL_ER_UPDATE_ERROR", "Failed to update tool error: " + str(e), None)
 
 

@@ -57,7 +57,7 @@ class WFMUtils:
                     key = obj['workflowCode']
                     configs_global[key] = obj
         except Exception as exc:
-            log_exception("read_all_configs", "Exception while reading configs: ", None, exc)
+            log_exception("Exception while reading configs: ", None, exc)
             post_error("CONFIG_READ_ERROR", "Exception while reading configs: " + str(exc), None)
 
 
