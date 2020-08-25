@@ -117,7 +117,7 @@ def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR):
 
         text_block_dfs, table_dfs, line_dfs = doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid)
 
-        response   =  doc_structure_response(pages, img_dfs, text_block_dfs, table_dfs,line_dfs,page_width, page_height)
+        response   =  doc_structure_response(pages, img_dfs, text_block_dfs, table_dfs,line_dfs,page_width, page_height,jobid)
         log_info("DocumentStructure","successfully received blocks in json response", jobid)
         return response
 
