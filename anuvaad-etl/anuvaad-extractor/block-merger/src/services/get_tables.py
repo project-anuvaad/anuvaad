@@ -15,9 +15,9 @@ def page_num_correction(file_index, num_size=None):
 
 def change_keys(table):
     table_row = {}
-    table_row['text_top'] = table['y']
-    table_row['text_left'] = table['x']
-    table_row['text_width'] = table['w']
+    table_row['text_top']    = table['y']
+    table_row['text_left']   = table['x']
+    table_row['text_width']  = table['w']
     table_row['text_height'] = table['h']
     return table_row
 
@@ -91,7 +91,7 @@ def extract_and_delete_region(page_df, table_df):
     return page_df, table_df
 
 
-def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs):
+def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
 
     #log_info("Service TableExtractor", "TableExtractor service started", None)
     
@@ -105,24 +105,24 @@ def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs):
         try :
             table_image = cv2.imread(table_image, 0)
         except Exception as e :
-            log_error("Service TableExtractor", "Error in loading background html image", None, e)
+            log_error("Service TableExtractor", "Error in loading background html image", job_id, e)
 
         if len(img_df) > 0:
             for index, row in img_df.iterrows():
-                row_bottom = int(row['text_top']) + int(row['text_height'])
-                row_right  = int(row['text_left']) + int(row['text_width'])
+                row_bottom = int(row['text_top'] + row['text_height'])
+                row_right  = int(row['text_left'] +  row['text_width'])
                 table_image[row['text_top']: row_bottom, row['text_left']: row_right] = 255
 
         try :
             tables = TableRepositories(table_image).response['response']['tables']
         except  Exception as e :
-            log_error("Service TableExtractor", "Error in finding tables", None, e)
+            log_error("Service TableExtractor", "Error in finding tables", job_id, e)
         
         try :
             Rects = RectRepositories(table_image)
             lines, _ = Rects.get_tables_and_lines()
         except  Exception as e :
-            log_error("Service TableExtractor", "Error in finding lines", None, e)
+            log_error("Service TableExtractor", "Error in finding lines", job_id, e)
         
 
         line_df = get_line_df(lines)
