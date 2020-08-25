@@ -48,6 +48,8 @@ def find_header(xml_dfs, preprocess_config,page_height):
     page_df = xml_dfs[0]
     sub_df = cut_page(page_df, page_height, cut_at=preprocess_config['header_cut'], direction='above')
     sub_df = add_box_coordinates(sub_df)
+    margin = config.PREPROCESS_CONFIGS['margin']
+
 
     for page2_df in xml_dfs:
         s_df = cut_page(page2_df, page_height, cut_at=preprocess_config['header_cut'], direction='above')
@@ -56,8 +58,11 @@ def find_header(xml_dfs, preprocess_config,page_height):
         page_level = []
         for index1, row1 in sub_df.iterrows():
             iou = 0
-            for index2, row2 in s_df.iterrows():
-                iou += bb_intersection_over_union(row1, row2)
+            sub_s_df = s_df[
+                (s_df['text_top'] > row1['text_top'] - margin) & (s_df['text_bottom'] < row1['text_bottom'] + margin)]
+            if len(sub_df) > 0:
+                for index2, row2 in sub_s_df.iterrows():
+                    iou += bb_intersection_over_union(row1, row2)
 
             page_level.append(iou)
         pdf_levle.append(page_level)
@@ -75,7 +80,7 @@ def find_footer(xml_dfs, preprocess_config,page_height):
     page_df = xml_dfs[0]
     sub_df = cut_page(page_df, page_height, cut_at=preprocess_config['footer_cut'], direction='below')
     sub_df = add_box_coordinates(sub_df)
-
+    margin = config.PREPROCESS_CONFIGS['margin']
     for page2_df in xml_dfs:
         s_df = cut_page(page2_df, page_height, cut_at=preprocess_config['footer_cut'], direction='below')
         s_df = add_box_coordinates(s_df)
@@ -83,8 +88,10 @@ def find_footer(xml_dfs, preprocess_config,page_height):
         page_level = []
         for index1, row1 in sub_df.iterrows():
             iou = 0
-            for index2, row2 in s_df.iterrows():
-                iou += bb_intersection_over_union(row1, row2)
+            sub_s_df = s_df[(s_df['text_top'] > row1['text_top'] - margin) & (s_df['text_bottom'] < row1['text_bottom'] + margin)]
+            if len(sub_df) > 0 :
+                for index2, row2 in sub_s_df.iterrows():
+                    iou += bb_intersection_over_union(row1, row2)
 
             page_level.append(iou)
         pdf_levle.append(page_level)

@@ -6,7 +6,7 @@ DEBUG = True
 API_URL_PREFIX = "/api/v0"
 HOST = '0.0.0.0'
 PORT = 5001
-BASE_DIR                                = 'upload'
+BASE_DIR      = 'upload'
 
 ENABLE_CORS = False
 
@@ -53,5 +53,5 @@ TABLE_CONFIGS = {
     "extract_by"           : 'starting_point'
 }
 
-PREPROCESS_CONFIGS = {'header_cut':0.0  , 'footer_cut' :0.0 ,'repeat_threshold' :0.95}
+PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.15 ,'repeat_threshold' :0.95 ,'underline_threshold':0.25, 'margin':10 }
 DROP_TEXT          =  ['SUPERSCRIPT']
