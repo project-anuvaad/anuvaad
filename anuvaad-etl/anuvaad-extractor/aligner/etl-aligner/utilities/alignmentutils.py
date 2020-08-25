@@ -9,7 +9,7 @@ import time
 import requests
 import numpy as np
 import csv
-from configs.alignerconfig import upload_url
+from configs.alignerconfig import file_upload_url
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
 from anuvaad_auditor.loghandler import log_info
@@ -84,7 +84,7 @@ class AlignmentUtils:
     # Utility to upload files to anuvaad's upload service
     def upload_file_binary(self, file):
         data = open(file, 'rb')
-        response = requests.post(url=upload_url, data=data,
+        response = requests.post(url=file_upload_url, data=data,
                                  headers={'Content-Type': 'application/x-www-form-urlencoded'})
         if response is not None:
             data = json.loads(response.text)
