@@ -12,7 +12,7 @@ ENABLE_CORS = False
 #folders and file path
 download_folder = 'upload'
 
-ALLOWED_FILE_TYPES = ['application/vnd.ms-excel','application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.oasis.opendocument.spreadsheet','application/zip','application/octet-stream','application/msword','application/pdf','image/x-ms-bmp','image/jpeg','image/jpg','image/png','text/plain','application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+ALLOWED_FILE_TYPES = ['text/html','application/vnd.ms-excel','application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.oasis.opendocument.spreadsheet','application/zip','application/octet-stream','application/msword','application/pdf','image/x-ms-bmp','image/jpeg','image/jpg','image/png','text/plain','application/vnd.openxmlformats-officedocument.wordprocessingml.document']
 
 
 #mongo
