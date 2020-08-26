@@ -8,19 +8,6 @@ class PDFTOHTML:
     def __init__(self):
         pass
 
-    # Method to validate if the wf-input contains all the fields reqd by Pdf2html.
-    def validate_pdftohtml_input(self, wf_input):
-        for file in wf_input["files"]:
-            if not file["path"]:
-                return False
-            if not file["type"]:
-                return False
-            if not file["locale"]:
-                return False
-        return True
-
-
-
     # Returns a json of the format accepted by Pdf2html based on the wf-input.
     def get_pdftohtml_input_wf(self, wf_input):
         tool_input = {

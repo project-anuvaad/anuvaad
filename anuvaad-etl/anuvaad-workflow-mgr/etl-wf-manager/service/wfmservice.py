@@ -79,13 +79,13 @@ class WFMService:
                     self.update_job_details(client_output, False)
                     next_step_input = next_step_details[0]
                     if next_step_input is None:
-                        post_error_wf("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.",
+                        log_error("The workflow contains incompatible steps in sequence. Please check the wf config.",
+                                  task_output, None)
+                        post_error_wf("INCOMPATIBLE_TOOL_SEQUENCE",
+                                      "The workflow contains incompatible steps in sequence. Please check the wf config.",
                                       task_output, None)
                         return None
                     next_tool = next_step_details[1]
-                    error = validator.validate_tool_input(next_step_input, next_tool["name"], task_output)
-                    if error is not None:
-                        return None
                     step_completed = task_output["stepOrder"]
                     next_step_input["stepOrder"] = step_completed + 1
                     producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
@@ -223,6 +223,7 @@ class WFMService:
             job_details["endTime"] = eval(str(time.time()).replace('.', ''))
             job_details["error"] = error
             self.update_job_details(job_details, False)
+            log_info("Job FAILED: " + error["jobID"], error)
         except Exception as e:
             log_exception("Failed to update tool error: ", error, e)
 

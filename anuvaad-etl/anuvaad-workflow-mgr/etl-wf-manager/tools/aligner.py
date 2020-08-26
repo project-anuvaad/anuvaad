@@ -7,21 +7,6 @@ class Aligner:
     def __init__(self):
         pass
 
-    # Method to validate if the wf-input contains all the fields reqd by Aligner.
-    def validate_aligner_input(self, wf_input):
-        if len(wf_input["files"]) != 2:
-            return False
-        for file in wf_input["files"]:
-            if not file["path"]:
-                return False
-            if not file["type"]:
-                return False
-            if not file["locale"]:
-                return False
-        return True
-
-
-
     # Returns a json of the format accepted by Aligner based on the wf-input.
     def get_aligner_input_wf(self, wf_input):
         source = {
