@@ -15,6 +15,8 @@ class WFMValidator:
 
     # Validator that validates the input request for initiating the alignment job
     def validate_input(self, data):
+        if data is None:
+            return post_error("INPUT_NOT_FOUND", "Input is empty", None)
         if 'workflowCode' not in data.keys():
             return post_error("WOFKLOWCODE_NOT_FOUND", "workflowCode is mandatory", None)
         if 'files' not in data.keys():
