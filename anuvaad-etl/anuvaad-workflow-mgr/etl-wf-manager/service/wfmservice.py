@@ -69,6 +69,8 @@ class WFMService:
             if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED":
                 log_info("The job is already completed/failed, jobID: " + job_id, task_output)
                 return None
+            if 'metadata' not in task_output.keys():
+                task_output["metadata"] = job_details["metadata"]
             if task_output["status"] != "FAILED":
                 log_info(task_output["tool"] + log_msg_end, task_output)
                 next_step_details = self.get_next_step_details(task_output)
@@ -172,19 +174,31 @@ class WFMService:
 
     # Method to search jobs on multiple criteria.
     def get_job_details_bulk(self, req_criteria):
-        criteria = {}
+        criteria = {"metadata.userID": {"$in": req_criteria["userIDs"]}}
         if 'jobIDs' in req_criteria.keys():
             if req_criteria["jobIDs"]:
-                criteria["jobID"] = {"$in": req_criteria["jobIDs"]}
-        if 'userIDs' in req_criteria.keys():
-            if req_criteria["userIDs"]:
-                criteria["metadata.userID"] = {"$in": req_criteria["userIDs"]}
+                jobIDs = []
+                for jobID in req_criteria["jobIDs"]:
+                    if jobID:
+                        jobIDs.append(jobID)
+                    if len(jobIDs) > 0:
+                        criteria["jobID"] = {"$in": jobIDs}
         if 'workflowCodes' in req_criteria.keys():
             if req_criteria["workflowCodes"]:
-                criteria["workflowCode"] = {"$in": req_criteria["workflowCodes"]}
+                wCodes = []
+                for wCode in req_criteria["workflowCodes"]:
+                    if wCode:
+                        wCodes.append(wCode)
+                    if len(wCodes) > 0:
+                        criteria["workflowCode"] = {"$in": wCodes}
         if 'statuses' in req_criteria.keys():
             if req_criteria["statuses"]:
-                criteria["status"] = {"$in": req_criteria["statuses"]}
+                statuses = []
+                for status in statuses:
+                    if status:
+                        statuses.append(status)
+                    if len(statuses) > 0:
+                        criteria["status"] = {"$in": req_criteria["statuses"]}
         exclude = {'_id': False}
         if 'taskDetails' not in req_criteria.keys():
             exclude["taskDetails"] = False

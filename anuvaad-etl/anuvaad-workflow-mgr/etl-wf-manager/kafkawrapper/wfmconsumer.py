@@ -53,6 +53,8 @@ def consume():
             try:
                 if msg:
                     data = msg.value
+                    if 'metadata' in data.keys():
+                        data["metadata"]["module"] = "WORKFLOW-MANAGER"
                     log_info("Received on Topic: " + msg.topic, data)
                     wfmservice.manage(data)
                     break
