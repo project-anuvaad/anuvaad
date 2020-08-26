@@ -331,7 +331,7 @@ class AnuvaadHinTokenizer(object):
 
 class SentenceEndLangVars(PunktLanguageVars):
     text = []
-    with open('utils/tokenizer_data/end.txt', encoding='utf8') as f:
+    with open('repositories/tokenizer_data/end.txt', encoding='utf8') as f:
         text = f.read()
     sent_end_chars = text.split('\n')
     
