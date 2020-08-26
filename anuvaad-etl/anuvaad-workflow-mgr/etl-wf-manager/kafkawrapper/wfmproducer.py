@@ -29,6 +29,7 @@ class Producer:
         try:
             if object_in:
                 producer.send(topic, value=object_in)
+                object_in["metadata"]["module"] = "WORKFLOW-MANAGER" # FOR LOGGING ONLY.
                 log_info("Pushing to topic: " + topic, object_in)
             producer.flush()
         except Exception as e:

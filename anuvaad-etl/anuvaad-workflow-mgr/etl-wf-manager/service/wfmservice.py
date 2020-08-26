@@ -8,7 +8,6 @@ from validator.wfmvalidator import WFMValidator
 from configs.wfmconfig import anu_etl_wfm_core_topic
 from configs.wfmconfig import log_msg_start
 from configs.wfmconfig import log_msg_end
-from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
@@ -54,6 +53,7 @@ class WFMService:
             producer.push_to_queue(first_tool_input, input_topic)
             client_output = self.get_wf_details(wf_input, None, False, None)
             self.update_job_details(client_output, False)
+            wf_input["metadata"]["module"] = "WORKFLOW-MANAGER" # FOR LOGGING ONLY.
             log_info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"], wf_input)
             log_info(first_tool["name"] + log_msg_start, wf_input)
         except Exception as e:
@@ -71,30 +71,30 @@ class WFMService:
                 return None
             if 'metadata' not in task_output.keys():
                 task_output["metadata"] = job_details["metadata"]
+            log_info(task_output["tool"] + log_msg_end, task_output)
             if task_output["status"] != "FAILED":
-                log_info(task_output["tool"] + log_msg_end, task_output)
                 next_step_details = self.get_next_step_details(task_output)
                 if next_step_details is not None:
                     client_output = self.get_wf_details(None, task_output, False, None)
                     self.update_job_details(client_output, False)
                     next_step_input = next_step_details[0]
                     if next_step_input is None:
-                        error = validator.get_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.")
-                        client_output = self.get_wf_details(None, task_output, True, error)
-                        self.update_job_details(client_output, False)
+                        post_error_wf("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.",
+                                      task_output, None)
                         return None
                     next_tool = next_step_details[1]
+                    error = validator.validate_tool_input(next_step_input, next_tool["name"], task_output)
+                    if error is not None:
+                        return None
                     step_completed = task_output["stepOrder"]
                     next_step_input["stepOrder"] = step_completed + 1
                     producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
                     log_info(next_tool["name"] + log_msg_start, task_output)
                 else:
-                    log_info(task_output["tool"] + log_msg_end, task_output)
                     client_output = self.get_wf_details(None, task_output, True, None)
                     self.update_job_details(client_output, False)
                     log_info("Job completed: " + task_output["jobID"], task_output)
             else:
-                log_info(task_output["tool"] + log_msg_end, task_output)
                 log_info("Job FAILED: " + task_output["jobID"], task_output)
                 client_output = self.get_wf_details(None, task_output, False, task_output["error"])
                 self.update_job_details(client_output, False)
@@ -225,7 +225,6 @@ class WFMService:
             self.update_job_details(job_details, False)
         except Exception as e:
             log_exception("Failed to update tool error: ", error, e)
-            post_error("TOOL_ER_UPDATE_ERROR", "Failed to update tool error: " + str(e), None)
 
 
 

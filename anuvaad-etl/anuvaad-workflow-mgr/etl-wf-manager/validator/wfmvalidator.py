@@ -2,6 +2,8 @@
 import logging
 
 from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.errorhandler import post_error_wf
+from anuvaad_auditor.loghandler import log_error
 from configs.wfmconfig import tool_blockmerger
 from configs.wfmconfig import tool_tokeniser
 from configs.wfmconfig import tool_pdftohtml
@@ -51,9 +53,6 @@ class WFMValidator:
         error = self.validate_config(data["workflowCode"])
         if error is not None:
             return error
-        error = self.validate_files(data)
-        if error is not None:
-            return error
 
     # Validates the workflowCode provided in the request.
     def validate_config(self, workflowCode):
@@ -62,39 +61,42 @@ class WFMValidator:
             return post_error("WORKFLOW_NOT_FOUND", "There's no workflow configured against this workflowCode", None)
 
     # Validates tool specific requirements of the input.
-    def validate_files(self, wf_input):
-        tools = wfmutils.get_tools_of_wf(wf_input["workflowCode"])
-        if tool_tokeniser in tools:
-            valid = tokeniser.validate_tokeniser_input(wf_input)
+    def validate_tool_input(self, tool_input, tool, predecessor_output):
+        if tool_tokeniser == tool:
+            valid = tokeniser.validate_tokeniser_input(tool_input)
             if not valid:
-                return post_error("TOKENISER_INPUT_ERROR", "Tokeniser is a part of this workflow. The given input is "
-                                                           "insufficient for that step.", None)
-        if tool_aligner in tools:
-            valid = aligner.validate_aligner_input(wf_input)
+                log_error("Failed to generate required input for: " + str(tool_tokeniser), predecessor_output, None)
+                return post_error_wf("TOKENISER_INPUT_ERROR",
+                                     "Failed to generate required input for: " + str(tool_tokeniser), predecessor_output, None)
+        if tool_aligner == tool:
+            valid = aligner.validate_aligner_input(tool_input)
             if not valid:
-                return post_error("ALIGNER_INPUT_ERROR", "Aligner is a part of this workflow. The given input is "
-                                                         "insufficient for that step.", None)
-        if tool_pdftohtml in tools:
-            valid = pdftohtml.validate_pdftohtml_input(wf_input)
+                log_error("Failed to generate required input for: " + str(tool_aligner), predecessor_output, None)
+                return post_error_wf("ALIGNER_INPUT_ERROR",
+                                     "Failed to generate required input for: " + str(tool_aligner), predecessor_output, None)
+        if tool_pdftohtml == tool:
+            valid = pdftohtml.validate_pdftohtml_input(tool_input)
             if not valid:
-                return post_error("PDFTOHTML_INPUT_ERROR", "PDFTOHTML is a part of this workflow. The given input is "
-                                                           "insufficient for that step.", None)
-        if tool_htmltojson in tools:
-            valid = htmltojson.validate_htmltojson_input(wf_input)
+                log_error("Failed to generate required input for: " + str(tool_pdftohtml), predecessor_output, None)
+                return post_error_wf("PDFTOHTML_INPUT_ERROR",
+                                     "Failed to generate required input for: " + str(tool_pdftohtml), predecessor_output, None)
+        if tool_htmltojson == tool:
+            valid = htmltojson.validate_htmltojson_input(tool_input)
             if not valid:
-                return post_error("HTMLTOJSON_INPUT_ERROR", "HTMLTOJSON is a part of this workflow. The given input "
-                                                            "is insufficient for that step.", None)
+                log_error("Failed to generate required input for: " + str(tool_htmltojson), predecessor_output, None)
+                return post_error_wf("HTMLTOJSON_INPUT_ERROR",
+                                     "Failed to generate required input for: " + str(tool_htmltojson), predecessor_output, None)
 
-        if tool_fileconverter in tools:
-            valid = file_converter.validate_fc_input(wf_input)
+        if tool_fileconverter == tool:
+            valid = file_converter.validate_fc_input(tool_input)
             if not valid:
-                return post_error("FILE_CONVERTER_INPUT_ERROR", "FILE_CONVERTER is a part of this workflow. The given input "
-                                                            "is insufficient for that step.", None)
+                log_error("Failed to generate required input for: " + str(tool_fileconverter), predecessor_output, None)
+                return post_error_wf("FILE_CONVERTER_INPUT_ERROR",
+                                     "Failed to generate required input for: " + str(tool_fileconverter), predecessor_output, None)
 
-        if tool_blockmerger in tools:
-            valid = block_merger.validate_bm_input(wf_input)
+        if tool_blockmerger == tool:
+            valid = block_merger.validate_bm_input(tool_input)
             if not valid:
-                return post_error("BLOCK_MERGER_INPUT_ERROR", "BLOCK_MERGER is a part of this workflow. The given input "
-                                                            "is insufficient for that step.", None)
-
-
+                log_error("Failed to generate required input for: " + str(tool_blockmerger), predecessor_output, None)
+                return post_error_wf("BLOCK_MERGER_INPUT_ERROR",
+                                     "Failed to generate required input for: " + str(tool_blockmerger), predecessor_output, None)

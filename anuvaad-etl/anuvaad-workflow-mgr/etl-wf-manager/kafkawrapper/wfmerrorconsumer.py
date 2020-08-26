@@ -51,6 +51,8 @@ def error_consume():
             try:
                 if msg:
                     data = msg.value
+                    if 'metadata' in data.keys():
+                        data["metadata"]["module"] = "WORKFLOW-MANAGER" # FOR LOGGING ONLY.
                     log_info("Received on Topic: " + msg.topic, data)
                     wfmservice.update_errors(data)
                     break
