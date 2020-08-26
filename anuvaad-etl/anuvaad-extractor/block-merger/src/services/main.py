@@ -12,6 +12,7 @@ from src.services.get_tables import  get_text_table_line_df
 from src.services.get_underline import get_underline
 from src.services.child_text_unify_to_parent import ChildTextUnify
 from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df
+from src.utilities.xml_utils import check_text
 
 def doc_pre_processing(filename, base_dir,jobid):
     '''
@@ -112,15 +113,17 @@ def response_per_page(p_df,img_df,table_df,line_df,page_no,page_width,page_heigh
     return myDict
 
 def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR):
+    img_dfs, bg_files, xml_dfs, pages, working_dir, header_region, footer_region, multiple_pages, page_width, page_height = doc_pre_processing(file_name, base_dir, jobid)
+
+    text_blocks_count = check_text(xml_dfs)
+    if text_blocks_count == 0:
+        raise ServiceError(400, "Text extraction failed. Either document is empty or is scanned.")
+
     try:
-        img_dfs,bg_files, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height = doc_pre_processing(file_name,base_dir,jobid)
-
         text_block_dfs, table_dfs, line_dfs = doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid)
-
         response   =  doc_structure_response(pages, img_dfs, text_block_dfs, table_dfs,line_dfs,page_width, page_height,jobid)
         log_info("DocumentStructure","successfully received blocks in json response", jobid)
         return response
-
     except:
         log_exception("DocumentStructure","Error occured during pdf to blocks conversion", jobid, None)
         raise ServiceError(400, "documentstructure failed. Something went wrong during pdf to blocks conversion.")
