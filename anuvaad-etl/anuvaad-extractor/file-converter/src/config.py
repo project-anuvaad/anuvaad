@@ -2,7 +2,7 @@ import logging
 import os
 import time
 
-DEBUG = True
+DEBUG = False
 API_URL_PREFIX = "/api/v0"
 HOST = '0.0.0.0'
 PORT = 5001
