@@ -9,8 +9,8 @@ import base64
 
 # extract pdf to image
 def extract_image_paths_from_pdf(filepath, workspace_output_dir):
-    working_dir = Path(os.path.join(workspace_output_dir, 'images'))
-    image_filename = Path(os.path.splitext(os.path.basename(filepath))[0])
+    working_dir     = os.path.join(workspace_output_dir, 'images')
+    image_filename  = os.path.splitext(os.path.basename(filepath))[0]
     
     create_directory(working_dir)
     images = pdf2image.convert_from_path(filepath, dpi=300, output_file=image_filename, output_folder=working_dir, fmt='jpg', paths_only=True)
@@ -150,6 +150,10 @@ def get_page_image_element_attrib(page, image):
             int(image.attrib['top']), int(image.attrib['left']), int(image.attrib['width']), int(image.attrib['height']),\
             None
 
+def get_image_base64(filepath):
+    with open(filepath, "rb") as img_file:
+        img_base64 = base64.b64encode(img_file.read())
+    return img_base64
 
 #### parse HTML page
 
