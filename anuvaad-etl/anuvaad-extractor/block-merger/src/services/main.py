@@ -127,7 +127,7 @@ def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR, lang='en'):
 
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:
-        raise ServiceError(400, "Text extraction failed. Either document is empty or is scanned.")
+        raise ServiceError(400, "Text extraction failed. Either document is empty or is scanned or is not in pdf format.")
 
     try:
         text_block_dfs, table_dfs, line_dfs = doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid, lang, page_width, page_height, pdf_image_paths)
