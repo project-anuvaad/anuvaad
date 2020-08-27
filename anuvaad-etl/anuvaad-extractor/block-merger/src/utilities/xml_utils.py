@@ -184,3 +184,13 @@ def get_ngram(indices, window_size = 2):
         ngrams.append(indices[count:count+window_size])  
         count = count+1  
     return ngrams
+
+'''
+Check if  input pdf is digital or scanned 
+'''
+def check_text(xml_dfs) :
+    text_count = 0
+    for xml_df in xml_dfs:
+        text_count += len(xml_df)
+    #print(check_text)
+    return text_count

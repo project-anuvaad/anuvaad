@@ -38,10 +38,14 @@ class Response(object):
                 input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
                 filepath = os.path.join(config.download_folder, input_filename)
                 log_info("workflow_response", "input filename received", input_filename)
-                result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=15)
-                copyfile(result, os.path.join(config.download_folder, upload_id+'.pdf'))
-                file_res = file_ops.one_filename_response(input_filename, upload_id+'.pdf', in_locale, 'pdf')
-                output_file_response.append(file_res)
+                if input_filename.endswith('.pdf'):
+                    file_res = file_ops.one_filename_response(input_filename, input_filename, in_locale, 'pdf')
+                    output_file_response.append(file_res)
+                else:
+                    result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=15)
+                    copyfile(result, os.path.join(config.download_folder, upload_id+'.pdf'))
+                    file_res = file_ops.one_filename_response(input_filename, upload_id+'.pdf', in_locale, 'pdf')
+                    output_file_response.append(file_res)
             task_endtime = str(time.time()).replace('.', '')
             response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
             response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)

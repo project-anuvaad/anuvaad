@@ -27,13 +27,17 @@ class FileConverter(Resource):
         upload_id = str(uuid4())
         filename = body['filename']
         filepath = os.path.join(config.download_folder, filename)
+        if filename.endswith('.pdf'):
+            res = CustomResponse(Status.SUCCESS.value, filename)
+            log.info("response successfully generated.")
+            return res.getres()
         try:
             result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=15)
             copyfile(result, os.path.join(config.download_folder, upload_id+'.pdf'))
             userfile = UserFiles(created_by=request.headers.get('ad-userid'),
                                             filename=upload_id+'.pdf', created_on=datetime.now())
             userfile.save()
-        except LibreOfficeError:
+        except LibreOfficeError as e:
             raise InternalServerErrorError({'message': 'Error when converting file to PDF'})
         except TimeoutExpired:
             raise InternalServerErrorError({'message': 'Timeout when converting file to PDF'})
