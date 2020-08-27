@@ -109,18 +109,18 @@ def doc_structure_response(pages,bg_files, text_block_dfs,table_dfs,line_dfs,pag
 def response_per_page(p_df,bg_img,table_df,line_df,page_no,page_width,page_height):
 
     p_df['block_id'] = range(len(p_df))
-    myDict           = {'page_no': page_no,'page_width': page_width,'page_height':page_height,'lines':[],'tables':[],'bg_images':[],'text_blocks':[]}
+    res_dict           = {'page_no': page_no,'page_width': page_width,'page_height':page_height,'lines':[],'tables':[],'images':[],'text_blocks':[]}
     #image_data       = process_image_df(img_df)
-    bg_img_data      = process_bg_image(bg_img)
-    table_data       = process_table_df(table_df)
-    line_data        = process_line_df(line_df)
-    text_data        = df_to_json(p_df)
-    myDict['bg_images'] = bg_img_data
-    myDict['tables'] = table_data
-    myDict['lines']  = line_data
-    myDict['text_blocks'] = text_data
+    bg_img_data        = process_bg_image(bg_img)
+    table_data         = process_table_df(table_df)
+    line_data          = process_line_df(line_df)
+    text_data          = df_to_json(p_df)
+    res_dict['images'] = bg_img_data
+    res_dict['tables'] = table_data
+    res_dict['lines']  = line_data
+    res_dict['text_blocks'] = text_data
 
-    return myDict
+    return res_dict
 
 
 def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR, lang='en'):
