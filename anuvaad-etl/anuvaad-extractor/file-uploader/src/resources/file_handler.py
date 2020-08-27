@@ -23,7 +23,8 @@ class FileUploader(Resource):
         parse.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files',help='File is required', required=True)
         args = parse.parse_args()
         f = args['file']
-        filename = str(uuid.uuid4())+'_'+f.filename
+        file_real_name, file_extension = os.path.splitext(f.filename)
+        filename = str(uuid.uuid4())+file_extension
         filepath = os.path.join(config.download_folder, filename)
         f.save(filepath)
         with open(filepath, 'rb') as f:
@@ -31,7 +32,7 @@ class FileUploader(Resource):
             f.close()
             if filetype in ALLOWED_FILE_TYPES:
                 userfile = UserFiles(created_by=request.headers.get('ad-userid'),
-                                            filename=filename, created_on=datetime.now())
+                                            filename=filename,file_real_name=file_real_name+file_extension, created_on=datetime.now())
                 userfile.save()
                 res = CustomResponse(Status.SUCCESS.value, filename)
                 return res.getres()
