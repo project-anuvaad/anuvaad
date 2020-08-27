@@ -140,6 +140,7 @@ class WFMService:
                 task_details = [task_output]
             client_input = {
                 "workflowCode": wf_input["workflowCode"],
+                "jobName": wf_input["jobName"],
                 "files": wf_input["files"]
             }
             client_output = {"input": client_input, "jobID": wf_input["jobID"], "workflowCode": wf_input["workflowCode"],
