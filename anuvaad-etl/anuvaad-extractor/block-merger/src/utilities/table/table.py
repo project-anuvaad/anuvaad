@@ -128,7 +128,7 @@ class TableRepositories:
             #print(area_ratio, i)
 
             # filtering out lines and noise
-            if (area_ratio < 0.8) & (area_ratio > 0.005) & (h1 > 5 ):
+            if (area_ratio < 0.8) & (h1 > 5 ):
                 midpoint = [int (x1 + w1 / 2), int (y1 + h1 / 2)]  # np.mean(contours[i],axis=0)
                 midpoints.append (midpoint)
                 if len (midpoints) > 1:

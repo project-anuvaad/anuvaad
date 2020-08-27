@@ -60,7 +60,7 @@ def create_directory(path):
 # read files present in a directory
 def read_directory_files(path, pattern='*'):
     
-    files = [f for f in sorted(glob.glob(os.path.join(path, pattern)))]
+    files = [f for f in sorted(glob.glob( str(Path(os.path.join(path, pattern)))))]
     return files
 
 def get_subdirectories(path):
