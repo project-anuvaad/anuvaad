@@ -13,7 +13,7 @@ from src.utilities.xml_utils import (extract_image_paths_from_pdf, extract_xml_f
                        get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered,
                        get_page_text_element_attrib, get_ngram, extract_html_bg_images_from_digital_pdf
                       )
-from src.services.xml_document_info import (get_xml_info, get_xml_image_info)
+from src.services.xml_document_info import (get_xml_info, get_xml_image_info, get_pdf_bg_image_info)
 
 
 from src.services.box_horizontal_operations import (merge_horizontal_blocks)
@@ -102,7 +102,12 @@ def process_input_pdf(filename, base_dir, jobid):
     except Exception as e :
             log_error("Service xml_document_info", "Error in extracting image xml info", jobid, e)
 
-    return img_dfs,bg_files, xml_dfs, page_width, page_height ,working_dir, pdf_image_paths
+    try:
+        bg_dfs  = get_pdf_bg_image_info(page_width, page_height, bg_files)
+    except Exception as e:
+        log_error("Service xml_document_info", "Error in process_input_pdf, unable to encode background images ", jobid, e)
+
+    return img_dfs,bg_files, xml_dfs, page_width, page_height ,working_dir, pdf_image_paths, bg_dfs
 
     
 def get_vdfs(pages, h_dfs, document_configs, debug=False):

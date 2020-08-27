@@ -26,7 +26,7 @@ def doc_pre_processing(filename, base_dir,jobid):
     '''
     log_info("Service main", "document preprocessing started  ===>", jobid)
 
-    img_dfs,bg_files,xml_dfs, page_width, page_height,working_dir, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir,jobid)
+    img_dfs,bg_files,xml_dfs, page_width, page_height,working_dir, pdf_image_paths, bg_dfs  = get_xml.process_input_pdf(filename, base_dir,jobid)
     multiple_pages = False
     pages          = len(xml_dfs)
     if pages > 1:
@@ -38,7 +38,7 @@ def doc_pre_processing(filename, base_dir,jobid):
 
     log_info("Service main", "document preprocessing successfully completed", jobid)
 
-    return img_dfs,bg_files,xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths
+    return img_dfs,bg_files,xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths, bg_dfs
 
 def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid,lang, page_width, page_height, pdf_image_paths):
     
@@ -95,23 +95,22 @@ def doc_structure_response(pages,bg_files, text_block_dfs,table_dfs,line_dfs,pag
     response = { 'result' : [] }
     for page_index in range(pages):
         #img_df     = img_dfs[page_index]
-        bg_img  = bg_files[page_index]
+        img_df     = bg_dfs[page_index]
         text_df    = text_block_dfs[page_index]
         table_df   = table_dfs[page_index]
         line_df    = line_dfs[page_index]
-        page_json  = response_per_page(text_df, bg_img,table_df,line_df, page_index, page_width, page_height)
+        page_json  = response_per_page(text_df, img_df, table_df,line_df, page_index, page_width, page_height)
         response['result'].append(page_json)
     
     log_info("Service main", "document structure response successfully completed", jobid)
 
     return response
 
-def response_per_page(p_df,bg_img,table_df,line_df,page_no,page_width,page_height):
+def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_height):
 
     p_df['block_id'] = range(len(p_df))
     res_dict           = {'page_no': page_no,'page_width': page_width,'page_height':page_height,'lines':[],'tables':[],'images':[],'text_blocks':[]}
-    #image_data       = process_image_df(img_df)
-    bg_img_data        = process_bg_image(bg_img)
+    image_data         = process_image_df(img_df)
     table_data         = process_table_df(table_df)
     line_data          = process_line_df(line_df)
     text_data          = df_to_json(p_df)
@@ -124,7 +123,7 @@ def response_per_page(p_df,bg_img,table_df,line_df,page_no,page_width,page_heigh
 
 
 def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR, lang='en'):
-    img_dfs,bg_files, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths = doc_pre_processing(file_name,base_dir,jobid)
+    img_dfs,bg_files, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths, bg_dfs = doc_pre_processing(file_name,base_dir,jobid)
 
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:
@@ -132,7 +131,7 @@ def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR, lang='en'):
 
     try:
         text_block_dfs, table_dfs, line_dfs = doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid, lang, page_width, page_height, pdf_image_paths)
-        response   =  doc_structure_response(pages, bg_files, text_block_dfs, table_dfs,line_dfs,page_width, page_height,jobid)
+        response   =  doc_structure_response(pages, bg_dfs, text_block_dfs, table_dfs,line_dfs,page_width, page_height,jobid)
         log_info("DocumentStructure","successfully received blocks in json response", jobid)
         return response
     except:

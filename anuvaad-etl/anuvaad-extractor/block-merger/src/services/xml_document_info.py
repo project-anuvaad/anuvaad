@@ -142,15 +142,10 @@ def get_xml_image_info(filepath):
 
     return dfs, width, height
 
-def get_xml_bg_image_info(bg_image_dir_path):
-    xml             = get_xmltree(filepath)
-    tag             = 'page'
-    pages           = get_specific_tags(xml, tag)
-    print('Total number of pages (%d) in file (%s)' % (len(pages), os.path.basename(filepath)))
+def get_pdf_bg_image_info(width, height, images_path):
     
-    width, height   = get_document_width_height(pages)
-    images_path     = read_directory_files(bg_image_dir_path)
-
+    print('Total number of background images (%d)' % (len(images_path)))
+    
     dfs             = []
     for image_path in images_path:
         t_ts        = []
