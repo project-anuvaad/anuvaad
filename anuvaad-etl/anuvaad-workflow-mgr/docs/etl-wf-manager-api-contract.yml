@@ -177,6 +177,9 @@ definitions:
       taskDetails:
         type: boolean
         description: The response will have taskDetails array if this value is set to 'True', otherwise the list will be empty.
+      error:
+        type: boolean
+        description: The response will have error details by default but can be excluded by setting this key to 'False'.
       workflowCodes:
         type: array
         items:

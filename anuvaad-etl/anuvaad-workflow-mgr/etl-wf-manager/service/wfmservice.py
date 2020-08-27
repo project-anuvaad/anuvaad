@@ -65,13 +65,14 @@ class WFMService:
         try:
             job_id = task_output["jobID"]
             job_details = self.get_job_details(job_id)
+            if not job_details:
+                log_error("This job is not found in the system, jobID: " + job_id, task_output)
+                return None
+            log_info(task_output["tool"] + log_msg_end, task_output)
             job_details = job_details[0]
             if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED":
-                log_info("The job is already completed/failed, jobID: " + job_id, task_output)
+                log_error("The job is already completed/failed, jobID: " + job_id, task_output)
                 return None
-            if 'metadata' not in task_output.keys():
-                task_output["metadata"] = job_details["metadata"]
-            log_info(task_output["tool"] + log_msg_end, task_output)
             if task_output["status"] != "FAILED":
                 next_step_details = self.get_next_step_details(task_output)
                 if next_step_details is not None:
@@ -114,7 +115,6 @@ class WFMService:
             next_task_input = wfmutils.get_tool_input(next_tool["name"], task_output["tool"], task_output, None)
             return next_task_input, next_tool
         except Exception as e:
-            log_exception("No next step found: ", task_output, e)
             return None
 
     # Method to update the status of job.
@@ -208,6 +208,9 @@ class WFMService:
         else:
             if req_criteria["taskDetails"] is False:
                 exclude["taskDetails"] = False
+        if 'error' in req_criteria.keys():
+            if req_criteria["error"] is False:
+                exclude["error"] = False
         return wfmrepo.search_job(criteria, exclude)
 
     # Method to get wf configs from the remote yaml file.
