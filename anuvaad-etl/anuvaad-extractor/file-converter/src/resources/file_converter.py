@@ -33,7 +33,8 @@ class FileConverter(Resource):
             userfile = UserFiles(created_by=request.headers.get('ad-userid'),
                                             filename=upload_id+'.pdf', created_on=datetime.now())
             userfile.save()
-        except LibreOfficeError:
+        except LibreOfficeError as e:
+            print(filepath)
             raise InternalServerErrorError({'message': 'Error when converting file to PDF'})
         except TimeoutExpired:
             raise InternalServerErrorError({'message': 'Timeout when converting file to PDF'})
