@@ -74,7 +74,7 @@ def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , foo
 
     
 
-def doc_structure_response(pages,bg_files, text_block_dfs,table_dfs,line_dfs,page_width, page_height,jobid):
+def doc_structure_response(pages,bg_dfs, text_block_dfs,table_dfs,line_dfs,page_width, page_height,jobid):
 
     '''
         To build required response in json format;
@@ -114,7 +114,7 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
     table_data         = process_table_df(table_df)
     line_data          = process_line_df(line_df)
     text_data          = df_to_json(p_df)
-    res_dict['images'] = bg_img_data
+    res_dict['images'] = image_data
     res_dict['tables'] = table_data
     res_dict['lines']  = line_data
     res_dict['text_blocks'] = text_data

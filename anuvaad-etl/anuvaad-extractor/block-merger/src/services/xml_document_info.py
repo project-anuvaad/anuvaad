@@ -155,7 +155,7 @@ def get_pdf_bg_image_info(width, height, images_path):
         ts          = []
         attribs     = []
         
-        p_t, p_l, p_w, p_h, t_t, t_l, t_w, t_h, img_base64 = (0, 0, width, height, get_image_base64(image_path))
+        t_t, t_l, t_w, t_h, img_base64 = (0, 0, width, height, get_image_base64(image_path))
         if img_base64 == None:
             continue
 
@@ -172,4 +172,4 @@ def get_pdf_bg_image_info(width, height, images_path):
         df.reset_index(inplace=True)
         dfs.append(normalize_page_xml_df(df, width, height))
 
-    return dfs, width, height
+    return dfs
