@@ -5,6 +5,8 @@ import pdf2image
 from lxml import etree
 from pathlib import Path
 import base64
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
 #import xml.etree.ElementTree as etree
 
 # extract pdf to image
@@ -57,7 +59,8 @@ def create_directory(path):
 
 # read files present in a directory
 def read_directory_files(path, pattern='*'):
-    files = [f for f in sorted(glob.glob(Path(os.path.join(path, pattern))))]
+    
+    files = [f for f in sorted(glob.glob( str(Path(os.path.join(path, pattern)))))]
     return files
 
 def get_subdirectories(path):
