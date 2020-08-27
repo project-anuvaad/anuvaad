@@ -1,6 +1,9 @@
 import json
 from src.services import get_xml
 import pandas as pd
+from anuvaad_auditor.loghandler import log_info
+import base64
+from anuvaad_auditor.loghandler import log_error
 
 def df_to_json(p_df):
     page_data = []
@@ -31,9 +34,9 @@ def df_to_json(p_df):
             
         return page_data
     except Exception as e :
-            log_error("Service df_to_json_converter", "Error in converting dataframe to json", None, e)
+            log_error("Service get_response", "Error in converting dataframe to json", None, e)
 
-def process_image_df(myDict,img_df):
+def process_image_df(img_df):
     image_data = []
     try:
         if len(img_df)>0:
@@ -47,9 +50,9 @@ def process_image_df(myDict,img_df):
         else:
             return None
     except Exception as e :
-            log_error("Service df_to_json_converter", "Error in processing image_df", None, e)
+            log_error("Service get_response", "Error in processing image_df", None, e)
 
-def process_table_df(myDict, table_df):
+def process_table_df(table_df):
     table_data = []
     try:
         if len(table_df)>0:
@@ -68,9 +71,9 @@ def process_table_df(myDict, table_df):
         else:
             return None
     except Exception as e :
-            log_error("Service df_to_json_converter", "Error in processing table_df", None, e)
+            log_error("Service get_response", "Error in processing table_df", None, e)
 
-def process_line_df(myDict,line_df):
+def process_line_df(line_df):
     line_data = []
     try:
         if len(line_df)>0:
@@ -83,4 +86,16 @@ def process_line_df(myDict,line_df):
         else:
             return None
     except Exception as e :
-            log_error("Service df_to_json_converter", "Error in processing line_df", None, e)
+            log_error("Service get_response", "Error in processing line_df", None, e)
+
+
+def process_bg_image(bg_img):
+    bg_image_data = []
+    try:
+        with open(bg_img, "rb") as img_file:
+            img_base64 = base64.b64encode(img_file.read())
+            img_base64 = img_base64.decode('ascii')
+            bg_image_data.append(img_base64)
+            return bg_image_data
+    except Exception as e :
+            log_error("Service get_response", "Error in processing bg_image", None, e)

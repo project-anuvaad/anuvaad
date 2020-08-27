@@ -22,7 +22,7 @@ from src.services.preprocess import  tag_heaader_footer_attrib
 from src.services.left_right_on_block import left_right_margin
 
 
-def create_pdf_processing_paths(filename, base_dir):
+def create_pdf_processing_paths(filename, base_dir, jobid):
     data_dir    = Path(os.path.join(base_dir, 'data'))
     ret         = create_directory(data_dir)
     if ret == False:
@@ -45,26 +45,27 @@ def create_pdf_processing_paths(filename, base_dir):
     
     return working_dir, True
 
-def extract_pdf_metadata(filename, working_dir, base_dir):
+def extract_pdf_metadata(filename, working_dir, base_dir,jobid):
     start_time          = time.time()
     pdf_filepath        = Path(os.path.join(base_dir, filename))
     try:
         pdf_image_paths   = extract_image_paths_from_pdf(pdf_filepath, working_dir)
         pdf_xml_dir         = extract_xml_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e :
-        log_error("Service xml_utils", "Error in extracting xml", None, e)
+        log_error("Service xml_utils", "Error in extracting xml", jobid, e)
     try:
         os.system('pdftohtml -c ' + str(pdf_filepath) + ' ' + str(working_dir) + '/')
     except Exception as e :
-        log_error("Service get_xml", "Error in extracting html", None, e)    
+        log_error("Service get_xml", "Error in extracting html", jobid, e)    
 
     try:
         pdf_bg_image_dir    = extract_html_bg_images_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e :
-        log_error("Service xml_utils", "Error in extracting html of bg images", None, e)
+        log_error("Service xml_utils", "Error in extracting html of bg images", jobid, e)
     
     end_time            = time.time()
     extraction_time     = end_time - start_time
+    
     xml_files           = read_directory_files(pdf_xml_dir, pattern='*.xml')
     bg_files            = read_directory_files(pdf_bg_image_dir, pattern='*.png')
     
@@ -72,19 +73,19 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
     
     return xml_files,  bg_files, pdf_image_paths
 
-def process_input_pdf(filename, base_dir):
+def process_input_pdf(filename, base_dir, jobid):
     '''
         - from the input extract following details
             - xml
             - images present in xml
             - background image present in each page
     '''
-    working_dir, ret = create_pdf_processing_paths(filename, base_dir)
+    working_dir, ret = create_pdf_processing_paths(filename, base_dir, jobid)
     if ret == False:
         log_info('Service get_xml','extract_pdf_processing_paths failed', None)
         return False
     
-    xml_file ,bg_files, pdf_image_paths   = extract_pdf_metadata(filename, working_dir,base_dir)
+    xml_file ,bg_files, pdf_image_paths   = extract_pdf_metadata(filename, working_dir,base_dir,jobid)
     if xml_file == None or len(xml_file)==0:
         log_info('Service get_xml','cannot extract xml metadata from pdf file', None)
         return False
@@ -95,11 +96,11 @@ def process_input_pdf(filename, base_dir):
     try :
         xml_dfs, page_width, page_height = get_xml_info(xml_file[0])
     except Exception as e :
-            log_error("Service xml_document_info", "Error in extracting text xml info", None, e)
+            log_error("Service xml_document_info", "Error in extracting text xml info", jobid, e)
     try :
         img_dfs, page_width, page_height = get_xml_image_info(xml_file[0])
     except Exception as e :
-            log_error("Service xml_document_info", "Error in extracting image xml info", None, e)
+            log_error("Service xml_document_info", "Error in extracting image xml info", jobid, e)
 
     return img_dfs,bg_files, xml_dfs, page_width, page_height ,working_dir, pdf_image_paths
 
