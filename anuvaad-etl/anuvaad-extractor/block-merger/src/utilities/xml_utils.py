@@ -3,13 +3,14 @@ import shutil
 import glob
 import pdf2image
 from lxml import etree
+from pathlib import Path
 import base64
 #import xml.etree.ElementTree as etree
 
 # extract pdf to image
 def extract_image_paths_from_pdf(filepath, workspace_output_dir):
-    working_dir = os.path.join(workspace_output_dir, 'images')
-    image_filename = os.path.splitext(os.path.basename(filepath))[0]
+    working_dir = Path(os.path.join(workspace_output_dir, 'images'))
+    image_filename = Path(os.path.splitext(os.path.basename(filepath))[0])
     
     create_directory(working_dir)
     images = pdf2image.convert_from_path(filepath, dpi=300, output_file=image_filename, output_folder=working_dir, fmt='jpg', paths_only=True)
@@ -17,28 +18,28 @@ def extract_image_paths_from_pdf(filepath, workspace_output_dir):
 
 # Execute pdftohtml to extract XML file of digital PDF
 def extract_xml_from_digital_pdf(filepath, workspace_output_dir):
-    working_dir    = os.path.join(workspace_output_dir, 'pdftohtml')
+    working_dir    = Path(os.path.join(workspace_output_dir, 'pdftohtml'))
     create_directory(working_dir)
 
-    working_dir     = os.path.join(working_dir, 'xml')
+    working_dir     = Path(os.path.join(working_dir, 'xml'))
     create_directory(working_dir)
 
-    shutil.copy(filepath, os.path.join(working_dir, os.path.basename(filepath)))
+    shutil.copy(filepath, Path(os.path.join(working_dir, os.path.basename(filepath))))
     
-    cmd = ('pdftohtml -xml %s' % (os.path.join(working_dir, os.path.basename(filepath))))
+    cmd = ('pdftohtml -xml %s' % (Path(os.path.join(working_dir, os.path.basename(filepath)))))
     os.system(cmd)
     return working_dir
 
 def extract_html_bg_images_from_digital_pdf(filepath, workspace_output_dir):
-    working_dir    = os.path.join(workspace_output_dir, 'pdftohtml')
+    working_dir    = Path(os.path.join(workspace_output_dir, 'pdftohtml'))
     create_directory(working_dir)
 
-    working_dir     = os.path.join(working_dir, 'html')
+    working_dir     = Path(os.path.join(working_dir, 'html'))
     create_directory(working_dir)
 
-    shutil.copy(filepath, os.path.join(working_dir, os.path.basename(filepath)))
+    shutil.copy(filepath, Path(os.path.join(working_dir, os.path.basename(filepath))))
     
-    cmd = ('pdftohtml -c %s' % (os.path.join(working_dir, os.path.basename(filepath))))
+    cmd = ('pdftohtml -c %s' % (Path(os.path.join(working_dir, os.path.basename(filepath)))))
     os.system(cmd)
     return working_dir
 
@@ -56,7 +57,7 @@ def create_directory(path):
 
 # read files present in a directory
 def read_directory_files(path, pattern='*'):
-    files = [f for f in sorted(glob.glob(os.path.join(path, pattern)))]
+    files = [f for f in sorted(glob.glob(Path(os.path.join(path, pattern))))]
     return files
 
 def get_subdirectories(path):

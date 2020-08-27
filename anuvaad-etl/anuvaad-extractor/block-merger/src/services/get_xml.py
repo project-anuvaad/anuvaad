@@ -49,6 +49,7 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
     start_time          = time.time()
     pdf_filepath        = Path(os.path.join(base_dir, filename))
     try:
+        pdf_image_paths   = extract_image_paths_from_pdf(pdf_filepath, working_dir)
         pdf_xml_dir         = extract_xml_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e :
         log_error("Service xml_utils", "Error in extracting xml", None, e)
@@ -69,7 +70,7 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
     
     log_info('Service get_xml','Successfully extracted xml, background images of file:', None)
     
-    return xml_files,  bg_files
+    return xml_files,  bg_files, pdf_image_paths
 
 def process_input_pdf(filename, base_dir):
     '''
@@ -83,7 +84,7 @@ def process_input_pdf(filename, base_dir):
         log_info('Service get_xml','extract_pdf_processing_paths failed', None)
         return False
     
-    xml_file ,bg_files   = extract_pdf_metadata(filename, working_dir,base_dir)
+    xml_file ,bg_files, pdf_image_paths   = extract_pdf_metadata(filename, working_dir,base_dir)
     if xml_file == None or len(xml_file)==0:
         log_info('Service get_xml','cannot extract xml metadata from pdf file', None)
         return False
@@ -100,7 +101,7 @@ def process_input_pdf(filename, base_dir):
     except Exception as e :
             log_error("Service xml_document_info", "Error in extracting image xml info", None, e)
 
-    return img_dfs,bg_files, xml_dfs, page_width, page_height ,working_dir
+    return img_dfs,bg_files, xml_dfs, page_width, page_height ,working_dir, pdf_image_paths
 
     
 def get_vdfs(pages, h_dfs, document_configs, debug=False):

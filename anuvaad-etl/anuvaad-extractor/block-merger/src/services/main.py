@@ -10,6 +10,7 @@ from anuvaad_auditor.loghandler import log_exception
 from src.services.preprocess import prepocess_pdf_regions
 from src.services.get_tables import  get_text_table_line_df
 from src.services.get_underline import get_underline
+from src.services.ocr_text_utilities import  tesseract_ocr
 from src.services.child_text_unify_to_parent import ChildTextUnify
 from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df
 from src.utilities.xml_utils import check_text
@@ -25,7 +26,7 @@ def doc_pre_processing(filename, base_dir,jobid):
     '''
     log_info("Service main", "document preprocessing started  ===>", jobid)
 
-    img_dfs,bg_files,xml_dfs, page_width, page_height,working_dir  = get_xml.process_input_pdf(filename, base_dir)
+    img_dfs,bg_files,xml_dfs, page_width, page_height,working_dir, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir)
     multiple_pages = False
     pages          = len(xml_dfs)
     if pages > 1:
@@ -37,9 +38,9 @@ def doc_pre_processing(filename, base_dir,jobid):
 
     log_info("Service main", "document preprocessing successfully completed", jobid)
 
-    return img_dfs,bg_files,xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height
+    return img_dfs,bg_files,xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths
 
-def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid):
+def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid,lang, page_width, page_height, pdf_image_paths):
     
     '''
         Document structure analysis to get:
@@ -60,11 +61,18 @@ def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , foo
     v_dfs          = get_xml.get_vdfs(pages, h_dfs, config.DOCUMENT_CONFIGS)
     p_dfs          = get_xml.get_pdfs(pages, v_dfs, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)
     p_dfs , line_dfs            = get_underline(p_dfs,line_dfs,jobid)
+    #if lang  in ['en','hi']:
+        #ocr_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang )
+
+        #return ocr_dfs, table_dfs, line_dfs
+    #else:
     text_block_dfs = text_merger.unify_child_text_blocks(pages, p_dfs, config.DROP_TEXT)
+
+    return text_block_dfs, table_dfs, line_dfs
 
     log_info("Service main", "document structure analysis successfully completed", jobid)
 
-    return text_block_dfs, table_dfs, line_dfs
+    
 
 def doc_structure_response(pages,img_dfs, text_block_dfs,table_dfs,line_dfs,page_width, page_height,jobid):
 
@@ -112,15 +120,16 @@ def response_per_page(p_df,img_df,table_df,line_df,page_no,page_width,page_heigh
 
     return myDict
 
-def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR):
-    img_dfs, bg_files, xml_dfs, pages, working_dir, header_region, footer_region, multiple_pages, page_width, page_height = doc_pre_processing(file_name, base_dir, jobid)
+
+def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR, lang='en'):
+    img_dfs,bg_files, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths = doc_pre_processing(file_name,base_dir,jobid)
 
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:
         raise ServiceError(400, "Text extraction failed. Either document is empty or is scanned.")
 
     try:
-        text_block_dfs, table_dfs, line_dfs = doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid)
+        text_block_dfs, table_dfs, line_dfs = doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid, lang, page_width, page_height, pdf_image_paths)
         response   =  doc_structure_response(pages, img_dfs, text_block_dfs, table_dfs,line_dfs,page_width, page_height,jobid)
         log_info("DocumentStructure","successfully received blocks in json response", jobid)
         return response

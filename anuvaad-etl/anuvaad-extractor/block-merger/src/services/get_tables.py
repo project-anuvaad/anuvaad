@@ -101,7 +101,7 @@ def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
     for page_index in range(pages):
         in_df  = xml_dfs[page_index]
         img_df = img_dfs[page_index]
-        table_image = os.path.join(working_dir, (page_num_correction(page_index , 3) + '.png'))
+        table_image = Path(os.path.join(working_dir, (page_num_correction(page_index , 3) + '.png')))
         try :
             table_image = cv2.imread(table_image, 0)
         except Exception as e :
