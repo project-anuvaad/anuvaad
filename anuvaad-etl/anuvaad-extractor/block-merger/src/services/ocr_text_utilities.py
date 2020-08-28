@@ -44,10 +44,17 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang='h
 
 
 def tesseract_ocr(pdf_image_paths, desired_width, desired_height, p_dfs, lang ):
+
+    start_time          = time.time()
+
     ocr_dfs = []
     for i, p_df in enumerate(p_dfs):
         filepath   = pdf_image_paths[i]
         df_updated = extract_text_from_image(filepath, desired_width, desired_height, p_df, lang)
         ocr_dfs.append(df_updated)
+
+    end_time            = time.time()
+    extraction_time     = end_time - start_time
+    
     return ocr_dfs
 

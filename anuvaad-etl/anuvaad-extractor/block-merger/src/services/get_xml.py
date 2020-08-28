@@ -26,22 +26,23 @@ def create_pdf_processing_paths(filename, base_dir, jobid):
     data_dir    = Path(os.path.join(base_dir, 'data'))
     ret         = create_directory(data_dir)
     if ret == False:
-        log_info('Service get_xml','data directory creation failed', None)
+        log_info('Service get_xml','data directory creation failed', jobid)
         return False
     
     output_dir  = Path(os.path.join(data_dir, 'output'))
     ret         = create_directory(output_dir)
     if ret == False:
-        log_info('Service get_xml','output directory creation failed', None)
+        log_info('Service get_xml','output directory creation failed', jobid)
         return False
+
     working_dir = Path(os.path.join(output_dir, os.path.splitext(filename)[0]+'_'+str(uuid.uuid1())))
     ret         = create_directory(working_dir)
     if ret == False:
         
-        log_info('Service get_xml','working directory creation failed', None)
+        log_info('Service get_xml','working directory creation failed', jobid)
         return False
     
-    log_info('Service get_xml','created processing directories successfully', None)
+    log_info('Service get_xml','created processing directories successfully', jobid)
     
     return working_dir, True
 
@@ -69,7 +70,7 @@ def extract_pdf_metadata(filename, working_dir, base_dir,jobid):
     xml_files           = read_directory_files(pdf_xml_dir, pattern='*.xml')
     bg_files            = read_directory_files(pdf_bg_image_dir, pattern='*.png')
     
-    log_info('Service get_xml','Successfully extracted xml, background images of file:', None)
+    log_info('Service get_xml','Successfully extracted xml, background images of file:', jobid)
     
     return xml_files,  bg_files, pdf_image_paths
 
@@ -82,12 +83,12 @@ def process_input_pdf(filename, base_dir, jobid):
     '''
     working_dir, ret = create_pdf_processing_paths(filename, base_dir, jobid)
     if ret == False:
-        log_info('Service get_xml','extract_pdf_processing_paths failed', None)
+        log_info('Service get_xml','extract_pdf_processing_paths failed', jobid)
         return False
     
     xml_file ,bg_files, pdf_image_paths   = extract_pdf_metadata(filename, working_dir,base_dir,jobid)
-    if xml_file == None or len(xml_file)==0:
-        log_info('Service get_xml','cannot extract xml metadata from pdf file', None)
+    if xml_file == None or bg_files == None:
+        log_info('Service get_xml','cannot extract xml metadata from pdf file', jobid)
         return False
     '''
         - parse xml to create df per page for text and table block.
@@ -105,9 +106,9 @@ def process_input_pdf(filename, base_dir, jobid):
     try:
         bg_dfs  = get_pdf_bg_image_info(page_width, page_height, bg_files)
     except Exception as e:
-        log_error("Service xml_document_info", "Error in process_input_pdf, unable to encode background images ", jobid, e)
+        log_error("Service xml_document_info", "Error in get_pdf_bg_image_info, unable to encode background images ", jobid, e)
 
-    return img_dfs,bg_files, xml_dfs, page_width, page_height ,working_dir, pdf_image_paths, bg_dfs
+    return img_dfs, xml_dfs, page_width, page_height ,working_dir, pdf_image_paths, bg_dfs
 
     
 def get_vdfs(pages, h_dfs, document_configs, debug=False):

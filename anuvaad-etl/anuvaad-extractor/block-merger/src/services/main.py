@@ -26,7 +26,7 @@ def doc_pre_processing(filename, base_dir,jobid):
     '''
     log_info("Service main", "document preprocessing started  ===>", jobid)
 
-    img_dfs,bg_files,xml_dfs, page_width, page_height,working_dir, pdf_image_paths, bg_dfs  = get_xml.process_input_pdf(filename, base_dir,jobid)
+    img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_image_paths, bg_dfs  = get_xml.process_input_pdf(filename, base_dir,jobid)
     multiple_pages = False
     pages          = len(xml_dfs)
     if pages > 1:
@@ -38,7 +38,7 @@ def doc_pre_processing(filename, base_dir,jobid):
 
     log_info("Service main", "document preprocessing successfully completed", jobid)
 
-    return img_dfs,bg_files,xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths, bg_dfs
+    return img_dfs,xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths, bg_dfs
 
 def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid,lang, page_width, page_height, pdf_image_paths):
     
@@ -123,7 +123,7 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
 
 
 def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR, lang='en'):
-    img_dfs,bg_files, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths, bg_dfs = doc_pre_processing(file_name,base_dir,jobid)
+    img_dfs, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths, bg_dfs = doc_pre_processing(file_name,base_dir,jobid)
 
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:
