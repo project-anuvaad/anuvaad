@@ -120,7 +120,8 @@ definitions:
     properties:
       input:
         description: Details of the input files of which tokenised sentences has to be generated
-        $ref: '#/definitions/FileInput'
+        example: 
+          $ref: '#/definitions/FileInput'
       jobID:   
         type: string
         description: A unique job ID generated for complete workflow. i.e.received from previous operation.  
@@ -171,7 +172,8 @@ definitions:
       output:
         type: object
         description: Final output of this process.
-        $ref: '#/definitions/FileOutput'
+        example:
+          $ref: '#/definitions/FileOutput'
       workflowCode:
         type: string
         description: Received from previous operation. Code of the workflow that has to be picked to process this input. 
