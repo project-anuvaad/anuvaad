@@ -13,7 +13,7 @@ ENABLE_CORS = False
 download_folder = 'upload'
 
 ALLOWED_FILE_TYPES = ['application/vnd.openxmlformats-officedocument.presentationml.presentation','text/html','application/vnd.ms-excel','application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.oasis.opendocument.spreadsheet','application/zip','application/octet-stream','application/msword','application/pdf','image/x-ms-bmp','image/jpeg','image/jpg','image/png','text/plain','application/vnd.openxmlformats-officedocument.wordprocessingml.document']
-ALLOWED_FILE_EXTENSIONS = ['pdf','txt','xls','xlsx','ods','pptx','ppt','doc','docx','docm','png','jpg','jpeg','bmp']
+ALLOWED_FILE_EXTENSIONS = ['xlm', 'xla', 'xls' ,'xlsx' ,'excel','xlsm','xlt','xltx','xlsb','odt','pdf','txt','ods','pptx','ppt','doc','docx','docm','png','jpg','jpeg','bmp']
 
 #mongo
 MONGO_IP = 'MONGO_IP'
