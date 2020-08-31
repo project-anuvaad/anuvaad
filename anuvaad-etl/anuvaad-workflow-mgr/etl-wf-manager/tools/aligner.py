@@ -23,7 +23,7 @@ class Aligner:
                 "source": source,
                 "target":  target
             }
-        tok_input = {
+        aligner_input = {
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
             "stepOrder": 0,
@@ -31,8 +31,8 @@ class Aligner:
             "input": tool_input,
             "metadata": wf_input["metadata"]
         }
-        tok_input["metadata"]["module"] = tool_tokeniser
-        return tok_input
+        aligner_input["metadata"]["module"] = tool_aligner
+        return aligner_input
 
     # Returns a json of the format accepted by Aligner based on the predecessor.
     def get_aligner_input(self, task_output, predecessor):
@@ -55,7 +55,7 @@ class Aligner:
                 "target":  target
             }
 
-        tok_input = {
+        aligner_input = {
             "jobID": task_output["jobID"],
             "workflowCode": task_output["workflowCode"],
             "stepOrder": task_output["stepOrder"],
@@ -63,5 +63,5 @@ class Aligner:
             "input": tool_input,
             "metadata": task_output["metadata"]
         }
-        tok_input["metadata"]["module"] = tool_tokeniser
-        return tok_input
+        aligner_input["metadata"]["module"] = tool_aligner
+        return aligner_input

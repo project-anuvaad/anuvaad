@@ -27,10 +27,9 @@ class AlignmentUtils:
         pass
 
     # Utility to parse input files.
-    def parse_input_file(self, path_eng, path_indic, object_in):
+    def parse_input_file(self, path_eng, path_indic):
         source = []
         target_corp = []
-        log_info("Parsing Input Files.....", object_in)
         if two_files:
             with codecs.open(path_eng, 'r', file_encoding) as txt_file:
                 for row in txt_file:
@@ -48,7 +47,6 @@ class AlignmentUtils:
                     if len(row) != 0:
                         source.append(row[0])
                         target_corp.append(row[1])
-        log_info("Parsing input Done.", object_in)
         return source, target_corp
 
     # Utility to write the output to a file

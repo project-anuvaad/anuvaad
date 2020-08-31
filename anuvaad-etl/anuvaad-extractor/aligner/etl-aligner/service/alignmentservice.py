@@ -153,6 +153,7 @@ class AlignmentService:
     # Service layer to parse the input file
     def parse_in(self, full_path, full_path_indic, object_in, iswf):
         try:
+            log_info("Parsing Input Files.....", object_in)
             source, target_corp = alignmentutils.parse_input_file(full_path, full_path_indic, object_in)
             return source, target_corp
         except Exception as e:
@@ -167,17 +168,18 @@ class AlignmentService:
     # Wrapper to build sentence embeddings
     def build_embeddings(self, source, target_corp, object_in, iswf):
         try:
+            log_info("Fetching embeddings for the sentences.....", object_in)
             src_loc = object_in["input"]["source"]["locale"]
             trgt_loc = object_in["input"]["target"]["locale"]
             source_embeddings, target_embeddings = self.build_index(source, target_corp, src_loc, trgt_loc)
             return source_embeddings, target_embeddings
         except Exception as e:
-            log_exception("Exception while vectorising the sentences: ", object_in, e)
-            self.update_job_status("FAILED", object_in, "Exception while vectorising sentences")
+            log_exception("Exception fetching embeddings for the sentences: ", object_in, e)
+            self.update_job_status("FAILED", object_in, "Exception fetching embeddings for the sentences")
             if iswf:
-                util.error_handler("LASER_ERROR", "Exception while vectorising sentences: " + str(e), object_in, True)
+                util.error_handler("LASER_ERROR", "Exception fetching embeddings for the sentences: " + str(e), object_in, True)
             else:
-                util.error_handler("LASER_ERROR", "Exception while vectorising sentences: " + str(e), object_in, False)
+                util.error_handler("LASER_ERROR", "Exception fetching embeddings for the sentences: " + str(e), object_in, False)
 
             return None
 
@@ -187,6 +189,7 @@ class AlignmentService:
         manual_dict = {}
         lines_with_no_match = []
         try:
+            log_info("Aligning the sentences.....", object_in)
             for i, embedding in enumerate(source_embeddings):
                 trgt = self.get_target_sentence(target_embeddings, embedding, source[i])
                 if trgt is not None:
@@ -210,6 +213,7 @@ class AlignmentService:
     # Service layer to generate output
     def generate_output(self, source_reformatted, target_refromatted, manual_src, manual_trgt, nomatch_src, path, path_indic, object_in):
         try:
+            log_info("Generating the output.....", object_in)
             output_source = directory_path + file_path_delimiter + res_suffix + path
             output_target = directory_path + file_path_delimiter + res_suffix + path_indic
             output_manual_src = directory_path + file_path_delimiter + man_suffix + path
