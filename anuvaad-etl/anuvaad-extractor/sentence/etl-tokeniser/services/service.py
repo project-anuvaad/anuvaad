@@ -53,7 +53,7 @@ class Tokenisation(object):
                 raise ServiceError(400, "Tokenisation failed. Something went wrong during tokenisation.")
 
     def adding_tokenised_text_blockmerger(self, input_json_data_pagewise):
-        blocks = input_json_data_pagewise['blocks']
+        blocks = input_json_data_pagewise['text_blocks']
         for item in blocks:
             text_data = item['text']
             tokenised_text = AnuvaadEngTokenizer().tokenize(text_data)

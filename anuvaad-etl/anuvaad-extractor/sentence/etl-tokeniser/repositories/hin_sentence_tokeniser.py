@@ -36,6 +36,7 @@ class AnuvaadHinTokenizer(object):
         self._regex_search_texts = []
         self._dot_abbrevations = []
         self._date_abbrevations = []
+        self._time_abbreviations = []
         self._table_points_abbrevations = []
         self._brackets_abbrevations = []
         self._dot_with_char_abbrevations = []
@@ -49,6 +50,7 @@ class AnuvaadHinTokenizer(object):
         print('--------------Process started-------------')
         text = self.serialize_with_abbrevations(text)
         text = self.serialize_dates(text)
+        text = self.serialize_time(text)
         text = self.serialize_table_points(text)
         text = self.serialize_url(text)
         text = self.serialize_pattern(text)
@@ -65,6 +67,7 @@ class AnuvaadHinTokenizer(object):
         output = []
         for se in sentences:
             se = self.deserialize_dates(se)
+            se = self.deserialize_time(se)
             se = self.deserialize_pattern(se)
             se = self.deserialize_url(se)
             se = self.deserialize_end(se)
@@ -193,7 +196,7 @@ class AnuvaadHinTokenizer(object):
         return text
     
     def serialize_dates(self, text):
-        patterns = re.findall(r'[0-9]{,2}[.][0-9]{,2}[.][0-9]{2,4}',text)
+        patterns = re.findall(r'[0-9]{1,4}[.][0-9]{1,2}[.][0-9]{1,4}',text)   # [0-9]{,2}[.][0-9]{,2}[.][0-9]{2,4}   [0-9]{1,4}[.][0-9]{1,2}[.][0-9]{1,4}
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -212,6 +215,26 @@ class AnuvaadHinTokenizer(object):
                 index+=1
         return text
 
+    def serialize_time(self, text):
+        patterns = re.findall(r'[0-9]{1,2}[:][0-9]{1,2}',text)
+        index = 0
+        if patterns is not None and isinstance(patterns, list):
+            for pattern in patterns:
+                pattern_obj = re.compile(re.escape(pattern))
+                self._time_abbreviations.append(pattern)
+                text = pattern_obj.sub('TI_'+str(index)+'_ME', text)
+                index+=1
+        return text
+
+    def deserialize_time(self, text):
+        index = 0
+        if self._time_abbreviations is not None and isinstance(self._time_abbreviations, list):
+            for pattern in self._time_abbreviations:
+                pattern_obj = re.compile(re.escape('TI_'+str(index)+'_ME'), re.IGNORECASE)
+                text = pattern_obj.sub(pattern, text)
+                index+=1
+        return text
+    
     def serialize_quotes_with_number(self, text):
         patterns = re.findall(r'([ ][“][0-9a-zA-Z\u0900-\u097F]{1,}[.])',text)
         index = 0
