@@ -91,7 +91,7 @@ class AlignmentService:
 
     # Wrapper method to categorise sentences into MATCH, ALMOST-MATCH and NO-MATCH
     def process(self, object_in, iswf):
-        log_info("process", "Alignment process starts for job: " + str(object_in["jobID"]), object_in["jobID"])
+        log_info("Alignment process starts for job: " + str(object_in["jobID"]), object_in)
         source_reformatted = []
         target_refromatted = []
         manual_src = []
@@ -126,7 +126,7 @@ class AlignmentService:
                     manual_trgt.append(target_corp[manual_dict[key][0]])
             try:
                 output_dict = self.generate_output(source_reformatted, target_refromatted, manual_src, manual_trgt,
-                                           lines_with_no_match, path, path_indic)
+                                           lines_with_no_match, path, path_indic, object_in)
                 if output_dict is not None:
                     result = self.build_final_response(path, path_indic, output_dict, object_in)
                     self.update_job_details(result, False)
@@ -137,31 +137,31 @@ class AlignmentService:
                     if iswf:
                         util.error_handler("OUTPUT_ERROR", "Exception while writing the output", object_in, True)
                     else:
-                        util.error_handler("OUTPUT_ERROR", "Exception while writing the output", None, False)
+                        util.error_handler("OUTPUT_ERROR", "Exception while writing the output", object_in, False)
             except Exception as e:
-                log_exception("process", "Exception while writing the output: ", object_in["jobID"], e)
+                log_exception("Exception while writing the output: ", object_in, e)
                 self.update_job_status("FAILED", object_in, "Exception while writing the output")
                 if iswf:
                     util.error_handler("OUTPUT_ERROR", "Exception while writing the output", object_in, True)
                 else:
-                    util.error_handler("OUTPUT_ERROR", "Exception while writing the output", None, False)
+                    util.error_handler("OUTPUT_ERROR", "Exception while writing the output", object_in, False)
                 return {}
-            log_info("process", "Sentences aligned Successfully! JOB ID: " + str(object_in["jobID"]), object_in["jobID"])
+            log_info("Sentences aligned Successfully! JOB ID: " + str(object_in["jobID"]), object_in)
         else:
             return {}
 
     # Service layer to parse the input file
     def parse_in(self, full_path, full_path_indic, object_in, iswf):
         try:
-            source, target_corp = alignmentutils.parse_input_file(full_path, full_path_indic)
+            source, target_corp = alignmentutils.parse_input_file(full_path, full_path_indic, object_in)
             return source, target_corp
         except Exception as e:
-            log_exception("parse_in", "Exception while parsing the input: ", object_in["jobID"], e)
+            log_exception("Exception while parsing the input: ", object_in, e)
             self.update_job_status("FAILED", object_in, "Exception while parsing the input")
             if iswf:
                 util.error_handler("INPUT_ERROR", "Exception while parsing the input: " + str(e), object_in, True)
             else:
-                util.error_handler("INPUT_ERROR", "Exception while parsing the input: " + str(e), None, False)
+                util.error_handler("INPUT_ERROR", "Exception while parsing the input: " + str(e), object_in, False)
             return None, None
 
     # Wrapper to build sentence embeddings
@@ -172,12 +172,12 @@ class AlignmentService:
             source_embeddings, target_embeddings = self.build_index(source, target_corp, src_loc, trgt_loc)
             return source_embeddings, target_embeddings
         except Exception as e:
-            log_exception("build_embeddings", "Exception while vectorising the sentences: ", object_in["jobID"], e)
+            log_exception("Exception while vectorising the sentences: ", object_in, e)
             self.update_job_status("FAILED", object_in, "Exception while vectorising sentences")
             if iswf:
                 util.error_handler("LASER_ERROR", "Exception while vectorising sentences: " + str(e), object_in, True)
             else:
-                util.error_handler("LASER_ERROR", "Exception while vectorising sentences: " + str(e), None, False)
+                util.error_handler("LASER_ERROR", "Exception while vectorising sentences: " + str(e), object_in, False)
 
             return None
 
@@ -198,17 +198,17 @@ class AlignmentService:
                     lines_with_no_match.append(source[i])
             return match_dict, manual_dict, lines_with_no_match
         except Exception as e:
-            log_exception("get_alignments", "Exception while aligning sentences: ", object_in["jobID"], e)
+            log_exception("Exception while aligning sentences: ", object_in, e)
             self.update_job_status("FAILED", object_in, "Exception while aligning sentences")
             if iswf:
                 util.error_handler("ALIGNMENT_ERROR", "Exception while aligning sentences: " + str(e), object_in, True)
             else:
-                util.error_handler("ALIGNMENT_ERROR", "Exception while aligning sentences: " + str(e), None, False)
+                util.error_handler("ALIGNMENT_ERROR", "Exception while aligning sentences: " + str(e), object_in, False)
             return None
 
 
     # Service layer to generate output
-    def generate_output(self, source_reformatted, target_refromatted, manual_src, manual_trgt, nomatch_src, path, path_indic):
+    def generate_output(self, source_reformatted, target_refromatted, manual_src, manual_trgt, nomatch_src, path, path_indic, object_in):
         try:
             output_source = directory_path + file_path_delimiter + res_suffix + path
             output_target = directory_path + file_path_delimiter + res_suffix + path_indic
@@ -221,24 +221,24 @@ class AlignmentService:
             alignmentutils.write_output(manual_trgt, output_manual_trgt)
             alignmentutils.write_output(nomatch_src, output_nomatch)
             return self.get_response_paths(output_source, output_target,
-                                           output_manual_src, output_manual_trgt, output_nomatch)
+                                           output_manual_src, output_manual_trgt, output_nomatch, object_in)
         except Exception as e:
-            log_exception("generate_output", "Exception while writing output to files: ", None, e)
+            log_exception("Exception while writing output to files: ", object_in, e)
             return None
 
     # Service layer to upload the files generated as output to the alignment process
-    def get_response_paths(self, output_src, output_trgt, output_manual_src, output_manual_trgt, output_nomatch):
+    def get_response_paths(self, output_src, output_trgt, output_manual_src, output_manual_trgt, output_nomatch, object_in):
         try:
-            output_src = alignmentutils.upload_file_binary(output_src)
-            output_trgt = alignmentutils.upload_file_binary(output_trgt)
-            output_manual_src = alignmentutils.upload_file_binary(output_manual_src)
-            output_manual_trgt = alignmentutils.upload_file_binary(output_manual_trgt)
-            output_nomatch = alignmentutils.upload_file_binary(output_nomatch)
+            output_src = alignmentutils.upload_file_binary(output_src, object_in)
+            output_trgt = alignmentutils.upload_file_binary(output_trgt, object_in)
+            output_manual_src = alignmentutils.upload_file_binary(output_manual_src, object_in)
+            output_manual_trgt = alignmentutils.upload_file_binary(output_manual_trgt, object_in)
+            output_nomatch = alignmentutils.upload_file_binary(output_nomatch, object_in)
             output_dict = {"source": output_src, "target": output_trgt, "manual_src": output_manual_src,
                            "manual_trgt": output_manual_trgt, "nomatch": output_nomatch}
             return output_dict
         except Exception as e:
-            log_exception("get_response_paths", "Exception while uploading output files: ", None, e)
+            log_exception("Exception while uploading output files: ", object_in, e)
             return None
 
     # Response formatter

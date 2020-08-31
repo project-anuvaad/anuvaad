@@ -27,10 +27,10 @@ class AlignmentUtils:
         pass
 
     # Utility to parse input files.
-    def parse_input_file(self, path_eng, path_indic):
+    def parse_input_file(self, path_eng, path_indic, object_in):
         source = []
         target_corp = []
-        log_info("parse_input_file", "Parsing Input Files.....", None)
+        log_info("Parsing Input Files.....", object_in)
         if two_files:
             with codecs.open(path_eng, 'r', file_encoding) as txt_file:
                 for row in txt_file:
@@ -48,7 +48,7 @@ class AlignmentUtils:
                     if len(row) != 0:
                         source.append(row[0])
                         target_corp.append(row[1])
-        log_info("parse_input_file", "Done.", None)
+        log_info("Parsing input Done.", object_in)
         return source, target_corp
 
     # Utility to write the output to a file
@@ -82,7 +82,7 @@ class AlignmentUtils:
         return b
 
     # Utility to upload files to anuvaad's upload service
-    def upload_file_binary(self, file):
+    def upload_file_binary(self, file, object_in):
         data = open(file, 'rb')
         response = requests.post(url=file_upload_url, data=data,
                                  headers={'Content-Type': 'application/x-www-form-urlencoded'})
@@ -92,7 +92,7 @@ class AlignmentUtils:
                 if key == "data":
                     return value["filepath"]
         else:
-            log_error("upload_file_binary", "Upload Failed!", None, None)
+            log_error("Upload Failed!", object_in, None)
 
     # Utility to decide (min,max) cs thresholds based on length of setences.
     def get_cs_on_sen_cat(self, sentence):
@@ -118,11 +118,9 @@ class AlignmentUtils:
     # Builds the error and passes it to error_manager
     def error_handler(self, code, message, object_in, iswf):
         if iswf:
-            job_id = object_in["jobID"]
-            task_id = object_in["taskID"]
-            state = "SENTENCES-ALIGNED"
-            status = "FAILED"
-            post_error_wf(code, message, job_id, task_id, state, status, None)
+            object_in["state"] = "SENTENCES-ALIGNED"
+            object_in["status"] = "FAILED"
+            post_error_wf(code, message, object_in, None)
         else:
             error = post_error(code, message, None)
             return error

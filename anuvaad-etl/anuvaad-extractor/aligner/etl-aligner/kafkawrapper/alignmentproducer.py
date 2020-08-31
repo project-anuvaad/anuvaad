@@ -4,6 +4,7 @@ import logging
 from kafka import KafkaProducer
 
 from configs.alignerconfig import kafka_bootstrap_server_host
+from utilities.alignmentutils import AlignmentUtils
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
@@ -26,8 +27,11 @@ class Producer:
     def push_to_queue(self, object_in, topic):
         producer = self.instantiate()
         try:
-            producer.send(topic, value=object_in)
-            log_info("push_to_queue", "Pushed to topic: " + topic, object_in["jobID"])
+            if object_in:
+                producer.send(topic, value=object_in)
+                log_info("Pushed to topic: " + topic, object_in)
             producer.flush()
         except Exception as e:
-            log_exception("push_to_queue", "Exception while producing: ", None, e)
+            util = AlignmentUtils()
+            log_exception("Exception while producing: ", None, e)
+            util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None, False)

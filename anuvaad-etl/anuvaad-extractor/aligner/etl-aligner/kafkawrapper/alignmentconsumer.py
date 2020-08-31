@@ -2,7 +2,6 @@ import json
 import logging
 
 from kafka import KafkaConsumer, TopicPartition
-import os
 from service.alignmentservice import AlignmentService
 from logging.config import dictConfig
 from utilities.alignmentutils import AlignmentUtils
@@ -48,16 +47,17 @@ class Consumer:
         consumer = self.instantiate(topics)
         service = AlignmentService()
         util = AlignmentUtils()
-        log_info("consume", "Align Consumer running.......", None)
+        log_info("Align Consumer running.......", None)
         while True:
             for msg in consumer:
                 try:
                     data = msg.value
-                    log_info("consume", "Received on Topic: " + msg.topic, data["jobID"])
-                    service.process(data, False)
+                    if data:
+                        log_info("Received on Topic: " + msg.topic, data)
+                        service.process(data, False)
                     break
                 except Exception as e:
-                    log_exception("consume", "Exception while consuming: ", None, e)
+                    log_exception("Exception while consuming: ", None, e)
                     util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None, False)
                     break
 
@@ -66,7 +66,7 @@ class Consumer:
         try:
             return json.loads(x.decode('utf-8'))
         except Exception as e:
-            log_exception("handle_json", "Exception while deserialising: ", None, e)
+            log_exception("Exception while deserialising: ", None, e)
             return {}
 
     # Log config

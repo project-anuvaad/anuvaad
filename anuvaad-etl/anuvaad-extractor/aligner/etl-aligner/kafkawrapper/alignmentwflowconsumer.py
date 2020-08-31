@@ -1,9 +1,7 @@
 import json
 import logging
-import traceback
 
 from kafka import KafkaConsumer, TopicPartition
-import os
 from service.alignmentservice import AlignmentService
 from utilities.alignmentutils import AlignmentUtils
 from logging.config import dictConfig
@@ -50,17 +48,18 @@ class WflowConsumer:
         consumer = self.instantiate(topics)
         service = AlignmentService()
         util = AlignmentUtils()
-        log_info("consume", "Align WFM Consumer running.......", None)
+        log_info("Align WFM Consumer running.......", None)
         while True:
             for msg in consumer:
                 data = {}
                 try:
                     data = msg.value
-                    log_info("consume", "Received on Topic: " + msg.topic, data["jobID"])
-                    service.wf_process(data)
+                    if data:
+                        log_info("Received on Topic: " + msg.topic, data)
+                        service.wf_process(data)
                     break
                 except Exception as e:
-                    log_exception("consume", "Exception while consuming: ", data["jobID"], e)
+                    log_exception("Exception while consuming: ", data, e)
                     data["taskID"] = "taskID"
                     util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming", data, True)
                     break
