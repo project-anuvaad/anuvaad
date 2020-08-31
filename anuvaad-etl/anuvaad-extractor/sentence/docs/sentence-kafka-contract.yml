@@ -9,13 +9,13 @@ info:
     
     
 usecase:
-  intiate-html2json:
+  intiate-tokeniser:
     input-topic: anuvaad-dp-tools-tokeniser-input
     description: In order to get the input for tokeniser tool asynchronously, the below mentioned JSON has to be listened from the above mentioned topic. The tokeniser will consume this data and trigger the tokeniser operation.
     $ref: '#/definitions/TokenisationRequest'
     
-  complete-html2json:
-    input-topic: anuvaad-dp-tools-tokeniser-output
+  complete-tokeniser:
+    output-topic: anuvaad-dp-tools-tokeniser-output
     description: In order to get the output for tokeniser tool asynchronously, the below mentioned JSON has to be pushed to the above mentioned topic.
     $ref: '#/definitions/TokenisationResponse'
     
