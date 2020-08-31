@@ -33,5 +33,5 @@ class Producer:
             producer.flush()
         except Exception as e:
             util = AlignmentUtils()
-            log_exception("Exception while producing: ", None, e)
+            log_exception("Exception while producing: " + str(e), None, e)
             util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None, False)

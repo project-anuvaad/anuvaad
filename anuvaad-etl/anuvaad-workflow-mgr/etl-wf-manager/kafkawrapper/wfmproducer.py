@@ -33,5 +33,5 @@ class Producer:
                 log_info("Pushing to topic: " + topic, object_in)
             producer.flush()
         except Exception as e:
-            log_exception("Exception while producing: ", object_in, e)
+            log_exception("Exception while producing: " + str(e), object_in, e)
             post_error("WFLOW_PRODUCER_ERROR", "Exception while producing: " + str(e), None)

@@ -139,7 +139,7 @@ class AlignmentService:
                     else:
                         util.error_handler("OUTPUT_ERROR", "Exception while writing the output", object_in, False)
             except Exception as e:
-                log_exception("Exception while writing the output: ", object_in, e)
+                log_exception("Exception while writing the output: " + str(e), object_in, e)
                 self.update_job_status("FAILED", object_in, "Exception while writing the output")
                 if iswf:
                     util.error_handler("OUTPUT_ERROR", "Exception while writing the output", object_in, True)
@@ -154,10 +154,10 @@ class AlignmentService:
     def parse_in(self, full_path, full_path_indic, object_in, iswf):
         try:
             log_info("Parsing Input Files.....", object_in)
-            source, target_corp = alignmentutils.parse_input_file(full_path, full_path_indic, object_in)
+            source, target_corp = alignmentutils.parse_input_file(full_path, full_path_indic)
             return source, target_corp
         except Exception as e:
-            log_exception("Exception while parsing the input: ", object_in, e)
+            log_exception("Exception while parsing the input: " + str(e), object_in, e)
             self.update_job_status("FAILED", object_in, "Exception while parsing the input")
             if iswf:
                 util.error_handler("INPUT_ERROR", "Exception while parsing the input: " + str(e), object_in, True)
@@ -174,7 +174,7 @@ class AlignmentService:
             source_embeddings, target_embeddings = self.build_index(source, target_corp, src_loc, trgt_loc)
             return source_embeddings, target_embeddings
         except Exception as e:
-            log_exception("Exception fetching embeddings for the sentences: ", object_in, e)
+            log_exception("Exception fetching embeddings for the sentences: " + str(e), object_in, e)
             self.update_job_status("FAILED", object_in, "Exception fetching embeddings for the sentences")
             if iswf:
                 util.error_handler("LASER_ERROR", "Exception fetching embeddings for the sentences: " + str(e), object_in, True)
@@ -201,7 +201,7 @@ class AlignmentService:
                     lines_with_no_match.append(source[i])
             return match_dict, manual_dict, lines_with_no_match
         except Exception as e:
-            log_exception("Exception while aligning sentences: ", object_in, e)
+            log_exception("Exception while aligning sentences: " + str(e), object_in, e)
             self.update_job_status("FAILED", object_in, "Exception while aligning sentences")
             if iswf:
                 util.error_handler("ALIGNMENT_ERROR", "Exception while aligning sentences: " + str(e), object_in, True)
@@ -227,7 +227,7 @@ class AlignmentService:
             return self.get_response_paths(output_source, output_target,
                                            output_manual_src, output_manual_trgt, output_nomatch, object_in)
         except Exception as e:
-            log_exception("Exception while writing output to files: ", object_in, e)
+            log_exception("Exception while writing output to files: " + str(e), object_in, e)
             return None
 
     # Service layer to upload the files generated as output to the alignment process
@@ -242,7 +242,7 @@ class AlignmentService:
                            "manual_trgt": output_manual_trgt, "nomatch": output_nomatch}
             return output_dict
         except Exception as e:
-            log_exception("Exception while uploading output files: ", object_in, e)
+            log_exception("Exception while uploading output files: " + str(e), object_in, e)
             return None
 
     # Response formatter

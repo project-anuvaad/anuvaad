@@ -59,7 +59,7 @@ class WflowConsumer:
                         service.wf_process(data)
                     break
                 except Exception as e:
-                    log_exception("Exception while consuming: ", data, e)
+                    log_exception("Exception while consuming: " + str(e), data, e)
                     data["taskID"] = "taskID"
                     util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming", data, True)
                     break

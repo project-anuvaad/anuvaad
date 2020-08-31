@@ -57,7 +57,7 @@ class Consumer:
                         service.process(data, False)
                     break
                 except Exception as e:
-                    log_exception("Exception while consuming: ", None, e)
+                    log_exception("Exception while consuming: " + str(e), None, e)
                     util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None, False)
                     break
 

@@ -59,7 +59,7 @@ def error_consume():
                     wfmservice.update_errors(data)
                     break
             except Exception as e:
-                log_exception("Exception while consuming: ", None, e)
+                log_exception("Exception while consuming: " + str(e), None, e)
                 post_error("WFM_ERROR_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
                 break
 

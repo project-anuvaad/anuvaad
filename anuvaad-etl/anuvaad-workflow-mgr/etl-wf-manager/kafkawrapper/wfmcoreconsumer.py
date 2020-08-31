@@ -55,7 +55,7 @@ def core_consume():
                     wfmservice.initiate(data)
                     break
             except Exception as e:
-                log_exception("Exception while consuming: ", None, e)
+                log_exception("Exception while consuming: " + str(e), None, e)
                 post_error("WFM_CORE_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
                 break
 

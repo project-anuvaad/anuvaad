@@ -57,7 +57,7 @@ class WFMService:
             log_info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"], wf_input)
             log_info(first_tool["name"] + log_msg_start, wf_input)
         except Exception as e:
-            log_exception("Exception while initiating workflow: ", wf_input, e)
+            log_exception("Exception while initiating workflow: " + str(e), wf_input, e)
             post_error_wf("WFLOW_INITIATE_ERROR", "Exception while initiating workflow: " + str(e), wf_input, e)
 
     # This method manages the workflow by tailoring the predecessor and successor tools for the workflow.
@@ -100,7 +100,7 @@ class WFMService:
                 client_output = self.get_wf_details(None, task_output, False, task_output["error"])
                 self.update_job_details(client_output, False)
         except Exception as e:
-            log_exception("Exception while managing the workflow: ", task_output, e)
+            log_exception("Exception while managing the workflow: " + str(e), task_output, e)
             post_error_wf("WFLOW_MANAGE_ERROR", "Exception while managing workflow: " + str(e), task_output, e)
 
 
@@ -231,7 +231,7 @@ class WFMService:
             self.update_job_details(job_details, False)
             log_info("Job FAILED: " + error["jobID"], error)
         except Exception as e:
-            log_exception("Failed to update tool error: ", error, e)
+            log_exception("Failed to update tool error: " + str(e), error, e)
 
 
 
