@@ -20,27 +20,33 @@ class Response(object):
         self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
 
     def workflow_response(self, task_id, task_starttime):
-        input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
+        input_key, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
         log_info("workflow_response", "started the response generation", jobid)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         tokenisation = Tokenisation(self.DOWNLOAD_FOLDER)
         try:
             error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)
-            error_validator.inputfile_list_empty(input_files)
-            output_file_response = list()
-            for i, item in enumerate(input_files):
-                input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
-                if in_file_type == "txt":
-                    input_file_data = file_ops.read_txt_file(input_filename)
-                    error_validator.file_encoding_error(input_file_data)
-                    output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
-                elif in_file_type == "json":
-                    input_jsonfile_data = file_ops.read_json_file(input_filename)
-                    input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item) 
-                                                        for item in input_jsonfile_data['result']]
-                    output_filename = tokenisation.writing_json_file_blockmerger(i, input_jsonfile_data)
-                file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
-                output_file_response.append(file_res)
+            error_validator.inputfile_list_empty(input_key)
+            if 'files' in input_key.keys():
+                output_file_response = list()
+                for i, item in enumerate(input_key['files']):
+                    input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                    if in_file_type == "txt":
+                        input_file_data = file_ops.read_txt_file(input_filename)
+                        error_validator.file_encoding_error(input_file_data)
+                        output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
+                    elif in_file_type == "json":
+                        input_jsonfile_data = file_ops.read_json_file(input_filename)
+                        input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item) 
+                                                            for item in input_jsonfile_data['result']]
+                        output_filename = tokenisation.writing_json_file_blockmerger(i, input_jsonfile_data)
+                    file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
+                    output_file_response.append(file_res)
+            else:
+                input_paragraphs = input_key['text']
+                input_locale = input_key['locale']
+                tokenised_sentences = tokenisation.tokenisation_core(input_paragraphs, input_locale)
+                output_file_response = {'tokenised_text' : tokenised_sentences, 'locale':input_locale}
             task_endtime = str(time.time()).replace('.', '')
             response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
             response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)

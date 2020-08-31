@@ -11,46 +11,41 @@ class Tokenisation(object):
     def __init__(self, DOWNLOAD_FOLDER):
         self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER      
 
+    # tokenising text in respective language 
+    def tokenisation_core(self, paragraph_data, text_locale):
+        try:
+            tokenised_text = []
+            if text_locale == 'en':
+                for paragraph in paragraph_data:
+                    tokenised_sentence_data = AnuvaadEngTokenizer().tokenize(paragraph)
+                    tokenised_text.extend(tokenised_sentence_data)
+            elif text_locale == 'hi':
+                for paragraph in paragraph_data:
+                    tokenised_sentence_data = AnuvaadHinTokenizer().tokenize(paragraph)
+                    tokenised_text.extend(tokenised_sentence_data)
+            return tokenised_text
+        except:
+            log_exception("eng_tokenisation","Error occured during File write for english tokenisation", None, None)
+            raise ServiceError(400, "Tokenisation failed. Something went wrong during tokenisation.")
+    
     # after successful tokenisation writting tokenised sentences into a text file
-    def eng_tokenisation(self,data, output_filepath):
+    def writing_tokenised_sentence_in_file(self, tokenised_data, output_path):
         log_info("eng_tokenisation","File write for english tokenised sentence started", None)
-        write_file = open(output_filepath, 'w', encoding='utf-16')
-        for item in data:
-            sentence_data = AnuvaadEngTokenizer().tokenize(item)
-            for sentence in sentence_data:
-                write_file.write("%s\n"%sentence)
-        write_file.close()
-        log_info("eng_tokenisation","File write for english tokenised sentence completed", None)
-
-    # after successful tokenisation writting tokenised sentences into a text file
-    def hin_tokenisation(self, data, output_filepath):
-        log_info("hin_tokenisation","File write for english tokenised sentence started", None)
-        write_file = open(output_filepath, 'w', encoding='utf-16')
-        for item in data:
-            sentence_data = AnuvaadHinTokenizer().tokenize(item)
-            for sentence in sentence_data:
-                write_file.write("%s\n"%sentence)
-        write_file.close()
-        log_info("hin_tokenisation","File write for english tokenised sentence completed", None)
+        write_file = open(output_path, 'w', encoding='utf-16')
+        for item in tokenised_data:
+            write_file.write("%s\n"%item)
+        log_info("writing_tokenised_sentence_in_file","File write for english tokenised sentence completed", None)
 
     # calling service function to convert paragragh into tokenised sentences for their respective language
     def tokenisation_response(self, input_file_data, in_locale, index):
-        if in_locale == "en":
-            try:
-                output_filepath , output_en_filename = file_ops.output_path(index, self.DOWNLOAD_FOLDER, '.txt')
-                self.eng_tokenisation(input_file_data, output_filepath)
-                return output_en_filename 
-            except:
-                log_exception("eng_tokenisation","Error occured during File write for english tokenisation", None, None)
-                raise ServiceError(400, "Tokenisation failed. Something went wrong during tokenisation.")
-        elif in_locale == "hi":
-            try:
-                output_filepath , output_hi_filename = file_ops.output_path(index, self.DOWNLOAD_FOLDER, '.txt')
-                self.hin_tokenisation(response_input_file_data, output_filepath)
-                return output_hi_filename
-            except:
-                log_exception("hin_tokenisation","Error occured during File write for Hindi tokenisation", None, None)
-                raise ServiceError(400, "Tokenisation failed. Something went wrong during tokenisation.")
+        try:
+            output_filepath , output_filename = file_ops.output_path(index, self.DOWNLOAD_FOLDER, '.txt')
+            tokenised_data = self.tokenisation_core(input_file_data, in_locale)
+            self.writing_tokenised_sentence_in_file(tokenised_data, output_filepath)
+            return output_filename 
+        except:
+            log_exception("tokenisation_response","Error occured during File write for english tokenisation", None, None)
+            raise ServiceError(400, "Tokenisation failed. Something went wrong during tokenisation.")
 
     def adding_tokenised_text_blockmerger(self, input_json_data_pagewise):
         blocks = input_json_data_pagewise['text_blocks']
