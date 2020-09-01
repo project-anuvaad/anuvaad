@@ -16,4 +16,4 @@ lxml==4.5.1
 urllib3==1.25.8
 uuid==1.30
 xmltodict==0.12.0
-anuvaad-auditor==0.1.0
+anuvaad-auditor==0.0.7
