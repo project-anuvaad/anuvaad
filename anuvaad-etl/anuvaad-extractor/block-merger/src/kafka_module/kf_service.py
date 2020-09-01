@@ -25,18 +25,22 @@ def process_merger_kf():
         consumer = consumer_class.consumer_instantiate()
         log_info("process_merger_kf", "trying to receive value from consumer ", None)
         for msg in consumer:
-            data = msg.value
-            task_id = str("BM-" + str(time.time()).replace('.', ''))
-            task_starttime = str(time.time()).replace('.', '')
-            input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
-            log_info("process_merger_kf", "kafka request arrived ", jobid)
-            response_gen = Response(data, DOWNLOAD_FOLDER)
-            file_value_response = response_gen.workflow_response(task_id, task_starttime)
-            if "errorID" not in file_value_response.keys():
-                producer = Producer()
-                producer.push_data_to_queue(config.output_topic, file_value_response, jobid, task_id)
-            else:
-                log_info("process_merger_kf", "error send to error handler", jobid)
+            try: 
+                data = msg.value
+                task_id = str("BM-" + str(time.time()).replace('.', ''))
+                task_starttime = str(time.time()).replace('.', '')
+                input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+                log_info("process_merger_kf", "kafka request arrived ", jobid)
+                response_gen = Response(data, DOWNLOAD_FOLDER)
+                file_value_response = response_gen.workflow_response(task_id, task_starttime)
+                if "errorID" not in file_value_response.keys():
+                    producer = Producer()
+                    producer.push_data_to_queue(config.output_topic, file_value_response, jobid, task_id)
+                else:
+                    log_info("process_merger_kf", "error send to error handler", jobid)
+            except Exception as e:
+                log_exception("process_pdf_kf", "exception while consuming the records", jobid, e)
+            
     except KafkaConsumerError as e:
         response_custom = CustomResponse(Status.ERR_STATUS.value, None, None)
         response_custom.status_code['message'] = str(e)
@@ -47,7 +51,7 @@ def process_merger_kf():
         response_custom['message'] = e.message      
         file_ops.error_handler(response_custom, "KAFKA_PRODUCER_ERROR", True)
         log_exception("process_pdf_kf", "response send to topic %s"%(config.output_topic), response_custom['jobID'], e)
-
+    
 
 dictConfig({
     'version': 1,

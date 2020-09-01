@@ -55,3 +55,9 @@ TABLE_CONFIGS = {
 
 PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.15 ,'repeat_threshold' :0.95 ,'underline_threshold':0.25, 'margin':10 }
 DROP_TEXT          =  ['SUPERSCRIPT']
+
+LANG_MAPPING       =  {
+    "en" : "eng", "kn" : "kan", "gu": "guj","or": "ori",
+    "hi" : "hin", "bn" : "ben", "mr": "mar",
+
+}

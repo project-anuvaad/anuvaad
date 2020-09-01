@@ -122,10 +122,12 @@ def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
         try :
             Rects = RectRepositories(table_image)
             lines, _ = Rects.get_tables_and_lines()
+            print(lines)
         except  Exception as e :
             log_error("Service TableExtractor", "Error in finding lines", job_id, e)
         
 
+        
         line_df = get_line_df(lines)
         tables_df = get_table_df(tables)
         filtered_in_df, table_df = extract_and_delete_region(in_df, tables_df)

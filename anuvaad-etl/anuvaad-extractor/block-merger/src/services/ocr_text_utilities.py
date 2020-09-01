@@ -1,7 +1,12 @@
 from pytesseract import pytesseract
 from PIL import Image
+import time
+import numpy as np
+from  config import LANG_MAPPING
 from pytesseract import Output
 import cv2
+from src.services.get_xml import drop_cols
+
 
 def extract_text_from_image(filepath, desired_width, desired_height, df, lang='hin'):
     image = Image.open(filepath)
@@ -16,10 +21,9 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang='h
         coord = {}
         crop_image = image.crop((left-5, top-5, right+5, bottom+5))
         check_block_height = False
+        
         if row['text_height']>2*row['font_size']:
-            check_block_height = True
-        if check_block_height:
-            temp_df = pytesseract.image_to_data(crop_image, lang=lang,output_type=Output.DATAFRAME)
+            temp_df = pytesseract.image_to_data(crop_image, lang=LANG_MAPPING[lang],output_type=Output.DATAFRAME)
             temp_df = temp_df[temp_df.text.notnull()]
             
             text = ""
@@ -27,9 +31,13 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang='h
                 text = text +" "+ str(row["text"])
                 coord[str(row["text"])] = {"left":int(row["left"]),"conf":int(row["conf"]),"top":int(row["top"]),"width":int(row["width"]),"height":int(row["height"])}
             df.at[index, 'text'] = text
-            df.at[index, 'word_coords'] = str(coord)
+            dictlist = []
+            for key, value in coord.items():
+                temp = [key,value]
+                dictlist.append(temp)
+            df.at[index, 'word_coords'] = dictlist
         else:
-            temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=lang,output_type=Output.DATAFRAME)
+            temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang],output_type=Output.DATAFRAME)
             temp_df = temp_df[temp_df.text.notnull()]
             
             text = ""
@@ -37,7 +45,11 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang='h
                 text = text +" "+ str(row["text"])
                 coord[str(row["text"])] = {"left":int(row["left"]),"conf":int(row["conf"]),"top":int(row["top"]),"width":int(row["width"]),"height":int(row["height"])}
             df.at[index, 'text'] = text
-            df.at[index, 'word_coords'] = str(coord)
+            dictlist = []
+            for key, value in coord.items():
+                temp = [key,value]
+                dictlist.append(temp)
+            df.at[index, 'word_coords'] = dictlist
         
     return df
 
@@ -57,4 +69,3 @@ def tesseract_ocr(pdf_image_paths, desired_width, desired_height, p_dfs, lang ):
     extraction_time     = end_time - start_time
     
     return ocr_dfs
-
