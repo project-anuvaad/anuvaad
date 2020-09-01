@@ -61,16 +61,18 @@ def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , foo
     v_dfs          = get_xml.get_vdfs(pages, h_dfs, config.DOCUMENT_CONFIGS)
     p_dfs          = get_xml.get_pdfs(pages, v_dfs, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)
     p_dfs , line_dfs            = get_underline(p_dfs,line_dfs,jobid)
-    #if lang  in ['en','hi']:
+    #if lang  !='en':
         #ocr_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang )
-
+    
         #return ocr_dfs, table_dfs, line_dfs
-    #else:
+   # else:
     text_block_dfs = text_merger.unify_child_text_blocks(pages, p_dfs, config.DROP_TEXT)
+
+    log_info("Service main", "document structure analysis successfully completed", jobid)
 
     return text_block_dfs, table_dfs, line_dfs
 
-    log_info("Service main", "document structure analysis successfully completed", jobid)
+   
 
     
 
@@ -122,7 +124,8 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
     return res_dict
 
 
-def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR, lang='en'):
+def DocumentStructure(jobid, file_name, lang='eng',base_dir = config.BASE_DIR):
+    
     img_dfs, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths, bg_dfs = doc_pre_processing(file_name,base_dir,jobid)
 
     text_blocks_count = check_text(xml_dfs)
