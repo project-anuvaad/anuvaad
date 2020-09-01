@@ -110,13 +110,12 @@ class WFMService:
         step_completed = task_output["stepOrder"]
         order_of_execution = wfmutils.get_order_of_exc(wf_code)
         try:
-            next_step_details = order_of_execution[eval(str(step_completed)) + 1]
+            next_step_details = order_of_execution[step_completed + 1]
             next_tool = next_step_details["tool"][0]
             next_task_input = wfmutils.get_tool_input(next_tool["name"], task_output["tool"], task_output, None)
             return next_task_input, next_tool
         except Exception as e:
             log_exception("No next step found: " + str(e), None, e)
-            log.exception("Exception: ", e)
             return None
 
     # Method to update the status of job.
