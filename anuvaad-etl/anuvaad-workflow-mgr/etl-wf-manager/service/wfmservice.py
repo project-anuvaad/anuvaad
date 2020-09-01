@@ -109,8 +109,8 @@ class WFMService:
         wf_code = task_output["workflowCode"]
         step_completed = task_output["stepOrder"]
         order_of_execution = wfmutils.get_order_of_exc(wf_code)
-        log_info("step_completed: " + str(step_completed))
-        log_info(order_of_execution)
+        log_info("step_completed: " + str(step_completed), None)
+        log_info(order_of_execution, None)
         try:
             next_step_details = order_of_execution[step_completed + 1]
             next_tool = next_step_details["tool"][0]
