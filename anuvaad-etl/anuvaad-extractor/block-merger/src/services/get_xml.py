@@ -173,8 +173,9 @@ def process_block(children, block_configs):
     return dfs
 
 
-def drop_cols(df):
-    drop_col = ['index', 'xml_index','level_0']
+def drop_cols(df,drop_col=None ):
+    if drop_col==None:
+        drop_col = ['index', 'xml_index','level_0']
     
     for col in drop_col:
         if col in df.columns:
