@@ -58,6 +58,7 @@ DROP_TEXT          =  ['SUPERSCRIPT']
 
 LANG_MAPPING       =  {
     "en" : "eng", "kn" : "kan", "gu": "guj","or": "ori",
-    "hi" : "hin", "bn" : "ben", "mr": "mar",
+    "hi" : "hin", "bn" : "ben", "mr": "mar", "ta": "tam",
+    "te" : "tel"
 
 }
