@@ -2,8 +2,8 @@ import os
 import json
 import time
 from pathlib import Path
-from anuvaad_em.emservice import post_error
-from anuvaad_em.emservice import post_error_wf
+from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.errorhandler import post_error_wf
 
 class FileOperation(object):
 
@@ -88,14 +88,10 @@ class FileOperation(object):
     # error manager integration 
     def error_handler(self, object_in, code, iswf):
         if iswf:
-                job_id = object_in["jobID"]
-                task_id = object_in["taskID"]
-                state = object_in['state']
-                status = object_in['status']
-                code = code
-                message = object_in['message']
-                error = post_error_wf(code, message, job_id, task_id, state, status, None)
-                return error
+            code = code
+            message = object_in['message']
+            error = post_error_wf(code, message, object_in, None)
+            return error
         else:
             code = code
             message = ""
