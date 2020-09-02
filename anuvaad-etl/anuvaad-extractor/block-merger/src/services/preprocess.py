@@ -1,5 +1,7 @@
 import pandas as pd
 import config
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
 preprocess_config = config.PREPROCESS_CONFIGS
 
 def cut_page(page_df ,height ,cut_at ,direction):
@@ -112,7 +114,7 @@ def add_attrib(page_df, region_to_change, attrib, margin=3):
             #print((page_df['text_top'] >= area[0]) & (page_df['text_left'] >= area[1]) & (
             #            page_df['text_top'] + page_df['text_height'] <= area[2]) & (
             #                  page_df['text_left'] + page_df['text_width'] <= area[3]))
-            page_df['attrib'][(page_df['text_top'] >= area[0]) & (page_df['text_left'] >= area[1]) & (
+            page_df['attrib'].loc[(page_df['text_top'] >= area[0]) & (page_df['text_left'] >= area[1]) & (
                         page_df['text_top'] + page_df['text_height'] <= area[2]) & (
                                           page_df['text_left'] + page_df['text_width'] <= area[3])] = attrib
 
@@ -121,7 +123,7 @@ def add_attrib(page_df, region_to_change, attrib, margin=3):
 
 def prepocess_pdf_regions(xml_dfs,page_height,config =preprocess_config ):
     #header_region = None
-    footer_region =None
+    #footer_region =None
     #if len(xml_dfs) > 1 :
     header_region = find_header(xml_dfs, config,page_height)
     footer_region = find_footer(xml_dfs, config,page_height)
@@ -132,3 +134,23 @@ def tag_heaader_footer_attrib(header_region , footer_region ,page_df,magrin=5):
     page_df  = add_attrib(page_df, header_region ,attrib='HEADER',margin=magrin)
     page_df = add_attrib(page_df, footer_region, attrib='FOOTER', margin=magrin)
     return page_df
+
+
+
+# Remove tables and lines from bg image
+
+def mask_image(image,df,job_id,margin= 2 ,fill=255):
+    if len(df) > 0:
+        for index, row in df.iterrows():
+            try :
+                row_bottom = int(row['text_top'] + row['text_height'])
+                row_right = int(row['text_left'] + row['text_width'])
+                if len(image.shape) == 2 :
+                    image[row['text_top'] - margin : row_bottom + margin , row['text_left'] - margin: row_right + margin] = fill
+                if len(image.shape) == 3 :
+                    image[row['text_top'] - margin: row_bottom + margin, row['text_left'] - margin: row_right + margin,:] = fill
+
+            except Exception as e :
+                log_error("Service TableExtractor", "Error in masking bg image", job_id, e)
+    return image
+
