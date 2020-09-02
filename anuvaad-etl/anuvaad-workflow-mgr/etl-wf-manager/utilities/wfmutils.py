@@ -165,8 +165,12 @@ class WFMUtils:
             response = requests.post(url=uri, data=api_input,
                                      headers={'Content-Type': 'application/json'})
             if response is not None:
-                data = json.loads(response.text)
-                return data
+                if response.text is not None:
+                    data = json.loads(response.text)
+                    return data
+                else:
+                    log_error("API response was None !", api_input, None)
+                    return None
             else:
                 log_error("API call failed!", api_input, None)
                 return None

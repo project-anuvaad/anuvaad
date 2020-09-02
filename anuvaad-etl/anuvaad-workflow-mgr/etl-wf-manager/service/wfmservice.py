@@ -59,6 +59,7 @@ class WFMService:
                 response = wfmutils.call_api(uri, tool_input)
                 if not response:
                     log_error("There was an error from: " + str(tool_details["name"]), wf_input, None)
+                    wf_input["taskID"] = "TASK-ID-NA"
                     error = post_error_wf("ERROR_FROM_TOOL",
                                           "There was an error from: " + str(tool_details["name"]), wf_input, None)
                     client_output = self.get_wf_details(wf_input, None, True, error)
@@ -75,6 +76,7 @@ class WFMService:
             return client_output
         except Exception as e:
             log_exception("Exception while processing sync workflow: " + str(e), wf_input, e)
+            wf_input["taskID"] = "TASK-ID-NA"
             error = post_error_wf("SYNC_WFLOW_ERROR", "Exception while processing sync workflow: " + str(e), wf_input, e)
             client_output = self.get_wf_details(wf_input, None, True, error)
             self.update_job_details(client_output, False)
@@ -104,6 +106,7 @@ class WFMService:
             log_info(first_tool["name"] + log_msg_start, wf_input)
         except Exception as e:
             log_exception("Exception while initiating workflow: " + str(e), wf_input, e)
+            wf_input["taskID"] = "TASK-ID-NA"
             post_error_wf("WFLOW_INITIATE_ERROR", "Exception while initiating workflow: " + str(e), wf_input, e)
 
 
@@ -196,7 +199,7 @@ class WFMService:
             if 'jobName' in wf_input.keys():
                 if wf_input["jobName"]:
                     client_input["jobName"] = wf_input["jobName"]
-                    
+
             client_output = {"input": client_input, "jobID": wf_input["jobID"], "workflowCode": wf_input["workflowCode"],
                 "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
                 "startTime": eval(str(time.time()).replace('.', '')), "taskDetails": task_details}

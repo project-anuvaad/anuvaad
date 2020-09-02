@@ -6,7 +6,7 @@ class Tokeniser:
     def __init__(self):
         pass
 
-    # Returns a json of the format accepted by Tokeniser.
+    # Returns a json of the format accepted by Tokeniser for SYNC and ASYNC
     def get_tokeniser_input_wf(self, wf_input, sync):
         if not sync:
             tool_input = {
