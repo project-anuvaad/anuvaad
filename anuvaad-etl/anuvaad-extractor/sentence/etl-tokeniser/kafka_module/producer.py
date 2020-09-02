@@ -18,13 +18,13 @@ class Producer(object):
         producer = KafkaProducer(bootstrap_servers = [config.bootstrap_server], value_serializer = lambda x:dumps(x).encode('utf-8'))
         return producer
 
-    def push_data_to_queue(self, topic_name, push_data, jobid, task_id):
+    def push_data_to_queue(self, topic_name, push_data, json_data, task_id):
         producer = self.producer_fn()
         try:
             producer.send(topic_name, value = push_data)
             producer.flush()
-            log_info("push_data_to_queue", "successfully pushed data to output queue", None)
+            log_info("push_data_to_queue : successfully pushed data to output queue", json_data)
         except:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            log_exception("push_data_to queue", "Response can't be pushed to queue %s"%(topic_name), jobid, None)
+            response_custom = CustomResponse(Status.ERR_STATUS.value, json_data['jobID'], task_id)
+            log_exception("push_data_to queue : Response can't be pushed to queue %s"%(topic_name), json_data, None)
             raise KafkaProducerError(response_custom.status_code, "data Not pushed to queue: %s"%(topic_name))

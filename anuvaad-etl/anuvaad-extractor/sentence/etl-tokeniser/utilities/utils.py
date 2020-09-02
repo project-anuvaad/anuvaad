@@ -2,8 +2,10 @@ import os
 import json
 import time
 from pathlib import Path
-from anuvaad_em.emservice import post_error
-from anuvaad_em.emservice import post_error_wf
+from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.errorhandler import post_error_wf
+from errors.errors_exception import FileEncodingError
+
 
 class FileOperation(object):
 
@@ -46,10 +48,13 @@ class FileOperation(object):
     
     # reading content of input text file
     def read_txt_file(self, input_filename,):
-        input_txt_filepath = self.input_path(input_filename)
-        with open(input_txt_filepath, 'r', encoding='utf-16') as f:
-            input_file_data = f.readlines()
-        return input_file_data
+        try:
+            input_txt_filepath = self.input_path(input_filename)
+            with open(input_txt_filepath, 'r', encoding='utf-16') as f:
+                input_file_data = f.readlines()
+            return input_file_data
+        except:
+            raise FileEncodingError( 400, "Tokenisation failed due to encoding. Service supports only utf-16 encoded file.")
 
     #reading content from json file
     def read_json_file(self, input_filename):
@@ -88,14 +93,10 @@ class FileOperation(object):
     # error manager integration 
     def error_handler(self, object_in, code, iswf):
         if iswf:
-                job_id = object_in["jobID"]
-                task_id = object_in["taskID"]
-                state = object_in['state']
-                status = object_in['status']
-                code = code
-                message = object_in['message']
-                error = post_error_wf(code, message, job_id, task_id, state, status, None)
-                return error
+            code = code
+            message = object_in['message']
+            error = post_error_wf(code, message, object_in, None)
+            return error
         else:
             code = code
             message = ""

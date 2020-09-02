@@ -7,6 +7,7 @@ from resources.response_generation import Response
 from errors.errors_exception import KafkaConsumerError
 from errors.errors_exception import KafkaProducerError
 from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
 from anuvaad_auditor.loghandler import log_exception
 import time
 import config
@@ -17,15 +18,14 @@ from logging.config import dictConfig
 def process_tokenization_kf():
     file_ops = FileOperation()
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
-    task_id = str("TOK-" + str(time.time()).replace('.', ''))
-    task_starttime = str(time.time()).replace('.', '')
     # instatiation of consumer for respective topic
     try:
         consumer_class = Consumer(config.input_topic, config.bootstrap_server)
         consumer = consumer_class.consumer_instantiate()
-        log_info("process_tokenization_kf", "trying to receive value from consumer ", None)
+        log_info("process_tokenization_kf : trying to receive value from consumer ", None)
         for msg in consumer:
             data = msg.value
+            log_info("process_tokenization_kf : received input json from input topic consumer ", data)
             task_id = str("TOK-" + str(time.time()).replace('.', ''))
             task_starttime = str(time.time()).replace('.', '')
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
@@ -33,19 +33,19 @@ def process_tokenization_kf():
             file_value_response = response_gen.workflow_response(task_id, task_starttime)
             if "errorID" not in file_value_response.keys():
                 producer = Producer()
-                producer.push_data_to_queue(config.output_topic, file_value_response, jobid, task_id)
+                producer.push_data_to_queue(config.output_topic, file_value_response, data, task_id)
             else:
-                log_info("process_tokenization_kf", "error send to error handler", jobid)
+                log_error("process_tokenization_kf : error send to error handler", data, None)
     except KafkaConsumerError as e:
         response_custom = CustomResponse(Status.ERR_STATUS.value, None, None)
         response_custom.status_code['message'] = str(e)
         file_ops.error_handler(response_custom.status_code, "KAFKA_CONSUMER_ERROR", True)
-        log_exception("process_tokenization_kf", "Consumer didn't instantiate", None, e)
+        log_exception("process_tokenization_kf : Consumer didn't instantiate", None, e)
     except KafkaProducerError as e:
         response_custom = e.code
         response_custom['message'] = e.message      
         file_ops.error_handler(response_custom, "KAFKA_PRODUCER_ERROR", True)
-        log_exception("process_tokenization_kf", "response send to topic %s"%(config.output_topic), response_custom['jobID'], e)
+        log_exception("process_tokenization_kf : response send to topic %s"%(config.output_topic), data, e)
 
 
 dictConfig({

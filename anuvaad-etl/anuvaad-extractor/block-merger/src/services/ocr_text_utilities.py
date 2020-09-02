@@ -1,60 +1,90 @@
-from pytesseract import pytesseract
+import time
+import numpy as np
 from PIL import Image
 from pytesseract import Output
-import cv2
+from  config import LANG_MAPPING
+from pytesseract import pytesseract
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
 
-def extract_text_from_image(filepath, desired_width, desired_height, df, lang='hin'):
+
+
+
+
+def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
     image = Image.open(filepath)
-    image = image.resize((desired_width, desired_height))
+    h_ratio = image.size[1]/desired_height
+    w_ratio = image.size[0]/desired_width
+    word_coord_lis = []
     
-
     for index, row in df.iterrows():
-        left = row['text_left']
-        top = row['text_top']
-        right = row['text_left'] + row['text_width']
-        bottom = row['text_top'] + row['text_height']
-        coord = {}
+        left = row['text_left']*w_ratio
+        top = row['text_top']*h_ratio
+        right = (row['text_left'] + row['text_width'])*w_ratio
+        bottom = (row['text_top'] + row['text_height'])*h_ratio
+        coord = []
         crop_image = image.crop((left-5, top-5, right+5, bottom+5))
-        check_block_height = False
         if row['text_height']>2*row['font_size']:
-            check_block_height = True
-        if check_block_height:
-            temp_df = pytesseract.image_to_data(crop_image, lang=lang,output_type=Output.DATAFRAME)
+            temp_df = pytesseract.image_to_data(crop_image, lang=LANG_MAPPING[lang],output_type=Output.DATAFRAME)
             temp_df = temp_df[temp_df.text.notnull()]
             
             text = ""
             for index2, row in temp_df.iterrows():
+                word_coord = {}
                 text = text +" "+ str(row["text"])
-                coord[str(row["text"])] = {"left":int(row["left"]),"conf":int(row["conf"]),"top":int(row["top"]),"width":int(row["width"]),"height":int(row["height"])}
+                word_coord['text']          = str(row["text"])
+                word_coord['conf']          = row["conf"]
+                word_coord['text_left']     = int(row["left"])
+                word_coord['text_top']      = int(row["top"])
+                word_coord['text_width']    = int(row["width"])
+                word_coord['text_height']   = int(row["height"])
+                coord.append(word_coord)
+
+            word_coord_lis.append(coord)
             df.at[index, 'text'] = text
-            df.at[index, 'word_coords'] = str(coord)
         else:
-            temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=lang,output_type=Output.DATAFRAME)
+            temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang],output_type=Output.DATAFRAME)
             temp_df = temp_df[temp_df.text.notnull()]
-            
             text = ""
+            
             for index2, row in temp_df.iterrows():
+                word_coord = {}
                 text = text +" "+ str(row["text"])
-                coord[str(row["text"])] = {"left":int(row["left"]),"conf":int(row["conf"]),"top":int(row["top"]),"width":int(row["width"]),"height":int(row["height"])}
+                word_coord['text']          = str(row["text"])
+                word_coord['conf']          = row["conf"]
+                word_coord['text_left']     = int(row["left"])
+                word_coord['text_top']      = int(row["top"])
+                word_coord['text_width']    = int(row["width"])
+                word_coord['text_height']   = int(row["height"])
+                coord.append(word_coord)
+            
             df.at[index, 'text'] = text
-            df.at[index, 'word_coords'] = str(coord)
+            word_coord_lis.append(coord)
+
+    df['word_coords'] = word_coord_lis
         
     return df
 
 
 
-def tesseract_ocr(pdf_image_paths, desired_width, desired_height, p_dfs, lang ):
+def tesseract_ocr(pdf_image_paths, desired_width, desired_height, dfs, lang,jobid ):
 
-    start_time          = time.time()
+    log_info("Service ocr_text_utilities", "tesseract ocr started  ===>", jobid)
 
-    ocr_dfs = []
-    for i, p_df in enumerate(p_dfs):
-        filepath   = pdf_image_paths[i]
-        df_updated = extract_text_from_image(filepath, desired_width, desired_height, p_df, lang)
-        ocr_dfs.append(df_updated)
+    try:
+        start_time          = time.time()
+        ocr_dfs = []
+        for i, df in enumerate(dfs):
+            filepath   = pdf_image_paths[i]
+            df_updated  = extract_text_from_image(filepath, desired_width, desired_height, df, lang)
+            ocr_dfs.append(df_updated)
 
-    end_time            = time.time()
-    extraction_time     = end_time - start_time
-    
+        end_time            = time.time()
+        extraction_time     = end_time - start_time
+    except Exception as e :
+            log_error("Service ocr_text_utilities", "Error in tesseract ocr", jobid, e)
+
+    log_info("Service ocr_text_utilities", "tesseract ocr successfully completed", jobid)
+
     return ocr_dfs
 

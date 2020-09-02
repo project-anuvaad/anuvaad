@@ -56,6 +56,7 @@ def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , foo
     log_info("Service main", "document structure analysis started  ===>", jobid)
     
     text_merger = ChildTextUnify()
+
     in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,jobid)
     h_dfs                              = get_xml.get_hdfs(pages, in_dfs, config.DOCUMENT_CONFIGS,header_region , footer_region, multiple_pages)
     v_dfs                              = get_xml.get_vdfs(pages, h_dfs, config.DOCUMENT_CONFIGS)
@@ -64,13 +65,16 @@ def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , foo
     #if lang  in ['en','hi']:
         #ocr_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang )
 
-        #return ocr_dfs, table_dfs, line_dfs
-    #else:
-    text_block_dfs = text_merger.unify_child_text_blocks(pages, p_dfs, config.DROP_TEXT)
+    if lang  != 'en':
+        text_block_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang,jobid )
+    else:
+        text_block_dfs  = text_merger.unify_child_text_blocks(pages, p_dfs, config.DROP_TEXT)
+
+    log_info("Service main", "document structure analysis successfully completed", jobid)
 
     return text_block_dfs, table_dfs, line_dfs , bg_dfs
 
-    log_info("Service main", "document structure analysis successfully completed", jobid)
+   
 
     
 

@@ -21,9 +21,9 @@ class Response(object):
 
     def workflow_response(self, task_id, task_starttime):
         input_key, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
-        log_info("workflow_response", "started the response generation", jobid)
+        log_info("workflow_response : started the response generation", self.json_data)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
-        tokenisation = Tokenisation(self.DOWNLOAD_FOLDER)
+        tokenisation = Tokenisation(self.DOWNLOAD_FOLDER, self.json_data)
         try:
             error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)
             error_validator.inputfile_list_empty(input_key)
@@ -45,45 +45,46 @@ class Response(object):
             else:
                 input_paragraphs = input_key['text']
                 input_locale = input_key['locale']
-                tokenised_sentences = tokenisation.tokenisation_core(input_paragraphs, input_locale)
-                output_file_response = {'tokenised_text' : tokenised_sentences, 'locale':input_locale}
+                tokenised_sentences = [tokenisation.tokenisation_core([input_paragraph], input_locale) for input_paragraph in input_paragraphs]  
+                output_list_text = [{"inputText" : x, "tokenisedSentences" : y} for x, y in zip(input_paragraphs, tokenised_sentences)]
+                output_file_response = {'tokenisedText' : output_list_text, 'locale':input_locale}
             task_endtime = str(time.time()).replace('.', '')
             response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
             response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
             response = copy.deepcopy(response_success)
-            log_info("workflow_response", "successfully generated response for workflow", jobid)
+            log_info("workflow_response : successfully generated response for workflow", self.json_data)
             return response
         except WorkflowkeyError as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
             response = file_ops.error_handler(response_custom.status_code, "WORKFLOWKEY-ERROR", True)
-            log_exception("workflow_response", "workflow key error: key value missing", jobid, e)
+            log_exception("workflow_response : workflow key error: key value missing", self.json_data, e)
             response = copy.deepcopy(response)
             return response
         except FileErrors as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = e.message
             response = file_ops.error_handler(response_custom.status_code, e.code, True)
-            log_exception("workflow_response", "some error occured while validating file", jobid, e)
+            log_exception("workflow_response : some error occured while validating file", self.json_data, e)
             response = copy.deepcopy(response)
             return response
         except FileEncodingError as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
             response = file_ops.error_handler(response_custom.status_code, "ENCODING_ERROR", True)
-            log_exception("workflow_response", "service supports only utf-16 encoded file", jobid, e)
+            log_exception("workflow_response : service supports only utf-16 encoded file", self.json_data, e)
             response = copy.deepcopy(response)
             return response
         except ServiceError as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
             response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
-            log_exception("workflow_response", "Error occured during tokenisation or file writing", jobid, e)
+            log_exception("workflow_response : Error occured during tokenisation or file writing", self.json_data, e)
             response = copy.deepcopy(response)
             return response
 
     def nonwf_response(self):
-        log_info("non workflow response", "started the response generation", None)
+        log_info("non workflow response : started the response generation", None)
         input_files = self.json_data['files']
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         tokenisation = Tokenisation(self.DOWNLOAD_FOLDER)
@@ -99,23 +100,23 @@ class Response(object):
                 output_file_response.append(file_res)
             response_true = Status.SUCCESS.value
             response_true['output'] = output_file_response
-            log_info("non workflow_response", "successfully generated response for rest server", None)
+            log_info("non workflow_response : successfully generated response for rest server", None)
             return response_true
         except FileErrors as e:
             response_custom = Status.ERR_STATUS.value
             response_custom['message'] = e.message
             response = file_ops.error_handler(response_custom, e.code, False)
-            log_exception("non workflow_response", "some error occured while validating file", None, e)
+            log_exception("non workflow_response : some error occured while validating file", None, e)
             return response
         except FileEncodingError as e:
             response_custom = Status.ERR_STATUS.value
             response_custom['message'] = str(e)
             response = file_ops.error_handler(response_custom, "ENCODING_ERROR", False)
-            log_exception("non workflow_response", "service supports only utf-16 encoded file", None, e)
+            log_exception("non workflow_response : service supports only utf-16 encoded file", None, e)
             return response
         except ServiceError as e:
             response_custom = Status.ERR_STATUS.value
             response_custom['message'] = str(e)
             response = file_ops.error_handler(response_custom, "SERVICE_ERROR", False)
-            log_exception("non workflow_response", "Error occured during tokenisation or file writing", None, e)
+            log_exception("non workflow_response : Error occured during tokenisation or file writing", None, e)
             return response
