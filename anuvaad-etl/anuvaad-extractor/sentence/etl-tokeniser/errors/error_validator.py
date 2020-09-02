@@ -26,7 +26,10 @@ class ValidationResponse(object):
                 raise FileErrors("NO_INPUT_FILES", "No file details in the input json")
             else:
                 for i, item in enumerate(input_files):
-                    input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                    try:
+                        input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                    except:
+                        raise FileErrors("INPUT_KEY_ERROR", "key under files are missing. Make sure you are using the correct format for files key.")
                     input_filepath = file_ops.input_path(input_filename)
                     if input_filename == "" or input_filename is None:
                         raise FileErrors("FILENAME_ERROR", "Filename not found or its empty")
@@ -59,6 +62,8 @@ class ValidationResponse(object):
     def format_error(self, json_data):
         keys_checked = {'workflowCode','jobID','input','tool','stepOrder'}
         if json_data.keys() == {'files'}:
+            return True
+        elif json_data.keys() == {'text', 'locale'}:
             return True
         elif json_data.keys() >= keys_checked:
             return True 

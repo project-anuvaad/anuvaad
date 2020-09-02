@@ -50,25 +50,25 @@ def extract_pdf_metadata(filename, working_dir, base_dir,jobid):
     start_time          = time.time()
     pdf_filepath        = Path(os.path.join(base_dir, filename))
     try:
-        pdf_image_paths   = extract_image_paths_from_pdf(pdf_filepath, working_dir)
+        pdf_image_paths     = extract_image_paths_from_pdf(pdf_filepath, working_dir)
         pdf_xml_dir         = extract_xml_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e :
         log_error("Service xml_utils", "Error in extracting xml", jobid, e)
     try:
         os.system('pdftohtml -c ' + str(pdf_filepath) + ' ' + str(working_dir) + '/')
     except Exception as e :
-        log_error("Service get_xml", "Error in extracting html", jobid, e)    
+        log_error("Service get_xml", "Error in extracting html", jobid, e)   
 
-    try:
-        pdf_bg_image_dir    = extract_html_bg_images_from_digital_pdf(pdf_filepath, working_dir)
-    except Exception as e :
-        log_error("Service xml_utils", "Error in extracting html of bg images", jobid, e)
-    
+    # try:
+    #     pdf_bg_image_dir    = extract_html_bg_images_from_digital_pdf(pdf_filepath, working_dir)
+    # except Exception as e :
+    #     log_error("Service xml_utils", "Error in extracting html of bg images", jobid, e)
+    #
     end_time            = time.time()
     extraction_time     = end_time - start_time
     
     xml_files           = read_directory_files(pdf_xml_dir, pattern='*.xml')
-    bg_files            = read_directory_files(pdf_bg_image_dir, pattern='*.png')
+    bg_files            = None#read_directory_files(pdf_bg_image_dir, pattern='*.png')
     
     log_info('Service get_xml','Successfully extracted xml, background images of file:', jobid)
     
@@ -87,7 +87,7 @@ def process_input_pdf(filename, base_dir, jobid):
         return False
     
     xml_file ,bg_files, pdf_image_paths   = extract_pdf_metadata(filename, working_dir,base_dir,jobid)
-    if xml_file == None or bg_files == None:
+    if xml_file == None : #or bg_files == None:
         log_info('Service get_xml','cannot extract xml metadata from pdf file', jobid)
         return False
     '''
@@ -102,13 +102,13 @@ def process_input_pdf(filename, base_dir, jobid):
         img_dfs, page_width, page_height = get_xml_image_info(xml_file[0])
     except Exception as e :
             log_error("Service xml_document_info", "Error in extracting image xml info", jobid, e)
+    #
+    # try:
+    #     bg_dfs  = get_pdf_bg_image_info(page_width, page_height, bg_files)
+    # except Exception as e:
+    #     log_error("Service xml_document_info", "Error in get_pdf_bg_image_info, unable to encode background images ", jobid, e)
 
-    try:
-        bg_dfs  = get_pdf_bg_image_info(page_width, page_height, bg_files)
-    except Exception as e:
-        log_error("Service xml_document_info", "Error in get_pdf_bg_image_info, unable to encode background images ", jobid, e)
-
-    return img_dfs, xml_dfs, page_width, page_height ,working_dir, pdf_image_paths, bg_dfs
+    return img_dfs, xml_dfs, page_width, page_height ,working_dir, pdf_image_paths #, bg_dfs
 
     
 def get_vdfs(pages, h_dfs, document_configs, debug=False):
@@ -173,8 +173,9 @@ def process_block(children, block_configs):
     return dfs
 
 
-def drop_cols(df):
-    drop_col = ['index', 'xml_index','level_0']
+def drop_cols(df,drop_col=None ):
+    if drop_col==None:
+        drop_col = ['index', 'xml_index','level_0']
     
     for col in drop_col:
         if col in df.columns:
