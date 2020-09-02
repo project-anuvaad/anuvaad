@@ -17,9 +17,9 @@ WORKDIR /app
 #         linux-headers
 
 RUN apk add tesseract-ocr
-RUN apk add tesseract-ocr-hin
-RUN apk add tesseract-ocr-kan
-RUN apk add tesseract-ocr-mar
+RUN apk add tesseract-ocr-all
+#RUN apk add tesseract-ocr-kan
+#RUN apk add tesseract-ocr-mar
 RUN pip add -r requirements.txt
 RUN apk update && apk add poppler-utils
 COPY start.sh /usr/bin/start.sh
