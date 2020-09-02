@@ -63,6 +63,8 @@ class ValidationResponse(object):
         keys_checked = {'workflowCode','jobID','input','tool','stepOrder'}
         if json_data.keys() == {'files'}:
             return True
+        elif json_data.keys() == {'text', 'locale'}:
+            return True
         elif json_data.keys() >= keys_checked:
             return True 
         else:
