@@ -20,7 +20,7 @@ RUN apk add tesseract-ocr
 RUN apk add --upgrade tesseract-ocr-data-hin
 RUN apk add --upgrade tesseract-ocr-data-tam
 RUN apk add --upgrade tesseract-ocr-data-kan
-RUN apk add -r requirements.txt
+RUN pip add -r requirements.txt
 RUN apk update && apk add poppler-utils
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
