@@ -26,7 +26,7 @@ def doc_pre_processing(filename, base_dir,jobid):
     '''
     log_info("Service main", "document preprocessing started  ===>", jobid)
 
-    img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_image_paths, bg_dfs  = get_xml.process_input_pdf(filename, base_dir,jobid)
+    img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir,jobid)
     multiple_pages = False
     pages          = len(xml_dfs)
     if pages > 1:
@@ -38,7 +38,7 @@ def doc_pre_processing(filename, base_dir,jobid):
 
     log_info("Service main", "document preprocessing successfully completed", jobid)
 
-    return img_dfs,xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths, bg_dfs
+    return img_dfs,xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths
 
 def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid,lang, page_width, page_height, pdf_image_paths):
     
@@ -56,11 +56,14 @@ def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , foo
     log_info("Service main", "document structure analysis started  ===>", jobid)
     
     text_merger = ChildTextUnify()
-    in_dfs, table_dfs, line_dfs = get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,jobid)
-    h_dfs          = get_xml.get_hdfs(pages, in_dfs, config.DOCUMENT_CONFIGS,header_region , footer_region, multiple_pages)
-    v_dfs          = get_xml.get_vdfs(pages, h_dfs, config.DOCUMENT_CONFIGS)
-    p_dfs          = get_xml.get_pdfs(pages, v_dfs, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)
-    p_dfs , line_dfs            = get_underline(p_dfs,line_dfs,jobid)
+
+    in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,jobid)
+    h_dfs                              = get_xml.get_hdfs(pages, in_dfs, config.DOCUMENT_CONFIGS,header_region , footer_region, multiple_pages)
+    v_dfs                              = get_xml.get_vdfs(pages, h_dfs, config.DOCUMENT_CONFIGS)
+    p_dfs                              = get_xml.get_pdfs(pages, v_dfs, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)
+    p_dfs , line_dfs                   = get_underline(p_dfs,line_dfs,jobid)
+    #if lang  in ['en','hi']:
+        #ocr_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang )
 
     if lang  != 'en':
         text_block_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang,jobid )
@@ -69,7 +72,7 @@ def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , foo
 
     log_info("Service main", "document structure analysis successfully completed", jobid)
 
-    return text_block_dfs, table_dfs, line_dfs
+    return text_block_dfs, table_dfs, line_dfs , bg_dfs
 
    
 
@@ -123,16 +126,15 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
     return res_dict
 
 
-def DocumentStructure(jobid, file_name, lang='en',base_dir = config.BASE_DIR):
-    
-    img_dfs, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths, bg_dfs = doc_pre_processing(file_name,base_dir,jobid)
+def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR, lang='en'):
+    img_dfs, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths  = doc_pre_processing(file_name,base_dir,jobid)
 
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:
         raise ServiceError(400, "Text extraction failed. Either document is empty or is scanned or is not in pdf format.")
 
     try:
-        text_block_dfs, table_dfs, line_dfs = doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid, lang, page_width, page_height, pdf_image_paths)
+        text_block_dfs, table_dfs, line_dfs ,bg_dfs= doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,jobid, lang, page_width, page_height, pdf_image_paths)
         response   =  doc_structure_response(pages, bg_dfs, text_block_dfs, table_dfs,line_dfs,page_width, page_height,jobid)
         log_info("DocumentStructure","successfully received blocks in json response", jobid)
         return response

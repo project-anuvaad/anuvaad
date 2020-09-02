@@ -5,6 +5,7 @@ import pdf2image
 from lxml import etree
 from pathlib import Path
 import base64
+import pandas as pd
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 #import xml.etree.ElementTree as etree

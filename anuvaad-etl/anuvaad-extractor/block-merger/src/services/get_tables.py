@@ -1,11 +1,13 @@
 import  pandas as pd
 from src.utilities.table.table import TableRepositories
 from src.utilities.table.line import  RectRepositories
+from src.services.preprocess import mask_image
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 import os
 from pathlib import Path
 import cv2
+import base64
 
 def page_num_correction(file_index, num_size=None):
     padding = '0'
@@ -62,15 +64,21 @@ def get_table_df(tables):
     return table_df
 
 
-def edit(dic, df):
+def edit(dic, df,extract_by = 'starting_point'):
     left_key = 'text_left'
     top_key = 'text_top'
     width_key = 'text_width'
     height_key = 'text_height'
 
-    region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
+    if extract_by == 'Intersection':
+        region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
                 (df[top_key] + df[height_key]) <= (dic[top_key] + dic[height_key])) & (
                          (df[left_key] + df[width_key]) <= (dic[left_key] + dic[width_key]))
+
+    if extract_by == 'starting_point':
+        region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
+                (df[top_key]) <= (dic[top_key] + dic[height_key])) & (
+                         (df[left_key]) <= (dic[left_key] + dic[width_key]))
 
     text_df = df[region].to_dict('records')
     df = df[~region]
@@ -99,20 +107,19 @@ def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
     in_dfs    = []
     table_dfs = []
     line_dfs  = []
+    bg_dfs     = []
     for page_index in range(pages):
         in_df  = xml_dfs[page_index]
         img_df = img_dfs[page_index]
-        table_image = os.path.join(working_dir, (page_num_correction(page_index , 3) + '.png'))
+        bg_image_path = os.path.join(working_dir, (page_num_correction(page_index , 3) + '.png'))
         try :
-            table_image = cv2.imread(table_image, 0)
+            table_image =  cv2.imread(bg_image_path, 0)
+            bg_image    =  cv2.imread(bg_image_path)
+            
         except Exception as e :
             log_error("Service TableExtractor", "Error in loading background html image", job_id, e)
 
-        if len(img_df) > 0:
-            for index, row in img_df.iterrows():
-                row_bottom = int(row['text_top'] + row['text_height'])
-                row_right  = int(row['text_left'] +  row['text_width'])
-                table_image[row['text_top']: row_bottom, row['text_left']: row_right] = 255
+        table_image = mask_image(table_image,img_df,job_id,margin=2,fill=255)
 
         try :
             tables = TableRepositories(table_image).response['response']['tables']
@@ -122,6 +129,7 @@ def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
         try :
             Rects = RectRepositories(table_image)
             lines, _ = Rects.get_tables_and_lines()
+            
         except  Exception as e :
             log_error("Service TableExtractor", "Error in finding lines", job_id, e)
         
@@ -131,9 +139,20 @@ def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
         tables_df = get_table_df(tables)
         filtered_in_df, table_df = extract_and_delete_region(in_df, tables_df)
 
+        #mask tables and lines from bg image
+        bg_image  = mask_image(bg_image,table_df,job_id,margin=2,fill=255)
+        bg_image = mask_image(bg_image, line_df, job_id, margin=2, fill=255)
+        h,w =   bg_image.shape[0] , bg_image.shape[1]
+        bg_binary = base64.b64encode(bg_image)
+
+
+        bg_df = pd.DataFrame([[0, 0, w, h, bg_binary,'IMAGE']],
+                          columns=['text_top', 'text_left', 'text_width', 'text_height', 'base64', 'attrib'])
+
+        bg_dfs.append(bg_df)
         in_dfs.append(filtered_in_df)
         table_dfs.append(table_df)
         line_dfs.append(line_df)
 
-    return in_dfs, table_dfs, line_dfs
+    return in_dfs, table_dfs, line_dfs , bg_dfs
 
