@@ -20,7 +20,7 @@ class WFMValidator:
         if 'workflowCode' not in data.keys():
             return post_error("WOFKLOWCODE_NOT_FOUND", "workflowCode is mandatory", None)
         else:
-            error = self.validate_config(data["workflowCode"])
+            error = self.validate_config(data["workflowCode"], data)
             if error is not None:
                 return error
 
