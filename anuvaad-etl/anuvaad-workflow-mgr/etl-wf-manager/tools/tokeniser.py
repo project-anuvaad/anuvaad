@@ -7,10 +7,15 @@ class Tokeniser:
         pass
 
     # Returns a json of the format accepted by Tokeniser.
-    def get_tokeniser_input_wf(self, wf_input):
-        tool_input = {
-            "files": wf_input["input"]["files"]
-        }
+    def get_tokeniser_input_wf(self, wf_input, sync):
+        if not sync:
+            tool_input = {
+                "files": wf_input["input"]["files"]
+            }
+        else:
+            tool_input = {
+                "files": wf_input["input"]["textBlocks"]
+            }
         tok_input = {
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],

@@ -32,12 +32,58 @@ class WFMService:
         wf_input["jobID"] = wfmutils.generate_job_id(wf_input["workflowCode"])
         client_output = self.get_wf_details(wf_input, None, False, None)
         self.update_job_details(client_output, True)
-        producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
-        return client_output
+        configs = wfmutils.get_configs()
+        wf_type = configs[wf_input["workflowCode"]]["type"]
+        if wf_type == "ASYNC":
+            producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
+            return client_output
+        else:
+            return self.process_sync(client_output)
 
     # Method to initiate the workflow.
     # This fetches the first step of workflow and starts the job.
-    def initiate(self, wf_input):
+    def process_sync(self, wf_input):
+        try:
+            order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
+            tool_output = None
+            previous_tool = None
+            for tool_order in order_of_execution.keys():
+                step_details = order_of_execution[tool_order]
+                tool_details = step_details["tool"][0]
+                log_info(tool_details["name"] + log_msg_start, wf_input)
+                uri = tool_details["api-details"][0]["uri"]
+                if not tool_output:
+                    tool_input = wfmutils.get_tool_input_sync(tool_details["name"], None, None, wf_input)
+                else:
+                    tool_input = wfmutils.get_tool_input_sync(tool_details["name"], tool_output, previous_tool, None)
+                response = wfmutils.call_api(uri, tool_input)
+                if not response:
+                    log_error("There was an error from: " + str(tool_details["name"]), wf_input, None)
+                    error = post_error_wf("ERROR_FROM_TOOL",
+                                          "There was an error from: " + str(tool_details["name"]), wf_input, None)
+                    client_output = self.get_wf_details(wf_input, None, True, error)
+                    self.update_job_details(client_output, False)
+                    log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
+                    return client_output
+                else:
+                    tool_output = response
+                    previous_tool = tool_details["name"]
+                    log_info(tool_details["name"] + log_msg_end, wf_input)
+            client_output = self.get_wf_details(tool_output, None, True, None)
+            self.update_job_details(client_output, False)
+            log_info("Job COMPLETED, jobID: " + str(wf_input["jobID"]), wf_input)
+            return client_output
+        except Exception as e:
+            log_exception("Exception while processing sync workflow: " + str(e), wf_input, e)
+            error = post_error_wf("SYNC_WFLOW_ERROR", "Exception while processing sync workflow: " + str(e), wf_input, e)
+            client_output = self.get_wf_details(wf_input, None, True, error)
+            self.update_job_details(client_output, False)
+            log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
+            return client_output
+
+    # Method to initiate the workflow.
+    # This fetches the first step of workflow and starts the job.
+    def initiate_wf(self, wf_input):
         try:
             order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
             first_step_details = order_of_execution[0]
@@ -60,8 +106,9 @@ class WFMService:
             log_exception("Exception while initiating workflow: " + str(e), wf_input, e)
             post_error_wf("WFLOW_INITIATE_ERROR", "Exception while initiating workflow: " + str(e), wf_input, e)
 
+
     # This method manages the workflow by tailoring the predecessor and successor tools for the workflow.
-    def manage(self, task_output):
+    def manage_wf(self, task_output):
         try:
             job_id = task_output["jobID"]
             job_details = self.get_job_details(job_id)
@@ -226,6 +273,8 @@ class WFMService:
             job_id = error["jobID"]
             job_details = self.get_job_details(job_id)
             job_details = job_details[0]
+            if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED":
+                return None
             job_details["status"] = "FAILED"
             job_details["endTime"] = eval(str(time.time()).replace('.', ''))
             job_details["error"] = error

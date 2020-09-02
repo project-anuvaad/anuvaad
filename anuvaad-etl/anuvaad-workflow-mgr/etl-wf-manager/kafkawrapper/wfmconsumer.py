@@ -58,7 +58,7 @@ def consume():
                         if job_details:
                             data["metadata"] = job_details[0]["metadata"]
                     log_info("Received on Topic: " + msg.topic, data)
-                    wfmservice.manage(data)
+                    wfmservice.manage_wf(data)
                     break
             except Exception as e:
                 log_exception("Exception while consuming: " + str(e), None, e)

@@ -52,7 +52,7 @@ def core_consume():
                 if msg:
                     data = msg.value
                     log_info("Received on Topic: " + msg.topic, data)
-                    wfmservice.initiate(data)
+                    wfmservice.initiate_wf(data)
                     break
             except Exception as e:
                 log_exception("Exception while consuming: " + str(e), None, e)

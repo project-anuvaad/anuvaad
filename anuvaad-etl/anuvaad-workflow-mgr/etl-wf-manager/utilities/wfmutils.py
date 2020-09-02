@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import time
@@ -13,8 +14,7 @@ from configs.wfmconfig import tool_htmltojson
 from configs.wfmconfig import tool_fileconverter
 from configs.wfmconfig import tool_aligner
 from anuvaad_auditor.errorhandler import post_error
-from anuvaad_auditor.loghandler import log_exception
-
+from anuvaad_auditor.loghandler import log_exception, log_error
 
 from tools.aligner import Aligner
 from tools.tokeniser import Tokeniser
@@ -132,7 +132,7 @@ class WFMUtils:
             if current_tool == tool_aligner:
                 tool_input = aligner.get_aligner_input_wf(wf_input)
             if current_tool == tool_tokeniser:
-                tool_input = tokeniser.get_tokeniser_input_wf(wf_input)
+                tool_input = tokeniser.get_tokeniser_input_wf(wf_input, False)
             if current_tool == tool_pdftohtml:
                 tool_input = pdftohtml.get_pdftohtml_input_wf(wf_input)
             if current_tool == tool_htmltojson:
@@ -143,4 +143,34 @@ class WFMUtils:
                 tool_input = block_merger.get_bm_input_wf(wf_input)
 
         return tool_input
+
+
+    # Returns the input required for the current tool to execute for the sync process.
+    # current_tool = The tool of which the input is to be computed.
+    # previous tool = Previous tool which got executed and produced 'task_output'.
+    # wf_input = Input received during initiation of wf.
+    def get_tool_input_sync(self, current_tool, previous_tool, task_output, wf_input):
+        tool_input = {}
+        if wf_input is None:
+            if current_tool == tool_tokeniser:
+                tool_input = tokeniser.get_tokeniser_input(task_output, previous_tool)
+        else:
+            if current_tool == tool_tokeniser:
+                tool_input = tokeniser.get_tokeniser_input_wf(wf_input, True)
+        return tool_input
+
+    # Util method to make an API call and fetch the result
+    def call_api(self, uri, api_input):
+        try:
+            response = requests.post(url=uri, data=api_input,
+                                     headers={'Content-Type': 'application/json'})
+            if response is not None:
+                data = json.loads(response.text)
+                return data
+            else:
+                log_error("API call failed!", api_input, None)
+                return None
+        except Exception as e:
+            log_exception("Exception while making the api call: " + str(e), api_input, e)
+            return None
 

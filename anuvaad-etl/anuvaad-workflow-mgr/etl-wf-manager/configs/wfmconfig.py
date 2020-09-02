@@ -17,6 +17,8 @@ tool_pdftohtml = "PDF-TO-HTML"
 tool_htmltojson = "HTML-TO-JSON"
 tool_fileconverter = "FILE-CONVERTER"
 tool_blockmerger = "BLOCK-MERGER"
+is_sync_flow_enabled = True
+is_async_flow_enabled = True
 
 #kafka-configs
 anu_etl_wfm_consumer_grp = os.environ.get('ANU_ETL_WF_CONSUMER_GRP', 'anu-etl-wfm-consumer-group')

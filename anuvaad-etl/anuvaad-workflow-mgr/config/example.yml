@@ -325,3 +325,52 @@ WorkflowConfigs:
           assignment: round-robin
       interruptenable: true
       endState: true
+
+
+  - workflowCode: DP_WFLOW_S_T
+    type: SYNC
+    description: Tokenises the given list of text blocks.
+    useCase: S_T
+    sequence:
+    - order: 0
+      tool:
+      - name: TOKENISER
+        description: tokenises the text blocks.
+        api-details:
+        - uri: http://abc.com/tokenise
+      endState: true
+
+
+  - workflowCode: DP_WFLOW_S_TR
+    type: SYNC
+    description: Translates the sentences.
+    useCase: S_TR
+    sequence:
+    - order: 0
+      tool:
+      - name: Translator
+        description: Translates the sentences.
+        api-details:
+        - uri: http://abc.com/translate
+      endState: true
+
+
+  - workflowCode: DP_WFLOW_S_TTR
+    type: SYNC
+    description: Tokenises the text blocks to sentences and Translates them.
+    useCase: S_TTR
+    sequence:
+    - order: 0
+      tool:
+      - name: TOKENISER
+        description: tokenises the text blocks.
+        api-details:
+        - uri: http://abc.com/tokenise
+      endState: false
+    - order: 1
+      tool:
+      - name: Translator
+        description: Translates the sentences.
+        api-details:
+        - uri: http://abc.com/translate
+      endState: false

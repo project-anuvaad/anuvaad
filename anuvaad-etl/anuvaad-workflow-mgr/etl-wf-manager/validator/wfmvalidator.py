@@ -5,6 +5,8 @@ from anuvaad_auditor.errorhandler import post_error
 
 log = logging.getLogger('file')
 from utilities.wfmutils import WFMUtils
+from configs.wfmconfig import is_sync_flow_enabled
+from configs.wfmconfig import is_async_flow_enabled
 
 wfmutils = WFMUtils()
 
@@ -34,13 +36,21 @@ class WFMValidator:
             wfType = configs[workflowCode]["type"]
             if wfType:
                 if wfType == "SYNC":
-                    error = self.validate_input_sync(data)
-                    if error is not None:
-                        return error
+                    if is_sync_flow_enabled:
+                        error = self.validate_input_sync(data)
+                        if error is not None:
+                            return error
+                    else:
+                        return post_error("WORKFLOW_TYPE_DISABLED",
+                                          "This workflow belongs to SYNC type, which is currently disabled", None)
                 elif wfType == "ASYNC":
-                    error = self.validate_input_async(data)
-                    if error is not None:
-                        return error
+                    if is_async_flow_enabled:
+                        error = self.validate_input_async(data)
+                        if error is not None:
+                            return error
+                    else:
+                        return post_error("WORKFLOW_TYPE_DISABLED",
+                                          "This workflow belongs to ASYNC type, which is currently disabled", None)
                 else:
                     return post_error("WORKFLOW_TYPE_INVALID", "This workflow is of an invalid type",
                                       None)
@@ -69,18 +79,14 @@ class WFMValidator:
 
     # Validator that validates the input request for initiating the sync job
     def validate_input_sync(self, data):
-        if 'files' not in data.keys():
-            return post_error("FILES_NOT_FOUND", "files are mandatory", None)
+        if 'textBlocks' not in data.keys():
+            return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks (word/sentence/paragraph) are mandatory", None)
         else:
-            if len(data["files"]) == 0:
-                return post_error("FILES_NOT_FOUND", "Input files are mandatory", None)
+            if not data["textBlocks"]:
+                return post_error("TEXT_BLOCKS_NOT_FOUND", "Input files are mandatory.", None)
             else:
-                for file in data["files"]:
-                    if not file["path"]:
-                        return post_error("FILES_PATH_NOT_FOUND", "Path is mandatory for all files in the input", None)
-                    if not file["type"]:
-                        return post_error("FILES_TYPE_NOT_FOUND", "Type is mandatory for all files in the input", None)
-                    if not file["locale"]:
-                        return post_error("FILES_LOCALE_NOT_FOUND", "Locale is mandatory for all files in the input",
-                                          None)
-
+                for block in data["textBlocks"]:
+                    if not block["text"]:
+                        return post_error("TEXT_NOT_FOUND", "Text is mandatory.", None)
+                    if not block["locale"]:
+                        return post_error("LOCALE_NOT_FOUND", "Locale is mandatory.", None)
