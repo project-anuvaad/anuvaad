@@ -50,14 +50,14 @@ def extract_pdf_metadata(filename, working_dir, base_dir,jobid):
     start_time          = time.time()
     pdf_filepath        = Path(os.path.join(base_dir, filename))
     try:
-        pdf_image_paths   = extract_image_paths_from_pdf(pdf_filepath, working_dir)
+        pdf_image_paths     = extract_image_paths_from_pdf(pdf_filepath, working_dir)
         pdf_xml_dir         = extract_xml_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e :
         log_error("Service xml_utils", "Error in extracting xml", jobid, e)
     try:
         os.system('pdftohtml -c ' + str(pdf_filepath) + ' ' + str(working_dir) + '/')
     except Exception as e :
-        log_error("Service get_xml", "Error in extracting html", jobid, e)    
+        log_error("Service get_xml", "Error in extracting html", jobid, e)   
 
     # try:
     #     pdf_bg_image_dir    = extract_html_bg_images_from_digital_pdf(pdf_filepath, working_dir)

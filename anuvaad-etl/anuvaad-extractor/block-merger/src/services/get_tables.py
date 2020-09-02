@@ -115,6 +115,7 @@ def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
         try :
             table_image =  cv2.imread(bg_image_path, 0)
             bg_image    =  cv2.imread(bg_image_path)
+            
         except Exception as e :
             log_error("Service TableExtractor", "Error in loading background html image", job_id, e)
 
@@ -128,6 +129,7 @@ def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
         try :
             Rects = RectRepositories(table_image)
             lines, _ = Rects.get_tables_and_lines()
+            
         except  Exception as e :
             log_error("Service TableExtractor", "Error in finding lines", job_id, e)
         
