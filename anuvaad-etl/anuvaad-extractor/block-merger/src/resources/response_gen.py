@@ -29,7 +29,7 @@ class Response(object):
             output_file_response = list()
             for i, item in enumerate(input_files):
                 input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
-                output_json_data = DocumentStructure(jobid, input_filename,in_locale)
+                output_json_data = DocumentStructure(jobid=jobid, file_name=input_filename,lang=in_locale)
                 output_filename_json = file_ops.writing_json_file(i, output_json_data, self.DOWNLOAD_FOLDER)
                 file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
                 output_file_response.append(file_res)
