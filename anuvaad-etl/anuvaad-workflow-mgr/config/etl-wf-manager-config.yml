@@ -225,6 +225,44 @@ WorkflowConfigs:
       endState: true
 
 
+  - workflowCode: DP_WFLOW_BT
+    description: extracts multiple blocks, Text content of each block is tokenised.
+    useCase: BM-TOK
+    sequence:
+    - order: 0
+      tool:
+      - name: BLOCK-MERGER
+        description: extracts different blocks from a pdf file.
+        kafka-input:
+        - topic: anuvaad-dp-tools-block-merger-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-block-merger-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 1
+      tool:
+      - name: TOKENISER
+        description: Tokenises a given file with paragraphs
+        kafka-input:
+        - topic: anuvaad-dp-tools-tokeniser-input
+          partitions: 2
+          keys: tokeniser-input-key-one, tokeniser-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-tokeniser-output
+          partitions: 2
+          keys: tokeniser-output-key-one, tokeniser-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
   - workflowCode: DP_WFLOW_FBT
     description: converts file into pdf and then extracts multiple blocks. Text content of each block is tokenised.
     useCase: FC-BM-TOK
