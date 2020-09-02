@@ -14,10 +14,12 @@ class AnuvaadHinTokenizer(object):
     """
     Default abbrevations
     """
-    _abbrevations_with_space_pattern = [r'[ ]ऐ[.]',r'[ ]बी[.]',r'[ ]सी[.]',r'[ ]डी[.]',r'[ ]ई[.]',r'[ ]एफ[.]',r'[ ]जी[.]',r'[ ]एच[.]',r'[ ]आइ[.]',r'[ ]जे[.]',r'[ ]के[.]',r'[ ]एल[.]',r'[ ]एम[.]',r'[ ]एन[.]',r'[ ]ओ[.]',r'[ ]पी[.]',r'[ ]क्यू[.]',r'[ ]आर[.]',r'[ ]एस[.]',r'[ ]टी[.]',r'[ ]यू[.]',r'[ ]वी[.]',r'[ ]डब्लू[.]',r'[ ]एक्स[.]',r'[ ]वायी[.]',r'[ ]ज़ेड[.]']
-    _abbrevations_with_space = [' ऐ.',' बी.',' सी.',' डी.',' ई.',' एफ.',' जी.',' एच.',' आइ.',' जे.',' के.',' एल.',' एम.',' एन.',' ओ.',' पी.',' क्यू.',' आर.',' एस.',' टी.',' यू.',' वी.',' डब्लू.',' एक्स.',' वायी.',' ज़ेड.']
-    _abbrevations_without_space_pattern = [r'डॉ[.]',r'पं[.]']
-    _abbrevations_without_space = ['डॉ.','पं.']
+    #_abbrevations_with_space_pattern = [r'[ ]ऐ[.]',r'[ ]बी[.]',r'[ ]सी[.]',r'[ ]डी[.]',r'[ ]ई[.]',r'[ ]एफ[.]',r'[ ]जी[.]',r'[ ]एच[.]',r'[ ]आइ[.]',r'[ ]जे[.]',r'[ ]के[.]',r'[ ]एल[.]',r'[ ]एम[.]',r'[ ]एन[.]',r'[ ]ओ[.]',r'[ ]पी[.]',r'[ ]क्यू[.]',r'[ ]आर[.]',r'[ ]एस[.]',r'[ ]टी[.]',r'[ ]यू[.]',r'[ ]वी[.]',r'[ ]डब्लू[.]',r'[ ]एक्स[.]',r'[ ]वायी[.]',r'[ ]ज़ेड[.]']
+    #_abbrevations_with_space = [' ऐ.',' बी.',' सी.',' डी.',' ई.',' एफ.',' जी.',' एच.',' आइ.',' जे.',' के.',' एल.',' एम.',' एन.',' ओ.',' पी.',' क्यू.',' आर.',' एस.',' टी.',' यू.',' वी.',' डब्लू.',' एक्स.',' वायी.',' ज़ेड.']
+    #_abbrevations_without_space_pattern = [r'डॉ[.]',r'पं[.]']
+    #_abbrevations_without_space = ['डॉ.','पं.']
+    _text_abbrevations_pattern = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)?)'
+    _text_abbrevations = []
     _tokenizer = None
     _regex_search_texts = []
     _date_abbrevations  = []
@@ -327,28 +329,42 @@ class AnuvaadHinTokenizer(object):
            
     def serialize_with_abbrevations(self, text):
         index = 0
-        index_for_without_space = 0
-        for abbrev in self._abbrevations_with_space_pattern:
-            pattern = re.compile(abbrev, re.IGNORECASE)
-            text = pattern.sub(' #'+str(index)+'#', text)
-            index += 1
-        for abbrev in self._abbrevations_without_space_pattern:
-            pattern = re.compile(abbrev, re.IGNORECASE)
-            text = pattern.sub('#'+str(index_for_without_space)+'##', text)
-            index_for_without_space += 1
+        # index_for_without_space = 0
+        # for abbrev in self._abbrevations_with_space_pattern:
+        #     pattern = re.compile(abbrev, re.IGNORECASE)
+        #     text = pattern.sub(' #'+str(index)+'#', text)
+        #     index += 1
+        # for abbrev in self._abbrevations_without_space_pattern:
+        #     pattern = re.compile(abbrev, re.IGNORECASE)
+        #     text = pattern.sub('#'+str(index_for_without_space)+'##', text)
+        #     index_for_without_space += 1
+        patterns = re.findall(self._text_abbrevations_pattern, text)
+        patterns = [tuple(j for j in pattern if j)[0] for pattern in patterns]
+        if patterns is not None and isinstance(patterns, list):
+            for pattern in patterns:
+                pattern_obj = re.compile(re.escape(pattern))
+                self._text_abbrevations.append(pattern)
+                text = pattern_obj.sub(' #'+str(index)+'#', text)
+                index+=1
+        print(self._text_abbrevations)
         return text
 
     def deserialize_with_abbrevations(self, text):
         index = 0
-        index_for_without_space = 0
-        for abbrev in self._abbrevations_without_space:
-            pattern = re.compile(re.escape('#'+str(index_for_without_space)+'##'), re.IGNORECASE)
-            text = pattern.sub(abbrev, text)
-            index_for_without_space += 1
-        for abbrev in self._abbrevations_with_space:
-            pattern = re.compile(re.escape(' #'+str(index)+'#'), re.IGNORECASE)
-            text = pattern.sub(abbrev, text)
-            index += 1
+        # index_for_without_space = 0
+        # for abbrev in self._abbrevations_without_space:
+        #     pattern = re.compile(re.escape('#'+str(index_for_without_space)+'##'), re.IGNORECASE)
+        #     text = pattern.sub(abbrev, text)
+        #     index_for_without_space += 1
+        # for abbrev in self._abbrevations_with_space:
+        #     pattern = re.compile(re.escape(' #'+str(index)+'#'), re.IGNORECASE)
+        #     text = pattern.sub(abbrev, text)
+        #     index += 1
+        if self._text_abbrevations is not None and isinstance(self._text_abbrevations, list):
+            for pattern in self._text_abbrevations:
+                pattern_obj = re.compile(re.escape(' #'+str(index)+'#'), re.IGNORECASE)
+                text = pattern_obj.sub(pattern, text)
+                index+=1
         return text
 
 

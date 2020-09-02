@@ -85,19 +85,26 @@ class Response(object):
 
     def nonwf_response(self):
         log_info("non workflow response : started the response generation", None)
-        input_files = self.json_data['files']
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
-        tokenisation = Tokenisation(self.DOWNLOAD_FOLDER)
+        tokenisation = Tokenisation(self.DOWNLOAD_FOLDER, self.json_data)
         try:
-            error_validator.inputfile_list_empty(input_files)
-            output_file_response = list()
-            for i, item in enumerate(input_files):
-                input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
-                input_file_data = file_ops.read_txt_file(input_filename)
-                error_validator.file_encoding_error(input_file_data)
-                output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
-                file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
-                output_file_response.append(file_res)
+            if 'files' in self.json_data.keys():
+                input_files = self.json_data['files']
+                error_validator.inputfile_list_empty(input_files)
+                output_file_response = list()
+                for i, item in enumerate(input_files):
+                    input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                    input_file_data = file_ops.read_txt_file(input_filename)
+                    error_validator.file_encoding_error(input_file_data)
+                    output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
+                    file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
+                    output_file_response.append(file_res)
+            else:
+                input_paragraphs = self.json_data['text']
+                input_locale = self.json_data['locale']
+                tokenised_sentences = [tokenisation.tokenisation_core([input_paragraph], input_locale) for input_paragraph in input_paragraphs]  
+                output_list_text = [{"inputText" : x, "tokenisedSentences" : y} for x, y in zip(input_paragraphs, tokenised_sentences)]
+                output_file_response = {'tokenisedText' : output_list_text, 'locale':input_locale}
             response_true = Status.SUCCESS.value
             response_true['output'] = output_file_response
             log_info("non workflow_response : successfully generated response for rest server", None)
