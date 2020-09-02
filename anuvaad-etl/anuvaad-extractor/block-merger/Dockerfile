@@ -19,7 +19,6 @@ WORKDIR /app
 RUN apk add tesseract-ocr
 RUN apk add --upgrade tesseract-ocr-data-hin
 RUN apk add --upgrade tesseract-ocr-data-tam
-RUN apk add --upgrade tesseract-ocr-data-mar
 RUN apk add --upgrade tesseract-ocr-data-kan
 RUN pip add -r requirements.txt
 RUN apk update && apk add poppler-utils
