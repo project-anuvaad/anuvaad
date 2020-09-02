@@ -13,11 +13,16 @@ from models.file_content import FileContent
 import json
 
 parser = reqparse.RequestParser(bundle_errors=True)
+BLOCK_TYPES = config.BLOCK_TYPES
 
 class ContentHandler(Resource):
 
     def post(self):
         body = request.get_json()
+        userid = request.headers.get('userid')
+        if 'result' not in body or 'process_identifier' not in body or userid is None:
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
+            return res.getresjson(), 400
         results = body['result']
         process_identifier = body['process_identifier']
         obj_to_be_saved = []
@@ -26,30 +31,81 @@ class ContentHandler(Resource):
             page_data['page_no'] = result['page_no']
             page_data['page_width'] = result['page_width']
             page_data['page_height'] = result['page_height']
-            if result['lines'] is not None:
-                for data in result['lines']:
-                    obj_to_be_saved = self.make_obj(process_identifier, page_data, data, config.TYPE_LINES, obj_to_be_saved)
-            if result['tables'] is not None:
-                for data in result['tables']:
-                    obj_to_be_saved = self.make_obj(process_identifier, page_data, data, config.TYPE_TABLES, obj_to_be_saved)
-            if result['images'] is not None:
-                for data in result['images']:
-                    obj_to_be_saved = self.make_obj(process_identifier, page_data, data, config.TYPE_IMAGES, obj_to_be_saved)
-            if result['text_blocks'] is not None:
-                for data in result['text_blocks']:
-                    obj_to_be_saved = self.make_obj(process_identifier, page_data, data, config.TYPE_TEXT, obj_to_be_saved)
+            for block_type in BLOCK_TYPES:
+                if result[block_type['key']] is not None:
+                    for data in result[block_type['key']]:
+                        obj_to_be_saved = self.make_obj(process_identifier, page_data, data, block_type['key'], obj_to_be_saved, userid)
         file_content_instances = [FileContent(**data) for data in obj_to_be_saved]
         FileContent.objects.insert(file_content_instances)
-        res = CustomResponse(Status.SUCCESS.value, '.pdf')
+        res = CustomResponse(Status.SUCCESS.value, None)
+        return res.getres()
+
+    def get(self):
+        parse = reqparse.RequestParser()
+        parse.add_argument('process_identifier', type=str, location='args',help='Process Identifier is required', required=True)
+        parse.add_argument('start_page', type=int, location='args',help='', required=False)
+        parse.add_argument('end_page', type=int, location='args',help='', required=False)
+        args = parse.parse_args()
+        process_identifier = args['process_identifier']
+        start_page = args['start_page']
+        end_page = args['end_page']
+        if start_page is None:
+            start_page = 1
+        if end_page is None:
+            end_page = 1
+        userid = request.headers.get('ad-userid')
+        output = {}
+        pipeline = {
+                '$group':
+                    {
+                        '_id': '$process_identifier',
+                        'maxQuantity': { '$max': "$page_no" }
+                    }
+        }
+        max_pages = FileContent.objects(process_identifier=process_identifier,created_by=userid).aggregate(pipeline)
+        max_page_number = 1
+        for max_page in max_pages:
+            max_page_number = max_page['maxQuantity']
+            break
+        if end_page > max_page_number:
+            end_page = max_page_number 
+        if start_page > max_page_number:
+            start_page = max_page_number
+        pipeline_blocks = {
+                '$group':
+                    {
+                        '_id': '$data_type',
+                        'data': { '$push': "$data" }
+                    }
+        }
+        output = []
+        for i in range(start_page,end_page+1):
+            blocks = FileContent.objects(process_identifier=process_identifier,page_no=i,created_by=userid).aggregate(pipeline_blocks)  
+            obj = {}
+            index = 0
+            for block in blocks:
+                if index == 0:
+                   obj['page_height'] = block['data'][0]['page_info']['page_height']
+                   obj['page_no'] = block['data'][0]['page_info']['page_no']
+                   obj['page_width'] = block['data'][0]['page_info']['page_width']
+                obj[block['_id']] = block['data']
+                index+=1
+            output.append(obj)
+        res = CustomResponse(Status.SUCCESS.value, output, max_page_number)
         return res.getres()
 
 
-    def make_obj(self,process_identifier, page_data, data, data_type, obj_to_be_saved):
+    def make_obj(self,process_identifier, page_data, data, data_type, obj_to_be_saved, userid):
+        obj = {}
+        data['block_id'] = str(uuid.uuid4())+process_identifier
         data['page_info'] = page_data
-        data['type'] = data_type
-        data['created_on'] = datetime.now()
-        data['process_identifier'] = process_identifier
-        obj_to_be_saved.append(data)
+        obj['page_no'] = page_data['page_no']
+        obj['data_type'] = data_type
+        obj['created_on'] = datetime.now()
+        obj['process_identifier'] = process_identifier
+        obj['created_by'] = userid
+        obj['data'] = data
+        obj_to_be_saved.append(obj)
         return obj_to_be_saved
         
 

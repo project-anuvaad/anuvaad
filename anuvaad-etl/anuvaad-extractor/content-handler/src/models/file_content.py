@@ -11,3 +11,4 @@ from mongoengine import *
 class FileContent(DynamicDocument):
     process_identifier = StringField(required=True)
     created_on = DateTimeField()
+    page_no = IntField()
