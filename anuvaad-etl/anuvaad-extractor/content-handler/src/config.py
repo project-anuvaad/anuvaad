@@ -2,7 +2,7 @@ import logging
 import os
 import time
 
-DEBUG = False
+DEBUG = True
 API_URL_PREFIX = "/api/v0"
 HOST = '0.0.0.0'
 PORT = 5001
@@ -12,10 +12,8 @@ ENABLE_CORS = False
 #folders and file path
 download_folder = 'upload'
 
-TYPE_LINES = 'LINES'
-TYPE_IMAGES = 'IMAGES'
-TYPE_TABLES = 'TABLES'
-TYPE_TEXT = 'TEXT'
+
+BLOCK_TYPES = [{'key':'lines'},{'key':'images'},{'key':'tables'},{'key':'text_blocks'}]
 
 #mongo
 MONGO_IP = 'MONGO_IP'

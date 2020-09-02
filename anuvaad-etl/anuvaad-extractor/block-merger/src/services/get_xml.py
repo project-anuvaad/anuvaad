@@ -24,6 +24,7 @@ from src.services.left_right_on_block import left_right_margin
 
 def create_pdf_processing_paths(filename, base_dir, jobid):
     data_dir    = Path(os.path.join(base_dir, 'data'))
+    print(data_dir)
     ret         = create_directory(data_dir)
     if ret == False:
         log_info('Service get_xml','data directory creation failed', jobid)
@@ -82,6 +83,7 @@ def process_input_pdf(filename, base_dir, jobid):
             - background image present in each page
     '''
     working_dir, ret = create_pdf_processing_paths(filename, base_dir, jobid)
+    
     if ret == False:
         log_info('Service get_xml','extract_pdf_processing_paths failed', jobid)
         return False
