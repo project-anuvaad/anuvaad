@@ -2,6 +2,7 @@ WorkflowConfigs:
 
 
   - workflowCode: DP_WFLOW_T
+    type: ASYNC
     description: tokenises paragraphs into sentences.    
     useCase: TOK
     sequence:
@@ -24,6 +25,7 @@ WorkflowConfigs:
 
 
   - workflowCode: DP_WFLOW_A
+    type: ASYNC
     description: Aligns the input files. 
     useCase: ALIGN
     sequence:
@@ -46,6 +48,7 @@ WorkflowConfigs:
 
 
   - workflowCode: DP_WFLOW_TA
+    type: ASYNC
     description: tokenises into sentences, aligns the corp.    
     useCase: TOK-ALIGN
     sequence:
@@ -84,6 +87,7 @@ WorkflowConfigs:
 
 
   - workflowCode: DP_WFLOW_P2H
+    type: ASYNC
     description: Converts a pdf into html and image files.    
     useCase: P2H
     sequence:
@@ -106,6 +110,7 @@ WorkflowConfigs:
 
 
   - workflowCode: DP_WFLOW_P2H2J
+    type: ASYNC
     description: Converts a pdf into json.  
     useCase: P2H-H2J
     sequence:
@@ -144,6 +149,7 @@ WorkflowConfigs:
 
 
   - workflowCode: DP_WFLOW_F
+    type: ASYNC
     description: converts a file into pdf and other formats
     useCase: FC
     sequence:
@@ -166,6 +172,7 @@ WorkflowConfigs:
 
 
   - workflowCode: DP_WFLOW_B
+    type: ASYNC
     description: extracts different blocks from a pdf file.
     useCase: BM
     sequence:
@@ -188,6 +195,7 @@ WorkflowConfigs:
 
 
   - workflowCode: DP_WFLOW_FB
+    type: ASYNC
     description: converts file into pdf and then extracts multiple blocks.
     useCase: FC-BM
     sequence:
@@ -226,6 +234,7 @@ WorkflowConfigs:
 
 
   - workflowCode: DP_WFLOW_BT
+    type: ASYNC
     description: extracts multiple blocks, Text content of each block is tokenised.
     useCase: BM-TOK
     sequence:
@@ -264,6 +273,7 @@ WorkflowConfigs:
 
 
   - workflowCode: DP_WFLOW_FBT
+    type: ASYNC
     description: converts file into pdf and then extracts multiple blocks. Text content of each block is tokenised.
     useCase: FC-BM-TOK
     sequence:

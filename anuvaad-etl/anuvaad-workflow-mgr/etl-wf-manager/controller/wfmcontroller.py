@@ -19,7 +19,7 @@ def initiate_workflow():
     service = WFMService()
     validator = WFMValidator()
     data = request.get_json()
-    error = validator.validate_input(data)
+    error = validator.validate(data)
     if error is not None:
         return error, 400
     data = add_headers(data, request)

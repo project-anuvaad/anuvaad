@@ -42,7 +42,7 @@ class WFMValidator:
                     if error is not None:
                         return error
                 else:
-                    return post_error("WORKFLOW_TYPE_INVALID", "This workflow is of a invalid type",
+                    return post_error("WORKFLOW_TYPE_INVALID", "This workflow is of an invalid type",
                                       None)
             else:
                 return post_error("WORKFLOW_TYPE_NOT_FOUND", "Workflow Type not found.",
