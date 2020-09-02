@@ -17,6 +17,7 @@ WORKDIR /app
 #         linux-headers
 
 RUN apk add tesseract-ocr
+RUN tesseract -v
 RUN apk add --upgrade tesseract-ocr-data-hin
 RUN apk add --upgrade tesseract-ocr-data-tam
 RUN apk add --upgrade tesseract-ocr-data-kan
