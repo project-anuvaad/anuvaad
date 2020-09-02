@@ -15,10 +15,10 @@ WORKDIR /app
 #         libwebp-dev \
 #         clang-dev \
 #         linux-headers
-RUN apt install tesseract-ocr
-RUN apt install tesseract-ocr-hin
-RUN apt install tesseract-ocr-kan
-RUN apt install tesseract-ocr-mar
+RUN apt-get install tesseract-ocr
+RUN apt-get install tesseract-ocr-hin
+RUN apt-get install tesseract-ocr-kan
+RUN apt-get install tesseract-ocr-mar
 RUN pip install -r requirements.txt
 RUN apk update && apk add poppler-utils
 COPY start.sh /usr/bin/start.sh
