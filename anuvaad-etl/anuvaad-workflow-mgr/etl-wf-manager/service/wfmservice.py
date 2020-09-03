@@ -116,12 +116,12 @@ class WFMService:
             job_id = task_output["jobID"]
             job_details = self.get_job_details(job_id)
             if not job_details:
-                log_error("This job is not found in the system, jobID: " + job_id, task_output)
+                log_error("This job is not found in the system, jobID: " + job_id, task_output, None)
                 return None
             log_info(task_output["tool"] + log_msg_end, task_output)
             job_details = job_details[0]
             if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED":
-                log_error("The job is already completed/failed, jobID: " + job_id, task_output)
+                log_error("The job is already completed/failed, jobID: " + job_id, task_output, None)
                 return None
             if task_output["status"] != "FAILED":
                 next_step_details = self.get_next_step_details(task_output)
@@ -144,7 +144,7 @@ class WFMService:
                 else:
                     client_output = self.get_wf_details(None, task_output, True, None)
                     self.update_job_details(client_output, False)
-                    log_info("Job completed: " + task_output["jobID"], task_output)
+                    log_info("Job COMPLETED: " + task_output["jobID"], task_output)
             else:
                 log_info("Job FAILED: " + task_output["jobID"], task_output)
                 client_output = self.get_wf_details(None, task_output, False, task_output["error"])

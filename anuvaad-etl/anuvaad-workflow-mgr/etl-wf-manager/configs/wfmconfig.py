@@ -23,7 +23,7 @@ is_async_flow_enabled = True
 anu_etl_wfm_core_topic = 'anu-etl-wf-initiate-v3'
 anu_etl_wfm_consumer_grp = os.environ.get('ANU_ETL_WF_CONSUMER_GRP', 'anu-etl-wfm-consumer-group')
 anu_etl_wf_error_topic = os.environ.get('ANU_ETL_WF_ERROR_TOPIC', 'anuvaad-etl-wf-errors')
-wfm_cons_no_of_partitions = 3
+wfm_cons_no_of_partitions = 1
 
 #datastore-configs
 mongo_alignment_db = os.environ.get('MONGO_ALIGNMENT_DB', 'anuvaad-etl-dataflow-pipeline')
