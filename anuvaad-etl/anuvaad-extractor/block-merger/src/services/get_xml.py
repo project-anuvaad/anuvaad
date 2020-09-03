@@ -24,7 +24,6 @@ from src.services.left_right_on_block import left_right_margin
 
 def create_pdf_processing_paths(filename, base_dir, jobid):
     data_dir    = Path(os.path.join(base_dir, 'data'))
-    print(data_dir)
     ret         = create_directory(data_dir)
     if ret == False:
         log_info('Service get_xml','data directory creation failed', jobid)

@@ -16,7 +16,7 @@ kf_local_server = 'localhost:9092'
 output_topic = 'anuvaad-dp-tools-block-merger-output-v1'
 kafka_ip_host = 'KAFKA_IP_HOST'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
-
+group_id = 'anuvaad-etl-bm-consumer-group'
 #folders and file path
 download_folder = 'upload'
 
