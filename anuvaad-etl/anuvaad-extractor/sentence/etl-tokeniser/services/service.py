@@ -16,11 +16,11 @@ class Tokenisation(object):
     def tokenisation_core(self, paragraph_data, text_locale):
         try:
             tokenised_text = []
-            if text_locale == 'eng':
+            if text_locale == 'en':
                 for paragraph in paragraph_data:
                     tokenised_sentence_data = AnuvaadEngTokenizer().tokenize(paragraph)
                     tokenised_text.extend(tokenised_sentence_data)
-            elif text_locale == 'hin':
+            elif text_locale == 'hi':
                 for paragraph in paragraph_data:
                     tokenised_sentence_data = AnuvaadHinTokenizer().tokenize(paragraph)
                     tokenised_text.extend(tokenised_sentence_data)
