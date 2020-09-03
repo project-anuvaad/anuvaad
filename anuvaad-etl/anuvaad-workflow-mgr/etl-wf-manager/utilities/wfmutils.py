@@ -74,10 +74,11 @@ class WFMUtils:
             config = all_configs[key]
             sequence = config["sequence"]
             for step in sequence:
-                output_topic = step["tool"][0]["kafka-output"][0]["topic"]
-                if output_topic not in topics:
-                    topics.append(output_topic)
-
+                tool_details = step["tool"][0]
+                if 'kafka-output' in tool_details.keys():
+                    output_topic = tool_details["kafka-output"][0]["topic"]
+                    if output_topic not in topics:
+                        topics.append(output_topic)
         return topics
 
     # Helper method to fetch tools involved in a given workflow.
