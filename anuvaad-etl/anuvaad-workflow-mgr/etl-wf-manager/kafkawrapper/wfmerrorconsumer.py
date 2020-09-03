@@ -1,5 +1,6 @@
 import json
 import logging
+import threading
 import traceback
 
 from kafka import KafkaConsumer, TopicPartition
@@ -8,6 +9,7 @@ from logging.config import dictConfig
 from service.wfmservice import WFMService
 from configs.wfmconfig import anu_etl_wfm_consumer_grp
 from configs.wfmconfig import kafka_bootstrap_server_host
+from configs.wfmconfig import wfm_error_cons_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
@@ -32,11 +34,13 @@ def instantiate(topics):
 
 
 # For all the topics, returns a list of TopicPartition Objects
+# For all the topics, returns a list of TopicPartition Objects
 def get_topic_paritions(topics):
     topic_paritions = []
     for topic in topics:
-        tp = TopicPartition(topic, 0)  # for now the partition is hardocoded
-        topic_paritions.append(tp)
+        for partition in range(0, wfm_error_cons_no_of_partitions):
+            tp = TopicPartition(topic, partition)
+            topic_paritions.append(tp)
     return topic_paritions
 
 
@@ -46,7 +50,8 @@ def error_consume():
         wfmservice = WFMService()
         topics = [anu_etl_wf_error_topic]
         consumer = instantiate(topics)
-        log_info("WFM Error Consumer Running..........", None)
+        thread = threading.current_thread().name
+        log_info(str(thread) + " | Running..........", None)
         while True:
             for msg in consumer:
                 try:
@@ -56,7 +61,7 @@ def error_consume():
                             job_details = wfmservice.get_job_details(data["jobID"])
                             if job_details:
                                 data["metadata"] = job_details[0]["metadata"]
-                        log_info("Received on Topic: " + msg.topic, data)
+                        log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
                         wfmservice.update_errors(data)
                         break
                 except Exception as e:

@@ -1,5 +1,6 @@
 import json
 import logging
+import threading
 import traceback
 
 from kafka import KafkaConsumer, TopicPartition
@@ -13,6 +14,7 @@ from anuvaad_auditor.loghandler import log_exception
 from configs.wfmconfig import anu_etl_wfm_core_topic
 from configs.wfmconfig import anu_etl_wfm_consumer_grp
 from configs.wfmconfig import kafka_bootstrap_server_host
+from configs.wfmconfig import wfm_core_cons_no_of_partitions
 
 
 log = logging.getLogger('file')
@@ -35,8 +37,9 @@ def instantiate(topics):
 def get_topic_paritions(topics):
     topic_paritions = []
     for topic in topics:
-        tp = TopicPartition(topic, 0)  # for now the partition is hardocoded
-        topic_paritions.append(tp)
+        for partition in range(0, wfm_core_cons_no_of_partitions):
+            tp = TopicPartition(topic, partition)
+            topic_paritions.append(tp)
     return topic_paritions
 
 
@@ -46,13 +49,14 @@ def core_consume():
         wfmservice = WFMService()
         topics = [anu_etl_wfm_core_topic]
         consumer = instantiate(topics)
-        log_info("WFM Core Consumer Running..........", None)
+        thread = threading.current_thread().name
+        log_info(str(thread) + " Running..........", None)
         while True:
             for msg in consumer:
                 try:
                     if msg:
                         data = msg.value
-                        log_info("Received on Topic: " + msg.topic, data)
+                        log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
                         wfmservice.initiate_wf(data)
                 except Exception as e:
                     log_exception("Exception while consuming: " + str(e), None, e)

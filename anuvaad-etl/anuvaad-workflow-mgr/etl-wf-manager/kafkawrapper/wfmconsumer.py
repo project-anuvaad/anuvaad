@@ -1,5 +1,6 @@
 import json
 import logging
+import threading
 
 from kafka import KafkaConsumer, TopicPartition
 from logging.config import dictConfig
@@ -50,7 +51,8 @@ def consume():
         configs = wfmutils.get_configs()
         topics = wfmutils.fetch_output_topics(configs)
         consumer = instantiate(topics)
-        log_info("WFM Consumer Running..........", None)
+        thread = threading.current_thread().name
+        log_info(str(thread) + " Running..........", None)
         while True:
             for msg in consumer:
                 try:
@@ -60,7 +62,7 @@ def consume():
                             job_details = wfmservice.get_job_details(data["jobID"])
                             if job_details:
                                 data["metadata"] = job_details[0]["metadata"]
-                        log_info("Received on Topic: " + msg.topic, data)
+                        log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
                         wfmservice.manage_wf(data)
                 except Exception as e:
                     log_exception("Exception while consuming: " + str(e), None, e)
