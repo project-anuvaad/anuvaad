@@ -1,8 +1,8 @@
 swagger: "2.0"
 info:
   version: 1.0.0
-  title: Anuvaad File Handler - API Contract
-  description: A python based microservice to trigger and orchestrate the file handler part of anuvaad-extractor.
+  title: Anuvaad Content Handler - API Contract
+  description: A python based microservice to trigger and orchestrate the content handler part of anuvaad-extractor.
   contact:
     name: Kumar Deepak
     email: kumar.deepak@tarento.com
@@ -15,51 +15,61 @@ basePath: '/api'
 
 
 paths: 
-  /v0/upload-file:
+  /v0/content:
     post:
-      summary: REST API to upload file.
-      description: This api takes a file and uploads it to server.
-      consumes:
-         - multipart/form-data
+      summary: REST API to save file content.
+      description: This api takes file data as json and save it in db, it's an sync api.
       parameters:
-         - in: formData
-           name: file
-           type: file
-           description: The file to upload.
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/Request'
+        - name: userid
+          in: header
+          type: string
+          required: true
             
       tags:
-      - File Handler
+      - File Converter
 
       responses:
         200:
           description: On successful completion of the job.
           schema:
-            $ref: '#/definitions/FileUploaderResponse'
+            $ref: '#/definitions/Response'
         400:
           description: On input errors causing a failure in the job.
           schema:
             $ref: '#/definitions/Error'
-            
-  /v0/download-file:
+    
     get:
-      summary: REST API to download file.
-      description: This api takes file name and user id and gives the file.
+      summary: REST API to retreive file content.
+      description: This api takes file data as json and save it in db, it's an sync api.
       parameters:
         - in: query
-          name: filename
+          name: process_identifier
           type: string
-          description: The filename to be downloaded
+          required: true
+          description: The process_identifier for the content
         - in: query
-          name: userid
-          type: string
-          description: The logged in userid
+          name: start_page
+          type: number
+          description: The start page for the content
+        - in: query
+          name: end_page
+          type: number
+          description: The start page for the content
             
       tags:
-      - File Handler
+      - Content Handler
 
       responses:
         200:
           description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/ContentResponse'
         400:
           description: On input errors causing a failure in the job.
           schema:
@@ -75,23 +85,84 @@ definitions:
     properties:
       status:
         type: number
-        description: Status code.       
+        description: Status code. 
+  
+  Obj:
+    type: object
+    
         
+  Result:
+    type: object
+    properties:
+      page_no:
+        type: number
+      page_width:
+        type: number
+      page_height:
+        type: number
+      lines:
+        type: array
+        items:
+          $ref: '#/definitions/Obj'
+      tables:
+        type: array
+        items:
+          $ref: '#/definitions/Obj'
+      images:
+        type: array
+        items:
+          $ref: '#/definitions/Obj'
+      text_blocks:
+        type: array
+        items:
+          $ref: '#/definitions/Obj'
       
+  Request:
+    type: object
+    properties:
+      process_identifier:
+        type: string
+        description: File id for the file to be converted.
+      result:
+        type: array
+        description: File id for the file to be converted.
+        items:
+          $ref: '#/definitions/Result'
 
         
-  FileUploaderResponse:
+  Response:
     type: object
     properties:        
       data:
         type: string
-        description: Output file id generated.
       ok:
         type: boolean
         description: request successful indicator.
       why:
         type: string
         description: Response message.
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+        
+        
+  ContentResponse:
+    type: object
+    properties:        
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Result'
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      count:
+        type: number
+        description: Total Available pages
       http:
         type: object
         description: Final output of this process.
