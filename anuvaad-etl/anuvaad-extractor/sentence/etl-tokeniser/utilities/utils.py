@@ -93,9 +93,9 @@ class FileOperation(object):
     # error manager integration 
     def error_handler(self, object_in, code, iswf):
         if iswf:
-            code = code
-            message = object_in['message']
-            error = post_error_wf(code, message, object_in, None)
+            object_in['status'] = "FAILED"
+            object_in['state'] = "SENTENCE-TOKENISED"
+            error = post_error_wf(code, object_in['message'], object_in, None)
             return error
         else:
             code = code

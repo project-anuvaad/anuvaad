@@ -55,30 +55,34 @@ class Response(object):
             log_info("workflow_response : successfully generated response for workflow", self.json_data)
             return response
         except WorkflowkeyError as e:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            response_custom.status_code['message'] = str(e)
-            response = file_ops.error_handler(response_custom.status_code, "WORKFLOWKEY-ERROR", True)
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = str(e)
+            response = file_ops.error_handler(response_custom, "WORKFLOWKEY-ERROR", True)
             log_exception("workflow_response : workflow key error: key value missing", self.json_data, e)
             response = copy.deepcopy(response)
             return response
         except FileErrors as e:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            response_custom.status_code['message'] = e.message
-            response = file_ops.error_handler(response_custom.status_code, e.code, True)
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = e.message
+            response = file_ops.error_handler(response_custom, e.code, True)
             log_exception("workflow_response : some error occured while validating file", self.json_data, e)
             response = copy.deepcopy(response)
             return response
         except FileEncodingError as e:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            response_custom.status_code['message'] = str(e)
-            response = file_ops.error_handler(response_custom.status_code, "ENCODING_ERROR", True)
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = str(e)
+            response = file_ops.error_handler(response_custom, "ENCODING_ERROR", True)
             log_exception("workflow_response : service supports only utf-16 encoded file", self.json_data, e)
             response = copy.deepcopy(response)
             return response
         except ServiceError as e:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            response_custom.status_code['message'] = str(e)
-            response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = str(e)
+            response = file_ops.error_handler(response_custom, "SERVICE_ERROR", True)
             log_exception("workflow_response : Error occured during tokenisation or file writing", self.json_data, e)
             response = copy.deepcopy(response)
             return response

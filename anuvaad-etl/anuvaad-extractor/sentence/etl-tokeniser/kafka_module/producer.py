@@ -25,6 +25,7 @@ class Producer(object):
             producer.flush()
             log_info("push_data_to_queue : successfully pushed data to output queue", json_data)
         except:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, json_data['jobID'], task_id)
+            response_custom = json_data
+            response_custom['taskID'] = task_id
             log_exception("push_data_to queue : Response can't be pushed to queue %s"%(topic_name), json_data, None)
-            raise KafkaProducerError(response_custom.status_code, "data Not pushed to queue: %s"%(topic_name))
+            raise KafkaProducerError(response_custom, "data Not pushed to queue: %s"%(topic_name))
