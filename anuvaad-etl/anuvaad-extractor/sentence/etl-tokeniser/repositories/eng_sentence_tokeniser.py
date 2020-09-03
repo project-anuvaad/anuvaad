@@ -59,7 +59,6 @@ class AnuvaadEngTokenizer(object):
         text = self.serialize_quotes_with_number(text)
         text = self.serialize_bullet_points(text)
         sentences = self._tokenizer.tokenize(text)
-        print("sentenses", sentences)
         output = []
         for se in sentences:
             se = self.deserialize_dates(se)
@@ -277,19 +276,15 @@ class AnuvaadEngTokenizer(object):
                 self._genralize_patterns.append(pattern)
                 text = pattern_obj.sub('#G'+str(index)+'P#', text)
                 index+=1  
-        print(patterns)
-        print("0",text)      
         return text
 
     def deserialize_with_abbreviations_generalize_pattern(self, text):
         index = 0
-        print("genera", self._genralize_patterns)
         if self._genralize_patterns is not None and isinstance(self._genralize_patterns, list):
             for pattern in self._genralize_patterns:
                 pattern_obj = re.compile(re.escape('#G'+str(index)+'P#'), re.IGNORECASE)
                 text = pattern_obj.sub(pattern, text)
                 index+=1
-        print("1")
         return text
 
 
