@@ -7,6 +7,7 @@ from utilities.wfmutils import WFMUtils
 from service.wfmservice import WFMService
 from configs.wfmconfig import anu_etl_wfm_consumer_grp
 from configs.wfmconfig import kafka_bootstrap_server_host
+from configs.wfmconfig import wfm_cons_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
@@ -33,35 +34,40 @@ def instantiate(topics):
 def get_topic_paritions(topics):
     topic_paritions = []
     for topic in topics:
-        tp = TopicPartition(topic, 0)  # for now the partition is hardocoded
-        topic_paritions.append(tp)
+        for partition in range(0, wfm_cons_no_of_partitions):
+            tp = TopicPartition(topic, partition)
+            topic_paritions.append(tp)
     return topic_paritions
 
 
 
 # Method to read and process the requests from the kafka queue
 def consume():
-    wfmutils = WFMUtils()
-    wfmservice = WFMService()
-    wfmutils.read_all_configs()
-    configs = wfmutils.get_configs()
-    topics = wfmutils.fetch_output_topics(configs)
-    consumer = instantiate(topics)
-    log_info("WFM Consumer Running..........", None)
-    while True:
-        for msg in consumer:
-            try:
-                if msg:
-                    data = msg.value
-                    if 'jobID' in data.keys():
-                        job_details = wfmservice.get_job_details(data["jobID"])
-                        if job_details:
-                            data["metadata"] = job_details[0]["metadata"]
-                    log_info("Received on Topic: " + msg.topic, data)
-                    wfmservice.manage_wf(data)
-            except Exception as e:
-                log_exception("Exception while consuming: " + str(e), None, e)
-                post_error("WFM_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+    try:
+        wfmutils = WFMUtils()
+        wfmservice = WFMService()
+        wfmutils.read_all_configs()
+        configs = wfmutils.get_configs()
+        topics = wfmutils.fetch_output_topics(configs)
+        consumer = instantiate(topics)
+        log_info("WFM Consumer Running..........", None)
+        while True:
+            for msg in consumer:
+                try:
+                    if msg:
+                        data = msg.value
+                        if 'jobID' in data.keys():
+                            job_details = wfmservice.get_job_details(data["jobID"])
+                            if job_details:
+                                data["metadata"] = job_details[0]["metadata"]
+                        log_info("Received on Topic: " + msg.topic, data)
+                        wfmservice.manage_wf(data)
+                except Exception as e:
+                    log_exception("Exception while consuming: " + str(e), None, e)
+                    post_error("WFM_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
+    except Exception as e:
+        log_exception("Exception while starting the wfm consumer: " + str(e), None, e)
+        post_error("WFM_CONSUMER_ERROR", "Exception while starting wfm consumer: " + str(e), None)
 
 # Method that provides a deserialiser for the kafka record.
 def handle_json(x):

@@ -42,22 +42,25 @@ def get_topic_paritions(topics):
 
 # Method to read and process the requests from the kafka queue
 def core_consume():
-    wfmservice = WFMService()
-    topics = [anu_etl_wfm_core_topic]
-    consumer = instantiate(topics)
-    log_info("WFM Core Consumer Running..........", None)
-    while True:
-        for msg in consumer:
-            try:
-                if msg:
-                    data = msg.value
-                    log_info("Received on Topic: " + msg.topic, data)
-                    wfmservice.initiate_wf(data)
+    try:
+        wfmservice = WFMService()
+        topics = [anu_etl_wfm_core_topic]
+        consumer = instantiate(topics)
+        log_info("WFM Core Consumer Running..........", None)
+        while True:
+            for msg in consumer:
+                try:
+                    if msg:
+                        data = msg.value
+                        log_info("Received on Topic: " + msg.topic, data)
+                        wfmservice.initiate_wf(data)
+                except Exception as e:
+                    log_exception("Exception while consuming: " + str(e), None, e)
+                    post_error("WFM_CORE_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
                     break
-            except Exception as e:
-                log_exception("Exception while consuming: " + str(e), None, e)
-                post_error("WFM_CORE_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
-                break
+    except Exception as e:
+        log_exception("Exception while starting the wfm core consumer: " + str(e), None, e)
+        post_error("WFM_CONSUMER_ERROR", "Exception while starting wfm core consumer: " + str(e), None)
 
 
 # Method that provides a deserialiser for the kafka record.

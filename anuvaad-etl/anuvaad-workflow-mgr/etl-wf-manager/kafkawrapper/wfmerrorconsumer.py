@@ -42,26 +42,30 @@ def get_topic_paritions(topics):
 
 # Method to read and process the requests from the kafka queue
 def error_consume():
-    wfmservice = WFMService()
-    topics = [anu_etl_wf_error_topic]
-    consumer = instantiate(topics)
-    log_info("WFM Error Consumer Running..........", None)
-    while True:
-        for msg in consumer:
-            try:
-                if msg:
-                    data = msg.value
-                    if 'jobID' in data.keys():
-                        job_details = wfmservice.get_job_details(data["jobID"])
-                        if job_details:
-                            data["metadata"] = job_details[0]["metadata"]
-                    log_info("Received on Topic: " + msg.topic, data)
-                    wfmservice.update_errors(data)
+    try:
+        wfmservice = WFMService()
+        topics = [anu_etl_wf_error_topic]
+        consumer = instantiate(topics)
+        log_info("WFM Error Consumer Running..........", None)
+        while True:
+            for msg in consumer:
+                try:
+                    if msg:
+                        data = msg.value
+                        if 'jobID' in data.keys():
+                            job_details = wfmservice.get_job_details(data["jobID"])
+                            if job_details:
+                                data["metadata"] = job_details[0]["metadata"]
+                        log_info("Received on Topic: " + msg.topic, data)
+                        wfmservice.update_errors(data)
+                        break
+                except Exception as e:
+                    log_exception("Exception while consuming: " + str(e), None, e)
+                    post_error("WFM_ERROR_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
                     break
-            except Exception as e:
-                log_exception("Exception while consuming: " + str(e), None, e)
-                post_error("WFM_ERROR_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
-                break
+    except Exception as e:
+        log_exception("Exception while starting the wfm error consumer: " + str(e), None, e)
+        post_error("WFM_CONSUMER_ERROR", "Exception while starting wfm error consumer: " + str(e), None)
 
 
 # Method that provides a deserialiser for the kafka record.
