@@ -65,6 +65,7 @@ def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , foo
     #if lang  in ['en','hi']:
         #ocr_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang )
 
+    
     if lang  != 'en':
         text_block_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang,jobid )
     else:
@@ -126,7 +127,7 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
     return res_dict
 
 
-def DocumentStructure(jobid, file_name, base_dir = config.BASE_DIR, lang='en'):
+def DocumentStructure(jobid, file_name, lang='en',base_dir = config.BASE_DIR ):
     img_dfs, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths  = doc_pre_processing(file_name,base_dir,jobid)
 
     text_blocks_count = check_text(xml_dfs)
