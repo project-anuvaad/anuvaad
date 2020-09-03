@@ -59,11 +59,9 @@ def consume():
                             data["metadata"] = job_details[0]["metadata"]
                     log_info("Received on Topic: " + msg.topic, data)
                     wfmservice.manage_wf(data)
-                    break
             except Exception as e:
                 log_exception("Exception while consuming: " + str(e), None, e)
                 post_error("WFM_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
-                break
 
 # Method that provides a deserialiser for the kafka record.
 def handle_json(x):
