@@ -37,6 +37,7 @@ class AnuvaadEngTokenizer(object):
             text = f.read()
         punkt_param.sent_starters = text.split('\n')
         self._regex_search_texts = []
+        self._genralize_patterns = []
         self._date_abbrevations = []
         self._dot_abbrevations = []
         self._table_points_abbrevations = []
@@ -73,7 +74,6 @@ class AnuvaadEngTokenizer(object):
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
             output.append(se.strip())
-        del self._genralize_patterns[:]
         return output
 
     def serialize_bullet_points(self, text):
