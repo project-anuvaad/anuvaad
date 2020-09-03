@@ -77,7 +77,7 @@ class WFMService:
         except Exception as e:
             log_exception("Exception while processing sync workflow: " + str(e), wf_input, e)
             wf_input["taskID"] = "TASK-ID-NA"
-            error = post_error_wf("SYNC_WFLOW_ERROR", "Exception while processing sync workflow: " + str(e), wf_input, e)
+            error = post_error_wf("SYNC_WFLOW_ERROR", "Exception while processing the sync workflow: " + str(e), wf_input, e)
             client_output = self.get_wf_details(wf_input, None, True, error)
             self.update_job_details(client_output, False)
             log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
