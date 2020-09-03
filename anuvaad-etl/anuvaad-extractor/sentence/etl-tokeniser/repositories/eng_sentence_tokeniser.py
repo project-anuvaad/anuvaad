@@ -17,7 +17,9 @@ class AnuvaadEngTokenizer(object):
     _abbrevations_with_space_pattern = [r'^W[.]E[.]F[.][ ]|[ ]W[.]E[.]F[.][ ]',r'^O[.]A[.][ ]|[ ]O[.]A[.][ ]',r'^Sr[.][ ]|[ ]Sr[.][ ]',r'^NO[.][ ]|[ ]NO[.][ ]',r'^Pvt[.][ ]|[ ]Pvt[.][ ]', r'^NOS[.][ ]|[ ]NOS[.][ ]',r'^Smt[.][ ]|[ ]Smt[.][ ]',r'^Sec[.][ ]|[ ]Sec[.][ ]',r'^Spl[.][ ]|[ ]Spl[.][ ]',r'^Mr[.][ ]|[ ]Mr[.][ ]',r'^ft[.][ ]|[ ]ft[.][ ]',r'^kgs[.][ ]|[ ]kgs[.][ ]',r'^kg[.][ ]|[ ]kg[.][ ]',r'^Dr[.][ ]|[ ]Dr[.][ ]',r'^Ms[.][ ]|[ ]Ms[.][ ]',r'^Ltd[.][ ]|[ ]Ltd[.][ ]',r'^Pty[.][ ]|[ ]Pty[.][ ]',r'^Assn[.][ ]|[ ]Assn[.][ ]',r'^St[.][ ]|[ ]St[.][ ]',r'^Vol[.][ ]|[ ]Vol[.][ ]',r'^pp[.][ ]|[ ]pp[.][ ]',r'^Co[.][ ]|[ ]Co[.][ ]',r'^Pty[.][ ]|[ ]Pty[.][ ]',r'^rs[.][ ]|[ ]rs[.][ ]',r'^Sh[.][ ]|[ ]Sh[.][ ]',r'^M/S[.][ ]|[ ]M/S[.][ ]',r'^Mrs[.][ ]|[ ]Mrs[.][ ]',r'^Vs[.][ ]|[ ]Vs[.][ ]',r'^viz[.][ ]|[ ]viz[.][ ]',r'^ex[.][ ]|[ ]ex[.][ ]',r'^etc[.][ ]|[ ]etc[.][ ]',r'^i[.]e[.][ ]|[ ]i[.]e[.][ ]',r'^Admn[.][ ]|[ ]Admn[.][ ]',r'^P[.]C[.][ ]|[ ]P[.]C[.][ ]']
     _abbrevations_with_space = ['W.E.F. ','O.A. ','Sr. ','NO. ','Pvt. ', 'NOS. ','Smt. ','Sec. ','Spl. ','Mr. ','ft. ','kgs. ','kg. ','Dr. ','Ms. ','Ltd. ','Pty. ','Assn. ','St. ','Vol. ','pp. ','Co. ','Pty. ','Rs. ','Sh. ','M/S. ','Mrs. ','Vs. ','viz. ','ex. ','etc. ','i.e. ','Admn. ','P.C. ']
     _abbrevations_without_space = ['Crl.']
+    _abbreviations_generalise_pattern = r'([A-Z][A-Z]?[a-z]?[A-Z]?[a-z]?[.](\s)?)'
     _tokenizer = None
+    _genralize_patterns = []
     _regex_search_texts = []
     _date_abbrevations  = []
     _table_points_abbrevations = []
@@ -46,6 +48,7 @@ class AnuvaadEngTokenizer(object):
 
     def tokenize(self, text):
         text = self.serialize_dates(text)
+        text = self.serialize_with_abbreviations_generalize_pattern(text)
         text = self.serialize_with_abbrevations(text)
         text = self.serialize_table_points(text)
         text = self.serialize_pattern(text)
@@ -56,9 +59,11 @@ class AnuvaadEngTokenizer(object):
         text = self.serialize_quotes_with_number(text)
         text = self.serialize_bullet_points(text)
         sentences = self._tokenizer.tokenize(text)
+        print("sentenses", sentences)
         output = []
         for se in sentences:
             se = self.deserialize_dates(se)
+            se = self.deserialize_with_abbreviations_generalize_pattern(se)
             se = self.deserialize_pattern(se)
             se = self.deserialize_dots(se)
             se = self.deserialize_brackets(se)
@@ -69,6 +74,7 @@ class AnuvaadEngTokenizer(object):
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
             output.append(se.strip())
+        del self._genralize_patterns[:]
         return output
 
     def serialize_bullet_points(self, text):
@@ -257,6 +263,33 @@ class AnuvaadEngTokenizer(object):
             pattern = re.compile(re.escape('#'+str(index_for_without_space)+'##'), re.IGNORECASE)
             text = pattern.sub(abbrev, text)
             index_for_without_space += 1
+        return text
+
+    def serialize_with_abbreviations_generalize_pattern(self, text):
+        index = 0
+        patterns = re.findall(self._abbreviations_generalise_pattern, text)
+        patterns = [tuple(j for j in pattern if j)[0] for pattern in patterns]
+        patterns = list(sorted(patterns, key = len))
+        patterns = patterns[::-1]
+        if patterns is not None and isinstance(patterns, list):
+            for pattern in patterns:
+                pattern_obj = re.compile(re.escape(pattern))
+                self._genralize_patterns.append(pattern)
+                text = pattern_obj.sub('#G'+str(index)+'P#', text)
+                index+=1  
+        print(patterns)
+        print("0",text)      
+        return text
+
+    def deserialize_with_abbreviations_generalize_pattern(self, text):
+        index = 0
+        print("genera", self._genralize_patterns)
+        if self._genralize_patterns is not None and isinstance(self._genralize_patterns, list):
+            for pattern in self._genralize_patterns:
+                pattern_obj = re.compile(re.escape('#G'+str(index)+'P#'), re.IGNORECASE)
+                text = pattern_obj.sub(pattern, text)
+                index+=1
+        print("1")
         return text
 
 
