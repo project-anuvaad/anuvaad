@@ -27,7 +27,6 @@ def instantiate(topics):
                              group_id=anu_etl_wfm_consumer_grp,
                              auto_offset_reset='latest',
                              enable_auto_commit=True,
-                             max_poll_records=1,
                              value_deserializer=lambda x: handle_json(x))
     consumer.assign(topic_partitions)
     return consumer
@@ -63,11 +62,9 @@ def error_consume():
                                 data["metadata"] = job_details[0]["metadata"]
                         log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
                         wfmservice.update_errors(data)
-                        break
                 except Exception as e:
                     log_exception("Exception while consuming: " + str(e), None, e)
                     post_error("WFM_ERROR_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
-                    break
     except Exception as e:
         log_exception("Exception while starting the wfm error consumer: " + str(e), None, e)
         post_error("WFM_CONSUMER_ERROR", "Exception while starting wfm error consumer: " + str(e), None)

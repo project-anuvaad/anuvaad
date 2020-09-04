@@ -25,7 +25,6 @@ def instantiate(topics):
                              group_id=anu_etl_wfm_consumer_grp,
                              auto_offset_reset='latest',
                              enable_auto_commit=True,
-                             max_poll_records=1,
                              value_deserializer=lambda x: handle_json(x))
     consumer.assign(topic_partitions)
     return consumer
