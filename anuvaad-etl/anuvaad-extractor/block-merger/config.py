@@ -42,7 +42,7 @@ DOCUMENT_CONFIGS = {
 
 BLOCK_CONFIGS = {
     "right_margin_threshold": 0.10,  "left_margin_threshold": 0.10,
-    "right_break_threshold": 0.04,   "left_break_threshold": 0.05,
+    "right_break_threshold": 0.06,   "left_break_threshold": 0.05,
     "header_left_threshold": 0.70,  "header_right_threshold": 0.85,
     "space_multiply_factor": 1.8
 }

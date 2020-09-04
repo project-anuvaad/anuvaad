@@ -9,7 +9,10 @@ from src.errors.error_validator import ValidationResponse
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import time
+import config
 import copy
+import threading
+from src.kafka_module.producer import Producer
 
 file_ops = FileOperation()
 
@@ -93,3 +96,15 @@ class Response(object):
             log_exception("non workflow_response", "Something went wrong during pdf to block conversion.", None, e)
             response = copy.deepcopy(response)
             return response
+
+    def multi_thred_block_merger(self,task_id, task_starttime,jobid):
+        thread = threading.current_thread().name
+        log_info("multi_thred_block_merger",str(thread)+" | block-merger process started ===>",jobid)
+        file_value_response = self.workflow_response(task_id, task_starttime)
+        if "errorID" not in file_value_response.keys():
+            producer = Producer()
+            producer.push_data_to_queue(config.output_topic, file_value_response, jobid, task_id)
+
+        else:
+            log_info("process_merger_kf", "error send to error handler", jobid)
+        
