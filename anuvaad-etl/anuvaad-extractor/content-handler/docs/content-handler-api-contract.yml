@@ -15,7 +15,7 @@ basePath: '/api'
 
 
 paths: 
-  /v0/content:
+  /v0/save-content:
     post:
       summary: REST API to save file content.
       description: This api takes file data as json and save it in db, it's an sync api.
@@ -32,7 +32,7 @@ paths:
           required: true
             
       tags:
-      - File Converter
+      - Content Handler
 
       responses:
         200:
@@ -44,6 +44,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     
+  /v0/fetch-content:
     get:
       summary: REST API to retreive file content.
       description: This api takes file data as json and save it in db, it's an sync api.
@@ -60,7 +61,7 @@ paths:
         - in: query
           name: end_page
           type: number
-          description: The start page for the content
+          description: The end page for the content
             
       tags:
       - Content Handler
@@ -123,7 +124,7 @@ definitions:
       process_identifier:
         type: string
         description: File id for the file to be converted.
-      result:
+      pages:
         type: array
         description: File id for the file to be converted.
         items:
