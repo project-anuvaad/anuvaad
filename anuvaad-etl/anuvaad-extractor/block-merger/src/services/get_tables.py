@@ -143,7 +143,7 @@ def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
         bg_image  = mask_image(bg_image,table_df,job_id,margin=2,fill=255)
         bg_image = mask_image(bg_image, line_df, job_id, margin=2, fill=255)
         h,w =   bg_image.shape[0] , bg_image.shape[1]
-        bg_binary = base64.b64encode(bg_image)
+        bg_binary = base64.b64encode(cv2.imencode('.png', bg_image)[1])#base64.b64encode(bg_image)
 
 
         bg_df = pd.DataFrame([[0, 0, w, h, bg_binary,'IMAGE']],
