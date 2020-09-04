@@ -43,6 +43,7 @@ class AnuvaadEngTokenizer(object):
         self._table_points_abbrevations = []
         self._brackets_abbrevations = []
         self._dot_with_char_abbrevations = []
+        self._dot_with_quote_abbrevations = []
         self._dot_with_number_abbrevations = []
         self._dot_with_beginning_number_abbrevations = []
         self._tokenizer = PunktSentenceTokenizer(train_text=punkt_param,lang_vars=SentenceEndLangVars())

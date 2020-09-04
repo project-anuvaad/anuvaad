@@ -1,5 +1,6 @@
 from repositories.eng_sentence_tokeniser import AnuvaadEngTokenizer
 from repositories.hin_sentence_tokeniser import AnuvaadHinTokenizer
+from repositories.kannada_sentence_tokeniser import AnuvaadKanTokenizer
 from errors.errors_exception import ServiceError
 from utilities.utils import FileOperation
 from anuvaad_auditor.loghandler import log_info
@@ -23,6 +24,10 @@ class Tokenisation(object):
             elif text_locale == 'hi':
                 for paragraph in paragraph_data:
                     tokenised_sentence_data = AnuvaadHinTokenizer().tokenize(paragraph)
+                    tokenised_text.extend(tokenised_sentence_data)
+            elif text_locale == 'kn':
+                for paragraph in paragraph_data:
+                    tokenised_sentence_data = AnuvaadKanTokenizer().tokenize(paragraph)
                     tokenised_text.extend(tokenised_sentence_data)
             return tokenised_text
         except:
