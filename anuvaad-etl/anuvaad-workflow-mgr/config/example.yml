@@ -337,7 +337,7 @@ WorkflowConfigs:
       - name: TOKENISER
         description: tokenises the text blocks.
         api-details:
-        - uri: http://abc.com/tokenise
+        - uri: https://auth.anuvaad.org/api/v0/tokenisation-wf
       endState: true
 
 
@@ -365,7 +365,7 @@ WorkflowConfigs:
       - name: TOKENISER
         description: tokenises the text blocks.
         api-details:
-        - uri: http://abc.com/tokenise
+        - uri: https://auth.anuvaad.org/api/v0/tokenisation-wf
       endState: false
     - order: 1
       tool:
