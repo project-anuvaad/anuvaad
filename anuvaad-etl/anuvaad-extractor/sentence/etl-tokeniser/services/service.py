@@ -4,6 +4,7 @@ from repositories.kannada_sentence_tokeniser import AnuvaadKanTokenizer
 from errors.errors_exception import ServiceError
 from utilities.utils import FileOperation
 from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
 from anuvaad_auditor.loghandler import log_exception
 import json
 
@@ -53,16 +54,17 @@ class Tokenisation(object):
             log_exception("tokenisation_response : Error occured during output file creation", None, None)
             raise ServiceError(400, "Tokenisation failed. Something went wrong during output file creation.")
 
-    def adding_tokenised_text_blockmerger(self, input_json_data_pagewise):
+    def adding_tokenised_text_blockmerger(self, input_json_data_pagewise, in_locale, page_id):
         try:
             blocks = input_json_data_pagewise['text_blocks']
-            for item in blocks:
+            for block_id, item in enumerate(blocks):
                 text_data = item['text']
-                tokenised_text = AnuvaadEngTokenizer().tokenize(text_data)
-                item['tokenised_text'] = tokenised_text
+                tokenised_text = self.tokenisation_core([text_data], in_locale)
+                item['tokenized_sentences'] = [self.making_object_for_tokenised_text(text, in_locale, i, block_id, page_id) for i, text in enumerate(tokenised_text)]
             return input_json_data_pagewise
         except:
-            log_error("Keys in block merger response changed or tokenisation went wrong.", self.input_json_data, e) 
+            log_error("Keys in block merger response changed or tokenisation went wrong.", self.input_json_data, None) 
+            raise ServiceError(400, "Tokenisation failed. Keys in block merger response changed or tokenisation went wrong.")
 
     def writing_json_file_blockmerger(self, index, json_output_data):
         output_filepath , output_json_filename = file_ops.output_path(index, self.DOWNLOAD_FOLDER, '.json')
@@ -70,3 +72,12 @@ class Tokenisation(object):
         json_object = json.dumps(json_output_data)
         write_file.write(json_object)
         return output_json_filename
+
+    def making_object_for_tokenised_text(self, text, locale, index, block_id, page_id):
+        object_text = {
+            "src" : text,
+            "src_locale" : locale,
+            "sentence_id" : "{0}_{1}_{2}".format(page_id, block_id, index)
+        }
+        return object_text
+        #tokenised_object_data = [ for i, text in enumerate(tokenised_data)]

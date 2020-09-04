@@ -37,8 +37,8 @@ class Response(object):
                         output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
                     elif in_file_type == "json":
                         input_jsonfile_data = file_ops.read_json_file(input_filename)
-                        input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item) 
-                                                            for item in input_jsonfile_data['result']]
+                        input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item, in_locale, page_id) 
+                                                            for page_id, item in enumerate(input_jsonfile_data['result'])]
                         output_filename = tokenisation.writing_json_file_blockmerger(i, input_jsonfile_data)
                     file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
                     output_file_response.append(file_res)

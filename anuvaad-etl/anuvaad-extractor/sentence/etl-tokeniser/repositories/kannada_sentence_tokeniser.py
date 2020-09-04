@@ -60,7 +60,6 @@ class AnuvaadKanTokenizer(object):
         text = self.add_space_after_sentence_end(text)
         sentences = self._tokenizer.tokenize(text)
         output = []
-        print(sentences)
         for se in sentences:
             se = self.deserialize_dates(se)
             se = self.deserialize_time(se)
@@ -334,7 +333,6 @@ class AnuvaadKanTokenizer(object):
                 self._abbrevations_with_space.append(pattern)
                 text = pattern_obj.sub('##'+str(index)+'##', text)
                 index+=1
-        print(text)
         return text
 
     def deserialize_with_abbrevations(self, text):
