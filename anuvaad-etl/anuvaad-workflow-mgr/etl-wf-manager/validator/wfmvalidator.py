@@ -42,7 +42,7 @@ class WFMValidator:
                             return error
                     else:
                         return post_error("WORKFLOW_TYPE_DISABLED",
-                                          "This workflow belongs to SYNC type, which is currently disabled", None)
+                                          "This workflow belongs to SYNC type, which is currently disabled.", None)
                 elif wfType == "ASYNC":
                     if is_async_flow_enabled:
                         error = self.validate_input_async(data)
@@ -50,7 +50,7 @@ class WFMValidator:
                             return error
                     else:
                         return post_error("WORKFLOW_TYPE_DISABLED",
-                                          "This workflow belongs to ASYNC type, which is currently disabled", None)
+                                          "This workflow belongs to ASYNC type, which is currently disabled.", None)
                 else:
                     return post_error("WORKFLOW_TYPE_INVALID", "This workflow is of an invalid type",
                                       None)
