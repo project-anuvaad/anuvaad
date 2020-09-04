@@ -14,7 +14,7 @@ class Consumer(object):
     def consumer_instantiate(self):
         try:
             consumer = KafkaConsumer(self.topic_name, bootstrap_servers = [self.server_address], auto_offset_reset = 'latest', 
-                                    enable_auto_commit=True, group_id = 'anuvaad-etl-tokeinser-consumer-group', value_deserializer=lambda x: loads(x.decode('utf-8')))
+                                    enable_auto_commit=True, group_id = 'anuvaad-etl-tokeniser-consumer-group', value_deserializer=lambda x: loads(x.decode('utf-8')))
             log_info("consumer_instantiate : Consumer returned for topic: %s"%(self.topic_name), None)
             return consumer
         except:
