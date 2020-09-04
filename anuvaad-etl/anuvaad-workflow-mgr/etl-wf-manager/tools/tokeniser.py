@@ -34,7 +34,7 @@ class Tokeniser:
             op_files = task_output["output"]
             for file in op_files:
                 file = {
-                    "path": file["outputFilePath"],
+                    "path": file["outputFile"],
                     "locale": file["outputLocale"],
                     "type": file["outputType"]
                 }
