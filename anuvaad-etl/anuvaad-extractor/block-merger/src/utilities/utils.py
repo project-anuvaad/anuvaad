@@ -42,7 +42,7 @@ class FileOperation(object):
     def one_filename_response(self, input_filename, output_json_file, in_locale, in_file_type):
         file_res = {
             "inputFile" : input_filename,
-            "outputFilePath" : output_json_file,
+            "outputFile" : output_json_file,
             "outputLocale" : in_locale,
             "outputType" : "json"
         }

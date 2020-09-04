@@ -13,7 +13,7 @@ merge_app = Flask(__name__)
 
 def start_kafka():
     try:
-        t1 = threading.Thread(target=process_merger_kf, name='keep_on_running')
+        t1 = threading.Thread(target=process_merger_kf, name='BM-consumer-thread')
         t1.start()
         log_info("multithread", "Kafka running on multithread", None)
     except Exception as e:

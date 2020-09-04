@@ -4,11 +4,14 @@ from src.utilities.utils import FileOperation
 from src.kafka_module.producer import Producer
 from src.kafka_module.consumer import Consumer
 from src.resources.response_gen import Response
+#from src.resources.response_gen import multi_thred_block_merger
 from src.errors.errors_exception import KafkaConsumerError
 from src.errors.errors_exception import KafkaProducerError
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import time
+
+import threading
 import config
 import logging
 from logging.config import dictConfig
@@ -23,7 +26,8 @@ def process_merger_kf():
     try:
         consumer_class = Consumer(config.input_topic, config.bootstrap_server)
         consumer = consumer_class.consumer_instantiate()
-        log_info("process_merger_kf", "trying to receive value from consumer ", None)
+        log_info("process_merger_kf", "trying to receive value from consumer", None)
+        thread_instance =0
         for msg in consumer:
             try: 
                 data = msg.value
@@ -32,12 +36,17 @@ def process_merger_kf():
                 input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
                 log_info("process_merger_kf", "kafka request arrived ", jobid)
                 response_gen = Response(data, DOWNLOAD_FOLDER)
+                t1 = threading.Thread(target=response_gen.multi_thred_block_merger,args=(task_id, task_starttime,jobid), name='BM-thread-'+str(thread_instance))
+                t1.start()
+                thread_instance+=1
+                log_info("multithread", "block-merger running on multithread", None)
+                '''
                 file_value_response = response_gen.workflow_response(task_id, task_starttime)
                 if "errorID" not in file_value_response.keys():
                     producer = Producer()
                     producer.push_data_to_queue(config.output_topic, file_value_response, jobid, task_id)
                 else:
-                    log_info("process_merger_kf", "error send to error handler", jobid)
+                    log_info("process_merger_kf", "error send to error handler", jobid)'''
             except Exception as e:
                 log_exception("process_pdf_kf", "exception while consuming the records", jobid, e)
             
