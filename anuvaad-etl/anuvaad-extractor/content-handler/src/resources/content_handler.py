@@ -20,10 +20,10 @@ class ContentHandler(Resource):
     def post(self):
         body = request.get_json()
         userid = request.headers.get('userid')
-        if 'result' not in body or 'process_identifier' not in body or userid is None:
+        if 'pages' not in body or 'process_identifier' not in body or userid is None:
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
             return res.getresjson(), 400
-        results = body['result']
+        results = body['pages']
         process_identifier = body['process_identifier']
         obj_to_be_saved = []
         for result in results:
@@ -39,6 +39,9 @@ class ContentHandler(Resource):
         FileContent.objects.insert(file_content_instances)
         res = CustomResponse(Status.SUCCESS.value, None)
         return res.getres()
+
+
+class FetchContentHandler(Resource):
 
     def get(self):
         parse = reqparse.RequestParser()
