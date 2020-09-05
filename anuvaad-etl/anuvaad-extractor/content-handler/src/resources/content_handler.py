@@ -40,6 +40,19 @@ class ContentHandler(Resource):
         res = CustomResponse(Status.SUCCESS.value, None)
         return res.getres()
 
+    def make_obj(self,process_identifier, page_data, data, data_type, obj_to_be_saved, userid):
+        obj = {}
+        data['block_id'] = str(uuid.uuid4())+process_identifier
+        data['page_info'] = page_data
+        obj['page_no'] = page_data['page_no']
+        obj['data_type'] = data_type
+        obj['created_on'] = datetime.now()
+        obj['process_identifier'] = process_identifier
+        obj['created_by'] = userid
+        obj['data'] = data
+        obj_to_be_saved.append(obj)
+        return obj_to_be_saved
+
 
 class FetchContentHandler(Resource):
 
@@ -98,17 +111,6 @@ class FetchContentHandler(Resource):
         return res.getres()
 
 
-    def make_obj(self,process_identifier, page_data, data, data_type, obj_to_be_saved, userid):
-        obj = {}
-        data['block_id'] = str(uuid.uuid4())+process_identifier
-        data['page_info'] = page_data
-        obj['page_no'] = page_data['page_no']
-        obj['data_type'] = data_type
-        obj['created_on'] = datetime.now()
-        obj['process_identifier'] = process_identifier
-        obj['created_by'] = userid
-        obj['data'] = data
-        obj_to_be_saved.append(obj)
-        return obj_to_be_saved
+    
         
 
