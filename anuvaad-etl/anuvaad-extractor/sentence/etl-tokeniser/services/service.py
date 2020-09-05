@@ -7,6 +7,8 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 from anuvaad_auditor.loghandler import log_exception
 import json
+import requests
+import config
 
 file_ops = FileOperation()
 class Tokenisation(object):
@@ -41,7 +43,7 @@ class Tokenisation(object):
         write_file = open(output_path, 'w', encoding='utf-16')
         for item in tokenised_data:
             write_file.write("%s\n"%item)
-        log_info("writing_tokenised_sentence_in_file : File write for tokenised sentence completed", None)
+        log_info("writing_tokenised_sentence_in_file : File write for tokenised sentence completed", self.input_json_data)
 
     # calling service function to convert paragragh into tokenised sentences for their respective language
     def tokenisation_response(self, input_file_data, in_locale, index):
@@ -51,7 +53,7 @@ class Tokenisation(object):
             self.writing_tokenised_sentence_in_file(tokenised_data, output_filepath)
             return output_filename 
         except:
-            log_exception("tokenisation_response : Error occured during output file creation", None, None)
+            log_exception("tokenisation_response : Error occured during output file creation", self.input_json_data, None)
             raise ServiceError(400, "Tokenisation failed. Something went wrong during output file creation.")
 
     def adding_tokenised_text_blockmerger(self, input_json_data_pagewise, in_locale, page_id):
@@ -81,3 +83,10 @@ class Tokenisation(object):
         }
         return object_text
         #tokenised_object_data = [ for i, text in enumerate(tokenised_data)]
+
+    def sending_data_to_content_handler(self, job_id, user_id, tokenised_block_json):
+        data = {"process_identifier" : job_id, "pages" : tokenised_block_json['result']}
+        headers = {"userid": user_id ,"Content-Type": "application/json"}
+        requests.post(url = config.internal_gateway_url_save_data, data = data, headers = headers)
+        log_info("tokenised block merger response saved in db", self.input_json_data)
+        

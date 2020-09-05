@@ -20,7 +20,7 @@ class Response(object):
         self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
 
     def workflow_response(self, task_id, task_starttime):
-        input_key, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
+        input_key, workflow_id, jobid, tool_name, step_order, user_id = file_ops.json_input_format(self.json_data)
         log_info("workflow_response : started the response generation", self.json_data)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         tokenisation = Tokenisation(self.DOWNLOAD_FOLDER, self.json_data)
@@ -39,6 +39,7 @@ class Response(object):
                         input_jsonfile_data = file_ops.read_json_file(input_filename)
                         input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item, in_locale, page_id) 
                                                             for page_id, item in enumerate(input_jsonfile_data['result'])]
+                        tokenisation.sending_data_to_content_handler(jobid, user_id, input_jsonfile_data)
                         output_filename = tokenisation.writing_json_file_blockmerger(i, input_jsonfile_data)
                     file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
                     output_file_response.append(file_res)

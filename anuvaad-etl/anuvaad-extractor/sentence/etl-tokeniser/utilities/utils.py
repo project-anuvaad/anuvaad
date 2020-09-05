@@ -71,7 +71,8 @@ class FileOperation(object):
         jobid = json_data['jobID']
         tool_name = json_data['tool']
         step_order = json_data['stepOrder']
-        return input_files, workflow_id, jobid, tool_name, step_order
+        user_id = json_data['metadata']['userID']
+        return input_files, workflow_id, jobid, tool_name, step_order, user_id
 
     # extracting input file features
     def accessing_files(self,files):
