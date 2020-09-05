@@ -86,10 +86,9 @@ class Tokenisation(object):
 
     def sending_data_to_content_handler(self, job_id, user_id, tokenised_block_json):
         try:
-            data = {"process_identifier" : job_id, "pages" : tokenised_block_json['result']}
-            json_object = json.loads(data, indent = 4) 
+            json_data = {"process_identifier" : job_id, "pages" : tokenised_block_json['result']}
             headers = {"userid": user_id ,"Content-Type": "application/json"}
-            response = requests.post(url = config.internal_gateway_url_save_data, data = json_object, headers = headers)
+            response = requests.post(url = config.internal_gateway_url_save_data, json = json_data, headers = headers)
             log_info("tokenised block merger response saved in db " + str(data['process_identifier']) + str(response.content), self.input_json_data)
         except Exception as e:
             log_exception("Can not save content in content handler.", self.input_json_data, e)
