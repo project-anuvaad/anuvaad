@@ -28,7 +28,7 @@ def process_tokenization_kf():
             log_info("process_tokenization_kf : received input json from input topic consumer ", data)
             task_id = str("TOK-" + str(time.time()).replace('.', ''))
             task_starttime = str(time.time()).replace('.', '')
-            input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+            input_files, workflow_id, jobid, tool_name, step_order, user_id = file_ops.json_input_format(data)
             response_gen = Response(data, DOWNLOAD_FOLDER)
             file_value_response = response_gen.workflow_response(task_id, task_starttime)
             if "errorID" not in file_value_response.keys():

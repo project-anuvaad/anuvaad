@@ -1,30 +1,20 @@
-# Anuvaad Toolkit: Anuvaad Hindi Tokenizer
-#
-# Author: Aroop <aroop.ghosh@tarento.com>
-# URL: <http://developers.anuvaad.org/>
-
 import re
 from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters, PunktTrainer, PunktLanguageVars
 from nltk.tokenize import sent_tokenize
 
-"""
-Utility tokenizer class for anuvaad project
-"""
-class AnuvaadHinTokenizer(object):
+class AnuvaadKanTokenizer(object):
+
     """
-    Default abbrevations
+    abbrevations
     """
-    #_abbrevations_with_space_pattern = [r'[ ]ऐ[.]',r'[ ]बी[.]',r'[ ]सी[.]',r'[ ]डी[.]',r'[ ]ई[.]',r'[ ]एफ[.]',r'[ ]जी[.]',r'[ ]एच[.]',r'[ ]आइ[.]',r'[ ]जे[.]',r'[ ]के[.]',r'[ ]एल[.]',r'[ ]एम[.]',r'[ ]एन[.]',r'[ ]ओ[.]',r'[ ]पी[.]',r'[ ]क्यू[.]',r'[ ]आर[.]',r'[ ]एस[.]',r'[ ]टी[.]',r'[ ]यू[.]',r'[ ]वी[.]',r'[ ]डब्लू[.]',r'[ ]एक्स[.]',r'[ ]वायी[.]',r'[ ]ज़ेड[.]']
-    #_abbrevations_with_space = [' ऐ.',' बी.',' सी.',' डी.',' ई.',' एफ.',' जी.',' एच.',' आइ.',' जे.',' के.',' एल.',' एम.',' एन.',' ओ.',' पी.',' क्यू.',' आर.',' एस.',' टी.',' यू.',' वी.',' डब्लू.',' एक्स.',' वायी.',' ज़ेड.']
-    #_abbrevations_without_space_pattern = [r'डॉ[.]',r'पं[.]']
-    #_abbrevations_without_space = ['डॉ.','पं.']
-    _text_abbrevations_pattern = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)?)'
-    _text_colon_abbreviations_pattern = r'([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?[:](\s)?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?'
-    _text_abbrevations = []
-    _text_colon_abbreviations = []
+    _abbrevations_with_space_pattern = r'((\s)(([\u0C85-\u0CB9,\u0CDE,\u0CE0-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)(([\u0C85-\u0CB9,\u0CDE,\u0CE0-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?(([\u0C85-\u0CB9,\u0CDE,\u0CE0-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?)'
+    _abbrevations_with_space = []
+    _abbrevations_without_space_pattern = ""
+    _abbrevations_without_space = []
     _tokenizer = None
     _regex_search_texts = []
     _date_abbrevations  = []
+    _time_abbreviations = []
     _table_points_abbrevations = []
     _brackets_abbrevations = []
     _decimal_abbrevations = []
@@ -33,36 +23,33 @@ class AnuvaadHinTokenizer(object):
     _dot_with_quote_abbrevations = []
     _dot_with_number_abbrevations = []
     _dot_with_beginning_number_abbrevations = []
-    
-    def __init__(self, abbrevations=None):
+
+    def __init__(self, abbrevations = None):
         if abbrevations is not None:
             self._abbrevations_without_space.append(abbrevations)
+        self._abbrevations_with_space = []
         self._regex_search_texts = []
-        self._text_abbrevations =[]
-        self._text_colon_abbreviations = []
-        self._dot_abbrevations = []
-        self._date_abbrevations = []
+        self._date_abbrevations  = []
         self._time_abbreviations = []
         self._table_points_abbrevations = []
         self._brackets_abbrevations = []
+        self._decimal_abbrevations = []
+        self._url_abbrevations = []
         self._dot_with_char_abbrevations = []
         self._dot_with_quote_abbrevations = []
         self._dot_with_number_abbrevations = []
-        self._decimal_abbrevations = []
-        self._url_abbrevations = []
         self._dot_with_beginning_number_abbrevations = []
         self._tokenizer = PunktSentenceTokenizer(lang_vars=SentenceEndLangVars())
 
     def tokenize(self, text):
-        print('--------------Process started-------------')
+        print('--------------Process kn started-------------')
         text = self.serialize_with_abbrevations(text)
-        text = self.serialize_colon_abbreviations(text)
         text = self.serialize_dates(text)
         text = self.serialize_time(text)
         text = self.serialize_table_points(text)
         text = self.serialize_url(text)
         text = self.serialize_pattern(text)
-        text = self.serialize_end(text)
+        # text = self.serialize_end(text)
         text = self.serialize_dots(text)
         text = self.serialize_brackets(text)
         text = self.serialize_dot_with_number(text)
@@ -78,14 +65,13 @@ class AnuvaadHinTokenizer(object):
             se = self.deserialize_time(se)
             se = self.deserialize_pattern(se)
             se = self.deserialize_url(se)
-            se = self.deserialize_end(se)
+            # se = self.deserialize_end(se)
             se = self.deserialize_dots(se)
             se = self.deserialize_decimal(se)
             se = self.deserialize_brackets(se)
             se = self.deserialize_dot_with_number(se)
             se = self.deserialize_dot_with_number_beginning(se)
             se = self.deserialize_quotes_with_number(se)
-            se = self.deserialize_colon_abbreviations(se)
             se = self.deserialize_with_abbrevations(se)
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
@@ -142,15 +128,15 @@ class AnuvaadHinTokenizer(object):
             text = pattern.sub(sentence_end + ' ', text)
         return text
 
-    def serialize_end(self, text):
-        pattern = re.compile(r'[।]')
-        text = pattern.sub(' END__END ', text)
-        return text
+    # def serialize_end(self, text):
+    #     pattern = re.compile(r'[।]')
+    #     text = pattern.sub(' END__END ', text)
+    #     return text
 
-    def deserialize_end(self, text):
-        pattern = re.compile(re.escape(' END__END'), re.IGNORECASE)
-        text = pattern.sub('।', text)
-        return text
+    # def deserialize_end(self, text):
+    #     pattern = re.compile(re.escape(' END__END'), re.IGNORECASE)
+    #     text = pattern.sub('।', text)
+    #     return text
 
     def serialize_bullet_points(self, text):
         pattern = re.compile(r'(?!^)[•]')
@@ -165,7 +151,7 @@ class AnuvaadHinTokenizer(object):
         return text
 
     def serialize_table_points(self, text):
-        patterns = re.findall(r'(?:(?:(?:[ ][(]?(?:(?:[0,9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0900-\u097F]{1,1})[)])|(?:[ ](?:(?:[0-9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0900-\u097F]{1,1})[.][ ])))',text)
+        patterns = re.findall(r'(?:(?:(?:[ ][(]?(?:(?:[0,9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0C80-\u0CF2]{1,1})[)])|(?:[ ](?:(?:[0-9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0C80-\u0CF2]{1,1})[.][ ])))',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -185,7 +171,7 @@ class AnuvaadHinTokenizer(object):
         return text
 
     def serialize_brackets(self, text):
-        patterns = re.findall(r'(?:[(](?:[0-9\u0900-\u097Fa-zA-Z.-]|[ ]){1,}[)])',text)
+        patterns = re.findall(r'(?:[(](?:[0-9\u0C80-\u0CF2a-zA-Z.-]|[ ]){1,}[)])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -205,7 +191,7 @@ class AnuvaadHinTokenizer(object):
         return text
     
     def serialize_dates(self, text):
-        patterns = re.findall(r'[0-9]{1,4}[.][0-9]{1,2}[.][0-9]{1,4}',text)   # [0-9]{,2}[.][0-9]{,2}[.][0-9]{2,4}   [0-9]{1,4}[.][0-9]{1,2}[.][0-9]{1,4}
+        patterns = re.findall(r'[0-9]{1,4}[.][0-9]{1,2}[.][0-9]{1,4}',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -244,8 +230,9 @@ class AnuvaadHinTokenizer(object):
                 index+=1
         return text
     
+
     def serialize_quotes_with_number(self, text):
-        patterns = re.findall(r'([ ][“][0-9a-zA-Z\u0900-\u097F]{1,}[.])',text)
+        patterns = re.findall(r'([ ][“][0-9a-zA-Z\u0C80-\u0CF2]{1,}[.])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -315,7 +302,7 @@ class AnuvaadHinTokenizer(object):
         return text
 
     def serialize_pattern(self, text):
-        patterns = re.findall(r'([\u0900-\u097F][.]){2,}',text)
+        patterns = re.findall(r'([\u0C80-\u0CF2][.]){2,}',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -336,64 +323,23 @@ class AnuvaadHinTokenizer(object):
            
     def serialize_with_abbrevations(self, text):
         index = 0
-        # index_for_without_space = 0
-        # for abbrev in self._abbrevations_with_space_pattern:
-        #     pattern = re.compile(abbrev, re.IGNORECASE)
-        #     text = pattern.sub(' #'+str(index)+'#', text)
-        #     index += 1
-        # for abbrev in self._abbrevations_without_space_pattern:
-        #     pattern = re.compile(abbrev, re.IGNORECASE)
-        #     text = pattern.sub('#'+str(index_for_without_space)+'##', text)
-        #     index_for_without_space += 1
-        patterns = re.findall(self._text_abbrevations_pattern, text)
+        patterns = re.findall(self._abbrevations_with_space_pattern, text)
         patterns = [tuple(j for j in pattern if j)[0] for pattern in patterns]
         patterns = list(sorted(patterns, key = len))
         patterns = patterns[::-1]
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
                 pattern_obj = re.compile(re.escape(pattern))
-                self._text_abbrevations.append(pattern)
+                self._abbrevations_with_space.append(pattern)
                 text = pattern_obj.sub('##'+str(index)+'##', text)
-                index+=1        
+                index+=1
         return text
 
     def deserialize_with_abbrevations(self, text):
         index = 0
-        # index_for_without_space = 0
-        # for abbrev in self._abbrevations_without_space:
-        #     pattern = re.compile(re.escape('#'+str(index_for_without_space)+'##'), re.IGNORECASE)
-        #     text = pattern.sub(abbrev, text)
-        #     index_for_without_space += 1
-        # for abbrev in self._abbrevations_with_space:
-        #     pattern = re.compile(re.escape(' #'+str(index)+'#'), re.IGNORECASE)
-        #     text = pattern.sub(abbrev, text)
-        #     index += 1
-        if self._text_abbrevations is not None and isinstance(self._text_abbrevations, list):
-            for pattern in self._text_abbrevations:
+        if self._abbrevations_with_space is not None and isinstance(self._abbrevations_with_space, list):
+            for pattern in self._abbrevations_with_space:
                 pattern_obj = re.compile(re.escape('##'+str(index)+'##'), re.IGNORECASE)
-                text = pattern_obj.sub(pattern, text)
-                index+=1
-        return text
-
-    def serialize_colon_abbreviations(self, text):
-        index = 0
-        patterns = re.findall(self._text_colon_abbreviations_pattern, text)
-        patterns = [tuple(j for j in pattern if j)[0] for pattern in patterns]
-        patterns = list(sorted(patterns, key = len))
-        patterns = patterns[::-1]
-        if patterns is not None and isinstance(patterns, list):
-            for pattern in patterns:
-                pattern_obj = re.compile(re.escape(pattern))
-                self._text_colon_abbreviations.append(pattern)
-                text = pattern_obj.sub('#C'+str(index)+'C#', text)
-                index+=1
-        return text
-
-    def deserialize_colon_abbreviations(self, text):
-        index = 0
-        if self._text_colon_abbreviations is not None and isinstance(self._text_colon_abbreviations, list):
-            for pattern in self._text_colon_abbreviations:
-                pattern_obj = re.compile(re.escape('#C'+str(index)+'C#'), re.IGNORECASE)
                 text = pattern_obj.sub(pattern, text)
                 index+=1
         return text
@@ -404,12 +350,3 @@ class SentenceEndLangVars(PunktLanguageVars):
     with open('repositories/tokenizer_data/end.txt', encoding='utf8') as f:
         text = f.read()
     sent_end_chars = text.split('\n')
-    
-    # # punkt = PunktTrainer()
-    # # punkt.train(text,finalize=False, verbose=False)
-    # # punkt.finalize_training(verbose=True)
-# text = "जिन मुख्य जिन्स समूहों  के मूल्यों में अप्रैल 2020 में अप्रैल 2019 की तुलना में नकारात्मक वृद्धि दर्ज की गई वो हैं- रत्न और आभूषण (-98.74%), चमड़ा और चमड़े के उत्पाद (-93.28%), "
-# # with open('data5.txt', encoding='utf8') as f:
-# #     text = f.read()
-# tokenizer = AnuvaadHinTokenizer()
-# print(tokenizer.tokenize(text))
