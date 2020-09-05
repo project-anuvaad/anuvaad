@@ -88,5 +88,5 @@ class Tokenisation(object):
         data = {"process_identifier" : job_id, "pages" : tokenised_block_json['result']}
         headers = {"userid": user_id}
         response = requests.post(url = config.internal_gateway_url_save_data, json = data, headers = headers)
-        log_info("tokenised block merger response saved in db " + str(type(data)) + str(response.content), self.input_json_data)
+        log_info("tokenised block merger response saved in db " + str(data['process_identifier']) + str(response.content), self.input_json_data)
         
