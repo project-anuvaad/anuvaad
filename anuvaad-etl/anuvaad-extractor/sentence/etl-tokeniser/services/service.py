@@ -73,6 +73,7 @@ class Tokenisation(object):
         write_file = open(output_filepath, 'w', encoding='utf-8')
         json_object = json.dumps(json_output_data)
         write_file.write(json_object)
+        log_info("Service : Json file write done!", self.input_json_data)
         return output_json_filename
 
     def making_object_for_tokenised_text(self, text, locale, index, block_id, page_id):
