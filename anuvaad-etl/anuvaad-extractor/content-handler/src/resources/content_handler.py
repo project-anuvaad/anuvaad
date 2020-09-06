@@ -88,7 +88,7 @@ class FetchContentHandler(Resource):
         if start_page is None:
             start_page = 1
         if end_page is None:
-            end_page = 1
+            end_page = start_page
         userid = request.headers.get('ad-userid')
         output = {}
         pipeline = {
