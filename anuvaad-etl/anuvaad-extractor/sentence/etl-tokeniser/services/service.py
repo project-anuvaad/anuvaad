@@ -73,6 +73,7 @@ class Tokenisation(object):
         write_file = open(output_filepath, 'w', encoding='utf-8')
         json_object = json.dumps(json_output_data)
         write_file.write(json_object)
+        log_info("Service : Json file write done!", self.input_json_data)
         return output_json_filename
 
     def making_object_for_tokenised_text(self, text, locale, index, block_id, page_id):
@@ -82,11 +83,16 @@ class Tokenisation(object):
             "sentence_id" : "{0}_{1}_{2}".format(page_id, block_id, index)
         }
         return object_text
-        #tokenised_object_data = [ for i, text in enumerate(tokenised_data)]
 
     def sending_data_to_content_handler(self, job_id, user_id, tokenised_block_json):
-        data = {"process_identifier" : job_id, "pages" : tokenised_block_json['result']}
-        headers = {"userid": user_id ,"Content-Type": "application/json"}
-        response = requests.post(url = config.internal_gateway_url_save_data, data = data, headers = headers)
-        log_info("tokenised block merger response saved in db %s"%(response.content), self.input_json_data)
+        #try:
+        json_data = {"process_identifier" : job_id, "pages" : tokenised_block_json['result']}
+        #json_str = json.dumps(json_data)
+        #headers = {"userid": user_id ,"Content-Type": "application/json", 'Active' : 'plain/text', 'Authorization' : 'Bearer 5bc5b73aa1ff40eab8004567868884b0|8903ea1bfae042beb4c165af273b2208'}
+        headers = {"userid": user_id ,"Content-Type": "application/json", 'Active' : 'plain/text'}
+        log_info("Intiating request to save data", self.input_json_data)
+        response = requests.post(config.internal_gateway_url_save_data, data = json_data, headers = headers)
+        log_info("tokenised block merger response saved in db " + str(response.headers) + str(response.content), self.input_json_data)
+        #except Exception as e:
+         #   log_exception("Can not save content in content handler.", self.input_json_data, e)
         
