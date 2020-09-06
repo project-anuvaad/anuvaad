@@ -39,6 +39,7 @@ class ContentHandler(Resource):
         FileContent.objects.insert(file_content_instances)
         res = CustomResponse(Status.SUCCESS.value, None)
         return res.getres()
+        
 
     def make_obj(self,process_identifier, page_data, data, data_type, obj_to_be_saved, userid):
         obj = {}
@@ -50,8 +51,27 @@ class ContentHandler(Resource):
         obj['process_identifier'] = process_identifier
         obj['created_by'] = userid
         obj['data'] = data
+        obj['block_id'] = data['block_id']
         obj_to_be_saved.append(obj)
         return obj_to_be_saved
+
+
+class UpdateContentHandler(Resource):
+
+    def post(self):
+        body = request.get_json()
+        userid = request.headers.get('ad-userid')
+        if 'blocks' not in body or userid is None:
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
+            return res.getresjson(), 400
+        blocks = body['blocks']
+        obj_to_be_saved = []
+        for block in blocks:
+            if 'block_id' in block:
+                file_content = FileContent.objects(block_id=block['block_id'])
+                file_content.update(set__data=block)
+        res = CustomResponse(Status.SUCCESS.value, None)
+        return res.getres()
 
 
 class FetchContentHandler(Resource):
