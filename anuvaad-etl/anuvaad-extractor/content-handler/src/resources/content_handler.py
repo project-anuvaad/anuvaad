@@ -43,7 +43,7 @@ class ContentHandler(Resource):
 
     def make_obj(self,process_identifier, page_data, data, data_type, obj_to_be_saved, userid):
         obj = {}
-        data['block_id'] = str(uuid.uuid4())+process_identifier
+        data['block_identifier'] = str(uuid.uuid4())+process_identifier
         data['job_id'] = process_identifier
         data['page_info'] = page_data
         obj['page_no'] = page_data['page_no']
@@ -52,7 +52,7 @@ class ContentHandler(Resource):
         obj['job_id'] = process_identifier
         obj['created_by'] = userid
         obj['data'] = data
-        obj['block_id'] = data['block_id']
+        obj['block_identifier'] = data['block_identifier']
         obj_to_be_saved.append(obj)
         return obj_to_be_saved
 
@@ -68,8 +68,8 @@ class UpdateContentHandler(Resource):
         blocks = body['blocks']
         obj_to_be_saved = []
         for block in blocks:
-            if 'block_id' in block:
-                file_content = FileContent.objects(block_id=block['block_id'])
+            if 'block_identifier' in block:
+                file_content = FileContent.objects(block_identifier=block['block_identifier'])
                 file_content.update(set__data=block)
         res = CustomResponse(Status.SUCCESS.value, None)
         return res.getres()
