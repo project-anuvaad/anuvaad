@@ -87,9 +87,8 @@ class Tokenisation(object):
     def sending_data_to_content_handler(self, job_id, user_id, tokenised_block_json):
         #try:
         json_data = {"process_identifier" : job_id, "pages" : tokenised_block_json['result']}
-        #json_str = json.dumps(json_data)
         #headers = {"userid": user_id ,"Content-Type": "application/json", 'Active' : 'plain/text', 'Authorization' : 'Bearer 5bc5b73aa1ff40eab8004567868884b0|8903ea1bfae042beb4c165af273b2208'}
-        headers = {"userid": user_id ,"Content-Type": "application/json", 'Active' : 'plain/text'}
+        headers = {"userid": user_id ,"Content-Type": "application/json", 'Active' : 'plain/text', 'Authorization' : ''}
         log_info("Intiating request to save data", self.input_json_data)
         response = requests.post(config.internal_gateway_url_save_data, data = json_data, headers = headers)
         log_info("tokenised block merger response saved in db " + str(response.headers) + str(response.content), self.input_json_data)
