@@ -18,9 +18,9 @@ def start_kafka():
     try:
         t1 = threading.Thread(target=process_fc_kf, name='keep_on_running')
         t1.start()
-        log_info("multithread", "Kafka running on multithread", None)
+        log_info("multithread : Kafka running on multithread", None)
     except Exception as e:
-        log_error("multithread", "Error while running custom threads", None, e)
+        log_error("multithread : Error while running custom threads", None, e)
 
 if config.ENABLE_CORS:
     cors    = CORS(tok_app, resources={r"/api/*": {"origins": "*"}})

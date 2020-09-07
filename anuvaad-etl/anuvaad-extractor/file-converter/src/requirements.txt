@@ -5,5 +5,5 @@ flask==1.1.2
 flask-cors==3.0.8
 flask-restful==0.3.8
 anuvaad-em==0.0.2
-anuvaad-auditor==0.0.7
+anuvaad-auditor==0.1.0
 mongoengine==0.18.0
