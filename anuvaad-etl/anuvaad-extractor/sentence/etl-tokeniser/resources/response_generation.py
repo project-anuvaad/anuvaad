@@ -87,6 +87,14 @@ class Response(object):
             log_exception("workflow_response : Error occured during tokenisation or file writing", self.json_data, e)
             response = copy.deepcopy(response)
             return response
+        except Exception as e:
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = str(e)
+            response = file_ops.error_handler(response_custom, "SERVICE_ERROR", True)
+            log_exception("workflow_response : Any random exception", self.json_data, e)
+            response = copy.deepcopy(response)
+            return response
 
     def nonwf_response(self):
         log_info("non workflow response : started the response generation", None)
