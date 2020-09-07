@@ -45,6 +45,7 @@ class ContentHandler(Resource):
         obj = {}
         data['block_identifier'] = str(uuid.uuid4())+process_identifier
         data['job_id'] = process_identifier
+        data['data_type'] = data_type
         data['page_info'] = page_data
         obj['page_no'] = page_data['page_no']
         obj['data_type'] = data_type
