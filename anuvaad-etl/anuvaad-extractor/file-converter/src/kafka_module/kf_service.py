@@ -15,7 +15,7 @@ def consumer_validator():
     try:
         consumer_class = Consumer(config.tok_input_topic, config.bootstrap_server)
         consumer = consumer_class.consumer_instantiate()
-        log_info("consumer_validator","--- consumer running -----", None)
+        log_info("consumer_validator --- consumer running -----", None)
         return consumer
     except:
         log_exception("consumer_validator : error in kafka opertation while listening to consumer on topic %s"%(config.tok_input_topic), None, None)
@@ -25,7 +25,7 @@ def push_output(producer, topic_name, output, jobid, task_id):
     try:
         producer.push_data_to_queue(topic_name, output)
         log_info("push_output : producer flushed value on topic %s"%(topic_name), jobid)
-    except:
+    except Exception as e:
         response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
         log_exception("push_output : Response can't be pushed to queue %s"%(topic_name), jobid, None)
         raise KafkaProducerError(response_custom, "data Not pushed to queue: %s"%(topic_name))
@@ -60,7 +60,7 @@ def process_fc_kf():
         file_ops.error_handler(response_custom, "KAFKA_CONSUMER_ERROR", True)
         log_exception("process_fc_kf : Consumer didn't instantiate", None, e)
     except KafkaProducerError as e:
-        response_custom = e.code
+        response_custom = {}
         response_custom['message'] = e.message      
         file_ops.error_handler(response_custom, "KAFKA_PRODUCER_ERROR", True)
-        log_exception("process_fc_kf", "response send to topic %s"%(config.tok_output_topic), response_custom['jobID'], e)
+        log_exception("process_fc_kf : response send to topic %s"%(config.tok_output_topic), None, e)
