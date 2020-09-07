@@ -10,14 +10,12 @@ from nltk.tokenize import sent_tokenize
 """
 Utility tokenizer class for anuvaad project
 """
-class AnuvaadHinTokenizer(object):
+class AnuvaadMarTokenizer(object):
     """
     Default abbrevations
     """
-    #_abbrevations_with_space_pattern = [r'[ ]ऐ[.]',r'[ ]बी[.]',r'[ ]सी[.]',r'[ ]डी[.]',r'[ ]ई[.]',r'[ ]एफ[.]',r'[ ]जी[.]',r'[ ]एच[.]',r'[ ]आइ[.]',r'[ ]जे[.]',r'[ ]के[.]',r'[ ]एल[.]',r'[ ]एम[.]',r'[ ]एन[.]',r'[ ]ओ[.]',r'[ ]पी[.]',r'[ ]क्यू[.]',r'[ ]आर[.]',r'[ ]एस[.]',r'[ ]टी[.]',r'[ ]यू[.]',r'[ ]वी[.]',r'[ ]डब्लू[.]',r'[ ]एक्स[.]',r'[ ]वायी[.]',r'[ ]ज़ेड[.]']
-    #_abbrevations_with_space = [' ऐ.',' बी.',' सी.',' डी.',' ई.',' एफ.',' जी.',' एच.',' आइ.',' जे.',' के.',' एल.',' एम.',' एन.',' ओ.',' पी.',' क्यू.',' आर.',' एस.',' टी.',' यू.',' वी.',' डब्लू.',' एक्स.',' वायी.',' ज़ेड.']
-    #_abbrevations_without_space_pattern = [r'डॉ[.]',r'पं[.]']
-    #_abbrevations_without_space = ['डॉ.','पं.']
+    #_abbrevations_without_space_pattern = 
+    #_abbrevations_without_space = 
     _text_abbrevations_pattern = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)?)'
     _text_colon_abbreviations_pattern = r'([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?[:](\s)?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?'
     _text_abbrevations = []
@@ -62,7 +60,6 @@ class AnuvaadHinTokenizer(object):
         text = self.serialize_table_points(text)
         text = self.serialize_url(text)
         text = self.serialize_pattern(text)
-        text = self.serialize_end(text)
         text = self.serialize_dots(text)
         text = self.serialize_brackets(text)
         text = self.serialize_dot_with_number(text)
@@ -78,7 +75,6 @@ class AnuvaadHinTokenizer(object):
             se = self.deserialize_time(se)
             se = self.deserialize_pattern(se)
             se = self.deserialize_url(se)
-            se = self.deserialize_end(se)
             se = self.deserialize_dots(se)
             se = self.deserialize_decimal(se)
             se = self.deserialize_brackets(se)
@@ -140,16 +136,6 @@ class AnuvaadHinTokenizer(object):
             text = pattern.sub(sentence_end, text)
             pattern = re.compile(r'['+sentence_end+']')
             text = pattern.sub(sentence_end + ' ', text)
-        return text
-
-    def serialize_end(self, text):
-        pattern = re.compile(r'[।]')
-        text = pattern.sub(' END__END ', text)
-        return text
-
-    def deserialize_end(self, text):
-        pattern = re.compile(re.escape(' END__END'), re.IGNORECASE)
-        text = pattern.sub('।', text)
         return text
 
     def serialize_bullet_points(self, text):
@@ -404,12 +390,3 @@ class SentenceEndLangVars(PunktLanguageVars):
     with open('repositories/tokenizer_data/end.txt', encoding='utf8') as f:
         text = f.read()
     sent_end_chars = text.split('\n')
-    
-    # # punkt = PunktTrainer()
-    # # punkt.train(text,finalize=False, verbose=False)
-    # # punkt.finalize_training(verbose=True)
-# text = "जिन मुख्य जिन्स समूहों  के मूल्यों में अप्रैल 2020 में अप्रैल 2019 की तुलना में नकारात्मक वृद्धि दर्ज की गई वो हैं- रत्न और आभूषण (-98.74%), चमड़ा और चमड़े के उत्पाद (-93.28%), "
-# # with open('data5.txt', encoding='utf8') as f:
-# #     text = f.read()
-# tokenizer = AnuvaadHinTokenizer()
-# print(tokenizer.tokenize(text))
