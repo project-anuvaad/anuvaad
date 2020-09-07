@@ -47,7 +47,7 @@ paths:
   /v0/fetch-content:
     get:
       summary: REST API to retreive file content.
-      description: This api takes file data as json and save it in db, it's an sync api.
+      description: This api takes process identifier and sends the content corresponding to that process, it's an sync api.
       parameters:
         - in: query
           name: process_identifier
@@ -71,6 +71,33 @@ paths:
           description: On successful completion of the job.
           schema:
             $ref: '#/definitions/ContentResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+            
+            
+            
+  /v0/update-content:
+    post:
+      summary: REST API to update file content.
+      description: This api takes array of blocks(which can be of any type,i.e. text-block, images, tables) and update it in db, it's an sync api.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/Blocks'
+            
+      tags:
+      - Content Handler
+
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/Response'
         400:
           description: On input errors causing a failure in the job.
           schema:
@@ -129,6 +156,19 @@ definitions:
         description: File id for the file to be converted.
         items:
           $ref: '#/definitions/Result'
+          
+          
+  Blocks:
+    type: object
+    properties:
+      blocks:
+        type: array
+        items:
+            $ref: '#/definitions/Block'
+        
+        
+  Block:
+    type: object
 
         
   Response:

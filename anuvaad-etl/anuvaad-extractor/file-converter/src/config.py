@@ -12,7 +12,9 @@ ENABLE_CORS = False
 #folders and file path
 download_folder = 'upload'
 
-TASK_STAT = 'FILE-CONVERTED'
+TASK_STAT = 'FILE-CONVERTER'
+
+CONSUMER_GROUP = 'anuvaad-etl-fc-consumer-group'
 
 #mongo
 MONGO_IP = 'MONGO_IP'
