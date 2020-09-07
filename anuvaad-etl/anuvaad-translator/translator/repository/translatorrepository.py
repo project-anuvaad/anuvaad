@@ -2,9 +2,9 @@
 import os
 import pymongo
 
-from configs.wfmconfig import mongo_server_host
-from configs.wfmconfig import mongo_wfm_db
-from configs.wfmconfig import mongo_wfm_jobs_col
+from configs.translatorconfig import mongo_server_host
+from configs.translatorconfig import mongo_translator_db
+from configs.translatorconfig import mongo_translator_collection
 
 
 
@@ -16,8 +16,8 @@ class WFMRepository:
     # Initialises and fetches mongo client
     def instantiate(self):
         client = pymongo.MongoClient(mongo_server_host)
-        db = client[mongo_wfm_db]
-        col = db[mongo_wfm_jobs_col]
+        db = client[mongo_translator_db]
+        col = db[mongo_translator_collection]
         return col
 
     # Inserts the object into mongo collection

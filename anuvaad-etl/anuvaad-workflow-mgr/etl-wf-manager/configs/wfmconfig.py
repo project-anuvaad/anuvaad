@@ -16,6 +16,7 @@ tool_pdftohtml = "PDF-TO-HTML"
 tool_htmltojson = "HTML-TO-JSON"
 tool_fileconverter = "FILE-CONVERTER"
 tool_blockmerger = "BLOCK-MERGER"
+tool_translator = "TRANSLATOR"
 is_sync_flow_enabled = True
 is_async_flow_enabled = True
 
@@ -32,8 +33,8 @@ wfm_error_cons_no_of_partitions = 1
 
 
 #datastore-configs
-mongo_alignment_db = os.environ.get('MONGO_ALIGNMENT_DB', 'anuvaad-etl-dataflow-pipeline')
-mongo_alignment_col_jobs = os.environ.get('MONGO_WFMJOBS_COL', 'anuvaad-etl-wfm-jobs')
+mongo_wfm_db = os.environ.get('MONGO_ALIGNMENT_DB', 'anuvaad-etl-dataflow-pipeline')
+mongo_wfm_jobs_col = os.environ.get('MONGO_WFMJOBS_COL', 'anuvaad-etl-wfm-jobs')
 
 #module-configs
 context_path = os.environ.get('ANU_ETL_WFM_CONTEXT_PATH', '/anuvaad-etl/wf-manager')

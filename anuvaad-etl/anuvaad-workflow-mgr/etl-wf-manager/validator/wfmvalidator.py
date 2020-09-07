@@ -7,6 +7,7 @@ log = logging.getLogger('file')
 from utilities.wfmutils import WFMUtils
 from configs.wfmconfig import is_sync_flow_enabled
 from configs.wfmconfig import is_async_flow_enabled
+from configs.wfmconfig import tool_translator
 
 wfmutils = WFMUtils()
 
@@ -37,7 +38,7 @@ class WFMValidator:
             if wfType:
                 if wfType == "SYNC":
                     if is_sync_flow_enabled:
-                        error = self.validate_input_sync(data)
+                        error = self.validate_input_sync(data, workflowCode)
                         if error is not None:
                             return error
                     else:
@@ -45,7 +46,7 @@ class WFMValidator:
                                           "This workflow belongs to SYNC type, which is currently disabled.", None)
                 elif wfType == "ASYNC":
                     if is_async_flow_enabled:
-                        error = self.validate_input_async(data)
+                        error = self.validate_input_async(data, workflowCode)
                         if error is not None:
                             return error
                     else:
@@ -60,13 +61,14 @@ class WFMValidator:
 
 
     # Validator that validates the input request for initiating an async job
-    def validate_input_async(self, data):
+    def validate_input_async(self, data, workflowCode):
         if 'files' not in data.keys():
             return post_error("FILES_NOT_FOUND", "files are mandatory", None)
         else:
             if len(data["files"]) == 0:
                 return post_error("FILES_NOT_FOUND", "Input files are mandatory", None)
             else:
+                tools = wfmutils.get_tools_of_wf(workflowCode)
                 for file in data["files"]:
                     if not file["path"]:
                         return post_error("FILES_PATH_NOT_FOUND", "Path is mandatory for all files in the input", None)
@@ -75,18 +77,25 @@ class WFMValidator:
                     if not file["locale"]:
                         return post_error("FILES_LOCALE_NOT_FOUND", "Locale is mandatory for all files in the input",
                                           None)
+                    if tool_translator in tools:
+                        if not file["model"]:
+                            return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
 
 
     # Validator that validates the input request for initiating the sync job
-    def validate_input_sync(self, data):
+    def validate_input_sync(self, data, workflowCode):
         if 'textBlocks' not in data.keys():
             return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks (word/sentence/paragraph) are mandatory", None)
         else:
             if not data["textBlocks"]:
                 return post_error("TEXT_BLOCKS_NOT_FOUND", "Input files are mandatory.", None)
             else:
+                tools = wfmutils.get_tools_of_wf(workflowCode)
                 for block in data["textBlocks"]:
                     if not block["text"]:
                         return post_error("TEXT_NOT_FOUND", "Text is mandatory.", None)
                     if not block["locale"]:
                         return post_error("LOCALE_NOT_FOUND", "Locale is mandatory.", None)
+                    if tool_translator in tools:
+                        if not block["model"]:
+                            return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)

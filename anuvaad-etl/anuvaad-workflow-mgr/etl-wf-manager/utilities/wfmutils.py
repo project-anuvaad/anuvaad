@@ -89,7 +89,8 @@ class WFMUtils:
         tools = []
         for step in sequence:
             tool = step["tool"][0]["name"]
-            tools.append(tool)
+            if tool not in tools:
+                tools.append(tool)
         return tools
 
     # Generates unique job id.
