@@ -74,7 +74,7 @@ def extract_pdf_metadata(filename, working_dir, base_dir,jobid):
     
     return xml_files,  bg_files, pdf_image_paths
 
-def process_input_pdf(filename, base_dir, jobid):
+def process_input_pdf(filename, base_dir, jobid, lang):
     '''
         - from the input extract following details
             - xml
@@ -96,7 +96,7 @@ def process_input_pdf(filename, base_dir, jobid):
         - parse xml to create df per page for image block.
     '''
     try :
-        xml_dfs, page_width, page_height = get_xml_info(xml_file[0])
+        xml_dfs, page_width, page_height = get_xml_info(xml_file[0],lang)
     except Exception as e :
             log_error("Service xml_document_info", "Error in extracting text xml info", jobid, e)
     try :
@@ -135,6 +135,7 @@ def get_hdfs(pages, in_dfs,document_configs,header_region , footer_region,multip
             if multiple_pages :
                 page_df   = tag_heaader_footer_attrib(header_region , footer_region,page_df)
 
+        
             h_df    = merge_horizontal_blocks(page_df, document_configs, debug=False)
             h_dfs.append(h_df)
     except Exception as e :
@@ -151,10 +152,13 @@ def get_pdfs(pages, page_dfs, configs,block_configs, debug=False):
             page_df     = page_dfs[page_index]
             cols        = page_df.columns.values.tolist()
             df          = pd.DataFrame(columns=cols)
+            
             for index, row in page_df.iterrows():
+
                 if row['children'] == None:
                     d_tmp = page_df.iloc[index]
                     d_tmp['avg_line_height'] = int(d_tmp['text_height'])
+                    
                     df = df.append(d_tmp)
                 else:
                     dfs = process_block(page_df.iloc[index], block_configs)
@@ -165,6 +169,7 @@ def get_pdfs(pages, page_dfs, configs,block_configs, debug=False):
     except Exception as e :
             log_error("Service get_xml", "Error in creating p_dfs", None, e)
 
+    
     return p_dfs
 
 
@@ -182,3 +187,56 @@ def drop_cols(df,drop_col=None ):
         if col in df.columns:
             df = df.drop(columns=[col])
     return df
+
+def change_font(font_name):
+    if '+' in font_name:
+        font = font_name.split('+')[1]
+    else:
+        font = font_name
+    return font
+
+def update_font(p_dfs, pages):
+
+    new_dfs = []
+    for page_index in range(pages):
+            page_df     = p_dfs[page_index]
+            page_df     = page_df.where(page_df.notnull(), None)
+            page_lis    = []
+            child_lis   =[]
+            for index, row in page_df.iterrows():
+                if row['children'] == None:
+                    page_lis.append(change_font(row["font_family"]))
+                    child_lis.append(row['children'])
+                else:
+                    sub_block_children   =  pd.read_json(row['children'])
+                    sub_block_children  = sub_block_children.where(sub_block_children.notnull(), None)
+                    page_lis1    = []
+                    child_lis1   =[]
+                    for index2, row2 in sub_block_children.iterrows():
+                        if row2['children'] == None:
+                            child_lis1.append(row2['children'])
+                            page_lis1.append(change_font(row2["font_family"]))
+                        else:
+                            sub2_block_children   =  pd.read_json(row2['children'])
+                            sub2_block_children   = sub2_block_children.where(sub2_block_children.notnull(), None)
+                            page_lis2 = []
+                            for index3, row3 in sub2_block_children.iterrows():
+                                page_lis2.append(change_font(row3["font_family"]))
+                                
+                            sub2_block_children['font_family'] = page_lis2
+                            page_lis1.append(max(set(page_lis2), key = page_lis2.count))
+                            child_lis1.append(sub2_block_children.to_json())
+                            
+
+                    sub_block_children['font_family'] = page_lis1
+
+                    page_lis.append(max(set(page_lis1), key = page_lis1.count))
+                    child_lis.append(sub_block_children.to_json())
+
+            page_df['font_family'] = page_lis
+            page_df['children']    = child_lis
+            new_dfs.append(page_df)
+
+    return new_dfs
+                
+                        
