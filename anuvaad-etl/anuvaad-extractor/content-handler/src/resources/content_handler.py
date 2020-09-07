@@ -20,11 +20,11 @@ class ContentHandler(Resource):
     def post(self):
         body = request.get_json()
         userid = request.headers.get('userid')
-        if 'pages' not in body or 'process_identifier' not in body or userid is None:
+        if 'pages' not in body or 'job_id' not in body or userid is None:
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
             return res.getresjson(), 400
         results = body['pages']
-        process_identifier = body['process_identifier']
+        process_identifier = body['job_id']
         obj_to_be_saved = []
         for result in results:
             page_data = {}
@@ -44,11 +44,12 @@ class ContentHandler(Resource):
     def make_obj(self,process_identifier, page_data, data, data_type, obj_to_be_saved, userid):
         obj = {}
         data['block_id'] = str(uuid.uuid4())+process_identifier
+        data['job_id'] = process_identifier
         data['page_info'] = page_data
         obj['page_no'] = page_data['page_no']
         obj['data_type'] = data_type
         obj['created_on'] = datetime.now()
-        obj['process_identifier'] = process_identifier
+        obj['job_id'] = process_identifier
         obj['created_by'] = userid
         obj['data'] = data
         obj['block_id'] = data['block_id']
@@ -78,11 +79,11 @@ class FetchContentHandler(Resource):
 
     def get(self):
         parse = reqparse.RequestParser()
-        parse.add_argument('process_identifier', type=str, location='args',help='Process Identifier is required', required=True)
+        parse.add_argument('job_id', type=str, location='args',help='Job Id is required', required=True)
         parse.add_argument('start_page', type=int, location='args',help='', required=False)
         parse.add_argument('end_page', type=int, location='args',help='', required=False)
         args = parse.parse_args()
-        process_identifier = args['process_identifier']
+        process_identifier = args['job_id']
         start_page = args['start_page']
         end_page = args['end_page']
         if start_page is None:
@@ -94,11 +95,11 @@ class FetchContentHandler(Resource):
         pipeline = {
                 '$group':
                     {
-                        '_id': '$process_identifier',
+                        '_id': '$job_id',
                         'maxQuantity': { '$max': "$page_no" }
                     }
         }
-        max_pages = FileContent.objects(process_identifier=process_identifier,created_by=userid).aggregate(pipeline)
+        max_pages = FileContent.objects(job_id=process_identifier,created_by=userid).aggregate(pipeline)
         max_page_number = 1
         for max_page in max_pages:
             max_page_number = max_page['maxQuantity']
@@ -116,7 +117,7 @@ class FetchContentHandler(Resource):
         }
         output = []
         for i in range(start_page,end_page+1):
-            blocks = FileContent.objects(process_identifier=process_identifier,page_no=i,created_by=userid).aggregate(pipeline_blocks)  
+            blocks = FileContent.objects(job_id=process_identifier,page_no=i,created_by=userid).aggregate(pipeline_blocks)  
             obj = {}
             index = 0
             for block in blocks:
