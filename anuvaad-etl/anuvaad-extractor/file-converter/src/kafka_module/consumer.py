@@ -2,6 +2,7 @@ from kafka import KafkaConsumer
 from json import loads
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
+import config
 
 # Kafka consumer class
 class Consumer(object):
@@ -13,10 +14,11 @@ class Consumer(object):
     def consumer_instantiate(self):
         try:
             consumer = KafkaConsumer(self.topic_name, bootstrap_servers = [self.server_address], auto_offset_reset = 'latest', 
+                                group_id = config.CONSUMER_GROUP,
                                     enable_auto_commit=True, value_deserializer=lambda x: loads(x.decode('utf-8')))
-            log_info("consumer_instantiate", "Consumer returned for topic: %s"%(self.topic_name), None)
+            log_info("consumer_instantiate : Consumer returned for topic: %s"%(self.topic_name), None)
             return consumer
         except Exception as e:
-            log_exception("consumer_instantiate", "error occured for consumer topic: %s"%(self.topic_name), None, e)
+            log_exception("consumer_instantiate : error occured for consumer topic: %s"%(self.topic_name), None, e)
 
 

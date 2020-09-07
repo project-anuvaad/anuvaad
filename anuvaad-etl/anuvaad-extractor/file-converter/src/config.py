@@ -14,6 +14,8 @@ download_folder = 'upload'
 
 TASK_STAT = 'FILE-CONVERTER'
 
+CONSUMER_GROUP = 'anuvaad-etl-fc-consumer-group'
+
 #mongo
 MONGO_IP = 'MONGO_IP'
 DEFAULT_VALUE = 'localhost'
