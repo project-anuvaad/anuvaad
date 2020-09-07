@@ -1,8 +1,9 @@
 import os
 from pathlib import Path
 import time
-from anuvaad_em.emservice import post_error
-from anuvaad_em.emservice import post_error_wf
+from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.errorhandler import post_error_wf
+import config
 
 class FileOperation(object):
 
@@ -79,14 +80,10 @@ class FileOperation(object):
     # error manager integration 
     def error_handler(self, object_in, code, iswf):
         if iswf:
-                job_id = object_in["jobID"]
-                task_id = object_in["taskID"]
-                state = object_in['state']
-                status = object_in['status']
-                code = code
-                message = object_in['message']
-                error = post_error_wf(code, message, job_id, task_id, state, status, None)
-                return error
+            object_in['status'] = "FAILED"
+            object_in['state'] = config.TASK_STAT
+            error = post_error_wf(code, object_in['message'], object_in, None)
+            return error
         else:
             code = code
             message = ""

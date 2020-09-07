@@ -52,38 +52,44 @@ class Response(object):
             log_info("workflow_response : successfully generated response for workflow", self.json_data)
             return response_success
         except LibreOfficeError as e:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            response_custom.status_code['message'] = 'LibreOfficeError'
-            response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = 'LibreOfficeError'
+            response = file_ops.error_handler(response_custom, "SERVICE_ERROR", True)
             log_exception("workflow_response : Error when converting file to PDF", self.json_data, e)
             return response
         except TimeoutExpired as e:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            response_custom.status_code['message'] = 'TimeoutExpired'
-            response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = 'TimeoutExpired'
+            response = file_ops.error_handler(response_custom, "SERVICE_ERROR", True)
             log_exception("workflow_response : Timeout when converting file to PDF", self.json_data, e)
             return response
         except WorkflowkeyError as e:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            response_custom.status_code['message'] = str(e)
-            response = file_ops.error_handler(response_custom.status_code, "WORKFLOWKEY-ERROR", True)
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = str(e)
+            response = file_ops.error_handler(response_custom, "WORKFLOWKEY-ERROR", True)
             log_exception("workflow_response : workflow key error: key value missing", self.json_data, e)
             return response
         except FileErrors as e:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            response_custom.status_code['message'] = e.message
-            response = file_ops.error_handler(response_custom.status_code, e.code, True)
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = e.message
+            response = file_ops.error_handler(response_custom, e.code, True)
             log_exception("workflow_response : some error occured while validating file", self.json_data, e)
             return response
         except FileEncodingError as e:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            response_custom.status_code['message'] = str(e)
-            response = file_ops.error_handler(response_custom.status_code, "ENCODING_ERROR", True)
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = str(e)
+            response = file_ops.error_handler(response_custom, "ENCODING_ERROR", True)
             log_exception("workflow_response : service supports only utf-16 encoded file", self.json_data, e)
             return response
         except ServiceError as e:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            response_custom.status_code['message'] = str(e)
-            response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = str(e)
+            response = file_ops.error_handler(response_custom, "SERVICE_ERROR", True)
             log_exception("workflow_response : Error occured during file conversion or file writing", self.json_data, e)
             return response
