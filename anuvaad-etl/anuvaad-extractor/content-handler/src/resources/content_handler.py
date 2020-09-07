@@ -34,27 +34,14 @@ class ContentHandler(Resource):
             for block_type in BLOCK_TYPES:
                 if result[block_type['key']] is not None:
                     for data in result[block_type['key']]:
-                        obj_to_be_saved = self.make_obj(process_identifier, page_data, data, block_type['key'], obj_to_be_saved, userid)
+                        obj_to_be_saved = make_obj(process_identifier, page_data, data, block_type['key'], obj_to_be_saved, userid)
         file_content_instances = [FileContent(**data) for data in obj_to_be_saved]
         FileContent.objects.insert(file_content_instances)
         res = CustomResponse(Status.SUCCESS.value, None)
         return res.getres()
         
 
-    def make_obj(self,process_identifier, page_data, data, data_type, obj_to_be_saved, userid):
-        obj = {}
-        data['block_identifier'] = str(uuid.uuid4())+process_identifier
-        data['job_id'] = process_identifier
-        data['page_info'] = page_data
-        obj['page_no'] = page_data['page_no']
-        obj['data_type'] = data_type
-        obj['created_on'] = datetime.now()
-        obj['job_id'] = process_identifier
-        obj['created_by'] = userid
-        obj['data'] = data
-        obj['block_identifier'] = data['block_identifier']
-        obj_to_be_saved.append(obj)
-        return obj_to_be_saved
+    
 
 
 class UpdateContentHandler(Resource):
@@ -70,7 +57,13 @@ class UpdateContentHandler(Resource):
         for block in blocks:
             if 'block_identifier' in block:
                 file_content = FileContent.objects(block_identifier=block['block_identifier'])
-                file_content.update(set__data=block)
+                if len(file_content) == 0:
+                    obj_to_be_saved = []
+                    obj_to_be_saved = make_obj(block['job_id'], block['page_info'], block, block['data_type'], obj_to_be_saved, userid)
+                    file_content_instances = [FileContent(**data) for data in obj_to_be_saved]
+                    FileContent.objects.insert(file_content_instances)
+                else:
+                    file_content.update(set__data=block)
         res = CustomResponse(Status.SUCCESS.value, None)
         return res.getres()
 
@@ -134,4 +127,20 @@ class FetchContentHandler(Resource):
 
     
         
+
+def make_obj(process_identifier, page_data, data, data_type, obj_to_be_saved, userid):
+        obj = {}
+        data['block_identifier'] = str(uuid.uuid4())+process_identifier
+        data['job_id'] = process_identifier
+        data['data_type'] = data_type
+        data['page_info'] = page_data
+        obj['page_no'] = page_data['page_no']
+        obj['data_type'] = data_type
+        obj['created_on'] = datetime.now()
+        obj['job_id'] = process_identifier
+        obj['created_by'] = userid
+        obj['data'] = data
+        obj['block_identifier'] = data['block_identifier']
+        obj_to_be_saved.append(obj)
+        return obj_to_be_saved
 

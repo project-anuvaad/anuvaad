@@ -15,7 +15,7 @@ from src.services.child_text_unify_to_parent import ChildTextUnify
 from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df, process_bg_image
 from src.utilities.xml_utils import check_text
 
-def doc_pre_processing(filename, base_dir,jobid):
+def doc_pre_processing(filename, base_dir,jobid, lang):
     '''
         Preprocessing on input pdf to get:
             - xml files
@@ -26,7 +26,7 @@ def doc_pre_processing(filename, base_dir,jobid):
     '''
     log_info("Service main", "document preprocessing started  ===>", jobid)
 
-    img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir,jobid)
+    img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir,jobid,lang)
     multiple_pages = False
     pages          = len(xml_dfs)
     if pages > 1:
@@ -56,21 +56,18 @@ def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , foo
     log_info("Service main", "document structure analysis started  ===>", jobid)
     
     text_merger = ChildTextUnify()
-
+    
     in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,jobid)
     h_dfs                              = get_xml.get_hdfs(pages, in_dfs, config.DOCUMENT_CONFIGS,header_region , footer_region, multiple_pages)
     v_dfs                              = get_xml.get_vdfs(pages, h_dfs, config.DOCUMENT_CONFIGS)
     p_dfs                              = get_xml.get_pdfs(pages, v_dfs, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)
     p_dfs , line_dfs                   = get_underline(p_dfs,line_dfs,jobid)
-    #if lang  in ['en','hi']:
-        #ocr_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang )
-
-    
+    p_dfs                              = get_xml.update_font(p_dfs, pages)
     if lang  != 'en':
-        text_block_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang,jobid )
+        text_block_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang,jobid)
     else:
         text_block_dfs  = text_merger.unify_child_text_blocks(pages, p_dfs, config.DROP_TEXT)
-
+        
     log_info("Service main", "document structure analysis successfully completed", jobid)
 
     return text_block_dfs, table_dfs, line_dfs , bg_dfs
@@ -132,7 +129,7 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
 
 
 def DocumentStructure(jobid, file_name, lang='en',base_dir = config.BASE_DIR ):
-    img_dfs, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths  = doc_pre_processing(file_name,base_dir,jobid)
+    img_dfs, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths  = doc_pre_processing(file_name,base_dir,jobid, lang)
 
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:
