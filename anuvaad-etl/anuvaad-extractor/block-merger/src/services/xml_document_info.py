@@ -1,10 +1,9 @@
 import pandas as pd
 import os
-from src.utilities.xml_utils import (extract_image_paths_from_pdf, extract_xml_from_digital_pdf, extract_html_bg_images_from_digital_pdf,
-                        create_directory, read_directory_files, get_subdirectories,
-                        get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered,
-                       get_page_text_element_attrib, get_page_image_element_attrib, get_image_base64
-                       )
+from src.utilities.xml_utils import (
+    get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered,
+    get_page_text_element_attrib, get_page_image_element_attrib, get_image_base64
+    )
 
 def get_document_width_height(pages):
     return int(pages[0].attrib['width']), int(pages[0].attrib['height'])
@@ -142,7 +141,7 @@ def get_xml_image_info(filepath):
 
     return dfs, width, height
 
-def get_pdf_bg_image_info(width, height, images_path):
+def get_pdf_image_info(width, height, images_path):
     
     print('Total number of background images (%d)' % (len(images_path)))
     

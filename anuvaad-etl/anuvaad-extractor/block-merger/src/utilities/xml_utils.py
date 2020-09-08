@@ -10,63 +10,6 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 #import xml.etree.ElementTree as etree
 
-# extract pdf to image
-def extract_image_paths_from_pdf(filepath, workspace_output_dir):
-    working_dir     = os.path.join(workspace_output_dir, 'images')
-    image_filename  = os.path.splitext(os.path.basename(filepath))[0]
-    
-    create_directory(working_dir)
-    images = pdf2image.convert_from_path(filepath, dpi=300, output_file=image_filename, output_folder=working_dir, fmt='jpg', paths_only=True)
-    return images
-
-# Execute pdftohtml to extract XML file of digital PDF
-def extract_xml_from_digital_pdf(filepath, workspace_output_dir):
-    working_dir    = Path(os.path.join(workspace_output_dir, 'pdftohtml'))
-    create_directory(working_dir)
-
-    working_dir     = Path(os.path.join(working_dir, 'xml'))
-    create_directory(working_dir)
-
-    shutil.copy(filepath, Path(os.path.join(working_dir, os.path.basename(filepath))))
-    
-    cmd = ('pdftohtml -xml %s' % (Path(os.path.join(working_dir, os.path.basename(filepath)))))
-    os.system(cmd)
-    return working_dir
-
-def extract_html_bg_images_from_digital_pdf(filepath, workspace_output_dir):
-    working_dir    = Path(os.path.join(workspace_output_dir, 'pdftohtml'))
-    create_directory(working_dir)
-
-    working_dir     = Path(os.path.join(working_dir, 'html'))
-    create_directory(working_dir)
-
-    shutil.copy(filepath, Path(os.path.join(working_dir, os.path.basename(filepath))))
-    
-    cmd = ('pdftohtml -c %s' % (Path(os.path.join(working_dir, os.path.basename(filepath)))))
-    os.system(cmd)
-    return working_dir
-
-# directory/folder helper functions
-# utility function
-def create_directory(path):
-    try:
-        os.mkdir(path)
-        return True
-    except FileExistsError as fe_error:
-        return True
-    except OSError as error:
-        print(error)
-    return False
-
-# read files present in a directory
-def read_directory_files(path, pattern='*'):
-    
-    files = [str(f) for f in sorted(glob.glob( str(Path(os.path.join(path, pattern)))))]
-    return files
-
-def get_subdirectories(path):
-    return [f.path for f in os.scandir(path) if f.is_dir()]
-
 ### xml helper functions
 def get_top(style):
     top = style.split(';')[1]

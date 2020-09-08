@@ -3,18 +3,13 @@ import uuid
 import config
 import logging
 import time
-from pathlib import Path
 import pandas as pd
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 
-from src.utilities.xml_utils import (extract_image_paths_from_pdf, extract_xml_from_digital_pdf,
-                       create_directory, read_directory_files, get_subdirectories,
-                       get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered,
-                       get_page_text_element_attrib, get_ngram, extract_html_bg_images_from_digital_pdf
-                      )
-from src.services.xml_document_info import (get_xml_info, get_xml_image_info, get_pdf_bg_image_info)
-
+from src.utilities.xml_utils import ( get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered, get_page_text_element_attrib, get_ngram)
+from src.services.xml_document_info import (get_xml_info, get_xml_image_info, get_pdf_image_info)
+from src.utilities.filesystem import (create_directory, extract_html_bg_image_paths_from_digital_pdf, extract_xml_path_from_digital_pdf)
 
 from src.services.box_horizontal_operations import (merge_horizontal_blocks)
 from src.services.box_vertical_operations import (merge_vertical_blocks)
@@ -23,56 +18,52 @@ from src.services.left_right_on_block import left_right_margin
 
 
 def create_pdf_processing_paths(filename, base_dir, jobid):
-    data_dir    = Path(os.path.join(base_dir, 'data'))
+    data_dir    = os.path.join(base_dir, 'data')
     ret         = create_directory(data_dir)
+
     if ret == False:
-        log_info('Service get_xml','data directory creation failed', jobid)
+        log_error('Service get_xml', 'JobID: unable to create data directory:', jobid, data_dir)
         return False
     
-    output_dir  = Path(os.path.join(data_dir, 'output'))
+    output_dir  = os.path.join(data_dir, 'output')
     ret         = create_directory(output_dir)
     if ret == False:
-        log_info('Service get_xml','output directory creation failed', jobid)
+        log_error('Service get_xml', 'JobID : unable to create output directory', jobid, output_dir)
         return False
 
-    working_dir = Path(os.path.join(output_dir, os.path.splitext(filename)[0]+'_'+str(uuid.uuid1())))
+    working_dir = os.path.join(output_dir, os.path.splitext(filename)[0]+'_'+str(uuid.uuid1()))
     ret         = create_directory(working_dir)
     if ret == False:
-        
-        log_info('Service get_xml','working directory creation failed', jobid)
+        log_info('Service get_xml', 'JobID: unable to create working directory', jobid, working_dir)
         return False
     
-    log_info('Service get_xml','created processing directories successfully', jobid)
+    log_info('Service get_xml', 'JobID: created processing directories successfully', jobid)
     
     return working_dir, True
 
-def extract_pdf_metadata(filename, working_dir, base_dir,jobid):
+def extract_pdf_metadata(filename, working_dir, base_dir, jobid):
     start_time          = time.time()
-    pdf_filepath        = Path(os.path.join(base_dir, filename))
-    try:
-        pdf_image_paths     = extract_image_paths_from_pdf(pdf_filepath, working_dir)
-        pdf_xml_dir         = extract_xml_from_digital_pdf(pdf_filepath, working_dir)
-    except Exception as e :
-        log_error("Service xml_utils", "Error in extracting xml", jobid, e)
-    try:
-        os.system('pdftohtml -c ' + str(pdf_filepath) + ' ' + str(working_dir) + '/')
-    except Exception as e :
-        log_error("Service get_xml", "Error in extracting html", jobid, e)   
+    pdf_filepath        = os.path.join(base_dir, filename)
 
-    # try:
-    #     pdf_bg_image_dir    = extract_html_bg_images_from_digital_pdf(pdf_filepath, working_dir)
-    # except Exception as e :
-    #     log_error("Service xml_utils", "Error in extracting html of bg images", jobid, e)
-    #
+    try:
+        pdf_xml_filepath        = extract_xml_path_from_digital_pdf(pdf_filepath, working_dir)
+    except Exception as e:
+        log_error('Service filesystem', 'JobID: Error extracting xml information', jobid, e)
+        return None, None, None
+    log_info('Service filesystem', 'JobID: successful extracting xml', jobid)
+    
+    try:
+        pdf_bg_img_filepaths    = extract_html_bg_image_paths_from_digital_pdf(pdf_filepath, working_dir)
+    except Exception as e:
+        log_error('Service filesystem', 'JobID: Error extracting background images information', jobid, e)
+        return None, None, None
+    log_info('Service filesystem', 'JobID: successful extracting xml', jobid)
+
     end_time            = time.time()
     extraction_time     = end_time - start_time
+    log_info('Service filesystem', 'extract_pdf_metadata completed in {}, JobID: '.format(extraction_time), jobid)
     
-    xml_files           = read_directory_files(pdf_xml_dir, pattern='*.xml')
-    bg_files            = None#read_directory_files(pdf_bg_image_dir, pattern='*.png')
-    
-    log_info('Service get_xml','Successfully extracted xml, background images of file:', jobid)
-    
-    return xml_files,  bg_files, pdf_image_paths
+    return pdf_xml_filepath, None, pdf_bg_img_filepaths
 
 def process_input_pdf(filename, base_dir, jobid):
     '''
@@ -84,32 +75,32 @@ def process_input_pdf(filename, base_dir, jobid):
     working_dir, ret = create_pdf_processing_paths(filename, base_dir, jobid)
     
     if ret == False:
-        log_info('Service get_xml','extract_pdf_processing_paths failed', jobid)
-        return False
+        log_info('Service get_xml', 'JobID: extract_pdf_processing_paths failed', jobid)
+        return None, None, None, None, None, None
     
-    xml_file ,bg_files, pdf_image_paths   = extract_pdf_metadata(filename, working_dir,base_dir,jobid)
-    if xml_file == None : #or bg_files == None:
-        log_info('Service get_xml','cannot extract xml metadata from pdf file', jobid)
-        return False
+    pdf_xml_filepath, pdf_xml_image_paths, pdf_bg_img_filepaths   = extract_pdf_metadata(filename, working_dir, base_dir, jobid)
+    if pdf_xml_filepath == None or pdf_bg_img_filepaths == None:
+        log_info('Service get_xml', "JobID: cannot extract xml metadata from pdf file", jobid)
+        return None, None, None, None, None, None
+
     '''
         - parse xml to create df per page for text and table block.
         - parse xml to create df per page for image block.
     '''
     try :
-        xml_dfs, page_width, page_height = get_xml_info(xml_file[0])
+        xml_dfs, page_width, page_height = get_xml_info(pdf_xml_filepath)
     except Exception as e :
-            log_error("Service xml_document_info", "Error in extracting text xml info", jobid, e)
-    try :
-        img_dfs, page_width, page_height = get_xml_image_info(xml_file[0])
-    except Exception as e :
-            log_error("Service xml_document_info", "Error in extracting image xml info", jobid, e)
-    #
-    # try:
-    #     bg_dfs  = get_pdf_bg_image_info(page_width, page_height, bg_files)
-    # except Exception as e:
-    #     log_error("Service xml_document_info", "Error in get_pdf_bg_image_info, unable to encode background images ", jobid, e)
+        log_error("Service get_xml", "Error in extracting text xml info", jobid, e)
+        return None, None, None, None, None, None
 
-    return img_dfs, xml_dfs, page_width, page_height ,working_dir, pdf_image_paths #, bg_dfs
+    try :
+        img_dfs, page_width, page_height = get_xml_image_info(pdf_xml_filepath)
+    except Exception as e :
+        log_error("Service get_xml", "Error in extracting image xml info", jobid, e)
+        return None, None, None, None, None, None
+
+    log_info('Service get_xml', 'created dataframes successfully JobID:', jobid)
+    return img_dfs, xml_dfs, page_width, page_height, working_dir, pdf_bg_img_filepaths
 
     
 def get_vdfs(pages, h_dfs, document_configs, debug=False):
@@ -169,7 +160,6 @@ def get_pdfs(pages, page_dfs, configs,block_configs, debug=False):
 
 
 def process_block(children, block_configs):
-    
     dfs = left_right_margin(children, block_configs)
     return dfs
 
