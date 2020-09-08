@@ -48,7 +48,28 @@ def remove_redundant_rows(in_df):
     
     return df
 
-def get_xml_info(filepath):
+def get_font_family(lang, f_family):
+
+    if lang!='en':
+        font = config.FONT_CONFIG[lang]
+    else:
+        font = f_family
+
+    return font
+
+def get_text_tag(bold, italic):
+
+    attr = ''
+    if len(bold)!=0 and len(italic)!=0:
+        attr = "BOLD"+ ", ITALIC"
+    if len(bold)!=0 and len(italic)==0:
+        attr =  "BOLD"
+    if len(italic)!=0 and len(bold)==0:
+        attr = "ITALIC"
+
+    return attr
+
+def get_xml_info(filepath, lang='en'):
     xml             = get_xmltree(filepath)
     tag             = 'page'
     pages           = get_specific_tags(xml, tag)
@@ -70,21 +91,30 @@ def get_xml_info(filepath):
         attribs     = []
         
         texts       = get_specific_tags(page, 'text')
-        
+        #b           = get_specific_tags(page, 'b')
         for index, text in enumerate(texts):
+            bold   =  get_specific_tags(text, 'b')
+            italic =  get_specific_tags(text, 'i')
+            
             p_t, p_l, p_w, p_h, t_t, t_l, t_w, t_h, f_size, f_family, f_color, t = get_page_text_element_attrib(fonts, page, text)
             if len(t.strip()) < 1:
                 continue
 
+            
             t_ts.append(t_t)
             t_ls.append(t_l)
             t_ws.append(t_w)
             t_hs.append(t_h)
             f_sizes.append(f_size)
+            f_family = get_font_family(lang, f_family)
+            
             f_familys.append(f_family)
             f_colors.append(f_color)
             ts.append(t)
-            attribs.append('')
+            attr = get_text_tag(bold, italic)
+            attribs.append(attr)
+            
+            
         
         df = pd.DataFrame(list(zip(t_ts, t_ls, t_ws, t_hs,
                                         ts, f_sizes, f_familys, f_colors, attribs)), 

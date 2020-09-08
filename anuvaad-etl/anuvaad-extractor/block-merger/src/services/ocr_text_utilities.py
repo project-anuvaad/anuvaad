@@ -72,9 +72,9 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
 
 
 
-def tesseract_ocr(pdf_image_paths, desired_width, desired_height, dfs, lang,jobid ):
+def tesseract_ocr(pdf_image_paths, desired_width, desired_height, dfs, lang,input_json ):
 
-    log_info("Service ocr_text_utilities", "tesseract ocr started  ===>", jobid)
+    log_info("Service ocr_text_utilities tesseract ocr started  ===>", input_json)
 
     try:
         start_time          = time.time()
@@ -86,10 +86,8 @@ def tesseract_ocr(pdf_image_paths, desired_width, desired_height, dfs, lang,jobi
 
         end_time            = time.time()
         extraction_time     = end_time - start_time
+        log_info("Service ocr_text_utilities tesseract ocr successfully completed", input_json)
     except Exception as e :
-            log_error("Service ocr_text_utilities", "Error in tesseract ocr", jobid, e)
-
-    log_info("Service ocr_text_utilities", "tesseract ocr successfully completed in {} seconds".format(extraction_time), jobid)
-
+            log_error("Service ocr_text_utilities Error in tesseract ocr", input_json, e)
     return ocr_dfs
 

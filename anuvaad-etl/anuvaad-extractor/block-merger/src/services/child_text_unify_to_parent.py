@@ -1,6 +1,6 @@
 import logging
 import pandas as pd
-from anuvaad_auditor.loghandler import log_info
+#from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 
 log = logging.getLogger('file')
@@ -63,7 +63,7 @@ class ChildTextUnify(object):
 
         return data
 
-    def unify_child_text_blocks(self,pages, p_dfs, drop_lis):
+    def unify_child_text_blocks(self,pages, p_dfs, drop_lis,input_json):
         #log.info("Child Text Merging started ===>")
         #log_info("Child Text Merging started ===>")
         merge_dfs = []
@@ -74,7 +74,7 @@ class ChildTextUnify(object):
                 merge_df = self.get_parent_block(p_df,drop_lis)
                 merge_dfs.append(merge_df)
         except  Exception as e :
-            log_error("Service child_text_unify_to_parent", "Error in merging child text to partent text", None, e)
+            log_error("Error in merging child text to partent text", input_json, e)
         #log_info("Child Text Merging completed")
         #log.info("Child Text Merging completed")
 
