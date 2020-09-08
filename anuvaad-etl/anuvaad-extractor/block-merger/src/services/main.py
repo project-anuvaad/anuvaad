@@ -26,7 +26,7 @@ def doc_pre_processing(filename, base_dir,lang):
             - header and footer regions
 
     '''
-    log_info("Service main: document preprocessing started ===>",app_context.application_context )
+    log_info("document preprocessing started ===>",app_context.application_context )
 
     img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir, lang)
     
@@ -35,7 +35,7 @@ def doc_pre_processing(filename, base_dir,lang):
     except Exception as e :
             log_error("Error in finding footer and header region", app_context.application_context, e)
 
-    log_info("Service main: document preprocessing successfully completed", app_context.application_context)
+    log_info("document preprocessing successfully completed", app_context.application_context)
 
     return img_dfs,xml_dfs, working_dir, header_region , footer_region, page_width, page_height, pdf_image_paths
 
