@@ -5,6 +5,7 @@ import config
 from src.services import get_xml
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
+from anuvaad_auditor.loghandler import  log_debug
 from src.errors.errors_exception import ServiceError
 from anuvaad_auditor.loghandler import log_exception
 from src.services.preprocess import prepocess_pdf_regions
@@ -56,11 +57,11 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir,header_region , footer_re
     
     text_merger = ChildTextUnify()
     
-    in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(xml_dfs, img_dfs, pdf_image_paths, working_dir, jobid)
+    in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(xml_dfs, img_dfs, pdf_image_paths)
     h_dfs                              = get_xml.get_hdfs(in_dfs,header_region,footer_region)
     v_dfs                              = get_xml.get_vdfs(h_dfs)
     p_dfs                              = get_xml.get_pdfs(v_dfs)
-    p_dfs , line_dfs                   = get_underline(p_dfs,line_dfs,input_json)
+    p_dfs , line_dfs                   = get_underline(p_dfs,line_dfs,app_context.application_context)
     p_dfs                              = get_xml.update_font(p_dfs)
     
     if lang  != 'en':
@@ -125,7 +126,7 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
 
 
 def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR):
-    log_debug('starting processing {}'.format(app_context), app_context.application_context)
+    log_debug('Block merger starting processing {}'.format(app_context), app_context.application_context)
     img_dfs, xml_dfs, working_dir, header_region , footer_region, page_width, page_height, pdf_image_paths  = doc_pre_processing(file_name,base_dir,lang)
 
     text_blocks_count = check_text(xml_dfs)
@@ -135,8 +136,8 @@ def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR
     try:
         text_block_dfs, table_dfs, line_dfs ,bg_dfs= doc_structure_analysis(xml_dfs,img_dfs,working_dir,header_region , footer_region, lang, page_width, page_height, pdf_image_paths)
         response   =  doc_structure_response(bg_dfs, text_block_dfs, table_dfs,line_dfs,page_width, page_height)
-        log_info("DocumentStructure : successfully received blocks in json response", input_json)
+        log_info("DocumentStructure : successfully received blocks in json response",  app_context.application_context)
         return response
     except Exception as e:
-        log_exception("Error occured during pdf to blocks conversion", input_json, e)
+        log_exception("Error occured during pdf to blocks conversion",  app_context.application_context, e)
         raise ServiceError(400, "documentstructure failed. Something went wrong during pdf to blocks conversion.")
