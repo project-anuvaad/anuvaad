@@ -1,9 +1,10 @@
 import pandas as pd
 #import numpy as np
 from collections import Counter
-#from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 import math
+import src.utilities.app_context as app_context
 
 def next_gen_children(df,index):
     try:
@@ -203,7 +204,8 @@ def left_right_margin(children, block_configs):
         block_df.loc[block_df['avg_line_height'].isnull(),'avg_line_height'] = block_df['text_height']
         
     except Exception as e :
-            log_error("Service left_right_on_block", "Error in left right margin", None, e)        
+        log_error("Error in left right margin", app_context.application_context, e)
+        return None   
     
     return block_df
 

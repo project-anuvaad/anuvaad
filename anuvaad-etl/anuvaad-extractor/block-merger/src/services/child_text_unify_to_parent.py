@@ -67,10 +67,10 @@ class ChildTextUnify(object):
 
     def unify_child_text_blocks(self, p_dfs):
         
-        start_time          = time.time()
-        merge_dfs = []
-        drop_lis = config.DROP_TEXT
-        pages     = len(p_dfs)
+        start_time = time.time()
+        merge_dfs  = []
+        drop_lis   = config.DROP_TEXT
+        pages      = len(p_dfs)
         try :
             for page_index in range(pages):
                 p_df = p_dfs[page_index]
