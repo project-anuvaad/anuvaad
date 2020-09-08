@@ -57,7 +57,7 @@ def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , foo
     
     text_merger = ChildTextUnify()
 
-    in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,jobid)
+    in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(xml_dfs, img_dfs, pdf_image_paths, working_dir, jobid)
     h_dfs                              = get_xml.get_hdfs(pages, in_dfs, config.DOCUMENT_CONFIGS,header_region , footer_region, multiple_pages)
     v_dfs                              = get_xml.get_vdfs(pages, h_dfs, config.DOCUMENT_CONFIGS)
     p_dfs                              = get_xml.get_pdfs(pages, v_dfs, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)

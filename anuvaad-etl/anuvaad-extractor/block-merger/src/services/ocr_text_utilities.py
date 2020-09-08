@@ -83,14 +83,13 @@ def tesseract_ocr(pdf_image_paths, desired_width, desired_height, dfs, lang,jobi
             filepath   = pdf_image_paths[i]
             df_updated  = extract_text_from_image(filepath, desired_width, desired_height, df, lang)
             ocr_dfs.append(df_updated)
-            print('OCR on page : ' , i)
 
         end_time            = time.time()
         extraction_time     = end_time - start_time
     except Exception as e :
             log_error("Service ocr_text_utilities", "Error in tesseract ocr", jobid, e)
 
-    log_info("Service ocr_text_utilities", "tesseract ocr successfully completed", jobid)
+    log_info("Service ocr_text_utilities", "tesseract ocr successfully completed in {} seconds".format(extraction_time), jobid)
 
     return ocr_dfs
 
