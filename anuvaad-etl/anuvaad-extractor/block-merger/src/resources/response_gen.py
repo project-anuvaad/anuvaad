@@ -26,7 +26,7 @@ class Response(object):
 
     def workflow_response(self, task_id, task_starttime):
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
-        log_info("workflow_response", "started the response generation", jobid)
+        log_info("workflow_response started the response generation", self.json_data)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         try:
             error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)
@@ -37,7 +37,7 @@ class Response(object):
                 
                 self.json_data['task_id']       = task_id
                 app_context.application_context = self.json_data
-                output_json_data = DocumentStructure(app_context=self.json_data, file_name=input_filename, lang=in_locale)
+                output_json_data = DocumentStructure(app_context=app_context.application_context, file_name=input_filename, lang=in_locale)
 
                 output_filename_json = file_ops.writing_json_file(i, output_json_data, self.DOWNLOAD_FOLDER)
                 file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)

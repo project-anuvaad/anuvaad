@@ -5,6 +5,8 @@ from src.utilities.xml_utils import (
     get_page_text_element_attrib, get_page_image_element_attrib, get_image_base64
     )
 
+import config
+
 def get_document_width_height(pages):
     return int(pages[0].attrib['width']), int(pages[0].attrib['height'])
 
