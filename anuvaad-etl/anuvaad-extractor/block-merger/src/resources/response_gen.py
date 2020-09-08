@@ -13,12 +13,14 @@ import config
 import copy
 import threading
 from src.kafka_module.producer import Producer
+import src.utilities.app_context as app_context
 
 file_ops = FileOperation()
 
 
 class Response(object):
     def __init__(self, json_data, DOWNLOAD_FOLDER):
+        app_context.init()
         self.json_data =json_data
         self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
 
@@ -32,7 +34,11 @@ class Response(object):
             output_file_response = list()
             for i, item in enumerate(input_files):
                 input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
-                output_json_data = DocumentStructure(input_json=self.json_data, file_name=input_filename,lang=in_locale)
+                
+                self.json_data['task_id']       = task_id
+                app_context.application_context = self.json_data
+                output_json_data = DocumentStructure(app_context=self.json_data, file_name=input_filename, lang=in_locale)
+
                 output_filename_json = file_ops.writing_json_file(i, output_json_data, self.DOWNLOAD_FOLDER)
                 file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
                 output_file_response.append(file_res)

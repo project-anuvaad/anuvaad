@@ -14,7 +14,7 @@ from src.services.ocr_text_utilities import  tesseract_ocr
 from src.services.child_text_unify_to_parent import ChildTextUnify
 from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df, process_bg_image
 from src.utilities.xml_utils import check_text
-
+import src.utilities.app_context as app_context
 
 def doc_pre_processing(filename, base_dir,input_json,lang):
 
@@ -26,9 +26,8 @@ def doc_pre_processing(filename, base_dir,input_json,lang):
             - header and footer regions
 
     '''
-    log_info("document preprocessing started  ===>", input_json)
 
-    img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir,jobid,lang)
+    img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir, lang)
     multiple_pages = False
     pages          = len(xml_dfs)
     if pages > 1:
@@ -76,9 +75,6 @@ def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , foo
     log_info( "document structure analysis successfully completed", input_json)
     return text_block_dfs, table_dfs, line_dfs , bg_dfs
 
-   
-
-    
 
 def doc_structure_response(pages,bg_dfs, text_block_dfs,table_dfs,line_dfs,page_width, page_height,input_json):
 
@@ -132,13 +128,9 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
     return res_dict
 
 
-#<<<<<<< HEAD
-#def DocumentStructure(input_json, file_name, lang='en',base_dir = config.BASE_DIR ):
-#    img_dfs, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths  = doc_pre_processing(file_name,base_dir,jobid)
-#=======
-#def DocumentStructure(jobid, file_name, lang='en',base_dir = config.BASE_DIR ):
-#    img_dfs, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths  = doc_pre_processing(file_name,base_dir,jobid, lang)
-#>>>>>>> 7acb04d10f0f02c7ed64d25d02fb046ea343c2f5
+def DocumentStructure(app_context, file_name, lang='en'):
+    log_debug('starting processing {}'.format(app_context), app_context.application_context)
+    img_dfs, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths  = doc_pre_processing(file_name,base_dir,jobid)
 
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:

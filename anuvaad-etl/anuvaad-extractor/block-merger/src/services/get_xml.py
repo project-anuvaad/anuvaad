@@ -15,73 +15,74 @@ from src.services.box_horizontal_operations import (merge_horizontal_blocks)
 from src.services.box_vertical_operations import (merge_vertical_blocks)
 from src.services.preprocess import  tag_heaader_footer_attrib
 from src.services.left_right_on_block import left_right_margin
+import src.utilities.app_context as app_context
 
 
-def create_pdf_processing_paths(filename, base_dir, jobid):
+def create_pdf_processing_paths(filename, base_dir):
     data_dir    = os.path.join(base_dir, 'data')
     ret         = create_directory(data_dir)
 
     if ret == False:
-        log_error('unable to create data directory {}'.format(data_dir), jobid, None)
+        log_error('unable to create data directory {}'.format(data_dir), app_context.application_context, None)
         return False
     
     output_dir  = os.path.join(data_dir, 'output')
     ret         = create_directory(output_dir)
     if ret == False:
-        log_error('unable to create output directory {}'.format(output_dir), jobid, None)
+        log_error('unable to create output directory {}'.format(output_dir), app_context.application_context, None)
         return False
 
     working_dir = os.path.join(output_dir, os.path.splitext(filename)[0]+'_'+str(uuid.uuid1()))
     ret         = create_directory(working_dir)
     if ret == False:
-        log_error('unable to create working directory {}'.format(working_dir), jobid, None)
+        log_error('unable to create working directory {}'.format(working_dir), app_context.application_context, None)
         return False
     
-    log_info('created processing directories successfully', jobid)
+    log_info('created processing directories successfully', app_context.application_context)
     
     return working_dir, True
 
-def extract_pdf_metadata(filename, working_dir, base_dir, jobid):
+def extract_pdf_metadata(filename, working_dir, base_dir):
     start_time          = time.time()
     pdf_filepath        = os.path.join(base_dir, filename)
 
     try:
         pdf_xml_filepath        = extract_xml_path_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e:
-        log_error('error extracting xml information of {}'.format(pdf_filepath), jobid, e)
+        log_error('error extracting xml information of {}'.format(pdf_filepath), app_context.application_context, e)
         return None, None, None
-    log_info('Extracting xml of {}'.format(pdf_filepath), jobid)
+    log_info('Extracting xml of {}'.format(pdf_filepath), app_context.application_context)
     
     try:
         pdf_bg_img_filepaths    = extract_html_bg_image_paths_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e:
-        log_error('unable to extract background images of {}'.format(pdf_filepath), jobid, None)
+        log_error('unable to extract background images of {}'.format(pdf_filepath), app_context.application_context, None)
         return None, None, None
 
-    log_info('Extracting background images of {}'.format(pdf_filepath), jobid)
+    log_info('Extracting background images of {}'.format(pdf_filepath), app_context.application_context)
 
     end_time            = time.time()
     extraction_time     = end_time - start_time
-    log_info('Extraction of {} completed in {}'.format(pdf_filepath, extraction_time), jobid)
+    log_info('Extraction of {} completed in {}'.format(pdf_filepath, extraction_time), app_context.application_context)
     
     return pdf_xml_filepath, None, pdf_bg_img_filepaths
 
-def process_input_pdf(filename, base_dir, jobid, lang):
+def process_input_pdf(filename, base_dir, lang):
     '''
         - from the input extract following details
             - xml
             - images present in xml
             - background image present in each page
     '''
-    working_dir, ret = create_pdf_processing_paths(filename, base_dir, jobid)
+    working_dir, ret = create_pdf_processing_paths(filename, base_dir)
     
     if ret == False:
-        log_error('create_pdf_processing_paths failed', jobid, None)
+        log_error('create_pdf_processing_paths failed', app_context.application_context, None)
         return None, None, None, None, None, None
     
-    pdf_xml_filepath, pdf_xml_image_paths, pdf_bg_img_filepaths   = extract_pdf_metadata(filename, working_dir, base_dir, jobid)
+    pdf_xml_filepath, pdf_xml_image_paths, pdf_bg_img_filepaths   = extract_pdf_metadata(filename, working_dir, base_dir)
     if pdf_xml_filepath == None or pdf_bg_img_filepaths == None:
-        log_error('extract_pdf_metadata failed', jobid, None)
+        log_error('extract_pdf_metadata failed', app_context.application_context, None)
         return None, None, None, None, None, None
 
     '''
@@ -89,18 +90,18 @@ def process_input_pdf(filename, base_dir, jobid, lang):
         - parse xml to create df per page for image block.
     '''
     try :
-        xml_dfs, page_width, page_height = get_xml_info(xml_file[0],lang)
+        xml_dfs, page_width, page_height = get_xml_info(pdf_xml_filepath, lang)
     except Exception as e :
-        log_error("Service get_xml", "Error in extracting text xml info", jobid, e)
+        log_error('get_xml_info failed', app_context.application_context, e)
         return None, None, None, None, None, None
 
     try :
         img_dfs, page_width, page_height = get_xml_image_info(pdf_xml_filepath)
     except Exception as e :
-        log_error("Service get_xml", "Error in extracting image xml info", jobid, e)
+        log_error('Error in extracting image xml info failed', app_context.application_context, None)
         return None, None, None, None, None, None
 
-    log_info('Service get_xml', 'created dataframes successfully JobID:', jobid)
+    log_info('process_input_pdf: created dataframes successfully', app_context.application_context)
     return img_dfs, xml_dfs, page_width, page_height, working_dir, pdf_bg_img_filepaths
 
     
