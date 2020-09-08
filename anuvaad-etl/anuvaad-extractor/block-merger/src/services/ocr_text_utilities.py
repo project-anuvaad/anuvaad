@@ -13,6 +13,7 @@ import src.utilities.app_context as app_context
 
 
 def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
+    print(filepath)
     image   = Image.open(filepath)
     h_ratio = image.size[1]/desired_height
     w_ratio = image.size[0]/desired_width
@@ -45,6 +46,7 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
 
             word_coord_lis.append(coord)
             text_list.append(text)
+            print(text)
         else:
             temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang]+"+eng",output_type=Output.DATAFRAME)
             temp_df = temp_df[temp_df.text.notnull()]
@@ -63,6 +65,7 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             
             word_coord_lis.append(coord)
             text_list.append(text)
+            print(text)
 
     df['word_coords'] = word_coord_lis
     df['text']  = text_list
@@ -83,7 +86,7 @@ def tesseract_ocr(pdf_image_paths, desired_width, desired_height, dfs, lang ):
     except Exception as e :
         log_error("Error in tesseract ocr", app_context.application_context, e)
         return None
-        
+
     end_time            = time.time()
     extraction_time     = end_time - start_time
     log_info('tesseract ocr successfully completed in {}'.format(extraction_time), app_context.application_context)

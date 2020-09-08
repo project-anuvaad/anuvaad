@@ -1,7 +1,7 @@
 import os
 import shutil
 import glob
-
+import pdf2image
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 

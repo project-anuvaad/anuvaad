@@ -9,7 +9,7 @@ from anuvaad_auditor.loghandler import log_error
 
 from src.utilities.xml_utils import ( get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered, get_page_text_element_attrib, get_ngram)
 from src.services.xml_document_info import (get_xml_info, get_xml_image_info, get_pdf_image_info)
-from src.utilities.filesystem import (create_directory, extract_html_bg_image_paths_from_digital_pdf, extract_xml_path_from_digital_pdf)
+from src.utilities.filesystem import (create_directory,extract_image_paths_from_pdf, extract_html_bg_image_paths_from_digital_pdf, extract_xml_path_from_digital_pdf)
 
 from src.services.box_horizontal_operations import (merge_horizontal_blocks)
 from src.services.box_vertical_operations import (merge_vertical_blocks)
@@ -47,9 +47,10 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
     pdf_filepath        = os.path.join(base_dir, filename)
 
     try:
+        pdf_image_paths         = extract_image_paths_from_pdf(pdf_filepath, working_dir)
         pdf_xml_filepath        = extract_xml_path_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e:
-        log_error('error extracting xml information of {}'.format(pdf_filepath), app_context.application_context, e)
+        log_error('error extracting xml information of {}'.format(pdf_filepath)+e, app_context.application_context, e)
         return None, None, None
     log_info('Extracting xml of {}'.format(pdf_filepath), app_context.application_context)
     
@@ -65,7 +66,7 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
     extraction_time     = end_time - start_time
     log_info('Extraction of {} completed in {}'.format(pdf_filepath, extraction_time), app_context.application_context)
     
-    return pdf_xml_filepath, None, pdf_bg_img_filepaths
+    return pdf_xml_filepath, pdf_image_paths, pdf_bg_img_filepaths
 
 def process_input_pdf(filename, base_dir, lang):
     '''
@@ -78,12 +79,12 @@ def process_input_pdf(filename, base_dir, lang):
     
     if ret == False:
         log_error('create_pdf_processing_paths failed', app_context.application_context, None)
-        return None, None, None, None, None, None
+        return None, None, None, None, None, None, None
     
-    pdf_xml_filepath, pdf_xml_image_paths, pdf_bg_img_filepaths   = extract_pdf_metadata(filename, working_dir, base_dir)
+    pdf_xml_filepath, pdf_image_paths, pdf_bg_img_filepaths   = extract_pdf_metadata(filename, working_dir, base_dir)
     if pdf_xml_filepath == None or pdf_bg_img_filepaths == None:
         log_error('extract_pdf_metadata failed', app_context.application_context, None)
-        return None, None, None, None, None, None
+        return None, None, None, None, None, None, None
 
     '''
         - parse xml to create df per page for text and table block.
@@ -92,17 +93,17 @@ def process_input_pdf(filename, base_dir, lang):
     try :
         xml_dfs, page_width, page_height = get_xml_info(pdf_xml_filepath, lang)
     except Exception as e :
-        log_error('get_xml_info failed', app_context.application_context, e)
-        return None, None, None, None, None, None
+        log_error('get_xml_info failed'+e, app_context.application_context, e)
+        return None, None, None, None, None, None, None
 
     try :
         img_dfs, page_width, page_height = get_xml_image_info(pdf_xml_filepath)
     except Exception as e :
         log_error('Error in extracting image xml info failed', app_context.application_context, e)
-        return None, None, None, None, None, None
+        return None, None, None, None, None, None, None
 
     log_info('process_input_pdf: created dataframes successfully', app_context.application_context)
-    return img_dfs, xml_dfs, page_width, page_height, working_dir, pdf_bg_img_filepaths
+    return img_dfs, xml_dfs, page_width, page_height, working_dir, pdf_bg_img_filepaths, pdf_image_paths
 
     
 def get_vdfs(h_dfs):
