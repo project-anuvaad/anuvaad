@@ -1,6 +1,7 @@
 import os
 import shutil
 import glob
+import src.utilities.app_context as app_context
 
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
@@ -12,7 +13,7 @@ def create_directory(path):
     except FileExistsError as fe_error:
         return True
     except OSError as error:
-        log_info("create_directory", 'unable to create directory :', path)
+        log_info('unable to create directory : {}'.format(path), app_context.application_context)
 
     return False
 
