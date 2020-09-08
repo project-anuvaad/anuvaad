@@ -22,22 +22,22 @@ def create_pdf_processing_paths(filename, base_dir, jobid):
     ret         = create_directory(data_dir)
 
     if ret == False:
-        log_error('Service get_xml', 'JobID: unable to create data directory:', jobid, data_dir)
+        log_error('unable to create data directory {}'.format(data_dir), jobid, None)
         return False
     
     output_dir  = os.path.join(data_dir, 'output')
     ret         = create_directory(output_dir)
     if ret == False:
-        log_error('Service get_xml', 'JobID : unable to create output directory', jobid, output_dir)
+        log_error('unable to create output directory {}'.format(output_dir), jobid, None)
         return False
 
     working_dir = os.path.join(output_dir, os.path.splitext(filename)[0]+'_'+str(uuid.uuid1()))
     ret         = create_directory(working_dir)
     if ret == False:
-        log_info('Service get_xml', 'JobID: unable to create working directory', jobid, working_dir)
+        log_error('unable to create working directory {}'.format(working_dir), jobid, None)
         return False
     
-    log_info('Service get_xml', 'JobID: created processing directories successfully', jobid)
+    log_info('created processing directories successfully', jobid)
     
     return working_dir, True
 
@@ -48,20 +48,21 @@ def extract_pdf_metadata(filename, working_dir, base_dir, jobid):
     try:
         pdf_xml_filepath        = extract_xml_path_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e:
-        log_error('Service filesystem', 'JobID: Error extracting xml information', jobid, e)
+        log_error('error extracting xml information of {}'.format(pdf_filepath), jobid, e)
         return None, None, None
-    log_info('Service filesystem', 'JobID: successful extracting xml', jobid)
+    log_info('Extracting xml of {}'.format(pdf_filepath), jobid)
     
     try:
         pdf_bg_img_filepaths    = extract_html_bg_image_paths_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e:
-        log_error('Service filesystem', 'JobID: Error extracting background images information', jobid, e)
+        log_error('unable to extract background images of {}'.format(pdf_filepath), jobid, None)
         return None, None, None
-    log_info('Service filesystem', 'JobID: successful extracting xml', jobid)
+
+    log_info('Extracting background images of {}'.format(pdf_filepath), jobid)
 
     end_time            = time.time()
     extraction_time     = end_time - start_time
-    log_info('Service filesystem', 'extract_pdf_metadata completed in {}, JobID: '.format(extraction_time), jobid)
+    log_info('Extraction of {} completed in {}'.format(pdf_filepath, extraction_time), jobid)
     
     return pdf_xml_filepath, None, pdf_bg_img_filepaths
 
@@ -75,12 +76,12 @@ def process_input_pdf(filename, base_dir, jobid):
     working_dir, ret = create_pdf_processing_paths(filename, base_dir, jobid)
     
     if ret == False:
-        log_info('Service get_xml', 'JobID: extract_pdf_processing_paths failed', jobid)
+        log_error('create_pdf_processing_paths failed', jobid, None)
         return None, None, None, None, None, None
     
     pdf_xml_filepath, pdf_xml_image_paths, pdf_bg_img_filepaths   = extract_pdf_metadata(filename, working_dir, base_dir, jobid)
     if pdf_xml_filepath == None or pdf_bg_img_filepaths == None:
-        log_info('Service get_xml', "JobID: cannot extract xml metadata from pdf file", jobid)
+        log_error('extract_pdf_metadata failed', jobid, None)
         return None, None, None, None, None, None
 
     '''
