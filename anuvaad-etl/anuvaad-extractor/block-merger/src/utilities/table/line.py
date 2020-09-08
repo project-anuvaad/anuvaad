@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import logging
 import os
 #import config
 
@@ -37,7 +36,6 @@ class RectRepositories:
         return rects
 
     def get_contours_and_intersections(self):
-        logging.debug(self.filepath)
         if type(self.filepath) == str:
             img = cv2.imread(self.filepath, 0)
         else:
