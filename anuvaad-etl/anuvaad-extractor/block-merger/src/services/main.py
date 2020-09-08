@@ -16,7 +16,7 @@ from src.services.get_response import process_image_df,  process_table_df, df_to
 from src.utilities.xml_utils import check_text
 import src.utilities.app_context as app_context
 
-def doc_pre_processing(filename, base_dir,input_json,lang):
+def doc_pre_processing(filename, base_dir,lang):
 
     '''
         Preprocessing on input pdf to get:
@@ -26,22 +26,20 @@ def doc_pre_processing(filename, base_dir,input_json,lang):
             - header and footer regions
 
     '''
+    log_info("Service main: document preprocessing started ===>",app_context.application_context )
 
     img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir, lang)
-    multiple_pages = False
-    pages          = len(xml_dfs)
-    if pages > 1:
-        multiple_pages =True
+    
     try:
         header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
     except Exception as e :
-            log_error("Error in finding footer and header region", input_json, e)
+            log_error("Error in finding footer and header region", app_context.application_context, e)
 
-    log_info("Service main document preprocessing successfully completed", input_json)
+    log_info("Service main: document preprocessing successfully completed", app_context.application_context)
 
-    return img_dfs,xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths
+    return img_dfs,xml_dfs, working_dir, header_region , footer_region, page_width, page_height, pdf_image_paths
 
-def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,input_json,lang, page_width, page_height, pdf_image_paths):
+def doc_structure_analysis(xml_dfs,img_dfs,working_dir,header_region , footer_region,lang, page_width, page_height, pdf_image_paths):
     
     '''
         Document structure analysis to get:
@@ -54,29 +52,27 @@ def doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , foo
             - text_block_dfs
 
     '''
-    log_info("document structure analysis started  ===>", input_json)
+    log_info("document structure analysis started  ===>", app_context.application_context )
     
     text_merger = ChildTextUnify()
     
     in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(xml_dfs, img_dfs, pdf_image_paths, working_dir, jobid)
-    h_dfs                              = get_xml.get_hdfs(pages, in_dfs, config.DOCUMENT_CONFIGS,header_region , footer_region, multiple_pages)
-    v_dfs                              = get_xml.get_vdfs(pages, h_dfs, config.DOCUMENT_CONFIGS)
-    p_dfs                              = get_xml.get_pdfs(pages, v_dfs, config.DOCUMENT_CONFIGS, config.BLOCK_CONFIGS)
+    h_dfs                              = get_xml.get_hdfs(in_dfs,header_region,footer_region)
+    v_dfs                              = get_xml.get_vdfs(h_dfs)
+    p_dfs                              = get_xml.get_pdfs(v_dfs)
     p_dfs , line_dfs                   = get_underline(p_dfs,line_dfs,input_json)
-    #if lang  in ['en','hi']:
-        #ocr_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang )
-
+    p_dfs                              = get_xml.update_font(p_dfs)
     
     if lang  != 'en':
-        text_block_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang,input_json )
+        text_block_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang)
     else:
-        text_block_dfs  = text_merger.unify_child_text_blocks(pages, p_dfs, config.DROP_TEXT,input_json)
+        text_block_dfs  = text_merger.unify_child_text_blocks(p_dfs)
 
-    log_info( "document structure analysis successfully completed", input_json)
+    log_info( "document structure analysis successfully completed", app_context.application_context )
     return text_block_dfs, table_dfs, line_dfs , bg_dfs
 
 
-def doc_structure_response(pages,bg_dfs, text_block_dfs,table_dfs,line_dfs,page_width, page_height,input_json):
+def doc_structure_response(bg_dfs, text_block_dfs,table_dfs,line_dfs,page_width, page_height):
 
     '''
         To build required response in json format;
@@ -92,11 +88,11 @@ def doc_structure_response(pages,bg_dfs, text_block_dfs,table_dfs,line_dfs,page_
                     - text_df
                     - tabel_df
     '''
-    log_info("document structure response started  ===>", input_json)
+    log_info("document structure response started  ===>", app_context.application_context)
 
     response = { 'result' : [] }
+    pages    = len(text_block_dfs)
     for page_index in range(pages):
-        #img_df     = img_dfs[page_index]
         img_df     = bg_dfs[page_index]
         text_df    = text_block_dfs[page_index]
         table_df   = table_dfs[page_index]
@@ -104,7 +100,7 @@ def doc_structure_response(pages,bg_dfs, text_block_dfs,table_dfs,line_dfs,page_
         page_json  = response_per_page(text_df, img_df, table_df,line_df, page_index, page_width, page_height)
         response['result'].append(page_json)
     
-    log_info( "document structure response successfully completed", input_json)
+    log_info( "document structure response successfully completed", app_context.application_context)
 
     return response
 
@@ -128,17 +124,17 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
     return res_dict
 
 
-def DocumentStructure(app_context, file_name, lang='en'):
+def DocumentStructure(app_context, file_name, lang='en',base_dir):
     log_debug('starting processing {}'.format(app_context), app_context.application_context)
-    img_dfs, xml_dfs, pages, working_dir, header_region , footer_region, multiple_pages, page_width, page_height, pdf_image_paths  = doc_pre_processing(file_name,base_dir,jobid)
+    img_dfs, xml_dfs, working_dir, header_region , footer_region, page_width, page_height, pdf_image_paths  = doc_pre_processing(file_name,base_dir,lang)
 
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:
         raise ServiceError(400, "Text extraction failed. Either document is empty or is scanned or is not in pdf format.")
 
     try:
-        text_block_dfs, table_dfs, line_dfs ,bg_dfs= doc_structure_analysis(pages,xml_dfs,img_dfs,working_dir,header_region , footer_region, multiple_pages,input_json, lang, page_width, page_height, pdf_image_paths)
-        response   =  doc_structure_response(pages, bg_dfs, text_block_dfs, table_dfs,line_dfs,page_width, page_height,input_json)
+        text_block_dfs, table_dfs, line_dfs ,bg_dfs= doc_structure_analysis(xml_dfs,img_dfs,working_dir,header_region , footer_region, lang, page_width, page_height, pdf_image_paths)
+        response   =  doc_structure_response(bg_dfs, text_block_dfs, table_dfs,line_dfs,page_width, page_height)
         log_info("DocumentStructure : successfully received blocks in json response", input_json)
         return response
     except Exception as e:

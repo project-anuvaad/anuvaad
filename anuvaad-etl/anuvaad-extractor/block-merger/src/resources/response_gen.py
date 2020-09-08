@@ -37,7 +37,7 @@ class Response(object):
                 
                 self.json_data['task_id']       = task_id
                 app_context.application_context = self.json_data
-                output_json_data = DocumentStructure(app_context=self.json_data, file_name=input_filename, lang=in_locale)
+                output_json_data = DocumentStructure(app_context=self.json_data, file_name=input_filename, lang=in_locale,base_dir=config.BASE_DIR)
 
                 output_filename_json = file_ops.writing_json_file(i, output_json_data, self.DOWNLOAD_FOLDER)
                 file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
