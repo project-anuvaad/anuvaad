@@ -3,6 +3,7 @@ import config
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 preprocess_config = config.PREPROCESS_CONFIGS
+import src.utilities.app_context as app_context
 
 def cut_page(page_df ,height ,cut_at ,direction):
 
@@ -47,7 +48,12 @@ def bb_intersection_over_union(rowA, rowB):
 def find_header(xml_dfs, preprocess_config,page_height):
     pdf_levle = []
 
-    page_df = xml_dfs[0]
+    try :
+        page_df = xml_dfs[0]
+    except Exception as e :
+        log_error('invalid xml_df passed for preprocessing ',app_context.application_context,e )
+        return pd.DataFrame()
+
     sub_df = cut_page(page_df, page_height, cut_at=preprocess_config['header_cut'], direction='above')
     sub_df = add_box_coordinates(sub_df)
     margin = config.PREPROCESS_CONFIGS['margin']
@@ -79,7 +85,12 @@ def find_header(xml_dfs, preprocess_config,page_height):
 def find_footer(xml_dfs, preprocess_config,page_height):
     pdf_levle = []
 
-    page_df = xml_dfs[0]
+    try :
+        page_df = xml_dfs[0]
+    except Exception as e :
+        log_error('invalid xml_df passed for preprocessing ',app_context.application_context ,e)
+        return pd.DataFrame()
+
     sub_df = cut_page(page_df, page_height, cut_at=preprocess_config['footer_cut'], direction='below')
     sub_df = add_box_coordinates(sub_df)
     margin = config.PREPROCESS_CONFIGS['margin']

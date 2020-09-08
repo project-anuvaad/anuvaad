@@ -6,3 +6,5 @@ exp_result.py
 **.DS_Store
 #
 /upload/*
+.idea
+src/notebooks/sample-data
