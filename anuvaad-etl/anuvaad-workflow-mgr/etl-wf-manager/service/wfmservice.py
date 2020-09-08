@@ -165,7 +165,7 @@ class WFMService:
             next_task_input = wfmutils.get_tool_input(next_tool["name"], task_output["tool"], task_output, None)
             return next_task_input, next_tool
         except Exception as e:
-            log_exception("No next step found: " + str(e), None, e)
+            log_exception("No next step found: " + str(e), task_output, e)
             return None
 
     # Method to update the status of job.
