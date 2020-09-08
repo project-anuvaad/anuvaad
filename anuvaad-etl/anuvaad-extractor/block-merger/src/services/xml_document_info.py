@@ -93,7 +93,6 @@ def get_xml_info(filepath, lang='en'):
         attribs     = []
         
         texts       = get_specific_tags(page, 'text')
-        #b           = get_specific_tags(page, 'b')
         for index, text in enumerate(texts):
             bold   =  get_specific_tags(text, 'b')
             italic =  get_specific_tags(text, 'i')

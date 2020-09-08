@@ -98,29 +98,43 @@ def process_input_pdf(filename, base_dir, lang):
     try :
         img_dfs, page_width, page_height = get_xml_image_info(pdf_xml_filepath)
     except Exception as e :
-        log_error('Error in extracting image xml info failed', app_context.application_context, None)
+        log_error('Error in extracting image xml info failed', app_context.application_context, e)
         return None, None, None, None, None, None
 
     log_info('process_input_pdf: created dataframes successfully', app_context.application_context)
     return img_dfs, xml_dfs, page_width, page_height, working_dir, pdf_bg_img_filepaths
 
     
-def get_vdfs(pages, h_dfs, document_configs, debug=False):
+def get_vdfs(h_dfs):
+    start_time          = time.time()
+    document_configs    = config.DOCUMENT_CONFIGS
     v_dfs = []
+    pages = len(h_dfs)
     try :
         for page_index in range(pages):
             h_df    = h_dfs[page_index]
             v_df    = merge_vertical_blocks(h_df, document_configs, debug=False)
             v_dfs.append(v_df)
     except Exception as e :
-            log_error("Service get_xml", "Error in creating v_dfs", None, e)
+        log_error('Error in creating v_dfs', app_context.application_context, e)
+        return None
+
+    end_time            = time.time()
+    extraction_time     = end_time - start_time
+    log_info('Extraction of v_dfs completed in {}'.format(extraction_time), app_context.application_context)
 
     return v_dfs
 
         
-def get_hdfs(pages, in_dfs,document_configs,header_region , footer_region,multiple_pages):
-   
+def get_hdfs(in_dfs,header_region , footer_region):
+    
+    start_time          = time.time()
+    pages = len(in_dfs)
+    multiple_pages = False
+    if pages > 1:
+        multiple_pages =True
     h_dfs = []
+    document_configs = config.DOCUMENT_CONFIGS
     try:
         for page_index in range(pages):
             page_df   = in_dfs[page_index]
@@ -132,14 +146,22 @@ def get_hdfs(pages, in_dfs,document_configs,header_region , footer_region,multip
             h_df    = merge_horizontal_blocks(page_df, document_configs, debug=False)
             h_dfs.append(h_df)
     except Exception as e :
-            log_error("Service get_xml", "Error in creating h_dfs", None, e)
+        log_error('Error in creating h_dfs', app_context.application_context, e)
+        return None
+
+    end_time            = time.time()
+    extraction_time     = end_time - start_time
+    log_info('Extraction of h_dfs completed in {}'.format(extraction_time), app_context.application_context)
 
     return h_dfs
 
 
 
-def get_pdfs(pages, page_dfs, configs,block_configs, debug=False):
-    p_dfs = []
+def get_pdfs(page_dfs):
+    start_time          = time.time()
+    p_dfs    = []
+    pages    = len(page_dfs)
+    block_configs = config.BLOCK_CONFIGS
     try :
         for page_index in range(pages):
             page_df     = page_dfs[page_index]
@@ -160,9 +182,12 @@ def get_pdfs(pages, page_dfs, configs,block_configs, debug=False):
             
             p_dfs.append(df)
     except Exception as e :
-            log_error("Service get_xml", "Error in creating p_dfs", None, e)
+        log_error('Error in creating p_dfs', app_context.application_context, e)
+        return None
 
-    
+    end_time            = time.time()
+    extraction_time     = end_time - start_time
+    log_info('Extraction of p_dfs completed in {}'.format(extraction_time), app_context.application_context)
     return p_dfs
 
 
@@ -187,48 +212,56 @@ def change_font(font_name):
         font = font_name
     return font
 
-def update_font(p_dfs, pages):
-
+def update_font(p_dfs):
+    start_time          = time.time()
+    pages    = len(p_dfs)
     new_dfs = []
-    for page_index in range(pages):
-            page_df     = p_dfs[page_index]
-            page_df     = page_df.where(page_df.notnull(), None)
-            page_lis    = []
-            child_lis   =[]
-            for index, row in page_df.iterrows():
-                if row['children'] == None:
-                    page_lis.append(change_font(row["font_family"]))
-                    child_lis.append(row['children'])
-                else:
-                    sub_block_children   =  pd.read_json(row['children'])
-                    sub_block_children  = sub_block_children.where(sub_block_children.notnull(), None)
-                    page_lis1    = []
-                    child_lis1   =[]
-                    for index2, row2 in sub_block_children.iterrows():
-                        if row2['children'] == None:
-                            child_lis1.append(row2['children'])
-                            page_lis1.append(change_font(row2["font_family"]))
-                        else:
-                            sub2_block_children   =  pd.read_json(row2['children'])
-                            sub2_block_children   = sub2_block_children.where(sub2_block_children.notnull(), None)
-                            page_lis2 = []
-                            for index3, row3 in sub2_block_children.iterrows():
-                                page_lis2.append(change_font(row3["font_family"]))
+    try:
+        for page_index in range(pages):
+                page_df     = p_dfs[page_index]
+                page_df     = page_df.where(page_df.notnull(), None)
+                page_lis    = []
+                child_lis   = []
+                for index, row in page_df.iterrows():
+                    if row['children'] == None:
+                        page_lis.append(change_font(row["font_family"]))
+                        child_lis.append(row['children'])
+                    else:
+                        sub_block_children   =  pd.read_json(row['children'])
+                        sub_block_children   = sub_block_children.where(sub_block_children.notnull(), None)
+                        page_lis1    = []
+                        child_lis1   =[]
+                        for index2, row2 in sub_block_children.iterrows():
+                            if row2['children'] == None:
+                                child_lis1.append(row2['children'])
+                                page_lis1.append(change_font(row2["font_family"]))
+                            else:
+                                sub2_block_children   =  pd.read_json(row2['children'])
+                                sub2_block_children   = sub2_block_children.where(sub2_block_children.notnull(), None)
+                                page_lis2 = []
+                                for index3, row3 in sub2_block_children.iterrows():
+                                    page_lis2.append(change_font(row3["font_family"]))
+                                    
+                                sub2_block_children['font_family'] = page_lis2
+                                page_lis1.append(max(set(page_lis2), key = page_lis2.count))
+                                child_lis1.append(sub2_block_children.to_json())
                                 
-                            sub2_block_children['font_family'] = page_lis2
-                            page_lis1.append(max(set(page_lis2), key = page_lis2.count))
-                            child_lis1.append(sub2_block_children.to_json())
-                            
 
-                    sub_block_children['font_family'] = page_lis1
+                        sub_block_children['font_family'] = page_lis1
 
-                    page_lis.append(max(set(page_lis1), key = page_lis1.count))
-                    child_lis.append(sub_block_children.to_json())
+                        page_lis.append(max(set(page_lis1), key = page_lis1.count))
+                        child_lis.append(sub_block_children.to_json())
 
-            page_df['font_family'] = page_lis
-            page_df['children']    = child_lis
-            new_dfs.append(page_df)
+                page_df['font_family'] = page_lis
+                page_df['children']    = child_lis
+                new_dfs.append(page_df)
+    except Exception as e :
+        log_error('Error in updating fonts', app_context.application_context, e)
+        return None
 
+    end_time            = time.time()
+    extraction_time     = end_time - start_time
+    log_info('Updating of fonts completed in {}'.format(extraction_time), app_context.application_context)
     return new_dfs
                 
                         
