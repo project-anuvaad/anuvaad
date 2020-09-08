@@ -160,9 +160,8 @@ def mask_image(image,df,input_json,margin= 2 ,fill=255):
                     image[row['text_top'] - margin : row_bottom + margin , row['text_left'] - margin: row_right + margin] = fill
                 if len(image.shape) == 3 :
                     image[row['text_top'] - margin: row_bottom + margin, row['text_left'] - margin: row_right + margin,:] = fill
-                    return image
 
             except Exception as e :
                 log_error("Service TableExtractor Error in masking bg image", input_json, e)
-                return image
+    return image
 

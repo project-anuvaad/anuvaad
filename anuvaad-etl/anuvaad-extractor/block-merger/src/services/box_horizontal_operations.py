@@ -1,12 +1,8 @@
 import pandas as pd
-from src.utilities.xml_utils import (
-    get_string_xmltree, get_xmltree, get_specific_tags, get_page_texts_ordered,
-    get_page_text_element_attrib, get_page_image_element_attrib, get_image_base64
-    )
 
 from src.services.box_horizontal_evalutions import (are_hlines,are_hlines_superscript)
 from src.services.box_grouping import arrange_grouped_line_indices
-
+from src.utilities.xml_utils import get_ngram
 
 def merge_horizontal_blocks(in_df, configs, debug=False):
     df = in_df.copy(deep=True)
