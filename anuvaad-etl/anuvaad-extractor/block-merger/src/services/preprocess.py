@@ -1,8 +1,8 @@
 import pandas as pd
-import config
+#import config
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
-preprocess_config = config.PREPROCESS_CONFIGS
+from config import PREPROCESS_CONFIGS as preprocess_config
 import src.utilities.app_context as app_context
 
 def cut_page(page_df ,height ,cut_at ,direction):
@@ -45,7 +45,7 @@ def bb_intersection_over_union(rowA, rowB):
     return iou
 
 
-def find_header(xml_dfs, preprocess_config,page_height):
+def find_header(xml_dfs,page_height, preprocess_config):
     pdf_levle = []
 
     try :
@@ -56,7 +56,7 @@ def find_header(xml_dfs, preprocess_config,page_height):
 
     sub_df = cut_page(page_df, page_height, cut_at=preprocess_config['header_cut'], direction='above')
     sub_df = add_box_coordinates(sub_df)
-    margin = config.PREPROCESS_CONFIGS['margin']
+    margin = preprocess_config['margin']
 
 
     for page2_df in xml_dfs:
@@ -82,7 +82,7 @@ def find_header(xml_dfs, preprocess_config,page_height):
     return regions_to_remove
 
 
-def find_footer(xml_dfs, preprocess_config,page_height):
+def find_footer(xml_dfs, page_height,preprocess_config,):
     pdf_levle = []
 
     try :
@@ -93,7 +93,7 @@ def find_footer(xml_dfs, preprocess_config,page_height):
 
     sub_df = cut_page(page_df, page_height, cut_at=preprocess_config['footer_cut'], direction='below')
     sub_df = add_box_coordinates(sub_df)
-    margin = config.PREPROCESS_CONFIGS['margin']
+    margin = preprocess_config['margin']
     for page2_df in xml_dfs:
         s_df = cut_page(page2_df, page_height, cut_at=preprocess_config['footer_cut'], direction='below')
         s_df = add_box_coordinates(s_df)
@@ -136,8 +136,8 @@ def prepocess_pdf_regions(xml_dfs,page_height,config =preprocess_config ):
     #header_region = None
     #footer_region =None
     #if len(xml_dfs) > 1 :
-    header_region = find_header(xml_dfs, config,page_height)
-    footer_region = find_footer(xml_dfs, config,page_height)
+    header_region = find_header(xml_dfs,page_height,config)
+    footer_region = find_footer(xml_dfs,page_height,config)
 
     return header_region , footer_region
 
@@ -160,8 +160,9 @@ def mask_image(image,df,input_json,margin= 2 ,fill=255):
                     image[row['text_top'] - margin : row_bottom + margin , row['text_left'] - margin: row_right + margin] = fill
                 if len(image.shape) == 3 :
                     image[row['text_top'] - margin: row_bottom + margin, row['text_left'] - margin: row_right + margin,:] = fill
+                    return image
 
             except Exception as e :
                 log_error("Service TableExtractor Error in masking bg image", input_json, e)
-    return image
+                return image
 
