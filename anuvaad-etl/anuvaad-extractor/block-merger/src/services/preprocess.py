@@ -139,7 +139,7 @@ def tag_heaader_footer_attrib(header_region , footer_region ,page_df,magrin=5):
 
 # Remove tables and lines from bg image
 
-def mask_image(image,df,job_id,margin= 2 ,fill=255):
+def mask_image(image,df,input_json,margin= 2 ,fill=255):
     if len(df) > 0:
         for index, row in df.iterrows():
             try :
@@ -151,6 +151,6 @@ def mask_image(image,df,job_id,margin= 2 ,fill=255):
                     image[row['text_top'] - margin: row_bottom + margin, row['text_left'] - margin: row_right + margin,:] = fill
 
             except Exception as e :
-                log_error("Service TableExtractor", "Error in masking bg image", job_id, e)
+                log_error("Service TableExtractor Error in masking bg image", input_json, e)
     return image
 

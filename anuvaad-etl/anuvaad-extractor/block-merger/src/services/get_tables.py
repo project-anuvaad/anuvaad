@@ -100,9 +100,9 @@ def extract_and_delete_region(page_df, table_df):
     return page_df, table_df
 
 
-def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
+def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,input_json):
 
-    #log_info("Service TableExtractor", "TableExtractor service started", None)
+    log_info("TableExtractor service started", input_json)
     
     in_dfs    = []
     table_dfs = []
@@ -117,21 +117,21 @@ def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
             bg_image    =  cv2.imread(bg_image_path)
             
         except Exception as e :
-            log_error("Service TableExtractor", "Error in loading background html image", job_id, e)
+            log_error("Service TableExtractor Error in loading background html image", input_json, e)
 
-        table_image = mask_image(table_image,img_df,job_id,margin=2,fill=255)
+        table_image = mask_image(table_image,img_df,input_json,margin=2,fill=255)
 
         try :
             tables = TableRepositories(table_image).response['response']['tables']
         except  Exception as e :
-            log_error("Service TableExtractor", "Error in finding tables", job_id, e)
+            log_error("Service TableExtractor Error in finding tables", input_json, e)
         
         try :
             Rects = RectRepositories(table_image)
             lines, _ = Rects.get_tables_and_lines()
             
         except  Exception as e :
-            log_error("Service TableExtractor", "Error in finding lines", job_id, e)
+            log_error("Service TableExtractor Error in finding lines", input_json, e)
         
 
         
@@ -140,8 +140,8 @@ def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
         filtered_in_df, table_df = extract_and_delete_region(in_df, tables_df)
 
         #mask tables and lines from bg image
-        bg_image  = mask_image(bg_image,table_df,job_id,margin=2,fill=255)
-        bg_image = mask_image(bg_image, line_df, job_id, margin=2, fill=255)
+        bg_image  = mask_image(bg_image,table_df,input_json,margin=2,fill=255)
+        bg_image = mask_image(bg_image, line_df, input_json, margin=2, fill=255)
         h,w =   bg_image.shape[0] , bg_image.shape[1]
         bg_binary = base64.b64encode(cv2.imencode('.png', bg_image)[1])#base64.b64encode(bg_image)
 

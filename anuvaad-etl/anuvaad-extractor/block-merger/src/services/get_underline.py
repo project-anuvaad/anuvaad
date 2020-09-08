@@ -20,7 +20,7 @@ def get_underline_per_page(p_df , lines_df):
     return line_df , p_df
 
 
-def get_underline(p_dfs, line_dfs,job_id):
+def get_underline(p_dfs, line_dfs,input_json):
     p_df_list = []
     line_df_list =[]
     try :
@@ -31,10 +31,10 @@ def get_underline(p_dfs, line_dfs,job_id):
             p_df_list.append(p_df)
             line_df_list.append(line_df)
 
-        log_info("Service main", "UnderLineDetection successfully completed", job_id)
+        log_info("UnderLineDetection successfully completed", input_json)
 
     except Exception as e :
-        log_error("Service UnderlineDetetion", "Error in finding under lines", job_id, e)
+        log_error("Service UnderlineDetetion Error in finding under lines", input_json, e)
 
 
 
