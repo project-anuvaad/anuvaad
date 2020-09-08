@@ -50,10 +50,10 @@ paths:
       description: This api takes process identifier and sends the content corresponding to that process, it's an sync api.
       parameters:
         - in: query
-          name: process_identifier
+          name: job_id
           type: string
           required: true
-          description: The process_identifier for the content
+          description: The job_id for the content
         - in: query
           name: start_page
           type: number
@@ -148,7 +148,7 @@ definitions:
   Request:
     type: object
     properties:
-      process_identifier:
+      job_id:
         type: string
         description: File id for the file to be converted.
       pages:

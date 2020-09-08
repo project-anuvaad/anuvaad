@@ -49,7 +49,6 @@ class AnuvaadKanTokenizer(object):
         text = self.serialize_table_points(text)
         text = self.serialize_url(text)
         text = self.serialize_pattern(text)
-        # text = self.serialize_end(text)
         text = self.serialize_dots(text)
         text = self.serialize_brackets(text)
         text = self.serialize_dot_with_number(text)
@@ -65,7 +64,6 @@ class AnuvaadKanTokenizer(object):
             se = self.deserialize_time(se)
             se = self.deserialize_pattern(se)
             se = self.deserialize_url(se)
-            # se = self.deserialize_end(se)
             se = self.deserialize_dots(se)
             se = self.deserialize_decimal(se)
             se = self.deserialize_brackets(se)
@@ -127,16 +125,6 @@ class AnuvaadKanTokenizer(object):
             pattern = re.compile(r'['+sentence_end+']')
             text = pattern.sub(sentence_end + ' ', text)
         return text
-
-    # def serialize_end(self, text):
-    #     pattern = re.compile(r'[।]')
-    #     text = pattern.sub(' END__END ', text)
-    #     return text
-
-    # def deserialize_end(self, text):
-    #     pattern = re.compile(re.escape(' END__END'), re.IGNORECASE)
-    #     text = pattern.sub('।', text)
-    #     return text
 
     def serialize_bullet_points(self, text):
         pattern = re.compile(r'(?!^)[•]')

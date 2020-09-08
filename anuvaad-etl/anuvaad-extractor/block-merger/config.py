@@ -62,3 +62,8 @@ LANG_MAPPING       =  {
     "te" : "tel"
 
 }
+
+
+FONT_CONFIG   = {
+    "hi": 'mangal'
+}
