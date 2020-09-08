@@ -12,7 +12,7 @@ def create_directory(path):
     except FileExistsError as fe_error:
         return True
     except OSError as error:
-        log_info("create_directory", 'unable to create directory :', path)
+        log_info('unable to create directory : {}'.format(path), app_context.application_context)
 
     return False
 
