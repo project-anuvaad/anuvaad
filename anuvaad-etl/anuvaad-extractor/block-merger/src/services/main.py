@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import base64
 import config
+import time
 from src.services import get_xml
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
@@ -91,7 +92,7 @@ def doc_structure_response(bg_dfs, text_block_dfs,table_dfs,line_dfs,page_width,
                     - tabel_df
     '''
     log_info("document structure response started  ===>", app_context.application_context)
-
+    start_time = time.time()
     response = { 'result' : [] }
     pages    = len(text_block_dfs)
     for page_index in range(pages):
@@ -101,8 +102,8 @@ def doc_structure_response(bg_dfs, text_block_dfs,table_dfs,line_dfs,page_width,
         line_df    = line_dfs[page_index]
         page_json  = response_per_page(text_df, img_df, table_df,line_df, page_index, page_width, page_height)
         response['result'].append(page_json)
-    
-    log_info( "document structure response successfully completed", app_context.application_context)
+    end_time = time.time() -start_time
+    log_info( "document structure response successfully completed {}".format(end_time), app_context.application_context)
 
     return response
 
