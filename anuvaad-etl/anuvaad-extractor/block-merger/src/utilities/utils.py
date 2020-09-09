@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 import time
 import json
-from anuvaad_em.emservice import post_error
-from anuvaad_em.emservice import post_error_wf
+from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.errorhandler import post_error_wf
 
 class FileOperation(object):
 

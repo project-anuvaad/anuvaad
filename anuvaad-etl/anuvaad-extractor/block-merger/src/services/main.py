@@ -13,7 +13,7 @@ from src.services.get_tables import  get_text_table_line_df
 from src.services.get_underline import get_underline
 from src.services.ocr_text_utilities import  tesseract_ocr
 from src.services.child_text_unify_to_parent import ChildTextUnify
-from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df, process_bg_image
+from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df
 from src.utilities.xml_utils import check_text
 import src.utilities.app_context as app_context
 
@@ -27,16 +27,17 @@ def doc_pre_processing(filename, base_dir,lang):
             - header and footer regions
 
     '''
-    log_info("document preprocessing started ===>",app_context.application_context )
+    log_info("document preprocessing started ===>", app_context.application_context)
 
     img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_bg_img_filepaths, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir, lang)
     
     try:
         header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
+        log_info("document preprocessing successfully completed", app_context.application_context)
     except Exception as e :
             log_error("Error in finding footer and header region", app_context.application_context, e)
 
-    log_info("document preprocessing successfully completed", app_context.application_context)
+
 
     return img_dfs,xml_dfs, working_dir, header_region , footer_region, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths
 
@@ -131,13 +132,26 @@ def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR
 
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:
-        raise ServiceError(400, "Text extraction failed. Either document is empty or is scanned or is not in pdf format.")
+        return {
+            'code': 400,
+            'message': 'looks like the file is of scanned type, currently we support Class-1 document.',
+            'rsp': None
+            }
 
     try:
-        text_block_dfs, table_dfs, line_dfs ,bg_dfs= doc_structure_analysis(xml_dfs,img_dfs,working_dir,header_region , footer_region, lang, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths)
+        text_block_dfs, table_dfs, line_dfs ,bg_dfs = doc_structure_analysis(xml_dfs,img_dfs,working_dir,header_region , footer_region, lang, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths)
         response   =  doc_structure_response(bg_dfs, text_block_dfs, table_dfs,line_dfs,page_width, page_height)
         log_info("DocumentStructure : successfully received blocks in json response",  app_context.application_context)
-        return response
+        return {
+                'code': 200,
+                'message': 'request completed',
+                'rsp': response
+                }
+
     except Exception as e:
         log_exception("Error occured during pdf to blocks conversion",  app_context.application_context, e)
-        raise ServiceError(400, "documentstructure failed. Something went wrong during pdf to blocks conversion.")
+        return {
+            'code': 400,
+            'message': 'Error occured during pdf to blocks conversion',
+            'rsp': None
+            }

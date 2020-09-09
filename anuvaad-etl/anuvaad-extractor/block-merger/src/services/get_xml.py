@@ -26,7 +26,7 @@ def create_pdf_processing_paths(filepath, base_dir):
 
     if ret == False:
         log_error('unable to create working directory {}'.format(working_dir), app_context.application_context, None)
-        return False
+        return None, False
     
     log_info('created processing directories successfully {}'.format(working_dir), app_context.application_context)
     
@@ -41,7 +41,7 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
         pdf_image_paths         = extract_image_paths_from_pdf(pdf_filepath, working_dir)
         pdf_xml_filepath        = extract_xml_path_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e:
-        log_error('error extracting xml information of {}'.format(pdf_filepath)+e, app_context.application_context, e)
+        log_error('error extracting xml information of {}'.format(pdf_filepath), app_context.application_context, e)
         return None, None, None
     log_info('Extracting xml of {}'.format(pdf_filepath), app_context.application_context)
     
@@ -75,7 +75,7 @@ def process_input_pdf(filename, base_dir, lang):
         return None, None, None, None, None, None, None
     
     pdf_xml_filepath, pdf_image_paths, pdf_bg_img_filepaths   = extract_pdf_metadata(filename, working_dir, base_dir)
-    if pdf_xml_filepath == None or pdf_bg_img_filepaths == None:
+    if pdf_xml_filepath == None or pdf_bg_img_filepaths == None or pdf_image_paths == None:
         log_error('extract_pdf_metadata failed', app_context.application_context, None)
         return None, None, None, None, None, None, None
 
@@ -86,7 +86,7 @@ def process_input_pdf(filename, base_dir, lang):
     try :
         xml_dfs, page_width, page_height = get_xml_info(pdf_xml_filepath, lang)
     except Exception as e :
-        log_error('get_xml_info failed'+e, app_context.application_context, e)
+        log_error('get_xml_info failed', app_context.application_context, e)
         return None, None, None, None, None, None, None
 
     try :
@@ -142,10 +142,7 @@ def get_hdfs(in_dfs, header_region, footer_region):
             h_df    = merge_horizontal_blocks(page_df, document_configs, debug=False)
             h_dfs.append(h_df)
     except Exception as e :
-
-        #print(e)
         log_error('Error in creating h_dfs', app_context.application_context, e)
-        #log_error(e, app_context.application_context, e)
         return None
 
     end_time         = time.time()
@@ -166,20 +163,16 @@ def get_pdfs(page_dfs):
             page_df     = page_dfs[page_index]
             cols        = page_df.columns.values.tolist()
             df          = pd.DataFrame(columns=cols)
-            
             for index, row in page_df.iterrows():
-
                 if row['children'] == None:
                     d_tmp = page_df.iloc[index]
-                    d_tmp['avg_line_height'] = int(d_tmp['text_height'])
-                    
+                    d_tmp['avg_line_height'] = int(d_tmp['text_height']) 
                     df = df.append(d_tmp)
                 else:
                     dfs = process_block(page_df.iloc[index], block_configs)
                     df  = df.append(dfs)
-
-            
             p_dfs.append(df)
+
     except Exception as e :
         log_error('Error in creating p_dfs', app_context.application_context, e)
         return None
@@ -227,14 +220,12 @@ def page_font_update(page_df):
     return page_df
 
 def update_font(p_dfs):
-    start_time          = time.time()
-    pages    = len(p_dfs)
-    new_dfs  = []
+    start_time = time.time()
+    pages      = len(p_dfs)
+    new_dfs    = []
     try:
         for page_index in range(pages):
-
             page_df     = p_dfs[page_index]
-            
             page_lis    = []
             child_lis   = []
             df = page_font_update(page_df)

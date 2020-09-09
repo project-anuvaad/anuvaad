@@ -8,7 +8,10 @@ import src.utilities.app_context as app_context
 import time
 
 def df_to_json(p_df):
+<<<<<<< HEAD
     #start_time = time.time()
+=======
+>>>>>>> 0d90b6da12545974850ef25c7bcb1dd91682761d
     page_data = []
     try:
         p_df      = p_df.where(p_df.notnull(), None)
@@ -37,9 +40,6 @@ def df_to_json(p_df):
         else:
             page_data = None
 
-        #end_time = time.time()
-        #extraction_time = end_time - start_time
-        #log_info('Generating response of p_df completed in {}'.format(extraction_time), app_context.application_context)
             
     except Exception as e :
         log_error('Error in generating response of p_df', app_context.application_context, e)
@@ -48,7 +48,6 @@ def df_to_json(p_df):
     return page_data
 
 def process_image_df(img_df):
-    start_time = time.time()
     image_data = []
     try:
         if len(img_df)>0:
@@ -66,13 +65,9 @@ def process_image_df(img_df):
         log_error('Error in generating response of img_df', app_context.application_context, e)
         return None
 
-    end_time            = time.time()
-    extraction_time     = end_time - start_time
-    log_info('Generating response of img_df completed in {}'.format(extraction_time), app_context.application_context)
     return image_data
 
 def process_table_df(table_df):
-    start_time = time.time()
     table_data = []
     try:
         if len(table_df)>0:
@@ -93,13 +88,10 @@ def process_table_df(table_df):
     except Exception as e :
         log_error('Error in generating response of table_df', app_context.application_context, e)
         return None
-    end_time            = time.time()
-    extraction_time     = end_time - start_time
-    log_info('Generating response of table_df completed in {}'.format(extraction_time), app_context.application_context)
+
     return table_data       
 
 def process_line_df(line_df):
-    start_time = time.time()
     line_data  = []
     try:
         if len(line_df)>0:
@@ -114,12 +106,10 @@ def process_line_df(line_df):
     except Exception as e :
         log_error('Error in generating response of line_df', app_context.application_context, e)
         return None
-    end_time            = time.time()
-    extraction_time     = end_time - start_time
-    log_info('Generating response of line_df completed in {}'.format(extraction_time), app_context.application_context)
+        
     return line_data        
 
-
+'''
 def process_bg_image(bg_img):
     bg_image_data = []
     try:
@@ -129,4 +119,4 @@ def process_bg_image(bg_img):
             bg_image_data.append(img_base64)
             return bg_image_data
     except Exception as e :
-            log_error("Service get_response", "Error in processing bg_image", None, e)
+            log_error("Service get_response", "Error in processing bg_image", None, e) '''

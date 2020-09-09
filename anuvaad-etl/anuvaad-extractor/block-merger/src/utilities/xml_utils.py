@@ -8,9 +8,7 @@ import base64
 import pandas as pd
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
-#import xml.etree.ElementTree as etree
 
-### xml helper functions
 def get_top(style):
     top = style.split(';')[1]
     return top.split(':')[1].strip('px')
@@ -102,7 +100,6 @@ def get_image_base64(filepath):
         img_base64 = base64.b64encode(img_file.read())
     return img_base64
 
-#### parse HTML page
 
 def get_html_page_df(nodes):
     tops  = []
@@ -143,5 +140,4 @@ def check_text(xml_dfs) :
     text_count = 0
     for xml_df in xml_dfs:
         text_count += len(xml_df)
-    #print(check_text)
     return text_count
