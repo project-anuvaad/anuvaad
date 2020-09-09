@@ -1,0 +1,11 @@
+{
+  "url_end_point": "A unique url end point to decide nmt translation models",
+  "message": [
+    {
+      "src" : "Sentence One",
+      "id": "Model ID, for the translation model to be chosen",
+      "s_id": "sentence_id",
+      "n_id": "job-ID|file-ID|page-No|block-ID"
+    }
+  ]
+}

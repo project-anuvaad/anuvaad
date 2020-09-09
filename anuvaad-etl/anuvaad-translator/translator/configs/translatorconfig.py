@@ -4,13 +4,18 @@ import os
 #CROSS-MODULE-COMMON-CONFIGS
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
 mongo_server_host = os.environ.get('MONGO_SERVER_HOST', 'mongodb://localhost:27017/')
-file_download_url = os.environ.get('FILE_DOWNLOAD_URL', 'https://auth.anuvaad.org/download')
+file_download_url = os.environ.get('FILE_DOWNLOAD_URL', 'https://auth.anuvaad.org/anuvaad/v1/download')
+save_content_url = os.environ.get('SAVE_CONTENT_URL', 'https://auth.anuvaad.org/api/v0/save-content')
+fetch_content_url = os.environ.get('FETCH_CONTENT_URL', 'https://auth.anuvaad.org/api/v0/fetch-content')
 
 
 
 #MODULE-SPECIFIC-CONFIGS
 #common-variables
 tool_translator = "TRANSLATOR"
+nmt_max_batch_size = 25
+anu_nmt_input_topic = 'anuvaad-dp-tools-nmt-input-v1'
+anu_nmt_output_topic = 'anuvaad-dp-tools-nmt-output-v1'
 
 #kafka-configs
 anu_translator_input_topic = 'anuvaad-dp-tools-translator-input-v1'
