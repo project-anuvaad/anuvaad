@@ -50,14 +50,8 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_h
 
     '''
     log_info("document structure analysis started  ===>", app_context.application_context )
-    try:
-        header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
-        
-    except Exception as e :
-        log_error("Error in finding footer and header region", app_context.application_context, e)
-        return None, None,None ,None
 
-    
+    header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
     text_merger = ChildTextUnify()
     
     in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths)
