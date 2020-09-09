@@ -56,11 +56,14 @@ class ChildTextUnify(object):
 
     def get_parent_block(self,data,drop_lis):
         new_df = data.copy(deep=True)
+        text_lis = []
         for block_index in range(len(data)):
             df   =  data.iloc[block_index]
             df   =  df.where(df.notnull(), None)
             text =  self.get_children_text_block(df, drop_lis)
-            new_df.iloc[block_index]['text'] = str(text)
+            text_lis.append(str(text))
+            #new_df.iloc[block_index]['text'] = str(text)
+        new_df['text'] = text_lis
 
         return new_df
 

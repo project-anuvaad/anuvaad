@@ -26,7 +26,7 @@ def create_pdf_processing_paths(filepath, base_dir):
 
     if ret == False:
         log_error('unable to create working directory {}'.format(working_dir), app_context.application_context, None)
-        return False
+        return None, False
     
     log_info('created processing directories successfully {}'.format(working_dir), app_context.application_context)
     
@@ -75,7 +75,7 @@ def process_input_pdf(filename, base_dir, lang):
         return None, None, None, None, None, None, None
     
     pdf_xml_filepath, pdf_image_paths, pdf_bg_img_filepaths   = extract_pdf_metadata(filename, working_dir, base_dir)
-    if pdf_xml_filepath == None or pdf_bg_img_filepaths == None:
+    if pdf_xml_filepath == None or pdf_bg_img_filepaths == None or pdf_image_paths == None:
         log_error('extract_pdf_metadata failed', app_context.application_context, None)
         return None, None, None, None, None, None, None
 
@@ -143,7 +143,6 @@ def get_hdfs(in_dfs, header_region, footer_region):
             h_dfs.append(h_df)
     except Exception as e :
         log_error('Error in creating h_dfs', app_context.application_context, e)
-        #log_error(e, app_context.application_context, e)
         return None
 
     end_time         = time.time()

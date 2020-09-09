@@ -19,7 +19,7 @@ from src.services.child_text_unify_to_parent import ChildTextUnify
 from services.preprocess import prepocess_pdf_regions
 from services.get_tables import page_num_correction , get_text_table_line_df
 from src.services.ocr_text_utilities import  tesseract_ocr
-from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df, process_bg_image
+from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df
 
 from utilities.filesystem import (create_directory, read_directory_files)
 import config
