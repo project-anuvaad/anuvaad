@@ -18,9 +18,10 @@ def cut_page(page_df ,height ,cut_at ,direction):
 
 
 def add_box_coordinates(sub_df):
-    sub_df['text_right']  = sub_df['text_left'] + sub_df['text_width']
-    sub_df['text_bottom'] = sub_df['text_top'] + sub_df['text_height']
-    return sub_df
+    df = sub_df.copy(deep=True)
+    df['text_right']  = sub_df['text_left'] + sub_df['text_width']
+    df['text_bottom'] = sub_df['text_top'] + sub_df['text_height']
+    return df
 
 def bb_intersection_over_union(rowA, rowB):
     boxA = [rowA['text_left'] ,rowA['text_top'], rowA['text_right'], rowA['text_bottom']]
@@ -132,7 +133,7 @@ def add_attrib(page_df, region_to_change, attrib, margin=3):
     return page_df
 
 
-def prepocess_pdf_regions(xml_dfs,page_height,config =preprocess_config ):
+def prepocess_pdf_regions(xml_dfs, page_height, config =preprocess_config ):
     #header_region = None
     #footer_region =None
     #if len(xml_dfs) > 1 :

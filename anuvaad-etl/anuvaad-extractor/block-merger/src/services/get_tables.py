@@ -114,7 +114,6 @@ def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths):
         in_df           = xml_dfs[index]
         img_df          = img_dfs[index]
         bg_image_path   = pdf_bg_img_filepaths[index]
-        #print(bg_image_path)
 
         try :
             table_image =  cv2.imread(bg_image_path, 0)
@@ -131,7 +130,7 @@ def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths):
         except  Exception as e :
              log_error("Service TableExtractor Error in finding tables", app_context.application_context, e)
              return None, None, None, None
-        #
+
         try :
             Rects       = RectRepositories(table_image)
             lines, _    = Rects.get_tables_and_lines()
@@ -140,16 +139,20 @@ def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths):
             log_error("Service TableExtractor Error in finding lines", app_context.application_context, e)
             return None, None, None, None
 
+
         
         line_df                     = get_line_df(lines)
         tables_df                   = get_table_df(tables)
         filtered_in_df, table_df    = extract_and_delete_region(in_df, tables_df)
+
+
 
         #mask tables and lines from bg image
         bg_image  = mask_image(bg_image,table_df,app_context.application_context,margin=2,fill=255)
         bg_image = mask_image(bg_image, line_df, app_context.application_context, margin=2, fill=255)
         h,w =   bg_image.shape[0] , bg_image.shape[1]
         bg_binary = base64.b64encode(cv2.imencode('.png', bg_image)[1])#base64.b64encode(bg_image)
+        
 
 
         bg_df = pd.DataFrame([[0, 0, w, h, bg_binary,'IMAGE']],
