@@ -151,7 +151,6 @@ def prepocess_pdf_regions(xml_dfs, page_height, config =preprocess_config ):
 
     except Exception as e:
         log_error('Error in finding header/footer ' + e ,app_context.application_context ,e)
-        
         return pd.DataFrame() ,pd.DataFrame()
 
     return header_region , footer_region
