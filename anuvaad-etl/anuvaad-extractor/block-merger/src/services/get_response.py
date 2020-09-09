@@ -5,6 +5,7 @@ from anuvaad_auditor.loghandler import log_info
 import base64
 from anuvaad_auditor.loghandler import log_error
 import src.utilities.app_context as app_context
+import time
 
 def df_to_json(p_df):
     start_time = time.time()
@@ -35,13 +36,15 @@ def df_to_json(p_df):
                 page_data.append(block)
         else:
             page_data = None
+
+        end_time = time.time()
+        extraction_time = end_time - start_time
+        log_info('Generating response of p_df completed in {}'.format(extraction_time), app_context.application_context)
             
     except Exception as e :
         log_error('Error in generating response of p_df', app_context.application_context, e)
         return None
-    end_time            = time.time()
-    extraction_time     = end_time - start_time
-    log_info('Generating response of p_df completed in {}'.format(extraction_time), app_context.application_context)
+
     return page_data
 
 def process_image_df(img_df):

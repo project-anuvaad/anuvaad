@@ -4,6 +4,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 from config import PREPROCESS_CONFIGS as preprocess_config
 import src.utilities.app_context as app_context
+import time
 
 def cut_page(page_df ,height ,cut_at ,direction):
 
@@ -137,8 +138,18 @@ def prepocess_pdf_regions(xml_dfs, page_height, config =preprocess_config ):
     #header_region = None
     #footer_region =None
     #if len(xml_dfs) > 1 :
-    header_region = find_header(xml_dfs,page_height,config)
-    footer_region = find_footer(xml_dfs,page_height,config)
+    try :
+        start_time = time.time()
+        header_region = find_header(xml_dfs,page_height,config)
+        footer_region = find_footer(xml_dfs,page_height,config)
+        end_time = time.time() - start_time
+        log_info('Header Footer detection completed successfully  in time {} '.format(end_time), app_context.application_context)
+        log_info('Footers found {} '.format(len(footer_region)), app_context.application_context)
+        log_info('Headers found {}'.format(len(header_region)),app_context.application_context)
+
+    except Exception as e:
+        log_error('Error in finding header/footer ' + e ,app_context.application_context ,e)
+        return pd.DataFrame() ,pd.DataFrame()
 
     return header_region , footer_region
 
@@ -163,6 +174,7 @@ def mask_image(image,df,input_json,margin= 2 ,fill=255):
                     image[row['text_top'] - margin: row_bottom + margin, row['text_left'] - margin: row_right + margin,:] = fill
 
             except Exception as e :
-                log_error("Service TableExtractor Error in masking bg image", input_json, e)
+                log_error("Service TableExtractor Error in masking bg image" +e, input_json, e)
+                return image
     return image
 
