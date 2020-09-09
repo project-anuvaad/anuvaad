@@ -60,26 +60,26 @@ class Response(object):
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
             response = file_ops.error_handler(response_custom.status_code, "WORKFLOWKEY-ERROR", True)
-            log_exception("workflow_response", "workflow key error: key value missing", jobid, e)
+            log_exception("workflow_response workflow key error: key value missing", app_context.application_context, e)
             response = copy.deepcopy(response)
             return response
         except FileErrors as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = e.message
             response = file_ops.error_handler(response_custom.status_code, e.code, True)
-            log_exception("workflow_response", "some error occured while validating file", jobid, e)
+            log_exception("workflow_response some error occured while validating file", app_context.application_context, e)
             response = copy.deepcopy(response)
             return response
         except ServiceError as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
             response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
-            log_exception("workflow_response", "Something went wrong during pdf to block conversion.", jobid, e)
+            log_exception("workflow_response Something went wrong during pdf to block conversion.", app_context.application_context, e)
             response = copy.deepcopy(response)
             return response
 
     def nonwf_response(self):
-        log_info("non workflow response", "started the response generation", None)
+        log_info("non workflow response started the response generation", app_context.application_context)
         input_files = self.json_data['files']
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         try:
@@ -93,32 +93,32 @@ class Response(object):
                 output_file_response.append(file_res)
             response_true = Status.SUCCESS.value
             response_true['output'] = output_file_response
-            log_info("non workflow_response", "successfully generated response for rest server", None)
+            log_info("non workflow_response successfully generated response for rest server", app_context.application_context)
             response_true = copy.deepcopy(response_true)
             return response_true
         except FileErrors as e:
             response_custom = Status.ERR_STATUS.value
             response_custom['message'] = e.message
             response = file_ops.error_handler(response_custom, e.code, False)
-            log_exception("non workflow_response", "some error occured while validating file", None, e)
+            log_exception("non workflow_response some error occured while validating file", app_context.application_context, e)
             response = copy.deepcopy(response)
             return response
         except ServiceError as e:
             response_custom = Status.ERR_STATUS.value
             response_custom['message'] = str(e)
             response = file_ops.error_handler(response_custom, "SERVICE_ERROR", False)
-            log_exception("non workflow_response", "Something went wrong during pdf to block conversion.", None, e)
+            log_exception("non workflow_response Something went wrong during pdf to block conversion.", app_context.application_context, e)
             response = copy.deepcopy(response)
             return response
 
     def multi_thred_block_merger(self,task_id, task_starttime,jobid):
         thread = threading.current_thread().name
-        log_info("multi_thred_block_merger",str(thread)+" | block-merger process started ===>",jobid)
+        log_info("multi_thred_block_merger" + str(thread)+" | block-merger process started ===>",app_context.application_context)
         file_value_response = self.workflow_response(task_id, task_starttime)
         if "errorID" not in file_value_response.keys():
             producer = Producer()
             producer.push_data_to_queue(config.output_topic, file_value_response, jobid, task_id)
 
         else:
-            log_info("process_merger_kf", "error send to error handler", jobid)
+            log_info("process_merger_kf error send to error handler", app_context.application_context)
         
