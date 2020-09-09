@@ -236,7 +236,7 @@ def update_font(p_dfs):
 
     end_time         = time.time()
     elapsed_time     = end_time - start_time
-    log_info('Processing of unify_child_text_blocks completed in {}/{}, average per page {}'.format(elapsed_time, len(p_dfs), (elapsed_time/len(p_dfs))), app_context.application_context)
+    log_info('Processing of updating fonts completed in {}/{}, average per page {}'.format(elapsed_time, len(p_dfs), (elapsed_time/len(p_dfs))), app_context.application_context)
     return new_dfs
   
     

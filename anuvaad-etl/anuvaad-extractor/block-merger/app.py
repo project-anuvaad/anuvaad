@@ -9,15 +9,16 @@ import config
 import threading
 import time
 
+
 merge_app = Flask(__name__)
 
 def start_kafka():
     try:
         t1 = threading.Thread(target=process_block_merger_kf, name='BM-consumer-thread')
         t1.start()
-        log_info("multithread", "Kafka running on multithread", None)
+        log_info("multithread Kafka running on multithread", None)
     except Exception as e:
-        log_error("threading", "ERROR WHILE RUNNING CUSTOM THREADS ", None, e)
+        log_error("threading ERROR WHILE RUNNING CUSTOM THREADS ", None, e)
 
 if config.ENABLE_CORS:
     cors    = CORS(merge_app, resources={r"/api/*": {"origins": "*"}})
@@ -28,6 +29,6 @@ for blueprint in vars(routes).values():
 
 
 if __name__ == "__main__":
-    # start_kafka()
+    start_kafka()
     merge_app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
     
