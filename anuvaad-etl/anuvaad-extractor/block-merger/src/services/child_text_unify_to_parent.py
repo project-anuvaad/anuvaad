@@ -6,8 +6,6 @@ import src.utilities.app_context as app_context
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 
-log = logging.getLogger('file')
-
 class ChildTextUnify(object):
     def __init__(self):
         pass       

@@ -116,7 +116,7 @@ def process_line_df(line_df):
     log_info('Generating response of line_df completed in {}'.format(extraction_time), app_context.application_context)
     return line_data        
 
-
+'''
 def process_bg_image(bg_img):
     bg_image_data = []
     try:
@@ -126,4 +126,4 @@ def process_bg_image(bg_img):
             bg_image_data.append(img_base64)
             return bg_image_data
     except Exception as e :
-            log_error("Service get_response", "Error in processing bg_image", None, e)
+            log_error("Service get_response", "Error in processing bg_image", None, e) '''

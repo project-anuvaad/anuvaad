@@ -13,7 +13,7 @@ from src.services.get_tables import  get_text_table_line_df
 from src.services.get_underline import get_underline
 from src.services.ocr_text_utilities import  tesseract_ocr
 from src.services.child_text_unify_to_parent import ChildTextUnify
-from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df, process_bg_image
+from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df
 from src.utilities.xml_utils import check_text
 import src.utilities.app_context as app_context
 
@@ -27,7 +27,7 @@ def doc_pre_processing(filename, base_dir,lang):
             - header and footer regions
 
     '''
-    log_info("document preprocessing started ===>",app_context.application_context )
+    log_info("document preprocessing started ===>", app_context.application_context)
 
     img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_bg_img_filepaths, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir, lang)
     
