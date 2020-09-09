@@ -11,9 +11,9 @@ BASE_DIR      = 'upload'
 ENABLE_CORS = False
 
 # kafka
-input_topic         = 'anuvaad-dp-tools-block-merger-input-v1'
+input_topic         = 'anuvaad-dp-tools-block-merger-input-v2'
 kf_local_server     = 'localhost:9092'
-output_topic        = 'anuvaad-dp-tools-block-merger-output-v1'
+output_topic        = 'anuvaad-dp-tools-block-merger-output-v2'
 kafka_ip_host       = 'KAFKA_IP_HOST'
 bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 TASK_STAT           = 'BLOCK-MERGER'
