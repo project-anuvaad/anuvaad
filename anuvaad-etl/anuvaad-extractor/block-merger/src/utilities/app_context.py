@@ -1,5 +1,7 @@
 
 
 def init():
-    global application_context
-    application_context = None
+    global app_context
+    app_context = {
+        'application_context' : None
+    }
