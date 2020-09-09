@@ -15,17 +15,18 @@ log = logging.getLogger('file')
 @translatorapp.route(context_path + '/v1/workflow/translate', methods=["POST"])
 def initiate_workflow():
     service = TranslatorService()
-    validator = TranslatorValidator()
     data = request.get_json()
+    '''
     error = validator.validate(data)
     if error is not None:
         return error, 400
-    response = service.register_job(data)
+    '''
+    response = service.start_file_translation(data)
     return response
 
 
 # REST endpoint to initiate the workflow.
-@translatorapp.route(context_path + '/v1/translate', methods=["POST"])
+@translatorapp.route(context_path + '/v1/text/translate', methods=["POST"])
 def initiate_workflow():
     service = TranslatorService()
     validator = TranslatorValidator()
@@ -35,14 +36,6 @@ def initiate_workflow():
         return error, 400
     response = service.register_job(data)
     return response
-
-
-# REST endpoint to fetch workflow jobs.
-@translatorapp.route(context_path + '/v1/workflow/jobs/search/<job_id>', methods=["GET"])
-def search_jobs(job_id):
-    service = TranslatorService()
-    response = service.get_job_details(job_id)
-    return jsonify(response)
 
 
 # Health endpoint

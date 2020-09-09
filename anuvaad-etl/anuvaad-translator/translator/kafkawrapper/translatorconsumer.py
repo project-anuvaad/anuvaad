@@ -3,8 +3,8 @@ import logging
 import threading
 
 from kafka import KafkaConsumer, TopicPartition
-from logging.config import dictConfig
-from anuvaad_auditor.errorhandler import post_error
+from service.translatorservice import TranslatorService
+#from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
@@ -44,6 +44,7 @@ def consume():
     try:
         topics = [anu_translator_input_topic]
         consumer = instantiate(topics)
+        service = TranslatorService()
         thread = threading.current_thread().name
         log_info(str(thread) + " Running..........", None)
         while True:
@@ -52,13 +53,13 @@ def consume():
                     if msg:
                         data = msg.value
                         log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
-                        wfmservice.initiate_wf(data)
+                        service.start_file_translation(data)
                 except Exception as e:
                     log_exception("Exception in translator while consuming: " + str(e), None, e)
                     post_error("TRANSLATOR_CONSUMER_ERROR", "Exception in translator while consuming: " + str(e), None)
     except Exception as e:
         log_exception("Exception while starting the translator consumer: " + str(e), None, e)
-        post_error("WFM_CONSUMER_ERROR", "Exception while starting translator consumer: " + str(e), None)
+        #post_error("TRANSLATOR_CONSUMER_EXC", "Exception while starting translator consumer: " + str(e), None)
 
 
 # Method that provides a deserialiser for the kafka record.

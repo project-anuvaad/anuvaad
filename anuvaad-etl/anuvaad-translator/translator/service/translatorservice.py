@@ -2,15 +2,16 @@ import logging
 
 from utilities.translatorutils import TranslatorUtils
 from kafkawrapper.translatorproducer import Producer
+from repository.translatorrepository import TranslatorRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from anuvaad_auditor.errorhandler import post_error_wf
-from configs.translatorconfig import save_content_url
 from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
 
 log = logging.getLogger('file')
 utils = TranslatorUtils()
 producer = Producer()
+repo = TranslatorRepository()
 
 
 class WFMService:
@@ -38,18 +39,26 @@ class WFMService:
 
     # Method to download and dump the content of the file present in the input
     def dump_file_to_db(self, file_id, translate_wf_input):
-        log_info("Downloading File....", translate_wf_input)
-        data = utils.download_file(file_id)
-        if not data:
-            log_error("File received on input couldn't be read!", translate_wf_input, None)
-            return None
-        else:
-            log_info("Dumping content to translator DB......", translate_wf_input)
-            res = utils.call_api(save_content_url, "POST", ch_input, None)
-            if not res:
-                log_error("Error while dumping file content to CH", translate_wf_input, None)
+        try:
+            log_info("Downloading File....", translate_wf_input)
+            data = utils.download_file(file_id)
+            if not data:
+                log_error("File received on input couldn't be read!", translate_wf_input, None)
                 return None
-            return res
+            else:
+                log_info("Dumping content to translator DB......", translate_wf_input)
+                db_in = {
+                    "jobID": translate_wf_input["jobID"],
+                    "taskID": translate_wf_input["taskID"],
+                    "fileID": file_id,
+                    "transInput": translate_wf_input,
+                    "data": data
+                }
+                repo.create(db_in)
+                return True
+        except Exception as e:
+            log_exception("Exception while dumping content to DB: " + str(e), translate_wf_input, e)
+            return None
 
     # Method to push sentences of the file to nmt for translation
     def push_sentences_to_nmt(self, file_id, translate_wf_input):
@@ -61,6 +70,7 @@ class WFMService:
                           "File content from DB couldn't be fetched, jobID: " + str(translate_wf_input["jobID"]),
                           translate_wf_input, None)
                 return None
+            content_from_db = content_from_db[0]
             data = content_from_db["data"]
             if not data:
                 log_error("NO_DATA_DB", "No data for file, jobID: " + str(translate_wf_input["jobID"]),
@@ -133,5 +143,15 @@ class WFMService:
             log_exception("Exception while fetching batch of sentences: " + str(e), translate_wf_input, e)
             return None
 
-    def get_content_from_db(self, job_id, file_id, pageNo):
-        return None
+    # Method to search data from db
+    def get_content_from_db(self, file_id, translate_wf_input, pageNo):
+        try:
+            query = {"jobID": translate_wf_input["jobID"], "fileID": file_id}
+            if pageNo:
+                query['data.page_no'] = pageNo
+            exclude = {'_id': False}
+            result = repo.search(query, exclude)
+            return result
+        except Exception as e:
+            log_exception("Exception while searching from db: " + str(e), translate_wf_input, e)
+            return None

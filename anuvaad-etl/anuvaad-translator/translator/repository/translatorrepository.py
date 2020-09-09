@@ -7,8 +7,7 @@ from configs.translatorconfig import mongo_translator_db
 from configs.translatorconfig import mongo_translator_collection
 
 
-
-class WFMRepository:
+class TranslatorRepository:
 
     def __init__(self):
         pass
@@ -21,12 +20,12 @@ class WFMRepository:
         return col
 
     # Inserts the object into mongo collection
-    def create_job(self, object_in):
+    def create(self, object_in):
         col = self.instantiate()
         col.insert_one(object_in)
 
     # Updates the object in the mongo collection
-    def update_job(self, object_in, job_id):
+    def update(self, object_in, job_id):
         col = self.instantiate()
         col.replace_one(
             {"jobID": job_id},
@@ -34,7 +33,7 @@ class WFMRepository:
         )
 
     # Searches the object into mongo collection
-    def search_job(self, query, exclude):
+    def search(self, query, exclude):
         col = self.instantiate()
         res = col.find(query, exclude)
         result = []

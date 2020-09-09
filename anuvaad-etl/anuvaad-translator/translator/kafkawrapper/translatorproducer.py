@@ -33,4 +33,4 @@ class Producer:
             producer.flush()
         except Exception as e:
             log_exception("Exception in translator while producing: " + str(e), object_in, e)
-            post_error("TRANSLATOR_PRODUCER_ERROR", "Exception in translator while producing: " + str(e), None)
+            post_error("TRANSLATOR_PRODUCER_EXC", "Exception in translator while producing: " + str(e), None)

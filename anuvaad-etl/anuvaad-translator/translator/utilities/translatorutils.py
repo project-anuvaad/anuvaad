@@ -5,24 +5,9 @@ import urllib
 
 import requests
 from configs.translatorconfig import file_download_url
-from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_exception, log_error
 
-
-aligner = Aligner()
-tokeniser = Tokeniser()
-pdftohtml = PDFTOHTML()
-htmltojson = HTMLTOJSON()
-file_converter = FileConverter()
-block_merger = BlockMerger()
-
 log = logging.getLogger('file')
-configs_global = {}
-
-yaml_file_loc = "/app/configs"
-yam_file_path_delimiter = "/"
-yaml_file_name = "wfconfig.yml"
-
 
 class TranslatorUtils:
     def __init__(self):
