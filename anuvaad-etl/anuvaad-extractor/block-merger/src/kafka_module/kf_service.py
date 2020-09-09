@@ -52,7 +52,7 @@ def process_block_merger_kf():
             task_starttime  = str(time.time()).replace('.', '')
 
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
-            log_info("process_block_merger_kf", "kafka request arrived ", jobid)
+            log_info("process_block_merger_kf kafka request arrived ", jobid)
 
             response_gen    = Response(data, DOWNLOAD_FOLDER)
 
