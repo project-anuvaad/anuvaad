@@ -8,6 +8,7 @@ import src.utilities.app_context as app_context
 import time
 
 def df_to_json(p_df):
+
     page_data = []
     try:
         p_df      = p_df.where(p_df.notnull(), None)
@@ -35,6 +36,7 @@ def df_to_json(p_df):
                 page_data.append(block)
         else:
             page_data = None
+
             
     except Exception as e :
         log_error('Error in generating response of p_df', app_context.application_context, e)
@@ -104,7 +106,7 @@ def process_line_df(line_df):
         
     return line_data        
 
-
+'''
 def process_bg_image(bg_img):
     bg_image_data = []
     try:
@@ -114,4 +116,4 @@ def process_bg_image(bg_img):
             bg_image_data.append(img_base64)
             return bg_image_data
     except Exception as e :
-            log_error("Service get_response", "Error in processing bg_image", None, e)
+            log_error("Service get_response", "Error in processing bg_image", None, e) '''
