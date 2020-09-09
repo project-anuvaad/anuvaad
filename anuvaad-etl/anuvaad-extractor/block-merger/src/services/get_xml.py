@@ -179,7 +179,7 @@ def get_pdfs(page_dfs):
 
     end_time         = time.time()
     elapsed_time     = end_time - start_time
-    log_info('Processing of get_hdfs completed in {}/{}, average per page {}'.format(elapsed_time, len(p_dfs), (elapsed_time/len(p_dfs))), app_context.application_context)
+    log_info('Processing of get_pdfs completed in {}/{}, average per page {}'.format(elapsed_time, len(p_dfs), (elapsed_time/len(p_dfs))), app_context.application_context)
     return p_dfs
 
 
