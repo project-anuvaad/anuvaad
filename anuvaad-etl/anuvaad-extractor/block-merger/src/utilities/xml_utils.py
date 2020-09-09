@@ -137,7 +137,10 @@ def get_ngram(indices, window_size = 2):
 Check if  input pdf is digital or scanned 
 '''
 def check_text(xml_dfs) :
-    text_count = 0
-    for xml_df in xml_dfs:
-        text_count += len(xml_df)
-    return text_count
+    if xml_dfs !=None:
+        text_count = 0
+        for xml_df in xml_dfs:
+            text_count += len(xml_df)
+        return text_count
+    else:
+        return 0

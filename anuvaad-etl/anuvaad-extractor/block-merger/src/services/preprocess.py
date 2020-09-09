@@ -5,6 +5,7 @@ from anuvaad_auditor.loghandler import log_error
 from config import PREPROCESS_CONFIGS as preprocess_config
 import src.utilities.app_context as app_context
 import time
+from anuvaad_auditor.errorhandler import post_error_wf
 
 def cut_page(page_df ,height ,cut_at ,direction):
 
@@ -53,8 +54,9 @@ def find_header(xml_dfs,page_height, preprocess_config):
     try :
         page_df = xml_dfs[0]
     except Exception as e :
-        log_error('invalid xml_df passed for preprocessing ',app_context.application_context,e )
-        return pd.DataFrame()
+        post_error_wf("INVALID_XML_ERROR", "invalid xml_df passed for preprocessing ", app_context.application_context ,e)
+        return None
+        
 
     sub_df = cut_page(page_df, page_height, cut_at=preprocess_config['header_cut'], direction='above')
     sub_df = add_box_coordinates(sub_df)
@@ -90,8 +92,8 @@ def find_footer(xml_dfs, page_height,preprocess_config,):
     try :
         page_df = xml_dfs[0]
     except Exception as e :
-        log_error('invalid xml_df passed for preprocessing ',app_context.application_context ,e)
-        return pd.DataFrame()
+        post_error_wf(400, "invalid xml_df passed for preprocessing ", app_context.application_context ,e)
+        return None
 
     sub_df = cut_page(page_df, page_height, cut_at=preprocess_config['footer_cut'], direction='below')
     sub_df = add_box_coordinates(sub_df)
@@ -149,6 +151,7 @@ def prepocess_pdf_regions(xml_dfs, page_height, config =preprocess_config ):
 
     except Exception as e:
         log_error('Error in finding header/footer ' + e ,app_context.application_context ,e)
+        
         return pd.DataFrame() ,pd.DataFrame()
 
     return header_region , footer_region

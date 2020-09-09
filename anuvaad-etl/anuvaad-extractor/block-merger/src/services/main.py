@@ -31,18 +31,12 @@ def doc_pre_processing(filename, base_dir,lang):
     log_info("document preprocessing started ===>", app_context.application_context)
 
     img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_bg_img_filepaths, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir, lang)
-    
-    try:
-        header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
+    if xml_dfs!=None:
         log_info("document preprocessing successfully completed", app_context.application_context)
-    except Exception as e :
-            log_error("Error in finding footer and header region", app_context.application_context, e)
 
+    return img_dfs,xml_dfs, working_dir, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths
 
-
-    return img_dfs,xml_dfs, working_dir, header_region , footer_region, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths
-
-def doc_structure_analysis(xml_dfs,img_dfs,working_dir,header_region , footer_region,lang, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths):
+def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths):
     
     '''
         Document structure analysis to get:
@@ -56,6 +50,13 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir,header_region , footer_re
 
     '''
     log_info("document structure analysis started  ===>", app_context.application_context )
+    try:
+        header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
+        
+    except Exception as e :
+        log_error("Error in finding footer and header region", app_context.application_context, e)
+        return None, None,None
+
     
     text_merger = ChildTextUnify()
     
@@ -129,8 +130,8 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
 
 def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR):
     log_debug('Block merger starting processing {}'.format(app_context), app_context.application_context)
-    img_dfs, xml_dfs, working_dir, header_region , footer_region, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths  = doc_pre_processing(file_name,base_dir,lang)
-
+    img_dfs, xml_dfs, working_dir, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths  = doc_pre_processing(file_name,base_dir,lang)
+    print(img_dfs, xml_dfs, working_dir, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths)
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:
         return {
@@ -140,7 +141,7 @@ def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR
             }
 
     try:
-        text_block_dfs, table_dfs, line_dfs ,bg_dfs = doc_structure_analysis(xml_dfs,img_dfs,working_dir,header_region , footer_region, lang, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths)
+        text_block_dfs, table_dfs, line_dfs ,bg_dfs = doc_structure_analysis(xml_dfs,img_dfs,working_dir, lang, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths)
         response   =  doc_structure_response(bg_dfs, text_block_dfs, table_dfs,line_dfs,page_width, page_height)
         log_info("DocumentStructure : successfully received blocks in json response",  app_context.application_context)
         return {
