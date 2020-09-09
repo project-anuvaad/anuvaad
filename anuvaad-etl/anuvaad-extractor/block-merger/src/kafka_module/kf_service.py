@@ -48,20 +48,20 @@ def process_block_merger_kf():
 
         for msg in consumer:
             data            = msg.value
-                task_id         = str("BM-" + str(time.time()).replace('.', ''))
-                task_starttime  = str(time.time()).replace('.', '')
+            task_id         = str("BM-" + str(time.time()).replace('.', ''))
+            task_starttime  = str(time.time()).replace('.', '')
 
-                input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
-                log_info("process_block_merger_kf", "kafka request arrived ", jobid)
+            input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+            log_info("process_block_merger_kf", "kafka request arrived ", jobid)
 
-                response_gen    = Response(data, DOWNLOAD_FOLDER)
+            response_gen    = Response(data, DOWNLOAD_FOLDER)
 
-                file_value_response = response_gen.workflow_response(task_id, task_starttime)
-                if "errorID" not in file_value_response.keys():
-                    push_output(producer_tok, config.tok_output_topic, file_value_response, jobid, task_id)
-                    log_info("process_block_merger_kf : response send to topic %s"%(config.tok_output_topic), None)
-                else:
-                    log_info("process_block_merger_kf : error send to error handler", jobid)
+            file_value_response = response_gen.workflow_response(task_id, task_starttime)
+            if "errorID" not in file_value_response.keys():
+                push_output(producer_tok, config.tok_output_topic, file_value_response, jobid, task_id)
+                log_info("process_block_merger_kf : response send to topic %s"%(config.tok_output_topic), None)
+            else:
+                log_info("process_block_merger_kf : error send to error handler", jobid)
     
     except KafkaConsumerError as e:
         response_custom = {}
