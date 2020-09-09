@@ -8,10 +8,7 @@ import src.utilities.app_context as app_context
 import time
 
 def df_to_json(p_df):
-<<<<<<< HEAD
-    #start_time = time.time()
-=======
->>>>>>> 0d90b6da12545974850ef25c7bcb1dd91682761d
+
     page_data = []
     try:
         p_df      = p_df.where(p_df.notnull(), None)
