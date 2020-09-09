@@ -66,6 +66,8 @@ def process_input_pdf(filename, base_dir, lang):
             - images present in xml
             - background image present in each page
     '''
+    start_time          = time.time()
+
     working_dir, ret = create_pdf_processing_paths(filename, base_dir)
  
     if ret == False:
@@ -94,6 +96,10 @@ def process_input_pdf(filename, base_dir, lang):
         return None, None, None, None, None, None, None
 
     log_info('process_input_pdf: created dataframes successfully', app_context.application_context)
+    end_time         = time.time()
+    elapsed_time     = end_time - start_time
+    log_info('Processing of process_input_pdf completed in {}/{}, average per page {}'.format(elapsed_time, len(xml_dfs), (elapsed_time/len(xml_dfs))), app_context.application_context)
+
     return img_dfs, xml_dfs, page_width, page_height, working_dir, pdf_bg_img_filepaths, pdf_image_paths
 
     
@@ -111,9 +117,9 @@ def get_vdfs(h_dfs):
         log_error('Error in creating v_dfs', app_context.application_context, e)
         return None
 
-    end_time            = time.time()
-    extraction_time     = end_time - start_time
-    log_info('Extraction of v_dfs completed in {}'.format(extraction_time), app_context.application_context)
+    end_time         = time.time()
+    elapsed_time     = end_time - start_time
+    log_info('Processing of get_vdfs completed in {}/{}, average per page {}'.format(elapsed_time, len(h_dfs), (elapsed_time/len(h_dfs))), app_context.application_context)
 
     return v_dfs
 
@@ -142,9 +148,9 @@ def get_hdfs(in_dfs, header_region, footer_region):
         #log_error(e, app_context.application_context, e)
         return None
 
-    end_time            = time.time()
-    extraction_time     = end_time - start_time
-    log_info('Extraction of h_dfs completed in {}'.format(extraction_time), app_context.application_context)
+    end_time         = time.time()
+    elapsed_time     = end_time - start_time
+    log_info('Processing of get_hdfs completed in {}/{}, average per page {}'.format(elapsed_time, len(in_dfs), (elapsed_time/len(in_dfs))), app_context.application_context)
 
     return h_dfs
 
@@ -178,9 +184,9 @@ def get_pdfs(page_dfs):
         log_error('Error in creating p_dfs', app_context.application_context, e)
         return None
 
-    end_time            = time.time()
-    extraction_time     = end_time - start_time
-    log_info('Extraction of p_dfs completed in {}'.format(extraction_time), app_context.application_context)
+    end_time         = time.time()
+    elapsed_time     = end_time - start_time
+    log_info('Processing of get_hdfs completed in {}/{}, average per page {}'.format(elapsed_time, len(p_dfs), (elapsed_time/len(p_dfs))), app_context.application_context)
     return p_dfs
 
 
@@ -236,9 +242,10 @@ def update_font(p_dfs):
     except Exception as e :
         log_error('Error in updating fonts', app_context.application_context, e)
         return None
-    end_time            = time.time()
-    extraction_time     = end_time - start_time
-    log_info('Updating of fonts completed in {}'.format(extraction_time), app_context.application_context)
+
+    end_time         = time.time()
+    elapsed_time     = end_time - start_time
+    log_info('Processing of unify_child_text_blocks completed in {}/{}, average per page {}'.format(elapsed_time, len(p_dfs), (elapsed_time/len(p_dfs))), app_context.application_context)
     return new_dfs
   
     
