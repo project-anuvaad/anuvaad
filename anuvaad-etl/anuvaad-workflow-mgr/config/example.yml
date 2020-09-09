@@ -181,12 +181,12 @@ WorkflowConfigs:
       - name: BLOCK-MERGER
         description: extracts different blocks from a pdf file.
         kafka-input:
-        - topic: anuvaad-dp-tools-block-merger-input-v1
+        - topic: anuvaad-dp-tools-block-merger-input-v2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-block-merger-output-v1
+        - topic: anuvaad-dp-tools-block-merger-output-v2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
           assignment: round-robin
@@ -220,12 +220,12 @@ WorkflowConfigs:
       - name: BLOCK-MERGER
         description: extracts different blocks from a pdf file.
         kafka-input:
-        - topic: anuvaad-dp-tools-block-merger-input-v1
+        - topic: anuvaad-dp-tools-block-merger-input-v2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-block-merger-output-v1
+        - topic: anuvaad-dp-tools-block-merger-output-v2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
           assignment: round-robin
@@ -243,12 +243,12 @@ WorkflowConfigs:
       - name: BLOCK-MERGER
         description: extracts different blocks from a pdf file.
         kafka-input:
-        - topic: anuvaad-dp-tools-block-merger-input-v1
+        - topic: anuvaad-dp-tools-block-merger-input-v2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-block-merger-output-v1
+        - topic: anuvaad-dp-tools-block-merger-output-v2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
           assignment: round-robin
@@ -298,12 +298,12 @@ WorkflowConfigs:
       - name: BLOCK-MERGER
         description: extracts different blocks from a pdf file.
         kafka-input:
-        - topic: anuvaad-dp-tools-block-merger-input-v1
+        - topic: anuvaad-dp-tools-block-merger-input-v2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-block-merger-output-v1
+        - topic: anuvaad-dp-tools-block-merger-output-v2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
           assignment: round-robin
@@ -337,7 +337,7 @@ WorkflowConfigs:
       - name: TOKENISER
         description: tokenises the text blocks.
         api-details:
-        - uri: https://auth.anuvaad.org/api/v0/tokenisation-wf
+        - uri: http://abc.com/tokenise
       endState: true
 
 
@@ -365,7 +365,7 @@ WorkflowConfigs:
       - name: TOKENISER
         description: tokenises the text blocks.
         api-details:
-        - uri: https://auth.anuvaad.org/api/v0/tokenisation-wf
+        - uri: http://abc.com/tokenise
       endState: false
     - order: 1
       tool:

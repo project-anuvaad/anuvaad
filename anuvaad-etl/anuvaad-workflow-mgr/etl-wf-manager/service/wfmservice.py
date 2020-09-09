@@ -57,7 +57,7 @@ class WFMService:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], tool_output, previous_tool, None)
                 response = wfmutils.call_api(uri, tool_input)
                 if not response:
-                    log_error("There was an error from: " + str(tool_details["name"]), wf_input, None)
+                    log_error("There was an error from the tool: " + str(tool_details["name"]), wf_input, None)
                     wf_input["taskID"] = "TASK-ID-NA"
                     error = post_error_wf("ERROR_FROM_TOOL",
                                           "There was an error from: " + str(tool_details["name"]), wf_input, None)
