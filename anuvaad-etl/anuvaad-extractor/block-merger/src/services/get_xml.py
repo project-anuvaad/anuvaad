@@ -145,7 +145,7 @@ def get_hdfs(in_dfs, header_region, footer_region):
 
         #print(e)
         log_error('Error in creating h_dfs', app_context.application_context, e)
-        log_error(e, app_context.application_context, e)
+        #log_error(e, app_context.application_context, e)
         return None
 
     end_time         = time.time()
