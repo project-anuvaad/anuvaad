@@ -35,7 +35,7 @@ def run_test(document_directory):
     files = read_directory_files(document_directory, "*.pdf")
     for file in files:
         app_context.application_context = dict({'task_id': 'BM-DUMMY', 'filename': os.path.basename(file)})
-        data       = main.DocumentStructure(app_context, os.path.basename(file), "hi", base_dir=input_dir)
+        data       = main.DocumentStructure(app_context, os.path.basename(file), "hi", base_dir=document_directory)
 
     end_time         = time.time()
     elapsed_time     = end_time - start_time
