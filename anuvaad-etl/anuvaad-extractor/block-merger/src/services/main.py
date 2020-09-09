@@ -131,7 +131,7 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
 def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR):
     log_debug('Block merger starting processing {}'.format(app_context), app_context.application_context)
     img_dfs, xml_dfs, working_dir, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths  = doc_pre_processing(file_name,base_dir,lang)
-    print(img_dfs, xml_dfs, working_dir, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths)
+    
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:
         return {
