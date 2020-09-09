@@ -67,7 +67,7 @@ class Tokenisation(object):
             for block_id, item in enumerate(blocks):
                 text_data = item['text']
                 tokenised_text = self.tokenisation_core([text_data], in_locale)
-                item['tokenized_sentences'] = [self.making_object_for_tokenised_text(text, in_locale, i, block_id, page_id) for i, text in enumerate(tokenised_text)]
+                item['tokenized_sentences'] = [self.making_object_for_tokenised_text(text, i, block_id, page_id) for i, text in enumerate(tokenised_text)]
             return input_json_data_pagewise
         except:
             log_error("Keys in block merger response changed or tokenisation went wrong.", self.input_json_data, None) 
@@ -81,10 +81,9 @@ class Tokenisation(object):
         log_info("Service : Json file write done!", self.input_json_data)
         return output_json_filename
 
-    def making_object_for_tokenised_text(self, text, locale, index, block_id, page_id):
+    def making_object_for_tokenised_text(self, text, index, block_id, page_id):
         object_text = {
-            "src" : text,
-            "src_locale" : locale,
+            "src_text" : text,
             "sentence_id" : "{0}_{1}_{2}".format(page_id, block_id, index)
         }
         return object_text

@@ -7,10 +7,10 @@ class AnuvaadKanTokenizer(object):
     """
     abbrevations
     """
-    _abbrevations_with_space_pattern = r'((\s)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?(([\u0C85-\u0CB9,\u0CDE,\u0CE0-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?)'
+    _abbrevations_with_space_pattern = r'((\s)(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?)(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?)?(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?)?)'
     _abbrevations_with_space = []
-    _abbrevations_without_space_pattern = [r'[ ]ಪ್ರೊ[.]']
-    _abbrevations_without_space = [' ಪ್ರೊ.']
+    # _abbrevations_without_space_pattern = 
+    # _abbrevations_without_space = 
     _tokenizer = None
     _regex_search_texts = []
     _date_abbrevations  = []
@@ -50,7 +50,6 @@ class AnuvaadKanTokenizer(object):
         text = self.serialize_url(text)
         text = self.serialize_pattern(text)
         text = self.serialize_dots(text)
-        test = self.serialize_end(text)
         text = self.serialize_brackets(text)
         text = self.serialize_dot_with_number(text)
         text = self.serialize_dot_with_number_beginning(text)
@@ -66,7 +65,6 @@ class AnuvaadKanTokenizer(object):
             se = self.deserialize_pattern(se)
             se = self.deserialize_url(se)
             se = self.deserialize_dots(se)
-            se = self.deserialize_end(se)
             se = self.deserialize_decimal(se)
             se = self.deserialize_brackets(se)
             se = self.deserialize_dot_with_number(se)
@@ -126,20 +124,6 @@ class AnuvaadKanTokenizer(object):
             text = pattern.sub(sentence_end, text)
             pattern = re.compile(r'['+sentence_end+']')
             text = pattern.sub(sentence_end + ' ', text)
-        return text
-
-    def serialize_end(self, text):
-        pattern_d = re.compile(r'(\u0965)')
-        text = pattern_d.sub(' END_||_END', text)
-        pattern = re.compile(r'(\u0964)')
-        text = pattern.sub(' END_|_END ', text)
-        return text
-
-    def deserialize_end(self, text):
-        pattern = re.compile(re.escape(' END_|_END'), re.IGNORECASE)
-        text = pattern.sub('।', text)
-        pattern = re.compile(re.escape(' END_||_END'), re.IGNORECASE)
-        text = pattern.sub('॥', text)
         return text
 
     def serialize_bullet_points(self, text):
