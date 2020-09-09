@@ -8,7 +8,7 @@ import src.utilities.app_context as app_context
 import time
 
 def df_to_json(p_df):
-    start_time = time.time()
+    #start_time = time.time()
     page_data = []
     try:
         p_df      = p_df.where(p_df.notnull(), None)
@@ -37,9 +37,9 @@ def df_to_json(p_df):
         else:
             page_data = None
 
-        end_time = time.time()
-        extraction_time = end_time - start_time
-        log_info('Generating response of p_df completed in {}'.format(extraction_time), app_context.application_context)
+        #end_time = time.time()
+        #extraction_time = end_time - start_time
+        #log_info('Generating response of p_df completed in {}'.format(extraction_time), app_context.application_context)
             
     except Exception as e :
         log_error('Error in generating response of p_df', app_context.application_context, e)
