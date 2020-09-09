@@ -18,27 +18,17 @@ from src.services.left_right_on_block import left_right_margin
 import src.utilities.app_context as app_context
 
 
-def create_pdf_processing_paths(filename, base_dir):
-    data_dir    = os.path.join(base_dir, 'data')
-    ret         = create_directory(data_dir)
-
-    if ret == False:
-        log_error('unable to create data directory {}'.format(data_dir), app_context.application_context, None)
-        return False
+def create_pdf_processing_paths(filepath, base_dir):
     
-    output_dir  = os.path.join(data_dir, 'output')
-    ret         = create_directory(output_dir)
-    if ret == False:
-        log_error('unable to create output directory {}'.format(output_dir), app_context.application_context, None)
-        return False
-
-    working_dir = os.path.join(output_dir, os.path.splitext(filename)[0]+'_'+str(uuid.uuid1()))
+    filename    = os.path.basename(filepath)
+    working_dir = os.path.join(base_dir, os.path.splitext(filename)[0] + '_' + str(uuid.uuid1()))
     ret         = create_directory(working_dir)
+
     if ret == False:
         log_error('unable to create working directory {}'.format(working_dir), app_context.application_context, None)
         return False
     
-    log_info('created processing directories successfully', app_context.application_context)
+    log_info('created processing directories successfully {}'.format(working_dir), app_context.application_context)
     
     return working_dir, True
 
@@ -46,6 +36,7 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
     start_time          = time.time()
     pdf_filepath        = os.path.join(base_dir, filename)
 
+    log_info('filepath {}, working_dir {}'.format(pdf_filepath, working_dir), app_context.application_context)
     try:
         pdf_image_paths         = extract_image_paths_from_pdf(pdf_filepath, working_dir)
         pdf_xml_filepath        = extract_xml_path_from_digital_pdf(pdf_filepath, working_dir)
@@ -76,7 +67,7 @@ def process_input_pdf(filename, base_dir, lang):
             - background image present in each page
     '''
     working_dir, ret = create_pdf_processing_paths(filename, base_dir)
-    
+ 
     if ret == False:
         log_error('create_pdf_processing_paths failed', app_context.application_context, None)
         return None, None, None, None, None, None, None
@@ -127,7 +118,7 @@ def get_vdfs(h_dfs):
     return v_dfs
 
         
-def get_hdfs(in_dfs,header_region , footer_region):
+def get_hdfs(in_dfs, header_region, footer_region):
     
     start_time          = time.time()
     pages = len(in_dfs)
@@ -139,11 +130,9 @@ def get_hdfs(in_dfs,header_region , footer_region):
     try:
         for page_index in range(pages):
             page_df   = in_dfs[page_index]
-            page_df   = page_df.loc[:]
             if multiple_pages :
                 page_df   = tag_heaader_footer_attrib(header_region , footer_region,page_df)
 
-        
             h_df    = merge_horizontal_blocks(page_df, document_configs, debug=False)
             h_dfs.append(h_df)
     except Exception as e :
