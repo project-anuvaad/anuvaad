@@ -27,7 +27,7 @@ class Response(object):
 
     def workflow_response(self, task_id, task_starttime):
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
-        log_info("workflow_response started the response generation", self.json_data)
+        log_info("workflow_response started the response generation", app_context.application_context)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         try:
             error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)
@@ -48,7 +48,8 @@ class Response(object):
                     response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
                     response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
                     response = copy.deepcopy(response_success)
-                    log_info("workflow_response", "successfully generated response for workflow", jobid)
+                    log_info("successfully generated response for workflow", app_context.application_context)
+                    
                     return response
 
                 else:
