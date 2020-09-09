@@ -1,4 +1,4 @@
-from src.kafka_module.kf_service import process_merger_kf
+from src.kafka_module.kf_service import process_block_merger_kf
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 from flask import Flask
@@ -13,7 +13,7 @@ merge_app = Flask(__name__)
 
 def start_kafka():
     try:
-        t1 = threading.Thread(target=process_merger_kf, name='BM-consumer-thread')
+        t1 = threading.Thread(target=process_block_merger_kf, name='BM-consumer-thread')
         t1.start()
         log_info("multithread", "Kafka running on multithread", None)
     except Exception as e:
@@ -28,6 +28,6 @@ for blueprint in vars(routes).values():
 
 
 if __name__ == "__main__":
-    start_kafka()
+    # start_kafka()
     merge_app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
     

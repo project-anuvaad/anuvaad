@@ -116,14 +116,14 @@ def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths):
         bg_image_path   = pdf_bg_img_filepaths[index]
 
         try :
-            #table_image =  cv2.imread(bg_image_path, 0)
+            table_image =  cv2.imread(bg_image_path, 0)
             bg_image    =  cv2.imread(bg_image_path)
             
         except Exception as e :
             log_error("Service TableExtractor Error in loading background html image", app_context.application_context, e)
             return None, None, None, None
 
-        table_image = mask_image(bg_image_path, img_df, app_context.application_context, margin=2, fill=255)
+        table_image = mask_image(table_image, img_df, app_context.application_context, margin=2, fill=255)
 
         try :
             tables = TableRepositories(table_image).response['response']['tables']

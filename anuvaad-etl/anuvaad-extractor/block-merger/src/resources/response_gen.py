@@ -37,16 +37,23 @@ class Response(object):
                 
                 self.json_data['task_id']       = task_id
                 app_context.application_context = self.json_data
-                output_json_data = DocumentStructure(app_context=app_context.application_context, file_name=input_filename, lang=in_locale)
-                output_filename_json = file_ops.writing_json_file(i, output_json_data, self.DOWNLOAD_FOLDER)
-                file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
-                output_file_response.append(file_res)
-            task_endtime = str(time.time()).replace('.', '')
-            response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
-            response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
-            response = copy.deepcopy(response_success)
-            log_info("workflow_response", "successfully generated response for workflow", jobid)
-            return response
+                
+                bm_response = DocumentStructure(app_context=app_context, file_name=input_filename, lang=in_locale)
+                if bm_response['code'] == 200:
+                    output_filename_json = file_ops.writing_json_file(i, bm_response['rsp'], self.DOWNLOAD_FOLDER)
+                    file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
+                    output_file_response.append(file_res)
+                    task_endtime = str(time.time()).replace('.', '')
+                    response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
+                    response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
+                    response = copy.deepcopy(response_success)
+                    log_info("workflow_response", "successfully generated response for workflow", jobid)
+                    return response
+
+                else:
+                    post_error_wf(bm_response.code, bm_response.message, app_context, None)
+                    return None
+            
         except WorkflowkeyError as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
