@@ -86,7 +86,7 @@ class FileOperation(object):
                 status = object_in['status']
                 code = code
                 message = object_in['message']
-                error = post_error_wf(code, message, job_id, task_id, state, status, None)
+                error = post_error_wf(code, message, object_in , None)
                 return error
         else:
             code = object_in['error']['code']

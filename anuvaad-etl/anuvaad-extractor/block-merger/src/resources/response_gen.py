@@ -22,6 +22,7 @@ file_ops = FileOperation()
 class Response(object):
     def __init__(self, json_data, DOWNLOAD_FOLDER):
         app_context.init()
+        print(json_data)
         self.json_data =json_data
         self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
 

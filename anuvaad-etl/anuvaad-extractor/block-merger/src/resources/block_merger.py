@@ -11,7 +11,7 @@ from anuvaad_auditor.loghandler import log_error
 import config
 import time
 import src.utilities.app_context as app_context
-
+app_context.init()
 
 # sentence block merging
 file_ops = FileOperation()
@@ -22,10 +22,12 @@ class BlockMergerWF(Resource):
     
     # reading json request and reurnung final response
     def post(self):
+        json_data = request.get_json(force=True)
+        app_context.application_context = json_data
         log_info("Resource BlockMergerWF  Block-merger service started", app_context.application_context)
         task_id = str("BM-" + str(time.time()).replace('.', ''))
         task_starttime = str(time.time()).replace('.', '')
-        json_data = request.get_json(force = True)
+        #json_data = request.get_json(force = True)
         try:
             error_validator = ValidationResponse(DOWNLOAD_FOLDER)
             if error_validator.format_error(json_data) is True:

@@ -55,7 +55,7 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_h
         
     except Exception as e :
         log_error("Error in finding footer and header region", app_context.application_context, e)
-        return None, None,None
+        return None, None,None ,None
 
     
     text_merger = ChildTextUnify()
