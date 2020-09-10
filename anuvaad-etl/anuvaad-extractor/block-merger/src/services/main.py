@@ -109,7 +109,7 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
     table_df['table_id'] = range(len(table_df))
     line_df['line_id']   = range(len(line_df))
 
-    res_dict           = {'page_no': page_no,'page_width': page_width,'page_height':page_height,'lines':[],'tables':[],'images':[],'text_blocks':[]}
+    res_dict           = {'page_no': page_no + 1,'page_width': page_width,'page_height':page_height,'lines':[],'tables':[],'images':[],'text_blocks':[]}
     image_data         = process_image_df(img_df)
     table_data         = process_table_df(table_df)
     line_data          = process_line_df(line_df)
