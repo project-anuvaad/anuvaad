@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 import time
 import json
-from anuvaad_em.emservice import post_error
-from anuvaad_em.emservice import post_error_wf
+from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.errorhandler import post_error_wf
 
 class FileOperation(object):
 
@@ -86,7 +86,7 @@ class FileOperation(object):
                 status = object_in['status']
                 code = code
                 message = object_in['message']
-                error = post_error_wf(code, message, job_id, task_id, state, status, None)
+                error = post_error_wf(code, message, object_in , None)
                 return error
         else:
             code = object_in['error']['code']

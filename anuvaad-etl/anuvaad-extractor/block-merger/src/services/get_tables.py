@@ -4,10 +4,11 @@ from src.utilities.table.line import  RectRepositories
 from src.services.preprocess import mask_image
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
-import os
-from pathlib import Path
+#import os
+#from pathlib import Path
 import cv2
 import base64
+import src.utilities.app_context as app_context
 
 def page_num_correction(file_index, num_size=None):
     padding = '0'
@@ -100,50 +101,58 @@ def extract_and_delete_region(page_df, table_df):
     return page_df, table_df
 
 
-def get_text_table_line_df(pages,working_dir, xml_dfs,img_dfs,job_id):
+def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths):
 
-    #log_info("Service TableExtractor", "TableExtractor service started", None)
+    log_info("TableExtractor service started", app_context.application_context)
     
-    in_dfs    = []
-    table_dfs = []
-    line_dfs  = []
-    bg_dfs     = []
-    for page_index in range(pages):
-        in_df  = xml_dfs[page_index]
-        img_df = img_dfs[page_index]
-        bg_image_path = os.path.join(working_dir, (page_num_correction(page_index , 3) + '.png'))
+    in_dfs      = []
+    table_dfs   = []
+    line_dfs    = []
+    bg_dfs      = []
+
+    for index, _ in enumerate(xml_dfs):
+        in_df           = xml_dfs[index]
+        img_df          = img_dfs[index]
+        bg_image_path   = pdf_bg_img_filepaths[index]
+
         try :
             table_image =  cv2.imread(bg_image_path, 0)
             bg_image    =  cv2.imread(bg_image_path)
             
         except Exception as e :
-            log_error("Service TableExtractor", "Error in loading background html image", job_id, e)
+            log_error("Service TableExtractor Error in loading background html image", app_context.application_context, e)
+            return None, None, None, None
 
-        table_image = mask_image(table_image,img_df,job_id,margin=2,fill=255)
+        table_image = mask_image(table_image, img_df, app_context.application_context, margin=2, fill=255)
 
         try :
             tables = TableRepositories(table_image).response['response']['tables']
         except  Exception as e :
-            log_error("Service TableExtractor", "Error in finding tables", job_id, e)
-        
+             log_error("Service TableExtractor Error in finding tables", app_context.application_context, e)
+             return None, None, None, None
+
         try :
-            Rects = RectRepositories(table_image)
-            lines, _ = Rects.get_tables_and_lines()
+            Rects       = RectRepositories(table_image)
+            lines, _    = Rects.get_tables_and_lines()
             
         except  Exception as e :
-            log_error("Service TableExtractor", "Error in finding lines", job_id, e)
-        
+            log_error("Service TableExtractor Error in finding lines", app_context.application_context, e)
+            return None, None, None, None
+
 
         
-        line_df = get_line_df(lines)
-        tables_df = get_table_df(tables)
-        filtered_in_df, table_df = extract_and_delete_region(in_df, tables_df)
+        line_df                     = get_line_df(lines)
+        tables_df                   = get_table_df(tables)
+        filtered_in_df, table_df    = extract_and_delete_region(in_df, tables_df)
+
+
 
         #mask tables and lines from bg image
-        bg_image  = mask_image(bg_image,table_df,job_id,margin=2,fill=255)
-        bg_image = mask_image(bg_image, line_df, job_id, margin=2, fill=255)
+        bg_image  = mask_image(bg_image,table_df,app_context.application_context,margin=2,fill=255)
+        bg_image = mask_image(bg_image, line_df, app_context.application_context, margin=2, fill=255)
         h,w =   bg_image.shape[0] , bg_image.shape[1]
         bg_binary = base64.b64encode(cv2.imencode('.png', bg_image)[1])#base64.b64encode(bg_image)
+        
 
 
         bg_df = pd.DataFrame([[0, 0, w, h, bg_binary,'IMAGE']],

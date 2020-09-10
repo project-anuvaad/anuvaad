@@ -9,7 +9,7 @@ info:
 
 schemes:
   - https
-basePath: '/anuvaad-etl/anuvaad-extractor/tokeniser'
+basePath: 'https://auth.anuvaad.org/api/v0/merge-blocks-wf'
 
 
 
