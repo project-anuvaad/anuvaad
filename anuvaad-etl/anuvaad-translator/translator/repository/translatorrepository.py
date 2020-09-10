@@ -32,10 +32,24 @@ class TranslatorRepository:
             {"$set": object_in}
         )
 
+    # Updates the object in the mongo collection
+    def delete(self, record_id):
+        col = self.instantiate()
+        col.remove({"recordID": record_id})
+
     # Searches the object into mongo collection
     def search(self, query, exclude):
         col = self.instantiate()
         res = col.find(query, exclude)
+        result = []
+        for record in res:
+            result.append(record)
+        return result
+
+    # Searches the object into mongo collection
+    def find_all(self):
+        col = self.instantiate()
+        res = col.find().sort({"$natural": 1})
         result = []
         for record in res:
             result.append(record)

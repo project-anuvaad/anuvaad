@@ -1,4 +1,5 @@
 import logging
+import time
 
 from utilities.translatorutils import TranslatorUtils
 from kafkawrapper.translatorproducer import Producer
@@ -21,21 +22,19 @@ class WFMService:
     # Service method to begin translation for document translation flow.
     def start_file_translation(self, translate_wf_input):
         translate_wf_input["taskID"] = utils.generate_task_id()
+        translate_wf_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
         log_info("File Translation initiated....", translate_wf_input)
         for file in translate_wf_input["input"]["files"]:
             try:
                 dumped = self.dump_file_to_db(file["path"], translate_wf_input)
                 if not dumped:
-                    post_error_wf("CONTENT_DUMP_FAILED", "Error while dumping file content to DB", translate_wf_input,
-                                  None)
+                    return post_error_wf("CONTENT_DUMP_FAILED", "Error while dumping file content to DB", translate_wf_input, None)
                 pushed = self.push_sentences_to_nmt(file["path"], translate_wf_input)
                 if not pushed:
-                    post_error_wf("BATCH_PUSH_FAILED", "Error while pushing batched to nmt", translate_wf_input,
-                                  None)
+                    return post_error_wf("BATCH_PUSH_FAILED", "Error while pushing batches to nmt", translate_wf_input, None)
             except Exception as e:
-                log_exception("Exception while translating the files: " + str(e), translate_wf_input, e)
-                post_error_wf("FILE_TRANSLATION_FAILED", "Exception while translating the file: " + str(e),
-                              translate_wf_input, e)
+                log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
+                return post_error_wf("NMT_PUSH_FAILED", "Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
 
     # Method to download and dump the content of the file present in the input
     def dump_file_to_db(self, file_id, translate_wf_input):
@@ -48,14 +47,9 @@ class WFMService:
             else:
                 log_info("Dumping content to translator DB......", translate_wf_input)
                 db_in = {
-                    "jobID": translate_wf_input["jobID"],
-                    "taskID": translate_wf_input["taskID"],
-                    "recordID": str(translate_wf_input["jobID"]) + "|" + str(file_id),
-                    "transInput": translate_wf_input,
-                    "total": len(data["result"]),
-                    "translated": 0,
-                    "skipped":0,
-                    "data": data
+                    "jobID": translate_wf_input["jobID"], "taskID": translate_wf_input["taskID"],
+                    "recordID": str(translate_wf_input["jobID"]) + "|" + str(file_id), "transInput": translate_wf_input,
+                    "totalSentences": 0, "translatedSentences": 0, "skippedSentences": 0, "data": data
                 }
                 repo.create(db_in)
                 return True
@@ -70,16 +64,12 @@ class WFMService:
             record_id = str(translate_wf_input["jobID"]) + "|" + file_id
             content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
             if not content_from_db:
-                log_error("CONTENT_FETCH_FAILED",
-                          "File content from DB couldn't be fetched, jobID: " + str(translate_wf_input["jobID"]),
-                          translate_wf_input, None)
+                log_error("CONTENT_FETCH_FAILED", "File content from DB couldn't be fetched, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
                 return None
             content_from_db = content_from_db[0]
             data = content_from_db["data"]
             if not data:
-                log_error("NO_DATA_DB", "No data for file, jobID: " + str(translate_wf_input["jobID"]),
-                          translate_wf_input,
-                          None)
+                log_error("NO_DATA_DB", "No data for file, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
                 return None
             pages = data["result"]
             total_sentences = 0
@@ -92,13 +82,15 @@ class WFMService:
                     batch = batches[batch_no]
                     nmt_in = {
                         "url_end_point": translate_wf_input["input"]["model"]["url_end_point"],
-                        "record_id": record_id,
-                        "message": batch
+                        "record_id": record_id, "message": batch
                     }
                     producer.produce(nmt_in, anu_nmt_input_topic)
                     total_sentences += len(batch)
-                    log_info("PAGE NO: " + str(page["page_no"]) + " | BATCH NO: " + str(batch_no) +
-                             " | BATCH SIZE: " + str(len(batch)) + " | OVERALL SENTENCES: " + str(total_sentences))
+                    log_info("PAGE NO: " + str(page["page_no"]) + " | BATCH NO: " + str(batch_no) + " | BATCH SIZE: " + str(len(batch)) + " | OVERALL SENTENCES: " + str(total_sentences))
+            query = {"recordID": record_id}
+            object_in = {"totalSentences": total_sentences}
+            repo.update(object_in, query)
+            log_info("All sentences sent to NMT, count: " + str(total_sentences), translate_wf_input)
             return True
         except Exception as e:
             log_exception("Exception while pushing sentences to NMT: " + str(e), translate_wf_input, e)
@@ -150,6 +142,7 @@ class WFMService:
     # Method to process the output received from the NMT
     def process_nmt_output(self, nmt_output):
         try:
+            nmt_output = nmt_output["out"]
             record_id = nmt_output["record_id"]
             job_id = str(record_id).split("|")[0]
             file_id = str(record_id).split("|")[1]
@@ -157,14 +150,12 @@ class WFMService:
             log_info("Data received from NMT..", translate_wf_input)
             file = self.get_content_from_db(record_id, None, translate_wf_input)
             if file is None:
-                log_error("There is no file under translation for this job: " +
-                    str(job_id) + " and file: " + str(file_id), translate_wf_input, nmt_output["status"]["errorObj"])
+                log_error("There is no file under translation for this job: " + str(job_id) + " and file: " + str(file_id), translate_wf_input, nmt_output["status"]["errorObj"])
                 return None
             translate_wf_input = file["transInput"]
             if nmt_output["status"]:
                 if nmt_output["status"]["statusCode"] != 200:
-                    log_error("There was an error at NMT while translating", translate_wf_input,
-                              nmt_output["status"]["errorObj"])
+                    log_error("There was an error at NMT while translating", translate_wf_input, nmt_output["status"]["errorObj"])
                     return None
             if nmt_output["response_body"]:
                 skip_count = 0
@@ -178,29 +169,23 @@ class WFMService:
                             continue
                         node = str(node_id).split("|")
                         job_id, file_id, page_no, block_id = node[0], node[1], node[2], node[3]
-                        record_id = str(job_id) + "|" + str(file_id)
                         query = {
-                            "recordID": record_id,
-                            "data.result.$.page_no": page_no,
-                            "data.page_no.$.block_id": block_id,
-                            "data.page_no.$.block_id.$.tokenised_sentences.$.sentence_id": response["s_id"]
+                            "recordID": record_id, "data.result.$.page_no": page_no,
+                            "data.page_no.$.block_id": block_id, "data.page_no.$.block_id.$.tokenised_sentences.$.sentence_id": response["s_id"]
                         }
-                        repo.update(response, query)
+                        object_in = {"data.page_no.$.block_id.$.tokenised_sentences.$": response}
+                        repo.update(object_in, query)
                         trans_count += 1
                     except Exception as e:
-                        log_exception("Exception saving translations: " + str(e), translate_wf_input, e)
+                        log_exception("Exception while saving translations: " + str(e), translate_wf_input, e)
                         skip_count += 1
                         continue
                 query = {"recordID": record_id}
-                object_in = {"skipped": skip_count, "translated": trans_count}
+                object_in = {"skippedSentences": skip_count, "translatedSentences": trans_count}
                 repo.update(object_in, query)
+                log_info("Batch processed, translated: " + str(trans_count) + "and skipped: "+str(skip_count), translate_wf_input)
         except Exception as e:
             log_exception("Exception while processing NMT output: " + str(e), None, e)
-            post_error_wf("NMT_OP_PROCESS_ERROR", "Exception while processing NMT output: " + str(e),
-                          None, e)
-
-
-
 
     # Method to search data from db
     def get_content_from_db(self, record_id, page_no, translate_wf_input):
