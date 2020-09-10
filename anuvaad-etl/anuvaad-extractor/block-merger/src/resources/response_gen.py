@@ -60,6 +60,7 @@ class Response(object):
                         post_error_wf(bm_response.code, bm_response.message, app_context.application_context, None)
                         return None
                 else:
+                    log_info('flushing queue data, not handling file {}'.format(input_files), app_context.application_context)
                     post_error_wf(400, 'flushing queue data, not handling file {}'.format(input_files), app_context.application_context, None)
                     return None
 

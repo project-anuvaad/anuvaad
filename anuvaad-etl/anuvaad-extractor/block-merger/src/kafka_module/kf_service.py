@@ -48,7 +48,11 @@ def process_block_merger_kf():
         log_info("process_block_merger_kf : trying to receive value from consumer ", None)
         
         for msg in consumer:
-            data            = msg.value
+            if Consumer.get_json_data(msg.value) == None:
+                log_info('process_block_merger_kf - received invalid data {}'.format(msg.value), None)
+                continue
+
+            data            = Consumer.get_json_data(msg.value)
             task_id         = str("BM-" + str(time.time()).replace('.', ''))
             task_starttime  = str(time.time()).replace('.', '')
 
