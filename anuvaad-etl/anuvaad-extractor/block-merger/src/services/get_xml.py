@@ -179,7 +179,7 @@ def get_pdfs(page_dfs):
 
     end_time         = time.time()
     elapsed_time     = end_time - start_time
-    log_info('Processing of get_hdfs completed in {}/{}, average per page {}'.format(elapsed_time, len(p_dfs), (elapsed_time/len(p_dfs))), app_context.application_context)
+    log_info('Processing of get_pdfs completed in {}/{}, average per page {}'.format(elapsed_time, len(p_dfs), (elapsed_time/len(p_dfs))), app_context.application_context)
     return p_dfs
 
 
@@ -197,29 +197,33 @@ def drop_cols(df,drop_col=None ):
             df = df.drop(columns=[col])
     return df
 
-def change_font(font_name):
-    if '+' in font_name:
-        font = font_name.split('+')[1]
+def change_font(font_name,lang):
+    if lang!='en':
+        font = config.FONT_CONFIG[lang]
+        return font
     else:
-        font = font_name
-    return font
+        if '+' in font_name:
+            font = font_name.split('+')[1]
+        else:
+            font = font_name
+        return font
 
-def page_font_update(page_df):
+def page_font_update(page_df,lang):
     
     page_df     = page_df.where(page_df.notnull(), None)
     for index, row in page_df.iterrows():
-        page_df.at[index,'font_family'] = change_font(row["font_family"])
+        page_df.at[index,'font_family'] = change_font(row["font_family"],lang)
         if 'children' in page_df.columns:
             if row['children'] == None:
                 pass
             else:
                 sub_block_children   =  pd.read_json(row['children'])
-                df = page_font_update(sub_block_children)
+                df = page_font_update(sub_block_children,lang)
                 page_df.at[index,'children'] = df.to_json()
                 
     return page_df
 
-def update_font(p_dfs):
+def update_font(p_dfs, lang):
     start_time = time.time()
     pages      = len(p_dfs)
     new_dfs    = []
@@ -228,7 +232,7 @@ def update_font(p_dfs):
             page_df     = p_dfs[page_index]
             page_lis    = []
             child_lis   = []
-            df = page_font_update(page_df)
+            df = page_font_update(page_df,lang)
             new_dfs.append(df)
     except Exception as e :
         log_error('Error in updating fonts', app_context.application_context, e)
