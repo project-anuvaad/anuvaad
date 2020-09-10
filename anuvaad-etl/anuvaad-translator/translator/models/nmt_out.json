@@ -1,23 +1,25 @@
 {
-  "status": {
-    "ok": "true",
-    "statusCode": 200,
-    "why": "success msg/reason for fail",
-    "erroObj": {
-      "code": "ERROR CODE",
-      "message": "ERROR MSG"
-    }
-  },
-  "response_body": [
-    {
-      "src" : "Sentence One",
-      "tgt": "Sentence One (Translated)",
-      "tagged_src": "",
-      "tagged_tgt": "",
-      "pred_score": 100,
-      "input_subwords": "sentence,one,translation,abc,etc",
-      "s_id": "sentence_id",
-      "n_id": "job-ID|file-ID|page-No|block-ID"
-    }
-  ]
+  "out": {
+    "status": {
+      "ok": "true",
+      "statusCode": 200,
+      "why": "success msg/reason for fail",
+      "erroObj": {
+        "code": "ERROR CODE",
+        "message": "ERROR MSG"
+      }
+    },
+    "response_body": [
+      {
+        "src": "Sentence One",
+        "tgt": "Sentence One (Translated)",
+        "tagged_src": "",
+        "tagged_tgt": "",
+        "pred_score": 100,
+        "input_subwords": "sentence,one,translation,abc,etc",
+        "s_id": "sentence_id",
+        "n_id": "job-ID|file-ID|page-No|block-ID"
+      }
+    ]
+  }
 }

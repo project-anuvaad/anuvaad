@@ -8,10 +8,10 @@ from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
-from configs.translatorconfig import anu_translator_input_topic
+from configs.translatorconfig import anu_nmt_output_topic
 from configs.translatorconfig import anu_translator_consumer_grp
 from configs.translatorconfig import kafka_bootstrap_server_host
-from configs.translatorconfig import translator_cons_no_of_partitions
+from configs.translatorconfig import translator_nmt_cons_no_of_partitions
 
 
 log = logging.getLogger('file')
@@ -33,16 +33,16 @@ def instantiate(topics):
 def get_topic_paritions(topics):
     topic_paritions = []
     for topic in topics:
-        for partition in range(0, translator_cons_no_of_partitions):
+        for partition in range(0, translator_nmt_cons_no_of_partitions):
             tp = TopicPartition(topic, partition)
             topic_paritions.append(tp)
     return topic_paritions
 
 
 # Method to read and process the requests from the kafka queue
-def consume():
+def consume_nmt():
     try:
-        topics = [anu_translator_input_topic]
+        topics = [anu_nmt_output_topic]
         consumer = instantiate(topics)
         service = TranslatorService()
         thread = threading.current_thread().name
@@ -55,10 +55,10 @@ def consume():
                         log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
                         service.start_file_translation(data)
                 except Exception as e:
-                    log_exception("Exception in translator while consuming: " + str(e), None, e)
+                    log_exception("Exception in translator nmt while consuming: " + str(e), None, e)
                     post_error("TRANSLATOR_CONSUMER_ERROR", "Exception in translator while consuming: " + str(e), None)
     except Exception as e:
-        log_exception("Exception while starting the translator consumer: " + str(e), None, e)
+        log_exception("Exception while starting the translator nmt consumer: " + str(e), None, e)
         post_error("TRANSLATOR_CONSUMER_EXC", "Exception while starting translator consumer: " + str(e), None)
 
 

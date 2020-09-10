@@ -25,11 +25,11 @@ class TranslatorRepository:
         col.insert_one(object_in)
 
     # Updates the object in the mongo collection
-    def update(self, object_in, job_id):
+    def update(self, object_in, criteria):
         col = self.instantiate()
-        col.replace_one(
-            {"jobID": job_id},
-            object_in
+        col.update(
+            criteria,
+            {"$set": object_in}
         )
 
     # Searches the object into mongo collection

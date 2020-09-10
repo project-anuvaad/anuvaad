@@ -23,6 +23,8 @@ anu_translator_output_topic = 'anuvaad-dp-tools-translator-output-v1'
 anu_translator_consumer_grp = os.environ.get('ANUVAAD_ETL_TRANSLATOR_CONSUMER_GRP', 'anuvaad-etl-translator-consumer-group')
 translator_cons_no_of_instances = 1
 translator_cons_no_of_partitions = 1
+translator_nmt_cons_no_of_instances = 1
+translator_nmt_cons_no_of_partitions = 1
 
 
 #datastore-configs
