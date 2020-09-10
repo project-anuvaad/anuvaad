@@ -24,7 +24,9 @@ class ContentHandler(Resource):
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
             return res.getresjson(), 400
         results = body['pages']
-        file_locale = body['file_locale']
+        file_locale  = ''
+        if 'file_locale' in body:
+            file_locale = body['file_locale']
         process_identifier = body['job_id']
         obj_to_be_saved = []
         for result in results:
