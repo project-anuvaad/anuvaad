@@ -39,12 +39,13 @@ class Response(object):
             output_file_response = list()
             for i, item in enumerate(input_files):
                 input_filename, in_file_type, in_locale     = file_ops.accessing_files(item)
-                self.json_data['task_id']                   = task_id
+                self.json_data['taskID']                   = task_id
                 app_context.application_context             = self.json_data
                 
                 if debug_flush == False:
                     bm_response = DocumentStructure(app_context=app_context, file_name=input_filename, lang=in_locale)
                     if bm_response['code'] == 200:
+                        
                         output_filename_json = file_ops.writing_json_file(i, bm_response['rsp'], self.DOWNLOAD_FOLDER)
                         file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
                         output_file_response.append(file_res)
