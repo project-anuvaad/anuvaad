@@ -53,11 +53,13 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_h
 
     header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
     text_merger = ChildTextUnify()
-    if lang  != 'en':
-        xml_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, xml_dfs, lang)
     
     in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths)
-    h_dfs                              = get_xml.get_hdfs(in_dfs,header_region,footer_region)
+    h_dfs = get_xml.get_hdfs(in_dfs, header_region, footer_region)
+    if lang != 'en':
+        h_dfs = tesseract_ocr(pdf_image_paths, page_width, page_height, h_dfs, lang)
+        for h_df in h_dfs:
+            h_df['children'] = None
     v_dfs                              = get_xml.get_vdfs(h_dfs)
     p_dfs                              = get_xml.get_pdfs(v_dfs)
     p_dfs , line_dfs                   = get_underline(p_dfs,line_dfs,app_context.application_context)
