@@ -25,7 +25,7 @@ class Response(object):
         self.json_data          = json_data
         self.DOWNLOAD_FOLDER    = DOWNLOAD_FOLDER
 
-    def workflow_response(self, task_id, task_starttime):
+    def workflow_response(self, task_id, task_starttime, debug_flush=False):
 
         app_context.init()
         app_context.application_context = {}
@@ -42,22 +42,26 @@ class Response(object):
                 self.json_data['task_id']                   = task_id
                 app_context.application_context             = self.json_data
                 
-                bm_response = DocumentStructure(app_context=app_context, file_name=input_filename, lang=in_locale)
-                if bm_response['code'] == 200:
-                    output_filename_json = file_ops.writing_json_file(i, bm_response['rsp'], self.DOWNLOAD_FOLDER)
-                    file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
-                    output_file_response.append(file_res)
-                    task_endtime = str(time.time()).replace('.', '')
-                    response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
-                    response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
-                    response = copy.deepcopy(response_success)
-                    log_info("successfully generated response for workflow", app_context.application_context)
-                    
-                    return response
-
+                if debug_flush == False:
+                    bm_response = DocumentStructure(app_context=app_context, file_name=input_filename, lang=in_locale)
+                    if bm_response['code'] == 200:
+                        output_filename_json = file_ops.writing_json_file(i, bm_response['rsp'], self.DOWNLOAD_FOLDER)
+                        file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
+                        output_file_response.append(file_res)
+                        task_endtime = str(time.time()).replace('.', '')
+                        response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
+                        response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
+                        response = copy.deepcopy(response_success)
+                        log_info("successfully generated response for workflow", app_context.application_context)
+                        
+                        return response
+                    else:
+                        post_error_wf(bm_response.code, bm_response.message, app_context.application_context, None)
+                        return None
                 else:
-                    post_error_wf(bm_response.code, bm_response.message, app_context, None)
+                    post_error_wf(400, 'flushing queue data, not handling file {}'.format(input_files), app_context.application_context, None)
                     return None
+
             
         except WorkflowkeyError as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)

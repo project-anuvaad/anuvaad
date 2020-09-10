@@ -10,6 +10,7 @@ from src.errors.errors_exception import KafkaProducerError
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import time
+import os
 
 import threading
 import config
@@ -56,12 +57,13 @@ def process_block_merger_kf():
 
             response_gen    = Response(data, DOWNLOAD_FOLDER)
 
-            file_value_response = response_gen.workflow_response(task_id, task_starttime)
-            if "errorID" not in file_value_response.keys():
-                push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id)
-                log_info("process_block_merger_kf : response send to topic %s"%(config.output_topic), None)
-            else:
-                log_info("process_block_merger_kf : error send to error handler", jobid)
+            file_value_response = response_gen.workflow_response(task_id, task_starttime, os.environ.get('DEBUG_FLUSH', False))
+            if file_value_response != None:
+                if "errorID" not in file_value_response.keys():
+                    push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id)
+                    log_info("process_block_merger_kf : response send to topic %s"%(config.output_topic), None)
+                else:
+                    log_info("process_block_merger_kf : error send to error handler", jobid)
     
     except KafkaConsumerError as e:
         response_custom = {}
