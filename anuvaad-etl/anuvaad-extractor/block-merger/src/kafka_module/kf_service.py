@@ -61,7 +61,7 @@ def process_block_merger_kf():
 
             response_gen    = Response(data, DOWNLOAD_FOLDER)
 
-            file_value_response = response_gen.workflow_response(task_id, task_starttime, os.environ.get('DEBUG_FLUSH', False))
+            file_value_response = response_gen.workflow_response(task_id, task_starttime, False)
             if file_value_response != None:
                 if "errorID" not in file_value_response.keys():
                     push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id)
