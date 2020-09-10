@@ -22,12 +22,14 @@ file_ops = FileOperation()
 
 class Response(object):
     def __init__(self, json_data, DOWNLOAD_FOLDER):
-        app_context.init()
-        app_context.application_context = json_data
         self.json_data          = json_data
         self.DOWNLOAD_FOLDER    = DOWNLOAD_FOLDER
 
     def workflow_response(self, task_id, task_starttime):
+
+        app_context.init()
+        
+
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
         log_info("workflow_response started the response generation", app_context.application_context)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
@@ -36,9 +38,9 @@ class Response(object):
             error_validator.inputfile_list_error(input_files)
             output_file_response = list()
             for i, item in enumerate(input_files):
-                input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
-                
-                # app_context.application_context['task_id']       = task_id
+                input_filename, in_file_type, in_locale     = file_ops.accessing_files(item)
+                self.json_data['task_id']                   = task_id
+                app_context.application_context             = self.json_data
                 
                 bm_response = DocumentStructure(app_context=app_context, file_name=input_filename, lang=in_locale)
                 if bm_response['code'] == 200:
