@@ -3,30 +3,23 @@ from json import dumps
 from kafka import KafkaProducer
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
-from src.utilities.model_response import Status
-from src.utilities.model_response import CustomResponse
-from src.errors.errors_exception import KafkaProducerError
-import config
-
 
 # kafka producer class
 class Producer(object):
-    def __init__(self):
-        pass
+    def __init__(self, server_address):
+        self.server_address = server_address
 
     # publishing massage with kafka producer
     def producer_fn(self):
-        producer = KafkaProducer(bootstrap_servers = [config.bootstrap_server], value_serializer = lambda x:dumps(x).encode('utf-8'))
-        return producer
-
-    # push data to output queue
-    def push_data_to_queue(self, topic_name, push_data, jobid, task_id):
-        producer = self.producer_fn()
         try:
-            producer.send(topic_name, value = push_data)
-            producer.flush()
-            log_info("push_data_to_queue", "successfully pushed data to output queue", None)
-        except:
-            response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-            log_exception("push_data_to queue", "Response can't be pushed to queue %s"%(topic_name), jobid, None)
-            raise KafkaProducerError(response_custom.status_code, "data Not pushed to queue: %s"%(topic_name))
+            producer = KafkaProducer(bootstrap_servers = [self.server_address], value_serializer = lambda x:dumps(x).encode('utf-8'))
+            log_info("producer_fn : producer returned succesfully", None)
+            return producer
+        except Exception as e:
+            log_exception("producer_fn : error occured in creating producer", None, e)
+
+    def push_data_to_queue(self, topic_name, push_data):
+        producer = self.producer_fn()
+        producer.send(topic_name, value = push_data)
+        producer.flush()
+        log_info("push_data_to_queue : successfully pushed data to output queue", None)

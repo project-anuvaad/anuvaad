@@ -47,8 +47,8 @@ class TableRepositories:
                                           cv2.THRESH_BINARY, self.BLOCK_SIZE, self.THRESHOLD_CONSTANT)
         self.filtered = filtered
         # Finding srtuctre elements (horizontal and vertical lines)
-        horizontal = filtered.copy ()
-        vertical = filtered.copy ()
+        horizontal = filtered.copy()
+        vertical = filtered.copy()
 
         horizontal_size = int (horizontal.shape [1] / self.SCALE)
         horizontal_structure = cv2.getStructuringElement (cv2.MORPH_RECT, (horizontal_size, 1))

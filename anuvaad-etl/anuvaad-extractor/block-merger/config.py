@@ -11,12 +11,14 @@ BASE_DIR      = 'upload'
 ENABLE_CORS = False
 
 # kafka
-input_topic = 'anuvaad-dp-tools-block-merger-input-v1'
-kf_local_server = 'localhost:9092'
-output_topic = 'anuvaad-dp-tools-block-merger-output-v1'
-kafka_ip_host = 'KAFKA_IP_HOST'
-bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
-group_id = 'anuvaad-etl-bm-consumer-group'
+input_topic         = 'anuvaad-dp-tools-block-merger-input-v2'
+kf_local_server     = 'localhost:9092'
+output_topic        = 'anuvaad-dp-tools-block-merger-output-v2'
+kafka_ip_host       = 'KAFKA_IP_HOST'
+bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
+TASK_STAT           = 'BLOCK-MERGER'
+CONSUMER_GROUP      = 'anuvaad-etl-bm-consumer-group'
+
 #folders and file path
 download_folder = 'upload'
 

@@ -1,1 +1,4 @@
 */**/sample-data
+*/**/.ipynb_checkpoints/*
+*.log
+.idea

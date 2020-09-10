@@ -24,6 +24,9 @@ class ContentHandler(Resource):
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
             return res.getresjson(), 400
         results = body['pages']
+        file_locale  = ''
+        if 'file_locale' in body:
+            file_locale = body['file_locale']
         process_identifier = body['job_id']
         obj_to_be_saved = []
         for result in results:
@@ -34,7 +37,7 @@ class ContentHandler(Resource):
             for block_type in BLOCK_TYPES:
                 if result[block_type['key']] is not None:
                     for data in result[block_type['key']]:
-                        obj_to_be_saved = make_obj(process_identifier, page_data, data, block_type['key'], obj_to_be_saved, userid)
+                        obj_to_be_saved = make_obj(process_identifier, page_data, data, block_type['key'], obj_to_be_saved, userid, file_locale)
         file_content_instances = [FileContent(**data) for data in obj_to_be_saved]
         FileContent.objects.insert(file_content_instances)
         res = CustomResponse(Status.SUCCESS.value, None)
@@ -59,7 +62,7 @@ class UpdateContentHandler(Resource):
                 file_content = FileContent.objects(block_identifier=block['block_identifier'])
                 if len(file_content) == 0:
                     obj_to_be_saved = []
-                    obj_to_be_saved = make_obj(block['job_id'], block['page_info'], block, block['data_type'], obj_to_be_saved, userid)
+                    obj_to_be_saved = make_obj(block['job_id'], block['page_info'], block, block['data_type'], obj_to_be_saved, userid, block['file_locale'])
                     file_content_instances = [FileContent(**data) for data in obj_to_be_saved]
                     FileContent.objects.insert(file_content_instances)
                 else:
@@ -128,12 +131,13 @@ class FetchContentHandler(Resource):
     
         
 
-def make_obj(process_identifier, page_data, data, data_type, obj_to_be_saved, userid):
+def make_obj(process_identifier, page_data, data, data_type, obj_to_be_saved, userid, file_locale):
         obj = {}
         data['block_identifier'] = str(uuid.uuid4())+process_identifier
         data['job_id'] = process_identifier
         data['data_type'] = data_type
         data['page_info'] = page_data
+        data['file_locale']  = file_locale
         obj['page_no'] = page_data['page_no']
         obj['data_type'] = data_type
         obj['created_on'] = datetime.now()

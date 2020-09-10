@@ -1,9 +1,10 @@
 import logging
 import pandas as pd
-#from anuvaad_auditor.loghandler import log_info
+import config
+import time
+import src.utilities.app_context as app_context
+from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
-
-log = logging.getLogger('file')
 
 class ChildTextUnify(object):
     def __init__(self):
@@ -54,19 +55,24 @@ class ChildTextUnify(object):
             return text
 
     def get_parent_block(self,data,drop_lis):
-        
+        new_df = data.copy(deep=True)
+        text_lis = []
         for block_index in range(len(data)):
             df   =  data.iloc[block_index]
             df   =  df.where(df.notnull(), None)
             text =  self.get_children_text_block(df, drop_lis)
-            data.iloc[block_index]['text'] = str(text)
+            text_lis.append(str(text))
+            #new_df.iloc[block_index]['text'] = str(text)
+        new_df['text'] = text_lis
 
-        return data
+        return new_df
 
-    def unify_child_text_blocks(self,pages, p_dfs, drop_lis,input_json):
-        #log.info("Child Text Merging started ===>")
-        #log_info("Child Text Merging started ===>")
-        merge_dfs = []
+    def unify_child_text_blocks(self, p_dfs):
+        
+        start_time = time.time()
+        merge_dfs  = []
+        drop_lis   = config.DROP_TEXT
+        pages      = len(p_dfs)
         try :
             for page_index in range(pages):
                 p_df = p_dfs[page_index]
@@ -74,9 +80,11 @@ class ChildTextUnify(object):
                 merge_df = self.get_parent_block(p_df,drop_lis)
                 merge_dfs.append(merge_df)
         except  Exception as e :
-            log_error("Error in merging child text to partent text", input_json, e)
-        #log_info("Child Text Merging completed")
-        #log.info("Child Text Merging completed")
-
+            log_error('Error in merging child text to partent text', app_context.application_context, e)
+            return None
+        
+        end_time         = time.time()
+        elapsed_time     = end_time - start_time
+        log_info('Processing of unify_child_text_blocks completed in {}/{}, average per page {}'.format(elapsed_time, len(p_dfs), (elapsed_time/len(p_dfs))), app_context.application_context)
         return merge_dfs
 

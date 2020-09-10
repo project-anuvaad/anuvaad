@@ -2,6 +2,7 @@ from repositories.eng_sentence_tokeniser import AnuvaadEngTokenizer
 from repositories.hin_sentence_tokeniser import AnuvaadHinTokenizer
 from repositories.kannada_sentence_tokeniser import AnuvaadKanTokenizer
 from repositories.marathi_sentence_tokeniser import AnuvaadMarTokenizer
+from repositories.tamil_sentence_tokeniser import AnuvaadTamTokenizer
 from errors.errors_exception import ServiceError
 from utilities.utils import FileOperation
 from anuvaad_auditor.loghandler import log_info
@@ -37,6 +38,10 @@ class Tokenisation(object):
                 for paragraph in paragraph_data:
                     tokenised_sentence_data = AnuvaadMarTokenizer().tokenize(paragraph)
                     tokenised_text.extend(tokenised_sentence_data)
+            elif text_locale == 'ta':
+                for paragraph in paragraph_data:
+                    tokenised_sentence_data = AnuvaadTamTokenizer().tokenize(paragraph)
+                    tokenised_text.extend(tokenised_sentence_data)
             return tokenised_text
         except:
             log_exception("tokenisation_core : Error occured during tokenising the paragraphs", self.input_json_data, None)
@@ -67,7 +72,7 @@ class Tokenisation(object):
             for block_id, item in enumerate(blocks):
                 text_data = item['text']
                 tokenised_text = self.tokenisation_core([text_data], in_locale)
-                item['tokenized_sentences'] = [self.making_object_for_tokenised_text(text, in_locale, i, block_id, page_id) for i, text in enumerate(tokenised_text)]
+                item['tokenized_sentences'] = [self.making_object_for_tokenised_text(text, i, block_id, page_id) for i, text in enumerate(tokenised_text)]
             return input_json_data_pagewise
         except:
             log_error("Keys in block merger response changed or tokenisation went wrong.", self.input_json_data, None) 
@@ -81,17 +86,16 @@ class Tokenisation(object):
         log_info("Service : Json file write done!", self.input_json_data)
         return output_json_filename
 
-    def making_object_for_tokenised_text(self, text, locale, index, block_id, page_id):
+    def making_object_for_tokenised_text(self, text, index, block_id, page_id):
         object_text = {
-            "src" : text,
-            "src_locale" : locale,
+            "src_text" : text,
             "sentence_id" : "{0}_{1}_{2}".format(page_id, block_id, index)
         }
         return object_text
 
     def sending_data_to_content_handler(self, job_id, user_id, tokenised_block_json):
         try:
-            json_data = {"job_id" : job_id, "pages" : tokenised_block_json['result']}
+            json_data = {"job_id" : job_id, "pages" : tokenised_block_json['result'], "file_locale" : tokenised_block_json['file_locale']}
             headers = {"userid": user_id ,"Content-Type": "application/json"}
             log_info("Intiating request to save data", self.input_json_data)
             response = requests.post(config.internal_gateway_url_save_data, json = json_data, headers = headers)
