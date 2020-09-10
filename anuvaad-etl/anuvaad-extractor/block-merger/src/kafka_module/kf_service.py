@@ -45,15 +45,14 @@ def process_block_merger_kf():
     try:
         consumer = consumer_validator()
         log_info("process_block_merger_kf : trying to receive value from consumer ", None)
-
+        
         for msg in consumer:
             data            = msg.value
             task_id         = str("BM-" + str(time.time()).replace('.', ''))
             task_starttime  = str(time.time()).replace('.', '')
 
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
-            log_info("process_block_merger_kf kafka request arrived ", jobid)
-            log_info('process_block_merger_kf : consumer job tail length {}'.format(len(consumer)), jobid)
+            log_info("process_block_merger_kf kafka request arrived "+str(jobid), data)
 
             response_gen    = Response(data, DOWNLOAD_FOLDER)
 

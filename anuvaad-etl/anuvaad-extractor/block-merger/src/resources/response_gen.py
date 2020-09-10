@@ -28,7 +28,7 @@ class Response(object):
     def workflow_response(self, task_id, task_starttime):
 
         app_context.init()
-        
+        app_context.application_context = {}
 
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
         log_info("workflow_response started the response generation", app_context.application_context)
