@@ -27,6 +27,7 @@ class Status(enum.Enum):
     ERROR_WEAK_PASSWORD = {'ok': False, 'http': {'status': 400}, 'why': 'weak password, at least provide 6 characters '}
     ERROR_GATEWAY = {'ok': False, 'http': {'status': 400}, 'why': 'gateway error'}
     ERROR_UNSUPPORTED_FILE = {'ok': False, 'http': {'status': 400}, 'why': 'unsupported file'}
+    ERROR_FILE_SIZE = {'ok': False, 'http': {'status': 400}, 'why': 'file size too big'}
     ERROR_NOTFOUND_FILE = {'ok': False, 'http': {'status': 400}, 'why': 'file not found'}
     ERROR_WRONG_PASSWORD = {'ok': False, 'http': {'status': 400}, 'why': 'wrong password '}
     USER_ALREADY_EXISTS = {'ok': False, 'http': {'status': 400}, 'why': 'username already exists '}

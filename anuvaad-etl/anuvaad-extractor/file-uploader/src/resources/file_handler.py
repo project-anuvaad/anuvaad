@@ -46,6 +46,11 @@ class FileUploader(Resource):
         fileallowed = False
         filename = str(uuid.uuid4())+file_extension
         filepath = os.path.join(config.download_folder, filename)
+        file_stat = os.stat(filepath)
+        file_size = file_stat.st_size/(1024*1024)
+        if file_size  > 10:
+            res = CustomResponse(Status.ERROR_FILE_SIZE.value, None)
+            return res.getresjson(), 400
         for allowed_file_extension in ALLOWED_FILE_EXTENSIONS:
             if file_extension.endswith(allowed_file_extension):
                 fileallowed = True
