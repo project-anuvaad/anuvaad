@@ -14,6 +14,7 @@ import os
 
 import threading, queue
 import config
+from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 
 blockMergerQueue = queue.Queue()
 
@@ -46,7 +47,7 @@ def process_block_merger_kf():
     # instatiation of consumer for respective topic
     try:
         consumer = consumer_validator()
-        log_info("process_block_merger_kf : trying to receive value from consumer ", None)
+        log_info("process_block_merger_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
         
         for msg in consumer:
             if Consumer.get_json_data(msg.value) == None:
@@ -76,6 +77,7 @@ def block_merger_request_worker():
     file_ops            = FileOperation()
     DOWNLOAD_FOLDER     = file_ops.create_file_download_dir(config.download_folder)
     producer_tok        = Producer(config.bootstrap_server)
+    log_info("block_merger_request_worker : starting thread ", LOG_WITHOUT_CONTEXT)
 
     while True:
         data            = blockMergerQueue.get(block=True)
