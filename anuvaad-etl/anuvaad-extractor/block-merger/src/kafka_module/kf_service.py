@@ -87,16 +87,19 @@ def block_merger_request_worker():
         
         log_info("block_merger_request_worker processing -- received message "+str(jobid), data)
 
-        response_gen    = Response(data, DOWNLOAD_FOLDER)
+        try:
+            response_gen    = Response(data, DOWNLOAD_FOLDER)
 
-        file_value_response = response_gen.workflow_response(task_id, task_starttime, False)
-        if file_value_response != None:
-            if "errorID" not in file_value_response.keys():
-                push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id)
-                log_info("process_block_merger_kf : response send to topic %s"%(config.output_topic), None)
-            else:
-                log_info("process_block_merger_kf : error send to error handler", jobid)
+            file_value_response = response_gen.workflow_response(task_id, task_starttime, False)
+            if file_value_response != None:
+                if "errorID" not in file_value_response.keys():
+                    push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id)
+                    log_info("block_merger_request_worker : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
+                else:
+                    log_info("block_merger_request_worker : error send to error handler", jobid)
 
-        log_info('block_merger_request_worker - request in internal queue {}'.format(blockMergerQueue.qsize()), jobid)
+            log_info('block_merger_request_worker - request in internal queue {}'.format(blockMergerQueue.qsize()), jobid)
 
-        blockMergerQueue.task_done()
+            blockMergerQueue.task_done()
+        except Exception as e:
+            log_info("block_merger_request_worker : error send to error handler {}",format(jobid), LOG_WITHOUT_CONTEXT, e)
