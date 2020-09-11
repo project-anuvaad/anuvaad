@@ -45,18 +45,19 @@ class FileUploader(Resource):
         file_real_name, file_extension = os.path.splitext(f.filename)
         fileallowed = False
         filename = str(uuid.uuid4())+file_extension
-        f.seek(0, os.SEEK_END)
-        file_size = f.tell()/(1024*1024)
         filepath = os.path.join(config.download_folder, filename)
-        if file_size  > 20:
-            res = CustomResponse(Status.ERROR_FILE_SIZE.value, None)
-            return res.getresjson(), 400
         for allowed_file_extension in ALLOWED_FILE_EXTENSIONS:
             if file_extension.endswith(allowed_file_extension):
                 fileallowed = True
                 break
         if fileallowed:
             f.save(filepath)
+            file_size = os.stat(filepath).st_size
+            file_size = file_size/(1024*1024)
+            if file_size  > 20:
+                os.remove(filepath)
+                res = CustomResponse(Status.ERROR_FILE_SIZE.value, None)
+                return res.getresjson(), 400
             userfile = UserFiles(created_by=request.headers.get('ad-userid'),
                                             filename=filename,file_real_name=file_real_name+file_extension, created_on=datetime.now())
             userfile.save()
