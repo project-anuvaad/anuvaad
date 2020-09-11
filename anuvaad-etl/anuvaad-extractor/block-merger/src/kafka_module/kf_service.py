@@ -16,7 +16,7 @@ import threading, queue
 import config
 
 blockMergerQueue    = queue.Queue()
-blockMergerOCRQueue = queue.Queue()
+# blockMergerOCRQueue = queue.Queue()
 
 def consumer_validator():
     try:
@@ -63,7 +63,7 @@ def process_block_merger_kf():
             blockMergerQueue.put(data)
 
             log_info('process_block_merger_kf - request in internal queue {}'.format(blockMergerQueue.qsize()), data)
-            log_info('process_block_merger_kf - request in internal OCR queue {}'.format(blockMergerOCRQueue.qsize()), data)
+            # log_info('process_block_merger_kf - request in internal OCR queue {}'.format(blockMergerOCRQueue.qsize()), data)
 
             # We should reject kafka request if internal queue size become too-much.
             #
