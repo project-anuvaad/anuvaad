@@ -22,7 +22,7 @@ def start_kafka():
         t2.start()
         log_info("Starting block_merger_request_worker", LOG_WITHOUT_CONTEXT)
 
-        t3 = threading.Thread(target=block_merger_request_worker_ocr, name='BM-worker-thread')
+        t3 = threading.Thread(target=block_merger_request_worker_ocr, name='BM-worker-ocr-thread')
         t3.start()
         log_info("Starting block_merger_request_worker_ocr", LOG_WITHOUT_CONTEXT)
 
