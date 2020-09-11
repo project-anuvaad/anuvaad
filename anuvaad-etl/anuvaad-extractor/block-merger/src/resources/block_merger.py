@@ -11,7 +11,6 @@ from anuvaad_auditor.loghandler import log_error
 import config
 import time
 import src.utilities.app_context as app_context
-app_context.init()
 
 # sentence block merging
 file_ops = FileOperation()
@@ -23,6 +22,7 @@ class BlockMergerWF(Resource):
     # reading json request and reurnung final response
     def post(self):
         json_data = request.get_json(force=True)
+        app_context.init()
         app_context.application_context = json_data
         log_info("Resource BlockMergerWF  Block-merger service started", app_context.application_context)
         task_id = str("BM-" + str(time.time()).replace('.', ''))
