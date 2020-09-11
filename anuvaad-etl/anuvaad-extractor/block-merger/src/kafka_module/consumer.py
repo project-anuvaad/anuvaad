@@ -13,10 +13,17 @@ class Consumer(object):
     # Consumer initialisation to consume message from queue
     def consumer_instantiate(self):
         try:
-            consumer = KafkaConsumer(self.topic_name, bootstrap_servers = [self.server_address], auto_offset_reset = 'latest', group_id = config.CONSUMER_GROUP, enable_auto_commit=True, value_deserializer=lambda x: loads(x.decode('utf-8')))
+            consumer = KafkaConsumer(self.topic_name, bootstrap_servers = [self.server_address], auto_offset_reset = 'latest', group_id = config.CONSUMER_GROUP, enable_auto_commit=True)
             log_info("consumer_instantiate : Consumer returned for topic: %s"%(self.topic_name), None)
             return consumer
         except Exception as e:
             log_exception("consumer_instantiate : error occured for consumer topic: %s"%(self.topic_name), None, e)
+
+    @staticmethod
+    def get_json_data(x):
+        try:
+            return loads(str(x, 'utf-8'))
+        except Exception as e:
+            return None
 
 
