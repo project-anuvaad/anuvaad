@@ -41,7 +41,7 @@ class Response(object):
                 input_filename, in_file_type, in_locale     = file_ops.accessing_files(item)
                 self.json_data['taskID']                   = task_id
                 app_context.application_context             = self.json_data
-                debug_flush = True
+                #debug_flush = True
                 if debug_flush == False:
                     bm_response = DocumentStructure(app_context=app_context, file_name=input_filename, lang=in_locale)
                     if bm_response['code'] == 200:
