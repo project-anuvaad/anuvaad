@@ -198,15 +198,20 @@ def drop_cols(df,drop_col=None ):
     return df
 
 def change_font(font_name,lang):
-    if lang!='en':
-        font = config.FONT_CONFIG[lang]
-        return font
-    else:
-        if '+' in font_name:
-            font = font_name.split('+')[1]
+    if font_name != None :
+        if lang!='en':
+            font = config.FONT_CONFIG[lang]
+            return font
         else:
-            font = font_name
-        return font
+            if '+' in font_name:
+                font = font_name.split('+')[1]
+            else:
+                font = font_name
+            return font
+    else :
+        return None
+
+
 #
 # def page_font_update(page_df,lang):
 #
@@ -312,7 +317,7 @@ def update_font(p_dfs,lang):
         log_info('Updating of fonts completed in {}'.format(extraction_time), app_context.application_context)
 
     except Exception as e:
-        log_error('Error in updating fonts', app_context.application_context, e)
+        log_error('Error in updating fonts' + str(e), app_context.application_context, e)
         return None
 
 
