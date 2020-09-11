@@ -42,13 +42,7 @@ def process_block_merger_kf():
     file_ops            = FileOperation()
     DOWNLOAD_FOLDER     = file_ops.create_file_download_dir(config.download_folder)
     producer_tok        = Producer(config.bootstrap_server)
-
-    '''
-        start actual worker thread that consumes message on the internal queue.
-        - kafka queue is vacated as-soon-as-possible
-    '''
-    threading.Thread(target=block_merger_request_worker, daemon=True).start()
-
+    
     # instatiation of consumer for respective topic
     try:
         consumer = consumer_validator()
