@@ -1,4 +1,4 @@
-from src.kafka_module.kf_service import process_block_merger_kf, block_merger_request_worker, block_merger_request_worker_ocr
+from src.kafka_module.kf_service import process_block_merger_kf, block_merger_request_worker
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 from flask import Flask
