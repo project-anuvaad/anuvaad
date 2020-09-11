@@ -57,7 +57,7 @@ class Response(object):
                         
                         return response
                     else:
-                        post_error_wf(bm_response.code, bm_response.message, app_context.application_context, None)
+                        post_error_wf(bm_response['code'], bm_response['message'], app_context.application_context, None)
                         return None
                 else:
                     log_info('flushing queue data, not handling file {}'.format(input_files), app_context.application_context)
