@@ -32,10 +32,10 @@ class TranslatorRepository:
             {"$set": object_in}
         )
 
-    # Updates the object in the mongo collection
-    def delete(self, record_id):
+    # Deletes the object in the mongo collection by job id
+    def delete(self, job_id):
         col = self.instantiate()
-        col.remove({"recordID": record_id})
+        col.remove({"jobID": job_id})
 
     # Searches the object into mongo collection
     def search(self, query, exclude):

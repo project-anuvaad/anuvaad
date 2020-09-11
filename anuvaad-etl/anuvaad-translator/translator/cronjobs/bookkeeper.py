@@ -17,7 +17,7 @@ class BookKeeper(Thread):
     def run(self):
         log_info("BookKeeper running......")
         repo = TranslatorRepository()
-        while not self.stopped.wait(20):
+        while not self.stopped.wait(30):
             completed = []
             failed = []
             try:
@@ -55,24 +55,47 @@ class BookKeeper(Thread):
     def push_to_wfm(self, completed, failed):
         producer = Producer
         repo = TranslatorRepository()
+        job_wise_records = {}
         for complete in completed:
-            wf_output = complete["transInput"]
-            wf_output["state"] = "TRANSLATED"
-            wf_output["status"] = "SUCCESS"
-            wf_output["output"] = {
-                "inputFile": str(complete["recordID"]).split("|")[1],
-                "result": str(complete["recordID"])
+            output = {
+                "inputFile": str(complete["recordID"]).split("|")[1], "outputFile": str(complete["recordID"])
             }
-            wf_output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
-            producer.produce(wf_output, anu_translator_output_topic)
-            repo.delete(complete["recordID"])
+            if complete["jobID"] in job_wise_records.keys():
+                result = job_wise_records[complete["jobID"]]
+                job_output = result["output"]
+                job_output.append(output)
+                result["output"] = job_output
+                job_wise_records[complete["jobID"]] = result
+            else:
+                result = complete["transInput"]
+                result["state"] = "TRANSLATED"
+                result["status"] = "SUCCESS"
+                result["taskEndTime"] = eval(str(time.time()).replace('.', ''))
+                job_output = [output]
+                result["output"] = job_output
+                job_wise_records[complete["jobID"]] = result
 
         for fail in failed:
-            wf_output = fail["transInput"]
-            wf_output["state"] = "TRANSLATED"
-            wf_output["status"] = "FAILED"
-            wf_output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
-            producer.produce(wf_output, anu_translator_output_topic)
-            repo.delete(fail["recordID"])
+            output = {
+                "inputFile": str(fail["recordID"]).split("|")[1], "outputFile": "FAILED"
+            }
+            if fail["jobID"] in job_wise_records.keys():
+                result = job_wise_records[fail["jobID"]]
+                job_output = result["output"]
+                job_output.append(output)
+                result["output"] = job_output
+                job_wise_records[fail["jobID"]] = result
+            else:
+                result = fail["transInput"]
+                result["state"] = "TRANSLATED"
+                result["status"] = "FAILED"
+                result["taskEndTime"] = eval(str(time.time()).replace('.', ''))
+                job_output = [output]
+                result["output"] = job_output
+                job_wise_records[fail["jobID"]] = result
+
+        for job_id in job_wise_records.keys():
+            producer.produce(job_wise_records[job_id], anu_translator_output_topic)
+            repo.delete(job_id)
 
         return None
