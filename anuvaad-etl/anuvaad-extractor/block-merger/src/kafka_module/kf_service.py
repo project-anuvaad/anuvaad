@@ -60,9 +60,9 @@ def process_block_merger_kf():
                 continue
             data            = Consumer.get_json_data(msg.value)
             jobid           = data['jobID']
-            log_info('process_block_merger_kf - received message from kafka, dumping into internal queue', jobid)
+            log_info('process_block_merger_kf - received message from kafka, dumping into internal queue', data)
             blockMergerQueue.put(data)
-            log_info('process_block_merger_kf - request in internal queue {}'.format(blockMergerQueue.qsize()), jobid)
+            log_info('process_block_merger_kf - request in internal queue {}'.format(blockMergerQueue.qsize()), data)
 
             # We should reject kafka request if internal queue size become too-much.
             #
