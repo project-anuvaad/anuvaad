@@ -151,6 +151,9 @@ definitions:
       job_id:
         type: string
         description: File id for the file to be converted.
+      file_locale:
+        type: string
+        description: File locale for the file to be converted.
       pages:
         type: array
         description: File id for the file to be converted.
