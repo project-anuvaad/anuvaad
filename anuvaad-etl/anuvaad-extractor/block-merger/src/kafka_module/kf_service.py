@@ -110,7 +110,7 @@ def block_merger_request_worker():
 
             blockMergerQueue.task_done()
         except Exception as e:
-            log_info("block_merger_request_worker : error send to error handler {}",format(jobid), LOG_WITHOUT_CONTEXT, e)
+            log_exception("block_merger_request_worker ",  LOG_WITHOUT_CONTEXT, e)
 
 def block_merger_request_worker_ocr():
     file_ops            = FileOperation()
@@ -141,4 +141,4 @@ def block_merger_request_worker_ocr():
 
             blockMergerOCRQueue.task_done()
         except Exception as e:
-            log_info("block_merger_request_worker_ocr : error send to error handler {}",format(jobid), LOG_WITHOUT_CONTEXT, e)
+            log_exception("block_merger_request_worker_ocr ",  LOG_WITHOUT_CONTEXT, e)
