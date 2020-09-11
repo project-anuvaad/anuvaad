@@ -22,9 +22,9 @@ def start_kafka():
         t2.start()
         log_info("Starting block_merger_request_worker", None)
 
-        t3 = threading.Thread(target=block_merger_request_worker_ocr, name='BM-worker-ocr-thread')
-        t3.start()
-        log_info("Starting block_merger_request_worker_ocr", None)
+        # t3 = threading.Thread(target=block_merger_request_worker_ocr, name='BM-worker-ocr-thread')
+        # t3.start()
+        # log_info("Starting block_merger_request_worker_ocr", None)
 
     except Exception as e:
         log_error("threading ERROR WHILE RUNNING CUSTOM THREADS ", None, e)
