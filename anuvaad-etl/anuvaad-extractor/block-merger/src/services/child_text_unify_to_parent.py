@@ -56,14 +56,17 @@ class ChildTextUnify(object):
 
     def get_parent_block(self,data,drop_lis):
         new_df = data.copy(deep=True)
-        text_lis = []
+        new_df = new_df.reset_index(drop=True)
+        #text_lis = []
         for block_index in range(len(data)):
-            df   =  data.iloc[block_index]
+            df   =  new_df.iloc[block_index]
             df   =  df.where(df.notnull(), None)
             text =  self.get_children_text_block(df, drop_lis)
-            text_lis.append(str(text))
-            #new_df.iloc[block_index]['text'] = str(text)
-        new_df['text'] = text_lis
+            #print(text , 'text +++++++++++++++++++')
+            #text_lis.append(str(text))
+            new_df.iloc[block_index]['text'] = str(text)
+        #new_df['text'] = text_lis
+        #print(text_lis)
 
         return new_df
 
@@ -80,7 +83,7 @@ class ChildTextUnify(object):
                 merge_df = self.get_parent_block(p_df,drop_lis)
                 merge_dfs.append(merge_df)
         except  Exception as e :
-            log_error('Error in merging child text to partent text', app_context.application_context, e)
+            log_error('Error in merging child text to partent text' +e, app_context.application_context, e)
             return None
         
         end_time         = time.time()

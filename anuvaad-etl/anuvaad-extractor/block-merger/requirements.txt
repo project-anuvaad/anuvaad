@@ -8,6 +8,7 @@ anuvaad-em==0.0.2
 pdf2image==1.12.1
 pytesseract==0.3.4
 python-utils==2.4.0
+pandas==1.0.3
 redis==3.5.3
 regex==2020.4.4
 requests==2.23.0

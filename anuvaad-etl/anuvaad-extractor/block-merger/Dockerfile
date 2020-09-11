@@ -1,6 +1,8 @@
 FROM anuvaadio/python3.6-opencv-4.1.0:5
 COPY / /app
 WORKDIR /app
+ARG D_F
+ENV DEBUG_FLUSH=$D_F
 # RUN apk update && apk add -U \
 #       --virtual .build-dependencies \
 #         build-base \
