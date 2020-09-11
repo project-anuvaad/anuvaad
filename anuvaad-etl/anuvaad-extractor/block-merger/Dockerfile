@@ -1,4 +1,4 @@
-FROM anuvaadio/python3.6-opencv-4.1.0:5
+FROM anuvaadio/python3.6-opencv-4.1.0:7
 COPY / /app
 WORKDIR /app
 ARG D_F
@@ -18,13 +18,8 @@ ENV DEBUG_FLUSH=$D_F
 #         clang-dev \
 #         linux-headers
 
-RUN apk add tesseract-ocr
-RUN tesseract -v
-RUN apk add --upgrade tesseract-ocr-data-hin
-RUN apk add --upgrade tesseract-ocr-data-tam
-RUN apk add --upgrade tesseract-ocr-data-kan
 RUN pip install -r requirements.txt
-RUN apk update && apk add poppler-utils
+#RUN apk update && apk add poppler-utils
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
 ENTRYPOINT ["sh","/usr/bin/start.sh"]
