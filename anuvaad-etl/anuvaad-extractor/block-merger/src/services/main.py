@@ -31,9 +31,6 @@ def doc_pre_processing(filename, base_dir,lang):
     log_info("document preprocessing started ===>", app_context.application_context)
 
     img_dfs,xml_dfs, page_width, page_height,working_dir, pdf_bg_img_filepaths, pdf_image_paths  = get_xml.process_input_pdf(filename, base_dir, lang)
-    if xml_dfs!=None:
-        log_info("document preprocessing successfully completed", app_context.application_context)
-
     return img_dfs,xml_dfs, working_dir, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths
 
 def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths):
@@ -128,6 +125,13 @@ def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR
     log_debug('Block merger starting processing {}'.format(app_context.application_context), app_context.application_context)
     img_dfs, xml_dfs, working_dir, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths  = doc_pre_processing(file_name,base_dir,lang)
     
+    if xml_dfs == None:
+        return {
+            'code': 400,
+            'message': 'Document pre-processing failed, check your installation',
+            'rsp': None
+        }
+
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:
         return {
