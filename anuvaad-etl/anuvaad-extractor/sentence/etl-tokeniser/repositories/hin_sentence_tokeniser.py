@@ -282,7 +282,7 @@ class AnuvaadHinTokenizer(object):
         return text
 
     def serialize_dot_with_number_beginning(self, text):
-        patterns = re.findall(r'(^[0-9]{1,}[.])',text)
+        patterns = re.findall(r'(^[\s]?[0-9]{1,}[-]?[.])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
