@@ -37,8 +37,8 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
                 text = text +" "+ str(row1["text"])
                 word_coord['text']          = str(row1["text"])
                 word_coord['conf']          = row1["conf"]
-                word_coord['text_left']     = int(row1["left"])
-                word_coord['text_top']      = int(row1["top"])
+                word_coord['text_left']     = int(row1["left"]+left)
+                word_coord['text_top']      = int(row1["top"]+top)
                 word_coord['text_width']    = int(row1["width"])
                 word_coord['text_height']   = int(row1["height"])
                 coord.append(word_coord)
@@ -55,8 +55,8 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
                 text = text +" "+ str(row2["text"])
                 word_coord['text']          = str(row2["text"])
                 word_coord['conf']          = row2["conf"]
-                word_coord['text_left']     = int(row2["left"])
-                word_coord['text_top']      = int(row2["top"])
+                word_coord['text_left']     = int(row2["left"]+left)
+                word_coord['text_top']      = int(row2["top"]+top)
                 word_coord['text_width']    = int(row2["width"])
                 word_coord['text_height']   = int(row2["height"])
                 coord.append(word_coord)
@@ -86,6 +86,7 @@ def tesseract_ocr(pdf_image_paths, desired_width, desired_height, dfs, lang ):
 
     end_time            = time.time()
     extraction_time     = end_time - start_time
-    log_info('tesseract ocr successfully completed in {}'.format(extraction_time), app_context.application_context)
+    log_info('tesseract ocr successfully completed in {}/{}, average per page {}'.format(extraction_time, len(dfs), (extraction_time/len(dfs))), app_context.application_context)
+
     return ocr_dfs
 

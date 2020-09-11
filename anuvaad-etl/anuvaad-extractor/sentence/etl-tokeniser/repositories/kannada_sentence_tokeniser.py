@@ -7,10 +7,12 @@ class AnuvaadKanTokenizer(object):
     """
     abbrevations
     """
-    _abbrevations_with_space_pattern = r'((\s)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?(([\u0C85-\u0CB9,\u0CDE,\u0CE0-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?)'
+    _abbrevations_with_space_pattern = r'((\s)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?)'
+    _abbrevations_without_space_pattern = r'(^(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?)'
+    _text_colon_abbreviations_pattern = r'([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?[:](\s)?([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?'
     _abbrevations_with_space = []
-    _abbrevations_without_space_pattern = [r'[ ]ಪ್ರೊ[.]']
-    _abbrevations_without_space = [' ಪ್ರೊ.']
+    _abbrevations_without_space = []
+    _text_colon_abbreviations = []
     _tokenizer = None
     _regex_search_texts = []
     _date_abbrevations  = []
@@ -28,6 +30,8 @@ class AnuvaadKanTokenizer(object):
         if abbrevations is not None:
             self._abbrevations_without_space.append(abbrevations)
         self._abbrevations_with_space = []
+        self._abbrevations_without_space = []
+        self._text_colon_abbreviations = []
         self._regex_search_texts = []
         self._date_abbrevations  = []
         self._time_abbreviations = []
@@ -44,6 +48,7 @@ class AnuvaadKanTokenizer(object):
     def tokenize(self, text):
         print('--------------Process kn started-------------')
         text = self.serialize_with_abbrevations(text)
+        text = self.serialize_colon_abbreviations(text)
         text = self.serialize_dates(text)
         text = self.serialize_time(text)
         text = self.serialize_table_points(text)
@@ -73,6 +78,7 @@ class AnuvaadKanTokenizer(object):
             se = self.deserialize_dot_with_number_beginning(se)
             se = self.deserialize_quotes_with_number(se)
             se = self.deserialize_with_abbrevations(se)
+            se = self.deserialize_colon_abbreviations(se)
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
             output.append(se.strip())
@@ -327,12 +333,18 @@ class AnuvaadKanTokenizer(object):
            
     def serialize_with_abbrevations(self, text):
         index = 0
-        # index_for_without_space = 0
-        # for abbrev in self._abbrevations_without_space_pattern:
-        #     pattern = re.compile(abbrev, re.IGNORECASE)
-        #     text = pattern.sub('#UN'+str(index_for_without_space)+'HN##', text)
-        #     index_for_without_space += 1
-        # print
+        index_for_without_space = 0
+        patterns_wos = re.findall(self._abbrevations_without_space_pattern, text)
+        patterns_wos = [tuple(j for j in pattern if j)[0] for pattern in patterns_wos]
+        patterns_wos = list(sorted(patterns_wos, key = len))
+        patterns_wos = patterns_wos[::-1]
+        if patterns_wos is not None and isinstance(patterns_wos, list):
+            for pattern in patterns_wos:
+                pattern_obj = re.compile(re.escape(pattern))
+                self._abbrevations_without_space.append(pattern)
+                text = pattern_obj.sub('#WO'+str(index)+'S##', text)
+                index_for_without_space+=1
+
         patterns = re.findall(self._abbrevations_with_space_pattern, text)
         patterns = [tuple(j for j in pattern if j)[0] for pattern in patterns]
         patterns = list(sorted(patterns, key = len))
@@ -347,11 +359,12 @@ class AnuvaadKanTokenizer(object):
 
     def deserialize_with_abbrevations(self, text):
         index = 0
-        # index_for_without_space = 0
-        # for abbrev in self._abbrevations_without_space:
-        #     pattern = re.compile(re.escape('#UN'+str(index_for_without_space)+'HN##'), re.IGNORECASE)
-        #     text = pattern.sub(abbrev, text)
-        #     index += 1
+        index_for_without_space = 0
+        if self._abbrevations_without_space is not None and isinstance(self._abbrevations_without_space, list):
+            for pattern in self._abbrevations_without_space:
+                pattern_obj = re.compile(re.escape('#WO'+str(index)+'S##'), re.IGNORECASE)
+                text = pattern_obj.sub(pattern, text)
+                index_for_without_space+=1
         if self._abbrevations_with_space is not None and isinstance(self._abbrevations_with_space, list):
             for pattern in self._abbrevations_with_space:
                 pattern_obj = re.compile(re.escape('##'+str(index)+'##'), re.IGNORECASE)
@@ -359,6 +372,28 @@ class AnuvaadKanTokenizer(object):
                 index+=1
         return text
 
+    def serialize_colon_abbreviations(self, text):
+        index = 0
+        patterns = re.findall(self._text_colon_abbreviations_pattern, text)
+        patterns = [tuple(j for j in pattern if j)[0] for pattern in patterns]
+        patterns = list(sorted(patterns, key = len))
+        patterns = patterns[::-1]
+        if patterns is not None and isinstance(patterns, list):
+            for pattern in patterns:
+                pattern_obj = re.compile(re.escape(pattern))
+                self._text_colon_abbreviations.append(pattern)
+                text = pattern_obj.sub('#C'+str(index)+'C#', text)
+                index+=1
+        return text
+
+    def deserialize_colon_abbreviations(self, text):
+        index = 0
+        if self._text_colon_abbreviations is not None and isinstance(self._text_colon_abbreviations, list):
+            for pattern in self._text_colon_abbreviations:
+                pattern_obj = re.compile(re.escape('#C'+str(index)+'C#'), re.IGNORECASE)
+                text = pattern_obj.sub(pattern, text)
+                index+=1
+        return text
 
 class SentenceEndLangVars(PunktLanguageVars):
     text = []

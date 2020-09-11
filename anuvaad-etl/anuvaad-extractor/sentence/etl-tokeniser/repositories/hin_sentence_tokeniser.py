@@ -13,15 +13,24 @@ Utility tokenizer class for anuvaad project
 class AnuvaadHinTokenizer(object):
     """
     Default abbrevations
+    incomplete char range = ([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])
+    complete char range = ([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])    
+    (\u0972-\u097F) represents character used in different lnguages other than hindi which use devanagri script
+    number range = ([\u0966-\u096F])
+    devanagri abbreviation symbol = ([\u0970-\u0971])
+    source for unicodes : https://unicode.org/charts/PDF/U0900.pdf
     """
     #_abbrevations_with_space_pattern = [r'[ ]ऐ[.]',r'[ ]बी[.]',r'[ ]सी[.]',r'[ ]डी[.]',r'[ ]ई[.]',r'[ ]एफ[.]',r'[ ]जी[.]',r'[ ]एच[.]',r'[ ]आइ[.]',r'[ ]जे[.]',r'[ ]के[.]',r'[ ]एल[.]',r'[ ]एम[.]',r'[ ]एन[.]',r'[ ]ओ[.]',r'[ ]पी[.]',r'[ ]क्यू[.]',r'[ ]आर[.]',r'[ ]एस[.]',r'[ ]टी[.]',r'[ ]यू[.]',r'[ ]वी[.]',r'[ ]डब्लू[.]',r'[ ]एक्स[.]',r'[ ]वायी[.]',r'[ ]ज़ेड[.]']
     #_abbrevations_with_space = [' ऐ.',' बी.',' सी.',' डी.',' ई.',' एफ.',' जी.',' एच.',' आइ.',' जे.',' के.',' एल.',' एम.',' एन.',' ओ.',' पी.',' क्यू.',' आर.',' एस.',' टी.',' यू.',' वी.',' डब्लू.',' एक्स.',' वायी.',' ज़ेड.']
     #_abbrevations_without_space_pattern = [r'डॉ[.]',r'पं[.]']
     #_abbrevations_without_space = ['डॉ.','पं.']
-    _text_abbrevations_pattern = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)?)'
+    _text_abbrevations_pattern_cic = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?)'
+    #_text_abbrevations_pattern_cii = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?)'
+    _text_abbrevations_pattern_cci = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?)?)'
     _text_colon_abbreviations_pattern = r'([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?[:](\s)?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?'
-    _text_abbrevations_without_space_pattern = r'(^(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?(\u002e)(\s)?)?)'
-    _text_abbrevations = []
+    _text_abbrevations_without_space_pattern = r'(^(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?)'
+    _text_abbrevations_cic = []
+    _text_abbrevations_cci = []
     _text_colon_abbreviations = []
     _text_abbrevations_without_space = []
     _tokenizer = None
@@ -40,7 +49,8 @@ class AnuvaadHinTokenizer(object):
         if abbrevations is not None:
             self._abbrevations_without_space.append(abbrevations)
         self._regex_search_texts = []
-        self._text_abbrevations =[]
+        self._text_abbrevations_cic =[]
+        self._text_abbrevations_cci =[]
         self._text_colon_abbreviations = []
         self._text_abbrevations_without_space = []
         self._dot_abbrevations = []
@@ -138,7 +148,7 @@ class AnuvaadHinTokenizer(object):
         return text
 
     def add_space_after_sentence_end(self, text):
-        sentence_ends = ['.','?','!',';',':','।']
+        sentence_ends = ['.','?','!',';',':','।', '॥']
         for sentence_end in sentence_ends:
             pattern = re.compile(r'['+sentence_end+'][ ]') #remove already correct patterns
             text = pattern.sub(sentence_end, text)
@@ -343,12 +353,9 @@ class AnuvaadHinTokenizer(object):
         return text
            
     def serialize_with_abbrevations(self, text):
-        index = 0
+        index_cic = 0
+        index_cci = 0
         index_for_without_space = 0
-        # for abbrev in self._abbrevations_with_space_pattern:
-        #     pattern = re.compile(abbrev, re.IGNORECASE)
-        #     text = pattern.sub(' #'+str(index)+'#', text)
-        #     index += 1
         # for abbrev in self._abbrevations_without_space_pattern:
         #     pattern = re.compile(abbrev, re.IGNORECASE)
         #     text = pattern.sub('#'+str(index_for_without_space)+'##', text)
@@ -363,20 +370,31 @@ class AnuvaadHinTokenizer(object):
                 self._text_abbrevations_without_space.append(pattern)
                 text = pattern_obj.sub('#W'+str(index)+'S#', text)
                 index_for_without_space+=1
-        patterns = re.findall(self._text_abbrevations_pattern, text)
+        patterns_cic = re.findall(self._text_abbrevations_pattern_cic, text)
+        patterns_cic = [tuple(j for j in pattern if j)[0] for pattern in patterns_cic]
+        patterns_cic = list(sorted(patterns_cic, key = len))
+        patterns_cic = patterns_wo[::-1]
+        if patterns_cic is not None and isinstance(patterns_cic, list):
+            for pattern in patterns_cic:
+                pattern_obj = re.compile(re.escape(pattern))
+                self._text_abbrevations_cic.append(pattern)
+                text = pattern_obj.sub('#CI'+str(index)+'C#', text)
+                index_cic+=1
+        patterns = re.findall(self._text_abbrevations_pattern_cci, text)
         patterns = [tuple(j for j in pattern if j)[0] for pattern in patterns]
         patterns = list(sorted(patterns, key = len))
         patterns = patterns[::-1]
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
                 pattern_obj = re.compile(re.escape(pattern))
-                self._text_abbrevations.append(pattern)
-                text = pattern_obj.sub('##'+str(index)+'##', text)
-                index+=1        
+                self._text_abbrevations_cci.append(pattern)
+                text = pattern_obj.sub('##C'+str(index)+'CI##', text)
+                index_cci+=1        
         return text
 
     def deserialize_with_abbrevations(self, text):
-        index = 0
+        index_cic = 0
+        index_cci = 0
         index_for_without_space = 0
         # for abbrev in self._abbrevations_without_space:
         #     pattern = re.compile(re.escape('#'+str(index_for_without_space)+'##'), re.IGNORECASE)
@@ -391,11 +409,16 @@ class AnuvaadHinTokenizer(object):
                 pattern_obj = re.compile(re.escape('#W'+str(index)+'S#'), re.IGNORECASE)
                 text = pattern_obj.sub(pattern, text)
                 index_for_without_space+=1
-        if self._text_abbrevations is not None and isinstance(self._text_abbrevations, list):
-            for pattern in self._text_abbrevations:
-                pattern_obj = re.compile(re.escape('##'+str(index)+'##'), re.IGNORECASE)
+        if self._text_abbrevations_cic is not None and isinstance(self._text_abbrevations_cic, list):
+            for pattern in self._text_abbrevations_cic:
+                pattern_obj = re.compile(re.escape('#CI'+str(index)+'C#'), re.IGNORECASE)
                 text = pattern_obj.sub(pattern, text)
-                index+=1
+                index_cic+=1
+        if self._text_abbrevations_cci is not None and isinstance(self._text_abbrevations_cci, list):
+            for pattern in self._text_abbrevations_cci:
+                pattern_obj = re.compile(re.escape('##C'+str(index)+'CI##'), re.IGNORECASE)
+                text = pattern_obj.sub(pattern, text)
+                index_cci+=1
         return text
 
     def serialize_colon_abbreviations(self, text):

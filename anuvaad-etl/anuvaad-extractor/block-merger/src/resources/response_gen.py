@@ -16,17 +16,20 @@ import threading
 from src.kafka_module.producer import Producer
 import src.utilities.app_context as app_context
 
+
 file_ops = FileOperation()
 
 
 class Response(object):
     def __init__(self, json_data, DOWNLOAD_FOLDER):
-        app_context.init()
-        print(json_data)
-        self.json_data =json_data
-        self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
+        self.json_data          = json_data
+        self.DOWNLOAD_FOLDER    = DOWNLOAD_FOLDER
 
-    def workflow_response(self, task_id, task_starttime):
+    def workflow_response(self, task_id, task_starttime, debug_flush=False):
+
+        app_context.init()
+        app_context.application_context = {}
+
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
         log_info("workflow_response started the response generation", app_context.application_context)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
@@ -35,27 +38,32 @@ class Response(object):
             error_validator.inputfile_list_error(input_files)
             output_file_response = list()
             for i, item in enumerate(input_files):
-                input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                input_filename, in_file_type, in_locale     = file_ops.accessing_files(item)
+                self.json_data['taskID']                   = task_id
+                app_context.application_context             = self.json_data
                 
-                self.json_data['task_id']       = task_id
-                app_context.application_context = self.json_data
-                
-                bm_response = DocumentStructure(app_context=app_context, file_name=input_filename, lang=in_locale)
-                if bm_response['code'] == 200:
-                    output_filename_json = file_ops.writing_json_file(i, bm_response['rsp'], self.DOWNLOAD_FOLDER)
-                    file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
-                    output_file_response.append(file_res)
-                    task_endtime = str(time.time()).replace('.', '')
-                    response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
-                    response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
-                    response = copy.deepcopy(response_success)
-                    log_info("successfully generated response for workflow", app_context.application_context)
-                    
-                    return response
-
+                if debug_flush == False:
+                    bm_response = DocumentStructure(app_context=app_context, file_name=input_filename, lang=in_locale)
+                    if bm_response['code'] == 200:
+                        
+                        output_filename_json = file_ops.writing_json_file(i, bm_response['rsp'], self.DOWNLOAD_FOLDER)
+                        file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
+                        output_file_response.append(file_res)
+                        task_endtime = str(time.time()).replace('.', '')
+                        response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
+                        response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
+                        response = copy.deepcopy(response_success)
+                        log_info("successfully generated response for workflow", app_context.application_context)
+                        
+                        return response
+                    else:
+                        post_error_wf(bm_response.code, bm_response.message, app_context.application_context, None)
+                        return None
                 else:
-                    post_error_wf(bm_response.code, bm_response.message, app_context, None)
+                    log_info('flushing queue data, not handling file {}'.format(input_files), app_context.application_context)
+                    post_error_wf(400, 'flushing queue data, not handling file {}'.format(input_files), app_context.application_context, None)
                     return None
+
             
         except WorkflowkeyError as e:
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)

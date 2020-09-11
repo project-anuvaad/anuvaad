@@ -50,14 +50,7 @@ def remove_redundant_rows(in_df):
     
     return df
 
-def get_font_family(lang, f_family):
 
-    if lang!='en':
-        font = config.FONT_CONFIG[lang]
-    else:
-        font = f_family
-
-    return font
 
 def get_text_tag(bold, italic):
 
@@ -107,7 +100,7 @@ def get_xml_info(filepath, lang='en'):
             t_ws.append(t_w)
             t_hs.append(t_h)
             f_sizes.append(f_size)
-            f_family = get_font_family(lang, f_family)
+            
             
             f_familys.append(f_family)
             f_colors.append(f_color)

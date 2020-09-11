@@ -50,30 +50,26 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_h
 
     '''
     log_info("document structure analysis started  ===>", app_context.application_context )
-    try:
-        header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
-        
-    except Exception as e :
-        log_error("Error in finding footer and header region", app_context.application_context, e)
-        return None, None,None ,None
 
-    
+    header_region, footer_region = prepocess_pdf_regions(xml_dfs, page_height)
     text_merger = ChildTextUnify()
     
     in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths)
-    h_dfs                              = get_xml.get_hdfs(in_dfs,header_region,footer_region)
+    h_dfs = get_xml.get_hdfs(in_dfs, header_region, footer_region)
+    if lang != 'en':
+        h_dfs = tesseract_ocr(pdf_image_paths, page_width, page_height, h_dfs, lang)
+        for h_df in h_dfs:
+            h_df['children'] = None
     v_dfs                              = get_xml.get_vdfs(h_dfs)
     p_dfs                              = get_xml.get_pdfs(v_dfs)
     p_dfs , line_dfs                   = get_underline(p_dfs,line_dfs,app_context.application_context)
-    p_dfs                              = get_xml.update_font(p_dfs)
+    p_dfs                              = get_xml.update_font(p_dfs,lang)
     
-    if lang  != 'en':
-        text_block_dfs  = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang)
-    else:
-        text_block_dfs  = text_merger.unify_child_text_blocks(p_dfs)
+    if lang=='en':
+        p_dfs  = text_merger.unify_child_text_blocks(p_dfs)
 
     log_info( "document structure analysis successfully completed", app_context.application_context )
-    return text_block_dfs, table_dfs, line_dfs , bg_dfs
+    return p_dfs, table_dfs, line_dfs , bg_dfs
 
 
 def doc_structure_response(bg_dfs, text_block_dfs,table_dfs,line_dfs,page_width, page_height):
@@ -115,7 +111,7 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
     table_df['table_id'] = range(len(table_df))
     line_df['line_id']   = range(len(line_df))
 
-    res_dict           = {'page_no': page_no,'page_width': page_width,'page_height':page_height,'lines':[],'tables':[],'images':[],'text_blocks':[]}
+    res_dict           = {'page_no': page_no + 1,'page_width': page_width,'page_height':page_height,'lines':[],'tables':[],'images':[],'text_blocks':[]}
     image_data         = process_image_df(img_df)
     table_data         = process_table_df(table_df)
     line_data          = process_line_df(line_df)
@@ -129,7 +125,7 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
 
 
 def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR):
-    log_debug('Block merger starting processing {}'.format(app_context), app_context.application_context)
+    log_debug('Block merger starting processing {}'.format(app_context.application_context), app_context.application_context)
     img_dfs, xml_dfs, working_dir, page_width, page_height, pdf_bg_img_filepaths,pdf_image_paths  = doc_pre_processing(file_name,base_dir,lang)
     
     text_blocks_count = check_text(xml_dfs)
