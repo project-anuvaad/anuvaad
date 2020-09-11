@@ -19,7 +19,7 @@ ENV DEBUG_FLUSH=$D_F
 #         linux-headers
 
 RUN pip install -r requirements.txt
-RUN apk update && apk add poppler-utils
+#RUN apk update && apk add poppler-utils
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
 ENTRYPOINT ["sh","/usr/bin/start.sh"]
