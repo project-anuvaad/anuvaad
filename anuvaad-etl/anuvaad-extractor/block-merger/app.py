@@ -1,4 +1,4 @@
-from src.kafka_module.kf_service import process_block_merger_kf, block_merger_request_worker
+from src.kafka_module.kf_service import process_block_merger_kf, block_merger_request_worker, block_merger_request_worker_ocr
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 from flask import Flask
@@ -21,6 +21,10 @@ def start_kafka():
         t2 = threading.Thread(target=block_merger_request_worker, name='BM-worker-thread')
         t2.start()
         log_info("Starting block_merger_request_worker", LOG_WITHOUT_CONTEXT)
+
+        t3 = threading.Thread(target=block_merger_request_worker_ocr, name='BM-worker-thread')
+        t3.start()
+        log_info("Starting block_merger_request_worker_ocr", LOG_WITHOUT_CONTEXT)
 
     except Exception as e:
         log_error("threading ERROR WHILE RUNNING CUSTOM THREADS ", LOG_WITHOUT_CONTEXT, e)
