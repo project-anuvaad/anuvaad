@@ -56,7 +56,7 @@ def process_block_merger_kf():
             data            = Consumer.get_json_data(msg.value)
             jobid           = data['jobID']
             log_info('process_block_merger_kf - received message from kafka, dumping into internal queue', data)
-            if json_data['input']['locale'] == 'en':
+            if data['input']['locale'] == 'en':
                 blockMergerQueue.put(data)
             else:
                 blockMergerOCRQueue.put(data)
