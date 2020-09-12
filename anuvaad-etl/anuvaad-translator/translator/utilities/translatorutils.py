@@ -9,6 +9,7 @@ from anuvaad_auditor.loghandler import log_exception, log_error
 
 log = logging.getLogger('file')
 
+
 class TranslatorUtils:
     def __init__(self):
         pass
@@ -54,4 +55,3 @@ class TranslatorUtils:
         except Exception as e:
             log_exception("Exception while making the api call: " + str(e), api_input, e)
             return None
-

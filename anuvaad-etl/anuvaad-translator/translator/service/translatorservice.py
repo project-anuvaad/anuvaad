@@ -15,7 +15,7 @@ producer = Producer()
 repo = TranslatorRepository()
 
 
-class WFMService:
+class TranslatorService:
     def __init__(self):
         pass
 
@@ -58,10 +58,10 @@ class WFMService:
             return None
 
     # Method to push sentences of the file to nmt for translation
-    def push_sentences_to_nmt(self, file_id, translate_wf_input):
+    def push_sentences_to_nmt(self, file, translate_wf_input):
         try:
             log_info("Translator process started......", translate_wf_input)
-            record_id = str(translate_wf_input["jobID"]) + "|" + file_id
+            record_id = str(translate_wf_input["jobID"]) + "|" + str(file["path"])
             content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
             if not content_from_db:
                 log_error("CONTENT_FETCH_FAILED", "File content from DB couldn't be fetched, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
@@ -81,15 +81,13 @@ class WFMService:
                 for batch_no in batches.keys():
                     batch = batches[batch_no]
                     nmt_in = {
-                        "url_end_point": translate_wf_input["input"]["model"]["url_end_point"],
+                        "url_end_point": file["model"]["url_end_point"],
                         "record_id": record_id, "message": batch
                     }
                     producer.produce(nmt_in, anu_nmt_input_topic)
                     total_sentences += len(batch)
                     log_info("PAGE NO: " + str(page["page_no"]) + " | BATCH NO: " + str(batch_no) + " | BATCH SIZE: " + str(len(batch)) + " | OVERALL SENTENCES: " + str(total_sentences))
-            query = {"recordID": record_id}
-            object_in = {"totalSentences": total_sentences}
-            repo.update(object_in, query)
+            repo.update({"totalSentences": total_sentences}, {"recordID": record_id})
             log_info("All sentences sent to NMT, count: " + str(total_sentences), translate_wf_input)
             return True
         except Exception as e:

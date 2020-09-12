@@ -8,8 +8,8 @@ from kafkawrapper.translatorconsumer import consume
 from kafkawrapper.transnmtconsumer import consume_nmt
 from cronjobs.bookkeeper import BookKeeper
 from anuvaad_auditor.loghandler import log_exception
-from configs.wfmconfig import translator_cons_no_of_instances
-from configs.wfmconfig import translator_nmt_cons_no_of_instances
+from configs.translatorconfig import translator_cons_no_of_instances
+from configs.translatorconfig import translator_nmt_cons_no_of_instances
 
 
 
