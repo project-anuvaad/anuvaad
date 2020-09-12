@@ -24,24 +24,29 @@ class Tokenisation(object):
             tokenised_text = []
             if text_locale == 'en':
                 for paragraph in paragraph_data:
-                    tokenised_sentence_data = AnuvaadEngTokenizer().tokenize(paragraph)
-                    tokenised_text.extend(tokenised_sentence_data)
+                    if paragraph is not None:
+                        tokenised_sentence_data = AnuvaadEngTokenizer().tokenize(paragraph)
+                        tokenised_text.extend(tokenised_sentence_data)
             elif text_locale == 'hi':
                 for paragraph in paragraph_data:
-                    tokenised_sentence_data = AnuvaadHinTokenizer().tokenize(paragraph)
-                    tokenised_text.extend(tokenised_sentence_data)
+                    if paragraph is not None:
+                        tokenised_sentence_data = AnuvaadHinTokenizer().tokenize(paragraph)
+                        tokenised_text.extend(tokenised_sentence_data)
             elif text_locale == 'kn':
                 for paragraph in paragraph_data:
-                    tokenised_sentence_data = AnuvaadKanTokenizer().tokenize(paragraph)
-                    tokenised_text.extend(tokenised_sentence_data)
+                    if paragraph is not None:
+                        tokenised_sentence_data = AnuvaadKanTokenizer().tokenize(paragraph)
+                        tokenised_text.extend(tokenised_sentence_data)
             elif text_locale == 'mr':
                 for paragraph in paragraph_data:
-                    tokenised_sentence_data = AnuvaadMarTokenizer().tokenize(paragraph)
-                    tokenised_text.extend(tokenised_sentence_data)
+                    if paragraph is not None:
+                        tokenised_sentence_data = AnuvaadMarTokenizer().tokenize(paragraph)
+                        tokenised_text.extend(tokenised_sentence_data)
             elif text_locale == 'ta':
                 for paragraph in paragraph_data:
-                    tokenised_sentence_data = AnuvaadTamTokenizer().tokenize(paragraph)
-                    tokenised_text.extend(tokenised_sentence_data)
+                    if paragraph is not None:
+                        tokenised_sentence_data = AnuvaadTamTokenizer().tokenize(paragraph)
+                        tokenised_text.extend(tokenised_sentence_data)
             return tokenised_text
         except:
             log_exception("tokenisation_core : Error occured during tokenising the paragraphs", self.input_json_data, None)
@@ -69,10 +74,11 @@ class Tokenisation(object):
     def adding_tokenised_text_blockmerger(self, input_json_data_pagewise, in_locale, page_id):
         try:
             blocks = input_json_data_pagewise['text_blocks']
-            for block_id, item in enumerate(blocks):
-                text_data = item['text']
-                tokenised_text = self.tokenisation_core([text_data], in_locale)
-                item['tokenized_sentences'] = [self.making_object_for_tokenised_text(text, i, block_id, page_id) for i, text in enumerate(tokenised_text)]
+            if blocks is not None:
+                for block_id, item in enumerate(blocks):
+                    text_data = item['text']
+                    tokenised_text = self.tokenisation_core([text_data], in_locale)
+                    item['tokenized_sentences'] = [self.making_object_for_tokenised_text(text, i, block_id, page_id) for i, text in enumerate(tokenised_text)]
             return input_json_data_pagewise
         except:
             log_error("Keys in block merger response changed or tokenisation went wrong.", self.input_json_data, None) 
