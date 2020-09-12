@@ -199,15 +199,25 @@ def drop_cols(df,drop_col=None ):
 
 def change_font(font_name,lang):
     if font_name != None :
-        if lang!='en':
-            font = config.FONT_CONFIG[lang]
-            return font
+        if lang != 'en':
+            if lang in config.FONT_CONFIG.keys():
+                font = config.FONT_CONFIG[lang]
+                return font
+            else:
+                if '+' in font_name:
+                    font = font_name.split('+')[1]
+                else:
+                    font = font_name
+                return font
         else:
             if '+' in font_name:
                 font = font_name.split('+')[1]
             else:
-                font = font_name
-            return font
+                if '+' in font_name:
+                    font = font_name.split('+')[1]
+                else:
+                    font = font_name
+                return font
     else :
         return None
 
