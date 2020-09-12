@@ -45,6 +45,8 @@ def children_condition(block_df,children_df,index,children_flag):
         block_df.at[index, 'xml_index']    = children_df['xml_index'].min()
         block_df.at[index, 'font_size']    = children_df['font_size'].max()
         block_df.at[index, 'font_family']  = most_frequent(children_df['font_family'])
+        block_df.at[index, 'font_size_updated']    = children_df['font_size_updated'].max()
+        block_df.at[index, 'font_family_updated']  = most_frequent(children_df['font_family_updated'])
         block_df.at[index, 'font_color']   = most_frequent(children_df['font_color'])
         if children_flag==True:
             block_df = sub_children(block_df,children_df,index)

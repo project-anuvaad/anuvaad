@@ -53,6 +53,7 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_h
     
     in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths)
     h_dfs = get_xml.get_hdfs(in_dfs, header_region, footer_region)
+    
     if lang != 'en':
         h_dfs = tesseract_ocr(pdf_image_paths, page_width, page_height, h_dfs, lang)
         for h_df in h_dfs:
@@ -60,11 +61,12 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_h
     v_dfs                              = get_xml.get_vdfs(h_dfs)
     p_dfs                              = get_xml.get_pdfs(v_dfs)
     p_dfs , line_dfs                   = get_underline(p_dfs,line_dfs,app_context.application_context)
-    p_dfs                              = get_xml.update_font(p_dfs,lang)
+    
     
     if lang=='en':
         p_dfs  = text_merger.unify_child_text_blocks(p_dfs)
-
+    
+    
     log_info( "document structure analysis successfully completed", app_context.application_context )
     return p_dfs, table_dfs, line_dfs , bg_dfs
 
@@ -89,11 +91,14 @@ def doc_structure_response(bg_dfs, text_block_dfs,table_dfs,line_dfs,page_width,
     start_time = time.time()
     response = { 'result' : [] }
     pages    = len(text_block_dfs)
+    
     for page_index in range(pages):
         img_df     = bg_dfs[page_index]
         text_df    = text_block_dfs[page_index]
+        text_df    =  get_xml.drop_update_col(text_df)
         table_df   = table_dfs[page_index]
         line_df    = line_dfs[page_index]
+        
         page_json  = response_per_page(text_df, img_df, table_df,line_df, page_index, page_width, page_height)
         response['result'].append(page_json)
     end_time = time.time() -start_time
@@ -102,6 +107,8 @@ def doc_structure_response(bg_dfs, text_block_dfs,table_dfs,line_dfs,page_width,
     return response
 
 def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_height):
+    
+    
 
     p_df['block_id']     = range(len(p_df))
     img_df['image_id']   = range(len(img_df))
@@ -112,7 +119,9 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
     image_data         = process_image_df(img_df)
     table_data         = process_table_df(table_df)
     line_data          = process_line_df(line_df)
+    
     text_data          = df_to_json(p_df)
+    
     res_dict['images'] = image_data
     res_dict['tables'] = table_data
     res_dict['lines']  = line_data

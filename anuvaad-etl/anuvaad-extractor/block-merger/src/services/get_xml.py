@@ -188,77 +188,45 @@ def process_block(children, block_configs):
     return dfs
 
 
-def drop_cols(df,drop_col=None ):
-    if drop_col==None:
-        drop_col = ['index', 'xml_index','level_0']
-    
-    for col in drop_col:
-        if col in df.columns:
-            df = df.drop(columns=[col])
-    return df
-
-def change_font(font_name, lang):
-    if font_name != None and lang != None:
-        if lang in config.FONT_CONFIG.keys():
-            font = config.FONT_CONFIG[lang]
-            return font
-        else:
-            if '+' in font_name:
-                return font_name.split('+')[1]
-            return font_name
-    else :
+def drop_cols(df,drop_col=None):
+    if len(df) !=0:
+        if drop_col==None:
+            drop_col = ['index', 'xml_index','level_0']
+        
+        for col in drop_col:
+            if col in df.columns:
+                df = df.drop(columns=[col])
+        return df
+    else:
         return None
 
+def drop_update_col(page_df):
+    try:
+        page_df     = page_df.where(page_df.notnull(), None)
+        for index, row in page_df.iterrows():
+            if row['children'] != None:
+                sub_block_children     =  pd.read_json(row['children'])
+                sub_block_children     =  sub_block_children.where(sub_block_children.notnull(), None)
+                for index2,row2 in sub_block_children.iterrows():
+                    if row2['children']!=None:
+                        sub_block_children2   =  pd.read_json(row2['children'])
+                        sub_block_children2   = drop_cols(sub_block_children2,drop_col=['font_family','font_size'])
+                        sub_block_children2.rename(columns={'font_family_updated': 'font_family', 'font_size_updated': 'font_size'},inplace=True)
+                        sub_block_children.at[index2,'children'] = sub_block_children2.to_json()
+                sub_block_children   = drop_cols(sub_block_children,drop_col=['font_family','font_size'])
+                sub_block_children.rename(columns={'font_family_updated': 'font_family', 'font_size_updated': 'font_size'},inplace=True)
+                page_df.at[index,'children'] = sub_block_children.to_json()
 
-#
-# def page_font_update(page_df,lang):
-#
-#     page_df     = page_df.where(page_df.notnull(), None)
-#     for index, row in page_df.iterrows():
-#         page_df.at[index,'font_family'] = change_font(row["font_family"],lang)
-#         if 'children' in page_df.columns:
-#             if row['children'] == None:
-#                 pass
-#             else:
-#                 sub_block_children   =  pd.read_json(row['children'])
-#                 df = page_font_update(sub_block_children,lang)
-#                 page_df.at[index,'children'] = df.to_json()
-#
-#     return page_df
+        page_df   = drop_cols(page_df,drop_col=['font_family','font_size'])
+        page_df.rename(columns={'font_family_updated': 'font_family', 'font_size_updated': 'font_size'},inplace=True)
+    
+        return page_df
 
-#
-# def page_font_update(page_df, lang):
-#
-#     page_df = page_df.where(page_df.notnull(), None)
-#
-#     for index, row in page_df.iterrows():
-#         page_df.at[index, 'font_family'] = change_font(row["font_family"], lang)
-#         if 'children' in page_df.columns:
-#             if row['children'] == None:
-#                 pass
-#             else:
-#                 sub_block_children = pd.read_json(row['children'])
-#                 sub_block_children = sub_block_children.where(sub_block_children.notnull(), None)
-#
-#                 for index2 , row2 in sub_block_children.iterrows():
-#                     sub_block_children.at[index2,'font_family'] = change_font(row2["font_family"], lang)
-#                     if 'children' in sub_block_children.columns:
-#                         if row2['children'] == None:
-#                             pass
-#                         else :
-#                             sub_children = pd.read_json(row2['children'])
-#                             sub_children = sub_children.where(sub_children.notnull(), None)
-#                             for index3, row3 in sub_children.iterrows():
-#                                 sub_children.at[index3, 'font_family'] = change_font(row3["font_family"], lang)
-#
-#                             sub_block_children.at[index2,'children'] = sub_children.to_json()
-#
-#                 page_df.at[index, 'children'] = sub_block_children.to_json()
-#
-#     return page_df
+    except Exception as e:
+        log_error('Error in updating and droping columns', app_context.application_context, e)
+        return None
 
-
-
+'''
 
 def update_font(p_dfs,lang):
     start_time          = time.time()
@@ -319,32 +287,8 @@ def update_font(p_dfs,lang):
         return None
 
 
-    return new_dfs
+    return new_dfs    '''
 
-
-#
-#
-# def update_font(p_dfs, lang):
-#     start_time = time.time()
-#     pages      = len(p_dfs)
-#     new_dfs    = []
-#     #try:
-#     for page_index in range(pages):
-#         page_df     = p_dfs[page_index]
-#         page_lis    = []
-#         child_lis   = []
-#         df = page_font_update(page_df,lang)
-#         new_dfs.append(df)
-#     # except Exception as e :
-#     #     log_error('Error in updating fonts'+str(e), app_context.application_context, e)
-#     #return None
-#
-#     end_time         = time.time()
-#     elapsed_time     = end_time - start_time
-#     log_info('Processing of updating fonts completed in {}/{}, average per page {}'.format(elapsed_time, len(p_dfs), (elapsed_time/len(p_dfs))), app_context.application_context)
-#     return new_dfs
-#
-    
 
     
                 

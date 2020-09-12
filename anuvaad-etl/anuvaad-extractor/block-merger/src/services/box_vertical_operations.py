@@ -59,6 +59,8 @@ def merge_vertical_blocks(in_df, configs, debug=False):
 
             block_df.at[index, 'xml_index'] = children_df['xml_index'].min()
             block_df.at[index, 'font_size'] = children_df['font_size'].max()
+            block_df.at[index, 'font_family_updated'] = df.iloc[lines[0][0]]['font_family_updated']
+            block_df.at[index, 'font_size_updated'] = children_df['font_size_updated'].max()
             block_df.at[index, 'font_family'] = df.iloc[lines[0][0]]['font_family']
             block_df.at[index, 'font_color'] = df.iloc[lines[0][0]]['font_color']
             block_df.at[index, 'children'] = children_df.to_json()
