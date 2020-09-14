@@ -27,7 +27,7 @@ class AnuvaadHinTokenizer(object):
     _text_abbrevations_pattern_cic = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?)'
     #_text_abbrevations_pattern_cii = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?)'
     _text_abbrevations_pattern_cci = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?)?)'
-    _text_colon_abbreviations_pattern = r'([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?[:](\s)?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?'
+    _text_colon_abbreviations_pattern = r'(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?[:](\s)?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?)'
     _text_abbrevations_without_space_pattern = r'(^(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?)'
     _text_abbrevations_cic = []
     _text_abbrevations_cci = []
@@ -85,7 +85,6 @@ class AnuvaadHinTokenizer(object):
         text = self.serialize_decimal(text)
         text = self.add_space_after_sentence_end(text)
         sentences = self._tokenizer.tokenize(text)
-        print(sentences)
         output = []
         for se in sentences:
             se = self.deserialize_dates(se)
@@ -283,7 +282,7 @@ class AnuvaadHinTokenizer(object):
         return text
 
     def serialize_dot_with_number_beginning(self, text):
-        patterns = re.findall(r'(^[0-9]{1,}[.])',text)
+        patterns = re.findall(r'(^[\s]?[0-9]{1,}[-]?[.])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -368,7 +367,7 @@ class AnuvaadHinTokenizer(object):
             for pattern in patterns_wo:
                 pattern_obj = re.compile(re.escape(pattern))
                 self._text_abbrevations_without_space.append(pattern)
-                text = pattern_obj.sub('#W'+str(index)+'S#', text)
+                text = pattern_obj.sub('#W'+str(index_for_without_space)+'S#', text)
                 index_for_without_space+=1
         patterns_cic = re.findall(self._text_abbrevations_pattern_cic, text)
         patterns_cic = [tuple(j for j in pattern if j)[0] for pattern in patterns_cic]
@@ -378,7 +377,7 @@ class AnuvaadHinTokenizer(object):
             for pattern in patterns_cic:
                 pattern_obj = re.compile(re.escape(pattern))
                 self._text_abbrevations_cic.append(pattern)
-                text = pattern_obj.sub('#CI'+str(index)+'C#', text)
+                text = pattern_obj.sub('#CI'+str(index_cic)+'C#', text)
                 index_cic+=1
         patterns = re.findall(self._text_abbrevations_pattern_cci, text)
         patterns = [tuple(j for j in pattern if j)[0] for pattern in patterns]
@@ -388,7 +387,7 @@ class AnuvaadHinTokenizer(object):
             for pattern in patterns:
                 pattern_obj = re.compile(re.escape(pattern))
                 self._text_abbrevations_cci.append(pattern)
-                text = pattern_obj.sub('##C'+str(index)+'CI##', text)
+                text = pattern_obj.sub('##C'+str(index_cci)+'CI##', text)
                 index_cci+=1        
         return text
 
@@ -406,17 +405,17 @@ class AnuvaadHinTokenizer(object):
         #     index += 1
         if self._text_abbrevations_without_space is not None and isinstance(self._text_abbrevations_without_space, list):
             for pattern in self._text_abbrevations_without_space:
-                pattern_obj = re.compile(re.escape('#W'+str(index)+'S#'), re.IGNORECASE)
+                pattern_obj = re.compile(re.escape('#W'+str(index_for_without_space)+'S#'), re.IGNORECASE)
                 text = pattern_obj.sub(pattern, text)
                 index_for_without_space+=1
         if self._text_abbrevations_cic is not None and isinstance(self._text_abbrevations_cic, list):
             for pattern in self._text_abbrevations_cic:
-                pattern_obj = re.compile(re.escape('#CI'+str(index)+'C#'), re.IGNORECASE)
+                pattern_obj = re.compile(re.escape('#CI'+str(index_cic)+'C#'), re.IGNORECASE)
                 text = pattern_obj.sub(pattern, text)
                 index_cic+=1
         if self._text_abbrevations_cci is not None and isinstance(self._text_abbrevations_cci, list):
             for pattern in self._text_abbrevations_cci:
-                pattern_obj = re.compile(re.escape('##C'+str(index)+'CI##'), re.IGNORECASE)
+                pattern_obj = re.compile(re.escape('##C'+str(index_cci)+'CI##'), re.IGNORECASE)
                 text = pattern_obj.sub(pattern, text)
                 index_cci+=1
         return text
@@ -450,7 +449,6 @@ class SentenceEndLangVars(PunktLanguageVars):
     with open('repositories/tokenizer_data/end.txt', encoding='utf8') as f:
         text = f.read()
     sent_end_chars = text.split('\n')
-    print(",end   ",sent_end_chars)
     
     # # punkt = PunktTrainer()
     # # punkt.train(text,finalize=False, verbose=False)
