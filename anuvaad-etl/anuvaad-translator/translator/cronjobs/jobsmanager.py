@@ -28,7 +28,8 @@ class JobsManger(Thread):
             try:
                 records = repo.find_all()
                 for record in records:
-                    log_info("JobsManager - recordID: " + record["recordID"] + " | translated: " + str(record["translatedSentences"])
+                    log_info("JobsManager - recordID: " + record["recordID"] + "| total: " + str(record["totalSentences"])
+                             + " | translated: " + str(record["translatedSentences"])
                              + " | skipped: " + str(record["skippedSentences"]), record["transInput"])
                     is_added = False
                     try:
