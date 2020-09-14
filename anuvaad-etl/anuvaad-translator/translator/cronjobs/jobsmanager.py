@@ -24,31 +24,36 @@ class JobsManger(Thread):
         while not self.stopped.wait(30):
             completed = []
             failed = []
+            inprogress = []
             try:
                 records = repo.find_all()
                 for record in records:
+                    log_info("JobsManager - recordID: " + record["recordID"] + " | translated: " + str(record["translatedSentences"])
+                             + " | skipped: " + str(record["skippedSentences"]), record["transInput"])
+                    is_added = False
                     try:
                         total = record["totalSentences"]
                         if total == 0:
                             failed.append(record)
-                            log_info("FAILED 1 found! recordID: " + record["recordID"], record["transInput"])
                             continue
                         translated = record["translatedSentences"]
                         skipped = record["skippedSentences"]
                         if total == translated or total == (translated + skipped):
                             completed.append(record)
-                            log_info("COMPLETED found! recordID: " + record["recordID"], record["transInput"])
+                            is_added = True
                         elif total == skipped:
                             failed.append(record)
-                            log_info("FAILED 2 found! recordID: " + record["recordID"], record["transInput"])
-                        log_info("INPROGRESS found! recordID: " + record["recordID"], record["transInput"])
+                            is_added = True
+                        if not is_added:
+                            inprogress.append(record)
                     except Exception as e:
                         log_exception("Exception in JobsManger for record: " + record["recordID"], record["transInput"], e)
                         continue
                 self.push_to_ch(completed, obj)
                 self.push_to_wfm(completed, failed, obj)
+                log_info("JobsManger - Run: " + str(run)
+                         + " | Completed: " + str(len(completed)) + " | Failed: " + str(len(failed)) + " | InProgress: " + str(len(inprogress)), obj)
                 run += 1
-                log_info("JobsManger - Run: " + str(run) + " | Records: " + str(len(completed) + len(failed)), obj)
             except Exception as e:
                 log_exception("JobsManger - Run: " + str(run) + " | Exception: " + str(e), obj, e)
 
