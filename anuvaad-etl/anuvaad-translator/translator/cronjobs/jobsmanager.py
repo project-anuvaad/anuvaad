@@ -28,9 +28,11 @@ class JobsManger(Thread):
             try:
                 records = repo.find_all()
                 for record in records:
+                    '''
                     log_info("JobsManager - recordID: " + record["recordID"] + "| total: " + str(record["totalSentences"])
                              + " | translated: " + str(record["translatedSentences"])
                              + " | skipped: " + str(record["skippedSentences"]), record["transInput"])
+                    '''
                     is_added = False
                     try:
                         total = record["totalSentences"]
@@ -50,8 +52,9 @@ class JobsManger(Thread):
                     except Exception as e:
                         log_exception("Exception in JobsManger for record: " + record["recordID"], record["transInput"], e)
                         continue
-                self.push_to_ch(completed, obj)
-                self.push_to_wfm(completed, failed, obj)
+                pushed = self.push_to_ch(completed, obj)
+                if pushed:
+                    self.push_to_wfm(completed, failed, obj)
                 log_info("JobsManger - Run: " + str(run)
                          + " | Completed: " + str(len(completed)) + " | Failed: " + str(len(failed)) + " | InProgress: " + str(len(inprogress)), obj)
                 run += 1
@@ -69,10 +72,10 @@ class JobsManger(Thread):
                     "pages": complete["data"]["result"]
                 }
                 utils.call_api(save_content_url, "POST", ch_input, None)
-                return None
+                return True
         except Exception as e:
             log_exception("Exception while pushing to CH: " + str(e), obj)
-            return None
+            return False
 
     # Method to push completed and failed records to WFM for job status update
     def push_to_wfm(self, completed, failed, obj):
@@ -122,8 +125,7 @@ class JobsManger(Thread):
             for job_id in job_wise_records.keys():
                 producer.produce(job_wise_records[job_id], anu_translator_output_topic)
                 repo.delete(job_id)
-            return None
+            return True
         except Exception as e:
             log_exception("Exception while pushing to WFM: " + str(e), obj)
-            return None
-
+            return False

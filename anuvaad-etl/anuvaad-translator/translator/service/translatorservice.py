@@ -155,8 +155,6 @@ class TranslatorService:
             job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
             record_id = str(recordid_split[0]) + "|" + str(recordid_split[1])
             translate_wf_input = {"jobID": job_id}
-            log_info("Data received from NMT..", translate_wf_input)
-            log_info("recordID: " + record_id, translate_wf_input)
             file = self.get_content_from_db(record_id, None, translate_wf_input)
             if not file:
                 log_error("There is no file under translation for this job: " + str(job_id) + " and file: " + str(file_id), translate_wf_input, nmt_output["status"]["errorObj"])
