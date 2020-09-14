@@ -17,6 +17,7 @@ class JobsManger(Thread):
     def run(self):
         log_info("JobsManger running......", None)
         repo = TranslatorRepository()
+        run = 0
         while not self.stopped.wait(30):
             completed = []
             failed = []
@@ -36,17 +37,19 @@ class JobsManger(Thread):
                         continue
                 self.push_to_ch(completed)
                 self.push_to_wfm(completed, failed)
+                run += 1
+                log_info("JobsManger - Run: " + str(run) + " | Records: " + str(len(completed) + len(failed)), {"metadata": {"module": "TRANSLATOR"}})
             except Exception as e:
-                log_exception("Exception in JobsManger: " + str(e), None, e)
+                log_exception("JobsManger - Run: " + str(run) + " | Exception: " + str(e), {"metadata": {"module": "TRANSLATOR"}}, e)
 
     # Method to push completed records to CH
     def push_to_ch(self, completed):
         utils = TranslatorUtils()
         for complete in completed:
             ch_input = {
-                "userid": complete["transInput"]["metadata"]["userID"],
-                "uniqueID": complete["recordID"],
-                "request": complete["data"]
+                "file_locale": complete["transInput"]["metadata"]["userID"],
+                "record_id": complete["recordID"],
+                "pages": complete["data"]["result"]
             }
             utils.call_api(save_content_url, "POST", ch_input, None)
             return None
