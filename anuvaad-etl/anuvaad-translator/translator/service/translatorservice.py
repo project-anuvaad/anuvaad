@@ -29,9 +29,11 @@ class TranslatorService:
             try:
                 dumped = self.dump_file_to_db(file["path"], translate_wf_input)
                 if not dumped:
+                    translate_wf_input["status"] = "FAILED"
                     return post_error_wf("CONTENT_DUMP_FAILED", "Error while dumping file content to DB", translate_wf_input, None)
                 pushed = self.push_sentences_to_nmt(file, translate_wf_input)
                 if not pushed:
+                    translate_wf_input["status"] = "FAILED"
                     return post_error_wf("BATCH_PUSH_FAILED", "Error while pushing batches to nmt", translate_wf_input, None)
             except Exception as e:
                 translate_wf_input["status"] = "FAILED"
@@ -76,7 +78,7 @@ class TranslatorService:
             pages = data["result"]
             total_sentences = 0
             for page in pages:
-                batches = self.fetch_batches_of_sentences(record_id, page, translate_wf_input)
+                batches = self.fetch_batches_of_sentences(file, record_id, page, translate_wf_input)
                 if not batches:
                     log_error("No batches obtained for page: " + str(page["page_no"]), translate_wf_input, None)
                     continue
@@ -101,7 +103,7 @@ class TranslatorService:
             return None
 
     # Method to fetch batches for sentences from the file
-    def fetch_batches_of_sentences(self, record_id, page, translate_wf_input):
+    def fetch_batches_of_sentences(self, file, record_id, page, translate_wf_input):
         try:
             log_info("Building batches of sentences for page: " + str(page["page_no"]), translate_wf_input)
             sentences_for_trans = {}
@@ -109,15 +111,16 @@ class TranslatorService:
             text_blocks = page["text_blocks"]
             if text_blocks:
                 for block in text_blocks:
+                    log.info(block)
                     block_id = block["block_id"]
-                    if block["tokenized_sentences"]:
+                    if 'tokenized_sentences' in block.keys():
                         batch_key = 0
                         for sentence in block["tokenized_sentences"]:
                             node_id = str(record_id) + "|" + str(page_no) + "|" + str(block_id)
                             sent_nmt_in = {
-                                "src": sentence["src"],
+                                "src": sentence["src_text"],
                                 "s_id": sentence["sentence_id"],
-                                "id": translate_wf_input["input"]["model"]["id"],
+                                "id": file["model"]["_id"],
                                 "n_id": node_id
                             }
                             if sentences_for_trans[batch_key]:
@@ -132,8 +135,7 @@ class TranslatorService:
                                 batch_key += 1
                         return sentences_for_trans
                     else:
-                        log_error("There are no tokenised sentences in block: " + str(block_id), translate_wf_input,
-                                  None)
+                        log_error("There are no tokenised sentences in block: " + str(block_id), translate_wf_input, None)
                         continue
             else:
                 log_error("There are no text blocks for this page: " + str(page_no), translate_wf_input, None)
