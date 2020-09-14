@@ -84,6 +84,7 @@ class TranslatorService:
                     continue
                 for batch_no in batches.keys():
                     batch = batches[batch_no]
+                    record_id = record_id + "|" + str(len(batch))
                     nmt_in = {
                         "url_end_point": file["model"]["url_end_point"],
                         "record_id": record_id, "message": batch
@@ -111,10 +112,10 @@ class TranslatorService:
             page_no = page["page_no"]
             text_blocks = page["text_blocks"]
             if text_blocks:
+                batch_key = 0
                 for block in text_blocks:
                     block_id = block["block_id"]
                     if 'tokenized_sentences' in block.keys():
-                        batch_key = 0
                         for sentence in block["tokenized_sentences"]:
                             node_id = str(record_id) + "|" + str(page_no) + "|" + str(block_id)
                             sent_nmt_in = {
@@ -149,8 +150,9 @@ class TranslatorService:
         try:
             nmt_output = nmt_output["out"]
             record_id = nmt_output["record_id"]
-            job_id = str(record_id).split("|")[0]
-            file_id = str(record_id).split("|")[1]
+            recordid_split = str(record_id).split("|")
+            job_id, file_id, batch_size = recordid_split[0], recordid_split[1], recordid_split[2]
+            record_id = str(recordid_split[0]) + "|" + str(recordid_split[1])
             translate_wf_input = {"jobID": job_id}
             log_info("Data received from NMT..", translate_wf_input)
             file = self.get_content_from_db(record_id, None, translate_wf_input)
@@ -158,15 +160,17 @@ class TranslatorService:
                 log_error("There is no file under translation for this job: " + str(job_id) + " and file: " + str(file_id), translate_wf_input, nmt_output["status"]["errorObj"])
                 return None
             file = file[0]
+            skip_count = 0
+            trans_count = 0
             translate_wf_input = file["transInput"]
             if 'status' in nmt_output.keys():
-                if 'statusCode' in nmt_output["status"].keys() != 200:
+                if 'statusCode' in nmt_output["status"].keys():
                     if nmt_output["status"]["statusCode"] != 200:
-                        log_error("There was an error at NMT while translating", translate_wf_input, nmt_output["status"]["errorObj"])
-                        return None
+                        skip_count += batch_size
+                        log_error("Error from NMT: " + str(nmt_output["status"]["why"]), translate_wf_input, None)
+                        if 'errorObj' in nmt_output["status"].keys():
+                            log_error("Error from NMT: " + str(nmt_output["status"]["why"]), translate_wf_input, nmt_output["status"]["errorObj"])
             if 'response_body' in nmt_output.keys():
-                skip_count = 0
-                trans_count = 0
                 for response in nmt_output["response_body"]:
                     try:
                         node_id = response["n_id"]
@@ -187,10 +191,10 @@ class TranslatorService:
                         log_exception("Exception while saving translations: " + str(e), translate_wf_input, e)
                         skip_count += 1
                         continue
-                query = {"recordID": record_id}
-                object_in = {"skippedSentences": skip_count, "translatedSentences": trans_count}
-                repo.update(object_in, query)
-                log_info("Batch processed, translated: " + str(trans_count) + "and skipped: "+str(skip_count), translate_wf_input)
+            query = {"recordID": record_id}
+            object_in = {"skippedSentences": skip_count, "translatedSentences": trans_count}
+            repo.update(object_in, query)
+            log_info("Batch processed, translated: " + str(trans_count) + "and skipped: "+str(skip_count), translate_wf_input)
         except Exception as e:
             log_exception("Exception while processing NMT output: " + str(e), None, e)
 
