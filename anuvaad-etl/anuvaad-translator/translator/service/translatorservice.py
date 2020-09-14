@@ -90,7 +90,8 @@ class TranslatorService:
                     }
                     producer.produce(nmt_in, anu_nmt_input_topic)
                     total_sentences += len(batch)
-                    log_info("PAGE NO: " + str(page["page_no"]) + " | BATCH NO: " + str(batch_no) + " | BATCH SIZE: " + str(len(batch)) + " | OVERALL SENTENCES: " + str(total_sentences))
+                    log_info("PAGE NO: " + str(page["page_no"]) + " | BATCH NO: " + str(batch_no)
+                             + " | BATCH SIZE: " + str(len(batch)) + " | OVERALL SENTENCES: " + str(total_sentences), translate_wf_input)
             if total_sentences > 0:
                 repo.update({"totalSentences": total_sentences}, {"recordID": record_id})
                 log_info("All sentences sent to NMT, recordID: " + record_id + " | count: " + str(total_sentences), translate_wf_input)
@@ -156,6 +157,7 @@ class TranslatorService:
             if file is None:
                 log_error("There is no file under translation for this job: " + str(job_id) + " and file: " + str(file_id), translate_wf_input, nmt_output["status"]["errorObj"])
                 return None
+            file = file[0]
             translate_wf_input = file["transInput"]
             if 'status' in nmt_output.keys():
                 if 'statusCode' in nmt_output["status"].keys() != 200:
