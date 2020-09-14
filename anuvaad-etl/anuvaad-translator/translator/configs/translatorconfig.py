@@ -14,8 +14,8 @@ fetch_content_url = os.environ.get('FETCH_CONTENT_URL', 'https://auth.anuvaad.or
 #common-variables
 tool_translator = "TRANSLATOR"
 nmt_max_batch_size = 25
-anu_nmt_input_topic = 'anuvaad_nmt_translate_processed'
-anu_nmt_output_topic = 'anuvaad_nmt_translate'
+anu_nmt_input_topic = 'anuvaad_nmt_translate'
+anu_nmt_output_topic = 'anuvaad_nmt_translate_processed'
 
 #kafka-configs
 anu_translator_input_topic = 'anuvaad-dp-tools-translator-input-v1'
