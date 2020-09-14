@@ -31,13 +31,17 @@ class JobsManger(Thread):
                         total = record["totalSentences"]
                         if total == 0:
                             failed.append(record)
+                            log_info("FAILED 1 found! recordID: " + record["recordID"], record["transInput"])
                             continue
                         translated = record["translatedSentences"]
                         skipped = record["skippedSentences"]
                         if total == translated or total == (translated + skipped):
                             completed.append(record)
+                            log_info("COMPLETED found! recordID: " + record["recordID"], record["transInput"])
                         elif total == skipped:
                             failed.append(record)
+                            log_info("FAILED 2 found! recordID: " + record["recordID"], record["transInput"])
+                        log_info("INPROGRESS found! recordID: " + record["recordID"], record["transInput"])
                     except Exception as e:
                         log_exception("Exception in JobsManger for record: " + record["recordID"], record["transInput"], e)
                         continue

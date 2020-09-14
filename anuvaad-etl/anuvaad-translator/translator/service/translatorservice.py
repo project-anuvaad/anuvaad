@@ -122,7 +122,7 @@ class TranslatorService:
                             sent_nmt_in = {
                                 "src": sentence["src_text"],
                                 "s_id": sentence["sentence_id"],
-                                "id": file["model"]["_id"],
+                                "id": eval(file["model"]["model_id"]),
                                 "n_id": node_id
                             }
                             if batch_key in sentences_for_trans.keys():
