@@ -83,10 +83,12 @@ class FetchContentHandler(Resource):
         parse.add_argument('job_id', type=str, location='args',help='Job Id is required', required=True)
         parse.add_argument('start_page', type=int, location='args',help='', required=False)
         parse.add_argument('end_page', type=int, location='args',help='', required=False)
+        parse.add_argument('all', type=str, location='args',help='', required=False)
         args = parse.parse_args()
         process_identifier = args['job_id']
         start_page = args['start_page']
         end_page = args['end_page']
+        all_pages = args['all']
         if start_page is None:
             start_page = 1
         if end_page is None:
@@ -109,6 +111,8 @@ class FetchContentHandler(Resource):
             end_page = max_page_number 
         if start_page > max_page_number:
             start_page = max_page_number
+        if all_pages is not None and all_pages == 'true':
+            end_page = max_page_number 
         pipeline_blocks = {
                 '$group':
                     {
