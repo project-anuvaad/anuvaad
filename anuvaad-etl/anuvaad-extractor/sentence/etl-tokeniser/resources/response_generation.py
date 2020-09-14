@@ -27,29 +27,33 @@ class Response(object):
         try:
             error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)
             error_validator.inputfile_list_empty(input_key)
-            if 'files' in input_key.keys():
-                output_file_response = list()
-                for i, item in enumerate(input_key['files']):
-                    input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
-                    if in_file_type == "txt":
-                        input_file_data = file_ops.read_txt_file(input_filename)
-                        error_validator.file_encoding_error(input_file_data)
-                        output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
-                    elif in_file_type == "json":
-                        input_jsonfile_data = file_ops.read_json_file(input_filename)
-                        input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item, in_locale, page_id) 
-                                                            for page_id, item in enumerate(input_jsonfile_data['result'])]
-                        input_jsonfile_data['file_locale'] = in_locale
-                        tokenisation.sending_data_to_content_handler(jobid, user_id, input_jsonfile_data)
-                        output_filename = tokenisation.writing_json_file_blockmerger(i, input_jsonfile_data)
-                    file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
-                    output_file_response.append(file_res)
+            if not isinstance(input_key, list):
+                if 'files' in input_key.keys():
+                    output_file_response = list()
+                    for i, item in enumerate(input_key['files']):
+                        input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                        if in_file_type == "txt":
+                            input_file_data = file_ops.read_txt_file(input_filename)
+                            error_validator.file_encoding_error(input_file_data)
+                            output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
+                        elif in_file_type == "json":
+                            input_jsonfile_data = file_ops.read_json_file(input_filename)
+                            input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item, in_locale, page_id) 
+                                                                for page_id, item in enumerate(input_jsonfile_data['result'])]
+                            input_jsonfile_data['file_locale'] = in_locale
+                            tokenisation.sending_data_to_content_handler(jobid, user_id, input_jsonfile_data)
+                            output_filename = tokenisation.writing_json_file_blockmerger(i, input_jsonfile_data)
+                        file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
+                        output_file_response.append(file_res)
             else:
-                input_paragraphs = input_key['text']
-                input_locale = input_key['locale']
-                tokenised_sentences = [tokenisation.tokenisation_core([input_paragraph], input_locale) for input_paragraph in input_paragraphs]  
-                output_list_text = [{"inputText" : x, "tokenisedSentences" : y} for x, y in zip(input_paragraphs, tokenised_sentences)]
-                output_file_response = {'tokenisedText' : output_list_text, 'locale':input_locale}
+                output_file_response = []
+                for paragraph in input_key:
+                    input_paragraphs = paragraph['text']
+                    input_locale = paragraph['locale']
+                    tokenised_sentences = [tokenisation.tokenisation_core([input_paragraph], input_locale) for input_paragraph in input_paragraphs]  
+                    output_list_text = [{"inputText" : x, "tokenisedSentences" : y} for x, y in zip(input_paragraphs, tokenised_sentences)]
+                    output_per_para = {'tokenisedText' : output_list_text, 'locale':input_locale}
+                    output_file_response.append(output_per_para)
             task_endtime = str(time.time()).replace('.', '')
             response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
             response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
