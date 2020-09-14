@@ -78,24 +78,25 @@ class TranslatorService:
             pages = data["result"]
             total_sentences = 0
             for page in pages:
+                sentences_per_page = 0
                 batches = self.fetch_batches_of_sentences(file, record_id, page, translate_wf_input)
                 if not batches:
                     log_error("No batches obtained for page: " + str(page["page_no"]), translate_wf_input, None)
                     continue
                 for batch_no in batches.keys():
                     batch = batches[batch_no]
-                    record_id = record_id + "|" + str(len(batch))
+                    record_id_enhanced = record_id + "|" + str(len(batch))
                     nmt_in = {
                         "url_end_point": file["model"]["url_end_point"],
-                        "record_id": record_id, "message": batch
+                        "record_id": record_id_enhanced, "message": batch
                     }
                     producer.produce(nmt_in, anu_nmt_input_topic)
+                    sentences_per_page += len(batch)
                     total_sentences += len(batch)
-                    log_info("PAGE NO: " + str(page["page_no"]) + " | BATCH NO: " + str(batch_no)
-                             + " | BATCH SIZE: " + str(len(batch)) + " | OVERALL SENTENCES: " + str(total_sentences), translate_wf_input)
+                log_info("PAGE NO: " + str(page["page_no"]) + " | SENTENCES: " + str(sentences_per_page), translate_wf_input)
             if total_sentences > 0:
                 repo.update({"totalSentences": total_sentences}, {"recordID": record_id})
-                log_info("All sentences sent to NMT, recordID: " + record_id + " | count: " + str(total_sentences), translate_wf_input)
+                log_info("recordID: " + record_id + " | TOTAL NO. OF SENTENCES SENT TO NMT : " + str(total_sentences), translate_wf_input)
                 return True
             else:
                 log_error("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)
@@ -194,7 +195,7 @@ class TranslatorService:
             query = {"recordID": record_id}
             object_in = {"skippedSentences": skip_count, "translatedSentences": trans_count}
             repo.update(object_in, query)
-            log_info("Batch processed, translated: " + str(trans_count) + "and skipped: "+str(skip_count), translate_wf_input)
+            log_info("Batch processed, TRANSLATED: " + str(trans_count) + " and SKIPPED: "+str(skip_count), translate_wf_input)
         except Exception as e:
             log_exception("Exception while processing NMT output: " + str(e), None, e)
 
