@@ -192,8 +192,11 @@ class TranslatorService:
                         log_exception("Exception while saving translations: " + str(e), translate_wf_input, e)
                         skip_count += 1
                         continue
+            content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)[0]
+            total_trans = content_from_db["translatedSentences"] + trans_count
+            total_skip = content_from_db["skippedSentences"] + skip_count
             query = {"recordID": record_id}
-            object_in = {"skippedSentences": skip_count, "translatedSentences": trans_count}
+            object_in = {"skippedSentences": total_skip, "translatedSentences": total_trans}
             repo.update(object_in, query)
             log_info("Batch processed, TRANSLATED: " + str(trans_count) + " and SKIPPED: "+str(skip_count), translate_wf_input)
         except Exception as e:
