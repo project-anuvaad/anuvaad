@@ -23,6 +23,7 @@ class TranslatorService:
     def start_file_translation(self, translate_wf_input):
         translate_wf_input["taskID"] = utils.generate_task_id()
         translate_wf_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
+        translate_wf_input["state"] = "TRANSLATED"
         log_info("Translator process initiated....", translate_wf_input)
         for file in translate_wf_input["input"]["files"]:
             try:
@@ -61,7 +62,7 @@ class TranslatorService:
     def push_sentences_to_nmt(self, file, translate_wf_input):
         try:
             log_info("File translation producer end started......", translate_wf_input)
-            record_id = str(translate_wf_input["jobID"]) + "|" + str(file["path"])
+            record_id = str(str(translate_wf_input["jobID"]) + "|" + str(file["path"]))
             content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
             if not content_from_db:
                 log_error("CONTENT_FETCH_FAILED", "File content from DB couldn't be fetched, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)

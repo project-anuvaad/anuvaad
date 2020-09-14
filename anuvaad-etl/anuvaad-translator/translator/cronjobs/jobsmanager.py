@@ -51,6 +51,7 @@ class JobsManger(Thread):
                 "record_id": complete["recordID"],
                 "pages": complete["data"]["result"]
             }
+            log_info("JobsManger - Pushing to CH..", {"metadata": {"module": "TRANSLATOR"}})
             utils.call_api(save_content_url, "POST", ch_input, None)
             return None
 
@@ -98,7 +99,8 @@ class JobsManger(Thread):
                 job_wise_records[fail["jobID"]] = result
 
         for job_id in job_wise_records.keys():
-            producer.produce(job_wise_records[job_id], anu_translator_output_topic)
+            log_info("Translate out topic: " + str(anu_translator_output_topic), None)
+            producer.produce(object_in=job_wise_records[job_id], topic=anu_translator_output_topic)
             #repo.delete(job_id)
 
         return None

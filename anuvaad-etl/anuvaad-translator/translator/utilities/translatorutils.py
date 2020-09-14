@@ -6,6 +6,7 @@ import urllib
 import requests
 from configs.translatorconfig import file_download_url
 from anuvaad_auditor.loghandler import log_exception, log_error
+from anuvaad_auditor.loghandler import log_info
 
 log = logging.getLogger('file')
 
@@ -36,6 +37,8 @@ class TranslatorUtils:
 
     # Util method to make an API call and fetch the result
     def call_api(self, uri, method, api_input, params):
+        log.info("API input")
+        log.info(api_input)
         try:
             response = None
             if method == "POST":
