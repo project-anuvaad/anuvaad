@@ -122,14 +122,13 @@ class TranslatorService:
                                 "id": file["model"]["_id"],
                                 "n_id": node_id
                             }
-                            if sentences_for_trans[batch_key]:
+                            if batch_key in sentences_for_trans.keys():
                                 sentence_list = sentences_for_trans[batch_key]
                                 sentence_list.append(sent_nmt_in)
                                 sentences_for_trans[batch_key] = sentence_list
                             else:
                                 sentence_list = [sent_nmt_in]
                                 sentences_for_trans[batch_key] = sentence_list
-
                             if len(sentences_for_trans[batch_key]) == nmt_max_batch_size:
                                 batch_key += 1
                         return sentences_for_trans
