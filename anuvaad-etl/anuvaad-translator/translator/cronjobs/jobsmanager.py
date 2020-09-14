@@ -28,6 +28,9 @@ class JobsManger(Thread):
                 for record in records:
                     try:
                         total = record["totalSentences"]
+                        if total == 0:
+                            failed.append(record)
+                            continue
                         translated = record["translatedSentences"]
                         skipped = record["skippedSentences"]
                         if total == translated or total == (translated + skipped):
@@ -105,7 +108,6 @@ class JobsManger(Thread):
                     job_wise_records[fail["jobID"]] = result
 
             for job_id in job_wise_records.keys():
-                log_info("Translate out topic: " + str(anu_translator_output_topic), None)
                 producer.produce(job_wise_records[job_id], anu_translator_output_topic)
                 # repo.delete(job_id)
             return None

@@ -24,16 +24,17 @@ class TranslatorService:
         translate_wf_input["taskID"] = utils.generate_task_id()
         translate_wf_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
         translate_wf_input["state"] = "TRANSLATED"
-        log_info("Translator process initiated....", translate_wf_input)
+        log_info("Translator process initiated... jobID: " + str(translate_wf_input["jobID"]), translate_wf_input)
         for file in translate_wf_input["input"]["files"]:
             try:
                 dumped = self.dump_file_to_db(file["path"], translate_wf_input)
                 if not dumped:
                     return post_error_wf("CONTENT_DUMP_FAILED", "Error while dumping file content to DB", translate_wf_input, None)
-                pushed = self.push_sentences_to_nmt(file["path"], translate_wf_input)
+                pushed = self.push_sentences_to_nmt(file, translate_wf_input)
                 if not pushed:
                     return post_error_wf("BATCH_PUSH_FAILED", "Error while pushing batches to nmt", translate_wf_input, None)
             except Exception as e:
+                translate_wf_input["status"] = "FAILED"
                 log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
                 return post_error_wf("NMT_PUSH_FAILED", "Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
 
@@ -61,8 +62,9 @@ class TranslatorService:
     # Method to push sentences of the file to nmt for translation
     def push_sentences_to_nmt(self, file, translate_wf_input):
         try:
-            log_info("File translation producer end started......", translate_wf_input)
-            record_id = str(str(translate_wf_input["jobID"]) + "|" + str(file["path"]))
+            log_info("File translation producer end.. jobID: " + str(translate_wf_input["jobID"]), translate_wf_input)
+            log.info(translate_wf_input)
+            record_id = str(translate_wf_input["jobID"]) + "|" + str(file["path"])
             content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
             if not content_from_db:
                 log_error("CONTENT_FETCH_FAILED", "File content from DB couldn't be fetched, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
@@ -89,7 +91,7 @@ class TranslatorService:
                     total_sentences += len(batch)
                     log_info("PAGE NO: " + str(page["page_no"]) + " | BATCH NO: " + str(batch_no) + " | BATCH SIZE: " + str(len(batch)) + " | OVERALL SENTENCES: " + str(total_sentences))
             repo.update({"totalSentences": total_sentences}, {"recordID": record_id})
-            log_info("All sentences sent to NMT, count: " + str(total_sentences), translate_wf_input)
+            log_info("All sentences sent to NMT, recordID: " + record_id + " | count: " + str(total_sentences), translate_wf_input)
             return True
         except Exception as e:
             log_exception("Exception while pushing sentences to NMT: " + str(e), translate_wf_input, e)
