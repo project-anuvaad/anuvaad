@@ -15,7 +15,7 @@ class BookKeeper(Thread):
 
     # Cron JOB to fetch status of each record and push it to CH and WFM on completion/failure.
     def run(self):
-        log_info("BookKeeper running......")
+        log_info("BookKeeper running......", None)
         repo = TranslatorRepository()
         while not self.stopped.wait(30):
             completed = []

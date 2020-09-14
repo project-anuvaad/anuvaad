@@ -49,7 +49,7 @@ class TranslatorRepository:
     # Searches the object into mongo collection
     def find_all(self):
         col = self.instantiate()
-        res = col.find().sort({"$natural": 1})
+        res = col.find({})
         result = []
         for record in res:
             result.append(record)
