@@ -8,14 +8,14 @@ from configs.translatorconfig import anu_translator_output_topic
 from configs.translatorconfig import save_content_url
 
 
-class BookKeeper(Thread):
+class JobsManger(Thread):
     def __init__(self, event):
         Thread.__init__(self)
         self.stopped = event
 
     # Cron JOB to fetch status of each record and push it to CH and WFM on completion/failure.
     def run(self):
-        log_info("BookKeeper running......", None)
+        log_info("JobsManger running......", None)
         repo = TranslatorRepository()
         while not self.stopped.wait(30):
             completed = []
@@ -32,15 +32,15 @@ class BookKeeper(Thread):
                         elif total == skipped:
                             failed.append(record)
                     except Exception as e:
-                        log_exception("Exception while book-keeping for record: " + record["recordID"], record["transInput"], e)
+                        log_exception("Exception in JobsManger for record: " + record["recordID"], record["transInput"], e)
                         continue
                 self.push_to_ch(completed)
                 self.push_to_wfm(completed, failed)
             except Exception as e:
-                log_exception("Exception in bookKeeper: " + str(e), None, e)
+                log_exception("Exception in JobsManger: " + str(e), None, e)
 
     # Method to push completed records to CH
-    def push_to_ch(self, completed, failed):
+    def push_to_ch(self, completed):
         utils = TranslatorUtils()
         for complete in completed:
             ch_input = {
@@ -96,6 +96,6 @@ class BookKeeper(Thread):
 
         for job_id in job_wise_records.keys():
             producer.produce(job_wise_records[job_id], anu_translator_output_topic)
-            repo.delete(job_id)
+            #repo.delete(job_id)
 
         return None
