@@ -63,6 +63,7 @@ class JobsManger(Thread):
 
     # Method to push completed records to CH
     def push_to_ch(self, completed, obj):
+        # finish processing failed for WFM
         try:
             utils = TranslatorUtils()
             for complete in completed:
@@ -71,8 +72,15 @@ class JobsManger(Thread):
                     "record_id": complete["recordID"],
                     "pages": complete["data"]["result"]
                 }
-                utils.call_api(save_content_url, "POST", ch_input, None)
-                return True
+                res = utils.call_api(save_content_url, "POST", ch_input, None)
+                if res:
+                    log_info("Content pushed to CH, record: " + complete["recordID"], complete["transInput"])
+                    #go ahead with processing success for WFM
+                else:
+                    log_info("Content push to CH Failed, record: " + complete["recordID"], complete["transInput"])
+                    #say failed for success jobs in WFM
+                    return False
+            return True
         except Exception as e:
             log_exception("Exception while pushing to CH: " + str(e), obj)
             return False
@@ -124,6 +132,7 @@ class JobsManger(Thread):
 
             for job_id in job_wise_records.keys():
                 producer.produce(job_wise_records[job_id], anu_translator_output_topic)
+                log_info("Status pushed to WFM!", job_wise_records[job_id])
                 repo.delete(job_id)
             return True
         except Exception as e:

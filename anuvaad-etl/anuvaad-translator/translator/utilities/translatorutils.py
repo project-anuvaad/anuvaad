@@ -43,8 +43,6 @@ class TranslatorUtils:
                 response = requests.post(url=uri, data=api_input, headers={'Content-Type': 'application/json'})
             elif method == "GET":
                 response = requests.get(url=uri, params=params)
-            log_info("CH API Response: ", None)
-            log_info(response, None)
             if response is not None:
                 if response.text is not None:
                     data = json.loads(response.text)
