@@ -151,7 +151,7 @@ class TranslatorService:
             nmt_output = nmt_output["out"]
             record_id = nmt_output["record_id"]
             recordid_split = str(record_id).split("|")
-            job_id, file_id, batch_size = recordid_split[0], recordid_split[1], recordid_split[2]
+            job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
             record_id = str(recordid_split[0]) + "|" + str(recordid_split[1])
             translate_wf_input = {"jobID": job_id}
             log_info("Data received from NMT..", translate_wf_input)
