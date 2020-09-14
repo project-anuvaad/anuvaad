@@ -132,10 +132,10 @@ class TranslatorService:
                                 sentences_for_trans[batch_key] = sentence_list
                             if len(sentences_for_trans[batch_key]) == nmt_max_batch_size:
                                 batch_key += 1
-                        return sentences_for_trans
                     else:
                         log_error("There are no tokenised sentences in block: " + str(block_id), translate_wf_input, None)
                         continue
+                return sentences_for_trans
             else:
                 log_error("There are no text blocks for this page: " + str(page_no), translate_wf_input, None)
                 return None
@@ -180,7 +180,7 @@ class TranslatorService:
                             "recordID": record_id, "data.result.$.page_no": page_no,
                             "data.page_no.$.block_id": block_id, "data.page_no.$.block_id.$.tokenised_sentences.$.sentence_id": response["s_id"]
                         }
-                        object_in = {"data.page_no.$.block_id.$.tokenised_sentences.$": response}
+                        object_in = {"data.page_no.block_id.tokenised_sentences.$": response}
                         repo.update(object_in, query)
                         trans_count += 1
                     except Exception as e:
