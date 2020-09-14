@@ -68,14 +68,14 @@ def get_text_tag(bold, italic):
 def update_font_size(f_size, lang):
     if f_size != None and lang != None:
         if lang in FONT_SIZE_CONFIG.keys():
-            if f_size<FONT_SIZE_CONFIG[lang]['type_1']['max'] and f_size>=FONT_SIZE_CONFIG[lang]['type_1']['min']:
-                f_size = f_size - f_size*FONT_SIZE_CONFIG[lang]['type_1']['ratio']
+            if f_size<FONT_SIZE_CONFIG[lang]['slab_1']['max'] and f_size>=FONT_SIZE_CONFIG[lang]['slab_1']['min']:
+                f_size = f_size - f_size*FONT_SIZE_CONFIG[lang]['slab_1']['ratio']
 
-            elif f_size<FONT_SIZE_CONFIG[lang]['type_2']['max'] and f_size>=FONT_SIZE_CONFIG[lang]['type_2']['min']:
-                f_size = f_size - f_size*FONT_SIZE_CONFIG[lang]['type_2']['ratio']
+            elif f_size<FONT_SIZE_CONFIG[lang]['slab_2']['max'] and f_size>=FONT_SIZE_CONFIG[lang]['slab_2']['min']:
+                f_size = f_size - f_size*FONT_SIZE_CONFIG[lang]['slab_2']['ratio']
 
-            elif f_size>=FONT_SIZE_CONFIG[lang]['type_3']['min']:
-                f_size = f_size - f_size*FONT_SIZE_CONFIG[lang]['type_3']['ratio']
+            elif f_size>=FONT_SIZE_CONFIG[lang]['slab_3']['min']:
+                f_size = f_size - f_size*FONT_SIZE_CONFIG[lang]['slab_3']['ratio']
 
             return f_size
 

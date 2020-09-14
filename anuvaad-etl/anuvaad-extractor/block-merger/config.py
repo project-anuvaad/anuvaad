@@ -71,13 +71,13 @@ FONT_CONFIG   = {
 }
 FONT_SIZE_CONFIG = {
     "hi":{
-        'type_1':{
+        'slab_1':{
             'min':0, 'max':10, 'ratio':0.00
         },
-        'type_2':{
+        'slab_2':{
             'min':10, 'max':20, 'ratio':0.05
         },
-        'type_3':{
+        'slab_3':{
             'min':20, 'max':50, 'ratio':0.06
         }
     }
