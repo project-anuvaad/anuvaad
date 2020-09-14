@@ -37,8 +37,6 @@ class TranslatorUtils:
 
     # Util method to make an API call and fetch the result
     def call_api(self, uri, method, api_input, params):
-        log.info("API input")
-        log.info(api_input)
         try:
             response = None
             if method == "POST":

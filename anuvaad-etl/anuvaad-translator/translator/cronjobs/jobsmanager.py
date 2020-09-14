@@ -6,6 +6,7 @@ from kafkawrapper.translatorproducer import Producer
 from utilities.translatorutils import TranslatorUtils
 from configs.translatorconfig import anu_translator_output_topic
 from configs.translatorconfig import save_content_url
+from configs.translatorconfig import anu_etl_module_name
 
 
 class JobsManger(Thread):
@@ -18,6 +19,7 @@ class JobsManger(Thread):
         log_info("JobsManger running......", None)
         repo = TranslatorRepository()
         run = 0
+        obj = {"metadata": {"module": anu_etl_module_name}}
         while not self.stopped.wait(30):
             completed = []
             failed = []
@@ -35,72 +37,79 @@ class JobsManger(Thread):
                     except Exception as e:
                         log_exception("Exception in JobsManger for record: " + record["recordID"], record["transInput"], e)
                         continue
-                self.push_to_ch(completed)
-                self.push_to_wfm(completed, failed)
+                self.push_to_ch(completed, obj)
+                self.push_to_wfm(completed, failed, obj)
                 run += 1
-                log_info("JobsManger - Run: " + str(run) + " | Records: " + str(len(completed) + len(failed)), {"metadata": {"module": "TRANSLATOR"}})
+                log_info("JobsManger - Run: " + str(run) + " | Records: " + str(len(completed) + len(failed)), obj)
             except Exception as e:
-                log_exception("JobsManger - Run: " + str(run) + " | Exception: " + str(e), {"metadata": {"module": "TRANSLATOR"}}, e)
+                log_exception("JobsManger - Run: " + str(run) + " | Exception: " + str(e), obj, e)
 
     # Method to push completed records to CH
-    def push_to_ch(self, completed):
-        utils = TranslatorUtils()
-        for complete in completed:
-            ch_input = {
-                "file_locale": complete["transInput"]["metadata"]["userID"],
-                "record_id": complete["recordID"],
-                "pages": complete["data"]["result"]
-            }
-            log_info("JobsManger - Pushing to CH..", {"metadata": {"module": "TRANSLATOR"}})
-            utils.call_api(save_content_url, "POST", ch_input, None)
+    def push_to_ch(self, completed, obj):
+        try:
+            utils = TranslatorUtils()
+            for complete in completed:
+                ch_input = {
+                    "file_locale": complete["transInput"]["metadata"]["userID"],
+                    "record_id": complete["recordID"],
+                    "pages": complete["data"]["result"]
+                }
+                utils.call_api(save_content_url, "POST", ch_input, None)
+                return None
+        except Exception as e:
+            log_exception("Exception while pushing to CH: " + str(e), obj)
             return None
 
     # Method to push completed and failed records to WFM for job status update
-    def push_to_wfm(self, completed, failed):
-        producer = Producer
+    def push_to_wfm(self, completed, failed, obj):
+        producer = Producer()
         repo = TranslatorRepository()
-        job_wise_records = {}
-        for complete in completed:
-            output = {
-                "inputFile": str(complete["recordID"]).split("|")[1], "outputFile": str(complete["recordID"])
-            }
-            if complete["jobID"] in job_wise_records.keys():
-                result = job_wise_records[complete["jobID"]]
-                job_output = result["output"]
-                job_output.append(output)
-                result["output"] = job_output
-                job_wise_records[complete["jobID"]] = result
-            else:
-                result = complete["transInput"]
-                result["state"] = "TRANSLATED"
-                result["status"] = "SUCCESS"
-                result["taskEndTime"] = eval(str(time.time()).replace('.', ''))
-                job_output = [output]
-                result["output"] = job_output
-                job_wise_records[complete["jobID"]] = result
+        try:
+            job_wise_records = {}
+            for complete in completed:
+                output = {
+                    "inputFile": str(complete["recordID"]).split("|")[1], "outputFile": str(complete["recordID"])
+                }
+                if complete["jobID"] in job_wise_records.keys():
+                    result = job_wise_records[complete["jobID"]]
+                    job_output = result["output"]
+                    job_output.append(output)
+                    result["output"] = job_output
+                    job_wise_records[complete["jobID"]] = result
+                else:
+                    result = complete["transInput"]
+                    result["state"] = "TRANSLATED"
+                    result["status"] = "SUCCESS"
+                    result["taskEndTime"] = eval(str(time.time()).replace('.', ''))
+                    job_output = [output]
+                    result["output"] = job_output
+                    job_wise_records[complete["jobID"]] = result
 
-        for fail in failed:
-            output = {
-                "inputFile": str(fail["recordID"]).split("|")[1], "outputFile": "FAILED"
-            }
-            if fail["jobID"] in job_wise_records.keys():
-                result = job_wise_records[fail["jobID"]]
-                job_output = result["output"]
-                job_output.append(output)
-                result["output"] = job_output
-                job_wise_records[fail["jobID"]] = result
-            else:
-                result = fail["transInput"]
-                result["state"] = "TRANSLATED"
-                result["status"] = "FAILED"
-                result["taskEndTime"] = eval(str(time.time()).replace('.', ''))
-                job_output = [output]
-                result["output"] = job_output
-                job_wise_records[fail["jobID"]] = result
+            for fail in failed:
+                output = {
+                    "inputFile": str(fail["recordID"]).split("|")[1], "outputFile": "FAILED"
+                }
+                if fail["jobID"] in job_wise_records.keys():
+                    result = job_wise_records[fail["jobID"]]
+                    job_output = result["output"]
+                    job_output.append(output)
+                    result["output"] = job_output
+                    job_wise_records[fail["jobID"]] = result
+                else:
+                    result = fail["transInput"]
+                    result["state"] = "TRANSLATED"
+                    result["status"] = "FAILED"
+                    result["taskEndTime"] = eval(str(time.time()).replace('.', ''))
+                    job_output = [output]
+                    result["output"] = job_output
+                    job_wise_records[fail["jobID"]] = result
 
-        for job_id in job_wise_records.keys():
-            log_info("Translate out topic: " + str(anu_translator_output_topic), None)
-            producer.produce(object_in=job_wise_records[job_id], topic=anu_translator_output_topic)
-            #repo.delete(job_id)
+            for job_id in job_wise_records.keys():
+                log_info("Translate out topic: " + str(anu_translator_output_topic), None)
+                producer.produce(job_wise_records[job_id], anu_translator_output_topic)
+                # repo.delete(job_id)
+            return None
+        except Exception as e:
+            log_exception("Exception while pushing to WFM: " + str(e), obj)
+            return None
 
-        return None
