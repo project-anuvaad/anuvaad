@@ -23,7 +23,7 @@ class TranslatorService:
     def start_file_translation(self, translate_wf_input):
         translate_wf_input["taskID"] = utils.generate_task_id()
         translate_wf_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
-        log_info("File Translation initiated....", translate_wf_input)
+        log_info("Translator process initiated....", translate_wf_input)
         for file in translate_wf_input["input"]["files"]:
             try:
                 dumped = self.dump_file_to_db(file["path"], translate_wf_input)
@@ -40,9 +40,9 @@ class TranslatorService:
     def dump_file_to_db(self, file_id, translate_wf_input):
         try:
             log_info("Downloading File....", translate_wf_input)
-            data = utils.download_file(file_id)
+            data = utils.download_file(file_id, translate_wf_input)
             if not data:
-                log_error("File received on input couldn't be read!", translate_wf_input, None)
+                log_error("File received on input couldn't be downloaded!", translate_wf_input, None)
                 return None
             else:
                 log_info("Dumping content to translator DB......", translate_wf_input)
@@ -60,7 +60,7 @@ class TranslatorService:
     # Method to push sentences of the file to nmt for translation
     def push_sentences_to_nmt(self, file, translate_wf_input):
         try:
-            log_info("Translator process started......", translate_wf_input)
+            log_info("File translation producer end started......", translate_wf_input)
             record_id = str(translate_wf_input["jobID"]) + "|" + str(file["path"])
             content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
             if not content_from_db:
@@ -151,11 +151,12 @@ class TranslatorService:
                 log_error("There is no file under translation for this job: " + str(job_id) + " and file: " + str(file_id), translate_wf_input, nmt_output["status"]["errorObj"])
                 return None
             translate_wf_input = file["transInput"]
-            if nmt_output["status"]:
-                if nmt_output["status"]["statusCode"] != 200:
-                    log_error("There was an error at NMT while translating", translate_wf_input, nmt_output["status"]["errorObj"])
-                    return None
-            if nmt_output["response_body"]:
+            if 'status' in nmt_output.keys():
+                if 'statusCode' in nmt_output["status"].keys() != 200:
+                    if nmt_output["status"]["statusCode"] != 200:
+                        log_error("There was an error at NMT while translating", translate_wf_input, nmt_output["status"]["errorObj"])
+                        return None
+            if 'response_body' in nmt_output.keys():
                 skip_count = 0
                 trans_count = 0
                 for response in nmt_output["response_body"]:
