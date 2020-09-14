@@ -63,7 +63,6 @@ class TranslatorService:
     def push_sentences_to_nmt(self, file, translate_wf_input):
         try:
             log_info("File translation producer end.. jobID: " + str(translate_wf_input["jobID"]), translate_wf_input)
-            log.info(translate_wf_input)
             record_id = str(translate_wf_input["jobID"]) + "|" + str(file["path"])
             content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
             if not content_from_db:
@@ -90,9 +89,13 @@ class TranslatorService:
                     producer.produce(nmt_in, anu_nmt_input_topic)
                     total_sentences += len(batch)
                     log_info("PAGE NO: " + str(page["page_no"]) + " | BATCH NO: " + str(batch_no) + " | BATCH SIZE: " + str(len(batch)) + " | OVERALL SENTENCES: " + str(total_sentences))
-            repo.update({"totalSentences": total_sentences}, {"recordID": record_id})
-            log_info("All sentences sent to NMT, recordID: " + record_id + " | count: " + str(total_sentences), translate_wf_input)
-            return True
+            if total_sentences > 0:
+                repo.update({"totalSentences": total_sentences}, {"recordID": record_id})
+                log_info("All sentences sent to NMT, recordID: " + record_id + " | count: " + str(total_sentences), translate_wf_input)
+                return True
+            else:
+                log_error("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)
+                return None
         except Exception as e:
             log_exception("Exception while pushing sentences to NMT: " + str(e), translate_wf_input, e)
             return None
@@ -100,7 +103,7 @@ class TranslatorService:
     # Method to fetch batches for sentences from the file
     def fetch_batches_of_sentences(self, record_id, page, translate_wf_input):
         try:
-            log_info("Building batches of sentences for page: " + page["page_no"], translate_wf_input)
+            log_info("Building batches of sentences for page: " + str(page["page_no"]), translate_wf_input)
             sentences_for_trans = {}
             page_no = page["page_no"]
             text_blocks = page["text_blocks"]

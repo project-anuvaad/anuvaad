@@ -7,6 +7,7 @@ from utilities.translatorutils import TranslatorUtils
 from configs.translatorconfig import anu_translator_output_topic
 from configs.translatorconfig import save_content_url
 from configs.translatorconfig import anu_etl_module_name
+from anuvaad_auditor.errorhandler import post_error_wf
 
 
 class JobsManger(Thread):
@@ -103,6 +104,7 @@ class JobsManger(Thread):
                     result["state"] = "TRANSLATED"
                     result["status"] = "FAILED"
                     result["taskEndTime"] = eval(str(time.time()).replace('.', ''))
+                    result["error"] = post_error_wf("NMT_TRANSLATION_FAILED", "There was an error at NMT while translating!", fail["transInput"], None)
                     job_output = [output]
                     result["output"] = job_output
                     job_wise_records[fail["jobID"]] = result
