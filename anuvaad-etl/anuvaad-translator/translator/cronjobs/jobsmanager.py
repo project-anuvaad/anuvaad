@@ -111,7 +111,7 @@ class JobsManger(Thread):
 
             for job_id in job_wise_records.keys():
                 producer.produce(job_wise_records[job_id], anu_translator_output_topic)
-                # repo.delete(job_id)
+                repo.delete(job_id)
             return None
         except Exception as e:
             log_exception("Exception while pushing to WFM: " + str(e), obj)

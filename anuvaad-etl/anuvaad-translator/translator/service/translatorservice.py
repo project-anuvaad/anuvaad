@@ -111,7 +111,6 @@ class TranslatorService:
             text_blocks = page["text_blocks"]
             if text_blocks:
                 for block in text_blocks:
-                    log.info(block)
                     block_id = block["block_id"]
                     if 'tokenized_sentences' in block.keys():
                         batch_key = 0
