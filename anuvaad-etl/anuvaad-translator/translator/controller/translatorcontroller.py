@@ -11,7 +11,7 @@ log = logging.getLogger('file')
 
 
 # REST endpoint to initiate the workflow.
-@translatorapp.route(context_path + '/v1/doc/workflow/translate', methods=["POST"])
+@translatorapp.route(context_path + '/v1/doc/wf/translate', methods=["POST"])
 def doc_translate_workflow():
     service = TranslatorService()
     data = request.get_json()
