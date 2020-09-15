@@ -134,7 +134,7 @@ def get_xml_info(filepath, lang='en'):
             f_colors.append(f_color)
 
             f_size_updated = update_font_size(f_size, lang)
-            f_sizes_updated.append(f_size_updated)
+            f_sizes_updated.append(int(f_size_updated))
 
             f_family_updated = update_font_family(f_family, lang)
             f_familys_updated.append(f_family_updated)
