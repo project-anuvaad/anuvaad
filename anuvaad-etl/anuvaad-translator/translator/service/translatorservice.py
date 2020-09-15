@@ -165,6 +165,8 @@ class TranslatorService:
                             log_error("Error from NMT: " + str(nmt_output["status"]["why"]), translate_wf_input, nmt_output["status"]["errorObj"])
             if 'response_body' in nmt_output.keys():
                 for response in nmt_output["response_body"]:
+                    log_info("NMT Res", translate_wf_input)
+                    log_info(response, translate_wf_input)
                     try:
                         node_id = response["n_id"]
                         if not node_id:
@@ -173,12 +175,10 @@ class TranslatorService:
                             continue
                         node = str(node_id).split("|")
                         job_id, file_id, page_no, block_id = node[0], node[1], node[2], node[3]
-                        query = {
-                            "recordID": record_id, "data.result.$.page_no": page_no,
-                            "data.page_no.$.block_id": block_id, "data.page_no.$.block_id.$.tokenised_sentences.$.sentence_id": response["s_id"]
-                        }
-                        object_in = {"data.page_no.block_id.tokenised_sentences.$": response}
-                        repo.update(object_in, query)
+                        find = {"recordID": record_id}
+                        set_value = {"data.result.$[p].text_blocks.$[b].tokenized_sentences.$[s]": response}
+                        filters = {"p": {"page_no": page_no}, "b": {"block_id": block_id}, "s": {"sentence_id": response["s_id"]}}
+                        repo.update_nested(find, set_value, filters)
                         trans_count += 1
                     except Exception as e:
                         log_exception("Exception while saving translations: " + str(e), translate_wf_input, e)

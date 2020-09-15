@@ -48,7 +48,6 @@ class TranslatorUtils:
             if response is not None:
                 if response.text is not None:
                     data = json.loads(response.text)
-                    log_info(data, api_input)
                     return data
                 else:
                     log_error("API response was None! URI: " + str(uri), api_input, None)
