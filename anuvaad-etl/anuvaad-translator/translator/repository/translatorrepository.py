@@ -35,10 +35,7 @@ class TranslatorRepository:
     # Updates the object in the mongo collection
     def update_nested(self, find, set_value, filters):
         col = self.instantiate()
-        col.update(
-            find,
-            {"$set": set_value, "arrayFilters": filters}
-        )
+        col.update(find, {"$set": set_value, "$arrayFilters": filters})
 
     # Deletes the object in the mongo collection by job id
     def delete(self, job_id):

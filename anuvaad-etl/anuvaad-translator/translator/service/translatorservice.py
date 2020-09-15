@@ -175,7 +175,7 @@ class TranslatorService:
                         job_id, file_id, page_no, block_id = node[0], node[1], node[2], node[3]
                         find = {"recordID": record_id}
                         set_value = {"data.result.$[p].text_blocks.$[b].tokenized_sentences.$[s]": response}
-                        filters = {"p": {"page_no": page_no}, "b": {"block_id": block_id}, "s": {"sentence_id": response["s_id"]}}
+                        filters = [{"p.page_no": page_no}, {"b.block_id": block_id}, {"s.sentence_id": response["s_id"]}]
                         repo.update_nested(find, set_value, filters)
                         trans_count += 1
                     except Exception as e:
