@@ -173,7 +173,7 @@ class TranslatorService:
                         continue
                     sentences_of_the_batch.append(response)
                 try:
-                    self.update_sentences(record_id, sentences_of_the_batch)  # Find a way to do batch update directly on MongoDB
+                    self.update_sentences(record_id, sentences_of_the_batch, translate_wf_input)  # Find a way to do batch update directly on MongoDB
                     trans_count += len(sentences_of_the_batch)
                 except Exception as e:
                     log_exception("Exception while saving translations: " + str(e), translate_wf_input, e)
@@ -202,8 +202,8 @@ class TranslatorService:
             return None
 
     # Back up method to update sentences from DB.
-    def update_sentences(self, record_id, nmt_res_batch):
-        job_details = self.get_content_from_db(record_id)[0]
+    def update_sentences(self, record_id, nmt_res_batch, translate_wf_input):
+        job_details = self.get_content_from_db(record_id, None, translate_wf_input)[0]
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             page_no, block_id = node[2], node[3]
