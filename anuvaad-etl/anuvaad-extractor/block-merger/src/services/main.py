@@ -59,7 +59,7 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_h
         for h_df in h_dfs:
             h_df['children'] = None
     v_dfs                              = get_xml.get_vdfs(h_dfs)
-    p_dfs                              = get_xml.get_pdfs(v_dfs)
+    p_dfs                              = get_xml.get_pdfs(v_dfs,lang)
     p_dfs , line_dfs                   = get_underline(p_dfs,line_dfs,app_context.application_context)
     
     if lang=='en':

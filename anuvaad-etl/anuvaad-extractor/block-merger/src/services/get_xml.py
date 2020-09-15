@@ -154,7 +154,7 @@ def get_hdfs(in_dfs, header_region, footer_region):
 
 
 
-def get_pdfs(page_dfs):
+def get_pdfs(page_dfs,lang):
     start_time          = time.time()
     try:
         p_dfs    = []
@@ -170,7 +170,7 @@ def get_pdfs(page_dfs):
                     d_tmp['avg_line_height'] = int(d_tmp['text_height']) 
                     df = df.append(d_tmp)
                 else:
-                    dfs = process_block(page_df.iloc[index], block_configs)
+                    dfs = process_block(page_df.iloc[index], block_configs,lang)
                     df  = df.append(dfs)
             p_dfs.append(df)
 
@@ -184,8 +184,8 @@ def get_pdfs(page_dfs):
     return p_dfs
 
 
-def process_block(children, block_configs):
-    dfs = left_right_margin(children, block_configs)
+def process_block(children, block_configs,lang):
+    dfs = left_right_margin(children, block_configs,lang)
     return dfs
 
 
