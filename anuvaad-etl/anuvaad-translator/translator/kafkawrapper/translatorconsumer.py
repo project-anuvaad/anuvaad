@@ -4,7 +4,9 @@ import threading
 
 from kafka import KafkaConsumer, TopicPartition
 from service.translatorservice import TranslatorService
+from validator.translatorvalidator import TranslatorValidator
 from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.errorhandler import post_error_wf
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
@@ -45,14 +47,18 @@ def consume():
         topics = [anu_translator_input_topic]
         consumer = instantiate(topics)
         service = TranslatorService()
+        validator = TranslatorValidator()
         thread = threading.current_thread().name
         log_info(str(thread) + " Running..........", None)
         while True:
             for msg in consumer:
                 try:
-                    if msg:
-                        data = msg.value
+                    data = msg.value
+                    if data:
                         log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
+                        error = validator.validate_wf(data)
+                        if error is not None:
+                            return post_error_wf(error["code"], error["message"], data, None)
                         service.start_file_translation(data)
                 except Exception as e:
                     log_exception("Exception in translator while consuming: " + str(e), None, e)

@@ -5,7 +5,6 @@ from utilities.translatorutils import TranslatorUtils
 from kafkawrapper.translatorproducer import Producer
 from repository.translatorrepository import TranslatorRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
-from anuvaad_auditor.errorhandler import post_error_wf
 from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
 
@@ -27,18 +26,11 @@ class TranslatorService:
         log_info("Translator process initiated... jobID: " + str(translate_wf_input["jobID"]), translate_wf_input)
         for file in translate_wf_input["input"]["files"]:
             try:
-                dumped = self.dump_file_to_db(file["path"], translate_wf_input)
-                if not dumped:
-                    translate_wf_input["status"] = "FAILED"
-                    return post_error_wf("CONTENT_DUMP_FAILED", "Error while dumping file content to DB", translate_wf_input, None)
-                pushed = self.push_sentences_to_nmt(file, translate_wf_input)
-                if not pushed:
-                    translate_wf_input["status"] = "FAILED"
-                    return post_error_wf("BATCH_PUSH_FAILED", "Error while pushing batches to nmt", translate_wf_input, None)
+                self.dump_file_to_db(file["path"], translate_wf_input)
+                self.push_sentences_to_nmt(file, translate_wf_input)
             except Exception as e:
-                translate_wf_input["status"] = "FAILED"
                 log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
-                return post_error_wf("NMT_PUSH_FAILED", "Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
+                continue
 
     # Method to download and dump the content of the file present in the input
     def dump_file_to_db(self, file_id, translate_wf_input):

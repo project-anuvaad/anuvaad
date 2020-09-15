@@ -50,8 +50,8 @@ def consume_nmt():
         while True:
             for msg in consumer:
                 try:
-                    if msg:
-                        data = msg.value
+                    data = msg.value
+                    if data:
                         log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
                         service.process_nmt_output(data)
                 except Exception as e:
