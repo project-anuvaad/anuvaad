@@ -5,8 +5,8 @@ import os
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
 mongo_server_host = os.environ.get('MONGO_SERVER_HOST', 'mongodb://localhost:27017/')
 file_download_url = os.environ.get('FILE_DOWNLOAD_URL', 'https://auth.anuvaad.org/anuvaad/v1/download')
-save_content_url = os.environ.get('SAVE_CONTENT_URL', 'https://auth.anuvaad.org/api/v0/save-content')
-fetch_content_url = os.environ.get('FETCH_CONTENT_URL', 'https://auth.anuvaad.org/api/v0/fetch-content')
+save_content_url = os.environ.get('SAVE_CONTENT_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/save-content')
+fetch_content_url = os.environ.get('FETCH_CONTENT_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/fetch-content')
 
 
 
