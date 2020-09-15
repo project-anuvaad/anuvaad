@@ -71,8 +71,8 @@ class JobsManger(Thread):
                     "file_locale": complete["transInput"]["metadata"]["userID"],
                     "record_id": complete["recordID"], "pages": complete["data"]["result"]
                 }
-                bearer = complete["transInput"]["metadata"]["bearer"]
-                res = utils.call_api(save_content_url, "POST", ch_input, None, bearer)
+                user_id = complete["transInput"]["metadata"]["userID"]
+                res = utils.call_api(save_content_url, "POST", ch_input, None, user_id)
                 if res:
                     output = {"inputFile": str(complete["recordID"]).split("|")[1], "outputFile": str(complete["recordID"])}
                     job_wise_records = self.manage_records(job_wise_records, complete, output)

@@ -36,18 +36,19 @@ class TranslatorUtils:
             return None
 
     # Util method to make an API call and fetch the result
-    def call_api(self, uri, method, api_input, params, bearer):
+    def call_api(self, uri, method, api_input, params, user_id):
         try:
             response = None
             if method == "POST":
-                api_headers = {'Authorization': 'Bearer ' + bearer, 'Content-Type': 'application/json'}
-                response = requests.post(url=uri, data=api_input, headers=api_headers)
+                api_headers = {'userid': user_id, 'Content-Type': 'application/json'}
+                response = requests.post(url=uri, json=api_input, headers=api_headers)
             elif method == "GET":
-                api_headers = {'Authorization': 'Bearer ' + bearer}
+                api_headers = {'userid': user_id}
                 response = requests.get(url=uri, params=params, headers=api_headers)
             if response is not None:
                 if response.text is not None:
                     data = json.loads(response.text)
+                    log_info(data, api_input)
                     return data
                 else:
                     log_error("API response was None! URI: " + str(uri), api_input, None)

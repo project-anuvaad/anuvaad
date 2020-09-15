@@ -23,8 +23,8 @@ class TranslatorValidator:
                 return post_error("METADATA_NOT_FOUND", "Metadata is mandatory", None)
             else:
                 metadata = data["metadata"]
-                if 'bearer' not in metadata.keys():
-                    return post_error("BEARER_TOKEN_NOT_FOUND", "Bearer token is mandatory", None)
+                if 'userID' not in metadata.keys():
+                    return post_error("USER_ID_NOT_FOUND", "Bearer token is mandatory", None)
         if 'input' not in data.keys():
             return post_error("INPUT_NOT_FOUND", "Input key is mandatory", None)
         else:
