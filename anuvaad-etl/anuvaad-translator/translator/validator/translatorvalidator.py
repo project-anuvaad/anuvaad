@@ -1,16 +1,6 @@
 #!/bin/python
-import logging
 
 from anuvaad_auditor.errorhandler import post_error
-
-log = logging.getLogger('file')
-from utilities.wfmutils import WFMUtils
-from configs.wfmconfig import is_sync_flow_enabled
-from configs.wfmconfig import is_async_flow_enabled
-from configs.wfmconfig import tool_translator
-
-wfmutils = WFMUtils()
-
 
 class TranslatorValidator:
     def __init__(self):
