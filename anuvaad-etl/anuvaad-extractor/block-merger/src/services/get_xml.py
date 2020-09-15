@@ -107,8 +107,9 @@ def get_vdfs(h_dfs):
     start_time          = time.time()
     document_configs    = config.DOCUMENT_CONFIGS
     v_dfs = []
-    pages = len(h_dfs)
+    
     try :
+        pages = len(h_dfs)
         for page_index in range(pages):
             h_df    = h_dfs[page_index]
             v_df    = merge_vertical_blocks(h_df, document_configs, debug=False)
@@ -127,13 +128,13 @@ def get_vdfs(h_dfs):
 def get_hdfs(in_dfs, header_region, footer_region):
     
     start_time          = time.time()
-    pages = len(in_dfs)
-    multiple_pages = False
-    if pages > 1:
-        multiple_pages =True
-    h_dfs = []
-    document_configs = config.DOCUMENT_CONFIGS
     try:
+        pages = len(in_dfs)
+        multiple_pages = False
+        if pages > 1:
+            multiple_pages =True
+        h_dfs = []
+        document_configs = config.DOCUMENT_CONFIGS
         for page_index in range(pages):
             page_df   = in_dfs[page_index]
             if multiple_pages :
@@ -155,10 +156,10 @@ def get_hdfs(in_dfs, header_region, footer_region):
 
 def get_pdfs(page_dfs):
     start_time          = time.time()
-    p_dfs    = []
-    pages    = len(page_dfs)
-    block_configs = config.BLOCK_CONFIGS
-    try :
+    try:
+        p_dfs    = []
+        pages    = len(page_dfs)
+        block_configs = config.BLOCK_CONFIGS
         for page_index in range(pages):
             page_df     = page_dfs[page_index]
             cols        = page_df.columns.values.tolist()
@@ -202,24 +203,38 @@ def drop_cols(df,drop_col=None):
 
 def drop_update_col(page_df):
     try:
+        if len(page_df)==0:
+            return page_df
         page_df     = page_df.where(page_df.notnull(), None)
+        page_lis =[]
         for index, row in page_df.iterrows():
             if row['children'] != None:
                 sub_block_children     =  pd.read_json(row['children'])
                 sub_block_children     =  sub_block_children.where(sub_block_children.notnull(), None)
+                child_lis = []
                 for index2,row2 in sub_block_children.iterrows():
                     if row2['children']!=None:
                         sub_block_children2   =  pd.read_json(row2['children'])
                         sub_block_children2   = drop_cols(sub_block_children2,drop_col=['font_family','font_size'])
                         sub_block_children2.rename(columns={'font_family_updated': 'font_family', 'font_size_updated': 'font_size'},inplace=True)
-                        sub_block_children.at[index2,'children'] = sub_block_children2.to_json()
+
+                        child_lis.append(sub_block_children2.to_json())
+                    else:
+                        child_lis.append(None)
+
                 sub_block_children   = drop_cols(sub_block_children,drop_col=['font_family','font_size'])
                 sub_block_children.rename(columns={'font_family_updated': 'font_family', 'font_size_updated': 'font_size'},inplace=True)
-                page_df.at[index,'children'] = sub_block_children.to_json()
+                sub_block_children['children'] = child_lis
+                page_lis.append(sub_block_children.to_json())
 
+            else:
+                page_lis.append(None)
+        
+        page_df['children'] = page_lis
         page_df   = drop_cols(page_df,drop_col=['font_family','font_size'])
+        
         page_df.rename(columns={'font_family_updated': 'font_family', 'font_size_updated': 'font_size'},inplace=True)
-    
+
         return page_df
 
     except Exception as e:

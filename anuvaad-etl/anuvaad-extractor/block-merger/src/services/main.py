@@ -62,7 +62,6 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_h
     p_dfs                              = get_xml.get_pdfs(v_dfs)
     p_dfs , line_dfs                   = get_underline(p_dfs,line_dfs,app_context.application_context)
     
-    
     if lang=='en':
         p_dfs  = text_merger.unify_child_text_blocks(p_dfs)
     
@@ -95,7 +94,7 @@ def doc_structure_response(bg_dfs, text_block_dfs,table_dfs,line_dfs,page_width,
     for page_index in range(pages):
         img_df     = bg_dfs[page_index]
         text_df    = text_block_dfs[page_index]
-        text_df    =  get_xml.drop_update_col(text_df)
+        text_df    = get_xml.drop_update_col(text_df)
         table_df   = table_dfs[page_index]
         line_df    = line_dfs[page_index]
         

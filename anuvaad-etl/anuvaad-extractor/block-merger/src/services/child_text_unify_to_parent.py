@@ -45,28 +45,23 @@ class ChildTextUnify(object):
 
                     for sub2_block_index in range(len(sub2_block_children)):
                         if 'attrib' in sub2_block_children.columns:
-                            if self.drop_text_regards_attrib(sub2_block_children['attrib'][sub2_block_index],drop_lis):
-                                continue
-                            else:
+                            if self.drop_text_regards_attrib(sub2_block_children['attrib'][sub2_block_index],drop_lis)==False:
                                 text = text+" " + str(sub2_block_children['text'][sub2_block_index])
                         else:
                             text = text+" " + str(sub2_block_children['text'][sub2_block_index])
                             
+                            
+
             return text
 
     def get_parent_block(self,data,drop_lis):
         new_df = data.copy(deep=True)
         new_df = new_df.reset_index(drop=True)
-        #text_lis = []
         for block_index in range(len(data)):
             df   =  new_df.iloc[block_index]
             df   =  df.where(df.notnull(), None)
             text =  self.get_children_text_block(df, drop_lis)
-            #print(text , 'text +++++++++++++++++++')
-            #text_lis.append(str(text))
-            new_df.iloc[block_index]['text'] = str(text)
-        #new_df['text'] = text_lis
-        #print(text_lis)
+            new_df.at[block_index,'text'] = str(text)
 
         return new_df
 
@@ -75,8 +70,9 @@ class ChildTextUnify(object):
         start_time = time.time()
         merge_dfs  = []
         drop_lis   = config.DROP_TEXT
-        pages      = len(p_dfs)
+        
         try :
+            pages      = len(p_dfs)
             for page_index in range(pages):
                 p_df = p_dfs[page_index]
                 p_df = p_df.reset_index(drop=True)
