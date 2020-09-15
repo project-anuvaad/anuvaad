@@ -211,14 +211,17 @@ class TranslatorService:
             sentence_id = nmt_res_sentence["s_id"]
             for i, page in enumerate(job_details["data"]["result"]):
                 if page["page_no"] == page_no:
+                    log_info("i : " + str(i), translate_wf_input)
                     p_index = i
                     for j, block in enumerate(page["text_blocks"]):
                         if block["block_id"] == block_id:
+                            log_info("j : " + str(j), translate_wf_input)
                             b_index = j
                             for k, sentence in enumerate(block["tokenized_sentences"]):
                                 if sentence["sentence_id"] == sentence_id:
+                                    log_info("k : " + str(k), translate_wf_input)
                                     s_index = k
-            log_info("p_index : " + str(p_index) + " | b_index: " + str(b_index) + " | s_index: " + s_index, translate_wf_input)
+            log_info("p_index : " + str(p_index) + " | b_index: " + str(b_index) + " | s_index: " + str(s_index), translate_wf_input)
             nmt_res_sentence["sentence_id"] = nmt_res_sentence["s_id"]
             job_details["data"]["result"][p_index]["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
         query = {"recordID": record_id}
