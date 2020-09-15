@@ -80,15 +80,18 @@ class FetchContentHandler(Resource):
 
     def get(self):
         parse = reqparse.RequestParser()
-        parse.add_argument('job_id', type=str, location='args',help='Job Id is required', required=True)
+        parse.add_argument('job_id', type=str, location='args',help='Job Id is required')
+        parse.add_argument('record_id', type=str, location='args',help='record_id is required')
         parse.add_argument('start_page', type=int, location='args',help='', required=False)
         parse.add_argument('end_page', type=int, location='args',help='', required=False)
         parse.add_argument('all', type=str, location='args',help='', required=False)
         args = parse.parse_args()
         process_identifier = args['job_id']
+        record_id = args['record_id']
         start_page = args['start_page']
         end_page = args['end_page']
         all_pages = args['all']
+        max_pages = 0
         if start_page is None:
             start_page = 1
         if end_page is None:
@@ -102,7 +105,17 @@ class FetchContentHandler(Resource):
                         'maxQuantity': { '$max': "$page_no" }
                     }
         }
-        max_pages = FileContent.objects(job_id=process_identifier,created_by=userid).aggregate(pipeline)
+        if record_id is not None:
+            pipeline = {
+                '$group':
+                    {
+                        '_id': '$record_id',
+                        'maxQuantity': { '$max': "$page_no" }
+                    }
+            }
+            max_pages = FileContent.objects(record_id=record_id,created_by=userid).aggregate(pipeline)
+        else:
+            max_pages = FileContent.objects(job_id=process_identifier,created_by=userid).aggregate(pipeline)
         max_page_number = 1
         for max_page in max_pages:
             max_page_number = max_page['maxQuantity']
@@ -122,7 +135,11 @@ class FetchContentHandler(Resource):
         }
         output = []
         for i in range(start_page,end_page+1):
-            blocks = FileContent.objects(job_id=process_identifier,page_no=i,created_by=userid).aggregate(pipeline_blocks)  
+            blocks = []
+            if record_id is not None:
+                blocks = FileContent.objects(record_id=record_id,page_no=i,created_by=userid).aggregate(pipeline_blocks)  
+            else:
+                blocks = FileContent.objects(job_id=process_identifier,page_no=i,created_by=userid).aggregate(pipeline_blocks)  
             obj = {}
             index = 0
             for block in blocks:
