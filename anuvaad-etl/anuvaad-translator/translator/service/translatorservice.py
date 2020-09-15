@@ -207,20 +207,19 @@ class TranslatorService:
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             page_no, block_id = node[2], node[3]
+            p_index, b_index, s_index = None, None, None
             sentence_id = nmt_res_sentence["s_id"]
-            for page in job_details["data"]["result"]:
+            for i, page in enumerate(job_details["data"]["result"]):
                 if page["page_no"] == page_no:
-                    for block in page["text_blocks"]:
+                    p_index = i
+                    for j, block in enumerate(page["text_blocks"]):
                         if block["block_id"] == block_id:
-                            for sentence in block["tokenized_sentences"]:
+                            b_index = j
+                            for k, sentence in enumerate(block["tokenized_sentences"]):
                                 if sentence["sentence_id"] == sentence_id:
-                                    sentence["tgt"] = nmt_res_sentence["trg"]
-                                    sentence["tagged_src"] = nmt_res_sentence["tagged_src"]
-                                    sentence["tagged_tgt"] = nmt_res_sentence["tagged_tgt"]
-                                    sentence["pred_score"] = nmt_res_sentence["pred_score"]
-                                    sentence["input_subwords"] = nmt_res_sentence["input_subwords"]
-                                    sentence["output_subwords"] = nmt_res_sentence["output_subwords"]
-                                    sentence["n_id"] = nmt_res_sentence["n_id"]
+                                    s_index = k
+            nmt_res_sentence["sentence_id"] = nmt_res_sentence["s_id"]
+            job_details["data"]["result"][p_index]["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
         query = {"recordID": record_id}
         object_in = {"data.result": job_details["data"]["result"]}
         repo.update(object_in, query)
