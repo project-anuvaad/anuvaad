@@ -2,6 +2,7 @@
 
 from anuvaad_auditor.errorhandler import post_error
 
+
 class TranslatorValidator:
     def __init__(self):
         pass
@@ -29,7 +30,8 @@ class TranslatorValidator:
                     if 'type' not in file.keys():
                         return post_error("FILES_TYPE_NOT_FOUND", "Type is mandatory for all files in the input", None)
                     if 'locale' not in file.keys():
-                        return post_error("FILES_LOCALE_NOT_FOUND", "Locale is mandatory for all files in the input", None)
+                        return post_error("FILES_LOCALE_NOT_FOUND", "Locale is mandatory for all files in the input",
+                                          None)
                     if 'model' not in file.keys():
                         return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
                     else:
