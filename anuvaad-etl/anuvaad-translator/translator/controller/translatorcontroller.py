@@ -1,10 +1,12 @@
 #!/bin/python
 import logging
+import time
 
 from flask import Flask, jsonify, request
 from service.translatorservice import TranslatorService
 from validator.translatorvalidator import TranslatorValidator
 from configs.translatorconfig import context_path
+from configs.translatorconfig import anu_etl_module_name
 
 translatorapp = Flask(__name__)
 log = logging.getLogger('file')
@@ -16,9 +18,10 @@ def doc_translate_workflow():
     service = TranslatorService()
     validator = TranslatorValidator()
     data = request.get_json()
-    error = validator.validate_wf(data)
+    error = validator.validate_wf(data, False)
     if error is not None:
         return error, 400
+    data = add_headers(data, request)
     response = service.start_file_translation(data)
     return response
 
@@ -30,6 +33,21 @@ def text_translate():
     data = request.get_json()
     response = service.register_job(data)
     return response
+
+
+# Fetches required headers from the request and adds it to the body.
+def add_headers(data, api_request):
+    bearer = api_request.headers["authorization"]
+    bearer = bearer.split(" ")[1]
+    headers = {
+        "userID": api_request.headers["ad-userid"],
+        "sessionID": api_request.headers["ad-requestID"],
+        "bearer": bearer,
+        "receivedAt": eval(str(time.time()).replace('.', '')),
+        "module": anu_etl_module_name
+    }
+    data["metadata"] = headers
+    return data
 
 
 # Health endpoint

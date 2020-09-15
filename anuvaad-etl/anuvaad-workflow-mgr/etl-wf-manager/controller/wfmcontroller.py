@@ -7,6 +7,7 @@ from logging.config import dictConfig
 from service.wfmservice import WFMService
 from validator.wfmvalidator import WFMValidator
 from configs.wfmconfig import context_path
+from configs.wfmconfig import module_wfm_name
 
 wfmapp = Flask(__name__)
 log = logging.getLogger('file')
@@ -60,11 +61,14 @@ def health():
 
 # Fetches required headers from the request and adds it to the body.
 def add_headers(data, api_request):
+    bearer = api_request.headers["authorization"]
+    bearer = bearer.split(" ")[1]
     headers = {
         "userID": api_request.headers["ad-userid"],
         "sessionID": api_request.headers["ad-requestID"],
+        "bearer": bearer,
         "receivedAt": eval(str(time.time()).replace('.', '')),
-        "module": "WORKFLOW-MANAGER"
+        "module": module_wfm_name
     }
     data["metadata"] = headers
     return data

@@ -17,6 +17,7 @@ tool_htmltojson = "HTML-TO-JSON"
 tool_fileconverter = "FILE-CONVERTER"
 tool_blockmerger = "BLOCK-MERGER"
 tool_translator = "TRANSLATOR"
+module_wfm_name = "WORKFLOW-MANAGER"
 is_sync_flow_enabled = True
 is_async_flow_enabled = True
 

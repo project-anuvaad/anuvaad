@@ -3,6 +3,7 @@ import logging
 
 from kafka import KafkaProducer
 from configs.wfmconfig import kafka_bootstrap_server_host
+from configs.wfmconfig import module_wfm_name
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
@@ -29,7 +30,7 @@ class Producer:
         try:
             if object_in:
                 producer.send(topic, value=object_in)
-                object_in["metadata"]["module"] = "WORKFLOW-MANAGER" # FOR LOGGING ONLY.
+                object_in["metadata"]["module"] = module_wfm_name # FOR LOGGING ONLY.
                 log_info("Pushing to topic: " + topic, object_in)
             producer.flush()
         except Exception as e:

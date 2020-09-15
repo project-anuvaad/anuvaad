@@ -8,6 +8,7 @@ from validator.wfmvalidator import WFMValidator
 from configs.wfmconfig import anu_etl_wfm_core_topic
 from configs.wfmconfig import log_msg_start
 from configs.wfmconfig import log_msg_end
+from configs.wfmconfig import module_wfm_name
 from anuvaad_auditor.errorhandler import post_error_wf
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
@@ -101,7 +102,7 @@ class WFMService:
             producer.push_to_queue(first_tool_input, input_topic)
             client_output = self.get_wf_details(wf_input, None, False, None)
             self.update_job_details(client_output, False)
-            wf_input["metadata"]["module"] = "WORKFLOW-MANAGER"  # FOR LOGGING ONLY.
+            wf_input["metadata"]["module"] = module_wfm_name  # FOR LOGGING ONLY.
             log_info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"], wf_input)
             log_info(first_tool["name"] + log_msg_start, wf_input)
         except Exception as e:

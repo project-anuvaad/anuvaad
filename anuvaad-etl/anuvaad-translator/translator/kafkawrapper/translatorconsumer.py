@@ -56,7 +56,7 @@ def consume():
                     data = msg.value
                     if data:
                         log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
-                        error = validator.validate_wf(data)
+                        error = validator.validate_wf(data, False)
                         if error is not None:
                             return post_error_wf(error["code"], error["message"], data, None)
                         service.start_file_translation(data)
