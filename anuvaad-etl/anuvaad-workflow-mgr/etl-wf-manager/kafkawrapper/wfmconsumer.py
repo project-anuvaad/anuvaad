@@ -58,7 +58,7 @@ def consume():
                     if msg:
                         data = msg.value
                         if 'jobID' in data.keys():
-                            job_details = wfmservice.get_job_details(data["jobID"])
+                            job_details = wfmutils.get_job_details(data["jobID"])
                             if job_details:
                                 data["metadata"] = job_details[0]["metadata"]
                         log_info(str(thread) + " | Received on Topic: " + msg.topic, data)

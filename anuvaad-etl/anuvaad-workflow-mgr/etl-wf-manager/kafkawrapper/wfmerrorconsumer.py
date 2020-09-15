@@ -1,11 +1,10 @@
 import json
 import logging
 import threading
-import traceback
 
 from kafka import KafkaConsumer, TopicPartition
-import os
 from logging.config import dictConfig
+from utilities.wfmutils import WFMUtils
 from service.wfmservice import WFMService
 from configs.wfmconfig import anu_etl_wfm_consumer_grp
 from configs.wfmconfig import kafka_bootstrap_server_host
@@ -46,6 +45,7 @@ def get_topic_paritions(topics):
 # Method to read and process the requests from the kafka queue
 def error_consume():
     try:
+        wfmutils = WFMUtils()
         wfmservice = WFMService()
         topics = [anu_etl_wf_error_topic]
         consumer = instantiate(topics)
@@ -57,7 +57,7 @@ def error_consume():
                     if msg:
                         data = msg.value
                         if 'jobID' in data.keys():
-                            job_details = wfmservice.get_job_details(data["jobID"])
+                            job_details = wfmutils.get_job_details(data["jobID"])
                             if job_details:
                                 data["metadata"] = job_details[0]["metadata"]
                         log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
