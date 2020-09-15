@@ -205,32 +205,30 @@ class TranslatorService:
     def update_sentences(self, record_id, nmt_res_batch, translate_wf_input):
         job_details = self.get_content_from_db(record_id, None, translate_wf_input)[0]
         for nmt_res_sentence in nmt_res_batch:
-            log_info("NODE ID: " + str(nmt_res_sentence["n_id"]), translate_wf_input)
             node = str(nmt_res_sentence["n_id"]).split("|")
             page_no, block_id = node[2], node[3]
-            log_info("PAGE NO: " + str(page_no), translate_wf_input)
-            log_info("BLOCK ID: " + str(block_id), translate_wf_input)
             p_index, b_index, s_index = 100000, 100000, 100000
             sentence_id = nmt_res_sentence["s_id"]
-            for i, page in enumerate(job_details["data"]["result"]):
-                log_info("i : " + str(i), translate_wf_input)
+            pages = job_details["data"]["result"]
+            for i, page in enumerate(pages):
                 if page["page_no"] == page_no:
                     p_index = i
                     break
-            for j, block in enumerate(job_details["data"]["result"][p_index]["text_blocks"]):
-                log_info("j : " + str(j), translate_wf_input)
+            log_info("result len: " + str(len(pages)))
+            page = pages[p_index]
+            for j, block in enumerate(page["text_blocks"]):
                 if block["block_id"] == block_id:
                     b_index = j
                     break
-            for k, sentence in enumerate(job_details["data"]["result"][p_index]["text_blocks"][b_index]["tokenized_sentences"]):
-                log_info("k : " + str(k), translate_wf_input)
+            block = page["text_blocks"][b_index]
+            for k, sentence in enumerate(block["tokenized_sentences"]):
                 if sentence["sentence_id"] == sentence_id:
                     s_index = k
                     break
             log_info("p_index : " + str(p_index) + " | b_index: " + str(b_index) + " | s_index: " + str(s_index), translate_wf_input)
             nmt_res_sentence["sentence_id"] = nmt_res_sentence["s_id"]
             job_details["data"]["result"][p_index]["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
-            
+
         query = {"recordID": record_id}
         object_in = {"data.result": job_details["data"]["result"]}
         repo.update(object_in, query)
