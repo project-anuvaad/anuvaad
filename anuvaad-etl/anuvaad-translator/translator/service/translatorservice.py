@@ -164,24 +164,20 @@ class TranslatorService:
                         if 'errorObj' in nmt_output["status"].keys():
                             log_error("Error from NMT: " + str(nmt_output["status"]["why"]), translate_wf_input, nmt_output["status"]["errorObj"])
             if 'response_body' in nmt_output.keys():
+                sentences_of_the_batch = []
                 for response in nmt_output["response_body"]:
-                    try:
-                        node_id = response["n_id"]
-                        if not node_id:
-                            log_error("Node ID missing!", translate_wf_input, None)
-                            skip_count += 1
-                            continue
-                        node = str(node_id).split("|")
-                        job_id, file_id, page_no, block_id = node[0], node[1], node[2], node[3]
-                        find = {"recordID": record_id}
-                        set_value = {"data.result.$[p].text_blocks.$[b].tokenized_sentences.$[s]": response}
-                        filters = [{"p.page_no": page_no}, {"b.block_id": block_id}, {"s.sentence_id": response["s_id"]}]
-                        repo.update_nested(find, set_value, filters)
-                        trans_count += 1
-                    except Exception as e:
-                        log_exception("Exception while saving translations: " + str(e), translate_wf_input, e)
+                    node_id = response["n_id"]
+                    if not node_id:
+                        log_error("Node ID missing!", translate_wf_input, None)
                         skip_count += 1
                         continue
+                    sentences_of_the_batch.append(response)
+                try:
+                    self.update_sentences(record_id, sentences_of_the_batch)  # Find a way to do batch update directly on MongoDB
+                    trans_count += len(sentences_of_the_batch)
+                except Exception as e:
+                    log_exception("Exception while saving translations: " + str(e), translate_wf_input, e)
+                    skip_count += len(sentences_of_the_batch)
             content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)[0]
             total_trans = content_from_db["translatedSentences"] + trans_count
             total_skip = content_from_db["skippedSentences"] + skip_count
@@ -204,3 +200,32 @@ class TranslatorService:
         except Exception as e:
             log_exception("Exception while searching from db: " + str(e), translate_wf_input, e)
             return None
+
+    # Back up method to update sentences from DB.
+    def update_sentences(self, record_id, nmt_res_batch):
+        job_details = self.get_content_from_db(record_id)[0]
+        for nmt_res_sentence in nmt_res_batch:
+            node = str(nmt_res_sentence["n_id"]).split("|")
+            page_no, block_id = node[2], node[3]
+            sentence_id = nmt_res_sentence["s_id"]
+            for page in job_details["data"]["result"]:
+                if page["page_no"] == page_no:
+                    for block in page["text_blocks"]:
+                        if block["block_id"] == block_id:
+                            for sentence in block["tokenized_sentences"]:
+                                if sentence["sentence_id"] == sentence_id:
+                                    sentence["tgt"] = nmt_res_sentence["trg"]
+                                    sentence["tagged_src"] = nmt_res_sentence["tagged_src"]
+                                    sentence["tagged_tgt"] = nmt_res_sentence["tagged_tgt"]
+                                    sentence["pred_score"] = nmt_res_sentence["pred_score"]
+                                    sentence["input_subwords"] = nmt_res_sentence["input_subwords"]
+                                    sentence["output_subwords"] = nmt_res_sentence["output_subwords"]
+                                    sentence["n_id"] = nmt_res_sentence["n_id"]
+        query = {"recordID": record_id}
+        object_in = {"data.result": job_details["data"]["result"]}
+        repo.update(object_in, query)
+
+
+
+
+
