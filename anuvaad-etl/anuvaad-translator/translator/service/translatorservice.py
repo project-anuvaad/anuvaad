@@ -207,7 +207,7 @@ class TranslatorService:
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             page_no, block_id = node[2], node[3]
-            p_index, b_index, s_index = None, None, None
+            p_index, b_index, s_index = 100000, 100000, 100000
             sentence_id = nmt_res_sentence["s_id"]
             for i, page in enumerate(job_details["data"]["result"]):
                 if page["page_no"] == page_no:
@@ -218,6 +218,7 @@ class TranslatorService:
                             for k, sentence in enumerate(block["tokenized_sentences"]):
                                 if sentence["sentence_id"] == sentence_id:
                                     s_index = k
+            log_info("p_index : " + str(p_index) + " | b_index: " + str(b_index) + " | s_index: " + s_index, translate_wf_input)
             nmt_res_sentence["sentence_id"] = nmt_res_sentence["s_id"]
             job_details["data"]["result"][p_index]["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
         query = {"recordID": record_id}
