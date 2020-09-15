@@ -37,7 +37,7 @@ def children_condition(block_df,children_df,index,children_flag):
         avg_line_height       = int(sum(children_df['text_height'])/ len(children_df['text_height']))
         height       = (children_df.iloc[-1]['text_top'] + children_df.iloc[-1]['text_height']) - children_df['text_top'].min()
         block_df.at[index, 'text_top']     = top
-        block_df.at[index, 'avg_line_height']     = avg_line_height
+        block_df.at[index, 'avg_line_height']  = avg_line_height
         block_df.at[index, 'text_left']    = left
         block_df.at[index, 'text_height']  = height
         block_df.at[index, 'text_width']   = width
@@ -48,11 +48,16 @@ def children_condition(block_df,children_df,index,children_flag):
         block_df.at[index, 'font_size_updated']    = children_df['font_size_updated'].max()
         block_df.at[index, 'font_family_updated']  = most_frequent(children_df['font_family_updated'])
         block_df.at[index, 'font_color']   = most_frequent(children_df['font_color'])
+        block_df.at[index, 'word_coords']  = children_df['word_coords'].values[0]
+        
         if children_flag==True:
             block_df = sub_children(block_df,children_df,index)
+            if len(children_df)>1:
+                block_df.at[index, 'word_coords']  = None
         else:
             if len(children_df)>1:
                 block_df.at[index, 'children']     = children_df.to_json()
+                block_df.at[index, 'word_coords']  = None
             else:
                 block_df.at[index, 'children']     = None
         index += 1
