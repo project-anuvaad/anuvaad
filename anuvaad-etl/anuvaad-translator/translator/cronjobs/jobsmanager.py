@@ -108,6 +108,7 @@ class JobsManger(Thread):
             job_wise_records[record["jobID"]] = result
         else:
             result = record["transInput"]
+            result["input"] = None
             result["state"] = "TRANSLATED"
             result["taskEndTime"] = eval(str(time.time()).replace('.', ''))
             job_output = [output]
