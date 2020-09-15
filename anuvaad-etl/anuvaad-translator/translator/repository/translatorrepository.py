@@ -37,8 +37,7 @@ class TranslatorRepository:
         col = self.instantiate()
         col.update(
             find,
-            {"$set": set_value},
-            {"arrayFilters": filters}
+            {"$set": set_value, "arrayFilters": filters}
         )
 
     # Deletes the object in the mongo collection by job id

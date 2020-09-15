@@ -165,8 +165,6 @@ class TranslatorService:
                             log_error("Error from NMT: " + str(nmt_output["status"]["why"]), translate_wf_input, nmt_output["status"]["errorObj"])
             if 'response_body' in nmt_output.keys():
                 for response in nmt_output["response_body"]:
-                    log_info("NMT Res", translate_wf_input)
-                    log_info(response, translate_wf_input)
                     try:
                         node_id = response["n_id"]
                         if not node_id:

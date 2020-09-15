@@ -32,16 +32,16 @@ class JobsManger(Thread):
                     is_added = False
                     try:
                         total = record["totalSentences"]
-                        if total == 0:
-                            failed.append(record)
-                            continue
                         translated = record["translatedSentences"]
                         skipped = record["skippedSentences"]
-                        if total == translated or total == (translated + skipped):
-                            completed.append(record)
+                        if total == 0:
+                            failed.append(record)
                             is_added = True
                         elif total == skipped:
                             failed.append(record)
+                            is_added = True
+                        elif total == translated or total == (translated + skipped):
+                            completed.append(record)
                             is_added = True
                         if not is_added:
                             inprogress.append(record)
