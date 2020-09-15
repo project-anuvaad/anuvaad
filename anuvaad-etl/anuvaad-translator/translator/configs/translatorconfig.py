@@ -20,8 +20,8 @@ anu_etl_module_name = "TRANSLATOR"
 jm_cron_interval_sec = 10
 
 #kafka-configs
-anu_translator_input_topic = 'anuvaad-dp-tools-translator-input-v1'
-anu_translator_output_topic = 'anuvaad-dp-tools-translator-output-v1'
+anu_translator_input_topic = 'anuvaad-dp-tools-translator-input-v2'
+anu_translator_output_topic = 'anuvaad-dp-tools-translator-output-v2'
 anu_translator_consumer_grp = os.environ.get('ANUVAAD_ETL_TRANSLATOR_CONSUMER_GRP', 'anuvaad-etl-translator-consumer-group')
 translator_cons_no_of_instances = 1
 translator_cons_no_of_partitions = 1

@@ -114,7 +114,7 @@ class WFMService:
     def manage_wf(self, task_output):
         try:
             job_id = task_output["jobID"]
-            job_details = self.get_job_details(job_id)
+            job_details = wfmutils.get_job_details(job_id)
             if not job_details:
                 log_error("This job is not found in the system, jobID: " + job_id, task_output, None)
                 return None
@@ -188,9 +188,9 @@ class WFMService:
     # This is the format in which the job details are stored in the db and also returned to user.
     def get_wf_details(self, wf_input, task_output, isfinal, error):
         if wf_input is not None:
-            wf_details = self.get_job_details(wf_input["jobID"])
+            wf_details = wfmutils.get_job_details(wf_input["jobID"])
         else:
-            wf_details = self.get_job_details(task_output["jobID"])
+            wf_details = wfmutils.get_job_details(task_output["jobID"])
         if wf_details is None or len(wf_details) == 0:
             task_details = []
             if task_output is not None:
@@ -230,12 +230,6 @@ class WFMService:
                 client_output["error"] = error
             client_output["metadata"] = wf_details["metadata"]
         return client_output
-
-    # Method to search jobs on job id for internal logic.
-    def get_job_details(self, job_id):
-        query = {"jobID": job_id}
-        exclude = {'_id': False}
-        return wfmrepo.search_job(query, exclude)
 
     # Method to search jobs on multiple criteria.
     def get_job_details_bulk(self, req_criteria):
@@ -285,7 +279,7 @@ class WFMService:
     def update_errors(self, error):
         try:
             job_id = error["jobID"]
-            job_details = self.get_job_details(job_id)
+            job_details = wfmutils.get_job_details(job_id)
             job_details = job_details[0]
             if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED":
                 return None

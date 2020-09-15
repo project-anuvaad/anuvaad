@@ -13,6 +13,8 @@ from configs.wfmconfig import tool_pdftohtml
 from configs.wfmconfig import tool_htmltojson
 from configs.wfmconfig import tool_fileconverter
 from configs.wfmconfig import tool_aligner
+from configs.wfmconfig import tool_translator
+from repository.wfmrepository import WFMRepository
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_exception, log_error
 
@@ -22,6 +24,7 @@ from tools.pdftohtml import PDFTOHTML
 from tools.htmltojson import HTMLTOJSON
 from tools.file_converter import FileConverter
 from tools.block_merger import BlockMerger
+from tools.translator import Translator
 
 
 aligner = Aligner()
@@ -30,6 +33,8 @@ pdftohtml = PDFTOHTML()
 htmltojson = HTMLTOJSON()
 file_converter = FileConverter()
 block_merger = BlockMerger()
+translator = Translator()
+wfmrepo = WFMRepository()
 
 log = logging.getLogger('file')
 configs_global = {}
@@ -130,6 +135,11 @@ class WFMUtils:
                 tool_input = file_converter.get_fc_input(task_output, previous_tool)
             if current_tool == tool_blockmerger:
                 tool_input = block_merger.get_bm_input(task_output, previous_tool)
+            if current_tool == tool_translator:
+                tool_input = translator.get_translator_input(task_output, previous_tool)
+                job_details = self.get_job_details(task_output["jobID"])[0]
+                for file in tool_input["input"]["files"]:
+                    file["model"] = job_details["input"]["files"][0]["model"]
         else:
             if current_tool == tool_aligner:
                 tool_input = aligner.get_aligner_input_wf(wf_input)
@@ -143,6 +153,8 @@ class WFMUtils:
                 tool_input = file_converter.get_fc_input_wf(wf_input)
             if current_tool == tool_blockmerger:
                 tool_input = block_merger.get_bm_input_wf(wf_input)
+            if current_tool == tool_translator:
+                tool_input = translator.get_translator_input_wf(wf_input, False)
 
         return tool_input
 
@@ -179,4 +191,10 @@ class WFMUtils:
         except Exception as e:
             log_exception("Exception while making the api call: " + str(e), api_input, e)
             return None
+
+    # Method to search jobs on job id for internal logic.
+    def get_job_details(self, job_id):
+        query = {"jobID": job_id}
+        exclude = {'_id': False}
+        return wfmrepo.search_job(query, exclude)
 

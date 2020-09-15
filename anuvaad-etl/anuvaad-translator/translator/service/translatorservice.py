@@ -31,6 +31,7 @@ class TranslatorService:
             except Exception as e:
                 log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
                 continue
+        return {"status": "success", "message": "Sentences sent to NMT"}
 
     # Method to download and dump the content of the file present in the input
     def dump_file_to_db(self, file_id, translate_wf_input):

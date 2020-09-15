@@ -1,6 +1,6 @@
 import time
 from threading import Thread
-from anuvaad_auditor.loghandler import log_exception, log_info
+from anuvaad_auditor.loghandler import log_exception, log_info, log_error
 from repository.translatorrepository import TranslatorRepository
 from kafkawrapper.translatorproducer import Producer
 from utilities.translatorutils import TranslatorUtils
@@ -49,9 +49,9 @@ class JobsManger(Thread):
                         log_exception("Exception in JobsManger for record: " + record["recordID"], record["transInput"], e)
                         log_exception("Exception - " + str(e), record["transInput"], e)
                         continue
-                self.data_sink(completed, failed, obj)
                 log_info("JobsManger - Run: " + str(run)
                          + " | Completed: " + str(len(completed)) + " | Failed: " + str(len(failed)) + " | InProgress: " + str(len(inprogress)), obj)
+                self.data_sink(completed, failed, obj)
                 run += 1
             except Exception as e:
                 log_exception("JobsManger - Run: " + str(run) + " | Exception: " + str(e), obj, e)
@@ -77,7 +77,7 @@ class JobsManger(Thread):
                     output = {"inputFile": str(complete["recordID"]).split("|")[1], "outputFile": str(complete["recordID"])}
                     job_wise_records = self.manage_records(job_wise_records, complete, output)
                 else:
-                    log_info("Content push to CH Failed, record: " + complete["recordID"], complete["transInput"])
+                    log_error("Content push to CH Failed, record: " + complete["recordID"], complete["transInput"], None)
                     output = {"inputFile": str(complete["recordID"]).split("|")[1], "outputFile": "FAILED", "error": "Content push to CH Failed"}
                     job_wise_records = self.manage_records(job_wise_records, complete, output)
 
@@ -93,7 +93,6 @@ class JobsManger(Thread):
                     job["error"] = post_error("TRANSLATION_FAILED", "All files failed", None)
                 job_wise_records[job_id] = job
                 producer.produce(job_wise_records[job_id], anu_translator_output_topic)
-                log_info("Status pushed to WFM!", job_wise_records[job_id])
                 repo.delete(job_id)
         except Exception as e:
             log_exception("Exception while pushing Translator data to sink: " + str(e), obj, e)
