@@ -59,10 +59,11 @@ class FileOperation(object):
     #reading content from json file
     def read_json_file(self, input_filename):
         input_json_filepath = self.input_path(input_filename)
-        with open(input_json_filepath, 'r', encoding='utf-8') as f:
-            #json_data = f.readlines()
-            data = json.loads(f.read())
-        return data
+        file_write = open(input_json_filepath, 'r+', encoding='utf-8')
+        data = json.loads(file_write.read())
+        file_write.seek(0)
+        file_write.truncate() 
+        return data, file_write
 
     # extracting data from received json input
     def json_input_format(self, json_data):

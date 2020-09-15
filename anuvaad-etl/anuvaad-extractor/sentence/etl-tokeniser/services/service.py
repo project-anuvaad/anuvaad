@@ -40,7 +40,7 @@ class Tokenisation(object):
             elif text_locale == 'mr':
                 for paragraph in paragraph_data:
                     if paragraph is not None:
-                        tokenised_sentence_data = AnuvaadMarTokenizer().tokenize(paragraph)
+                        tokenised_sentence_data = AnuvaadHinTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
             elif text_locale == 'ta':
                 for paragraph in paragraph_data:

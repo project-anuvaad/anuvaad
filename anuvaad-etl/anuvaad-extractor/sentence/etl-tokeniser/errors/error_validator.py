@@ -61,7 +61,7 @@ class ValidationResponse(object):
             raise FileEncodingError( 400, "Tokenisation failed due to encoding. Service supports only utf-16 encoded file.")
 
     def format_error(self, json_data):
-        keys_checked = {'workflowCode','jobID','input','tool','stepOrder'}
+        keys_checked = {'workflowCode','jobID','input','tool','stepOrder','metadata'}
         if json_data.keys() == {'files'}:
             return True
         elif json_data.keys() >= keys_checked:

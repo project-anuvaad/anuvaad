@@ -11,6 +11,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import time
 import copy
+import json
 
 file_ops = FileOperation()
 
@@ -37,12 +38,14 @@ class Response(object):
                             error_validator.file_encoding_error(input_file_data)
                             output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
                         elif in_file_type == "json":
-                            input_jsonfile_data = file_ops.read_json_file(input_filename)
+                            input_jsonfile_data, file_write = file_ops.read_json_file(input_filename)
                             input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item, in_locale, page_id) 
                                                                 for page_id, item in enumerate(input_jsonfile_data['result'])]
                             input_jsonfile_data['file_locale'] = in_locale
                             tokenisation.sending_data_to_content_handler(jobid, user_id, input_jsonfile_data)
-                            output_filename = tokenisation.writing_json_file_blockmerger(i, input_jsonfile_data)
+                            json_dat_write = json.dumps(input_jsonfile_data)
+                            file_write.write(json_dat_write)
+                            output_filename = input_filename
                         file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
                         output_file_response.append(file_res)
             else:
