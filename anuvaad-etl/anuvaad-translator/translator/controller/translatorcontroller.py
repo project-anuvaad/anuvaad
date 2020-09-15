@@ -21,7 +21,6 @@ def doc_translate_workflow():
     error = validator.validate_wf(data, False)
     if error is not None:
         return error, 400
-    data = add_headers(data, request)
     response = service.start_file_translation(data)
     return response
 
