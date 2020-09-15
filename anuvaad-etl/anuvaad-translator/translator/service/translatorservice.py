@@ -214,17 +214,19 @@ class TranslatorService:
                 if page["page_no"] == page_no:
                     p_index = i
                     break
-            log_info("result len: " + str(len(pages)))
+            log_info("pages len: " + str(len(pages)), translate_wf_input)
             page = pages[p_index]
             for j, block in enumerate(page["text_blocks"]):
                 if block["block_id"] == block_id:
                     b_index = j
                     break
+            log_info("block len: " + str(len(page["text_blocks"])), translate_wf_input)
             block = page["text_blocks"][b_index]
             for k, sentence in enumerate(block["tokenized_sentences"]):
                 if sentence["sentence_id"] == sentence_id:
                     s_index = k
                     break
+            log_info("sent len: " + str(len(block["tokenized_sentences"])), translate_wf_input)
             log_info("p_index : " + str(p_index) + " | b_index: " + str(b_index) + " | s_index: " + str(s_index), translate_wf_input)
             nmt_res_sentence["sentence_id"] = nmt_res_sentence["s_id"]
             job_details["data"]["result"][p_index]["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
