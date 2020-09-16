@@ -70,16 +70,21 @@ class WFMValidator:
             else:
                 tools = wfmutils.get_tools_of_wf(workflowCode)
                 for file in data["files"]:
-                    if not file["path"]:
+                    if 'path' not in file.keys():
                         return post_error("FILES_PATH_NOT_FOUND", "Path is mandatory for all files in the input", None)
-                    if not file["type"]:
+                    if 'type' not in file.keys():
                         return post_error("FILES_TYPE_NOT_FOUND", "Type is mandatory for all files in the input", None)
-                    if not file["locale"]:
-                        return post_error("FILES_LOCALE_NOT_FOUND", "Locale is mandatory for all files in the input",
-                                          None)
+                    if 'locale' not in file.keys():
+                        return post_error("FILES_LOCALE_NOT_FOUND", "Locale is mandatory for all files in the input", None)
                     if tool_translator in tools:
-                        if not file["model"]:
+                        if 'model' not in file.keys():
                             return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
+                        else:
+                            model = file["model"]
+                            if 'model_id' not in model.keys():
+                                return post_error("MODEL_ID_ NOT_FOUND", "Model ID is mandatory for this wf.", None)
+                            if 'url_end_point' not in model.keys():
+                                return post_error("MODEL_URL_ NOT_FOUND", "Model url end point is mandatory for this wf.", None)
 
 
     # Validator that validates the input request for initiating the sync job
@@ -92,10 +97,16 @@ class WFMValidator:
             else:
                 tools = wfmutils.get_tools_of_wf(workflowCode)
                 for block in data["textBlocks"]:
-                    if not block["text"]:
-                        return post_error("TEXT_NOT_FOUND", "Text is mandatory.", None)
-                    if not block["locale"]:
-                        return post_error("LOCALE_NOT_FOUND", "Locale is mandatory.", None)
+                    if 'path' not in block.keys():
+                        return post_error("TEXT_NOT_FOUND", "Text is mandatory for all text blocks in the input", None)
+                    if 'locale' not in block.keys():
+                        return post_error("TEXT_LOCALE_NOT_FOUND", "Text Locale is mandatory for all text blocks in the input", None)
                     if tool_translator in tools:
-                        if not block["model"]:
+                        if 'model' not in block.keys():
                             return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
+                        else:
+                            model = block["model"]
+                            if 'model_id' not in model.keys():
+                                return post_error("MODEL_ID_ NOT_FOUND", "Model ID is mandatory for this wf.", None)
+                            if 'url_end_point' not in model.keys():
+                                return post_error("MODEL_URL_ NOT_FOUND", "Model url end point is mandatory for this wf.", None)
