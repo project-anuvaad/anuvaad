@@ -7,19 +7,25 @@ from anuvaad_auditor.loghandler import log_error
 import src.utilities.app_context as app_context
 import time
 
-def df_to_json(p_df):
+def df_to_json(p_df,block_key =''):
 
     page_data = []
     try:
         p_df      = p_df.where(p_df.notnull(), None)
         if len(p_df) > 0 :
             p_df = get_xml.drop_cols(p_df)
+            p_df = p_df.reset_index(drop=True)
             for index ,row in p_df.iterrows():
                 block = row.to_dict()
+                if block_key == '':
+                    block['block_id'] = str(index)
+                else:
+                    block['block_id'] = block_key + '_' + str(index)
                 for key in block.keys():
+
                     if key in ['text']:
                         block[key] = block[key]
-                    if key not in ['text', 'children']:
+                    if key not in ['text', 'children','block_id']:
                         try :
                             block[key] = int(block[key])
                         except :
@@ -32,14 +38,14 @@ def df_to_json(p_df):
                         if block['children'] == None :
                             pass
                         else :
-                            block['children'] = df_to_json(pd.read_json(row['children']))
+                            block['children'] = df_to_json(pd.read_json(row['children']), block_key = block['block_id'])
                 page_data.append(block)
         else:
             page_data = None
 
             
     except Exception as e :
-        log_error('Error in generating response of p_df', app_context.application_context, e)
+        log_error('Error in generating response of p_df'+ str(e), app_context.application_context, e)
         return None
 
     return page_data

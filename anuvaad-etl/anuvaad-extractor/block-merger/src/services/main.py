@@ -109,7 +109,7 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
     
     
 
-    p_df['block_id']     = range(len(p_df))
+    #p_df['block_id']     = range(len(p_df))
     img_df['image_id']   = range(len(img_df))
     table_df['table_id'] = range(len(table_df))
     line_df['line_id']   = range(len(line_df))
@@ -119,7 +119,7 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
     table_data         = process_table_df(table_df)
     line_data          = process_line_df(line_df)
     
-    text_data          = df_to_json(p_df)
+    text_data          = df_to_json(p_df,block_key='')
     
     res_dict['images'] = image_data
     res_dict['tables'] = table_data
