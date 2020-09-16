@@ -101,7 +101,7 @@ def extract_and_delete_region(page_df, table_df):
     return page_df, table_df
 
 
-def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths):
+def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths,check=False):
 
     log_info("TableExtractor service started", app_context.application_context)
     
@@ -118,13 +118,16 @@ def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths):
         try :
             table_image =  cv2.imread(bg_image_path, 0)
             bg_image    =  cv2.imread(bg_image_path)
-            
+            image_width , image_height = table_image.shape[1] , table_image.shape[0]
+            if check :
+                cv2.imwrite('bg_org.png',table_image)
         except Exception as e :
             log_error("Service TableExtractor Error in loading background html image", app_context.application_context, e)
             return None, None, None, None
 
-        table_image = mask_image(table_image, img_df, app_context.application_context, margin=2, fill=255)
-
+        table_image = mask_image(table_image, img_df,image_width,image_height ,app_context.application_context, margin=0, fill=255)
+        if check :
+            cv2.imwrite('bg_org_masked.png', table_image)
         try :
             tables = TableRepositories(table_image).response['response']['tables']
         except  Exception as e :
@@ -148,14 +151,13 @@ def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths):
 
 
         #mask tables and lines from bg image
-        bg_image  = mask_image(bg_image,table_df,app_context.application_context,margin=2,fill=255)
-        bg_image = mask_image(bg_image, line_df, app_context.application_context, margin=2, fill=255)
-        h,w =   bg_image.shape[0] , bg_image.shape[1]
+        bg_image  = mask_image(bg_image,table_df,image_width,image_height,app_context.application_context,margin=0,fill=255)
+        bg_image = mask_image(bg_image, line_df,image_width,image_height, app_context.application_context, margin=0, fill=255)
         bg_binary = base64.b64encode(cv2.imencode('.png', bg_image)[1])#base64.b64encode(bg_image)
         
 
 
-        bg_df = pd.DataFrame([[0, 0, w, h, bg_binary,'IMAGE']],
+        bg_df = pd.DataFrame([[0, 0, image_width, image_height, bg_binary,'IMAGE']],
                           columns=['text_top', 'text_left', 'text_width', 'text_height', 'base64', 'attrib'])
 
         bg_dfs.append(bg_df)

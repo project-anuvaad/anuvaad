@@ -1,13 +1,13 @@
-import os
-import pandas as pd
-import base64
+#import os
+#import pandas as pd
+#import base64
 import config
 import time
 from src.services import get_xml
 from anuvaad_auditor.loghandler import log_info
-from anuvaad_auditor.loghandler import log_error
+#from anuvaad_auditor.loghandler import log_error
 from anuvaad_auditor.loghandler import  log_debug
-from src.errors.errors_exception import ServiceError
+#from src.errors.errors_exception import ServiceError
 from anuvaad_auditor.loghandler import log_exception
 from src.services.preprocess import prepocess_pdf_regions
 from src.services.get_tables import  get_text_table_line_df
