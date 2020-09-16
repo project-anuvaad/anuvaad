@@ -26,9 +26,12 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
         right  = (row['text_left'] + row['text_width'])*w_ratio
         bottom = (row['text_top'] + row['text_height'])*h_ratio
         coord  = []
-        crop_image = image.crop((left-5, top-5, right+5, bottom+5))
+        crop_image = image.crop((left-5, top-15, right+5, bottom+10))
+        #crop_image.save("/home/naresh/crop/"+str(index)+'.jpg')
         if row['text_height']>2*row['font_size']:
             temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang]+"+eng",output_type=Output.DATAFRAME)
+            #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang],output_type=Output.DATAFRAME)
+
             temp_df = temp_df[temp_df.text.notnull()]
             
             text = ""
@@ -47,6 +50,7 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             text_list.append(text)
         else:
             temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang]+"+eng",output_type=Output.DATAFRAME)
+            #temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang],output_type=Output.DATAFRAME)
             temp_df = temp_df[temp_df.text.notnull()]
             text = ""
             
