@@ -8,7 +8,7 @@ from repository.translatorrepository import TranslatorRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
-from configs.translatorconfig import nmt_translate_uri
+from configs.translatorconfig import nmt_translate_url
 
 log = logging.getLogger('file')
 utils = TranslatorUtils()
@@ -37,7 +37,7 @@ class TranslatorService:
                 nmt_in_txt.append(sent_nmt_in)
             nmt_in = {"translate": nmt_in_txt}
             log_info("Making API call to NMT...", text_translate_input)
-            res = utils.call_api(nmt_translate_uri, "POST", nmt_in, None, text_translate_input["metadata"]["userID"])
+            res = utils.call_api(nmt_translate_url, "POST", nmt_in, None, text_translate_input["metadata"]["userID"])
             output = text_translate_input
             output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
             if res:
