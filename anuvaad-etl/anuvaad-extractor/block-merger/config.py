@@ -70,15 +70,16 @@ FONT_CONFIG   = {
     "hi": 'mangal'
 }
 FONT_SIZE_CONFIG = {
-    "hi":{
-        'slab_1':{
-            'min':0, 'max':10, 'ratio':0.00
-        },
-        'slab_2':{
-            'min':10, 'max':20, 'ratio':0.05
-        },
-        'slab_3':{
-            'min':20, 'max':50, 'ratio':0.06
-        }
-    }
+    "hi":{ 'slab_1':{ 'min':0, 'max':10, 'ratio':0.00},
+           'slab_2':{'min':10, 'max':20, 'ratio':0.05},
+           'slab_3':{'min':20, 'max':50, 'ratio':0.06}
+         }
+}
+
+CROP_CONFIG = {
+    'hi': {'top':15, 'bottom':10,'right':5,'left':5},
+    'ml': {'top':15, 'bottom':10,'right':5,'left':5},
+    'kn':{'top':15, 'bottom':10,'right':5,'left':5 },
+    'ta':{'top':5, 'bottom':5,'right':5,'left':5 },
+    'ma':{'top':5, 'bottom':5,'right':5,'left':5 }
 }
