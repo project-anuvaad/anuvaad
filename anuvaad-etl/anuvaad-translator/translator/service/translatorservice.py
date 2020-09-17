@@ -29,7 +29,7 @@ class TranslatorService:
             nmt_in_txt = []
             in_map = {}
             for text in text_translate_input["input"]["textList"]:
-                s_id = text["node"]["pageNo"] + "|" + text["node"]["blockID"] + "|" + text["node"]["sentenceID"]
+                s_id = str(text["node"]["pageNo"]) + "|" + str(text["node"]["blockID"]) + "|" + str(text["node"]["sentenceID"])
                 in_map[s_id] = text
                 sent_nmt_in = {
                     "src": text["content"]["text"], "s_id": s_id, "id": text["content"]["model_id"], "n_id": s_id
@@ -49,19 +49,19 @@ class TranslatorService:
                     translations.append(text)
                 output["input"] = None
                 output["status"] = "SUCCESS"
-                output[output] = {"translations": translations}
+                output["output"] = {"translations": translations}
                 return output
             else:
                 output = text_translate_input
                 output["status"] = "FAILED"
-                output[output] = None
+                output["output"] = None
                 output["error"] = post_error("TRANSLATION_FAILED", "There was an error while translating!", None)
                 return output
         except Exception as e:
             log_exception("Exception while translating: " + str(e), text_translate_input, None)
             output = text_translate_input
             output["status"] = "FAILED"
-            output[output] = None
+            output["output"] = None
             output["error"] = post_error("TRANSLATION_FAILED", "There was an exception while translating!", None)
             return output
 
