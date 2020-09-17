@@ -25,6 +25,7 @@ class TranslatorService:
         text_translate_input["taskID"] = utils.generate_task_id()
         text_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
         text_translate_input["state"] = "TRANSLATED"
+        output = text_translate_input
         try:
             nmt_in_txt = []
             in_map = {}
@@ -33,39 +34,31 @@ class TranslatorService:
                 in_map[s_id] = text
                 sent_nmt_in = {"src": text["content"]["text"], "s_id": s_id, "id": text["content"]["model"]["model_id"], "n_id": s_id}
                 nmt_in_txt.append(sent_nmt_in)
-            nmt_in = {"translate": nmt_in_txt}
-            log_info("Making API call to NMT...", text_translate_input)
-            res = utils.call_api(nmt_translate_url, "POST", nmt_in, None, text_translate_input["metadata"]["userID"])
-            output = text_translate_input
+            log_info(nmt_in_txt, text_translate_input)
+            res = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None, text_translate_input["metadata"]["userID"])
             output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
+            translations = []
             if res:
                 log_info(res, text_translate_input)
-                translations = []
-                for translation in res:
-                    text = in_map[translation["s_id"]]
-                    text["content"] = translation
-                    translations.append(text)
+                if 'response_body' in res.keys():
+                    for translation in res["response_body"]:
+                        text = in_map[translation["s_id"]]
+                        text["content"] = translation
+                        translations.append(text)
+            if len(translations) > 0:
                 output["input"] = None
                 output["status"] = "SUCCESS"
                 output["output"] = {"translations": translations}
-                return output
             else:
-                output = text_translate_input
                 output["status"] = "FAILED"
                 output["output"] = None
                 output["error"] = post_error("TRANSLATION_FAILED", "There was an error while translating!", None)
-                return output
         except Exception as e:
             log_exception("Exception while translating: " + str(e), text_translate_input, None)
-            output = text_translate_input
             output["status"] = "FAILED"
             output["output"] = None
             output["error"] = post_error("TRANSLATION_FAILED", "There was an exception while translating!", None)
-            return output
-
-
-
-
+        return output
 
     # Service method to begin translation for document translation flow.
     def start_file_translation(self, translate_wf_input):
