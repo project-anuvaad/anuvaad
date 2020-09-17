@@ -52,8 +52,11 @@ paths:
         - in: query
           name: job_id
           type: string
-          required: true
           description: The job_id for the content
+        - in: query
+          name: record_id
+          type: string
+          description: The record_id for the content
         - in: query
           name: start_page
           type: number
