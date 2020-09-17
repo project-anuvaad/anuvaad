@@ -49,8 +49,8 @@ class AnuvaadEngTokenizer(object):
         self._tokenizer = PunktSentenceTokenizer(train_text=punkt_param,lang_vars=SentenceEndLangVars())
 
     def tokenize(self, text):
-        text = self.serialize_dates(text)
         text = self.serialize_with_abbreviations_generalize_pattern(text)
+        text = self.serialize_dates(text)
         text = self.serialize_with_abbrevations(text)
         text = self.serialize_table_points(text)
         text = self.serialize_pattern(text)
@@ -63,8 +63,8 @@ class AnuvaadEngTokenizer(object):
         sentences = self._tokenizer.tokenize(text)
         output = []
         for se in sentences:
-            se = self.deserialize_dates(se)
             se = self.deserialize_with_abbreviations_generalize_pattern(se)
+            se = self.deserialize_dates(se)
             se = self.deserialize_pattern(se)
             se = self.deserialize_dots(se)
             se = self.deserialize_brackets(se)
