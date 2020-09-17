@@ -26,11 +26,18 @@ def doc_translate_workflow():
 
 
 # REST endpoint to initiate the workflow.
-@translatorapp.route(context_path + '/v1/text/translate', methods=["POST"])
+@translatorapp.route(context_path + '/v1/text/workflow/translate', methods=["POST"])
 def text_translate():
     service = TranslatorService()
+    validator = TranslatorValidator()
     data = request.get_json()
-    response = service.register_job(data)
+    error = validator.validate_text_translate(data)
+    if error is not None:
+        data["state"] = "TRANSLATED"
+        data["status"] = "FAILED"
+        data["error"] = error
+        return data, 400
+    response = service.text_translate(data)
     return response
 
 

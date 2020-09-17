@@ -1,12 +1,14 @@
 import logging
 import time
 
+from anuvaad_auditor import post_error
 from utilities.translatorutils import TranslatorUtils
 from kafkawrapper.translatorproducer import Producer
 from repository.translatorrepository import TranslatorRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
+from configs.translatorconfig import nmt_translate_uri
 
 log = logging.getLogger('file')
 utils = TranslatorUtils()
@@ -18,16 +20,53 @@ class TranslatorService:
     def __init__(self):
         pass
 
+    # Method to accept text list and return translations for SYNC flow.
     def text_translate(self, text_translate_input):
         text_translate_input["taskID"] = utils.generate_task_id()
         text_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
         text_translate_input["state"] = "TRANSLATED"
-        nmt_in_txt = []
-        for text in text_translate_input["input"]["textBlocks"]:
-            if 'node' in text.keys():
+        try:
+            nmt_in_txt = []
+            in_map = {}
+            for text in text_translate_input["input"]["textList"]:
                 s_id = text["node"]["pageNo"] + "|" + text["node"]["blockID"] + "|" + text["node"]["sentenceID"]
+                in_map[s_id] = text
+                sent_nmt_in = {
+                    "src": text["content"]["text"], "s_id": s_id, "id": text["content"]["model_id"], "n_id": s_id
+                }
+                nmt_in_txt.append(sent_nmt_in)
+            nmt_in = {"translate": nmt_in_txt}
+            log_info("Making API call to NMT...", text_translate_input)
+            res = utils.call_api(nmt_translate_uri, "POST", nmt_in, None, text_translate_input["metadata"]["userID"])
+            output = text_translate_input
+            output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
+            if res:
+                log_info(res, text_translate_input)
+                translations = []
+                for translation in res:
+                    text = in_map[translation["s_id"]]
+                    text["content"] = translation
+                    translations.append(text)
+                output["input"] = None
+                output["status"] = "SUCCESS"
+                output[output] = {"translations": translations}
+                return output
             else:
-                s_id = "UUID"
+                output = text_translate_input
+                output["status"] = "FAILED"
+                output[output] = None
+                output["error"] = post_error("TRANSLATION_FAILED", "There was an error while translating!", None)
+                return output
+        except Exception as e:
+            log_exception("Exception while translating: " + str(e), text_translate_input, None)
+            output = text_translate_input
+            output["status"] = "FAILED"
+            output[output] = None
+            output["error"] = post_error("TRANSLATION_FAILED", "There was an exception while translating!", None)
+            return output
+
+
+
 
 
     # Service method to begin translation for document translation flow.
