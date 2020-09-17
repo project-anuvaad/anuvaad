@@ -3,6 +3,7 @@ from repositories.hin_sentence_tokeniser import AnuvaadHinTokenizer
 from repositories.kannada_sentence_tokeniser import AnuvaadKanTokenizer
 from repositories.marathi_sentence_tokeniser import AnuvaadMarTokenizer
 from repositories.tamil_sentence_tokeniser import AnuvaadTamTokenizer
+from repositories.general_tokeniser import AnuvaadTokenizer
 from errors.errors_exception import ServiceError
 from utilities.utils import FileOperation
 from anuvaad_auditor.loghandler import log_info
@@ -25,28 +26,38 @@ class Tokenisation(object):
             if text_locale == 'en':
                 for paragraph in paragraph_data:
                     if paragraph is not None:
+                        paragraph = paragraph.strip()
                         tokenised_sentence_data = AnuvaadEngTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
             elif text_locale == 'hi':
                 for paragraph in paragraph_data:
                     if paragraph is not None:
+                        paragraph = paragraph.strip()
                         tokenised_sentence_data = AnuvaadHinTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
             elif text_locale == 'kn':
                 for paragraph in paragraph_data:
                     if paragraph is not None:
+                        paragraph = paragraph.strip()
                         tokenised_sentence_data = AnuvaadKanTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
             elif text_locale == 'mr':
                 for paragraph in paragraph_data:
                     if paragraph is not None:
+                        paragraph = paragraph.strip()
                         tokenised_sentence_data = AnuvaadMarTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
             elif text_locale == 'ta':
                 for paragraph in paragraph_data:
                     if paragraph is not None:
+                        paragraph = paragraph.strip()
                         tokenised_sentence_data = AnuvaadTamTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
+            # else:
+            #     for paragraph in paragraph_data:
+            #         if paragraph is not None:
+            #             tokenised_sentence_data = AnuvaadTokenizer().tokenize(paragraph)
+            #             tokenised_text.extend(tokenised_sentence_data)
             return tokenised_text
         except:
             log_exception("tokenisation_core : Error occured during tokenising the paragraphs", self.input_json_data, None)
