@@ -1,0 +1,30 @@
+{
+  "jobID": "jobID",
+  "workflowCode": "workflowCode",
+  "stepOrder": 2,
+  "tool": "TRANSLATOR",
+  "output": {
+    "textList": [
+      {
+        "node": {
+          "recordID": "recordID",
+          "pageNo": 0,
+          "blockID": 1,
+          "sentenceID": 0
+        },
+        "content":{
+          "input_subwords": "['▁V', 'AL', 'ED', 'IC', 'T', 'OR', 'Y', '▁R', 'EM', 'AR', 'K', 'S', '▁ON']",
+          "n_id": "FC-BM-TOK-TRANS-16001927982661095|0-1600192814630419.json|1|0",
+          "output_subwords": "['▁വ', 'ാലി', 'ഡെ', 'ക്ട', 'റി', '▁റിട്ട', 'ാർ', 'ക്ക്', 'സ്', '▁ഓ', 'ണ', 'ാണ്']",
+          "pred_score": -9.413372993469238,
+          "s_id": "0_0_0",
+          "sentence_id": "0_0_0",
+          "src": "VALEDICTORY REMARKS ON",
+          "tagged_src": "VALEDICTORY REMARKS ON",
+          "tagged_tgt": "വാലിഡെക്ടറി റിട്ടാർക്ക്സ് ഓണാണ്",
+          "tgt": "വാലിഡെക്ടറി റിട്ടാർക്ക്സ് ഓണാണ്"
+        }
+      }
+    ]
+  }
+}

@@ -18,6 +18,18 @@ class TranslatorService:
     def __init__(self):
         pass
 
+    def text_translate(self, text_translate_input):
+        text_translate_input["taskID"] = utils.generate_task_id()
+        text_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
+        text_translate_input["state"] = "TRANSLATED"
+        nmt_in_txt = []
+        for text in text_translate_input["input"]["textBlocks"]:
+            if 'node' in text.keys():
+                s_id = text["node"]["pageNo"] + "|" + text["node"]["blockID"] + "|" + text["node"]["sentenceID"]
+            else:
+                s_id = "UUID"
+
+
     # Service method to begin translation for document translation flow.
     def start_file_translation(self, translate_wf_input):
         translate_wf_input["taskID"] = utils.generate_task_id()
@@ -115,7 +127,7 @@ class TranslatorService:
                             sent_nmt_in = {
                                 "src": sentence["src_text"],
                                 "s_id": sentence["sentence_id"],
-                                "id": eval(file["model"]["model_id"]),
+                                "id": file["model"]["model_id"],
                                 "n_id": node_id
                             }
                             if batch_key in sentences_for_trans.keys():
