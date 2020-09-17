@@ -31,9 +31,7 @@ class TranslatorService:
             for text in text_translate_input["input"]["textList"]:
                 s_id = str(text["node"]["pageNo"]) + "|" + str(text["node"]["blockID"]) + "|" + str(text["node"]["sentenceID"])
                 in_map[s_id] = text
-                sent_nmt_in = {
-                    "src": text["content"]["text"], "s_id": s_id, "id": text["content"]["model_id"], "n_id": s_id
-                }
+                sent_nmt_in = {"src": text["content"]["text"], "s_id": s_id, "id": text["content"]["model"]["model_id"], "n_id": s_id}
                 nmt_in_txt.append(sent_nmt_in)
             nmt_in = {"translate": nmt_in_txt}
             log_info("Making API call to NMT...", text_translate_input)
