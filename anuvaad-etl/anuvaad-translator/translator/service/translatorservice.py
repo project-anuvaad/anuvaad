@@ -28,26 +28,48 @@ class TranslatorService:
         output = text_translate_input
         try:
             nmt_in_txt = []
-            in_map = {}
-            for text in text_translate_input["input"]["textList"]:
-                s_id = str(text["node"]["pageNo"]) + "|" + str(text["node"]["blockID"]) + "|" + str(text["node"]["sentenceID"])
-                in_map[s_id] = text
-                sent_nmt_in = {"src": text["text"], "s_id": s_id, "id": text["model"]["model_id"], "n_id": s_id}
-                nmt_in_txt.append(sent_nmt_in)
+            record_id, model_id  = text_translate_input["input"]["recordID"], text_translate_input["input"]["modelID"]
+            for block in text_translate_input["input"]["blocks"]:
+                sentences = block["tokenized_sentences"]
+                for sentence in sentences:
+                    n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["sentence_id"])
+                    sent_nmt_in = {"src": sentence["src_text"], "s_id": sentence["sentence_id"], "id": model_id, "n_id": n_id}
+                    nmt_in_txt.append(sent_nmt_in)
             res = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None, text_translate_input["metadata"]["userID"])
             output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
-            translations = []
             if res:
                 if 'response_body' in res.keys():
-                    for translation in res["response_body"]:
-                        text = translation
-                        text["node"] = in_map[translation["s_id"]]["node"]
-                        translations.append(text)
-            if len(translations) > 0:
-                output["input"] = None
-                output["status"] = "SUCCESS"
-                output["output"] = {"translations": translations}
+                    if res['response_body']:
+                        for translation in res["response_body"]:
+                            b_index, s_index = None, None
+                            block_id, sentence_id = str(translation["n_id"]).split("|")[2], str(translation["n_id"]).split("|")[3]
+                            for j, block in enumerate(text_translate_input["input"]["blocks"]):
+                                if str(block["block_id"]) == str(block_id):
+                                    b_index = j
+                                    break
+                            block = text_translate_input["input"]["blocks"][b_index]
+                            for k, sentence in enumerate(block["tokenized_sentences"]):
+                                if str(sentence["sentence_id"]) == str(sentence_id):
+                                    s_index = k
+                                    break
+                            translation["sentence_id"] = translation["s_id"]
+                            text_translate_input["input"]["blocks"][b_index]["tokenized_sentences"][s_index] = translation
+                        # call update API of CH.
+                        output["input"] = None
+                        output["status"] = "SUCCESS"
+                        output["output"] = {"recordID": record_id}
+                    else:
+                        log_error("Error while translating - empty 'response_body' from NMT", text_translate_input, None)
+                        output["status"] = "FAILED"
+                        output["output"] = None
+                        output["error"] = post_error("TRANSLATION_FAILED", "Error while translating - empty 'response_body' from NMT", None)
+                else:
+                    log_error("Error while translating - null 'response_body' from NMT", text_translate_input, None)
+                    output["status"] = "FAILED"
+                    output["output"] = None
+                    output["error"] = post_error("TRANSLATION_FAILED", "Error while translating - null 'response_body' from NMT", None)
             else:
+                log_error("Error while translating - empty/null res from NMT", text_translate_input, None)
                 output["status"] = "FAILED"
                 output["output"] = None
                 output["error"] = post_error("TRANSLATION_FAILED", "There was an error while translating!", None)
@@ -55,7 +77,7 @@ class TranslatorService:
             log_exception("Exception while translating: " + str(e), text_translate_input, None)
             output["status"] = "FAILED"
             output["output"] = None
-            output["error"] = post_error("TRANSLATION_FAILED", "There was an exception while translating!", None)
+            output["error"] = post_error("TRANSLATION_FAILED", "There was an exception while translating: " + str(e), e)
         return output
 
     # Service method to begin translation for document translation flow.
