@@ -27,6 +27,17 @@ class TranslatorValidator:
                         return post_error("TEXT_LIST_EMPTY", "Text list cannot be empty", None)
                     else:
                         for text in data["input"]["textList"]:
+                            if 'text' not in text.keys():
+                                return post_error("TEXT_NOT_FOUND", "Text is mandatory", None)
+                            if 'locale' not in text.keys():
+                                return post_error("LOCALE_NOT_FOUND", "Locale is mandatory", None)
+                            if 'model' not in text.keys():
+                                return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.",
+                                                  None)
+                            else:
+                                model = text["model"]
+                                if 'model_id' not in model.keys():
+                                    return post_error("MODEL_ID_NOT_FOUND", "Model Id is mandatory.", None)
                             if 'node' not in text.keys():
                                 return post_error("NODE_NOT_FOUND", "Node is mandatory", None)
                             else:
@@ -39,21 +50,6 @@ class TranslatorValidator:
                                     return post_error("BLOCK_ID_NOT_FOUND", "Block ID is mandatory", None)
                                 if 'sentenceID' not in node.keys():
                                     return post_error("SENTENCE_ID_NOT_FOUND", "sentence ID is mandatory", None)
-                            if 'content' not in text.keys():
-                                return post_error("CONTENT_NOT_FOUND", "Content is mandatory", None)
-                            else:
-                                content = text["content"]
-                                if 'text' not in content.keys():
-                                    return post_error("TEXT_NOT_FOUND", "Text is mandatory", None)
-                                if 'locale' not in content.keys():
-                                    return post_error("LOCALE_NOT_FOUND", "Locale is mandatory", None)
-                                if 'model' not in content.keys():
-                                    return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.",
-                                                      None)
-                                else:
-                                    model = content["model"]
-                                    if 'model_id' not in model.keys():
-                                        return post_error("MODEL_ID_NOT_FOUND", "Model Id is mandatory.", None)
 
 
 

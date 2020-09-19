@@ -14,8 +14,10 @@ class Translator:
                 "files": wf_input["input"]["files"]
             }
         else:
+            textList = []
+
             tool_input = {
-                "textBlocks": wf_input["input"]["textBlocks"]
+                "textList": wf_input["input"]["textBlocks"]
             }
         trans_input = {
             "jobID": wf_input["jobID"],

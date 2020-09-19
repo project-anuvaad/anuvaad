@@ -32,18 +32,16 @@ class TranslatorService:
             for text in text_translate_input["input"]["textList"]:
                 s_id = str(text["node"]["pageNo"]) + "|" + str(text["node"]["blockID"]) + "|" + str(text["node"]["sentenceID"])
                 in_map[s_id] = text
-                sent_nmt_in = {"src": text["content"]["text"], "s_id": s_id, "id": text["content"]["model"]["model_id"], "n_id": s_id}
+                sent_nmt_in = {"src": text["text"], "s_id": s_id, "id": text["model"]["model_id"], "n_id": s_id}
                 nmt_in_txt.append(sent_nmt_in)
-            log_info(nmt_in_txt, text_translate_input)
             res = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None, text_translate_input["metadata"]["userID"])
             output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
             translations = []
             if res:
-                log_info(res, text_translate_input)
                 if 'response_body' in res.keys():
                     for translation in res["response_body"]:
-                        text = in_map[translation["s_id"]]
-                        text["content"] = translation
+                        text = translation
+                        text["node"] = in_map[translation["s_id"]]["node"]
                         translations.append(text)
             if len(translations) > 0:
                 output["input"] = None
@@ -192,7 +190,7 @@ class TranslatorService:
             translate_wf_input = {"jobID": job_id}
             file = self.get_content_from_db(record_id, None, translate_wf_input)
             if not file:
-                log_error("There is no file under translation for this job: " + str(job_id) + " and file: " + str(file_id), translate_wf_input, nmt_output["status"]["errorObj"])
+                log_error("There is no data for this recordID: " + str(record_id), translate_wf_input, nmt_output["status"])
                 return None
             file = file[0]
             skip_count = 0
@@ -202,9 +200,7 @@ class TranslatorService:
                 if 'statusCode' in nmt_output["status"].keys():
                     if nmt_output["status"]["statusCode"] != 200:
                         skip_count += batch_size
-                        log_error("Error from NMT: " + str(nmt_output["status"]["why"]), translate_wf_input, None)
-                        if 'errorObj' in nmt_output["status"].keys():
-                            log_error("Error from NMT: " + str(nmt_output["status"]["why"]), translate_wf_input, nmt_output["status"]["errorObj"])
+                        log_error("Error from NMT: " + str(nmt_output["status"]["why"]), translate_wf_input, nmt_output["status"])
             if 'response_body' in nmt_output.keys():
                 sentences_of_the_batch = []
                 for response in nmt_output["response_body"]:

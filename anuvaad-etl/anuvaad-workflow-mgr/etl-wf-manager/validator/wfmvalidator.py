@@ -96,17 +96,27 @@ class WFMValidator:
                 return post_error("TEXT_BLOCKS_NOT_FOUND", "Input files are mandatory.", None)
             else:
                 tools = wfmutils.get_tools_of_wf(workflowCode)
-                for block in data["textBlocks"]:
-                    if 'path' not in block.keys():
+                for text in data["textList"]:
+                    if 'text' not in text.keys():
                         return post_error("TEXT_NOT_FOUND", "Text is mandatory for all text blocks in the input", None)
-                    if 'locale' not in block.keys():
+                    if 'locale' not in text.keys():
                         return post_error("TEXT_LOCALE_NOT_FOUND", "Text Locale is mandatory for all text blocks in the input", None)
                     if tool_translator in tools:
-                        if 'model' not in block.keys():
+                        if 'model' not in text.keys():
                             return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
                         else:
-                            model = block["model"]
+                            model = text["model"]
                             if 'model_id' not in model.keys():
                                 return post_error("MODEL_ID_ NOT_FOUND", "Model ID is mandatory for this wf.", None)
-                            if 'url_end_point' not in model.keys():
-                                return post_error("MODEL_URL_ NOT_FOUND", "Model url end point is mandatory for this wf.", None)
+                        if 'node' not in text.keys():
+                                return post_error("NODE_NOT_FOUND", "Node is mandatory", None)
+                        else:
+                            node = text["node"]
+                            if 'recordID' not in node.keys():
+                                return post_error("RECORD_ID_NOT_FOUND", "Record ID is mandatory", None)
+                            if 'pageNo' not in node.keys():
+                                return post_error("PAGE_NO_NOT_FOUND", "Page no is mandatory", None)
+                            if 'blockID' not in node.keys():
+                                return post_error("BLOCK_ID_NOT_FOUND", "Block ID is mandatory", None)
+                            if 'sentenceID' not in node.keys():
+                                return post_error("SENTENCE_ID_NOT_FOUND", "sentence ID is mandatory", None)
