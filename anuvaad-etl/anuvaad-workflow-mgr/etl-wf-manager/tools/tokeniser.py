@@ -14,7 +14,10 @@ class Tokeniser:
             }
         else:
             tool_input = {
-                "files": wf_input["input"]["textBlocks"]
+                "recordID": wf_input["input"]["recordID"],
+                "modelID": wf_input["input"]["modelID"],
+                "locale": wf_input["input"]["locale"],
+                "blocks": wf_input["input"]["textBlocks"]
             }
         tok_input = {
             "jobID": wf_input["jobID"],

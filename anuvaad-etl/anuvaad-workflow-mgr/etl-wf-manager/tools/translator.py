@@ -14,10 +14,11 @@ class Translator:
                 "files": wf_input["input"]["files"]
             }
         else:
-            textList = []
-
             tool_input = {
-                "textList": wf_input["input"]["textBlocks"]
+                "recordID": wf_input["input"]["recordID"],
+                "modelID": wf_input["input"]["modelID"],
+                "locale": wf_input["input"]["locale"],
+                "blocks": wf_input["input"]["textBlocks"]
             }
         trans_input = {
             "jobID": wf_input["jobID"],
@@ -31,22 +32,29 @@ class Translator:
         return trans_input
 
     # Returns a json of the format accepted by Translator based on the predecessor.
-    def get_translator_input(self, task_output, predecessor):
-        if predecessor == tool_tokeniser:
-            files = []
-            op_files = task_output["output"]
-            for file in op_files:
-                file = {
-                    "path": file["outputFile"],
-                    "locale": file["outputLocale"],
-                    "type": file["outputType"]
-                }
-                files.append(file)
+    def get_translator_input(self, task_output, predecessor, is_sync):
+        if is_sync:
+            if predecessor == tool_tokeniser:
+                tool_input = task_output["output"]
+            else:
+                return None
         else:
-            return None
-        tool_input = {
-            "files": files
-        }
+            if predecessor == tool_tokeniser:
+                files = []
+                op_files = task_output["output"]
+                for file in op_files:
+                    file = {
+                        "path": file["outputFile"],
+                        "locale": file["outputLocale"],
+                        "type": file["outputType"]
+                    }
+                    files.append(file)
+            else:
+                return None
+            tool_input = {
+                "files": files
+            }
+
         trans_input = {
             "jobID": task_output["jobID"],
             "workflowCode": task_output["workflowCode"],

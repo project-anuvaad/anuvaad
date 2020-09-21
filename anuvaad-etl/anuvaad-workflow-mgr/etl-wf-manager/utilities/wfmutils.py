@@ -169,7 +169,7 @@ class WFMUtils:
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input(task_output, previous_tool)
             if current_tool == tool_translator:
-                tool_input = translator.get_tokeniser_input(task_output, previous_tool)
+                tool_input = translator.get_translator_input(task_output, previous_tool, True)
         else:
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input_wf(wf_input, True)
