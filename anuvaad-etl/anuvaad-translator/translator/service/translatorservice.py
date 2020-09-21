@@ -33,7 +33,11 @@ class TranslatorService:
                 sentences = block["tokenized_sentences"]
                 for sentence in sentences:
                     n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["sentence_id"])
-                    sent_nmt_in = {"src": sentence["src_text"], "s_id": sentence["sentence_id"], "id": model_id, "n_id": n_id}
+                    sent_nmt_in = {"s_id": sentence["sentence_id"], "id": model_id, "n_id": n_id}
+                    if 'src_text' in sentence.keys():
+                        sent_nmt_in["src"] = sentence["src_text"]
+                    else:
+                        sent_nmt_in["src"] = sentence["src"]
                     nmt_in_txt.append(sent_nmt_in)
             res = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None, text_translate_input["metadata"]["userID"])
             output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
