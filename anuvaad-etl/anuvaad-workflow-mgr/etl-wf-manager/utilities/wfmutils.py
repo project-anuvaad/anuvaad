@@ -181,7 +181,7 @@ class WFMUtils:
     def call_api(self, uri, api_input):
         try:
             log_info(api_input, api_input)
-            response = requests.post(url=uri, data=api_input, headers={'Content-Type': 'application/json'})
+            response = requests.post(url=uri, json=api_input, headers={'Content-Type': 'application/json'})
             if response is not None:
                 log_info(response, api_input)
                 if response.text is not None:
