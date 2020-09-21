@@ -24,11 +24,12 @@ class TranslatorService:
         text_translate_input["taskID"] = utils.generate_task_id()
         text_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
         text_translate_input["state"] = "TRANSLATED"
+        log_info("Translation SYNC started....", text_translate_input)
         output = text_translate_input
         is_successful, fail_msg, record_id = False, None, None
         try:
             nmt_in_txt = []
-            record_id, model_id  = text_translate_input["input"]["recordID"], text_translate_input["input"]["modelID"]
+            record_id, model_id = text_translate_input["input"]["recordID"], text_translate_input["input"]["modelID"]
             for block in text_translate_input["input"]["textBlocks"]:
                 sentences = block["tokenized_sentences"]
                 for sentence in sentences:
@@ -88,6 +89,7 @@ class TranslatorService:
             output["input"] = None
             output["status"] = "SUCCESS"
             output["output"] = {"recordID": record_id}
+        log_info(output, text_translate_input)
         return output
 
     # Service method to begin translation for document translation flow.

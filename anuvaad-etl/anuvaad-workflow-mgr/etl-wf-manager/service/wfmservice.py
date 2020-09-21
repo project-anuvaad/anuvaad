@@ -57,25 +57,12 @@ class WFMService:
                 else:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], tool_output, previous_tool, None)
                 response = wfmutils.call_api(uri, tool_input)
-                if not response:
-                    log_error("There was an error from the tool: " + str(tool_details["name"]), wf_input, None)
-                    error = post_error("ERROR_FROM_TOOL", "There was an error from: " + str(tool_details["name"]), None)
-                    client_output = self.get_wf_details(wf_input, None, True, error)
-                    self.update_job_details(client_output, False)
-                    log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
-                    return client_output
-                else:
-                    if 'error' in response.keys():
-                        log_error("Error from the tool: " + str(tool_details["name"]) + " | Cause: " + str(response["error"]), wf_input, None)
-                        error = post_error("ERROR_FROM_TOOL",
-                                           "Error from the tool: " + str(tool_details["name"]) + " | Cause: " + str(response["error"]), None)
-                        client_output = self.get_wf_details(wf_input, None, True, error)
-                        self.update_job_details(client_output, False)
-                        log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
-                        return client_output
-                    tool_output = response
-                    previous_tool = tool_details["name"]
-                    log_info(tool_details["name"] + log_msg_end, wf_input)
+                error = self.validate_tool_response(response, tool_details, wf_input)
+                if error:
+                    return error
+                tool_output = response
+                previous_tool = tool_details["name"]
+                log_info(tool_details["name"] + log_msg_end, wf_input)
             client_output = self.get_wf_details(tool_output, None, True, None)
             self.update_job_details(client_output, False)
             log_info("Job COMPLETED, jobID: " + str(wf_input["jobID"]), wf_input)
@@ -83,6 +70,27 @@ class WFMService:
         except Exception as e:
             log_exception("Exception while processing sync workflow: " + str(e), wf_input, e)
             error = post_error("SYNC_WFLOW_ERROR", "Exception while processing the sync workflow: " + str(e), e)
+            client_output = self.get_wf_details(wf_input, None, True, error)
+            self.update_job_details(client_output, False)
+            log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
+            return client_output
+
+    # Validates errors and returns failure object
+    def validate_tool_response(self, tool_response, tool_details, wf_input):
+        if not tool_response:
+            log_error("There was an error from the tool: " + str(tool_details["name"]), wf_input, None)
+            error = post_error("ERROR_FROM_TOOL", "There was an error from: " + str(tool_details["name"]), None)
+            client_output = self.get_wf_details(wf_input, None, True, error)
+            self.update_job_details(client_output, False)
+            log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
+            return client_output
+        else:
+            if 'error' in tool_response.keys():
+                fail_msg = "Error from the tool: " + str(tool_details["name"]) + " | Cause: " + str(tool_response["error"])
+            else:
+                fail_msg = "Error from the tool: " + str(tool_details["name"])
+            log_error(fail_msg, wf_input, None)
+            error = post_error("ERROR_FROM_TOOL", fail_msg, None)
             client_output = self.get_wf_details(wf_input, None, True, error)
             self.update_job_details(client_output, False)
             log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)

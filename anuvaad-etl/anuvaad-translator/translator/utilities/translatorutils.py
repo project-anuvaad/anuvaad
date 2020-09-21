@@ -39,7 +39,6 @@ class TranslatorUtils:
     def call_api(self, uri, method, api_input, params, user_id):
         try:
             response = None
-            log_info(api_input, api_input)
             if method == "POST":
                 api_headers = {'userid': user_id, 'ad-userid': user_id, 'Content-Type': 'application/json'}
                 response = requests.post(url=uri, json=api_input, headers=api_headers)
