@@ -47,11 +47,12 @@ class TranslatorService:
                         for translation in res["response_body"]:
                             b_index, s_index = None, None
                             block_id, sentence_id = str(translation["n_id"]).split("|")[2], str(translation["n_id"]).split("|")[3]
-                            for j, block in enumerate(text_translate_input["input"]["textBlocks"]):
-                                if str(block["block_id"]) == str(block_id):
+                            blocks = text_translate_input["input"]["textBlocks"]
+                            for j, block in enumerate(blocks):
+                                if str(block["block_identifier"]) == str(block_id):
                                     b_index = j
                                     break
-                            block = text_translate_input["input"]["textBlocks"][b_index]
+                            block = blocks[b_index]
                             for k, sentence in enumerate(block["tokenized_sentences"]):
                                 if str(sentence["sentence_id"]) == str(sentence_id):
                                     s_index = k
