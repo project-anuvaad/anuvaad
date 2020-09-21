@@ -6,6 +6,7 @@ import base64
 from anuvaad_auditor.loghandler import log_error
 import src.utilities.app_context as app_context
 import time
+import uuid
 
 def df_to_json(p_df,block_key =''):
 
@@ -72,18 +73,24 @@ def process_image_df(img_df):
 
 def process_table_df(table_df):
     table_data = []
+    unique_id =  str(uuid.uuid1())
     try:
         if len(table_df)>0:
             table_df = get_xml.drop_cols(table_df)
 
             for index ,row in table_df.iterrows():
                 block             = row.to_dict()
-                block['children'] = row['children']
-                for child in row['children']:
-                    for sub_child in child['text']:
-                        if 'xml_index' in sub_child.keys():
-                            sub_child.pop('xml_index')
+                #block['children'] = row['children']
+                block['block_id'] = str(index) + '_' + unique_id
+                for index2, child in enumerate(row['children']):
+                    row['children'][index2]['block_id'] = str(index) + '_' + str(index2) + '_' + unique_id
 
+                    for index3,sub_child in enumerate(child['text']):
+                        if 'xml_index' in sub_child.keys():
+                            row['children'][index2]['text'][index3].pop('xml_index')
+                        row['children'][index2]['text'][index3]['block_id'] = str(index) + '_' + str(index2) + '_' + str(index3) + '_' + unique_id
+
+                block['children'] = row['children']
                 table_data.append(block)
             
         else:
