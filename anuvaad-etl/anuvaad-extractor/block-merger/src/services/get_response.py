@@ -19,7 +19,8 @@ def df_to_json(p_df,block_key =''):
             for index ,row in p_df.iterrows():
                 block = row.to_dict()
                 if block_key == '':
-                    block['block_id'] = str(index)
+                    block_key  =  str(uuid.uuid1())
+                    block['block_id'] = block_key + '_' +  str(index)
                 else:
                     block['block_id'] = block_key + '_' + str(index)
                 for key in block.keys():
