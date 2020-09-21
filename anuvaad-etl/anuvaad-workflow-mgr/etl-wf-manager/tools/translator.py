@@ -35,7 +35,12 @@ class Translator:
     def get_translator_input(self, task_output, predecessor, is_sync):
         if is_sync:
             if predecessor == tool_tokeniser:
-                tool_input = task_output["output"]
+                tool_input = {
+                    "recordID": task_output["output"]["record_id"],
+                    "locale": task_output["output"]["locale"],
+                    "modelID": task_output["output"]["model_id"],
+                    "textBlocks": task_output["output"]["text_blocks"]
+                }
             else:
                 return None
         else:
