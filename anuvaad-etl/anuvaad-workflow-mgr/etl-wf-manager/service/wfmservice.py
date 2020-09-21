@@ -66,9 +66,9 @@ class WFMService:
                     return client_output
                 else:
                     if 'error' in response.keys():
-                        log_error("Error from the tool: " + str(tool_details["name"], " | Cause: " + str(response["error"])), None)
+                        log_error("Error from the tool: " + str(tool_details["name"], " | Cause: " + str(response["error"]["message"])), None)
                         error = post_error("ERROR_FROM_TOOL",
-                                           "Error from the tool: " + str(tool_details["name"], " | Cause: " + str(response["error"])), None)
+                                           "Error from the tool: " + str(tool_details["name"], " | Cause: " + str(response["error"]["message"])), None)
                         client_output = self.get_wf_details(wf_input, None, True, error)
                         self.update_job_details(client_output, False)
                         log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
