@@ -61,6 +61,7 @@ class WFMService:
                 if error:
                     return error
                 tool_output = response
+                tool_output["metadata"] = wf_input["metadata"]
                 previous_tool = tool_details["name"]
                 log_info(tool_details["name"] + log_msg_end, wf_input)
             client_output = self.get_wf_details(None, tool_output, True, None)
