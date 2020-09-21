@@ -59,16 +59,16 @@ class WFMService:
                 response = wfmutils.call_api(uri, tool_input)
                 if not response:
                     log_error("There was an error from the tool: " + str(tool_details["name"]), wf_input, None)
-                    error = post_error("ERROR_FROM_TOOL", "There was an error from: " + str(tool_details["name"]), wf_input, None)
+                    error = post_error("ERROR_FROM_TOOL", "There was an error from: " + str(tool_details["name"]), None)
                     client_output = self.get_wf_details(wf_input, None, True, error)
                     self.update_job_details(client_output, False)
                     log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
                     return client_output
                 else:
                     if 'error' in response.keys():
-                        log_error("Error from the tool: " + str(tool_details["name"], " | Cause: " + str(response["error"])), wf_input, None)
+                        log_error("Error from the tool: " + str(tool_details["name"], " | Cause: " + str(response["error"])), None)
                         error = post_error("ERROR_FROM_TOOL",
-                                           "Error from the tool: " + str(tool_details["name"], " | Cause: " + str(response["error"])), wf_input, None)
+                                           "Error from the tool: " + str(tool_details["name"], " | Cause: " + str(response["error"])), None)
                         client_output = self.get_wf_details(wf_input, None, True, error)
                         self.update_job_details(client_output, False)
                         log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)

@@ -514,7 +514,7 @@ WorkflowConfigs:
       - name: Translator
         description: Translates the sentences.
         api-details:
-        - uri: https://gateway_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/doc/workflow/translate
+        - uri: http://gateway_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/doc/workflow/translate
       endState: true
 
 
