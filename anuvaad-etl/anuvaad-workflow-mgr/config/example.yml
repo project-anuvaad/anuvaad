@@ -511,7 +511,7 @@ WorkflowConfigs:
     sequence:
     - order: 0
       tool:
-      - name: Translator
+      - name: TRANSLATOR
         description: Translates the sentences.
         api-details:
         - uri: http://gateway_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/doc/workflow/translate
@@ -532,7 +532,7 @@ WorkflowConfigs:
       endState: false
     - order: 1
       tool:
-      - name: Translator
+      - name: TRANSLATOR
         description: Translates the sentences.
         api-details:
         - uri: http://gateway_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/doc/workflow/translate

@@ -199,11 +199,13 @@ class WFMService:
             task_details = []
             if task_output is not None:
                 task_details = [task_output]
-            client_input = {
-                "workflowCode": wf_input["workflowCode"]
-            }
+            client_input = {"workflowCode": wf_input["workflowCode"]}
             if 'textBlocks' in wf_input.keys():
                 client_input["textBlocks"] = wf_input["textBlocks"]
+                client_input["recordID"] = wf_input["recordID"]
+                client_input["locale"] = wf_input["locale"]
+                if 'modelID' in wf_input.keys():
+                    client_input["modelID"] = wf_input["modelID"]
             else:
                 client_input["files"] = wf_input["files"]
             if 'jobName' in wf_input.keys():
