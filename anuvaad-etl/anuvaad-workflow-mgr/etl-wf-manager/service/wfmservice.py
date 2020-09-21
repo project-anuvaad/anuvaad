@@ -66,7 +66,7 @@ class WFMService:
                     return client_output
                 else:
                     if 'error' in response.keys():
-                        log_error("Error from the tool: " + str(tool_details["name"]) + " | Cause: " + str(response["error"]), None)
+                        log_error("Error from the tool: " + str(tool_details["name"]) + " | Cause: " + str(response["error"]), wf_input, None)
                         error = post_error("ERROR_FROM_TOOL",
                                            "Error from the tool: " + str(tool_details["name"]) + " | Cause: " + str(response["error"]), None)
                         client_output = self.get_wf_details(wf_input, None, True, error)
