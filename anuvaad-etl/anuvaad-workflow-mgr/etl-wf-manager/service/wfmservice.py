@@ -55,7 +55,7 @@ class WFMService:
                 if not tool_output:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], None, None, wf_input)
                 else:
-                    tool_input = wfmutils.get_tool_input_sync(tool_details["name"], tool_output, previous_tool, None)
+                    tool_input = wfmutils.get_tool_input_sync(tool_details["name"], previous_tool, tool_output, None)
                 response = wfmutils.call_api(uri, tool_input)
                 error = self.validate_tool_response(response, tool_details, wf_input)
                 if error:
