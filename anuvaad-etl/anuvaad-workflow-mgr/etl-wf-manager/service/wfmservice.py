@@ -63,7 +63,7 @@ class WFMService:
                 tool_output = response
                 previous_tool = tool_details["name"]
                 log_info(tool_details["name"] + log_msg_end, wf_input)
-            client_output = self.get_wf_details(tool_output, None, True, None)
+            client_output = self.get_wf_details(None, tool_output, True, None)
             self.update_job_details(client_output, False)
             log_info("Job COMPLETED, jobID: " + str(wf_input["jobID"]), wf_input)
             return client_output
@@ -86,15 +86,15 @@ class WFMService:
             return client_output
         else:
             if 'error' in tool_response.keys():
-                fail_msg = "Error from the tool: " + str(tool_details["name"]) + " | Cause: " + str(tool_response["error"])
-            else:
-                fail_msg = "Error from the tool: " + str(tool_details["name"])
-            log_error(fail_msg, wf_input, None)
-            error = post_error("ERROR_FROM_TOOL", fail_msg, None)
-            client_output = self.get_wf_details(wf_input, None, True, error)
-            self.update_job_details(client_output, False)
-            log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
-            return client_output
+                if tool_response["error"]:
+                    fail_msg = "Error from the tool: " + str(tool_details["name"]) + " | Cause: " + str(
+                        tool_response["error"])
+                    log_error(fail_msg, wf_input, None)
+                    error = post_error("ERROR_FROM_TOOL", fail_msg, None)
+                    client_output = self.get_wf_details(wf_input, None, True, error)
+                    self.update_job_details(client_output, False)
+                    log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
+                    return client_output
 
     # Method to initiate the workflow.
     # This fetches the first step of workflow and starts the job.
