@@ -518,6 +518,7 @@ WorkflowConfigs:
       endState: true
 
 
+
   - workflowCode: DP_WFLOW_S_TTR
     type: SYNC
     description: Tokenises the text blocks to sentences and Translates them.
@@ -536,4 +537,4 @@ WorkflowConfigs:
         description: Translates the sentences.
         api-details:
         - uri: http://gateway_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/doc/workflow/translate
-      endState: ]true
+      endState: true
