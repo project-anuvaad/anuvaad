@@ -499,7 +499,7 @@ WorkflowConfigs:
       - name: TOKENISER
         description: tokenises the text blocks.
         api-details:
-        - uri: http://abc.com/tokenise
+        - uri: http://gateway_anuvaad-etl-tokeniser:5001/api/v0/blocks-tokenisation-wf
       endState: true
 
 
@@ -528,12 +528,12 @@ WorkflowConfigs:
       - name: TOKENISER
         description: tokenises the text blocks.
         api-details:
-        - uri: http://abc.com/tokenise
+        - uri: http://gateway_anuvaad-etl-tokeniser:5001/api/v0/blocks-tokenisation-wf
       endState: false
     - order: 1
       tool:
       - name: Translator
         description: Translates the sentences.
         api-details:
-        - uri: http://abc.com/translate
+        - uri: http://gateway_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/doc/workflow/translate
       endState: false
