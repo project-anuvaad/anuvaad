@@ -80,6 +80,6 @@ CROP_CONFIG = {
     'hi': {'top':15, 'bottom':10,'right':5,'left':5},
     'ml': {'top':15, 'bottom':10,'right':5,'left':5},
     'kn':{'top':15, 'bottom':10,'right':5,'left':5 },
-    'ta':{'top':5, 'bottom':5,'right':5,'left':5 },
+    'ta':{'top':5, 'bottom':15,'right':5,'left':10 },
     'ma':{'top':5, 'bottom':5,'right':5,'left':5 }
 }
