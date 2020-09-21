@@ -185,6 +185,7 @@ class WFMUtils:
             if response is not None:
                 log_info(response, api_input)
                 if response.text is not None:
+                    log_info(response.text, api_input)
                     data = json.loads(response.text)
                     return data
                 else:

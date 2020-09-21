@@ -7,6 +7,7 @@ from service.translatorservice import TranslatorService
 from validator.translatorvalidator import TranslatorValidator
 from configs.translatorconfig import context_path
 from configs.translatorconfig import anu_etl_module_name
+from anuvaad_auditor.loghandler import log_info
 
 translatorapp = Flask(__name__)
 log = logging.getLogger('file')
@@ -32,10 +33,12 @@ def text_translate():
     validator = TranslatorValidator()
     data = request.get_json()
     error = validator.validate_text_translate(data)
+    log_info(error, data)
     if error is not None:
         data["state"] = "TRANSLATED"
         data["status"] = "FAILED"
         data["error"] = error
+        log_info(data, data)
         return data, 400
     response = service.text_translate(data)
     return response
