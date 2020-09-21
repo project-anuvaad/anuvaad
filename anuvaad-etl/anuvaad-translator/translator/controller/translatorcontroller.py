@@ -13,7 +13,7 @@ log = logging.getLogger('file')
 
 
 # REST endpoint to initiate the workflow.
-@translatorapp.route(context_path + '/v1/doc/workflow/translate', methods=["POST"])
+@translatorapp.route(context_path + '/v1/text/workflow/translate', methods=["POST"])
 def doc_translate_workflow():
     service = TranslatorService()
     validator = TranslatorValidator()
@@ -26,7 +26,7 @@ def doc_translate_workflow():
 
 
 # REST endpoint to initiate the workflow.
-@translatorapp.route(context_path + '/v1/text/workflow/translate', methods=["POST"])
+@translatorapp.route(context_path + '/v1/doc/workflow/translate', methods=["POST"])
 def text_translate():
     service = TranslatorService()
     validator = TranslatorValidator()
