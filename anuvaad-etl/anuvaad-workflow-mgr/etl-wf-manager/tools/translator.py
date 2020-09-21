@@ -14,12 +14,7 @@ class Translator:
                 "files": wf_input["input"]["files"]
             }
         else:
-            tool_input = {
-                "recordID": wf_input["input"]["recordID"],
-                "modelID": wf_input["input"]["modelID"],
-                "locale": wf_input["input"]["locale"],
-                "blocks": wf_input["input"]["textBlocks"]
-            }
+            tool_input = wf_input["input"]
         trans_input = {
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
