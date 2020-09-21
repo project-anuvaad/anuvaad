@@ -9,7 +9,7 @@ from configs.wfmconfig import anu_etl_wfm_core_topic
 from configs.wfmconfig import log_msg_start
 from configs.wfmconfig import log_msg_end
 from configs.wfmconfig import module_wfm_name
-from anuvaad_auditor.errorhandler import post_error_wf
+from anuvaad_auditor.errorhandler import post_error_wf, post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 from anuvaad_auditor.loghandler import log_exception
@@ -59,14 +59,20 @@ class WFMService:
                 response = wfmutils.call_api(uri, tool_input)
                 if not response:
                     log_error("There was an error from the tool: " + str(tool_details["name"]), wf_input, None)
-                    wf_input["taskID"] = "TASK-ID-NA"
-                    error = post_error_wf("ERROR_FROM_TOOL",
-                                          "There was an error from: " + str(tool_details["name"]), wf_input, None)
+                    error = post_error("ERROR_FROM_TOOL", "There was an error from: " + str(tool_details["name"]), wf_input, None)
                     client_output = self.get_wf_details(wf_input, None, True, error)
                     self.update_job_details(client_output, False)
                     log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
                     return client_output
                 else:
+                    if 'error' in response.keys():
+                        log_error("Error from the tool: " + str(tool_details["name"], " | Cause: " + str(response["error"])), wf_input, None)
+                        error = post_error("ERROR_FROM_TOOL",
+                                           "Error from the tool: " + str(tool_details["name"], " | Cause: " + str(response["error"])), wf_input, None)
+                        client_output = self.get_wf_details(wf_input, None, True, error)
+                        self.update_job_details(client_output, False)
+                        log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
+                        return client_output
                     tool_output = response
                     previous_tool = tool_details["name"]
                     log_info(tool_details["name"] + log_msg_end, wf_input)
@@ -76,9 +82,7 @@ class WFMService:
             return client_output
         except Exception as e:
             log_exception("Exception while processing sync workflow: " + str(e), wf_input, e)
-            wf_input["taskID"] = "TASK-ID-NA"
-            error = post_error_wf("SYNC_WFLOW_ERROR", "Exception while processing the sync workflow: " + str(e),
-                                  wf_input, e)
+            error = post_error("SYNC_WFLOW_ERROR", "Exception while processing the sync workflow: " + str(e), wf_input, e)
             client_output = self.get_wf_details(wf_input, None, True, error)
             self.update_job_details(client_output, False)
             log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
