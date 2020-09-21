@@ -51,6 +51,16 @@ class ValidationResponse(object):
                             raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory.")
                         elif in_locale == "" or in_locale is None:
                             raise FileErrors("LOCALE_ERROR", "No language input or unsupported language input.")
+            elif 'blocks' in input_key.keys():
+                blocks_list, record_id, model_id, in_locale = file_ops.get_input_values_for_block_tokenise(input_key)
+                if in_locale == "" or in_locale is None:
+                    raise FileErrors("LOCALE_ERROR", "No language input or unsupported language input.")
+                elif record_id == "" or record_id is None:
+                    raise FileErrors("RECORD_ERROR", "No record id found for this request.")
+                elif model_id == "" or model_id is None:
+                    raise FileErrors("MODEL_ID_ERROR", "No model id found for this request.")
+                elif not isinstance(blocks_list, list) or blocks_list == None:
+                    raise FileErrors("BLOCKS_ERROR", "either blocks key isn't list type or none.")
 
     # checking whether file is utf-16 encoded or not
     def file_encoding_error(self, input_file_data):

@@ -52,3 +52,21 @@ class SentenceTokenise(Resource):
         except FormatError as e:
             log_error("Resource SenTokenisePostWF : Input json format is not correct or dict_key is missing", None, e)
             return Status.ERR_request_input_format.value
+
+class BlockTokenize(Resource):
+
+    def post(self):
+        task_id = str("TOK-" + str(time.time()).replace('.', ''))
+        task_starttime = str(time.time()).replace('.', '')
+        json_data = request.get_json(force = True)
+        log_info("Resource BlockTokenize : data from api request received", json_data)
+        try:
+            error_validator = ValidationResponse(DOWNLOAD_FOLDER)
+            if error_validator.format_error(json_data) is True:
+                response_gen = Response(json_data, DOWNLOAD_FOLDER)
+                response = response_gen.workflow_response_block_tokeniser(task_id, task_starttime)
+                log_info("Resource BlockTokenize : Tokenisation api response completed", json_data)
+                return jsonify(response)
+        except FormatError as e:
+            log_error("Resource BlockTokenize : Input json format is not correct or dict_key is missing", json_data, e)
+            return Status.ERR_request_input_format.value

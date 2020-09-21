@@ -82,6 +82,14 @@ class FileOperation(object):
         locale = files['locale']
         return filepath, file_type, locale
 
+    # getting input key values from block tokeniser request
+    def get_input_values_for_block_tokenise(self, input_data):
+        record_id = input_data['record_id']
+        model_id = input_data['model_id']
+        blocks_list = input_data['text_blocks']
+        in_locale = input_data['locale']
+        return blocks_list, record_id, model_id, in_locale
+
     # output format for individual pdf file
     def one_filename_response(self, input_filename, output_filename, in_locale, in_file_type):
         file_res = {

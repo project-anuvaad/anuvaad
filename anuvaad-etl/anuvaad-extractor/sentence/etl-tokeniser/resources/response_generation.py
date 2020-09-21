@@ -104,6 +104,56 @@ class Response(object):
             response = copy.deepcopy(response)
             return response
 
+    def workflow_response_block_tokeniser(self, task_id, task_starttime):
+        input_key, workflow_id, jobid, tool_name, step_order, user_id = file_ops.json_input_format(self.json_data)
+        log_info("workflow_response : started the block tokenisation response generation", self.json_data)
+        error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
+        tokenisation = Tokenisation(self.DOWNLOAD_FOLDER, self.json_data)
+        try:
+            error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)
+            error_validator.inputfile_list_empty(input_key)
+            blocks_list, record_id, model_id, in_locale = file_ops.get_input_values_for_block_tokenise(input_key)
+            input_key = tokenisation.adding_tokenised_text_blockmerger(input_key, in_locale, 0)
+            task_endtime = str(time.time()).replace('.', '')
+            response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
+            response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, input_key)
+            response = copy.deepcopy(response_success)
+            log_info("workflow_response : successfully generated response for workflow", self.json_data)
+            return response
+        except WorkflowkeyError as e:
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = str(e)
+            response = file_ops.error_handler(response_custom, "WORKFLOWKEY-ERROR", True)
+            log_exception("workflow_response : workflow key error: key value missing", self.json_data, e)
+            response = copy.deepcopy(response)
+            return response
+        except FileErrors as e:
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = e.message
+            response = file_ops.error_handler(response_custom, e.code, True)
+            log_exception("workflow_response : some error occured while validating file", self.json_data, e)
+            response = copy.deepcopy(response)
+            return response
+        except ServiceError as e:
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = str(e)
+            response = file_ops.error_handler(response_custom, "SERVICE_ERROR", True)
+            log_exception("workflow_response : Error occured during tokenisation or file writing", self.json_data, e)
+            response = copy.deepcopy(response)
+            return response
+        except Exception as e:
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = str(e)
+            response = file_ops.error_handler(response_custom, "SERVICE_ERROR", True)
+            log_exception("workflow_response : Any random exception", self.json_data, e)
+            response = copy.deepcopy(response)
+            return response
+        
+
     def nonwf_response(self):
         log_info("non workflow response : started the response generation", None)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
