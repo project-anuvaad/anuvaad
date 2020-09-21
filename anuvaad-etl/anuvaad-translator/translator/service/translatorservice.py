@@ -1,4 +1,3 @@
-import logging
 import time
 
 from anuvaad_auditor import post_error
@@ -9,8 +8,8 @@ from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
 from configs.translatorconfig import nmt_translate_url
+from configs.translatorconfig import update_content_url
 
-log = logging.getLogger('file')
 utils = TranslatorUtils()
 producer = Producer()
 repo = TranslatorRepository()
@@ -26,6 +25,7 @@ class TranslatorService:
         text_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
         text_translate_input["state"] = "TRANSLATED"
         output = text_translate_input
+        is_successful, fail_msg, record_id = False, None, None
         try:
             nmt_in_txt = []
             record_id, model_id  = text_translate_input["input"]["recordID"], text_translate_input["input"]["modelID"]
@@ -54,30 +54,35 @@ class TranslatorService:
                                     break
                             translation["sentence_id"] = translation["s_id"]
                             text_translate_input["input"]["blocks"][b_index]["tokenized_sentences"][s_index] = translation
-                        # call update API of CH.
-                        output["input"] = None
-                        output["status"] = "SUCCESS"
-                        output["output"] = {"recordID": record_id}
+                        api_input = {"blocks": text_translate_input["input"]["blocks"]}
+                        res = utils.call_api(update_content_url, "POST", api_input, None, text_translate_input["metadata"]["userID"])
+                        if res:
+                            if res["http"]["status"] == 200:
+                                is_successful = True
+                            else:
+                                fail_msg = "Error while updating blocks to CH: " + res["why"]
+                                log_error(fail_msg, text_translate_input, None)
                     else:
-                        log_error("Error while translating - empty 'response_body' from NMT", text_translate_input, None)
-                        output["status"] = "FAILED"
-                        output["output"] = None
-                        output["error"] = post_error("TRANSLATION_FAILED", "Error while translating - empty 'response_body' from NMT", None)
+                        fail_msg = "Error while translating - empty 'response_body' from NMT"
+                        log_error(fail_msg, text_translate_input, None)
                 else:
-                    log_error("Error while translating - null 'response_body' from NMT", text_translate_input, None)
-                    output["status"] = "FAILED"
-                    output["output"] = None
-                    output["error"] = post_error("TRANSLATION_FAILED", "Error while translating - null 'response_body' from NMT", None)
+                    fail_msg = "Error while translating - null 'response_body' from NMT"
+                    log_error(fail_msg, text_translate_input, None)
             else:
-                log_error("Error while translating - empty/null res from NMT", text_translate_input, None)
-                output["status"] = "FAILED"
-                output["output"] = None
-                output["error"] = post_error("TRANSLATION_FAILED", "There was an error while translating!", None)
+                fail_msg = "Error while translating - empty/null res from NMT"
+                log_error(fail_msg, text_translate_input, None)
         except Exception as e:
-            log_exception("Exception while translating: " + str(e), text_translate_input, None)
+            fail_msg = "Exception while translating: " + str(e)
+            log_exception(fail_msg, text_translate_input, None)
+
+        if not is_successful:
             output["status"] = "FAILED"
             output["output"] = None
-            output["error"] = post_error("TRANSLATION_FAILED", "There was an exception while translating: " + str(e), e)
+            output["error"] = post_error("TRANSLATION_FAILED", fail_msg, None)
+        else:
+            output["input"] = None
+            output["status"] = "SUCCESS"
+            output["output"] = {"recordID": record_id}
         return output
 
     # Service method to begin translation for document translation flow.
@@ -160,25 +165,22 @@ class TranslatorService:
             log_exception("Exception while pushing sentences to NMT: " + str(e), translate_wf_input, e)
             return None
 
-    # Method to fetch batches for sentences from the file
+    # Method to fetch batches for sentences from the file for a page.
     def fetch_batches_of_sentences(self, file, record_id, page, translate_wf_input):
         try:
             log_info("Building batches of sentences for page: " + str(page["page_no"]), translate_wf_input)
             sentences_for_trans = {}
             page_no = page["page_no"]
             text_blocks = page["text_blocks"]
+            batch_key = 0
             if text_blocks:
-                batch_key = 0
                 for block in text_blocks:
                     block_id = block["block_id"]
                     if 'tokenized_sentences' in block.keys():
                         for sentence in block["tokenized_sentences"]:
-                            node_id = str(record_id) + "|" + str(page_no) + "|" + str(block_id)
+                            node_id = "TEXT-BLOCK" + "|" + str(record_id) + "|" + str(page_no) + "|" + str(block_id)
                             sent_nmt_in = {
-                                "src": sentence["src_text"],
-                                "s_id": sentence["sentence_id"],
-                                "id": file["model"]["model_id"],
-                                "n_id": node_id
+                                "src": sentence["src_text"], "s_id": sentence["sentence_id"], "id": file["model"]["model_id"], "n_id": node_id
                             }
                             if batch_key in sentences_for_trans.keys():
                                 sentence_list = sentences_for_trans[batch_key]
@@ -192,10 +194,41 @@ class TranslatorService:
                     else:
                         log_error("There are no tokenised sentences in block: " + str(block_id), translate_wf_input, None)
                         continue
-                return sentences_for_trans
+                log_info("Text Blocks batched.", translate_wf_input)
             else:
                 log_error("There are no text blocks for this page: " + str(page_no), translate_wf_input, None)
-                return None
+            tables = page["tables"]
+            if tables:
+                for table in tables:
+                    if 'children' in table.keys():
+                        cells = table["children"]
+                        for cell in cells:
+                            if 'text' in cell.keys():
+                                texts = cell["text"]
+                                for text in texts:
+                                    node_id = "TABLE" + "|" + str(record_id) + "|" + str(page_no) + "|" + str(table["table_id"]) + "|" + str(cell["cell_id"])
+                                    sent_nmt_in = {
+                                        "src": text["text"], "s_id": text["text_id"], "id": file["model"]["model_id"], "n_id": node_id
+                                    }
+                                    if batch_key in sentences_for_trans.keys():
+                                        sentence_list = sentences_for_trans[batch_key]
+                                        sentence_list.append(sent_nmt_in)
+                                        sentences_for_trans[batch_key] = sentence_list
+                                    else:
+                                        sentence_list = [sent_nmt_in]
+                                        sentences_for_trans[batch_key] = sentence_list
+                                    if len(sentences_for_trans[batch_key]) == nmt_max_batch_size:
+                                        batch_key += 1
+                            else:
+                                log_error("No text for the cell: " + str(cell["cell_id"]), translate_wf_input)
+                                continue
+                    else:
+                        log_error("No cells for the table: " + str(table["table_id"]), translate_wf_input)
+                        continue
+                log_info("Table text content batched.", translate_wf_input)
+            else:
+                log_error("There are no tables for this page: " + str(page_no), translate_wf_input, None)
+            return sentences_for_trans
         except Exception as e:
             log_exception("Exception while fetching batch of sentences: " + str(e), translate_wf_input, e)
             return None
@@ -266,26 +299,54 @@ class TranslatorService:
         job_details = self.get_content_from_db(record_id, None, translate_wf_input)[0]
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
-            page_no, block_id = node[2], node[3]
-            p_index, b_index, s_index = None, None, None
-            sentence_id = nmt_res_sentence["s_id"]
-            pages = job_details["data"]["result"]
-            for i, page in enumerate(pages):
-                if str(page["page_no"]) == str(page_no):
-                    p_index = i
-                    break
-            page = pages[p_index]
-            for j, block in enumerate(page["text_blocks"]):
-                if str(block["block_id"]) == str(block_id):
-                    b_index = j
-                    break
-            block = page["text_blocks"][b_index]
-            for k, sentence in enumerate(block["tokenized_sentences"]):
-                if str(sentence["sentence_id"]) == str(sentence_id):
-                    s_index = k
-                    break
-            nmt_res_sentence["sentence_id"] = nmt_res_sentence["s_id"]
-            job_details["data"]["result"][p_index]["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
+            if node[0] == "TEXT-BLOCK":
+                page_no, block_id = node[3], node[4]
+                p_index, b_index, s_index = None, None, None
+                sentence_id = nmt_res_sentence["s_id"]
+                pages = job_details["data"]["result"]
+                for i, page in enumerate(pages):
+                    if str(page["page_no"]) == str(page_no):
+                        p_index = i
+                        break
+                page = pages[p_index]
+                for j, block in enumerate(page["text_blocks"]):
+                    if str(block["block_id"]) == str(block_id):
+                        b_index = j
+                        break
+                block = page["text_blocks"][b_index]
+                for k, sentence in enumerate(block["tokenized_sentences"]):
+                    if str(sentence["sentence_id"]) == str(sentence_id):
+                        s_index = k
+                        break
+                nmt_res_sentence["sentence_id"] = nmt_res_sentence["s_id"]
+                job_details["data"]["result"][p_index]["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
+
+            elif node[0] == "TABLE":
+                page_no, table_id, cell_id = node[3], node[4], node[5]
+                p_index, t_index, c_index, s_index = None, None, None, None
+                sentence_id = nmt_res_sentence["s_id"]
+                pages = job_details["data"]["result"]
+                for i, page in enumerate(pages):
+                    if str(page["page_no"]) == str(page_no):
+                        p_index = i
+                        break
+                page = pages[p_index]
+                for j, table in enumerate(page["tables"]):
+                    if str(table["table_id"]) == str(table_id):
+                        t_index = j
+                        break
+                table = page["tables"][t_index]
+                for k, cell in enumerate(table["children"]):
+                    if str(cell["cell_id"]) == str(cell_id):
+                        c_index = k
+                        break
+                cell = table["children"][c_index]
+                for l, text in enumerate(cell["text"]):
+                    if str(text["text_id"]) == str(sentence_id):
+                        s_index = l
+                        break
+                job_details["data"]["result"][p_index]["tables"][t_index]["children"][c_index]["text"][s_index]["translated_txt"] = nmt_res_sentence["tgt"]
+
         query = {"recordID": record_id}
         object_in = {"data.result": job_details["data"]["result"]}
         repo.update(object_in, query)
