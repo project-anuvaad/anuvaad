@@ -9,6 +9,7 @@ from configs.wfmconfig import anu_etl_wfm_core_topic
 from configs.wfmconfig import log_msg_start
 from configs.wfmconfig import log_msg_end
 from configs.wfmconfig import module_wfm_name
+from configs.wfmconfig import tool_ch
 from anuvaad_auditor.errorhandler import post_error_wf, post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
@@ -60,7 +61,9 @@ class WFMService:
                 error = self.validate_tool_response(response, tool_details, wf_input)
                 if error:
                     return error
-                tool_output = response
+                if tool_details["name"] == tool_ch:
+                    tool_output = wf_input
+                    tool_output["output"] = response
                 tool_output["metadata"] = wf_input["metadata"]
                 previous_tool = tool_details["name"]
                 log_info(tool_details["name"] + log_msg_end, wf_input)
@@ -86,16 +89,24 @@ class WFMService:
             log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
             return client_output
         else:
+            fail_msg = None
             if 'error' in tool_response.keys():
                 if tool_response["error"]:
                     fail_msg = "Error from the tool: " + str(tool_details["name"]) + " | Cause: " + str(
                         tool_response["error"])
-                    log_error(fail_msg, wf_input, None)
-                    error = post_error("ERROR_FROM_TOOL", fail_msg, None)
-                    client_output = self.get_wf_details(wf_input, None, True, error)
-                    self.update_job_details(client_output, False)
-                    log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
-                    return client_output
+            elif 'http' in tool_response.keys():
+                if 'status' in tool_response["http"]:
+                    if tool_response["http"]["status"] != 200:
+                        fail_msg = "Error from the tool: " + str(tool_details["name"]) + " | Cause: " + str(
+                            tool_response["why"])
+            if fail_msg:
+                log_error(fail_msg, wf_input, None)
+                error = post_error("ERROR_FROM_TOOL", fail_msg, None)
+                client_output = self.get_wf_details(wf_input, None, True, error)
+                self.update_job_details(client_output, False)
+                log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
+                return client_output
+
 
     # Method to initiate the workflow.
     # This fetches the first step of workflow and starts the job.
