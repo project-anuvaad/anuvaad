@@ -20,9 +20,9 @@ def df_to_json(p_df,block_key =''):
                 block = row.to_dict()
                 if block_key == '':
                     block_key  =  str(uuid.uuid1())
-                    block['block_id'] = block_key + '_' +  str(index)
+                    block['block_id'] = block_key + '-' +  str(index)
                 else:
-                    block['block_id'] = block_key + '_' + str(index)
+                    block['block_id'] = block_key + '-' + str(index)
                 for key in block.keys():
 
                     if key in ['text']:
@@ -82,14 +82,14 @@ def process_table_df(table_df):
             for index ,row in table_df.iterrows():
                 block             = row.to_dict()
                 #block['children'] = row['children']
-                block['block_id'] = str(index) + '_' + unique_id
+                block['block_id'] = str(index) + '-' + unique_id
                 for index2, child in enumerate(row['children']):
-                    row['children'][index2]['block_id'] = str(index) + '_' + str(index2) + '_' + unique_id
+                    row['children'][index2]['block_id'] = str(index) + '-' + str(index2) + '-' + unique_id
 
                     for index3,sub_child in enumerate(child['text']):
                         if 'xml_index' in sub_child.keys():
                             row['children'][index2]['text'][index3].pop('xml_index')
-                        row['children'][index2]['text'][index3]['block_id'] = str(index) + '_' + str(index2) + '_' + str(index3) + '_' + unique_id
+                        row['children'][index2]['text'][index3]['block_id'] = str(index) + '-' + str(index2) + '-' + str(index3) + '-' + unique_id
 
                 block['children'] = row['children']
                 table_data.append(block)
