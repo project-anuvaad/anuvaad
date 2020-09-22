@@ -151,8 +151,8 @@ def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths,check=False):
 
 
         #mask tables and lines from bg image
-        bg_image  = mask_image(bg_image,table_df,image_width,image_height,app_context.application_context,margin=0,fill=255)
-        bg_image = mask_image(bg_image, line_df,image_width,image_height, app_context.application_context, margin=0, fill=255)
+        #bg_image  = mask_image(bg_image,table_df,image_width,image_height,app_context.application_context,margin=0,fill=255)
+        #bg_image = mask_image(bg_image, line_df,image_width,image_height, app_context.application_context, margin=0, fill=255)
         bg_binary = base64.b64encode(cv2.imencode('.png', bg_image)[1])#base64.b64encode(bg_image)
         
 
