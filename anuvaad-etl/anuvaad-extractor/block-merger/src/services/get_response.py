@@ -7,6 +7,37 @@ from anuvaad_auditor.loghandler import log_error
 import src.utilities.app_context as app_context
 import time
 import uuid
+import copy
+#
+# def adopt_child(p_df):
+#
+#     if len(p_df) > 0 :
+#         p_df = p_df.where(p_df.notnull(), None)
+#         p_df = p_df.reset_index(drop=True)
+#         for index,row in p_df.iterrows():
+#             if row['children'] == None :
+#                 print('yes')
+#                 p_df.loc['children'][index] =  'sgsdgsdgsdkjglsdkjgkdjgkldsjgkj'#row.to_json()
+#             else :
+#                 print(row['text'])
+#
+#     return p_df
+
+
+
+
+def adopt_child(text_blocks):
+
+    if len(text_blocks) > 0 :
+
+        for index,block in enumerate(text_blocks):
+            if block['children'] == None :
+                parent_info = copy.deepcopy(text_blocks[index])
+                text_blocks[index]['children'] = parent_info
+                #print('yes')
+
+    return text_blocks
+
 
 def df_to_json(p_df,block_key =''):
 
@@ -32,20 +63,20 @@ def df_to_json(p_df,block_key =''):
                             block[key] = int(block[key])
                         except :
                             pass
-                    
-                if block['attrib'] == "TABLE":
-                    pass
-                else :
-                    if 'children' in list(block.keys()):
-                        if block['children'] == None :
-                            pass
-                        else :
-                            block['children'] = df_to_json(pd.read_json(row['children']), block_key = block['block_id'])
+
+                # if block['attrib'] == "TABLE":
+                #     pass
+                # else :
+                if 'children' in list(block.keys()):
+                    if block['children'] == None :
+                        pass
+                    else :
+                        block['children'] = df_to_json(pd.read_json(row['children']), block_key = block['block_id'])
                 page_data.append(block)
         else:
             page_data = None
 
-            
+
     except Exception as e :
         log_error('Error in generating response of p_df'+ str(e), app_context.application_context, e)
         return None

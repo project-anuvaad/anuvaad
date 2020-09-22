@@ -101,6 +101,33 @@ def extract_and_delete_region(page_df, table_df):
     return page_df, table_df
 
 
+def get_text_from_table_cells(table_dfs,p_dfs):
+
+    table_cells  = [ ]
+    for page_index in range(len(p_dfs)) :
+        table_df = table_dfs[page_index]
+        if len(table_df) > 0 :
+            for t_index , row in table_df.iterrows():
+                cells = row['children']
+                if cells != None :
+                    for cell in cells :
+                        cell.pop('index')
+                        if cell['text'] != None :
+                            text_df = pd.DataFrame(cell['text'])
+                            text_df['children'] = None
+                            cell['children'] = text_df.to_json()
+                            if len(text_df) > 0 :
+                                cell['text']   =  ' '.join( pd.DataFrame(cell['text'])['text'].values)
+                                table_cells.append(cell)
+
+            t_cells_df = pd.DataFrame(table_cells)
+
+            p_dfs[page_index] = pd.concat([p_dfs[page_index] , t_cells_df ])
+
+    return p_dfs
+
+
+
 def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths,check=False):
 
     log_info("TableExtractor service started", app_context.application_context)
@@ -135,8 +162,8 @@ def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths,check=False):
              return None, None, None, None
 
         try :
-            Rects       = RectRepositories(table_image)
-            lines, _    = Rects.get_tables_and_lines()
+            rects       = RectRepositories(table_image)
+            lines, _    = rects.get_tables_and_lines()
             
         except  Exception as e :
             log_error("Service TableExtractor Error in finding lines", app_context.application_context, e)

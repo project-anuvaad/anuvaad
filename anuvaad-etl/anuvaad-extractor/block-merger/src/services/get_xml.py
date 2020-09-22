@@ -143,7 +143,7 @@ def get_hdfs(in_dfs, header_region, footer_region):
             h_df    = merge_horizontal_blocks(page_df, document_configs, debug=False)
             h_dfs.append(h_df)
     except Exception as e :
-        log_error('Error in creating h_dfs', app_context.application_context, e)
+        log_error('Error in creating h_dfs' +str(e), app_context.application_context, e)
         return None
 
     end_time         = time.time()

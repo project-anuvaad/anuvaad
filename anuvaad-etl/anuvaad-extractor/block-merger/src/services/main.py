@@ -10,11 +10,11 @@ from anuvaad_auditor.loghandler import  log_debug
 #from src.errors.errors_exception import ServiceError
 from anuvaad_auditor.loghandler import log_exception
 from src.services.preprocess import prepocess_pdf_regions
-from src.services.get_tables import  get_text_table_line_df
+from src.services.get_tables import  get_text_table_line_df , get_text_from_table_cells
 from src.services.get_underline import get_underline
 from src.services.ocr_text_utilities import  tesseract_ocr
 from src.services.child_text_unify_to_parent import ChildTextUnify
-from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df
+from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df, adopt_child
 from src.utilities.xml_utils import check_text
 import src.utilities.app_context as app_context
 
@@ -61,6 +61,10 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_h
     v_dfs                              = get_xml.get_vdfs(h_dfs)
     p_dfs                              = get_xml.get_pdfs(v_dfs,lang)
     p_dfs , line_dfs                   = get_underline(p_dfs,line_dfs,app_context.application_context)
+
+    p_dfs                              = get_text_from_table_cells(table_dfs,p_dfs)
+
+
     
     if lang=='en':
         p_dfs  = text_merger.unify_child_text_blocks(p_dfs)
@@ -97,7 +101,8 @@ def doc_structure_response(bg_dfs, text_block_dfs,table_dfs,line_dfs,page_width,
         text_df    = get_xml.drop_update_col(text_df)
         table_df   = table_dfs[page_index]
         line_df    = line_dfs[page_index]
-        
+        #text_df    = adopt_child(text_df)
+
         page_json  = response_per_page(text_df, img_df, table_df,line_df, page_index, page_width, page_height)
         response['result'].append(page_json)
     end_time = time.time() -start_time
@@ -118,9 +123,9 @@ def response_per_page(p_df, img_df, table_df,line_df,page_no,page_width,page_hei
     image_data         = process_image_df(img_df)
     table_data         = process_table_df(table_df)
     line_data          = process_line_df(line_df)
-    
+
     text_data          = df_to_json(p_df,block_key='')
-    
+    text_data          = adopt_child(text_data)
     res_dict['images'] = image_data
     res_dict['tables'] = table_data
     res_dict['lines']  = line_data

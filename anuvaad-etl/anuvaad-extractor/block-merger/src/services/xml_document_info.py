@@ -153,7 +153,7 @@ def get_xml_info(filepath, lang='en'):
             remove rows that are redundant.
         '''
         df  = remove_redundant_rows(df)
-
+        #df['children'] = None
         df.reset_index(inplace=True)
         df.rename(columns={'index':'xml_index'},inplace=True)
         dfs.append(normalize_page_xml_df(df, width, height))
