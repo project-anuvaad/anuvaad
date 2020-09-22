@@ -538,3 +538,18 @@ WorkflowConfigs:
         api-details:
         - uri: http://gateway_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/doc/workflow/translate
       endState: true
+
+
+
+  - workflowCode: DP_WFLOW_S_C
+    type: SYNC
+    description: 
+    useCase: S_C
+    sequence:
+    - order: 0
+      tool:
+      - name: CONTENT-HANDLER
+        description: Saves Blocks to CH.
+        api-details:
+        - uri: http://gateway_anuvaad-content-handler:5001/api/v0/update-content
+      endState: true
