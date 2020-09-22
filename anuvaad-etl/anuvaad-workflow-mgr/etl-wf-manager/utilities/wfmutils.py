@@ -14,9 +14,10 @@ from configs.wfmconfig import tool_htmltojson
 from configs.wfmconfig import tool_fileconverter
 from configs.wfmconfig import tool_aligner
 from configs.wfmconfig import tool_translator
+from configs.wfmconfig import tool_ch
 from repository.wfmrepository import WFMRepository
 from anuvaad_auditor.errorhandler import post_error
-from anuvaad_auditor.loghandler import log_exception, log_error, log_info
+from anuvaad_auditor.loghandler import log_exception, log_error
 
 from tools.aligner import Aligner
 from tools.tokeniser import Tokeniser
@@ -25,6 +26,7 @@ from tools.htmltojson import HTMLTOJSON
 from tools.file_converter import FileConverter
 from tools.block_merger import BlockMerger
 from tools.translator import Translator
+from tools.contenthandler import ContentHandler
 
 
 aligner = Aligner()
@@ -34,6 +36,7 @@ htmltojson = HTMLTOJSON()
 file_converter = FileConverter()
 block_merger = BlockMerger()
 translator = Translator()
+ch = ContentHandler()
 wfmrepo = WFMRepository()
 
 log = logging.getLogger('file')
@@ -175,12 +178,14 @@ class WFMUtils:
                 tool_input = tokeniser.get_tokeniser_input_wf(wf_input, True)
             if current_tool == tool_translator:
                 tool_input = translator.get_translator_input_wf(wf_input, True)
+            if current_tool == tool_ch:
+                tool_input = ch.get_ch_update_req(wf_input)
         return tool_input
 
     # Util method to make an API call and fetch the result
-    def call_api(self, uri, api_input):
+    def call_api(self, uri, api_input, user_id):
         try:
-            api_headers = {'Content-Type': 'application/json'}
+            api_headers = {'userid': user_id, 'ad-userid': user_id, 'Content-Type': 'application/json'}
             response = requests.post(url=uri, json=api_input, headers=api_headers)
             if response is not None:
                 if response.text is not None:
