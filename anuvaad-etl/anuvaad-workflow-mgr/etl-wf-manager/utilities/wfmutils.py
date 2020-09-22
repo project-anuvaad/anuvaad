@@ -136,7 +136,7 @@ class WFMUtils:
             if current_tool == tool_blockmerger:
                 tool_input = block_merger.get_bm_input(task_output, previous_tool)
             if current_tool == tool_translator:
-                tool_input = translator.get_translator_input(task_output, previous_tool)
+                tool_input = translator.get_translator_input(task_output, previous_tool, False)
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 for file in tool_input["input"]["files"]:
                     file["model"] = job_details["input"]["files"][0]["model"]

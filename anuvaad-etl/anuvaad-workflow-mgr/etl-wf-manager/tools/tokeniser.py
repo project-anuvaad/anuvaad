@@ -7,8 +7,8 @@ class Tokeniser:
         pass
 
     # Returns a json of the format accepted by Tokeniser for SYNC and ASYNC
-    def get_tokeniser_input_wf(self, wf_input, sync):
-        if not sync:
+    def get_tokeniser_input_wf(self, wf_input, is_sync):
+        if not is_sync:
             tool_input = {
                 "files": wf_input["input"]["files"]
             }
