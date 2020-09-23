@@ -28,12 +28,18 @@ def initiate_workflow():
     return response
 
 
-# REST endpoint to fetch workflow jobs.
-@wfmapp.route(context_path + '/v1/workflow/jobs/search/<job_id>', methods=["GET"])
-def search_jobs(job_id):
+
+# REST endpoint to interrupt the workflow.
+@wfmapp.route(context_path + '/v1/workflow/interrupt', methods=["POST"])
+def interrupt_workflow():
     service = WFMService()
-    response = service.get_job_details(job_id)
-    return jsonify(response)
+    data = add_headers(request.get_json(), request)
+    response = service.interrupt_job(data)
+    if not response:
+        return response, 400
+    return response
+
+
 
 # REST endpoint to fetch workflow jobs.
 @wfmapp.route(context_path + '/v1/workflow/jobs/search/bulk', methods=["POST"])

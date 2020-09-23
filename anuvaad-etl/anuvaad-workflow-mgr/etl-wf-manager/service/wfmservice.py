@@ -42,8 +42,28 @@ class WFMService:
         else:
             return self.process_sync(client_output)
 
-    # Method to initiate the workflow.
-    # This fetches the first step of workflow and starts the job.
+    # Method to interrupt the job
+    def interrupt_job(self, interrupt_in):
+        response = []
+        if 'jobIDs' in interrupt_in.keys():
+            if interrupt_in["jobIDs"]:
+                for job_id in interrupt_in["jobIDs"]:
+                    job_details = wfmutils.get_job_details(job_id)
+                    if not job_details:
+                        response.append({"jobID": job_id, "message": "There is no job with this id, cant be interrupted."})
+                        continue
+                    job_details = job_details[0]
+                    if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED" or job_details["status"] == "INTERRUPTED":
+                        response.append({"jobID": job_id, "message": "The job is either completed/failed/interrupted, cant be interrupted."})
+                    else:
+                        job_details["status"] = "INTERRUPTED"
+                        job_details["endTime"] = eval(str(time.time()).replace('.', ''))
+                        self.update_job_details(job_details, False)
+                        log_info("Job INTERRUPTED: " + str(job_id), {"jobID": job_id})
+                        response.append({"jobID": job_id, "message": "Interrupted successfully."})
+        return response
+
+    # Method to initiate and process the SYNC workflow.
     def process_sync(self, wf_input):
         try:
             order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
@@ -147,8 +167,8 @@ class WFMService:
                 return None
             log_info(task_output["tool"] + log_msg_end, task_output)
             job_details = job_details[0]
-            if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED":
-                log_error("The job is already completed/failed, jobID: " + job_id, task_output, None)
+            if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED" or job_details["status"] == "INTERRUPTED":
+                log_error("The job is already completed/failed/interrupted, jobID: " + job_id, task_output, None)
                 return None
             if task_output["status"] != "FAILED":
                 next_step_details = self.get_next_step_details(task_output)
@@ -312,7 +332,7 @@ class WFMService:
             job_id = error["jobID"]
             job_details = wfmutils.get_job_details(job_id)
             job_details = job_details[0]
-            if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED":
+            if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED" or job_details["status"] == "INTERRUPTED":
                 return None
             job_details["status"] = "FAILED"
             job_details["endTime"] = eval(str(time.time()).replace('.', ''))
