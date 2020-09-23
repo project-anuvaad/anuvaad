@@ -65,6 +65,8 @@ class WFMService:
                 if tool_details["name"] == tool_ch or tool_details["name"] == tool_nmt:
                     tool_output = wf_input
                     tool_output["output"] = response
+                else:
+                    tool_output = response
                 tool_output["metadata"] = wf_input["metadata"]
                 previous_tool = tool_details["name"]
                 log_info(tool_details["name"] + log_msg_end, wf_input)
