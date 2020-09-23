@@ -60,12 +60,10 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_h
             h_df['children'] = None
     v_dfs                              = get_xml.get_vdfs(h_dfs)
     p_dfs                              = get_xml.get_pdfs(v_dfs,lang)
-    p_dfs , line_dfs                   = get_underline(p_dfs,line_dfs,app_context.application_context)
 
     p_dfs                              = get_text_from_table_cells(table_dfs,p_dfs)
+    p_dfs, line_dfs = get_underline(p_dfs, line_dfs, app_context.application_context)
 
-
-    
     if lang=='en':
         p_dfs  = text_merger.unify_child_text_blocks(p_dfs)
     

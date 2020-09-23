@@ -105,31 +105,31 @@ def process_image_df(img_df):
 
 def process_table_df(table_df):
     table_data = []
-    unique_id =  str(uuid.uuid1())
-    try:
-        if len(table_df)>0:
-            table_df = get_xml.drop_cols(table_df)
-
-            for index ,row in table_df.iterrows():
-                block             = row.to_dict()
-                #block['children'] = row['children']
-                block['block_id'] = str(index) + '-' + unique_id
-                for index2, child in enumerate(row['children']):
-                    row['children'][index2]['block_id'] = str(index) + '-' + str(index2) + '-' + unique_id
-
-                    for index3,sub_child in enumerate(child['text']):
-                        if 'xml_index' in sub_child.keys():
-                            row['children'][index2]['text'][index3].pop('xml_index')
-                        row['children'][index2]['text'][index3]['block_id'] = str(index) + '-' + str(index2) + '-' + str(index3) + '-' + unique_id
-
-                block['children'] = row['children']
-                table_data.append(block)
-            
-        else:
-            table_data = None
-    except Exception as e :
-        log_error('Error in generating response of table_df', app_context.application_context, e)
-        return None
+    # unique_id =  str(uuid.uuid1())
+    # try:
+    #     if len(table_df)>0:
+    #         table_df = get_xml.drop_cols(table_df)
+    #
+    #         for index ,row in table_df.iterrows():
+    #             block             = row.to_dict()
+    #             #block['children'] = row['children']
+    #             block['block_id'] = str(index) + '-' + unique_id
+    #             for index2, child in enumerate(row['children']):
+    #                 row['children'][index2]['block_id'] = str(index) + '-' + str(index2) + '-' + unique_id
+    #
+    #                 for index3,sub_child in enumerate(child['text']):
+    #                     if 'xml_index' in sub_child.keys():
+    #                         row['children'][index2]['text'][index3].pop('xml_index')
+    #                     row['children'][index2]['text'][index3]['block_id'] = str(index) + '-' + str(index2) + '-' + str(index3) + '-' + unique_id
+    #
+    #             block['children'] = row['children']
+    #             table_data.append(block)
+    #
+    #     else:
+    #         table_data = None
+    # except Exception as e :
+    #     log_error('Error in generating response of table_df', app_context.application_context, e)
+    #     return None
 
     return table_data       
 
