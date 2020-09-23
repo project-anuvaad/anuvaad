@@ -36,8 +36,8 @@ def interrupt_workflow():
     data = add_headers(request.get_json(), request)
     response = service.interrupt_job(data)
     if not response:
-        return response, 400
-    return response
+        return {"response": response}, 400
+    return {"response": response}
 
 
 
