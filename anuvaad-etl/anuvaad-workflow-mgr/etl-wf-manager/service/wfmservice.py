@@ -10,6 +10,7 @@ from configs.wfmconfig import log_msg_start
 from configs.wfmconfig import log_msg_end
 from configs.wfmconfig import module_wfm_name
 from configs.wfmconfig import tool_ch
+from configs.wfmconfig import tool_nmt
 from anuvaad_auditor.errorhandler import post_error_wf, post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
@@ -61,7 +62,7 @@ class WFMService:
                 error = self.validate_tool_response(response, tool_details, wf_input)
                 if error:
                     return error
-                if tool_details["name"] == tool_ch:
+                if tool_details["name"] == tool_ch or tool_details["name"] == tool_nmt:
                     tool_output = wf_input
                     tool_output["output"] = response
                 tool_output["metadata"] = wf_input["metadata"]

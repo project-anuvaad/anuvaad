@@ -8,6 +8,7 @@ from utilities.wfmutils import WFMUtils
 from configs.wfmconfig import is_sync_flow_enabled
 from configs.wfmconfig import is_async_flow_enabled
 from configs.wfmconfig import tool_translator
+from configs.wfmconfig import tool_nmt
 
 wfmutils = WFMUtils()
 
@@ -89,20 +90,36 @@ class WFMValidator:
 
     # Validator that validates the input request for initiating the sync job
     def validate_input_sync(self, data, workflowCode):
-        if 'recordID' not in data.keys():
-            return post_error("RECORD_ID_NOT_FOUND", "Record id is mandatory.", None)
-        if 'locale' not in data.keys():
-            return post_error("LOCALE_NOT_FOUND", "Locale is mandatory.", None)
-        if 'textBlocks' not in data.keys():
-            return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory", None)
-        else:
-            if not data["textBlocks"]:
-                return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory.", None)
+        tools = wfmutils.get_tools_of_wf(workflowCode)
+        if tool_nmt in tools:
+            if 'textList' not in data.keys():
+                return post_error("TEXT_LIST_NOT_FOUND", "text list is mandatory.", None)
             else:
-                for block in data["textBlocks"]:
-                    if 'block_identifier' not in block.keys():
-                        return post_error("BLOCK_ID_NOT_FOUND", "block_identifier for all text blocks in the input", None)
-                tools = wfmutils.get_tools_of_wf(workflowCode)
-                if tool_translator in tools:
-                    if 'modelID' not in data.keys():
-                        return post_error("MODEL_NOT_FOUND", "Model ID is mandatory.", None)
+                if not data['textList']:
+                    return post_error("TEXT_LIST_EMPTY", "text list cannot be empty.", None)
+                else:
+                    for text in data['textList']:
+                        if 'src' not in text.keys():
+                            return post_error("SRC_NOT_FOUND", "src is mandatory.", None)
+                        if 'taggedPrefix' not in text.keys():
+                            return post_error("TAGGED_PREFIX_NOT_FOUND", "taggedPrefix is mandatory.", None)
+                        if 'modelID' not in text.keys():
+                            return post_error("MODEL_ID_NOT_FOUND", "modelID is mandatory", None)
+        else:
+            if 'recordID' not in data.keys():
+                return post_error("RECORD_ID_NOT_FOUND", "Record id is mandatory.", None)
+            if 'locale' not in data.keys():
+                return post_error("LOCALE_NOT_FOUND", "Locale is mandatory.", None)
+            if 'textBlocks' not in data.keys():
+                return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory", None)
+            else:
+                if not data["textBlocks"]:
+                    return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory.", None)
+                else:
+                    for block in data["textBlocks"]:
+                        if 'block_identifier' not in block.keys():
+                            return post_error("BLOCK_ID_NOT_FOUND", "block_identifier for all text blocks in the input",
+                                              None)
+                    if tool_translator in tools:
+                        if 'modelID' not in data.keys():
+                            return post_error("MODEL_NOT_FOUND", "Model ID is mandatory.", None)

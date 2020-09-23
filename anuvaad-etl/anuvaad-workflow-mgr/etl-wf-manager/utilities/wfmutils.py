@@ -15,6 +15,7 @@ from configs.wfmconfig import tool_fileconverter
 from configs.wfmconfig import tool_aligner
 from configs.wfmconfig import tool_translator
 from configs.wfmconfig import tool_ch
+from configs.wfmconfig import tool_nmt
 from repository.wfmrepository import WFMRepository
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_exception, log_error
@@ -27,6 +28,7 @@ from tools.file_converter import FileConverter
 from tools.block_merger import BlockMerger
 from tools.translator import Translator
 from tools.contenthandler import ContentHandler
+from tools.nmt import NMT
 
 
 aligner = Aligner()
@@ -37,6 +39,7 @@ file_converter = FileConverter()
 block_merger = BlockMerger()
 translator = Translator()
 ch = ContentHandler()
+nmt = NMT()
 wfmrepo = WFMRepository()
 
 log = logging.getLogger('file')
@@ -180,6 +183,8 @@ class WFMUtils:
                 tool_input = translator.get_translator_input_wf(wf_input, True)
             if current_tool == tool_ch:
                 tool_input = ch.get_ch_update_req(wf_input)
+            if current_tool == tool_nmt:
+                tool_input = nmt.get_nmt_it_req(wf_input)
         return tool_input
 
     # Util method to make an API call and fetch the result

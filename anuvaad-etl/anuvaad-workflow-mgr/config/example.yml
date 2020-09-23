@@ -553,3 +553,18 @@ WorkflowConfigs:
         api-details:
         - uri: http://gateway_anuvaad-content-handler:5001/api/v0/update-content
       endState: true
+
+
+
+  - workflowCode: DP_WFLOW_S_IT
+    type: SYNC
+    description: 
+    useCase: S_IT
+    sequence:
+    - order: 0
+      tool:
+      - name: NMT
+        description: Serves Interactive Translation.
+        api-details:
+        - uri: http://52.40.71.62:5001/v1/interactive-translation
+      endState: true
