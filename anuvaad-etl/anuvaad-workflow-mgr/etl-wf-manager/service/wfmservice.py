@@ -85,8 +85,8 @@ class WFMService:
     # Validates errors and returns failure object
     def validate_tool_response(self, tool_response, tool_details, wf_input):
         if not tool_response:
-            log_error("There was an error from the tool: " + str(tool_details["name"]), wf_input, None)
-            error = post_error("ERROR_FROM_TOOL", "There was an error from: " + str(tool_details["name"]), None)
+            log_error("Error from the tool: " + str(tool_details["name"]), wf_input, None)
+            error = post_error("ERROR_FROM_TOOL", "Error from the tool: " + str(tool_details["name"]), None)
             client_output = self.get_wf_details(wf_input, None, True, error)
             self.update_job_details(client_output, False)
             log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
@@ -229,6 +229,8 @@ class WFMService:
                 client_input["locale"] = wf_input["locale"]
                 if 'modelID' in wf_input.keys():
                     client_input["modelID"] = wf_input["modelID"]
+            elif 'textList' in wf_input.keys():
+                client_input["textList"] = wf_input["textList"]
             else:
                 client_input["files"] = wf_input["files"]
             if 'jobName' in wf_input.keys():
