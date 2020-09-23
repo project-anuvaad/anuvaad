@@ -33,7 +33,7 @@ def adopt_child(text_blocks):
         for index,block in enumerate(text_blocks):
             if block['children'] == None :
                 parent_info = copy.deepcopy(text_blocks[index])
-                text_blocks[index]['children'] = parent_info
+                text_blocks[index]['children'] = [parent_info]
                 #print('yes')
 
     return text_blocks
