@@ -69,10 +69,10 @@ class TranslatorService:
                                 fail_msg = "Error while updating blocks to CH: " + res["why"]
                                 log_error(fail_msg, text_translate_input, None)
                     else:
-                        fail_msg = "Error while translating - empty 'response_body' from NMT"
+                        fail_msg = "Error while translating - empty 'response_body' from NMT -- " + str(res["status"]["why"])
                         log_error(fail_msg, text_translate_input, None)
                 else:
-                    fail_msg = "Error while translating - null 'response_body' from NMT"
+                    fail_msg = "Error while translating - no 'response_body' from NMT -- " + str(res["status"]["why"])
                     log_error(fail_msg, text_translate_input, None)
             else:
                 fail_msg = "Error while translating - empty/null res from NMT"
