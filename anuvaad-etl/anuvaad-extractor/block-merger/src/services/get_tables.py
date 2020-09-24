@@ -103,8 +103,8 @@ def extract_and_delete_region(page_df, table_df):
 
 def get_text_from_table_cells(table_dfs,p_dfs):
 
-    table_cells  = [ ]
     for page_index in range(len(p_dfs)) :
+        table_cells = []
         table_df = table_dfs[page_index]
         if len(table_df) > 0 :
             for t_index , row in table_df.iterrows():
