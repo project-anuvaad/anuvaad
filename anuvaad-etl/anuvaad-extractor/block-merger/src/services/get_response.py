@@ -28,15 +28,18 @@ import copy
 
 def adopt_child(text_blocks):
 
-    if len(text_blocks) > 0 :
+    try :
+        if len(text_blocks) > 0 :
 
-        for index,block in enumerate(text_blocks):
-            if block['children'] == None :
-                parent_info = copy.deepcopy(text_blocks[index])
-                text_blocks[index]['children'] = [parent_info]
-                #print('yes')
+            for index,block in enumerate(text_blocks):
+                if block['children'] == None :
+                    parent_info = copy.deepcopy(text_blocks[index])
+                    text_blocks[index]['children'] = [parent_info]
+                    #print('yes')
+        return text_blocks
+    except :
+        return []
 
-    return text_blocks
 
 
 def df_to_json(p_df,block_key =''):
