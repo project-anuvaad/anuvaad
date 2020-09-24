@@ -65,7 +65,7 @@ def get_table_df(tables):
     return table_df
 
 
-def edit(dic, df,extract_by = 'starting_point'):
+def edit(dic, df,extract_by = 'Intersection'):
     left_key = 'text_left'
     top_key = 'text_top'
     width_key = 'text_width'
