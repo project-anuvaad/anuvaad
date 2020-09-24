@@ -1,14 +1,11 @@
 import time
 
-from anuvaad_auditor import post_error
 from utilities.translatorutils import TranslatorUtils
 from kafkawrapper.translatorproducer import Producer
 from repository.translatorrepository import TranslatorRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
-from configs.translatorconfig import nmt_translate_url
-from configs.translatorconfig import update_content_url
 
 utils = TranslatorUtils()
 producer = Producer()
@@ -18,79 +15,6 @@ repo = TranslatorRepository()
 class TranslatorService:
     def __init__(self):
         pass
-
-    # Method to accept text list and return translations for SYNC flow.
-    def text_translate(self, text_translate_input):
-        text_translate_input["taskID"] = utils.generate_task_id()
-        text_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
-        text_translate_input["state"] = "TRANSLATED"
-        log_info("Translation SYNC started....", text_translate_input)
-        output = text_translate_input
-        is_successful, fail_msg, record_id = False, None, None
-        try:
-            nmt_in_txt = []
-            record_id, model_id = text_translate_input["input"]["recordID"], text_translate_input["input"]["modelID"]
-            for block in text_translate_input["input"]["textBlocks"]:
-                sentences = block["tokenized_sentences"]
-                for sentence in sentences:
-                    n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["sentence_id"])
-                    sent_nmt_in = {"s_id": sentence["sentence_id"], "id": model_id, "n_id": n_id}
-                    if 'src_text' in sentence.keys():
-                        sent_nmt_in["src"] = sentence["src_text"]
-                    else:
-                        sent_nmt_in["src"] = sentence["src"]
-                    nmt_in_txt.append(sent_nmt_in)
-            res = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None, text_translate_input["metadata"]["userID"])
-            output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
-            if res:
-                if 'response_body' in res.keys():
-                    if res['response_body']:
-                        for translation in res["response_body"]:
-                            b_index, s_index = None, None
-                            block_id, sentence_id = str(translation["n_id"]).split("|")[2], str(translation["n_id"]).split("|")[3]
-                            blocks = text_translate_input["input"]["textBlocks"]
-                            for j, block in enumerate(blocks):
-                                if str(block["block_identifier"]) == str(block_id):
-                                    b_index = j
-                                    break
-                            block = blocks[b_index]
-                            for k, sentence in enumerate(block["tokenized_sentences"]):
-                                if str(sentence["sentence_id"]) == str(sentence_id):
-                                    s_index = k
-                                    break
-                            translation["sentence_id"] = translation["s_id"]
-                            text_translate_input["input"]["textBlocks"][b_index]["tokenized_sentences"][s_index] = translation
-                        api_input = {"blocks": text_translate_input["input"]["textBlocks"]}
-                        res = utils.call_api(update_content_url, "POST", api_input, None, text_translate_input["metadata"]["userID"])
-                        if res:
-                            if res["http"]["status"] == 200:
-                                is_successful = True
-                            else:
-                                fail_msg = "Error while updating blocks to CH: " + res["why"]
-                                log_error(fail_msg, text_translate_input, None)
-                    else:
-                        fail_msg = "Error while translating - empty 'response_body' from NMT -- " + str(res["status"]["why"])
-                        log_error(fail_msg, text_translate_input, None)
-                else:
-                    fail_msg = "Error while translating - no 'response_body' from NMT -- " + str(res["status"]["why"])
-                    log_error(fail_msg, text_translate_input, None)
-            else:
-                fail_msg = "Error while translating - empty/null res from NMT"
-                log_error(fail_msg, text_translate_input, None)
-        except Exception as e:
-            fail_msg = "Exception while translating: " + str(e)
-            log_exception(fail_msg, text_translate_input, None)
-
-        if not is_successful:
-            output["status"] = "FAILED"
-            output["output"] = None
-            output["error"] = post_error("TRANSLATION_FAILED", fail_msg, None)
-        else:
-            output["input"] = None
-            output["status"] = "SUCCESS"
-            output["output"] = {"recordID": record_id}
-        log_info(output, text_translate_input)
-        return output
 
     # Service method to begin translation for document translation flow.
     def start_file_translation(self, translate_wf_input):
@@ -131,7 +55,7 @@ class TranslatorService:
     # Method to push sentences of the file to nmt for translation
     def push_sentences_to_nmt(self, file, translate_wf_input):
         try:
-            log_info("File translation producer end.. jobID: " + str(translate_wf_input["jobID"]), translate_wf_input)
+            log_info("File translation started... " + str(translate_wf_input["jobID"]), translate_wf_input)
             record_id = str(translate_wf_input["jobID"]) + "|" + str(file["path"])
             content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
             if not content_from_db:
@@ -153,10 +77,7 @@ class TranslatorService:
                 for batch_no in batches.keys():
                     batch = batches[batch_no]
                     record_id_enhanced = record_id + "|" + str(len(batch))
-                    nmt_in = {
-                        "url_end_point": file["model"]["url_end_point"],
-                        "record_id": record_id_enhanced, "message": batch
-                    }
+                    nmt_in = {"url_end_point": file["model"]["url_end_point"], "record_id": record_id_enhanced, "message": batch}
                     producer.produce(nmt_in, anu_nmt_input_topic)
                     sentences_per_page += len(batch)
                     total_sentences += len(batch)
@@ -181,13 +102,60 @@ class TranslatorService:
             text_blocks = page["text_blocks"]
             batch_key = 0
             if text_blocks:
-                for block in text_blocks:
-                    block_id = block["block_id"]
-                    if 'tokenized_sentences' in block.keys():
-                        for sentence in block["tokenized_sentences"]:
-                            node_id = "TEXT-BLOCK" + "|" + str(record_id) + "|" + str(page_no) + "|" + str(block_id)
+                sentences_for_trans, batch_key = self.fetch_batches_of_blocks(record_id, page_no, text_blocks, file, sentences_for_trans, translate_wf_input)
+                log_info("Text Blocks batched.", translate_wf_input)
+            else:
+                log_error("There are no text blocks for this page: " + str(page_no), translate_wf_input, None)
+            tables = page["tables"]
+            if tables:
+                sentences_for_trans = self.fetc_batches_of_tables(record_id, page_no, tables, file, sentences_for_trans, batch_key, translate_wf_input)
+                log_info("Table text content batched.", translate_wf_input)
+            else:
+                log_error("There are no tables for this page: " + str(page_no), translate_wf_input, None)
+            return sentences_for_trans
+        except Exception as e:
+            log_exception("Exception while fetching batch of sentences: " + str(e), translate_wf_input, e)
+            return None
+
+    # Iterates through the blocks and creates batches of sentences for translation
+    def fetch_batches_of_blocks(self, record_id, page_no, text_blocks, file, sentences_for_trans, translate_wf_input):
+        batch_key = 0
+        for block in text_blocks:
+            block_id = block["block_id"]
+            if 'tokenized_sentences' in block.keys():
+                for sentence in block["tokenized_sentences"]:
+                    node_id = "TEXT-BLOCK" + "|" + str(record_id) + "|" + str(page_no) + "|" + str(block_id)
+                    sent_nmt_in = {
+                        "src": sentence["src_text"], "s_id": sentence["sentence_id"], "id": file["model"]["model_id"],
+                        "n_id": node_id
+                    }
+                    if batch_key in sentences_for_trans.keys():
+                        sentence_list = sentences_for_trans[batch_key]
+                        sentence_list.append(sent_nmt_in)
+                        sentences_for_trans[batch_key] = sentence_list
+                    else:
+                        sentence_list = [sent_nmt_in]
+                        sentences_for_trans[batch_key] = sentence_list
+                    if len(sentences_for_trans[batch_key]) == nmt_max_batch_size:
+                        batch_key += 1
+            else:
+                log_error("There are no tokenised sentences in block: " + str(block_id), translate_wf_input, None)
+                continue
+        return sentences_for_trans, batch_key
+
+    # Iterates through the tables and creates batches of sentences for translation
+    def fetc_batches_of_tables(self, record_id, page_no, tables, file, sentences_for_trans, batch_key, translate_wf_input):
+        for table in tables:
+            if 'children' in table.keys():
+                cells = table["children"]
+                for cell in cells:
+                    if 'text' in cell.keys():
+                        texts = cell["text"]
+                        for text in texts:
+                            node_id = "TABLE" + "|" + str(record_id) + "|" + str(page_no) + "|" + str(
+                                table["block_id"]) + "|" + str(cell["block_id"])
                             sent_nmt_in = {
-                                "src": sentence["src_text"], "s_id": sentence["sentence_id"], "id": file["model"]["model_id"], "n_id": node_id
+                                "src": text["text"], "s_id": text["block_id"], "id": file["model"]["model_id"], "n_id": node_id
                             }
                             if batch_key in sentences_for_trans.keys():
                                 sentence_list = sentences_for_trans[batch_key]
@@ -199,47 +167,12 @@ class TranslatorService:
                             if len(sentences_for_trans[batch_key]) == nmt_max_batch_size:
                                 batch_key += 1
                     else:
-                        log_error("There are no tokenised sentences in block: " + str(block_id), translate_wf_input, None)
+                        log_error("No text for the cell: " + str(cell["block_id"]), translate_wf_input)
                         continue
-                log_info("Text Blocks batched.", translate_wf_input)
             else:
-                log_error("There are no text blocks for this page: " + str(page_no), translate_wf_input, None)
-            tables = page["tables"]
-            if tables:
-                for table in tables:
-                    if 'children' in table.keys():
-                        cells = table["children"]
-                        for cell in cells:
-                            if 'text' in cell.keys():
-                                texts = cell["text"]
-                                for text in texts:
-                                    node_id = "TABLE" + "|" + str(record_id) + "|" + str(page_no) + "|" + str(table["block_id"]) + "|" + str(cell["block_id"])
-                                    sent_nmt_in = {
-                                        "src": text["text"], "s_id": text["block_id"], "id": file["model"]["model_id"], "n_id": node_id
-                                    }
-                                    if batch_key in sentences_for_trans.keys():
-                                        sentence_list = sentences_for_trans[batch_key]
-                                        sentence_list.append(sent_nmt_in)
-                                        sentences_for_trans[batch_key] = sentence_list
-                                    else:
-                                        sentence_list = [sent_nmt_in]
-                                        sentences_for_trans[batch_key] = sentence_list
-                                    if len(sentences_for_trans[batch_key]) == nmt_max_batch_size:
-                                        batch_key += 1
-                            else:
-                                log_error("No text for the cell: " + str(cell["block_id"]), translate_wf_input)
-                                continue
-                    else:
-                        log_error("No cells for the table: " + str(table["block_id"]), translate_wf_input)
-                        continue
-                log_info("Table text content batched.", translate_wf_input)
-            else:
-                log_error("There are no tables for this page: " + str(page_no), translate_wf_input, None)
-            return sentences_for_trans
-        except Exception as e:
-            log_exception("Exception while fetching batch of sentences: " + str(e), translate_wf_input, e)
-            return None
-
+                log_error("No cells for the table: " + str(table["block_id"]), translate_wf_input)
+                continue
+        return sentences_for_trans
 
     # Method to process the output received from the NMT
     def process_nmt_output(self, nmt_output):

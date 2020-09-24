@@ -4,6 +4,7 @@ import time
 
 from flask import Flask, jsonify, request
 from service.translatorservice import TranslatorService
+from service.blocktranslationservice import BlockTranslationService
 from validator.translatorvalidator import TranslatorValidator
 from configs.translatorconfig import context_path
 from configs.translatorconfig import anu_etl_module_name
@@ -14,7 +15,7 @@ log = logging.getLogger('file')
 
 
 # REST endpoint to initiate the workflow.
-@translatorapp.route(context_path + '/v1/text/workflow/translate', methods=["POST"])
+@translatorapp.route(context_path + '/v1/doc/workflow/translate', methods=["POST"])
 def doc_translate_workflow():
     service = TranslatorService()
     validator = TranslatorValidator()
@@ -27,9 +28,9 @@ def doc_translate_workflow():
 
 
 # REST endpoint to initiate the workflow.
-@translatorapp.route(context_path + '/v1/doc/workflow/translate', methods=["POST"])
+@translatorapp.route(context_path + '/v1/block/workflow/translate', methods=["POST"])
 def text_translate():
-    service = TranslatorService()
+    service = BlockTranslationService()
     validator = TranslatorValidator()
     data = request.get_json()
     error = validator.validate_text_translate(data)
@@ -38,9 +39,8 @@ def text_translate():
         data["state"] = "TRANSLATED"
         data["status"] = "FAILED"
         data["error"] = error
-        log_info(data, data)
         return data, 400
-    response = service.text_translate(data)
+    response = service.block_translate(data)
     return response
 
 

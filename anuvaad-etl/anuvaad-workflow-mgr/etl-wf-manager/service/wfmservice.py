@@ -130,7 +130,6 @@ class WFMService:
                 log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
                 return client_output
 
-
     # Method to initiate the workflow.
     # This fetches the first step of workflow and starts the job.
     def initiate_wf(self, wf_input):
