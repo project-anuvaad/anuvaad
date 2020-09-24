@@ -145,6 +145,7 @@ def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR
 
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:
+        log_info("DocumentStructure : looks like the file is either empty or scanned type, currently we support Class-1 document.", app_context.application_context)
         return {
             'code': 400,
             'message': 'looks like the file is of scanned type, currently we support Class-1 document.',
