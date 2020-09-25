@@ -20,6 +20,10 @@ ENV DEBUG_FLUSH=$D_F
 
 RUN pip install -r requirements.txt
 #RUN apk update && apk add poppler-utils
+RUN apk update && apk add curl
+RUN curl -o /usr/share/tessdata/Devanagari.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/master/script/Devanagari.traineddata
+RUN curl -o /usr/share/tessdata/eng.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/master/eng.traineddata
+RUN curl -o /usr/share/tessdata/hin.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/master/hin.traineddata
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
 ENTRYPOINT ["sh","/usr/bin/start.sh"]
