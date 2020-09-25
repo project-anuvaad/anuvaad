@@ -23,47 +23,27 @@ class Tokenisation(object):
 
     # tokenising text in respective language 
     def tokenisation_core(self, paragraph_data, text_locale):
-        try:
-            tokenised_text = []
-            if text_locale == 'en':
-                for paragraph in paragraph_data:
-                    if paragraph is not None:
-                        paragraph = self.remove_extra_spaces(paragraph)
+        tokenised_text = []
+        for paragraph in paragraph_data:
+            if paragraph is not None:
+                try:
+                    paragraph = self.remove_extra_spaces(paragraph)
+                    if text_locale == 'en':
                         tokenised_sentence_data = AnuvaadEngTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
-            elif text_locale == 'hi' or text_locale == 'mr':
-                for paragraph in paragraph_data:
-                    if paragraph is not None:
-                        paragraph = self.remove_extra_spaces(paragraph)
+                    elif text_locale == 'hi' or text_locale == 'mr':
                         tokenised_sentence_data = AnuvaadHinTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
-            elif text_locale == 'kn':
-                for paragraph in paragraph_data:
-                    if paragraph is not None:
-                        paragraph = self.remove_extra_spaces(paragraph)
+                    elif text_locale == 'kn':
                         tokenised_sentence_data = AnuvaadKanTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
-            # elif text_locale == 'mr':
-            #     for paragraph in paragraph_data:
-            #         if paragraph is not None:
-            #             paragraph = paragraph.strip()
-            #             tokenised_sentence_data = AnuvaadMarTokenizer().tokenize(paragraph)
-            #             tokenised_text.extend(tokenised_sentence_data)
-            elif text_locale == 'ta':
-                for paragraph in paragraph_data:
-                    if paragraph is not None:
-                        paragraph = self.remove_extra_spaces(paragraph)
+                    elif text_locale == 'ta':
                         tokenised_sentence_data = AnuvaadTamTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
-            # else:
-            #     for paragraph in paragraph_data:
-            #         if paragraph is not None:
-            #             tokenised_sentence_data = AnuvaadTokenizer().tokenize(paragraph)
-            #             tokenised_text.extend(tokenised_sentence_data)
-            return tokenised_text
-        except:
-            log_exception("tokenisation_core : Error occured during tokenising the paragraphs", self.input_json_data, None)
-            raise ServiceError(400, "Tokenisation failed. Something went wrong during tokenisation.")
+                except:
+                    log_exception("Received error in this text :  %s"%(paragraph), self.input_json_data, None)
+                    raise ServiceError(400, "Tokenisation failed. Something went wrong during tokenisation.")
+        return tokenised_text
     
     # after successful tokenisation writting tokenised sentences into a text file
     def writing_tokenised_sentence_in_file(self, tokenised_data, output_path):
@@ -125,6 +105,7 @@ class Tokenisation(object):
     # precleaning before tokenisation
     def remove_extra_spaces(self,text):
         text = text.strip()
+        text = text.replace("\\", '')
         patterns = re.findall(r'[\s]{1,}',text)
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
