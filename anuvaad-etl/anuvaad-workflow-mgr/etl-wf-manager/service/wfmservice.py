@@ -153,7 +153,6 @@ class WFMService:
             log_info(first_tool["name"] + log_msg_start, wf_input)
         except Exception as e:
             log_exception("Exception while initiating workflow: " + str(e), wf_input, e)
-            wf_input["taskID"] = "TASK-ID-NA"
             post_error_wf("WFLOW_INITIATE_ERROR", "Exception while initiating workflow: " + str(e), wf_input, e)
 
     # This method manages the workflow by tailoring the predecessor and successor tools for the workflow.
