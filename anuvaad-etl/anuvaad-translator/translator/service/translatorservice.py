@@ -217,7 +217,7 @@ class TranslatorService:
                     break
             block = page["text_blocks"][b_index]
             for k, sentence in enumerate(block["tokenized_sentences"]):
-                if str(sentence["sentence_id"]) == str(sentence_id):
+                if str(sentence["s_id"]) == str(sentence_id):
                     s_index = k
                     break
             job_details["data"]["result"][p_index]["text_blocks"][b_index]["tokenized_sentences"][
