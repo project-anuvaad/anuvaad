@@ -7,8 +7,8 @@ class AnuvaadKanTokenizer(object):
     """
     abbrevations
     """
-    _abbrevations_with_space_pattern = r'((\s)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?)'
-    _abbrevations_without_space_pattern = r'(^(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?)?)'
+    _abbrevations_with_space_pattern = r'((\s)(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?){1,})'
+    _abbrevations_without_space_pattern = r'(^(([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?([\u0C85-\u0CB9,\u0CDE-\u0CE1])?([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?(\u002e)(\s)?){1,})'
     _text_colon_abbreviations_pattern = r'([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?[:](\s)?([\u0C85-\u0CB9,\u0CDE-\u0CE1])([\u0C80-\u0C84,\u0CBC-\u0CD6,\u0CE2-\u0CE3,\u0CF1-\u0CF2])?'
     _abbrevations_with_space = []
     _abbrevations_without_space = []
@@ -81,7 +81,8 @@ class AnuvaadKanTokenizer(object):
             se = self.deserialize_colon_abbreviations(se)
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
-            output.append(se.strip())
+            if se != '':
+                output.append(se.strip())
         print('--------------Process finished-------------')
         return output
 
@@ -181,7 +182,7 @@ class AnuvaadKanTokenizer(object):
         return text
 
     def serialize_brackets(self, text):
-        patterns = re.findall(r'(?:[(](?:[0-9\u0C80-\u0CF2a-zA-Z.-]|[ ]){1,}[)])',text)
+        patterns = re.findall(r'(?:[(](?:[0-9\u0C80-\u0CF2a-zA-Z][.]?|[ ]){1,}[)]?).',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:

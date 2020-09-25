@@ -102,7 +102,8 @@ class AnuvaadHinTokenizer(object):
             se = self.deserialize_with_abbrevations(se)
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
-            output.append(se.strip())
+            if se != '':
+                output.append(se.strip())
         print('--------------Process finished-------------')
         return output
 
@@ -202,7 +203,7 @@ class AnuvaadHinTokenizer(object):
         return text
 
     def serialize_brackets(self, text):
-        patterns = re.findall(r'(?:[(](?:[0-9\u0900-\u097Fa-zA-Z.-]|[ ]){1,}[)])',text)
+        patterns = re.findall(r'(?:[(](?:[0-9\u0900-\u097Fa-zA-Z][.]?|[ ]){1,}[)]?).',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:

@@ -7,9 +7,9 @@ class AnuvaadTamTokenizer(object):
     """
     abbrevations
     """
-    _abbrevations_with_space_pattern = r'((\s)(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?)(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?)?(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?)?)'
+    _abbrevations_with_space_pattern = r'((\s)(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?){1,})'
     _abbrevations_with_space = []
-    _abbrevations_without_space_pattern = r'(^(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?)(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?)?(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?)?)'
+    _abbrevations_without_space_pattern = r'(^(([\u0B85-\u0BB9])([\u0B82-\u0B83,\u0BBE-\u0BD7])?([\u0B85-\u0BB9])?([\u0B82-\u0B83,\u0BBE-\u0BD7])?(\u002e)(\s)?){1,})'
     _abbrevations_without_space = []
     _tokenizer = None
     _regex_search_texts = []
@@ -76,7 +76,8 @@ class AnuvaadTamTokenizer(object):
             se = self.deserialize_with_abbrevations(se)
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
-            output.append(se.strip())
+            if se != '':
+                output.append(se.strip())
         print('--------------Process finished-------------')
         return output
 
@@ -176,7 +177,7 @@ class AnuvaadTamTokenizer(object):
         return text
 
     def serialize_brackets(self, text):
-        patterns = re.findall(r'(?:[(](?:[0-9\u0B82-\u0BD7a-zA-Z.-]|[ ]){1,}[)])',text)
+        patterns = re.findall(r'(?:[(](?:[0-9\u0B82-\u0BD7a-zA-Z][.]?|[ ]){1,}[)]?).',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:

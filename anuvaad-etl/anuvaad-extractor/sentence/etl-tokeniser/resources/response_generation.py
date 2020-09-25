@@ -43,8 +43,10 @@ class Response(object):
                                                                 for page_id, item in enumerate(input_jsonfile_data['result'])]
                             input_jsonfile_data['file_locale'] = in_locale
                             tokenisation.sending_data_to_content_handler(jobid, user_id, input_jsonfile_data)
-                            json_dat_write = json.dumps(input_jsonfile_data)
-                            file_write.write(json_dat_write)
+                            json_data_write = json.dumps(input_jsonfile_data)
+                            file_write.seek(0)
+                            file_write.truncate()
+                            file_write.write(json_data_write)
                             output_filename = input_filename
                         file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
                         output_file_response.append(file_res)

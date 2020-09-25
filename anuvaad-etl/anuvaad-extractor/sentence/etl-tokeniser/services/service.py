@@ -9,9 +9,11 @@ from utilities.utils import FileOperation
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 from anuvaad_auditor.loghandler import log_exception
+import re
 import json
 import requests
 import config
+import uuid
 
 file_ops = FileOperation()
 class Tokenisation(object):
@@ -26,31 +28,31 @@ class Tokenisation(object):
             if text_locale == 'en':
                 for paragraph in paragraph_data:
                     if paragraph is not None:
-                        paragraph = paragraph.strip()
+                        paragraph = self.remove_extra_spaces(paragraph)
                         tokenised_sentence_data = AnuvaadEngTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
-            elif text_locale == 'hi':
+            elif text_locale == 'hi' or text_locale == 'mr':
                 for paragraph in paragraph_data:
                     if paragraph is not None:
-                        paragraph = paragraph.strip()
+                        paragraph = self.remove_extra_spaces(paragraph)
                         tokenised_sentence_data = AnuvaadHinTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
             elif text_locale == 'kn':
                 for paragraph in paragraph_data:
                     if paragraph is not None:
-                        paragraph = paragraph.strip()
+                        paragraph = self.remove_extra_spaces(paragraph)
                         tokenised_sentence_data = AnuvaadKanTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
-            elif text_locale == 'mr':
-                for paragraph in paragraph_data:
-                    if paragraph is not None:
-                        paragraph = paragraph.strip()
-                        tokenised_sentence_data = AnuvaadMarTokenizer().tokenize(paragraph)
-                        tokenised_text.extend(tokenised_sentence_data)
+            # elif text_locale == 'mr':
+            #     for paragraph in paragraph_data:
+            #         if paragraph is not None:
+            #             paragraph = paragraph.strip()
+            #             tokenised_sentence_data = AnuvaadMarTokenizer().tokenize(paragraph)
+            #             tokenised_text.extend(tokenised_sentence_data)
             elif text_locale == 'ta':
                 for paragraph in paragraph_data:
                     if paragraph is not None:
-                        paragraph = paragraph.strip()
+                        paragraph = self.remove_extra_spaces(paragraph)
                         tokenised_sentence_data = AnuvaadTamTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
             # else:
@@ -89,7 +91,7 @@ class Tokenisation(object):
                 for block_id, item in enumerate(blocks):
                     text_data = item['text']
                     tokenised_text = self.tokenisation_core([text_data], in_locale)
-                    item['tokenized_sentences'] = [self.making_object_for_tokenised_text(text, i, block_id, page_id) for i, text in enumerate(tokenised_text)]
+                    item['tokenized_sentences'] = [self.making_object_for_tokenised_text(text) for i, text in enumerate(tokenised_text)]
             return input_json_data_pagewise
         except:
             log_error("Keys in block merger response changed or tokenisation went wrong.", self.input_json_data, None) 
@@ -103,10 +105,10 @@ class Tokenisation(object):
         log_info("Service : Json file write done!", self.input_json_data)
         return output_json_filename
 
-    def making_object_for_tokenised_text(self, text, index, block_id, page_id):
+    def making_object_for_tokenised_text(self, text):
         object_text = {
-            "src_text" : text,
-            "sentence_id" : "{0}_{1}_{2}".format(page_id, block_id, index)
+            "src" : text,
+            "s_id" : uuid.uuid1()
         }
         return object_text
 
@@ -119,4 +121,39 @@ class Tokenisation(object):
             log_info("tokenised block merger response saved in db " + str(response.headers) + str(response.content), self.input_json_data)
         except Exception as e:
            log_exception("Can not save content in content handler.", self.input_json_data, e)
-        
+    
+    # precleaning before tokenisation
+    def remove_extra_spaces(self,text):
+        text = text.strip()
+        patterns = re.findall(r'[\s]{1,}',text)
+        if patterns is not None and isinstance(patterns, list):
+            for pattern in patterns:
+                pattern_obj = re.compile(re.escape(pattern))
+                text = pattern_obj.sub(' ', text)
+        return text
+
+    def getting_incomplete_text(self, input_data_file):
+        for page_idx, page_data in enumerate(input_data_file):
+            page_data_blocks = page_data['text_blocks']
+            print("no. of blocks: ", len(page_data_blocks))
+            for i, block in enumerate(page_data_blocks):
+                tok_sentence = block['tokenized_sentences']
+                if i < len(page_data_blocks) -1:
+                    print("i    ",i, "same page")
+                    next_block = page_data_blocks[i+1]
+                    last_tok_object = tok_sentence[len(tok_sentence)-1]
+                    if last_tok_object['src_text'][-1] != '.':
+                        print(" --- last-----",last_tok_object ,last_tok_object['src_text'])
+                else:
+                    next_block = page_data_blocks[i]
+                    print(i, "------NEED next page---------", len(page_data_blocks))
+                    next_tok_sentence = next_block['tokenized_sentences'][0]['src_text']
+                    print("next :::: ###    ", next_tok_sentence)
+                    if page_idx < len(input_data_file) -1:
+                        next_page_data = input_data_file[page_idx + 1]
+                        first_block_tok_text = next_page_data['text_blocks'][0]['tokenized_sentences'][0]['src_text']
+                        if re.match(r'[a-zA-z]', first_block_tok_text, re.IGNORECASE) is None:
+                            second_block_tok = next_page_data['text_blocks'][1]['tokenized_sentences']
+                            obj_added_to_be_last_page = second_block_tok.pop(0)
+                            text_send_last_page_incomplete_text = obj_added_to_be_last_page['src_text']
+                            print("text transfered  ---  ", text_send_last_page_incomplete_text)
