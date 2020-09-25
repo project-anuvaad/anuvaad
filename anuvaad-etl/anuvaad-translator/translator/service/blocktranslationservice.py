@@ -62,12 +62,8 @@ class BlockTranslationService:
         for block in block_translate_input["input"]["textBlocks"]:
             sentences = block["tokenized_sentences"]
             for sentence in sentences:
-                n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["sentence_id"])
-                sent_nmt_in = {"s_id": sentence["sentence_id"], "id": model_id, "n_id": n_id}
-                if 'src_text' in sentence.keys():
-                    sent_nmt_in["src"] = sentence["src_text"]
-                else:
-                    sent_nmt_in["src"] = sentence["src"]
+                n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["s_id"])
+                sent_nmt_in = {"s_id": sentence["s_id"], "src": sentence["src"], "id": model_id, "n_id": n_id}
                 nmt_in_txt.append(sent_nmt_in)
         return nmt_in_txt
 
@@ -78,8 +74,7 @@ class BlockTranslationService:
             if nmt_response['response_body']:
                 for translation in nmt_response["response_body"]:
                     b_index, s_index = None, None
-                    block_id, sentence_id = str(translation["n_id"]).split("|")[2], str(translation["n_id"]).split("|")[
-                        3]
+                    block_id, sentence_id = str(translation["n_id"]).split("|")[2], str(translation["n_id"]).split("|")[3]
                     blocks = block_translate_input["input"]["textBlocks"]
                     for j, block in enumerate(blocks):
                         if str(block["block_identifier"]) == str(block_id):
@@ -87,10 +82,9 @@ class BlockTranslationService:
                             break
                     block = blocks[b_index]
                     for k, sentence in enumerate(block["tokenized_sentences"]):
-                        if str(sentence["sentence_id"]) == str(sentence_id):
+                        if str(sentence["s_id"]) == str(sentence_id):
                             s_index = k
                             break
-                    translation["sentence_id"] = translation["s_id"]
                     block_translate_input["input"]["textBlocks"][b_index]["tokenized_sentences"][s_index] = translation
                 ch_input = {"blocks": block_translate_input["input"]["textBlocks"]}
         return ch_input
