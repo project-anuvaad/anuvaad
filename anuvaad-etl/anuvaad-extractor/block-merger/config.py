@@ -59,7 +59,7 @@ PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.15 ,'repeat_threshold
 DROP_TEXT          =  ['SUPERSCRIPT']
 
 LANG_MAPPING       =  {
-    "en" : "eng", "kn" : "kan", "gu": "guj","or": "ori",
+    "en" : ["eng"], "kn" : ["kan"], "gu": ["guj"],"or": ["ori"],
     "hi" : ["hin","Devanagari","eng"], "bn" : "ben", "mr": "mar", "ta": "tam",
     "te" : "tel"
 
@@ -70,9 +70,9 @@ FONT_CONFIG   = {
     "hi": 'mangal'
 }
 FONT_SIZE_CONFIG = {
-    "hi":{ 'slab_1':{ 'min':0, 'max':10, 'ratio':0.00},
-           'slab_2':{'min':10, 'max':20, 'ratio':0.05},
-           'slab_3':{'min':20, 'max':50, 'ratio':0.06}
+    "hi":{ 'slab_1':{ 'min':0, 'max':15, 'ratio':0.00},
+           'slab_2':{'min':15, 'max':25, 'ratio':0.05},
+           'slab_3':{'min':25, 'max':50, 'ratio':0.06}
          }
 }
 
