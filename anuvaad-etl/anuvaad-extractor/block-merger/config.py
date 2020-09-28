@@ -70,7 +70,7 @@ FONT_CONFIG   = {
     "hi": 'mangal'
 }
 FONT_SIZE_CONFIG = {
-    "hi":{ 'slab_1':{ 'min':0, 'max':15, 'ratio':0.00},
+    "hi":{ 'slab_1':{ 'min':0, 'max':15, 'ratio':-0.05},
            'slab_2':{'min':15, 'max':25, 'ratio':0.05},
            'slab_3':{'min':25, 'max':50, 'ratio':0.06}
          }
