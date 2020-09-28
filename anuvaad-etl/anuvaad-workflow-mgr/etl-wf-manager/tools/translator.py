@@ -1,4 +1,3 @@
-from configs.wfmconfig import tool_blockmerger
 from configs.wfmconfig import tool_tokeniser
 from configs.wfmconfig import tool_translator
 
