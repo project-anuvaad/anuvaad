@@ -1,8 +1,8 @@
 from repositories.eng_sentence_tokeniser import AnuvaadEngTokenizer
-from repositories.hin_sentence_tokeniser import AnuvaadHinTokenizer
-from repositories.kannada_sentence_tokeniser import AnuvaadKanTokenizer
-from repositories.tamil_sentence_tokeniser import AnuvaadTamTokenizer
-from repositories.malayalam_sentence_tokeniser import AnuvaadMalTokenizer
+from repositories.hin_sentence_tokeniser import AnuvaadHindiTokenizer
+from repositories.kannada_sentence_tokeniser import AnuvaadKannadaTokenizer
+from repositories.tamil_sentence_tokeniser import AnuvaadTamilTokenizer
+from repositories.malayalam_sentence_tokeniser import AnuvaadMalayalamTokenizer
 from repositories.general_tokeniser import AnuvaadTokenizer
 from errors.errors_exception import ServiceError
 from utilities.utils import FileOperation
@@ -32,16 +32,16 @@ class Tokenisation(object):
                         tokenised_sentence_data = AnuvaadEngTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
                     elif text_locale == 'hi' or text_locale == 'mr':
-                        tokenised_sentence_data = AnuvaadHinTokenizer().tokenize(paragraph)
+                        tokenised_sentence_data = AnuvaadHindiTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
                     elif text_locale == 'kn':
-                        tokenised_sentence_data = AnuvaadKanTokenizer().tokenize(paragraph)
+                        tokenised_sentence_data = AnuvaadKannadaTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
                     elif text_locale == 'ta':
-                        tokenised_sentence_data = AnuvaadTamTokenizer().tokenize(paragraph)
+                        tokenised_sentence_data = AnuvaadTamilTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
                     elif text_locale == 'ml':
-                        tokenised_sentence_data = AnuvaadMalTokenizer().tokenize(paragraph)
+                        tokenised_sentence_data = AnuvaadMalayalamTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
                 except:
                     log_exception("Received error in this text :  %s"%(paragraph), self.input_json_data, None)
@@ -109,12 +109,8 @@ class Tokenisation(object):
     def remove_extra_spaces(self,text):
         text = text.strip()
         text = text.replace("\\", '')
-        text = re.sub('\u200d', '', text)
-        patterns = re.findall(r'[\s]{1,}',text)
-        if patterns is not None and isinstance(patterns, list):
-            for pattern in patterns:
-                pattern_obj = re.compile(re.escape(pattern))
-                text = pattern_obj.sub(' ', text)
+        text = re.sub('\u200d|\u200c', '', text)
+        text = re.sub('[\s]{1,}', ' ', text)
         return text
 
     # def getting_incomplete_text(self, input_data_file):

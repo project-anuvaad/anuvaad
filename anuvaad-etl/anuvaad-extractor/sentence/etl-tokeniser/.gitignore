@@ -13,3 +13,4 @@ tmp
 test123.txt
 **.pyc
 repositories/marathi_tok.py
+repositories/telugu_senetence_tokeniser.py

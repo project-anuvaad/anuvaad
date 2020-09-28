@@ -10,7 +10,7 @@ from nltk.tokenize import sent_tokenize
 """
 Utility tokenizer class for anuvaad project
 """
-class AnuvaadHinTokenizer(object):
+class AnuvaadHindiTokenizer(object):
     """
     Default abbrevations
     incomplete char range = ([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])

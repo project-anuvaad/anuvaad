@@ -2,7 +2,7 @@ import re
 from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters, PunktTrainer, PunktLanguageVars
 from nltk.tokenize import sent_tokenize
 
-class AnuvaadKanTokenizer(object):
+class AnuvaadKannadaTokenizer(object):
 
     """
     abbrevations
