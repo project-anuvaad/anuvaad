@@ -91,7 +91,7 @@ class WFMValidator:
     # Validator that validates the input request for initiating the sync job
     def validate_input_sync(self, data, workflowCode):
         tools = wfmutils.get_tools_of_wf(workflowCode)
-        if tool_nmt in tools:
+        if tool_nmt in tools or workflowCode == "DP_WFLOW_S_IT_T":
             if 'textList' not in data.keys():
                 return post_error("TEXT_LIST_NOT_FOUND", "text list is mandatory.", None)
             else:

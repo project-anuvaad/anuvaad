@@ -1,5 +1,6 @@
 import time
 
+import uuid
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from anuvaad_auditor.errorhandler import post_error
 from configs.translatorconfig import nmt_translate_url
@@ -54,6 +55,49 @@ class BlockTranslationService:
             output["status"] = "SUCCESS"
             output["output"] = {"recordID": record_id}
         return output
+
+    # Method to accept text list and return translations for SYNC flow.
+    def text_translate(self, text_translate_input):
+        text_translate_input["taskID"] = utils.generate_task_id()
+        text_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
+        text_translate_input["state"] = "TRANSLATED"
+        log_info("Text Translation started....", text_translate_input)
+        output = text_translate_input
+        output["status"], output["output"] = "FAILED", None
+        try:
+            text_nmt = []
+            for text in text_translate_input["input"]["textList"]:
+                text_in = {"s_id": str(uuid.uuid4()), "id": text["modelID"], "src": text["src"], "tagged_prefix": text["taggedPrefix"]}
+                text_nmt.append(text_in)
+            nmt_response = utils.call_api(nmt_translate_url, "POST", text_nmt, None, text_translate_input["metadata"]["userID"])
+            if nmt_response:
+                if 'status' in nmt_response.keys():
+                    if 'statusCode' in nmt_response["status"].keys():
+                        if nmt_response["status"]["statusCode"] != 200:
+                            output["error"] = post_error("TRANSLATION_FAILED", "Error while translating: " + str(nmt_response["status"]["why"]), None)
+                            return output
+                nmt_response = self.dedup_hypothesis(nmt_response)
+                output["input"] = None
+                output["status"] = "SUCCESS"
+                output["output"] = {"predictions": nmt_response}
+                return output
+            else:
+                output["error"] = post_error("TRANSLATION_FAILED", "Error while translating", None)
+                return output
+        except Exception as e:
+            log_exception("Exception while translating: " + str(e), text_translate_input, None)
+            output["error"] = post_error("TRANSLATION_FAILED", "Exception while translating: " + str(e), None)
+            return output
+
+    # Finds if there are duplicate predicitions and de-duplicates it.
+    def dedup_hypothesis(self, nmt_res):
+        for hypothesis in nmt_res:
+            hypothesis_list = []
+            for tgt in hypothesis["tgt"]:
+                if tgt not in hypothesis_list:
+                    hypothesis_list.append(tgt)
+            hypothesis["tgt"] = hypothesis_list
+        return nmt_res
 
     # Method to fetch blocks from input and add it to list for translation
     def get_blocks_for_translation(self, block_translate_input):

@@ -1,5 +1,6 @@
 import time
 
+import uuid
 from utilities.translatorutils import TranslatorUtils
 from kafkawrapper.translatorproducer import Producer
 from repository.translatorrepository import TranslatorRepository

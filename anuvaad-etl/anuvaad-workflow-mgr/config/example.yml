@@ -558,7 +558,7 @@ WorkflowConfigs:
 
   - workflowCode: DP_WFLOW_S_IT
     type: SYNC
-    description: 
+    description: Serves Interactive Translation directly from NMT
     useCase: S_IT
     sequence:
     - order: 0
@@ -567,4 +567,19 @@ WorkflowConfigs:
         description: Serves Interactive Translation.
         api-details:
         - uri: http://52.40.71.62:5001/v1/interactive-translation
+      endState: true
+
+
+
+  - workflowCode: DP_WFLOW_S_IT_T
+    type: SYNC
+    description: Serves Interactive Translation through translator service
+    useCase: S_IT_T
+    sequence:
+    - order: 0
+      tool:
+      - name: TRANSLATOR
+        description: Translates the given text
+        api-details:
+        - uri: http://gateway_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/text/workflow/translate
       endState: true

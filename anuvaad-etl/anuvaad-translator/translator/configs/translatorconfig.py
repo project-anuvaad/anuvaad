@@ -34,6 +34,7 @@ translator_nmt_cons_no_of_partitions = 1
 #datastore-configs
 mongo_translator_db = os.environ.get('MONGO_ANUVAAD_TRANSLATOR_DB', 'anuvaad-etl-translator')
 mongo_translator_collection = os.environ.get('MONGO_ANUVAAD_TRANSLATOR_COL', 'anuvaad-etl-translator-content')
+mongo_sentences_collection = os.environ.get('MONGO_ANUVAAD_TRANSLATOR_SENTENCES_COL', 'anuvaad-etl-translator-sentences')
 
 #module-configs
 context_path = os.environ.get('ANU_ETL_WFM_CONTEXT_PATH', '/anuvaad-etl/translator')
