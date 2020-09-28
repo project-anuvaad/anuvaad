@@ -1,8 +1,8 @@
 from repositories.eng_sentence_tokeniser import AnuvaadEngTokenizer
 from repositories.hin_sentence_tokeniser import AnuvaadHinTokenizer
 from repositories.kannada_sentence_tokeniser import AnuvaadKanTokenizer
-from repositories.marathi_sentence_tokeniser import AnuvaadMarTokenizer
 from repositories.tamil_sentence_tokeniser import AnuvaadTamTokenizer
+from repositories.malayalam_sentence_tokeniser import AnuvaadMalTokenizer
 from repositories.general_tokeniser import AnuvaadTokenizer
 from errors.errors_exception import ServiceError
 from utilities.utils import FileOperation
@@ -39,6 +39,9 @@ class Tokenisation(object):
                         tokenised_text.extend(tokenised_sentence_data)
                     elif text_locale == 'ta':
                         tokenised_sentence_data = AnuvaadTamTokenizer().tokenize(paragraph)
+                        tokenised_text.extend(tokenised_sentence_data)
+                    elif text_locale == 'ml':
+                        tokenised_sentence_data = AnuvaadMalTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
                 except:
                     log_exception("Received error in this text :  %s"%(paragraph), self.input_json_data, None)
@@ -106,6 +109,7 @@ class Tokenisation(object):
     def remove_extra_spaces(self,text):
         text = text.strip()
         text = text.replace("\\", '')
+        text = re.sub('\u200d', '', text)
         patterns = re.findall(r'[\s]{1,}',text)
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -113,28 +117,28 @@ class Tokenisation(object):
                 text = pattern_obj.sub(' ', text)
         return text
 
-    def getting_incomplete_text(self, input_data_file):
-        for page_idx, page_data in enumerate(input_data_file):
-            page_data_blocks = page_data['text_blocks']
-            print("no. of blocks: ", len(page_data_blocks))
-            for i, block in enumerate(page_data_blocks):
-                tok_sentence = block['tokenized_sentences']
-                if i < len(page_data_blocks) -1:
-                    print("i    ",i, "same page")
-                    next_block = page_data_blocks[i+1]
-                    last_tok_object = tok_sentence[len(tok_sentence)-1]
-                    if last_tok_object['src_text'][-1] != '.':
-                        print(" --- last-----",last_tok_object ,last_tok_object['src_text'])
-                else:
-                    next_block = page_data_blocks[i]
-                    print(i, "------NEED next page---------", len(page_data_blocks))
-                    next_tok_sentence = next_block['tokenized_sentences'][0]['src_text']
-                    print("next :::: ###    ", next_tok_sentence)
-                    if page_idx < len(input_data_file) -1:
-                        next_page_data = input_data_file[page_idx + 1]
-                        first_block_tok_text = next_page_data['text_blocks'][0]['tokenized_sentences'][0]['src_text']
-                        if re.match(r'[a-zA-z]', first_block_tok_text, re.IGNORECASE) is None:
-                            second_block_tok = next_page_data['text_blocks'][1]['tokenized_sentences']
-                            obj_added_to_be_last_page = second_block_tok.pop(0)
-                            text_send_last_page_incomplete_text = obj_added_to_be_last_page['src_text']
-                            print("text transfered  ---  ", text_send_last_page_incomplete_text)
+    # def getting_incomplete_text(self, input_data_file):
+    #     for page_idx, page_data in enumerate(input_data_file):
+    #         page_data_blocks = page_data['text_blocks']
+    #         print("no. of blocks: ", len(page_data_blocks))
+    #         for i, block in enumerate(page_data_blocks):
+    #             tok_sentence = block['tokenized_sentences']
+    #             if i < len(page_data_blocks) -1:
+    #                 print("i    ",i, "same page")
+    #                 next_block = page_data_blocks[i+1]
+    #                 last_tok_object = tok_sentence[len(tok_sentence)-1]
+    #                 if last_tok_object['src_text'][-1] != '.':
+    #                     print(" --- last-----",last_tok_object ,last_tok_object['src_text'])
+    #             else:
+    #                 next_block = page_data_blocks[i]
+    #                 print(i, "------NEED next page---------", len(page_data_blocks))
+    #                 next_tok_sentence = next_block['tokenized_sentences'][0]['src_text']
+    #                 print("next :::: ###    ", next_tok_sentence)
+    #                 if page_idx < len(input_data_file) -1:
+    #                     next_page_data = input_data_file[page_idx + 1]
+    #                     first_block_tok_text = next_page_data['text_blocks'][0]['tokenized_sentences'][0]['src_text']
+    #                     if re.match(r'[a-zA-z]', first_block_tok_text, re.IGNORECASE) is None:
+    #                         second_block_tok = next_page_data['text_blocks'][1]['tokenized_sentences']
+    #                         obj_added_to_be_last_page = second_block_tok.pop(0)
+    #                         text_send_last_page_incomplete_text = obj_added_to_be_last_page['src_text']
+    #                         print("text transfered  ---  ", text_send_last_page_incomplete_text)
