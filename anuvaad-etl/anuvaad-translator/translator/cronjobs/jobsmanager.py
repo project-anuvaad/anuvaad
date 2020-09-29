@@ -24,6 +24,7 @@ class JobsManger(Thread):
         obj = {"metadata": {"module": anu_etl_module_name}}
         while not self.stopped.wait(jm_cron_interval_sec):
             completed = []
+            completed_jobids =[]
             failed = []
             inprogress = []
             try:
@@ -42,6 +43,7 @@ class JobsManger(Thread):
                             is_added = True
                         elif total == translated or total == (translated + skipped):
                             completed.append(record)
+                            completed_jobids.append(record["jobID"])
                             is_added = True
                         if not is_added:
                             inprogress.append(record)
@@ -51,6 +53,8 @@ class JobsManger(Thread):
                         continue
                 log_info("JobsManger - Run: " + str(run)
                          + " | Completed: " + str(len(completed)) + " | Failed: " + str(len(failed)) + " | InProgress: " + str(len(inprogress)), obj)
+                if len(completed) > 0:
+                    log_info("JobsManger - Run: " + str(run) + " | Completed Jobs: " + completed_jobids, obj)
                 self.data_sink(completed, failed, obj)
                 run += 1
             except Exception as e:
