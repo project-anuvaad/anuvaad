@@ -24,25 +24,29 @@ class BlockTranslationService:
         output = block_translate_input
         is_successful, fail_msg, record_id = False, None, None
         try:
-            nmt_in_txt = self.get_blocks_for_translation(block_translate_input)
-            nmt_response = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None, block_translate_input["metadata"]["userID"])
-            output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
-            if nmt_response:
-                ch_input = self.get_translations_ip_ch(nmt_response, block_translate_input)
-                if ch_input:
-                    ch_response = utils.call_api(update_content_url, "POST", ch_input, None, block_translate_input["metadata"]["userID"])
-                    if ch_response:
-                        if ch_response["http"]["status"] == 200:
-                            is_successful = True
-                        else:
-                            fail_msg = "Error while updating blocks to CH: " + ch_response["why"]
-                            log_error(fail_msg, block_translate_input, None)
-                else:
-                    fail_msg = "Error while translating from NMT: " + str(nmt_response["status"]["why"])
-                    log_error(fail_msg, block_translate_input, None)
-            else:
-                fail_msg = "Error while translating - empty/null res from NMT"
+            nmt_in_txt = self.get_sentences_for_translation(block_translate_input)
+            if not nmt_in_txt:
+                fail_msg = "Error while translating, there are no tokenised sentences in these blocks"
                 log_error(fail_msg, block_translate_input, None)
+            else:
+                nmt_response = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None, block_translate_input["metadata"]["userID"])
+                output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
+                if nmt_response:
+                    ch_input = self.get_translations_ip_ch(nmt_response, block_translate_input)
+                    if ch_input:
+                        ch_response = utils.call_api(update_content_url, "POST", ch_input, None, block_translate_input["metadata"]["userID"])
+                        if ch_response:
+                            if ch_response["http"]["status"] == 200:
+                                is_successful = True
+                            else:
+                                fail_msg = "Error while updating blocks to CH: " + ch_response["why"]
+                                log_error(fail_msg, block_translate_input, None)
+                    else:
+                        fail_msg = "Error while translating from NMT: " + str(nmt_response["status"]["why"])
+                        log_error(fail_msg, block_translate_input, None)
+                else:
+                    fail_msg = "Error while translating - empty/null res from NMT"
+                    log_error(fail_msg, block_translate_input, None)
         except Exception as e:
             fail_msg = "Exception while translating: " + str(e)
             log_exception(fail_msg, block_translate_input, None)
@@ -92,26 +96,16 @@ class BlockTranslationService:
     # Finds if there are duplicate predicitions and de-duplicates it.
     def dedup_hypothesis(self, nmt_res):
         for hypothesis in nmt_res["response_body"]:
-            hypothesis_list = []
-            target_list = hypothesis["tgt"]
-            for i, tgt in enumerate(target_list):
-                log_info(target_list[i], None)
-                if target_list[i] not in hypothesis_list:
-                    hypothesis_list.append(tgt)
-                    log_info(hypothesis_list, None)
-                log_info("....................................", None)
-            hypothesis["tgt"] = hypothesis_list
-            log_info(hypothesis["tgt"], None)
-            log_info("----------------------------------------", None)
+            target_list = list(set(hypothesis["tgt"]))
+            hypothesis["tgt"] = target_list
         return nmt_res
 
     # Method to fetch blocks from input and add it to list for translation
-    def get_blocks_for_translation(self, block_translate_input):
+    def get_sentences_for_translation(self, block_translate_input):
         nmt_in_txt = []
         record_id, model_id = block_translate_input["input"]["recordID"], block_translate_input["input"]["modelID"]
         for block in block_translate_input["input"]["textBlocks"]:
-            sentences = block["tokenized_sentences"]
-            for sentence in sentences:
+            for sentence in block["tokenized_sentences"]:
                 n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["s_id"])
                 sent_nmt_in = {"s_id": sentence["s_id"], "src": sentence["src"], "id": model_id, "n_id": n_id}
                 nmt_in_txt.append(sent_nmt_in)
