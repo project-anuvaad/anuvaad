@@ -58,8 +58,7 @@ def doc_structure_analysis(xml_dfs,img_dfs,working_dir ,lang, page_width, page_h
         h_dfs = tesseract_ocr(pdf_image_paths, page_width, page_height, h_dfs, lang)
         for index, h_df in enumerate(h_dfs):
             h_dfs[index]['children'] = None
-            
-            h_dfs[index]['font_size'] = h_dfs[index]['text_height']
+            #h_dfs[index]['font_size'] = h_dfs[index]['text_height']
 
     v_dfs                              = get_xml.get_vdfs(h_dfs)
     p_dfs                              = get_xml.get_pdfs(v_dfs,lang)

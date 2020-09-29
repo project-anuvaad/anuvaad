@@ -31,7 +31,7 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
         bottom = (row['text_top'] + row['text_height'])*h_ratio
         coord  = []
         crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
-        crop_image.save("/home/naresh/crop/"+str(uuid.uuid4())+'.jpg')
+        #crop_image.save("/home/naresh/crop/"+str(uuid.uuid4())+'.jpg')
         if row['text_height']>2*row['font_size']:
             #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang]+"+eng",output_type=Output.DATAFRAME)
             temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][1],output_type=Output.DATAFRAME)
@@ -65,7 +65,7 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][1],output_type=Output.DATAFRAME)
             temp_df = temp_df[temp_df.text.notnull()]
             text = ""
-            print("kkkkkkkkkkkkkkkkkkkkkkk")
+            #print("kkkkkkkkkkkkkkkkkkkkkkk")
             for index2, row2 in temp_df.iterrows():
                 word_coord = {}
                 temp_text  = str(row2["text"])
