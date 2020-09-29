@@ -54,7 +54,7 @@ class JobsManger(Thread):
                 log_info("JobsManger - Run: " + str(run)
                          + " | Completed: " + str(len(completed)) + " | Failed: " + str(len(failed)) + " | InProgress: " + str(len(inprogress)), obj)
                 if len(completed) > 0:
-                    log_info("JobsManger - Run: " + str(run) + " | Completed Jobs: " + completed_jobids, obj)
+                    log_info("JobsManger - Run: " + str(run) + " | Completed Jobs: " + str(completed_jobids), obj)
                 self.data_sink(completed, failed, obj)
                 run += 1
             except Exception as e:

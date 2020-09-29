@@ -19,7 +19,7 @@ nmt_max_batch_size = 25
 anu_nmt_input_topic = 'anuvaad_nmt_translate'
 anu_nmt_output_topic = 'anuvaad_nmt_translate_processed'
 anu_etl_module_name = "TRANSLATOR"
-jm_cron_interval_sec = 45
+jm_cron_interval_sec = 30
 
 #kafka-configs
 anu_translator_input_topic = 'anuvaad-dp-tools-translator-input-v2'
