@@ -105,6 +105,7 @@ class BlockTranslationService:
         for response in nmt_response:
             prediction = response
             prediction["tgt"] = list(set(response["tgt"]))
+            predictions.append(prediction)
         return predictions
 
     # Method to fetch blocks from input and add it to list for translation
