@@ -195,7 +195,7 @@ class TranslatorService:
         object_in = {"skippedSentences": total_skip, "translatedSentences": total_trans}
         repo.update(object_in, query)
         log_info("Batch processed, TRANSLATED: " + str(trans_count) + " | SKIPPED: " + str(skip_count) +
-                 " | jobID: " + translate_wf_input["jobID"], translate_wf_input)
+                 " | recordID: " + translate_wf_input["recordID"], translate_wf_input)
 
     # Back up method to update sentences from DB.
     def update_sentences(self, record_id, nmt_res_batch, translate_wf_input):

@@ -92,16 +92,16 @@ class BlockTranslationService:
     # Finds if there are duplicate predicitions and de-duplicates it.
     def dedup_hypothesis(self, nmt_res):
         for hypothesis in nmt_res["response_body"]:
-            log_info(hypothesis, None)
             hypothesis_list = []
-            log_info(hypothesis["tgt"], None)
-            for tgt in hypothesis["tgt"]:
-                log_info(tgt, None)
-                if tgt not in hypothesis_list:
+            target_list = hypothesis["tgt"]
+            for i, tgt in enumerate(target_list):
+                log_info(target_list[i], None)
+                if target_list[i] not in hypothesis_list:
                     hypothesis_list.append(tgt)
                     log_info(hypothesis_list, None)
                 log_info("....................................", None)
             hypothesis["tgt"] = hypothesis_list
+            log_info(hypothesis["tgt"], None)
             log_info("----------------------------------------", None)
         return nmt_res
 
