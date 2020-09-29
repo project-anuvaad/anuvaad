@@ -60,9 +60,7 @@ class FileOperation(object):
     def read_json_file(self, input_filename):
         input_json_filepath = self.input_path(input_filename)
         file_write = open(input_json_filepath, 'r+', encoding='utf-8')
-        data = json.loads(file_write.read())
-        file_write.seek(0)
-        file_write.truncate() 
+        data = json.loads(file_write.read()) 
         return data, file_write
 
     # extracting data from received json input
@@ -81,6 +79,14 @@ class FileOperation(object):
         file_type = files['type']
         locale = files['locale']
         return filepath, file_type, locale
+
+    # getting input key values from block tokeniser request
+    def get_input_values_for_block_tokenise(self, input_data):
+        record_id = input_data['record_id']
+        model_id = input_data['model_id']
+        blocks_list = input_data['text_blocks']
+        in_locale = input_data['locale']
+        return blocks_list, record_id, model_id, in_locale
 
     # output format for individual pdf file
     def one_filename_response(self, input_filename, output_filename, in_locale, in_file_type):

@@ -1,41 +1,20 @@
-# Anuvaad Toolkit: Anuvaad Hindi Tokenizer
-#
-# Author: Aroop <aroop.ghosh@tarento.com>
-# URL: <http://developers.anuvaad.org/>
-
 import re
-from nltk.tokenize.punkt import PunktSentenceTokenizer, PunktParameters, PunktTrainer, PunktLanguageVars
-from nltk.tokenize import sent_tokenize
 
 """
 Utility tokenizer class for anuvaad project
 """
-class AnuvaadHindiTokenizer(object):
+
+class AnuvaadTokenizer(object):
+    
     """
-    Default abbrevations
-    incomplete char range = ([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])
-    complete char range = ([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])    
-    (\u0972-\u097F) represents character used in different lnguages other than hindi which use devanagri script
-    number range = ([\u0966-\u096F])
-    devanagri abbreviation symbol = ([\u0970-\u0971])
-    source for unicodes : https://unicode.org/charts/PDF/U0900.pdf
+    abbrevations generalisation
+    unicode range for indian vernacular scripts : '\u0900-\u0D7F'
     """
-    #_abbrevations_with_space_pattern = [r'[ ]ऐ[.]',r'[ ]बी[.]',r'[ ]सी[.]',r'[ ]डी[.]',r'[ ]ई[.]',r'[ ]एफ[.]',r'[ ]जी[.]',r'[ ]एच[.]',r'[ ]आइ[.]',r'[ ]जे[.]',r'[ ]के[.]',r'[ ]एल[.]',r'[ ]एम[.]',r'[ ]एन[.]',r'[ ]ओ[.]',r'[ ]पी[.]',r'[ ]क्यू[.]',r'[ ]आर[.]',r'[ ]एस[.]',r'[ ]टी[.]',r'[ ]यू[.]',r'[ ]वी[.]',r'[ ]डब्लू[.]',r'[ ]एक्स[.]',r'[ ]वायी[.]',r'[ ]ज़ेड[.]']
-    #_abbrevations_with_space = [' ऐ.',' बी.',' सी.',' डी.',' ई.',' एफ.',' जी.',' एच.',' आइ.',' जे.',' के.',' एल.',' एम.',' एन.',' ओ.',' पी.',' क्यू.',' आर.',' एस.',' टी.',' यू.',' वी.',' डब्लू.',' एक्स.',' वायी.',' ज़ेड.']
-    #_abbrevations_without_space_pattern = [r'डॉ[.]',r'पं[.]']
-    #_abbrevations_without_space = ['डॉ.','पं.']
-    _text_abbrevations_pattern_cic = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?)'
-    #_text_abbrevations_pattern_cii = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?)'
-    _text_abbrevations_pattern_cci = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?)?)'
-    _text_colon_abbreviations_pattern = r'(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?[:](\s)?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?)'
-    _text_abbrevations_without_space_pattern = r'(^(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?)?)'
-    _text_abbrevations_cic = []
-    _text_abbrevations_cci = []
+
+    _text_colon_abbreviations_pattern = r'(([\u0900-\u0D7F])?[:](\s)?([\u0900-\u0D7F])?)'
     _text_colon_abbreviations = []
-    _text_abbrevations_without_space = []
-    _tokenizer = None
-    _regex_search_texts = []
     _date_abbrevations  = []
+    _time_abbreviations = []
     _table_points_abbrevations = []
     _brackets_abbrevations = []
     _decimal_abbrevations = []
@@ -44,16 +23,10 @@ class AnuvaadHindiTokenizer(object):
     _dot_with_quote_abbrevations = []
     _dot_with_number_abbrevations = []
     _dot_with_beginning_number_abbrevations = []
+    DELIM_PAT = re.compile(r'[\.\?!\u0964\u0965]')
     
-    def __init__(self, abbrevations=None):
-        if abbrevations is not None:
-            self._abbrevations_without_space.append(abbrevations)
-        self._regex_search_texts = []
-        self._text_abbrevations_cic =[]
-        self._text_abbrevations_cci =[]
+    def __init__(self):
         self._text_colon_abbreviations = []
-        self._text_abbrevations_without_space = []
-        self._dot_abbrevations = []
         self._date_abbrevations = []
         self._time_abbreviations = []
         self._table_points_abbrevations = []
@@ -64,18 +37,16 @@ class AnuvaadHindiTokenizer(object):
         self._decimal_abbrevations = []
         self._url_abbrevations = []
         self._dot_with_beginning_number_abbrevations = []
-        self._tokenizer = PunktSentenceTokenizer(lang_vars=SentenceEndLangVars())
 
     def tokenize(self, text):
         print('--------------Process started-------------')
-        text = self.serialize_with_abbrevations(text)
-        text = self.serialize_colon_abbreviations(text)
         text = self.serialize_dates(text)
         text = self.serialize_time(text)
+        text = self.serialize_colon_abbreviations(text)
         text = self.serialize_table_points(text)
         text = self.serialize_url(text)
         text = self.serialize_pattern(text)
-        text = self.serialize_end(text)
+        # text = self.serialize_end(text)
         text = self.serialize_dots(text)
         text = self.serialize_brackets(text)
         text = self.serialize_dot_with_number(text)
@@ -84,14 +55,14 @@ class AnuvaadHindiTokenizer(object):
         text = self.serialize_bullet_points(text)
         text = self.serialize_decimal(text)
         text = self.add_space_after_sentence_end(text)
-        sentences = self._tokenizer.tokenize(text)
+        sentences = self.sentence_split(text)
         output = []
         for se in sentences:
             se = self.deserialize_dates(se)
             se = self.deserialize_time(se)
             se = self.deserialize_pattern(se)
             se = self.deserialize_url(se)
-            se = self.deserialize_end(se)
+            #se = self.deserialize_end(se)
             se = self.deserialize_dots(se)
             se = self.deserialize_decimal(se)
             se = self.deserialize_brackets(se)
@@ -99,11 +70,10 @@ class AnuvaadHindiTokenizer(object):
             se = self.deserialize_dot_with_number_beginning(se)
             se = self.deserialize_quotes_with_number(se)
             se = self.deserialize_colon_abbreviations(se)
-            se = self.deserialize_with_abbrevations(se)
+            #se = self.deserialize_with_abbrevations(se)
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
-            if se != '':
-                output.append(se.strip())
+            output.append(se.strip())
         print('--------------Process finished-------------')
         return output
 
@@ -183,7 +153,7 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def serialize_table_points(self, text):
-        patterns = re.findall(r'(?:(?:(?:[ ][(]?(?:(?:[0,9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0900-\u097F]{1,1})[)])|(?:[ ](?:(?:[0-9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0900-\u097F]{1,1})[.][ ])))',text)
+        patterns = re.findall(r'(?:(?:(?:[ ][(]?(?:(?:[0,9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0900-\u0D7F]{1,1})[)])|(?:[ ](?:(?:[0-9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0900-\u0D7F]{1,1})[.][ ])))',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -203,7 +173,7 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def serialize_brackets(self, text):
-        patterns = re.findall(r'(?:[(](?:[0-9\u0900-\u097Fa-zA-Z][.]?|[ ]){1,}[)]?).',text)
+        patterns = re.findall(r'(?:[(](?:[0-9\u0900-\u0D7Fa-zA-Z.-]|[ ]){1,}[)])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -263,7 +233,7 @@ class AnuvaadHindiTokenizer(object):
         return text
     
     def serialize_quotes_with_number(self, text):
-        patterns = re.findall(r'([ ][“][0-9a-zA-Z\u0900-\u097F]{1,}[.])',text)
+        patterns = re.findall(r'([ ][“][0-9a-zA-Z\u0900-\u0D7F]{1,}[.])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -333,7 +303,7 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def serialize_pattern(self, text):
-        patterns = re.findall(r'([\u0900-\u097F][.]){2,}',text)
+        patterns = re.findall(r'([\u0900-\u0D7F][.]){2,}',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -352,6 +322,90 @@ class AnuvaadHindiTokenizer(object):
                 index+=1
         return text
            
+    def sentence_split(self, text):
+        line = text
+        ### Phase 1: break on sentence delimiters.
+        cand_sentences=[]
+        begin=0
+        text = text.strip()
+        for mo in self.DELIM_PAT.finditer(text):
+            p1=mo.start()
+            p2=mo.end()
+            ## NEW
+            if p1>0 and text[p1-1].isnumeric():
+                continue
+
+            end=p1+1
+            s= text[begin:end].strip()
+            if len(s)>0:
+                cand_sentences.append(s)
+            begin=p1+1
+        s= text[begin:].strip()
+        if len(s)>0:
+            cand_sentences.append(s)
+        final_sentences=[]
+        sen_buffer=''        
+        bad_state=False
+        for i, sentence in enumerate(cand_sentences):
+            print("sentence", sentence) 
+            if i < len(cand_sentences)-1:
+                next_sentence = cand_sentences[i+1]
+            next_sentence_words = next_sentence.split(' ')
+            words=sentence.split(' ')
+            #print("words", words)
+            print("next sentence", next_sentence)
+            #if len(words)<=2 and words[-1]=='.':
+            if len(words)==1 and sentence[-1]=='.':
+                print("11111111")
+                bad_state=True
+                sen_buffer = sen_buffer + ' ' + sentence
+                print("senteces bobobob", sen_buffer)
+            elif len(next_sentence_words)==1 and sentence[-1]=='.':
+                print("222222222")
+                bad_state=True
+                sen_buffer = sen_buffer + ' ' + sentence + ' ' + next_sentence
+                print("buffer2", sen_buffer)
+                # if len(sen_buffer)>0:
+                #     final_sentences.append(sen_buffer)
+                if i < len(cand_sentences)-1:
+                    cand_sentences[i+1] = sen_buffer
+                else:
+                    sentence = sen_buffer
+                sen_buffer=''
+            # elif words[-1][-1]=='.' and next_sentence[-1] == '.':
+            #     print(sentence)
+            ## NEW condition    
+            # elif sentence[-1]=='.' and is_acronym_abbvr(words[-1][:-1],lang):
+            #     if len(sen_buffer)>0 and  not bad_state:
+            #         final_sentences.append(sen_buffer)
+            #     bad_state=True
+            #     sen_buffer = sentence
+            elif bad_state:
+                print("33333333333333", bad_state)
+                sen_buffer = sen_buffer + ' ' + sentence + next_sentence
+                # if len(sen_buffer)>0:
+                #     final_sentences.append(sen_buffer)
+                print("sen buffer bad", sen_buffer)
+                if i < len(cand_sentences)-1:
+                    cand_sentences[i+1] = sen_buffer
+                else:
+                    sentence = sen_buffer
+                sen_buffer=''
+                bad_state=False
+            else: ## good state   
+                print("444444444444", sentence)                 
+                if len(sen_buffer)>0:
+                    final_sentences.append(sen_buffer)
+                sen_buffer=sentence
+                bad_state=False
+
+        if len(sen_buffer)>0:
+            final_sentences.append(sen_buffer)
+        print("finals", final_sentences)
+        return final_sentences
+
+   # def 
+
     def serialize_with_abbrevations(self, text):
         index_cic = 0
         index_cci = 0
@@ -445,11 +499,11 @@ class AnuvaadHindiTokenizer(object):
         return text
 
 
-class SentenceEndLangVars(PunktLanguageVars):
-    text = []
-    with open('repositories/tokenizer_data/end.txt', encoding='utf8') as f:
-        text = f.read()
-    sent_end_chars = text.split('\n')
+# class SentenceEndLangVars(PunktLanguageVars):
+#     text = []
+#     with open('repositories/tokenizer_data/end.txt', encoding='utf8') as f:
+#         text = f.read()
+#     sent_end_chars = text.split('\n')
     
     # # punkt = PunktTrainer()
     # # punkt.train(text,finalize=False, verbose=False)
