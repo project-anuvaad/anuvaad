@@ -3,6 +3,7 @@ import time
 import uuid
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from anuvaad_auditor.errorhandler import post_error
+from configs.translatorconfig import nmt_interactive_translate_url
 from configs.translatorconfig import nmt_translate_url
 from configs.translatorconfig import update_content_url
 from utilities.translatorutils import TranslatorUtils
@@ -75,18 +76,18 @@ class BlockTranslationService:
             for text in text_translate_input["input"]["textList"]:
                 text_in = {"s_id": str(uuid.uuid4()), "id": text["modelID"], "src": text["src"], "tagged_prefix": text["taggedPrefix"]}
                 text_nmt.append(text_in)
-            nmt_response = utils.call_api(nmt_translate_url, "POST", text_nmt, None, text_translate_input["metadata"]["userID"])
+            nmt_response = utils.call_api(nmt_interactive_translate_url, "POST", text_nmt, None, text_translate_input["metadata"]["userID"])
             if nmt_response:
                 if 'status' in nmt_response.keys():
                     if 'statusCode' in nmt_response["status"].keys():
                         if nmt_response["status"]["statusCode"] != 200:
                             output["error"] = post_error("TRANSLATION_FAILED", "Error while translating: " + str(nmt_response["status"]["why"]), None)
                             return output
-                nmt_response = self.dedup_hypothesis(nmt_response)
+                nmt_predictions = self.dedup_hypothesis(nmt_response)
                 output["input"] = None
                 output["status"] = "SUCCESS"
                 output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
-                output["output"] = {"predictions": nmt_response}
+                output["output"] = {"predictions": nmt_predictions}
                 return output
             else:
                 output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
@@ -100,10 +101,11 @@ class BlockTranslationService:
 
     # Finds if there are duplicate predicitions and de-duplicates it.
     def dedup_hypothesis(self, nmt_res):
-        for hypothesis in nmt_res["response_body"]:
-            target_list = list(set(hypothesis["tgt"]))
-            hypothesis["tgt"] = target_list
-        return nmt_res
+        predictions, nmt_response = [], nmt_res["response_body"]
+        for response in nmt_response:
+            prediction = response
+            prediction["tgt"] = list(set(response["tgt"]))
+        return predictions
 
     # Method to fetch blocks from input and add it to list for translation
     def get_sentences_for_translation(self, block_translate_input):
