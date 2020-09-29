@@ -25,6 +25,7 @@ is_async_flow_enabled = True
 js_cron_interval_sec = 3600 # 1 hr
 js_job_failure_interval_sec = 43200 # 12 hrs
 
+
 #kafka-configs
 anu_etl_wfm_core_topic = 'anu-etl-wf-initiate-v3'
 anu_etl_wfm_consumer_grp = os.environ.get('ANUVAAD_ETL_WF_CONSUMER_GRP', 'anuvaad-etl-wfm-consumer-group')
