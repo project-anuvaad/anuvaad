@@ -1,0 +1,43 @@
+import time
+from threading import Thread
+from repository.wfmrepository import WFMRepository
+from configs.wfmconfig import module_wfm_name
+from configs.wfmconfig import js_cron_interval_sec
+from configs.wfmconfig import js_job_failure_interval_sec
+from anuvaad_auditor.loghandler import log_exception, log_info, log_error
+from anuvaad_auditor.errorhandler import post_error
+
+
+class JobSweeper(Thread):
+    def __init__(self, event):
+        Thread.__init__(self)
+        self.stopped = event
+
+    # Cron JOB to fetch status of each record and push it to CH and WFM on completion/failure.
+    def run(self):
+        log_info("JobSweeper running......", None)
+        wfmrepo = WFMRepository()
+        run = 0
+        obj = {"metadata": {"module": module_wfm_name}}
+        while not self.stopped.wait(js_cron_interval_sec):
+            try:
+                criteria, exclude = {"status": {"$in": ["START", "INPROGRESS"]}}, {'_id': False}
+                jobs = wfmrepo.search_job(criteria, exclude)
+                no_of_jobs = 0
+                if jobs:
+                    for job in jobs:
+                        job_start_time = job["startTime"]
+                        diff = eval(str(time.time()).replace('.', '')[0:13]) - job_start_time
+                        if diff / 1000 > js_job_failure_interval_sec:
+                            job["status"] = "FAILED"
+                            job["error"] = post_error("ORPHAN_JOB",
+                                                      "The job was failed by the system, since it was idle", None)
+                            job["endTime"] = eval(str(time.time()).replace('.', '')[0:13])
+                            wfmrepo.update_job(job, job["jobID"])
+                            log_info("JOB FAILED: The job was failed by the system, since it was idle", job)
+                            no_of_jobs += 1
+                run += 1
+                log_info("JobSweeper - Run: " + str(run) + " | Jobs Processed: " + str(no_of_jobs))
+            except Exception as e:
+                run += 1
+                log_exception("JobSweeper - Run: " + str(run) + " | Exception in JobSweeper: " + str(e), obj, e)

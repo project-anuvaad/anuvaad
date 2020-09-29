@@ -20,7 +20,7 @@ class TranslatorService:
     # Service method to begin translation for document translation flow.
     def start_file_translation(self, translate_wf_input):
         translate_wf_input["taskID"] = utils.generate_task_id()
-        translate_wf_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
+        translate_wf_input["taskStartTime"] = eval(str(time.time()).replace('.', '')[0:13])
         translate_wf_input["state"] = "TRANSLATED"
         log_info("Translator process initiated... jobID: " + str(translate_wf_input["jobID"]), translate_wf_input)
         for file in translate_wf_input["input"]["files"]:

@@ -17,7 +17,7 @@ class TranslatorUtils:
 
     # Generates unique task id.
     def generate_task_id(self):
-        return "TRANS" + "-" + str(time.time()).replace('.', '')
+        return "TRANS" + "-" + str(time.time()).replace('.', '')[0:13]
 
     # Generates unique task id.
     def download_file(self, file_id, task_input):

@@ -110,7 +110,7 @@ class WFMUtils:
         config = self.get_configs()
         config_to_be_used = config[workflowCode]
         usecase = config_to_be_used["useCase"]
-        return usecase + "-" + str(time.time()).replace('.', '')
+        return usecase + "-" + str(time.time()).replace('.', '')[0:13]
 
     # Fetches the order of execution for a given workflow.
     def get_order_of_exc(self, workflowCode):

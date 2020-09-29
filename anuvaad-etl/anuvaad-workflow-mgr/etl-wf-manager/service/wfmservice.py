@@ -258,7 +258,7 @@ class WFMService:
             client_output = {"input": client_input, "jobID": wf_input["jobID"],
                              "workflowCode": wf_input["workflowCode"],
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
-                             "startTime": eval(str(time.time()).replace('.', '')), "taskDetails": task_details}
+                             "startTime": eval(str(time.time()).replace('.', '')[0:13]), "taskDetails": task_details}
         else:
             wf_details = wf_details[0]
             if task_output is not None:
@@ -270,12 +270,12 @@ class WFMService:
             client_output = wf_details
             if isfinal:
                 client_output["status"] = "COMPLETED"
-                client_output["endTime"] = eval(str(time.time()).replace('.', ''))
+                client_output["endTime"] = eval(str(time.time()).replace('.', '')[0:13])
             else:
                 client_output["status"] = "INPROGRESS"
             if error is not None:
                 client_output["status"] = "FAILED"
-                client_output["endTime"] = eval(str(time.time()).replace('.', ''))
+                client_output["endTime"] = eval(str(time.time()).replace('.', '')[0:13])
                 client_output["error"] = error
             client_output["metadata"] = wf_details["metadata"]
         return client_output
@@ -333,7 +333,7 @@ class WFMService:
             if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED" or job_details["status"] == "INTERRUPTED":
                 return None
             job_details["status"] = "FAILED"
-            job_details["endTime"] = eval(str(time.time()).replace('.', ''))
+            job_details["endTime"] = eval(str(time.time()).replace('.', '')[0:13])
             job_details["error"] = error
             self.update_job_details(job_details, False)
             log_info("Job FAILED: " + error["jobID"], error)

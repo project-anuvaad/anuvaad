@@ -18,7 +18,7 @@ class BlockTranslationService:
     # Method to accept block list and return translations for SYNC flow.
     def block_translate(self, block_translate_input):
         block_translate_input["taskID"] = utils.generate_task_id()
-        block_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
+        block_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', '')[0:13])
         block_translate_input["state"] = "TRANSLATED"
         log_info("Block Translation started....", block_translate_input)
         output = block_translate_input
@@ -53,17 +53,19 @@ class BlockTranslationService:
         if not is_successful:
             output["status"] = "FAILED"
             output["output"] = None
+            output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
             output["error"] = post_error("TRANSLATION_FAILED", fail_msg, None)
         else:
             output["input"] = None
             output["status"] = "SUCCESS"
+            output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
             output["output"] = {"recordID": record_id}
         return output
 
     # Method to accept text list and return translations for SYNC flow.
     def text_translate(self, text_translate_input):
         text_translate_input["taskID"] = utils.generate_task_id()
-        text_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', ''))
+        text_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', '')[0:13])
         text_translate_input["state"] = "TRANSLATED"
         log_info("Text Translation started....", text_translate_input)
         output = text_translate_input
@@ -83,14 +85,17 @@ class BlockTranslationService:
                 nmt_response = self.dedup_hypothesis(nmt_response)
                 output["input"] = None
                 output["status"] = "SUCCESS"
+                output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
                 output["output"] = {"predictions": nmt_response}
                 return output
             else:
+                output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
                 output["error"] = post_error("TRANSLATION_FAILED", "Error while translating", None)
                 return output
         except Exception as e:
             log_exception("Exception while translating: " + str(e), text_translate_input, None)
             output["error"] = post_error("TRANSLATION_FAILED", "Exception while translating: " + str(e), None)
+            output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
             return output
 
     # Finds if there are duplicate predicitions and de-duplicates it.
