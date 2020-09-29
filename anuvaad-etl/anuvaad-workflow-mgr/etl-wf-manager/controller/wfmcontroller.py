@@ -70,7 +70,7 @@ def add_headers(data, api_request):
     headers = {
         "userID": api_request.headers["ad-userid"],
         "sessionID": api_request.headers["ad-requestID"],
-        "receivedAt": eval(str(time.time()).replace('.', '')),
+        "receivedAt": eval(str(time.time()).replace('.', '')[0:13]),
         "module": module_wfm_name
     }
     data["metadata"] = headers
