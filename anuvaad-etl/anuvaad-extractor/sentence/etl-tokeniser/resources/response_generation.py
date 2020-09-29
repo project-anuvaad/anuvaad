@@ -59,7 +59,7 @@ class Response(object):
                     output_list_text = [{"inputText" : x, "tokenisedSentences" : y} for x, y in zip(input_paragraphs, tokenised_sentences)]
                     output_per_para = {'tokenisedText' : output_list_text, 'locale':input_locale}
                     output_file_response.append(output_per_para)
-            task_endtime = str(time.time()).replace('.', '')
+            task_endtime =  eval(str(time.time()).replace('.', '')[0:13])
             response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
             response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
             response = copy.deepcopy(response_success)
@@ -116,7 +116,7 @@ class Response(object):
             error_validator.inputfile_list_empty(input_key)
             blocks_list, record_id, model_id, in_locale = file_ops.get_input_values_for_block_tokenise(input_key)
             input_key = tokenisation.adding_tokenised_text_blockmerger(input_key, in_locale, 0)
-            task_endtime = str(time.time()).replace('.', '')
+            task_endtime = eval(str(time.time()).replace('.', '')[0:13])
             response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
             response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, input_key)
             response = copy.deepcopy(response_success)

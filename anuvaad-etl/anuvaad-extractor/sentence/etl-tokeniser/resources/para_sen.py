@@ -20,8 +20,8 @@ class SenTokenisePostWF(Resource):
     
     # reading json request and reurnung final response
     def post(self):
-        task_id = str("TOK-" + str(time.time()).replace('.', ''))
-        task_starttime = str(time.time()).replace('.', '')
+        task_id = str("TOK-" +  str(time.time()).replace('.', '')[0:13])
+        task_starttime = eval(str(time.time()).replace('.', '')[0:13])
         json_data = request.get_json(force = True)
         log_info("Resource SenTokenisePostWF : data from api request received", json_data)
         try:
@@ -56,8 +56,8 @@ class SentenceTokenise(Resource):
 class BlockTokenize(Resource):
 
     def post(self):
-        task_id = str("TOK-" + str(time.time()).replace('.', ''))
-        task_starttime = str(time.time()).replace('.', '')
+        task_id = str("TOK-" + str(time.time()).replace('.', '')[0:13])
+        task_starttime = eval(str(time.time()).replace('.', '')[0:13])
         json_data = request.get_json(force = True)
         log_info("Resource BlockTokenize : data from api request received", json_data)
         try:
