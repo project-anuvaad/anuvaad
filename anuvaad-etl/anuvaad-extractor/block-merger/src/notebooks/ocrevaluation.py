@@ -50,26 +50,7 @@ def google_vision_image_to_string(pdf_image_paths,pdf_to_image_dir,pdf_name,path
         pass
 
     return out_text_path_vision
-def draw_box(filepath, desired_width, desired_height, df, color="green", save=False):
-    image  = Image.open(filepath)
-    image  = image.resize((desired_width, desired_height))
-    draw   = ImageDraw.Draw(image)
-    
-    for index, row in df.iterrows():
-        left   = int(row['text_left'])
-        right  = int(row['text_width'] + left)
-        top    = int(row['text_top'])
-        bottom = int(row["text_height"] + top)
-        
-        draw.rectangle(((left, top), (right,bottom)), outline=color)
-    save_filepath = os.path.join(os.path.dirname(filepath), 'processed_' + os.path.basename(filepath))
-    if save:
-        image.save(save_filepath)
-    
-    return image
 
-def show_df(df):
-    return df.head(df.shape[0])
 
 def ocr_evaluation(xml_dfs,img_dfs ,page_height,page_width,lang,pdf_bg_img_filepaths,pdf_image_paths,filename,base_dir):
 
@@ -81,14 +62,15 @@ def ocr_evaluation(xml_dfs,img_dfs ,page_height,page_width,lang,pdf_bg_img_filep
     #in_dfs, table_dfs, line_dfs,bg_dfs = get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths,,check=True)#
 
     h_dfs = get_xml.get_hdfs(xml_dfs, header_region, footer_region)
+    
     v_dfs                              = get_xml.get_vdfs(h_dfs)
     p_dfs                              = get_xml.get_pdfs(v_dfs,lang)
-
+    p_dfs = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang)
    # p_dfs                              = get_text_from_table_cells(table_dfs,p_dfs)
    # p_dfs, line_dfs = get_underline(p_dfs, line_dfs, app_context.application_context)
-    p_dfs = tesseract_ocr(pdf_image_paths, page_width, page_height, p_dfs, lang)
+    
 
-    draw_box(img_filepaths[0], page_width, page_height,p_dfs[0], color='red',save=True)
+   
 
     draw_hist(p_dfs,base_dir, filename,path)
     out_text_path_vision = google_vision_image_to_string(pdf_image_paths,base_dir,filename,path)

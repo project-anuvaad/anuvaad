@@ -31,10 +31,10 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
         bottom = (row['text_top'] + row['text_height'])*h_ratio
         coord  = []
         crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
-        #crop_image.save("/home/naresh/crop/"+str(uuid.uuid4())+'.jpg')
+        crop_image.save("/home/naresh/crop/"+str(uuid.uuid4())+'.jpg')
         if row['text_height']>2*row['font_size']:
             #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang]+"+eng",output_type=Output.DATAFRAME)
-            temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][1],output_type=Output.DATAFRAME)
+            temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
 
             temp_df = temp_df[temp_df.text.notnull()]
             
@@ -44,10 +44,10 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
                 temp_text  = str(row1["text"])
                 
                 temp_conf  = row1["conf"]
-                # if temp_conf<60:
-                #     check["devnagari_text:"].append(str(temp_text))
-                #     temp_text, temp_conf  = low_conf_ocr(lang,int(row1["left"]+left),int(row1["top"]+top),int(row1["width"]),int(row1["height"]),image)
-                #     check["original"].append(str(temp_text))
+                if temp_conf<30:
+                    #check["devnagari_text:"].append(str(temp_text))
+                    temp_text, temp_conf  = low_conf_ocr(lang,int(row1["left"]+left),int(row1["top"]+top),int(row1["width"]),int(row1["height"]),image)
+                    #check["original"].append(str(temp_text))
                 text = text +" "+ str(temp_text)
                 
                 word_coord['text']          = str(temp_text)
@@ -62,7 +62,7 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             text_list.append(text)
         else:
             #temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang]+"+eng",output_type=Output.DATAFRAME)
-            temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][1],output_type=Output.DATAFRAME)
+            temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
             temp_df = temp_df[temp_df.text.notnull()]
             text = ""
             #print("kkkkkkkkkkkkkkkkkkkkkkk")
@@ -70,10 +70,10 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
                 word_coord = {}
                 temp_text  = str(row2["text"])
                 temp_conf  = row2["conf"]
-                # if temp_conf<60:
-                #     check["devnagari_text:"].append(str(temp_text))
-                #     temp_text, temp_conf  = low_conf_ocr(lang,int(row2["left"]+left),int(row2["top"]+top),int(row2["width"]),int(row2["height"]),image)
-                #     check["original"].append(str(temp_text))
+                if temp_conf<30:
+                    #check["devnagari_text:"].append(str(temp_text))
+                    temp_text, temp_conf  = low_conf_ocr(lang,int(row2["left"]+left),int(row2["top"]+top),int(row2["width"]),int(row2["height"]),image)
+                    #check["original"].append(str(temp_text))
                 text = text +" "+ str(temp_text)
                 
                 word_coord['text']          = str(temp_text)
@@ -94,10 +94,10 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
     return df
 
 def low_conf_ocr(lang,left,top,width,height,image):
-    crop_image = image.crop((left-10, top-20, left+width+10, top+height+5))
+    crop_image = image.crop((left-5, top-7, left+width+5, top+height+7))
     crop_image.save("/home/naresh/check/"+str(uuid.uuid4())+'.jpg')
-    temp_df_eng = pytesseract.image_to_data(crop_image,config='--psm 8', lang= LANG_MAPPING[lang][2],output_type=Output.DATAFRAME)
-    temp_df_hin = pytesseract.image_to_data(crop_image, config='--psm 8',lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
+    temp_df_eng = pytesseract.image_to_data(crop_image,config='--psm 6', lang= LANG_MAPPING[lang][2],output_type=Output.DATAFRAME)
+    temp_df_hin = pytesseract.image_to_data(crop_image, config='--psm 6',lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
     eng_index = temp_df_eng['conf'].argmax()
     hin_index = temp_df_hin['conf'].argmax()
     eng_conf  = temp_df_eng['conf'][eng_index]

@@ -11,14 +11,23 @@ BASE_DIR      = 'upload'
 ENABLE_CORS = False
 
 # kafka
-input_topic         = 'anuvaad-dp-tools-block-merger-input-v2'
+
+input_topic_default = 'anuvaad-dp-tools-block-merger-input-v2'
+input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT'
+input_topic = os.environ.get(input_topic_identifier, input_topic_default)
+
+output_topic_default = 'anuvaad-dp-tools-block-merger-output-v2'
+output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT'
+output_topic = os.environ.get(output_topic_identifier, output_topic_default)
+
 kf_local_server     = 'localhost:9092'
-output_topic        = 'anuvaad-dp-tools-block-merger-output-v2'
 kafka_ip_host       = 'KAFKA_IP_HOST'
 bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
+
 TASK_STAT           = 'BLOCK-MERGER'
 CONSUMER_GROUP      = 'anuvaad-etl-bm-consumer-group'
 
+CONSUMER_GROUP    = os.environ.get(CONSUMER_GROUP)
 #folders and file path
 download_folder = 'upload'
 
@@ -60,7 +69,7 @@ DROP_TEXT          =  ['SUPERSCRIPT']
 
 LANG_MAPPING       =  {
     "en" : ["eng"], "kn" : ["kan"], "gu": ["guj"],"or": ["ori"],
-    "hi" : ["hin","Devanagari","eng"], "bn" : "ben", "mr": "mar", "ta": "tam",
+    "hi" : ["Devanagari","hin","eng"], "bn" : "ben", "mr": "mar", "ta": "tam",
     "te" : "tel"
 
 }
