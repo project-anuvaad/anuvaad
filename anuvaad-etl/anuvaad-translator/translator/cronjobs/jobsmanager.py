@@ -6,7 +6,7 @@ from kafkawrapper.translatorproducer import Producer
 from utilities.translatorutils import TranslatorUtils
 from configs.translatorconfig import anu_translator_output_topic
 from configs.translatorconfig import save_content_url
-from configs.translatorconfig import anu_etl_module_name
+from configs.translatorconfig import tool_translator
 from configs.translatorconfig import jm_cron_interval_sec
 from anuvaad_auditor.errorhandler import post_error
 
@@ -21,7 +21,7 @@ class JobsManger(Thread):
         log_info("JobsManger running......", None)
         repo = TranslatorRepository()
         run = 0
-        obj = {"metadata": {"module": anu_etl_module_name}}
+        obj = {"metadata": {"module": tool_translator}}
         while not self.stopped.wait(jm_cron_interval_sec):
             completed = []
             completed_jobids =[]

@@ -6,7 +6,6 @@ import urllib
 import requests
 from configs.translatorconfig import file_download_url
 from anuvaad_auditor.loghandler import log_exception, log_error
-from anuvaad_auditor.loghandler import log_info
 
 log = logging.getLogger('file')
 
