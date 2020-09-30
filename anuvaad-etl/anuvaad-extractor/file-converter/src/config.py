@@ -25,9 +25,15 @@ MONGO_SERVER_URL = os.environ.get(MONGO_IP, DEFAULT_VALUE)
 MONGO_DB = os.environ.get(MONGO_DB_IDENTIFIER, DEFAULT_MONGO_DB_IDENTIFIER)
 
 # kafka
-tok_input_topic = 'anuvaad-dp-tools-fc-input'
+tok_input_topic_default = 'anuvaad-dp-tools-fc-input'
+tok_input_topic_identifier = 'ANUVAAD_DP_TOOLS_FC_INPUT_TOPIC'
+tok_input_topic = os.environ.get(tok_input_topic_identifier, tok_input_topic_default)
+
+tok_output_topic_default = 'anuvaad-dp-tools-fc-output'
+tok_output_topic_identifier = 'ANUVAAD_DP_TOOLS_FC_OUTPUT_TOPIC'
+tok_output_topic = os.environ.get(tok_output_topic_identifier, tok_output_topic_default)
+
 kf_local_server = 'localhost:9092'
-tok_output_topic = 'anuvaad-dp-tools-fc-output'
 kafka_ip_host = 'KAFKA_CLUSTER_DETAILS'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 
