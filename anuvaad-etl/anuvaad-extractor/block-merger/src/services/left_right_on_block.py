@@ -62,9 +62,8 @@ def children_condition(block_df,children_df,index,children_flag,lang):
                 block_df.at[index, 'children']     = None
         index += 1
         
-    except Exception as e :
-        print(e)
-        return None
+    except:
+        pass
     
     return block_df,index
 
