@@ -42,7 +42,7 @@ class Response(object):
                             input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item, in_locale, page_id) 
                                                                 for page_id, item in enumerate(input_jsonfile_data['result'])]
                             input_jsonfile_data['file_locale'] = in_locale
-                            tokenisation.sending_data_to_content_handler(jobid, user_id, input_jsonfile_data)
+                            #tokenisation.sending_data_to_content_handler(jobid, user_id, input_jsonfile_data)
                             json_data_write = json.dumps(input_jsonfile_data)
                             file_write.seek(0)
                             file_write.truncate()
