@@ -20,8 +20,8 @@ tool_nmt = "NMT"
 module_wfm_name = "WORKFLOW-MANAGER"
 is_sync_flow_enabled = True
 is_async_flow_enabled = True
-js_cron_interval_sec = 60 # 1 hr
-js_job_failure_interval_sec = 43200 # 12 hrs
+js_cron_interval_sec = os.environ.get('WFM_JS_CRON_INTERVAL_SEC', 3600) # 1 hr
+js_job_failure_interval_sec = os.environ.get('WFM_JS_CRON_FAILURE_INTERVAL_SEC', 21600) # 6 hrs
 
 
 #kafka-configs
