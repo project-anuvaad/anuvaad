@@ -46,7 +46,7 @@ class Response(object):
                     copyfile(result, os.path.join(config.download_folder, upload_id+'.pdf'))
                     file_res = file_ops.one_filename_response(input_filename, upload_id+'.pdf', in_locale, 'pdf')
                     output_file_response.append(file_res)
-            task_endtime = str(time.time()).replace('.', '')
+            task_endtime = eval(str(time.time()).replace('.', '')[0:13])
             response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
             response_success = response_true.success_response(workflow_id, task_starttime, task_endtime, tool_name, step_order, output_file_response)
             log_info("workflow_response : successfully generated response for workflow", self.json_data)
