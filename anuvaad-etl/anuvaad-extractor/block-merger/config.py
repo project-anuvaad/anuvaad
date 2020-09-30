@@ -13,11 +13,11 @@ ENABLE_CORS = False
 # kafka
 
 input_topic_default = 'anuvaad-dp-tools-block-merger-input-v2'
-input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT_V2'
+input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT'
 input_topic = os.environ.get(input_topic_identifier, input_topic_default)
 
 output_topic_default = 'anuvaad-dp-tools-block-merger-output-v2'
-output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT_V2'
+output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT'
 output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
 kf_local_server     = 'localhost:9092'
