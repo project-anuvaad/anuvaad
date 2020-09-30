@@ -7,7 +7,7 @@ from service.translatorservice import TranslatorService
 from service.blocktranslationservice import BlockTranslationService
 from validator.translatorvalidator import TranslatorValidator
 from configs.translatorconfig import context_path
-from configs.translatorconfig import anu_etl_module_name
+from configs.translatorconfig import tool_translator
 from anuvaad_auditor.loghandler import log_info
 
 translatorapp = Flask(__name__)
@@ -34,7 +34,6 @@ def block_translate():
     validator = TranslatorValidator()
     data = request.get_json()
     error = validator.validate_block_translate(data)
-    log_info(error, data)
     if error is not None:
         data["state"], data["status"], data["error"] = "TRANSLATED", "FAILED", error
         return data, 400
@@ -49,7 +48,6 @@ def text_translate():
     validator = TranslatorValidator()
     data = request.get_json()
     error = validator.validate_text_translate(data)
-    log_info(error, data)
     if error is not None:
         data["state"], data["status"], data["error"] = "TRANSLATED", "FAILED", error
         return data, 400
@@ -66,7 +64,7 @@ def add_headers(data, api_request):
         "sessionID": api_request.headers["ad-requestID"],
         "bearer": bearer,
         "receivedAt": eval(str(time.time()).replace('.', '')),
-        "module": anu_etl_module_name
+        "module": tool_translator
     }
     data["metadata"] = headers
     return data
