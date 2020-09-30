@@ -4,7 +4,7 @@ from repository.wfmrepository import WFMRepository
 from configs.wfmconfig import module_wfm_name
 from configs.wfmconfig import js_cron_interval_sec
 from configs.wfmconfig import js_job_failure_interval_sec
-from anuvaad_auditor.loghandler import log_exception, log_info, log_error
+from anuvaad_auditor.loghandler import log_exception, log_info
 from anuvaad_auditor.errorhandler import post_error
 
 
@@ -25,6 +25,7 @@ class JobSweeper(Thread):
                 jobs = wfmrepo.search_job(criteria, exclude)
                 no_of_jobs = 0
                 if jobs:
+                    log_info("JobSweeper - Run: " + str(run) + " | Jobs Fetched: " + str(len(jobs)), obj)
                     for job in jobs:
                         job_start_time = job["startTime"]
                         diff = eval(str(time.time()).replace('.', '')[0:13]) - job_start_time
@@ -37,7 +38,7 @@ class JobSweeper(Thread):
                             log_info("JOB FAILED: The job was failed by the system, since it was idle", job)
                             no_of_jobs += 1
                 run += 1
-                log_info("JobSweeper - Run: " + str(run) + " | Jobs Processed: " + str(no_of_jobs))
+                log_info("JobSweeper - Run: " + str(run) + " | Jobs Processed: " + str(no_of_jobs), obj)
             except Exception as e:
                 run += 1
                 log_exception("JobSweeper - Run: " + str(run) + " | Exception in JobSweeper: " + str(e), obj, e)
