@@ -9,11 +9,11 @@ PORT = 5001
 ENABLE_CORS = False
 
 # kafka
-input_topic_default = 'kafka-anuvaad-dp-tools-tokeniser-input-v1'
+input_topic_default = 'anuvaad-dp-tools-tokeniser-input-v1'
 input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_INPUT'
 input_topic = os.environ.get(input_topic_identifier, input_topic_default)
 
-output_topic_default = 'kafka-anuvaad-dp-tools-tokeniser-output-v1'
+output_topic_default = 'anuvaad-dp-tools-tokeniser-output-v1'
 output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT'
 output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
