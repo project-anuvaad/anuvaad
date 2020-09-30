@@ -25,6 +25,10 @@ MONGO_SERVER_URL = os.environ.get(MONGO_IP, DEFAULT_VALUE)
 MONGO_DB = os.environ.get(MONGO_DB_IDENTIFIER, DEFAULT_MONGO_DB_IDENTIFIER)
 
 # kafka
+consumer_grp_default = 'anuvaad-etl-fc-consumer-group'
+consumer_grp_identifier = 'KAFKA_ANUVAAD_ETL_FC_CONSUMER_GRP'
+CONSUMER_GROUP = os.environ.get(consumer_grp_identifier, consumer_grp_default)
+
 tok_input_topic_default = 'anuvaad-dp-tools-fc-input-v1'
 tok_input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_FC_INPUT'
 tok_input_topic = os.environ.get(tok_input_topic_identifier, tok_input_topic_default)
