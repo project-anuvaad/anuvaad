@@ -1,0 +1,13 @@
+.App{
+    margin-left: -100px;
+  }
+  
+  @media (max-width: 800px) {
+    .GridFileDetails {
+      display: none;
+    }
+  }
+  
+  .Button{
+    width: 100%; pointer-events: none; font-size:'10px'; font-weight:bold;
+  }
