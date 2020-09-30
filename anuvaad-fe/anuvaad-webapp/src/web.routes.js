@@ -21,6 +21,9 @@ import Layout from "./ui/containers/web/Layout";
 import Callback from "./ui/containers/web/Callback";
 import NotFound from "./ui/containers/web/NotFound";
 import ViewDocument from "./ui/containers/web/ViewDocument";
+import DocumentEditor from './ui/containers/web/Interactive-Editor/DocumentEditor';
+import FileUpload from './ui/containers/web/Interactive-Editor/FileUpload';
+import Translate from "./ui/containers/web/Dashboard";
 
 
 
@@ -86,6 +89,21 @@ class AppRoutes extends React.Component {
             <Route exact path={`${process.env.PUBLIC_URL}/callback`} component={Callback} />
             <Route exact path={`${process.env.PUBLIC_URL}/logout`} component={Logout} />
 
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/dashboard`}
+              title={translate('dashboard.page.heading.title')}
+              component={Translate}
+              authenticate={this.authenticateUser}
+              currentMenu="dashboard"
+            />
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/document-upload`}
+              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              component={FileUpload}
+              title={translate('dashboard.page.heading.title')}
+              authenticate={this.authenticateUser}
+              currentMenu="texttranslate"
+            />
 
             
             <PrivateRoute
@@ -95,6 +113,17 @@ class AppRoutes extends React.Component {
               userRoles={["editor", "user"]}
               authenticate={this.authenticateUser}
               currentMenu="viewdocument"
+              dontShowLoader
+            />
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/interactive-document/:locale/:jobid/:inputfileid/:modelId`}
+              // path={`${process.env.PUBLIC_URL}/interactive-document/:fileid/:inputfileid`}
+              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              component={DocumentEditor}
+              title={translate('dashboard.page.heading.title')}
+              authenticate={this.authenticateUser}
+              dontShowLoader
+              currentMenu="texttranslate"
             />
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
           </Switch>
