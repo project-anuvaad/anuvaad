@@ -20,8 +20,7 @@ import Logout from "./ui/containers/web/Logout";
 import Layout from "./ui/containers/web/Layout";
 import Callback from "./ui/containers/web/Callback";
 import NotFound from "./ui/containers/web/NotFound";
-
-import ViewTranslate from "./ui/containers/web/ViewTranslate";
+import ViewDocument from "./ui/containers/web/ViewDocument";
 
 
 
@@ -88,15 +87,16 @@ class AppRoutes extends React.Component {
             <Route exact path={`${process.env.PUBLIC_URL}/logout`} component={Logout} />
 
 
-            <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
+            
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/viewtranslate`}
+              path={`${process.env.PUBLIC_URL}/view-document`}
               title={translate('common.page.title.document')}
-              component={ViewTranslate}
+              component={ViewDocument}
               userRoles={["editor", "user"]}
               authenticate={this.authenticateUser}
-              currentMenu="viewtranslate"
+              currentMenu="viewdocument"
             />
+            <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
           </Switch>
         </div>
       </Router>

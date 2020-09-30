@@ -1,4 +1,4 @@
-import { grey500, white } from 'material-ui/styles/colors';
+var grey500 = "#9E9E9E";
 
 const Newcorpus = theme => ({
   root: {
@@ -106,7 +106,7 @@ btns: {
   },
   btn: {
     background: '#4f81e9',
-    color: white,
+    color: "	#FFFFFF",
     padding: 7,
     borderRadius: 2,
     margin: 2,
