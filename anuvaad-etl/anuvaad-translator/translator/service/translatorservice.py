@@ -137,6 +137,8 @@ class TranslatorService:
     # Method to process the output received from the NMT
     def process_nmt_output(self, nmt_output):
         try:
+            log_info("NMT OUT", None)
+            log_info(nmt_output, None)
             nmt_output = nmt_output["out"]
             record_id = nmt_output["record_id"]
             recordid_split = str(record_id).split("|")
