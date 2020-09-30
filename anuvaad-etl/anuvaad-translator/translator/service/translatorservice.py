@@ -142,13 +142,14 @@ class TranslatorService:
             recordid_split = str(record_id).split("|")
             job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
             record_id = str(recordid_split[0]) + "|" + str(recordid_split[1])
-            translate_wf_input = {"jobID": job_id, "recordID": record_id}
+            translate_wf_input = {"jobID": job_id}
             file = self.get_content_from_db(record_id, None, translate_wf_input)
             if not file:
                 log_error("There is no data for this recordID: " + str(record_id), translate_wf_input, nmt_output["status"])
                 return None
             file, skip_count, trans_count = file[0], 0, 0
             translate_wf_input = file["transInput"]
+            translate_wf_input["recordID"] = record_id
             if 'status' in nmt_output.keys():
                 if 'statusCode' in nmt_output["status"].keys():
                     if nmt_output["status"]["statusCode"] != 200:
