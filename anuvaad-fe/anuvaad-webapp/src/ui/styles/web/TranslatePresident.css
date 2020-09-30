@@ -1,0 +1,239 @@
+.App-logo {
+    height: 40vmin;
+  }
+  
+  .App{
+    background-color: rgb(255, 255, 255);
+    min-height: 80vh;
+    text-align: center;
+  }
+  
+  .App-link {
+    color: #09d3ac;
+  }
+  
+  #main-container { 
+    width: 100%;
+    height: 100%;
+    /* z-index: 1; */
+    text-align: center;
+    max-width: inherit;
+    transition: all 500ms ease;  
+   }
+   .idbox {
+    width: 80%;
+    text-align: justify;
+    font-family: arial,sans-serif;
+    font-size: 30px;
+    min-height: 300px;
+    background: rgb(218, 218, 218);
+    padding: 40px;
+    border-radius: 5px;
+    resize: none;
+    margin: 5% 5% 3% 5%;
+   }
+   .translateBtn {
+      border-radius: 5px !important;   
+      height: 15%;
+      background-color: rgb(20, 19, 19) !important;
+      padding: 16px !important;
+      border: none;
+      font-weight: bold;
+      width: 30%;
+      margin: 4% 35%;
+   }
+  
+   .textarea-container{   
+      height: 70%;
+      width: 80%;
+   }
+   #container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* z-index: -10; */
+    text-align: center;
+    max-width: inherit;
+    transition: all 500ms ease;
+    background-color: inherit;
+   }
+   #paper {
+      text-align: center;
+      margin-left: 20px;
+      color:rgb(214, 208, 208);
+      width: 100%;
+      margin-top: 20px ;
+      margin-bottom: 1%;
+      padding-top: 25px;
+      padding-bottom: 25px;
+      margin-right:22px;
+      background: rgb(204, 200, 200);
+      border: 1px solid rgb(207, 204, 204);
+      -webkit-animation-name: header; /* Safari 4.0 - 8.0 */
+      -webkit-animation-duration: 0.1s; /* Safari 4.0 - 8.0 */
+      animation-name: header;
+      animation-duration: 0.1s;
+  }
+  
+  /* 
+  @-webkit-keyframes header {
+      from {
+            transform: translate3d(0,0,0)
+        }
+    
+        to {
+            transform: translate3d(0,1px,0);
+            opacity: 1
+        }
+    } */
+    
+    /* Standard syntax */
+    /* @keyframes header {
+       from {
+            transform: translate3d(0,0,0)
+        }
+    
+        to {
+            transform: translate3d(0,1px,0);
+            opacity: 1
+        }
+    } */
+  
+  #langContainer{
+      padding-left:40px;
+      padding-top:30px
+  }
+  .card{
+      min-height: 165px;
+      margin: 20px;
+  }
+  .zoom{
+    transition: transform .4s;
+  }
+  #cardGrid{
+      
+      padding-top: '15px !important';
+      padding-bottom:'15px !important';
+  }
+  title{
+      
+      font-weight:'bold';
+  }
+  #cardTitle{
+      text-align:'center';
+      font-weight:'bold'
+  }
+  
+   #button {
+    border-radius: 6px;
+    width:150px;
+    min-height:50px;
+    margin-top: 1%;
+    background-color: #CE505F;
+   }
+  
+  .slideUp {
+      opacity: 0;
+      animation-name: slideUp;
+      animation-duration: 0.8s;
+      animation-fill-mode: both;
+      -webkit-animation-duration: 0.8s;
+      -webkit-animation-fill-mode: both;
+      -webkit-animation-name: slideUp;
+  }
+
+  .zoom:hover {
+    transform: scale(1.05); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  }
+  
+  
+  .slideUp:nth-child(1){
+      animation-delay: 0.1s;
+  }
+  
+  .slideUp:nth-child(2){
+      animation-delay: 0.2s;
+  }
+  
+   .slideUp:nth-child(3){
+      animation-delay: 0.3s;
+  }
+  
+  .slideUp:nth-child(4){
+      animation-delay: 0.4s;
+  }
+  
+  .slideUp:nth-child(5){
+      animation-delay: 0.5s;
+  }
+  
+  .slideUp:nth-child(6){
+      animation-delay: 0.6s;
+  } 
+  
+  .slideUp:nth-child(7){
+      animation-delay: 0.7s;
+  } 
+  
+  .slideUp:nth-child(8){
+      animation-delay: 0.8s;
+  } 
+  .slideUp:nth-child(9){
+      animation-delay: 0.9s;
+  } 
+  
+  
+  @keyframes slideUp {
+      from {
+          transform: translate3d(0,1000px,0)
+      }
+  
+      to {
+          transform: translate3d(0,0,0);
+          opacity: 1
+      }
+  }
+  
+  @-webkit-keyframes slideUp {
+      from {
+          transform: translate3d(0,1000px,0)
+      }
+  
+      to {
+          transform: translate3d(0,0,0);
+          opacity: 1
+      }
+  }
+   
+  
+   .fadeUp {
+      animation-name: fadeUp;
+      -webkit-animation-name: fadeUp;
+      animation-duration: 1s;
+      -webkit-animation-duration: 1.2s;
+      visibility: hidden;
+      transition-delay: 1s;
+      animation-direction: reverse;
+      transition: all 1s ease-in-out;
+     }
+     @keyframes fadeUp {
+         0% {       
+          opacity: 0.3;
+          transform: translateY(-100%);
+         }
+         70% {
+          opacity: 1;
+          transform: translateY(0%);
+         }
+     }
+     @-webkit-keyframes fadeUp {
+         0% {
+          opacity: 0.3;
+          -webkit-transform: translateY(-100%);
+         }
+         100% {
+          opacity: 1;
+          -webkit-transform: translateY(0%);
+         }    
+     }
+  

@@ -1,0 +1,11 @@
+/*Source Sans Pro Regular*/
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@1,300&display=swap');
+/* Source Sans Pro semiBold*/
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,600;1,300&display=swap');
+
+.header{
+    font-family: 'Source Sans Pro', sans-serif;
+}
+.typographyHeader1{
+    font-weight: '549';
+}
