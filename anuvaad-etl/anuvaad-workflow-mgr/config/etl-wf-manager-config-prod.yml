@@ -27,12 +27,12 @@ WorkflowConfigs:
       - name: BLOCK-MERGER
         description: extracts different blocks from a pdf file.
         kafka-input:
-        - topic: anuvaad-dp-tools-block-merger-input-v2
+        - topic: ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT_V2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-block-merger-output-v2
+        - topic: ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT_V2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
           assignment: round-robin
@@ -66,12 +66,12 @@ WorkflowConfigs:
       - name: BLOCK-MERGER
         description: extracts different blocks from a pdf file.
         kafka-input:
-        - topic: anuvaad-dp-tools-block-merger-input-v2
+        - topic: ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT_V2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-block-merger-output-v2
+        - topic: ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT_V2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
           assignment: round-robin
@@ -82,12 +82,12 @@ WorkflowConfigs:
       - name: TOKENISER
         description: Tokenises a given file with paragraphs
         kafka-input:
-        - topic: anuvaad-dp-tools-tokeniser-input-v1
+        - topic: ANUVAAD_DP_TOOLS_TOKENISER_INPUT_V1
           partitions: 2
           keys: tokeniser-input-key-one, tokeniser-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-tokeniser-output-v1
+        - topic: ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT_V1
           partitions: 2
           keys: tokeniser-output-key-one, tokeniser-output-key-two
           assignment: round-robin
@@ -122,12 +122,12 @@ WorkflowConfigs:
       - name: BLOCK-MERGER
         description: extracts different blocks from a pdf file.
         kafka-input:
-        - topic: anuvaad-dp-tools-block-merger-input-v2
+        - topic: ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT_V2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-block-merger-output-v2
+        - topic: ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT_V2
           partitions: 2
           keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
           assignment: round-robin
@@ -138,12 +138,12 @@ WorkflowConfigs:
       - name: TOKENISER
         description: Tokenises a given file with paragraphs
         kafka-input:
-        - topic: anuvaad-dp-tools-tokeniser-input-v1
+        - topic: ANUVAAD_DP_TOOLS_TOKENISER_INPUT_V1
           partitions: 2
           keys: tokeniser-input-key-one, tokeniser-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-tokeniser-output-v1
+        - topic: ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT_V1
           partitions: 2
           keys: tokeniser-output-key-one, tokeniser-output-key-two
           assignment: round-robin
@@ -154,12 +154,12 @@ WorkflowConfigs:
       - name: TRANSLATOR
         description: Translates sentences from a bm-tok processed json file.
         kafka-input:
-        - topic: anuvaad-dp-tools-translator-input-v2
+        - topic: ANUVAAD_DP_TOOLS_TRANSLATOR_INPUT_V2
           partitions: 2
           keys: anuvaad-dp-tools-translator-input-key-one, anuvaad-dp-tools-translator-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-translator-output-v2
+        - topic: ANUVAAD_DP_TOOLS_TRANSLATOR_INPUT_V2
           partitions: 2
           keys: anuvaad-dp-tools-translator-output-key-one, anuvaad-dp-tools-translator-output-key-two
           assignment: round-robin

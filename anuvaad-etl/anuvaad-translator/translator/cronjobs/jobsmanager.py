@@ -59,6 +59,7 @@ class JobsManger(Thread):
                 run += 1
             except Exception as e:
                 log_exception("JobsManger - Run: " + str(run) + " | Exception: " + str(e), obj, e)
+                run += 1
 
     # Method to push data to CH and WFM.
     def data_sink(self, completed, failed, obj):
