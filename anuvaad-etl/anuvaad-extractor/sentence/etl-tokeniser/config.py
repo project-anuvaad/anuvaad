@@ -9,6 +9,10 @@ PORT = 5001
 ENABLE_CORS = False
 
 # kafka
+consumer_grp_default = 'anuvaad-etl-tokeniser-consumer-group'
+consumer_grp_identifier = 'KAFKA_ANUVAAD_ETL_TOKENISER_CONSUMER_GRP'
+CONSUMER_GROUP = os.environ.get(consumer_grp_identifier, consumer_grp_default)
+
 input_topic_default = 'anuvaad-dp-tools-tokeniser-input-v1'
 input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_INPUT'
 input_topic = os.environ.get(input_topic_identifier, input_topic_default)
