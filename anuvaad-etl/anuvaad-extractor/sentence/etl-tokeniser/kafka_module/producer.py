@@ -23,7 +23,7 @@ class Producer(object):
         try:
             producer.send(topic_name, value = push_data)
             producer.flush()
-            log_info("push_data_to_queue : successfully pushed data to output queue", json_data)
+            log_info("push_data_to_queue : successfully pushed data to output queue : %s"%(config.output_topic), json_data)
         except:
             response_custom = json_data
             response_custom['taskID'] = task_id

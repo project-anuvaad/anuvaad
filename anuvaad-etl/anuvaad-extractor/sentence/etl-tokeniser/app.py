@@ -28,5 +28,5 @@ for blueprint in vars(routes).values():
 
 if __name__ == "__main__":
     start_kafka()
-    tok_app.run(host=config.HOST, port=config.PORT, debug=False)
+    tok_app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
     
