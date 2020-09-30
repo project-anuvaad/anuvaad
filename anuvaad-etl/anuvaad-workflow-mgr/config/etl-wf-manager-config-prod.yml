@@ -159,7 +159,7 @@ WorkflowConfigs:
           keys: anuvaad-dp-tools-translator-input-key-one, anuvaad-dp-tools-translator-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: ANUVAAD_DP_TOOLS_TRANSLATOR_INPUT_V2
+        - topic: ANUVAAD_DP_TOOLS_TRANSLATOR_OUTPUT_V2
           partitions: 2
           keys: anuvaad-dp-tools-translator-output-key-one, anuvaad-dp-tools-translator-output-key-two
           assignment: round-robin
