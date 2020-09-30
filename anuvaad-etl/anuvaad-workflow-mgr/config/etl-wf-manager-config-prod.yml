@@ -178,7 +178,7 @@ WorkflowConfigs:
       - name: TRANSLATOR
         description: Translates the sentences.
         api-details:
-        - uri: http://users_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/block/workflow/translate
+        - uri: http://user_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/block/workflow/translate
       endState: true
 
 
@@ -193,14 +193,14 @@ WorkflowConfigs:
       - name: TOKENISER
         description: tokenises the text blocks.
         api-details:
-        - uri: http://users_anuvaad-etl-tokeniser:5001/api/v0/blocks-tokenisation-wf
+        - uri: http://user_anuvaad-etl-tokeniser:5001/api/v0/blocks-tokenisation-wf
       endState: false
     - order: 1
       tool:
       - name: TRANSLATOR
         description: Translates the sentences.
         api-details:
-        - uri: http://users_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/block/workflow/translate
+        - uri: http://user_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/block/workflow/translate
       endState: true
 
 
@@ -215,7 +215,7 @@ WorkflowConfigs:
       - name: CONTENT-HANDLER
         description: Saves Blocks to CH.
         api-details:
-        - uri: http://users_anuvaad-content-handler:5001/api/v0/update-content
+        - uri: http://user_anuvaad-content-handler:5001/api/v0/update-content
       endState: true
 
 
@@ -230,5 +230,5 @@ WorkflowConfigs:
       - name: TRANSLATOR
         description: Translates the given text
         api-details:
-        - uri: http://users_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/text/workflow/translate
+        - uri: http://user_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/text/workflow/translate
       endState: true
