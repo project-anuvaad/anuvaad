@@ -13,7 +13,7 @@ const DashboardStyles = theme => ({
     width: '100%'
   },
   withoutLabel: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing.unit * 3
   },
   typographyHeader:{
      paddingBottom: "12px", paddingTop: "2%"

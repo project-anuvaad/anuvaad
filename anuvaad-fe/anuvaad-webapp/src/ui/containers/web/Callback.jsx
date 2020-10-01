@@ -24,11 +24,26 @@ class Callback extends React.Component {
       if (this.props.userProfile.isActive) {
         localStorage.setItem("userDetails", this.props.userProfile.firstname + " " + this.props.userProfile.lastname);
         localStorage.setItem("userProfile", JSON.stringify(this.props.userProfile));
-        
+        if (this.props.userProfile.roles === null) {
+          localStorage.setItem("roles", JSON.stringify(["editor"]));
+        } else {
+          localStorage.setItem("roles", JSON.stringify(this.props.userProfile.roles));
+        }
+        var role = JSON.parse(localStorage.getItem('roles'));
+        if (role && Array.isArray(role) && role.includes('analyzer')) {
+          history.push(`${process.env.PUBLIC_URL}/benchmarktranslate`);
+        }
+        else if (role && Array.isArray(role) && role.includes('admin')) {
+          history.push(`${process.env.PUBLIC_URL}/comparison-report`);
+        }
+        else if (role && Array.isArray(role) && role.includes('user')) {
+          history.push(`${process.env.PUBLIC_URL}/translate`);
+        }
+        else {
           // history.push(`${process.env.PUBLIC_URL}/dashboard`);
         history.push(`${process.env.PUBLIC_URL}/view-document`);
 
-        
+        }
       }
     }else if(this.state.loading && this.props.userProfile && this.props.userProfile.id && !localStorage.getItem("lang" + this.props.userProfile.id)){
       this.setState({
@@ -58,10 +73,25 @@ class Callback extends React.Component {
       localStorage.setItem("userDetails", this.props.userProfile.firstname + " " + this.props.userProfile.lastname);
       localStorage.setItem("lang" + this.props.userProfile.id, lang)
       localStorage.setItem("userProfile", JSON.stringify(this.props.userProfile));
-      
+      if (this.props.userProfile.roles === null) {
+        localStorage.setItem("roles", JSON.stringify(["editor"]));
+      } else {
+        localStorage.setItem("roles", JSON.stringify(this.props.userProfile.roles));
+      }
+      var role = JSON.parse(localStorage.getItem('roles'));
+      if (role && Array.isArray(role) && role.includes('analyzer')) {
+        history.push(`${process.env.PUBLIC_URL}/benchmarktranslate`);
+      }
+      else if (role && Array.isArray(role) && role.includes('admin')) {
+        history.push(`${process.env.PUBLIC_URL}/comparison-report`);
+      }
+      else if (role && Array.isArray(role) && role.includes('user')) {
+        history.push(`${process.env.PUBLIC_URL}/translate`);
+      }
+      else {
         // history.push(`${process.env.PUBLIC_URL}/dashboard`);
         history.push(`${process.env.PUBLIC_URL}/view-document`);
-      
+      }
     }
   }
 

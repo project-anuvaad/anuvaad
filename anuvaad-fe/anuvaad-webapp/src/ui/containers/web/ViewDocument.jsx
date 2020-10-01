@@ -185,7 +185,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[3]}</div>
+                  {tableMeta.rowData[3]}
                 </div>
               );
             }
@@ -238,7 +238,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[8]}</div>
+                  {tableMeta.rowData[8]}
                 </div>
               );
             }
@@ -257,7 +257,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[9]}</div>
+                  {tableMeta.rowData[9]}
                 </div>
               );
             }
@@ -281,8 +281,7 @@ class ViewDocument extends React.Component {
 
                 <div style={{ width: '120px' }}>
 
-                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[1]}</div></div>}
+                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>{tableMeta.rowData[1]}</div>}
 
                 </div>
               );
@@ -302,7 +301,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[11]}</div>
+                  {tableMeta.rowData[11]}
                 </div>
               );
             }
@@ -323,7 +322,7 @@ class ViewDocument extends React.Component {
               return (
                 <div >
                   <Tooltip title="info" placement="left"><IconButton style={{ color: '#233466' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[13])}><InfoIcon style={{ color: "#C6C6C6" }} /></IconButton></Tooltip>
-                  {/* {tableMeta.rowData[1] === 'COMPLETED' ? <Tooltip title={translate('viewTranslate.page.title.downloadSource')} placement="right"><IconButton style={{ color: '#233466' }} component="a" onClick={() => { this.setState({ fileDownload: true }), this.handleFileDownload(tableMeta.rowData[5]) }}><DeleteOutlinedIcon /></IconButton></Tooltip> : ''} */}
+                  {tableMeta.rowData[1] === 'COMPLETED' ? <Tooltip title={translate('viewTranslate.page.title.downloadSource')} placement="right"><IconButton style={{ color: '#233466' }} component="a" onClick={() => { this.setState({ fileDownload: true }); this.handleFileDownload(tableMeta.rowData[5]) }}><DeleteOutlinedIcon /></IconButton></Tooltip> : ''}
                 </div>
               );
             }
@@ -357,7 +356,7 @@ class ViewDocument extends React.Component {
       filterType: "checkbox",
       // onRowClick: rowData => (rowData[1] === "COMPLETED") && this.handleClick(rowData),
       download: false,
-      // expandableRowsOnClick: true,
+      expandableRowsOnClick: true,
       print: false,
       fixedHeader: true,
       filter: false,

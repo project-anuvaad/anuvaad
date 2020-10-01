@@ -1,4 +1,5 @@
 import C from "../actions/constants";
+import { act } from "react-test-renderer";
 
 const initialUserState = {
   result: []
@@ -11,13 +12,15 @@ export default function(state = initialUserState, action) {
       if (result !== null && result.data) {
         action.payload.data.map(payloadData => {
           result.data.map((pageDetails, index) => {
-            if (pageDetails.page_no === payloadData.page_no) {
+            if (pageDetails.page_no == payloadData.page_no) {
               pageDetails = payloadData;
               status = true;
-              i =  index;
+              i=  index;
               pageD = payloadData;
+              console.log(pageDetails)
             }
           });
+          console.log(result.data)
           if (status) {
             result.data[i] = pageD
             status = false;

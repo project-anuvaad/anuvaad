@@ -10,7 +10,7 @@ const PdfTranslateStyles = theme => ({
       width: '100%'
     },
     withoutLabel: {
-      marginTop: theme.spacing(3)
+      marginTop: theme.spacing.unit * 3
     },
     div:{
       width: '55%', marginLeft: "20%", marginTop: '5%', marginBottom: '9%',

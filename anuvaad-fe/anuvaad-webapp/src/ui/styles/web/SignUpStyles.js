@@ -10,7 +10,7 @@ const SignUpStyles = theme => ({
     width: '100%'
   },
   withoutLabel: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing.unit * 3
   },
   typographyHeader:{
     marginTop: '5%', 

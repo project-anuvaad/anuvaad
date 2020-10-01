@@ -19,9 +19,9 @@ class DocumentBlock extends React.Component {
     };
   }
 
-  handleMouseHover(id, block_identifier, has_sibling, pageNo) {
+  handleMouseHover(id, block_identifier, has_sibling) {
     if (!this.props.selectedSentence) {
-      this.props.handleOnMouseEnter(id, this.props.parent, 0, block_identifier, has_sibling, pageNo);
+      this.props.handleOnMouseEnter(id, this.props.parent, 0, block_identifier, has_sibling);
     }
   }
 
@@ -72,7 +72,7 @@ class DocumentBlock extends React.Component {
           !this.props.targetSelected && this.props.value !== true && this.props.handleOnMouseLeave();
         }}
         onMouseEnter={() => {
-          !this.props.targetSelected && this.props.value !== true && this.handleMouseHover(sentence.block_id + "_" + this.props.page_no + "_" + this.props.paperType, sentence.block_identifier, sentence.has_sibling, this.props.page_no);
+          !this.props.targetSelected && this.props.value !== true && this.handleMouseHover(sentence.block_id + "_" + this.props.page_no + "_" + this.props.paperType, sentence.block_identifier, sentence.has_sibling);
         }}
         style={{
           
@@ -158,7 +158,7 @@ maxRows={4}
     
     if (sentence.tokenized_sentences) {
       sentence.tokenized_sentences.map((text) => {
-        words_count += text && text.tgt ? text.tgt.split(" ").length : 0
+        words_count += text.tgt.split(" ").length
       })
     }
     if (words_count > 0 && childrens > 1) {
@@ -178,7 +178,7 @@ maxRows={4}
             !this.props.targetSelected && this.props.value !== true && this.props.handleOnMouseLeave();
           }}
           onMouseEnter={() => {
-            !this.props.targetSelected && this.props.value !== true && this.handleMouseHover(sentence.block_id + "_" + this.props.page_no + "_" + this.props.paperType, sentence.block_identifier, sentence.has_sibling, this.props.page_no);
+            !this.props.targetSelected && this.props.value !== true && this.handleMouseHover(sentence.block_id + "_" + this.props.page_no + "_" + this.props.paperType, sentence.block_identifier, sentence.has_sibling);
           }}
           ref={textarea => {
             this.textInput = textarea;
@@ -266,8 +266,7 @@ maxRows={4}
                       let words_length = words.length + current_line_words
                       if (words_length >= words_in_line) {
                         var i, j, temparray, chunk = words_in_line;
-                        i = 0;
-                         j = words_length;
+                        i = 0; j = words_length;
                         while (i < j) {
                           if (current_line_words >= chunk) {
                             current_line_words = 0
@@ -286,7 +285,7 @@ maxRows={4}
                                 background: (!this.props.targetSelected && !not_tokenized && this.props.hoveredSentence.split('_')[0] === this.props.sentence.block_id) ? tokenIndex % 2 == 0 ? '#92a8d1' : "coral" : ''
                               }}
                               onDoubleClick={event => {
-                                this.handleDoubleClickTarget(event, text.s_id + "_" + this.props.page_no, text, "target", sentence.block_id + "_" + this.props.page_no, this.props.page_no);
+                                this.handleDoubleClickTarget(event, text.s_id + "_" + this.props.page_no, text, "target", sentence.block_id + "_" + this.props.page_no);
                               }}
                             >
                               {temparray.join(" ")}
@@ -312,7 +311,7 @@ maxRows={4}
                               background: (!this.props.targetSelected && !not_tokenized && this.props.hoveredSentence.split('_')[0] === this.props.sentence.block_id) ? tokenIndex % 2 == 0 ? '#92a8d1' : "coral" : ''
                             }}
                             onDoubleClick={event => {
-                              this.handleDoubleClickTarget(event, text.s_id + "_" + this.props.page_no, text, "target", sentence.block_id + "_" + this.props.page_no, this.props.page_no);
+                              this.handleDoubleClickTarget(event, text.s_id + "_" + this.props.page_no, text, "target", sentence.block_id + "_" + this.props.page_no);
                             }}
                           >
                             {words.join(" ")}
@@ -334,7 +333,7 @@ maxRows={4}
                                 background: (!this.props.targetSelected && !not_tokenized && this.props.hoveredSentence.split('_')[0] === this.props.sentence.block_id) ? tokenIndex % 2 == 0 ? '#92a8d1' : "coral" : ''
                               }}
                               onDoubleClick={event => {
-                                this.handleDoubleClickTarget(event, text.s_id + "_" + this.props.page_no, text, "target", sentence.block_id + "_" + this.props.page_no, this.props.page_no);
+                                this.handleDoubleClickTarget(event, text.s_id + "_" + this.props.page_no, text, "target", sentence.block_id + "_" + this.props.page_no);
                               }}
                             >
                               {words.join(" ")}
@@ -355,8 +354,8 @@ maxRows={4}
     );
   };
 
-  handleDoubleClickTarget = (evnt, id, text, pageDetails, block_id, pageNo) => {
-    this.props.handleDoubleClickTarget(evnt, id, text, pageDetails, block_id, pageNo);
+  handleDoubleClickTarget = (evnt, id, text, pageDetails, block_id) => {
+    this.props.handleDoubleClickTarget(evnt, id, text, pageDetails, block_id);
   };
   handleChange = name => event => {
 
@@ -443,7 +442,7 @@ maxRows={4}
       !this.props.targetSelected && this.props.value !== true && this.props.handleOnMouseLeave();
     }}
       onMouseEnter={() => {
-        !this.props.targetSelected && this.props.value !== true && this.handleMouseHover(sentence.block_id + "_" + this.props.page_no + "_" + this.props.paperType, sentence.block_identifier, sentence.has_sibling, this.props.page_no);
+        !this.props.targetSelected && this.props.value !== true && this.handleMouseHover(sentence.block_id + "_" + this.props.page_no + "_" + this.props.paperType, sentence.block_identifier, sentence.has_sibling);
       }} style={div_style}><Textfit
         mode={"single"}
         style={{ height: parseInt(child.text_height), width: parseInt(child.text_width) }}
@@ -709,7 +708,7 @@ maxRows={4}
             !this.props.targetSelected && this.props.value !== true && this.props.handleOnMouseLeave();
           }}
           onMouseEnter={() => {
-            !this.props.targetSelected && this.props.value !== true && this.handleMouseHover(sentence.block_id + "_" + this.props.page_no + "_" + this.props.paperType, sentence.block_identifier, sentence.has_sibling, this.props.page_no);
+            !this.props.targetSelected && this.props.value !== true && this.handleMouseHover(sentence.block_id + "_" + this.props.page_no + "_" + this.props.paperType, sentence.block_identifier, sentence.has_sibling);
           }}
           ref={sentence.block_id + "_" + this.props.page_no}
         >

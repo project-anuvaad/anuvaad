@@ -100,7 +100,15 @@ const GlobalStyles = theme => ({
     ...theme.mixins.toolbar,
     justifyContent: "flex-end"
   },
-
+  // content: {
+  //   flexGrow: 1,
+  //   padding: theme.spacing.unit * 3,
+  //   transition: theme.transitions.create("margin", {
+  //     easing: theme.transitions.easing.sharp,
+  //     duration: theme.transitions.duration.leavingScreen
+  //   }),
+  //   marginLeft: -drawerWidth
+  // },
   contentShift: {
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
@@ -114,9 +122,9 @@ const GlobalStyles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    width: theme.spacing(7),
+    width: theme.spacing.unit * 7,
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9)
+      width: theme.spacing.unit * 9
     }
   },
   toolbar: {
@@ -135,7 +143,7 @@ const GlobalStyles = theme => ({
     background: theme.palette.background.default,
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(3),
+    padding: theme.spacing.unit * 3,
     marginTop: '3%'
   }
 });
