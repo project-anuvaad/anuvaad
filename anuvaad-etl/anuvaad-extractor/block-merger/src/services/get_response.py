@@ -54,9 +54,9 @@ def df_to_json(p_df,block_key =''):
                 block = row.to_dict()
                 if block_key == '':
                     block_key  =  str(uuid.uuid1())
-                    block['block_id'] = block_key + '-' +  str(index)
+                    block['block_id'] = uuid.uuid4().hex # block_key + '-' +  str(index)
                 else:
-                    block['block_id'] = block_key + '-' + str(index)
+                    block['block_id'] = uuid.uuid4().hex #block_key + '-' + str(index)
                 for key in block.keys():
 
                     if key in ['text']:
