@@ -31,9 +31,7 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
         bottom = (row['text_top'] + row['text_height'])*h_ratio
         coord  = []
         crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
-        #crop_image.save("/home/naresh/crop/"+str(uuid.uuid4())+'.jpg')
         if row['text_height']>2*row['font_size']:
-            #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang]+"+eng",output_type=Output.DATAFRAME)
             temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
 
             temp_df = temp_df[temp_df.text.notnull()]
@@ -44,9 +42,9 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
                 temp_text  = str(row1["text"])
                 
                 temp_conf  = row1["conf"]
-                if temp_conf<30:
+                #if temp_conf<30:
                     #check["devnagari_text:"].append(str(temp_text))
-                    temp_text, temp_conf  = low_conf_ocr(lang,int(row1["left"]+left),int(row1["top"]+top),int(row1["width"]),int(row1["height"]),image)
+                   # temp_text, temp_conf  = low_conf_ocr(lang,int(row1["left"]+left),int(row1["top"]+top),int(row1["width"]),int(row1["height"]),image)
                     #check["original"].append(str(temp_text))
                 text = text +" "+ str(temp_text)
                 
@@ -61,18 +59,17 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             word_coord_lis.append(coord)
             text_list.append(text)
         else:
-            #temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang]+"+eng",output_type=Output.DATAFRAME)
             temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
             temp_df = temp_df[temp_df.text.notnull()]
             text = ""
-            #print("kkkkkkkkkkkkkkkkkkkkkkk")
+            
             for index2, row2 in temp_df.iterrows():
                 word_coord = {}
                 temp_text  = str(row2["text"])
                 temp_conf  = row2["conf"]
-                if temp_conf<30:
+                #if temp_conf<30:
                     #check["devnagari_text:"].append(str(temp_text))
-                    temp_text, temp_conf  = low_conf_ocr(lang,int(row2["left"]+left),int(row2["top"]+top),int(row2["width"]),int(row2["height"]),image)
+                    #temp_text, temp_conf  = low_conf_ocr(lang,int(row2["left"]+left),int(row2["top"]+top),int(row2["width"]),int(row2["height"]),image)
                     #check["original"].append(str(temp_text))
                 text = text +" "+ str(temp_text)
                 
@@ -87,8 +84,7 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             word_coord_lis.append(coord)
             text_list.append(text)
 
-    # with open('/home/naresh/coord_check/'+str(filepath.split('/')[-1].split('.jpg')[0])+'.json', 'w') as fp:
-    #     json.dump(check, fp)
+    
     df['word_coords'] = word_coord_lis
     df['text']        = text_list
     return df
