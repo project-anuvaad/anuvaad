@@ -20,6 +20,9 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteOutlinedIcon from '@material-ui/icons/VerticalAlignBottom';
 import InfoIcon from '@material-ui/icons/Info';
 import Dialog from "../../components/web/common/SimpleDialog";
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import PublishIcon from '@material-ui/icons/Publish';
 const TELEMETRY = require('../../../utils/TelemetryManager')
 
 class ViewDocument extends React.Component {
@@ -368,27 +371,41 @@ class ViewDocument extends React.Component {
         <Toolbar style={{ marginLeft: "-5.4%", marginRight: "1.5%", marginTop: "20px" }}>
           <Typography variant="title" color="inherit" style={{ flex: 1 }} />
           {this.state.role.includes("dev") || this.state.role.includes("grader") || this.state.role.includes("user") || this.state.role.includes("interactive-editor") ? (
-            <Button
-              color="primary"
-              variant="extendedFab"
+            // <Button
+            //   color="primary"
+            //   variant="extendedFab"
 
-              style={{
-                marginRight: 0
-              }}
-              aria-label="Add"
-              onClick={() => {
-                history.push(`${process.env.PUBLIC_URL}/document-upload`);
-              }}
-            >
-              {/* <AddIcon /> */}
-              <img src="upload.svg"
-                style={{
-                  marginRight: '5px',
-                  height: '16px'
+            //   style={{
+            //     marginRight: 0
+            //   }}
+            //   aria-label="Add"
+            //   onClick={() => {
+            //     history.push(`${process.env.PUBLIC_URL}/document-upload`);
+            //   }}
+            // >
+            //   {/* <AddIcon /> */}
+            //   <img src="upload.svg"
+            //     style={{
+            //       marginRight: '5px',
+            //       height: '16px'
+            //     }}
+            //     alt="" />
+            //   {translate("common.page.button.upload")}
+            // </Button>
+            <Fab color="primary"
+            variant="extended"
+            aria-label="Add"
+            style={{
+                  marginRight: 0,
+                   textTransform: 'none'
                 }}
-                alt="" />
-              {translate("common.page.button.upload")}
-            </Button>
+               
+            onClick={() => {
+                  history.push(`${process.env.PUBLIC_URL}/document-upload`);
+                }}>
+           <PublishIcon fontSize="small"/>
+            {translate("common.page.button.upload")}
+          </Fab>
           ) : (
               ""
             )}
