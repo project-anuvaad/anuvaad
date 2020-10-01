@@ -29,7 +29,7 @@ const FileUploadStyles = theme => ({
     },
   
     typography: {
-      marginLeft:"2%",
+     // marginLeft:"2%",
       marginTop:'1.7%',
       marginBottom:'2%',
       height:"18px"
@@ -39,6 +39,7 @@ const FileUploadStyles = theme => ({
       // marginRight: "30%",
       width:"100%" ,
       height:'40px',
+    
       
     },
    paper: {
@@ -55,8 +56,8 @@ const FileUploadStyles = theme => ({
       marginLeft: "5.5%" 
     },
     textfield:{
-      width: '87.9%',
-      marginLeft:"2.3%"
+      width: '92%',
+      //marginLeft:"1%"
     },
     span:{
       color:'red'
@@ -71,17 +72,17 @@ const FileUploadStyles = theme => ({
       color:"#FFFFFF"
     },
     button1: {
-      marginTop: "9%",
-     
-      width: "90.5%",
+      //marginTop: "9%",
+     marginLeft:'6.3%',
+      width: "92.7%",
       backgroundColor:'#1C9AB7',
       borderRadius:"20px 20px 20px 20px",
       color:"#FFFFFF"
     },
     button2: {
-      marginTop: "9%",
-      marginLeft: "7%",
-      width: "91.4%",
+      //arginTop: "9%",
+      marginLeft: "5%",
+      width: "88%",
       backgroundColor:'#1C9AB7',
       borderRadius:"20px 20px 20px 20px",
       color:"#FFFFFF"
