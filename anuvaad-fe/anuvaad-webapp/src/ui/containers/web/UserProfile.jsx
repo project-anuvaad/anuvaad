@@ -189,14 +189,14 @@ class UserProfile extends React.Component {
           <Grid container spacing={4}>
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow} style={{marginTop: '0px'}}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="title" gutterBottom="true" style={{}}>
+                <Typography value="" variant="h5" gutterBottom="true" style={{}}>
                   {translate("common.page.label.firstName")}{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
                 {/* <br /> */}
                 {/* <br /> */}
-                <Typography value="" variant="title" gutterBottom="true" style={{ textTransform: "capitalize" }}>
+                <Typography value="" variant="h5" gutterBottom="true" style={{ textTransform: "capitalize" }}>
                   {" "}
                   {this.state.userDetails.firstname}{" "}
                 </Typography>
@@ -204,14 +204,14 @@ class UserProfile extends React.Component {
             </Grid>
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="title" gutterBottom="true">
+                <Typography value="" variant="h5" gutterBottom="true">
                   {translate("common.page.label.lastName")}{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
                 {/* <br />
                 <br /> */}
-                <Typography value="" variant="title" gutterBottom="true" style={{ textTransform: "capitalize" }}>
+                <Typography value="" variant="h5" gutterBottom="true" style={{ textTransform: "capitalize" }}>
                   {" "}
                   {this.state.userDetails.lastname}{" "}
                 </Typography>
@@ -219,14 +219,14 @@ class UserProfile extends React.Component {
             </Grid>
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="title" gutterBottom="true">
+                <Typography value="" variant="h5" gutterBottom="true">
                   {translate("common.page.label.email")}{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
                 {/* <br />
                 <br /> */}
-                <Typography value="" variant="title" gutterBottom="true" style={{ marginTop: "-1%" }}>
+                <Typography value="" variant="h5" gutterBottom="true" style={{ marginTop: "-1%" }}>
                   {" "}
                   {this.state.userDetails.email}{" "}
                 </Typography>
@@ -235,7 +235,7 @@ class UserProfile extends React.Component {
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="title" gutterBottom="true">
+                <Typography value="" variant="h5" gutterBottom="true">
                   {translate("profile.page.label.role")}{" "}
                 </Typography>
               </Grid>
@@ -243,7 +243,7 @@ class UserProfile extends React.Component {
                 {/* <br />
                 <br />
                 <br /> */}
-                <Typography value="" variant="title" gutterBottom="true" style={{ marginTop: "-1%" }}>
+                <Typography value="" variant="h5" gutterBottom="true" style={{ marginTop: "-1%" }}>
                   {" "}
                   [{useRole}]{" "}
                 </Typography>
@@ -252,7 +252,7 @@ class UserProfile extends React.Component {
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="title" gutterBottom="true" >
+                <Typography value="" variant="h5" gutterBottom="true" >
                   {translate("common.page.label.selectLanguage")}{" "}
                 </Typography>
               </Grid>

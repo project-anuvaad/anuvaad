@@ -6,11 +6,11 @@ const FileUploadStyles = theme => ({
       flexWrap: 'wrap'
     },
     margin: {
-      margin: theme.spacing.unit,
+      margin: theme.spacing(1),
       width: '100%'
     },
     withoutLabel: {
-      marginTop: theme.spacing.unit * 3
+      marginTop: theme.spacing(3)
     },
     div:{
       display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center'

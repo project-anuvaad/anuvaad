@@ -419,7 +419,7 @@ class ComparisonReport extends React.Component {
           <div>
             <Grid container spacing={24} style={{ padding: 5, marginLeft: "3%",marginRight: "3%"  }}>
               <Grid item xs={2} sm={2} lg={2} xl={2} style={{ marginTop: "38px" }}>
-                <Typography variant="title" color="inherit">
+                <Typography variant="h5" color="inherit">
                   {translate('common.page.label.fromDate')}
                 </Typography>
               </Grid>
@@ -438,7 +438,7 @@ class ComparisonReport extends React.Component {
               </Grid>
 
               <Grid item xs={2} sm={2} lg={2} xl={2} style={{ marginLeft: "2%", marginTop: "38px" }}>
-                <Typography variant="title" color="inherit">
+                <Typography variant="h5" color="inherit">
                   {translate('common.page.label.toDate')}
                 </Typography>
               </Grid>

@@ -218,7 +218,7 @@ class PdfUpload extends Component {
             <Grid item xs={12} sm={6} lg={6} xl={6}  >
          
               <Grid container spacing={24} className={classes.grid}>
-                <Typography gutterBottom variant="title" className={classes.typography}>
+                <Typography gutterBottom variant="h5" className={classes.typography}>
                   {translate('common.page.label.sourceLang')}<span className={classes.span}>*</span>
                 </Typography>
               <Grid item xs={12} sm={12} lg={12} xl={12}  >
@@ -240,7 +240,7 @@ class PdfUpload extends Component {
             
               <Typography 
                 value="Select target language"
-                variant="title"
+                variant="h5"
                 gutterBottom="true"
                 className={classes.typography}
               >
@@ -262,7 +262,7 @@ class PdfUpload extends Component {
           </Grid>
           <br/><br/>
           <Grid container spacing={24} className={classes.grid}>
-                <Typography gutterBottom variant="title" className={classes.typography}>
+                <Typography gutterBottom variant="h5" className={classes.typography}>
                  Strategy<span className={classes.span}>*</span>
                 </Typography>
               <Grid item xs={12} sm={12} lg={12} xl={12}  >
@@ -281,7 +281,7 @@ class PdfUpload extends Component {
               </Grid>
               <br /><br/>
           <Grid container spacing={24} className={classes.grid}>
-              <Typography gutterBottom variant="title"  className={classes.typography}>
+              <Typography gutterBottom variant="h5"  className={classes.typography}>
                 {translate("common.page.label.filename")}
               </Typography>
               <TextField

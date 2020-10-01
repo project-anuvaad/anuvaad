@@ -198,7 +198,7 @@ class Corp extends React.Component {
     return (
       <div>
         <Toolbar style={{ marginLeft: "-5.4%", marginRight: "1.5%", marginTop: "20px" }}>
-          <Typography variant="title" color="inherit" style={{ flex: 1 }} />
+          <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
           {this.state.role.includes("dev") ? (
             <Button
               variant="extendedFab"

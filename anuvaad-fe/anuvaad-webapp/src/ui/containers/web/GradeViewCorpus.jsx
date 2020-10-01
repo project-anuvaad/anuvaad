@@ -188,7 +188,7 @@ class Corpus extends React.Component {
         <Grid container spacing={24}>
           <Grid item xs={12} sm={12} lg={12} xl={12} style={{ margin: '2% 3%' }}>
             <Toolbar style={{ marginRight: "-1.2%" }}>
-              <Typography variant="title" color="inherit" style={{ flex: 1 }} />
+              <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
               <Typography variant="h8" gutterBottom>
                 {translate("common.page.text.rowsPerPage")}&nbsp;&nbsp;&nbsp;&nbsp;
                 <Select width="50%" value={this.state.pageCount} onChange={this.handleSelectChange} displayEmpty>

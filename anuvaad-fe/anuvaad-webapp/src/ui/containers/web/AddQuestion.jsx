@@ -106,7 +106,7 @@ class AddQuestion extends React.Component {
         el.status !== "DELETED" && (
           <Grid container spacing={24} style={{ marginTop: "1 %", marginLeft: "12%" }}>
             <Grid item xs={5} sm={5} lg={5} xl={5}>
-              <Typography gutterBottom variant="title" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
+              <Typography gutterBottom variant="h5" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
                 {translate("addQuestion.page.label.question")}
               </Typography>
               <br />
@@ -138,7 +138,7 @@ class AddQuestion extends React.Component {
             </Grid>
 
             <Grid item xs={5} sm={5} lg={5} xl={5}>
-              <Typography gutterBottom variant="title" component="h2" style={{ width: "80%", paddingTop: "25px" }}>
+              <Typography gutterBottom variant="h5" component="h2" style={{ width: "80%", paddingTop: "25px" }}>
                 {translate("addQuestion.page.label.questionType")} &emsp;&emsp;{" "}
               </Typography>
               <br />
@@ -170,7 +170,7 @@ class AddQuestion extends React.Component {
         <Paper style={{ margin: "1% 3%", paddingTop: "5px", paddingBottom: "1%" }} elevation={4}>
           <Typography
             gutterBottom
-            variant="title"
+            variant="h5"
             component="h2"
             style={{
               marginTop: "-.7%",

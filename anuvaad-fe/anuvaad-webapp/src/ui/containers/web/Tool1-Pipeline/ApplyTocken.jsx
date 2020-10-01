@@ -56,7 +56,7 @@ class ApplyToken extends React.Component {
           <StepDetals workSpace={this.props.match.params.name} activeStep={this.state.activeStep} />
           <Grid container spacing={24} style={{ marginTop: "3%", marginLeft: "12%" }}>
             <Grid item xs={4} sm={4} lg={4} xl={4}>
-              <Typography gutterBottom variant="title" component="h2">
+              <Typography gutterBottom variant="h5" component="h2">
                 {translate("common.page.label.positiveTocken")}
               </Typography>
               <br />
@@ -78,7 +78,7 @@ class ApplyToken extends React.Component {
                 </Grid>
 
                 <Grid item xs={5} sm={5} lg={5} xl={5}>
-                  <Typography gutterBottom variant="title" component="h2">
+                  <Typography gutterBottom variant="h5" component="h2">
                     {translate("common.page.label.found")} {this.state.workspaceDetails.token_count ? this.state.workspaceDetails.token_count : 0}{" "}
                     {translate("common.page.label.tokens")}
                   </Typography>
@@ -87,7 +87,7 @@ class ApplyToken extends React.Component {
             </Grid>
 
             <Grid item xs={4} sm={4} lg={4} xl={4} style={{ marginTop: "40px" }}>
-              <Typography gutterBottom variant="title" component="h2">
+              <Typography gutterBottom variant="h5" component="h2">
                 {translate("uploadTocken.page.label.negativeTocken")}
               </Typography>
               <br />
@@ -109,7 +109,7 @@ class ApplyToken extends React.Component {
                 </Grid>
 
                 <Grid item xs={4} sm={4} lg={4} xl={4}>
-                  <Typography gutterBottom variant="title" component="h2" style={{ marginTop: "10px" }}>
+                  <Typography gutterBottom variant="h5" component="h2" style={{ marginTop: "10px" }}>
                     {translate("common.page.label.found")}
                     {this.state.workspaceDetails.negative_token_count ? this.state.workspaceDetails.negative_token_count : 0}{" "}
                     {translate("common.page.label.tokens")}

@@ -170,7 +170,7 @@ class UserUpdate extends React.Component {
           <Paper style={{ marginTop: "10px", marginRight: "30px", marginLeft: "-20px" }}>
             <Typography
               gutterBottom
-              variant="title"
+              variant="h5"
               component="h2"
               style={{ background: '#ECEFF1', paddingLeft: "35%", paddingTop: "13px", paddingBottom: "13px", width: "65%", marginBottom: "4%" }}
             >
@@ -265,7 +265,7 @@ class UserUpdate extends React.Component {
 
               <Grid container spacing={8}>
                 <Grid item xs={6} sm={6} lg={6} xl={6}>
-                  <Typography value="" variant="title" gutterBottom style={{ marginLeft: "12%", marginTop: "12px" }}>
+                  <Typography value="" variant="h5" gutterBottom style={{ marginLeft: "12%", marginTop: "12px" }}>
                     {translate("userUpdate.page.label.selectRole")}{" "}
                   </Typography>
                 </Grid>
@@ -305,7 +305,7 @@ class UserUpdate extends React.Component {
 
               <Grid container spacing={8}>
                 <Grid item xs={6} sm={6} lg={6} xl={6}>
-                  <Typography value="" variant="title" gutterBottom style={{ marginLeft: "12%", marginTop: "12px" }}>
+                  <Typography value="" variant="h5" gutterBottom style={{ marginLeft: "12%", marginTop: "12px" }}>
                     {translate("userUpdate.page.label.selectHighCourt")}{" "}
                   </Typography>
                 </Grid>

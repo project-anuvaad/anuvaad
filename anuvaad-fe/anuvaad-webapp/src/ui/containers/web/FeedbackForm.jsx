@@ -86,7 +86,7 @@ class FeedbackForm extends React.Component {
     return this.state.questionList.map((el, i) => (
       <Grid container spacing={24} style={{ marginTop: "1 %", marginLeft: "12%" }} key={i}>
         <Grid item xs={4} sm={4} lg={4} xl={4}>
-          <Typography gutterBottom variant="title" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
+          <Typography gutterBottom variant="h5" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
             {el.question}
           </Typography>
           <br />
@@ -136,7 +136,7 @@ class FeedbackForm extends React.Component {
           <Paper style={{ marginLeft: "3%", marginRight: "10%", marginTop: "1%", paddingTop: "5px", paddingBottom: "3%" }} elevation={4}>
             <Typography
               gutterBottom
-              variant="title"
+              variant="h5"
               component="h2"
               style={{
                 marginTop: "-.7%",

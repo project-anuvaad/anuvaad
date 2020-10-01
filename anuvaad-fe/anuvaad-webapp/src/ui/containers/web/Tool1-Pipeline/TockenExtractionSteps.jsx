@@ -25,7 +25,7 @@ class TockenExtractionSteps extends React.Component {
         <Stepper steps={this.state.steps} activeStep={this.props.activeStep} alternativeLabel style={{ marginTop: "3%", marginRight: "2%" }} />
         <Grid container spacing={24} style={{ marginLeft: "12%" }}>
           <Grid item xs={4} sm={4} lg={4} xl={4}>
-            <Typography gutterBottom variant="title" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
+            <Typography gutterBottom variant="h5" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
               {translate("common.page.label.workSpaceName")}
             </Typography>
             <br />

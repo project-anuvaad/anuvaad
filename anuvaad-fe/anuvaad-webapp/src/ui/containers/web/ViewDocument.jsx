@@ -366,7 +366,7 @@ class ViewDocument extends React.Component {
     return (
       <div>
         <Toolbar style={{ marginLeft: "-5.4%", marginRight: "1.5%", marginTop: "20px" }}>
-          <Typography variant="title" color="inherit" style={{ flex: 1 }} />
+          <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
           {this.state.role.includes("dev") || this.state.role.includes("grader") || this.state.role.includes("user") || this.state.role.includes("interactive-editor") ? (
             <Button
               color="primary"

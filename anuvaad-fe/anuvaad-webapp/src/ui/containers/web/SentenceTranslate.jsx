@@ -170,7 +170,7 @@ class SentenceTranslate extends React.Component {
         </Grid>
 
         {this.state.sentences && this.state.sentences.length > 0 &&  <Toolbar style={{ marginRight: "3%", marginTop: "20px" }}>
-              <Typography variant="title" color="inherit" style={{ flex: 1 }}></Typography>
+              <Typography variant="h5" color="inherit" style={{ flex: 1 }}></Typography>
               <Button
                 variant="contained"
 
