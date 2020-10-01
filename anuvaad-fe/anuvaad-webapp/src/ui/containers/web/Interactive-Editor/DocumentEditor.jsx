@@ -554,8 +554,8 @@ class PdfFileEditor extends React.Component {
           <div>
             <Grid
               container
-              spacing={16}
-              style={{ marginTop: "-10px", padding: "10px 24px 12px 24px", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}
+              spacing={2}
+              style={{ marginTop: "-10px", padding: "10px 24px 12px ",width:"100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}
             >
               <Grid item xs={12} sm={6} lg={2} xl={2} className="GridFileDetails">
                 <Button
@@ -624,7 +624,7 @@ class PdfFileEditor extends React.Component {
               </Grid> */}
 
               <Grid item xs={12} sm={6} lg={6} xl={6}>
-                <Paper elevation={2}>
+                <Paper elevation={3}>
                   {this.state.tokenized ?
                     <Toolbar style={{ color: '#000000', background: this.state.edited ? "#989E9C" : '#ECEFF1' }}>
                       <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: this.state.edited ? "white" : "#1C9AB7" }}>
@@ -672,7 +672,7 @@ class PdfFileEditor extends React.Component {
                       </Grid>
                       <Grid item xs={6} sm={6} lg={6} xl={6}>
                         {this.state.numPages && this.state.pageNo && (
-                          <Grid container spacing={8}>
+                          <Grid container>
                             <Grid item xs={4} sm={4} lg={4} xl={4} style={{ textAlign: 'right' }}>
                               <TextButton
                                 style={{ fontWeight: "bold", width: "80%" }}
@@ -713,7 +713,7 @@ class PdfFileEditor extends React.Component {
               </Grid>
             </Grid>
 
-            <Grid container spacing={16} style={{ padding: "142px 24px 12px 24px" }}>
+            <Grid container spacing={2} style={{ padding: "142px 24px 12px 24px" }}>
               <Grid item xs={12} sm={6} lg={6} xl={6}>
                 <Paper
                   elevation={this.state.edited ? 12 : 2}
