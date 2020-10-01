@@ -6,17 +6,17 @@ const IntractiveTranslationStyles = theme => ({
     flexWrap: 'wrap'
   },
   margin: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     width: '100%'
   },
   withoutLabel: {
-    marginTop: theme.spacing.unit * 3
+    marginTop: theme.spacing(3) 
   },
   textField: {
     flexBasis:40,
     height:'30%',
-    marginLeft: theme.spacing.unit*-0.1,
-    marginRight: theme.spacing.unit,
+    marginLeft: theme.spacing(-0.1),
+    marginRight: theme.spacing(1),
     marginBottom:'10px'
 
   },

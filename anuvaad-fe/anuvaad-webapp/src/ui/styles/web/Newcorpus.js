@@ -9,17 +9,17 @@ const Newcorpus = theme => ({
     alignItems: 'center',
   },
   margin: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     width: '100%'
   },
   withoutLabel: {
-    marginTop: theme.spacing.unit * 3
+    marginTop: theme.spacing(3) 
   },
   textField: {
     flexBasis:40,
     height:'30%',
-    marginLeft: theme.spacing.unit*-0.1,
-    marginRight: theme.spacing.unit,
+    marginLeft: theme.spacing(-0.1),
+    marginRight: theme.spacing(1),
     marginBottom:'10px'
 
   },
@@ -40,7 +40,7 @@ select:{
 },
 button: {
   justifyContent: 'center',
-  left: theme.spacing.unit*22,
+  left: theme.spacing(22),
   marginBottom:'2%',
   marginTop:'5%'
   ,
@@ -48,7 +48,7 @@ button: {
 },
 buttons: {
   justifyContent: 'center',
-  left: theme.spacing.unit*26,
+  left: theme.spacing(26),
   marginBottom:'2%',
   marginTop:'5%',
   width:'240px',
@@ -57,7 +57,7 @@ buttons: {
 
 button1: {
   // justifyContent: 'center',
-  // left: theme.spacing.unit*12,
+  // left: theme.spacing(1)*12,
   marginTop:'5%',
   marginLeft:'0.1%',
   width:'48%',
@@ -67,7 +67,7 @@ button1: {
 },
 btns: {
   justifyContent: 'center',
-  left: theme.spacing.unit*6,
+  left: theme.spacing(6),
   marginTop:'5%',
   width:'48%',
   height:'43px',

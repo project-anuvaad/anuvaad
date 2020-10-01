@@ -145,7 +145,7 @@ class Createcorpus extends React.Component {
       <Paper className={classes.paper} elevation={2}>
         <Typography
           gutterBottom
-          variant="title"
+          variant="h5"
           component="h2"
           style={{
             marginTop: "-3.7%",

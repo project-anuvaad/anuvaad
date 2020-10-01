@@ -118,7 +118,7 @@ class Newcorpus extends React.Component {
           <Grid container>
             <Grid item xs={12} sm={12} lg={12} xl={12} style={{ display: 'flex', flexDirection: 'row', marginTop: '5%' }}>
               <Grid item xs={8} sm={8} lg={7} xl={7} style={{ textAlign: 'left' }}>
-                <Typography value='' variant="title" style={{ paddingTop: '3%' }} >{translate('common.page.label.sourceLang')}</Typography>
+                <Typography value='' variant="h5" style={{ paddingTop: '3%' }} >{translate('common.page.label.sourceLang')}</Typography>
               </Grid>
               <Grid item xs={5} sm={5} lg={6} xl={6}>
                 <Select
@@ -163,7 +163,7 @@ class Newcorpus extends React.Component {
             <Grid item xs={12} sm={12} lg={12} xl={12} style={{ display: 'flex', flexDirection: 'row', marginTop: '5%' }}>
               <Grid item xs={8} sm={8} lg={7} xl={7} style={{ textAlign: 'left' }}>
           
-              <Typography value='' variant="title" style={{ paddingTop: '3%' }} >{translate('common.page.label.targetLang')}</Typography>
+              <Typography value='' variant="h5" style={{ paddingTop: '3%' }} >{translate('common.page.label.targetLang')}</Typography>
 
             </Grid>
             <Grid item xs={5} sm={5} lg={6} xl={6}>
@@ -297,7 +297,7 @@ class Newcorpus extends React.Component {
     return (
       <div className={classes.root}>
 
-        <Typography gutterBottom variant="title" variant="h4" className={classes.typographyHeader}>
+        <Typography gutterBottom variant="h5" variant="h4" className={classes.typographyHeader}>
           {translate('newCorpus.page.text.createCorpus')}
         </Typography>
         {/* <div className={classes.CorpusContainer}> */}

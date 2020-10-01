@@ -131,7 +131,7 @@ class UploadToken extends React.Component {
           <StepDetals workSpace={this.props.match.params.name} activeStep={this.state.activeStep} />
           <Grid container spacing={24} style={{ marginTop: "1%", marginLeft: "12%" }}>
             <Grid item xs={2} sm={2} lg={2} xl={2} style={{ marginTop: "30px" }}>
-              <Typography gutterBottom variant="title" component="h2">
+              <Typography gutterBottom variant="h5" component="h2">
                 {translate("common.page.label.positiveTocken")}
               </Typography>
               <br />
@@ -145,7 +145,7 @@ class UploadToken extends React.Component {
             <Grid item xs={7} sm={7} lg={7} xl={7}>
               <Grid container spacing={8}>
                 <Grid item xs={1} sm={1} lg={1} xl={1}>
-                  <Typography gutterBottom variant="title" component="h2" style={{ paddingTop: "28px" }}>
+                  <Typography gutterBottom variant="h5" component="h2" style={{ paddingTop: "28px" }}>
                     {translate("uploadTocken.page.label.or")}
                   </Typography>
                 </Grid>
@@ -176,7 +176,7 @@ class UploadToken extends React.Component {
               </Grid>
             </Grid>
             <Grid item xs={2} sm={2} lg={2} xl={2} style={{ marginTop: "30px" }}>
-              <Typography gutterBottom variant="title" component="h2">
+              <Typography gutterBottom variant="h5" component="h2">
                 {translate("uploadTocken.page.label.negativeTocken")}
               </Typography>
               <br />
@@ -190,7 +190,7 @@ class UploadToken extends React.Component {
             <Grid item xs={7} sm={7} lg={7} xl={7}>
               <Grid container spacing={8}>
                 <Grid item xs={1} sm={1} lg={1} xl={1}>
-                  <Typography gutterBottom variant="title" component="h2" style={{ paddingTop: "28px" }}>
+                  <Typography gutterBottom variant="h5" component="h2" style={{ paddingTop: "28px" }}>
                     {translate("uploadTocken.page.label.or")}
                   </Typography>
                 </Grid>

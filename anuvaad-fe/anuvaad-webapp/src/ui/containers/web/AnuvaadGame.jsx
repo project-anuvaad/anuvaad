@@ -399,7 +399,7 @@ class AnuvaadGame extends React.Component {
               </Typography>
               <Grid container spacing={8}>
                 <Grid item xs={8} sm={8} lg={8} xl={8}>
-                  <Typography value="" variant="title" gutterBottom style={{ marginLeft: "12%", paddingTop: "9.5%" }}>
+                  <Typography value="" variant="h5" gutterBottom style={{ marginLeft: "12%", paddingTop: "9.5%" }}>
                     {translate("common.page.label.sourceLang")}{" "}
                   </Typography>
                 </Grid>
@@ -429,7 +429,7 @@ class AnuvaadGame extends React.Component {
               </Grid>
               <Grid container spacing={8}>
                 <Grid item xs={8} sm={8} lg={8} xl={8}>
-                  <Typography value="" variant="title" gutterBottom style={{ marginLeft: "12%", paddingTop: "9.5%" }}>
+                  <Typography value="" variant="h5" gutterBottom style={{ marginLeft: "12%", paddingTop: "9.5%" }}>
                     {translate("common.page.label.targetLang")}&nbsp;
                 </Typography>
                 </Grid>
@@ -457,7 +457,7 @@ class AnuvaadGame extends React.Component {
               {role.includes("dev") && (
                 <Grid container spacing={8}>
                   <Grid item xs={8} sm={8} lg={8} xl={8}>
-                    <Typography value="" variant="title" gutterBottom style={{ marginLeft: "12%", paddingTop: "9.5%" }}>
+                    <Typography value="" variant="h5" gutterBottom style={{ marginLeft: "12%", paddingTop: "9.5%" }}>
                       {translate("common.page.label.pleaseSelectModel")}{" "}
                     </Typography>
                   </Grid>

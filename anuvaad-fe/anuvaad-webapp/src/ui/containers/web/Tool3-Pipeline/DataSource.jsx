@@ -26,7 +26,7 @@ class DataSource extends React.Component {
       <div>
         <Toolbar style={{ marginTop: "20px", marginRight: "3%", marginLeft: "3%", padding: "0px" }}>
 
-          <Typography variant="title" color="inherit" style={{ flex: 1 }} />
+          <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
 
           <Button
             variant="extendedFab"

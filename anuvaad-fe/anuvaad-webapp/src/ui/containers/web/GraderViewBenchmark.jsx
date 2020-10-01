@@ -159,14 +159,14 @@ class BenchmarkGrade extends React.Component {
     );
     return (
       <div>
-        <Typography variant="title" color="inherit" style={{ marginTop: "20px", marginLeft: "20px" }}>
+        <Typography variant="h5" color="inherit" style={{ marginTop: "20px", marginLeft: "20px" }}>
           <b>{translate("graderViewBenchmark.page.label.sentencesFrom") + this.props.label}</b>
         </Typography>
         <Grid container spacing={4} style={{ padding: "20px" }}>
           {this.state.sentences && this.state.sentences.length > 0 && <AppBar pending={this.state.pending} count={this.state.count} val={value} />}
 
           {this.state.sentences.length > 0 && (
-            <Typography variant="title" color="inherit" style={{ marginTop: "20px" }}>
+            <Typography variant="h5" color="inherit" style={{ marginTop: "20px" }}>
               <b>{translate("commonCorpus.page.text.sourceSentence")}</b>
               <br />
             </Typography>
@@ -200,7 +200,7 @@ class BenchmarkGrade extends React.Component {
 
         {this.state.sentences && this.state.sentences.length > 0 && (
           <Toolbar style={{ marginRight: "3%", marginTop: "20px" }}>
-            <Typography variant="title" color="inherit" style={{ flex: 1 }} />
+            <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
             <Button
               variant="contained"
               disabled={

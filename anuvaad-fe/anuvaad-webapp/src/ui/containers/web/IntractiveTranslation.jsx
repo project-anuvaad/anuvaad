@@ -340,7 +340,7 @@ class IntractiveTrans extends React.Component {
             {!this.state.edit &&
               <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.rowData} style={{ marginTop: "0%" }}>
                 <Grid item xs={6} sm={6} lg={8} xl={8} className={classes.label}>
-                  <Typography value="" variant="title">
+                  <Typography value="" variant="h5">
                     {translate("common.page.label.sourceLang")}{" "}
                   </Typography>
                 </Grid>
@@ -369,7 +369,7 @@ class IntractiveTrans extends React.Component {
             {!this.state.edit &&
               <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.rowData}>
                 <Grid item xs={6} sm={6} lg={8} xl={8} className={classes.label}>
-                  <Typography value="" variant="title">
+                  <Typography value="" variant="h5">
                     {translate("common.page.label.targetLang")}{" "}
                   </Typography>
                 </Grid>

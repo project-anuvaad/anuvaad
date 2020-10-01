@@ -336,7 +336,7 @@ class BenchmarkGrade extends React.Component {
         <Grid container spacing={24} style={{ padding: 5 }}>
           <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginLeft: "3%", marginRight: "3%", marginTop: "38px" }}>
             <Toolbar style={{ marginRight: "-1.2%", paddingBottom: "2%" }}>
-              <Typography variant="title" color="inherit" style={{ flex: 1 }} />
+              <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
               <Typography variant="h6" gutterBottom>
                 {translate("common.page.text.rowsPerPage")}&nbsp;&nbsp;&nbsp;&nbsp;
                 <Select width="50%" value={this.state.pageCount} onChange={this.handleSelectChange} displayEmpty>
@@ -352,12 +352,12 @@ class BenchmarkGrade extends React.Component {
                 <CssBaseline />
                 <Grid container spacing={24} style={{ padding: 5 }}>
                   <Grid item xs={3} sm={3} lg={3} xl={3}>
-                    <Typography variant="title" color="inherit" style={{ paddingBottom: "8px", paddingLeft: "15px", flex: 1 }}>
+                    <Typography variant="h5" color="inherit" style={{ paddingBottom: "8px", paddingLeft: "15px", flex: 1 }}>
                       {this.state.pending === 0 ? translate("benchmarkGrade.page.label.totalGrade") + this.calculateScore() : null}
                     </Typography>
                   </Grid>
                   <Grid item xs={3} sm={3} lg={3} xl={3}>
-                    <Typography variant="title" color="inherit" style={{ paddingBottom: "8px", flex: 1 }}>
+                    <Typography variant="h5" color="inherit" style={{ paddingBottom: "8px", flex: 1 }}>
                       {this.state.pending
                         ? (this.state.count && translate("benchMarkGrade.page.label.sentencesPending")) + (this.state.pending && this.state.pending)
                         : this.state.pending === 0 && translate("common.page.label.completed")}
@@ -420,7 +420,7 @@ class BenchmarkGrade extends React.Component {
               />
             )}
             <Toolbar style={{ marginRight: "3%", marginTop: "20px" }}>
-              <Typography variant="title" color="inherit" style={{ flex: 1 }} />
+              <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
               <Button
                 variant="contained"
                 onClick={event => {

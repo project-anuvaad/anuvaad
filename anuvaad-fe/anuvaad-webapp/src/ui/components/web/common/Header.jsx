@@ -29,10 +29,12 @@ import themeAnuvaad from "../../../theme/web/theme-anuvaad";
 
 const styles = {
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    
   },
   flex: {
     flex: 1,
+    
   },
   felxDemo: {
     flex: 1,
@@ -141,7 +143,7 @@ class Header extends React.Component {
                 }} />
             }
 
-            <Typography variant="title" color="inherit" className={forDemo ? classes.felxDemo : classes.flex}>
+            <Typography variant="h5" color="inherit" className={forDemo ? classes.felxDemo : classes.flex}>
               {title}
             </Typography>
 
@@ -156,13 +158,14 @@ class Header extends React.Component {
               {!dontShowHeader &&
                 <div style={{ display: 'flex', flexDirection: 'row', cursor: "pointer" }} onClick={this.handleMenu.bind(this)}>
 
-                  <PeopleIcon style={{ marginRight: '10px' }}></PeopleIcon>
+                  <PeopleIcon style={{ marginRight: '10px', paddingTop:"4px" }}></PeopleIcon>
                   <Typography
-                    variant="title"
+                    variant="h5"
                     color="inherit"
                     style={{
                       // position: "absolute",
                       textTransform: "capitalize",
+
                       // right: "60px"
                     }}
                   >
@@ -182,7 +185,7 @@ class Header extends React.Component {
                 >
                   {/* <Fab aria-owns={openEl ? "menu-appbar" : null} aria-haspopup="true" onClick={this.handleMenu} color="primary" size="medium">
                 </Fab> */}
-                  <DownIcon onClick={this.handleMenu.bind(this)} style={{ cursor: "pointer" }}></DownIcon>
+                  <DownIcon onClick={this.handleMenu.bind(this)} style={{ cursor: "pointer", paddingTop:"3px"  }}></DownIcon>
                   <Menu
                     id="menu-appbar"
                     anchorEl={anchorEl}
@@ -253,7 +256,7 @@ class Header extends React.Component {
                         <Typography
                           type="body2"
                           style={{ color: "#D6D6D6", paddingBottom: "2%", marginLeft: "6%" }}
-                          variant="title"
+                          variant="h5"
                           color="inherit"
                           className={classes.flex}
                         >

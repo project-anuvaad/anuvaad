@@ -471,7 +471,7 @@ class Corpus extends React.Component {
                         <Toolbar style={{ marginRight: '-1.2%' }}>
 
 
-                            <Typography variant="title" color="inherit" style={{ flex: 1 }}>
+                            <Typography variant="h5" color="inherit" style={{ flex: 1 }}>
 
                             </Typography>
                             <Typography variant="h8" gutterBottom>

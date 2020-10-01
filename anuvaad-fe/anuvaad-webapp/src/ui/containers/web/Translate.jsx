@@ -97,7 +97,7 @@ class Translate extends React.Component {
         ) : (
           <Paper style={{ margin: "5%" }} elevation={2}>
             <br />
-            <Typography gutterBottom variant="title" component="h2" className={classes.typography}>
+            <Typography gutterBottom variant="h5" component="h2" className={classes.typography}>
               {translate("dashboard.page.heading.title")}
             </Typography>
             <br />

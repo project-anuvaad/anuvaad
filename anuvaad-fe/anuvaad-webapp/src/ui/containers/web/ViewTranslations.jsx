@@ -147,7 +147,7 @@ class Corpus extends React.Component {
       <div>
         <Grid container spacing={24} style={{ padding: 24 }}>
           <Grid item xs={12} sm={12} lg={12} xl={12}>
-            <Typography component="h2" variant="title" gutterBottom>
+            <Typography component="h2" variant="h5" gutterBottom>
               {translate("common.page.label.translation")}
             </Typography>
           </Grid>

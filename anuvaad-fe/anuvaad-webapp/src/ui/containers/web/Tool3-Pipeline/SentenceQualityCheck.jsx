@@ -121,7 +121,7 @@ class SentenceQualityCheck extends React.Component {
         <Paper style={{ marginLeft: "3%", marginRight: "3%", marginTop: "3%", paddingTop: "10px", paddingBottom: "3%" }} elevation={4}>
           <Grid container spacing={24} style={{ marginTop: "3%", marginLeft: "12%" }}>
             <Grid item xs={4} sm={4} lg={4} xl={4}>
-              <Typography gutterBottom variant="title" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
+              <Typography gutterBottom variant="h5" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
                 {translate("common.page.label.workSpaceName")}
               </Typography>
               <br />
@@ -133,13 +133,13 @@ class SentenceQualityCheck extends React.Component {
             </Grid>
 
             <Grid item xs={2} sm={2} lg={2} xl={2}>
-              <Typography gutterBottom variant="title" component="h2" style={{ width: "100%", paddingTop: "30px" }}>
+              <Typography gutterBottom variant="h5" component="h2" style={{ width: "100%", paddingTop: "30px" }}>
                 {translate("tool3.sentenceQualityCheck.label.foundSentences")}
               </Typography>
               <br />
             </Grid>
             <Grid item xs={2} sm={2} lg={2} xl={2}>
-              <Typography gutterBottom variant="title" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
+              <Typography gutterBottom variant="h5" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
                 {this.state.sentence.found_sentences && `${this.state.sentence.found_sentences} / ${this.state.sentence.total_sentences}`}
               </Typography>
               <br />
@@ -160,7 +160,7 @@ class SentenceQualityCheck extends React.Component {
             </Grid>
 
             <Grid item xs={4} sm={4} lg={4} xl={4}>
-              <Typography gutterBottom variant="title" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
+              <Typography gutterBottom variant="h5" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
                 {translate("commonCorpus.page.text.sourceSentence")}
               </Typography>
               <br />
@@ -172,7 +172,7 @@ class SentenceQualityCheck extends React.Component {
             </Grid>
 
             <Grid item xs={4} sm={4} lg={4} xl={4}>
-              <Typography gutterBottom variant="title" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
+              <Typography gutterBottom variant="h5" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
                 {translate("commonCorpus.page.text.targetSentence")}
               </Typography>
               <br />
@@ -193,7 +193,7 @@ class SentenceQualityCheck extends React.Component {
             </Grid>
 
             <Grid item xs={4} sm={4} lg={4} xl={4}>
-              <Typography gutterBottom variant="title" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
+              <Typography gutterBottom variant="h5" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
                 {translate("tool3.sentenceQualityCheck.label.replacedSentence")}
               </Typography>
               <br />

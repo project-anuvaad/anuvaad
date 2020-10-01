@@ -122,7 +122,7 @@ class CreateWorkspace extends React.Component {
       <div>
         <Toolbar style={{ marginTop: "20px", marginRight: "3%", marginLeft: "3%", padding: "0px", marginBottom: "15px" }}>
 
-          <Typography variant="title" color="inherit" style={{ flex: 1 }} />
+          <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
 
           <Button
             variant="extendedFab"
@@ -138,7 +138,7 @@ class CreateWorkspace extends React.Component {
         <Paper style={{ marginLeft: "3%", marginRight: "3%", marginTop: "1%", paddingTop: "5px", paddingBottom: "3%" }} elevation={4}>
           <Typography
             gutterBottom
-            variant="title"
+            variant="h5"
             component="h2"
             style={{
               marginTop: "-.7%",
@@ -153,7 +153,7 @@ class CreateWorkspace extends React.Component {
           <br />
           <Grid container spacing={24} style={{ marginTop: "1 %", marginLeft: "12%" }}>
             <Grid item xs={5} sm={5} lg={5} xl={5}>
-              <Typography gutterBottom variant="title" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
+              <Typography gutterBottom variant="h5" component="h2" style={{ width: "65%", paddingTop: "30px" }}>
                 {translate("common.page.label.enterWorkspace")}
               </Typography>
               <br />
@@ -173,7 +173,7 @@ class CreateWorkspace extends React.Component {
             </Grid>
 
             <Grid item xs={5} sm={5} lg={5} xl={5}>
-              <Typography gutterBottom variant="title" component="h2" style={{ width: "80%", paddingTop: "25px" }}>
+              <Typography gutterBottom variant="h5" component="h2" style={{ width: "80%", paddingTop: "25px" }}>
                 {translate("common.page.label.csvFile")} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
               </Typography>
               <br />

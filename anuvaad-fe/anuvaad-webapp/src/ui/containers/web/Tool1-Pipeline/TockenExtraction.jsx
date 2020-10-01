@@ -43,7 +43,7 @@ class TokenExtraction extends React.Component {
 
           <Grid container spacing={24} style={{ marginTop: "3%", marginLeft: "12%" }}>
             <Grid item xs={5} sm={5} lg={5} xl={5}>
-              <Typography gutterBottom variant="title" component="h2">
+              <Typography gutterBottom variant="h5" component="h2">
                 {translate("tockenExtraction.page.label.enterPositiveTocken")}
               </Typography>
               <br />
@@ -55,14 +55,14 @@ class TokenExtraction extends React.Component {
                 </Grid>
 
                 <Grid item xs={6} sm={6} lg={6} xl={6}>
-                  <Typography gutterBottom variant="title" component="h2">
+                  <Typography gutterBottom variant="h5" component="h2">
                     {translate("tockenExtraction.page.label.foundTocken")}
                   </Typography>
                 </Grid>
               </Grid>
             </Grid>
             <Grid item xs={5} sm={5} lg={5} xl={5} style={{ marginTop: "40px" }}>
-              <Typography gutterBottom variant="title" component="h2">
+              <Typography gutterBottom variant="h5" component="h2">
                 {translate("tockenExtraction.page.label.enterNegativeTocken")}
               </Typography>
               <br />
@@ -74,7 +74,7 @@ class TokenExtraction extends React.Component {
                 </Grid>
 
                 <Grid item xs={6} sm={6} lg={6} xl={6}>
-                  <Typography gutterBottom variant="title" component="h2">
+                  <Typography gutterBottom variant="h5" component="h2">
                     {translate("tockenExtraction.page.label.foundTocken")}
                   </Typography>
                 </Grid>
