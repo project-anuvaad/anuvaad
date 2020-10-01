@@ -7,7 +7,6 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { blueGrey50, darkBlack } from "material-ui/styles/colors";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import SelectModel from "@material-ui/core/Select";
@@ -394,7 +393,7 @@ class AnuvaadGame extends React.Component {
             <Paper style={{ marginLeft: "25%", width: "50%", marginTop: "4%" }}>
               <Typography
                 variant="h5"
-                style={{ color: darkBlack, background: blueGrey50, textAlign: "center", paddingBottom: "12px", paddingTop: "8px" }}
+                style={{ color: '#000000', background: '#ECEFF1', textAlign: "center", paddingBottom: "12px", paddingTop: "8px" }}
               >
                 {translate("dashboard.page.heading.title")}
               </Typography>

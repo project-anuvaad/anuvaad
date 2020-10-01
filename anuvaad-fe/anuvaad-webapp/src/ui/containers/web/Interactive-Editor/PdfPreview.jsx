@@ -4,7 +4,6 @@ import "../../../styles/web/InteractivePreview.css";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { blueGrey50, darkBlack } from "material-ui/styles/colors";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { Document, Page } from "react-pdf/dist/entry.webpack";
 import CloseIcon from "@material-ui/icons/Close";
@@ -50,7 +49,7 @@ class PdfPreview extends React.Component {
      
     return (
       <Paper elevation={2} style={{ height: "98%", paddingBottom: "10px" }}>
-        <Toolbar style={{ color: darkBlack, background: blueGrey50 }}>
+        <Toolbar style={{ color: '#000000', background: '#ECEFF1' }}>
           <Grid item xs={3} sm={3} lg={3} xl={3}>
             <Typography value="" variant="h6" gutterBottom style={{ width: "100%", flex: 1, color: '#1C9AB7' }}>
               {translate("intractive_translate.page.preview.originalPDF")}

@@ -12,7 +12,6 @@ import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import { blueGrey50, darkBlack } from "material-ui/styles/colors";
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
@@ -297,7 +296,7 @@ class UserProfile extends React.Component {
           >
             <Typography
               variant="h5"
-              style={{ color: darkBlack, background: blueGrey50, paddingBottom: "12px", paddingTop: "8px", textAlign: 'center' }}
+              style={{ color: '#000000', background: '#ECEFF1', paddingBottom: "12px", paddingTop: "8px", textAlign: 'center' }}
             >
               {translate("userProfile.page.label.changePassword")}
             </Typography>

@@ -11,7 +11,7 @@ import { withStyles } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import Fab from "@material-ui/core/Fab";
 import CloseIcon from "@material-ui/icons/Close";
-import { blueGrey50 } from "material-ui/styles/colors";
+
 import C from "../../../flux/actions/constants";
 import FetchModel from "../../../flux/actions/apis/fetchmodel";
 import FetchLanguage from "../../../flux/actions/apis/fetchlanguage";
@@ -214,7 +214,7 @@ class Translate extends React.Component {
                   body={this.state.sentence}
                   fontSize={this.state.showZoomed ? "40px" : "20px"}
                   showZoomed={this.state.showZoomed}
-                  style={{ minWidth: "100%", marginTop: "50%", background: blueGrey50, minHeight: window.innerHeight + 7 - window.innerHeight / 5 }}
+                  style={{ minWidth: "100%", marginTop: "50%", background: '#ECEFF1', minHeight: window.innerHeight + 7 - window.innerHeight / 5 }}
                  />
               </Grid>
               {/* <Grid container item xs={12} spacing={3} id='cardGrid'>
@@ -257,7 +257,7 @@ class Translate extends React.Component {
                               ? this.state[lang.label.toLowerCase()].map((elem) => elem.tgt)
                               : ""
                           }
-                          style={{ raised: true, Height: "100px", background: blueGrey50, marginBottom: "5px" }}
+                          style={{ raised: true, Height: "100px", background: '#ECEFF1', marginBottom: "5px" }}
                         />
                       </Grid>
                     ))}

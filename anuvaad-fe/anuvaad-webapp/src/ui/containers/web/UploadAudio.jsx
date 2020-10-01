@@ -3,7 +3,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { DropzoneArea } from "material-ui-dropzone";
-import { blueGrey50 } from "material-ui/styles/colors";
 import MicRecorder from "mic-recorder-to-mp3";
 import FetchLanguage from "../../../flux/actions/apis/fetchlanguage";
 import FetchModel from "../../../flux/actions/apis/fetchmodel";
@@ -136,7 +135,7 @@ class UploadAudio extends React.Component {
                 value="Audio to Text"
                 variant="h5"
                 gutterBottom="true"
-                style={{ paddingTop: "3%", paddingBottom: "4%", background: blueGrey50, marginBottom: "3%", textAlign: "center" }}
+                style={{ paddingTop: "3%", paddingBottom: "4%", background: '#ECEFF1', marginBottom: "3%", textAlign: "center" }}
               />
 
               <Grid container spacing={4}>
@@ -174,7 +173,7 @@ class UploadAudio extends React.Component {
                   value={`Text:${this.props.audio}`}
                   variant="h5"
                   gutterBottom="true"
-                  style={{ paddingLeft: "20%", paddingTop: "3%", paddingBottom: "4%", background: blueGrey50 }}
+                  style={{ paddingLeft: "20%", paddingTop: "3%", paddingBottom: "4%", background: '#ECEFF1' }}
                 />
               )}
             </div>

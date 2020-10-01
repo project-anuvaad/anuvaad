@@ -20,7 +20,6 @@ import ConfigUpload from "../../../../flux/actions/apis/configupload";
 import SaveDataSource from "../../../../flux/actions/apis/savedatasource";
 import Toolbar from "@material-ui/core/Toolbar";
 import BackIcon from "@material-ui/icons/ChevronLeft";
-import { blueGrey50} from "material-ui/styles/colors";
 import { translate } from "../../../../assets/localisation";
 
 class CreateWorkspace extends React.Component {
@@ -176,7 +175,7 @@ class CreateWorkspace extends React.Component {
           style={{
             marginTop: "-.7%",
             paddingLeft: "40%",
-            background: blueGrey50,
+            background: '#ECEFF1',
             paddingTop: "25px",
             paddingBottom: "16px",
             

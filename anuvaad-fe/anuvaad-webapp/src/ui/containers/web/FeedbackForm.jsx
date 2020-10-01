@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { blueGrey50 } from "material-ui/styles/colors";
 import StarRatings from "react-star-ratings";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -142,7 +141,7 @@ class FeedbackForm extends React.Component {
               style={{
                 marginTop: "-.7%",
                 paddingLeft: "33%",
-                background: blueGrey50,
+                background: '#ECEFF1',
                 paddingTop: "25px",
                 paddingBottom: "16px"
               }}

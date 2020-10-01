@@ -14,7 +14,6 @@ import ClearContent from "../../../../flux/actions/apis/clearcontent";
 import FileContent from "../../../../flux/actions/apis/fetchcontent";
 import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
-import { blueGrey50, darkBlack } from "material-ui/styles/colors";
 import Toolbar from "@material-ui/core/Toolbar";
 import PdfPreview from "./PdfPreview";
 import DocPreview from "./DocPreview";
@@ -627,7 +626,7 @@ class PdfFileEditor extends React.Component {
               <Grid item xs={12} sm={6} lg={6} xl={6}>
                 <Paper elevation={2}>
                   {this.state.tokenized ?
-                    <Toolbar style={{ color: darkBlack, background: this.state.edited ? "#989E9C" : blueGrey50 }}>
+                    <Toolbar style={{ color: '#000000', background: this.state.edited ? "#989E9C" : '#ECEFF1' }}>
                       <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: this.state.edited ? "white" : "#1C9AB7" }}>
                         Extracted Document
                      </Typography>
@@ -646,7 +645,7 @@ class PdfFileEditor extends React.Component {
                       )}
                     </Toolbar> :
 
-                    <Toolbar style={{ color: darkBlack, backgroundColor: blueGrey50 }}>
+                    <Toolbar style={{ color: '#000000', backgroundColor: '#ECEFF1' }}>
                       <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: "#1C9AB7" }}>
                         Extracted Document
                     </Typography>
@@ -657,14 +656,14 @@ class PdfFileEditor extends React.Component {
               <Grid item xs={12} sm={6} lg={6} xl={6}>
                 <Paper elevation={2}>
                   {!this.state.tokenized ?
-                    <Toolbar style={{ color: darkBlack, background: this.state.pageDetails === "target" ? "#989E9C" : blueGrey50 }}>
+                    <Toolbar style={{ color: '#000000', background: this.state.pageDetails === "target" ? "#989E9C" : '#ECEFF1' }}>
                       <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: this.state.pageDetails === "target" ? "white" :"#1C9AB7" }}>
                         Translated Document
                       </Typography>
                     </Toolbar>
 
                     :
-                    <Toolbar style={{ color: darkBlack, background: blueGrey50 }}>
+                    <Toolbar style={{ color: '#000000', background: '#ECEFF1' }}>
 
                       <Grid item xs={3} sm={3} lg={3} xl={3}>
                         <Typography value="" variant="h6" gutterBottom style={{ width: "100%", flex: 1, color: '#1C9AB7' }}>
@@ -722,7 +721,7 @@ class PdfFileEditor extends React.Component {
                     // paddingBottom: "12px"
                   }}
                 >
-                  {/* <Toolbar style={{ color: darkBlack, background: this.state.edited ? "#989E9C" : blueGrey50 }}>
+                  {/* <Toolbar style={{ color: '#000000', background: this.state.edited ? "#989E9C" : '#ECEFF1' }}>
                     <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: "#1C9AB7" }}>
                       Extracted Document
                     </Typography>
@@ -851,7 +850,7 @@ class PdfFileEditor extends React.Component {
                     ></DocPreview>
                   ) : (
                       <div>
-                        {/* <Toolbar style={{ color: darkBlack, background: this.state.pageDetails === "target" ? "#989E9C" : blueGrey50 }}>
+                        {/* <Toolbar style={{ color: '#000000', background: this.state.pageDetails === "target" ? "#989E9C" : '#ECEFF1' }}>
                           <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: "#1C9AB7" }}>
                             Translated Document
                         </Typography>

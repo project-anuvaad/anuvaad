@@ -1,5 +1,4 @@
 import React from "react";
-import { blueGrey50, darkBlack } from "material-ui/styles/colors";
 import { withStyles } from "@material-ui/core";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -20,8 +19,8 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 const styles = {
   paperHeader: {
-    color: darkBlack,
-    background: blueGrey50,
+    color: '#000000',
+    background: '#ECEFF1',
   },
 };
 
@@ -1042,7 +1041,7 @@ class EditorPaper extends React.Component {
                   padding: '2%',
                   display: 'block',
                   maxWidth: '450px',
-                  wordWrap: 'break-word', cursor: 'not-allowed', fontSize: '15px', zIndex: 999, backgroundColor: this.state.selectedIndex == index ? blueGrey50 : 'white'
+                  wordWrap: 'break-word', cursor: 'not-allowed', fontSize: '15px', zIndex: 999, backgroundColor: this.state.selectedIndex == index ? '#ECEFF1' : 'white'
                 }} selected={true}>{at.substring(this.state.caretPos)}</Typography>
             })
               : <div></div>

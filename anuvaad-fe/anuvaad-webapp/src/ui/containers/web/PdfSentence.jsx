@@ -9,7 +9,6 @@ import { withStyles } from "@material-ui/core/styles";
 import NewCorpusStyle from "../../styles/web/Newcorpus";
 import Typography from "@material-ui/core/Typography";
 import MUIDataTable from "mui-datatables";
-import { blueGrey50, darkBlack } from "material-ui/styles/colors";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -180,7 +179,7 @@ handleRowClick = rowData => {
                                     disableEscapeKeyDown
                                     fullWidth
                                     aria-labelledby="form-dialog-title">
-                                    <Typography variant="h5" style={{ color: darkBlack, background: blueGrey50, paddingLeft: '12%', paddingBottom: '12px', paddingTop: '8px' }} >Source Sentence</Typography>
+                                    <Typography variant="h5" style={{ color: '#000000', background: '#ECEFF1', paddingLeft: '12%', paddingBottom: '12px', paddingTop: '8px' }} >Source Sentence</Typography>
 
                                     <DialogContent>
                                         <DialogContentText /><br />

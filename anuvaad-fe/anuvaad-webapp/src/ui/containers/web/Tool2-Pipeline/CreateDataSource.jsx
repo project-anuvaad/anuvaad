@@ -9,7 +9,6 @@ import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Toolbar from "@material-ui/core/Toolbar";
 import BackIcon from "@material-ui/icons/ChevronLeft";
-import { blueGrey50 } from "material-ui/styles/colors";
 import Snackbar from "../../../components/web/common/Snackbar";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import history from "../../../../web.history";
@@ -144,7 +143,7 @@ class CreateWorkspace extends React.Component {
             style={{
               marginTop: "-.7%",
               paddingLeft: "40%",
-              background: blueGrey50,
+              background: '#ECEFF1',
               paddingTop: "25px",
               paddingBottom: "16px"
             }}

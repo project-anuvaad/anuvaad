@@ -1,6 +1,6 @@
 import API from "./api";
 import C from "../constants";
-import { CommunicationStayCurrentLandscape } from "material-ui/svg-icons";
+
 import ENDPOINTS from "../../../configs/apiendpoints";
 export default class UpdateSentences extends API {
   constructor(updateSentence, timeout = 2000) {
@@ -16,7 +16,6 @@ export default class UpdateSentences extends API {
   }
 
   processResponse(res) {
-    CommunicationStayCurrentLandscape.log(res);
     super.processResponse(res);
     if (res.data) {
       this.sentences = res.data;

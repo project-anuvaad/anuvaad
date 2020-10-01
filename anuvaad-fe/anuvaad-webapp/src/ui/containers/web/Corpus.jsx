@@ -25,7 +25,6 @@ import UpdateSentencesStatus from "../../../flux/actions/apis/update-sentenses-s
 import SourceTranslate from "../../../flux/actions/apis/source-translate";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import { blueGrey50, darkBlack } from "material-ui/styles/colors";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -361,7 +360,7 @@ class Corpus extends React.Component {
                                     disableEscapeKeyDown
                                     fullWidth
                                     aria-labelledby="form-dialog-title">
-                                    <Typography variant="h5" style={{ color: darkBlack, background: blueGrey50, paddingLeft: '12%', paddingBottom: '12px', paddingTop: '8px' }} >{translate("parallel_corpus.page.dialog.message")}</Typography>
+                                    <Typography variant="h5" style={{ color: '#000000', background: '#ECEFF1', paddingLeft: '12%', paddingBottom: '12px', paddingTop: '8px' }} >{translate("parallel_corpus.page.dialog.message")}</Typography>
 
                                     <DialogContent>
                                         <DialogContentText /><br />

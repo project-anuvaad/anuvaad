@@ -22,7 +22,6 @@ import history from "../../../web.history";
 import { DropzoneArea } from "material-ui-dropzone";
 import Select from "../../components/web/common/Select";
 import Stepper from "../../components/web/common/Stepper";
-import { white, blueGrey50, darkBlack } from "material-ui/styles/colors";
 
 class Createcorpus extends React.Component {
   constructor(props) {
@@ -151,7 +150,7 @@ class Createcorpus extends React.Component {
           style={{
             marginTop: "-3.7%",
             paddingLeft: "40%",
-            background: blueGrey50,
+            background: '#ECEFF1',
             paddingTop: "25px",
             paddingBottom: "16px",
             marginLeft: "-2.3%",

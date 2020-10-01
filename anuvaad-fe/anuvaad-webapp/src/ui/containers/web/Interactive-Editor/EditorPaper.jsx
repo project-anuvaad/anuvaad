@@ -1,5 +1,4 @@
 import React from "react";
-import { blueGrey50, darkBlack } from "material-ui/styles/colors";
 import { withStyles } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import ContentEditable from "react-contenteditable";
@@ -7,8 +6,8 @@ import CustomTable from "../../../components/web/common/CustomTable";
 
 const styles = {
   paperHeader: {
-    color: darkBlack,
-    background: blueGrey50
+    color: '#000000',
+    background: '#ECEFF1'
   }
 };
 

@@ -7,7 +7,6 @@ import { bindActionCreators } from "redux";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import { blueGrey50, darkBlack } from "material-ui/styles/colors";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -835,7 +834,7 @@ class IntractiveTrans extends React.Component {
                       paddingBottom: "12px"
                     }}
                   >
-                    <Toolbar style={{ color: darkBlack, background: blueGrey50 }}>
+                    <Toolbar style={{ color: '#000000', background: '#ECEFF1' }}>
                       <Typography value="" variant="h6" gutterBottom style={{ flex: 1 }}>
                         {translate("common.page.label.source")}
                       </Typography>
@@ -904,7 +903,7 @@ class IntractiveTrans extends React.Component {
                         contentEditableId={this.state.contentEditableId}
                       />
                     </div>
-                    <Toolbar style={{ color: darkBlack, background: blueGrey50, display: "flex", flexDirection: "row-reverse" }}>
+                    <Toolbar style={{ color: '#000000', background: '#ECEFF1', display: "flex", flexDirection: "row-reverse" }}>
                      
                     </Toolbar>
                   </Paper>
@@ -916,7 +915,7 @@ class IntractiveTrans extends React.Component {
                         onClick={event => {
                           this.handleClick(false, 4);
                         }}
-                        style={{ color: darkBlack, background: blueGrey50 }}
+                        style={{ color: '#000000', background: '#ECEFF1' }}
                       >
                         <KeyboardTabIcon color="primary" style={{ cursor: "pointer" }} /> &nbsp;&nbsp;
                       <Typography value="" variant="subtitle2" color="primary" style={{ cursor: "pointer" }}>
@@ -930,7 +929,7 @@ class IntractiveTrans extends React.Component {
               {!this.state.collapseToken ? (
                 <Grid item xs={12} sm={6} lg={6} xl={6} className="GridFileDetails">
                   <Paper elevation={2} style={{ maxHeight: window.innerHeight - 200, paddingBottom: "12px" }}>
-                    <Toolbar style={{ color: darkBlack, background: blueGrey50 }}>
+                    <Toolbar style={{ color: '#000000', background: '#ECEFF1' }}>
                       <Typography value="" variant="h6" gutterBottom>
                         {translate("common.page.label.target")}
                       </Typography>
@@ -975,7 +974,7 @@ class IntractiveTrans extends React.Component {
                         contentEditableId={this.state.contentEditableId}
                       />
                     </div>
-                    <Toolbar style={{ color: darkBlack, background: blueGrey50, display: "flex", flexDirection: "row-reverse" }}>
+                    <Toolbar style={{ color: '#000000', background: '#ECEFF1', display: "flex", flexDirection: "row-reverse" }}>
                       <Button
                         onClick={event => {
                           this.handleDone(true, this.state.scriptSentence);

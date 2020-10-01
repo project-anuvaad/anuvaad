@@ -1,4 +1,4 @@
-import { grey500, white } from 'material-ui/styles/colors';
+
 
 const Newcorpus = theme => ({
   root: {
@@ -86,7 +86,7 @@ btns: {
     padding: 10
   },
   flatButton: {
-    color: grey500
+    color: '#ECEFF1'
   },
   checkRemember: {
     style: {
@@ -95,12 +95,12 @@ btns: {
       paddingTop: 5
     },
     labelStyle: {
-      color: grey500
+      color: '#ECEFF1'
     },
     iconStyle: {
-      color: grey500,
-      borderColor: grey500,
-      fill: grey500
+      color: '#ECEFF1',
+      borderColor: '#ECEFF1',
+      fill: '#ECEFF1'
     }
   },
   loginBtn: {
@@ -108,7 +108,7 @@ btns: {
   },
   btn: {
     background: '#4f81e9',
-    color: white,
+    color: "white",
     padding: 7,
     borderRadius: 2,
     margin: 2,

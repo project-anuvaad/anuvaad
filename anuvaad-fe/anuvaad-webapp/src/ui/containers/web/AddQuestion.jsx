@@ -7,7 +7,6 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
-import { blueGrey50 } from "material-ui/styles/colors";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
@@ -176,7 +175,7 @@ class AddQuestion extends React.Component {
             style={{
               marginTop: "-.7%",
               paddingLeft: "44%",
-              background: blueGrey50,
+              background: '#ECEFF1',
               paddingTop: "25px",
               paddingBottom: "16px"
             }}

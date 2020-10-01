@@ -1,4 +1,4 @@
-import { grey500, white } from 'material-ui/styles/colors';
+import { '#ECEFF1'0, white } from 'material-ui/styles/colors';
 
 const UpdatePasswordStyles = theme => ({
   image:{

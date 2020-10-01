@@ -9,7 +9,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import { blueGrey50 } from "material-ui/styles/colors";
+
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
@@ -172,7 +172,7 @@ class UserUpdate extends React.Component {
               gutterBottom
               variant="title"
               component="h2"
-              style={{ background: blueGrey50, paddingLeft: "35%", paddingTop: "13px", paddingBottom: "13px", width: "65%", marginBottom: "4%" }}
+              style={{ background: '#ECEFF1', paddingLeft: "35%", paddingTop: "13px", paddingBottom: "13px", width: "65%", marginBottom: "4%" }}
             >
               {newUser ? translate("userUpdate.page.label.addNewUser") : translate("userUpdate.page.label.passwordUpdated")}
             </Typography>
@@ -291,7 +291,7 @@ class UserUpdate extends React.Component {
                           </MenuItem>
                         ))
                       : []}
-                    >
+                    
                   </SelectModel>
                   <br />
                 </Grid>
@@ -326,7 +326,7 @@ class UserUpdate extends React.Component {
                           </MenuItem>
                         ))
                       : []}
-                    >
+                    
                   </SelectModel>
                   <br />
                 </Grid>

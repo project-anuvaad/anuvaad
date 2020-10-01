@@ -8,7 +8,6 @@ import Paper from "@material-ui/core/Paper";
 import SourceView from "./SourceView";
 // import Data from "./Data.json";
 import Typography from "@material-ui/core/Typography";
-import { blueGrey50, darkBlack } from "material-ui/styles/colors";
 
 import KeyboardTabIcon from "@material-ui/icons/KeyboardTab";
 
@@ -226,7 +225,7 @@ class PdfFileEditor extends React.Component {
     let pageDividerHeight = "0";
     return (
       <Paper style={style}>
-        <Toolbar style={{ color: darkBlack, background: blueGrey50, width: paperWidth }}>
+        <Toolbar style={{ color: '#000000', background: '#ECEFF1', width: paperWidth }}>
           <Typography value="" variant="h6" gutterBottom style={{ flex: 1 }}>
             {this.props.title}
           </Typography>
