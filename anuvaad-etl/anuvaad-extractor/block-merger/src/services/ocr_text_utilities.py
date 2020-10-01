@@ -40,14 +40,12 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             for index2, row1 in temp_df.iterrows():
                 word_coord = {}
                 temp_text  = str(row1["text"])
-                
                 temp_conf  = row1["conf"]
                 #if temp_conf<30:
                     #check["devnagari_text:"].append(str(temp_text))
                    # temp_text, temp_conf  = low_conf_ocr(lang,int(row1["left"]+left),int(row1["top"]+top),int(row1["width"]),int(row1["height"]),image)
                     #check["original"].append(str(temp_text))
                 text = text +" "+ str(temp_text)
-                
                 word_coord['text']          = str(temp_text)
                 word_coord['conf']          = temp_conf
                 word_coord['text_left']     = int(row1["left"]+left)
@@ -72,7 +70,6 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
                     #temp_text, temp_conf  = low_conf_ocr(lang,int(row2["left"]+left),int(row2["top"]+top),int(row2["width"]),int(row2["height"]),image)
                     #check["original"].append(str(temp_text))
                 text = text +" "+ str(temp_text)
-                
                 word_coord['text']          = str(temp_text)
                 word_coord['conf']          = temp_conf
                 word_coord['text_left']     = int(row2["left"]+left)
