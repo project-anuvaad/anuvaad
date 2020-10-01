@@ -424,7 +424,7 @@ maxRows={4}
   }
 
   makeSpan(text, child, spanId, tokenIndex, token_obj) {
-    return (<span id={this.props.sentence.block_id + '##' + token_obj.s_id + '##' + (token_obj.actual_src.length - token_obj.src.length)}
+    return (token_obj && <span id={this.props.sentence.block_id + '##' + token_obj.s_id + '##' + (token_obj.actual_src.length - token_obj.src.length)}
       onMouseUp={this.getSelectionText.bind(this)}
       onKeyUp={this.getSelectionText.bind(this)} style={{
         // fontSize: (child.font_size) + "px",
