@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Button from "@material-ui/core/Button";
+//import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import MUIDataTable from "mui-datatables";
@@ -12,9 +12,11 @@ import history from "../../../web.history";
 import FetchPdf from "../../../flux/actions/apis/fetchpdf";
 import APITransport from "../../../flux/actions/apitransport/apitransport";
 import { translate } from "../../../assets/localisation";
-import Timer from "../../components/web/common/CountDown";
+//import Timer from "../../components/web/common/CountDown";
 import ProgressBar from "../../components/web/common/ProgressBar";
 import Spinner from "../../components/web/common/Spinner";
+import Fab from '@material-ui/core/Fab';
+import PublishIcon from '@material-ui/icons/Publish';
 
 class PdfUpload extends React.Component {
   constructor(props) {
@@ -200,27 +202,42 @@ class PdfUpload extends React.Component {
         <Toolbar style={{ marginLeft: "-5.4%", marginRight: "1.5%", marginTop: "20px" }}>
           <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
           {this.state.role.includes("dev") || this.state.role.includes("grader") || this.state.role.includes("user") || this.state.role.includes("interactive-editor") ? (
-            <Button
-            color="primary"
-              variant="extendedFab"
+            // <Button
+            // color="primary"
+            //   variant="extendedFab"
 
-              style={{
-                marginRight: 0
-              }}
-              aria-label="Add"
-              onClick={() => {
-                history.push(`${process.env.PUBLIC_URL}/pdf-upload`);
-              }}
-            >
-              {/* <AddIcon /> */}
-              <img src="upload.svg"
-                style={{
-                  marginRight: '5px',
-                  height: '16px'
+            //   style={{
+            //     marginRight: 0
+            //   }}
+            //   aria-label="Add"
+            //   onClick={() => {
+            //     history.push(`${process.env.PUBLIC_URL}/pdf-upload`);
+            //   }}
+            // >
+            //   {/* <AddIcon /> */}
+            //   <img src="upload.svg"
+            //     style={{
+            //       marginRight: '5px',
+            //       height: '16px'
+            //     }}
+            //     alt="" />
+            //   {translate("common.page.button.upload")}
+            // </Button>
+
+            <Fab color="primary"
+            variant="extended"
+            aria-label="Add"
+            style={{
+                  marginRight: 0,
+                   textTransform: 'none'
                 }}
-                alt="" />
-              {translate("common.page.button.upload")}
-            </Button>
+               
+            onClick={() => {
+                  history.push(`${process.env.PUBLIC_URL}/pdf-upload`);
+                }}>
+           <PublishIcon fontSize="small"/>
+            {translate("common.page.button.upload")}
+          </Fab>
           ) : (
               ""
             )}

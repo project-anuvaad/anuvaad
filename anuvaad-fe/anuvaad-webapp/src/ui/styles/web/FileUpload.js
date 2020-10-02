@@ -18,7 +18,7 @@ const FileUploadStyles = theme => ({
     typographyHeader:{
       paddingTop:'1%',
       minWidth: "5%",
-     
+      fontWeight: "bold"
       
   
     },

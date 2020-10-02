@@ -29,7 +29,7 @@ const PdfUploadStyles = theme => ({
   },
 
   typography: {
-    marginLeft:"2%",
+    //marginLeft:"2%",
     marginTop:'2%',
     height:"18px"
     
@@ -54,8 +54,8 @@ const PdfUploadStyles = theme => ({
     marginLeft: "5.5%" 
   },
   textfield:{
-    width: '87.9%',
-    marginLeft:"2.3%"
+    width: '91.8%',
+    //marginLeft:"2.3%"
   },
   span:{
     color:'red'
@@ -63,7 +63,7 @@ const PdfUploadStyles = theme => ({
   button: {
     marginTop: "6%",
     
-    width: "92%",
+    width: "87%",
     backgroundColor:'#1C9AB7',
     borderRadius:"20px 20px 20px 20px",
     color:"#FFFFFF"

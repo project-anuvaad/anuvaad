@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Button from "@material-ui/core/Button";
+//import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import MUIDataTable from "mui-datatables";
@@ -21,7 +21,7 @@ import DeleteOutlinedIcon from '@material-ui/icons/VerticalAlignBottom';
 import InfoIcon from '@material-ui/icons/Info';
 import Dialog from "../../components/web/common/SimpleDialog";
 import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+//import AddIcon from '@material-ui/icons/Add';
 import PublishIcon from '@material-ui/icons/Publish';
 const TELEMETRY = require('../../../utils/TelemetryManager')
 
@@ -94,6 +94,7 @@ class ViewDocument extends React.Component {
           subTask.state = task.state
           subTask.status = task.status
           tasks.push(subTask)
+        return null;
         })
         taskData.subTasks = tasks
 
@@ -111,7 +112,7 @@ class ViewDocument extends React.Component {
               if (lang.language_code === targetLangCode) {
                 targetLang = lang.language_name
               }
-            })
+           return null })
           }
         }
 
@@ -130,7 +131,8 @@ class ViewDocument extends React.Component {
         b["tasks"] = taskData
 
         arr.push(b)
-      })
+      return null
+    })
       this.setState({ name: arr, showLoader: false });
     }
   }
