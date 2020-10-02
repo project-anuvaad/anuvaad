@@ -7,6 +7,7 @@ from src.utilities.xml_utils import (
 
 import config
 from config import FONT_SIZE_CONFIG
+from config import FONT_CONFIG
 
 def get_document_width_height(pages):
     return int(pages[0].attrib['width']), int(pages[0].attrib['height'])
@@ -86,9 +87,13 @@ def update_font_size(f_size, lang):
 
 def update_font_family(font_name, lang):
     if font_name != None and lang != None:
-        if '+' in font_name:
-            return font_name.split('+')[1]
-        return font_name
+        if lang =='hi':
+            font_name = FONT_CONFIG['hi']
+            return font_name
+        else :
+            if '+' in font_name:
+                return font_name.split('+')[1]
+            return font_name
     else :
         return None
 

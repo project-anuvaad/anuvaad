@@ -77,7 +77,7 @@ LANG_MAPPING       =  {
 
 
 FONT_CONFIG   = {
-    "hi": 'mangal'
+    "hi": 'Ariel Unicode MS'
 }
 FONT_SIZE_CONFIG = {
     "hi":{ 'slab_1':{ 'min':0, 'max':15, 'ratio':-0.05},
