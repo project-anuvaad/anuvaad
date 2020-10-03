@@ -19,7 +19,16 @@ for blueprint in vars(routes).values():
     if isinstance(blueprint, Blueprint):
         tok_app.register_blueprint(blueprint, url_prefix=config.API_URL_PREFIX)
 
-if __name__ == "__main__":
-    connectmongo()
-    tok_app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
+from models.sentence import Sentence
+s = Sentence()
+sent = s.get_block_by_s_id('1d35c8f8-b833-45a7-9f6a-62e432b83939--')
+print(sent)
+
+# sent['pred_score'] = 100
+# print(s.update_sentence_by_s_id(sent, sent['s_id']))
+
+
+# if __name__ == "__main__":
+#     connectmongo()
+#     tok_app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
     
