@@ -21,6 +21,7 @@ import DeleteOutlinedIcon from '@material-ui/icons/VerticalAlignBottom';
 import InfoIcon from '@material-ui/icons/Info';
 import Dialog from "../../components/web/common/SimpleDialog";
 import Fab from '@material-ui/core/Fab';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 //import AddIcon from '@material-ui/icons/Add';
 import PublishIcon from '@material-ui/icons/Publish';
 const TELEMETRY = require('../../../utils/TelemetryManager')
@@ -43,6 +44,18 @@ class ViewDocument extends React.Component {
       showInfo: false
     };
   }
+
+  getMuiTheme = () => createMuiTheme({
+    overrides: {
+      MUIDataTableBodyCell: {
+        root: {
+          padding: '3px 10px 3px'
+          
+        }
+      },
+     
+    }
+  })
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('view-document')
@@ -326,7 +339,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div >
-                  <Tooltip title="info" placement="left"><IconButton style={{ color: '#233466' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[13])}><InfoIcon style={{ color: "#C6C6C6" }} /></IconButton></Tooltip>
+                  <Tooltip title="info" placement="left"><IconButton style={{ color: '#233466', padding:'5px' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[13])}><InfoIcon style={{ color: "#C6C6C6" }} /></IconButton></Tooltip>
                   {tableMeta.rowData[1] === 'COMPLETED' ? <Tooltip title={translate('viewTranslate.page.title.downloadSource')} placement="right"><IconButton style={{ color: '#233466' }} component="a" onClick={() => { this.setState({ fileDownload: true }); this.handleFileDownload(tableMeta.rowData[5]) }}><DeleteOutlinedIcon /></IconButton></Tooltip> : ''}
                 </div>
               );
@@ -413,7 +426,7 @@ class ViewDocument extends React.Component {
             )}
         </Toolbar>
         <div style={{ marginLeft: "3%", marginRight: "3%", marginTop: "2%", marginBottom: '5%' }}>
-          {!this.state.showLoader && <MUIDataTable title={translate("common.page.title.document")} data={this.state.name} columns={columns} options={options} />}
+          {!this.state.showLoader &&<MuiThemeProvider theme={this.getMuiTheme()}> <MUIDataTable title={translate("common.page.title.document")} data={this.state.name} columns={columns} options={options} /></MuiThemeProvider>}
         </div>
         {this.state.showInfo &&
           <Dialog message={this.state.message}
