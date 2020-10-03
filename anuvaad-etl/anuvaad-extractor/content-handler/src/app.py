@@ -19,7 +19,6 @@ for blueprint in vars(routes).values():
     if isinstance(blueprint, Blueprint):
         tok_app.register_blueprint(blueprint, url_prefix=config.API_URL_PREFIX)
 
-
 if __name__ == "__main__":
     connectmongo()
     tok_app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)

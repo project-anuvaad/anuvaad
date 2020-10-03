@@ -40,7 +40,7 @@ class ContentHandler(Resource):
             page_data['page_width'] = result['page_width']
             page_data['page_height'] = result['page_height']
             for block_type in BLOCK_TYPES:
-                if result[block_type['key']] is not None:
+                if block_type['key'] in list(result.keys()):
                     for data in result[block_type['key']]:
                         obj_to_be_saved = make_obj(process_identifier, page_data, data, block_type['key'], obj_to_be_saved, userid, file_locale, record_id)
         file_content_instances = [FileContent(**data) for data in obj_to_be_saved]
