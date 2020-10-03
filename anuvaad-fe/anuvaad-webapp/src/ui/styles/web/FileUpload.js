@@ -10,7 +10,7 @@ const FileUploadStyles = theme => ({
       width: '100%'
     },
     withoutLabel: {
-      marginTop: theme.spacing(3)
+      marginTop: theme.spacing(2)
     },
     div:{
       display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center'
@@ -46,7 +46,7 @@ const FileUploadStyles = theme => ({
       width: "60%",
       minWidth: "200px",
       marginTop: "2%",
-      marginBottom:'4%',
+      marginBottom:'1%',
       padding: "3% 3% 3% 3%",
       // marginLeft: "15%",
       
@@ -87,26 +87,28 @@ const FileUploadStyles = theme => ({
       borderRadius:"20px 20px 20px 20px",
       color:"#FFFFFF"
     },
-    dropZoneArea:{
-      paddingTop: '13%',
-      top: "auto",
-      width:'91%',
-      minHeight:'340px',
-      height: "100%",
-      borderColor:'#1C9AB7',
-      backgroundColor: '#F5F9FA',
-      border: '1px dashed #1C9AB7',
-      fontColor:'#1C9AB7',
-      "& svg":{color:'#1C9AB7',},
-      "& p": {
-        textOverflow: "ellipsis",
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        fontSize: "19px",
-        color:'#1C9AB7',
+    // dropZoneArea:{
+
+      
+    //   paddingTop: '13%',
+    //   top: "auto",
+    //   width:'91%',
+    //   minHeight:'340px',
+    //   height: "100%",
+    //   borderColor:'#1C9AB7',
+    //   backgroundColor: '#F5F9FA',
+    //   border: '1px dashed #1C9AB7',
+    //   fontColor:'#1C9AB7',
+    //   "& svg":{color:'#1C9AB7',},
+    //   "& p": {
+    //     textOverflow: "ellipsis",
+    //     whiteSpace: "nowrap",
+    //     overflow: "hidden",
+    //     fontSize: "19px",
+    //     color:'#1C9AB7',
         
-      }
-    }
+    //   }
+    // }
     
   });
   

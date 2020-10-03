@@ -19,8 +19,37 @@ import WorkFlow from "../../../../flux/actions/apis/fileupload";
 import DocumentUpload from "../../../../flux/actions/apis/document_upload";
 import TextField from "@material-ui/core/TextField";
 import Select from "../../../components/web/common/Select";
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 const TELEMETRY = require('../../../../utils/TelemetryManager')
-
+const theme = createMuiTheme({
+  overrides: {
+    MuiDropzoneArea: {
+      root: {
+        paddingTop: '15%',
+        top: "auto",
+        width:'98%',
+        minHeight:'320px',
+        height: "85%",
+        borderColor:'#1C9AB7',
+        backgroundColor: '#F5F9FA',
+        border: '1px dashed #1C9AB7',
+        fontColor:'#1C9AB7',
+        marginTop:"3%",
+        marginLeft:'1%',
+        "& svg":{color:'#1C9AB7',},
+        "& p": {
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          fontSize: "19px",
+          color:'#1C9AB7',
+          
+        }
+      },
+      
+    }
+  }
+});
 
 class PdfUpload extends Component {
   constructor() {
@@ -37,6 +66,8 @@ class PdfUpload extends Component {
       workflow :"DP_WFLOW_FBTTR"
     };
   }
+
+  
 
   handleSubmit(e) {
     let model = "";
@@ -214,6 +245,7 @@ class PdfUpload extends Component {
         <Paper className={classes.paper}>
           <Grid container spacing={8}>
             <Grid item xs={12} sm={6} lg={6} xl={6}>
+            <MuiThemeProvider theme={theme}>
               <DropzoneArea
                 className={classes.DropZoneArea}
                 showPreviewsInDropzone
@@ -225,6 +257,7 @@ class PdfUpload extends Component {
                 dropzoneText={translate("common.page.label.addDropDocument")}
                 onDelete={this.handleDelete.bind(this)}
               />
+              </MuiThemeProvider>
             </Grid>
 
             <Grid item xs={12} sm={6} lg={6} xl={6}>
