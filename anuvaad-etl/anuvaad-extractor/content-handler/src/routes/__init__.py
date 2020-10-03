@@ -1,2 +1,3 @@
 from .content_handler_routes import CONTENT_HANDLER_BLUEPRINT
 from .sentence import SENTENCE_BLUEPRINT
+from .file_content import FILE_CONTENT_BLUEPRINT

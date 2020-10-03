@@ -1,6 +1,6 @@
 from db.connection_manager  import get_db
 
-class Sentence(object):
+class SentenceModel(object):
 
     def get_block_by_s_id(self, s_id):
         collections = get_db()['file_content']
