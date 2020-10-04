@@ -37,8 +37,37 @@ class FileContentRepositories:
         return True
         
     @staticmethod
-    def get(user_id, record_id, offset, limit):
-        blocks = []
-        print(user_id, record_id, offset, limit)
+    def get(user_id, record_id, start_page=1, end_page=5):
+        total_page_count    = BlockModel.get_document_total_page_count(user_id, record_id)
 
+        if start_page == 0 and end_page == 0:
+            start_page  = 1
+            end_page    = total_page_count
         
+        if start_page == 0:
+            start_page  = 1
+        if end_page == 0:
+            end_page   = 5
+        if start_page > end_page:
+            return False
+
+        data            = {}
+        data['pages']   = []
+        for i in range(start_page, end_page+1):
+            page_blocks = BlockModel.get_blocks_by_page(user_id, record_id, i)
+
+            page    = {}
+            for block in page_blocks:
+                page[block['_id']] = block['data']
+
+            if len(block['data']) > 0 :
+                page['page_height']     = block['data'][0]['page_info']['page_height']
+                page['page_no']         = block['data'][0]['page_info']['page_no']
+                page['page_width']      = block['data'][0]['page_info']['page_width']
+
+            data['pages'].append(page)
+
+        data['start_page']  = start_page
+        data['end_page']    = end_page
+        data['total']       = total_page_count
+        return data

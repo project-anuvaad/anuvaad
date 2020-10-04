@@ -22,13 +22,15 @@ class FileContentResource(Resource):
     def get(self, user_id, record_id):
 
         parser = reqparse.RequestParser()
-        parser.add_argument('offset', type=int, help='offset can be 0, set limit & offset as 0 to get entire document', required=True)
-        parser.add_argument('limit',  type=int, help='limit can be 0, set limit & offset as 0 to get entire document ', required=True)
+        parser.add_argument('start_page', type=int, help='start_page can be 0, set start_page & end_page as 0 to get entire document', required=True)
+        parser.add_argument('end_page',  type=int, help='end_page can be 0, set start_page & end_page as 0 to get entire document', required=True)
 
         args    = parser.parse_args()
-        if FileContentRepositories.get(user_id, record_id, args['offset'], args['limit']) == False:
-            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
+        result  = FileContentRepositories.get(user_id, record_id, args['start_page'], args['end_page'])
+
+        if result == False:
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
-        res = CustomResponse(Status.SUCCESS.value, None)
+        res = CustomResponse(Status.SUCCESS.value, result, result['total'])
         return res.getres()
         
