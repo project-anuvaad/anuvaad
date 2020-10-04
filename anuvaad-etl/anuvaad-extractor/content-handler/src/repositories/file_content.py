@@ -14,6 +14,20 @@ class FileContentRepositories:
         new_block['job_id']     = record_id.split('|')[0]
         new_block['created_by'] = user_id
         new_block['data']       = block
+
+        '''
+            storing a Step-0/baseline translation
+        '''
+        if 'tokenized_sentences' in list(block.keys()):
+            for elem in block['tokenized_sentences']:
+                elem['s0_tgt']    = elem['tgt']
+                elem['s0_src']    = elem['tgt']
+                del elem['input_subwords']
+                del elem['output_subwords']
+                del elem['pred_score']
+                del elem['tagged_src']
+                del elem['tagged_tgt'] 
+
         new_block['block_identifier']   = block['block_identifier']
         return new_block
 
