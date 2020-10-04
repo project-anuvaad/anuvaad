@@ -18,8 +18,7 @@ class FileContentRepositories:
         return new_block
 
     @staticmethod
-    def process(user_id, file_locale, record_id, pages):
-
+    def store(user_id, file_locale, record_id, pages):
         blocks = []
         for page in pages:
             if 'images' in list(page.keys()):
@@ -37,4 +36,9 @@ class FileContentRepositories:
         BlockModel.store_bulk_blocks(blocks)
         return True
         
+    @staticmethod
+    def get(user_id, record_id, offset, limit):
+        blocks = []
+        print(user_id, record_id, offset, limit)
+
         
