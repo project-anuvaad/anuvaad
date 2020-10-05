@@ -1,17 +1,33 @@
 from db.connection_manager  import get_db
+import pymongo.errors as DB_ERRORS
 
 class BlockModel(object):
-    def get_block_by_block_id(self, block_id):
-        pass
 
-    def get_blocks_count(self):
-        pass
+    @staticmethod
+    def update_block(user_id, record_id, block):
+        try:
+            collections = get_db()['file_content']
+            results     = collections.update({'$and': [{'created_by': user_id}, {'record_id': record_id}, { 'data.block_id': {'$eq': block['block_id']} }]},
+            { '$set': block }, upsert=True)
+
+            if 'writeError' in list(results.keys()):
+                return False
+            return True
+
+        except DB_ERRORS as errors:
+            print(errors.details)
+            return False
 
     @staticmethod
     def store_bulk_blocks(blocks):
-        collections = get_db()['file_content']
-        result      = collections.insert_many(blocks)
-        print(result)
+        try:
+            collections = get_db()['file_content']
+            results     = collections.insert_many(blocks)
+            if len(blocks) == len(results.inserted_ids):
+                return True
+        except DB_ERRORS as errors:
+            print(errors.details)
+            return False
 
     @staticmethod
     def get_all_blocks(user_id, record_id):

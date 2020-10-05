@@ -1,2 +1,2 @@
 from .sentence import SentenceGETResource, SentencePOSTResource
-from .file_content import FileContentPOSTResource, FileContentGETResource
+from .file_content import FileContentGetResource, FileContentSaveResource, FileContentUpdateResource
