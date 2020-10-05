@@ -5,25 +5,19 @@ import { connect } from "react-redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import SourceView from "./DocumentSource";
 import Grid from "@material-ui/core/Grid";
-import CloseIcon from "@material-ui/icons/Close";
 import Button from "@material-ui/core/Fab";
 import { translate } from "../../../../assets/localisation";
 import history from "../../../../web.history";
-import FileDetails from "../../../../flux/actions/apis/fetch_filedetails";
 import ClearContent from "../../../../flux/actions/apis/clearcontent";
 import FileContent from "../../../../flux/actions/apis/fetchcontent";
 import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import Toolbar from "@material-ui/core/Toolbar";
-import PdfPreview from "./PdfPreview";
 import DocPreview from "./DocPreview";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Arrow from "@material-ui/icons/ArrowUpward";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import GetAppIcon from "@material-ui/icons/GetApp";
-import DoneIcon from "@material-ui/icons/Done";
 import Typography from "@material-ui/core/Typography";
 import Snackbar from "../../../components/web/common/Snackbar";
 import WorkFlow from "../../../../flux/actions/apis/fileupload";
@@ -31,7 +25,6 @@ import TextButton from '@material-ui/core/Button';
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
-
 
 class PdfFileEditor extends React.Component {
   constructor(props) {
@@ -136,7 +129,7 @@ class PdfFileEditor extends React.Component {
         this.setState({
           sentences: temp,
           open: this.state.apiStatus && true,
-          message: this.state.apiStatus && (this.state.apiCall == "Merge sentence" ? "Sentence merged successfully!" : this.state.apiCall == "merge" ? "Paragraph merged successfully" : this.state.apiCall == "Split sentence" ? "Sentence Splitted Sucessfully" : "Sentence updated successfully...!"),
+          message: this.state.apiStatus && (this.state.apiCall === "Merge sentence" ? "Sentence merged successfully!" : this.state.apiCall === "merge" ? "Paragraph merged successfully" : this.state.apiCall === "Split sentence" ? "Sentence Splitted Sucessfully" : "Sentence updated successfully...!"),
           apiStatus: false,
           apiCall: false,
           showLoader: false,
@@ -213,7 +206,7 @@ class PdfFileEditor extends React.Component {
       block_identifier: block_identifier,
       has_sibling: has_sibling,
       scrollPageNo: pageNo,
-      scrollToPage: this.state.scrollToPage !== pageNo && pageNo,
+      scrollToPage: this.state.scrollToPage !== pageNo ? pageNo : this.state.pageNo
       // pageNo: this.state.pageNo !== pageNo && pageNo
     });
   }
@@ -235,7 +228,7 @@ class PdfFileEditor extends React.Component {
     let end_id = end;
     let startSentence = start.split("_");
     let endSentence = end.split("_");
-    if (parseInt(startSentence[0]) === parseInt(endSentence[0]) && parseInt(startSentence[1]) == parseInt(endSentence[1])) {
+    if (parseInt(startSentence[0]) === parseInt(endSentence[0]) && parseInt(startSentence[1]) === parseInt(endSentence[1])) {
       if (parseInt(startSentence[2]) > parseInt(endSentence[2])) {
         start_id = end;
         end_id = start;
@@ -248,7 +241,7 @@ class PdfFileEditor extends React.Component {
       let selectedBlock = sentenceObj[startSentence[0]] && sentenceObj[startSentence[0]].text_blocks[startSentence[1]];
       if (sentenceObj[startSentence[0]] && type === "Merge sentence") {
         selectedBlock.tokenized_sentences.map((text, i) => {
-          if (text.s_id == start_id || token === true) {
+          if (text.s_id === start_id || token === true) {
             token = true;
             index = i;
 
@@ -256,7 +249,7 @@ class PdfFileEditor extends React.Component {
             text.src = null;
           }
 
-          if (text.s_id == end_id) {
+          if (text.s_id === end_id) {
             token = false;
             text.src = null;
           }
@@ -266,7 +259,7 @@ class PdfFileEditor extends React.Component {
         const selectedSplitEndIndex = window.getSelection() && window.getSelection().getRangeAt(0).endOffset;
         let selectedSplitValue, nextSplitValue, copySentence, ind;
         selectedBlock.tokenized_sentences.map((text, i) => {
-          if (text.s_id == start_id) {
+          if (text.s_id === start_id) {
             selectedSplitValue = text.src.substring(0, selectedSplitEndIndex);
             nextSplitValue = text.src.substring(selectedSplitEndIndex, text.src.length);
             text.src = selectedSplitValue;
@@ -340,8 +333,7 @@ class PdfFileEditor extends React.Component {
   }
 
   handleSourceChange = (evt, blockValue) => {
-
-    if (this.state.pageDetails == "target") {
+    if (this.state.pageDetails === "target") {
       let sentenceObj = this.state.targetText;
       sentenceObj.tgt = evt.target.value;
       this.setState({ targetText: sentenceObj });
@@ -373,7 +365,7 @@ class PdfFileEditor extends React.Component {
 
     if (docPage && Array.isArray(docPage) && docPage.length > 0) {
       docPage.map((page, index) => {
-        if (page.page_no == pageNo) {
+        if (page.page_no === pageNo) {
           if (page.text_blocks && Array.isArray(page.text_blocks) && page.text_blocks.length > 0) {
             page.text_blocks.map((block, i) => {
               if (block.block_id == blockId) {
@@ -450,7 +442,7 @@ class PdfFileEditor extends React.Component {
 
   handlePreviewPageChange(pageNo, value) {
     if (this.state.pageNo !== pageNo) {
-      this.setState({ pageNo: parseInt(pageNo) });
+      this.setState({ pageNo: parseInt(pageNo), scrollPageNo: pageNo });
     }
   }
 
