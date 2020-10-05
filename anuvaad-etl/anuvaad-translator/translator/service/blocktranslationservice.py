@@ -30,12 +30,14 @@ class BlockTranslationService:
                 fail_msg = "Error while translating, there are no tokenised sentences in these blocks"
                 log_error(fail_msg, block_translate_input, None)
             else:
-                nmt_response = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None, block_translate_input["metadata"]["userID"])
+                nmt_response = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None,
+                                              block_translate_input["metadata"]["userID"])
                 output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
                 if nmt_response:
                     ch_input = self.get_translations_ip_ch(nmt_response, block_translate_input)
                     if ch_input:
-                        ch_response = utils.call_api(update_content_url, "POST", ch_input, None, block_translate_input["metadata"]["userID"])
+                        ch_response = utils.call_api(update_content_url, "POST", ch_input, None,
+                                                     block_translate_input["metadata"]["userID"])
                         if ch_response:
                             if ch_response["http"]["status"] == 200:
                                 is_successful = True
@@ -73,25 +75,35 @@ class BlockTranslationService:
         output["status"], output["output"] = "FAILED", None
         try:
             text_nmt = []
-            for text in text_translate_input["input"]["textList"]:
-                text_in = {"s_id": str(uuid.uuid4()), "id": text["modelID"], "src": text["src"], "tagged_prefix": text["taggedPrefix"]}
-                text_nmt.append(text_in)
-            nmt_response = utils.call_api(nmt_interactive_translate_url, "POST", text_nmt, None, text_translate_input["metadata"]["userID"])
-            if nmt_response:
-                if 'status' in nmt_response.keys():
-                    if 'statusCode' in nmt_response["status"].keys():
-                        if nmt_response["status"]["statusCode"] != 200:
-                            output["error"] = post_error("TRANSLATION_FAILED", "Error while translating: " + str(nmt_response["status"]["why"]), None)
-                            return output
-                nmt_predictions = self.dedup_hypothesis(nmt_response)
+            text_for_nmt, ch_res = self.get_stored_hypothesis_ch(text_translate_input["input"]["textList"], text_translate_input)
+            if text_for_nmt:
+                for text in text_for_nmt:
+                    text_in = {"s_id": str(uuid.uuid4()), "id": text["modelID"], "src": text["src"],
+                               "tagged_prefix": text["taggedPrefix"]}
+                    text_nmt.append(text_in)
+                nmt_response = utils.call_api(nmt_interactive_translate_url, "POST", text_nmt, None, text_translate_input["metadata"]["userID"])
+                if nmt_response:
+                    if 'status' in nmt_response.keys():
+                        if 'statusCode' in nmt_response["status"].keys():
+                            if nmt_response["status"]["statusCode"] != 200:
+                                output["error"] = post_error("TRANSLATION_FAILED", "Error while translating: " + str(
+                                    nmt_response["status"]["why"]), None)
+                                return output
+                    nmt_predictions = self.dedup_hypothesis(ch_res.extend(nmt_response["response_body"]))
+                    output["input"] = None
+                    output["status"] = "SUCCESS"
+                    output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
+                    output["output"] = {"predictions": nmt_predictions}
+                    return output
+                else:
+                    output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
+                    output["error"] = post_error("TRANSLATION_FAILED", "Error while translating", None)
+                    return output
+            else:
                 output["input"] = None
                 output["status"] = "SUCCESS"
                 output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
-                output["output"] = {"predictions": nmt_predictions}
-                return output
-            else:
-                output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
-                output["error"] = post_error("TRANSLATION_FAILED", "Error while translating", None)
+                output["output"] = {"predictions": ch_res}
                 return output
         except Exception as e:
             log_exception("Exception while translating: " + str(e), text_translate_input, None)
@@ -99,10 +111,29 @@ class BlockTranslationService:
             output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
             return output
 
+    # Checks and returns stored sentence translation from ch if available.
+    def get_stored_hypothesis_ch(self, text_list, text_translate_input):
+        sent_map, ch_res, text_for_nmt = {}, {}, []
+        for text in text_list:
+            sent_map[text["s_id"]] = text
+        request = {"s_id": sent_map.keys()}
+        ch_response = utils.call_api(nmt_interactive_translate_url, "POST", request, None, text_translate_input["metadata"]["userID"])
+        if ch_response:
+            for translation in ch_response["response"]:
+                if translation["s_id"] in sent_map.keys():
+                    if sent_map[translation["s_id"]]["src"] in translation["src"]:
+                        translation["tgt"] = [translation["tgt"]]
+                        ch_res[translation["s_id"]] = translation
+        for s_id in sent_map.keys():
+            if s_id not in ch_res.keys():
+                text_for_nmt.append(sent_map[s_id])
+        log_info("Translation fetched from CH! ", text_translate_input)
+        return text_for_nmt, list(ch_res.values())
+
     # Finds if there are duplicate predicitions and de-duplicates it.
-    def dedup_hypothesis(self, nmt_res):
-        predictions, nmt_response = [], nmt_res["response_body"]
-        for response in nmt_response:
+    def dedup_hypothesis(self, hypothesis_list):
+        predictions = []
+        for response in hypothesis_list:
             prediction = response
             prediction["tgt"] = list(set(response["tgt"]))
             predictions.append(prediction)
@@ -126,7 +157,8 @@ class BlockTranslationService:
             if nmt_response['response_body']:
                 for translation in nmt_response["response_body"]:
                     b_index, s_index = None, None
-                    block_id, sentence_id = str(translation["n_id"]).split("|")[2], str(translation["n_id"]).split("|")[3]
+                    block_id, sentence_id = str(translation["n_id"]).split("|")[2], str(translation["n_id"]).split("|")[
+                        3]
                     blocks = block_translate_input["input"]["textBlocks"]
                     for j, block in enumerate(blocks):
                         if str(block["block_identifier"]) == str(block_id):
