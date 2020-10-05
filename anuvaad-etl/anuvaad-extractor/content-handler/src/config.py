@@ -1,4 +1,3 @@
-import logging
 import os
 import time
 
@@ -27,11 +26,3 @@ MONGO_DB = os.environ.get(MONGO_DB_IDENTIFIER, DEFAULT_MONGO_DB_IDENTIFIER)
 MONGO_DB_HOST   = os.environ.get('MONGO_IP', '192.168.1.9')
 MONGO_DB_PORT   = os.environ.get('MONGO_PORT', 27017)
 MONGO_DB_SCHEMA = os.environ.get('MONGO_DB_IDENTIFIER', 'preprocessing')
-
-logging.basicConfig(
-    filename=os.getenv("SERVICE_LOG", "server.log"),
-    level=logging.DEBUG,
-    format="%(levelname)s: %(asctime)s \
-        pid:%(process)s module:%(module)s %(message)s",
-    datefmt="%d/%m/%y %H:%M:%S",
-)
