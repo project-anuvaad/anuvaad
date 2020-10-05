@@ -73,7 +73,7 @@ class Preview extends React.Component {
                 
               }
             }
-            else if(this.state.value==1&& sentence.sentence_index === parseInt(this.state.sentenceDetails.startNode.split("_")[1])){
+            else if(this.state.value===1&& sentence.sentence_index === parseInt(this.state.sentenceDetails.startNode.split("_")[1])){
 
               
               console.log(paragraph,this.state.value)
@@ -84,9 +84,11 @@ class Preview extends React.Component {
               
               console.log(paragraph)
             }
-          });
+         return null;
+         });
         }
-      });
+      return null;
+    });
 
       this.setState({ sentences: sentenceObj });
     }

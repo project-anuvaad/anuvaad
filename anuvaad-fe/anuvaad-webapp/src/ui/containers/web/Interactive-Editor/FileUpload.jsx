@@ -242,7 +242,7 @@ class PdfUpload extends Component {
         <br />
         <Typography className={classes.typographySubHeader}>{translate("pdf_upload.page.label.uploadMessage")}</Typography>
         <br />
-        <Paper className={classes.paper}>
+        <Paper  elevation={3} className={classes.paper}>
           <Grid container spacing={8}>
             <Grid item xs={12} sm={6} lg={6} xl={6}>
             <MuiThemeProvider theme={theme}>
