@@ -265,29 +265,6 @@ class Header extends React.Component {
                       }
                     />
                   </ListItem>
-                  {role && Array.isArray(role) && role.includes("dev") && (
-                    <div>
-                      <Divider className={classes.divider} />
-                      <ListItem
-                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "data-pipeline-tools" && themeAnuvaad.palette.primary.main }}
-                        button
-                        onClick={event => {
-                          this.handleDrawerClose();
-                          history.push("/data-pipeline-tools");
-                        }}
-                      >
-
-                        <ListItemText
-                          disableTypography
-                          primary={
-                            <Typography type="body2" style={{ color: currentMenu === "data-pipeline-tools" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              {translate('header.page.heading.dataPipeline')}
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                    </div>
-                  )}
                   {role && Array.isArray(role) && role.includes("user") && (
                     <div>
                       <Divider className={classes.divider} />
