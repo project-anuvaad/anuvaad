@@ -59,6 +59,8 @@ def merge_horizontal_blocks(in_df, configs, debug=False):
             block_df.at[index, 'font_size'] = children_df.iloc[-1]['font_size']
             block_df.at[index, 'font_family'] = children_df.iloc[-1]['font_family']
             block_df.at[index, 'font_color'] = children_df.iloc[-1]['font_color']
+            block_df.at[index, 'font_family_updated'] = children_df.iloc[-1]['font_family_updated']
+            block_df.at[index, 'font_size_updated'] = children_df.iloc[-1]['font_size_updated']
             block_df.at[index, 'children'] = children_df.to_json()
             index += 1
 

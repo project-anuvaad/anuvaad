@@ -65,7 +65,7 @@ def get_table_df(tables):
     return table_df
 
 
-def edit(dic, df,extract_by = 'starting_point'):
+def edit(dic, df,extract_by = 'Intersection'):
     left_key = 'text_left'
     top_key = 'text_top'
     width_key = 'text_width'
@@ -101,7 +101,34 @@ def extract_and_delete_region(page_df, table_df):
     return page_df, table_df
 
 
-def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths):
+def get_text_from_table_cells(table_dfs,p_dfs):
+
+    for page_index in range(len(p_dfs)) :
+        table_cells = []
+        table_df = table_dfs[page_index]
+        if len(table_df) > 0 :
+            for t_index , row in table_df.iterrows():
+                cells = row['children']
+                if cells != None :
+                    for cell in cells :
+                        cell.pop('index')
+                        if cell['text'] != None :
+                            text_df = pd.DataFrame(cell['text'])
+                            text_df['children'] = None
+                            cell['children'] = text_df.to_json()
+                            if len(text_df) > 0 :
+                                cell['text']   =  ' '.join( pd.DataFrame(cell['text'])['text'].values)
+                                table_cells.append(cell)
+
+            t_cells_df = pd.DataFrame(table_cells)
+
+            p_dfs[page_index] = pd.concat([p_dfs[page_index] , t_cells_df ])
+
+    return p_dfs
+
+
+
+def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths,check=False):
 
     log_info("TableExtractor service started", app_context.application_context)
     
@@ -118,13 +145,16 @@ def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths):
         try :
             table_image =  cv2.imread(bg_image_path, 0)
             bg_image    =  cv2.imread(bg_image_path)
-            
+            image_width , image_height = table_image.shape[1] , table_image.shape[0]
+            if check :
+                cv2.imwrite('bg_org.png',table_image)
         except Exception as e :
             log_error("Service TableExtractor Error in loading background html image", app_context.application_context, e)
             return None, None, None, None
 
-        table_image = mask_image(table_image, img_df, app_context.application_context, margin=2, fill=255)
-
+        table_image = mask_image(table_image, img_df,image_width,image_height ,app_context.application_context, margin=0, fill=255)
+        if check :
+            cv2.imwrite('bg_org_masked.png', table_image)
         try :
             tables = TableRepositories(table_image).response['response']['tables']
         except  Exception as e :
@@ -132,8 +162,8 @@ def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths):
              return None, None, None, None
 
         try :
-            Rects       = RectRepositories(table_image)
-            lines, _    = Rects.get_tables_and_lines()
+            rects       = RectRepositories(table_image)
+            lines, _    = rects.get_tables_and_lines()
             
         except  Exception as e :
             log_error("Service TableExtractor Error in finding lines", app_context.application_context, e)
@@ -148,14 +178,13 @@ def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths):
 
 
         #mask tables and lines from bg image
-        bg_image  = mask_image(bg_image,table_df,app_context.application_context,margin=2,fill=255)
-        bg_image = mask_image(bg_image, line_df, app_context.application_context, margin=2, fill=255)
-        h,w =   bg_image.shape[0] , bg_image.shape[1]
+        #bg_image  = mask_image(bg_image,table_df,image_width,image_height,app_context.application_context,margin=0,fill=255)
+        #bg_image = mask_image(bg_image, line_df,image_width,image_height, app_context.application_context, margin=0, fill=255)
         bg_binary = base64.b64encode(cv2.imencode('.png', bg_image)[1])#base64.b64encode(bg_image)
         
 
 
-        bg_df = pd.DataFrame([[0, 0, w, h, bg_binary,'IMAGE']],
+        bg_df = pd.DataFrame([[0, 0, image_width, image_height, bg_binary,'IMAGE']],
                           columns=['text_top', 'text_left', 'text_width', 'text_height', 'base64', 'attrib'])
 
         bg_dfs.append(bg_df)

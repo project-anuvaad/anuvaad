@@ -6,6 +6,8 @@ from src.utilities.xml_utils import (
     )
 
 import config
+from config import FONT_SIZE_CONFIG
+from config import FONT_CONFIG
 
 def get_document_width_height(pages):
     return int(pages[0].attrib['width']), int(pages[0].attrib['height'])
@@ -64,6 +66,37 @@ def get_text_tag(bold, italic):
 
     return attr
 
+def update_font_size(f_size, lang):
+    if f_size != None and lang != None:
+        if lang in FONT_SIZE_CONFIG.keys():
+            if f_size<FONT_SIZE_CONFIG[lang]['slab_1']['max'] and f_size>=FONT_SIZE_CONFIG[lang]['slab_1']['min']:
+                f_size = f_size - f_size*FONT_SIZE_CONFIG[lang]['slab_1']['ratio']
+
+            elif f_size<FONT_SIZE_CONFIG[lang]['slab_2']['max'] and f_size>=FONT_SIZE_CONFIG[lang]['slab_2']['min']:
+                f_size = f_size - f_size*FONT_SIZE_CONFIG[lang]['slab_2']['ratio']
+
+            elif f_size>=FONT_SIZE_CONFIG[lang]['slab_3']['min']:
+                f_size = f_size - f_size*FONT_SIZE_CONFIG[lang]['slab_3']['ratio']
+
+            return f_size
+
+        else:
+            return f_size
+    else:
+        return None
+
+def update_font_family(font_name, lang):
+    if font_name != None and lang != None:
+        if lang =='hi':
+            font_name = FONT_CONFIG['hi']
+            return font_name
+        else :
+            if '+' in font_name:
+                return font_name.split('+')[1]
+            return font_name
+    else :
+        return None
+
 def get_xml_info(filepath, lang='en'):
     xml             = get_xmltree(filepath)
     tag             = 'page'
@@ -84,7 +117,9 @@ def get_xml_info(filepath, lang='en'):
         f_colors    = []
         ts          = []
         attribs     = []
-        
+        f_familys_updated = []
+        f_sizes_updated   = []       
+         
         texts       = get_specific_tags(page, 'text')
         for index, text in enumerate(texts):
             bold   =  get_specific_tags(text, 'b')
@@ -100,10 +135,15 @@ def get_xml_info(filepath, lang='en'):
             t_ws.append(t_w)
             t_hs.append(t_h)
             f_sizes.append(f_size)
-            
-            
             f_familys.append(f_family)
             f_colors.append(f_color)
+
+            f_size_updated = update_font_size(f_size, lang)
+            f_sizes_updated.append(int(f_size_updated))
+
+            f_family_updated = update_font_family(f_family, lang)
+            f_familys_updated.append(f_family_updated)
+            
             ts.append(t)
             attr = get_text_tag(bold, italic)
             attribs.append(attr)
@@ -111,14 +151,14 @@ def get_xml_info(filepath, lang='en'):
             
         
         df = pd.DataFrame(list(zip(t_ts, t_ls, t_ws, t_hs,
-                                        ts, f_sizes, f_familys, f_colors, attribs)), 
+                                        ts, f_sizes, f_familys, f_colors, attribs,f_familys_updated, f_sizes_updated )), 
                           columns =['text_top', 'text_left', 'text_width', 'text_height',
-                                      'text', 'font_size', 'font_family', 'font_color', 'attrib'])
+                                      'text', 'font_size', 'font_family', 'font_color', 'attrib','font_family_updated','font_size_updated'])
         '''
             remove rows that are redundant.
         '''
         df  = remove_redundant_rows(df)
-
+        #df['children'] = None
         df.reset_index(inplace=True)
         df.rename(columns={'index':'xml_index'},inplace=True)
         dfs.append(normalize_page_xml_df(df, width, height))
