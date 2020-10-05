@@ -5,10 +5,10 @@ class SentenceModel(object):
     @staticmethod
     def get_block_by_s_id(user_id, s_id):
         collections = get_db()['file_content']
-        doc         = collections.find_one({'$and': [{'created_by': user_id}, { 'data.tokenized_sentences': {'$elemMatch': {'s_id': {'$eq': s_id}}}}]})
-        if doc == None:
-            return False
-        return doc
+        docs         = collections.find({'$and': [{'created_by': user_id}, { 'data.tokenized_sentences': {'$elemMatch': {'s_id': {'$eq': s_id}}}}]})
+        for doc in docs:
+            return doc
+        return None
 
     def get_sentence_by_s_id(user_id, s_id):
         collections = get_db()['file_content']

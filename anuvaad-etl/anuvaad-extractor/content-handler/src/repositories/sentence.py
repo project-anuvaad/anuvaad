@@ -1,5 +1,5 @@
-from flask import jsonify
 import config
+import json
 from models import SentenceModel
 
 class SentenceRepositories:
@@ -17,6 +17,9 @@ class SentenceRepositories:
                 return False
         return True
 
-
-    def get_sentence_block(s_id):
-        pass
+    @staticmethod
+    def get_sentence_block(user_id, s_id):
+        result = SentenceModel.get_block_by_s_id(user_id, s_id)
+        del result['_id']
+        del result['created_on']
+        return result
