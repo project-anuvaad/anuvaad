@@ -1,4 +1,6 @@
-from db.connection_manager  import get_db
+from utilities import MODULE_CONTEXT
+from db import connect_db, get_db
+from anuvaad_auditor.loghandler import log_info, log_exception
 
 class BlockModel(object):
 
@@ -14,7 +16,7 @@ class BlockModel(object):
             return True
 
         except Exception as e:
-            print(errors.details)
+            log_exception("db connection exception ",  MODULE_CONTEXT, e)
             return False
 
     @staticmethod
@@ -25,7 +27,7 @@ class BlockModel(object):
             if len(blocks) == len(results.inserted_ids):
                 return True
         except Exception as e:
-            print(errors.details)
+            log_exception("db connection exception ",  MODULE_CONTEXT, e)
             return False
 
     @staticmethod
@@ -38,6 +40,7 @@ class BlockModel(object):
             })
             return docs
         except Exception as e:
+            log_exception("db connection exception ",  MODULE_CONTEXT, e)
             return False
         
 
@@ -51,6 +54,7 @@ class BlockModel(object):
                                 ])
             return results
         except Exception as e:
+            log_exception("db connection exception ",  MODULE_CONTEXT, e)
             return False
 
     @staticmethod
@@ -75,4 +79,5 @@ class BlockModel(object):
 
             return count
         except Exception as e:
+            log_exception("db connection exception ",  MODULE_CONTEXT, e)
             return 0
