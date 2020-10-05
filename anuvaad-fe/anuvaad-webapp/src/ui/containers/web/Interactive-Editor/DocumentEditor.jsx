@@ -64,7 +64,9 @@ class PdfFileEditor extends React.Component {
       scrollToId: "",
       editableId: "",
       showNextSuggestion: false,
-      workflow: "DP_WFLOW_S_TTR"
+      workflow: "DP_WFLOW_S_TTR",
+      scrollTransMode: false,
+      scrollPageNo: ""
     };
   }
   getSnapshotBeforeUpdate(prevProps, prevState) {
@@ -146,10 +148,27 @@ class PdfFileEditor extends React.Component {
         });
       }
     }
+
+    if (!this.state.tokenized && this.state.scrollPageNo > 1 && this.state.scrollTransMode) {
+      let page = this.state.scrollPageNo
+      let sentences = this.state.sentences
+
+      let height = 0
+      sentences && Array.isArray(sentences) && sentences.length > 0 && sentences.map((sentence, i) => {
+        if (sentence.page_no < page) {
+          height += sentence.page_height
+        }
+      })
+      this.scrollPage(height)
+    }
+  }
+
+  scrollPage(heightToBescrolled) {
+    window.scrollTo(0, heightToBescrolled);
+    this.setState({ scrollTransMode: false })
   }
 
   getPageId(blocks) {
-    debugger
     let page_ids = [];
     blocks.forEach(element => {
       page_ids.push(parseInt(element.split("_")[1]));
@@ -184,7 +203,7 @@ class PdfFileEditor extends React.Component {
     this.setState({ buttonDisable: false, pdfPage: this.state.currentPage + 1 });
   }
 
-  handleOnMouseEnter(sentenceId, parent, yOffset, block_identifier, has_sibling) {
+  handleOnMouseEnter(sentenceId, parent, yOffset, block_identifier, has_sibling, pageNo) {
     this.setState({
       hoveredSentence: sentenceId,
       hoveredTableId: "",
@@ -192,7 +211,10 @@ class PdfFileEditor extends React.Component {
       scrollToId: sentenceId,
       yOffset: yOffset,
       block_identifier: block_identifier,
-      has_sibling: has_sibling
+      has_sibling: has_sibling,
+      scrollPageNo: pageNo,
+      scrollToPage: this.state.scrollToPage !== pageNo && pageNo,
+      // pageNo: this.state.pageNo !== pageNo && pageNo
     });
   }
 
@@ -337,7 +359,7 @@ class PdfFileEditor extends React.Component {
     this.setState({ targetText: sentenceObj, showNextSuggestion: true });
   }
 
-  handleDoubleClickTarget(event, id, text, pageDetails, block_id) {
+  handleDoubleClickTarget(event, id, text, pageDetails, block_id, pageNo) {
     this.setState({ targetSelected: id, targetText: text, pageDetails, hoveredSentence: block_id });
   }
   handleCheck(block, evt, checkValue, diffValue) {
@@ -400,7 +422,8 @@ class PdfFileEditor extends React.Component {
       targetSelected: "",
       pageDetails: "",
       edited: false,
-      mergeButton: "Merge"
+      mergeButton: "Merge",
+      scrollTransMode: true
     });
   }
 
@@ -413,7 +436,12 @@ class PdfFileEditor extends React.Component {
   };
 
   handlePageChange(value) {
-    this.setState({ pageNo: Number(this.state.pageNo) + Number(value), scrollToPage: Number(this.state.pageNo) + Number(value) });
+    let page = Number(this.state.pageNo) + Number(value)
+    this.setState({
+      pageNo: page,
+      scrollToPage: page,
+      scrollPageNo: page
+    });
   }
 
   handleZoomChange = value => {
