@@ -92,10 +92,10 @@ class FileContentRepositories:
 
         for block in blocks:
             if 'data_type' in list(block.keys()) and block['data_type'] == 'text_blocks':
-                updated_blocks.append(FileContentRepositories.update_block_info(block, record_id, block['page_info']['page_no'], 'text_blocks', user_id))
+                updated_blocks.append(FileContentRepositories.update_block_info(block, block['record_id'], block['page_info']['page_no'], 'text_blocks', user_id))
 
         if len(updated_blocks) > 0:
             for block in updated_blocks:
-                if BlockModel.update_block(user_id, record_id, block) == False:
+                if BlockModel.update_block(user_id, block['record_id'], block) == False:
                     return False
         return True

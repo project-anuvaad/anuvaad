@@ -51,12 +51,12 @@ class FileContentUpdateResource(Resource):
 
         args    = parser.parse_args()
         try:
-            pages = ast.literal_eval(args['blocks'])
+            blocks = ast.literal_eval(args['blocks'])
         except expression as identifier:
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
         
-        result  = FileContentRepositories.update(args['ad-userid'], None, args['blocks'])
+        result  = FileContentRepositories.update(args['ad-userid'], None, blocks)
 
         if result == False:
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)

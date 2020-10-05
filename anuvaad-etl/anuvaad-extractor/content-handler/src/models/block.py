@@ -1,5 +1,4 @@
 from db.connection_manager  import get_db
-import pymongo.errors as DB_ERRORS
 
 class BlockModel(object):
 
@@ -7,14 +6,14 @@ class BlockModel(object):
     def update_block(user_id, record_id, block):
         try:
             collections = get_db()['file_content']
-            results     = collections.update({'$and': [{'created_by': user_id}, {'record_id': record_id}, { 'data.block_id': {'$eq': block['block_id']} }]},
+            results     = collections.update({'$and': [{'created_by': user_id}, {'record_id': record_id}, { 'data.block_id': {'$eq': block['data']['block_id']} }]},
             { '$set': block }, upsert=True)
 
             if 'writeError' in list(results.keys()):
                 return False
             return True
 
-        except DB_ERRORS as errors:
+        except Exception as e:
             print(errors.details)
             return False
 
@@ -25,45 +24,55 @@ class BlockModel(object):
             results     = collections.insert_many(blocks)
             if len(blocks) == len(results.inserted_ids):
                 return True
-        except DB_ERRORS as errors:
+        except Exception as e:
             print(errors.details)
             return False
 
     @staticmethod
     def get_all_blocks(user_id, record_id):
-        collections = get_db()['file_content']
-        docs        = collections.find({
-            'record_id': record_id,
-            'created_by': user_id
-        })
-        return docs
+        try:
+            collections = get_db()['file_content']
+            docs        = collections.find({
+                'record_id': record_id,
+                'created_by': user_id
+            })
+            return docs
+        except Exception as e:
+            return False
+        
 
     @staticmethod
     def get_blocks_by_page(user_id, record_id, page_number):
-        collections = get_db()['file_content']
-        results        = collections.aggregate([
-                            { '$match' : { 'page_no': page_number, 'record_id': record_id, 'created_by': user_id } },
-                            { '$group': { '_id': '$data_type', 'data': { '$push': "$data" } } }
-                            ])
-        return results
+        try:
+            collections = get_db()['file_content']
+            results        = collections.aggregate([
+                                { '$match' : { 'page_no': page_number, 'record_id': record_id, 'created_by': user_id } },
+                                { '$group': { '_id': '$data_type', 'data': { '$push': "$data" } } }
+                                ])
+            return results
+        except Exception as e:
+            return False
 
     @staticmethod
     def get_document_total_page_count(user_id, record_id):
-        collections = get_db()['file_content']
-        results     = collections.aggregate([
-            { '$match' : { 'record_id': record_id, 'created_by': user_id } },
-            {
-                '$group':
-                    {
-                        '_id': '$record_id',
-                        'page_count': { '$max': "$page_no" }
-                    }
-            }
-        ])
+        try:
+            collections = get_db()['file_content']
+            results     = collections.aggregate([
+                { '$match' : { 'record_id': record_id, 'created_by': user_id } },
+                {
+                    '$group':
+                        {
+                            '_id': '$record_id',
+                            'page_count': { '$max': "$page_no" }
+                        }
+                }
+            ])
 
-        count = 0
-        for result in results:
-            count = result['page_count']
-            break
+            count = 0
+            for result in results:
+                count = result['page_count']
+                break
 
-        return count
+            return count
+        except Exception as e:
+            return 0

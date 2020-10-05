@@ -6,13 +6,13 @@ from resources import FileContentGetResource, FileContentSaveResource, FileConte
 FILE_CONTENT_BLUEPRINT = Blueprint("file_content", __name__)
 
 Api(FILE_CONTENT_BLUEPRINT).add_resource(
-    FileContentGetResource, "/ch/fetch-content"
+    FileContentGetResource, "/fetch-content"
 )
 
 Api(FILE_CONTENT_BLUEPRINT).add_resource(
-    FileContentSaveResource, "/ch/save-content"
+    FileContentSaveResource, "/save-content"
 )
 
 Api(FILE_CONTENT_BLUEPRINT).add_resource(
-    FileContentUpdateResource, "/ch/update-content"
+    FileContentUpdateResource, "/update-content"
 )
