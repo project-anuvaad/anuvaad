@@ -1,5 +1,5 @@
 from utilities import MODULE_CONTEXT
-from db import connect_db, get_db
+from db import get_db
 from anuvaad_auditor.loghandler import log_info, log_exception
 
 class SentenceModel(object):
