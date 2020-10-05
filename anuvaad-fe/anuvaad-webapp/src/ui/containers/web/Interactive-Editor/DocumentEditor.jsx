@@ -555,7 +555,7 @@ class PdfFileEditor extends React.Component {
             <Grid
               container
               spacing={2}
-              style={{ marginTop: "-10px", padding: "10px 24px 12px ",width:"100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}
+              style={{ marginTop: "-20px", padding: "25px 24px 0px ", width: "100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}
             >
               <Grid item xs={12} sm={6} lg={2} xl={2} className="GridFileDetails">
                 <Button
@@ -657,7 +657,7 @@ class PdfFileEditor extends React.Component {
                 <Paper elevation={2}>
                   {!this.state.tokenized ?
                     <Toolbar style={{ color: '#000000', background: this.state.pageDetails === "target" ? "#989E9C" : '#ECEFF1' }}>
-                      <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: this.state.pageDetails === "target" ? "white" :"#1C9AB7" }}>
+                      <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: this.state.pageDetails === "target" ? "white" : "#1C9AB7" }}>
                         Translated Document
                       </Typography>
                     </Toolbar>
@@ -713,7 +713,7 @@ class PdfFileEditor extends React.Component {
               </Grid>
             </Grid>
 
-            <Grid container spacing={2} style={{ padding: "142px 24px 12px 24px" }}>
+            <Grid container spacing={2} style={{ padding: "142px 24px 0px 24px" }}>
               <Grid item xs={12} sm={6} lg={6} xl={6}>
                 <Paper
                   elevation={this.state.edited ? 12 : 2}
@@ -721,24 +721,6 @@ class PdfFileEditor extends React.Component {
                     // paddingBottom: "12px"
                   }}
                 >
-                  {/* <Toolbar style={{ color: '#000000', background: this.state.edited ? "#989E9C" : '#ECEFF1' }}>
-                    <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: "#1C9AB7" }}>
-                      Extracted Document
-                    </Typography>
-
-                    {this.state.tokenized && !this.state.apiCall && (
-                      <Toolbar
-                        onClick={event => {
-                          this.handleClick(this.state.mergeButton === "save" ? "Merge" : "save");
-                        }}
-                        style={{ paddingRight: "0px" }}
-                      >
-                        <Typography value="" variant="subtitle2" style={{ cursor: "pointer", color: "#233466", paddingLeft: "7px" }}>
-                          {this.state.mergeButton == "save" ? "Save" : "Merge Blocks"}
-                        </Typography>
-                      </Toolbar>
-                    )}
-                  </Toolbar> */}
                   <div
                     id="scrollableDiv"
                     style={
@@ -833,7 +815,7 @@ class PdfFileEditor extends React.Component {
                     paddingBottom: "12px",
                     paddingTop: "12px",
                     // height: "98%"
-                  }: {}}
+                  } : {}}
                 >
                   {this.state.tokenized ? (
                     <DocPreview
