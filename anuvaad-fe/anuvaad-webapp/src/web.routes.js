@@ -27,9 +27,7 @@ import GraderReport from "./ui/containers/web/GraderReport";
 import GraderTranslate from "./ui/containers/web/SentenceTranslate";
 import FileTranslate from "./ui/containers/web/GraderTranslate";
 import ComparisonReport from "./ui/containers/web/ComparisonReport";
-import ExistingWorkspaceDetails from "./ui/containers/web/Tool1-Pipeline/ExtractionSteps";
-import ExtractionSteps from "./ui/containers/web/Tool1-Pipeline/NewSentenceExtraction";
-import NewSentenceExtraction from "./ui/containers/web/Tool1-Pipeline/NewSentenceExtraction";
+
 import PdfTranslate from "./ui/containers/web/PdfTranslate";
 import EditTranslate from "./ui/containers/web/EditTranslate";
 import ViewTranslate from "./ui/containers/web/ViewTranslate";
@@ -42,33 +40,6 @@ import AddQuestion from "./ui/containers/web/AddQuestion";
 import TranslatePresident from "./ui/containers/web/TranslateJudgement";
 import DataPipeline from "./ui/containers/web/DataPipeline";
 import TPresident from "./ui/containers/web/TPresident";
-import ExistingWorkspace from "./ui/containers/web/Tool1-Pipeline/ExistingWorkspace";
-import SentenceExtraction from "./ui/containers/web/Tool1-Pipeline/SentenceExtraction";
-import Tool2SentenceExtraction from "./ui/containers/web/Tool2-Pipeline/SentenceExtraction";
-import Tool3SentenceExtraction from "./ui/containers/web/Tool3-Pipeline/SentenceExtraction";
-import Tool4SentenceExtraction from "./ui/containers/web/Tool4-Pipeline/SentenceExtraction";
-import TockenExtraction from "./ui/containers/web/Tool1-Pipeline/TockenExtraction";
-import ApplyTocken from "./ui/containers/web/Tool1-Pipeline/ApplyTocken";
-import UploadTocken from "./ui/containers/web/Tool1-Pipeline/UploadTocken";
-import Tool2ExistingWorkspace from "./ui/containers/web/Tool2-Pipeline/ExistingWorkspace";
-import Tool3ExistingWorkspace from "./ui/containers/web/Tool3-Pipeline/ExistingWorkspace";
-import Tool4ExistingWorkspace from "./ui/containers/web/Tool4-Pipeline/ExistingWorkspace";
-import CreateWorkspace from "./ui/containers/web/Tool2-Pipeline/CreateWorkspace";
-import DataSource from "./ui/containers/web/Tool1-Pipeline/DataSource";
-import Stage3DataPipelineDownload from "./ui/containers/web/Tool3-Pipeline/DataPipelineDownload";
-import DataPipelineDownload from "./ui/containers/web/Tool2-Pipeline/DataPipelineDownload";
-import SentenceQualityCheck from "./ui/containers/web/Tool3-Pipeline/SentenceQualityCheck";
-import Tool3CreateWorkspace from "./ui/containers/web/Tool3-Pipeline/CreateWorkspace";
-import Tool4CreateWorkspace from "./ui/containers/web/Tool4-Pipeline/CreateWorkspace";
-import DownloadSentence from "./ui/containers/web/Tool2-Pipeline/DownloadSentence";
-import WorkspaceDetails from "./ui/containers/web/Tool2-Pipeline/WorkspaceDetails";
-import Tool3WorkspaceDetails from "./ui/containers/web/Tool3-Pipeline/WorkspaceDetails";
-import Tool3CreateDataSource from "./ui/containers/web/Tool3-Pipeline/CreateDataSource";
-import Tool2CreateDataSource from "./ui/containers/web/Tool2-Pipeline/CreateDataSource";
-import Tool4WorkspaceDetails from "./ui/containers/web/Tool4-Pipeline/WorkspaceDetails";
-import Tool3DataSource from "./ui/containers/web/Tool3-Pipeline/DataSource";
-import Tool4DataSource from "./ui/containers/web/Tool4-Pipeline/DataSource";
-import Stage2DataSource from "./ui/containers/web/Tool2-Pipeline/DataSource";
 import FeedbackForm from "./ui/containers/web/FeedbackForm";
 import PdfUpload from "./ui/containers/web/PdfUpload";
 import PdfToDoc from "./ui/containers/web/PdfToDoc";
@@ -510,257 +481,9 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="feedback"
             />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/existing-workspace`}
-              dontShowLoader
-              title={translate('webroutes.page.title.stage1Toolchain')}
-              userRoles={["dev"]}
-              component={ExistingWorkspace}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/workspace-details`}
-              dontShowLoader
-              title={translate('webroutes.page.title.stage1Toolchain')}
-              userRoles={["dev"]}
-              component={ExistingWorkspaceDetails}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/apply-token/:name/:session_id`}
-              title={translate('webroutes.page.title.stage1Toolchain')}
-              userRoles={["dev"]}
-              component={ApplyTocken}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/data-pipeline-tools`}
-              title={translate('webroutes.page.title.dataPipeLine')}
-              userRoles={["dev"]}
-              component={DataPipeline}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/upload-token/:name/:session_id`}
-              title={translate('webroutes.page.title.stage1Toolchain')}
-              userRoles={["dev"]}
-              component={UploadTocken}
-              authenticate={this.authenticateUser}
-              currentMenu="upload-token"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/sentence-extraction/:name/:session_id`}
-              title={translate('webroutes.page.title.stage1Toolchain')}
-              userRoles={["dev"]}
-              component={SentenceExtraction}
-              authenticate={this.authenticateUser}
-              currentMenu="sentence-extraction"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/new-extraction`}
-              title={translate('webroutes.page.title.stage1Toolchain')}
-              userRoles={["dev"]}
-              component={NewSentenceExtraction}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/token-extraction`}
-              title={translate('webroutes.page.title.stage1Toolchain')}
-              userRoles={["dev"]}
-              component={TockenExtraction}
-              authenticate={this.authenticateUser}
-              currentMenu="token-extraction"
-            />
 
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/sentence-extraction`}
-              title={translate('webroutes.page.title.stage1Toolchain')}
-              userRoles={["dev"]}
-              component={ExtractionSteps}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
 
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage2/download-sentence`}
-              title={translate('webroutes.page.title.stage2Toolchain')}
-              userRoles={["dev"]}
-              component={DownloadSentence}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage2/existing-workspace`}
-              dontShowLoader
-              title={translate('webroutes.page.title.stage2Toolchain')}
-              userRoles={["dev"]}
-              component={Tool2ExistingWorkspace}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage3/existing-workspace`}
-              dontShowLoader
-              title={translate('webroutes.page.title.stage3Toolchain')}
-              userRoles={["dev"]}
-              component={Tool3ExistingWorkspace}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage2/sentence-extraction/:name/:session_id`}
-              title={translate('webroutes.page.title.stage2Toolchain')}
-              userRoles={["dev"]}
-              component={Tool2SentenceExtraction}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage3/sentence-extraction/:name/:session_id`}
-              title={translate('webroutes.page.title.stage3Toolchain')}
-              userRoles={["dev"]}
-              component={Tool3SentenceExtraction}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage4/sentence-extraction/:name/:session_id`}
-              title={translate('webroutes.page.title.stage4Toolchain')}
-              userRoles={["dev"]}
-              component={Tool4SentenceExtraction}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage2/workspace-details`}
-              dontShowLoader
-              title={translate('webroutes.page.title.stage2Toolchain')}
-              userRoles={["dev"]}
-              component={WorkspaceDetails}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage3/create-workspace`}
-              title={translate('webroutes.page.title.stage3Toolchain')}
-              userRoles={["dev"]}
-              component={Tool3CreateWorkspace}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage4/create-workspace`}
-              title={translate('webroutes.page.title.stage4Toolchain')}
-              userRoles={["dev"]}
-              component={Tool4CreateWorkspace}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage3/sentence-qaulity/:name/:session_id`}
-              title={translate('webroutes.page.title.stage3Toolchain')}
-              userRoles={["dev"]}
-              component={SentenceQualityCheck}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage3/workspace-details`}
-              dontShowLoader
-              title={translate('webroutes.page.title.stage3Toolchain')}
-              userRoles={["dev"]}
-              component={Tool3WorkspaceDetails}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage4/workspace-details`}
-              dontShowLoader
-              title={translate('webroutes.page.title.stage4Toolchain')}
-              userRoles={["dev"]}
-              component={Tool4WorkspaceDetails}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage2/create-workspace`}
-              title={translate('webroutes.page.title.stage2Toolchain')}
-              userRoles={["dev"]}
-              component={CreateWorkspace}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage2/create-datasource`}
-              title="STAGE 2, DATASOURCE"
-              userRoles={["dev"]}
-              component={Tool2CreateDataSource}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage3/create-datasource`}
-              title="STAGE 3, DATASOURCE"
-              userRoles={["dev"]}
-              component={Tool3CreateDataSource}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage4/create-datasource`}
-              title="STAGE 4, DATASOURCE"
-              userRoles={["dev"]}
-              component={Tool3CreateDataSource}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage2/datasource/:name/:session_id`}
-              title={translate('webroutes.page.title.stage2dataSource')}
-              userRoles={["dev"]}
-              component={DataPipelineDownload}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage4/existing-workspace`}
-              dontShowLoader
-              title={translate('webroutes.page.title.stage4Toolchain')}
-              userRoles={["dev"]}
-              component={Tool4ExistingWorkspace}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/datasource`}
-              title={translate('webroutes.page.title.stage1dataSource')}
-              userRoles={["dev"]}
-              component={DataSource}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
+            
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/feedback-form/:page`}
               title={translate('webroutes.page.title.feedbackForm')}
@@ -769,34 +492,7 @@ class AppRoutes extends React.Component {
               currentMenu="feedback-form"
             />
 
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage3/datasource/:name/:session_id`}
-              title={translate('webroutes.page.title.stage3dataSource')}
-              userRoles={["dev"]}
-              component={Stage3DataPipelineDownload}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage2/datasource`}
-              dontShowLoader
-              title={translate('webroutes.page.title.stage2dataSource')}
-              userRoles={["dev"]}
-              component={Stage2DataSource}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage3/datasource`}
-              dontShowLoader
-              title={translate('webroutes.page.title.stage3dataSource')}
-              userRoles={["dev"]}
-              component={Tool3DataSource}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
-            />
+           
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/anuvaad-editor`}
               title="Anuvaad Editor"
@@ -856,15 +552,6 @@ class AppRoutes extends React.Component {
               component={InteractivePreview}
               authenticate={this.authenticateUser}
               currentMenu="view-pdf"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/stage4/datasource`}
-              dontShowLoader
-              title={translate('webroutes.page.title.stage4dataSource')}
-              userRoles={["dev"]}
-              component={Tool4DataSource}
-              authenticate={this.authenticateUser}
-              currentMenu="data-pipeline-tools"
             />
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/pdf-file-editor`}
