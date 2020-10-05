@@ -1,4 +1,5 @@
 
+LOG_WITHOUT_CONTEXT = {'metadata':{'module':'CONTENT-HANDLER'}}
 
 def init():
     global app_context
