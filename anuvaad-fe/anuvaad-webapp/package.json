@@ -87,16 +87,7 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
-    "babel-plugin-transform-remove-console": "^6.9.4",
-    "babel-preset-react-native": "5.0.2",
-    "commit-msg": "^0.2.3",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2",
-    "enzyme-to-json": "^3.4.4",
-    "eslint": "^7.10.0",
-    "lint-staged": "^7.3.0",
-    "react-csv-downloader": "^1.4.0",
-    "react-test-renderer": "16.4.1",
+    "eslint": "^6.6.0",
     "webpack": "4.42.0"
   },
   "scripts": {
