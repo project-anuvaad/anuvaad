@@ -28,16 +28,16 @@ def next_gen_children(df,index):
         pass
     return flag    
 
-def children_condition(block_df,children_df,index,children_flag):
+def children_condition(block_df,children_df,index,children_flag,lang):
     try:
-        
+
         top          = children_df['text_top'].min()
         left         = children_df['text_left'].min()
         width        = children_df[['text_left', 'text_width']].sum(axis=1).max() - left
         avg_line_height       = int(sum(children_df['text_height'])/ len(children_df['text_height']))
         height       = (children_df.iloc[-1]['text_top'] + children_df.iloc[-1]['text_height']) - children_df['text_top'].min()
         block_df.at[index, 'text_top']     = top
-        block_df.at[index, 'avg_line_height']     = avg_line_height
+        block_df.at[index, 'avg_line_height']  = avg_line_height
         block_df.at[index, 'text_left']    = left
         block_df.at[index, 'text_height']  = height
         block_df.at[index, 'text_width']   = width
@@ -45,9 +45,16 @@ def children_condition(block_df,children_df,index,children_flag):
         block_df.at[index, 'xml_index']    = children_df['xml_index'].min()
         block_df.at[index, 'font_size']    = children_df['font_size'].max()
         block_df.at[index, 'font_family']  = most_frequent(children_df['font_family'])
+        block_df.at[index, 'font_size_updated']    = children_df['font_size_updated'].max()
+        block_df.at[index, 'font_family_updated']  = most_frequent(children_df['font_family_updated'])
         block_df.at[index, 'font_color']   = most_frequent(children_df['font_color'])
+        if (lang!='en') & ('word_coords' in children_df.columns) :
+             block_df.at[index, 'word_coords']  = children_df['word_coords'].values[0]
+
         if children_flag==True:
             block_df = sub_children(block_df,children_df,index)
+            if len(children_df)>1 and lang!='en':
+                block_df.at[index, 'word_coords']  = None
         else:
             if len(children_df)>1:
                 block_df.at[index, 'children']     = children_df.to_json()
@@ -161,7 +168,7 @@ def left_right_condition(flag,index,df,skip,current_line,left1,right1,para_right
     return flag,skip
 
 
-def left_right_margin(children, block_configs):
+def left_right_margin(children, block_configs,lang):
     try:
         para_left   = children['text_left'];  para_width = children['text_width'];  para_right = para_left+para_width
         children_df = children['children']
@@ -179,7 +186,7 @@ def left_right_margin(children, block_configs):
                     c_df = pd.read_json(df['children'][index])
                     children_flag = False
                     for i in range(len(c_df)):
-                        block_df, block_index = children_condition(block_df,c_df[i:i+1],block_index,children_flag)
+                        block_df, block_index = children_condition(block_df,c_df[i:i+1],block_index,children_flag,lang)
                     continue
                 
             left1 = int(df['text_left'][index]);  right1 = int(df['text_width'][index]+left1);  current_line = int(df['text_width'][index]);  skip=0
@@ -192,7 +199,7 @@ def left_right_margin(children, block_configs):
                 if len(children_df) != len(df):
                     children_flag = True
                     
-                block_df, block_index = children_condition(block_df,children_df,block_index,children_flag)
+                block_df, block_index = children_condition(block_df,children_df,block_index,children_flag,lang)
                 break
             else:
                 children_flag = False
@@ -200,7 +207,7 @@ def left_right_margin(children, block_configs):
                 if len(children_df) != len(df):
                     children_flag = True
                     
-                block_df, block_index = children_condition(block_df,children_df,block_index,children_flag)
+                block_df, block_index = children_condition(block_df,children_df,block_index,children_flag,lang)
         block_df.loc[block_df['avg_line_height'].isnull(),'avg_line_height'] = block_df['text_height']
         
     except Exception as e :

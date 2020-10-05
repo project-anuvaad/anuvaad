@@ -160,7 +160,6 @@ class EditorPaper extends React.Component {
   }
 
   newFetchSentence(sentence, prevSentence, index, noOfPage, sArray) {
-    console.log(noOfPage)
     let padding = Number(sArray[0].x) * 100 / Number(sArray[0].page_width);
     if (this.state.columns > 1 && padding > 40) {
       padding = 10

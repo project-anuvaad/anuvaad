@@ -1,4 +1,4 @@
-FROM anuvaadio/python3.6-opencv-4.1.0:5
+FROM anuvaadio/python3.6-opencv-4.1.0:7
 COPY / /app
 WORKDIR /app
 ARG D_F
@@ -18,13 +18,12 @@ ENV DEBUG_FLUSH=$D_F
 #         clang-dev \
 #         linux-headers
 
-RUN apk add tesseract-ocr
-RUN tesseract -v
-RUN apk add --upgrade tesseract-ocr-data-hin
-RUN apk add --upgrade tesseract-ocr-data-tam
-RUN apk add --upgrade tesseract-ocr-data-kan
 RUN pip install -r requirements.txt
-RUN apk update && apk add poppler-utils
+#RUN apk update && apk add poppler-utils
+RUN apk update && apk add curl
+RUN curl -L -o /usr/share/tessdata/Devanagari.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/script/Devanagari.traineddata
+RUN curl -L -o /usr/share/tessdata/eng.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/eng.traineddata
+RUN curl -L -o /usr/share/tessdata/hin.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/hin.traineddata
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
 ENTRYPOINT ["sh","/usr/bin/start.sh"]

@@ -9,3 +9,5 @@ exp_result.py
 .idea
 src/notebooks/sample-data
 upload
+venv
+.idea
