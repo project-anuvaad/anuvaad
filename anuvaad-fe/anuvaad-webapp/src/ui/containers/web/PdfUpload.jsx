@@ -19,6 +19,37 @@ import SimpleSelect from "../../components/web/common/SimpleSelect";
 import FetchModel from "../../../flux/actions/apis/fetchmodel";
 import FetchLanguage from "../../../flux/actions/apis/fetchlanguage";
 import PdfUploadStyles from "../../styles/web/PdfUploadStyles";
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+
+const theme = createMuiTheme({
+  overrides: {
+    MuiDropzoneArea: {
+      root: {
+        paddingTop: '15%',
+        top: "auto",
+        width:'98%',
+        minHeight:'320px',
+        height: "95.3%",
+        borderColor:'#1C9AB7',
+        backgroundColor: '#F5F9FA',
+        border: '1px dashed #1C9AB7',
+        fontColor:'#1C9AB7',
+        marginTop:"3%",
+        marginLeft:'1%',
+        "& svg":{color:'#1C9AB7',},
+        "& p": {
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          fontSize: "19px",
+          color:'#1C9AB7',
+          
+        }
+      },
+      
+    }
+  }
+});
 
 class PdfUpload extends Component {
   constructor() {
@@ -199,10 +230,11 @@ class PdfUpload extends Component {
             {translate("pdf_upload.page.label.uploadMessage")}
         </Typography >
         <br />
-        <Paper className={classes.paper}>
+        <Paper elevation={3} className={classes.paper}>
           <Grid container spacing={8}>
 
             <Grid item xs={12} sm={6} lg={6} xl={6} >
+            <MuiThemeProvider theme={theme}>
               <DropzoneArea className={classes.DropZoneArea}
                 showPreviewsInDropzone
                 acceptedFiles={[".pdf"]}
@@ -213,6 +245,7 @@ class PdfUpload extends Component {
                 dropzoneText={translate("common.page.label.addDropFile")}
                 onDelete={this.handleDelete.bind(this)}
               />
+               </MuiThemeProvider>
             </Grid>
 
             <Grid item xs={12} sm={6} lg={6} xl={6}  >
@@ -262,10 +295,11 @@ class PdfUpload extends Component {
           </Grid>
           <br/><br/>
           <Grid container spacing={24} className={classes.grid}>
-                <Typography gutterBottom variant="h5" className={classes.typography}>
+
+                <Typography gutterBottom="true" variant="h5" className={classes.typography}>
                  Strategy<span className={classes.span}>*</span>
                 </Typography>
-              <Grid item xs={12} sm={12} lg={12} xl={12}  >
+              <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.simpleselect} >
                   <SimpleSelect
                   id="outlined-age-simple"
                   selectValue="language_code"
@@ -304,7 +338,7 @@ class PdfUpload extends Component {
 <Button
     variant="contained"
     color="primary"
-    className={classes.button} size="large" 
+    className={classes.button1} size="large" 
     onClick={() => {
       history.push(`${process.env.PUBLIC_URL}/view-pdf`);
     }}
@@ -318,7 +352,7 @@ class PdfUpload extends Component {
   <Grid container spacing={24} className={classes.grid}>
    
   <Grid item xs={12} sm={12} lg={12} xl={12}  >
-  <Button variant="contained" color="primary" className={classes.button} size="large" onClick={this.handleSubmit.bind(this)}>
+  <Button variant="contained" color="primary" className={classes.button2} size="large" onClick={this.handleSubmit.bind(this)}>
 {translate("common.page.button.upload")}
 </Button>
   </Grid>

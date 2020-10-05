@@ -5,25 +5,19 @@ import { connect } from "react-redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import SourceView from "./DocumentSource";
 import Grid from "@material-ui/core/Grid";
-import CloseIcon from "@material-ui/icons/Close";
 import Button from "@material-ui/core/Fab";
 import { translate } from "../../../../assets/localisation";
 import history from "../../../../web.history";
-import FileDetails from "../../../../flux/actions/apis/fetch_filedetails";
 import ClearContent from "../../../../flux/actions/apis/clearcontent";
 import FileContent from "../../../../flux/actions/apis/fetchcontent";
 import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import Toolbar from "@material-ui/core/Toolbar";
-import PdfPreview from "./PdfPreview";
 import DocPreview from "./DocPreview";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Arrow from "@material-ui/icons/ArrowUpward";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import GetAppIcon from "@material-ui/icons/GetApp";
-import DoneIcon from "@material-ui/icons/Done";
 import Typography from "@material-ui/core/Typography";
 import Snackbar from "../../../components/web/common/Snackbar";
 import WorkFlow from "../../../../flux/actions/apis/fileupload";
@@ -31,7 +25,6 @@ import TextButton from '@material-ui/core/Button';
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
-
 
 class PdfFileEditor extends React.Component {
   constructor(props) {
@@ -64,7 +57,9 @@ class PdfFileEditor extends React.Component {
       scrollToId: "",
       editableId: "",
       showNextSuggestion: false,
-      workflow: "DP_WFLOW_S_TTR"
+      workflow: "DP_WFLOW_S_TTR",
+      scrollTransMode: false,
+      scrollPageNo: ""
     };
   }
   getSnapshotBeforeUpdate(prevProps, prevState) {
@@ -134,7 +129,7 @@ class PdfFileEditor extends React.Component {
         this.setState({
           sentences: temp,
           open: this.state.apiStatus && true,
-          message: this.state.apiStatus && (this.state.apiCall == "Merge sentence" ? "Sentence merged successfully!" : this.state.apiCall == "merge" ? "Paragraph merged successfully" : this.state.apiCall == "Split sentence" ? "Sentence Splitted Sucessfully" : "Sentence updated successfully...!"),
+          message: this.state.apiStatus && (this.state.apiCall === "Merge sentence" ? "Sentence merged successfully!" : this.state.apiCall === "merge" ? "Paragraph merged successfully" : this.state.apiCall === "Split sentence" ? "Sentence Splitted Sucessfully" : "Sentence updated successfully...!"),
           apiStatus: false,
           apiCall: false,
           showLoader: false,
@@ -146,10 +141,27 @@ class PdfFileEditor extends React.Component {
         });
       }
     }
+
+    if (!this.state.tokenized && this.state.scrollPageNo > 1 && this.state.scrollTransMode) {
+      let page = this.state.scrollPageNo
+      let sentences = this.state.sentences
+
+      let height = 0
+      sentences && Array.isArray(sentences) && sentences.length > 0 && sentences.map((sentence, i) => {
+        if (sentence.page_no < page) {
+          height += sentence.page_height
+        }
+      })
+      this.scrollPage(height)
+    }
+  }
+
+  scrollPage(heightToBescrolled) {
+    window.scrollTo(0, heightToBescrolled);
+    this.setState({ scrollTransMode: false })
   }
 
   getPageId(blocks) {
-    debugger
     let page_ids = [];
     blocks.forEach(element => {
       page_ids.push(parseInt(element.split("_")[1]));
@@ -184,7 +196,7 @@ class PdfFileEditor extends React.Component {
     this.setState({ buttonDisable: false, pdfPage: this.state.currentPage + 1 });
   }
 
-  handleOnMouseEnter(sentenceId, parent, yOffset, block_identifier, has_sibling) {
+  handleOnMouseEnter(sentenceId, parent, yOffset, block_identifier, has_sibling, pageNo) {
     this.setState({
       hoveredSentence: sentenceId,
       hoveredTableId: "",
@@ -192,7 +204,10 @@ class PdfFileEditor extends React.Component {
       scrollToId: sentenceId,
       yOffset: yOffset,
       block_identifier: block_identifier,
-      has_sibling: has_sibling
+      has_sibling: has_sibling,
+      scrollPageNo: pageNo,
+      scrollToPage: this.state.scrollToPage !== pageNo ? pageNo : this.state.pageNo
+      // pageNo: this.state.pageNo !== pageNo && pageNo
     });
   }
 
@@ -213,7 +228,7 @@ class PdfFileEditor extends React.Component {
     let end_id = end;
     let startSentence = start.split("_");
     let endSentence = end.split("_");
-    if (parseInt(startSentence[0]) === parseInt(endSentence[0]) && parseInt(startSentence[1]) == parseInt(endSentence[1])) {
+    if (parseInt(startSentence[0]) === parseInt(endSentence[0]) && parseInt(startSentence[1]) === parseInt(endSentence[1])) {
       if (parseInt(startSentence[2]) > parseInt(endSentence[2])) {
         start_id = end;
         end_id = start;
@@ -226,7 +241,7 @@ class PdfFileEditor extends React.Component {
       let selectedBlock = sentenceObj[startSentence[0]] && sentenceObj[startSentence[0]].text_blocks[startSentence[1]];
       if (sentenceObj[startSentence[0]] && type === "Merge sentence") {
         selectedBlock.tokenized_sentences.map((text, i) => {
-          if (text.s_id == start_id || token === true) {
+          if (text.s_id === start_id || token === true) {
             token = true;
             index = i;
 
@@ -234,7 +249,7 @@ class PdfFileEditor extends React.Component {
             text.src = null;
           }
 
-          if (text.s_id == end_id) {
+          if (text.s_id === end_id) {
             token = false;
             text.src = null;
           }
@@ -244,7 +259,7 @@ class PdfFileEditor extends React.Component {
         const selectedSplitEndIndex = window.getSelection() && window.getSelection().getRangeAt(0).endOffset;
         let selectedSplitValue, nextSplitValue, copySentence, ind;
         selectedBlock.tokenized_sentences.map((text, i) => {
-          if (text.s_id == start_id) {
+          if (text.s_id === start_id) {
             selectedSplitValue = text.src.substring(0, selectedSplitEndIndex);
             nextSplitValue = text.src.substring(selectedSplitEndIndex, text.src.length);
             text.src = selectedSplitValue;
@@ -318,8 +333,7 @@ class PdfFileEditor extends React.Component {
   }
 
   handleSourceChange = (evt, blockValue) => {
-
-    if (this.state.pageDetails == "target") {
+    if (this.state.pageDetails === "target") {
       let sentenceObj = this.state.targetText;
       sentenceObj.tgt = evt.target.value;
       this.setState({ targetText: sentenceObj });
@@ -337,7 +351,7 @@ class PdfFileEditor extends React.Component {
     this.setState({ targetText: sentenceObj, showNextSuggestion: true });
   }
 
-  handleDoubleClickTarget(event, id, text, pageDetails, block_id) {
+  handleDoubleClickTarget(event, id, text, pageDetails, block_id, pageNo) {
     this.setState({ targetSelected: id, targetText: text, pageDetails, hoveredSentence: block_id });
   }
   handleCheck(block, evt, checkValue, diffValue) {
@@ -351,7 +365,7 @@ class PdfFileEditor extends React.Component {
 
     if (docPage && Array.isArray(docPage) && docPage.length > 0) {
       docPage.map((page, index) => {
-        if (page.page_no == pageNo) {
+        if (page.page_no === pageNo) {
           if (page.text_blocks && Array.isArray(page.text_blocks) && page.text_blocks.length > 0) {
             page.text_blocks.map((block, i) => {
               if (block.block_id == blockId) {
@@ -400,7 +414,8 @@ class PdfFileEditor extends React.Component {
       targetSelected: "",
       pageDetails: "",
       edited: false,
-      mergeButton: "Merge"
+      mergeButton: "Merge",
+      scrollTransMode: true
     });
   }
 
@@ -413,7 +428,12 @@ class PdfFileEditor extends React.Component {
   };
 
   handlePageChange(value) {
-    this.setState({ pageNo: Number(this.state.pageNo) + Number(value), scrollToPage: Number(this.state.pageNo) + Number(value) });
+    let page = Number(this.state.pageNo) + Number(value)
+    this.setState({
+      pageNo: page,
+      scrollToPage: page,
+      scrollPageNo: page
+    });
   }
 
   handleZoomChange = value => {
@@ -422,7 +442,7 @@ class PdfFileEditor extends React.Component {
 
   handlePreviewPageChange(pageNo, value) {
     if (this.state.pageNo !== pageNo) {
-      this.setState({ pageNo: parseInt(pageNo) });
+      this.setState({ pageNo: parseInt(pageNo), scrollPageNo: pageNo });
     }
   }
 
@@ -555,7 +575,7 @@ class PdfFileEditor extends React.Component {
             <Grid
               container
               spacing={2}
-              style={{ marginTop: "-10px", padding: "10px 24px 12px ",width:"100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}
+              style={{ marginTop: "-20px", padding: "25px 24px 0px ", width: "100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}
             >
               <Grid item xs={12} sm={6} lg={2} xl={2} className="GridFileDetails">
                 <Button
@@ -657,7 +677,7 @@ class PdfFileEditor extends React.Component {
                 <Paper elevation={2}>
                   {!this.state.tokenized ?
                     <Toolbar style={{ color: '#000000', background: this.state.pageDetails === "target" ? "#989E9C" : '#ECEFF1' }}>
-                      <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: this.state.pageDetails === "target" ? "white" :"#1C9AB7" }}>
+                      <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: this.state.pageDetails === "target" ? "white" : "#1C9AB7" }}>
                         Translated Document
                       </Typography>
                     </Toolbar>
@@ -713,7 +733,7 @@ class PdfFileEditor extends React.Component {
               </Grid>
             </Grid>
 
-            <Grid container spacing={2} style={{ padding: "142px 24px 12px 24px" }}>
+            <Grid container spacing={2} style={{ padding: "142px 24px 0px 24px" }}>
               <Grid item xs={12} sm={6} lg={6} xl={6}>
                 <Paper
                   elevation={this.state.edited ? 12 : 2}
@@ -721,24 +741,6 @@ class PdfFileEditor extends React.Component {
                     // paddingBottom: "12px"
                   }}
                 >
-                  {/* <Toolbar style={{ color: '#000000', background: this.state.edited ? "#989E9C" : '#ECEFF1' }}>
-                    <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: "#1C9AB7" }}>
-                      Extracted Document
-                    </Typography>
-
-                    {this.state.tokenized && !this.state.apiCall && (
-                      <Toolbar
-                        onClick={event => {
-                          this.handleClick(this.state.mergeButton === "save" ? "Merge" : "save");
-                        }}
-                        style={{ paddingRight: "0px" }}
-                      >
-                        <Typography value="" variant="subtitle2" style={{ cursor: "pointer", color: "#233466", paddingLeft: "7px" }}>
-                          {this.state.mergeButton == "save" ? "Save" : "Merge Blocks"}
-                        </Typography>
-                      </Toolbar>
-                    )}
-                  </Toolbar> */}
                   <div
                     id="scrollableDiv"
                     style={
@@ -833,7 +835,7 @@ class PdfFileEditor extends React.Component {
                     paddingBottom: "12px",
                     paddingTop: "12px",
                     // height: "98%"
-                  }: {}}
+                  } : {}}
                 >
                   {this.state.tokenized ? (
                     <DocPreview
