@@ -60,50 +60,53 @@ const PdfUploadStyles = theme => ({
   span:{
     color:'red'
   },
-  button: {
-    marginTop: "6%",
+  // button: {
+  //   marginTop: "6%",
     
-    width: "87%",
-    backgroundColor:'#1C9AB7',
-    borderRadius:"20px 20px 20px 20px",
-    color:"#FFFFFF"
-  },
+  //   width: "87%",
+  //   backgroundColor:'#1C9AB7',
+  //   borderRadius:"20px 20px 20px 20px",
+  //   color:"#FFFFFF"
+  // },
   button1: {
-    marginTop: "6%",
-    
-    width: "90%",
+    //marginTop: "6%",
+    marginLeft:'7%',
+    width: "93%",
     backgroundColor:'#1C9AB7',
     borderRadius:"20px 20px 20px 20px",
     color:"#FFFFFF"
   },
   button2: {
-    marginTop: "6%",
-    marginLeft: "3%",
-    width: "90%",
+    //marginTop: "6%",
+    //marginLeft: "3%",
+    width: "87%",
     backgroundColor:'#1C9AB7',
     borderRadius:"20px 20px 20px 20px",
     color:"#FFFFFF"
   },
-  dropZoneArea:{
-    paddingTop: '30%',
-    top: "auto",
-    width:'91%',
-    minHeight:'363px',
-    height: "100%",
-    borderColor:'#1C9AB7',
-    backgroundColor: '#F5F9FA',
-    border: '1px dashed #1C9AB7',
-    fontColor:'#1C9AB7',
-    "& svg":{color:'#1C9AB7',},
-    "& p": {
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      fontSize: "19px",
-      color:'#1C9AB7',
-      
-    },
+  simpleselect:{
+    marginTop:'2%'
   },
+  // dropZoneArea:{
+  //   paddingTop: '30%',
+  //   top: "auto",
+  //   width:'91%',
+  //   minHeight:'363px',
+  //   height: "100%",
+  //   borderColor:'#1C9AB7',
+  //   backgroundColor: '#F5F9FA',
+  //   border: '1px dashed #1C9AB7',
+  //   fontColor:'#1C9AB7',
+  //   "& svg":{color:'#1C9AB7',},
+  //   "& p": {
+  //     textOverflow: "ellipsis",
+  //     whiteSpace: "nowrap",
+  //     overflow: "hidden",
+  //     fontSize: "19px",
+  //     color:'#1C9AB7',
+      
+  //   },
+  // },
   dropZoneArea1:{
     paddingTop: '12%',
     top: "auto",
