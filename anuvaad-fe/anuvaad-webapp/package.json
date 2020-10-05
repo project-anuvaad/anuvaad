@@ -89,10 +89,21 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext .js,.jsx src",
+    "lint:eslint": "eslint --ignore-path native-base-theme/* .eslintignore",
+    "lint:fix": "eslint --ext .js,.jsx src --fix",
+    "lint:staged": "lint-staged"
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "eslint --ignore-path .eslintignore ",
+      "git add"
+    ]
   },
   "browserslist": {
     "production": [
