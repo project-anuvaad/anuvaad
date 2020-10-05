@@ -25,48 +25,46 @@ class ChildTextUnify(object):
         else:
             text = ""
             block_children  =  pd.read_json(block['children'])
-            block_children  =  block_children.reset_index(drop=True)
+            #block_children  =  block_children.reset_index(drop=True)
             block_children  =  block_children.where(block_children.notnull(), None)
             block_children  =  block_children.sort_values('text_top')
+
+            block_children  = block_children.reset_index(drop=True)
 
             for sub_block_index in range(len(block_children)):
                 
                 sub_df  = block_children.iloc[sub_block_index]
                 sub_df  = sub_df.where(sub_df.notnull(), None)
 
+                #if 'children' in sub_df.columns:
                 if sub_df['children'] == None:
-                    text = text+" " + sub_df['text']
+                    text = str(text) +" " + str(sub_df['text'])
                     continue
                 else:
                     sub2_block_children   =  pd.read_json(sub_df['children'])
                     sub2_block_children   =  sub2_block_children.reset_index(drop=True)
                     sub2_block_children   =  sub2_block_children.sort_values('text_left')
                     sub2_block_children   =  sub2_block_children.where(sub2_block_children.notnull(), None)
-
+                    #if 'children' in sub2_block_children.columns:
                     for sub2_block_index in range(len(sub2_block_children)):
                         if 'attrib' in sub2_block_children.columns:
-                            if self.drop_text_regards_attrib(sub2_block_children['attrib'][sub2_block_index],drop_lis):
-                                continue
-                            else:
+                            if self.drop_text_regards_attrib(sub2_block_children['attrib'][sub2_block_index],drop_lis)==False:
                                 text = text+" " + str(sub2_block_children['text'][sub2_block_index])
                         else:
                             text = text+" " + str(sub2_block_children['text'][sub2_block_index])
-                            
+
+
+
             return text
 
     def get_parent_block(self,data,drop_lis):
         new_df = data.copy(deep=True)
         new_df = new_df.reset_index(drop=True)
-        #text_lis = []
         for block_index in range(len(data)):
             df   =  new_df.iloc[block_index]
             df   =  df.where(df.notnull(), None)
             text =  self.get_children_text_block(df, drop_lis)
-            #print(text , 'text +++++++++++++++++++')
-            #text_lis.append(str(text))
-            new_df.iloc[block_index]['text'] = str(text)
-        #new_df['text'] = text_lis
-        #print(text_lis)
+            new_df.at[block_index,'text'] = str(text)
 
         return new_df
 
@@ -75,8 +73,9 @@ class ChildTextUnify(object):
         start_time = time.time()
         merge_dfs  = []
         drop_lis   = config.DROP_TEXT
-        pages      = len(p_dfs)
+        
         try :
+            pages      = len(p_dfs)
             for page_index in range(pages):
                 p_df = p_dfs[page_index]
                 p_df = p_df.reset_index(drop=True)
