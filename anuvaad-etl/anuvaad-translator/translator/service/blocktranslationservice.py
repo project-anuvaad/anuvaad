@@ -67,9 +67,8 @@ class BlockTranslationService:
 
     # Method to accept text list and return translations for SYNC flow.
     def text_translate(self, text_translate_input):
-        text_translate_input["taskID"] = utils.generate_task_id()
+        text_translate_input["taskID"], text_translate_input["state"] = utils.generate_task_id(), "TRANSLATED"
         text_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', '')[0:13])
-        text_translate_input["state"] = "TRANSLATED"
         log_info("Text Translation started....", text_translate_input)
         output = text_translate_input
         output["status"], output["output"] = "FAILED", None
@@ -89,20 +88,16 @@ class BlockTranslationService:
                                 return output
                     ch_res.extend(nmt_response["response_body"])
                     nmt_predictions = self.dedup_hypothesis(ch_res)
-                    output["input"] = None
-                    output["status"] = "SUCCESS"
-                    output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
-                    output["output"] = {"predictions": nmt_predictions}
+                    output["input"], output["status"] = None, "SUCCESS"
+                    output["taskEndTime"], output["output"] = eval(str(time.time()).replace('.', '')[0:13]), {"predictions": nmt_predictions}
                     return output
                 else:
                     output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
                     output["error"] = post_error("TRANSLATION_FAILED", "Error while translating", None)
                     return output
             else:
-                output["input"] = None
-                output["status"] = "SUCCESS"
-                output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
-                output["output"] = {"predictions": ch_res}
+                output["input"], output["status"] = None, "SUCCESS"
+                output["taskEndTime"], output["output"] = eval(str(time.time()).replace('.', '')[0:13]), {"predictions": ch_res}
                 return output
         except Exception as e:
             log_exception("Exception while translating: " + str(e), text_translate_input, None)
@@ -113,27 +108,23 @@ class BlockTranslationService:
     # Checks and returns stored sentence translation from ch if available.
     def get_stored_hypothesis_ch(self, text_list, text_translate_input):
         sent_map, ch_res, text_for_nmt, ch_response = {}, {}, [], []
-        log_info("Text List Size: " + str(len(text_list)), text_translate_input)
         for text in text_list:
             sent_map[text["s_id"]] = text
         for s_id in sent_map.keys():
             ch_res_sent = utils.fetch_sentence_by_id(s_id, text_translate_input["metadata"]["userID"])
             if ch_res_sent:
-                if 'data' in ch_res_sent.keys():
-                    if ch_res_sent["data"]:
-                        ch_response.append(ch_res_sent["data"])
-        log_info("CH Response size: " + str(len(ch_response)), text_translate_input)
+                if ch_res_sent["data"]:
+                    ch_response.append(ch_res_sent["data"])
         if ch_response:
             for translation in ch_response:
                 if translation["s_id"] in sent_map.keys():
                     if sent_map[translation["s_id"]]["src"] in translation["src"]:
-                        translation["tgt"] = [translation["tgt"]]
+                        translation["tgt"] = [translation["s0_tgt"], translation["tgt"]]
                         ch_res[translation["s_id"]] = translation
         for s_id in sent_map.keys():
             if s_id not in ch_res.keys():
                 text_for_nmt.append(sent_map[s_id])
-        log_info("Text for NMT Size: " + str(len(text_for_nmt)), text_translate_input)
-        log_info("Translation fetched from CH! ", text_translate_input)
+        log_info("Translation fetched from CH! Count: " + str(len(ch_res.keys())), text_translate_input)
         return text_for_nmt, list(ch_res.values())
 
     # Finds if there are duplicate predicitions and de-duplicates it.

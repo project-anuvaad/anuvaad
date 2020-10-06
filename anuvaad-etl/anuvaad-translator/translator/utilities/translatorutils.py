@@ -47,8 +47,7 @@ class TranslatorUtils:
                 response = requests.get(url=uri, params=params, headers=api_headers)
             if response is not None:
                 if response.text is not None:
-                    data = json.loads(response.text)
-                    return data
+                    return json.loads(response.text)
                 else:
                     log_error("API response was None! URI: " + str(uri), api_input, None)
                     return None
@@ -64,14 +63,10 @@ class TranslatorUtils:
         try:
             api_headers = {'userid': user_id, 'ad-userid': user_id, 'Content-Type': 'application/json'}
             ch_url = sentence_fetch_url.replace("{user_id}", user_id).replace("{sentence_id}", sentence_id)
-            log_info("URL: " + str(ch_url), None)
             response = requests.get(url=ch_url, headers=api_headers)
-            log_info(response, None)
             if response is not None:
                 if response.text is not None:
-                    data = json.loads(response.text)
-                    log_info(data, None)
-                    return data
+                    return json.loads(response.text)
                 else:
                     log_error("API response was None! URI: " + str(ch_url), None, None)
                     return None
