@@ -35,7 +35,12 @@ class SentenceModel(object):
                 ])
             
             for doc in docs:
-                return doc['tokenized_sentences'][0]
+                sentence = doc['tokenized_sentences'][0]
+                if 's0_tgt' not in list(sentence.keys()):
+                    sentence['s0_tgt'] = sentence['tgt']
+                if 's0_src' not in list(sentence.keys()):
+                    sentence['s0_src'] = sentence['src']
+                return sentence
 
             return None
         except expression as identifier:
