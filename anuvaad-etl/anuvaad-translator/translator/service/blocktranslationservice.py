@@ -78,9 +78,7 @@ class BlockTranslationService:
             text_for_nmt, ch_res = self.get_stored_hypothesis_ch(text_translate_input["input"]["textList"], text_translate_input)
             if text_for_nmt:
                 for text in text_for_nmt:
-                    text_in = {"s_id": str(uuid.uuid4()), "id": text["modelID"], "src": text["src"],
-                               "tagged_prefix": text["taggedPrefix"]}
-                    text_nmt.append(text_in)
+                    text_nmt.append({"s_id": text["s_id"], "id": text["modelID"], "src": text["src"], "tagged_prefix": text["taggedPrefix"]})
                 nmt_response = utils.call_api(nmt_interactive_translate_url, "POST", text_nmt, None, text_translate_input["metadata"]["userID"])
                 if nmt_response:
                     if 'status' in nmt_response.keys():

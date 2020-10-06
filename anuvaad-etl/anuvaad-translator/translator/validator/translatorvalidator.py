@@ -58,6 +58,8 @@ class TranslatorValidator:
                         return post_error("TEXT_LIST_EMPTY", "Text list cannot be empty", None)
                     else:
                         for text in api_input["textList"]:
+                            if 's_id' not in text.keys():
+                                return post_error("SENTENCE_ID_NOT_FOUND", "s_id is mandatory", None)
                             if 'src' not in text.keys():
                                 return post_error("TEXT_NOT_FOUND", "src is mandatory", None)
                             if 'taggedPrefix' not in text.keys():
