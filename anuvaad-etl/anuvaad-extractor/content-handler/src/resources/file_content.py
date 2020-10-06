@@ -2,6 +2,8 @@ from flask_restful import fields, marshal_with, reqparse, Resource
 from repositories import SentenceRepositories, FileContentRepositories
 from models import CustomResponse, Status
 import ast
+from utilities import MODULE_CONTEXT
+from anuvaad_auditor.loghandler import log_info, log_exception
 
 class FileContentSaveResource(Resource):
     def post(self):
@@ -12,20 +14,23 @@ class FileContentSaveResource(Resource):
         parser.add_argument('userid', location='headers', type=str, help='userid cannot be empty', required=True)
         parser.add_argument('src_lang', location='json', type=str, help='please provide source language', required=True)
         parser.add_argument('tgt_lang', location='json', type=str, help='please provide translated language', required=True)
-
-
         args    = parser.parse_args()
+
+        log_info("FileContentSaveResource record_id {} for user {}".format(args['record_id'], args['userid']), MODULE_CONTEXT)
+
         try:
             pages = ast.literal_eval(args['pages'])
-        except expression as identifier:
+            if FileContentRepositories.store(args['userid'], args['file_locale'], args['record_id'], pages, args['src_lang'], args['tgt_lang']) == False:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+                return res.getresjson(), 400
+
+            res = CustomResponse(Status.SUCCESS.value, None)
+            return res.getres()
+        except Exception as e:
+            log_exception("FileContentSaveResource ",  MODULE_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
 
-        if FileContentRepositories.store(args['userid'], args['file_locale'], args['record_id'], pages, args['src_lang'], args['tgt_lang']) == False:
-            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
-            return res.getresjson(), 400
-        res = CustomResponse(Status.SUCCESS.value, None)
-        return res.getres()
 
 class FileContentGetResource(Resource):
     def get(self):
@@ -38,31 +43,40 @@ class FileContentGetResource(Resource):
         parser.add_argument('record_id', type=str, location='args', help='record_id is required', required=True)
 
         args    = parser.parse_args()
-        result  = FileContentRepositories.get(args['ad-userid'], args['record_id'], args['start_page'], args['end_page'])
-
-        if result == False:
+        log_info("FileContentGetResource record_id {} for user {}".format(args['record_id'], args['ad-userid']), MODULE_CONTEXT)
+        try:
+            result  = FileContentRepositories.get(args['ad-userid'], args['record_id'], args['start_page'], args['end_page'])
+            if result == False:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+                return res.getresjson(), 400
+            res = CustomResponse(Status.SUCCESS.value, result['pages'], result['total'])
+            return res.getres()
+        except Exception as e:
+            log_exception("FileContentGetResource ",  MODULE_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
-        res = CustomResponse(Status.SUCCESS.value, result, result['total'])
-        return res.getres()
+        
         
 class FileContentUpdateResource(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('blocks', location='json', type=str, help='blocks cannot be empty', required=True)
         parser.add_argument('ad-userid', location='headers', type=str, help='userid cannot be empty', required=True)
-
         args    = parser.parse_args()
+        log_info("FileContentUpdateResource for user {}".format(args['ad-userid']), MODULE_CONTEXT)
+
         try:
-            blocks = ast.literal_eval(args['blocks'])
-        except expression as identifier:
+            blocks  = ast.literal_eval(args['blocks'])
+            result  = FileContentRepositories.update(args['ad-userid'], None, blocks)
+
+            if result == False:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+                return res.getresjson(), 400
+            
+            res = CustomResponse(Status.SUCCESS.value, result, None)
+            return res.getres()            
+        except Exception as e:
+            log_exception("FileContentGetResource ",  MODULE_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
         
-        result  = FileContentRepositories.update(args['ad-userid'], None, blocks)
-
-        if result == False:
-            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
-            return res.getresjson(), 400
-        res = CustomResponse(Status.SUCCESS.value, result, None)
-        return res.getres()

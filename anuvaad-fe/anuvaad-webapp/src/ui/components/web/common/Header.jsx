@@ -224,7 +224,7 @@ class Header extends React.Component {
         </AppBar>
         <div>
           {!drawer &&
-            <Grid container spacing={24}>
+            <Grid container spacing={10}>
               {/* <Grid container spacing={24} style={{ padding: 24 }}> */}
               {/* <Grid item xs={12} sm={12} lg={12} xl={12}>
         <div style={{marginLeft:'-5%',marginTop:'-1%'}}>
@@ -541,29 +541,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-                  {role && Array.isArray(role) && (role.includes("editor") || role.includes("user")) && (
-                    <div>
-                      <Divider className={classes.divider} />
-                      <ListItem
-                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "doctranslate" && themeAnuvaad.palette.primary.main }}
-                        button
-                        onClick={event => {
-                          this.handleDrawerClose();
-                          history.push("/doctranslate");
-                        }}
-                      >
-
-                        <ListItemText
-                          disableTypography
-                          primary={
-                            <Typography type="body2" style={{ color: currentMenu === "doctranslate" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              {translate('webroutes.page.title.translateFile')}
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                    </div>
-                  )}
+                  
                   {role && Array.isArray(role) && (role.includes("editor") || role.includes("user")) && (
                     <div>
                       <Divider className={classes.divider} />
