@@ -73,7 +73,9 @@ class JobsManger(Thread):
                 job_wise_records = self.manage_records(job_wise_records, fail, output)
             for complete in completed:
                 ch_input = {
-                    "file_locale": complete["transInput"]["metadata"]["userID"],
+                    "file_locale": complete["transInput"]["input"]["files"][0]["model"]["source_language_code"],
+                    "src_lang": complete["transInput"]["input"]["files"][0]["model"]["source_language_code"],
+                    "tgt_lang": complete["transInput"]["input"]["files"][0]["model"]["target_language_code"],
                     "record_id": complete["recordID"], "pages": complete["data"]["result"]
                 }
                 user_id = complete["transInput"]["metadata"]["userID"]
