@@ -86,10 +86,6 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
-<<<<<<< HEAD
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.6.0",
-=======
     "babel-eslint": "^10.0.1",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "babel-preset-react-native": "5.0.2",
@@ -101,7 +97,6 @@
     "lint-staged": "^7.3.0",
     "react-csv-downloader": "^1.4.0",
     "react-test-renderer": "16.4.1",
->>>>>>> develop
     "webpack": "4.42.0"
     
   },
