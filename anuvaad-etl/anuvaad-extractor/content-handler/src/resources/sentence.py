@@ -9,23 +9,35 @@ class SentenceGetResource(Resource):
     def get(self, user_id, s_id):
         log_info("SentenceGetResource {} for user {}".format(s_id, user_id), MODULE_CONTEXT)
 
-        result  = SentenceRepositories.get_sentence(user_id, s_id)
-        if result == False:
+        try:
+            result  = SentenceRepositories.get_sentence(user_id, s_id)
+            if result == False:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+                return res.getresjson(), 400
+
+            res = CustomResponse(Status.SUCCESS.value, result)
+            return res.getres()
+        except Exception as e:
+            log_exception("SentenceGetResource ",  MODULE_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
-
-        res = CustomResponse(Status.SUCCESS.value, result)
-        return res.getres()
+        
 
 class SentenceBlockGetResource(Resource):
     def get(self, user_id, s_id):
         log_info("SentenceBlockGetResource {} for user {}".format(s_id, user_id), MODULE_CONTEXT)
-        result  = SentenceRepositories.get_sentence_block(user_id, s_id)
-        if result == False:
+        try:
+            result  = SentenceRepositories.get_sentence_block(user_id, s_id)
+            if result == False:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+                return res.getresjson(), 400
+            res = CustomResponse(Status.SUCCESS.value, result)
+            return result, 200
+        except Exception as e:
+            log_exception("SentenceBlockGetResource ",  MODULE_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
-        res = CustomResponse(Status.SUCCESS.value, result)
-        return result, 200
+
 
 class SentencePostResource(Resource):
     def post(self, user_id):
@@ -36,14 +48,14 @@ class SentencePostResource(Resource):
         args    = parser.parse_args()
         try:
             sentences = ast.literal_eval(args['sentences'])
-        except expression as identifier:
-            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
-            return res.getresjson(), 400
-            
-        result = SentenceRepositories.update_sentences(user_id, sentences)
-        if result == False:
+            result = SentenceRepositories.update_sentences(user_id, sentences)
+            if result == False:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+                return res.getresjson(), 400
+
+            res = CustomResponse(Status.SUCCESS.value, result)
+            return res.getres()
+        except Exception as e:
+            log_exception("SentencePostResource ",  MODULE_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
-
-        res = CustomResponse(Status.SUCCESS.value, result)
-        return res.getres()

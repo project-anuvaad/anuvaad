@@ -73,13 +73,12 @@ class FileContentRepositories:
             page    = {}
             for block in page_blocks:
                 page[block['_id']] = block['data']
+                if len(block['data']) > 0 :
+                    page['page_height']     = block['data'][0]['page_info']['page_height']
+                    page['page_no']         = block['data'][0]['page_info']['page_no']
+                    page['page_width']      = block['data'][0]['page_info']['page_width']
 
-            if len(block['data']) > 0 :
-                page['page_height']     = block['data'][0]['page_info']['page_height']
-                page['page_no']         = block['data'][0]['page_info']['page_no']
-                page['page_width']      = block['data'][0]['page_info']['page_width']
-
-            data['pages'].append(page)
+                data['pages'].append(page)
 
         data['start_page']  = start_page
         data['end_page']    = end_page
