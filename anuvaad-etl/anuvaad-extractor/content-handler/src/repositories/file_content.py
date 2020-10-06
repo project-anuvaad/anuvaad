@@ -23,12 +23,10 @@ class FileContentRepositories:
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
                 elem['s0_tgt']    = elem['tgt']
-                elem['s0_src']    = elem['tgt']
+                elem['s0_src']    = elem['src']
                 del elem['input_subwords']
                 del elem['output_subwords']
-                del elem['pred_score']
-                del elem['tagged_src']
-                del elem['tagged_tgt'] 
+                del elem['pred_score'] 
 
         new_block['block_identifier']   = block['block_identifier']
         return new_block
@@ -93,8 +91,21 @@ class FileContentRepositories:
         updated_blocks  = []
 
         for block in blocks:
+            src_lang = None
+            tgt_lang = None
+
+            if src_lang not in list(block.keys()):
+                src_lang = 'NA'
+            else:
+                src_lang = block['src_lang']
+
+            if tgt_lang not in list(block.keys()):
+                tgt_lang = 'NA'
+            else:
+                tgt_lang = block['tgt_lang']
+
             if 'data_type' in list(block.keys()) and block['data_type'] == 'text_blocks':
-                updated_blocks.append(FileContentRepositories.update_block_info(block, block['record_id'], block['page_info']['page_no'], 'text_blocks', user_id))
+                updated_blocks.append(FileContentRepositories.update_block_info(block, block['record_id'], block['page_info']['page_no'], 'text_blocks', user_id, src_lang, tgt_lang))
 
         if len(updated_blocks) > 0:
             for block in updated_blocks:

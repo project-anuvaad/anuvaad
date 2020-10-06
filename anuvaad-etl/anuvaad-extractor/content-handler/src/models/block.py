@@ -8,7 +8,7 @@ class BlockModel(object):
     def update_block(user_id, record_id, block):
         try:
             collections = get_db()['file_content']
-            results     = collections.update({'$and': [{'created_by': user_id}, {'record_id': record_id}, { 'data.block_id': {'$eq': block['data']['block_id']} }]},
+            results     = collections.update({'$and': [{'created_by': user_id}, {'record_id': record_id}, { 'block_identifier': block['block_identifier'] }]},
             { '$set': block }, upsert=True)
 
             if 'writeError' in list(results.keys()):
