@@ -554,20 +554,7 @@ class PdfFileEditor extends React.Component {
   }
 
   render() {
-    let leftPaddingValue = 0;
-    let rightPaddingValue = 0;
-
-    this.state.sentences &&
-      this.state.sentences.map(sentence => {
-        if (leftPaddingValue > parseInt(sentence.x) || leftPaddingValue == 0) {
-          leftPaddingValue = parseInt(sentence.x);
-        }
-        if ((sentence.width && rightPaddingValue < parseInt(sentence.width) + parseInt(sentence.x)) || (sentence.width && rightPaddingValue == 0)) {
-          rightPaddingValue = parseInt(sentence.width) + parseInt(sentence.x);
-        }
-      });
-    let paperWidth = this.state.sentences && this.state.sentences[0].page_width - leftPaddingValue - 78 + "px";
-
+  
     return (
       <div>
         {this.state.sentences && (
@@ -579,7 +566,7 @@ class PdfFileEditor extends React.Component {
             >
               <Grid item xs={12} sm={6} lg={2} xl={2} className="GridFileDetails">
                 <Button
-                  variant="outlined"
+                  // variant="outlined"
                   onClick={event => {
                     this.handleOnClose();
                   }}
@@ -592,7 +579,7 @@ class PdfFileEditor extends React.Component {
               <Grid item xs={12} sm={6} lg={8} xl={8} className="GridFileDetails">
                 <Button
                   color="primary"
-                  variant="outlined"
+                  // variant="outlined"
                   className="GridFileDetails"
                   style={{
                     textTransform: "capitalize",
@@ -612,7 +599,7 @@ class PdfFileEditor extends React.Component {
               </Grid>
               <Grid item xs={12} sm={6} lg={2} xl={2}>
                 <Button
-                  variant="contained"
+                  // variant="contained"
                   // color="primary"
                   style={{
                     color: "#233466",
