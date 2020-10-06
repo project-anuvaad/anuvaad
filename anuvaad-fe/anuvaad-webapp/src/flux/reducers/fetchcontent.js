@@ -17,7 +17,6 @@ export default function(state = initialUserState, action) {
               status = true;
               i=  index;
               pageD = payloadData;
-              console.log(pageDetails)
             }
           });
           if (status) {
