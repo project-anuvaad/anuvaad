@@ -25,8 +25,8 @@ class BlockMergerWF(Resource):
         app_context.init()
         app_context.application_context = json_data
         log_info("Resource BlockMergerWF  Block-merger service started", app_context.application_context)
-        task_id = str("BM-" + str(time.time()).replace('.', ''))
-        task_starttime = str(time.time()).replace('.', '')
+        task_id = str("BM-" + str(time.time()).replace('.', '')[0:13])
+        task_starttime  =  eval(str(time.time()).replace('.', '')[0:13])
         #json_data = request.get_json(force = True)
         try:
             error_validator = ValidationResponse(DOWNLOAD_FOLDER)

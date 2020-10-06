@@ -11,14 +11,24 @@ BASE_DIR      = 'upload'
 ENABLE_CORS = False
 
 # kafka
-input_topic         = 'anuvaad-dp-tools-block-merger-input-v2'
+
+input_topic_default = 'anuvaad-dp-tools-block-merger-input-v2'
+input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT'
+input_topic = os.environ.get(input_topic_identifier, input_topic_default)
+
+output_topic_default = 'anuvaad-dp-tools-block-merger-output-v2'
+output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT'
+output_topic = os.environ.get(output_topic_identifier, output_topic_default)
+
 kf_local_server     = 'localhost:9092'
-output_topic        = 'anuvaad-dp-tools-block-merger-output-v2'
 kafka_ip_host       = 'KAFKA_IP_HOST'
 bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
-TASK_STAT           = 'BLOCK-MERGER'
-CONSUMER_GROUP      = 'anuvaad-etl-bm-consumer-group'
 
+TASK_STAT           = 'BLOCK-MERGER'
+
+CONSUMER_GROUP_default       = 'anuvaad-etl-bm-consumer-group'
+CONSUMER_GROUP_identifire    = 'ANUVAAD_ETL_BM_CONSUMER_GROUP_V1'
+CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_default,CONSUMER_GROUP_identifire)
 #folders and file path
 download_folder = 'upload'
 
@@ -59,13 +69,27 @@ PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.15 ,'repeat_threshold
 DROP_TEXT          =  ['SUPERSCRIPT']
 
 LANG_MAPPING       =  {
-    "en" : "eng", "kn" : "kan", "gu": "guj","or": "ori",
-    "hi" : "hin", "bn" : "ben", "mr": "mar", "ta": "tam",
-    "te" : "tel"
+    "en" : ["eng"], "kn" : ["kan"], "gu": ["guj"],"or": ["ori"],
+    "hi" : ["Devanagari","hin","eng"], "bn" : "ben", "mr": ["Devanagari","hin","eng"], "ta": ["tam"],
+    "te" : ["tel"]
 
 }
 
 
 FONT_CONFIG   = {
-    "hi": 'mangal'
+    "hi": 'Ariel Unicode MS'
+}
+FONT_SIZE_CONFIG = {
+    "hi":{ 'slab_1':{ 'min':0, 'max':15, 'ratio':-0.05},
+           'slab_2':{'min':15, 'max':25, 'ratio':0.05},
+           'slab_3':{'min':25, 'max':50, 'ratio':0.06}
+         }
+}
+
+CROP_CONFIG = {
+    'hi': {'top':15, 'bottom':10,'right':5,'left':5},
+    'ml': {'top':15, 'bottom':10,'right':5,'left':5},
+    'kn':{'top':15, 'bottom':10,'right':5,'left':5 },
+    'ta':{'top':5, 'bottom':15,'right':5,'left':10 },
+    'ma':{'top':5, 'bottom':5,'right':5,'left':5 }
 }
