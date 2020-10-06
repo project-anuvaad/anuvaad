@@ -15,7 +15,6 @@ import Benchmark from "./ui/containers/web/Benchmark";
 import history from "./web.history";
 import Home from "./ui/containers/web/Home";
 import Translate from "./ui/containers/web/Translate";
-import UploadAudio from "./ui/containers/web/UploadAudio";
 import UserProfile from "./ui/containers/web/UserProfile";
 import ViewTranslations from "./ui/containers/web/ViewTranslations";
 import DashboardTamil from "./ui/containers/web/Dashboard";
@@ -38,8 +37,7 @@ import Editor from "./ui/containers/web/Editor";
 import AnuvaadModels from "./ui/containers/web/TextModels";
 import AddQuestion from "./ui/containers/web/AddQuestion";
 import TranslatePresident from "./ui/containers/web/TranslateJudgement";
-import DataPipeline from "./ui/containers/web/DataPipeline";
-import TPresident from "./ui/containers/web/TPresident";
+
 import FeedbackForm from "./ui/containers/web/FeedbackForm";
 import PdfUpload from "./ui/containers/web/PdfUpload";
 import PdfToDoc from "./ui/containers/web/PdfToDoc";
@@ -165,17 +163,7 @@ class AppRoutes extends React.Component {
             <Route exact path={`${process.env.PUBLIC_URL}/callback`} component={Callback} />
             <Route exact path={`${process.env.PUBLIC_URL}/logout`} component={Logout} />
 
-            <PrivateRoute
-              exact
-              path={`${process.env.PUBLIC_URL}/anuvaad-translate`}
-              userRoles={["user"]}
-              forDemo
-              drawer
-              title={translate('webroutes.page.title.anuvaadTranslate')}
-              component={TPresident}
-              authenticate={this.authenticateUser}
-              currentMenu="anuvaad-translates"
-            />
+            
 
             <PrivateRoute
               exact
@@ -376,12 +364,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="translate-v1"
             />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/upload-audio`}
-              component={UploadAudio}
-              authenticate={this.authenticateUser}
-              currentMenu="upload-audio"
-            />
+            
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/qna`}
               title={translate('webroutes.page.title.q&a')}

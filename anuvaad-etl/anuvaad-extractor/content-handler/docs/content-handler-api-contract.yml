@@ -298,9 +298,9 @@ definitions:
     type: object
     properties:        
       data:
-        type: object
-        description: "document details along with fetched pages content"
-        $ref: '#/definitions/Result'
+        type: array
+        items:
+          $ref: '#/definitions/Result'
       ok:
         type: boolean
         description: request successful indicator.

@@ -541,29 +541,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-                  {role && Array.isArray(role) && (role.includes("editor") || role.includes("user")) && (
-                    <div>
-                      <Divider className={classes.divider} />
-                      <ListItem
-                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "doctranslate" && themeAnuvaad.palette.primary.main }}
-                        button
-                        onClick={event => {
-                          this.handleDrawerClose();
-                          history.push("/doctranslate");
-                        }}
-                      >
-
-                        <ListItemText
-                          disableTypography
-                          primary={
-                            <Typography type="body2" style={{ color: currentMenu === "doctranslate" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              {translate('webroutes.page.title.translateFile')}
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                    </div>
-                  )}
+                  
                   {role && Array.isArray(role) && (role.includes("editor") || role.includes("user")) && (
                     <div>
                       <Divider className={classes.divider} />
