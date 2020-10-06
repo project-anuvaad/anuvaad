@@ -89,7 +89,7 @@ class ViewDocument extends React.Component {
       var arr = []
 
       this.props.fetchDocument.map((value, i) => {
-        if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && value.status === "COMPLETED") {
+        if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && (value.status === "FAILED"|| value.status === "COMPLETED")) {
           TELEMETRY.endWorkflow(value.jobID)
         }
 
