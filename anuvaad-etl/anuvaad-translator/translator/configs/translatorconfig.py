@@ -8,6 +8,7 @@ file_download_url = os.environ.get('FILE_DOWNLOAD_URL', 'https://auth.anuvaad.or
 save_content_url = os.environ.get('SAVE_CONTENT_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/save-content')
 fetch_content_url = os.environ.get('FETCH_CONTENT_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/fetch-content')
 update_content_url = os.environ.get('UPDATE_CONTENT_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/update-content')
+sentence_fetch_url = os.environ.get('SENTENCE_FETCH_URL', 'http://gateway_anuvaad-content-handler:5001/api//v0/sentence/{user_id}/{sentence_id}')
 nmt_translate_url = os.environ.get('NMT_TRANSLATE_URL', 'http://52.40.71.62:3003/translator/translate-anuvaad')
 nmt_interactive_translate_url = os.environ.get('NMT_IT_URL', 'http://52.40.71.62:5001/v1/interactive-translation')
 

@@ -113,13 +113,17 @@ class BlockTranslationService:
 
     # Checks and returns stored sentence translation from ch if available.
     def get_stored_hypothesis_ch(self, text_list, text_translate_input):
-        sent_map, ch_res, text_for_nmt = {}, {}, []
+        sent_map, ch_res, text_for_nmt, ch_response = {}, {}, [], []
+        log_info("Text List Size: " + str(len(text_list)), text_translate_input)
         for text in text_list:
             sent_map[text["s_id"]] = text
-        request = {"s_id": sent_map.keys()}
-        ch_response = utils.call_api(nmt_interactive_translate_url, "POST", request, None, text_translate_input["metadata"]["userID"])
+        for s_id in sent_map.keys():
+            ch_res_sent = utils.fetch_sentence_by_id(s_id, text_translate_input["metadata"]["userID"])
+            if ch_res_sent:
+                ch_response.append(ch_res_sent)
+        log_info("CH Response size: " + str(len(ch_response)), text_translate_input)
         if ch_response:
-            for translation in ch_response["response"]:
+            for translation in ch_response:
                 if translation["s_id"] in sent_map.keys():
                     if sent_map[translation["s_id"]]["src"] in translation["src"]:
                         translation["tgt"] = [translation["tgt"]]
@@ -127,6 +131,7 @@ class BlockTranslationService:
         for s_id in sent_map.keys():
             if s_id not in ch_res.keys():
                 text_for_nmt.append(sent_map[s_id])
+        log_info("Text for NMT Size: " + str(len(text_for_nmt)), text_translate_input)
         log_info("Translation fetched from CH! ", text_translate_input)
         return text_for_nmt, list(ch_res.values())
 
