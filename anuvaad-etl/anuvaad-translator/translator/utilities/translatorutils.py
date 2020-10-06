@@ -66,9 +66,11 @@ class TranslatorUtils:
             ch_url = sentence_fetch_url.replace("{user_id}", user_id).replace("{sentence_id}", sentence_id)
             log_info("URL: " + str(ch_url), None)
             response = requests.get(url=ch_url, headers=api_headers)
+            log_info(response, None)
             if response is not None:
                 if response.text is not None:
                     data = json.loads(response.text)
+                    log_info(data, None)
                     return data
                 else:
                     log_error("API response was None! URI: " + str(ch_url), None, None)
