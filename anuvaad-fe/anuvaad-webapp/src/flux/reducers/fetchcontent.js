@@ -9,23 +9,22 @@ export default function(state = initialUserState, action) {
     case C.FETCH_CONTENT:
       let result = state.result;
       let status = false, i, pageD;
-      if (result!==null && result.data) {
-        action.payload.data.pages.map(payloadData => {
-          result.data.pages.map((pageDetails, index) => {
+      if (result !== null && result.data) {
+        action.payload.data.map(payloadData => {
+          result.data.map((pageDetails, index) => {
             if (pageDetails.page_no == payloadData.page_no) {
               pageDetails = payloadData;
               status = true;
               i=  index;
               pageD = payloadData;
+              console.log(pageDetails)
             }
           });
           if (status) {
-            result.data.pages[i] = pageD
+            result.data[i] = pageD
             status = false;
           } else {
-            result.data.pages = result.data.pages.concat(payloadData);
-            result.data.end_page = action.payload.data.end_page
-            
+            result.data = result.data.concat(payloadData);
           }
         });
       } else {
