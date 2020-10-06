@@ -65,7 +65,7 @@ class AlignmentService:
     # Service layer to update job status
     def update_job_status(self, status, object_in, cause):
         object_in["status"] = status
-        object_in["endTime"] = eval(str(time.time()).replace('.', ''))
+        object_in["endTime"] = eval(str(time.time()).replace('.', '')[0:13])
         if cause is not None:
             object_in["cause"] = cause
         self.update_job_details(object_in, False)
@@ -101,7 +101,7 @@ class AlignmentService:
         full_path = directory_path + file_path_delimiter + path
         full_path_indic = directory_path + file_path_delimiter + path_indic
         object_in["status"] = "INPROGRESS"
-        object_in["startTime"] = eval(str(time.time()).replace('.', ''))
+        object_in["startTime"] = eval(str(time.time()).replace('.', '')[0:13])
         self.update_job_details(object_in, False)
         source, target_corp = self.parse_in(full_path, full_path_indic, object_in, iswf)
         if source is None:
@@ -250,7 +250,7 @@ class AlignmentService:
         result = {"status": "COMPLETED",
                   "jobID": object_in["jobID"],
                   "startTime": object_in["startTime"],
-                  "endTime": eval(str(time.time()).replace('.', '')),
+                  "endTime": eval(str(time.time()).replace('.', '')[0:13]),
                   "input": {
                       "source": source,
                       "target": target

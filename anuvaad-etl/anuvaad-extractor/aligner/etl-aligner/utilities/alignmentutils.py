@@ -107,11 +107,11 @@ class AlignmentUtils:
 
     # Utility to generate a unique random task ID
     def generate_task_id(self):
-        return "ALIGN-" + str(time.time()).replace('.', '')
+        return "ALIGN-" + str(time.time()).replace('.', '')[0:13]
 
     # Utility to generate a unique random job ID
     def generate_job_id(self):
-        return "ALIGN-" + str(time.time()).replace('.', '')
+        return "ALIGN-" + str(time.time()).replace('.', '')[0:13]
 
     # Builds the error and passes it to error_manager
     def error_handler(self, code, message, object_in, iswf):
