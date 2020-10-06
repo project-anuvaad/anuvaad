@@ -87,7 +87,8 @@ class BlockTranslationService:
                                 output["error"] = post_error("TRANSLATION_FAILED", "Error while translating: " + str(
                                     nmt_response["status"]["why"]), None)
                                 return output
-                    nmt_predictions = self.dedup_hypothesis(ch_res.extend(nmt_response["response_body"]))
+                    ch_res.extend(nmt_response["response_body"])
+                    nmt_predictions = self.dedup_hypothesis(ch_res)
                     output["input"] = None
                     output["status"] = "SUCCESS"
                     output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
