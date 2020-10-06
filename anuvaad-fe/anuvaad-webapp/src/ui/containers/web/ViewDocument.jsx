@@ -59,6 +59,7 @@ class ViewDocument extends React.Component {
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('view-document')
+    // return null;
   }
 
   componentDidMount() {
@@ -188,7 +189,7 @@ class ViewDocument extends React.Component {
         options: {
           filter: true,
           sort: true,
-          sortDirection: "desc",
+          // sortOrder: "asc",
           display: "excluded"
 
         }
@@ -314,7 +315,7 @@ class ViewDocument extends React.Component {
         options: {
           filter: true,
           sort: true,
-          sortDirection: "desc",
+          // sortOrder: "asc",
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -378,7 +379,11 @@ class ViewDocument extends React.Component {
       print: false,
       fixedHeader: true,
       filter: false,
-      selectableRows: "none"
+      selectableRows: "none",
+      sortOrder: {
+        name: 'timestamp',
+        direction: 'desc'
+      }
     };
 
     return (

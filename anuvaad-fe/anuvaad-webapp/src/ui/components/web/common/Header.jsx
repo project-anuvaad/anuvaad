@@ -224,7 +224,7 @@ class Header extends React.Component {
         </AppBar>
         <div>
           {!drawer &&
-            <Grid container spacing={24}>
+            <Grid container spacing={10}>
               {/* <Grid container spacing={24} style={{ padding: 24 }}> */}
               {/* <Grid item xs={12} sm={12} lg={12} xl={12}>
         <div style={{marginLeft:'-5%',marginTop:'-1%'}}>
