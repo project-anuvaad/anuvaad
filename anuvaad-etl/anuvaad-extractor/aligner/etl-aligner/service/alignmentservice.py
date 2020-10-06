@@ -71,8 +71,8 @@ class AlignmentService:
         self.update_job_details(object_in, False)
 
     # Service layer to fetch vectors for all the source and target sentences.
-    def build_index(self, source, target_corp, src_loc, trgt_loc):
-        source_embeddings, target_embeddings = laser.vecotrize_sentences(source, target_corp, src_loc, trgt_loc)
+    def build_index(self, source, target_corp, src_loc, trgt_loc, object_in):
+        source_embeddings, target_embeddings = laser.vecotrize_sentences(source, target_corp, src_loc, trgt_loc, object_in)
         return source_embeddings, target_embeddings
 
     # Service layer to fetch target sentence for a given source sentence.
@@ -171,7 +171,7 @@ class AlignmentService:
             log_info("Fetching embeddings for the sentences.....", object_in)
             src_loc = object_in["input"]["source"]["locale"]
             trgt_loc = object_in["input"]["target"]["locale"]
-            source_embeddings, target_embeddings = self.build_index(source, target_corp, src_loc, trgt_loc)
+            source_embeddings, target_embeddings = self.build_index(source, target_corp, src_loc, trgt_loc, object_in)
             return source_embeddings, target_embeddings
         except Exception as e:
             log_exception("Exception fetching embeddings for the sentences: " + str(e), object_in, e)
