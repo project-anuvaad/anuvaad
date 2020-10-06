@@ -24,6 +24,7 @@ class FileContentSaveResource(Resource):
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
 
+            log_info("FileContentSaveResource record_id {} for user {} saved".format(args['record_id'], args['userid']), MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS.value, None)
             return res.getres()
         except Exception as e:
@@ -49,6 +50,7 @@ class FileContentGetResource(Resource):
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
+            log_info("FileContentGetResource record_id {} for user {} has {} pages".format(args['record_id'], args['ad-userid'], result['total']), MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS.value, result['pages'], result['total'])
             return res.getres()
         except Exception as e:
@@ -72,7 +74,8 @@ class FileContentUpdateResource(Resource):
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
-            
+
+            log_info("FileContentUpdateResource for user {} updated".format(args['ad-userid']), MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS.value, result, None)
             return res.getres()            
         except Exception as e:
