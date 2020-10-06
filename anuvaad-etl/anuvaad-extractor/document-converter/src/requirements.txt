@@ -4,3 +4,4 @@ flask-restful==0.3.8
 requests==2.24.0
 pandas==1.1.2
 python-docx==0.8.10
+anuvaad-auditor==0.1.2

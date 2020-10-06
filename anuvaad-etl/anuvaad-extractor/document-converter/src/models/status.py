@@ -23,10 +23,11 @@ class Status(enum.Enum):
     DATA_NOT_FOUND = {'ok': False,'http':{'status':404},
                 'why':'data not found'}
     OPERATION_NOT_PERMITTED = {'ok': False, 'http': {'status': 400},
-                               'why': 'operation not permitted'}
+                               'why': 'operation not permitted.'}
     ERROR_WEAK_PASSWORD = {'ok': False, 'http': {'status': 400}, 'why': 'weak password, at least provide 6 characters '}
     ERROR_GATEWAY = {'ok': False, 'http': {'status': 400}, 'why': 'gateway error'}
     ERROR_UNSUPPORTED_FILE = {'ok': False, 'http': {'status': 400}, 'why': 'unsupported file'}
     ERROR_NOTFOUND_FILE = {'ok': False, 'http': {'status': 400}, 'why': 'file not found'}
     ERROR_WRONG_PASSWORD = {'ok': False, 'http': {'status': 400}, 'why': 'wrong password '}
     USER_ALREADY_EXISTS = {'ok': False, 'http': {'status': 400}, 'why': 'username already exists '}
+    DATA_GET_ERROR = {'ok': False, 'http': {'status': 400}, 'why': 'Not receiving data from content handler'}

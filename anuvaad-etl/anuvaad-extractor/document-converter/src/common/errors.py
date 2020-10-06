@@ -15,7 +15,7 @@ class BadRequestError(RestAPIError):
         super().__init__(400, payload)
 
 
-class InternalServerErrorError(RestAPIError):
+class InternalServerError(RestAPIError):
     def __init__(self, payload=None):
         super().__init__(500, payload)
 

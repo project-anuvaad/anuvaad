@@ -3,10 +3,8 @@ from flask.blueprints import Blueprint
 from flask_cors import CORS
 import routes
 import config
-import logging
-from logging.config import dictConfig
-
-log = logging.getLogger()
+from anuvaad_auditor.loghandler import log_info
+from utilities import MODULE_CONTEXT
 
 doc_app  = Flask(__name__)
 
@@ -19,5 +17,5 @@ for blueprint in vars(routes).values():
 
 
 if __name__ == "__main__":
-    log.info("server up")
+    log_info("starting server at {} at port {}".format(config.HOST, config.PORT), MODULE_CONTEXT)
     doc_app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
