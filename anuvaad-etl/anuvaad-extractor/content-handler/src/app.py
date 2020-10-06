@@ -5,7 +5,6 @@ from anuvaad_auditor.loghandler import log_info
 import routes
 import config
 from utilities import MODULE_CONTEXT
-from db import connect_db
 
 server  = Flask(__name__)
 
@@ -17,6 +16,5 @@ for blueprint in vars(routes).values():
         server.register_blueprint(blueprint, url_prefix=config.API_URL_PREFIX)
 
 if __name__ == "__main__":
-    connect_db()
     log_info('starting server at {} at port {}'.format(config.HOST, config.PORT), MODULE_CONTEXT)
     server.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
