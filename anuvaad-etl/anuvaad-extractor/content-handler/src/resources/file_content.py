@@ -49,7 +49,7 @@ class FileContentGetResource(Resource):
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
-            res = CustomResponse(Status.SUCCESS.value, result, result['total'])
+            res = CustomResponse(Status.SUCCESS.value, result['pages'], result['total'])
             return res.getres()
         except Exception as e:
             log_exception("FileContentGetResource ",  MODULE_CONTEXT, e)
