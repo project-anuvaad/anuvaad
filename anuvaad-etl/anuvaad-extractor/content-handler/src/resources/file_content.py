@@ -10,6 +10,9 @@ class FileContentSaveResource(Resource):
         parser.add_argument('record_id', location='json', type=str, help='record_id cannot be empty', required=True)
         parser.add_argument('pages', location='json', type=str, help='pages cannot be empty', required=True)
         parser.add_argument('userid', location='headers', type=str, help='userid cannot be empty', required=True)
+        parser.add_argument('src_lang', location='json', type=str, help='please provide source language', required=True)
+        parser.add_argument('tgt_lang', location='json', type=str, help='please provide translated language', required=True)
+
 
         args    = parser.parse_args()
         try:
@@ -18,7 +21,7 @@ class FileContentSaveResource(Resource):
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
 
-        if FileContentRepositories.store(args['userid'], args['file_locale'], args['record_id'], pages) == False:
+        if FileContentRepositories.store(args['userid'], args['file_locale'], args['record_id'], pages, args['src_lang'], args['tgt_lang']) == False:
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
         res = CustomResponse(Status.SUCCESS.value, None)
