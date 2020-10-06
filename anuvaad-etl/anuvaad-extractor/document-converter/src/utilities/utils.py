@@ -40,3 +40,7 @@ class DocumentUtilities():
         INCH_TO_TWIPS  = 1440
         px_to_inches   = 1.0 / float(dpi)
         return math.ceil(px * px_to_inches * INCH_TO_TWIPS)
+
+    def url_generation(self, url_pre, record_id, job_id, start_page, end_page):
+        url_modified = url_pre + '?record_id={}&job_id={}&start_page={}&end_page={}'.format(record_id, job_id, start_page, end_page)
+        return url_modified

@@ -62,6 +62,9 @@ definitions:
       user_id:
         type: string
         description: user id to access the data from content-handler db.
+      job_id:
+        type: string
+        description: job id to access the data from content-handler db.
           
 
 

@@ -20,12 +20,14 @@ class DocumentConversion(object):
     def __init__(self, DOWNLOAD_FOLDER):
         self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
 
-    def get_data_from_content_handler(self, record_id, user_id):
+    def get_data_from_content_handler(self, record_id, user_id, job_id, start_page=0, end_page=0):
+        doc_utils = DocumentUtilities()
         try:
-            json_data = {'record_id' : record_id, 'all' : True}
+            #json_data = {'record_id' : record_id, 'all' : True}
             headers = {"ad-userid": user_id ,"Content-Type": "application/json"}
             log_info("Intiating request to fetch data",MODULE_CONTEXT)
-            response = requests.get(config.internal_gateway_url_fetch_data, json = json_data, headers = headers)
+            request_url = doc_utils.url_generation(config.internal_gateway_url_fetch_data, record_id, job_id, start_page, end_page)
+            response = requests.get(request_url, headers = headers)
             response_data = response.content
             log_info("Received data from fetch-content end point of content handler", MODULE_CONTEXT)
             dict_str = response_data.decode("UTF-8")
