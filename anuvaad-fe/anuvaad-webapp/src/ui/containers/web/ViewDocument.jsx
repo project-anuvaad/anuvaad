@@ -50,10 +50,10 @@ class ViewDocument extends React.Component {
       MUIDataTableBodyCell: {
         root: {
           padding: '3px 10px 3px'
-          
+
         }
       },
-     
+
     }
   })
 
@@ -85,8 +85,11 @@ class ViewDocument extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.fetchDocument !== this.props.fetchDocument) {
       var arr = []
-      this.props.fetchDocument.map(value => {
-
+      
+      this.props.fetchDocument.map((value, i) => {
+        if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && value.status === "COMPLETED") {
+          TELEMETRY.endWorkflow(value.jobID)
+        }
 
         let date = value.startTime.toString()
         let timestamp = date.substring(0, 13)
@@ -108,7 +111,7 @@ class ViewDocument extends React.Component {
           subTask.state = task.state
           subTask.status = task.status
           tasks.push(subTask)
-        return null;
+          return null;
         })
         taskData.subTasks = tasks
 
@@ -126,7 +129,8 @@ class ViewDocument extends React.Component {
               if (lang.language_code === targetLangCode) {
                 targetLang = lang.language_name
               }
-           return null })
+              return null
+            })
           }
         }
 
@@ -145,8 +149,8 @@ class ViewDocument extends React.Component {
         b["tasks"] = taskData
 
         arr.push(b)
-      return null
-    })
+        return null
+      })
       this.setState({ name: arr, showLoader: false });
     }
   }
@@ -340,7 +344,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div >
-                  <Tooltip title="info" placement="left"><IconButton style={{ color: '#233466', padding:'5px' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[13])}><InfoIcon style={{ color: "#C6C6C6" }} /></IconButton></Tooltip>
+                  <Tooltip title="info" placement="left"><IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[13])}><InfoIcon style={{ color: "#C6C6C6" }} /></IconButton></Tooltip>
                   {tableMeta.rowData[1] === 'COMPLETED' ? <Tooltip title={translate('viewTranslate.page.title.downloadSource')} placement="right"><IconButton style={{ color: '#233466' }} component="a" onClick={() => { this.setState({ fileDownload: true }); this.handleFileDownload(tableMeta.rowData[5]) }}><DeleteOutlinedIcon /></IconButton></Tooltip> : ''}
                 </div>
               );
@@ -391,47 +395,26 @@ class ViewDocument extends React.Component {
         <Toolbar style={{ marginLeft: "-5.4%", marginRight: "1.5%", marginTop: "20px" }}>
           <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
           {this.state.role.includes("dev") || this.state.role.includes("grader") || this.state.role.includes("user") || this.state.role.includes("interactive-editor") ? (
-            // <Button
-            //   color="primary"
-            //   variant="extendedFab"
-
-            //   style={{
-            //     marginRight: 0
-            //   }}
-            //   aria-label="Add"
-            //   onClick={() => {
-            //     history.push(`${process.env.PUBLIC_URL}/document-upload`);
-            //   }}
-            // >
-            //   {/* <AddIcon /> */}
-            //   <img src="upload.svg"
-            //     style={{
-            //       marginRight: '5px',
-            //       height: '16px'
-            //     }}
-            //     alt="" />
-            //   {translate("common.page.button.upload")}
-            // </Button>
             <Fab color="primary"
-            variant="extended"
-            aria-label="Add"
-            style={{
-                  marginRight: 0,
-                   textTransform: 'none'
-                }}
-               
-            onClick={() => {
-                  history.push(`${process.env.PUBLIC_URL}/document-upload`);
-                }}>
-           <PublishIcon fontSize="small"/>
-            {translate("common.page.button.upload")}
-          </Fab>
+              variant="extended"
+              aria-label="Add"
+              style={{
+                marginRight: 0,
+                textTransform: 'none'
+              }}
+
+              onClick={() => {
+                history.push(`${process.env.PUBLIC_URL}/document-upload`);
+              }}>
+              <PublishIcon fontSize="small" />
+              {translate("common.page.button.upload")}
+            </Fab>
           ) : (
               ""
             )}
         </Toolbar>
         <div style={{ marginLeft: "3%", marginRight: "3%", marginTop: "2%", marginBottom: '5%' }}>
-          {!this.state.showLoader &&<MuiThemeProvider theme={this.getMuiTheme()}> <MUIDataTable title={translate("common.page.title.document")} data={this.state.name} columns={columns} options={options} /></MuiThemeProvider>}
+          {!this.state.showLoader && <MuiThemeProvider theme={this.getMuiTheme()}> <MUIDataTable title={translate("common.page.title.document")} data={this.state.name} columns={columns} options={options} /></MuiThemeProvider>}
         </div>
         {this.state.showInfo &&
           <Dialog message={this.state.message}
