@@ -59,7 +59,9 @@ class ViewDocument extends React.Component {
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('view-document')
-    // return null;
+
+    //getSnapshotBeforeUpdate() must return null
+    return null; 
   }
 
   componentDidMount() {
@@ -85,7 +87,7 @@ class ViewDocument extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.fetchDocument !== this.props.fetchDocument) {
       var arr = []
-      
+
       this.props.fetchDocument.map((value, i) => {
         if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && value.status === "COMPLETED") {
           TELEMETRY.endWorkflow(value.jobID)
@@ -413,7 +415,7 @@ class ViewDocument extends React.Component {
               ""
             )}
         </Toolbar>
-        <div style={{ marginLeft: "3%", marginRight: "3%", marginTop: "2%", marginBottom: '5%' }}>
+        <div style={{ margin: '2% 3% 3% 3%' }}>
           {!this.state.showLoader && <MuiThemeProvider theme={this.getMuiTheme()}> <MUIDataTable title={translate("common.page.title.document")} data={this.state.name} columns={columns} options={options} /></MuiThemeProvider>}
         </div>
         {this.state.showInfo &&

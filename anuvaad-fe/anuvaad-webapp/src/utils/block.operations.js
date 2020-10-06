@@ -105,7 +105,7 @@ function get_merged_blocks(sentences, selected_block_ids) {
     let updated_blocks      = []
 
     selected_blocks.forEach(element => {
-        if (element.block_identifier == largest_block.block_identifier) {
+        if (element.block_identifier === largest_block.block_identifier) {
             element.text    = text
 
         } else {
@@ -137,7 +137,7 @@ function get_tokenized_sentences_block(blocks) {
  */
 function get_sentence_id_index(tokenized_sentences, sentence_id) {
   for (var i = 0; i < tokenized_sentences.length; i++) {
-    if (tokenized_sentences[i].s_id == sentence_id) {
+    if (tokenized_sentences[i].s_id === sentence_id) {
       return i;
     }
   }
