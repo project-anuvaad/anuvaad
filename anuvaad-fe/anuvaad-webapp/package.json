@@ -93,7 +93,7 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.4",
-    "eslint": "^7.10.0",
+    "eslint": "^6.6.0",
     "lint-staged": "^7.3.0",
     "react-csv-downloader": "^1.4.0",
     "react-test-renderer": "16.4.1",
