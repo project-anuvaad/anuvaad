@@ -119,7 +119,8 @@ class BlockTranslationService:
             ch_res_sent = utils.fetch_sentence_by_id(s_id, text_translate_input["metadata"]["userID"])
             if ch_res_sent:
                 if 'data' in ch_res_sent.keys():
-                    ch_response.append(ch_res_sent["data"])
+                    if ch_res_sent["data"]:
+                        ch_response.append(ch_res_sent["data"])
         log_info("CH Response size: " + str(len(ch_response)), text_translate_input)
         if ch_response:
             for translation in ch_response:
