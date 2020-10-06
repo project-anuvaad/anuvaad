@@ -2,6 +2,8 @@ from flask_restful import fields, marshal_with, reqparse, Resource
 from repositories import SentenceRepositories, FileContentRepositories
 from models import CustomResponse, Status
 import ast
+from utilities import MODULE_CONTEXT
+from anuvaad_auditor.loghandler import log_info, log_exception
 
 class FileContentSaveResource(Resource):
     def post(self):
@@ -12,9 +14,10 @@ class FileContentSaveResource(Resource):
         parser.add_argument('userid', location='headers', type=str, help='userid cannot be empty', required=True)
         parser.add_argument('src_lang', location='json', type=str, help='please provide source language', required=True)
         parser.add_argument('tgt_lang', location='json', type=str, help='please provide translated language', required=True)
-
-
         args    = parser.parse_args()
+
+        log_info("FileContentSaveResource record_id {} for user {}".format(args['record_id'], args['userid']), MODULE_CONTEXT)
+
         try:
             pages = ast.literal_eval(args['pages'])
         except expression as identifier:
@@ -38,6 +41,7 @@ class FileContentGetResource(Resource):
         parser.add_argument('record_id', type=str, location='args', help='record_id is required', required=True)
 
         args    = parser.parse_args()
+        log_info("FileContentGetResource record_id {} for user {}".format(args['record_id'], args['ad-userid']), MODULE_CONTEXT)
         result  = FileContentRepositories.get(args['ad-userid'], args['record_id'], args['start_page'], args['end_page'])
 
         if result == False:
@@ -51,8 +55,9 @@ class FileContentUpdateResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('blocks', location='json', type=str, help='blocks cannot be empty', required=True)
         parser.add_argument('ad-userid', location='headers', type=str, help='userid cannot be empty', required=True)
-
         args    = parser.parse_args()
+        log_info("FileContentUpdateResource for user {}".format(args['ad-userid']), MODULE_CONTEXT)
+
         try:
             blocks = ast.literal_eval(args['blocks'])
         except expression as identifier:
