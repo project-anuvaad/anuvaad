@@ -140,7 +140,8 @@ class DocumentConversion(object):
                         font.size                      = Twips(doc_utils.pixel_to_twips(row['font_size'])) 
                         run.add_text(row['text'])
                 run.add_break(WD_BREAK.PAGE)
-            output_filepath = os.path.join(self.DOWNLOAD_FOLDER ,record_id + '.docx')
+            output_filepath = os.path.join(self.DOWNLOAD_FOLDER ,record_id + '_translated.docx')
             document.save(output_filepath)
+            return output_filepath
         except Exception as e:
             log_exception("dataframe to doc formation failed", MODULE_CONTEXT, e)

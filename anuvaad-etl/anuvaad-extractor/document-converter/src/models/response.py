@@ -9,9 +9,9 @@
 from flask import jsonify
 
 class CustomResponse :
-    def __init__(self, statuscode, data, count=0):
+    def __init__(self, statuscode, data):
         self.statuscode = statuscode
-        self.statuscode['count'] = count
+        self.statuscode['translated_document'] = data
     
     def getres(self):
         return jsonify(self.statuscode)
