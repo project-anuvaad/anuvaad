@@ -17,7 +17,8 @@ class FileContentSaveResource(Resource):
         args    = parser.parse_args()
 
         log_info("FileContentSaveResource record_id {} for user {}".format(args['record_id'], args['userid']), MODULE_CONTEXT)
-
+        log_info('{}'.format(str(args['pages'])), MODULE_CONTEXT)
+        
         try:
             pages = ast.literal_eval(args['pages'])
             if FileContentRepositories.store(args['userid'], args['file_locale'], args['record_id'], pages, args['src_lang'], args['tgt_lang']) == False:
