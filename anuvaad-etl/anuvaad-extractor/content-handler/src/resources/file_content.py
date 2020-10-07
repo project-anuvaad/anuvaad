@@ -79,21 +79,25 @@ class FileContentGetResource(Resource):
         
 class FileContentUpdateResource(Resource):
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('blocks', location='json', type=str, help='blocks cannot be empty', required=True)
-        parser.add_argument('ad-userid', location='headers', type=str, help='userid cannot be empty', required=True)
-        args    = parser.parse_args()
-        log_info("FileContentUpdateResource for user {}".format(args['ad-userid']), MODULE_CONTEXT)
+        body        = request.get_json()
+        user_id     = request.headers.get('userid')
+        
+        if 'blocks' not in body or user_id is None:
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
+        
+        blocks      = body['blocks']
+        
+        log_info("FileContentUpdateResource for user {}, to update {} blocks".format(user_id, len(blocks)), MODULE_CONTEXT)
 
         try:
-            blocks  = ast.literal_eval(args['blocks'])
-            result  = FileContentRepositories.update(args['ad-userid'], None, blocks)
+            result  = FileContentRepositories.update(user_id, blocks)
 
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
 
-            log_info("FileContentUpdateResource for user {} updated".format(args['ad-userid']), MODULE_CONTEXT)
+            log_info("FileContentUpdateResource for user {} updated".format(user_id), MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS.value, result, None)
             return res.getres()            
         except Exception as e:
