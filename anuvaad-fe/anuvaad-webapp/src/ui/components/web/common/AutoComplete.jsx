@@ -64,7 +64,7 @@ class AutoComplete extends React.Component {
             if (saveData) {
                 this.props.handleChangeEvent({ target: { value: this.state.value } })
             }
-            this.props.handleBlur(this.props.block_identifier_with_page, wfcodes.DP_WFLOW_S_C, saveData)
+            this.props.handleBlur(this.props.block_identifier_with_page, wfcodes.DP_WFLOW_S_C, saveData, this.props.value, this.state.value)
         } else  if (event.key === 'Tab') {
             let divdata = this.refs[this.props.refId].getBoundingClientRect()
             let x = divdata.x
@@ -161,7 +161,7 @@ class AutoComplete extends React.Component {
 
     handleClickAway(id, value, wf_code) {
         let saveData = (this.state.value !== this.props.value || this.state.modified) ? true : false
-        this.props.handleClickAway(id, value, wf_code, saveData)
+        this.props.handleClickAway(id, value, wf_code, saveData, this.props.value)
     }
 
     getLoader() {

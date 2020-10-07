@@ -59,11 +59,16 @@ class PdfFileEditor extends React.Component {
       showNextSuggestion: false,
       workflow: "DP_WFLOW_S_TTR",
       scrollTransMode: false,
-      scrollPageNo: ""
+      scrollPageNo: "",
+      initialSenetenceId: "",
+      initialSenetence: ""
     };
   }
   getSnapshotBeforeUpdate(prevProps, prevState) {
-    TELEMETRY.pageLoadStarted('document-editor')
+    // if(!this.state.hoveredSentence) {
+    //   TELEMETRY.pageLoadStarted('document-editor')
+    // }
+    return null
   }
 
   componentDidMount() {
@@ -90,6 +95,10 @@ class PdfFileEditor extends React.Component {
       });
     }
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
+    
+      let telemetryData = this.state.telemetry
+      TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
+
       const apiObj = new FileContent(this.props.match.params.jobid, this.state.startPage, this.state.endPage);
       this.props.APITransport(apiObj);
       this.setState({ apiStatus: true });
@@ -97,28 +106,7 @@ class PdfFileEditor extends React.Component {
 
     /* Pagination api */
     if (prevProps.fetchContent !== this.props.fetchContent && this.props.fetchContent.result.data) {
-      // let temp = Data.data;
       let temp = this.props.fetchContent.result.data;
-      // let sentenceObj = temp;
-      // sentenceObj &&
-      //   sentenceObj.map(sentence => {
-      //     sentence.text_blocks &&
-      //       sentence.text_blocks.map(sentenceChildren => {
-      //         sentenceChildren.children
-      //           ? sentenceChildren.children.map(children => {
-      //               children.children
-      //                 ? children.children.map(value => {
-      //                     value.max_font = value.font_size;
-      //                   })
-      //                 : (children.max_font = children.font_size);
-
-      //               // children.font_size = children.font_size -1;
-      //             })
-      //           : (sentenceChildren.max_font = sentenceChildren.font_size);
-      //       });
-      //   });
-      // temp = sentenceObj;
-
       if (!temp) {
         this.setState({
           hasMoreItems: true,
@@ -334,15 +322,29 @@ class PdfFileEditor extends React.Component {
   }
 
   handleSourceChange = (evt, blockValue) => {
+
     if (this.state.pageDetails === "target") {
       let sentenceObj = this.state.targetText;
       sentenceObj.tgt = evt.target.value;
       this.setState({ targetText: sentenceObj });
     } else {
+      let initialSenetenceId, initialSenetence
+
+      if (this.state.selectedSourceText && this.state.selectedSourceText.block_id && this.state.initialSenetenceId !== this.state.selectedSourceText.block_id) {
+        initialSenetenceId = this.state.selectedSourceText.block_id
+        initialSenetence = this.state.selectedSourceText.text
+      }
+
       let sentenceObj = this.state.selectedSourceText;
       sentenceObj.text = evt.target.value;
 
-      this.setState({ selectedSourceText: sentenceObj, height: evt.currentTarget.offsetHeight, textChange: true });
+      this.setState({
+        selectedSourceText: sentenceObj,
+        height: evt.currentTarget.offsetHeight,
+        textChange: true,
+        initialSenetenceId: initialSenetenceId ? initialSenetenceId : this.state.initialSenetenceId,
+        initialSenetence: initialSenetence ? initialSenetence : this.state.initialSenetence
+      });
     }
   };
 
@@ -467,7 +469,7 @@ class PdfFileEditor extends React.Component {
     this.setState({ mergeButton: value });
   }
 
-  handleBlur(id, wf_code, saveData) {
+  handleBlur(id, wf_code, saveData, prevValue, finalValue) {
     let status = "update";
     let idDetails = id.split("_")
     let text = "";
@@ -499,9 +501,14 @@ class PdfFileEditor extends React.Component {
         });
       }
     });
+    let telemetry = {}
+    telemetry.initialSenetence = wf_code ? prevValue : this.state.initialSenetence
+    telemetry.finalSenetence = wf_code ? finalValue : saveData
+    telemetry.sId = idDetails[0] ? idDetails[0] : id
+    telemetry.mode = wf_code ? "translation" : "validation"
 
     if (blockItem && !wf_code && this.state.textChange) this.workFlowApi("DP_WFLOW_S_TTR", [blockItem], status);
-    else if (wf_code && blockItem && saveData) this.workFlowApi(wf_code, [blockItem], status);
+    else if (wf_code && blockItem && saveData) this.workFlowApi(wf_code, [blockItem], status, prevValue);
     this.setState({
       hoveredSentence: "",
       targetSelected: "",
@@ -510,7 +517,8 @@ class PdfFileEditor extends React.Component {
       selectedSourceText: "",
       edited: false,
       textChange: false,
-      updatePage: parseInt(idDetails[1])
+      updatePage: parseInt(idDetails[1]),
+      telemetry
     });
   }
 
@@ -555,7 +563,6 @@ class PdfFileEditor extends React.Component {
   }
 
   render() {
-  
     return (
       <div>
         {this.state.sentences && (
