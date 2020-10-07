@@ -628,7 +628,6 @@ maxRows={4}
                 elems = obj.elems
               }
             })
-            // elems.push(this.makeSpanWithDiv(child, child_elems))
           }
           else {
             var text = child.text
