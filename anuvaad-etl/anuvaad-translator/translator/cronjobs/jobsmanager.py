@@ -80,16 +80,16 @@ class JobsManger(Thread):
                 }
                 user_id = complete["transInput"]["metadata"]["userID"]
                 res = utils.call_api(save_content_url, "POST", ch_input, None, user_id)
-                log_info(ch_input, complete["transInput"])
                 if res:
-                    log_info(res, complete["transInput"])
-                    output = {"inputFile": str(complete["recordID"]).split("|")[1], "outputFile": str(complete["recordID"])}
-                    job_wise_records = self.manage_records(job_wise_records, complete, output)
+                    if res["http"]["status"] != 200:
+                        log_error("Content push to CH Failed | Cause: " + res["http"]["why"] + " | record: " + complete["recordID"], complete["transInput"], None)
+                        output = {"inputFile": str(complete["recordID"]).split("|")[1], "outputFile": "FAILED","error": res["http"]["why"]}
+                    else:
+                        output = {"inputFile": str(complete["recordID"]).split("|")[1], "outputFile": str(complete["recordID"])}
                 else:
                     log_error("Content push to CH Failed, record: " + complete["recordID"], complete["transInput"], None)
                     output = {"inputFile": str(complete["recordID"]).split("|")[1], "outputFile": "FAILED", "error": "Content push to CH Failed"}
-                    job_wise_records = self.manage_records(job_wise_records, complete, output)
-
+                job_wise_records = self.manage_records(job_wise_records, complete, output)
             for job_id in job_wise_records.keys():
                 status = "FAILED"
                 for output in job_wise_records[job_id]["output"]:
