@@ -1,0 +1,81 @@
+{
+    "models_root": "./src/available_nmt_models",
+    "models": [
+        {
+            "id": 56,
+            "path":"test"
+        },
+        {
+            "id": 17,
+            "path":"en-ml"
+        },
+        {
+            "id": 7,
+            "path":"en-ta"
+        },
+        {
+            "id": 15,
+            "path":"en-kn"
+        },
+        {
+            "id":16,
+            "path":"en-te"
+        },
+        {
+            "id":18,
+            "path":"en-pa"
+        },
+        {
+            "id":11,
+            "path":"en-bn"
+        },
+        {
+            "id":42,
+            "path":"en-mr"
+        },
+        {
+            "id":10,
+            "path":"en-gu"
+        },
+        {
+            "id":50,
+            "path":"te-en"
+        },
+        {
+            "id":6,
+            "path":"hi-en"
+        },
+        {
+            "id":62,
+            "path":"mr-en"
+        },
+        {
+            "id":58,
+            "path":"bn-en"
+        },
+        {
+            "id":8,
+            "path":"ta-en"
+        },
+        {
+            "id":55,
+            "path":"pa-en"
+        },
+        {
+            "id":48,
+            "path":"kn-en"
+        },
+        {
+            "id":60,
+            "path":"ml-en"
+        },
+        {
+            "id":52,
+            "path":"gu-en"
+        },
+        {
+            "id":100,
+            "path":"en-hi-int8"
+        }
+    ]
+}

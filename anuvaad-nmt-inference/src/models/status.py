@@ -2,23 +2,20 @@ import enum
 
 
 class Status(enum.Enum):
-    SUCCESS = {'ok': True, 'http': {'status': 200},
-               'why': "request successful"}
-    ERR_GLOBAL_SYSTEM = {'ok': False, 'http': {
-        'status': 500}, 'why': "Internal Server Error"}
-    ERR_GLOBAL_MISSING_PARAMETERS = {
-        'ok': False, 'http': {'status': 400}, 'why': "Data Missing"}
-    FAILURE = {'ok': False,'http':{'status':500},
-                'why':'request failed'}
-    CORRUPT_FILE = {'ok': False,'http':{'status':500},
-                'why':'uploaded file is corrupt'}
-    DATA_NOT_FOUND = {'ok': False,'http':{'status':404},
-                'why':'data not found'}
-    OPERATION_NOT_PERMITTED = {'ok': False, 'http': {'status': 400},
-                               'why': 'operation not permitted'}
-    ERROR_WEAK_PASSWORD = {'ok': False, 'http': {'status': 400}, 'why': 'weak password, at least provide 6 characters '}
-    ERROR_GATEWAY = {'ok': False, 'http': {'status': 400}, 'why': 'gateway error'}
-    ERROR_UNSUPPORTED_FILE = {'ok': False, 'http': {'status': 400}, 'why': 'unsupported file'}
-    ERROR_NOTFOUND_FILE = {'ok': False, 'http': {'status': 400}, 'why': 'file not found'}
-    ERROR_WRONG_PASSWORD = {'ok': False, 'http': {'status': 400}, 'why': 'wrong password '}
-    USER_ALREADY_EXISTS = {'ok': False, 'http': {'status': 400}, 'why': 'username already exists '}
+    
+    SUCCESS = { "ok": "true",  "statusCode": 200 , "why": "Requested operation successful" }
+    FILE_MISSING = { "ok": "false", "statusCode": 404 , "why": "No file found" }
+    TYPE_MISSING = { "ok": "false", "statusCode": 404 , "why": "No type found in the request" }
+    ID_MISSING = { "ok": "false", "statusCode": 404 , "why": "No ID found in the request" }
+    LANGUAGE_MISSING = { "ok": "false", "statusCode": 404 , "why": "No language found in the request" }
+    MANDATORY_PARAM_MISSING = { "ok": "false", "statusCode": 404 , "why": "missing mandatory params from type','language','id" }
+    TYPE_OR_LANGUAGE_MISSING = { "ok": "false", "statusCode": 404 , "why": "either type or language missing in form data" }
+    INVALID_TYPE = { "ok": "false",  "statusCode": 401 , "why": "Invalid file type of file to be downloaded/uploaded !" }
+    SYSTEM_ERR = { "ok": "false",  "statusCode": 500 , "why": "Something went wrong on the server !" }
+    SEVER_MODEL_ERR = { "ok": "false",  "statusCode": 500 , "why": "Something went wrong on the server !" }
+    UNSUPPORTED_LANGUAGE = { "ok": "false",  "statusCode": 401 , "why": "only hindi and english languages are supported" }
+    No_File_DB = { "ok": "false",  "statusCode": 401 , "why": "no file found in the db for the given id" }
+    ID_OR_SRC_MISSING = { "ok": "false",  "statusCode": 401 , "why": "Either id or src missing for some inputs in the request" }
+    INCORRECT_ID = { "ok": "false",  "statusCode": 401 , "why": "wrong model id for some input" }
+    INVALID_API_REQUEST = {"ok": "false",  "statusCode": 401 , "why": "invalid api request,either incorrect format or empty request"}
+    KAFKA_INVALID_REQUEST = {"ok": "false",  "statusCode": 401 , "why": "incorrect url_end_point for KAFKA"}
