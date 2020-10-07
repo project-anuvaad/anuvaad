@@ -1,21 +1,25 @@
 import config
 from models import BlockModel
 import datetime
+import uuid
 
 class FileContentRepositories:
 
     @staticmethod
     def update_block_info(block, record_id, page_no, data_type, user_id, src_lang, tgt_lang):
-        new_block               = {}
-        new_block['created_on'] = datetime.datetime.utcnow()
-        new_block['record_id']  = record_id
-        new_block['page_no']    = page_no
-        new_block['data_type']  = data_type
-        new_block['job_id']     = record_id.split('|')[0]
-        new_block['created_by'] = user_id
-        new_block['src_lang']   = src_lang
-        new_block['tgt_lang']   = tgt_lang
-        new_block['data']       = block
+        new_block                   = {}
+        new_block['created_on']     = datetime.datetime.utcnow()
+        new_block['record_id']      = record_id
+        new_block['page_no']        = page_no
+        new_block['data_type']      = data_type
+        new_block['job_id']         = record_id.split('|')[0]
+        new_block['created_by']     = user_id
+        new_block['src_lang']       = src_lang
+        new_block['tgt_lang']       = tgt_lang
+
+        if block != None and if 'block_identifier' not in list(block.keys()):
+            new_block['block_identifier']   = str(uuid.uuid4())
+            block['block_identifier']       = new_block['block_identifier']
 
         '''
             storing a Step-0/baseline translation
@@ -28,7 +32,6 @@ class FileContentRepositories:
                 del elem['output_subwords']
                 del elem['pred_score'] 
 
-        new_block['block_identifier']   = block['block_identifier']
         return new_block
 
     @staticmethod

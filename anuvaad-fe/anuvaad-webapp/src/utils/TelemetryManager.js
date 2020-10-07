@@ -310,3 +310,26 @@ export const endSentenceEdit = (sentence, sentence_id, mode) => {
   let options = {}
   $t.interact(data, options)
 }
+
+/**
+ * single event to report changes in sentence
+ * @param {*} sentence_initial , initial sentence when user moved into the edit 
+ * @param {*} sentence_final , final sentence when user moved out of edit
+ * @param {*} sentence_id , sentence_identifier or identifier that uniquely identifies.
+ * @param {*} mode , validation or translation
+ */
+export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, mode) => {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'click',
+    id: sentence_id,
+    initial: sentence_initial,
+    final: sentence_final,
+    mode: mode
+  }
+  let options = {}
+  $t.interact(data, options)
+}
