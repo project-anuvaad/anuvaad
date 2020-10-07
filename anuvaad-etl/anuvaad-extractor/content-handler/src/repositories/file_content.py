@@ -17,9 +17,10 @@ class FileContentRepositories:
         new_block['src_lang']       = src_lang
         new_block['tgt_lang']       = tgt_lang
 
-        if block != None and if 'block_identifier' not in list(block.keys()):
-            new_block['block_identifier']   = str(uuid.uuid4())
-            block['block_identifier']       = new_block['block_identifier']
+        if block != None:
+            if 'block_identifier' not in list(block.keys()):
+                new_block['block_identifier']   = str(uuid.uuid4())
+                block['block_identifier']       = new_block['block_identifier']
 
         '''
             storing a Step-0/baseline translation
