@@ -78,7 +78,7 @@ class FileContentRepositories:
                     page['page_no']         = block['data'][0]['page_info']['page_no']
                     page['page_width']      = block['data'][0]['page_info']['page_width']
 
-                data['pages'].append(page)
+            data['pages'].append(page)
 
         data['start_page']  = start_page
         data['end_page']    = end_page
