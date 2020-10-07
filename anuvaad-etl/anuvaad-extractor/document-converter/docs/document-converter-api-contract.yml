@@ -72,14 +72,15 @@ definitions:
   Response:
     type: object
     properties: 
-      count:
-        type: integer
       ok:
         type: boolean
         description: request successful indicator.
       why:
         type: string
         description: Response message.
+      translated_document:
+        type: string
+        description: translated document name.
       http:
         type: object
         description: Final output of this process.
