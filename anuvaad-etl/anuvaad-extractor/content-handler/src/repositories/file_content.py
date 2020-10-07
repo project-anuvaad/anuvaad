@@ -88,6 +88,7 @@ class FileContentRepositories:
                 for text in page['text_blocks']:
                     log_info("appending text block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                     blocks.append(FileContentRepositories.create_block_info(text, record_id, page['page_no'], 'text_blocks', user_id, src_lang, tgt_lang))
+                continue
 
         BlockModel.store_bulk_blocks(blocks)
         return True
@@ -115,6 +116,7 @@ class FileContentRepositories:
             page    = {}
             for block in page_blocks:
                 page[block['_id']] = block['data']
+                print(block['data'])
                 if len(block['data']) > 0 :
                     page['page_height']     = block['data'][0]['page_info']['page_height']
                     page['page_no']         = block['data'][0]['page_info']['page_no']
