@@ -78,6 +78,7 @@ class FileContentRepositories:
             page_info['page_width']     = page['page_width']
             page_info['page_height']    = page['page_height']
 
+            print(type(page), list(page.keys()))
             if 'images' in list(page.keys()):
                 for image in page['images']:
                     log_info("appending image block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
