@@ -38,7 +38,6 @@ class FileContentRepositories:
                     del elem['pred_score'] 
 
         log_info("creating new block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
-        print(new_block)
         return new_block
 
     @staticmethod
@@ -83,19 +82,16 @@ class FileContentRepositories:
                 for image in page['images']:
                     log_info("appending image block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                     blocks.append(FileContentRepositories.create_block_info(image, record_id, page_info, 'images', user_id, src_lang, tgt_lang))
-                continue
 
             if  'lines' in page:
                 for line in page['lines']:
                     log_info("appending lines block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                     blocks.append(FileContentRepositories.create_block_info(line, record_id, page_info, 'lines', user_id, src_lang, tgt_lang))
-                continue
 
             if 'text_blocks' in page:
                 for text in page['text_blocks']:
                     log_info("appending text block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                     blocks.append(FileContentRepositories.create_block_info(text, record_id, page_info, 'text_blocks', user_id, src_lang, tgt_lang))
-                continue
 
         BlockModel.store_bulk_blocks(blocks)
         return True
