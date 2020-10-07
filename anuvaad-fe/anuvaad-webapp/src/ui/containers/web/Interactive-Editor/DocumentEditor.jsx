@@ -159,6 +159,12 @@ class PdfFileEditor extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    let recordId = this.props.match.params.jobid;
+    let jobId = recordId ? recordId.split("|")[0] : ""
+    TELEMETRY.endTranslatorFlow(jobId)
+  }
+
   scrollPage(heightToBescrolled) {
     window.scrollTo(0, heightToBescrolled);
     this.setState({ scrollTransMode: false })
