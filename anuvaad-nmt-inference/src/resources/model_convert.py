@@ -15,7 +15,8 @@ class ModelConvertResource(Resource):
             return out.getres()
         else:
             log_info("null inputs in request in interactive-translation API",MODULE_CONTEXT)
-            return jsonify({'status':statusCode["INVALID_API_REQUEST"]})
+            rout = CustomResponse(Status.INVALID_API_REQUEST.value,None)
+            return out.getres()
     
     # ####
     #     log_info("ModelConvertResource record_id {} for user {}".format(args['record_id'], args['userid']), MODULE_CONTEXT)

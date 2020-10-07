@@ -1,18 +1,18 @@
 from flask import Blueprint
 from flask_restful import Api
 
-from resources import SentenceGetResource, SentencePostResource, SentenceBlockGetResource
+from resources import InteractiveTranslateResource, InteractiveMultiTranslateResource, OpenNMTTranslateResource
 
 TRANSLATE_BLUEPRINT = Blueprint("translate", __name__)
 
 Api(TRANSLATE_BLUEPRINT).add_resource(
-    SentenceGetResource, "/v1/interactive-translation"
+    InteractiveTranslateResource, "/interactive-translation"
 )
 
 Api(TRANSLATE_BLUEPRINT).add_resource(
-    SentenceBlockGetResource, "/interactive-translation"
+    InteractiveMultiTranslateResource, "/v1/interactive-translation"
 )
 
 Api(TRANSLATE_BLUEPRINT).add_resource(
-    SentencePostResource, "/translate-anuvaad"
+    OpenNMTTranslateResource, "/translate-anuvaad"
 )
