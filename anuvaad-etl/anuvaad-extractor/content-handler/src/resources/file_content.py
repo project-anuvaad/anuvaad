@@ -4,28 +4,45 @@ from models import CustomResponse, Status
 import ast
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
+from flask import request
 
 class FileContentSaveResource(Resource):
     def post(self):
-        parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument('file_locale', location='json', type=str, help='file_locale cannot be empty', required=True)
-        parser.add_argument('record_id', location='json', type=str, help='record_id cannot be empty', required=True)
-        parser.add_argument('pages', location='json', type=str, help='pages cannot be empty', required=True)
-        parser.add_argument('userid', location='headers', type=str, help='userid cannot be empty', required=True)
-        parser.add_argument('src_lang', location='json', type=str, help='please provide source language', required=True)
-        parser.add_argument('tgt_lang', location='json', type=str, help='please provide translated language', required=True)
-        args    = parser.parse_args()
+        body        = request.get_json()
+        user_id     = request.headers.get('userid')
+        pages       = body['pages']
+        file_locale = ''
+        
+        if 'file_locale' in body:
+            file_locale = body['file_locale']
 
-        log_info("FileContentSaveResource record_id {} for user {}".format(args['record_id'], args['userid']), MODULE_CONTEXT)
-        log_info('{}'.format(str(args['pages'])), MODULE_CONTEXT)
+        job_id = ''
+        if 'job_id' in body:
+            job_id = body['job_id']
+
+        record_id = None
+        if 'record_id' in body:
+            record_id = body['record_id']
+
+        src_lang = None
+        if 'src_lang' in body:
+            src_lang    = body['src_lang']
+        tgt_lang = None
+        if 'tgt_lang' in body:
+            tgt_lang    = body['tgt_lang']
+
+        if 'pages' not in body or user_id is None or record_id == None or src_lang == None or tgt_lang == None:
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
+            return res.getresjson(), 400
+        
+        log_info("FileContentSaveResource record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
         
         try:
-            pages = ast.literal_eval(args['pages'])
-            if FileContentRepositories.store(args['userid'], args['file_locale'], args['record_id'], pages, args['src_lang'], args['tgt_lang']) == False:
+            if FileContentRepositories.store(user_id, file_locale, record_id, pages, src_lang, tgt_lang) == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
 
-            log_info("FileContentSaveResource record_id {} for user {} saved".format(args['record_id'], args['userid']), MODULE_CONTEXT)
+            log_info("FileContentSaveResource record_id {} for user {} saved".format(record_id, user_id), MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS.value, None)
             return res.getres()
         except Exception as e:

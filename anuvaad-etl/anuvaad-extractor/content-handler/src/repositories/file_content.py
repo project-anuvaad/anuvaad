@@ -2,6 +2,8 @@ import config
 from models import BlockModel
 import datetime
 import uuid
+from utilities import MODULE_CONTEXT
+from anuvaad_auditor.loghandler import log_info, log_exception
 
 class FileContentRepositories:
 
@@ -23,7 +25,7 @@ class FileContentRepositories:
         '''
             storing a Step-0/baseline translation
         '''
-        if 'tokenized_sentences' in list(block.keys()):
+        if 'tokenized_sentences' in block:
             for elem in block['tokenized_sentences']:
                 elem['s0_tgt']    = elem['tgt']
                 elem['s0_src']    = elem['src']
@@ -34,6 +36,7 @@ class FileContentRepositories:
                 if 'pred_score' in elem:
                     del elem['pred_score'] 
 
+        log_info("creating new block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
         return new_block
 
     @staticmethod
@@ -62,22 +65,26 @@ class FileContentRepositories:
                 if 'pred_score' in elem:
                     del elem['pred_score'] 
 
+        log_info("updating new block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
         return new_block
 
     @staticmethod
     def store(user_id, file_locale, record_id, pages, src_lang, tgt_lang):
         blocks = []
         for page in pages:
-            if 'images' in list(page.keys()):
+            if 'images' in page:
                 for image in page['images']:
+                    log_info("appending image block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                     blocks.append(FileContentRepositories.create_block_info(image, record_id, page['page_no'], 'images', user_id, src_lang, tgt_lang))
 
-            if  'lines' in list(page.keys()):
+            if  'lines' in page:
                 for line in page['lines']:
+                    log_info("appending lines block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                     blocks.append(FileContentRepositories.create_block_info(line, record_id, page['page_no'], 'lines', user_id, src_lang, tgt_lang))
 
-            if 'text_blocks' in list(page.keys()):
+            if 'text_blocks' in page:
                 for text in page['text_blocks']:
+                    log_info("appending text block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                     blocks.append(FileContentRepositories.create_block_info(text, record_id, page['page_no'], 'text_blocks', user_id, src_lang, tgt_lang))
 
         BlockModel.store_bulk_blocks(blocks)
