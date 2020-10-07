@@ -1,2 +1,2 @@
-# from .translate import SentenceRepositories
+from .translate import TranslateService, OpenNMTTranslateService
 from .model_convert import ModelConvertService

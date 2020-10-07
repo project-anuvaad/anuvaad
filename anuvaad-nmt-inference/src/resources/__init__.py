@@ -1,2 +1,2 @@
-# from .translate import SentenceGetResource, SentencePostResource, SentenceBlockGetResource
+from .translate import InteractiveTranslateResource, InteractiveMultiTranslateResource, OpenNMTTranslateResource
 from .model_convert import ModelConvertResource

@@ -2,5 +2,5 @@
 __pycache__/
 
 # nmt-inference model folder
-src/available_nmt_models/*
-!src/available_nmt_models/.gitkeep
+available_nmt_models/*
+!/available_nmt_models/.gitkeep
