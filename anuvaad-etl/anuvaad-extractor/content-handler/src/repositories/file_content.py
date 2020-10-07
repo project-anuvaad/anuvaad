@@ -78,17 +78,17 @@ class FileContentRepositories:
             page_info['page_width']     = page['page_width']
             page_info['page_height']    = page['page_height']
 
-            if 'images' in page:
+            if 'images' in list(page.keys()):
                 for image in page['images']:
                     log_info("appending image block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                     blocks.append(FileContentRepositories.create_block_info(image, record_id, page_info, 'images', user_id, src_lang, tgt_lang))
 
-            if  'lines' in page:
+            if  'lines' in list(page.keys()):
                 for line in page['lines']:
                     log_info("appending lines block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                     blocks.append(FileContentRepositories.create_block_info(line, record_id, page_info, 'lines', user_id, src_lang, tgt_lang))
 
-            if 'text_blocks' in page:
+            if 'text_blocks' in list(page.keys()):
                 for text in page['text_blocks']:
                     log_info("appending text block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                     blocks.append(FileContentRepositories.create_block_info(text, record_id, page_info, 'text_blocks', user_id, src_lang, tgt_lang))
