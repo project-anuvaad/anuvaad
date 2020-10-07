@@ -28,7 +28,7 @@ class FetchSentenceResource(Resource):
             res = CustomResponse(Status.SUCCESS.value, result)
             return res.getres()
         except Exception as e:
-            log_exception("SentenceGetResource ",  MODULE_CONTEXT, e)
+            log_exception("FetchSentenceResource ",  MODULE_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
         
@@ -46,6 +46,7 @@ class SaveSentenceResource(Resource):
             return res.getresjson(), 400
 
         log_info("SaveSentenceResource for user {}, number sentences to update {}".format(user_id, len(sentences)), MODULE_CONTEXT)
+        print(body)
         try:
             result = SentenceRepositories.update_sentences(user_id, sentences)
             if result == False:
@@ -55,7 +56,7 @@ class SaveSentenceResource(Resource):
             res = CustomResponse(Status.SUCCESS.value, result)
             return res.getres()
         except Exception as e:
-            log_exception("SentencePostResource ",  MODULE_CONTEXT, e)
+            log_exception("SaveSentenceResource ",  MODULE_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
 

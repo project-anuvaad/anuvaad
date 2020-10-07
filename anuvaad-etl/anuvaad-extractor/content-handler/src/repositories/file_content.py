@@ -37,6 +37,7 @@ class FileContentRepositories:
                     del elem['pred_score'] 
 
         log_info("creating new block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
+        print(new_block)
         return new_block
 
     @staticmethod
