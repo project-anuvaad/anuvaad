@@ -8,11 +8,11 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 class FileContentRepositories:
 
     @staticmethod
-    def create_block_info(block, record_id, page_no, data_type, user_id, src_lang, tgt_lang):
+    def create_block_info(block, record_id, page_info, data_type, user_id, src_lang, tgt_lang):
         new_block                   = {}
         new_block['created_on']     = datetime.datetime.utcnow()
         new_block['record_id']      = record_id
-        new_block['page_no']        = page_no
+        new_block['page_no']        = page_info['page_no']
         new_block['data_type']      = data_type
         new_block['job_id']         = record_id.split('|')[0]
         new_block['created_by']     = user_id
@@ -21,6 +21,7 @@ class FileContentRepositories:
         new_block['block_identifier']   = str(uuid.uuid4())
         block['block_identifier']       = new_block['block_identifier']
         new_block['data']               = block
+        new_block['data']['page_info']  = page_info
 
         '''
             storing a Step-0/baseline translation
@@ -73,22 +74,27 @@ class FileContentRepositories:
     def store(user_id, file_locale, record_id, pages, src_lang, tgt_lang):
         blocks = []
         for page in pages:
+            page_info                   = {}
+            page_info['page_no']        = page['page_no']
+            page_info['page_width']     = page['page_width']
+            page_info['page_height']    = page['page_height']
+
             if 'images' in page:
                 for image in page['images']:
                     log_info("appending image block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
-                    blocks.append(FileContentRepositories.create_block_info(image, record_id, page['page_no'], 'images', user_id, src_lang, tgt_lang))
+                    blocks.append(FileContentRepositories.create_block_info(image, record_id, page_info, 'images', user_id, src_lang, tgt_lang))
                 continue
 
             if  'lines' in page:
                 for line in page['lines']:
                     log_info("appending lines block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
-                    blocks.append(FileContentRepositories.create_block_info(line, record_id, page['page_no'], 'lines', user_id, src_lang, tgt_lang))
+                    blocks.append(FileContentRepositories.create_block_info(line, record_id, page_info, 'lines', user_id, src_lang, tgt_lang))
                 continue
 
             if 'text_blocks' in page:
                 for text in page['text_blocks']:
                     log_info("appending text block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
-                    blocks.append(FileContentRepositories.create_block_info(text, record_id, page['page_no'], 'text_blocks', user_id, src_lang, tgt_lang))
+                    blocks.append(FileContentRepositories.create_block_info(text, record_id, page_info, 'text_blocks', user_id, src_lang, tgt_lang))
                 continue
 
         BlockModel.store_bulk_blocks(blocks)
@@ -117,7 +123,6 @@ class FileContentRepositories:
             page    = {}
             for block in page_blocks:
                 page[block['_id']] = block['data']
-                print(block['data'])
                 if len(block['data']) > 0 :
                     page['page_height']     = block['data'][0]['page_info']['page_height']
                     page['page_no']         = block['data'][0]['page_info']['page_no']
