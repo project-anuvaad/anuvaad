@@ -91,15 +91,14 @@ class BlockTranslationService:
                     nmt_predictions = self.dedup_hypothesis(ch_res)
                     output["input"], output["status"] = None, "SUCCESS"
                     output["taskEndTime"], output["output"] = eval(str(time.time()).replace('.', '')[0:13]), {"predictions": nmt_predictions}
-                    return output
                 else:
                     output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
                     output["error"] = post_error("TRANSLATION_FAILED", "Error while translating", None)
-                    return output
             else:
+                ch_predictions = self.dedup_hypothesis(ch_res)
                 output["input"], output["status"] = None, "SUCCESS"
-                output["taskEndTime"], output["output"] = eval(str(time.time()).replace('.', '')[0:13]), {"predictions": ch_res}
-                return output
+                output["taskEndTime"], output["output"] = eval(str(time.time()).replace('.', '')[0:13]), {"predictions": ch_predictions}
+            return output
         except Exception as e:
             log_exception("Exception while translating: " + str(e), text_translate_input, None)
             output["error"] = post_error("TRANSLATION_FAILED", "Exception while translating: " + str(e), None)
