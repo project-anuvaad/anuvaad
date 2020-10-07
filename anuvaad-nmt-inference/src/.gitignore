@@ -1,0 +1,6 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# nmt-inference model folder
+src/available_nmt_models/*
+!src/available_nmt_models/.gitkeep
