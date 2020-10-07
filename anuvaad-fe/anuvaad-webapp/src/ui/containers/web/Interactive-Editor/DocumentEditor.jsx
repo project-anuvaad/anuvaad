@@ -22,6 +22,7 @@ import Typography from "@material-ui/core/Typography";
 import Snackbar from "../../../components/web/common/Snackbar";
 import WorkFlow from "../../../../flux/actions/apis/fileupload";
 import TextButton from '@material-ui/core/Button';
+import LanguageCodes from "../../../components/web/common/Languages.json"
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -74,11 +75,25 @@ class PdfFileEditor extends React.Component {
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('document-editor')
 
+    let recordId = this.props.match.params.jobid;
+    let jobId = recordId ? recordId.split("|")[0] : ""
+
+    let langCodes = LanguageCodes
+    let sourceLang = ''
+    if (langCodes && Array.isArray(langCodes) && langCodes.length > 0) {
+      langCodes.map(lang => {
+        if (lang.language_code === this.props.match.params.locale) {
+          sourceLang = lang.language_name
+        }
+        return true
+      })
+    }
+    TELEMETRY.startTranslatorFlow(sourceLang, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
+
     this.props.ClearContent(null);
     this.setState({ showLoader: true });
-    /* Pagination api */
-    let recordId = this.props.match.params.jobid;
 
+    /* Pagination api */
     const apiObj = new FileContent(recordId, 1, this.state.pagesToBeLoaded);
     this.props.APITransport(apiObj);
     let obj = {};
@@ -95,7 +110,7 @@ class PdfFileEditor extends React.Component {
       });
     }
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
-    
+
       let telemetryData = this.state.telemetry
       TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
 
@@ -310,7 +325,10 @@ class PdfFileEditor extends React.Component {
   };
 
   handleOnClose() {
-    //Telemetry
+    let recordId = this.props.match.params.jobid;
+    let jobId = recordId ? recordId.split("|")[0] : ""
+    TELEMETRY.endTranslatorFlow(jobId)
+
     history.push(`${process.env.PUBLIC_URL}/view-document`);
   }
   handleSource(selectedBlock, type) {

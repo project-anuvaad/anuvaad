@@ -133,7 +133,6 @@ class DocumentBlock extends React.Component {
   };
 
   handleClickAway = (id, text, wf_code, saveData, prevValue) => {
-    debugger
     if (!this.props.showSuggestions) {
       if (saveData) {
         this.handleChangeEvent({ target: { value: text } })

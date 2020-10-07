@@ -303,7 +303,7 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/interactive-document/:locale/:jobid/:inputfileid/:modelId`}
+              path={`${process.env.PUBLIC_URL}/interactive-document/:locale/:targetlang/:jobid/:inputfileid/:modelId`}
               // path={`${process.env.PUBLIC_URL}/interactive-document/:fileid/:inputfileid`}
               userRoles={["editor", "dev", "grader", "interactive-editor"]}
               component={DocumentEditor}
