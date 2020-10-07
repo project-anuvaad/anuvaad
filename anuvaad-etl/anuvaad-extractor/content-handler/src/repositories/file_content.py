@@ -1,51 +1,91 @@
 import config
 from models import BlockModel
 import datetime
+import uuid
+from utilities import MODULE_CONTEXT
+from anuvaad_auditor.loghandler import log_info, log_exception
 
 class FileContentRepositories:
 
     @staticmethod
+    def create_block_info(block, record_id, page_no, data_type, user_id, src_lang, tgt_lang):
+        new_block                   = {}
+        new_block['created_on']     = datetime.datetime.utcnow()
+        new_block['record_id']      = record_id
+        new_block['page_no']        = page_no
+        new_block['data_type']      = data_type
+        new_block['job_id']         = record_id.split('|')[0]
+        new_block['created_by']     = user_id
+        new_block['src_lang']       = src_lang
+        new_block['tgt_lang']       = tgt_lang
+        new_block['block_identifier']   = str(uuid.uuid4())
+        block['block_identifier']       = new_block['block_identifier']
+        new_block['data']               = block
+
+        '''
+            storing a Step-0/baseline translation
+        '''
+        if 'tokenized_sentences' in block:
+            for elem in block['tokenized_sentences']:
+                elem['s0_tgt']    = elem['tgt']
+                elem['s0_src']    = elem['src']
+                if 'input_subwords' in elem:
+                    del elem['input_subwords']
+                if 'output_subwords' in elem:
+                    del elem['output_subwords']
+                if 'pred_score' in elem:
+                    del elem['pred_score'] 
+
+        log_info("creating new block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
+        return new_block
+
+    @staticmethod
     def update_block_info(block, record_id, page_no, data_type, user_id, src_lang, tgt_lang):
-        new_block               = {}
-        new_block['created_on'] = datetime.datetime.utcnow()
-        new_block['record_id']  = record_id
-        new_block['page_no']    = page_no
-        new_block['data_type']  = data_type
-        new_block['job_id']     = record_id.split('|')[0]
-        new_block['created_by'] = user_id
-        new_block['src_lang']   = src_lang
-        new_block['tgt_lang']   = tgt_lang
-        new_block['data']       = block
+        new_block                   = {}
+        new_block['created_on']     = datetime.datetime.utcnow()
+        new_block['record_id']      = record_id
+        new_block['page_no']        = page_no
+        new_block['data_type']      = data_type
+        new_block['job_id']         = record_id.split('|')[0]
+        new_block['created_by']     = user_id
+        new_block['src_lang']       = src_lang
+        new_block['tgt_lang']       = tgt_lang
+        new_block['block_identifier']   = block['block_identifier']
+        new_block['data']               = block
 
         '''
             storing a Step-0/baseline translation
         '''
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
-                elem['s0_tgt']    = elem['tgt']
-                elem['s0_src']    = elem['src']
-                del elem['input_subwords']
-                del elem['output_subwords']
-                del elem['pred_score'] 
+                if 'input_subwords' in elem:
+                    del elem['input_subwords']
+                if 'output_subwords' in elem:
+                    del elem['output_subwords']
+                if 'pred_score' in elem:
+                    del elem['pred_score'] 
 
-        new_block['block_identifier']   = block['block_identifier']
+        log_info("updating new block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
         return new_block
 
     @staticmethod
     def store(user_id, file_locale, record_id, pages, src_lang, tgt_lang):
         blocks = []
         for page in pages:
-            if 'images' in list(page.keys()):
+            if 'images' in page:
                 for image in page['images']:
-                    blocks.append(FileContentRepositories.update_block_info(image, record_id, page['page_no'], 'images', user_id, src_lang, tgt_lang))
+                    log_info("appending image block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
+                    blocks.append(FileContentRepositories.create_block_info(image, record_id, page['page_no'], 'images', user_id, src_lang, tgt_lang))
 
-            if  'lines' in list(page.keys()):
+            if  'lines' in page:
                 for line in page['lines']:
-                    blocks.append(FileContentRepositories.update_block_info(line, record_id, page['page_no'], 'lines', user_id, src_lang, tgt_lang))
+                    log_info("appending lines block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
+                    blocks.append(FileContentRepositories.create_block_info(line, record_id, page['page_no'], 'lines', user_id, src_lang, tgt_lang))
 
-            if 'text_blocks' in list(page.keys()):
+            if 'text_blocks' in page:
                 for text in page['text_blocks']:
-                    blocks.append(FileContentRepositories.update_block_info(text, record_id, page['page_no'], 'text_blocks', user_id, src_lang, tgt_lang))
+                    log_info("appending text block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
+                    blocks.append(FileContentRepositories.create_block_info(text, record_id, page['page_no'], 'text_blocks', user_id, src_lang, tgt_lang))
 
         BlockModel.store_bulk_blocks(blocks)
         return True
