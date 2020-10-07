@@ -76,11 +76,13 @@ class FileContentRepositories:
                 for image in page['images']:
                     log_info("appending image block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                     blocks.append(FileContentRepositories.create_block_info(image, record_id, page['page_no'], 'images', user_id, src_lang, tgt_lang))
+                continue
 
             if  'lines' in page:
                 for line in page['lines']:
                     log_info("appending lines block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                     blocks.append(FileContentRepositories.create_block_info(line, record_id, page['page_no'], 'lines', user_id, src_lang, tgt_lang))
+                continue
 
             if 'text_blocks' in page:
                 for text in page['text_blocks']:
