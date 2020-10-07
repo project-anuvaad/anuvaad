@@ -89,7 +89,7 @@ class FileContentRepositories:
                         log_info("appending lines block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
                         blocks.append(FileContentRepositories.create_block_info(line, record_id, page_info, 'lines', user_id, src_lang, tgt_lang))
             except Exception as e:
-                log_info('lines block is not present, proceeding further')
+                log_info('lines block is not present, proceeding further', MODULE_CONTEXT)
                 pass
 
             if 'text_blocks' in list(page.keys()):
