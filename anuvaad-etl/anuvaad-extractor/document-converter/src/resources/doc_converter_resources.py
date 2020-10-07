@@ -22,11 +22,10 @@ class DocumentConverter(Resource):
         try:
             record_id = body['record_id']
             user_id = body['user_id']
-            job_id = body['job_id']
-            if 'record_id' not in body or record_id is None or 'user_id' not in body or user_id is None or 'job_id' not in body or job_id is None:
+            if 'record_id' not in body or record_id is None or 'user_id' not in body or user_id is None:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
                 return res.getresjson(), 400
-            out_translated_doc = document_saving(record_id, user_id, job_id, DOWNLOAD_FOLDER)
+            out_translated_doc = document_saving(record_id, user_id, DOWNLOAD_FOLDER)
             log_info("document saved successfully", MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS.value, out_translated_doc)
             return res.getres()
