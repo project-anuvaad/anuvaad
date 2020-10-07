@@ -17,6 +17,7 @@ from src.services.child_text_unify_to_parent import ChildTextUnify
 from src.services.get_response import process_image_df,  process_table_df, df_to_json, process_line_df, adopt_child
 from src.utilities.xml_utils import check_text
 import src.utilities.app_context as app_context
+from src.utilities.craft_pytorch.test import extract_word_bbox
 
 def doc_pre_processing(filename, base_dir,lang):
 
@@ -144,6 +145,8 @@ def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR
             'message': 'Document pre-processing failed, check your installation',
             'rsp': None
         }
+    df = extract_word_bbox(pdf_image_paths[0])
+    print(df)
 
     text_blocks_count = check_text(xml_dfs)
     if text_blocks_count == 0:

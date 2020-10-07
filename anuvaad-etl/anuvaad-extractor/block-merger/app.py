@@ -6,11 +6,15 @@ from flask.blueprints import Blueprint
 from flask_cors import CORS
 from src import routes
 import config
+import torch
 import threading
 import time
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 
+
 merge_app = Flask(__name__)
+
+
 
 def start_kafka():
     try:
@@ -35,6 +39,10 @@ if config.ENABLE_CORS:
 for blueprint in vars(routes).values():
     if isinstance(blueprint, Blueprint):
         merge_app.register_blueprint(blueprint, url_prefix=config.API_URL_PREFIX)
+
+
+    
+
 
 
 if __name__ == "__main__":

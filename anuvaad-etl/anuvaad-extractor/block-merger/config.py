@@ -93,3 +93,5 @@ CROP_CONFIG = {
     'ta':{'top':5, 'bottom':15,'right':5,'left':10 },
     'ma':{'top':5, 'bottom':5,'right':5,'left':5 }
 }
+
+CRAFT_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"
