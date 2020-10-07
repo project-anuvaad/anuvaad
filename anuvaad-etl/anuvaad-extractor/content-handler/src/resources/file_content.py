@@ -36,7 +36,6 @@ class FileContentSaveResource(Resource):
             return res.getresjson(), 400
         
         log_info("FileContentSaveResource record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
-        print(body)
         
         try:
             if FileContentRepositories.store(user_id, file_locale, record_id, pages, src_lang, tgt_lang) == False:

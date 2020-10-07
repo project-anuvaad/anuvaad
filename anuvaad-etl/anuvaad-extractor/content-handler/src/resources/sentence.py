@@ -46,7 +46,6 @@ class SaveSentenceResource(Resource):
             return res.getresjson(), 400
 
         log_info("SaveSentenceResource for user {}, number sentences to update {}".format(user_id, len(sentences)), MODULE_CONTEXT)
-        print(body)
         try:
             result = SentenceRepositories.update_sentences(user_id, sentences)
             if result == False:
