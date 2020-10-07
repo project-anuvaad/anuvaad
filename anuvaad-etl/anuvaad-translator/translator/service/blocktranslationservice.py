@@ -6,6 +6,7 @@ from anuvaad_auditor.errorhandler import post_error
 from configs.translatorconfig import nmt_interactive_translate_url
 from configs.translatorconfig import nmt_translate_url
 from configs.translatorconfig import update_content_url
+from configs.translatorconfig import sentence_fetch_url
 from utilities.translatorutils import TranslatorUtils
 
 utils = TranslatorUtils()
@@ -110,11 +111,11 @@ class BlockTranslationService:
         sent_map, ch_res, text_for_nmt, ch_response = {}, {}, [], []
         for text in text_list:
             sent_map[text["s_id"]] = text
-        for s_id in sent_map.keys():
-            ch_res_sent = utils.fetch_sentence_by_id(s_id, text_translate_input["metadata"]["userID"])
-            if ch_res_sent:
-                if ch_res_sent["data"]:
-                    ch_response.append(ch_res_sent["data"])
+        api_input = {"sentences": list(sent_map.keys())}
+        api_res = utils.call_api(sentence_fetch_url, "POST", api_input, None, text_translate_input["metadata"]["userID"])
+        if api_res:
+            if api_res["data"]:
+                ch_response = api_res["data"]
         if ch_response:
             for translation in ch_response:
                 if translation["s_id"] in sent_map.keys():

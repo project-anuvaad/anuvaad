@@ -59,11 +59,11 @@ class TranslatorUtils:
             return None
 
     # Stop gap method for fetching sentence from CH.
-    def fetch_sentence_by_id(self, sentence_id, user_id):
+    def fetch_sentence_by_id(self, sentence_ids, user_id):
         try:
+            api_input = {"sentences": sentence_ids}
             api_headers = {'userid': user_id, 'ad-userid': user_id, 'Content-Type': 'application/json'}
-            ch_url = sentence_fetch_url.replace("{user_id}", user_id).replace("{sentence_id}", sentence_id)
-            response = requests.get(url=ch_url, headers=api_headers)
+            response = requests.post(url=sentence_fetch_url, headers=api_headers)
             if response is not None:
                 if response.text is not None:
                     return json.loads(response.text)
