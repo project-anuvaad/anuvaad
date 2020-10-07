@@ -190,6 +190,7 @@ class AlignmentService:
         lines_with_no_match = []
         try:
             log_info("Aligning the sentences.....", object_in)
+            sentence_count, interval = 0, 0
             for i, embedding in enumerate(source_embeddings):
                 trgt = self.get_target_sentence(target_embeddings, embedding, source[i])
                 if trgt is not None:
@@ -199,6 +200,11 @@ class AlignmentService:
                         manual_dict[i] = trgt[0], trgt[1]
                 else:
                     lines_with_no_match.append(source[i])
+                interval += 1
+                if interval == 200:
+                    sentence_count += interval
+                    log_info("No of sentences processed (match + almost + nomatch): " + str(sentence_count), object_in)
+                    interval = 0
             return match_dict, manual_dict, lines_with_no_match
         except Exception as e:
             log_exception("Exception while aligning sentences: " + str(e), object_in, e)
