@@ -70,6 +70,9 @@ class ViewDocument extends React.Component {
   }
 
   handleClick = rowData => {
+    // localStorage.setItem("file", rowData);
+
+    // TELEMETRY.startTranslatorFlow(rowData[8], rowData[9], rowData[3], rowData[2])
     history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[7]}/${rowData[4]}/${rowData[5]}/${rowData[6]}`);
 
     // history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[4]}/${rowData[5]}`);

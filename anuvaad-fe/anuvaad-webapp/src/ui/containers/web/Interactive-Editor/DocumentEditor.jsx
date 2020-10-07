@@ -72,9 +72,9 @@ class PdfFileEditor extends React.Component {
     this.props.ClearContent(null);
     this.setState({ showLoader: true });
     /* Pagination api */
-    let jobId = this.props.match.params.jobid;
+    let recordId = this.props.match.params.jobid;
 
-    const apiObj = new FileContent(jobId, 1, this.state.pagesToBeLoaded);
+    const apiObj = new FileContent(recordId, 1, this.state.pagesToBeLoaded);
     this.props.APITransport(apiObj);
     let obj = {};
     obj.download_source_path = this.props.match.params.inputfileid;
@@ -322,6 +322,7 @@ class PdfFileEditor extends React.Component {
   };
 
   handleOnClose() {
+    //Telemetry
     history.push(`${process.env.PUBLIC_URL}/view-document`);
   }
   handleSource(selectedBlock, type) {
