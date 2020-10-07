@@ -1,6 +1,7 @@
 import config
 from models import BlockModel
 import datetime
+import uuid
 
 class FileContentRepositories:
 
@@ -28,7 +29,10 @@ class FileContentRepositories:
                 del elem['output_subwords']
                 del elem['pred_score'] 
 
-        new_block['block_identifier']   = block['block_identifier']
+        if 'block_identifier' in list(block.keys()):
+            new_block['block_identifier']   = block['block_identifier']
+        else:
+            new_block['block_identifier']   = str(uuid.uuid4())
         return new_block
 
     @staticmethod
