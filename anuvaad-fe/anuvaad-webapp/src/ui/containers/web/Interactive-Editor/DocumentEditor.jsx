@@ -735,7 +735,7 @@ class PdfFileEditor extends React.Component {
                         ? {
                           maxHeight: window.innerHeight - 240,
                           overflowY: this.state.edited ? "hidden" : "scroll",
-                          overflowX: "auto"
+                          // overflowX: "auto"
                         }
                         : {}
                     }
