@@ -203,8 +203,9 @@ class AlignmentService:
                 interval += 1
                 if interval == 200:
                     sentence_count += interval
-                    log_info("No of sentences processed (match + almost + nomatch): " + str(sentence_count), object_in)
+                    log_info("No of sentences(src) processed (match + almost + nomatch): " + str(sentence_count), object_in)
                     interval = 0
+            log_info("No of sentences(src) processed (match + almost + nomatch): " + str(sentence_count + interval), object_in)
             return match_dict, manual_dict, lines_with_no_match
         except Exception as e:
             log_exception("Exception while aligning sentences: " + str(e), object_in, e)
