@@ -12,10 +12,9 @@ class SentenceRepositories:
             sentence = SentenceModel.get_sentence_by_s_id(user_id, s_id)
             if sentence == None:
                 log_info('could not get sentence for s_id {}'.format(s_id), MODULE_CONTEXT)
-                return False
+                continue
             sentences.append(sentence)
-        if sentence == None:
-            return False
+
         return sentences
         
     @staticmethod
