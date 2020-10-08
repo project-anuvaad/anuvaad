@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 
 var placeRight = (function (_ref) {
     var gap = _ref.gap,
@@ -8,8 +8,8 @@ var placeRight = (function (_ref) {
         frameTop = _ref.frameTop,
         boxHeight = _ref.boxHeight,
         selectionTop = _ref.selectionTop,
-        selectionLeft = _ref.selectionLeft,
-        selectionHeight = _ref.selectionHeight;
+        selectionLeft = _ref.selectionLeft;
+        // selectionHeight = _ref.selectionHeight;
 
     var style = { position: "fixed" };
     style.left = selectionLeft - 7;

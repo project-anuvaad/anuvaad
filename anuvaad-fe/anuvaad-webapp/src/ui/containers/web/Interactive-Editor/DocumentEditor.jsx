@@ -151,7 +151,8 @@ class PdfFileEditor extends React.Component {
         if (sentence.page_no < page) {
           height += sentence.page_height
         }
-      })
+      return null;
+    })
       this.scrollPage(height)
     }
   }
@@ -253,7 +254,7 @@ class PdfFileEditor extends React.Component {
             token = false;
             text.src = null;
           }
-        });
+        return null;});
         selectedBlock.tokenized_sentences[index].src = textValue;
       } else if (sentenceObj[startSentence[0]] && type === "Split sentence") {
         const selectedSplitEndIndex = window.getSelection() && window.getSelection().getRangeAt(0).endOffset;
@@ -267,7 +268,7 @@ class PdfFileEditor extends React.Component {
             copySentence.src = nextSplitValue;
             ind = i;
           }
-        });
+        return null;});
         let id = copySentence.s_id.split("_");
         id[2] = selectedBlock.tokenized_sentences.length;
         let newId = id.join("_");
@@ -304,7 +305,7 @@ class PdfFileEditor extends React.Component {
       values[1] = indexValue ? indexValue : indexes[1];
       values[2] = i;
       sentence.s_id = values.join("_");
-    });
+    return null;});
     return tokenizedArray;
   };
 
@@ -315,9 +316,9 @@ class PdfFileEditor extends React.Component {
       sen.map((value, index) => {
         sen[index].block_id = index;
         this.tokenizedIndex(value.tokenized_sentences, index);
-      });
+      return null;});
       sentence.text_blocks = sen;
-    });
+    return null;});
     this.setState({ sentences: sentenceObj });
   };
 
@@ -358,7 +359,7 @@ class PdfFileEditor extends React.Component {
     let blockId = block.split("_")[0];
     let pageNo = block.split("_")[1];
     let blockTop,
-      blockHeight,
+     blockHeight,
       valueH = 0;
     let docPage = this.state.sentences;
     let strText = this.state.selectedSourceText;
@@ -368,12 +369,12 @@ class PdfFileEditor extends React.Component {
         if (page.page_no === pageNo) {
           if (page.text_blocks && Array.isArray(page.text_blocks) && page.text_blocks.length > 0) {
             page.text_blocks.map((block, i) => {
-              if (block.block_id == blockId) {
+              if (block.block_id === blockId) {
                 blockTop = block.text_top;
-                blockHeight = block.text_height;
+               // blockHeight = block.text_height;
                 block.text = strText;
               }
-            });
+            return null;});
 
             page.text_blocks.map((block, i) => {
               if (block.text_top > blockTop) {
@@ -388,14 +389,14 @@ class PdfFileEditor extends React.Component {
 
                 // }
               }
-            });
+            return null;});
             if ((this.state.height !== 0 && this.state.height !== evt.currentTarget.offsetHeight) || diffValue) {
               page.page_height = page.page_height + valueH;
               valueH = 0;
             }
           }
         }
-      });
+      return null;});
     }
     !checkValue && this.setState({ selectedBlockId: null, clear: false });
 
@@ -473,9 +474,9 @@ class PdfFileEditor extends React.Component {
     let blockItem;
 
     this.state.sentences.map(page => {
-      if (page.page_no == idDetails[1]) {
+      if (page.page_no === idDetails[1]) {
         page.text_blocks.map(block => {
-          if (block.block_identifier == idDetails[0]) {
+          if (block.block_identifier === idDetails[0]) {
             block &&
               block.children &&
               Array.isArray(block.children) &&
@@ -484,9 +485,9 @@ class PdfFileEditor extends React.Component {
                 children.children
                   ? children.children.map(grandChildren => {
                     text = text + " " + grandChildren.text;
-                  })
+                  return null;})
                   : (text = text + " " + children.text);
-              });
+              return null;});
 
             if (block.text !== text) {
               block.text = text;
@@ -495,9 +496,9 @@ class PdfFileEditor extends React.Component {
               blockItem = block;
             }
           }
-        });
+        return null;});
       }
-    });
+    return null;});
 
     if (blockItem && !wf_code && this.state.textChange) this.workFlowApi("DP_WFLOW_S_TTR", [blockItem], status);
     else if (wf_code && blockItem && saveData) this.workFlowApi(wf_code, [blockItem], status);
@@ -545,12 +546,12 @@ class PdfFileEditor extends React.Component {
                       token.tgt = textData;
                       token.tagged_tgt = textData;
                     }
-                  });
+                  return null;});
               }
-            });
+            return null;});
           }
         }
-      });
+      return null;});
   }
 
   render() {
@@ -646,7 +647,7 @@ class PdfFileEditor extends React.Component {
                           style={{ paddingRight: "0px" }}
                         >
                           <Typography value="" variant="subtitle2" style={{ cursor: "pointer", color: "#233466", paddingLeft: "7px" }}>
-                            {this.state.mergeButton == "save" ? "Save" : "Merge Blocks"}
+                            {this.state.mergeButton === "save" ? "Save" : "Merge Blocks"}
                           </Typography>
                         </Toolbar>
                       )}

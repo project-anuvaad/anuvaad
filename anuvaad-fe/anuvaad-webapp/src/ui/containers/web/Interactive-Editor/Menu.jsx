@@ -20,7 +20,7 @@ class Popovers extends React.Component {
                 if (option && option.length > 0 && option !== " ") {
                     return <Button style={{ textTransform: 'none', width: '100%', justifyContent: 'left' }} onClick={() => this.props.handleSuggetionClick(option, i)}>{option}</Button>
                 }
-            })
+            return null;})
             )
         } else {
             return (<Typography>No Suggention available</Typography>)
@@ -45,7 +45,7 @@ class Popovers extends React.Component {
                         }
                     }
                 }
-            })
+            return null;})
         }
         if (!this.props.apistatus.loading) {
             return (

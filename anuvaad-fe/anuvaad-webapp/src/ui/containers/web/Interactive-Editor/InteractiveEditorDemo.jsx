@@ -17,7 +17,7 @@ import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
 import htmlToText from "html-to-text";
 import { translate } from "../../../../assets/localisation";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import Editor from "./Editor";
+//import Editor from "./Editor";
 import FetchDoc from "../../../../flux/actions/apis/fetchdocsentence";
 import InteractiveSourceUpdate from "../../../../flux/actions/apis/interactivesourceupdate";
 import history from "../../../../web.history";
@@ -486,7 +486,7 @@ class IntractiveTrans extends React.Component {
   }
 
   handleonDoubleClick(selectedSourceId, selectedSourceText, row, cell, type) {
-    if (type == 'target') {
+    if (type === 'target') {
       this.setState({ selectedTargetId: selectedSourceId, selectedTargetText: selectedSourceText, selectedSourceCheckText: selectedSourceText, row, cell });
     } else {
       this.setState({ selectedSourceId, selectedSourceText, selectedSourceCheckText: selectedSourceText, row, cell });
