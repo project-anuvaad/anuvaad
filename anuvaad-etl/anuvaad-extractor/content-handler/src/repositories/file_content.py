@@ -18,11 +18,13 @@ class FileContentRepositories:
         new_block['created_by']     = user_id
         new_block['src_lang']       = src_lang
         new_block['tgt_lang']       = tgt_lang
-        if 'block_identifier' not in block: 
-            new_block['block_identifier']   = str(uuid.uuid4())
-            block['block_identifier']       = new_block['block_identifier']
-        else:
-            new_block['block_identifier']   = block['block_identifier']
+
+        '''
+        ' generating block_identifier to uniquely identify individual block
+        '''
+        new_block['block_identifier']   = str(uuid.uuid4())
+        block['block_identifier']       = new_block['block_identifier']
+
         new_block['data']               = block
         new_block['data']['page_info']  = page_info
 
