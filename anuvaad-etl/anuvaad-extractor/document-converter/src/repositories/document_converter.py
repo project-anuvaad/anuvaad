@@ -29,9 +29,12 @@ class DocumentConversion(object):
             log_info("Intiating request to fetch data from %s"%request_url, MODULE_CONTEXT)
             response = requests.get(request_url, headers = headers)
             response_data = response.content
+            print(response_data)
             log_info("Received data from fetch-content end point of content handler", MODULE_CONTEXT)
             dict_str = response_data.decode("UTF-8")
+            print("decoded ", dict_str)
             dict_json = json.loads(dict_str)
+            print("json   ",dict_json)
             pages = dict_json['data']
             return pages
         except Exception as e:
