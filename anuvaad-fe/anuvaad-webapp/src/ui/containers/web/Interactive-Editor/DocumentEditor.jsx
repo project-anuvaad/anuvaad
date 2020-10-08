@@ -23,6 +23,8 @@ import Snackbar from "../../../components/web/common/Snackbar";
 import WorkFlow from "../../../../flux/actions/apis/fileupload";
 import TextButton from '@material-ui/core/Button';
 import LanguageCodes from "../../../components/web/common/Languages.json"
+import DownloadIcon from "@material-ui/icons/ArrowDownward";
+import DocumentConverter from "../../../../flux/actions/apis/documentconverter";
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -157,6 +159,13 @@ class PdfFileEditor extends React.Component {
       return null;
     })
       this.scrollPage(height)
+    }
+
+    if(prevProps.documentconverter !== this.props.documentconverter) {
+      let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${
+        this.props.documentconverter ? this.props.documentconverter : ""
+        }`
+      window.open(url, "_self")
     }
   }
 
@@ -587,6 +596,14 @@ class PdfFileEditor extends React.Component {
       return null;});
   }
 
+  handleTargetDownload() {
+    let recordId = this.props.match.params.jobid
+    let jobId = recordId ? recordId.split("|")[0] : ""
+
+    const apiObj = new DocumentConverter(recordId, jobId);
+    this.props.APITransport(apiObj);
+  }
+
   render() {
     return (
       <div>
@@ -609,7 +626,7 @@ class PdfFileEditor extends React.Component {
                   {translate("common.page.title.document")}
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={6} lg={8} xl={8} className="GridFileDetails">
+              <Grid item xs={12} sm={5} lg={7} xl={7} className="GridFileDetails">
                 <Button
                   color="primary"
                   // variant="outlined"
@@ -628,6 +645,22 @@ class PdfFileEditor extends React.Component {
                   <div style={{ fontSize: "20px", fontWeight: "bold" }}>
                     {!this.state.apiCall ? (this.state.tokenized ? "You are in validation mode" : "You are in Translation mode") : "Loading ....."}
                   </div>
+                </Button>
+              </Grid>
+                <Grid item xs={12} sm={6} lg={1} xl={1}>
+                <Button
+                  onClick={() => this.handleTargetDownload()}
+                  style={{
+                    color: "#233466",
+                    textTransform: "capitalize",
+                    width: "100%",
+                    minWidth: "110px",
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    borderRadius: "30px"
+                  }}
+                >
+                  <DownloadIcon fontSize="large" style={{ color: "#233466", fontSize: "x-large" }} />&nbsp;Download
                 </Button>
               </Grid>
               <Grid item xs={12} sm={6} lg={2} xl={2}>
@@ -650,18 +683,7 @@ class PdfFileEditor extends React.Component {
                   <ChevronRightIcon fontSize="large" />
                 </Button>
               </Grid>
-              {/* <Grid item xs={12} sm={6} lg={1} xl={1}>
-                <Button
-                  onClick={event => {
-                    alert("In progress");
-                  }}
-                  variant="outlined"
-                  style={{ width: "100%", minWidth: "55px", borderRadius: "30px", color: "#233466" }}
-                >
-                  <DoneIcon fontSize="large" style={{ color: "#233466" }} />
-                  &nbsp;&nbsp;{translate("common.page.label.done")}
-                </Button>
-              </Grid> */}
+            
 
               <Grid item xs={12} sm={6} lg={6} xl={6}>
                 <Paper elevation={3}>
@@ -993,7 +1015,8 @@ const mapStateToProps = state => ({
   fileUpload: state.fileUpload,
   documentDetails: state.documentDetails,
   fetchContent: state.fetchContent,
-  workflowStatus: state.workflowStatus
+  workflowStatus: state.workflowStatus,
+  documentconverter: state.documentconverter
 });
 
 const mapDispatchToProps = dispatch =>
