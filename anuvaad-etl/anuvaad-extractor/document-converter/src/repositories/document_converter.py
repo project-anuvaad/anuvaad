@@ -126,7 +126,11 @@ class DocumentConversion(object):
                         paragraph_format.left_indent   = Cm(doc_utils.get_cms(row['text_left']))
                         if index != df.index[-1] and df.iloc[index + 1]['text_top'] != row['text_top']:
                             pixel = df.iloc[index + 1]['text_top'] - row['text_top'] - row['font_size']
-                            paragraph_format.space_after = Twips(doc_utils.pixel_to_twips(pixel))
+                            #print("pixel", pixel, "next top", df.iloc[index + 1]['text_top'], "top", row['text_top'], "font", row['font_size'])
+                            if pixel>0:
+                                paragraph_format.space_after = Twips(doc_utils.pixel_to_twips(pixel))
+                            else:
+                                paragraph_format.space_after = Twips(0)
                         else:
                             paragraph_format.space_after = Twips(0)
                         run                            = paragraph.add_run()
