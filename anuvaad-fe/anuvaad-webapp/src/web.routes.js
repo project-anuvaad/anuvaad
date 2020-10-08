@@ -46,7 +46,7 @@ import Signup from "./ui/containers/web/SignUp";
 import Activate from "./ui/containers/web/Activate";
 import IntractiveTranslate from "./ui/containers/web/IntractiveTranslation";
 import InteractiveEditor from "./ui/containers/web/Interactive-Editor/InteractiveEditor";
-import InteractiveEditorDemo from "./ui/containers/web/Interactive-Editor/InteractiveEditorDemo";
+
 import PdfSentence from "./ui/containers/web/PdfSentence";
 import InteractivePreview from "./ui/containers/web/Interactive-Editor/Preview"
 import { translate } from '../src/assets/localisation';
@@ -517,14 +517,6 @@ class AppRoutes extends React.Component {
               title={"Document Translate"}
               userRoles={["editor", "dev", "grader", "interactive-editor"]}
               component={InteractiveEditor}
-              authenticate={this.authenticateUser}
-              currentMenu="view-pdf"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/interactive-editor-demo/:fileid`}
-              title={translate('webroutes.page.title.anuvaadEditor')}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
-              component={InteractiveEditorDemo}
               authenticate={this.authenticateUser}
               currentMenu="view-pdf"
             />
