@@ -60,8 +60,10 @@ class ViewDocument extends React.Component {
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('view-document')
 
-    //getSnapshotBeforeUpdate() must return null
-    return null; 
+   /**
+    * getSnapshotBeforeUpdate() must return null
+    */
+   return null;
   }
 
   componentDidMount() {
@@ -70,8 +72,7 @@ class ViewDocument extends React.Component {
   }
 
   handleClick = rowData => {
-    history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[7]}/${rowData[4]}/${rowData[5]}/${rowData[6]}`);
-
+    history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[7]}/${rowData[9]}/${rowData[4]}/${rowData[5]}/${rowData[6]}`, this.state);
     // history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[4]}/${rowData[5]}`);
   };
 

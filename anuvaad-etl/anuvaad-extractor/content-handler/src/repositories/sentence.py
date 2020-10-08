@@ -1,14 +1,21 @@
 import config
 import json
 from models import SentenceModel
+from utilities import MODULE_CONTEXT
+from anuvaad_auditor.loghandler import log_info, log_exception
 
 class SentenceRepositories:
     @staticmethod
-    def get_sentence(user_id, s_id):
-        sentence = SentenceModel.get_sentence_by_s_id(user_id, s_id)
-        if sentence == None:
-            return False
-        return sentence
+    def get_sentence(user_id, s_ids):
+        sentences = []
+        for s_id in s_ids:
+            sentence = SentenceModel.get_sentence_by_s_id(user_id, s_id)
+            if sentence == None:
+                log_info('could not get sentence for s_id {}'.format(s_id), MODULE_CONTEXT)
+                continue
+            sentences.append(sentence)
+
+        return sentences
         
     @staticmethod
     def update_sentences(user_id, sentences):

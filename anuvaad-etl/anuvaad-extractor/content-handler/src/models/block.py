@@ -5,10 +5,10 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 class BlockModel(object):
 
     @staticmethod
-    def update_block(user_id, record_id, block):
+    def update_block(user_id, block_identifier, block):
         try:
             collections = get_db()['file_content']
-            results     = collections.update({'$and': [{'created_by': user_id}, {'record_id': record_id}, { 'block_identifier': block['block_identifier'] }]},
+            results     = collections.update({'$and': [{'created_by': user_id}, { 'block_identifier': block_identifier }]},
             { '$set': block }, upsert=True)
 
             if 'writeError' in list(results.keys()):
