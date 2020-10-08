@@ -67,8 +67,8 @@ class DocumentConversion(object):
                     text_widths.append(text['text_width'])
                     text_heights.append(text['text_height'])
                     font_sizes.append(text['font_size'])
-                    font_sizes.append(text['font_family'])
-                    font_sizes.append(text['font_color'])
+                    font_families.append(text['font_family'])
+                    font_colors.append(text['font_color'])
                     b64_images.append(None)
                     
                     text_value = []
@@ -86,8 +86,6 @@ class DocumentConversion(object):
                     font_families.append(None)
                     font_colors.append(None)
                 
-                #print("top",len(text_tops),"left" len(text_lefts), len(text_widths), len(text_heights),
-                 #                                       len(text_values), len(font_sizes), len(font_families), len(font_colors), len(b64_images))
                 df = pd.DataFrame(list(zip(text_tops, text_lefts, text_widths, text_heights,
                                                         text_values, font_sizes, font_families, font_colors, b64_images)), 
                                         columns =['text_top', 'text_left', 'text_width', 'text_height',
@@ -117,23 +115,23 @@ class DocumentConversion(object):
             
             for index, df in enumerate(dataframes):
                 for index, row in df.iterrows():
-                    if row['text'] == None and row['base64'] != None:
-                        image_path = doc_utils.get_path_from_base64(self.DOWNLOAD_FOLDER, row['base64'])           
-                        document.add_picture(image_path, width=Cm(doc_utils.get_cms(row['text_width'])), 
-                                        height=Cm(doc_utils.get_cms(row['text_height'])))
-                        os.remove(image_path)
+                    # if row['text'] == None and row['base64'] != None:
+                    #     image_path = doc_utils.get_path_from_base64(self.DOWNLOAD_FOLDER, row['base64'])           
+                    #     document.add_picture(image_path, width=Cm(doc_utils.get_cms(row['text_width'])), 
+                    #                     height=Cm(doc_utils.get_cms(row['text_height'])))
+                    #     os.remove(image_path)
                     if row['text'] != None and row['base64'] == None:
                         paragraph                      = document.add_paragraph()
                         paragraph_format               = paragraph.paragraph_format
                         paragraph_format.left_indent   = Cm(doc_utils.get_cms(row['text_left']))
-                        if index != df.index[-1]:
+                        if index != df.index[-1] and df.iloc[index + 1]['text_top'] != row['text_top']:
                             pixel = df.iloc[index + 1]['text_top'] - row['text_top'] - row['font_size']
                             paragraph_format.space_after = Twips(doc_utils.pixel_to_twips(pixel))
                         else:
                             paragraph_format.space_after = Twips(0)
                         run                            = paragraph.add_run()
-                        # if "Bold" in row['font_family']:
-                        #     run.bold                   = True
+                        if "Bold" in row['font_family']:
+                            run.bold                   = True
                         font                           = run.font
                         font.name                      = 'Arial'
                         font.size                      = Twips(doc_utils.pixel_to_twips(row['font_size'])) 
