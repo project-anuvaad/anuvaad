@@ -24,17 +24,14 @@ class DocumentConversion(object):
         doc_utils = DocumentUtilities()
         try:
             #json_data = {'record_id' : record_id, 'all' : True}
-            headers = {"ad-userid" : "kd", "Content-Type": "application/json"}
+            headers = {"ad-userid" : user_id, "Content-Type": "application/json"}
             request_url = doc_utils.url_generation(config.internal_gateway_url_fetch_data, record_id, start_page, end_page)
             log_info("Intiating request to fetch data from %s"%request_url, MODULE_CONTEXT)
             response = requests.get(request_url, headers = headers)
             response_data = response.content
-            print(response_data)
             log_info("Received data from fetch-content end point of content handler", MODULE_CONTEXT)
             dict_str = response_data.decode("UTF-8")
-            print("decoded ", dict_str)
             dict_json = json.loads(dict_str)
-            print("json   ",dict_json)
             pages = dict_json['data']
             return pages
         except Exception as e:
@@ -47,7 +44,6 @@ class DocumentConversion(object):
             page_height      = None
             page_layout = {}
             for page in pages:
-                print(page)
                 text_tops        = []
                 text_lefts       = []
                 text_widths      = []
@@ -65,34 +61,20 @@ class DocumentConversion(object):
                 page_width   = page['page_width']
                 page_height  = page['page_height']
                 page_layout.update({'page_width' : page_width, 'page_height' : page_height})
-            
                 for text in texts:
                     text_tops.append(text['text_top'])
                     text_lefts.append(text['text_left'])
                     text_widths.append(text['text_width'])
                     text_heights.append(text['text_height'])
-                    if str(text['font_size']) == "NaN" or text['font_size'] == None:
-                        text['font_size'] = text['children'][0]['font_size']
-                        font_sizes.append(text['font_size'])
-                    else:
-                        font_sizes.append(text['font_size'])
-                    if str(text['font_family']) == "NaN" or text['font_family'] == None:
-                        text['font_family'] = text['children'][0]['font_family']
-                        font_sizes.append(text['font_family'])
-                    else:
-                        font_sizes.append(text['font_family'])
-                    if str(text['font_color']) == "NaN" or text['font_color'] == None:
-                        text['font_color'] = text['children'][0]['font_color']
-                        font_sizes.append(text['font_color'])
-                    else:
-                        font_sizes.append(text['font_color'])
+                    font_sizes.append(text['font_size'])
+                    font_sizes.append(text['font_family'])
+                    font_sizes.append(text['font_color'])
                     b64_images.append(None)
                     
                     text_value = []
                     for processed_text in text['tokenized_sentences']:
                         text_value.append(processed_text['tgt'])        
                     text_values.append(' '.join(text_value))
-                
                 for image in images:
                     text_tops.append(image['text_top'])
                     text_lefts.append(image['text_left'])
@@ -103,8 +85,9 @@ class DocumentConversion(object):
                     font_sizes.append(None)
                     font_families.append(None)
                     font_colors.append(None)
-                    
-                #print(text, " font", font_sizes, "top", text_tops)
+                
+                #print("top",len(text_tops),"left" len(text_lefts), len(text_widths), len(text_heights),
+                 #                                       len(text_values), len(font_sizes), len(font_families), len(font_colors), len(b64_images))
                 df = pd.DataFrame(list(zip(text_tops, text_lefts, text_widths, text_heights,
                                                         text_values, font_sizes, font_families, font_colors, b64_images)), 
                                         columns =['text_top', 'text_left', 'text_width', 'text_height',
@@ -132,7 +115,7 @@ class DocumentConversion(object):
             section.bottom_margin = Cm(1.27)
             document._body.clear_content()
             
-            for idx, df in enumerate(dataframes):
+            for index, df in enumerate(dataframes):
                 for index, row in df.iterrows():
                     if row['text'] == None and row['base64'] != None:
                         image_path = doc_utils.get_path_from_base64(self.DOWNLOAD_FOLDER, row['base64'])           
@@ -149,16 +132,17 @@ class DocumentConversion(object):
                         else:
                             paragraph_format.space_after = Twips(0)
                         run                            = paragraph.add_run()
-                        if "Bold" in row['font_family']:
-                            run.bold                   = True
+                        # if "Bold" in row['font_family']:
+                        #     run.bold                   = True
                         font                           = run.font
                         font.name                      = 'Arial'
                         font.size                      = Twips(doc_utils.pixel_to_twips(row['font_size'])) 
                         run.add_text(row['text'])
                 run.add_break(WD_BREAK.PAGE)
-            output_filepath = os.path.join(self.DOWNLOAD_FOLDER ,record_id + '_translated.docx')
+            out_filename = os.path.splitext(os.path.basename(record_id))[0] + '_translated.docx'
+            output_filepath = os.path.join(self.DOWNLOAD_FOLDER , out_filename)
             document.save(output_filepath)
-            return output_filepath
+            return out_filename
         except Exception as e:
             log_exception("dataframe to doc formation failed", MODULE_CONTEXT, e)
 
