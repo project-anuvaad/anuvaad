@@ -44,6 +44,7 @@ class DocumentConversion(object):
             page_height      = None
             page_layout = {}
             for page in pages:
+                print(page)
                 text_tops        = []
                 text_lefts       = []
                 text_widths      = []

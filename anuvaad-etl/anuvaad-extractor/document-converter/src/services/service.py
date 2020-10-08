@@ -8,6 +8,7 @@ def document_saving(record_id, user_id, download_folder):
         log_info("document formation started", MODULE_CONTEXT)
         doc_conversion = DocumentConversion(download_folder)
         pages = doc_conversion.get_data_from_content_handler(record_id, user_id)
+        print(pages)
         #dataframes, page_layout = doc_conversion.convert_page_data_into_dataframes(pages)
         #output_filename = doc_conversion.document_creation(dataframes, page_layout, record_id)
         output_filename = doc_conversion.dummy_doc(record_id)
