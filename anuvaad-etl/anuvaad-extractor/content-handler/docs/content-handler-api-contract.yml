@@ -102,20 +102,20 @@ paths:
           schema:
             $ref: '#/definitions/Error'
   
-  /v0/sentence/{user_id}/{sentence_id}:
-    get:
+  /v0/fetch-content-sentence:
+    post:
       summary: API to get sentence
       parameters:
-        - in: path
-          name: user_id
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/SentencesSearch'
+        - name: userid
+          in: header
           type: string
           required: true
-          description: user identifier
-        - in: path
-          name: sentence_id
-          type: string
-          required: true
-          description: sentence identifier
       tags:
       - Content Handler
       responses:
@@ -128,15 +128,14 @@ paths:
           schema:
             $ref: '#/definitions/Error'
             
-  /v0/sentence/{user_id}:
+  /v0/save-content-sentence:
     post:
       summary: API to update a sentence or array of sentence object
       parameters:
-        - in: path
-          name: user_id
+        - name: userid
+          in: header
           type: string
           required: true
-          description: user identifier
         - name: request
           in: body
           required: true
@@ -188,6 +187,15 @@ definitions:
         type: array
         items:
             $ref: '#/definitions/Sentence'
+            
+  SentencesSearch:
+    type: object
+    properties:
+      sentences:
+        type: array
+        description: array of s_id string
+        items:
+          type: string
         
   SentenceResponse:
     type: object
@@ -195,7 +203,7 @@ definitions:
       data:
         type: object
         description: "Sentence object"
-        $ref: '#/definitions/Sentence'
+        $ref: '#/definitions/Sentences'
       ok:
         type: boolean
         description: request successful indicator.

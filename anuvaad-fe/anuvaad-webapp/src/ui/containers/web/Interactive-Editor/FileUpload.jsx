@@ -146,6 +146,11 @@ class PdfUpload extends Component {
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('document-upload')
+    
+    /**
+    * getSnapshotBeforeUpdate() must return null
+    */
+   return null;
   }
 
   componentDidMount() {
