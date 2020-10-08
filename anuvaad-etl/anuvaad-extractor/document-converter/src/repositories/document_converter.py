@@ -24,10 +24,10 @@ class DocumentConversion(object):
         doc_utils = DocumentUtilities()
         try:
             #json_data = {'record_id' : record_id, 'all' : True}
-            headers = {"ad-userid" : user_id, "Content-Type": "application/json", "authorization" : "Bearer fcaa45d8ce284697846cf0976df28d73|dd2d80923bb148cf9f5be18f36f35e6b"}
+            headers = {"ad-userid" : user_id, "Content-Type": "application/json"}
             request_url = doc_utils.url_generation(config.internal_gateway_url_fetch_data, record_id, start_page, end_page)
             log_info("Intiating request to fetch data from %s"%request_url, MODULE_CONTEXT)
-            response = requests.get(config.external_gateway_url_fetch_data, headers = headers)
+            response = requests.get(request_url, headers = headers)
             response_data = response.content
             log_info("Received data from fetch-content end point of content handler", MODULE_CONTEXT)
             dict_str = response_data.decode("UTF-8")
@@ -68,14 +68,11 @@ class DocumentConversion(object):
                     text_widths.append(text['text_width'])
                     text_heights.append(text['text_height'])
                     if str(text['font_size']) == "NaN" or text['font_size'] == None:
-                        print("11111111111")
                         text['font_size'] = text['children'][0]['font_size']
                         font_sizes.append(text['font_size'])
                     else:
-                        print("22222222222")
                         font_sizes.append(text['font_size'])
                     if str(text['font_family']) == "NaN" or text['font_family'] == None:
-                        print("3333333333333333")
                         text['font_family'] = text['children'][0]['font_family']
                         font_sizes.append(text['font_family'])
                     else:
@@ -132,8 +129,6 @@ class DocumentConversion(object):
             document._body.clear_content()
             
             for idx, df in enumerate(dataframes):
-                print()
-                print(df)
                 for index, row in df.iterrows():
                     if row['text'] == None and row['base64'] != None:
                         image_path = doc_utils.get_path_from_base64(self.DOWNLOAD_FOLDER, row['base64'])           
@@ -146,7 +141,6 @@ class DocumentConversion(object):
                         paragraph_format.left_indent   = Cm(doc_utils.get_cms(row['text_left']))
                         if index != df.index[-1]:
                             pixel = df.iloc[index + 1]['text_top'] - row['text_top'] - row['font_size']
-                            print(idx, "   ", index, "   ", pixel, "top ", df.iloc[index + 1]['text_top'], "row top ", row['text_top'],"font ", row['font_size'])
                             paragraph_format.space_after = Twips(doc_utils.pixel_to_twips(pixel))
                         else:
                             paragraph_format.space_after = Twips(0)
@@ -160,7 +154,6 @@ class DocumentConversion(object):
                 run.add_break(WD_BREAK.PAGE)
             output_filepath = os.path.join(self.DOWNLOAD_FOLDER ,record_id + '_translated.docx')
             document.save(output_filepath)
-            print("output   ", output_filepath)
             return output_filepath
         except Exception as e:
             log_exception("dataframe to doc formation failed", MODULE_CONTEXT, e)
