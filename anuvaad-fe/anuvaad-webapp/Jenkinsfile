@@ -22,7 +22,7 @@ then
 docker rm "$JOB_BASE_NAME"
 fi
 
-docker run --env REACT_APP_BASE_URL=$base_url --env REACT_APP_APIGW_BASE_URL=$apigw_url --env REACT_APP_DOWNLOAD_URL=$download_url --env REACT_APP_CLIENT_ID=$client_id -v $(pwd):/opt --name "$JOB_BASE_NAME" node:12.18.4-alpine3.10 /bin/sh -c "npm -g install npm@^6.14.8 && cd /opt && rm -rf package-lock.json && npm install &&  npm run build"
+docker run --env REACT_APP_BASE_URL=$base_url --env REACT_APP_APIGW_BASE_URL=$apigw_url --env REACT_APP_DOWNLOAD_URL=$download_url --env REACT_APP_CLIENT_ID=$client_id -v $(pwd):/opt --name "$JOB_BASE_NAME" anuvaadio/anuvaad-node-npm6.14.8-base:1 /bin/sh -c "cd /opt && rm -rf package-lock.json && npm install &&  npm run build"
 docker rm "$JOB_BASE_NAME"
 commit_id=$(git rev-parse --short HEAD)
 echo $commit_id> commit_id.txt
