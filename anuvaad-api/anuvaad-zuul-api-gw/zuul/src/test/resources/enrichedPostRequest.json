@@ -1,0 +1,31 @@
+{
+    "RequestInfo": {
+        "fu": "bar",
+        "authToken": "dummy-auth-token",
+        "userInfo": {
+            "id": 30,
+            "uuid":"asdfgvcxzawertyjnbvcxzasdfgh",
+            "userName": "userName",
+            "name": "name",
+            "type": "EMPLOYEE",
+            "mobileNumber": "1234567890",
+            "emailId": "fu@bar.com",
+            "tenantId": "default",
+            "roles": [
+                {
+                    "id": 1,
+                    "name": "Employee",
+                    "code": "EMPLOYEE",
+                    "tenantId": "default"
+                },
+                {
+                    "id": 2,
+                    "name": "ULB Operator",
+                    "code": "ULB",
+                    "tenantId": "default"
+                }
+            ]
+        },
+        "correlationId": "someCorrelationId"
+    }
+}
