@@ -162,10 +162,13 @@ class PdfFileEditor extends React.Component {
     }
 
     if(prevProps.documentconverter !== this.props.documentconverter) {
-      let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${
-        this.props.documentconverter ? this.props.documentconverter : ""
-        }`
-      window.open(url, "_self")
+      let fileName = (this.props.documentconverter && this.props.documentconverter.translated_document) ? this.props.documentconverter.translated_document : ""
+
+      if(fileName) {
+        let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
+        window.open(url, "_self")
+      }
+      
     }
   }
 
@@ -598,9 +601,9 @@ class PdfFileEditor extends React.Component {
 
   handleTargetDownload() {
     let recordId = this.props.match.params.jobid
-    let jobId = recordId ? recordId.split("|")[0] : ""
+    let user_profile  = JSON.parse(localStorage.getItem('userProfile'))
 
-    const apiObj = new DocumentConverter(recordId, jobId);
+    const apiObj = new DocumentConverter(recordId, user_profile.id);
     this.props.APITransport(apiObj);
   }
 
