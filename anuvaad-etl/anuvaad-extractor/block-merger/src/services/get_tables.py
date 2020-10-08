@@ -5,6 +5,7 @@ from src.services.preprocess import mask_image
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 #import os
+from collections import Counter
 #from pathlib import Path
 import cv2
 import base64
@@ -24,6 +25,15 @@ def change_keys(table):
     table_row['text_width']  = table['w']
     table_row['text_height'] = table['h']
     return table_row
+
+
+def most_frequent(List):
+    try:
+        occurence_count = Counter(List)
+    except:
+        pass
+    return occurence_count.most_common(1)[0][0]
+
 
 
 def get_line_df(lines):
@@ -115,8 +125,15 @@ def get_text_from_table_cells(table_dfs,p_dfs):
                         if cell['text'] != None :
                             text_df = pd.DataFrame(cell['text'])
                             text_df['children'] = None
+
                             cell['children'] = text_df.to_json()
                             if len(text_df) > 0 :
+                                add_keys = ['font_size', 'font_family', 'font_color', 'attrib', 'font_family_updated',
+                                            'font_size_updated']
+                                for add_key in add_keys:
+                                    print(text_df)
+                                    cell[add_key] = most_frequent(text_df[add_key])
+
                                 cell['text']   =  ' '.join( pd.DataFrame(cell['text'])['text'].values)
                                 table_cells.append(cell)
 
