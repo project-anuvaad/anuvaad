@@ -24,7 +24,7 @@ class DocumentConversion(object):
         doc_utils = DocumentUtilities()
         try:
             #json_data = {'record_id' : record_id, 'all' : True}
-            headers = {"ad-userid" : user_id, "Content-Type": "application/json"}
+            headers = {"ad-userid" : "kd", "Content-Type": "application/json"}
             request_url = doc_utils.url_generation(config.internal_gateway_url_fetch_data, record_id, start_page, end_page)
             log_info("Intiating request to fetch data from %s"%request_url, MODULE_CONTEXT)
             response = requests.get(request_url, headers = headers)
