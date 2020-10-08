@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
-import Styles from "./MachineTranslationStyle"
+import Styles from "../../../styles/web/MachineTranslationStyle"
 
 class MachineTranslation extends Component {
   constructor() {
