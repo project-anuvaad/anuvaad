@@ -1,20 +1,18 @@
 import os
 
-consumer_topics ={
-  "TEST_TOPIC":"testtopic",
-  "DOCUMENT_REQ":"to-nmt",
-  "new_topic":"nmt_translate"
-}
+## Environment variables
+IS_RUN_KAFKA = 'IS_RUN_KAFKA'
+IS_RUN_KAFKA_DEFAULT_VALUE = False
+bootstrap_server_boolean = os.environ.get(IS_RUN_KAFKA, IS_RUN_KAFKA_DEFAULT_VALUE)
 
-producer_topics ={
-  "TEST_TOPIC":"listener",
-  "TO_DOCUMENT":"listener",
-  "new_topic":"nmt_translate_processed"
-}
+KAFKA_IP_HOST = 'KAFKA_IP_HOST'
+default_value = 'localhost:9092'
+bootstrap_server = os.environ.get(KAFKA_IP_HOST, default_value)
 
-## "description":"default topics"
+## "description":"Kafka topics and variables"
 nmt_input_topic_default = "anuvaad-nmt-input-default"
 nmt_output_topic_default = 'anuvaad-nmt-output-default'
+group_id = 'anuvaad'
 
 kafka_topic = [
   {
