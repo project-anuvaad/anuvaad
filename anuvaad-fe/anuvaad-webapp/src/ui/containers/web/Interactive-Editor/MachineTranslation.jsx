@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 import Styles from "../../../styles/web/MachineTranslationStyle"
+import Typography from '@material-ui/core/Typography';
 
 class MachineTranslation extends Component {
   constructor() {
@@ -12,14 +13,17 @@ class MachineTranslation extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, sentence } = this.props;
     return (
         <Paper className={classes.paper} >
-            <div className={classes.header}>Machine Translation</div>
+            <div>
+            <Typography variant="h5" gutterBottom style={{ color: '#000000', marginLeft: "30px", textAlign: "left" }} >Machine Translation</Typography>
+          </div>
+           
             <hr/>
-            <div>{this.props.sourceText}</div>
+            <div className={classes.div} >{sentence && sentence.src}</div>
             <hr/>
-            <div>{this.props.targetText}</div>
+            <div>{sentence&& sentence.tgt}</div>
         </Paper>
     );
   }

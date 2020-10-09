@@ -32,10 +32,12 @@ class PdfFileEditor extends React.Component {
 
             element.text_blocks.map(sentence=>{
                 sentence.tokenized_sentences.map(value=>{
-                sentenceArray.push(<div>{value.src}</div>)
+                sentenceArray.push(<div onClick={() => this.setState({activeSentence:value})}>{value.src}</div>)
                 })
             })
         })
+
+        console.log(this.state.activeSentence)
 
         return sentenceArray
 
@@ -77,7 +79,7 @@ class PdfFileEditor extends React.Component {
                 </Paper>
               </Grid>
               <Grid item xs={12} sm={3} lg={3} xl={3}>
-              <MachineTranslation/>
+              <MachineTranslation sentence ={this.state.activeSentence}/>
               </Grid>
             </Grid>
 
