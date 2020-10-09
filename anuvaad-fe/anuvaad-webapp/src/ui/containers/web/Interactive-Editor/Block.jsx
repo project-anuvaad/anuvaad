@@ -10,6 +10,8 @@ import Save from "@material-ui/icons/CheckCircleOutline";
 import Split from "@material-ui/icons/CallSplit";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
+import Checkbox from '@material-ui/core/Checkbox';
+
 class Block extends Component {
   constructor() {
     super();
@@ -30,6 +32,7 @@ class Block extends Component {
               {sentence.src}
             </div>
             <hr style={{ border: "1px dashed #00000014" }} />
+
             {/* <div>{sentence.tgt}</div> */}
           </Grid>
           <Grid
@@ -47,6 +50,11 @@ class Block extends Component {
                 paddingLeft: "4%",
               }}
             >
+
+{/* <Checkbox
+            size="small"
+            color="primary"
+          /> */}
               <Tooltip title="Go to validation mode">
                 <IconButton aria-label="validation mode">
                   <ArrowBackIcon fontSize="medium" className={classes.Icons} />
@@ -72,7 +80,7 @@ class Block extends Component {
               </Tooltip>
               <Tooltip title="Merge Sentence">
                 <IconButton aria-label="merge">
-                  <Merge fontSize="medium" />
+                  <Merge fontSize="medium"/>
                 </IconButton>
               </Tooltip>
             </div>
