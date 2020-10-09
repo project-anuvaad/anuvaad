@@ -77,6 +77,7 @@ class Block extends Component {
                 // handleClickAway={this.props.handleClickAway.bind(this)}
                 tokenObject={sentence}
                 showTargetLang={this.props.selectedTargetId === sentence.s_id && true}
+                modelId={this.props.modelId}
               />}
             </div>
             </div>
