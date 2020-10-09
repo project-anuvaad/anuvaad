@@ -13,12 +13,12 @@ class Block extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes,sentence } = this.props;
     return (
-        <Paper style={{margin: "20px", minHeight: "80px", padding: "2%"}} onClick={() => this.props.handleSentenceClick(this.props.sentence)}>
-            <div onClick={() => this.props.handleSentenceClick(this.props.sentence)}>{this.props.sentence}</div>
+        <Paper variant="outlined" style={{margin: "10px", minHeight: "80px", padding: "1%"}} onClick={() => this.props.handleSentenceClick(this.props.sentence)}>
+            <div onClick={() => this.props.handleSentenceClick(sentence)}>{sentence.src}</div>
             <hr style={{border: "1px dashed #00000014"}} />
-            <div>{this.props.sourceText}</div>
+            {/* <div>{sentence.tgt}</div> */}
         </Paper>
     );
   }
