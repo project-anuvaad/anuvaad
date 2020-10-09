@@ -214,33 +214,33 @@ class AutoComplete extends React.Component {
 
         return (
             // <ClickAwayListener id={tokenIndex} onClickAway={() => this.handleClickAway(tokenIndex, this.state.value, wfcodes.DP_WFLOW_S_C)}>
-            <div key={aId}>
-                <textarea
-                    id={aId}
-                    ref={refId}
-                    // maxRows={4}
-                    multiline={true}
-                    autoFocus={true}
-                    placeholder="Type your translation here"
-                    style={style}
-                    value={this.state.value}
-                    onChange={this.handleChangeEvent.bind(this)}
-                    onKeyDown={this.handleEnter}
-                >
-                </textarea>
-                {
-                    this.state.showSuggestions &&
-                    <Menu
-                        isOpen={true}
-                        topValue={this.state.topValue}
-                        leftValue={this.state.leftValue}
-                        handleSuggetionClick={this.handleSuggetionCLick.bind(this)}
-                        handlePopOverClose={this.props.handleSuggestionClose}
-                        targetVal={this.state.caretVal}
-                        options={this.state.autoCompleteText}
-                    ></Menu>}
+                <div key={aId}>
+                    <textarea
+                        id={aId}
+                        ref={refId}
+                        // maxRows={4}
+                        multiline={true}
+                        // autoFocus={true}
+                        placeholder="Type your translation here"
+                        style={style}
+                        value={this.state.value }
+                        onChange={this.handleChangeEvent.bind(this)}
+                        onKeyDown={this.handleEnter}
+                    >
+                    </textarea>
+                    {
+                        this.props.showSuggestions &&
+                        <Menu
+                            isOpen={true}
+                            topValue={this.state.topValue}
+                            leftValue={this.state.leftValue}
+                            handleSuggetionClick={this.handleSuggetionCLick.bind(this)}
+                            handlePopOverClose={this.props.handleSuggestionClose}
+                            targetVal={this.state.caretVal}
+                            options={this.props.autoCompleteText}
+                        ></Menu>}
 
-            </div >
+                </div >
             // </ClickAwayListener>
         );
     }
