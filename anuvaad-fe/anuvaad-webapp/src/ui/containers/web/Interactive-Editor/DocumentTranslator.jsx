@@ -23,7 +23,6 @@ class PdfFileEditor extends React.Component {
   }
 
   handleSentenceClick(value) {
-      console.log(value)
     this.setState({ activeSentence: value })
   }
 
@@ -75,7 +74,9 @@ class PdfFileEditor extends React.Component {
                 </div>
               </Grid>
               <Grid item xs={12} sm={3} lg={3} xl={3}>
-                <MachineTranslation sentence={this.state.activeSentence} />
+                <Grid item xs={12} sm={12} lg={12} xl={12} style={{height: "50%"}}>
+                  <MachineTranslation sentence={this.state.activeSentence} />
+                </Grid>
               </Grid>
             </Grid>
 
