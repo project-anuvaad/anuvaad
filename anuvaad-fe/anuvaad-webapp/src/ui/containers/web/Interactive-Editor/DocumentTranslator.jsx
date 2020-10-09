@@ -33,7 +33,7 @@ class PdfFileEditor extends React.Component {
       element.text_blocks.map((sentence) => {
         sentence.tokenized_sentences.map((value) => {
           sentenceArray.push(
-            <Block sentence={value} handleSentenceClick={this.handleSentenceClick.bind(this)}></Block>
+            <Block sentence={value} selectedBlock={this.state.activeSentence} handleSentenceClick={this.handleSentenceClick.bind(this)}></Block>
             // <div onClick={() => this.setState({ activeSentence: value })}>
             //   {value.src}
             // </div>
