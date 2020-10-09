@@ -74,7 +74,8 @@ const PdfUploadStyles = theme => ({
     width: "93%",
     backgroundColor:'#1C9AB7',
     borderRadius:"20px 20px 20px 20px",
-    color:"#FFFFFF"
+    color:"#FFFFFF",
+    height:'46px'
   },
   button2: {
     //marginTop: "6%",
@@ -82,7 +83,8 @@ const PdfUploadStyles = theme => ({
     width: "87%",
     backgroundColor:'#1C9AB7',
     borderRadius:"20px 20px 20px 20px",
-    color:"#FFFFFF"
+    color:"#FFFFFF",
+    height:'46px'
   },
   simpleselect:{
     marginTop:'2%'
