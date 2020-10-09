@@ -5,18 +5,19 @@ import subprocess
 import sys
 import codecs
 import os
-from onmt.utils.logging import logger
+from anuvaad_auditor.loghandler import log_info, log_exception
+from utilities import MODULE_CONTEXT
 
 def indic_tokenizer(s):
-    logger.info("indic_tokenizing")
+    log_info("indic_tokenizing",MODULE_CONTEXT)
     return ' '.join(indic_tok.trivial_tokenize_indic(s))
 
 def indic_detokenizer(s):
-    logger.info("detokenizing using indic")
+    log_info("detokenizing using indic",MODULE_CONTEXT)
     return indic_detok.trivial_detokenize_indic(s)
 
 def moses_tokenizer(text):
-    logger.info("moses_tokenizing")
+    log_info("moses_tokenizing",MODULE_CONTEXT)
     tokenizer_path = "src/tools/tokenizer.perl" 
     text = text 
     lang = "en" 
@@ -27,11 +28,10 @@ def moses_tokenizer(text):
     return tokenized_output.strip().decode('utf-8')
 
 def moses_detokenizer(text):
-    logger.info("moses_detokenizing")
     detokenizer_path = "src/tools/detokenize.perl"
     text = text 
     lang = "en" 
-    logger.info("moses detokenizing")
+    log_info("moses detokenizing",MODULE_CONTEXT)
     pipe = subprocess.Popen(["perl", detokenizer_path, '-l', lang, text], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     pipe.stdin.write(text.encode('utf-8'))
     pipe.stdin.close()
@@ -42,7 +42,7 @@ def truecaser(text):
     truecaser_path = "tools/truecaser.perl"
     text = text 
     model = "truecaseModel_en100919"
-    logger.info("truecasing")
+    log_info("truecasing",MODULE_CONTEXT)
     pipe = subprocess.Popen(["perl", truecaser_path, '--model', model, text], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     pipe.stdin.write(text.encode('utf-8'))
     pipe.stdin.close()
@@ -52,7 +52,7 @@ def truecaser(text):
 def detruecaser(text):
     detruecaser_path = "tools/detrucaser.perl"
     text = text 
-    logger.info("detruecasing")
+    log_info("detruecasing",MODULE_CONTEXT)
     pipe = subprocess.Popen(["perl", detruecaser_path, text], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     pipe.stdin.write(text.encode('utf-8'))
     pipe.stdin.close()
@@ -60,13 +60,13 @@ def detruecaser(text):
     return detruecased_output.strip().decode('utf-8')    
 
 def apply_bpe(bpe_model,text):
-    logger.info("subword encoding")
+    log_info("subword encoding",MODULE_CONTEXT)
     codes = codecs.open(bpe_model, encoding='utf-8')
     bpe = subword_enc.BPE(codes)
     return bpe.process_line(text)
 
 def decode_bpe(text):
-    logger.info("subword decoding")
+    log_info("subword decoding",MODULE_CONTEXT)
     with open("intermediate_data/subword.txt","w") as f:
         f.write(text)
     # pipe = subprocess.call(["echo %s|sed -r 's/(@@ )|(@@ ?$)//g'" % text],shell=True)

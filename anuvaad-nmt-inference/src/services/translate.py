@@ -6,7 +6,7 @@ import os
 import json 
 import sys
 import re
-import utilities.sp_enc_dec as sp
+import utilities.sentencepiece_util as sp
 import utilities.sentence_processor as sentence_processor
 import utilities.ancillary_functions as ancillary_functions
 import utilities.handle_date_url as date_url_util
