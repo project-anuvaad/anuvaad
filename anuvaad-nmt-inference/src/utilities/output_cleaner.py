@@ -2,7 +2,8 @@
 Aims to modify/clean the translated sentence(output) to match the gramatical standards
 Falls under non-nlp processing
 '''
-from onmt.utils.logging import logger
+from anuvaad_auditor.loghandler import log_info, log_exception
+from utilities import MODULE_CONTEXT
 
 def cleaner(src,tgt,id):
     if id == 56:
@@ -24,17 +25,17 @@ def purnaviram_applier(src,tgt):
             return tgt
         elif src.endswith('.') and tgt[-1] != '।':
             if tgt.endswith('.'):
-                logger.info("Replacing '.' with purnaviram")
+                log_info("Replacing '.' with purnaviram",MODULE_CONTEXT)
                 tgt = tgt[:-1] + str("।")
             else:
-                logger.info("Adding the missing purnaviram")
+                log_info("Adding the missing purnaviram",MODULE_CONTEXT)
                 tgt = tgt + str("।")
             return tgt
         else:
             return tgt    
 
     except Exception as e:
-        logger.error("Error in purnaviram applier, returning original tgt: {}".format(e))
+        log_exception("Error in purnaviram applier, returning original tgt: {}".format(e),MODULE_CONTEXT,e)
         return tgt
 
 def fullstop_applier(src,tgt):
@@ -47,12 +48,12 @@ def fullstop_applier(src,tgt):
         if src.endswith('.') and tgt.endswith('.'):
             return tgt
         elif src.endswith('.') and tgt[-1] != '.':
-            logger.info("Adding the missing fullstop")
+            log_info("Adding the missing fullstop",MODULE_CONTEXT)
             tgt = tgt + str(".")
             return tgt
         else:
             return tgt    
 
     except Exception as e:
-        logger.error("Error in fullstop_applier, returning original tgt: {}".format(e))
+        log_exception("Error in fullstop_applier, returning original tgt: {}".format(e),MODULE_CONTEXT,e)
         return tgt
