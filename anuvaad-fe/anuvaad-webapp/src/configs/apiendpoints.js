@@ -22,7 +22,7 @@ const endpoints = {
   fetchducuments: '/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk',
   insertSentence: "/v1/interactive-editor/add-sentence-node",
   interactivesavesentence: "/v1/interactive-editor/update-pdf-sentences",
-  interactivesourceupdate: "/v1/interactive-editor/update-pdf-source-sentences",
+  //interactivesourceupdate: "/v1/interactive-editor/update-pdf-source-sentences",
   InteractiveMerge: "/v1/interactive-editor/merge-split-sentence",
   acceptallsentence: "/accept-all-search-replace-sentence",
   activate_user: "/v1/user/activate-account",
@@ -67,7 +67,8 @@ const endpoints = {
   sentencereplace: "/update-search-replace-sentence",
   setpassword: "/set-user-password",
   documentupload:"/api/v0/upload-file",
-  fecthcontent: "/api/v0/fetch-content"
+  fecthcontent: "/api/v0/fetch-content",
+  documentConverter: "/api/v0/document-converter",
 };
 
 export default endpoints;

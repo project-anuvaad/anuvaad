@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 
 var placeBelow = (function (_ref) {
     var gap = _ref.gap,
