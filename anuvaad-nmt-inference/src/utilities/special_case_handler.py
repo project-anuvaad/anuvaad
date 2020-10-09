@@ -1,13 +1,14 @@
 import re
-from onmt.utils.logging import logger
-import utilities.common_util_functions as util
+from anuvaad_auditor.loghandler import log_info, log_exception
+from utilities import MODULE_CONTEXT
+import utilities.misc as misc
 from config.regex_patterns import patterns
 
 def handle_single_token(token):
    try:
-       if isfloat(token):
+       if misc.isfloat(token):
             return (token)
-       elif util.token_is_date(token):
+       elif misc.token_is_date(token):
            print("returning date")
            return token     
     #    elif token.isalnum():
@@ -35,46 +36,6 @@ def handle_single_token(token):
        logger.info("returning null to allow token to go to model")
        return ""
           
-
-def replace_from_LC_table(token):
-    lookup_file = "config/lookup_table.txt"
-    hindi_number=list()
-    for char in token:
-        if char.isdigit():
-            with open(lookup_file, "r") as f:
-                            for line in f:
-                                if line.startswith(char):
-                                    char = line.split('|||')[1].strip() 
-
-        hindi_number.append(char) 
-    s = [str(i) for i in hindi_number] 
-    res = ("".join(s)) 
-    return res 
-
-def isfloat(str):
-    try: 
-        float(str)
-    except ValueError: 
-        return False
-    return True
-
-def capture_prefix_suffix(text):
-    prefix = text[0]
-    suffix = text[-1] 
-    if (prefix.isalpha() or prefix.isdigit()) and (suffix.isalpha() or suffix.isdigit() or suffix == '.'):
-        prefix = ""
-        suffix = ""
-        translation_text = text
-    elif (prefix.isalpha() or prefix.isdigit()) and (suffix.isalpha()== False and suffix.isdigit()==False and suffix != '.'): 
-        prefix = ""
-        translation_text = text[0:]
-    elif (prefix.isalpha()==False or prefix.isdigit()==False) and (suffix.isalpha()== False and suffix.isdigit()==False and suffix != '.'):
-        translation_text = text[1:-1]  
-    elif (prefix.isalpha()==False or prefix.isdigit()==False) and (suffix.isalpha() or suffix.isdigit() or suffix == '.'):  
-        suffix = ""
-        translation_text = text[1:]     
-    print(prefix,suffix,translation_text)
-    return prefix,suffix,translation_text
 
 def token_is_alphanumeric_char(token):
     "checking if single token consists of alphanumeric and symbolic characters. But, symbol only at the begining and end are considerd"
@@ -118,22 +79,13 @@ def separate_alphanumeric_and_symbol(text):
         return "","",text
 
 
-def replace_hindi_numbers(text):
-    hindi_numbers = ['०', '१', '२', '३','४','५','६','७','८','९']
-    eng_numbers = ['0','1','2','3','4','5','6','7','8','9'] 
- 
-    for i in hindi_numbers : 
-        text = text.replace(i,eng_numbers[hindi_numbers.index(i)]) 
-    return text    
-
-
 "below is for handling dates which are splitted in more than 1 token and other special cases"
 def special_case_fits(text):
     if len(text) == 0 :
         return True
-    elif util.token_is_date(text):
+    elif misc.token_is_date(text):
         return True
-    elif len(text.split()) == 1 and util.token_is_url(text):
+    elif len(text.split()) == 1 and misc.token_is_url(text):
         "this will handle single URL and return the same i.e single token-url"
         return True
     elif len(text.split()) == 1 and len(handle_single_token(text))>0:  
@@ -144,7 +96,7 @@ def handle_special_cases(text,model_id):
         if len(text) == 0 :
             logger.info("Null src for this request")
             return ""
-        elif util.token_is_date(text):
+        elif misc.token_is_date(text):
             hindi_months = ['जनवरी', 'फ़रवरी', 'मार्च', 'अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्टूबर','नवंबर','दिसंबर']
             tamil_months = ['ஜனவரி', 'பிப்ரவரி', 'மார்ச்', 'ஏப்ரல்','மே','ஜூன்','ஜூலை','ஆகஸ்ட்','செப்டம்பர்','அக்டோபர்','நவம்பர்','டிசம்பர்']
             eng_months = ['january','february','march','april','may','june','july','august','september','october','november','december'] 
@@ -159,7 +111,7 @@ def handle_special_cases(text,model_id):
 
             logger.info('handling dates before model in long alpha-numeric format')
             return text
-        elif len(text.split()) == 1 and util.token_is_url(text):
+        elif len(text.split()) == 1 and misc.token_is_url(text):
             logger.info('handling single token-url before model and returning as it is')
             return text   
         elif len(text.split()) == 1 and len(handle_single_token(text))>0:

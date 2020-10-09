@@ -1,76 +1,13 @@
 import re
-import utilities.common_util_functions as common_utils
+import utilities.misc as misc
 from config.regex_patterns import patterns, hindi_numbers
-from onmt.utils.logging import logger
+from anuvaad_auditor.loghandler import log_info, log_exception
+from utilities import MODULE_CONTEXT
 import numpy as np
 
-
-def tag_number_date_url(text):
-  try: 
-    resultant_str = list()
-    count_date = 0
-    date_original = list()
-    count_url = 0
-    url_original = list()
-    for word in text.split():
-        print("word",word)
-        # if len(word)>4 and len(word)<12 and token_is_date(word):
-        ext = [".",",","?","!"]
-        if word.isalpha()== False and word[:-1].isalpha() == False and len(word)>4 and common_utils.token_is_date(word):
-            if word.endswith(tuple(ext)):
-              end_token = word[-1]
-              word = word[:-1]
-              if len(word)<7 and int(word):
-                word = word+end_token
-                print("kkkk")
-              else:
-                date_original.append(word)
-                word = 'DdAaTtEe'+str(count_date)+end_token
-                count_date +=1
-                print("jjj")
-            else:
-              date_original.append(word)  
-              word = 'DdAaTtEe'+str(count_date)
-              count_date +=1
-              print("ggg")
-        elif common_utils.token_is_url(word):
-            url_original.append(word)
-            word = 'UuRrLl'+str(count_url)
-            count_url +=1
-            print("kkk")
-
-        resultant_str.append(word)   
-        s = [str(i) for i in resultant_str] 
-        res = str(" ".join(s))  
-    print("res",res,date_original,url_original)    
-
-    return res,date_original,url_original 
-  except Exception as e:
-    print(e)   
-
-def replace_tags_with_original(text,date_original,url_original):
-  try:
-    resultant_str = list()
-    for word in text.split():
-      print("word-1",word[:-1])
-      if word[:-1] == 'DdAaTtEe':
-        word = date_original[int(word[-1])]
-        print(word,"date")
-      elif word[:-1] == 'UuRrLl':
-        word = url_original[int(word[-1])]  
-        print("url",word)
-
-      resultant_str.append(word)
-      s = [str(i) for i in resultant_str] 
-      res = str(" ".join(s))
-
-    print(res,"response")
-    return res    
-  except Exception as e:
-    print(e)
-    pass
-
-"merge below two functions and above two, when training for tamil again..above two are used in tamil 2108, rest all will use below one"
+'''
+Below funtions are meant to handle date, numbers and URls as part of pre and post translation processing
+'''
 
 def tag_number_date_url_1(text):
   try: 
@@ -107,7 +44,7 @@ def tag_number_date_url_1(text):
         # if len(word)>4 and len(word)<12 and token_is_date(word):
         try:
           ext = [".",",","?","!"]
-          if word.isalpha()== False and word[:-1].isalpha() == False and len(word)>4 and common_utils.token_is_date(word):
+          if word.isalpha()== False and word[:-1].isalpha() == False and len(word)>4 and misc.token_is_date(word):
             if word.endswith(tuple(ext)):
               end_token = word[-1]
               word = word[:-1]
@@ -121,7 +58,7 @@ def tag_number_date_url_1(text):
               date_original.append(word)  
               word = 'DdAaTtEe'+str(count_date)
               count_date +=1
-          elif common_utils.token_is_url(word):
+          elif misc.token_is_url(word):
             url_original.append(word)
             word = 'UuRrLl'+str(count_url)
             count_url +=1
@@ -138,7 +75,7 @@ def tag_number_date_url_1(text):
     return res,date_original,url_original,num_array,num_map 
   except Exception as e:
     logger.error("In handle_date_url:tag_num function parent except block:{}".format(e))
-    return text,[],[],(num_array or []) 
+    return text,[],[],(num_array or [])
 
 def replace_tags_with_original_1(text,date_original,url_original,num_array):
   try:
@@ -183,19 +120,6 @@ def replace_tags_with_original_1(text,date_original,url_original,num_array):
     return res    
   except Exception as e:
     logger.error("Error in parent except block of replace_tags_with_original_1 function, returning tagged output:{}".format(e))
-    return text
-
-
-def regex_pass(text,regex_list):
-  try:
-    regex_list = regex_list
-    for pattern in regex_list:
-      text = re.sub(pattern['regex'],pattern['replacement'],text)
-
-    return text
-    
-  except Exception as e:
-    logger.error("Error in regex_pass: handle_date_url function:{}".format(e))
     return text
 
 def get_indices_of_num_with_zero_prefix(num_arr):
