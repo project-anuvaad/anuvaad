@@ -24,7 +24,7 @@ class Block extends Component {
 
   render() {
     const { classes, sentence, selectedBlock } = this.props;
-  
+
     return (
       <Paper
         variant="outlined"
@@ -38,7 +38,7 @@ class Block extends Component {
             </div>
             <hr style={{ border: "1px dashed #00000014" }} />
             <div style={{ minHeight: '45px' }}>
-               <AutoComplete
+              <AutoComplete
                 aId={sentence.s_id}
                 refId={sentence.s_id}
                 block_identifier_with_page={sentence.block_identifier + "_" + this.props.pageNo}
@@ -65,8 +65,10 @@ class Block extends Component {
                 showSuggestions={this.props.showSuggestions}
                 handleSuggestionClose={this.props.handleSuggestionClose}
                 // handleClickAway={this.props.handleClickAway.bind(this)}
-                // tokenObject={text}
+                tokenObject={sentence}
                 showTargetLang={this.props.selectedTargetId === sentence.s_id && true}
+                modelId={this.props.modelId}
+
               />
             </div>
           </Grid>

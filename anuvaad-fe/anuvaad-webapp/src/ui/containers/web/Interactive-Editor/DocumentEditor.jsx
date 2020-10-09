@@ -912,6 +912,7 @@ class PdfFileEditor extends React.Component {
 
               <Grid container spacing={2} style={{ padding: "122px 24px 0px 24px" }}>
                 <TranslateView 
+                modelId = {this.props.match.params.modelId}
                 sentences={this.state.sentences} 
                 handleSourceChange= {this.handleSourceChange.bind(this)}
                 />

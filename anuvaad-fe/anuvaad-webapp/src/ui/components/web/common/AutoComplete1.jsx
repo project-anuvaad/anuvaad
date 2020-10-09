@@ -5,6 +5,11 @@ import Button from '@material-ui/core/MenuItem';
 import TextareaAutosize from 'react-textarea-autosize';
 import wfcodes from '../../../../configs/workflowcodes'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import IntractiveApi from "../../../../flux/actions/apis/intractive_translate";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import { withRouter } from "react-router-dom";
 
 var getCaretCoordinates = require('textarea-caret');
 
@@ -42,10 +47,16 @@ class AutoComplete extends React.Component {
                 value: this.props.value
             })
         }
-        if(prevProps.tokenObject !== this.props.tokenObject){
+        if (prevProps.tokenObject !== this.props.tokenObject) {
             this.setState({
                 tokenObject: this.props.tokenObject
             })
+        }
+        if (prevProps.intractiveTrans !== this.props.intractiveTrans) {
+            this.setState({
+                autoCompleteText: this.props.intractiveTrans && this.props.intractiveTrans.length > 0 && this.props.intractiveTrans[0].tgt,
+                autoCompleteTextTaggetTgt: this.props.intractiveTrans && this.props.intractiveTrans.length > 0 && this.props.intractiveTrans[0].tagged_tgt,
+            });
         }
     }
 
@@ -58,7 +69,6 @@ class AutoComplete extends React.Component {
     }
 
     handleEnter = (event) => {
-        debugger
         if (event.key === 'Escape') {
             this.setState({ showSuggestions: false })
             let saveData = (this.state.value !== this.props.value || this.state.modified) ? true : false
@@ -67,31 +77,42 @@ class AutoComplete extends React.Component {
                 this.props.handleChangeEvent({ target: { value: this.state.value } })
             }
             this.props.handleBlur(this.props.block_identifier_with_page, wfcodes.DP_WFLOW_S_C, saveData, this.props.value, this.state.value)
-        } else  if (event.key === 'Tab') {
+        } else if (event.key === 'Tab') {
+            // } else if (((event.key === ' ' || event.key === 'Spacebar') && (this.state.previousKeyPressed === 'Control' || this.state.previousKeyPressed === "Command"))) {
             let divdata = this.refs[this.props.refId].getBoundingClientRect()
             let x = divdata.x
             let y = divdata.y
-    
+
             var elem = document.getElementById(this.props.aId)
             let caretVal = this.state.value.substring(0, elem.selectionStart)
-    
+
             var coordinates = getCaretCoordinates(elem, elem.selectionEnd);
-    
+
             let topValue = 0
             let leftValue = 0
             if (coordinates) {
                 topValue = y + coordinates.top + this.props.heightToBeIncreased
                 leftValue = x + coordinates.left + 5
-    
+
                 this.setState({ anchorEl: document.activeElement, topValue, leftValue, caretVal })
             }
-
             this.setState({ showSuggestions: true })
             // this.props.fetchSuggestions(this.props.sourceText, this.props.value)
-            this.props.fetchSuggestions(this.props.sourceText, this.handleCalc(caretVal, this.state.tokenObject), this.state.tokenObject)
+            this.fetchSuggestions(this.props.sourceText, this.handleCalc(caretVal, this.state.tokenObject), this.state.tokenObject)
 
         }
+        this.setState({
+            previousKeyPressed: event.key,
+            previousPressedKeyCode: event.keyCode
+        })
 
+    }
+
+    fetchSuggestions(srcText, targetTxt, tokenObject) {
+        let targetVal = targetTxt
+        this.setState({ showSuggestions: true, autoCompleteText: null })
+        const apiObj = new IntractiveApi(srcText, targetVal, { model_id: this.props.modelId }, true, true);
+        this.props.APITransport(apiObj);
     }
 
     handleCalc(value, tokenText) {
@@ -158,7 +179,7 @@ class AutoComplete extends React.Component {
         this.setState({
             value: event.target.value
         })
-        
+
     }
 
     handleClickAway(id, value, wf_code) {
@@ -193,36 +214,50 @@ class AutoComplete extends React.Component {
 
         return (
             // <ClickAwayListener id={tokenIndex} onClickAway={() => this.handleClickAway(tokenIndex, this.state.value, wfcodes.DP_WFLOW_S_C)}>
-                <div key={aId}>
-                    <textarea
-                        id={aId}
-                        ref={refId}
-                        // maxRows={4}
-                        multiline={true}
-                        autoFocus={true}
-                        placeholder="Type your translation here"
-                        style={style}
-                        value={this.state.value }
-                        onChange={this.handleChangeEvent.bind(this)}
-                        onKeyDown={this.handleEnter}
-                    >
-                    </textarea>
-                    {
-                        this.props.showSuggestions &&
-                        <Menu
-                            isOpen={true}
-                            topValue={this.state.topValue}
-                            leftValue={this.state.leftValue}
-                            handleSuggetionClick={this.handleSuggetionCLick.bind(this)}
-                            handlePopOverClose={this.props.handleSuggestionClose}
-                            targetVal={this.state.caretVal}
-                            options={this.props.autoCompleteText}
-                        ></Menu>}
+            <div key={aId}>
+                <textarea
+                    id={aId}
+                    ref={refId}
+                    // maxRows={4}
+                    multiline={true}
+                    autoFocus={true}
+                    placeholder="Type your translation here"
+                    style={style}
+                    value={this.state.value}
+                    onChange={this.handleChangeEvent.bind(this)}
+                    onKeyDown={this.handleEnter}
+                >
+                </textarea>
+                {
+                    this.state.showSuggestions &&
+                    <Menu
+                        isOpen={true}
+                        topValue={this.state.topValue}
+                        leftValue={this.state.leftValue}
+                        handleSuggetionClick={this.handleSuggetionCLick.bind(this)}
+                        handlePopOverClose={this.props.handleSuggestionClose}
+                        targetVal={this.state.caretVal}
+                        options={this.state.autoCompleteText}
+                    ></Menu>}
 
-                </div >
+            </div >
             // </ClickAwayListener>
         );
     }
 }
 
-export default (AutoComplete);
+const mapStateToProps = state => ({
+    apistatus: state.apistatus,
+    intractiveTrans: state.intractiveTrans
+});
+
+const mapDispatchToProps = dispatch =>
+    bindActionCreators(
+        {
+            APITransport
+        },
+        dispatch
+    );
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AutoComplete));
+

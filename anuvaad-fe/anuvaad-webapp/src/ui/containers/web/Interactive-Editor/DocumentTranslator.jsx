@@ -35,6 +35,7 @@ class PdfFileEditor extends React.Component {
             <Block 
             sentence={value} 
             pageNo={element.page_no}
+            modelId={this.props.modelId}
             selectedBlock={this.state.activeSentence} 
             handleSentenceClick={this.handleSentenceClick.bind(this)}
             handleSourceChange = {this.props.handleSourceChange}
