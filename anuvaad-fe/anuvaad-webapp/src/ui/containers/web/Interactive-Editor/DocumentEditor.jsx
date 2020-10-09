@@ -615,7 +615,7 @@ class PdfFileEditor extends React.Component {
             <Grid
               container
               spacing={2}
-              style={{ marginTop: "-20px", padding: "25px 24px 0px ", width: "100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}
+              style={{ marginTop: "-20px", padding: "1.5% 1.3% 0px ", width: "100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}
             >
               <Grid item xs={12} sm={6} lg={2} xl={2} className="GridFileDetails">
                 <Button
@@ -689,7 +689,7 @@ class PdfFileEditor extends React.Component {
             
 
               <Grid item xs={12} sm={6} lg={6} xl={6}>
-                <Paper elevation={3}>
+                <Paper elevation={2}>
                   {this.state.tokenized ?
                     <Toolbar style={{ color: '#000000', background: this.state.edited ? "#989E9C" : '#ECEFF1' }}>
                       <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: this.state.edited ? "white" : "#1C9AB7" }}>
