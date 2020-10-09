@@ -58,7 +58,7 @@ parser.add_argument('--show_time', default=False, action='store_true', help='sho
 parser.add_argument('--test_folder', default='/data/', type=str, help='folder path to input images')
 parser.add_argument('--refine', default=False, action='store_true', help='enable link refiner')
 parser.add_argument('--refiner_model', default='weights/craft_refiner_CTW1500.pth', type=str, help='pretrained refiner model')
-args = parser.parse_args()
+args = parser.parse_args(args=[])
 
 
 
@@ -121,15 +121,17 @@ def extract_word_bbox(image_path):
     bboxes, polys, score_text = test_net(image, args.text_threshold, args.link_threshold, args.low_text, args.cuda, args.poly, None)
 
     
-    column_names = ["tl_x","tl_y" ,"bl_x","bl_y", "tr_x","tr_y","br_x","br_y"]
+    #column_names = ["tl_x","tl_y" ,"bl_x","bl_y", "tr_x","tr_y","br_x","br_y"]
+    column_names = ["x1","y1" ,"x4","y4", "x2","y2","x3","y3"]
+
 
     df = pd.DataFrame(columns = column_names)
     for index, box in enumerate(polys):
         poly = np.array(box).astype(np.int32).reshape((-1))
-        df.at[index,'tl_x']= int(poly[0]); df.at[index,'tl_y']= int(poly[1])
-        df.at[index,'tr_x']= int(poly[2]); df.at[index,'tr_y']= int(poly[3])
-        df.at[index,'br_x']= int(poly[4]); df.at[index,'br_y']= int(poly[5])
-        df.at[index,'bl_x']= int(poly[6]); df.at[index,'bl_y']= int(poly[7])
+        df.at[index,'x1']= int(poly[0]); df.at[index,'y1']= int(poly[1])
+        df.at[index,'x2']= int(poly[2]); df.at[index,'y2']= int(poly[3])
+        df.at[index,'x3']= int(poly[4]); df.at[index,'y3']= int(poly[5])
+        df.at[index,'x4']= int(poly[6]); df.at[index,'y4']= int(poly[7])
         
     print("elapsed time for word bounding box extraction per page: {}s".format(time.time() - t))
     return df

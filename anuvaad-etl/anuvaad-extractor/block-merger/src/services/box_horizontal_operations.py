@@ -69,10 +69,10 @@ def merge_horizontal_blocks(in_df, configs, debug=False):
 
 def update_attribute_index(df, index, attrib):
     if (df.iloc[index]['attrib'] == None):
-        df.at[index, 'attrib'] = attrib
+        df['attrib'].loc[index] = attrib
     else:
         if pd.isna(df.iloc[index]['attrib']) or df.iloc[index]['attrib'] == '':
-            df.at[index, 'attrib'] = attrib
+            df['attrib'].loc[index] = attrib
         else:
             prev_attrib = df.iloc[index]['attrib']
             attribs = prev_attrib.split(',')
