@@ -7,7 +7,7 @@ const MachineTranslationStyles = theme => ({
       fontSize: 14
     },
     div:{
-      minHeight:"60%"
+      minHeight:"200px"
     }
 
   });
