@@ -10,8 +10,13 @@ import MachineTranslation from "./MachineTranslation";
 import Block from "./Block";
 import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
-
+import Fab from '@material-ui/core/Fab';
+import Merge from "@material-ui/icons/CallMerge";
 import Snackbar from "../../../components/web/common/Snackbar";
+import CancelIcon from '@material-ui/icons/Cancel';
+import Typography from '@material-ui/core/Typography';
+import Toolbar from "@material-ui/core/Toolbar";
+
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -23,9 +28,16 @@ class PdfFileEditor extends React.Component {
   }
 
   handleSentenceClick(value) {
-      console.log(value)
+     
     this.setState({ activeSentence: value })
   }
+
+  handleClick(value){
+    console.log(value)
+    this.setState({buttonStatus : value})
+  }
+
+  
 
   handleSentence = () => {
     let sentenceArray = [];
@@ -33,7 +45,7 @@ class PdfFileEditor extends React.Component {
       element.text_blocks.map((sentence) => {
         sentence.tokenized_sentences.map((value) => {
           sentenceArray.push(
-            <Block sentence={value} selectedBlock={this.state.activeSentence} handleSentenceClick={this.handleSentenceClick.bind(this)}></Block>
+            <Block sentence={value} handleClick ={this.handleClick.bind(this)} buttonStatus ={this.state.buttonStatus} selectedBlock={this.state.activeSentence} handleSentenceClick={this.handleSentenceClick.bind(this)}></Block>
             // <div onClick={() => this.setState({ activeSentence: value })}>
             //   {value.src}
             // </div>
@@ -62,6 +74,32 @@ class PdfFileEditor extends React.Component {
               }}
             >
               <Grid item xs={12} sm={9} lg={9} xl={9}>
+              {this.state.buttonStatus === "merge" &&
+              <Toolbar >
+              
+                  
+          <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
+              <Fab
+          variant="extended"
+          size="medium"
+          color="primary"
+          aria-label="add"
+
+          onClick={() => this.handleClick("")}
+        >
+          <CancelIcon />
+          Cancel
+        </Fab>
+        <Fab
+          variant="extended"
+          size="medium"
+          color="primary"
+          aria-label="add"
+          onClick={() => this.handleMergeSentence(this.props.sentence)}
+        >
+          <Merge />
+          Merge
+        </Fab></Toolbar>}
                 <div elevation={3} style={{ overflow: "auto" }}>
                   <div
                     id="scrollableDiv"
