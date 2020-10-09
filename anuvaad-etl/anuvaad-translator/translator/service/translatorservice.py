@@ -7,6 +7,7 @@ from repository.translatorrepository import TranslatorRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
+from configs.translatorconfig import anu_translator_output_topic
 
 utils = TranslatorUtils()
 producer = Producer()
@@ -23,13 +24,22 @@ class TranslatorService:
         translate_wf_input["taskStartTime"] = eval(str(time.time()).replace('.', '')[0:13])
         translate_wf_input["state"] = "TRANSLATED"
         log_info("Translator process initiated... jobID: " + str(translate_wf_input["jobID"]), translate_wf_input)
+        error_list = []
         for file in translate_wf_input["input"]["files"]:
             try:
-                self.dump_file_to_db(file["path"], translate_wf_input)
-                self.push_sentences_to_nmt(file, translate_wf_input)
+                dumped = self.dump_file_to_db(file["path"], translate_wf_input)
+                if not dumped:
+                    error_list.append({"inputFile": str(file["path"]), "outputFile": "FAILED", "error": "File received couldn't be downloaded!"})
+                else:
+                    self.push_sentences_to_nmt(file, translate_wf_input)
             except Exception as e:
                 log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
                 continue
+        if error_list:
+            translate_wf_input["output"], translate_wf_input["state"] = error_list, "FAILED"
+            translate_wf_input["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
+            producer.produce(translate_wf_input, anu_translator_output_topic)
+            return {"status": "failed", "message": "Some/All files failed"}
         return {"status": "success", "message": "Sentences sent to NMT"}
 
     # Method to download and dump the content of the file present in the input
@@ -39,7 +49,7 @@ class TranslatorService:
             data = utils.download_file(file_id, translate_wf_input)
             if not data:
                 log_error("File received on input couldn't be downloaded!", translate_wf_input, None)
-                return None
+                return False
             else:
                 log_info("Dumping content to translator DB......", translate_wf_input)
                 db_in = {
@@ -60,12 +70,12 @@ class TranslatorService:
             record_id = str(translate_wf_input["jobID"]) + "|" + str(file["path"])
             content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
             if not content_from_db:
-                log_error("CONTENT_FETCH_FAILED", "File content from DB couldn't be fetched, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
+                log_error("File content from DB couldn't be fetched, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
                 return None
             content_from_db = content_from_db[0]
             data = content_from_db["data"]
             if not data:
-                log_error("NO_DATA_DB", "No data for file, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
+                log_error("No data for file, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
                 return None
             pages = data["result"]
             total_sentences = 0
