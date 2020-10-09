@@ -30,18 +30,33 @@ class PdfFileEditor extends React.Component {
     let sentenceArray = [];
     this.props.sentences.map((element) => {
       element.text_blocks.map((sentence) => {
-        sentence.tokenized_sentences.map((value) => {
+        sentence.tokenized_sentences.map((value, tokenIndex) => {
           sentenceArray.push(
-            <Block sentence={value} selectedBlock={this.state.activeSentence} handleSentenceClick={this.handleSentenceClick.bind(this)}></Block>
-            // <div onClick={() => this.setState({ activeSentence: value })}>
-            //   {value.src}
-            // </div>
+            <Block 
+            sentence={value} 
+            pageNo={element.page_no}
+            selectedBlock={this.state.activeSentence} 
+            handleSentenceClick={this.handleSentenceClick.bind(this)}
+            handleSourceChange = {this.props.handleSourceChange}
+            tokenIndex = {this.props.tokenIndex}
+            showTargetData = { this.showTargetData.bind(this)}
+            selectedTargetId = {this.state.selectedTargetId}
+            // blockIdentifier = {}
+           />
           );
         });
       });
     });
     return sentenceArray;
   };
+
+  handleBlur(id, finalValue, wc_code) {
+
+  }
+
+  showTargetData(blockId) {
+    this.setState({ selectedTargetId: blockId })
+  }
 
   render() {
     return (
