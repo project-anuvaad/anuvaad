@@ -20,12 +20,12 @@ class MachineTranslation extends Component {
           <Typography variant="h5" gutterBottom className={classes.header} >Machine Translation</Typography>
         </div>
 
-        <hr />
+        <hr style={{border: "1px solid #00000014"}}/>
         <div className={classes.div} >
           {sentence && sentence.src}
 
         </div>
-        <hr />
+        <hr style={{border: "1px solid #00000014"}}/>
         <div className={classes.div}>
           {sentence && sentence.tgt}
 

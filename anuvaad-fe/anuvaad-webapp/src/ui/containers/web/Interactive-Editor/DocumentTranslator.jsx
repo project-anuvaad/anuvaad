@@ -7,6 +7,7 @@ import SourceView from "./DocumentSource";
 import Grid from "@material-ui/core/Grid";
 import ClearContent from "../../../../flux/actions/apis/clearcontent";
 import MachineTranslation from "./MachineTranslation";
+import Block from "./Block";
 import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 
@@ -21,15 +22,20 @@ class PdfFileEditor extends React.Component {
     this.state = {};
   }
 
+  handleSentenceClick(value) {
+    this.setState({ activeSentence: value })
+  }
+
   handleSentence = () => {
     let sentenceArray = [];
     this.props.sentences.map((element) => {
       element.text_blocks.map((sentence) => {
         sentence.tokenized_sentences.map((value) => {
           sentenceArray.push(
-            <div onClick={() => this.setState({ activeSentence: value })}>
-              {value.src}
-            </div>
+            <Block sentence={value.src} handleSentenceClick={this.handleSentenceClick.bind(this)}></Block>
+            // <div onClick={() => this.setState({ activeSentence: value })}>
+            //   {value.src}
+            // </div>
           );
         });
       });
@@ -55,7 +61,7 @@ class PdfFileEditor extends React.Component {
               }}
             >
               <Grid item xs={12} sm={9} lg={9} xl={9}>
-                <Paper elevation={3} style={{ overflow: "auto" }}>
+                <div elevation={3} style={{ overflow: "auto" }}>
                   <div
                     id="scrollableDiv"
                     style={{
@@ -65,7 +71,7 @@ class PdfFileEditor extends React.Component {
                   >
                     {this.handleSentence()}
                   </div>
-                </Paper>
+                </div>
               </Grid>
               <Grid item xs={12} sm={3} lg={3} xl={3}>
                 <MachineTranslation sentence={this.state.activeSentence} />
