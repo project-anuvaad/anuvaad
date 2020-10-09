@@ -12,44 +12,32 @@ import Paper from "@material-ui/core/Paper";
 
 import Snackbar from "../../../components/web/common/Snackbar";
 
-
 const BLOCK_OPS = require("../../../../utils/block.operations");
-const TELEMETRY = require('../../../../utils/TelemetryManager')
+const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 class PdfFileEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      
-    };
-  }
-  
-
-  
-  handleSentence=()=>{
-      let sentenceArray= []
-        this.props.sentences.map(element=>{
-
-            element.text_blocks.map(sentence=>{
-                sentence.tokenized_sentences.map(value=>{
-                sentenceArray.push(<div onClick={() => this.setState({activeSentence:value})}>{value.src}</div>)
-                })
-            })
-        })
-
-        console.log(this.state.activeSentence)
-
-        return sentenceArray
-
+    this.state = {};
   }
 
-  
-
-  
+  handleSentence = () => {
+    let sentenceArray = [];
+    this.props.sentences.map((element) => {
+      element.text_blocks.map((sentence) => {
+        sentence.tokenized_sentences.map((value) => {
+          sentenceArray.push(
+            <div onClick={() => this.setState({ activeSentence: value })}>
+              {value.src}
+            </div>
+          );
+        });
+      });
+    });
+    return sentenceArray;
+  };
 
   render() {
-
-    console.log("ypooooo",this.props.sentences)
     return (
       <div>
         {this.props.sentences && (
@@ -57,49 +45,48 @@ class PdfFileEditor extends React.Component {
             <Grid
               container
               spacing={2}
-              style={{ marginTop: "-20px", padding: "5px 24px 0px ", width: "100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}
+              style={{
+                marginTop: "-20px",
+                padding: "5px 24px 0px ",
+                width: "100%",
+                position: "fixed",
+                zIndex: 1000,
+                background: "#F5F9FA",
+              }}
             >
               <Grid item xs={12} sm={9} lg={9} xl={9}>
-                  
-                <Paper elevation={3} style={{overflow: 'auto'}}>
-
-                <div
+                <Paper elevation={3} style={{ overflow: "auto" }}>
+                  <div
                     id="scrollableDiv"
-                    style={
-                      {
-                          maxHeight: window.innerHeight - 220,
-                          overflowY: "auto",
-                          // overflowX: "auto"
-                        }
-                        
-                    }
+                    style={{
+                      maxHeight: window.innerHeight - 220,
+                      overflowY: "auto"
+                    }}
                   >
-                  {this.handleSentence()}
+                    {this.handleSentence()}
                   </div>
                 </Paper>
               </Grid>
               <Grid item xs={12} sm={3} lg={3} xl={3}>
-              <MachineTranslation sentence ={this.state.activeSentence}/>
+                <MachineTranslation sentence={this.state.activeSentence} />
               </Grid>
             </Grid>
 
-            <Grid container spacing={2} style={{ padding: "12px 24px 0px 24px" }}>
+            <Grid
+              container
+              spacing={2}
+              style={{ padding: "12px 24px 0px 24px" }}
+            >
               <Grid item xs={12} sm={6} lg={6} xl={6}>
-                <Paper>
-                  
-                    
-                      
-                </Paper>
+                <Paper></Paper>
               </Grid>
               <Grid item xs={12} sm={6} lg={6} xl={6}>
-                <Paper>
-                  
-                </Paper>
+                <Paper></Paper>
               </Grid>
             </Grid>
           </div>
         )}
-       
+
         {this.state.open && (
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -114,21 +101,23 @@ class PdfFileEditor extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   fetchPdfSentence: state.fetchPdfSentence,
   fileUpload: state.fileUpload,
   documentDetails: state.documentDetails,
   fetchContent: state.fetchContent,
-  workflowStatus: state.workflowStatus
+  workflowStatus: state.workflowStatus,
 });
 
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       APITransport,
-      ClearContent: ClearContent
+      ClearContent: ClearContent,
     },
     dispatch
   );
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PdfFileEditor));
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(PdfFileEditor)
+);

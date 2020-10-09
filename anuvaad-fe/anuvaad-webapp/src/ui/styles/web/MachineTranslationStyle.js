@@ -10,9 +10,6 @@ const MachineTranslationStyles = theme => ({
       textAlign: "left",
     },
     div:{
-      // maxHeight:"50%",
-      // overflowY: "scroll",
-      // height: "50%",
       minHeight:"60%",
       padding: "0% 3%"
     }
