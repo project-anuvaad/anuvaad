@@ -1,9 +1,9 @@
 import React from "react";
 
 class Preview extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
 
     hoverOn(e, pageNo) {
         // if (!this.props.isPreview) {
@@ -136,7 +136,7 @@ class Preview extends React.Component {
     }
 
     render() {
-        const { key, sentence, yAxis, widthValue, leftPaddingValue, printPageNo, pageNo, isFirstPage, pageDividerHeight, paperWidth } = this.props;
+        const { key, sentence, yAxis, widthValue, leftPaddingValue, printPageNo, pageNo,  pageDividerHeight, paperWidth } = this.props;
         var a = {
             position: "absolute ",
             top: yAxis,
@@ -152,7 +152,7 @@ class Preview extends React.Component {
         return (
             <div key={key}>
                 {printPageNo ? <div>
-                    {pageNo != "1" && <div style={{ position: "absolute ", top: pageDividerHeight - 65, width: paperWidth, color: "#A5A5A5" }}><hr /></div>}
+                    {pageNo !== "1" && <div style={{ position: "absolute ", top: pageDividerHeight - 65, width: paperWidth, color: "#A5A5A5" }}><hr /></div>}
 
                     <div style={{ position: "absolute ", top: pageDividerHeight - 50, fontSize: "13px", fontFamily: "Times", left: "25px", color: "#A5A5A5" }}>Page No. {pageNo}</div>
                 </div> : <div></div>
@@ -164,7 +164,7 @@ class Preview extends React.Component {
                         top: yAxis,
                         left: sentence.x + "px",
                         overflow: "hidden"
-                    }}><img width={sentence.width} height={sentence.height} src={sentence.img}></img></div> : this.fetchSentence(sentence, a)}
+                    }}><img width={sentence.width} height={sentence.height} src={sentence.img} alt=""></img></div> : this.fetchSentence(sentence, a)}
 
                 {/* </div> */}
             </div >

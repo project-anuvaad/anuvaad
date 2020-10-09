@@ -1,5 +1,5 @@
 import C from "../actions/constants";
-import { act } from "react-test-renderer";
+//import { act } from "react-test-renderer";
 
 const initialUserState = {
   result: []
@@ -12,20 +12,20 @@ export default function(state = initialUserState, action) {
       if (result !== null && result.data) {
         action.payload.data.map(payloadData => {
           result.data.map((pageDetails, index) => {
-            if (pageDetails.page_no == payloadData.page_no) {
+            if (pageDetails.page_no === payloadData.page_no) {
               pageDetails = payloadData;
               status = true;
               i=  index;
               pageD = payloadData;
             }
-          });
+          return null;});
           if (status) {
             result.data[i] = pageD
             status = false;
           } else {
             result.data = result.data.concat(payloadData);
           }
-        });
+        return null;});
       } else {
         
         result = action.payload;

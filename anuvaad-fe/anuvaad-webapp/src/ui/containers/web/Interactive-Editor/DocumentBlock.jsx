@@ -27,11 +27,11 @@ class DocumentBlock extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.mergeButton !== this.props.mergeButton) {
-      if (this.props.mergeButton == "Merge" && arr.length > 0) {
+      if (this.props.mergeButton === "Merge" && arr.length > 0) {
         this.sentenceClear(arr)
         this.updateContent(arr)
       }
-      else if (this.props.mergeButton == "Merge") {
+      else if (this.props.mergeButton === "Merge") {
         this.sentenceClear(arr)
       }
 
@@ -49,7 +49,7 @@ class DocumentBlock extends React.Component {
   sentenceClear() {
     return arr.map(arrValue => {
       this.setState({ [arrValue]: false })
-    })
+    return null;})
   }
   updateContent(val) {
 
@@ -152,13 +152,13 @@ class DocumentBlock extends React.Component {
       if (this.props.targetSelected === text.s_id + "_" + this.props.page_no) {
         editable = true
       }
-    })
+    return null;})
 
 
     if (sentence.tokenized_sentences) {
       sentence.tokenized_sentences.map((text) => {
         words_count += text && text.tgt ? text.tgt.split(" ").length : 0
-      })
+      return null;})
     }
     if (words_count > 0 && childrens > 1) {
       // words_in_line = Math.round(words_count / childrens) + 1
@@ -184,7 +184,7 @@ class DocumentBlock extends React.Component {
           }}
         >
           <Textfit
-            mode={sentence.children && sentence.children.length == 1 ? "single" : "multi"}
+            mode={sentence.children && sentence.children.length === 1 ? "single" : "multi"}
             style={{ height: parseInt(sentence.text_height), width: parseInt(sentence.text_width) }}
             min={1}
             max={parseInt(sentence.font_size)}
@@ -260,7 +260,7 @@ class DocumentBlock extends React.Component {
                   } else {
                     if (text.tgt) {
                       let words = text.tgt ? text.tgt.split(" ") : []
-                      if (words_in_line != -1) {
+                      if (words_in_line !== -1) {
                         let spans = []
                         let words_length = words.length + current_line_words
                         if (words_length >= words_in_line) {
@@ -271,7 +271,7 @@ class DocumentBlock extends React.Component {
                             if (current_line_words >= chunk) {
                               current_line_words = 0
                             }
-                            if (i == 0)
+                            if (i === 0)
                               temparray = words.slice(i, i - current_line_words + chunk);
                             else
                               temparray = words.slice(i, i + chunk);
@@ -282,7 +282,7 @@ class DocumentBlock extends React.Component {
                                 style={{
                                   outline: "none",
                                   textAlign: 'justify',
-                                  background: (!this.props.targetSelected && !not_tokenized && this.props.hoveredSentence.split('_')[0] === this.props.sentence.block_id) ? tokenIndex % 2 == 0 ? '#92a8d1' : "coral" : ''
+                                  background: (!this.props.targetSelected && !not_tokenized && this.props.hoveredSentence.split('_')[0] === this.props.sentence.block_id) ? tokenIndex % 2 === 0 ? '#92a8d1' : "coral" : ''
                                 }}
                                 onDoubleClick={event => {
                                   this.handleDoubleClickTarget(event, text.s_id + "_" + this.props.page_no, text, "target", sentence.block_id + "_" + this.props.page_no, this.props.page_no);
@@ -294,8 +294,8 @@ class DocumentBlock extends React.Component {
                               {(temparray.length + current_line_words < chunk) ? '' : <br></br>}
                             </span>)
 
-                            i == 0 ? i += chunk - current_line_words : i += chunk
-                            if (current_line_words == chunk) {
+                            i === 0 ? i += chunk - current_line_words : i += chunk
+                            if (current_line_words === chunk) {
                               current_line_words = 0
                             } else
                               current_line_words = temparray.length > 0 ? (temparray.length + current_line_words) : current_line_words
@@ -308,7 +308,7 @@ class DocumentBlock extends React.Component {
                               style={{
                                 outline: "none",
                                 textAlign: 'justify',
-                                background: (!this.props.targetSelected && !not_tokenized && this.props.hoveredSentence.split('_')[0] === this.props.sentence.block_id) ? tokenIndex % 2 == 0 ? '#92a8d1' : "coral" : ''
+                                background: (!this.props.targetSelected && !not_tokenized && this.props.hoveredSentence.split('_')[0] === this.props.sentence.block_id) ? tokenIndex % 2 === 0 ? '#92a8d1' : "coral" : ''
                               }}
                               onDoubleClick={event => {
                                 this.handleDoubleClickTarget(event, text.s_id + "_" + this.props.page_no, text, "target", sentence.block_id + "_" + this.props.page_no, this.props.page_no);
@@ -330,7 +330,7 @@ class DocumentBlock extends React.Component {
                                 contentEditableId={true}
                                 style={{
                                   outline: "none",
-                                  background: (!this.props.targetSelected && !not_tokenized && this.props.hoveredSentence.split('_')[0] === this.props.sentence.block_id) ? tokenIndex % 2 == 0 ? '#92a8d1' : "coral" : ''
+                                  background: (!this.props.targetSelected && !not_tokenized && this.props.hoveredSentence.split('_')[0] === this.props.sentence.block_id) ? tokenIndex % 2 === 0 ? '#92a8d1' : "coral" : ''
                                 }}
                                 onDoubleClick={event => {
                                   this.handleDoubleClickTarget(event, text.s_id + "_" + this.props.page_no, text, "target", sentence.block_id + "_" + this.props.page_no, this.props.page_no);
@@ -412,10 +412,10 @@ class DocumentBlock extends React.Component {
         let sentence = this.props.sentence
         let actual_text = ''
         sentence.tokenized_sentences.map((token) => {
-          if (token.s_id == start_s_id) {
+          if (token.s_id === start_s_id) {
             actual_text = token.src
           }
-        })
+        return null;})
         actual_text = actual_text.replace(/\s{2,}/g, ' ')
         actual_text = actual_text.trim()
         this.props.popUp(start_block_id, start_s_id, split_index, actual_text.substring(0, split_index), event, opeartion)
@@ -430,7 +430,7 @@ class DocumentBlock extends React.Component {
         // fontSize: (child.font_size) + "px",
         height: (child.text_height) + "px",
         left: (child.text_left - 2) + "px",
-        background: ((!this.props.targetSelected && !(this.props.targetSelected && this.props.targetSelected.length > 0) && spanId && spanId === this.props.sentence.block_id && !this.props.selectedBlock) || (token_obj && token_obj.s_id + '_' + this.props.page_no === this.props.targetSelected)) ? tokenIndex % 2 == 0 ? '#92a8d1' : "coral" : ''
+        background: ((!this.props.targetSelected && !(this.props.targetSelected && this.props.targetSelected.length > 0) && spanId && spanId === this.props.sentence.block_id && !this.props.selectedBlock) || (token_obj && token_obj.s_id + '_' + this.props.page_no === this.props.targetSelected)) ? tokenIndex % 2 === 0 ? '#92a8d1' : "coral" : ''
       }}
     >
       {text}
@@ -479,7 +479,7 @@ class DocumentBlock extends React.Component {
       }
       return { text: text, tokenized_data: tokenized_data, tokenIndex: tokenIndex, spanId: spanId, child: child, elems: elems }
     }
-    if (text.length == tokenized_data[tokenIndex].src.length) {
+    if (text.length === tokenized_data[tokenIndex].src.length) {
       if (!child.dont_show) {
         elems.push(this.makeDiv(sentence, this.makeSpan(text, child, spanId, tokenIndex, tokenized_data[tokenIndex]), div_style, child))
       }
@@ -503,7 +503,7 @@ class DocumentBlock extends React.Component {
           text = text.substring(tokenized_data[tokenIndex].src.length, text.length)
           text = text.trim()
           tokenIndex++
-          if (!(tokenIndex == tokenized_data.length && text.length > 0)) {
+          if (!(tokenIndex === tokenized_data.length && text.length > 0)) {
             if (!child.dont_show) {
               spans.push(<span id={this.props.sentence.block_id + '##' + tokenized_data[tokenIndex].s_id + '##' + (tokenized_data[tokenIndex].actual_src.length - tokenized_data[tokenIndex].src.length)} onMouseUp={this.getSelectionText.bind(this)}
                 onKeyUp={this.getSelectionText.bind(this)}> </span>)
@@ -515,7 +515,7 @@ class DocumentBlock extends React.Component {
             spans.push(<span id={this.props.sentence.block_id + '##' + tokenized_data[tokenIndex].s_id + '##' + (tokenized_data[tokenIndex].actual_src.length - tokenized_data[tokenIndex].src.length)} onMouseUp={this.getSelectionText.bind(this)}
               onKeyUp={this.getSelectionText.bind(this)}> </span>)
           }
-          if (text.length == tokenized_data[tokenIndex].src.length) {
+          if (text.length === tokenized_data[tokenIndex].src.length) {
             tokenIndex++
           } else {
             tokenized_data[tokenIndex].src = tokenized_data[tokenIndex].src.substring(text.length, tokenized_data[tokenIndex].src.length)
@@ -563,29 +563,29 @@ class DocumentBlock extends React.Component {
       allPages.map((page) => {
         if (page.text_blocks) {
           page.text_blocks.map((block) => {
-            if (block.block_id == spanId && sentence.block_id == spanId) {
-              if (sentence.block_identifier != block.block_identifier) {
+            if (block.block_id === spanId && sentence.block_id === spanId) {
+              if (sentence.block_identifier !== block.block_identifier) {
                 if (block.children) {
                   block.children.map((c) => {
                     let child = JSON.parse(JSON.stringify(c))
                     child.dont_show = true
                     childrens.push(child)
-                  })
+                  return null;})
                 }
               } else {
                 if (block.children) {
                   block.children.map((child) => {
                     childrens.push(JSON.parse(JSON.stringify(child)))
-                  })
+                  return null;})
                 }
               }
               if (block.tokenized_sentences.length > 0) {
                 tokenized_sentences = block.tokenized_sentences
               }
             }
-          })
+          return null;})
         }
-      })
+      return null;})
       if (childrens.length > 0) {
         sentence.children = JSON.parse(JSON.stringify(childrens))
         sentence.tokenized_sentences = JSON.parse(JSON.stringify(tokenized_sentences))
@@ -597,7 +597,7 @@ class DocumentBlock extends React.Component {
       t.src = t.src.replace(/\s\s+/g, ' ')
       t.src = t.src.trim()
       t.actual_src = t.src
-    })
+    return null;})
 
     if (sentence.children) {
       sentence.children.map((child) => {
@@ -627,7 +627,7 @@ class DocumentBlock extends React.Component {
                 // child = obj.child
                 elems = obj.elems
               }
-            })
+            return null;})
           }
           else {
             var text = child.text
@@ -640,7 +640,7 @@ class DocumentBlock extends React.Component {
             elems = obj.elems
           }
         }
-      })
+      return null;})
     } else {
       let text = sentence.text.trim()
       let obj = this.makeSpanObjects(sentence, text, tokenized_data, tokenIndex, spanId, elems, sentence)
@@ -669,7 +669,7 @@ class DocumentBlock extends React.Component {
       height: sentence.text_height + 4 + "px",
       fontFamily: sentence.font_family,
       fontWeight: sentence.font_family && sentence.font_family.includes("Bold") && "bold",
-      fontFamily: sentence.font_family,
+      //fontFamily: sentence.font_family,
       textAlign: "justify",
       zIndex: this.props.paperType === "target" && this.props.hoveredSentence.split("_")[0] === sentence.block_id ? 2 : 1,
       display: "block",
