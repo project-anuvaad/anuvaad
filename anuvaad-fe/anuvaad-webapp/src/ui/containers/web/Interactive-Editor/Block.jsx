@@ -21,16 +21,19 @@ class Block extends Component {
     return (
       <Paper
         variant="outlined"
-        style={{ margin: "10px", minHeight: "90px", padding: "1%",border: selectedBlock &&sentence && sentence.s_id===selectedBlock.s_id ?  "1px solid #1C9AB7" : "1px solid #D6D6D6", }}
-        onClick={() => this.props.handleSentenceClick(this.props.sentence)}
+        style={{ margin: "10px", minHeight: "90px", padding: "1%", border: selectedBlock && sentence && sentence.s_id === selectedBlock.s_id ? "1px solid #1C9AB7" : "1px solid #D6D6D6", }}
+        onClick={() => {this.props.handleSentenceClick(this.props.sentence)}}
       >
         <Grid container spacing={2}>
           <Grid item xs={8} sm={9} lg={11} xl={11}>
-            <div style = {{minHeight:'45px'}}onClick={() => this.props.handleSentenceClick(sentence)}>
+            <div style={{ minHeight: '45px' }} onClick={() => this.props.handleSentenceClick(sentence)}>
               {sentence.src}
             </div>
             <hr style={{ border: "1px dashed #00000014" }} />
             {/* <div>{sentence.tgt}</div> */}
+            <div style={{ minHeight: '45px' }} onClick={() => this.props.handleSentenceClick(sentence)}>
+              { this.state.showTargetLang && sentence.tgt}
+            </div>
           </Grid>
           <Grid
             item
@@ -47,8 +50,8 @@ class Block extends Component {
                 paddingLeft: "4%",
               }}
             >
-              <Tooltip title="Go to validation mode">
-                <IconButton aria-label="validation mode">
+              <Tooltip title="Get machine translated sentence">
+                <IconButton aria-label="validation mode" onClick={() => {this.setState({showTargetLang: true})}}>
                   <ArrowBackIcon fontSize="medium" className={classes.Icons} />
                 </IconButton>
               </Tooltip>
