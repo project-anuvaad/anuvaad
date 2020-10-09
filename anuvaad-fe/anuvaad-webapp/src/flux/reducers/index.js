@@ -70,7 +70,8 @@ import workflowStatus from "./fileupload";
 import documentUplaod from "./documentUpload";
 import fetchDocument from "./fetch_document";
 import documentDetails from "./fetch_fileDetails";
-import fetchContent from "./fetchcontent"
+import fetchContent from "./fetchcontent";
+import documentconverter from "./documentconverter";
 
 export default {
     login,
@@ -145,5 +146,6 @@ export default {
     documentUplaod,
     fetchDocument,
     documentDetails,
-    fetchContent
+    fetchContent,
+    documentconverter
 };
