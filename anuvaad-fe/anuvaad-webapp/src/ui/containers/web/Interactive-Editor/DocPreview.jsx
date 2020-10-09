@@ -1,13 +1,13 @@
 import React from "react";
-import Grid from "@material-ui/core/Grid";
+//import Grid from "@material-ui/core/Grid";
 import "../../../styles/web/InteractivePreview.css";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+// import Button from "@material-ui/core/Button";
+// import Typography from "@material-ui/core/Typography";
+// import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { Document, Page } from "react-pdf/dist/entry.webpack";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import Toolbar from "@material-ui/core/Toolbar";
-import { translate } from "../../../../assets/localisation";
+// import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+// import Toolbar from "@material-ui/core/Toolbar";
+// import { translate } from "../../../../assets/localisation";
 
 class PdfPreview extends React.Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class PdfPreview extends React.Component {
   };
 
   render() {
-    const { pageNo, fileDetails, numPages } = this.props;
+    const { pageNo, fileDetails } = this.props;
     const url =
       fileDetails &&
       fileDetails.download_source_path &&
@@ -116,7 +116,7 @@ class PdfPreview extends React.Component {
               )}
           </Grid> */}
         {/* </Toolbar> */}
-        <div style={{ maxHeight: window.innerHeight - 260, overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
+        <div style={{ maxHeight: window.innerHeight - 275, overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
           <Document file={url} onLoadSuccess={this.props.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
 
 
