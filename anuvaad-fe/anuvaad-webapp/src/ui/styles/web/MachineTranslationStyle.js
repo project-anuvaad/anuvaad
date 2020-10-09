@@ -1,7 +1,7 @@
 const MachineTranslationStyles = theme => ({
     paper: {
         border: "1px solid #1C9AB7",
-        minHeight:"50%",
+        minHeight:"100%",
         backgroundColor: "#F4FDFF"
     },
     header: {

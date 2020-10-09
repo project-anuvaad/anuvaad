@@ -28,7 +28,6 @@ class PdfFileEditor extends React.Component {
   }
 
   handleSentenceClick(value) {
-     
     this.setState({ activeSentence: value })
   }
 
@@ -43,18 +42,34 @@ class PdfFileEditor extends React.Component {
     let sentenceArray = [];
     this.props.sentences.map((element) => {
       element.text_blocks.map((sentence) => {
-        sentence.tokenized_sentences.map((value) => {
+        sentence.tokenized_sentences.map((value, tokenIndex) => {
           sentenceArray.push(
-            <Block sentence={value} handleClick ={this.handleClick.bind(this)} buttonStatus ={this.state.buttonStatus} selectedBlock={this.state.activeSentence} handleSentenceClick={this.handleSentenceClick.bind(this)}></Block>
-            // <div onClick={() => this.setState({ activeSentence: value })}>
-            //   {value.src}
-            // </div>
+            <Block 
+            sentence={value} 
+            handleClick ={this.handleClick.bind(this)} buttonStatus ={this.state.buttonStatus}
+            pageNo={element.page_no}
+            selectedBlock={this.state.activeSentence} 
+            handleSentenceClick={this.handleSentenceClick.bind(this)}
+            handleSourceChange = {this.props.handleSourceChange}
+            tokenIndex = {this.props.tokenIndex}
+            showTargetData = { this.showTargetData.bind(this)}
+            selectedTargetId = {this.state.selectedTargetId}
+            // blockIdentifier = {}
+           />
           );
         });
       });
     });
     return sentenceArray;
   };
+
+  handleBlur(id, finalValue, wc_code) {
+
+  }
+
+  showTargetData(blockId) {
+    this.setState({ selectedTargetId: blockId })
+  }
 
   render() {
     return (
@@ -113,7 +128,9 @@ class PdfFileEditor extends React.Component {
                 </div>
               </Grid>
               <Grid item xs={12} sm={3} lg={3} xl={3}>
-                <MachineTranslation sentence={this.state.activeSentence} />
+                <Grid item xs={12} sm={12} lg={12} xl={12} style={{height: "50%"}}>
+                  <MachineTranslation sentence={this.state.activeSentence} />
+                </Grid>
               </Grid>
             </Grid>
 

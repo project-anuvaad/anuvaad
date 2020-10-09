@@ -12,17 +12,21 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import Checkbox from '@material-ui/core/Checkbox';
 import ValidationIcon from '@material-ui/icons/SettingsEthernet';
+import AutoComplete from "../../../components/web/common/AutoComplete1"
+
 class Block extends Component {
   constructor() {
     super();
     this.state = {};
   }
 
-
-  
+  handleChangeEvent = event => {
+    this.props.handleSourceChange(event, this.props.sentence);
+  };
 
   render() {
     const { classes, sentence, selectedBlock } = this.props;
+  
     return (
       <Paper
         variant="outlined"
@@ -44,7 +48,38 @@ class Block extends Component {
             </div>
             <hr style={{ border: "1px dashed #00000014" }} />
 
-            {/* <div>{sentence.tgt}</div> */}
+            {/* <div style={{ minHeight: '45px' }}> */}
+            {selectedBlock &&sentence && sentence.s_id===selectedBlock.s_id &&
+               <AutoComplete
+                aId={sentence.s_id}
+                refId={sentence.s_id}
+                block_identifier_with_page={sentence.block_identifier + "_" + this.props.pageNo}
+                style={{
+                  width: "100%",
+                  resize: "none",
+                  zIndex: 1111,
+                  borderRadius: "4px",
+                  backgroundColor: "#F4FDFF",
+                  border: this.props.selectedTargetId === sentence.s_id ? '1px dotted #1C9AB7' : ""
+                }}
+                tokenIndex={this.props.tokenIndex}
+                value={this.props.selectedTargetId === sentence.s_id ? sentence.tgt : ""}
+                sentence={sentence}
+                sourceText={sentence.src}
+                page_no={this.props.page_no}
+                handleChangeEvent={this.handleChangeEvent.bind(this)}
+                fetchSuggestions={this.props.fetchSuggestions}
+                autoCompleteText={this.props.autoCompleteText}
+                autoCompleteTextTaggetTgt={this.props.autoCompleteTextTaggetTgt}
+                handleSuggestion={this.props.handleSuggestion}
+                heightToBeIncreased={sentence.font_size}
+                handleBlur={this.props.handleBlur}
+                showSuggestions={this.props.showSuggestions}
+                handleSuggestionClose={this.props.handleSuggestionClose}
+                // handleClickAway={this.props.handleClickAway.bind(this)}
+                // tokenObject={text}
+                showTargetLang={this.props.selectedTargetId === sentence.s_id && true}
+              />}
             </div>
             </div>
           </Grid>
@@ -72,9 +107,8 @@ class Block extends Component {
                 paddingLeft: "4%",
               }}
             >
-
-              <Tooltip title="Go to validation mode">
-                <IconButton aria-label="validation mode">
+              <Tooltip title="Get machine translated sentence">
+                <IconButton aria-label="validation mode" onClick={() => { this.props.showTargetData(sentence.s_id) }}>
                   <ArrowBackIcon fontSize="medium" className={classes.Icons} />
                 </IconButton>
               </Tooltip>
