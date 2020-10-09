@@ -157,19 +157,19 @@ class PdfFileEditor extends React.Component {
         if (sentence.page_no < page) {
           height += sentence.page_height
         }
-      return null;
-    })
+        return null;
+      })
       this.scrollPage(height)
     }
 
-    if(prevProps.documentconverter !== this.props.documentconverter) {
+    if (prevProps.documentconverter !== this.props.documentconverter) {
       let fileName = (this.props.documentconverter && this.props.documentconverter.translated_document) ? this.props.documentconverter.translated_document : ""
 
-      if(fileName) {
+      if (fileName) {
         let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
         window.open(url, "_self")
       }
-      
+
     }
   }
 
@@ -276,7 +276,8 @@ class PdfFileEditor extends React.Component {
             token = false;
             text.src = null;
           }
-        return null;});
+          return null;
+        });
         selectedBlock.tokenized_sentences[index].src = textValue;
       } else if (sentenceObj[startSentence[0]] && type === "Split sentence") {
         const selectedSplitEndIndex = window.getSelection() && window.getSelection().getRangeAt(0).endOffset;
@@ -290,7 +291,8 @@ class PdfFileEditor extends React.Component {
             copySentence.src = nextSplitValue;
             ind = i;
           }
-        return null;});
+          return null;
+        });
         let id = copySentence.s_id.split("_");
         id[2] = selectedBlock.tokenized_sentences.length;
         let newId = id.join("_");
@@ -327,7 +329,8 @@ class PdfFileEditor extends React.Component {
       values[1] = indexValue ? indexValue : indexes[1];
       values[2] = i;
       sentence.s_id = values.join("_");
-    return null;});
+      return null;
+    });
     return tokenizedArray;
   };
 
@@ -338,9 +341,11 @@ class PdfFileEditor extends React.Component {
       sen.map((value, index) => {
         sen[index].block_id = index;
         this.tokenizedIndex(value.tokenized_sentences, index);
-      return null;});
+        return null;
+      });
       sentence.text_blocks = sen;
-    return null;});
+      return null;
+    });
     this.setState({ sentences: sentenceObj });
   };
 
@@ -399,7 +404,7 @@ class PdfFileEditor extends React.Component {
     let blockId = block.split("_")[0];
     let pageNo = block.split("_")[1];
     let blockTop,
-     blockHeight,
+      blockHeight,
       valueH = 0;
     let docPage = this.state.sentences;
     let strText = this.state.selectedSourceText;
@@ -411,10 +416,11 @@ class PdfFileEditor extends React.Component {
             page.text_blocks.map((block, i) => {
               if (block.block_id === blockId) {
                 blockTop = block.text_top;
-               // blockHeight = block.text_height;
+                // blockHeight = block.text_height;
                 block.text = strText;
               }
-            return null;});
+              return null;
+            });
 
             page.text_blocks.map((block, i) => {
               if (block.text_top > blockTop) {
@@ -429,14 +435,16 @@ class PdfFileEditor extends React.Component {
 
                 // }
               }
-            return null;});
+              return null;
+            });
             if ((this.state.height !== 0 && this.state.height !== evt.currentTarget.offsetHeight) || diffValue) {
               page.page_height = page.page_height + valueH;
               valueH = 0;
             }
           }
         }
-      return null;});
+        return null;
+      });
     }
     !checkValue && this.setState({ selectedBlockId: null, clear: false });
 
@@ -525,9 +533,11 @@ class PdfFileEditor extends React.Component {
                 children.children
                   ? children.children.map(grandChildren => {
                     text = text + " " + grandChildren.text;
-                  return null;})
+                    return null;
+                  })
                   : (text = text + " " + children.text);
-              return null;});
+                return null;
+              });
 
             if (block.text !== text) {
               block.text = text;
@@ -536,9 +546,11 @@ class PdfFileEditor extends React.Component {
               blockItem = block;
             }
           }
-        return null;});
+          return null;
+        });
       }
-    return null;});
+      return null;
+    });
     let telemetry = {}
     telemetry.initialSenetence = wf_code ? prevValue : this.state.initialSenetence
     telemetry.finalSenetence = wf_code ? finalValue : saveData
@@ -592,17 +604,20 @@ class PdfFileEditor extends React.Component {
                       token.tgt = textData;
                       token.tagged_tgt = textData;
                     }
-                  return null;});
+                    return null;
+                  });
               }
-            return null;});
+              return null;
+            });
           }
         }
-      return null;});
+        return null;
+      });
   }
 
   handleTargetDownload() {
     let recordId = this.props.match.params.jobid
-    let user_profile  = JSON.parse(localStorage.getItem('userProfile'))
+    let user_profile = JSON.parse(localStorage.getItem('userProfile'))
 
     const apiObj = new DocumentConverter(recordId, user_profile.id);
     this.props.APITransport(apiObj);
@@ -686,24 +701,12 @@ class PdfFileEditor extends React.Component {
                   <ChevronRightIcon fontSize="large" />
                 </Button>
               </Grid>
-              {/* <Grid item xs={12} sm={6} lg={1} xl={1}>
-                <Button
-                  onClick={event => {
-                    alert("In progress");
-                  }}
-                  variant="outlined"
-                  style={{ width: "100%", minWidth: "55px", borderRadius: "30px", color: "#233466" }}
-                >
-                  <DoneIcon fontSize="large" style={{ color: "#233466" }} />
-                  &nbsp;&nbsp;{translate("common.page.label.done")}
-                </Button>
-              </Grid> */}
+
               {this.state.tokenized &&
-              <Grid container
-              spacing={2}>
-              <Grid item xs={12} sm={6} lg={6} xl={6}>
-                <Paper elevation={3}>
-                  
+                // <Grid container spacing={2}>
+                <Grid item xs={12} sm={6} lg={6} xl={6}>
+                  <Paper elevation={3}>
+
                     <Toolbar style={{ color: '#000000', background: this.state.edited ? "#989E9C" : '#ECEFF1' }}>
                       <Typography value="" variant="h6" gutterBottom style={{ flex: 1, color: this.state.edited ? "white" : "#1C9AB7" }}>
                         Extracted Document
@@ -721,200 +724,202 @@ class PdfFileEditor extends React.Component {
                           </Typography>
                         </Toolbar>
                       )}
-                    </Toolbar> 
-                 
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={6} lg={6} xl={6}>
-                <Paper elevation={2}>
-                  {this.state.tokenized &&
-                    
-                    <Toolbar style={{ color: '#000000', background: '#ECEFF1' }}>
-
-                      <Grid item xs={3} sm={3} lg={3} xl={3}>
-                        <Typography value="" variant="h6" gutterBottom style={{ width: "100%", flex: 1, color: '#1C9AB7' }}>
-                          {translate("intractive_translate.page.preview.originalPDF")}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={6} sm={6} lg={6} xl={6}>
-                        {this.state.numPages && this.state.pageNo && (
-                          <Grid container>
-                            <Grid item xs={4} sm={4} lg={4} xl={4} style={{ textAlign: 'right' }}>
-                              <TextButton
-                                style={{ fontWeight: "bold", width: "80%" }}
-                                color="primary"
-                                disabled={this.state.pageNo <= 1}
-                                onClick={event => {
-                                  this.handlePageChange(-1);
-                                }}
-                              >
-                                {" "}
-                                <ChevronLeftIcon size="large" />
-                              </TextButton>
-                            </Grid>
-                            <Grid item xs={4} sm={4} lg={4} xl={4} style={{ textAlign: 'center' }}>
-                              <TextButton style={{ fontWeight: "bold", width: "100%", pointerEvents: "none" }}>
-                                {`${this.state.pageNo} / ${this.state.numPages}`}
-                              </TextButton>
-                            </Grid>
-
-                            <Grid item xs={4} sm={4} lg={4} xl={4} style={{ textAlign: 'left' }}>
-                              <TextButton
-                                color="primary"
-                                disabled={this.state.numPages <= this.state.pageNo}
-                                onClick={event => {
-                                  this.handlePageChange(1);
-                                }}
-                                style={{ fontWeight: "bold", width: "80%" }}
-                              >
-                                <ChevronRightIcon size="large" />{" "}
-                              </TextButton>
-                            </Grid>
-                          </Grid>
-                        )}
-                      </Grid>
                     </Toolbar>
-                  }
-                </Paper>
-              </Grid>
-              </Grid>
+
+                  </Paper>
+                </Grid>
+              }
+              {this.state.tokenized &&
+                <Grid item xs={12} sm={6} lg={6} xl={6}>
+                  <Paper elevation={2}>
+                    {this.state.tokenized &&
+
+                      <Toolbar style={{ color: '#000000', background: '#ECEFF1' }}>
+
+                        <Grid item xs={3} sm={3} lg={3} xl={3}>
+                          <Typography value="" variant="h6" gutterBottom style={{ width: "100%", flex: 1, color: '#1C9AB7' }}>
+                            {translate("intractive_translate.page.preview.originalPDF")}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={6} sm={6} lg={6} xl={6}>
+                          {this.state.numPages && this.state.pageNo && (
+                            <Grid container>
+                              <Grid item xs={4} sm={4} lg={4} xl={4} style={{ textAlign: 'right' }}>
+                                <TextButton
+                                  style={{ fontWeight: "bold", width: "80%" }}
+                                  color="primary"
+                                  disabled={this.state.pageNo <= 1}
+                                  onClick={event => {
+                                    this.handlePageChange(-1);
+                                  }}
+                                >
+                                  {" "}
+                                  <ChevronLeftIcon size="large" />
+                                </TextButton>
+                              </Grid>
+                              <Grid item xs={4} sm={4} lg={4} xl={4} style={{ textAlign: 'center' }}>
+                                <TextButton style={{ fontWeight: "bold", width: "100%", pointerEvents: "none" }}>
+                                  {`${this.state.pageNo} / ${this.state.numPages}`}
+                                </TextButton>
+                              </Grid>
+
+                              <Grid item xs={4} sm={4} lg={4} xl={4} style={{ textAlign: 'left' }}>
+                                <TextButton
+                                  color="primary"
+                                  disabled={this.state.numPages <= this.state.pageNo}
+                                  onClick={event => {
+                                    this.handlePageChange(1);
+                                  }}
+                                  style={{ fontWeight: "bold", width: "80%" }}
+                                >
+                                  <ChevronRightIcon size="large" />{" "}
+                                </TextButton>
+                              </Grid>
+                            </Grid>
+                          )}
+                        </Grid>
+                      </Toolbar>
+                    }
+                  </Paper>
+                </Grid>
+              // {/* </Grid> */}
             }
             </Grid>
             {this.state.tokenized ?
-            <Grid container spacing={2} style={{ padding: "142px 24px 0px 24px" }}>
-              <Grid item xs={12} sm={6} lg={6} xl={6}>
-                <Paper
-                  elevation={this.state.edited ? 12 : 2}
-                  style={{
-                    // paddingBottom: "12px"
-                  }}
-                >
-                  <div
-                    id="scrollableDiv"
-                    style={
-                      this.state.tokenized
-                        ? {
-                          maxHeight: window.innerHeight - 240,
-                          overflowY: this.state.edited ? "hidden" : "scroll",
-                          // overflowX: "auto"
-                        }
-                        : {}
-                    }
+              <Grid container spacing={2} style={{ padding: "142px 24px 0px 24px" }}>
+                <Grid item xs={12} sm={6} lg={6} xl={6}>
+                  <Paper
+                    elevation={this.state.edited ? 12 : 2}
+                    style={{
+                      // paddingBottom: "12px"
+                    }}
                   >
-                    <InfiniteScroll
-                      next={this.fetchData.bind(this)}
-                      hasMore={this.state.hasMoreItems}
-                      dataLength={this.state.sentences ? this.state.sentences.length : 0}
-                      loader={
-                        <p style={{ textAlign: "center" }}>
-                          <CircularProgress
-                            size={20}
-                            style={{
-                              zIndex: 1000
-                            }}
-                          />
-                        </p>
+                    <div
+                      id="scrollableDiv"
+                      style={
+                        this.state.tokenized
+                          ? {
+                            maxHeight: window.innerHeight - 240,
+                            overflowY: this.state.edited ? "hidden" : "scroll",
+                            // overflowX: "auto"
+                          }
+                          : {}
                       }
-                      endMessage={
-                        <p style={{ textAlign: "center" }}>
-                          <b>You have seen it all</b>
-                        </p>
-                      }
-                      // style={{ overflowY: "hidden" }}
-                      scrollableTarget={this.state.tokenized ? "scrollableDiv" : null}
-                      onScroll={() => this.handleScroll()}
                     >
-                      {this.state.sentences &&
-                        this.state.sentences.map((sentence, index) => {
-                          return (
-                            <div>
-                              <SourceView
-                                block_identifier={this.state.block_identifier}
-                                sentences={this.state.sentences}
-                                has_sibling={this.state.has_sibling}
-                                paperType="source"
-                                isPreview={true}
-                                parent={this.state.parent}
-                                key={sentence.page_no + "_" + index}
-                                pageNo={sentence.page_no}
-                                sourceSentence={sentence}
-                                selectedSourceText={this.state.selectedSourceText}
-                                createBlockId={this.state.selectedBlockId}
-                                isEditable={this.state.isEditable}
-                                hoveredSentence={this.state.hoveredSentence}
-                                hoveredTableId={this.state.hoveredTableId}
-                                clear={this.state.clear}
-                                heightValue={this.state.height}
-                                popOver={this.state.popOver}
-                                selectedCell={this.state.selectedCell}
-                                scrollToPage={this.state.scrollToPage}
-                                scrollToTop={this.state.scrollToTop}
-                                scrollToId={this.state.scrollToId}
-                                yOffset={this.state.yOffset}
-                                workFlowApi={this.workFlowApi.bind(this)}
-                                handleOnMouseEnter={this.handleOnMouseEnter.bind(this)}
-                                handleOnMouseLeave={this.handleOnMouseLeave.bind(this)}
-                                handleSourceChange={this.handleSourceChange.bind(this)}
-                                handleEditor={this.handleEditor.bind(this)}
-                                handleCheck={this.handleCheck.bind(this)}
-                                handleSource={this.handleSource.bind(this)}
-                                handleTableHover={this.handleTableHover.bind(this)}
-                                handlePopUp={this.handlePopUp.bind(this)}
-                                handleBlur={this.handleBlur.bind(this)}
-                                handleSentenceOperation={this.handleSentenceOperation.bind(this)}
-                                tokenized={this.state.tokenized}
-                                handlePreviewPageChange={this.handlePreviewPageChange.bind(this)}
-                                mergeButton={this.state.mergeButton}
-                                updateContent={this.updateContent.bind(this)}
-                                editableId={this.state.editableId}
-                                handleAutoCompleteEditor={this.handleAutoCompleteEditor.bind(this)}
-                                targetSelected={this.state.targetSelected}
-                              />
-                            </div>
-                          );
-                        })}
-                    </InfiniteScroll>
-                  </div>
-                </Paper>
+                      <InfiniteScroll
+                        next={this.fetchData.bind(this)}
+                        hasMore={this.state.hasMoreItems}
+                        dataLength={this.state.sentences ? this.state.sentences.length : 0}
+                        loader={
+                          <p style={{ textAlign: "center" }}>
+                            <CircularProgress
+                              size={20}
+                              style={{
+                                zIndex: 1000
+                              }}
+                            />
+                          </p>
+                        }
+                        endMessage={
+                          <p style={{ textAlign: "center" }}>
+                            <b>You have seen it all</b>
+                          </p>
+                        }
+                        // style={{ overflowY: "hidden" }}
+                        scrollableTarget={this.state.tokenized ? "scrollableDiv" : null}
+                        onScroll={() => this.handleScroll()}
+                      >
+                        {this.state.sentences &&
+                          this.state.sentences.map((sentence, index) => {
+                            return (
+                              <div>
+                                <SourceView
+                                  block_identifier={this.state.block_identifier}
+                                  sentences={this.state.sentences}
+                                  has_sibling={this.state.has_sibling}
+                                  paperType="source"
+                                  isPreview={true}
+                                  parent={this.state.parent}
+                                  key={sentence.page_no + "_" + index}
+                                  pageNo={sentence.page_no}
+                                  sourceSentence={sentence}
+                                  selectedSourceText={this.state.selectedSourceText}
+                                  createBlockId={this.state.selectedBlockId}
+                                  isEditable={this.state.isEditable}
+                                  hoveredSentence={this.state.hoveredSentence}
+                                  hoveredTableId={this.state.hoveredTableId}
+                                  clear={this.state.clear}
+                                  heightValue={this.state.height}
+                                  popOver={this.state.popOver}
+                                  selectedCell={this.state.selectedCell}
+                                  scrollToPage={this.state.scrollToPage}
+                                  scrollToTop={this.state.scrollToTop}
+                                  scrollToId={this.state.scrollToId}
+                                  yOffset={this.state.yOffset}
+                                  workFlowApi={this.workFlowApi.bind(this)}
+                                  handleOnMouseEnter={this.handleOnMouseEnter.bind(this)}
+                                  handleOnMouseLeave={this.handleOnMouseLeave.bind(this)}
+                                  handleSourceChange={this.handleSourceChange.bind(this)}
+                                  handleEditor={this.handleEditor.bind(this)}
+                                  handleCheck={this.handleCheck.bind(this)}
+                                  handleSource={this.handleSource.bind(this)}
+                                  handleTableHover={this.handleTableHover.bind(this)}
+                                  handlePopUp={this.handlePopUp.bind(this)}
+                                  handleBlur={this.handleBlur.bind(this)}
+                                  handleSentenceOperation={this.handleSentenceOperation.bind(this)}
+                                  tokenized={this.state.tokenized}
+                                  handlePreviewPageChange={this.handlePreviewPageChange.bind(this)}
+                                  mergeButton={this.state.mergeButton}
+                                  updateContent={this.updateContent.bind(this)}
+                                  editableId={this.state.editableId}
+                                  handleAutoCompleteEditor={this.handleAutoCompleteEditor.bind(this)}
+                                  targetSelected={this.state.targetSelected}
+                                />
+                              </div>
+                            );
+                          })}
+                      </InfiniteScroll>
+                    </div>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6} lg={6} xl={6}>
+                  <Paper
+                    style={this.state.tokenized ? {
+                      paddingBottom: "12px",
+                      paddingTop: "12px",
+                      // height: "98%"
+                    } : {}}
+                  >
+                    {this.state.tokenized && (
+                      <DocPreview
+                        parent="document-editor"
+                        data={this.state.fileId}
+                        pageNo={this.state.pageNo}
+                        numPages={this.state.numPages}
+                        zoom={this.state.zoom}
+                        handlePageChange={this.handlePageChange.bind(this)}
+                        onDocumentLoadSuccess={this.onDocumentLoadSuccess.bind(this)}
+                        fileDetails={this.state.fileDetails}
+                        handleChange={this.handleZoomChange.bind(this)}
+                        handleClick={this.handleCompareDocClose.bind(this)}
+                      ></DocPreview>
+                    )}
+                  </Paper>
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6} lg={6} xl={6}>
-                <Paper
-                  style={this.state.tokenized ? {
-                    paddingBottom: "12px",
-                    paddingTop: "12px",
-                    // height: "98%"
-                  } : {}}
-                >
-                  {this.state.tokenized && (
-                    <DocPreview
-                      parent="document-editor"
-                      data={this.state.fileId}
-                      pageNo={this.state.pageNo}
-                      numPages={this.state.numPages}
-                      zoom={this.state.zoom}
-                      handlePageChange={this.handlePageChange.bind(this)}
-                      onDocumentLoadSuccess={this.onDocumentLoadSuccess.bind(this)}
-                      fileDetails={this.state.fileDetails}
-                      handleChange={this.handleZoomChange.bind(this)}
-                      handleClick={this.handleCompareDocClose.bind(this)}
-                    ></DocPreview>
-                  )  }
-                </Paper>
+              :
+
+
+              <Grid container spacing={2} style={{ padding: "122px 24px 0px 24px" }}>
+                <TranslateView sentences={this.state.sentences} />
+
               </Grid>
-            </Grid>
-            :
-            
-               
-                  <Grid container spacing={2} style={{ padding: "122px 24px 0px 24px" }}>
-            <TranslateView sentences ={this.state.sentences} />
 
-            </Grid>
-          
-          }
-            
+            }
 
 
-            
+
+
           </div>
         )}
         {!this.state.sentences && <Spinner />}
