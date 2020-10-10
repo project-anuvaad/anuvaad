@@ -53,7 +53,7 @@ class PdfFileEditor extends React.Component {
         sentence.tokenized_sentences.map((value, tokenIndex) => {
           sentenceArray.push(
             <Block 
-            handleDialogMessage = {this.handleDialogMessage.bind(this)}
+            // handleDialogMessage = {this.handleDialogMessage.bind(this)}
             sentence={value} 
             handleClick ={this.handleClick.bind(this)} buttonStatus ={this.state.buttonStatus}
             pageNo={element.page_no}
