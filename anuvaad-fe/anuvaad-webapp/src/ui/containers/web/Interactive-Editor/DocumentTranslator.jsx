@@ -16,9 +16,9 @@ import Snackbar from "../../../components/web/common/Snackbar";
 import CancelIcon from '@material-ui/icons/Cancel';
 import Typography from '@material-ui/core/Typography';
 import Toolbar from "@material-ui/core/Toolbar";
+import Dialog from "../../../components/web/common/SimpleDialog";
+import BLOCK_OPS from "../../../../utils/block.operations";
 
-
-const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 class PdfFileEditor extends React.Component {
@@ -27,15 +27,65 @@ class PdfFileEditor extends React.Component {
     this.state = {};
   }
 
+
+  
+
   handleSentenceClick(value) {
     this.setState({ activeSentence: value })
   }
 
-  handleClick(value){
-    console.log(value)
+  handleClick=(value)=>{
+      console.log("value----",value)
     this.setState({buttonStatus : value})
   }
 
+  handleClose = () => {
+    
+    this.setState({
+      openDialog: false,
+      start_block_id:"",
+      start_sentence_id:'',
+      end_sentence_id:'',
+      operation_type: "",
+    });
+  };
+  handleDialogMessage = (start_block_id, start_sentence_id, end_sentence_id,subString, event,operation, message) => {
+    // let splitValue = this.handleSplitSentence(subString)
+    
+    debugger
+    this.setState({
+      operation_type: operation,
+      openDialog: true,
+      message : message,
+      title:operation,
+      topValue: event.clientY - 4,
+      leftValue: event.clientX - 2,
+      selectedBlock: null,
+      start_block_id,
+      start_sentence_id,
+      end_sentence_id
+
+
+
+    });
+  };
+
+  handleDialog() {
+    let workflowCode = "DP_WFLOW_S_TR";
+    if (this.state.title === "Merge sentence") {
+     let updatedBlocks =   BLOCK_OPS.do_sentences_merging(this.props.sentences,this.state.start_block_id, this.state.start_sentence_id, this.state.end_sentence_id);
+    this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
+     
+    }
+    else if(this.state.title === "Split sentence" ){
+      let updatedBlocks =   BLOCK_OPS.do_sentence_splitting(this.props.sentences,this.state.start_block_id, this.state.start_sentence_id, this.state.end_sentence_id);
+      this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
+    }
+    
+    this.setState({ openDialog: false });
+  }
+
+  
   
 
   handleSentence = () => {
@@ -45,6 +95,7 @@ class PdfFileEditor extends React.Component {
         sentence.tokenized_sentences.map((value, tokenIndex) => {
           sentenceArray.push(
             <Block 
+            handleDialogMessage = {this.handleDialogMessage.bind(this)}
             sentence={value} 
             handleClick ={this.handleClick.bind(this)} buttonStatus ={this.state.buttonStatus}
             pageNo={element.page_no}
@@ -65,6 +116,10 @@ class PdfFileEditor extends React.Component {
 
   handleBlur(id, finalValue, wc_code) {
 
+  }
+
+  handleMe(value){
+      this.setState({mergeButton:value})
   }
 
   showTargetData(blockId) {
@@ -110,7 +165,7 @@ class PdfFileEditor extends React.Component {
           size="medium"
           color="primary"
           aria-label="add"
-          onClick={() => this.handleMergeSentence(this.props.sentence)}
+          onClick={() => this.handleClick("mergeSaved")}
         >
           <Merge />
           Merge
@@ -129,7 +184,7 @@ class PdfFileEditor extends React.Component {
               </Grid>
               <Grid item xs={12} sm={3} lg={3} xl={3}>
                 <Grid item xs={12} sm={12} lg={12} xl={12} style={{height: "50%"}}>
-                  <MachineTranslation sentence={this.state.activeSentence} />
+                  <MachineTranslation sentence={this.state.activeSentence} buttonStatus ={this.state.buttonStatus}/>
                 </Grid>
               </Grid>
             </Grid>
@@ -147,6 +202,16 @@ class PdfFileEditor extends React.Component {
               </Grid>
             </Grid>
           </div>
+        )}
+
+{this.state.openDialog && (
+          <Dialog
+            message={this.state.dialogMessage}
+            handleSubmit={this.handleDialog.bind(this)}
+            handleClose={this.handleClose.bind(this)}
+            open
+            title={this.state.title}
+          />
         )}
 
         {this.state.open && (

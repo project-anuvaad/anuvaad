@@ -4,6 +4,11 @@ const MachineTranslationStyles = theme => ({
         minHeight:"100%",
         backgroundColor: "#F4FDFF"
     },
+    paper2: {
+      border: "1px solid grey",
+      minHeight:"100%",
+      backgroundColor: "#e3e3e4"
+  },
     header: {
       color: '#000000', 
       paddingLeft: "3%", 
