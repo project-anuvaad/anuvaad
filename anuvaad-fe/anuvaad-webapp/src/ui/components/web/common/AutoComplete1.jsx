@@ -61,7 +61,6 @@ class AutoComplete extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.value)
         this.setState({
             value: this.props.value,
             tokenObject: this.props.tokenObject
@@ -98,13 +97,13 @@ class AutoComplete extends React.Component {
             }
             this.setState({ showSuggestions: true })
             // this.props.fetchSuggestions(this.props.sourceText, this.props.value)
-            this.fetchSuggestions(this.props.sourceText, this.handleCalc(caretVal, this.state.tokenObject), this.state.tokenObject)
+            this.props.fetchSuggestions(this.props.sourceText, this.handleCalc(caretVal, this.state.tokenObject), this.state.tokenObject)
 
         }
-        this.setState({
-            previousKeyPressed: event.key,
-            previousPressedKeyCode: event.keyCode
-        })
+        // this.setState({
+        //     previousKeyPressed: event.key,
+        //     previousPressedKeyCode: event.keyCode
+        // })
 
     }
 
@@ -166,13 +165,23 @@ class AutoComplete extends React.Component {
 
     handleSuggetionCLick(suggestion, index) {
         var tokenObj = this.props.tokenObject
-        tokenObj.tagged_tgt = this.state.autoCompleteTextTaggetTgt[index]
+        tokenObj.tagged_tgt = this.props.autoCompleteTextTaggetTgt[index]
         this.setState({ modified: true })
         var elem = document.getElementById(this.props.aId)
-        let caretVal = this.state.value.substring(0, elem.selectionStart)
+        let caretVal = this.props.value
         caretVal = caretVal.trim()
+        
         this.setState({ caretVal: caretVal + suggestion, value: caretVal + suggestion, tokenObject: tokenObj })
-        this.handleSuggestion(suggestion, this.state.caretVal, this.props.sourceText, tokenObj)
+        this.props.handleSuggestionClick(suggestion, this.state.value, this.props.sourceText, tokenObj)
+ 
+        // var tokenObj = this.props.tokenObject
+        // tokenObj.tagged_tgt = this.state.autoCompleteTextTaggetTgt[index]
+        // this.setState({ modified: true })
+        // var elem = document.getElementById(this.props.aId)
+        // let caretVal = this.state.value.substring(0, elem.selectionStart)
+        // caretVal = caretVal.trim()
+        // this.setState({ caretVal: caretVal + suggestion, value: caretVal + suggestion, tokenObject: tokenObj })
+        // this.handleSuggestion(suggestion, this.state.caretVal, this.props.sourceText, tokenObj)
     }
 
     handleSuggestion(suggestion, value, src, tokenObject) {
@@ -230,7 +239,6 @@ class AutoComplete extends React.Component {
 
     render() {
         const { aId, refId, style, tokenIndex, sentence } = this.props
-
         return (
             // <ClickAwayListener id={tokenIndex} onClickAway={() => this.handleClickAway(tokenIndex, this.state.value, wfcodes.DP_WFLOW_S_C)}>
             <div key={aId}>
@@ -242,8 +250,8 @@ class AutoComplete extends React.Component {
                     // autoFocus={true}
                     placeholder="Type your translation here"
                     style={style}
-                    value={this.state.value}
-                    onChange={this.handleChangeEvent.bind(this)}
+                    value={this.props.value}
+                    onChange={this.props.handleChangeEvent}
                     onKeyDown={this.handleEnter}
                 >
                 </textarea>
@@ -256,7 +264,7 @@ class AutoComplete extends React.Component {
                         handleSuggetionClick={this.handleSuggetionCLick.bind(this)}
                         handlePopOverClose={this.handleSuggestionClose.bind(this)}
                         targetVal={this.state.caretVal}
-                        options={this.state.autoCompleteText}
+                        options={this.props.autoCompleteText}
                     ></Menu>}
 
             </div >
