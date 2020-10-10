@@ -24,20 +24,24 @@ const TELEMETRY = require("../../../../utils/TelemetryManager");
 class PdfFileEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      activeSentence: {},
+      selectedTargetId: "",
+      highlightId: "",
+    };
   }
 
   handleSentenceClick(value) {
     // this.setState({ activeSentence: value, selectedTargetId: value.s_id })
+    // if(this.state.selectedTargetId !== value.s_id) {
+    //   this.setState()
+    // }
     this.setState({ activeSentence: value })
   }
 
   handleClick(value){
-    console.log(value)
     this.setState({buttonStatus : value})
   }
-
-  
 
   handleSentence = () => {
     let sentenceArray = [];
@@ -56,6 +60,8 @@ class PdfFileEditor extends React.Component {
             handleSourceChange = {this.props.handleSourceChange}
             tokenIndex = {this.props.tokenIndex}
             showTargetData = { this.showTargetData.bind(this)}
+            handleEditorClick={this.handleEditorClick.bind(this)}
+            highlightId={this.state.highlightId}
            />
           );
         });
@@ -64,8 +70,8 @@ class PdfFileEditor extends React.Component {
     return sentenceArray;
   };
 
-  handleBlur(id, finalValue, wc_code) {
-
+  handleEditorClick(id) {
+    this.setState({ highlightId: id })
   }
 
   showTargetData(blockId) {

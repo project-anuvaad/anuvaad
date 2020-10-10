@@ -246,13 +246,14 @@ class AutoComplete extends React.Component {
                     id={aId}
                     ref={refId}
                     // maxRows={4}
-                    multiline={true}
-                    // autoFocus={true}
+                    // multiline={true}
+                    autoFocus={this.props.value ? true : false}
                     placeholder="Type your translation here"
                     style={style}
                     value={this.props.value}
                     onChange={this.props.handleChangeEvent}
                     onKeyDown={this.handleEnter}
+                    onClick={() => this.props.handleEditorClick(sentence.s_id)}
                 >
                 </textarea>
                 {
