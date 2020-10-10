@@ -10,18 +10,44 @@ import Save from "@material-ui/icons/CheckCircleOutline";
 import Split from "@material-ui/icons/CallSplit";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
-import Checkbox from "@material-ui/core/Checkbox";
-import ValidationIcon from "@material-ui/icons/SettingsEthernet";
-import AutoComplete from "../../../components/web/common/AutoComplete1";
+import Checkbox from '@material-ui/core/Checkbox';
+import ValidationIcon from '@material-ui/icons/SettingsEthernet';
+import AutoComplete from "../../../components/web/common/AutoComplete1"
+import IntractiveApi from "../../../../flux/actions/apis/intractive_translate";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import { withRouter } from "react-router-dom";
+
+var getCaretCoordinates = require('textarea-caret');
 
 let arr = [];
 class Block extends Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      showSuggestions: false,
+      enteredData: false
+    };
+  }
+
+  componentDidMount() {
+    this.setState({
+      sentence: this.props.sentence
+    })
   }
   componentDidUpdate(prevProps) {
-    console.log(this.props.buttonStatus, prevProps.buttonStatus);
+
+    if (prevProps.intractiveTrans !== this.props.intractiveTrans) {
+      let sentence = this.state.sentence
+      // sentence.tagged_tgt = this.props.intractiveTrans && this.props.intractiveTrans.length > 0 && this.props.intractiveTrans[0].tagged_tgt,
+      this.setState({
+        autoCompleteText: this.props.intractiveTrans && this.props.intractiveTrans.length > 0 && this.props.intractiveTrans[0].tgt,
+        autoCompleteTextTaggetTgt: this.props.intractiveTrans && this.props.intractiveTrans.length > 0 && this.props.intractiveTrans[0].tagged_tgt,
+
+      });
+    }
+
     if (prevProps.buttonStatus !== this.props.buttonStatus) {
       if (this.props.buttonStatus == "mergeSaved" && arr.length > 0) {
         this.handleDialogMessage(arr);
@@ -50,6 +76,51 @@ class Block extends Component {
     );
   }
 
+  handleChangeEvent = event => {
+    let sentence = this.state.sentence
+
+    sentence.tagged_tgt = event.target.value
+    sentence.tgt = event.target.value
+    this.setState({
+      sentence: sentence,
+      enteredData : true
+    })
+
+  }
+
+  fetchSuggestions(srcText, targetTxt, tokenObject) {
+    let targetVal = targetTxt
+
+    this.setState({ showSuggestions: true, autoCompleteText: null })
+    const apiObj = new IntractiveApi(srcText, targetVal, { model_id: this.props.modelId }, true, true);
+    this.props.APITransport(apiObj);
+  }
+
+  handleSuggestionClick(suggestion, value, src, tokenObject) {
+    let sentence = this.state.sentence
+    sentence.tagged_tgt = value.trim() + suggestion
+    sentence.tgt = value.trim() + suggestion
+    // console.log(sentence)
+    this.setState({ showSuggestions: false })
+    // this.props.handleSuggestion(suggestion, value)
+
+    this.setState({ autoCompleteText: null, tokenObject, sentence: sentence })
+
+
+    let targetVal = value.trim() + suggestion
+    setTimeout(() => {
+      this.setState({ showSuggestions: true })
+
+    }, 50)
+
+    const apiObj = new IntractiveApi(src, targetVal, { model_id: this.props.modelId }, true, true);
+    this.props.APITransport(apiObj);
+  }
+
+  handleChangeEvent = (event) => {
+    this.props.handleSourceChange(event, this.props.sentence);
+  };
+
   handleChange = (name) => (event) => {
     debugger;
     if (arr.includes(name)) {
@@ -58,13 +129,8 @@ class Block extends Component {
       arr.push(name);
     }
     this.setState({ selectedValueArray: arr });
-
-    console.log("arr", arr);
   };
-
-  handleChangeEvent = (event) => {
-    this.props.handleSourceChange(event, this.props.sentence);
-  };
+   
 
   render() {
     const { classes, sentence, selectedBlock } = this.props;
@@ -120,42 +186,44 @@ class Block extends Component {
                         zIndex: 1111,
                         borderRadius: "4px",
                         backgroundColor: "#F4FDFF",
-                        border:
-                          this.props.selectedTargetId === sentence.s_id
-                            ? "1px dotted #1C9AB7"
-                            : "",
+                        border: this.props.selectedTargetId === sentence.s_id ? '1px dotted #1C9AB7' : ""
                       }}
                       tokenIndex={this.props.tokenIndex}
-                      value={
-                        this.props.selectedTargetId === sentence.s_id
-                          ? sentence.tgt
-                          : ""
-                      }
-                      sentence={sentence}
+                      value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData ) ? this.state.sentence.tgt : ""}
+                      sentence={this.state.sentence}
+
                       sourceText={sentence.src}
                       page_no={this.props.page_no}
-                      handleChangeEvent={this.handleChangeEvent.bind(this)}
-                      fetchSuggestions={this.props.fetchSuggestions}
-                      autoCompleteText={this.props.autoCompleteText}
-                      autoCompleteTextTaggetTgt={
-                        this.props.autoCompleteTextTaggetTgt
-                      }
+                      // fetchSuggestions={this.props.fetchSuggestions}
                       handleSuggestion={this.props.handleSuggestion}
                       heightToBeIncreased={sentence.font_size}
                       handleBlur={this.props.handleBlur}
+
                       showSuggestions={this.props.showSuggestions}
                       handleSuggestionClose={this.props.handleSuggestionClose}
                       // handleClickAway={this.props.handleClickAway.bind(this)}
-                      // tokenObject={text}
-                      showTargetLang={
-                        this.props.selectedTargetId === sentence.s_id && true
-                      }
-                    />
-                  )}
+                      tokenObject={sentence}
+                      showTargetLang={this.props.selectedTargetId === sentence.s_id && true}
+                      modelId={this.props.modelId}
+
+                      autoCompleteText={this.state.autoCompleteText}
+                      autoCompleteTextTaggetTgt={this.state.autoCompleteTextTaggetTgt}
+                      handleChangeEvent={this.handleChangeEvent.bind(this)}
+                      fetchSuggestions={this.fetchSuggestions.bind(this)}
+                      handleSuggestionClick={this.handleSuggestionClick.bind(this)}
+                    />)}
+                </div>
               </div>
-            </div>
-          </Grid>
-          <Grid item xs={4} sm={3} lg={1} xl={1}>
+            </Grid>
+            <Grid
+              item
+              xs={4}
+              sm={3}
+              lg={1}
+              xl={1}
+
+            >
+
             {this.props.buttonStatus === "merge" ? (
               <Checkbox
                 size="small"
@@ -242,10 +310,30 @@ class Block extends Component {
               </div>
             )}
           </Grid>
-        </Grid>
-      </Paper>
-    );
+          </Grid>
+        </Paper>
+      );
   }
 }
 
-export default withStyles(Styles)(Block);
+const mapStateToProps = state => ({
+  apistatus: state.apistatus,
+  intractiveTrans: state.intractiveTrans
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      APITransport
+    },
+    dispatch
+  );
+
+export default withRouter(
+  withStyles(Styles)(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(Block)
+  )
+);
