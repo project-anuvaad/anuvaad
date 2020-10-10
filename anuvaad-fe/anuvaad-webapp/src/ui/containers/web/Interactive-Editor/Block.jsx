@@ -21,6 +21,7 @@ import { withRouter } from "react-router-dom";
 
 var getCaretCoordinates = require('textarea-caret');
 
+let arr = [];
 class Block extends Component {
   constructor() {
     super();
@@ -36,8 +37,8 @@ class Block extends Component {
       sentence: this.props.sentence
     })
   }
-
   componentDidUpdate(prevProps) {
+
     if (prevProps.intractiveTrans !== this.props.intractiveTrans) {
       let sentence = this.state.sentence
       // sentence.tagged_tgt = this.props.intractiveTrans && this.props.intractiveTrans.length > 0 && this.props.intractiveTrans[0].tagged_tgt,
@@ -47,11 +48,34 @@ class Block extends Component {
 
       });
     }
+
+    if (prevProps.buttonStatus !== this.props.buttonStatus) {
+      if (this.props.buttonStatus == "mergeSaved" && arr.length > 0) {
+        this.handleDialogMessage(arr);
+        arr = [];
+      } else if (this.props.buttonStatus == "") {
+        arr = [];
+        this.setState({ selectedValueArray: [] });
+      }
+    }
   }
 
-  // handleChangeEvent = event => {
-  //   this.props.handleSourceChange(event, this.props.sentence);
-  // };
+  handleSplitSentence(event, text) {
+    const sentenceStartId = window.getSelection().anchorNode.parentNode.id;
+    const split_index = window.getSelection().focusOffset;
+    let opeartion = "Split sentence";
+    let actual_text = text;
+    actual_text = actual_text.replace(/\s{2,}/g, " ");
+    actual_text = actual_text.trim();
+    this.props.handleDialogMessage(
+      sentenceStartId,
+      split_index,
+      actual_text.substring(0, split_index),
+      event,
+      opeartion,
+      "Do you want to split the sentence"
+    );
+  }
 
   handleChangeEvent = event => {
     let sentence = this.state.sentence
@@ -104,6 +128,21 @@ class Block extends Component {
     this.props.handleEditorClick(id)
   }
 
+  // handleChangeEvent = (event) => {
+  //   this.props.handleSourceChange(event, this.props.sentence);
+  // };
+
+  handleChange = (name) => (event) => {
+    debugger;
+    if (arr.includes(name)) {
+      arr = arr.filter((item) => item !== name);
+    } else {
+      arr.push(name);
+    }
+    this.setState({ selectedValueArray: arr });
+  };
+
+
   render() {
     const { classes, sentence, selectedBlock, highlightId } = this.props;
     // console.log(this.props.selectedTargetId)
@@ -111,11 +150,19 @@ class Block extends Component {
     //   console.log(this.state.highlightDivider)
     //   console.log("===============================================================================")
     // }
-  
+
     return (
       <Paper
         variant="outlined"
-        style={{ margin: "10px", minHeight: "90px", padding: "1%", border: selectedBlock && sentence && sentence.s_id === selectedBlock.s_id ? "2px solid #1C9AB7" : "2px solid #D6D6D6", }}
+        style={{
+          margin: "10px",
+          minHeight: "90px",
+          padding: "1%",
+          border: selectedBlock && sentence && sentence.s_id === selectedBlock.s_id ||
+            arr.includes(sentence.s_id)
+            ? "2px solid #1C9AB7"
+            : "2px solid #D6D6D6"
+        }}
         onClick={() => this.props.handleSentenceClick(this.props.sentence)}
       >
         <Grid container spacing={2}>
@@ -176,7 +223,8 @@ class Block extends Component {
                     handleEditorClick={this.props.handleEditorClick}
                   />}
               </div>
-            </div>
+
+              {/* </div>
           </Grid>
           <Grid
             item
@@ -194,7 +242,55 @@ class Block extends Component {
               /> :
 
               <div style={{ display: "flex", flexDirection: "column" }}>
-                {this.props.buttonStatus !== "split" &&
+                {this.props.buttonStatus !== "split" && */}
+            </div>
+          </Grid>
+
+
+
+
+          <Grid
+            item
+            xs={4}
+            sm={3}
+            lg={1}
+            xl={1}
+
+          >
+
+            {this.props.buttonStatus === "merge" ? (
+              <Checkbox
+                size="small"
+                color="primary"
+                onChange={this.handleChange(sentence.s_id)}
+              />
+            ) : (
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  {this.props.buttonStatus !== "split" && (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        paddingLeft: "4%",
+                      }}
+                    >
+                      <Tooltip title="Get machine translated sentence">
+                        <IconButton aria-label="validation mode" onClick={() => { this.handleShowTarget(sentence.s_id) }}>
+                          <ArrowBackIcon fontSize="medium" className={classes.Icons} />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Save">
+                        <IconButton aria-label="save">
+                          <Save fontSize="medium" />
+                        </IconButton>
+                      </Tooltip>
+
+                      {/* </div>} */}
+
+
+
+                    </div>
+                  )}
                   <div
                     style={{
                       display: "flex",
@@ -202,26 +298,7 @@ class Block extends Component {
                       paddingLeft: "4%",
                     }}
                   >
-                    <Tooltip title="Get machine translated sentence">
-                      <IconButton aria-label="validation mode" onClick={() => { this.handleShowTarget(sentence.s_id) }}>
-                        <ArrowBackIcon fontSize="medium" className={classes.Icons} />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Save">
-                      <IconButton aria-label="save">
-                        <Save fontSize="medium" />
-                      </IconButton>
-                    </Tooltip>
-
-                  </div>}
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    paddingLeft: "4%",
-                  }}
-                >
-                  <Tooltip title="Spit sentence">
+                    {/* <Tooltip title="Spit sentence">
                     <IconButton aria-label="Split">
                       <Split fontSize={this.props.buttonStatus !== "split" ? "medium" : "large"} onClick={event => {
                         this.props.handleClick("split");
@@ -238,7 +315,49 @@ class Block extends Component {
                     </Tooltip>}
                 </div>
               </div>
-            }
+            } */}
+                    <Tooltip
+                      title={
+                        this.props.buttonStatus === "split"
+                          ? "Please select sentence to split"
+                          : "Spit sentence"
+                      }
+                    >
+                      <IconButton aria-label="Split">
+                        <Split
+                          fontSize={
+                            this.props.buttonStatus !== "split"
+                              ? "medium"
+                              : "large"
+                          }
+                          style={
+                            this.props.buttonStatus === "split"
+                              ? { color: "#1C9AB7" }
+                              : {}
+                          }
+                          onClick={(event) => {
+                            this.props.buttonStatus !== "split"
+                              ? this.props.handleClick("split")
+                              : this.handleSplitSentence(event, sentence.src);
+                          }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                    {this.props.buttonStatus !== "split" && (
+                      <Tooltip title="Merge Sentence">
+                        <IconButton aria-label="merge">
+                          <Merge
+                            fontSize="medium"
+                            onClick={(event) => {
+                              this.props.handleClick("merge");
+                            }}
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </div>
+                </div>
+              )}
           </Grid>
         </Grid>
       </Paper>

@@ -15,23 +15,27 @@ class MachineTranslation extends Component {
   render() {
     const { classes, sentence } = this.props;
     return (
-      <Paper className={classes.paper} >
+      <Paper className={this.props.buttonStatus !=="merge" ? classes.paper: classes.paper2} >
         <div>
           <Typography variant="h5" gutterBottom className={classes.header} >Machine Translation</Typography>
         </div>
-
-        <hr style={{ border: "1px solid #00000014" }} />
+      {this.props.buttonStatus !=="merge"&& sentence &&
+      <div>
+        <hr style={this.props.buttonStatus !=="merge" ? { border: "1px solid #00000014" }: { border: "1px solid grey" }} />
         <div className={classes.div} >
           <div>
-            {sentence && sentence.src}
+            {sentence && sentence.s0_src}
           </div>
         </div>
         {sentence && <hr style={{ border: "1px solid #00000014" }} />}
         <div className={classes.div}>
           <div>
-            {sentence && sentence.tgt}
+            {sentence && sentence.s0_tgt}
           </div>
+          </div>
+          
         </div>
+  } 
       </Paper>
     );
 
