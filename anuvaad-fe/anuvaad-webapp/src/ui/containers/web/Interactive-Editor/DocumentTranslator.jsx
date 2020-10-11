@@ -36,6 +36,7 @@ class PdfFileEditor extends React.Component {
     // if(this.state.selectedTargetId !== value.s_id) {
     //   this.setState()
     // }
+    this.handleClick("")
     this.setState({ activeSentence: value });
   }
 
@@ -78,12 +79,13 @@ class PdfFileEditor extends React.Component {
         this.state.selected_block_id,
         this.state.sentence_id,
         this.state.sentence_index
+        
       );
 
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
     }
-
-    this.setState({ openDialog: false });
+      
+      this.setState({ openDialog: false, buttonStatus: "" });
   }
 
   handleClose = () => {
@@ -95,6 +97,7 @@ class PdfFileEditor extends React.Component {
       sentence_index: "",
       selected_block_id: "",
       dialogMessage: "",
+      buttonStatus: ""
     });
   };
 
@@ -125,6 +128,8 @@ class PdfFileEditor extends React.Component {
               showTargetData={this.showTargetData.bind(this)}
               handleEditorClick={this.handleEditorClick.bind(this)}
               highlightId={this.state.highlightId}
+              saveUpdatedSentence={this.props.saveUpdatedSentence}
+
             />
           );
         });
@@ -197,7 +202,7 @@ class PdfFileEditor extends React.Component {
                     id="scrollableDiv"
                     style={{
                       maxHeight: window.innerHeight - 220,
-                      overflowY: "auto",
+                      overflowY: this.state.selectedBlock ? "hidden" : "auto",
                     }}
                   >
                     {this.handleSentence()}

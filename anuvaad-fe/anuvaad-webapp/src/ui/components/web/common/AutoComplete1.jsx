@@ -83,7 +83,7 @@ class AutoComplete extends React.Component {
             let y = divdata.y
 
             var elem = document.getElementById(this.props.aId)
-            let caretVal = this.state.value.substring(0, elem.selectionStart)
+            let caretVal = this.state.value && this.state.value.substring(0, elem.selectionStart)
 
             var coordinates = getCaretCoordinates(elem, elem.selectionEnd);
 
@@ -247,8 +247,8 @@ class AutoComplete extends React.Component {
                     ref={refId}
                     // maxRows={4}
                     // multiline={true}
-                    // autoFocus={this.props.value ? true : false}
-                    autoFocus={true}
+                    autoFocus={this.props.value && !this.props.autoFocus ? true : false}
+                    // autoFocus={true}
                     placeholder="Type your translation here"
                     style={style}
                     value={this.props.value}
