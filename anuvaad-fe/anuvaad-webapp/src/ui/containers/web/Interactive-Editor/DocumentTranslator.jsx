@@ -77,6 +77,7 @@ class PdfFileEditor extends React.Component {
             highlightId={this.state.highlightId}
             block={sentence}
             handleSave={this.handleSave.bind(this)}
+            blockIdentifier={sentence.block_identifier}
            />
           );
         });
@@ -97,17 +98,16 @@ class PdfFileEditor extends React.Component {
     this.setState({ selectedTargetId: blockId, showData: true });
   }
 
-  handleSave(senObj) {
+  handleSave(senObj, blockIdentifier) {
     this.setState({
       highlightId: false,
       selectedTargetId: null,
       activeSentence: {}
     })
-    this.props.saveUpdatedSentence(senObj)
+    this.props.saveUpdatedSentence(senObj, blockIdentifier)
   }
 
   render() {
-    console.log("====================================================================================================")
     return (
       <div>
         {this.props.sentences && (

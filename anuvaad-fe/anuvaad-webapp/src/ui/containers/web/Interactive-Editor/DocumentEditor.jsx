@@ -376,10 +376,16 @@ class PdfFileEditor extends React.Component {
     }
   };
 
-  saveUpdatedSentence(sentenceObj) {
+  saveUpdatedSentence(sentenceObj, blockIdentifier) {
     this.setState({ selectedSourceText: sentenceObj })
 
     this.workFlowApi(wfcodes.DP_WFLOW_S_C, [sentenceObj], "update")
+
+    let telemetry = {}
+    telemetry.initialSenetence = sentenceObj.s0_tgt
+    telemetry.finalSenetence = sentenceObj.tgt
+    telemetry.sId = blockIdentifier
+    telemetry.mode = "translation"
   }
 
   workFlowApi(workflow, blockDetails, update) {

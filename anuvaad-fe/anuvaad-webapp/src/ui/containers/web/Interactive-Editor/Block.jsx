@@ -170,7 +170,7 @@ class Block extends Component {
       }
     })
 
-    this.props.handleSave(block)
+    this.props.handleSave(block, this.props.blockIdentifier)
   }
 
   handleClick(id) {
