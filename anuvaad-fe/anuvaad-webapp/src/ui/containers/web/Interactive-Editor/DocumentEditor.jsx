@@ -389,8 +389,8 @@ class PdfFileEditor extends React.Component {
   }
 
   workFlowApi(workflow, blockDetails, update) {
-
-    let pageInfo;
+    debugger
+    let pageInfo = [];
     const apiObj = new WorkFlow(
       workflow,
       blockDetails,
@@ -400,10 +400,17 @@ class PdfFileEditor extends React.Component {
       "",
       parseInt(this.props.match.params.modelId)
     );
-    pageInfo = update !== "merge" && blockDetails.length > 0 && blockDetails[0].page_info.page_no;
+
+    console.log(blockDetails)
+    blockDetails.map(pageInfoDetails=>{
+     
+      pageInfo.push(pageInfoDetails.page_info &&parseInt(pageInfoDetails.page_info.page_no));
+    })
+    
+    // pageInfo = update !== "merge" && blockDetails.length > 0 && blockDetails[0].page_info.page_no;
 
     this.props.APITransport(apiObj);
-    pageInfo ? this.setState({ apiCall: update, startPage: pageInfo, endPage: pageInfo }) : this.setState({ apiCall: update });
+    pageInfo ? this.setState({ apiCall: update, startPage: Math.min(...pageInfo), endPage: Math.max(...pageInfo) }) : this.setState({ apiCall: update });
   }
 
   handleBlur(id, wf_code, saveData, prevValue, finalValue) {

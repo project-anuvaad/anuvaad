@@ -32,9 +32,58 @@ class PdfFileEditor extends React.Component {
   }
 
   handleSentenceClick(value) {
-    if(this.state.activeSentence && this.state.activeSentence.s_id !== value.s_id) {
-      this.setState({ activeSentence: value, selectedTargetId: null, highlightId: null })
+    // this.setState({ activeSentence: value, selectedTargetId: value.s_id })
+    // if(this.state.selectedTargetId !== value.s_id) {
+    //   this.setState()
+    // }
+    this.setState({ activeSentence: value });
+  }
+
+  handleDialogMessage = (
+    selected_block_id,
+    sentence_id,
+    sentence_index,
+    operation,
+    message
+  ) => {
+    // let splitValue = this.handleSplitSentence(subString)
+
+    console.log(
+      selected_block_id,
+      sentence_id,
+      sentence_index,
+      operation,
+      message
+    );
+    this.setState({
+      operation_type: operation,
+      openDialog: true,
+      title: operation,
+
+      sentence_id,
+      sentence_index,
+      selected_block_id,
+      dialogMessage: message,
+    });
+  };
+
+  handleDialog() {
+    let workflowCode = "DP_WFLOW_S_TR";
+    if (this.state.title === "Merge sentence") {
+       let updatedBlocks =   BLOCK_OPS.do_sentences_merging_v1(this.props.sentences,this.state.sentence_id);
+      this.props.workFlowApi(workflowCode, updatedBlocks, this.state.title);
+    } else if (this.state.title === "Split sentence") {
+      let updatedBlocks = BLOCK_OPS.do_sentence_splitting(
+        this.props.sentences,
+        this.state.selected_block_id,
+        this.state.sentence_id,
+        this.state.sentence_index
+      );
+
+      this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
     }
+
+    this.setState({ openDialog: false });
   }
 
   handleClose = () => {
@@ -59,26 +108,24 @@ class PdfFileEditor extends React.Component {
       element.text_blocks.map((sentence) => {
         sentence.tokenized_sentences.map((value, tokenIndex) => {
           sentenceArray.push(
-            <Block 
-            // handleDialogMessage = {this.handleDialogMessage.bind(this)}
-            sentence={value} 
-            sen={sentence}
-            block_id={sentence.block_id}
-            handleClick ={this.handleClick.bind(this)} buttonStatus ={this.state.buttonStatus}
-            pageNo={element.page_no}
-            modelId={this.props.modelId}
-            selectedBlock={this.state.activeSentence} 
-            selectedTargetId = {this.state.selectedTargetId}
-            handleSentenceClick={this.handleSentenceClick.bind(this)}
-            handleSourceChange = {this.props.handleSourceChange}
-            tokenIndex = {this.props.tokenIndex}
-            showTargetData = { this.showTargetData.bind(this)}
-            handleEditorClick={this.handleEditorClick.bind(this)}
-            highlightId={this.state.highlightId}
-            block={sentence}
-            handleSave={this.handleSave.bind(this)}
-            blockIdentifier={sentence.block_identifier}
-           />
+            <Block
+              handleDialogMessage={this.handleDialogMessage.bind(this)}
+              sentence={value}
+              sen={sentence}
+              block_id={sentence.block_id}
+              handleClick={this.handleClick.bind(this)}
+              buttonStatus={this.state.buttonStatus}
+              pageNo={element.page_no}
+              modelId={this.props.modelId}
+              selectedBlock={this.state.activeSentence}
+              selectedTargetId={this.state.selectedTargetId}
+              handleSentenceClick={this.handleSentenceClick.bind(this)}
+              handleSourceChange={this.props.handleSourceChange}
+              tokenIndex={this.props.tokenIndex}
+              showTargetData={this.showTargetData.bind(this)}
+              handleEditorClick={this.handleEditorClick.bind(this)}
+              highlightId={this.state.highlightId}
+            />
           );
         });
       });
@@ -96,15 +143,6 @@ class PdfFileEditor extends React.Component {
 
   showTargetData(blockId) {
     this.setState({ selectedTargetId: blockId, showData: true });
-  }
-
-  handleSave(senObj, blockIdentifier) {
-    this.setState({
-      highlightId: false,
-      selectedTargetId: null,
-      activeSentence: {}
-    })
-    this.props.saveUpdatedSentence(senObj, blockIdentifier)
   }
 
   render() {
