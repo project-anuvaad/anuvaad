@@ -115,7 +115,7 @@ class PdfFileEditor extends React.Component {
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
 
       let telemetryData = this.state.telemetry
-      TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
+      // TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
 
       const apiObj = new FileContent(this.props.match.params.jobid, this.state.startPage, this.state.endPage);
       this.props.APITransport(apiObj);
@@ -915,6 +915,8 @@ class PdfFileEditor extends React.Component {
                 modelId = {this.props.match.params.modelId}
                 sentences={this.state.sentences} 
                 handleSourceChange= {this.handleSourceChange.bind(this)}
+                workFlowApi={this.workFlowApi.bind(this)}
+                
                 />
 
               </Grid>
