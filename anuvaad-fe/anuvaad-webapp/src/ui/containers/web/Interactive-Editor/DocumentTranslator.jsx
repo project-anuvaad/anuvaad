@@ -10,11 +10,11 @@ import MachineTranslation from "./MachineTranslation";
 import Block from "./Block";
 import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
-import Fab from '@material-ui/core/Fab';
+import Fab from "@material-ui/core/Fab";
 import Merge from "@material-ui/icons/CallMerge";
 import Snackbar from "../../../components/web/common/Snackbar";
-import CancelIcon from '@material-ui/icons/Cancel';
-import Typography from '@material-ui/core/Typography';
+import CancelIcon from "@material-ui/icons/Cancel";
+import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 import Dialog from "../../../components/web/common/SimpleDialog";
 import BLOCK_OPS from "../../../../utils/block.operations";
@@ -31,19 +31,26 @@ class PdfFileEditor extends React.Component {
     };
   }
 
-
-  
-
   handleSentenceClick(value) {
-    // this.setState({ activeSentence: value, selectedTargetId: value.s_id })
-    // if(this.state.selectedTargetId !== value.s_id) {
-    //   this.setState()
-    // }
-    this.setState({ activeSentence: value })
+    if(this.state.activeSentence && this.state.activeSentence.s_id !== value.s_id) {
+      this.setState({ activeSentence: value, selectedTargetId: null, highlightId: null })
+    }
   }
 
-  handleClick(value){
-    this.setState({buttonStatus : value})
+  handleClose = () => {
+    this.setState({
+      openDialog: false,
+      title: "",
+
+      sentence_id: "",
+      sentence_index: "",
+      selected_block_id: "",
+      dialogMessage: "",
+    });
+  };
+
+  handleClick(value) {
+    this.setState({ buttonStatus: value });
   }
 
   handleSentence = () => {
@@ -55,6 +62,8 @@ class PdfFileEditor extends React.Component {
             <Block 
             // handleDialogMessage = {this.handleDialogMessage.bind(this)}
             sentence={value} 
+            sen={sentence}
+            block_id={sentence.block_id}
             handleClick ={this.handleClick.bind(this)} buttonStatus ={this.state.buttonStatus}
             pageNo={element.page_no}
             modelId={this.props.modelId}
@@ -66,6 +75,8 @@ class PdfFileEditor extends React.Component {
             showTargetData = { this.showTargetData.bind(this)}
             handleEditorClick={this.handleEditorClick.bind(this)}
             highlightId={this.state.highlightId}
+            block={sentence}
+            handleSave={this.handleSave.bind(this)}
            />
           );
         });
@@ -75,18 +86,28 @@ class PdfFileEditor extends React.Component {
   };
 
   handleEditorClick(id) {
-    this.setState({ highlightId: id })
+    this.setState({ highlightId: id });
   }
 
-  handleMe(value){
-      this.setState({mergeButton:value})
+  handleMe(value) {
+    this.setState({ mergeButton: value });
   }
 
   showTargetData(blockId) {
-    this.setState({ selectedTargetId: blockId, showData: true })
+    this.setState({ selectedTargetId: blockId, showData: true });
+  }
+
+  handleSave(senObj) {
+    this.setState({
+      highlightId: false,
+      selectedTargetId: null,
+      activeSentence: {}
+    })
+    this.props.saveUpdatedSentence(senObj)
   }
 
   render() {
+    console.log("====================================================================================================")
     return (
       <div>
         {this.props.sentences && (
@@ -104,38 +125,41 @@ class PdfFileEditor extends React.Component {
               }}
             >
               <Grid item xs={12} sm={9} lg={9} xl={9}>
-              {this.state.buttonStatus === "merge" &&
-              <Toolbar >
-              
-                  
-          <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
-              <Fab
-          variant="extended"
-          size="medium"
-          color="primary"
-          aria-label="add"
-
-          onClick={() => this.handleClick("")}
-        >
-          <CancelIcon />
-          Cancel
-        </Fab>
-        <Fab
-          variant="extended"
-          size="medium"
-          color="primary"
-          aria-label="add"
-          onClick={() => this.handleClick("mergeSaved")}
-        >
-          <Merge />
-          Merge
-        </Fab></Toolbar>}
+                {this.state.buttonStatus === "merge" && (
+                  <Toolbar>
+                    <Typography
+                      variant="h5"
+                      color="inherit"
+                      style={{ flex: 1 }}
+                    />
+                    <Fab
+                      variant="extended"
+                      size="medium"
+                      color="primary"
+                      aria-label="add"
+                      onClick={() => this.handleClick("")}
+                    >
+                      <CancelIcon />
+                      Cancel
+                    </Fab>
+                    <Fab
+                      variant="extended"
+                      size="medium"
+                      color="primary"
+                      aria-label="add"
+                      onClick={() => this.handleClick("mergeSaved")}
+                    >
+                      <Merge />
+                      Merge
+                    </Fab>
+                  </Toolbar>
+                )}
                 <div elevation={3} style={{ overflow: "auto" }}>
                   <div
                     id="scrollableDiv"
                     style={{
                       maxHeight: window.innerHeight - 220,
-                      overflowY: "auto"
+                      overflowY: "auto",
                     }}
                   >
                     {this.handleSentence()}
@@ -143,8 +167,18 @@ class PdfFileEditor extends React.Component {
                 </div>
               </Grid>
               <Grid item xs={12} sm={3} lg={3} xl={3}>
-                <Grid item xs={12} sm={12} lg={12} xl={12} style={{height: "50%"}}>
-                  <MachineTranslation sentence={this.state.activeSentence} buttonStatus ={this.state.buttonStatus}/>
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  lg={12}
+                  xl={12}
+                  style={{ height: "50%" }}
+                >
+                  <MachineTranslation
+                    sentence={this.state.activeSentence}
+                    buttonStatus={this.state.buttonStatus}
+                  />
                 </Grid>
               </Grid>
             </Grid>
@@ -164,7 +198,7 @@ class PdfFileEditor extends React.Component {
           </div>
         )}
 
-{this.state.openDialog && (
+        {this.state.openDialog && (
           <Dialog
             message={this.state.dialogMessage}
             handleSubmit={this.handleDialog.bind(this)}

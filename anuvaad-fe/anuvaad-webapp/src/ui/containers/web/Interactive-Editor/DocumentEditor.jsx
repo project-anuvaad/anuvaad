@@ -26,6 +26,7 @@ import LanguageCodes from "../../../components/web/common/Languages.json"
 import DownloadIcon from "@material-ui/icons/ArrowDownward";
 import DocumentConverter from "../../../../flux/actions/apis/documentconverter";
 import TranslateView from "./DocumentTranslator";
+import wfcodes from '../../../../configs/workflowcodes'
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -114,8 +115,8 @@ class PdfFileEditor extends React.Component {
     }
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
 
-      let telemetryData = this.state.telemetry
-      TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
+      // let telemetryData = this.state.telemetry
+      // TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
 
       const apiObj = new FileContent(this.props.match.params.jobid, this.state.startPage, this.state.endPage);
       this.props.APITransport(apiObj);
@@ -192,23 +193,7 @@ class PdfFileEditor extends React.Component {
     this.setState({ startPage: Math.min(...page_ids), endPage: Math.max(...page_ids) });
   }
 
-  workFlowApi(workflow, blockDetails, update) {
 
-    let pageInfo;
-    const apiObj = new WorkFlow(
-      workflow,
-      blockDetails,
-      this.props.match.params.jobid,
-      this.props.match.params.locale,
-      "",
-      "",
-      parseInt(this.props.match.params.modelId)
-    );
-    pageInfo = update !== "merge" && blockDetails.length > 0 && blockDetails[0].page_info.page_no;
-
-    this.props.APITransport(apiObj);
-    pageInfo ? this.setState({ apiCall: update, startPage: pageInfo, endPage: pageInfo }) : this.setState({ apiCall: update });
-  }
 
   fetchData() {
     let jobId = this.props.match.params.jobid;
@@ -391,6 +376,88 @@ class PdfFileEditor extends React.Component {
     }
   };
 
+  saveUpdatedSentence(sentenceObj) {
+    this.setState({ selectedSourceText: sentenceObj })
+
+    this.workFlowApi(wfcodes.DP_WFLOW_S_C, [sentenceObj], "update")
+  }
+
+  workFlowApi(workflow, blockDetails, update) {
+
+    let pageInfo;
+    const apiObj = new WorkFlow(
+      workflow,
+      blockDetails,
+      this.props.match.params.jobid,
+      this.props.match.params.locale,
+      "",
+      "",
+      parseInt(this.props.match.params.modelId)
+    );
+    pageInfo = update !== "merge" && blockDetails.length > 0 && blockDetails[0].page_info.page_no;
+
+    this.props.APITransport(apiObj);
+    pageInfo ? this.setState({ apiCall: update, startPage: pageInfo, endPage: pageInfo }) : this.setState({ apiCall: update });
+  }
+
+  handleBlur(id, wf_code, saveData, prevValue, finalValue) {
+    let status = "update";
+    let idDetails = id.split("_")
+    let text = "";
+    let blockItem;
+
+    this.state.sentences.map(page => {
+      if (page.page_no === idDetails[1]) {
+        page.text_blocks.map(block => {
+          if (block.block_identifier === idDetails[0]) {
+            block &&
+              block.children &&
+              Array.isArray(block.children) &&
+              block.children.length > 0 &&
+              block.children.map(children => {
+                children.children
+                  ? children.children.map(grandChildren => {
+                    text = text + " " + grandChildren.text;
+                    return null;
+                  })
+                  : (text = text + " " + children.text);
+                return null;
+              });
+
+            if (block.text !== text) {
+              block.text = text;
+              blockItem = block;
+            } else if (wf_code) {
+              blockItem = block;
+            }
+          }
+          return null;
+        });
+      }
+      return null;
+    });
+    let telemetry = {}
+    telemetry.initialSenetence = wf_code ? prevValue : this.state.initialSenetence
+    telemetry.finalSenetence = wf_code ? finalValue : saveData
+    telemetry.sId = idDetails[0] ? idDetails[0] : id
+    telemetry.mode = wf_code ? "translation" : "validation"
+
+    if (blockItem && !wf_code && this.state.textChange) this.workFlowApi("DP_WFLOW_S_TTR", [blockItem], status);
+    else if (wf_code && blockItem && saveData) this.workFlowApi(wf_code, [blockItem], status, prevValue);
+    this.setState({
+      hoveredSentence: "",
+      targetSelected: "",
+      pageDetails: "",
+      selectedBlockId: "",
+      selectedSourceText: "",
+      edited: false,
+      textChange: false,
+      updatePage: parseInt(idDetails[1]),
+      telemetry
+    });
+  }
+
+
   handleSuggestion(suggestion, targetValue) {
     let sentenceObj = this.state.targetText;
     sentenceObj.tgt = targetValue.trim() + suggestion;
@@ -515,62 +582,6 @@ class PdfFileEditor extends React.Component {
     this.setState({ mergeButton: value });
   }
 
-  handleBlur(id, wf_code, saveData, prevValue, finalValue) {
-    let status = "update";
-    let idDetails = id.split("_")
-    let text = "";
-    let blockItem;
-
-    this.state.sentences.map(page => {
-      if (page.page_no === idDetails[1]) {
-        page.text_blocks.map(block => {
-          if (block.block_identifier === idDetails[0]) {
-            block &&
-              block.children &&
-              Array.isArray(block.children) &&
-              block.children.length > 0 &&
-              block.children.map(children => {
-                children.children
-                  ? children.children.map(grandChildren => {
-                    text = text + " " + grandChildren.text;
-                    return null;
-                  })
-                  : (text = text + " " + children.text);
-                return null;
-              });
-
-            if (block.text !== text) {
-              block.text = text;
-              blockItem = block;
-            } else if (wf_code) {
-              blockItem = block;
-            }
-          }
-          return null;
-        });
-      }
-      return null;
-    });
-    let telemetry = {}
-    telemetry.initialSenetence = wf_code ? prevValue : this.state.initialSenetence
-    telemetry.finalSenetence = wf_code ? finalValue : saveData
-    telemetry.sId = idDetails[0] ? idDetails[0] : id
-    telemetry.mode = wf_code ? "translation" : "validation"
-
-    if (blockItem && !wf_code && this.state.textChange) this.workFlowApi("DP_WFLOW_S_TTR", [blockItem], status);
-    else if (wf_code && blockItem && saveData) this.workFlowApi(wf_code, [blockItem], status, prevValue);
-    this.setState({
-      hoveredSentence: "",
-      targetSelected: "",
-      pageDetails: "",
-      selectedBlockId: "",
-      selectedSourceText: "",
-      edited: false,
-      textChange: false,
-      updatePage: parseInt(idDetails[1]),
-      telemetry
-    });
-  }
 
   updateContent(selectedArray) {
     if (selectedArray.length > 0) {
@@ -782,8 +793,8 @@ class PdfFileEditor extends React.Component {
                     }
                   </Paper>
                 </Grid>
-              // {/* </Grid> */}
-            }
+                // {/* </Grid> */}
+              }
             </Grid>
             {this.state.tokenized ?
               <Grid container spacing={2} style={{ padding: "142px 24px 0px 24px" }}>
@@ -911,10 +922,12 @@ class PdfFileEditor extends React.Component {
 
 
               <Grid container spacing={2} style={{ padding: "122px 24px 0px 24px" }}>
-                <TranslateView 
-                modelId = {this.props.match.params.modelId}
-                sentences={this.state.sentences} 
-                handleSourceChange= {this.handleSourceChange.bind(this)}
+                <TranslateView
+                  modelId={this.props.match.params.modelId}
+                  sentences={this.state.sentences}
+                  handleSourceChange={this.handleSourceChange.bind(this)}
+                  saveUpdatedSentence={this.saveUpdatedSentence.bind(this)}
+                  workFlowApi={this.workFlowApi.bind(this)}
                 />
 
               </Grid>

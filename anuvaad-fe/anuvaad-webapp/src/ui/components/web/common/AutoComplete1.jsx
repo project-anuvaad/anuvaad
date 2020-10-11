@@ -247,7 +247,8 @@ class AutoComplete extends React.Component {
                     ref={refId}
                     // maxRows={4}
                     // multiline={true}
-                    autoFocus={this.props.value ? true : false}
+                    // autoFocus={this.props.value ? true : false}
+                    autoFocus={true}
                     placeholder="Type your translation here"
                     style={style}
                     value={this.props.value}
