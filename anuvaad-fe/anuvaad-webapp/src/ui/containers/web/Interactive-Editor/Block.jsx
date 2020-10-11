@@ -113,7 +113,7 @@ class Block extends Component {
     let sentence = this.state.sentence;
     sentence.tagged_tgt = value.trim() + suggestion;
     sentence.tgt = value.trim() + suggestion;
-    // console.log(sentence)
+
     this.setState({ showSuggestions: false });
     // this.props.handleSuggestion(suggestion, value)
 
@@ -139,6 +139,15 @@ class Block extends Component {
   }
 
   handleShowTarget(id) {
+    let sentence = this.state.sentence;
+
+    sentence.tagged_tgt = sentence.s0_tgt;
+    sentence.tgt = sentence.s0_tgt;
+    this.setState({
+      sentence: sentence,
+      enteredData: true,
+    });
+
     this.props.showTargetData(id);
     this.props.handleEditorClick(id);
   }
