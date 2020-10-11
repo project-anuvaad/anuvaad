@@ -128,12 +128,7 @@ class Block extends Component {
     this.props.handleEditorClick(id)
   }
 
-  // handleChangeEvent = (event) => {
-  //   this.props.handleSourceChange(event, this.props.sentence);
-  // };
-
   handleChange = (name) => (event) => {
-    debugger;
     if (arr.includes(name)) {
       arr = arr.filter((item) => item !== name);
     } else {
@@ -142,15 +137,26 @@ class Block extends Component {
     this.setState({ selectedValueArray: arr });
   };
 
+  handleSave() {
+    let block = this.props.block
+    this.setState({ enteredData: false })
+    block && block.tokenized_sentences && Array.isArray(block.tokenized_sentences) && block.tokenized_sentences.length > 0 && block.tokenized_sentences.map((tokenObj, i) => {
+      if (this.state.sentence && this.state.sentence.s_id === tokenObj.s_id) {
+        tokenObj = this.state.sentence
+      }
+    })
+
+    this.props.handleSave(block)
+  }
+
+  handleClick(id) {
+    this.setState({auto: true})
+    this.props.handleEditorClick(id)
+  }
 
   render() {
-    const { classes, sentence, selectedBlock, highlightId } = this.props;
-    // console.log(this.props.selectedTargetId)
-    // if(this.state.sentence && this.props.selectedTargetId === this.state.sentence.s_id) {
-    //   console.log(this.state.highlightDivider)
-    //   console.log("===============================================================================")
-    // }
-
+    const { classes, sentence, selectedBlock, highlightId, selectedTargetId } = this.props;
+   
     return (
       <Paper
         variant="outlined"
@@ -177,7 +183,7 @@ class Block extends Component {
                   {sentence.src}
                 </div>
                 <hr style={{ border: (highlightId === sentence.s_id && selectedBlock && sentence && sentence.s_id === selectedBlock.s_id) ? "1px dashed #1C9AB7" : "1px dashed #00000014" }} />
-                {selectedBlock && sentence && sentence.s_id === selectedBlock.s_id &&
+                {((selectedBlock && sentence && sentence.s_id === selectedBlock.s_id) &&  (selectedTargetId === sentence.s_id || this.state.auto))?
                   <AutoComplete
                     aId={sentence.s_id}
                     refId={sentence.s_id}
@@ -187,10 +193,7 @@ class Block extends Component {
                       resize: "none",
                       zIndex: 1111,
                       borderRadius: "4px",
-                      // backgroundColor: "#F4FDFF",
-                      // border: this.props.selectedTargetId === sentence.s_id ? '1px dotted #1C9AB7' : ""
                       border: '0px dotted white',
-                      // color: "white",
                       minHeight: "45px",
                       fontSize: "18px",
                       border: 'none',
@@ -199,18 +202,17 @@ class Block extends Component {
                     }}
                     tokenIndex={this.props.tokenIndex}
                     value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData) ? this.state.sentence.tgt : ""}
+                    // value={this.state.sentence.tgt}
                     sentence={this.state.sentence}
 
                     sourceText={sentence.src}
                     page_no={this.props.page_no}
-                    // fetchSuggestions={this.props.fetchSuggestions}
                     handleSuggestion={this.props.handleSuggestion}
                     heightToBeIncreased={sentence.font_size}
                     handleBlur={this.props.handleBlur}
 
                     showSuggestions={this.props.showSuggestions}
                     handleSuggestionClose={this.props.handleSuggestionClose}
-                    // handleClickAway={this.props.handleClickAway.bind(this)}
                     tokenObject={sentence}
                     showTargetLang={this.props.selectedTargetId === sentence.s_id && true}
                     modelId={this.props.modelId}
@@ -221,52 +223,75 @@ class Block extends Component {
                     fetchSuggestions={this.fetchSuggestions.bind(this)}
                     handleSuggestionClick={this.handleSuggestionClick.bind(this)}
                     handleEditorClick={this.props.handleEditorClick}
-                  />}
+                  /> 
+                  : <textarea
+                  aId={sentence.s_id}
+                  refId={sentence.s_id}
+                    // autoFocus={true}
+                    placeholder="Type your translation here"
+                    style={{
+                      width: "100%",
+                      resize: "none",
+                      zIndex: 1111,
+                      borderRadius: "4px",
+                      border: '0px dotted white',
+                      minHeight: "45px",
+                      fontSize: "18px",
+                      border: 'none',
+                      outline: "none"
+
+                    }}
+                    value={this.props.value}
+                    onChange={this.props.handleChangeEvent}
+                    onKeyDown={this.handleEnter}
+                    onClick={() => this.handleClick (sentence.s_id)}
+                  />
+                  }
               </div>
 
-              {/* </div>
-          </Grid>
-          <Grid
-            item
-            xs={4}
-            sm={3}
-            lg={1}
-            xl={1}
-
-          >
-
-            {this.props.buttonStatus === "merge" ?
-              <Checkbox
-                size="small"
-                color="primary"
-              /> :
-
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                {this.props.buttonStatus !== "split" && */}
             </div>
           </Grid>
+            <Grid
+              item
+              xs={4}
+              sm={3}
+              lg={1}
+              xl={1}
+
+            >
+              {this.props.buttonStatus === "merge" ? (
+                <Checkbox
+                  size="small"
+                  color="primary"
+                  onChange={this.handleChange(sentence.s_id)}
+                />
+              ) : (
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    {this.props.buttonStatus !== "split" && (
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          paddingLeft: "4%",
+                        }}
+                      >
+                        <Tooltip title="Get machine translated sentence">
+                          <IconButton aria-label="validation mode" onClick={() => { this.handleShowTarget(sentence.s_id) }}>
+                            <ArrowBackIcon fontSize="medium" className={classes.Icons} />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Save">
+                          <IconButton aria-label="save" onClick={() => this.handleSave()}>
+                            <Save fontSize="medium" />
+                          </IconButton>
+                        </Tooltip>
+
+                        {/* </div>} */}
 
 
 
-
-          <Grid
-            item
-            xs={4}
-            sm={3}
-            lg={1}
-            xl={1}
-
-          >
-
-            {this.props.buttonStatus === "merge" ? (
-              <Checkbox
-                size="small"
-                color="primary"
-                onChange={this.handleChange(sentence.s_id)}
-              />
-            ) : (
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  {this.props.buttonStatus !== "split" && (
+                      </div>
+                    )}
                     <div
                       style={{
                         display: "flex",
@@ -274,107 +299,65 @@ class Block extends Component {
                         paddingLeft: "4%",
                       }}
                     >
-                      <Tooltip title="Get machine translated sentence">
-                        <IconButton aria-label="validation mode" onClick={() => { this.handleShowTarget(sentence.s_id) }}>
-                          <ArrowBackIcon fontSize="medium" className={classes.Icons} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Save">
-                        <IconButton aria-label="save">
-                          <Save fontSize="medium" />
-                        </IconButton>
-                      </Tooltip>
-
-                      {/* </div>} */}
-
-
-
-                    </div>
-                  )}
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      paddingLeft: "4%",
-                    }}
-                  >
-                    {/* <Tooltip title="Spit sentence">
-                    <IconButton aria-label="Split">
-                      <Split fontSize={this.props.buttonStatus !== "split" ? "medium" : "large"} onClick={event => {
-                        this.props.handleClick("split");
-                      }} />
-                    </IconButton>
-                  </Tooltip>
-                  {this.props.buttonStatus !== "split" &&
-                    <Tooltip title="Merge Sentence">
-                      <IconButton aria-label="merge">
-                        <Merge fontSize="medium" onClick={event => {
-                          this.props.handleClick("merge");
-                        }} />
-                      </IconButton>
-                    </Tooltip>}
-                </div>
-              </div>
-            } */}
-                    <Tooltip
-                      title={
-                        this.props.buttonStatus === "split"
-                          ? "Please select sentence to split"
-                          : "Spit sentence"
-                      }
-                    >
-                      <IconButton aria-label="Split">
-                        <Split
-                          fontSize={
-                            this.props.buttonStatus !== "split"
-                              ? "medium"
-                              : "large"
-                          }
-                          style={
-                            this.props.buttonStatus === "split"
-                              ? { color: "#1C9AB7" }
-                              : {}
-                          }
-                          onClick={(event) => {
-                            this.props.buttonStatus !== "split"
-                              ? this.props.handleClick("split")
-                              : this.handleSplitSentence(event, sentence.src);
-                          }}
-                        />
-                      </IconButton>
-                    </Tooltip>
-                    {this.props.buttonStatus !== "split" && (
-                      <Tooltip title="Merge Sentence">
-                        <IconButton aria-label="merge">
-                          <Merge
-                            fontSize="medium"
+                      <Tooltip
+                        title={
+                          this.props.buttonStatus === "split"
+                            ? "Please select sentence to split"
+                            : "Spit sentence"
+                        }
+                      >
+                        <IconButton aria-label="Split">
+                          <Split
+                            fontSize={
+                              this.props.buttonStatus !== "split"
+                                ? "medium"
+                                : "large"
+                            }
+                            style={
+                              this.props.buttonStatus === "split"
+                                ? { color: "#1C9AB7" }
+                                : {}
+                            }
                             onClick={(event) => {
-                              this.props.handleClick("merge");
+                              this.props.buttonStatus !== "split"
+                                ? this.props.handleClick("split")
+                                : this.handleSplitSentence(event, sentence.src);
                             }}
                           />
                         </IconButton>
                       </Tooltip>
-                    )}
+                      {this.props.buttonStatus !== "split" && (
+                        <Tooltip title="Merge Sentence">
+                          <IconButton aria-label="merge">
+                            <Merge
+                              fontSize="medium"
+                              onClick={(event) => {
+                                this.props.handleClick("merge");
+                              }}
+                            />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+            </Grid>
           </Grid>
-        </Grid>
       </Paper>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  apistatus: state.apistatus,
+          apistatus: state.apistatus,
   intractiveTrans: state.intractiveTrans
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
-    {
-      APITransport
-    },
+        {
+          APITransport
+        },
     dispatch
   );
 

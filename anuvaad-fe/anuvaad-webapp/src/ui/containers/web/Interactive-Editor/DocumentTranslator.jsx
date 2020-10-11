@@ -31,15 +31,10 @@ class PdfFileEditor extends React.Component {
     };
   }
 
-
-  
-
   handleSentenceClick(value) {
-    // this.setState({ activeSentence: value, selectedTargetId: value.s_id })
-    // if(this.state.selectedTargetId !== value.s_id) {
-    //   this.setState()
-    // }
-    this.setState({ activeSentence: value })
+    if(this.state.activeSentence && this.state.activeSentence.s_id !== value.s_id) {
+      this.setState({ activeSentence: value, selectedTargetId: null, highlightId: null })
+    }
   }
 
   handleClick(value){
@@ -66,6 +61,8 @@ class PdfFileEditor extends React.Component {
             showTargetData = { this.showTargetData.bind(this)}
             handleEditorClick={this.handleEditorClick.bind(this)}
             highlightId={this.state.highlightId}
+            block={sentence}
+            handleSave={this.handleSave.bind(this)}
            />
           );
         });
@@ -86,7 +83,17 @@ class PdfFileEditor extends React.Component {
     this.setState({ selectedTargetId: blockId, showData: true })
   }
 
+  handleSave(senObj) {
+    this.setState({
+      highlightId: false,
+      selectedTargetId: null,
+      activeSentence: {}
+    })
+    this.props.saveUpdatedSentence(senObj)
+  }
+
   render() {
+    console.log("====================================================================================================")
     return (
       <div>
         {this.props.sentences && (
