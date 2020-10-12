@@ -36,14 +36,14 @@ class FileContentSaveResource(Resource):
             return res.getresjson(), 400
         
         AppContext.addRecordID(record_id)
-        log_info("FileContentSaveResource record_id {} for user {}".format(record_id, user_id), AppContext.getContext())
+        log_info("FileContentSaveResource record_id ({}) for user ({})".format(record_id, user_id), AppContext.getContext())
         
         try:
             if FileContentRepositories.store(user_id, file_locale, record_id, pages, src_lang, tgt_lang) == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
 
-            log_info("FileContentSaveResource record_id {} for user {} saved".format(record_id, user_id), AppContext.getContext())
+            log_info("FileContentSaveResource record_id ({}) for user ({}) saved".format(record_id, user_id), AppContext.getContext())
             res = CustomResponse(Status.SUCCESS.value, None)
             return res.getres()
         except Exception as e:

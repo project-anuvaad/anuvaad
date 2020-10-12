@@ -40,9 +40,7 @@ class FileContentRepositories:
                 if 'output_subwords' in elem:
                     del elem['output_subwords']
                 if 'pred_score' in elem:
-                    del elem['pred_score'] 
-
-        log_info("creating new block for record_id {} for user {}".format(record_id, user_id), AppContext.getContext())
+                    del elem['pred_score']
         return new_block
 
     @staticmethod
@@ -74,23 +72,28 @@ class FileContentRepositories:
             page_info['page_width']     = page['page_width']
             page_info['page_height']    = page['page_height']
 
-            if 'images' in page and page['images'] != None:
-                for image in page['images']:
-                    log_info("appending image block for record_id {} for user {}".format(record_id, user_id), AppContext.getContext())
-                    blocks.append(FileContentRepositories.create_block_info(image, record_id, page_info, 'images', user_id, src_lang, tgt_lang))
+            try:
+                if 'images' in page and page['images'] != None:
+                    for image in page['images']:
+                        blocks.append(FileContentRepositories.create_block_info(image, record_id, page_info, 'images', user_id, src_lang, tgt_lang))
+            except Exception as e:
+                log_exception('images key not present, thats strange', AppContext.getContext(), e)
+            
             try:
                 if  'lines' in page and page['lines'] != None:
                     for line in page['lines']:
-                        log_info("appending lines block for record_id {} for user {}".format(record_id, user_id), AppContext.getContext())
                         blocks.append(FileContentRepositories.create_block_info(line, record_id, page_info, 'lines', user_id, src_lang, tgt_lang))
             except Exception as e:
-                log_info('lines block is not present, proceeding further', AppContext.getContext())
+                log_info('lines key is not present, ignorning further', AppContext.getContext())
                 pass
-
-            if 'text_blocks' in page and page['text_blocks'] != None:
-                for text in page['text_blocks']:
-                    log_info("appending text block for record_id {} for user {}".format(record_id, user_id), AppContext.getContext())
-                    blocks.append(FileContentRepositories.create_block_info(text, record_id, page_info, 'text_blocks', user_id, src_lang, tgt_lang))
+            
+            try:
+                if 'text_blocks' in page and page['text_blocks'] != None:
+                    for text in page['text_blocks']:
+                        blocks.append(FileContentRepositories.create_block_info(text, record_id, page_info, 'text_blocks', user_id, src_lang, tgt_lang))
+            except Exception as e:
+                log_exception('text_blocks key not present, thats strange', AppContext.getContext(), e)
+                pass
 
         BlockModel.store_bulk_blocks(blocks)
         return True
