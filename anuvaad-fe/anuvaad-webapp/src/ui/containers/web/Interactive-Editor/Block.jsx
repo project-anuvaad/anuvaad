@@ -142,7 +142,7 @@ class Block extends Component {
 
   handleShowTarget(id) {
     if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
-      let sentence = this.state.sentence;
+      let sentence = this.props.sentence;
 
       sentence.tagged_tgt = sentence.s0_tgt;
       sentence.tgt = sentence.s0_tgt;
