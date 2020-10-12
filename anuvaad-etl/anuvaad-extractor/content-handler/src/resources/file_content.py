@@ -63,7 +63,7 @@ class FileContentGetResource(Resource):
         parser.add_argument('record_id', type=str, location='args', help='record_id is required', required=True)
 
         args    = parser.parse_args()
-        AppContext.addRecordID(record_id)
+        AppContext.addRecordID(args['record_id'])
         log_info("FileContentGetResource record_id {} for user {}".format(args['record_id'], args['ad-userid']), AppContext.getContext())
 
         try:
