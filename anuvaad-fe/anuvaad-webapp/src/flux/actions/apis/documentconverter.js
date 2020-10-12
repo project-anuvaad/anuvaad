@@ -28,8 +28,6 @@ export default class DocumentConverter extends API {
     }
 
     getBody() {
-        console.log(this.user_id)
-        console.log(this.record_id)
         return {
             record_id: this.record_id,
             user_id: this.user_id
