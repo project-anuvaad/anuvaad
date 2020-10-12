@@ -2,7 +2,7 @@ import config
 from models import BlockModel
 import datetime
 import uuid
-from utilities import MODULE_CONTEXT
+from utilities import AppContext
 from anuvaad_auditor.loghandler import log_info, log_exception
 
 class FileContentRepositories:
@@ -42,7 +42,7 @@ class FileContentRepositories:
                 if 'pred_score' in elem:
                     del elem['pred_score'] 
 
-        log_info("creating new block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
+        log_info("creating new block for record_id {} for user {}".format(record_id, user_id), AppContext.getContext())
         return new_block
 
     @staticmethod
@@ -62,7 +62,7 @@ class FileContentRepositories:
                 if 'pred_score' in elem:
                     del elem['pred_score'] 
 
-        log_info("updating new block for block_identifier {}".format(block['block_identifier']), MODULE_CONTEXT)
+        log_info("updating new block for block_identifier {}".format(block['block_identifier']), AppContext.getContext())
         return new_block
 
     @staticmethod
@@ -76,20 +76,20 @@ class FileContentRepositories:
 
             if 'images' in page and page['images'] != None:
                 for image in page['images']:
-                    log_info("appending image block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
+                    log_info("appending image block for record_id {} for user {}".format(record_id, user_id), AppContext.getContext())
                     blocks.append(FileContentRepositories.create_block_info(image, record_id, page_info, 'images', user_id, src_lang, tgt_lang))
             try:
                 if  'lines' in page and page['lines'] != None:
                     for line in page['lines']:
-                        log_info("appending lines block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
+                        log_info("appending lines block for record_id {} for user {}".format(record_id, user_id), AppContext.getContext())
                         blocks.append(FileContentRepositories.create_block_info(line, record_id, page_info, 'lines', user_id, src_lang, tgt_lang))
             except Exception as e:
-                log_info('lines block is not present, proceeding further', MODULE_CONTEXT)
+                log_info('lines block is not present, proceeding further', AppContext.getContext())
                 pass
 
             if 'text_blocks' in page and page['text_blocks'] != None:
                 for text in page['text_blocks']:
-                    log_info("appending text block for record_id {} for user {}".format(record_id, user_id), MODULE_CONTEXT)
+                    log_info("appending text block for record_id {} for user {}".format(record_id, user_id), AppContext.getContext())
                     blocks.append(FileContentRepositories.create_block_info(text, record_id, page_info, 'text_blocks', user_id, src_lang, tgt_lang))
 
         BlockModel.store_bulk_blocks(blocks)

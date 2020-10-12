@@ -72,7 +72,9 @@ class PdfFileEditor extends React.Component {
   handleDialog() {
     let workflowCode = "DP_WFLOW_S_TR";
     if (this.state.title === "Merge sentence") {
-      let updatedBlocks = BLOCK_OPS.do_sentences_merging_v1(this.props.sentences, this.state.sentence_id);
+       let result         = BLOCK_OPS.do_sentences_merging_v1(this.props.sentences,this.state.sentence_id);
+       let updatedBlocks  = result.blocks
+
       this.props.workFlowApi(workflowCode, updatedBlocks, this.state.title);
     } else if (this.state.title === "Split sentence") {
       let updatedBlocks = BLOCK_OPS.do_sentence_splitting(
