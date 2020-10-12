@@ -247,7 +247,7 @@ class PdfFileEditor extends React.Component {
                   <MachineTranslation
                     sentence={this.state.activeSentence}
                     buttonStatus={this.state.buttonStatus}
-                    apiCall = {this.props.apiCall}
+                    
                   />
                 </Grid>
               </Grid>
