@@ -91,7 +91,7 @@ class FileContentUpdateResource(Resource):
         
         blocks      = body['blocks']
         AppContext.addRecordID(None)
-        log_info("FileContentUpdateResource for user {}, to update {} blocks".format(user_id, len(blocks)), AppContext.getContext())
+        log_info("FileContentUpdateResource for user ({}), to update ({}) blocks".format(user_id, len(blocks)), AppContext.getContext())
 
         try:
             result  = FileContentRepositories.update(user_id, blocks)
@@ -100,7 +100,7 @@ class FileContentUpdateResource(Resource):
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
 
-            log_info("FileContentUpdateResource for user {} updated".format(user_id), AppContext.getContext())
+            log_info("FileContentUpdateResource for user ({}) updated".format(user_id), AppContext.getContext())
             res = CustomResponse(Status.SUCCESS.value, result, None)
             return res.getres()            
         except Exception as e:

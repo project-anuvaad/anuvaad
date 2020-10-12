@@ -28,9 +28,6 @@ class FileContentRepositories:
         new_block['data']               = block
         new_block['data']['page_info']  = page_info
 
-        '''
-            storing a Step-0/baseline translation
-        '''
         if 'tokenized_sentences' in block:
             for elem in block['tokenized_sentences']:
                 elem['s0_tgt']    = elem['tgt']
@@ -48,11 +45,10 @@ class FileContentRepositories:
         new_block                   = {}
         new_block['data']           = block
 
-        '''
-            storing a Step-0/baseline translation
-        '''
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
+                elem['s0_tgt']    = elem['tgt']
+                elem['s0_src']    = elem['src']
                 if 'input_subwords' in elem:
                     del elem['input_subwords']
                 if 'output_subwords' in elem:
