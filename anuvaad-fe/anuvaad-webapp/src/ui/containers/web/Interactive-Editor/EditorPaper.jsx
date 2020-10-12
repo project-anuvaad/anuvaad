@@ -99,9 +99,9 @@ class EditorPaper extends React.Component {
       activeElTagName === "textarea" ||
       (activeElTagName === "input" && /^(?:text|search|password|tel|url)$/i.test(activeEl.type) && typeof activeEl.selectionStart === "number")
     ) {
-      text = activeEl.value.slice(activeEl.selectionStart, activeEl.selectionEnd);
+      //text = activeEl.value.slice(activeEl.selectionStart, activeEl.selectionEnd);
     } else if (window.getSelection) {
-      text = window.getSelection().toString();
+      //text = window.getSelection().toString();
     }
 
     let sentences = "";
@@ -315,7 +315,7 @@ class EditorPaper extends React.Component {
                       }
                   }
                   ref={sentence._id + "_" + tokenText.sentence_index + "_" + this.props.paperType}
-                  key={sentence._id + "_" + tokenText.sentence_index}
+                  //key={sentence._id + "_" + tokenText.sentence_index}
                   onDoubleClick={event => this.props.handleonDoubleClick(sentence._id + "_" + tokenText.sentence_index, tokenText.text, event)}
                   onClick={event => {
                     sentence.text_pending

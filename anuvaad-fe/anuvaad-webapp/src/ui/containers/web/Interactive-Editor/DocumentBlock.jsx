@@ -80,7 +80,7 @@ class DocumentBlock extends React.Component {
           top: value.text_top - 2 + "px",
           fontSize: value.font_size + "px",
           fontFamily: sentence.font_family,
-          fontWeight: sentence.font_family && sentence.font_family.includes("Bold") && "bold" || sentence.attrib && sentence.attrib.toLowerCase().includes("bold"),
+          fontWeight: (sentence.font_family && sentence.font_family.includes("Bold") && "bold") || (sentence.attrib && sentence.attrib.toLowerCase().includes("bold")),
           outline: "0px solid transparent",
           zIndex: this.props.selectedSentence === value.block_id + "_" + this.props.page_no ? 2 : 1,
 
@@ -113,7 +113,7 @@ class DocumentBlock extends React.Component {
                 backgroundColor: "#F4FDFF",
                 borderColor: "#1C9AB7",
                 color: "#000000",
-                fontWeight: sentence.font_family && sentence.font_family.includes("Bold") && "bold" || sentence.attrib && sentence.attrib.toLowerCase().includes("bold"),
+                fontWeight: (sentence.font_family && sentence.font_family.includes("Bold") && "bold" )|| (sentence.attrib && sentence.attrib.toLowerCase().includes("bold")),
 
 
               }}
@@ -345,7 +345,7 @@ class DocumentBlock extends React.Component {
                       }
                     }
                   }
-                })}
+                return null;})}
             </div>
           </Textfit>
         </div>
@@ -384,7 +384,7 @@ class DocumentBlock extends React.Component {
     const obj_start = sentenceStartId.split('##')
     const start_block_id = obj_start[0]
     const start_s_id = obj_start[1]
-    let offset_tokenized = obj_start[2]
+    //let offset_tokenized = obj_start[2]
     const obj_end = sentenceEndId.split('##')
     const end_block_id = obj_end[0]
     const end_s_id = obj_end[1]
@@ -605,7 +605,7 @@ class DocumentBlock extends React.Component {
           tokenized_data[tokenIndex].src = tokenized_data[tokenIndex].src.replace(/\s\s+/g, ' ');
           tokenized_data[tokenIndex].src = tokenized_data[tokenIndex].src.trim()
           if (child.children) {
-            let child_elems = []
+            //let child_elems = []
             child.children.map((ch) => {
               ch.dont_show = child.dont_show
               var text = ''

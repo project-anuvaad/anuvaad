@@ -403,7 +403,7 @@ class PdfFileEditor extends React.Component {
     let blockId = block.split("_")[0];
     let pageNo = block.split("_")[1];
     let blockTop,
-      blockHeight,
+     // blockHeight,
       valueH = 0;
     let docPage = this.state.sentences;
     let strText = this.state.selectedSourceText;
