@@ -1,6 +1,14 @@
 var jp                = require('jsonpath')
 const { v4 }        = require('uuid');
 
+function flattenArray(array) {
+    let self = this;
+    return array.reduce(function(memo, el) {
+      var items = Array.isArray(el) ? flattenArray(el) : [el];
+      return memo.concat(items);
+    }, []);
+}
+
 function get_block_id(blocks) {
     let block_ids = []
     blocks.forEach(element => {
@@ -265,6 +273,41 @@ function get_start_end_index(blocks, sentence_ids) {
 }
 
 /**
+ * finds sentence_id index in the given sorted blocks
+ * @param {*} blocks 
+ * @param {*} sentence_ids 
+ * @returns array of sentence_id and its index
+ */
+function get_sentence_ids_in_ascending_order(blocks, sentence_ids) {
+    let sentence_ids_indices = []
+
+    blocks.forEach(block => {
+        let block_sentence_indices = []
+        sentence_ids.forEach(s_id => {
+            for (var i = 0; i < block.tokenized_sentences.length; i++) {
+                if (s_id == block.tokenized_sentences[i].s_id) {
+                    block_sentence_indices.push({'s_id': s_id, 
+                    'index': i, 
+                    'block_identifer': block.block_identifier, 
+                    'src': block.tokenized_sentences[i].src })
+                }
+            }
+            block_sentence_indices     = block_sentence_indices.sort((a, b) => {
+                if (a.index < b.index) {
+                    return -1
+                }
+                if (a.index > b.index) {
+                    return 1
+                }
+                return 0
+            })
+        })
+        sentence_ids_indices.push(block_sentence_indices)
+    })
+    return sentence_ids_indices
+}
+
+/**
  * @description merges the source sentences between sentence_id that is present at the lowest index of the
  *              tokenized sentence in asending order of indices.
  * @param {*} sentences, list of all the sentences in which merge operation has to be performed
@@ -344,43 +387,30 @@ function do_sentences_merging_v1(sentences, sentence_ids) {
             selected_blocks.push(block[0])
         }
     })
-    let unique_selected_blocks  = get_unique_blocks(selected_blocks);
-    let sorted_selected_blocks  = get_sorted_blocks(unique_selected_blocks);
-    
-    let start_end_index             = get_start_end_index(sorted_selected_blocks, sentence_ids)
-    let final_tokenized_sentence    = sorted_selected_blocks[0].tokenized_sentences[start_end_index.first]
 
-    let merged_sentence         = ""
-    for (var i = 0; i < sorted_selected_blocks.length; i++) {
-        merged_sentence += ' '
-        if (i === 0) {
-            for (var j = start_end_index.first; j < sorted_selected_blocks[i].tokenized_sentences.length; j++) {
-                merged_sentence += sorted_selected_blocks[i].tokenized_sentences[j].src
-                sorted_selected_blocks[i].tokenized_sentences.splice(j, 1)
-            }
-            continue
-        }
+    let unique_selected_blocks      = get_unique_blocks(selected_blocks);
+    let sorted_selected_blocks      = get_sorted_blocks(unique_selected_blocks);
+    let sentence_indices            = get_sentence_ids_in_ascending_order(sorted_selected_blocks, sentence_ids)
+    sentence_indices                = flattenArray(sentence_indices)
 
-        if (i === (sorted_selected_blocks.length - 1)) {
-            for (var j = 0; j <= start_end_index.last; j++) {
-                merged_sentence += sorted_selected_blocks[i].tokenized_sentences[j].src
-                sorted_selected_blocks[i].tokenized_sentences.splice(j, 1)
-            }
-            continue
-        }
-        
-        for (var j = 0; j <= sorted_selected_blocks[i].tokenized_sentences.length; j++) {
-            merged_sentence += sorted_selected_blocks[i].tokenized_sentences[j].src
-            sorted_selected_blocks[i].tokenized_sentences.splice(j, 1)
-        }
+    let merged_sentence             = ""
+    let tokenized_sentence          = sorted_selected_blocks[0].tokenized_sentences[sentence_indices[0].index]
+    sentence_indices.forEach(sentence_index => {
+        sorted_selected_blocks.forEach(block => {
+            block.tokenized_sentences.forEach(sentence => {
+                if (sentence.s_id === sentence_index.s_id) {
+                    merged_sentence += sentence.src
+                    block.tokenized_sentences.splice(sentence_index.index, 1)
+                }
+            })
+        })
+    })
 
-    }
+    tokenized_sentence.src  = merged_sentence
+    tokenized_sentence.tgt  = ''
+    sorted_selected_blocks[0].tokenized_sentences.splice(sentence_indices[0].index, 0, tokenized_sentence)
 
-
-    final_tokenized_sentence.src   = merged_sentence
-    sorted_selected_blocks[0].tokenized_sentences.splice(start_end_index.first, 1)
-    sorted_selected_blocks[0].tokenized_sentences.splice(start_end_index.first, 0, final_tokenized_sentence)
-
+    console.log(JSON.stringify(sorted_selected_blocks))
     return sorted_selected_blocks
 }
 
