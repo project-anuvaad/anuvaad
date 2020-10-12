@@ -85,7 +85,7 @@ class PdfFileEditor extends React.Component {
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
     }
       
-      this.setState({ openDialog: false,  buttonStatus: "" });
+      this.setState({ openDialog: false, activeSentence:{}, buttonStatus: "" });
   }
 
   handleClose = () => {
@@ -189,7 +189,7 @@ class PdfFileEditor extends React.Component {
                       variant="extended"
                       size="medium"
                       color="primary"
-                      aria-label="add"
+                     mergeSaved aria-label="add"
                       onClick={() => this.handleClick("mergeSaved")}
                     >
                       <Merge />
@@ -247,7 +247,7 @@ class PdfFileEditor extends React.Component {
                   <MachineTranslation
                     sentence={this.state.activeSentence}
                     buttonStatus={this.state.buttonStatus}
-                    apiCall = {this.props.apiCall}
+                    
                   />
                 </Grid>
               </Grid>
