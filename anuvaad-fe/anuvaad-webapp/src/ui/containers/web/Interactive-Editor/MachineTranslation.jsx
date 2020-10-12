@@ -2,26 +2,43 @@ import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 import Styles from "../../../styles/web/MachineTranslationStyle"
+import Typography from '@material-ui/core/Typography';
 
 class MachineTranslation extends Component {
   constructor() {
     super();
     this.state = {
-    
+
     };
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, sentence } = this.props;
     return (
-        <Paper className={classes.paper} >
-            <div className={classes.header}>Machine Translation</div>
-            <hr/>
-            <div>{this.props.sourceText}</div>
-            <hr/>
-            <div>{this.props.targetText}</div>
-        </Paper>
+      <Paper className={this.props.buttonStatus !=="merge" && this.props.buttonStatus !=="mergeSaved" && this.props.buttonStatus !=="split" ? classes.paper: classes.paper2} >
+        <div>
+          <Typography variant="h5" gutterBottom className={classes.header} >Machine Translation</Typography>
+        </div>
+      {this.props.buttonStatus !=="merge"  && this.props.buttonStatus !=="mergeSaved" && this.props.buttonStatus !=="split" && sentence &&
+      <div>
+        <hr style={this.props.buttonStatus !=="merge" ? { border: "1px solid #00000014" }: { border: "1px solid grey" }} />
+        <div className={classes.div} >
+          <div>
+            {sentence && sentence.s0_src}
+          </div>
+        </div>
+        {sentence && <hr style={{ border: "1px solid #00000014" }} />}
+        <div className={classes.div}>
+          <div>
+            {sentence && sentence.s0_tgt}
+          </div>
+          </div>
+          
+        </div>
+  } 
+      </Paper>
     );
+
   }
 }
 
