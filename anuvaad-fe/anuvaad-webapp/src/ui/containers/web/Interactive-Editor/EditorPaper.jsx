@@ -646,12 +646,12 @@ class EditorPaper extends React.Component {
               sArray.push(sentence)
               let fontValue = Number(sentence.class_style['font-size'].split('px')[0])
               // if ((index !== sentences.length - 1 && sentences[index + 1].y !== sentence.y) || index === sentences.length - 1) {
-              if ((index !== sentences.length - 1 && ((fontValue + Number(sentence.y_end) < Number(sentences[index + 1].y) || sentence.page_no != sentences[index + 1].page_no))) || index === sentences.length - 1) {
+              if ((index !== sentences.length - 1 && ((fontValue + Number(sentence.y_end) < Number(sentences[index + 1].y) || sentence.page_no !== sentences[index + 1].page_no))) || index === sentences.length - 1) {
                 let a = this.newFetchSentence(sentence, sentences[index - 1], index, sentences[sentences.length - 1].page_no, sArray);
                 sArray = []
                 elems.push(a);
               }
-              if (index == sentences.length - 1 || sentence.page_no != sentences[index + 1].page_no) {
+              if (index === sentences.length - 1 || sentence.page_no !== sentences[index + 1].page_no) {
                 let elemArray = elems
                 elems = []
                 return <div><p>{this.renderPageNumber(sentence.page_no, sentences[sentences.length - 1].page_no)}</p><div style={{ columnCount: this.state.columns }}><p>{elemArray}</p></div></div>
@@ -661,7 +661,7 @@ class EditorPaper extends React.Component {
 
 
 
-            })
+            return null;})
             : sentences &&
             Array.isArray(sentences) &&
             sentences.length > 0 &&

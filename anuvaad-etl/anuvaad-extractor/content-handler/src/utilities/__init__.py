@@ -1,1 +1,1 @@
-from .app_context import MODULE_CONTEXT
+from .app_context import AppContext
