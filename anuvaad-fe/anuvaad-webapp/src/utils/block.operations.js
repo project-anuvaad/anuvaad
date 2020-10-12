@@ -392,23 +392,33 @@ function do_sentences_merging_v1(sentences, sentence_ids) {
 
     let merged_sentence             = ""
     let tokenized_sentence          = sorted_selected_blocks[0].tokenized_sentences[sentence_indices[0].index]
-    sentence_indices.forEach(sentence_index => {
-        sorted_selected_blocks.forEach(block => {
+    sorted_selected_blocks.forEach(block => {
+        sentence_indices.forEach(sentence_index => {
             block.tokenized_sentences.forEach(sentence => {
                 if (sentence.s_id === sentence_index.s_id) {
                     merged_sentence += sentence.src
                     block.tokenized_sentences.splice(sentence_index.index, 1)
+                    block.tokenized_sentences.splice(sentence_index.index, 0, {})
                 }
             })
         })
+    })
+
+    sorted_selected_blocks.forEach(block => {
+        let updated_tokenized_sentences = []
+        block.tokenized_sentences.forEach(sentence => {
+            if (Object.keys(sentence).length !== 0) {
+                updated_tokenized_sentences.push(sentence)
+            }
+        })
+        block.tokenized_sentences   = updated_tokenized_sentences
     })
 
     tokenized_sentence.src  = merged_sentence
     tokenized_sentence.tgt  = ''
     sorted_selected_blocks[0].tokenized_sentences.splice(sentence_indices[0].index, 0, tokenized_sentence)
 
-    console.log(JSON.stringify(sorted_selected_blocks))
-    return sorted_selected_blocks
+    return {'blocks': sorted_selected_blocks, 'sentence_id': sentence_indices[0].s_id}
 }
 
 /**
