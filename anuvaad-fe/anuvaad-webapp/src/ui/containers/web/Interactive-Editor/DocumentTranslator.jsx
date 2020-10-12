@@ -31,13 +31,22 @@ class PdfFileEditor extends React.Component {
     };
   }
 
-  handleSentenceClick(value) {
+  handleSentenceClick(value, saveData, block, blockIdentifier) {
     // this.setState({ activeSentence: value, selectedTargetId: value.s_id })
-    // if(this.state.selectedTargetId !== value.s_id) {
-    //   this.setState()
-    // }
+
+    if (block && this.state.activeSentence && this.state.activeSentence.s_id && this.state.activeSentence.s_id !== value.s_id)
+      if (saveData) {
+        this.setState({
+          title: "Please save the edited sentence", openDialog: true
+        })
+      }
+
     this.handleClick("")
-    this.setState({ activeSentence: value });
+    this.setState({
+      activeSentence: value,
+      updateData: saveData && block,
+      updateBlockId: blockIdentifier
+    });
   }
 
   handleDialogMessage = (
@@ -48,14 +57,6 @@ class PdfFileEditor extends React.Component {
     message
   ) => {
     // let splitValue = this.handleSplitSentence(subString)
-
-    console.log(
-      selected_block_id,
-      sentence_id,
-      sentence_index,
-      operation,
-      message
-    );
     this.setState({
       operation_type: operation,
       openDialog: true,
@@ -71,7 +72,7 @@ class PdfFileEditor extends React.Component {
   handleDialog() {
     let workflowCode = "DP_WFLOW_S_TR";
     if (this.state.title === "Merge sentence") {
-       let updatedBlocks =   BLOCK_OPS.do_sentences_merging_v1(this.props.sentences,this.state.sentence_id);
+      let updatedBlocks = BLOCK_OPS.do_sentences_merging_v1(this.props.sentences, this.state.sentence_id);
       this.props.workFlowApi(workflowCode, updatedBlocks, this.state.title);
     } else if (this.state.title === "Split sentence") {
       let updatedBlocks = BLOCK_OPS.do_sentence_splitting(
@@ -79,13 +80,14 @@ class PdfFileEditor extends React.Component {
         this.state.selected_block_id,
         this.state.sentence_id,
         this.state.sentence_index
-        
-      );
 
+      );
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
+    } else if (this.state.title === "Please save the edited sentence") {
+      this.props.saveUpdatedSentence(this.state.updateData, this.state.updateBlockId)
     }
-      
-      this.setState({ openDialog: false, activeSentence:{}, buttonStatus: "" });
+
+    this.setState({ openDialog: false, buttonStatus: "" });
   }
 
   handleClose = () => {
@@ -189,7 +191,7 @@ class PdfFileEditor extends React.Component {
                       variant="extended"
                       size="medium"
                       color="primary"
-                     mergeSaved aria-label="add"
+                      mergeSaved aria-label="add"
                       onClick={() => this.handleClick("mergeSaved")}
                     >
                       <Merge />
@@ -205,33 +207,33 @@ class PdfFileEditor extends React.Component {
                       overflowY: this.state.selectedBlock ? "hidden" : "auto",
                     }}
                   >
-                    {this.props.sentences.map((element) => {
-      return element.text_blocks.map((sentence) => {
-        return sentence.tokenized_sentences.map((value, tokenIndex) => {
-         return <Block
-              handleDialogMessage={this.handleDialogMessage.bind(this)}
-              sentence={value}
-              sen={sentence}
-              block_id={sentence.block_id}
-              handleClick={this.handleClick.bind(this)}
-              buttonStatus={this.state.buttonStatus}
-              pageNo={element.page_no}
-              modelId={this.props.modelId}
-              selectedBlock={this.state.activeSentence}
-              selectedTargetId={this.state.selectedTargetId}
-              handleSentenceClick={this.handleSentenceClick.bind(this)}
-              handleSourceChange={this.props.handleSourceChange}
-              tokenIndex={this.props.tokenIndex}
-              showTargetData={this.showTargetData.bind(this)}
-              handleEditorClick={this.handleEditorClick.bind(this)}
-              highlightId={this.state.highlightId}
-              saveUpdatedSentence={this.props.saveUpdatedSentence}
+                    {this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
+                      return element && element.text_blocks && element.text_blocks.map((sentence) => {
+                        return sentence.tokenized_sentences.map((value, tokenIndex) => {
+                          return <Block
+                            handleDialogMessage={this.handleDialogMessage.bind(this)}
+                            sentence={value}
+                            sen={sentence}
+                            block_id={sentence.block_id}
+                            handleClick={this.handleClick.bind(this)}
+                            buttonStatus={this.state.buttonStatus}
+                            pageNo={element.page_no}
+                            modelId={this.props.modelId}
+                            selectedBlock={this.state.activeSentence}
+                            selectedTargetId={this.state.selectedTargetId}
+                            handleSentenceClick={this.handleSentenceClick.bind(this)}
+                            handleSourceChange={this.props.handleSourceChange}
+                            tokenIndex={this.props.tokenIndex}
+                            showTargetData={this.showTargetData.bind(this)}
+                            handleEditorClick={this.handleEditorClick.bind(this)}
+                            highlightId={this.state.highlightId}
+                            saveUpdatedSentence={this.props.saveUpdatedSentence}
 
-            />
-          
-        });
-      })
-    })}
+                          />
+
+                        });
+                      })
+                    })}
                   </div>
                 </div>
               </Grid>
@@ -247,7 +249,7 @@ class PdfFileEditor extends React.Component {
                   <MachineTranslation
                     sentence={this.state.activeSentence}
                     buttonStatus={this.state.buttonStatus}
-                    
+
                   />
                 </Grid>
               </Grid>
