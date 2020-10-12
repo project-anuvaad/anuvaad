@@ -85,7 +85,7 @@ class PdfFileEditor extends React.Component {
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
     }
       
-      this.setState({ openDialog: false, buttonStatus: "" });
+      this.setState({ openDialog: false,  buttonStatus: "" });
   }
 
   handleClose = () => {
@@ -205,7 +205,33 @@ class PdfFileEditor extends React.Component {
                       overflowY: this.state.selectedBlock ? "hidden" : "auto",
                     }}
                   >
-                    {this.handleSentence()}
+                    {this.props.sentences.map((element) => {
+      return element.text_blocks.map((sentence) => {
+        return sentence.tokenized_sentences.map((value, tokenIndex) => {
+         return <Block
+              handleDialogMessage={this.handleDialogMessage.bind(this)}
+              sentence={value}
+              sen={sentence}
+              block_id={sentence.block_id}
+              handleClick={this.handleClick.bind(this)}
+              buttonStatus={this.state.buttonStatus}
+              pageNo={element.page_no}
+              modelId={this.props.modelId}
+              selectedBlock={this.state.activeSentence}
+              selectedTargetId={this.state.selectedTargetId}
+              handleSentenceClick={this.handleSentenceClick.bind(this)}
+              handleSourceChange={this.props.handleSourceChange}
+              tokenIndex={this.props.tokenIndex}
+              showTargetData={this.showTargetData.bind(this)}
+              handleEditorClick={this.handleEditorClick.bind(this)}
+              highlightId={this.state.highlightId}
+              saveUpdatedSentence={this.props.saveUpdatedSentence}
+
+            />
+          
+        });
+      })
+    })}
                   </div>
                 </div>
               </Grid>
@@ -221,6 +247,7 @@ class PdfFileEditor extends React.Component {
                   <MachineTranslation
                     sentence={this.state.activeSentence}
                     buttonStatus={this.state.buttonStatus}
+                    apiCall = {this.props.apiCall}
                   />
                 </Grid>
               </Grid>

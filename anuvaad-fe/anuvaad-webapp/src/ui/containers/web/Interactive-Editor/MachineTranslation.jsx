@@ -15,11 +15,11 @@ class MachineTranslation extends Component {
   render() {
     const { classes, sentence } = this.props;
     return (
-      <Paper className={this.props.buttonStatus !=="merge" ? classes.paper: classes.paper2} >
+      <Paper className={this.props.buttonStatus !=="merge" && this.props.buttonStatus !=="mergeSaved" && this.props.buttonStatus !=="Split" ? classes.paper: classes.paper2} >
         <div>
           <Typography variant="h5" gutterBottom className={classes.header} >Machine Translation</Typography>
         </div>
-      {this.props.buttonStatus !=="merge"&& sentence &&
+      {this.props.buttonStatus !=="merge"  && this.props.buttonStatus !=="mergeSaved" && this.props.buttonStatus !=="Split" && sentence &&
       <div>
         <hr style={this.props.buttonStatus !=="merge" ? { border: "1px solid #00000014" }: { border: "1px solid grey" }} />
         <div className={classes.div} >
