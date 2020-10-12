@@ -2,7 +2,6 @@ var jp                = require('jsonpath')
 const { v4 }        = require('uuid');
 
 function flattenArray(array) {
-    let self = this;
     return array.reduce(function(memo, el) {
       var items = Array.isArray(el) ? flattenArray(el) : [el];
       return memo.concat(items);
@@ -17,6 +16,7 @@ function get_block_id(blocks) {
     return block_ids
 }
 
+/*
 function get_page_id(blocks) {
     let page_ids = []
     blocks.forEach(element => {
@@ -24,11 +24,12 @@ function get_page_id(blocks) {
     });
     return page_ids
 }
+*/
 
 function get_blocks(sentences, block_ids) {
     let blocks = []
     block_ids.forEach(element => {
-        let condition           = '$..[*].text_blocks[?(@.block_id ==' + '\'' + element + '\'' + ')]'
+        let condition           = `$..[*].text_blocks[?(@.block_id == '${element}')]`;
         let selected_blocks     = jp.query(sentences, condition)
 
         selected_blocks.forEach(element => {
@@ -55,7 +56,7 @@ function get_sentence_id_blocks(sentences, blocks, s_id) {
     blocks.forEach(element => {
         let condition   = `$.tokenized_sentences[?(@.s_id == '${s_id}')]`;
         let selects     = jp.query(element, condition)
-        if (selects.length == 1) {
+        if (selects.length === 1) {
             selected_blocks.push(element)
             return selected_blocks
         }
@@ -224,46 +225,41 @@ function get_sorted_blocks(blocks) {
  * @description get tokenized_sentences of the blocks
  * @param {*} blocks 
  * @returns tokenized_sentences
- */
 function get_blocks_tokenized_sentences(blocks) {
     let condition           = '$..tokenized_sentences[*]'
     let tokenized_sentences = jp.query(blocks, condition)
     return tokenized_sentences
 }
+ */
 
 /**
  * @description, get start and end index of sentence_ids spread across the blocks
  * @param {*} blocks 
  * @param {*} sentence_ids 
- */
 function get_start_end_index(blocks, sentence_ids) {
     let first_block         = blocks[0]
     let last_block          = blocks[blocks.length - 1]
 
     let first_block_indices = []
-    for (var i = 0; i < first_block.tokenized_sentences.length; i++) {
+    for (let i = 0; i < first_block.tokenized_sentences.length; i++) {
         sentence_ids.forEach(s_id => {
-            if (s_id == first_block.tokenized_sentences[i].s_id) {
+            if (s_id === first_block.tokenized_sentences[i].s_id) {
                 first_block_indices.push(i)
             }
         })
     }
-    /**
-     * sort ascending
-     */
+
     first_block_indices     = first_block_indices.sort((a, b) => a - b)
 
     let last_block_indices  = []
-    for (var i = 0; i < last_block.tokenized_sentences.length; i++) {
+    for (let j = 0; j < last_block.tokenized_sentences.length; j++) {
         sentence_ids.forEach(s_id => {
-            if (s_id == last_block.tokenized_sentences[i].s_id) {
-                last_block_indices.push(i)
+            if (s_id === last_block.tokenized_sentences[j].s_id) {
+                last_block_indices.push(j)
             }
         })
     }
-    /**
-     * sort desending
-     */
+
     last_block_indices      = last_block_indices.sort((a, b) => b - a)
 
     return {
@@ -271,6 +267,7 @@ function get_start_end_index(blocks, sentence_ids) {
         'last' : last_block_indices[0]
     }
 }
+*/
 
 /**
  * finds sentence_id index in the given sorted blocks
@@ -285,7 +282,7 @@ function get_sentence_ids_in_ascending_order(blocks, sentence_ids) {
         let block_sentence_indices = []
         sentence_ids.forEach(s_id => {
             for (var i = 0; i < block.tokenized_sentences.length; i++) {
-                if (s_id == block.tokenized_sentences[i].s_id) {
+                if (s_id === block.tokenized_sentences[i].s_id) {
                     block_sentence_indices.push({'s_id': s_id, 
                     'index': i, 
                     'block_identifer': block.block_identifier, 
@@ -383,7 +380,7 @@ function do_sentences_merging_v1(sentences, sentence_ids) {
 
     sentence_ids.forEach(element => {
         let block = get_sentence_id_blocks(sentences, text_blocks, element)
-        if (block.length == 1) {
+        if (block.length === 1) {
             selected_blocks.push(block[0])
         }
     })
