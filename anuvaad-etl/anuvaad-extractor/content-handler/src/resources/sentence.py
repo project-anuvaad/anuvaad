@@ -1,7 +1,7 @@
 from flask_restful import fields, marshal_with, reqparse, Resource
 from repositories import SentenceRepositories
 from models import CustomResponse, Status
-from utilities import MODULE_CONTEXT
+from utilities import AppContext
 from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import request
 
@@ -16,8 +16,9 @@ class FetchSentenceResource(Resource):
         if user_id is None or s_ids is None:
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
-
-        log_info("FetchSentenceResource s_ids {} for user {}".format(len(s_ids), user_id), MODULE_CONTEXT)
+        
+        AppContext.addRecordID(None)
+        log_info("FetchSentenceResource s_ids {} for user {}".format(len(s_ids), user_id), AppContext.getContext())
 
         try:
             result  = SentenceRepositories.get_sentence(user_id, s_ids)
@@ -28,7 +29,7 @@ class FetchSentenceResource(Resource):
             res = CustomResponse(Status.SUCCESS.value, result)
             return res.getres()
         except Exception as e:
-            log_exception("FetchSentenceResource ",  MODULE_CONTEXT, e)
+            log_exception("FetchSentenceResource ",  AppContext.getContext(), e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
         
@@ -45,7 +46,9 @@ class SaveSentenceResource(Resource):
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
 
-        log_info("SaveSentenceResource for user {}, number sentences to update {}".format(user_id, len(sentences)), MODULE_CONTEXT)
+        AppContext.addRecordID(None)
+        log_info("SaveSentenceResource for user {}, number sentences to update {}".format(user_id, len(sentences)), AppContext.getContext())
+
         try:
             result = SentenceRepositories.update_sentences(user_id, sentences)
             if result == False:
@@ -55,7 +58,7 @@ class SaveSentenceResource(Resource):
             res = CustomResponse(Status.SUCCESS.value, result)
             return res.getres()
         except Exception as e:
-            log_exception("SaveSentenceResource ",  MODULE_CONTEXT, e)
+            log_exception("SaveSentenceResource ",  AppContext.getContext(), e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
 
@@ -65,7 +68,9 @@ class SaveSentenceResource(Resource):
 '''
 class SentenceBlockGetResource(Resource):
     def get(self, user_id, s_id):
-        log_info("SentenceBlockGetResource {} for user {}".format(s_id, user_id), MODULE_CONTEXT)
+        AppContext.addRecordID(None)
+        log_info("SentenceBlockGetResource {} for user {}".format(s_id, user_id), AppContext.getContext())
+        
         try:
             result  = SentenceRepositories.get_sentence_block(user_id, s_id)
             if result == False:
@@ -74,6 +79,6 @@ class SentenceBlockGetResource(Resource):
             res = CustomResponse(Status.SUCCESS.value, result)
             return result, 200
         except Exception as e:
-            log_exception("SentenceBlockGetResource ",  MODULE_CONTEXT, e)
+            log_exception("SentenceBlockGetResource ",  AppContext.getContext(), e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400

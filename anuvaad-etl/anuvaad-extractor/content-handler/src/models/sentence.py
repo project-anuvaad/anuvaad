@@ -1,4 +1,4 @@
-from utilities import MODULE_CONTEXT
+from utilities import AppContext
 from db import get_db
 from anuvaad_auditor.loghandler import log_info, log_exception
 
@@ -13,7 +13,7 @@ class SentenceModel(object):
                 return doc
             return None
         except Exception as e:
-            log_exception("db connection exception ",  MODULE_CONTEXT, e)
+            log_exception("db connection exception ",  AppContext.getContext(), e)
             return None
         
     @staticmethod
@@ -44,7 +44,7 @@ class SentenceModel(object):
 
             return None
         except expression as identifier:
-            log_exception("db connection exception ",  MODULE_CONTEXT, e)
+            log_exception("db connection exception ",  AppContext.getContext(), e)
             return None
 
     @staticmethod
@@ -67,5 +67,5 @@ class SentenceModel(object):
                 return False
             return True        
         except expression as identifier:
-            log_exception("db connection exception ",  MODULE_CONTEXT, e)
+            log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
