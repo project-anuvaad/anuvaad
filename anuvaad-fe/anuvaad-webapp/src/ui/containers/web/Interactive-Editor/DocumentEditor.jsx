@@ -124,7 +124,8 @@ class PdfFileEditor extends React.Component {
     }
 
     /* Pagination api */
-    if (prevProps.fetchContent !== this.props.fetchContent && this.props.fetchContent.result.data) {
+    if (prevProps.fetchContent !== this.props.fetchContent) {
+
       let temp = this.props.fetchContent.result.data;
       if (!temp) {
         this.setState({
@@ -136,7 +137,7 @@ class PdfFileEditor extends React.Component {
         this.setState({
           sentences: temp,
           open: this.state.apiStatus && true,
-          message: this.state.apiStatus && (this.state.apiCall === "Merge sentence" ? "Sentence merged successfully!" : this.state.apiCall === "merge" ? "Paragraph merged successfully" : this.state.apiCall === "Split sentence" ? "Sentence Splitted Sucessfully" : "Sentence updated successfully...!"),
+          message: this.state.apiStatus && (this.state.apiCall === "Merge sentence" ? "Sentence merged successfully!" :  this.state.apiCall === "Split sentence" ? "Sentence Splitted Sucessfully" : "Sentence updated successfully...!"),
           apiStatus: false,
           apiCall: false,
           showLoader: false,
@@ -147,6 +148,10 @@ class PdfFileEditor extends React.Component {
           // hasMoreItems: Data.count > this.state.currentPage + this.state.pagesToBeLoaded ? true : false
         });
       }
+
+      setTimeout(() => {
+        this.setState({ open: false });
+      }, 3000);
     }
 
     if (!this.state.tokenized && this.state.scrollPageNo > 1 && this.state.scrollTransMode) {
@@ -735,7 +740,7 @@ class PdfFileEditor extends React.Component {
                         Extracted Document
                      </Typography>
 
-                      {this.state.tokenized && !this.state.apiCall && (
+                      {/* {this.state.tokenized && !this.state.apiCall && (
                         <Toolbar
                           onClick={event => {
                             this.handleClick(this.state.mergeButton === "save" ? "Merge" : "save");
@@ -746,7 +751,7 @@ class PdfFileEditor extends React.Component {
                             {this.state.mergeButton === "save" ? "Save" : "Merge Blocks"}
                           </Typography>
                         </Toolbar>
-                      )}
+                      )} */}
                     </Toolbar>
 
                   </Paper>
@@ -940,6 +945,7 @@ class PdfFileEditor extends React.Component {
                   handleSourceChange={this.handleSourceChange.bind(this)}
                   saveUpdatedSentence={this.saveUpdatedSentence.bind(this)}
                   workFlowApi={this.workFlowApi.bind(this)}
+                  apiCall = {this.state.apiCall}
                 />
 
               </Grid>
