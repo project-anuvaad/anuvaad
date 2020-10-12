@@ -194,6 +194,7 @@ class Block extends Component {
 
   render() {
     const { classes, sentence, selectedBlock, highlightId, selectedTargetId } = this.props;
+    console.log(this.state.sentence && this.state.sentence.hasOwnProperty("save"), '========================================')
     return (
       <Paper
         variant="outlined"
@@ -225,13 +226,13 @@ class Block extends Component {
 
               <div style={{ width: "100%", paddingLeft: "10px" }}>
                 <div
-                  style={{ minHeight: "45px", padding: "5px" }}
+                  style={{ minHeight: "45px", padding: "5px", fontSize: "16px" }}
                 // onClick={() => this.props.handleSentenceClick(sentence)}
                 >
                   {sentence.src}
                 </div>
                 <hr style={{ border: (selectedBlock && sentence && sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "copy" || this.props.buttonStatus === "typing")) ? "1px dashed #1C9AB7" : "1px dashed #00000014" }} />
-                {(selectedBlock && sentence && sentence.s_id === selectedBlock.s_id) &&
+                {((selectedBlock && sentence && sentence.s_id === selectedBlock.s_id) || (this.state.sentence && this.state.sentence.hasOwnProperty("save"))) ?
                   <AutoComplete
                     aId={sentence.s_id}
                     refId={sentence.s_id}
@@ -243,15 +244,16 @@ class Block extends Component {
                       borderRadius: "4px",
                       border: '0px dotted white',
                       minHeight: "45px",
-                      fontSize: "18px",
+                      fontSize: "16px",
                       border: 'none',
-                      outline: "none"
+                      outline: "none",
+                      fontFamily: "Source Sans Pro,Regular,Arial,sans-serif"
 
                     }}
                     tokenIndex={this.props.tokenIndex}
                     // value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData) ? this.state.sentence.tgt : ""}
                     // value={this.state.sentence.tgt}
-                    value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData) ? this.state.sentence.tgt : ""}
+                    value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData || this.state.sentence.hasOwnProperty("save")) ? this.state.sentence.tgt : ""}
                     sentence={this.state.sentence}
 
                     sourceText={sentence.src}
@@ -276,7 +278,7 @@ class Block extends Component {
 
 
                   />
-
+                  : <div style={{minHeight: "50px"}}></div>
                 }
               </div>
 
@@ -310,11 +312,11 @@ class Block extends Component {
                           style={selectedBlock &&
                             sentence &&
                             sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "typing" || this.props.buttonStatus === "copy") ? { color: "#1C9AB7" } : {}}
-                            >
-                            <ArrowBackIcon
-                              fontSize="medium"
-                              className={classes.Icons}
-                            />
+                        >
+                          <ArrowBackIcon
+                            fontSize="medium"
+                            className={classes.Icons}
+                          />
                         </IconButton>
                       </Tooltip>
                       < Tooltip title="Save">
@@ -414,7 +416,7 @@ class Block extends Component {
                             </IconButton>
                           </Tooltip>
                         </div>
-                      ) : this.props.buttonStatus !== "split" && this.props.buttonStatus !== "typing" && (
+                      ) : this.props.buttonStatus !== "split" && (
                         <Tooltip title={"Spit sentence"}>
                           <IconButton aria-label="Split">
                             <Split
@@ -426,7 +428,7 @@ class Block extends Component {
                           </IconButton>
                         </Tooltip>
                       )}
-                    {this.props.buttonStatus !== "split" && this.props.buttonStatus !== "typing" && (
+                    {this.props.buttonStatus !== "split" && (
                       <Tooltip title="Merge Sentence">
                         <IconButton aria-label="merge">
                           <Merge

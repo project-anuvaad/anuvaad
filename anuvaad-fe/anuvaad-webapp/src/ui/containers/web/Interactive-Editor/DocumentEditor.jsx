@@ -389,7 +389,6 @@ class PdfFileEditor extends React.Component {
   }
 
   workFlowApi(workflow, blockDetails, update) {
-    debugger
     let pageInfo = [];
     const apiObj = new WorkFlow(
       workflow,
