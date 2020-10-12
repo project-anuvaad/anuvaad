@@ -141,19 +141,24 @@ class Block extends Component {
   }
 
   handleShowTarget(id) {
-    let sentence = this.state.sentence;
+    if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
+      let sentence = this.state.sentence;
 
-    sentence.tagged_tgt = sentence.s0_tgt;
-    sentence.tgt = sentence.s0_tgt;
-    this.setState({
-      sentence: sentence,
-      enteredData: true,
-    });
+      sentence.tagged_tgt = sentence.s0_tgt;
+      sentence.tgt = sentence.s0_tgt;
+      this.setState({
+        sentence: sentence,
+        enteredData: true,
+      });
 
 
-    this.props.handleClick("copy")
-    this.props.showTargetData(id)
-    this.props.handleEditorClick(id)
+      this.props.handleClick("copy")
+      this.props.showTargetData(id)
+      this.props.handleEditorClick(id)
+    } else {
+      this.props.handleSentenceClick(this.props.sentence)
+    }
+
   }
 
   handleChange = (name) => (event) => {
@@ -165,21 +170,26 @@ class Block extends Component {
     this.setState({ selectedValueArray: arr });
   };
 
-  handleSave() {
-    let block = this.props.sen
-    this.setState({ enteredData: false })
+  handleSave(id) {
+    if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
 
-    block && block.tokenized_sentences && Array.isArray(block.tokenized_sentences) && block.tokenized_sentences.length > 0 && block.tokenized_sentences.map((tokenObj, i) => {
-      if (this.state.sentence && this.state.sentence.s_id === tokenObj.s_id) {
-        let sentence = this.state.sentence
-        sentence.save = true
-        tokenObj = this.state.sentence
+      let block = this.props.sen
+      this.setState({ enteredData: false })
 
-        // this.setState({sentence})
-      }
-    })
-    this.props.handleClick("")
-    this.props.saveUpdatedSentence(block, this.props.blockIdentifier)
+      block && block.tokenized_sentences && Array.isArray(block.tokenized_sentences) && block.tokenized_sentences.length > 0 && block.tokenized_sentences.map((tokenObj, i) => {
+        if (this.state.sentence && this.state.sentence.s_id === tokenObj.s_id) {
+          let sentence = this.state.sentence
+          sentence.save = true
+          tokenObj = this.state.sentence
+
+          // this.setState({sentence})
+        }
+      })
+      this.props.handleClick("")
+      this.props.saveUpdatedSentence(block, this.props.blockIdentifier)
+    } else {
+      this.props.handleSentenceClick(this.props.sentence)
+    }
   }
 
   handleClick(id) {
@@ -194,7 +204,7 @@ class Block extends Component {
 
   render() {
     const { classes, sentence, selectedBlock, highlightId, selectedTargetId } = this.props;
-    console.log(this.state.sentence && this.state.sentence.hasOwnProperty("save"), '========================================')
+
     return (
       <Paper
         variant="outlined"
@@ -252,7 +262,6 @@ class Block extends Component {
                     }}
                     tokenIndex={this.props.tokenIndex}
                     // value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData) ? this.state.sentence.tgt : ""}
-                    // value={this.state.sentence.tgt}
                     value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData || this.state.sentence.hasOwnProperty("save")) ? this.state.sentence.tgt : ""}
                     sentence={this.state.sentence}
 
@@ -278,7 +287,7 @@ class Block extends Component {
 
 
                   />
-                  : <div style={{minHeight: "50px"}}></div>
+                  : <div style={{ minHeight: "50px" }}></div>
                 }
               </div>
 
@@ -324,61 +333,10 @@ class Block extends Component {
                           <Save style={selectedBlock &&
                             sentence &&
                             sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "typing" || this.props.buttonStatus === "copy") ? { color: "#1C9AB7" } : {}} onClick={(event) => {
-                              this.handleSave("save");
+                              this.handleSave(sentence.s_id);
                             }} />
                         </IconButton>
                       </Tooltip>
-
-                      {/* {selectedBlock &&
-                        sentence &&
-                        sentence.s_id === selectedBlock.s_id && this.props.buttonStatus === "typing" ?
-                        <div>
-                          <Tooltip title="Get machine translated sentence">
-                            <IconButton
-                              aria-label="validation mode"
-                              onClick={() => {
-                                this.handleShowTarget(sentence.s_id);
-                              }}
-                            >
-                              <ArrowBackIcon
-                                fontSize="large"
-                                className={classes.Icons}
-                              />
-                            </IconButton>
-                          </Tooltip>
-                          < Tooltip title="Save">
-                            <IconButton aria-label="save">
-                              <Save style={{ color: "#1C9AB7" }} fontSize="large" onClick={(event) => {
-                                this.handleSave("save");
-                              }} />
-                            </IconButton>
-                          </Tooltip> </div> :
-                        this.props.buttonStatus !== "typing" &&
-                        <div>
-                           <Tooltip title="Get machine translated sentence">
-                            <IconButton
-                              aria-label="validation mode"
-                              onClick={() => {
-                                this.handleShowTarget(sentence.s_id);
-                              }}
-                            >
-                              <ArrowBackIcon
-                                fontSize="medium"
-                                className={classes.Icons}
-                              />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Save">
-                            <IconButton aria-label="save">
-                              <Save onClick={(event) => {
-                                this.handleSave("save");
-                              }} />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
-                      } */}
-
-                      {/* </div>} */}
                     </div>
                   )}
                   <div
