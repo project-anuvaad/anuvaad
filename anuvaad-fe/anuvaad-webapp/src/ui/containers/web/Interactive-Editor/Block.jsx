@@ -200,7 +200,7 @@ class Block extends Component {
         id={this.props.block_id + "##" + sentence.s_id}
         style={{
           margin: "10px",
-          minHeight: "90px",
+          minHeight: "120px",
           padding: "1%",
           border:
             (selectedBlock &&
@@ -300,20 +300,34 @@ class Block extends Component {
                         paddingLeft: "4%",
                       }}
                     >
-                      {/* <Tooltip title="Get machine translated sentence">
+                      <Tooltip title="Get machine translated sentence">
                         <IconButton
                           aria-label="validation mode"
                           onClick={() => {
                             this.handleShowTarget(sentence.s_id);
                           }}
-                        >
-                          <ArrowBackIcon
-                            fontSize="medium"
-                            className={classes.Icons}
-                          />
+
+                          style={selectedBlock &&
+                            sentence &&
+                            sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "typing" || this.props.buttonStatus === "copy") ? { color: "#1C9AB7" } : {}}
+                            >
+                            <ArrowBackIcon
+                              fontSize="medium"
+                              className={classes.Icons}
+                            />
                         </IconButton>
-                      </Tooltip> */}
-                      {selectedBlock &&
+                      </Tooltip>
+                      < Tooltip title="Save">
+                        <IconButton aria-label="save">
+                          <Save style={selectedBlock &&
+                            sentence &&
+                            sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "typing" || this.props.buttonStatus === "copy") ? { color: "#1C9AB7" } : {}} onClick={(event) => {
+                              this.handleSave("save");
+                            }} />
+                        </IconButton>
+                      </Tooltip>
+
+                      {/* {selectedBlock &&
                         sentence &&
                         sentence.s_id === selectedBlock.s_id && this.props.buttonStatus === "typing" ?
                         <div>
@@ -360,7 +374,7 @@ class Block extends Component {
                             </IconButton>
                           </Tooltip>
                         </div>
-                      }
+                      } */}
 
                       {/* </div>} */}
                     </div>
