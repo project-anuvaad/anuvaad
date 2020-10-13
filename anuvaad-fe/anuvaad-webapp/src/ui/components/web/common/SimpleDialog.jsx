@@ -17,10 +17,10 @@ export default class SimpleDialog extends React.Component {
             <div>
 
                 <Dialog
-                    inputProps={{
-                        name: 'max-width',
-                        id: 'max-width',
-                      }}
+                    // inputProps={{
+                    //     name: 'max-width',
+                    //     id: 'max-width',
+                    //   }}
                     open={open}
                     keepMounted
                     onClose={this.handleClose}
