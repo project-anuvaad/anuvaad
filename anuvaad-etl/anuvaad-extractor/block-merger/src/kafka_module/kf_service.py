@@ -29,13 +29,13 @@ def consumer_validator():
         log_exception("consumer_validator : error in kafka opertation while listening to consumer on topic %s"%(config.input_topic), None, None)
         raise KafkaConsumerError(400, "Can not connect to consumer.")
 
-def push_output(producer, topic_name, output, jobid, task_id):
+def push_output(producer, topic_name, output, jobid, task_id,data):
     try:
         producer.push_data_to_queue(topic_name, output)
-        log_info("push_output : producer flushed value on topic %s"%(topic_name), jobid)
+        log_info("push_output : producer flushed value on topic %s"%(topic_name), data)
     except Exception as e:
         response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
-        log_exception("push_output : Response can't be pushed to queue %s"%(topic_name), jobid, None)
+        log_exception("push_output : Response can't be pushed to queue %s"%(topic_name), data, None)
         raise KafkaProducerError(response_custom, "data Not pushed to queue: %s"%(topic_name))
 
 
@@ -101,12 +101,12 @@ def block_merger_request_worker():
             file_value_response = response_gen.workflow_response(task_id, task_starttime, False)
             if file_value_response != None:
                 if "errorID" not in file_value_response.keys():
-                    push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id)
+                    push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
                     log_info("block_merger_request_worker : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
                 else:
-                    log_info("block_merger_request_worker : error send to error handler", jobid)
+                    log_info("block_merger_request_worker : error send to error handler", data)
 
-            log_info('block_merger_request_worker - request in internal queue {}'.format(blockMergerQueue.qsize()), jobid)
+            log_info('block_merger_request_worker - request in internal queue {}'.format(blockMergerQueue.qsize()), data)
 
             blockMergerQueue.task_done()
         except Exception as e:
@@ -132,12 +132,12 @@ def block_merger_request_worker_ocr():
             file_value_response = response_gen.workflow_response(task_id, task_starttime, False)
             if file_value_response != None:
                 if "errorID" not in file_value_response.keys():
-                    push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id)
+                    push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
                     log_info("block_merger_request_worker_ocr : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
                 else:
-                    log_info("block_merger_request_worker_ocr : error send to error handler", jobid)
+                    log_info("block_merger_request_worker_ocr : error send to error handler", data)
 
-            log_info('block_merger_request_worker_ocr - request in internal queue {}'.format(blockMergerQueue.qsize()), jobid)
+            log_info('block_merger_request_worker_ocr - request in internal queue {}'.format(blockMergerQueue.qsize()), data)
 
             blockMergerOCRQueue.task_done()
         except Exception as e:
