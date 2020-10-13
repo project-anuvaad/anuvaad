@@ -52,7 +52,6 @@ class AnuvaadEngTokenizer(object):
         text = self.serialize_with_abbreviations_generalize_pattern(text)
         text = self.serialize_dates(text)
         text = self.serialize_with_abbrevations(text)
-        text = self.serialize_table_points(text)
         text = self.serialize_pattern(text)
         text = self.serialize_dots(text)
         text = self.serialize_brackets(text)
@@ -60,6 +59,7 @@ class AnuvaadEngTokenizer(object):
         text = self.serialize_dot_with_number_beginning(text)
         text = self.serialize_quotes_with_number(text)
         text = self.serialize_bullet_points(text)
+        text = self.serialize_table_points(text)
         sentences = self._tokenizer.tokenize(text)
         output = []
         for se in sentences:
