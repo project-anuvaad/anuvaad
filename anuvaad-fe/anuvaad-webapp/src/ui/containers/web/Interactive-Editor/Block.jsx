@@ -242,7 +242,7 @@ class Block extends Component {
           }}
           
         >
-          <Grid container spacing={2}>
+          <Grid container spacing={2} style={{padding: "7px"}}>
             <Grid item xs={8} sm={9} lg={11} xl={11}>
               <div style={{ display: "flex", flexDirection: "row" }} 
               
