@@ -16,10 +16,8 @@ from anuvaad_auditor.loghandler import log_exception
 log = logging.getLogger('file')
 
 
-
 # Method to instantiate the kafka consumer
 def instantiate(topics):
-    #topic_partitions = get_topic_paritions(topics)
     consumer = KafkaConsumer(*topics,
                              bootstrap_servers=[kafka_bootstrap_server_host],
                              api_version=(1, 0, 0),
@@ -27,7 +25,6 @@ def instantiate(topics):
                              auto_offset_reset='latest',
                              enable_auto_commit=True,
                              value_deserializer=lambda x: handle_json(x))
-    #consumer.assign(topics)
     return consumer
 
 
@@ -39,7 +36,6 @@ def get_topic_paritions(topics):
             tp = TopicPartition(topic, partition)
             topic_paritions.append(tp)
     return topic_paritions
-
 
 
 # Method to read and process the requests from the kafka queue
@@ -71,6 +67,7 @@ def consume():
         log_exception("Exception while starting the wfm consumer: " + str(e), None, e)
         post_error("WFM_CONSUMER_ERROR", "Exception while starting wfm consumer: " + str(e), None)
 
+
 # Method that provides a deserialiser for the kafka record.
 def handle_json(x):
     try:
@@ -78,8 +75,6 @@ def handle_json(x):
     except Exception as e:
         log_exception("Exception while deserializing: ", None, e)
         return {}
-
-
 
 
 # Log config

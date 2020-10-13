@@ -23,19 +23,14 @@ class JobsManger(Thread):
         run = 0
         obj = {"metadata": {"module": tool_translator}}
         while not self.stopped.wait(jm_cron_interval_sec):
-            completed = []
-            completed_jobids =[]
-            failed_jobids = []
-            failed = []
-            inprogress = []
+            completed, failed, inprogress = [], [], []
+            completed_jobids, failed_jobids = [], []
             try:
                 records = repo.find_all()
                 for record in records:
                     is_added = False
                     try:
-                        total = record["totalSentences"]
-                        translated = record["translatedSentences"]
-                        skipped = record["skippedSentences"]
+                        total, translated, skipped = record["totalSentences"], record["translatedSentences"], record["skippedSentences"]
                         if total == 0:
                             failed.append(record)
                             failed_jobids.append(record["jobID"])
