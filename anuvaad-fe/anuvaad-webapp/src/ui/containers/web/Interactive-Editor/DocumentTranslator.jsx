@@ -3,12 +3,10 @@ import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import SourceView from "./DocumentSource";
 import Grid from "@material-ui/core/Grid";
 import ClearContent from "../../../../flux/actions/apis/clearcontent";
 import MachineTranslation from "./MachineTranslation";
 import Block from "./Block";
-import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import Merge from "@material-ui/icons/CallMerge";
@@ -18,6 +16,9 @@ import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 import Dialog from "../../../components/web/common/SimpleDialog";
 import BLOCK_OPS from "../../../../utils/block.operations";
+
+import InfiniteScroll from "react-infinite-scroll-component";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -31,13 +32,42 @@ class PdfFileEditor extends React.Component {
     };
   }
 
-  handleSentenceClick(value) {
+  componentDidUpdate(prevProps) {
+   
+
+    
+    if(this.props.open && prevProps.open!==this.props.open){
+
+      {this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
+        element && element.text_blocks && element.text_blocks.map((sentence) => {
+          sentence.tokenized_sentences.map((value, tokenIndex) => {
+              if(value.s_id === this.state.SentenceOperationId){
+                this.setState({activeSentence: value, buttonStatus:"selected" })
+              }
+          })
+        })
+      })}
+     
+    }
+  }
+
+  handleSentenceClick(value, saveData, block, blockIdentifier) {
     // this.setState({ activeSentence: value, selectedTargetId: value.s_id })
-    // if(this.state.selectedTargetId !== value.s_id) {
-    //   this.setState()
-    // }
+
+    if (block && this.state.activeSentence && this.state.activeSentence.s_id && this.state.activeSentence.s_id !== value.s_id)
+      if (saveData) {
+        this.setState({
+          title: "Please save the edited sentence", openDialog: true
+        })
+      }
+
     this.handleClick("")
-    this.setState({ activeSentence: value });
+    this.setState({
+      activeSentence: value,
+      updateData: saveData && block,
+      updateBlockId: blockIdentifier,
+      buttonStatus: "selected"
+    });
   }
 
   handleDialogMessage = (
@@ -48,14 +78,6 @@ class PdfFileEditor extends React.Component {
     message
   ) => {
     // let splitValue = this.handleSplitSentence(subString)
-
-    console.log(
-      selected_block_id,
-      sentence_id,
-      sentence_index,
-      operation,
-      message
-    );
     this.setState({
       operation_type: operation,
       openDialog: true,
@@ -69,9 +91,13 @@ class PdfFileEditor extends React.Component {
   };
 
   handleDialog() {
+    let SentenceOperationId;
     let workflowCode = "DP_WFLOW_S_TR";
     if (this.state.title === "Merge sentence") {
-       let updatedBlocks =   BLOCK_OPS.do_sentences_merging_v1(this.props.sentences,this.state.sentence_id);
+      let result = BLOCK_OPS.do_sentences_merging_v1(this.props.sentences, this.state.sentence_id);
+      let updatedBlocks = result.blocks
+      SentenceOperationId = result.sentence_id;
+
       this.props.workFlowApi(workflowCode, updatedBlocks, this.state.title);
     } else if (this.state.title === "Split sentence") {
       let updatedBlocks = BLOCK_OPS.do_sentence_splitting(
@@ -79,13 +105,15 @@ class PdfFileEditor extends React.Component {
         this.state.selected_block_id,
         this.state.sentence_id,
         this.state.sentence_index
-        
-      );
 
+      );
+      SentenceOperationId = this.state.activeSentence.s_id;
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
+    } else if (this.state.title === "Please save the edited sentence") {
+      this.props.saveUpdatedSentence(this.state.updateData, this.state.updateBlockId)
     }
-      
-      this.setState({ openDialog: false, activeSentence:{}, buttonStatus: "" });
+
+    this.setState({ openDialog: false, buttonStatus: "apiCalled", SentenceOperationId });
   }
 
   handleClose = () => {
@@ -116,6 +144,7 @@ class PdfFileEditor extends React.Component {
               sentence={value}
               sen={sentence}
               block_id={sentence.block_id}
+              blockIdentifier={sentence.block_identifier}
               handleClick={this.handleClick.bind(this)}
               buttonStatus={this.state.buttonStatus}
               pageNo={element.page_no}
@@ -129,7 +158,8 @@ class PdfFileEditor extends React.Component {
               handleEditorClick={this.handleEditorClick.bind(this)}
               highlightId={this.state.highlightId}
               saveUpdatedSentence={this.props.saveUpdatedSentence}
-
+              mergeSentenceId = {this.state.mergeSentenceId}
+              open ={this.props.open}
             />
           );
         });
@@ -151,6 +181,7 @@ class PdfFileEditor extends React.Component {
   }
 
   render() {
+
     return (
       <div>
         {this.props.sentences && (
@@ -160,7 +191,7 @@ class PdfFileEditor extends React.Component {
               spacing={2}
               style={{
                 marginTop: "-20px",
-                padding: "5px 24px 0px ",
+                padding: "5px 24px 0px 10px",
                 width: "100%",
                 position: "fixed",
                 zIndex: 1000,
@@ -189,8 +220,9 @@ class PdfFileEditor extends React.Component {
                       variant="extended"
                       size="medium"
                       color="primary"
-                     mergeSaved aria-label="add"
+                      mergeSaved aria-label="add"
                       onClick={() => this.handleClick("mergeSaved")}
+                      style={{marginLeft: "10px"}}
                     >
                       <Merge />
                       Merge
@@ -199,39 +231,65 @@ class PdfFileEditor extends React.Component {
                 )}
                 <div elevation={3} style={{ overflow: "auto" }}>
                   <div
-                    id="scrollableDiv"
+                    id="scrollableDivs"
                     style={{
-                      maxHeight: window.innerHeight - 220,
+                      maxHeight: window.innerHeight - 180,
                       overflowY: this.state.selectedBlock ? "hidden" : "auto",
+                      border: "1px solid #D6D6D6"
                     }}
                   >
-                    {this.props.sentences.map((element) => {
-      return element.text_blocks.map((sentence) => {
-        return sentence.tokenized_sentences.map((value, tokenIndex) => {
-         return <Block
-              handleDialogMessage={this.handleDialogMessage.bind(this)}
-              sentence={value}
-              sen={sentence}
-              block_id={sentence.block_id}
-              handleClick={this.handleClick.bind(this)}
-              buttonStatus={this.state.buttonStatus}
-              pageNo={element.page_no}
-              modelId={this.props.modelId}
-              selectedBlock={this.state.activeSentence}
-              selectedTargetId={this.state.selectedTargetId}
-              handleSentenceClick={this.handleSentenceClick.bind(this)}
-              handleSourceChange={this.props.handleSourceChange}
-              tokenIndex={this.props.tokenIndex}
-              showTargetData={this.showTargetData.bind(this)}
-              handleEditorClick={this.handleEditorClick.bind(this)}
-              highlightId={this.state.highlightId}
-              saveUpdatedSentence={this.props.saveUpdatedSentence}
+                    <InfiniteScroll
+                      next={this.props.fetchData}
+                      hasMore={this.props.hasMoreItems}
+                      dataLength={this.props.sentences ? this.props.sentences.length : 0}
+                      loader={
+                        <p style={{ textAlign: "center" }}>
+                          <CircularProgress
+                            size={20}
+                            style={{
+                              zIndex: 1000
+                            }}
+                          />
+                        </p>
+                      }
+                      endMessage={
+                        <p style={{ textAlign: "center" }}>
+                          <b>You have seen it all</b>
+                        </p>
+                      }
+                      scrollableTarget={"scrollableDivs"}
+                    // onScroll={() => this.props.handleScroll()}
+                    >
+                      {this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
+                        return element && element.text_blocks && element.text_blocks.map((sentence) => {
+                          return sentence.tokenized_sentences.map((value, tokenIndex) => {
+                            return <Block
+                              handleDialogMessage={this.handleDialogMessage.bind(this)}
+                              sentence={value}
+                              sen={sentence}
+                              block_id={sentence.block_id}
+                              handleClick={this.handleClick.bind(this)}
+                              buttonStatus={this.state.buttonStatus}
+                              pageNo={element.page_no}
+                              modelId={this.props.modelId}
+                              selectedBlock={this.state.activeSentence}
+                              selectedTargetId={this.state.selectedTargetId}
+                              handleSentenceClick={this.handleSentenceClick.bind(this)}
+                              handleSourceChange={this.props.handleSourceChange}
+                              tokenIndex={this.props.tokenIndex}
+                              showTargetData={this.showTargetData.bind(this)}
+                              handleEditorClick={this.handleEditorClick.bind(this)}
+                              highlightId={this.state.highlightId}
+                              saveUpdatedSentence={this.props.saveUpdatedSentence}
+                              SentenceOperationId = {this.state.SentenceOperationId}
+                              blockIdentifier={sentence.block_identifier}
 
-            />
-          
-        });
-      })
-    })}
+                            />
+
+                          });
+                        })
+                      })}
+                    </InfiniteScroll>
                   </div>
                 </div>
               </Grid>
@@ -247,7 +305,7 @@ class PdfFileEditor extends React.Component {
                   <MachineTranslation
                     sentence={this.state.activeSentence}
                     buttonStatus={this.state.buttonStatus}
-                    
+
                   />
                 </Grid>
               </Grid>
