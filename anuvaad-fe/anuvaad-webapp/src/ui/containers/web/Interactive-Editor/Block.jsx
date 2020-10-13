@@ -84,6 +84,9 @@ class Block extends Component {
   }
 
   handleChangeEvent = (event) => {
+    if(this.props.buttonStatus === "selected") {
+      this.props.handleClick("typing")
+    }
     let sentence = this.state.sentence;
 
     sentence.tagged_tgt = event.target.value;
@@ -134,7 +137,6 @@ class Block extends Component {
   }
 
   handleEditorClick(id) {
-
     this.props.handleClick("typing")
     this.setState({ highlightDivider: true, highlightId: id });
   }

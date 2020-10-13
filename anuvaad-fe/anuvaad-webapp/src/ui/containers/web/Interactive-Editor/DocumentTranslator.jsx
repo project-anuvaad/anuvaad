@@ -222,6 +222,7 @@ class PdfFileEditor extends React.Component {
                       color="primary"
                       mergeSaved aria-label="add"
                       onClick={() => this.handleClick("mergeSaved")}
+                      style={{marginLeft: "10px"}}
                     >
                       <Merge />
                       Merge
@@ -234,6 +235,7 @@ class PdfFileEditor extends React.Component {
                     style={{
                       maxHeight: window.innerHeight - 180,
                       overflowY: this.state.selectedBlock ? "hidden" : "auto",
+                      border: "1px solid #D6D6D6"
                     }}
                   >
                     <InfiniteScroll
