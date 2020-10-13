@@ -115,8 +115,8 @@ class PdfFileEditor extends React.Component {
     }
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
 
-      // let telemetryData = this.state.telemetry
-      // TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
+      let telemetryData = this.state.telemetry
+      TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
 
       const apiObj = new FileContent(this.props.match.params.jobid, this.state.startPage, this.state.endPage);
       this.props.APITransport(apiObj);
@@ -137,7 +137,7 @@ class PdfFileEditor extends React.Component {
         this.setState({
           sentences: temp,
           open: this.state.apiStatus && true,
-          message: this.state.apiStatus && (this.state.apiCall === "Merge sentence" ? "Sentence merged successfully!" :  this.state.apiCall === "Split sentence" ? "Sentence Splitted Sucessfully" : "Sentence updated successfully...!"),
+          message: this.state.apiStatus && (this.state.apiCall === "Merge sentence" ? "Sentence merged successfully!" : this.state.apiCall === "Split sentence" ? "Sentence Splitted Sucessfully" : "Sentence updated successfully...!"),
           apiStatus: false,
           apiCall: false,
           showLoader: false,
@@ -381,16 +381,17 @@ class PdfFileEditor extends React.Component {
     }
   };
 
-  saveUpdatedSentence(sentenceObj, blockIdentifier) {
+  saveUpdatedSentence(sentenceObj, tokenObj, blockIdentifier) {
     this.setState({ selectedSourceText: sentenceObj })
 
     this.workFlowApi(wfcodes.DP_WFLOW_S_C, [sentenceObj], "update")
 
     let telemetry = {}
-    telemetry.initialSenetence = sentenceObj.s0_tgt
-    telemetry.finalSenetence = sentenceObj.tgt
+    telemetry.initialSenetence = tokenObj.s0_tgt
+    telemetry.finalSenetence = tokenObj.tgt
     telemetry.sId = blockIdentifier
     telemetry.mode = "translation"
+    this.setState({ telemetry })
   }
 
   workFlowApi(workflow, blockDetails, update) {
@@ -406,11 +407,11 @@ class PdfFileEditor extends React.Component {
     );
 
     console.log(blockDetails)
-    blockDetails.map(pageInfoDetails=>{
-     
-      pageInfo.push(pageInfoDetails.page_info &&parseInt(pageInfoDetails.page_info.page_no));
+    blockDetails.map(pageInfoDetails => {
+
+      pageInfo.push(pageInfoDetails.page_info && parseInt(pageInfoDetails.page_info.page_no));
     })
-    
+
     // pageInfo = update !== "merge" && blockDetails.length > 0 && blockDetails[0].page_info.page_no;
 
     this.props.APITransport(apiObj);
@@ -650,6 +651,7 @@ class PdfFileEditor extends React.Component {
     const apiObj = new DocumentConverter(recordId, user_profile.id);
     this.props.APITransport(apiObj);
   }
+
   render() {
     return (
       <div>
@@ -980,7 +982,8 @@ const mapStateToProps = state => ({
   fileUpload: state.fileUpload,
   documentDetails: state.documentDetails,
   fetchContent: state.fetchContent,
-  workflowStatus: state.workflowStatus
+  workflowStatus: state.workflowStatus,
+  documentconverter: state.documentconverter
 });
 
 const mapDispatchToProps = dispatch =>

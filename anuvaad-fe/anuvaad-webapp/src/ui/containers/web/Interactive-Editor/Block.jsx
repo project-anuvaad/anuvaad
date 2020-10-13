@@ -185,7 +185,7 @@ class Block extends Component {
         }
       })
       this.props.handleClick("")
-      this.props.saveUpdatedSentence(block, this.props.blockIdentifier)
+      this.props.saveUpdatedSentence(block, this.state.sentence,this.props.blockIdentifier)
     } else {
       this.props.handleSentenceClick(this.props.sentence)
     }

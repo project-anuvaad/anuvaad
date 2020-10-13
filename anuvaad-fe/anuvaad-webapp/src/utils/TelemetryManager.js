@@ -1,44 +1,45 @@
 import $t from "@project-sunbird/telemetry-sdk/index.js";
+import CONFIGS from '../configs/configs.js'
 
 /**
  * initializes the telemetry API
  */
-export const init = (env='TEST') => {
+export const init = () => {
   let config = {}
-  if (env === 'TEST') {
+
+  if (CONFIGS.BASE_URL_AUTO === 'https://auth.anuvaad.org') {
     config  = {
       pdata: {
-        id: 'kd.anuvaad.org',
+        id: 'developers.anuvaad.org',
         ver: "1.0",
         pid: "anuvaad-portal",
       },
       host: "https://auth.anuvaad.org",
-      env: "anuvaad-dev",
+      env: "DEV",
       did: "20d63257084c2dca33f31a8f14d8e94c0d939de4",
-      channel: 'kd.anuvaad.org',
-      batchsize: 1,
+      channel: 'developers.anuvaad.org',
+      batchsize: 10,
       endpoint: "/v1/telemetry",
       apislug: "/",
     }
   } else {
     config  = {
       pdata: {
-        id: 'users.anuvaad.org',
+        id: CONFIGS.BASE_URL_AUTO.replace(/(^\w+:|^)\/\//, ''),
         ver: "1.0",
         pid: "anuvaad-portal",
       },
-      host: "https://auth.anuvaad.org",
-      env: "anuvaad-user",
+      host: CONFIGS.BASE_URL_AUTO,
+      env: "PROD",
       did: "20d63257084c2dca33f31a8f14d8e94c0d939de4",
-      channel: 'users.anuvaad.org',
-      batchsize: 1,
+      channel: CONFIGS.BASE_URL_AUTO.replace(/(^\w+:|^)\/\//, ''),
+      batchsize: 20,
       endpoint: "/v1/telemetry",
       apislug: "/",
     }
   }
 
   $t.initialize(config);
-
   console.log("is telemetry initialized:", $t.isInitialized());
 };
 
@@ -47,6 +48,7 @@ export const init = (env='TEST') => {
  * @param {*} page_id , which page_id
  */
 export const pageLoadStarted = (page_id) => {
+
   if ($t.isInitialized() === false) {
     init()
   }

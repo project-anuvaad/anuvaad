@@ -144,6 +144,7 @@ class PdfFileEditor extends React.Component {
               sentence={value}
               sen={sentence}
               block_id={sentence.block_id}
+              blockIdentifier={sentence.block_identifier}
               handleClick={this.handleClick.bind(this)}
               buttonStatus={this.state.buttonStatus}
               pageNo={element.page_no}
@@ -231,7 +232,7 @@ class PdfFileEditor extends React.Component {
                   <div
                     id="scrollableDivs"
                     style={{
-                      maxHeight: window.innerHeight - 220,
+                      maxHeight: window.innerHeight - 180,
                       overflowY: this.state.selectedBlock ? "hidden" : "auto",
                     }}
                   >
@@ -255,7 +256,7 @@ class PdfFileEditor extends React.Component {
                         </p>
                       }
                       scrollableTarget={"scrollableDivs"}
-                      // onScroll={() => this.props.handleScroll()}
+                    // onScroll={() => this.props.handleScroll()}
                     >
                       {this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
                         return element && element.text_blocks && element.text_blocks.map((sentence) => {
@@ -279,6 +280,8 @@ class PdfFileEditor extends React.Component {
                               highlightId={this.state.highlightId}
                               saveUpdatedSentence={this.props.saveUpdatedSentence}
                               SentenceOperationId = {this.state.SentenceOperationId}
+                              blockIdentifier={sentence.block_identifier}
+
                             />
 
                           });
