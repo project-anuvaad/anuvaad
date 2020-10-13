@@ -25,6 +25,7 @@ class JobsManger(Thread):
         while not self.stopped.wait(jm_cron_interval_sec):
             completed = []
             completed_jobids =[]
+            failed_jobids = []
             failed = []
             inprogress = []
             try:
@@ -37,9 +38,11 @@ class JobsManger(Thread):
                         skipped = record["skippedSentences"]
                         if total == 0:
                             failed.append(record)
+                            failed_jobids.append(record["jobID"])
                             is_added = True
                         elif total == skipped:
                             failed.append(record)
+                            failed_jobids.append(record["jobID"])
                             is_added = True
                         elif total == translated or total == (translated + skipped):
                             completed.append(record)
@@ -55,6 +58,8 @@ class JobsManger(Thread):
                          + " | Completed: " + str(len(completed)) + " | Failed: " + str(len(failed)) + " | InProgress: " + str(len(inprogress)), obj)
                 if len(completed) > 0:
                     log_info("JobsManger - Run: " + str(run) + " | Completed Jobs: " + str(completed_jobids), obj)
+                if len(failed) > 0:
+                    log_info("JobsManger - Run: " + str(run) + " | Failed Jobs: " + str(failed_jobids), obj)
                 self.data_sink(completed, failed, obj)
                 run += 1
             except Exception as e:
