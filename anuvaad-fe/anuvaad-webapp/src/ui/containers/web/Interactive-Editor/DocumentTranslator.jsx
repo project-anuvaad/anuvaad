@@ -191,7 +191,7 @@ class PdfFileEditor extends React.Component {
               spacing={2}
               style={{
                 marginTop: "-20px",
-                padding: "5px 24px 0px ",
+                padding: "5px 24px 0px 10px",
                 width: "100%",
                 position: "fixed",
                 zIndex: 1000,
