@@ -53,13 +53,9 @@ def consume():
         thread = threading.current_thread().name
         log_info(str(thread) + " Running..........", None)
         while True:
-            log_info("consumer", None)
-            log_info(consumer, None)
             for msg in consumer:
                 try:
                     if msg:
-                        log_info("msg", None)
-                        log_info(msg, None)
                         data = msg.value
                         if 'jobID' in data.keys():
                             job_details = wfmutils.get_job_details(data["jobID"])
