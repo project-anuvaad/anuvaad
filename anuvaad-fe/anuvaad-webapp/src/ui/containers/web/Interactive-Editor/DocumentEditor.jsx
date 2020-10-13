@@ -115,8 +115,8 @@ class PdfFileEditor extends React.Component {
     }
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
 
-      // let telemetryData = this.state.telemetry
-      // TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
+      let telemetryData = this.state.telemetry
+      TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
 
       const apiObj = new FileContent(this.props.match.params.jobid, this.state.startPage, this.state.endPage);
       this.props.APITransport(apiObj);
@@ -381,16 +381,17 @@ class PdfFileEditor extends React.Component {
     }
   };
 
-  saveUpdatedSentence(sentenceObj, blockIdentifier) {
+  saveUpdatedSentence(sentenceObj, tokenObj, blockIdentifier) {
     this.setState({ selectedSourceText: sentenceObj })
 
     this.workFlowApi(wfcodes.DP_WFLOW_S_C, [sentenceObj], "update")
 
     let telemetry = {}
-    telemetry.initialSenetence = sentenceObj.s0_tgt
-    telemetry.finalSenetence = sentenceObj.tgt
+    telemetry.initialSenetence = tokenObj.s0_tgt
+    telemetry.finalSenetence = tokenObj.tgt
     telemetry.sId = blockIdentifier
     telemetry.mode = "translation"
+    this.setState({ telemetry })
   }
 
   workFlowApi(workflow, blockDetails, update) {
