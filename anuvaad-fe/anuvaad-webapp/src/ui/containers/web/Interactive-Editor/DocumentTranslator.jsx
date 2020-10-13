@@ -3,12 +3,10 @@ import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import SourceView from "./DocumentSource";
 import Grid from "@material-ui/core/Grid";
 import ClearContent from "../../../../flux/actions/apis/clearcontent";
 import MachineTranslation from "./MachineTranslation";
 import Block from "./Block";
-import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import Fab from "@material-ui/core/Fab";
 import Merge from "@material-ui/icons/CallMerge";
@@ -18,6 +16,9 @@ import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 import Dialog from "../../../components/web/common/SimpleDialog";
 import BLOCK_OPS from "../../../../utils/block.operations";
+
+import InfiniteScroll from "react-infinite-scroll-component";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -72,8 +73,8 @@ class PdfFileEditor extends React.Component {
   handleDialog() {
     let workflowCode = "DP_WFLOW_S_TR";
     if (this.state.title === "Merge sentence") {
-       let result         = BLOCK_OPS.do_sentences_merging_v1(this.props.sentences,this.state.sentence_id);
-       let updatedBlocks  = result.blocks
+      let result = BLOCK_OPS.do_sentences_merging_v1(this.props.sentences, this.state.sentence_id);
+      let updatedBlocks = result.blocks
 
       this.props.workFlowApi(workflowCode, updatedBlocks, this.state.title);
     } else if (this.state.title === "Split sentence") {
@@ -155,6 +156,7 @@ class PdfFileEditor extends React.Component {
   }
 
   render() {
+
     return (
       <div>
         {this.props.sentences && (
@@ -203,39 +205,62 @@ class PdfFileEditor extends React.Component {
                 )}
                 <div elevation={3} style={{ overflow: "auto" }}>
                   <div
-                    id="scrollableDiv"
+                    id="scrollableDivs"
                     style={{
                       maxHeight: window.innerHeight - 220,
                       overflowY: this.state.selectedBlock ? "hidden" : "auto",
                     }}
                   >
-                    {this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
-                      return element && element.text_blocks && element.text_blocks.map((sentence) => {
-                        return sentence.tokenized_sentences.map((value, tokenIndex) => {
-                          return <Block
-                            handleDialogMessage={this.handleDialogMessage.bind(this)}
-                            sentence={value}
-                            sen={sentence}
-                            block_id={sentence.block_id}
-                            handleClick={this.handleClick.bind(this)}
-                            buttonStatus={this.state.buttonStatus}
-                            pageNo={element.page_no}
-                            modelId={this.props.modelId}
-                            selectedBlock={this.state.activeSentence}
-                            selectedTargetId={this.state.selectedTargetId}
-                            handleSentenceClick={this.handleSentenceClick.bind(this)}
-                            handleSourceChange={this.props.handleSourceChange}
-                            tokenIndex={this.props.tokenIndex}
-                            showTargetData={this.showTargetData.bind(this)}
-                            handleEditorClick={this.handleEditorClick.bind(this)}
-                            highlightId={this.state.highlightId}
-                            saveUpdatedSentence={this.props.saveUpdatedSentence}
-
+                    <InfiniteScroll
+                      next={this.props.fetchData}
+                      hasMore={this.props.hasMoreItems}
+                      dataLength={this.props.sentences ? this.props.sentences.length : 0}
+                      loader={
+                        <p style={{ textAlign: "center" }}>
+                          <CircularProgress
+                            size={20}
+                            style={{
+                              zIndex: 1000
+                            }}
                           />
+                        </p>
+                      }
+                      endMessage={
+                        <p style={{ textAlign: "center" }}>
+                          <b>You have seen it all</b>
+                        </p>
+                      }
+                      scrollableTarget={"scrollableDivs"}
+                      // onScroll={() => this.props.handleScroll()}
+                    >
+                      {this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
+                        return element && element.text_blocks && element.text_blocks.map((sentence) => {
+                          return sentence.tokenized_sentences.map((value, tokenIndex) => {
+                            return <Block
+                              handleDialogMessage={this.handleDialogMessage.bind(this)}
+                              sentence={value}
+                              sen={sentence}
+                              block_id={sentence.block_id}
+                              handleClick={this.handleClick.bind(this)}
+                              buttonStatus={this.state.buttonStatus}
+                              pageNo={element.page_no}
+                              modelId={this.props.modelId}
+                              selectedBlock={this.state.activeSentence}
+                              selectedTargetId={this.state.selectedTargetId}
+                              handleSentenceClick={this.handleSentenceClick.bind(this)}
+                              handleSourceChange={this.props.handleSourceChange}
+                              tokenIndex={this.props.tokenIndex}
+                              showTargetData={this.showTargetData.bind(this)}
+                              handleEditorClick={this.handleEditorClick.bind(this)}
+                              highlightId={this.state.highlightId}
+                              saveUpdatedSentence={this.props.saveUpdatedSentence}
 
-                        });
-                      })
-                    })}
+                            />
+
+                          });
+                        })
+                      })}
+                    </InfiniteScroll>
                   </div>
                 </div>
               </Grid>
