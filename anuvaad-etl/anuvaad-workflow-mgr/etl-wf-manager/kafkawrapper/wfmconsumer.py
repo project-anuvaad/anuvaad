@@ -20,7 +20,7 @@ log = logging.getLogger('file')
 # Method to instantiate the kafka consumer
 def instantiate(topics):
     #topic_partitions = get_topic_paritions(topics)
-    consumer = KafkaConsumer(topics,
+    consumer = KafkaConsumer(*topics,
                              bootstrap_servers=[kafka_bootstrap_server_host],
                              api_version=(1, 0, 0),
                              group_id=anu_etl_wfm_consumer_grp,
