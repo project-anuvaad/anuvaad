@@ -116,7 +116,9 @@ class PdfFileEditor extends React.Component {
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
 
       let telemetryData = this.state.telemetry
-      TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
+      if (telemetryData && telemetryData.hasOwnProperty("save")) {
+        TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
+      }
 
       const apiObj = new FileContent(this.props.match.params.jobid, this.state.startPage, this.state.endPage);
       this.props.APITransport(apiObj);
@@ -384,17 +386,22 @@ class PdfFileEditor extends React.Component {
   saveUpdatedSentence(sentenceObj, tokenObj, blockIdentifier) {
     this.setState({ selectedSourceText: sentenceObj })
 
-    this.workFlowApi(wfcodes.DP_WFLOW_S_C, [sentenceObj], "update")
+    this.workFlowApi(wfcodes.DP_WFLOW_S_C, [sentenceObj], "update", "edit")
 
     let telemetry = {}
     telemetry.initialSenetence = tokenObj.s0_tgt
     telemetry.finalSenetence = tokenObj.tgt
     telemetry.sId = blockIdentifier
     telemetry.mode = "translation"
+    telemetry.save = true
     this.setState({ telemetry })
   }
 
-  workFlowApi(workflow, blockDetails, update) {
+  workFlowApi(workflow, blockDetails, update, type) {
+
+    if(!type || type !== "edit") {
+    this.setState({ telemetry: null })
+    }
     let pageInfo = [];
     const apiObj = new WorkFlow(
       workflow,
@@ -406,7 +413,6 @@ class PdfFileEditor extends React.Component {
       parseInt(this.props.match.params.modelId)
     );
 
-    console.log(blockDetails)
     blockDetails.map(pageInfoDetails => {
 
       pageInfo.push(pageInfoDetails.page_info && parseInt(pageInfoDetails.page_info.page_no));
@@ -947,7 +953,7 @@ class PdfFileEditor extends React.Component {
                   handleSourceChange={this.handleSourceChange.bind(this)}
                   saveUpdatedSentence={this.saveUpdatedSentence.bind(this)}
                   workFlowApi={this.workFlowApi.bind(this)}
-                  open = {this.state.open}
+                  open={this.state.open}
                   fetchData={this.fetchData.bind(this)}
                   hasMoreItems={this.state.hasMoreItems}
                   handleScroll={this.handleScroll.bind(this)}
