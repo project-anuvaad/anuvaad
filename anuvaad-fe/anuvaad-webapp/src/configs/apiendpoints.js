@@ -67,7 +67,8 @@ const endpoints = {
   sentencereplace: "/update-search-replace-sentence",
   setpassword: "/set-user-password",
   documentupload:"/api/v0/upload-file",
-  fecthcontent: "/api/v0/fetch-content"
+  fecthcontent: "/api/v0/fetch-content",
+  documentConverter: "/api/v0/document-converter"
 };
 
 export default endpoints;
