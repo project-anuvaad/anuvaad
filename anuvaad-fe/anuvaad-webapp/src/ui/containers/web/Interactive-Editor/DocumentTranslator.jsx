@@ -32,6 +32,25 @@ class PdfFileEditor extends React.Component {
     };
   }
 
+  componentDidUpdate(prevProps) {
+   
+
+    
+    if(this.props.open && prevProps.open!==this.props.open){
+
+      {this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
+        element && element.text_blocks && element.text_blocks.map((sentence) => {
+          sentence.tokenized_sentences.map((value, tokenIndex) => {
+              if(value.s_id === this.state.SentenceOperationId){
+                this.setState({activeSentence: value, buttonStatus:"selected" })
+              }
+          })
+        })
+      })}
+     
+    }
+  }
+
   handleSentenceClick(value, saveData, block, blockIdentifier) {
     // this.setState({ activeSentence: value, selectedTargetId: value.s_id })
 
@@ -46,7 +65,8 @@ class PdfFileEditor extends React.Component {
     this.setState({
       activeSentence: value,
       updateData: saveData && block,
-      updateBlockId: blockIdentifier
+      updateBlockId: blockIdentifier,
+      buttonStatus: "selected"
     });
   }
 
@@ -71,10 +91,12 @@ class PdfFileEditor extends React.Component {
   };
 
   handleDialog() {
+    let SentenceOperationId;
     let workflowCode = "DP_WFLOW_S_TR";
     if (this.state.title === "Merge sentence") {
       let result = BLOCK_OPS.do_sentences_merging_v1(this.props.sentences, this.state.sentence_id);
       let updatedBlocks = result.blocks
+      SentenceOperationId = result.sentence_id;
 
       this.props.workFlowApi(workflowCode, updatedBlocks, this.state.title);
     } else if (this.state.title === "Split sentence") {
@@ -85,12 +107,13 @@ class PdfFileEditor extends React.Component {
         this.state.sentence_index
 
       );
+      SentenceOperationId = this.state.activeSentence.s_id;
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
     } else if (this.state.title === "Please save the edited sentence") {
       this.props.saveUpdatedSentence(this.state.updateData, this.state.updateBlockId)
     }
 
-    this.setState({ openDialog: false, buttonStatus: "" });
+    this.setState({ openDialog: false, buttonStatus: "apiCalled", SentenceOperationId });
   }
 
   handleClose = () => {
@@ -134,7 +157,8 @@ class PdfFileEditor extends React.Component {
               handleEditorClick={this.handleEditorClick.bind(this)}
               highlightId={this.state.highlightId}
               saveUpdatedSentence={this.props.saveUpdatedSentence}
-
+              mergeSentenceId = {this.state.mergeSentenceId}
+              open ={this.props.open}
             />
           );
         });
@@ -254,7 +278,7 @@ class PdfFileEditor extends React.Component {
                               handleEditorClick={this.handleEditorClick.bind(this)}
                               highlightId={this.state.highlightId}
                               saveUpdatedSentence={this.props.saveUpdatedSentence}
-
+                              SentenceOperationId = {this.state.SentenceOperationId}
                             />
 
                           });

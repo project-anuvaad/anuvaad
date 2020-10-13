@@ -945,7 +945,7 @@ class PdfFileEditor extends React.Component {
                   handleSourceChange={this.handleSourceChange.bind(this)}
                   saveUpdatedSentence={this.saveUpdatedSentence.bind(this)}
                   workFlowApi={this.workFlowApi.bind(this)}
-                  apiCall = {this.state.apiCall}
+                  open = {this.state.open}
                   fetchData={this.fetchData.bind(this)}
                   hasMoreItems={this.state.hasMoreItems}
                   handleScroll={this.handleScroll.bind(this)}

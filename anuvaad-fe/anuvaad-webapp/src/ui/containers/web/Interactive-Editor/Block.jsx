@@ -229,12 +229,12 @@ class Block extends Component {
           style={{
             margin: "10px",
             minHeight: "120px",
-            padding: "1%",
+            padding: "0, 1%, 1%, 1%",
             border:
               (selectedBlock &&
                 sentence &&
                 sentence.s_id === selectedBlock.s_id) ||
-                arr.includes(sentence.s_id)
+                arr.includes(sentence.s_id) ||(sentence && this.props.SentenceOperationId=== sentence.s_id && this.props.buttonStatus==="apiCalled")
                 ? "2px solid #1C9AB7"
                 : "2px solid #D6D6D6",
           }}
@@ -243,6 +243,7 @@ class Block extends Component {
           <Grid container spacing={2}>
             <Grid item xs={8} sm={9} lg={11} xl={11}>
               <div style={{ display: "flex", flexDirection: "row" }} 
+              
               onClick={() => selectedBlock &&
                 sentence &&
                 sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}
@@ -260,7 +261,7 @@ class Block extends Component {
                   >
                     {sentence.src}
                   </div>
-                  <hr style={{ border: (selectedBlock && sentence && sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "copy" || this.props.buttonStatus === "typing")) ? "1px dashed #1C9AB7" : "1px dashed #00000014" }} />
+                  <hr style={{ border: (selectedBlock && sentence && sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "copy" || this.props.buttonStatus === "typing") ) ? "1px dashed #1C9AB7" : "1px dashed #00000014" }} />
                   {((selectedBlock && sentence && sentence.s_id === selectedBlock.s_id) || (this.state.sentence && this.state.sentence.hasOwnProperty("save"))) ?
                     <AutoComplete
                       aId={sentence.s_id}
