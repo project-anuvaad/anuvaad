@@ -33,21 +33,23 @@ class PdfFileEditor extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-   
 
-    
-    if(this.props.open && prevProps.open!==this.props.open){
 
-      {this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
-        element && element.text_blocks && element.text_blocks.map((sentence) => {
-          sentence.tokenized_sentences.map((value, tokenIndex) => {
-              if(value.s_id === this.state.SentenceOperationId){
-                this.setState({activeSentence: value, buttonStatus:"selected" })
+
+    if (this.props.open && prevProps.open !== this.props.open) {
+      {
+        this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
+
+          element && element.text_blocks && element.text_blocks.map((sentence) => {
+            sentence.tokenized_sentences.map((value, tokenIndex) => {
+              if (value.s_id === this.state.SentenceOperationId) {
+                this.setState({ activeSentence: value, buttonStatus: "selected" })
               }
+            })
           })
         })
-      })}
-     
+      }
+
     }
   }
 
@@ -157,9 +159,9 @@ class PdfFileEditor extends React.Component {
               showTargetData={this.showTargetData.bind(this)}
               handleEditorClick={this.handleEditorClick.bind(this)}
               highlightId={this.state.highlightId}
-              saveUpdatedSentence={this.props.saveUpdatedSentence}
-              mergeSentenceId = {this.state.mergeSentenceId}
-              open ={this.props.open}
+              saveUpdatedSentence={this.saveUpdatedSentence.bind(this)}
+              mergeSentenceId={this.state.mergeSentenceId}
+              open={this.props.open}
             />
           );
         });
@@ -167,6 +169,11 @@ class PdfFileEditor extends React.Component {
     });
     return sentenceArray;
   };
+
+  saveUpdatedSentence(block, sentence, blockIdentifier) {
+    this.setState({ SentenceOperationId: sentence.s_id })
+    this.props.saveUpdatedSentence(block, sentence, blockIdentifier)
+  }
 
   handleEditorClick(id) {
     this.setState({ highlightId: id });
@@ -222,7 +229,7 @@ class PdfFileEditor extends React.Component {
                       color="primary"
                       mergeSaved aria-label="add"
                       onClick={() => this.handleClick("mergeSaved")}
-                      style={{marginLeft: "10px"}}
+                      style={{ marginLeft: "10px" }}
                     >
                       <Merge />
                       Merge
@@ -280,8 +287,8 @@ class PdfFileEditor extends React.Component {
                               showTargetData={this.showTargetData.bind(this)}
                               handleEditorClick={this.handleEditorClick.bind(this)}
                               highlightId={this.state.highlightId}
-                              saveUpdatedSentence={this.props.saveUpdatedSentence}
-                              SentenceOperationId = {this.state.SentenceOperationId}
+                              saveUpdatedSentence={this.saveUpdatedSentence.bind(this)}
+                              SentenceOperationId={this.state.SentenceOperationId}
                               blockIdentifier={sentence.block_identifier}
 
                             />
