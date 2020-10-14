@@ -11,8 +11,8 @@ import cv2
 import pandas as pd
 from skimage import io
 import numpy as np
-from src.utilities.craft_pytorch import craft_utils
-from src.utilities.craft_pytorch import imgproc
+from craft_pytorch import craft_utils
+from craft_pytorch import imgproc
 import json
 import config
 from anuvaad_auditor.loghandler import log_info
@@ -20,7 +20,7 @@ import src.utilities.app_context as app_context
 
 import zipfile
 
-from src.utilities.craft_pytorch.craft import CRAFT
+from craft_pytorch.craft import CRAFT
 from collections import OrderedDict
 
 
@@ -136,7 +136,7 @@ def sort_regions(contours_df, sorted_contours=[]):
 
     return sorted_contours
 
-def convert_to_in_df(craft_df) :
+def convert_to_in_df(craft_df):
     in_df_columns = ['xml_index', 'text_top', 'text_left', 'text_width', 'text_height',
                      'text', 'font_size', 'font_family', 'font_color', 'attrib']
     in_df = pd.DataFrame(columns=in_df_columns)
@@ -155,18 +155,22 @@ def convert_to_in_df(craft_df) :
     return  in_df
 
 
-def detect_text(image_paths,text_threshold=args.text_threshold,low_text_threshold= args.low_text):
+def detect_text(image_paths,text_threshold=args.text_threshold,low_text_threshold= args.low_text,img_class="single_col"):
 
     in_dfs = []
     number_of_pages = len(image_paths)
+    if img_class == "double_col":
+        number_of_pages = 1
+        image_paths = [image_paths]
+    
     t = time.time()
     for image_path in image_paths :
-        t = time.time()
-        image = imgproc.loadImage(image_path)
+
+        if img_class == "double_col":
+            image = image_path
+        else:
+            image = imgproc.loadImage(image_path)
         bboxes, polys, score_text = test_net(image, text_threshold, args.link_threshold, low_text_threshold, args.cuda, args.poly, None)
-
-
-        #column_names = ["tl_x","tl_y" ,"bl_x","bl_y", "tr_x","tr_y","br_x","br_y"]
         column_names = ["x1","y1" ,"x4","y4", "x2","y2","x3","y3"]
 
 
@@ -177,9 +181,8 @@ def detect_text(image_paths,text_threshold=args.text_threshold,low_text_threshol
             df.at[index,'x2']= int(poly[2]); df.at[index,'y2']= int(poly[3])
             df.at[index,'x3']= int(poly[4]); df.at[index,'y3']= int(poly[5])
             df.at[index,'x4']= int(poly[6]); df.at[index,'y4']= int(poly[7])
-
         in_df = convert_to_in_df(df)
-        in_dfs.appen(in_df)
+        in_dfs.append(in_df)
 
 
 
