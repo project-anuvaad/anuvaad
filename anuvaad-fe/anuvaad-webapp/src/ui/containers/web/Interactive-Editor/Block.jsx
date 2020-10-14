@@ -243,7 +243,7 @@ class Block extends Component {
   }
 
   render() {
-    const { classes, sentence, selectedBlock, highlightId, selectedTargetId } = this.props;
+    const { classes, sentence, selectedBlock, prevBlock } = this.props;
     return (
         <Paper
           variant="outlined"
@@ -264,16 +264,16 @@ class Block extends Component {
           <Grid container spacing={2} style={{padding: "7px"}}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
               <div style={{ display: "flex", flexDirection: "row" }}
-              onClick={() => selectedBlock &&
-                sentence &&
-                sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" ? this.handleCardClick(this.props.sentence) : this.handleBlurClick(this.props.sentence)}
-                >
+              >
                 {/* <Tooltip title="Go to validation mode">
                 <ValidationIcon
                   style={{ color: "#1C9AB7", cursor: "pointer" }}
                 />
               </Tooltip> */}
-                <div style={{ width: "100%", paddingLeft: "10px" }}>
+                <div style={{ width: "100%", paddingLeft: "10px" }} onClick={() => selectedBlock &&
+                sentence &&
+                sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" ? this.handleCardClick(this.props.sentence) : this.handleBlurClick(this.props.sentence)}
+                >
                   <div
                     style={{ minHeight: "45px", padding: "5px", fontSize: "16px" }}
                   // onClick={() => this.props.handleSentenceClick(sentence)}
@@ -281,7 +281,7 @@ class Block extends Component {
                     {sentence.src}
                   </div>
                   <hr style={{ border: (selectedBlock && sentence && sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "copy" || this.props.buttonStatus === "typing") ) ? "1px dashed #1C9AB7" : "1px dashed #00000014" }} />
-                  {((selectedBlock && sentence && sentence.s_id === selectedBlock.s_id) || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ?
+                  {((selectedBlock && sentence && sentence.s_id === selectedBlock.s_id) || (prevBlock && sentence && sentence.s_id === prevBlock.s_id) ||(this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ?
                     <AutoComplete
                       aId={sentence.s_id}
                       refId={sentence.s_id}
