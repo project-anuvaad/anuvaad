@@ -106,7 +106,13 @@ def low_conf_ocr(lang,left,top,width,height,image):
     return text, conf
 
 
-def tesseract_ocr(pdf_image_paths, desired_width, desired_height, dfs, lang ):
+def tesseract_ocr(pdf_data ):
+
+    pdf_image_paths = pdf_data['pdf_image_paths']
+    desired_width   = pdf_data['page_width']
+    desired_height  = pdf_data['page_height']
+    dfs             = pdf_data['h_dfs']
+    lang            = pdf_data['lang']
 
     log_info('tesseract ocr started  ===>', app_context.application_context)
     start_time          = time.time()

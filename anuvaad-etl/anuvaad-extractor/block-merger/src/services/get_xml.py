@@ -128,23 +128,23 @@ def get_vdfs(h_dfs):
 def get_hdfs(in_dfs, header_region, footer_region):
     
     start_time          = time.time()
-    try:
-        pages = len(in_dfs)
-        multiple_pages = False
-        if pages > 1:
-            multiple_pages =True
-        h_dfs = []
-        document_configs = config.DOCUMENT_CONFIGS
-        for page_index in range(pages):
-            page_df   = in_dfs[page_index]
-            if multiple_pages :
-                page_df   = tag_heaader_footer_attrib(header_region , footer_region,page_df)
+    #try:
+    pages = len(in_dfs)
+    multiple_pages = False
+    if pages > 1:
+        multiple_pages =True
+    h_dfs = []
+    document_configs = config.DOCUMENT_CONFIGS
+    for page_index in range(pages):
+        page_df   = in_dfs[page_index]
+        if multiple_pages :
+            page_df   = tag_heaader_footer_attrib(header_region , footer_region,page_df)
 
-            h_df    = merge_horizontal_blocks(page_df, document_configs, debug=False)
-            h_dfs.append(h_df)
-    except Exception as e :
-        log_error('Error in creating h_dfs' +str(e), app_context.application_context, e)
-        return None
+        h_df    = merge_horizontal_blocks(page_df, document_configs, debug=False)
+        h_dfs.append(h_df)
+    # except Exception as e :
+    #     log_error('Error in creating h_dfs' +str(e), app_context.application_context, e)
+    #     return None
 
     end_time         = time.time()
     elapsed_time     = end_time - start_time

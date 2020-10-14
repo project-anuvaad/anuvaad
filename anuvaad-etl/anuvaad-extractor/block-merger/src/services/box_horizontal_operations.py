@@ -63,6 +63,7 @@ def merge_horizontal_blocks(in_df, configs, debug=False):
             block_df.at[index, 'font_size_updated'] = children_df.iloc[-1]['font_size_updated']
             block_df.at[index, 'children'] = children_df.to_json()
             index += 1
+            block_df = block_df.where(block_df.notnull(), None)
 
     return update_superscript_in_horizontal_boxes(block_df, configs, debug=debug)
 

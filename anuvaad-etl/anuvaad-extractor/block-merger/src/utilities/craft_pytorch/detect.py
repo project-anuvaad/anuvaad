@@ -15,6 +15,8 @@ from src.utilities.craft_pytorch import craft_utils
 from src.utilities.craft_pytorch import imgproc
 import json
 import config
+from anuvaad_auditor.loghandler import log_info
+import src.utilities.app_context as app_context
 
 import zipfile
 
@@ -47,8 +49,8 @@ net = load_craft_model()
 
 parser = argparse.ArgumentParser(description='CRAFT Text Detection')
 parser.add_argument('--trained_model', default='./model/craft_mlt_25k.pth', type=str, help='pretrained model')
-parser.add_argument('--text_threshold', default=0.7, type=float, help='text confidence threshold')
-parser.add_argument('--low_text', default=0.4, type=float, help='text low-bound score')
+parser.add_argument('--text_threshold', default=0.4, type=float, help='text confidence threshold')
+parser.add_argument('--low_text', default=0.3, type=float, help='text low-bound score')
 parser.add_argument('--link_threshold', default=0.4, type=float, help='link confidence threshold')
 parser.add_argument('--cuda', default=False, type=str2bool, help='Use cuda for inference')
 parser.add_argument('--canvas_size', default=1280, type=int, help='image size for inference')
@@ -113,28 +115,81 @@ def test_net(image, text_threshold, link_threshold, low_text, cuda, poly, refine
     return boxes, polys, ret_score_text
 
 
+def sort_regions(contours_df, sorted_contours=[]):
+    check_y = contours_df.iloc[0]['text_top']
+    spacing_threshold = contours_df.iloc[0]['text_height']  * 0.8  # *2 #*0.5
 
-def extract_word_bbox(image_path):
+    same_line = contours_df[abs(contours_df['text_top'] - check_y) < spacing_threshold]
+    next_lines = contours_df[abs(contours_df['text_top'] - check_y) >= spacing_threshold]
 
+    #     if len(same_line) > 0 :
+    #         check_y = same_line['text_top'].max()
+    #         same_line = contours_df[abs(contours_df['text_top'] - check_y) < spacing_threshold ]
+    #         next_lines = contours_df[abs(contours_df['text_top'] - check_y) >=spacing_threshold]
+
+    next_lines = contours_df[abs(contours_df['text_top'] - check_y) >= spacing_threshold]
+    sort_lines = same_line.sort_values(by=['text_left'])
+    for index, row in sort_lines.iterrows():
+        sorted_contours.append(row)
+    if len(next_lines) > 0:
+        sort_regions(next_lines, sorted_contours)
+
+    return sorted_contours
+
+def convert_to_in_df(craft_df) :
+    in_df_columns = ['xml_index', 'text_top', 'text_left', 'text_width', 'text_height',
+                     'text', 'font_size', 'font_family', 'font_color', 'attrib']
+    in_df = pd.DataFrame(columns=in_df_columns)
+    in_df['text_top'] = craft_df['y1']
+    in_df['text_left'] = craft_df['x1']
+    in_df['text_height'] = craft_df['y4'] - craft_df['y1']
+    in_df['text_width'] = craft_df['x2'] - craft_df['x1']
+    in_df['text'] = 'ss'
+    in_df['attrib'] = None
+    in_df['font_family'] = 'Ariel Unicode MS'
+    in_df['font_family_updated'] = 'Ariel Unicode MS'
+
+    in_df = in_df.sort_values(by=['text_top'])
+    in_df = pd.DataFrame(sort_regions(in_df, []))
+
+    return  in_df
+
+
+def detect_text(image_paths,text_threshold=args.text_threshold,low_text_threshold= args.low_text):
+
+    in_dfs = []
+    number_of_pages = len(image_paths)
     t = time.time()
-    image = imgproc.loadImage(image_path)
-    bboxes, polys, score_text = test_net(image, args.text_threshold, args.link_threshold, args.low_text, args.cuda, args.poly, None)
-
-    
-    #column_names = ["tl_x","tl_y" ,"bl_x","bl_y", "tr_x","tr_y","br_x","br_y"]
-    column_names = ["x1","y1" ,"x4","y4", "x2","y2","x3","y3"]
+    for image_path in image_paths :
+        t = time.time()
+        image = imgproc.loadImage(image_path)
+        bboxes, polys, score_text = test_net(image, text_threshold, args.link_threshold, low_text_threshold, args.cuda, args.poly, None)
 
 
-    df = pd.DataFrame(columns = column_names)
-    for index, box in enumerate(polys):
-        poly = np.array(box).astype(np.int32).reshape((-1))
-        df.at[index,'x1']= int(poly[0]); df.at[index,'y1']= int(poly[1])
-        df.at[index,'x2']= int(poly[2]); df.at[index,'y2']= int(poly[3])
-        df.at[index,'x3']= int(poly[4]); df.at[index,'y3']= int(poly[5])
-        df.at[index,'x4']= int(poly[6]); df.at[index,'y4']= int(poly[7])
-        
-    print("elapsed time for word bounding box extraction per page: {}s".format(time.time() - t))
-    return df
+        #column_names = ["tl_x","tl_y" ,"bl_x","bl_y", "tr_x","tr_y","br_x","br_y"]
+        column_names = ["x1","y1" ,"x4","y4", "x2","y2","x3","y3"]
+
+
+        df = pd.DataFrame(columns = column_names)
+        for index, box in enumerate(polys):
+            poly = np.array(box).astype(np.int32).reshape((-1))
+            df.at[index,'x1']= int(poly[0]); df.at[index,'y1']= int(poly[1])
+            df.at[index,'x2']= int(poly[2]); df.at[index,'y2']= int(poly[3])
+            df.at[index,'x3']= int(poly[4]); df.at[index,'y3']= int(poly[5])
+            df.at[index,'x4']= int(poly[6]); df.at[index,'y4']= int(poly[7])
+
+        in_df = convert_to_in_df(df)
+        in_dfs.appen(in_df)
+
+
+
+    time_taken = time.time() - t
+    time_take_per_page = time_taken / number_of_pages
+
+    message = 'Time taken for text detection is ' + str(time_taken) + '/' + str(number_of_pages) + 'time per page : ' + str(time_take_per_page)
+
+    log.in
+    return in_dfs
 
 
 #extract_word_bbox("/home/naresh/Tarento/CRAFT-pytorch/test_images/mp_hc_1995_CRA237_hi-01.jpg")

@@ -130,7 +130,7 @@ def get_text_from_table_cells(table_dfs, p_dfs):
                                 add_keys = ['font_size', 'font_family', 'font_color', 'attrib', 'font_family_updated',
                                             'font_size_updated']
                                 for add_key in add_keys:
-                                    print(text_df)
+                                    #print(text_df)
                                     cell[add_key] = most_frequent(text_df[add_key])
 
                                 cell['text'] = ' '.join(pd.DataFrame(cell['text'])['text'].values)
@@ -143,7 +143,14 @@ def get_text_from_table_cells(table_dfs, p_dfs):
     return p_dfs
 
 
-def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths, check=False):
+def get_text_table_line_df(pdf_data,flags, check=False):
+    xml_dfs = pdf_data['in_dfs']
+    img_dfs= pdf_data['img_dfs']
+    if flags['doc_class'] == 'class_1':
+        pdf_bg_img_filepaths = pdf_data['pdf_bg_img_filepaths']
+    else :
+        pdf_bg_img_filepaths = pdf_data['pdf_image_paths']
+
     log_info("TableExtractor service started", app_context.application_context)
 
     in_dfs = []
@@ -188,6 +195,11 @@ def get_text_table_line_df(xml_dfs, img_dfs, pdf_bg_img_filepaths, check=False):
         line_df = get_line_df(lines)
         tables_df = get_table_df(tables)
         filtered_in_df, table_df = extract_and_delete_region(in_df, tables_df)
+
+        if flags['doc_class'] == 'class_1':
+            pass
+        else:
+            bg_image  = mask_image(bg_image,in_df,image_width,image_height,app_context.application_context,margin=0,fill=255)
 
         # mask tables and lines from bg image
         # bg_image  = mask_image(bg_image,table_df,image_width,image_height,app_context.application_context,margin=0,fill=255)
