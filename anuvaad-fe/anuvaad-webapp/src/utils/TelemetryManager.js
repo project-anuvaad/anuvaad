@@ -335,3 +335,71 @@ export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, m
   let options = {}
   $t.interact(data, options)
 }
+
+/**
+ * @description call this method when user triggers merge action
+ * @param {*} sentences_initial, sentences that getting merged 
+ * @param {*} sentence_final , final sentence after completion of merge operation
+ */
+export const mergeSentencesEvent = (sentences_initial, sentence_final) => {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'click',
+    action: 'MERGE'
+  }
+
+  let options = {
+    context: {
+      cdata:[]
+    },
+  }
+  sentences_initial.forEach(element => {
+    options.context.cdata.push({
+      type: 'SENTENCE_FRAGMENT',
+      text: element
+    })
+  });
+  options.context.cdata.push({
+    type: 'SENTENCE_FINAL',
+    text: sentence_final
+  })
+
+  $t.interact(data, options)
+}
+
+/**
+ * @description call this method to sent split sentence event
+ * @param {*} sentence_initial , initial sentence that is getting splitted
+ * @param {*} sentences_final , output after spliting of sentence
+ */
+export const splitSentencesEvent = (sentence_initial, sentences_final) => {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'click',
+    action: 'SPLIT'
+  }
+
+  let options = {
+    context: {
+      cdata:[]
+    },
+  }
+  sentences_final.forEach(element => {
+    options.context.cdata.push({
+      type: 'SENTENCE_FRAGMENT',
+      text: element
+    })
+  });
+  options.context.cdata.push({
+    type: 'SENTENCE_INITIAL',
+    text: sentence_initial
+  })
+
+  $t.interact(data, options)
+}
