@@ -13,7 +13,7 @@ from docx.enum.section import WD_SECTION, WD_ORIENT
 from docx.shared import Length
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
-
+import uuid
 
 class DocumentConversion(object):
 
@@ -145,7 +145,7 @@ class DocumentConversion(object):
                         font.size                      = Twips(doc_utils.pixel_to_twips(row['font_size'])) 
                         run.add_text(row['text'])
                 run.add_break(WD_BREAK.PAGE)
-            out_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + '_translated.docx'
+            out_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '_translated.docx'
             output_filepath = os.path.join(self.DOWNLOAD_FOLDER , out_filename)
             document.save(output_filepath)
             return out_filename
