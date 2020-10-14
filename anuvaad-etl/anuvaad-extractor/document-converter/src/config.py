@@ -12,5 +12,5 @@ ENABLE_CORS = False
 download_folder = 'upload'
 
 # internal url
-CONTENT_HANDLER_ENDPOINT    = os.environ('CONTENT_HANDLER_SERVER_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/fetch-content')
-FILE_CONVERTER_ENDPOINT     = os.environ('FILE_CONVERTER_SERVER_URL', 'http://gateway_anuvaad-file-converter:5001/api/v0/')
+CONTENT_HANDLER_ENDPOINT    = os.environ.get('CONTENT_HANDLER_SERVER_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/fetch-content')
+FILE_CONVERTER_ENDPOINT     = os.environ.get('FILE_CONVERTER_SERVER_URL', 'http://gateway_anuvaad-file-converter:5001/api/v0/')
