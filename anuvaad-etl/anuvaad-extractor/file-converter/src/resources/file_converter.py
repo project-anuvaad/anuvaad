@@ -32,7 +32,7 @@ class FileConverter(Resource):
             log.info("response successfully generated.")
             return res.getres()
         try:
-            result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=15)
+            result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=60)
             copyfile(result, os.path.join(config.download_folder, upload_id+'.pdf'))
             userfile = UserFiles(created_by=request.headers.get('ad-userid'),
                                             filename=upload_id+'.pdf', created_on=datetime.now())
