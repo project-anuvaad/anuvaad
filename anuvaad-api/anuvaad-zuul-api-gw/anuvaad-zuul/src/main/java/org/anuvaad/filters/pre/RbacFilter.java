@@ -1,20 +1,27 @@
 package org.anuvaad.filters.pre;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import org.anuvaad.models.Role;
-import org.anuvaad.models.User;
+import net.minidev.json.JSONObject;
+import org.anuvaad.models.*;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashSet;
-import java.util.List;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.anuvaad.constants.RequestContextConstants.*;
 
@@ -29,8 +36,23 @@ public class RbacFilter extends ZuulFilter {
     @Value("${anuvaad.auth-service-host}")
     private String authUri;
 
+    @Value("${anuvaad.auth-service-host}")
+    private String roleConfigsUrl;
+
+    @Value("${anuvaad.auth-service-host}")
+    private String actionConfigsUrl;
+
+    @Value("${anuvaad.auth-service-host}")
+    private String roleActionConfigsUrl;
+
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    public static ResourceLoader resourceLoader;
 
     @Override
     public String filterType() {
@@ -54,7 +76,7 @@ public class RbacFilter extends ZuulFilter {
     private static final String UNAUTHORIZED_USER_MESSAGE = "You are not authorised to access this resource";
     private static final String PROCEED_ROUTING_MESSAGE = "Routing to protected endpoint: {} - auth provided";
     private static final String INVALID_ROLES_MESSAGE = "You have invalid roles.";
-    private static final String INVALID_ROLES_ACTIONS_MESSAGE = "You don't have access to the actions.";
+    private static final String INVALID_ROLES_ACTIONS_MESSAGE = "You don't have access to the action.";
     private static final String RETRIEVING_USER_FAILED_MESSAGE = "Retrieving user failed";
 
 
@@ -68,7 +90,7 @@ public class RbacFilter extends ZuulFilter {
             logger.info(SKIP_RBAC, uri);
             return null;
         }
-        Boolean isUserAuthorised = verifyAuthorization(authToken, uri);
+        Boolean isUserAuthorised = verifyAuthorization(ctx, authToken, uri);
         if (isUserAuthorised){
             logger.info(PROCEED_ROUTING_MESSAGE, uri);
             return null;
@@ -85,12 +107,12 @@ public class RbacFilter extends ZuulFilter {
      * @param uri
      * @return
      */
-    public Boolean verifyAuthorization(String authToken, String uri) {
+    public Boolean verifyAuthorization(RequestContext ctx, String authToken, String uri) {
         try {
             User user = getUser(authToken, ctx);
-            Boolean isRolesCorrect = verifyRoles(user.getRoles());
+            Boolean isRolesCorrect = verifyRoles(user.getUserRoles());
             if(isRolesCorrect) {
-                Boolean isRoleActionsCorrect = verifyRoleActions(user.getRoles(), uri);
+                Boolean isRoleActionsCorrect = verifyRoleActions(user.getUserRoles(), uri);
                 if(isRoleActionsCorrect)
                     return true;
                 else {
@@ -108,12 +130,69 @@ public class RbacFilter extends ZuulFilter {
         }
     }
 
-    public Boolean verifyRoles(List<Role> roles) {
-        return true;
+    public Boolean verifyRoles(List<UserRole> userRoles) {
+        try{
+            Resource resource = resourceLoader.getResource(roleConfigsUrl);
+            HashMap<String, List<Role>> rolesMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
+            List<String> configRoles = rolesMap.get("roles").stream()
+                    .filter(Role::getActive).map(Role::getCode).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(configRoles)){
+                logger.info("Roles couldn't be fetched from config");
+                return false;
+            }
+            List<String> roles = userRoles.stream().map(UserRole::getRoleCode).collect(Collectors.toList());
+            for(String role: roles){
+                if (!configRoles.contains(role)) {
+                    logger.info("This user contains an invalid/inactive role!");
+                    return false;
+                }
+            }
+            return true;
+        }catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return false;
+        }
+
     }
 
-    public Boolean verifyRoleActions(List<Role> roles, String uri) {
-        return true;
+    public Boolean verifyRoleActions(List<UserRole> userRoles, String uri) {
+        try{
+            Resource resource = resourceLoader.getResource(actionConfigsUrl);
+            HashMap<String, List<Action>> actionsMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
+            Map<String, String> configActions = actionsMap.get("actions").stream()
+                    .filter(Action::getActive).collect(Collectors.toMap(Action:: getId, Action::getUri));
+            resource = resourceLoader.getResource(roleActionConfigsUrl);
+            HashMap<String, List<RoleAction>> roleActionsMap = objectMapper.readValue(resource.getInputStream(), HashMap.class);
+            List<RoleAction> configRoleActions = roleActionsMap.get("role-actions");
+            Map<String, List<String>> roleActions = new HashMap<>();
+            for(RoleAction roleAction: configRoleActions){
+                if (roleAction.getActive()){
+                    if (null != roleActions.get(roleAction.getRole())){
+                        List<String> actionListOftheRole = roleActions.get(roleAction.getRole());
+                        actionListOftheRole.add(configActions.get(roleAction.getActionID()));
+                        roleActions.put(roleAction.getRole(), actionListOftheRole);
+                    }else{
+                        List<String> actionListOftheRole = new ArrayList<>();
+                        actionListOftheRole.add(configActions.get(roleAction.getActionID()));
+                        roleActions.put(roleAction.getRole(), actionListOftheRole);
+                    }
+                }
+            }
+            List<String> roles = userRoles.stream().map(UserRole::getRoleCode).collect(Collectors.toList());;
+            int fail = 0;
+            for (String role: roles){
+                List<String> actionList = roleActions.get(role);
+                if (CollectionUtils.isEmpty(actionList)) fail = fail + 1;
+                else{
+                    if(!actionList.contains(uri)) fail += 1;
+                    else break;
+                }
+            }
+            return fail != roles.size();
+        }catch (Exception e) {
+            logger.error(String.valueOf(e));
+            return false;
+        }
     }
 
 

@@ -8,9 +8,36 @@ import lombok.Setter;
 @Setter
 public class Role {
 
-    @JsonProperty("roleCode")
-    public String roleCode;
+    @JsonProperty("code")
+    public String code;
 
-    @JsonProperty("roleDesc")
-    public String roleDesc;
+    @JsonProperty("description")
+    public String description;
+
+    @JsonProperty("active")
+    public Boolean active;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 }

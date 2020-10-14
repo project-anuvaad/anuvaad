@@ -41,6 +41,9 @@ public class AuthFilter extends ZuulFilter {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE = "Retrieving of auth token failed";
@@ -50,9 +53,6 @@ public class AuthFilter extends ZuulFilter {
     private static final String UNAUTH_USER_MESSAGE = "You are not authenticated to access this resource";
     private static final String RETRIEVING_USER_FAILED_MESSAGE = "Retrieving user failed";
     private static final String PROCEED_ROUTING_MESSAGE = "Routing to protected endpoint: {} - auth provided";
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Override
     public String filterType() {

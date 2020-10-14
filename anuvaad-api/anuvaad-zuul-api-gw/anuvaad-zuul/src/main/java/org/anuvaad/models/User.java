@@ -29,7 +29,7 @@ public class User {
     public String phoneNo;
 
     @JsonProperty("phoneNo")
-    public List<Role> roles;
+    public List<UserRole> userRoles;
 
 
 }

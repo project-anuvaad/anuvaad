@@ -2,28 +2,28 @@
     "actions":[
         {
             "id":"30b20c13-db5a-465c-a6b4-50a7c0daee57",
-            "url":"/anuvaad-etl/wf-manager/v1/workflow/initiate",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/initiate",
             "module":"WORKFLOW-MANAGER",
             "active":true,
             "description":"API to initiate workflows"
         },
         {
             "id":"c720db5f-986c-4e84-892c-b5c34a349f74",
-            "url":"/anuvaad-etl/wf-manager/v1/workflow/interrupt",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/interrupt",
             "module":"WORKFLOW-MANAGER",
             "active":true,
             "description":"API to interrupt workflows"
         },
         {
             "id":"400bf52e-d7ef-4bdb-9ce5-8f64b42ada9c",
-            "url":"/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk",
             "module":"WORKFLOW-MANAGER",
             "active":true,
             "description":"API to search workflow jobs"
         },
         {
             "id":"41e9fca3-fa0b-425c-af2b-847ef35c4734",
-            "url":"/anuvaad-etl/wf-manager/v1/workflow/configs/search",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/configs/search",
             "module":"WORKFLOW-MANAGER",
             "active":true,
             "description":"API to initiate workflow configs"
