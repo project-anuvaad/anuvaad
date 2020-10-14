@@ -28,6 +28,23 @@ import PeopleIcon from '@material-ui/icons/Person';
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
 
 const styles = {
+    container:{},
+    containerDemo:{},
+    appBar:{},
+    appBarShift:{},
+    buttonLeft:{},
+    buttonRight:{},
+    editButton:{},
+    hide:{},
+    drawer:{},
+    drawerPaper:{},
+    drawerHeader:{},
+    contentShift:{},
+    drawerPaperClose:{},
+    toolbar:{},
+    title:{},
+    content:{},
+  
   root: {
     flexGrow: 1,
     
