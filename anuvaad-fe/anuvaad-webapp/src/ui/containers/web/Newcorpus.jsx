@@ -297,7 +297,7 @@ class Newcorpus extends React.Component {
     return (
       <div className={classes.root}>
 
-        <Typography gutterBottom variant="h5" variant="h4" className={classes.typographyHeader}>
+        <Typography gutterBottom  variant="h4" className={classes.typographyHeader}>
           {translate('newCorpus.page.text.createCorpus')}
         </Typography>
         {/* <div className={classes.CorpusContainer}> */}

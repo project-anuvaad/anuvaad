@@ -416,7 +416,7 @@ class PdfFileEditor extends React.Component {
     blockDetails.map(pageInfoDetails => {
 
       pageInfo.push(pageInfoDetails.page_info && parseInt(pageInfoDetails.page_info.page_no));
-    })
+    return null;})
 
     // pageInfo = update !== "merge" && blockDetails.length > 0 && blockDetails[0].page_info.page_no;
 
@@ -425,13 +425,14 @@ class PdfFileEditor extends React.Component {
   }
 
   handleBlur(id, wf_code, saveData, prevValue, finalValue) {
+    
     let status = "update";
     let idDetails = id.split("_")
     let text = "";
     let blockItem;
 
     this.state.sentences.map(page => {
-      if (page.page_no === idDetails[1]) {
+      if (parseInt(page.page_no) === parseInt(idDetails[1])) {
         page.text_blocks.map(block => {
           if (block.block_identifier === idDetails[0]) {
             block &&
@@ -495,7 +496,7 @@ class PdfFileEditor extends React.Component {
     let blockId = block.split("_")[0];
     let pageNo = block.split("_")[1];
     let blockTop,
-      blockHeight,
+     // blockHeight,
       valueH = 0;
     let docPage = this.state.sentences;
     let strText = this.state.selectedSourceText;
@@ -697,7 +698,7 @@ class PdfFileEditor extends React.Component {
                   }}
                 >
                   <div style={{ fontSize: "20px", fontWeight: "bold" }}>
-                    {!this.state.apiCall ? (this.state.tokenized ? "You are in validation mode" : "You are in Translation mode") : "Loading ....."}
+                    {!this.state.apiCall ? (this.state.tokenized ? "You are in validation mode" : "You are in Translation mode") : "Saving....."}
                   </div>
                 </Button>
               </Grid>

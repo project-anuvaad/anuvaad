@@ -52,7 +52,7 @@ class SignUp extends React.Component {
         if (!this.state.termsAndCondition) {
           alert(translate('common.page.alert.acceptTerms&Condition'))
         } else {
-          var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+          var mailformat = /^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/;
           if (this.state.email.match(mailformat)) {
             let { APITransport } = this.props;
             let apiObj = new SignupApi(this.state.email, this.state.firstName, this.state.lastName, this.state.password);
