@@ -697,7 +697,7 @@ class PdfFileEditor extends React.Component {
                   }}
                 >
                   <div style={{ fontSize: "20px", fontWeight: "bold" }}>
-                    {!this.state.apiCall ? (this.state.tokenized ? "You are in validation mode" : "You are in Translation mode") : "Loading ....."}
+                    {!this.state.apiCall ? (this.state.tokenized ? "You are in validation mode" : "You are in Translation mode") : "Saving....."}
                   </div>
                 </Button>
               </Grid>

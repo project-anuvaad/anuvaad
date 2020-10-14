@@ -162,6 +162,12 @@ class Block extends Component {
 
   }
 
+  handleBlurClick =(val)=>{
+    console.log("000000",this.state.sentence)
+
+
+  }
+
   handleChange = (name) => (event) => {
     if (arr.includes(name)) {
       arr = arr.filter((item) => item !== name);
@@ -231,7 +237,7 @@ class Block extends Component {
           style={{
             margin: "10px",
             minHeight: "120px",
-            padding: "0, 1%, 1%, 1%",
+            padding: "1%",
             border:
               (selectedBlock &&
                 sentence &&
@@ -243,12 +249,12 @@ class Block extends Component {
           
         >
           <Grid container spacing={2} style={{padding: "7px"}}>
-            <Grid item xs={8} sm={9} lg={11} xl={11}>
+            <Grid item xs={12} sm={12} lg={12} xl={12}>
               <div style={{ display: "flex", flexDirection: "row" }} 
               
               onClick={() => selectedBlock &&
                 sentence &&
-                sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}
+                sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" ? this.handleCardClick(this.props.sentence) : this.handleBlurClick(this.props.sentence)}
                 >
                 {/* <Tooltip title="Go to validation mode">
                 <ValidationIcon
@@ -313,18 +319,14 @@ class Block extends Component {
                   }
                 </div>
 
-              </div>
-            </Grid>
-
-            <Grid item xs={4} sm={3} lg={1} xl={1}>
-              {this.props.buttonStatus === "merge" ? (
+                {this.props.buttonStatus === "merge" ? (
                 <Checkbox
                   size="small"
                   color="primary"
                   onChange={this.handleChange(sentence.s_id)}
                 />
               ) : (
-                  <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems:"center" }}>
                     {this.props.buttonStatus !== "split" && (
                       <div
                         style={{
@@ -333,7 +335,7 @@ class Block extends Component {
                           paddingLeft: "4%",
                         }}
                       >
-                        <Tooltip title="Get machine translated sentence">
+                        <Tooltip title="Copy machine translated sentence">
                           <IconButton
                             aria-label="validation mode"
                             onClick={() => {
@@ -423,7 +425,10 @@ class Block extends Component {
                     </div>
                   </div>
                 )}
+
+              </div>
             </Grid>
+
           </Grid>
         </Paper >
     );
