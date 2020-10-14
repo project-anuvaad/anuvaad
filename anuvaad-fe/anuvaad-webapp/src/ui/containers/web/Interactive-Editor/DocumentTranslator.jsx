@@ -130,7 +130,7 @@ class PdfFileEditor extends React.Component {
   }
 
   handleClose = () => {
-    if (this.state.title === "Save") {
+    if(this.state.title === "Save") {
       this.getUpdatedBlock(this.state.prevActiveState, "no")
     }
     this.setState({
@@ -163,7 +163,8 @@ class PdfFileEditor extends React.Component {
       element && element.text_blocks && element.text_blocks.map((sentence) => {
         sentence.tokenized_sentences.map((value, tokenIndex) => {
           if (tokenObj && tokenObj.s_id === value.s_id) {
-            if (operationType === "save") {
+            if(operationType === "save") {
+              value.save = true
               this.props.saveUpdatedSentence(sentence, sentence, sentence.block_identifier)
             } else {
               if (value.hasOwnProperty("save")) {
