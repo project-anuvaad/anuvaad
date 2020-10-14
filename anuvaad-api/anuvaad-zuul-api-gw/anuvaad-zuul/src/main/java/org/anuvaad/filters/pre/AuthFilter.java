@@ -3,6 +3,7 @@ package org.anuvaad.filters.pre;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import org.anuvaad.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,8 @@ public class AuthFilter extends ZuulFilter {
     private static final String AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE = "Retrieving of auth token failed";
     private static final String OPEN_ENDPOINT_MESSAGE = "Routing to an open endpoint: {}";
     private static final String AUTH_TOKEN_HEADER_NAME = "auth-token";
-    private static final String ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE = "Routing to protected endpoint {} restricted - No auth token";
-    private static final String UNAUTHORIZED_USER_MESSAGE = "You are not authorized to access this resource";
+    private static final String ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE = "Routing to protected endpoint {} restricted, due to authentication failure - No auth token";
+    private static final String UNAUTH_USER_MESSAGE = "You are not authenticated to access this resource";
     private static final String RETRIEVING_USER_FAILED_MESSAGE = "Retrieving user failed";
     private static final String PROCEED_ROUTING_MESSAGE = "Routing to protected endpoint: {} - auth provided";
 
@@ -71,7 +72,7 @@ public class AuthFilter extends ZuulFilter {
     @Override
     public Object run() {
         String authToken;
-        RequestContext ctx = RequestContext.getCurrentContext()
+        RequestContext ctx = RequestContext.getCurrentContext();
         if (openEndpointsWhitelist.contains(getRequestURI())) {
             setShouldDoAuth(false);
             logger.info(OPEN_ENDPOINT_MESSAGE, getRequestURI());
@@ -87,7 +88,7 @@ public class AuthFilter extends ZuulFilter {
         ctx.set(AUTH_TOKEN_KEY, authToken);
         if (authToken == null) {
             logger.info(ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE, getRequestURI());
-            ExceptionUtils.raiseCustomException(HttpStatus.UNAUTHORIZED, UNAUTHORIZED_USER_MESSAGE);
+            ExceptionUtils.raiseCustomException(HttpStatus.UNAUTHORIZED, UNAUTH_USER_MESSAGE);
             return null;
         } else {
             User user = verifyAuthenticity(ctx, authToken);

@@ -1,0 +1,24 @@
+{
+    "roles":[
+        {
+            "code":"SUPERUSER",
+            "active":true,
+            "description":"Has access to every resource in the system"
+        },
+        {
+            "url":"ADMIN",
+            "active":true,
+            "description":"Has access to every resource in the system"
+        },
+        {
+            "url":"TRANSLATOR",
+            "active":true,
+            "description":"Has access to translation related resources"
+        },
+        {
+            "url":"DEVELOPER",
+            "active":true,
+            "description":"Has access to technical details of th system"
+        }
+    ]
+}

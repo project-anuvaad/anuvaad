@@ -1,0 +1,24 @@
+{
+    "role-actions":[
+        {
+            "role":"SUPERUSER",
+            "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
+            "active":true
+        },
+        {
+            "role":"SUPERUSER",
+            "actionID": "400bf52e-d7ef-4bdb-9ce5-8f64b42ada9c",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
+            "active":true
+        },
+        {
+            "role":"DEVELOPER",
+            "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
+            "active":true
+        }
+    ]
+}
