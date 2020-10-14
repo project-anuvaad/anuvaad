@@ -8,20 +8,20 @@ class MachineTranslation extends Component {
   constructor() {
     super();
     this.state = {
-
+      status: ["merge","mergeSaved","split","apiCalled",""]
     };
   }
 
   render() {
-    const { classes, sentence } = this.props;
+    const { classes, sentence, buttonStatus } = this.props;
     return (
-      <Paper className={this.props.buttonStatus !=="merge" && this.props.buttonStatus !=="mergeSaved" && this.props.buttonStatus !=="split" ? classes.paper: classes.paper2} >
+      <Paper className={!this.state.status.includes(buttonStatus) ? classes.paper: classes.paper2} >
         <div>
           <Typography variant="h5" gutterBottom className={classes.header} >Machine Translation</Typography>
         </div>
-      {this.props.buttonStatus !=="merge"  && this.props.buttonStatus !=="mergeSaved" && this.props.buttonStatus !=="split" && sentence &&
+      {!this.state.status.includes(buttonStatus) && sentence &&
       <div>
-        <hr style={this.props.buttonStatus !=="merge" ? { border: "1px solid #00000014" }: { border: "1px solid grey" }} />
+        <hr style={!this.state.status.includes(buttonStatus) ? { border: "1px solid #00000014" }: { border: "1px solid grey" }} />
         <div className={classes.div} >
           <div>
             {sentence && sentence.s0_src}
