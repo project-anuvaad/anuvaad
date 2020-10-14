@@ -59,6 +59,8 @@ BLOCK_CONFIGS = {
     "space_multiply_factor": 1.8
 }
 
+BLOCK_BREAK_CONFIG = {'margin_support': 2, 'width_threshold': 0.65}
+
 TABLE_CONFIGS = {
     "remove_background" : True ,
     "background_threshold" : 50,
@@ -94,5 +96,5 @@ CROP_CONFIG = {
     'ma':{'top':5, 'bottom':5,'right':5,'left':5 }
 }
 
-CRAFT_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"
-#CRAFT_MODEL_PATH='/home/dhiraj/Documents/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
+#CRAFT_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"
+CRAFT_MODEL_PATH='/home/dhiraj/Documents/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/src/utilities/craft_pytorch/model/craft_mlt_25k.pth'

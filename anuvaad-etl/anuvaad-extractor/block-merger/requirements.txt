@@ -4,6 +4,7 @@ flask==1.1.2
 flask-cors==3.0.8
 flask-restful==0.3.8
 elasticsearch==7.8.0
+compose==1.1.1
 anuvaad-em==0.0.2
 pdf2image==1.12.1
 pytesseract==0.3.4

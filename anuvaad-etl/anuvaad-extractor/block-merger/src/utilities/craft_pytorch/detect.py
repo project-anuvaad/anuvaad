@@ -188,7 +188,7 @@ def detect_text(image_paths,text_threshold=args.text_threshold,low_text_threshol
 
     message = 'Time taken for text detection is ' + str(time_taken) + '/' + str(number_of_pages) + 'time per page : ' + str(time_take_per_page)
 
-    log.in
+    log_info(message, app_context.application_context)
     return in_dfs
 
 
