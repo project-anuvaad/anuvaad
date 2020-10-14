@@ -10,7 +10,7 @@ import Split from "@material-ui/icons/CallSplit";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import Checkbox from "@material-ui/core/Checkbox";
-import ValidationIcon from "@material-ui/icons/SettingsEthernet";
+//import ValidationIcon from "@material-ui/icons/SettingsEthernet";
 import AutoComplete from "../../../components/web/common/AutoComplete1";
 import IntractiveApi from "../../../../flux/actions/apis/intractive_translate";
 import { bindActionCreators } from "redux";
@@ -54,12 +54,12 @@ class Block extends Component {
     }
 
     if (prevProps.buttonStatus !== this.props.buttonStatus) {
-      if (this.props.buttonStatus == "mergeSaved" && arr.length > 0) {
+      if (this.props.buttonStatus === "mergeSaved" && arr.length > 0) {
         let message = "Do you want to merge the sentences";
         let operation = "Merge sentence";
         this.props.handleDialogMessage("", arr, "", operation, message);
         arr = [];
-      } else if (this.props.buttonStatus == "") {
+      } else if (this.props.buttonStatus === "") {
         arr = [];
         this.setState({ selectedValueArray: [] });
       }
@@ -191,7 +191,7 @@ class Block extends Component {
 
           // this.setState({sentence})
         }
-      })
+      return null;})
       this.props.handleClick("")
       this.props.saveUpdatedSentence(block, this.state.sentence,this.props.blockIdentifier)
     } else {
@@ -280,7 +280,7 @@ class Block extends Component {
                         resize: "none",
                         zIndex: 1111,
                         borderRadius: "4px",
-                        border: '0px dotted white',
+                        //border: '0px dotted white',
                         minHeight: "45px",
                         fontSize: "16px",
                         border: 'none',

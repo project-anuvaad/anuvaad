@@ -38,7 +38,7 @@ class Activate extends React.Component {
                 if (!this.state.termsAndCondition) {
                     alert(translate('common.page.alert.acceptTerms&Condition'))
                 } else {
-                    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                    var mailformat = /^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/;
                     if (this.state.email.match(mailformat)) {
                         let { APITransport } = this.props;
                         let apiObj = new SignupApi(this.state.email, this.state.firstName, this.state.lastName, this.state.password);
@@ -88,7 +88,7 @@ class Activate extends React.Component {
                 <div>
                     <Grid container>
                         <Grid item xs={12} sm={4} lg={5} xl={5} >
-                            <img src="/Anuvaad.png" width="100%" />
+                            <img src="/Anuvaad.png" width="100%"  alt=""/>
                         </Grid>
                         <Grid item xs={12} sm={8} lg={7} xl={7} style={{ backgroundColor: '#f1f5f7' }} >
                             {/* <ValidatorForm

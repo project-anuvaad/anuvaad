@@ -91,7 +91,7 @@ class FileContentUpdateResource(Resource):
         
         blocks      = body['blocks']
         AppContext.addRecordID(None)
-        log_info("FileContentUpdateResource for user ({}), to update ({}) blocks".format(user_id, len(blocks)), AppContext.getContext())
+        log_info("FileContentUpdateResource for user ({}), to update ({}) blocks request {}".format(user_id, len(blocks), body), AppContext.getContext())
 
         try:
             result  = FileContentRepositories.update(user_id, blocks)
