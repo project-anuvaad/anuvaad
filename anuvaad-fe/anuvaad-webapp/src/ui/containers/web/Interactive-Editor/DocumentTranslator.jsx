@@ -231,13 +231,13 @@ class PdfFileEditor extends React.Component {
       Object.keys(this.state.activeSentence).length > 0 &&
       this.state.dialogToken
     ) {
-      this.handleDialogMessage(
-        "",
-        "",
-        "",
-        "Save",
-        "Do you want to save the updated sentence"
-      );
+      // this.handleDialogMessage(
+      //   "",
+      //   "",
+      //   "",
+      //   "Save",
+      //   "Do you want to save the updated sentence"
+      // );
       this.setState({ dialogToken: false });
     }
   };
