@@ -425,6 +425,7 @@ class PdfFileEditor extends React.Component {
   }
 
   handleBlur(id, wf_code, saveData, prevValue, finalValue) {
+    debugger
     let status = "update";
     let idDetails = id.split("_")
     let text = "";
@@ -465,7 +466,7 @@ class PdfFileEditor extends React.Component {
     telemetry.finalSenetence = wf_code ? finalValue : saveData
     telemetry.sId = idDetails[0] ? idDetails[0] : id
     telemetry.mode = wf_code ? "translation" : "validation"
-
+    console.log(blockItem, !wf_code, this.state.textChange)
     if (blockItem && !wf_code && this.state.textChange) this.workFlowApi("DP_WFLOW_S_TTR", [blockItem], status);
     else if (wf_code && blockItem && saveData) this.workFlowApi(wf_code, [blockItem], status, prevValue);
     this.setState({

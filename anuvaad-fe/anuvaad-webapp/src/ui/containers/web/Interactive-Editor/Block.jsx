@@ -88,18 +88,23 @@ class Block extends Component {
     if (this.props.buttonStatus === "selected") {
       this.props.handleClick("typing")
     }
+    if(!this.props.dialogToken){
+      this.props.handleBlurClick(true)
+    }
     let sentence = this.state.sentence;
-
+    // debugger
     sentence.tagged_tgt = event.target.value;
     sentence.tgt = event.target.value;
 
     if (sentence.hasOwnProperty("save") && sentence.save) {
       sentence.save = false
     }
+
     this.setState({
       sentence: sentence,
       enteredData: true,
     });
+    
   };
 
   fetchSuggestions(srcText, targetTxt, tokenObject) {
@@ -170,7 +175,8 @@ class Block extends Component {
   }
 
   handleBlurClick = (val) => {
-    this.props.handleBlurClick("", true)
+    
+    this.props.handleBlurClick(false)
 
 
   }
@@ -185,6 +191,7 @@ class Block extends Component {
   };
 
   handleSave(id) {
+    
     if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
 
       let block = this.props.sen
