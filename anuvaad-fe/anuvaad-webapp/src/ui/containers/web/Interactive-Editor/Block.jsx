@@ -163,7 +163,7 @@ class Block extends Component {
   }
 
   handleBlurClick =(val)=>{
-    console.log("000000",this.state.sentence)
+    this.props.handleBlurClick("",true)
 
 
   }

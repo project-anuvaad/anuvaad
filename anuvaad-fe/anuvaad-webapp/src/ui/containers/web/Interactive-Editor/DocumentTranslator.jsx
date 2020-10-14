@@ -187,8 +187,15 @@ class PdfFileEditor extends React.Component {
     this.setState({ selectedTargetId: blockId, showData: true });
   }
 
+  handleBlurClick=(updatedSentence,token)=>{
+    this.setState({updatedSentence,dialogToken:token})
+  }
+
   handleOutsideClick=()=>{
-    Object.keys(this.state.activeSentence).length>0 && console.log("clicked", this.state.activeSentence)
+    Object.keys(this.state.activeSentence).length>0 &&console.log("clicked", this.state.activeSentence)
+    if(this.state.activeSentence.tgt!==this.state.updatedSentence){
+
+    }
   }
 
   render() {
