@@ -26,7 +26,7 @@ class DocumentSource extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if ((prevProps.scrollToPage !== this.props.scrollToPage || this.props.scrollToTop || (prevProps.tokenized != this.props.tokenized)) && this.props.tokenized) {
+    if ((prevProps.scrollToPage !== this.props.scrollToPage || this.props.scrollToTop || (prevProps.tokenized !== this.props.tokenized)) && this.props.tokenized) {
       if (this.refs[this.props.scrollToPage]) {
         this.refs[this.props.scrollToPage].scrollIntoView({
           behavior: "smooth",
@@ -238,7 +238,7 @@ class DocumentSource extends React.Component {
         {sourceSentence.text_blocks &&
           sourceSentence.text_blocks.map((sentence, index) => {
             yAxis = sentence.text_top + sourceSentence.page_no * sourceSentence.page_height;
-            const block_id = sentence.block_id;
+            //const block_id = sentence.block_id;
             return (
               <div>
                 {/* {this.props.tokenized ? */}

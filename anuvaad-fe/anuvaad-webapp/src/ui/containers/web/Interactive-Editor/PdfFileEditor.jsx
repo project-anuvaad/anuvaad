@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import FetchDoc from "../../../../flux/actions/apis/fetchdocsentence";
+//import FetchDoc from "../../../../flux/actions/apis/fetchdocsentence";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
@@ -9,7 +9,7 @@ import SourceView from "./SourceView";
 // import Data from "./Data.json";
 import Typography from "@material-ui/core/Typography";
 
-import KeyboardTabIcon from "@material-ui/icons/KeyboardTab";
+//import KeyboardTabIcon from "@material-ui/icons/KeyboardTab";
 
 import Toolbar from "@material-ui/core/Toolbar";
 // import Data from "./PPT.json";
@@ -173,14 +173,14 @@ class PdfFileEditor extends React.Component {
       }
 
       if (
-        (this.state.sentences[index + 1] && sentence.page_no != this.state.sentences[index + 1].page_no) ||
+        (this.state.sentences[index + 1] && sentence.page_no !== this.state.sentences[index + 1].page_no) ||
         index === this.state.sentences.length - 1
       ) {
         pages[sentence.page_no] = minPageHeight;
       }
 
       this.setState({ pageArr: pages });
-    });
+    return null;});
   }
 
   handleOnMouseEnter(sentenceId, parent, pageNo) {
@@ -196,13 +196,13 @@ class PdfFileEditor extends React.Component {
     let leftPaddingValue = 0;
     let rightPaddingValue = 0;
     this.state.sentences.map(sentence => {
-      if (leftPaddingValue > parseInt(sentence.x) || leftPaddingValue == 0) {
+      if (leftPaddingValue > parseInt(sentence.x) || leftPaddingValue === 0) {
         leftPaddingValue = parseInt(sentence.x);
       }
-      if ((sentence.width && rightPaddingValue < parseInt(sentence.width) + parseInt(sentence.x)) || (sentence.width && rightPaddingValue == 0)) {
+      if ((sentence.width && rightPaddingValue < parseInt(sentence.width) + parseInt(sentence.x)) || (sentence.width && rightPaddingValue === 0)) {
         rightPaddingValue = parseInt(sentence.width) + parseInt(sentence.x);
       }
-    });
+    return null;});
     // width: this.state.sentences && rightPaddingValue-leftPaddingValue+20+ "px",
     let paperWidth = this.state.sentences && this.state.sentences[0].page_width - leftPaddingValue - 78 + "px";
 
@@ -214,7 +214,7 @@ class PdfFileEditor extends React.Component {
       overflowY: "scroll",
       height: this.state.sentences && this.state.sentences[0].page_height + "px",
 
-      overflowX: this.props.match.path == "/pdf-file-editor" && "hidden",
+      overflowX: this.props.match.path === "/pdf-file-editor" && "hidden",
       backgroundColor: "white",
 
       backgroundImage: this.state.backgroundImage && "url(" + this.state.backgroundImage + ")",

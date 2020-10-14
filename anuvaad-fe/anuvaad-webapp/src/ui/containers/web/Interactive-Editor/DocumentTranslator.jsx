@@ -45,9 +45,9 @@ class PdfFileEditor extends React.Component {
               if (value.s_id === this.state.SentenceOperationId) {
                 this.setState({ activeSentence: value, buttonStatus: "selected" })
               }
-            })
-          })
-        })
+            return null;})
+          return null;})
+       return null; })
       }
 
     }
@@ -164,9 +164,9 @@ class PdfFileEditor extends React.Component {
               open={this.props.open}
             />
           );
-        });
-      });
-    });
+        return null;});
+      return null;});
+    return null;});
     return sentenceArray;
   };
 
@@ -187,12 +187,23 @@ class PdfFileEditor extends React.Component {
     this.setState({ selectedTargetId: blockId, showData: true });
   }
 
+  handleBlurClick=(updatedSentence,token)=>{
+    this.setState({updatedSentence,dialogToken:token})
+  }
+
+  handleOutsideClick=()=>{
+    Object.keys(this.state.activeSentence).length>0 &&console.log("clicked", this.state.activeSentence)
+    if(this.state.activeSentence.tgt!==this.state.updatedSentence){
+
+    }
+  }
+
   render() {
 
     return (
       <div>
         {this.props.sentences && (
-          <div>
+          <div  onClick={() => this.handleOutsideClick("")}>
             <Grid
               container
               spacing={2}
@@ -265,7 +276,6 @@ class PdfFileEditor extends React.Component {
                         </p>
                       }
                       scrollableTarget={"scrollableDivs"}
-                    // onScroll={() => this.props.handleScroll()}
                     >
                       {this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
                         return element && element.text_blocks && element.text_blocks.map((sentence) => {

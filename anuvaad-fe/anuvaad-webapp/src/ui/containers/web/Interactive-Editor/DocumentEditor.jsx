@@ -416,7 +416,7 @@ class PdfFileEditor extends React.Component {
     blockDetails.map(pageInfoDetails => {
 
       pageInfo.push(pageInfoDetails.page_info && parseInt(pageInfoDetails.page_info.page_no));
-    })
+    return null;})
 
     // pageInfo = update !== "merge" && blockDetails.length > 0 && blockDetails[0].page_info.page_no;
 
@@ -495,7 +495,7 @@ class PdfFileEditor extends React.Component {
     let blockId = block.split("_")[0];
     let pageNo = block.split("_")[1];
     let blockTop,
-      blockHeight,
+     // blockHeight,
       valueH = 0;
     let docPage = this.state.sentences;
     let strText = this.state.selectedSourceText;
@@ -697,7 +697,7 @@ class PdfFileEditor extends React.Component {
                   }}
                 >
                   <div style={{ fontSize: "20px", fontWeight: "bold" }}>
-                    {!this.state.apiCall ? (this.state.tokenized ? "You are in validation mode" : "You are in Translation mode") : "Loading ....."}
+                    {!this.state.apiCall ? (this.state.tokenized ? "You are in validation mode" : "You are in Translation mode") : "Saving....."}
                   </div>
                 </Button>
               </Grid>
@@ -968,23 +968,23 @@ class PdfFileEditor extends React.Component {
 
           </div>
         )}
-        {!this.state.sentences && <Spinner />}
-        {this.state.open && (
-          <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            open={this.state.open}
-            autoHideDuration={3000}
-            variant="success"
-            message={this.state.message}
-          />
-        )}
-      </div>
-    );
+            {!this.state.sentences && <Spinner />}
+            {this.state.open && (
+              <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                open={this.state.open}
+                autoHideDuration={3000}
+                variant="success"
+                message={this.state.message}
+              />
+            )}
+          </div>
+        );
   }
 }
 
 const mapStateToProps = state => ({
-  fetchPdfSentence: state.fetchPdfSentence,
+          fetchPdfSentence: state.fetchPdfSentence,
   fileUpload: state.fileUpload,
   documentDetails: state.documentDetails,
   fetchContent: state.fetchContent,
@@ -994,9 +994,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
-    {
-      APITransport,
-      ClearContent: ClearContent
+        {
+          APITransport,
+          ClearContent: ClearContent
     },
     dispatch
   );

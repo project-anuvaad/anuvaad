@@ -790,10 +790,10 @@ class IntractiveTrans extends React.Component {
                     variant="contained"
                     // size="large"
                     color="primary"
-                    style={{ textTransform: "capitalize", width: "100%", minWidth: "110px", overflow: "hidden", whiteSpace: "nowrap", borderRadius: '30px' }}
+                    style={{ textTransform: "capitalize", width: "100%", minWidth: "110px", overflow: "hidden", whiteSpace: "nowrap", borderRadius: '30px',height:'46px' }}
                     onClick={() => this.handlePreview()}
                   >
-                    <GetAppIcon fontSize="large" />
+                    <GetAppIcon  />
                     &nbsp;&nbsp;{translate("common.page.label.review/download")}
                   </Button>
                 </Grid>
@@ -804,10 +804,10 @@ class IntractiveTrans extends React.Component {
                     }}
                     variant="outlined"
                     // size="large"
-                    // color="primary"
-                    style={{ width: "100%", minWidth: "55px",  borderRadius: '30px', color: '#233466' }}
+                     //color="primary"
+                    style={{ width: "100%", minWidth: "55px",  borderRadius: '30px', color: '#233466',height:'46px' }}
                   >
-                    <DoneIcon fontSize="large" style={{ color: '#233466' }} />
+                    <DoneIcon  style={{ color: '#233466' }} />
                     &nbsp;&nbsp;{translate("common.page.label.done")}
                   </Button>
                 </Grid>

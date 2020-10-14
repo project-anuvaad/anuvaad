@@ -77,7 +77,8 @@ const FileUploadStyles = theme => ({
       width: "92.7%",
       backgroundColor:'#1C9AB7',
       borderRadius:"20px 20px 20px 20px",
-      color:"#FFFFFF"
+      color:"#FFFFFF",
+      height:'46px'
     },
     button2: {
       //arginTop: "9%",
@@ -85,7 +86,8 @@ const FileUploadStyles = theme => ({
       width: "88%",
       backgroundColor:'#1C9AB7',
       borderRadius:"20px 20px 20px 20px",
-      color:"#FFFFFF"
+      color:"#FFFFFF",
+      height:'46px'
     },
     // dropZoneArea:{
 

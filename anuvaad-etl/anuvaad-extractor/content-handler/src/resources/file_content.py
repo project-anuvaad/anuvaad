@@ -36,14 +36,14 @@ class FileContentSaveResource(Resource):
             return res.getresjson(), 400
         
         AppContext.addRecordID(record_id)
-        log_info("FileContentSaveResource record_id {} for user {}".format(record_id, user_id), AppContext.getContext())
+        log_info("FileContentSaveResource record_id ({}) for user ({})".format(record_id, user_id), AppContext.getContext())
         
         try:
             if FileContentRepositories.store(user_id, file_locale, record_id, pages, src_lang, tgt_lang) == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
 
-            log_info("FileContentSaveResource record_id {} for user {} saved".format(record_id, user_id), AppContext.getContext())
+            log_info("FileContentSaveResource record_id ({}) for user ({}) saved".format(record_id, user_id), AppContext.getContext())
             res = CustomResponse(Status.SUCCESS.value, None)
             return res.getres()
         except Exception as e:
@@ -63,7 +63,7 @@ class FileContentGetResource(Resource):
         parser.add_argument('record_id', type=str, location='args', help='record_id is required', required=True)
 
         args    = parser.parse_args()
-        AppContext.addRecordID(record_id)
+        AppContext.addRecordID(args['record_id'])
         log_info("FileContentGetResource record_id {} for user {}".format(args['record_id'], args['ad-userid']), AppContext.getContext())
 
         try:
@@ -91,7 +91,7 @@ class FileContentUpdateResource(Resource):
         
         blocks      = body['blocks']
         AppContext.addRecordID(None)
-        log_info("FileContentUpdateResource for user {}, to update {} blocks".format(user_id, len(blocks)), AppContext.getContext())
+        log_info("FileContentUpdateResource for user ({}), to update ({}) blocks request {}".format(user_id, len(blocks), body), AppContext.getContext())
 
         try:
             result  = FileContentRepositories.update(user_id, blocks)
@@ -100,7 +100,7 @@ class FileContentUpdateResource(Resource):
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
 
-            log_info("FileContentUpdateResource for user {} updated".format(user_id), AppContext.getContext())
+            log_info("FileContentUpdateResource for user ({}) updated".format(user_id), AppContext.getContext())
             res = CustomResponse(Status.SUCCESS.value, result, None)
             return res.getres()            
         except Exception as e:

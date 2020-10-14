@@ -68,7 +68,7 @@ const endpoints = {
   setpassword: "/set-user-password",
   documentupload:"/api/v0/upload-file",
   fecthcontent: "/api/v0/fetch-content",
-  documentConverter: "/api/v0/document-converter"
+  documentConverter: "/api/v0/document-converter",
 };
 
 export default endpoints;
