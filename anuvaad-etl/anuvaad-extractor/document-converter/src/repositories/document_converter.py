@@ -54,6 +54,10 @@ class DocumentConversion(object):
                 text_values      = []
                 b64_images       = []
 
+                if 'images' not in list(page.keys()) or 'text_blocks' not in list(page.keys()):
+                    log_info('looks like one of the key is missing {}'.format(page.keys()), MODULE_CONTEXT)
+                    continue
+                
                 images       = page['images']
                 texts        = page['text_blocks']
             #     tables       = page['tables']
