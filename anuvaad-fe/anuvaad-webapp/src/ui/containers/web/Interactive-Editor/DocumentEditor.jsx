@@ -416,7 +416,7 @@ class PdfFileEditor extends React.Component {
     blockDetails.map(pageInfoDetails => {
 
       pageInfo.push(pageInfoDetails.page_info && parseInt(pageInfoDetails.page_info.page_no));
-    })
+    return null;})
 
     // pageInfo = update !== "merge" && blockDetails.length > 0 && blockDetails[0].page_info.page_no;
 

@@ -45,9 +45,9 @@ class PdfFileEditor extends React.Component {
               if (value.s_id === this.state.SentenceOperationId) {
                 this.setState({ activeSentence: value, buttonStatus: "selected" })
               }
-            })
-          })
-        })
+            return null;})
+          return null;})
+       return null; })
       }
 
     }
@@ -164,9 +164,9 @@ class PdfFileEditor extends React.Component {
               open={this.props.open}
             />
           );
-        });
-      });
-    });
+        return null;});
+      return null;});
+    return null;});
     return sentenceArray;
   };
 
