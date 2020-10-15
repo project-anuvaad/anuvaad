@@ -31,7 +31,6 @@ def instantiate(topics):
 
 
 # For all the topics, returns a list of TopicPartition Objects
-# For all the topics, returns a list of TopicPartition Objects
 def get_topic_paritions(topics):
     topic_paritions = []
     for topic in topics:

@@ -8,7 +8,7 @@ file_upload_url = os.environ.get('FILE_UPLOAD_URL', 'https://auth.anuvaad.org/up
 
 #MODULE-SPECIFIC-CONFIGS
 #common-variables
-align_job_topic = "anuvaad-etl-alignment-jobs-v5"
+align_job_topic = "anuvaad-etl-alignment-jobs-v6"
 anu_dp_wf_aligner_in_topic = "anuvaad-dp-tools-aligner-input-v2"
 anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-output-v2"
 

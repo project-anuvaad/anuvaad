@@ -174,7 +174,7 @@ class AlignmentService:
             source_embeddings, target_embeddings = self.build_index(source, target_corp, src_loc, trgt_loc, object_in)
             return source_embeddings, target_embeddings
         except Exception as e:
-            log_exception("Exception fetching embeddings for the sentences: " + str(e), object_in, e)
+            log_exception("Exception while fetching embeddings for the sentences: " + str(e), object_in, e)
             self.update_job_status("FAILED", object_in, "Exception fetching embeddings for the sentences")
             if iswf:
                 util.error_handler("LASER_ERROR", "Exception fetching embeddings for the sentences: " + str(e), object_in, True)
