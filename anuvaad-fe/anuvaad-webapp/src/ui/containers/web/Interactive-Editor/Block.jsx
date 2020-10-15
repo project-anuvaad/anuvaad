@@ -70,7 +70,7 @@ class Block extends Component {
       })
     }
 
-    if (prevProps.selectedBlock && prevProps.selectedBlock !== this.props.selectedBlock) {
+    if (prevProps.selectedBlock && prevProps.selectedBlock.hasOwnProperty("s_id") && prevProps.selectedBlock !== this.props.selectedBlock) {
       if (this.state.editedText) {
         if (prevProps.selectedBlock.tgt !== this.state.editedText) {
           let message = "Do you want to save the edited sentences";
