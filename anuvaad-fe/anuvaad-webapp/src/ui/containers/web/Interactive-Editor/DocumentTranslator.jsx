@@ -135,13 +135,19 @@ class PdfFileEditor extends React.Component {
 
       this.props.workFlowApi(workflowCode, updatedBlocks, this.state.title);
     } else if (this.state.title === "Split sentence") {
+      let data = this.state.activeSentence && this.state.activeSentence.src
+
       let updatedBlocks = BLOCK_OPS.do_sentence_splitting(
         this.props.sentences,
         this.state.selected_block_id,
         this.state.sentence_id,
         this.state.sentence_index
       );
+
       SentenceOperationId = this.state.activeSentence.s_id;
+
+      TELEMETRY.splitSentencesEvent(data, [data.slice(0, this.state.sentence_index), data.slice(this.state.sentence_index)])
+
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
     } else if (this.state.title === "Save") {
 
@@ -163,7 +169,7 @@ class PdfFileEditor extends React.Component {
     this.setState({
       openDialog: false,
       title: "",
-      
+
       sentence_id: "",
       sentence_index: "",
       selected_block_id: "",
