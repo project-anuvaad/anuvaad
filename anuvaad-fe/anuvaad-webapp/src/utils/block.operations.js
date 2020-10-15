@@ -396,7 +396,8 @@ function do_sentences_merging_v1(sentences, sentence_ids) {
         sentence_indices.forEach(sentence_index => {
             block.tokenized_sentences.forEach(sentence => {
                 if (sentence.s_id === sentence_index.s_id) {
-                    merged_sentence += sentence.src
+                    merged_sentence= merged_sentence.trim()
+                    merged_sentence += " "+sentence.src
                     block.tokenized_sentences.splice(sentence_index.index, 1)
                     block.tokenized_sentences.splice(sentence_index.index, 0, {})
                 }

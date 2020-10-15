@@ -139,7 +139,7 @@ class PdfFileEditor extends React.Component {
         this.setState({
           sentences: temp,
           open: this.state.apiStatus && true,
-          message: this.state.apiStatus && (this.state.apiCall === "Merge sentence" ? "Sentence merged successfully!" : this.state.apiCall === "Split sentence" ? "Sentence Splitted Sucessfully" : "Sentence updated successfully...!"),
+          message: this.state.apiStatus && (this.state.apiCall === "Merge sentence" ? "Sentence merged successfully!" : this.state.apiCall === "Split sentence" ? "Sentence Splitted Sucessfully" : "Translated sentence saved...!"),
           apiStatus: false,
           apiCall: false,
           showLoader: false,
@@ -425,13 +425,14 @@ class PdfFileEditor extends React.Component {
   }
 
   handleBlur(id, wf_code, saveData, prevValue, finalValue) {
+    
     let status = "update";
     let idDetails = id.split("_")
     let text = "";
     let blockItem;
 
     this.state.sentences.map(page => {
-      if (page.page_no === idDetails[1]) {
+      if (parseInt(page.page_no) === parseInt(idDetails[1])) {
         page.text_blocks.map(block => {
           if (block.block_identifier === idDetails[0]) {
             block &&
@@ -697,7 +698,7 @@ class PdfFileEditor extends React.Component {
                   }}
                 >
                   <div style={{ fontSize: "20px", fontWeight: "bold" }}>
-                    {!this.state.apiCall ? (this.state.tokenized ? "You are in validation mode" : "You are in Translation mode") : "Loading ....."}
+                    {!this.state.apiCall ? (this.state.tokenized ? "You are in validation mode" : "You are in Translation mode") : "Saving....."}
                   </div>
                 </Button>
               </Grid>

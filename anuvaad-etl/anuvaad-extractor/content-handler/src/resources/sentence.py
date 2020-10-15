@@ -47,7 +47,7 @@ class SaveSentenceResource(Resource):
             return res.getresjson(), 400
 
         AppContext.addRecordID(None)
-        log_info("SaveSentenceResource for user {}, number sentences to update {}".format(user_id, len(sentences)), AppContext.getContext())
+        log_info("SaveSentenceResource for user {}, number sentences to update {} request {}".format(user_id, len(sentences), body), AppContext.getContext())
 
         try:
             result = SentenceRepositories.update_sentences(user_id, sentences)
