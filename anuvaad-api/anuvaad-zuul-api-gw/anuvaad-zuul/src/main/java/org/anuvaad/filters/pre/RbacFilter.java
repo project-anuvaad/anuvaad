@@ -3,9 +3,8 @@ package org.anuvaad.filters.pre;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import net.minidev.json.JSONObject;
 import org.anuvaad.models.*;
-import org.apache.commons.io.IOUtils;
+import org.anuvaad.utils.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +17,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.anuvaad.constants.RequestContextConstants.*;
 
+/**
+ * 3rd filter to execute in the request flow.
+ * Checks if the user is authorised to access the API, throws exception otherwise.
+ * for the given auth token checks if there's a valid user, valid roles and valid actions in the system.
+ * Performs authorisation level checks on the request.
+ *
+ */
 public class RbacFilter extends ZuulFilter {
 
     @Value("#{'${anuvaad.open-endpoints-whitelist}'.split(',')}")

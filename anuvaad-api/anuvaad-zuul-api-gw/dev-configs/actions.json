@@ -5,6 +5,7 @@
             "uri":"/anuvaad-etl/wf-manager/v1/workflow/initiate",
             "module":"WORKFLOW-MANAGER",
             "active":true,
+            "whiteList":false,
             "description":"API to initiate workflows"
         },
         {
@@ -12,6 +13,7 @@
             "uri":"/anuvaad-etl/wf-manager/v1/workflow/interrupt",
             "module":"WORKFLOW-MANAGER",
             "active":true,
+            "whiteList":false,
             "description":"API to interrupt workflows"
         },
         {
@@ -19,6 +21,7 @@
             "uri":"/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk",
             "module":"WORKFLOW-MANAGER",
             "active":true,
+            "whiteList":false,
             "description":"API to search workflow jobs"
         },
         {
@@ -26,6 +29,7 @@
             "uri":"/anuvaad-etl/wf-manager/v1/workflow/configs/search",
             "module":"WORKFLOW-MANAGER",
             "active":true,
+            "whiteList":false,
             "description":"API to initiate workflow configs"
         }
     ]

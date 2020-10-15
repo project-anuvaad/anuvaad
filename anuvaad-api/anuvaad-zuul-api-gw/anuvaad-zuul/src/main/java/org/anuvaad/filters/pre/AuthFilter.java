@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.anuvaad.models.User;
+import org.anuvaad.utils.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,9 +81,9 @@ public class AuthFilter extends ZuulFilter {
         }
         try {
             authToken = getAuthTokenFromRequestHeader();
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE, e);
-            ExceptionUtils.RaiseException(e);
+            ExceptionUtils.raiseCustomException(HttpStatus.BAD_REQUEST, AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE);
             return null;
         }
         ctx.set(AUTH_TOKEN_KEY, authToken);

@@ -20,6 +20,9 @@ public class Action {
     @JsonProperty("active")
     public Boolean active;
 
+    @JsonProperty("whiteList")
+    public Boolean whiteList;
+
     @JsonProperty("description")
     public String description;
 
@@ -61,5 +64,13 @@ public class Action {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean getWhiteList() {
+        return whiteList;
+    }
+
+    public void setWhiteList(Boolean whiteList) {
+        this.whiteList = whiteList;
     }
 }
