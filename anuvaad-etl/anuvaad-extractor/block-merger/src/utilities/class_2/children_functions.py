@@ -34,7 +34,7 @@ def doc_pre_processing(filename, base_dir, lang):
 
     log_info("document preprocessing started ===>", app_context.application_context)
     flags = {}
-    pdf_data={}
+    #pdf_data={}
 
     img_dfs, xml_dfs, page_width, page_height, working_dir, pdf_bg_img_filepaths, pdf_image_paths = get_xml.process_input_pdf(
         filename, base_dir, lang)

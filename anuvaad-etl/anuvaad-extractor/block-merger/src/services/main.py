@@ -23,14 +23,14 @@ def extract_images_and_text_regions(filename, base_dir,lang):
     if flags['doc_class'] == 'class_1':
         pass
     else :
-        pdf_data[1] = detect_text(image_paths=pdf_data['pdf_image_paths'])
+        pdf_data['in_dfs'] = detect_text(image_paths=pdf_data['pdf_image_paths'])
 
     pdf_data['in_dfs'], table_dfs, line_dfs, bg_dfs                     = get_text_table_line_df(pdf_data,flags)
     pdf_data['table_dfs'], pdf_data['line_dfs'], pdf_data['bg_dfs']     = table_dfs, line_dfs,bg_dfs
 
     pdf_data['lang']        = lang
     flags['page_layout']    = 'single_column'
-    del pdf_data['img_dfs']
+    #del pdf_data['img_dfs']
     return [pdf_data ,flags]
 
 
@@ -50,7 +50,7 @@ def merge_horizontally(input) :
         for index, h_df in enumerate(h_dfs):
             h_dfs[index]['children'] = None
         pdf_data['h_dfs'] = h_dfs
-    del pdf_data['in_dfs']
+    #del pdf_data['in_dfs']
     return [pdf_data,flags]
 
 
@@ -61,7 +61,7 @@ def merge_vertically(input):
     else :
         v_dfs = children_functions.vertical_merging(pdf_data,flags)
     pdf_data['v_dfs'] = v_dfs
-    del pdf_data['h_dfs']
+    #del pdf_data['h_dfs']
     return [pdf_data ,flags]
 
 def break_blocks(input):
@@ -77,7 +77,7 @@ def break_blocks(input):
     p_dfs = get_text_from_table_cells(pdf_data['table_dfs'], p_dfs)
     p_dfs, line_dfs = get_underline(p_dfs, pdf_data['line_dfs'], app_context.application_context)
     pdf_data['p_dfs'] = p_dfs
-    del pdf_data['v_dfs']
+    #del pdf_data['v_dfs']
     log_info("document structure analysis successfully completed", app_context.application_context)
     return [pdf_data,flags]
 

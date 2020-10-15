@@ -89,6 +89,7 @@ FONT_SIZE_CONFIG = {
 }
 
 CROP_CONFIG = {
+    'en' : {'top':1, 'bottom':1,'right':1,'left':1},
     'hi': {'top':15, 'bottom':10,'right':5,'left':5},
     'ml': {'top':15, 'bottom':10,'right':5,'left':5},
     'kn':{'top':15, 'bottom':10,'right':5,'left':5 },

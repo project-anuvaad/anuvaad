@@ -1,26 +1,24 @@
-import sys
-import os
+#import sys
+#import os
 import time
 import argparse
 import torch
-import torch.nn as nn
-import torch.backends.cudnn as cudnn
+#import torch.nn as nn
+#import torch.backends.cudnn as cudnn
 from torch.autograd import Variable
-from PIL import Image
+#from PIL import Image
 import cv2
 import pandas as pd
-from skimage import io
+#from skimage import io
 import numpy as np
-from craft_pytorch import craft_utils
-from craft_pytorch import imgproc
-import json
+from src.utilities.craft_pytorch import craft_utils
+from src.utilities.craft_pytorch import imgproc
+#import json
 import config
 from anuvaad_auditor.loghandler import log_info
 import src.utilities.app_context as app_context
-
-import zipfile
-
-from craft_pytorch.craft import CRAFT
+#import zipfile
+from src.utilities.craft_pytorch.craft import CRAFT
 from collections import OrderedDict
 
 
@@ -144,10 +142,12 @@ def convert_to_in_df(craft_df):
     in_df['text_left'] = craft_df['x1']
     in_df['text_height'] = craft_df['y4'] - craft_df['y1']
     in_df['text_width'] = craft_df['x2'] - craft_df['x1']
-    in_df['text'] = 'ss'
+    in_df['text'] = ''
     in_df['attrib'] = None
     in_df['font_family'] = 'Ariel Unicode MS'
     in_df['font_family_updated'] = 'Ariel Unicode MS'
+    in_df['font_size'] = in_df['text_height']
+    in_df['font_size_updated'] = in_df['text_height']
 
     in_df = in_df.sort_values(by=['text_top'])
     in_df = pd.DataFrame(sort_regions(in_df, []))
