@@ -211,7 +211,7 @@ class Dashboard extends React.Component {
           {translate("dashboard.page.heading.title")}
         </Typography>
         <Paper className={classes.paper}>
-          <Grid container spacing={24}>
+          <Grid container >
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.rowData} style={{ marginTop: "0%" }}>
               <Grid item xs={6} sm={6} lg={8} xl={8} className={classes.label}>
                 <Typography value="" variant="h5">

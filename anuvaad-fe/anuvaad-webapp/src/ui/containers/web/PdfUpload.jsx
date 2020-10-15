@@ -233,8 +233,9 @@ class PdfUpload extends Component {
       });
     } else {
       this.setState({
-        files,
+        files:{
         workspaceName: "",
+        }
       });
     }
   };
