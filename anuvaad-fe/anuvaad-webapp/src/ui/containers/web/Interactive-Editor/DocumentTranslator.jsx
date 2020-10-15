@@ -20,7 +20,7 @@ import BLOCK_OPS from "../../../../utils/block.operations";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-const TELEMETRY = require("../../../../utils/TelemetryManager");
+//const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 class PdfFileEditor extends React.Component {
   constructor(props) {
@@ -35,7 +35,7 @@ class PdfFileEditor extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.open && prevProps.open !== this.props.open) {
-      {
+      
         this.props.sentences &&
           Array.isArray(this.props.sentences) &&
           this.props.sentences.length > 0 &&
@@ -58,7 +58,7 @@ class PdfFileEditor extends React.Component {
               });
             return null;
           });
-      }
+      
     }
 
     if (prevState.activeSentence !== this.state.activeSentence) {
@@ -204,9 +204,12 @@ class PdfFileEditor extends React.Component {
                   this.setState({prevActiveState:{}})
                 }
               }
-            });
+            return null;
           });
-      });
+          return null;
+        });
+      return null;
+    });
   }
 
   handleEditorClick(id) {

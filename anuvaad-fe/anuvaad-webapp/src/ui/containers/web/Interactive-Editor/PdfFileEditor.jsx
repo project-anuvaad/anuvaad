@@ -47,6 +47,7 @@ class PdfFileEditor extends React.Component {
   //   }
 
   getSelectionText(event, id) {
+    // eslint-disable-next-line
     var text = "";
     let selection = {};
     var activeEl = document.activeElement;
@@ -108,20 +109,21 @@ class PdfFileEditor extends React.Component {
       selectedSentence.startParagraph &&
       selectedSentence.endParagraph
     ) {
-      let initialIndex;
+      //let initialIndex;
       let startSentence;
-      let endIndex;
+      //let endIndex;
+      // eslint-disable-next-line
       let endSentence;
       let operation_type,balanceSplitValue;
       let selectedSplitValue;
-      const { pageNo } = selectedSentence;
+      //const { pageNo } = selectedSentence;
 
       const startValue = selectedSentence.startNode.split("_");
       const endValue = selectedSentence.endNode.split("_");
 
       this.state.sentences.map((sentence, index) => {
         if (sentence._id === startValue[0]) {
-          initialIndex = index;
+          //initialIndex = index;
           sentence.tokenized_sentences.map((value, index) => {
             if (value.sentence_index === Number(startValue[1])) {
               startSentence = value;
@@ -130,7 +132,7 @@ class PdfFileEditor extends React.Component {
           });
         }
         if (sentence._id === endValue[0]) {
-          endIndex = index;
+          //endIndex = index;
 
           sentence.tokenized_sentences.map((value, index) => {
             if (value.sentence_index === Number(endValue[1])) {
@@ -142,7 +144,7 @@ class PdfFileEditor extends React.Component {
         return true;
       });
 
-      const mergeSentence = this.state.sentences.slice(initialIndex, endIndex + 1);
+      //const mergeSentence = this.state.sentences.slice(initialIndex, endIndex + 1);
       if (startValue[0] === endValue[0] && startValue[1] === endValue[1]) {
         const selectedSplitEndIndex = window.getSelection() && window.getSelection().getRangeAt(0).endOffset;
         operation_type = "split";

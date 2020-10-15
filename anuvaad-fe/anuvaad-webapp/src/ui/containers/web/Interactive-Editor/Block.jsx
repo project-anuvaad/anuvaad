@@ -19,7 +19,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { withRouter } from "react-router-dom";
 
-var getCaretCoordinates = require("textarea-caret");
+//var getCaretCoordinates = require("textarea-caret");
 
 let arr = [];
 class Block extends Component {
@@ -40,7 +40,7 @@ class Block extends Component {
   }
   componentDidUpdate(prevProps) {
     if (prevProps.intractiveTrans !== this.props.intractiveTrans) {
-      let sentence = this.state.sentence;
+      //let sentence = this.state.sentence;
       // sentence.tagged_tgt = this.props.intractiveTrans && this.props.intractiveTrans.length > 0 && this.props.intractiveTrans[0].tagged_tgt,
       this.setState({
         autoCompleteText:
@@ -71,6 +71,7 @@ class Block extends Component {
     const sentenceStartId = text.s_id;
     const split_index = window.getSelection().focusOffset;
     let opeartion = "Split sentence";
+    // eslint-disable-next-line
     let actual_text = text.src;
     actual_text = actual_text.replace(/\s{2,}/g, " ");
     actual_text = actual_text.trim();
@@ -243,7 +244,7 @@ class Block extends Component {
   }
 
   render() {
-    const { classes, sentence, selectedBlock, prevBlock } = this.props;
+    const { classes, sentence, selectedBlock, } = this.props;
     return (
         <Paper
           variant="outlined"
