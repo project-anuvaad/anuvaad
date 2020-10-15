@@ -71,6 +71,7 @@ const PdfUploadStyles = theme => ({
   button1: {
     //marginTop: "6%",
     marginLeft:'7%',
+    marginBottom:'3%',
     width: "93%",
     backgroundColor:'#1C9AB7',
     borderRadius:"20px 20px 20px 20px",
@@ -81,6 +82,7 @@ const PdfUploadStyles = theme => ({
     //marginTop: "6%",
     //marginLeft: "3%",
     width: "87%",
+    marginBottom:'3%',
     backgroundColor:'#1C9AB7',
     borderRadius:"20px 20px 20px 20px",
     color:"#FFFFFF",

@@ -345,7 +345,7 @@ class Block extends Component {
                               sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "typing" || this.props.buttonStatus === "copy") ? { color: "#1C9AB7" } : {}}
                           >
                             <ArrowBackIcon
-                              fontSize="medium"
+                              fontSize="default"
                               className={classes.Icons}
                             />
                           </IconButton>
@@ -400,7 +400,7 @@ class Block extends Component {
                           <Tooltip title={"Spit sentence"}>
                             <IconButton aria-label="Split">
                               <Split
-                                fontSize={"medium"}
+                                fontSize={"default"}
                                 onClick={(event) => {
                                   this.handleSplit()
                                 }}
@@ -412,7 +412,7 @@ class Block extends Component {
                         <Tooltip title="Merge Sentence">
                           <IconButton aria-label="merge">
                             <Merge
-                              fontSize="medium"
+                              fontSize="default"
                               onClick={(event) => {
                                 this.props.handleClick("merge");
                               }}

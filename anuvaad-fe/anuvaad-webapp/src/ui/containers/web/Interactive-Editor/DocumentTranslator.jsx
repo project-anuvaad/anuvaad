@@ -250,14 +250,16 @@ class PdfFileEditor extends React.Component {
                       hasMore={this.props.hasMoreItems}
                       dataLength={this.props.sentences ? this.props.sentences.length : 0}
                       loader={
-                        <p style={{ textAlign: "center" }}>
+                        <p style={{ textAlign: "center" }} >
                           <CircularProgress
                             size={20}
                             style={{
                               zIndex: 1000
                             }}
                           />
+                         
                         </p>
+                        
                       }
                       endMessage={
                         <p style={{ textAlign: "center" }}>

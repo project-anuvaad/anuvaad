@@ -64,7 +64,8 @@ class PdfUpload extends Component {
       name: "",
       message: "File uplaoded successfully",
       showComponent: false,
-      workflow :"DP_WFLOW_FBTTR"
+      workflow :"DP_WFLOW_FBTTR",
+      
     };
   }
 
@@ -267,7 +268,7 @@ class PdfUpload extends Component {
             </Grid>
 
             <Grid item xs={12} sm={6} lg={6} xl={6}>
-              <Grid container spacing={24} className={classes.grid}>
+              <Grid container className={classes.grid}>
                 <Typography gutterBottom variant="h5" className={classes.typography}>
                   {translate('common.page.label.sourceLang')}<span className={classes.span}>*</span>
                 </Typography>
@@ -287,12 +288,12 @@ class PdfUpload extends Component {
                 </Grid>
               </Grid>
               <br /><br />
-              <Grid container spacing={24} className={classes.grid}>
+              <Grid container  className={classes.grid}>
 
                 <Typography
                   value="Select target language"
                   variant="h5"
-                  gutterBottom="true"
+                  gutterBottom={true}
                   className={classes.typography}
                 >
                   {translate('common.page.label.targetLang')}<span className={classes.span}>*</span>
@@ -312,7 +313,7 @@ class PdfUpload extends Component {
                 </Grid>
               </Grid>
               <br /><br />
-              <Grid container spacing={24} className={classes.grid}>
+              <Grid container className={classes.grid}>
                 <Typography gutterBottom variant="h5" className={classes.typography}>
                   {translate("common.page.label.filename")}
                 </Typography>

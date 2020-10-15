@@ -40,8 +40,8 @@ class SimpleSelect extends React.Component {
 }
 
 
-SimpleSelect.propTypes = {
-  classes: PropTypes.object.isRequired
-};
+// SimpleSelect.propTypes = {
+//   classes: PropTypes.object.isRequired
+// };
 
 export default (SimpleSelect);
