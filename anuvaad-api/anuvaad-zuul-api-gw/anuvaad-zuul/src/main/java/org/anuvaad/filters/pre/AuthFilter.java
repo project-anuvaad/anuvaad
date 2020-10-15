@@ -1,10 +1,11 @@
 package org.anuvaad.filters.pre;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import org.anuvaad.cache.ZuulConfigCache;
 import org.anuvaad.models.User;
 import org.anuvaad.utils.ExceptionUtils;
+import org.anuvaad.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 
 import static org.anuvaad.constants.RequestContextConstants.*;
 
@@ -30,25 +31,13 @@ import static org.anuvaad.constants.RequestContextConstants.*;
 @Component
 public class AuthFilter extends ZuulFilter {
 
-    @Value("#{'${anuvaad.open-endpoints-whitelist}'.split(',')}")
-    private HashSet<String> openEndpointsWhitelist;
-
-    @Value("${anuvaad.auth-service-host}")
-    private String authServiceHost;
-
-    @Value("${anuvaad.auth-service-host}")
-    private String authUri;
-
     @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    public UserUtils userUtils;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE = "Retrieving of auth token failed";
-    private static final String OPEN_ENDPOINT_MESSAGE = "Routing to an open endpoint: {}";
+    private static final String SKIP_AUTH_CHECK = "Auth check skipped - whitelisted endpoint | {}";
     private static final String AUTH_TOKEN_HEADER_NAME = "auth-token";
     private static final String ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE = "Routing to protected endpoint {} restricted, due to authentication failure - No auth token";
     private static final String UNAUTH_USER_MESSAGE = "You are not authenticated to access this resource";
@@ -74,9 +63,10 @@ public class AuthFilter extends ZuulFilter {
     public Object run() {
         String authToken;
         RequestContext ctx = RequestContext.getCurrentContext();
+        List<String> openEndpointsWhitelist = ZuulConfigCache.whiteListEndpoints;
         if (openEndpointsWhitelist.contains(getRequestURI())) {
             setShouldDoAuth(false);
-            logger.info(OPEN_ENDPOINT_MESSAGE, getRequestURI());
+            logger.info(SKIP_AUTH_CHECK, getRequestURI());
             return null;
         }
         try {
@@ -110,7 +100,7 @@ public class AuthFilter extends ZuulFilter {
      */
     public User verifyAuthenticity(RequestContext ctx, String authToken) {
         try {
-            User user = getUser(authToken, ctx);
+            User user = userUtils.getUser(authToken, ctx);
             if (null != user)
                 ctx.set(USER_INFO_KEY, user);
             return user;
@@ -118,20 +108,6 @@ public class AuthFilter extends ZuulFilter {
             logger.error(RETRIEVING_USER_FAILED_MESSAGE, ex);
             return null;
         }
-    }
-
-    /**
-     * Fetches user from the UMS via API.
-     * @param authToken
-     * @param ctx
-     * @return
-     */
-    private User getUser(String authToken, RequestContext ctx) {
-        String authURL = String.format("%s%s%s", authServiceHost, authUri, authToken);
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(CORRELATION_ID_HEADER_NAME, (String) ctx.get(CORRELATION_ID_KEY));
-        final HttpEntity<Object> httpEntity = new HttpEntity<>(null, headers);
-        return restTemplate.postForObject(authURL, httpEntity, User.class);
     }
 
     /**
