@@ -73,17 +73,8 @@ class Block extends Component {
       })
     }
 
-    if (prevProps.selectedBlock && prevProps.selectedBlock !== this.props.selectedBlock) {
-      debugger
-      if (this.state.editedText) {
-        if (prevProps.selectedBlock.tgt !== this.state.editedText) {
-          let message = "Do you want to save the edited sentences";
-          let operation = "Save";
-          this.props.handleDialogMessage(prevProps.selectedBlock, "", "", operation, message);
-        }
-
-      }
-
+    if(prevProps.saveCancelled !== this.props.saveCancelled && this.props.saveCancelled ){
+      this.setState({editedText: this.props.sentence && this.props.sentence.hasOwnProperty("tgt") && this.props.sentence.tgt})
     }
   }
 
@@ -105,18 +96,12 @@ class Block extends Component {
   }
 
   handleChangeEvent = (event) => {
-    this.setState({ editedText: event.target.value })
+    this.setState({ editedText: event.target.value , enteredData: true})
     // this.props.updateSentence(event.target.value)
     if (this.props.buttonStatus === "selected") {
       this.props.handleClick("typing")
     }
-    // if (!this.props.dialogToken) {
-    //   this.props.handleBlurClick(true)
-    // }
 
-    this.setState({
-      enteredData: true,
-    });
 
   };
 
@@ -171,7 +156,10 @@ class Block extends Component {
       this.setState({
         editedText: this.props.sentence && this.props.sentence.hasOwnProperty("s0_tgt") && this.props.sentence.s0_tgt,
         enteredData: true,
+        dontShowDialog:true
       });
+
+      
 
 
       this.props.handleClick("copy")
@@ -183,11 +171,24 @@ class Block extends Component {
 
   }
 
-  handleBlurClick = (val) => {
+  handleBlurCard=(event,id)=>{
 
-    this.props.handleBlurClick(false)
+    
+    
+    
+    if(this.state.editedText!==this.props.selectedBlock.tgt && this.state.editedText){
 
+      let message = "Do you want to save the sentences";
+      let operation = "Save";
 
+      if((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type!=="button")  && !this.state.dontShowDialog ){
+        this.props.handleDialogMessage(this.props.selectedBlock, "", "", operation, message, this.state.editedText)
+      }
+      
+     
+      // this.handleSave(this.props.selectedBlock.s_id) 
+    }
+    
   }
 
   handleChange = (name) => (event) => {
@@ -203,7 +204,7 @@ class Block extends Component {
 
     if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
       let block = this.props.sen
-      this.setState({ enteredData: false })
+      this.setState({ enteredData: false, dontShowDialog:true })
 
       block && block.tokenized_sentences && Array.isArray(block.tokenized_sentences) && block.tokenized_sentences.length > 0 && block.tokenized_sentences.map((tokenObj, i) => {
         if (this.state.sentence && this.state.sentence.s_id === tokenObj.s_id) {
@@ -232,6 +233,10 @@ class Block extends Component {
     this.props.handleClick("split");
   }
 
+  showSuggestions(value){
+    this.setState({dontShowDialog:value})
+  }
+
   handleCardClick(sentence) {
     let saveData = false
     let block = this.props.sen
@@ -240,7 +245,7 @@ class Block extends Component {
   }
 
   render() {
-    const { classes, sentence, selectedBlock, prevBlock } = this.props;
+    const { classes, sentence, selectedBlock} = this.props;
     return (
       <Paper
         variant="outlined"
@@ -249,6 +254,7 @@ class Block extends Component {
           margin: "10px",
           minHeight: "120px",
           padding: "1%",
+          background: sentence.hasOwnProperty("save") && sentence.save && "#ecf5f2",
           border:
             (selectedBlock &&
               sentence &&
@@ -261,16 +267,17 @@ class Block extends Component {
         <Grid container spacing={2} style={{ padding: "7px" }}>
           <Grid item xs={12} sm={12} lg={12} xl={12}>
             <div style={{ display: "flex", flexDirection: "row" }}
-              onClick={() => selectedBlock &&
-                sentence &&
-                sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" ? this.handleCardClick(this.props.sentence) : this.handleBlurClick(this.props.sentence)}
+            onBlur= {(event)=>{this.handleBlurCard(event, sentence.s_id)}}
+              
             >
               {/* <Tooltip title="Go to validation mode">
                 <ValidationIcon
                   style={{ color: "#1C9AB7", cursor: "pointer" }}
                 />
               </Tooltip> */}
-              <div style={{ width: "100%", paddingLeft: "10px" }}>
+              <div style={{ width: "100%", paddingLeft: "10px" }} onClick={() => selectedBlock &&
+                sentence &&
+                sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}>
                 <div
                   style={{ minHeight: "45px", padding: "5px", fontSize: "16px" }}
                 // onClick={() => this.props.handleSentenceClick(sentence)}
@@ -293,6 +300,7 @@ class Block extends Component {
                       fontSize: "16px",
                       border: 'none',
                       outline: "none",
+                      background : sentence.hasOwnProperty("save") && sentence.save && "#ecf5f2",
                       fontFamily: "Source Sans Pro,Regular,Arial,sans-serif"
                     }}
                     tokenIndex={this.props.tokenIndex}
@@ -316,6 +324,8 @@ class Block extends Component {
                     handleSuggestionClick={this.handleSuggestionClick.bind(this)}
                     handleEditorClick={this.handleEditorClick.bind(this)}
                     autoFocus={this.state.sentence.hasOwnProperty("save")}
+                    showSuggestions = {this.showSuggestions.bind(this)}
+                    
                   />
                   : <div style={{ minHeight: "50px" }}></div>
                 }

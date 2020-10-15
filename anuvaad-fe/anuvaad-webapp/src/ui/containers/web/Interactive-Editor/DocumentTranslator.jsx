@@ -107,7 +107,8 @@ class PdfFileEditor extends React.Component {
     sentence_id,
     sentence_index,
     operation,
-    message
+    message,
+    editedText
   ) => {
     // let splitValue = this.handleSplitSentence(subString)
     this.setState({
@@ -119,6 +120,7 @@ class PdfFileEditor extends React.Component {
       sentence_index,
       selected_block_id,
       dialogMessage: message,
+      editedText
     });
   };
 
@@ -143,9 +145,10 @@ class PdfFileEditor extends React.Component {
       );
       SentenceOperationId = this.state.activeSentence.s_id;
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
-    } else if (this.state.title === "Save") {
-
-      this.getUpdatedBlock(this.state.prevActiveState, "save", this.state.editedText)
+    } 
+    else if(this.state.title === "Save"){
+      debugger
+      this.getUpdatedBlock(this.state.selected_block_id, this.state.operation_type, this.state.editedText)
     }
 
     this.setState({
@@ -157,9 +160,6 @@ class PdfFileEditor extends React.Component {
   }
 
   handleClose = () => {
-    if (this.state.title === "Save") {
-      this.getUpdatedBlock(this.state.prevActiveState, "no")
-    }
     this.setState({
       openDialog: false,
       title: "",
@@ -169,7 +169,12 @@ class PdfFileEditor extends React.Component {
       selected_block_id: "",
       dialogMessage: "",
       buttonStatus: "",
+      saveCancelled: true
     });
+
+    setTimeout(() => {
+      this.setState({saveCancelled: false })
+  }, 50)
   };
 
   handleClick(value) {
@@ -178,7 +183,7 @@ class PdfFileEditor extends React.Component {
 
   saveUpdatedSentence(block, sentence, blockIdentifier, editedText) {
     this.setState({ SentenceOperationId: sentence.s_id, updateToken: true })
-    this.getUpdatedBlock(sentence, "save", editedText)
+    this.getUpdatedBlock(sentence, "Save", editedText)
   }
 
   getUpdatedBlock(tokenObj, operationType, editedText) {
@@ -187,7 +192,7 @@ class PdfFileEditor extends React.Component {
       element && element.text_blocks && element.text_blocks.map((sentence) => {
         sentence.tokenized_sentences.map((value, tokenIndex) => {
           if (tokenObj && tokenObj.s_id === value.s_id) {
-            if (operationType === "save") {
+            if (operationType === "Save") {
               TELEMETRY.sentenceChanged(value.tgt, editedText, sentence.block_identifier, "translation")
 
               value.save = true
@@ -343,6 +348,7 @@ class PdfFileEditor extends React.Component {
                               dialogToken={this.state.dialogToken}
                               updateSentence={this.updateSentence.bind(this)}
                               prevBlock={this.state.prevActiveState}
+                              saveCancelled= {this.state.saveCancelled}
                             />
 
                           });
