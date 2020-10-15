@@ -70,7 +70,7 @@ class EditorPaper extends React.Component {
 
         supArray.push(
           <span key={index}>
-            <a href="#">
+            <a href="/#">
               <span
                 onClick={() => this.props.handleSuperScript(sentenceId + "_" + 0, "true", this.props.paperType, true)}
                 title={superScripts && superScripts[supScript] ? superScripts[supScript].text : ""}
@@ -90,7 +90,7 @@ class EditorPaper extends React.Component {
   }
 
   getSelectionText(event) {
-    var text = "";
+    //var text = "";
     let selection = {};
     var activeEl = document.activeElement;
     var activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null;
@@ -167,6 +167,7 @@ class EditorPaper extends React.Component {
     padding = (padding - 10) + "%";
     let pageNo = sArray[0].page_no;
     if (!sArray[0].is_footer && !sArray[0].is_table) {
+      // eslint-disable-next-line
       let printPageNo = false;
       let isFirst = false;
       if (index === 0) {

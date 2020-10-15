@@ -19,7 +19,6 @@ import BLOCK_OPS from "../../../../utils/block.operations";
 
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 class PdfFileEditor extends React.Component {
@@ -29,50 +28,72 @@ class PdfFileEditor extends React.Component {
       activeSentence: {},
       selectedTargetId: "",
       highlightId: "",
-      updateToken: false
+      updateToken: false,
+      editedText: ""
     };
   }
 
   componentDidUpdate(prevProps, prevState) {
 
     if (this.props.open && prevProps.open !== this.props.open) {
-      {
-        this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
-
-          element && element.text_blocks && element.text_blocks.map((sentence) => {
-            sentence.tokenized_sentences.map((value, tokenIndex) => {
-              if (value.s_id === this.state.SentenceOperationId) {
-                this.setState({ activeSentence: value, buttonStatus: "selected", updateToken: false, openDialog: false })
-              }
-              return null;
-            })
+      
+        this.props.sentences &&
+          Array.isArray(this.props.sentences) &&
+          this.props.sentences.length > 0 &&
+          this.props.sentences.map((element) => {
+            element &&
+              element.text_blocks &&
+              element.text_blocks.map((sentence) => {
+                sentence.tokenized_sentences.map((value, tokenIndex) => {
+                  if (value.s_id === this.state.SentenceOperationId) {
+                    this.setState({
+                      activeSentence: value,
+                      buttonStatus: "selected",
+                      updateToken: false,
+                      openDialog: false,
+                    });
+                  }
+                  return null;
+                });
+                return null;
+              });
             return null;
-          })
-          return null;
-        })
-      }
-
+          });
+      
     }
 
-    if (prevState.activeSentence !== this.state.activeSentence) {
-      this.setState({
-        prevActiveState: prevState.activeSentence
-      })
-    }
+    // if (prevState.activeSentence !== this.state.activeSentence) {
+    //   this.setState({
+    //     prevActiveState: prevState.activeSentence
+    //   })
 
+    //   if (this.state.editedText && this.state.editedText) {
+    //     if (prevState.activeSentence.tgt !== this.state.editedText) {
+    //       this.setState({
+    //         openDialog: true,
+    //         title: "Save",
+    //         dialogMessage: "Do you want to save the updated sentence"
+    //       })
+    //     }
+
+    //   }
+
+    // }
+
+  }
+
+  updateSentence(text) {
+    this.setState({
+      editedText: text
+    })
   }
 
   handleSentenceClick(value, saveData, block, blockIdentifier) {
     // this.setState({ activeSentence: value, selectedTargetId: value.s_id })
 
     if (block && this.state.activeSentence && this.state.activeSentence.s_id && this.state.activeSentence.s_id !== value.s_id)
-      if (saveData) {
-        this.setState({
-          title: "Please save the edited sentence", openDialog: true
-        })
-      }
 
-    this.handleClick("")
+      this.handleClick("")
     this.setState({
       activeSentence: value,
       updateData: saveData && block,
@@ -86,18 +107,19 @@ class PdfFileEditor extends React.Component {
     sentence_id,
     sentence_index,
     operation,
-    message
+    message,
+    editedText
   ) => {
     // let splitValue = this.handleSplitSentence(subString)
     this.setState({
       operation_type: operation,
       openDialog: true,
       title: operation,
-
       sentence_id,
       sentence_index,
       selected_block_id,
       dialogMessage: message,
+      editedText
     });
   };
 
@@ -111,6 +133,8 @@ class PdfFileEditor extends React.Component {
 
       this.props.workFlowApi(workflowCode, updatedBlocks, this.state.title);
     } else if (this.state.title === "Split sentence") {
+      let data = this.state.activeSentence && this.state.activeSentence.src
+
       let updatedBlocks = BLOCK_OPS.do_sentence_splitting(
         this.props.sentences,
         this.state.selected_block_id,
@@ -118,21 +142,22 @@ class PdfFileEditor extends React.Component {
         this.state.sentence_index
 
       );
-      SentenceOperationId = this.state.activeSentence.s_id;
-      this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
-    } else if (this.state.title === "Save") {
 
-      this.getUpdatedBlock(this.state.prevActiveState, "save")
-      // this.props.saveUpdatedSentence(this.state.updateData, this.state.updateBlockId)
+      SentenceOperationId = this.state.activeSentence.s_id;
+
+      TELEMETRY.splitSentencesEvent(data, [data.slice(0, this.state.sentence_index), data.slice(this.state.sentence_index)])
+
+      this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
+    } 
+    else if(this.state.title === "Save"){
+      debugger
+      this.getUpdatedBlock(this.state.selected_block_id, this.state.operation_type, this.state.editedText)
     }
 
     this.setState({ openDialog: false, buttonStatus: "apiCalled", SentenceOperationId, dialogToken: false });
   }
 
   handleClose = () => {
-    if(this.state.title === "Save") {
-      this.getUpdatedBlock(this.state.prevActiveState, "no")
-    }
     this.setState({
       openDialog: false,
       title: "",
@@ -141,35 +166,41 @@ class PdfFileEditor extends React.Component {
       sentence_index: "",
       selected_block_id: "",
       dialogMessage: "",
-      buttonStatus: ""
+      buttonStatus: "",
+      saveCancelled: true
     });
+
+    setTimeout(() => {
+      this.setState({saveCancelled: false })
+  }, 50)
   };
 
   handleClick(value) {
     this.setState({ buttonStatus: value });
   }
 
-
-
-  saveUpdatedSentence(block, sentence, blockIdentifier) {
+  saveUpdatedSentence(block, sentence, blockIdentifier, editedText) {
     this.setState({ SentenceOperationId: sentence.s_id, updateToken: true })
-    // this.props.saveUpdatedSentence(block, sentence, blockIdentifier)
-    this.getUpdatedBlock(sentence, "save")
+    this.getUpdatedBlock(sentence, "Save", editedText)
   }
 
-  getUpdatedBlock(tokenObj, operationType) {
+  getUpdatedBlock(tokenObj, operationType, editedText) {
 
     this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
       element && element.text_blocks && element.text_blocks.map((sentence) => {
         sentence.tokenized_sentences.map((value, tokenIndex) => {
           if (tokenObj && tokenObj.s_id === value.s_id) {
-            if(operationType === "save") {
+            if (operationType === "Save") {
+              TELEMETRY.sentenceChanged(value.tgt, editedText, sentence.block_identifier, "translation")
+
               value.save = true
-              this.props.saveUpdatedSentence(sentence, sentence, sentence.block_identifier)
+              value.tgt = editedText
+              value.tagged_tgt = editedText
+              this.props.saveUpdatedSentence(sentence)
             } else {
               if (value.hasOwnProperty("save")) {
-                value.tgt = value.s0_tgt
-                value.tagget_tgt = value.s0_tgt
+                value.tgt = this.state.prevActiveState && this.state.prevActiveState.tgt
+                value.tagget_tgt = this.state.prevActiveState && this.state.prevActiveState.s0_tgt
                 // value.save = true
               }
             }
@@ -179,11 +210,6 @@ class PdfFileEditor extends React.Component {
         })
       })
     })
-  }
-
-  saveUpdatedSentence(block, sentence, blockIdentifier) {
-    this.setState({ SentenceOperationId: sentence.s_id })
-    this.props.saveUpdatedSentence(block, sentence, blockIdentifier)
   }
 
   handleEditorClick(id) {
@@ -203,12 +229,8 @@ class PdfFileEditor extends React.Component {
   }
 
   handleOutsideClick = () => {
-
-    // Object.keys(this.state.activeSentence).length > 0 && console.log("clicked", this.state.activeSentence)
     if (Object.keys(this.state.activeSentence).length > 0 && this.state.dialogToken) {
-      // this.handleDialogMessage("", "", "", "Save", "Do you want to save the updated sentence")
       this.setState({ dialogToken: false })
-
     }
   }
 
@@ -217,7 +239,7 @@ class PdfFileEditor extends React.Component {
     return (
       <div>
         {this.props.sentences && (
-          <div onClick={() => this.handleOutsideClick("")}>
+          <div>
             <Grid
               container
               spacing={2}
@@ -275,14 +297,16 @@ class PdfFileEditor extends React.Component {
                       hasMore={this.props.hasMoreItems}
                       dataLength={this.props.sentences ? this.props.sentences.length : 0}
                       loader={
-                        <p style={{ textAlign: "center" }}>
+                        <p style={{ textAlign: "center" }} >
                           <CircularProgress
                             size={20}
                             style={{
                               zIndex: 1000
                             }}
                           />
+                         
                         </p>
+                        
                       }
                       endMessage={
                         <p style={{ textAlign: "center" }}>
@@ -316,7 +340,9 @@ class PdfFileEditor extends React.Component {
                               blockIdentifier={sentence.block_identifier}
                               handleBlurClick={this.handleBlurClick.bind(this)}
                               dialogToken={this.state.dialogToken}
-
+                              updateSentence={this.updateSentence.bind(this)}
+                              prevBlock={this.state.prevActiveState}
+                              saveCancelled= {this.state.saveCancelled}
                             />
 
                           });

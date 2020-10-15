@@ -336,7 +336,7 @@ class IntractiveTrans extends React.Component {
           {translate("intractive_translate.page.main.title")}
         </Typography>
         <Paper elevation={3} className={classes.paper}>
-          <Grid container spacing={24}>
+          <Grid container >
             {!this.state.edit &&
               <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.rowData} style={{ marginTop: "0%" }}>
                 <Grid item xs={6} sm={6} lg={8} xl={8} className={classes.label}>

@@ -2,9 +2,9 @@ import React from 'react';
 import Popover from 'react-text-selection-popover';
 import Menu from '../../../containers/web/Interactive-Editor/Menu'
 import Button from '@material-ui/core/MenuItem';
-import TextareaAutosize from 'react-textarea-autosize';
-import wfcodes from '../../../../configs/workflowcodes'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+// import TextareaAutosize from 'react-textarea-autosize';
+// import wfcodes from '../../../../configs/workflowcodes'
+// import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import IntractiveApi from "../../../../flux/actions/apis/intractive_translate";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -70,6 +70,7 @@ class AutoComplete extends React.Component {
     handleEnter = (event) => {
         if (event.key === 'Escape') {
             this.setState({ showSuggestions: false })
+            this.props.showSuggestions(false)
             // let saveData = (this.state.value !== this.props.value || this.state.modified) ? true : false
 
             // if (saveData) {
@@ -96,6 +97,7 @@ class AutoComplete extends React.Component {
                 this.setState({ anchorEl: document.activeElement, topValue, leftValue, caretVal })
             }
             this.setState({ showSuggestions: true })
+            this.props.showSuggestions(true)
             // this.props.fetchSuggestions(this.props.sourceText, this.props.value)
             this.props.fetchSuggestions(this.props.sourceText, this.handleCalc(caretVal, this.state.tokenObject), this.state.tokenObject)
 
@@ -109,6 +111,7 @@ class AutoComplete extends React.Component {
 
     fetchSuggestions(srcText, targetTxt, tokenObject) {
         let targetVal = targetTxt
+        this.props.showSuggestions(false)
         this.setState({ showSuggestions: true, autoCompleteText: null })
         const apiObj = new IntractiveApi(srcText, targetVal, { model_id: this.props.modelId }, true, true);
         this.props.APITransport(apiObj);
@@ -167,7 +170,7 @@ class AutoComplete extends React.Component {
         var tokenObj = this.props.tokenObject
         tokenObj.tagged_tgt = this.props.autoCompleteTextTaggetTgt[index]
         this.setState({ modified: true })
-        var elem = document.getElementById(this.props.aId)
+        //var elem = document.getElementById(this.props.aId)
         let caretVal = this.props.value
         caretVal = caretVal.trim()
         
@@ -186,12 +189,14 @@ class AutoComplete extends React.Component {
 
     handleSuggestion(suggestion, value, src, tokenObject) {
         this.setState({ showSuggestions: false })
+        this.props.showSuggestions(false)
         // this.props.handleSuggestion(suggestion, value)
         this.setState({ autoCompleteText: null, tokenObject })
 
         let targetVal = value.trim() + suggestion
         setTimeout(() => {
             this.setState({ showSuggestions: true })
+            this.props.showSuggestions(true)
 
         }, 50)
 
@@ -235,10 +240,11 @@ class AutoComplete extends React.Component {
 
     handleSuggestionClose() {
         this.setState({ showSuggestions : false })
+        this.props.showSuggestions(false)
     }
 
     render() {
-        const { aId, refId, style, tokenIndex, sentence } = this.props
+        const { aId, refId, style,  sentence } = this.props
         return (
             // <ClickAwayListener id={tokenIndex} onClickAway={() => this.handleClickAway(tokenIndex, this.state.value, wfcodes.DP_WFLOW_S_C)}>
             <div key={aId}>

@@ -99,7 +99,7 @@ class ViewDocument extends React.Component {
         var d = new Date(parseInt(timestamp))
         let dateStr = d.toISOString()
         var myDate = new Date(dateStr);
-        let createdAt = (myDate.toLocaleString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }))
+        let createdAt = (myDate.toLocaleString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }))
         let currentDate = new Date()
 
         let timeDiff = Math.floor((currentDate.getTime() - myDate.getTime()) / 60000)
