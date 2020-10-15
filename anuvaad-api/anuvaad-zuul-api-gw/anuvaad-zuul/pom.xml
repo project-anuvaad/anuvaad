@@ -31,11 +31,6 @@
             <version>0.3.0</version>
         </dependency>
         <dependency>
-            <groupId>org.egov.services</groupId>
-            <artifactId>tracer</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -43,11 +38,6 @@
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -64,23 +54,6 @@
             <version>5.2.5.RELEASE</version>
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>repo.egovernments.org</id>
-            <name>eGov ERP Releases Repository</name>
-            <url>https://nexus-repo.egovernments.org/nexus/content/repositories/releases/</url>
-        </repository>
-        <repository>
-            <id>repo.egovernments.org.snapshots</id>
-            <name>eGov ERP Releases Repository</name>
-            <url>https://nexus-repo.egovernments.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>repo.egovernments.org.public</id>
-            <name>eGov Public Repository Group</name>
-            <url>https://nexus-repo.egovernments.org/nexus/content/groups/public/</url>
-        </repository>
-    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -95,10 +68,6 @@
                 </executions>
                 <configuration>
                     <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
                         <exclude>
                             <groupId>org.springframework.boot</groupId>
                             <artifactId>spring-boot-devtools</artifactId>
