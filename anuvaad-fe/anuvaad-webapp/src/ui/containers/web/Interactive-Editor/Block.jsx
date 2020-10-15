@@ -41,17 +41,14 @@ class Block extends Component {
   }
   componentDidUpdate(prevProps) {
     if (prevProps.intractiveTrans !== this.props.intractiveTrans) {
-      let sentence = this.state.sentence;
       // sentence.tagged_tgt = this.props.intractiveTrans && this.props.intractiveTrans.length > 0 && this.props.intractiveTrans[0].tagged_tgt,
       this.setState({
         autoCompleteText:
           this.props.intractiveTrans &&
-          this.props.intractiveTrans.length > 0 &&
-          this.props.intractiveTrans[0].tgt,
+          this.props.intractiveTrans.tgt,
         autoCompleteTextTaggetTgt:
           this.props.intractiveTrans &&
-          this.props.intractiveTrans.length > 0 &&
-          this.props.intractiveTrans[0].tagged_tgt,
+          this.props.intractiveTrans.tagged_tgt,
       });
     }
 
@@ -74,7 +71,6 @@ class Block extends Component {
     }
 
     if (prevProps.selectedBlock && prevProps.selectedBlock !== this.props.selectedBlock) {
-      debugger
       if (this.state.editedText) {
         if (prevProps.selectedBlock.tgt !== this.state.editedText) {
           let message = "Do you want to save the edited sentences";
@@ -130,7 +126,8 @@ class Block extends Component {
         targetVal,
         { model_id: this.props.modelId },
         true,
-        true
+        true,
+        this.props.sentence.s_id
       );
       this.props.APITransport(apiObj);
     }
@@ -155,7 +152,8 @@ class Block extends Component {
       targetVal,
       { model_id: this.props.modelId },
       true,
-      true
+      true,
+      this.props.sentence.s_id
     );
     this.props.APITransport(apiObj);
   }
