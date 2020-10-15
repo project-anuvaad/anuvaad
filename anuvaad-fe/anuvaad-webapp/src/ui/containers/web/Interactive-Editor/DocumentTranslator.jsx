@@ -115,7 +115,6 @@ class PdfFileEditor extends React.Component {
       operation_type: operation,
       openDialog: true,
       title: operation,
-
       sentence_id,
       sentence_index,
       selected_block_id,
@@ -238,11 +237,8 @@ class PdfFileEditor extends React.Component {
   };
 
   handleOutsideClick = () => {
-
     if (Object.keys(this.state.activeSentence).length > 0 && this.state.dialogToken) {
-      // this.handleDialogMessage("", "", "", "Save", "Do you want to save the updated sentence")
       this.setState({ dialogToken: false })
-
     }
   };
 
