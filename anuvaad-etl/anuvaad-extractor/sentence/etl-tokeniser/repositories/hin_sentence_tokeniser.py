@@ -100,7 +100,7 @@ class AnuvaadHindiTokenizer(object):
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
             se = self.deserialize_end(se)
-            if se != '':
+            if se != '' and se!= 'END_|_END':
                 output.append(se.strip())
         print('--------------Process finished-------------')
         return output
