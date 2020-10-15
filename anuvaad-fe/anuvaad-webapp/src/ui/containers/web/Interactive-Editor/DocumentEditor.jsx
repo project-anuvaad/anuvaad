@@ -139,7 +139,7 @@ class PdfFileEditor extends React.Component {
         this.setState({
           sentences: temp,
           open: this.state.apiStatus && true,
-          message: this.state.apiStatus && (this.state.apiCall === "Merge sentence" ? "Sentence merged successfully!" : this.state.apiCall === "Split sentence" ? "Sentence Splitted Sucessfully" : "Translated sentence saved...!"),
+          message: this.state.apiStatus && (this.state.apiCall === "Merge sentence" ? "Sentence merged successfully!" : this.state.apiCall === "Split sentence" ? "Sentence Splitted Sucessfully" : "Sentence updated successfully...!"),
           apiStatus: false,
           apiCall: false,
           showLoader: false,
@@ -383,10 +383,18 @@ class PdfFileEditor extends React.Component {
     }
   };
 
-  saveUpdatedSentence(sentenceObj) {
+  saveUpdatedSentence(sentenceObj, tokenObj, blockIdentifier) {
     this.setState({ selectedSourceText: sentenceObj })
 
     this.workFlowApi(wfcodes.DP_WFLOW_S_C, [sentenceObj], "update", "edit")
+
+    let telemetry = {}
+    telemetry.initialSenetence = tokenObj.s0_tgt
+    telemetry.finalSenetence = tokenObj.tgt
+    telemetry.sId = blockIdentifier
+    telemetry.mode = "translation"
+    telemetry.save = true
+    this.setState({ telemetry })
   }
 
   workFlowApi(workflow, blockDetails, update, type) {
