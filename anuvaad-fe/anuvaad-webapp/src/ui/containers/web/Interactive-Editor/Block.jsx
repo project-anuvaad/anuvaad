@@ -77,11 +77,9 @@ class Block extends Component {
       debugger
       if (this.state.editedText) {
         if (prevProps.selectedBlock.tgt !== this.state.editedText) {
-          this.setState({
-            openDialog: true,
-            title: "Save",
-            dialogMessage: "Do you want to save the updated sentence"
-          })
+          let message = "Do you want to save the edited sentences";
+          let operation = "Save";
+          this.props.handleDialogMessage(prevProps.selectedBlock, "", "", operation, message);
         }
 
       }
@@ -140,10 +138,10 @@ class Block extends Component {
   }
 
   handleSuggestionClick(suggestion, value, src, tokenObject) {
-    let editedSentence = this.state.editedText + suggestion 
+    let editedSentence = this.state.editedText + suggestion
     this.props.updateSentence(this.state.editedText + suggestion)
-    this.setState({ editedText: editedSentence})
-    
+    this.setState({ editedText: editedSentence })
+
     this.setState({ showSuggestions: false, caret: this.state.caret + suggestion });
 
     this.setState({ autoCompleteText: null, tokenObject });
@@ -169,7 +167,7 @@ class Block extends Component {
 
   handleShowTarget(id) {
     if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
-      
+
       this.setState({
         editedText: this.props.sentence && this.props.sentence.hasOwnProperty("s0_tgt") && this.props.sentence.s0_tgt,
         enteredData: true,
