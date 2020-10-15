@@ -733,7 +733,7 @@ class PdfFileEditor extends React.Component {
 
               {this.state.tokenized &&
                 // <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} lg={6} xl={6}>
+                <Grid item xs={12} sm={6} lg={6} xl={6} style={{paddingRight: "0px"}}>
                   <Paper elevation={3}>
 
                     <Toolbar style={{ color: '#000000', background: this.state.edited ? "#989E9C" : '#ECEFF1' }}>
@@ -759,7 +759,7 @@ class PdfFileEditor extends React.Component {
                 </Grid>
               }
               {this.state.tokenized &&
-                <Grid item xs={12} sm={6} lg={6} xl={6}>
+                <Grid item xs={12} sm={6} lg={6} xl={6} style={{paddingLeft:"16px"}}>
                   <Paper elevation={2}>
                     {this.state.tokenized &&
 
