@@ -35,24 +35,31 @@ class PdfFileEditor extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-
     if (this.props.open && prevProps.open !== this.props.open) {
       {
-        this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
-
-          element && element.text_blocks && element.text_blocks.map((sentence) => {
-            sentence.tokenized_sentences.map((value, tokenIndex) => {
-              if (value.s_id === this.state.SentenceOperationId) {
-                this.setState({ activeSentence: value, buttonStatus: "selected", updateToken: false, openDialog: false })
-              }
-              return null;
-            })
+        this.props.sentences &&
+          Array.isArray(this.props.sentences) &&
+          this.props.sentences.length > 0 &&
+          this.props.sentences.map((element) => {
+            element &&
+              element.text_blocks &&
+              element.text_blocks.map((sentence) => {
+                sentence.tokenized_sentences.map((value, tokenIndex) => {
+                  if (value.s_id === this.state.SentenceOperationId) {
+                    this.setState({
+                      activeSentence: value,
+                      buttonStatus: "selected",
+                      updateToken: false,
+                      openDialog: false,
+                    });
+                  }
+                  return null;
+                });
+                return null;
+              });
             return null;
-          })
-          return null;
-        })
+          });
       }
-
     }
 
     // if (prevState.activeSentence !== this.state.activeSentence) {
@@ -119,8 +126,11 @@ class PdfFileEditor extends React.Component {
     let SentenceOperationId;
     let workflowCode = "DP_WFLOW_S_TR";
     if (this.state.title === "Merge sentence") {
-      let result = BLOCK_OPS.do_sentences_merging_v1(this.props.sentences, this.state.sentence_id);
-      let updatedBlocks = result.blocks
+      let result = BLOCK_OPS.do_sentences_merging_v1(
+        this.props.sentences,
+        this.state.sentence_id
+      );
+      let updatedBlocks = result.blocks;
       SentenceOperationId = result.sentence_id;
 
       this.props.workFlowApi(workflowCode, updatedBlocks, this.state.title);
@@ -130,7 +140,6 @@ class PdfFileEditor extends React.Component {
         this.state.selected_block_id,
         this.state.sentence_id,
         this.state.sentence_index
-
       );
       SentenceOperationId = this.state.activeSentence.s_id;
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
@@ -139,7 +148,12 @@ class PdfFileEditor extends React.Component {
       this.getUpdatedBlock(this.state.prevActiveState, "save", this.state.editedText)
     }
 
-    this.setState({ openDialog: false, buttonStatus: "apiCalled", SentenceOperationId, dialogToken: false });
+    this.setState({
+      openDialog: false,
+      buttonStatus: "apiCalled",
+      SentenceOperationId,
+      dialogToken: false,
+    });
   }
 
   handleClose = () => {
@@ -149,12 +163,12 @@ class PdfFileEditor extends React.Component {
     this.setState({
       openDialog: false,
       title: "",
-
+      
       sentence_id: "",
       sentence_index: "",
       selected_block_id: "",
       dialogMessage: "",
-      buttonStatus: ""
+      buttonStatus: "",
     });
   };
 
@@ -209,8 +223,8 @@ class PdfFileEditor extends React.Component {
   }
 
   handleBlurClick = (token) => {
-    this.setState({ dialogToken: token })
-  }
+    this.setState({ dialogToken: token });
+  };
 
   handleOutsideClick = () => {
 
@@ -219,10 +233,9 @@ class PdfFileEditor extends React.Component {
       this.setState({ dialogToken: false })
 
     }
-  }
+  };
 
   render() {
-
     return (
       <div>
         {this.props.sentences && (
@@ -261,7 +274,8 @@ class PdfFileEditor extends React.Component {
                       variant="extended"
                       size="medium"
                       color="primary"
-                      mergeSaved aria-label="add"
+                      mergeSaved
+                      aria-label="add"
                       onClick={() => this.handleClick("mergeSaved")}
                       style={{ marginLeft: "10px" }}
                     >
@@ -276,19 +290,21 @@ class PdfFileEditor extends React.Component {
                     style={{
                       maxHeight: window.innerHeight - 180,
                       overflowY: this.state.selectedBlock ? "hidden" : "auto",
-                      border: "1px solid #D6D6D6"
+                      border: "1px solid #D6D6D6",
                     }}
                   >
                     <InfiniteScroll
                       next={this.props.fetchData}
                       hasMore={this.props.hasMoreItems}
-                      dataLength={this.props.sentences ? this.props.sentences.length : 0}
+                      dataLength={
+                        this.props.sentences ? this.props.sentences.length : 0
+                      }
                       loader={
                         <p style={{ textAlign: "center" }}>
                           <CircularProgress
                             size={20}
                             style={{
-                              zIndex: 1000
+                              zIndex: 1000,
                             }}
                           />
                         </p>
@@ -326,6 +342,7 @@ class PdfFileEditor extends React.Component {
                               handleBlurClick={this.handleBlurClick.bind(this)}
                               dialogToken={this.state.dialogToken}
                               updateSentence={this.updateSentence.bind(this)}
+                              prevBlock={this.state.prevActiveState}
                             />
 
                           });
@@ -347,7 +364,6 @@ class PdfFileEditor extends React.Component {
                   <MachineTranslation
                     sentence={this.state.activeSentence}
                     buttonStatus={this.state.buttonStatus}
-
                   />
                 </Grid>
               </Grid>

@@ -242,7 +242,7 @@ class Block extends Component {
   }
 
   render() {
-    const { classes, sentence, selectedBlock, highlightId, selectedTargetId } = this.props;
+    const { classes, sentence, selectedBlock, prevBlock } = this.props;
     return (
       <Paper
         variant="outlined"
