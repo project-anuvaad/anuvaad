@@ -27,7 +27,6 @@ class Block extends Component {
     super();
     this.state = {
       showSuggestions: false,
-      enteredData: false,
       highlightDivider: false,
       caret: ""
     };
@@ -41,7 +40,6 @@ class Block extends Component {
   }
   componentDidUpdate(prevProps) {
     if (prevProps.intractiveTrans !== this.props.intractiveTrans) {
-      let sentence = this.state.sentence;
       // sentence.tagged_tgt = this.props.intractiveTrans && this.props.intractiveTrans.length > 0 && this.props.intractiveTrans[0].tagged_tgt,
       this.setState({
         autoCompleteText:
@@ -54,7 +52,7 @@ class Block extends Component {
           this.props.intractiveTrans[0].tagged_tgt,
       });
     }
-
+    console.log(prevProps.selectedBlock)
     if (prevProps.buttonStatus !== this.props.buttonStatus) {
       if (this.props.buttonStatus === "mergeSaved" && arr.length > 0) {
         let message = "Do you want to merge the sentences";
@@ -71,6 +69,28 @@ class Block extends Component {
       this.setState({
         editedText: this.props.sentence && this.props.sentence.hasOwnProperty("tgt") && this.props.sentence.tgt
       })
+    }
+
+    if (prevProps.selectedBlock && prevProps.selectedBlock.hasOwnProperty("s_id") && prevProps.selectedBlock !== this.props.selectedBlock) {
+
+      // this.setState({
+      //   prevActiveState: prevState.activeSentence
+      // })
+
+      if (this.state.editedText && this.state.editedText) {
+        if (prevProps.selectedBlock.tgt !== this.state.editedText) {
+          let message = "Do you want to save the edited sentences";
+          let operation = "Save";
+          this.props.handleDialogMessage(prevProps.selectedBlock, "", "", operation, message, this.state.editedText);
+          // this.setState({
+          //   openDialog: true,
+          //   title: "Save",
+          //   dialogMessage: "Do you want to save the updated sentence"
+          // })
+        }
+
+      }
+
     }
   }
 
@@ -92,18 +112,19 @@ class Block extends Component {
   }
 
   handleChangeEvent = (event) => {
+    // console.log(this.state.editedText)
+    // console.log(this.props.selectedBlock)
+    // console.log("---------------------------------")
     this.setState({ editedText: event.target.value })
-    this.props.updateSentence(event.target.value)
+    
+    // this.props.updateSentence(event.target.value)
+
     if (this.props.buttonStatus === "selected") {
       this.props.handleClick("typing")
     }
-    if (!this.props.dialogToken) {
-      this.props.handleBlurClick(true)
-    }
-
-    this.setState({
-      enteredData: true,
-    });
+    // if (!this.props.dialogToken) {
+    //   this.props.handleBlurClick(true)
+    // }
 
   };
 
@@ -157,7 +178,6 @@ class Block extends Component {
       
       this.setState({
         editedText: this.props.sentence && this.props.sentence.hasOwnProperty("s0_tgt") && this.props.sentence.s0_tgt,
-        enteredData: true,
       });
 
 
@@ -190,7 +210,6 @@ class Block extends Component {
 
     if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
       let block = this.props.sen
-      this.setState({ enteredData: false })
 
       block && block.tokenized_sentences && Array.isArray(block.tokenized_sentences) && block.tokenized_sentences.length > 0 && block.tokenized_sentences.map((tokenObj, i) => {
         if (this.state.sentence && this.state.sentence.s_id === tokenObj.s_id) {
@@ -227,7 +246,7 @@ class Block extends Component {
   }
 
   render() {
-    const { classes, sentence, selectedBlock, highlightId, selectedTargetId } = this.props;
+    const { classes, sentence, selectedBlock, prevBlock } = this.props;
     return (
       <Paper
         variant="outlined"
@@ -284,7 +303,7 @@ class Block extends Component {
                     }}
                     tokenIndex={this.props.tokenIndex}
                     // value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData) ? this.state.sentence.tgt : ""}
-                    value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData || (this.props.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
+                    value={(this.props.selectedTargetId === this.state.sentence.s_id || (this.props.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
                     sentence={this.state.sentence}
                     sourceText={sentence.src}
                     page_no={this.props.page_no}

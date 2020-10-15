@@ -139,7 +139,7 @@ class PdfFileEditor extends React.Component {
         this.setState({
           sentences: temp,
           open: this.state.apiStatus && true,
-          message: this.state.apiStatus && (this.state.apiCall === "Merge sentence" ? "Sentence merged successfully!" : this.state.apiCall === "Split sentence" ? "Sentence Splitted Sucessfully" : "Sentence updated successfully...!"),
+          message: this.state.apiStatus && (this.state.apiCall === "Merge sentence" ? "Sentence merged successfully!" : this.state.apiCall === "Split sentence" ? "Sentence Splitted Sucessfully" : "Translated sentence saved...!"),
           apiStatus: false,
           apiCall: false,
           showLoader: false,
