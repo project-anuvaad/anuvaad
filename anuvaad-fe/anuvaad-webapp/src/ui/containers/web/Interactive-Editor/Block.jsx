@@ -41,17 +41,14 @@ class Block extends Component {
   }
   componentDidUpdate(prevProps) {
     if (prevProps.intractiveTrans !== this.props.intractiveTrans) {
-      let sentence = this.state.sentence;
       // sentence.tagged_tgt = this.props.intractiveTrans && this.props.intractiveTrans.length > 0 && this.props.intractiveTrans[0].tagged_tgt,
       this.setState({
         autoCompleteText:
           this.props.intractiveTrans &&
-          this.props.intractiveTrans.length > 0 &&
-          this.props.intractiveTrans[0].tgt,
+          this.props.intractiveTrans.tgt,
         autoCompleteTextTaggetTgt:
           this.props.intractiveTrans &&
-          this.props.intractiveTrans.length > 0 &&
-          this.props.intractiveTrans[0].tagged_tgt,
+          this.props.intractiveTrans.tagged_tgt,
       });
     }
 
@@ -115,7 +112,8 @@ class Block extends Component {
         targetVal,
         { model_id: this.props.modelId },
         true,
-        true
+        true,
+        this.props.sentence.s_id
       );
       this.props.APITransport(apiObj);
     }
@@ -140,7 +138,8 @@ class Block extends Component {
       targetVal,
       { model_id: this.props.modelId },
       true,
-      true
+      true,
+      this.props.sentence.s_id
     );
     this.props.APITransport(apiObj);
   }
@@ -176,7 +175,7 @@ class Block extends Component {
     
     
     
-    if(this.state.editedText!==this.props.selectedBlock.tgt && this.state.editedText){
+    if(this.state.editedText!==this.props.selectedBlock.tgt && this.state.editedText && this.state.enteredData){
 
       let message = "Do you want to save the sentences";
       let operation = "Save";
