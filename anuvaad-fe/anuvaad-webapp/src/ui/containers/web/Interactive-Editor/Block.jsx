@@ -281,7 +281,9 @@ class Block extends Component {
                     {sentence.src}
                   </div>
                   <hr style={{ border: (selectedBlock && sentence && sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "copy" || this.props.buttonStatus === "typing") ) ? "1px dashed #1C9AB7" : "1px dashed #00000014" }} />
-                  {((selectedBlock && sentence && sentence.s_id === selectedBlock.s_id) || (prevBlock && sentence && sentence.s_id === prevBlock.s_id) ||(this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ?
+                  
+                  {/* (prevBlock && sentence && sentence.s_id === prevBlock.s_id) || */}
+                  {((selectedBlock && sentence && sentence.s_id === selectedBlock.s_id) || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ?
                     <AutoComplete
                       aId={sentence.s_id}
                       refId={sentence.s_id}
