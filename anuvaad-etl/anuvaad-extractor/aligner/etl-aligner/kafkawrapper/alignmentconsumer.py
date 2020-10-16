@@ -31,14 +31,6 @@ class Consumer:
                                  value_deserializer=lambda x: self.handle_json(x))
         return consumer
 
-    # For all the topics, returns a list of TopicPartition Objects
-    def get_topic_paritions(self, topics):
-        topic_paritions = []
-        for topic in topics:
-            tp = TopicPartition(topic, 0) #for now the partition is hardocoded
-            topic_paritions.append(tp)
-        return topic_paritions
-
     # Method to read and process the requests from the kafka queue
     def consume(self):
         topics = [align_job_topic]
@@ -51,7 +43,7 @@ class Consumer:
                 try:
                     data = msg.value
                     if data:
-                        log_info("Received on Topic: " + msg.topic, data)
+                        log_info("Align-Cons | Received on Topic: " + msg.topic + " | Partition: " + msg.partition, data)
                         service.process(data, False)
                     break
                 except Exception as e:

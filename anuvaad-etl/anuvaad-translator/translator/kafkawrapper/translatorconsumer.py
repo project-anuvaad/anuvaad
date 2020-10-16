@@ -54,7 +54,7 @@ def consume():
                 try:
                     data = msg.value
                     if data:
-                        log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
+                        log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + msg.partition, data)
                         error = validator.validate_wf(data, False)
                         if error is not None:
                             return post_error_wf(error["code"], error["message"], data, None)

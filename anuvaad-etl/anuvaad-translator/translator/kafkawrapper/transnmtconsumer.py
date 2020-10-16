@@ -51,7 +51,7 @@ def consume_nmt():
                 try:
                     data = msg.value
                     if data:
-                        log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
+                        log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + msg.partition, data)
                         service.process_nmt_output(data)
                 except Exception as e:
                     log_exception("Exception in translator nmt while consuming: " + str(e), None, e)

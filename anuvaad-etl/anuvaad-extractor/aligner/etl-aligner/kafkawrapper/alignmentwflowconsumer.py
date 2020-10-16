@@ -22,25 +22,15 @@ class WflowConsumer:
 
     # Method to instantiate the kafka consumer
     def instantiate(self, topics):
-        topic_partitions = self.get_topic_paritions(topics)
-        consumer = KafkaConsumer(bootstrap_servers=[kafka_bootstrap_server_host],
+        consumer = KafkaConsumer(*topics,
+                                 bootstrap_servers=[kafka_bootstrap_server_host],
                                  api_version=(1, 0, 0),
                                  group_id=align_job_consumer_grp,
                                  auto_offset_reset='earliest',
                                  enable_auto_commit=True,
                                  max_poll_records=1,
                                  value_deserializer=lambda x: self.handle_json(x))
-        consumer.assign(topic_partitions)
         return consumer
-
-    # For all the topics, returns a list of TopicPartition Objects
-    def get_topic_paritions(self, topics):
-        topic_paritions = []
-        for topic in topics:
-            tp = TopicPartition(topic, 0) #for now the partition is hardocoded
-            topic_paritions.append(tp)
-        return topic_paritions
-
 
     # Method to read and process the requests from the kafka queue
     def consume(self):
@@ -55,7 +45,7 @@ class WflowConsumer:
                 try:
                     data = msg.value
                     if data:
-                        log_info("Received on Topic: " + msg.topic, data)
+                        log_info("WFM-Cons | Received on Topic: " + msg.topic + " | Partition: " + msg.partition, data)
                         service.wf_process(data)
                     break
                 except Exception as e:

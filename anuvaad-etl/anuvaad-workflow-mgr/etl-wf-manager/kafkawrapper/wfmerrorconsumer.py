@@ -58,7 +58,7 @@ def error_consume():
                             job_details = wfmutils.get_job_details(data["jobID"])
                             if job_details:
                                 data["metadata"] = job_details[0]["metadata"]
-                        log_info(str(thread) + " | Received on Topic: " + msg.topic, data)
+                        log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + msg.partition, data)
                         wfmservice.update_errors(data)
                 except Exception as e:
                     log_exception("Exception while consuming: " + str(e), None, e)
