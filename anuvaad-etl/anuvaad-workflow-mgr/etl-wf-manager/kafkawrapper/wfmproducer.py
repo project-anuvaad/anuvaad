@@ -19,7 +19,7 @@ class Producer:
     # Method to instantiate producer
     # Any other method that needs a producer will get it from her
     def instantiate(self):
-        producer = KafkaProducer(bootstrap_servers=[kafka_bootstrap_server_host],
+        producer = KafkaProducer(bootstrap_servers=list(str(kafka_bootstrap_server_host).split(",")),
                                  api_version=(1, 0, 0),
                                  value_serializer=lambda x: json.dumps(x).encode('utf-8'))
         return producer
@@ -32,8 +32,8 @@ class Producer:
                 producer.send(topic, value=object_in)
                 object_in["metadata"]["module"] = module_wfm_name # FOR LOGGING ONLY.
                 log_info("Pushing to topic: " + topic, object_in)
+                return None
             producer.flush()
-            return None
         except Exception as e:
             log_exception("Exception while producing: " + str(e), object_in, e)
             return post_error("WFLOW_PRODUCER_ERROR", "Exception while producing: " + str(e), None)

@@ -38,7 +38,7 @@ class WFMService:
         wf_type = configs[wf_input["workflowCode"]]["type"]
         if wf_type == "ASYNC":
             prod_res = producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
-            if not prod_res:
+            if prod_res:
                 client_output = self.get_wf_details(wf_input, None, False, prod_res)
                 self.update_job_details(client_output, False)
             return client_output
