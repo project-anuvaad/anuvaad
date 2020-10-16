@@ -171,7 +171,7 @@ class Block extends Component {
       this.setState({
         editedText: this.props.sentence && this.props.sentence.hasOwnProperty("s0_tgt") && this.props.sentence.s0_tgt,
         enteredData: true,
-        dontShowDialog: true
+        // dontShowDialog: true
       });
 
 
@@ -187,13 +187,17 @@ class Block extends Component {
   }
 
   handleBlurCard = (event, id) => {
+    debugger
     if (this.state.editedText !== this.props.selectedBlock.tgt && this.state.editedText && this.state.enteredData) {
 
       let message = "Do you want to save the sentences";
       let operation = "Save";
 
       if ((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type !== "button") && !this.state.dontShowDialog) {
-        this.props.handleDialogMessage(this.props.selectedBlock, "", "", operation, message, this.state.editedText)
+
+        this.props.getUpdatedBlock(this.props.selectedBlock, operation, this.state.editedText)
+    
+        // this.props.handleDialogMessage(this.props.selectedBlock, "", "", operation, message, this.state.editedText)
       }
 
 
