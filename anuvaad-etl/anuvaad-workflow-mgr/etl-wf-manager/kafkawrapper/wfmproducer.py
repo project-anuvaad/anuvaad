@@ -33,6 +33,7 @@ class Producer:
                 object_in["metadata"]["module"] = module_wfm_name # FOR LOGGING ONLY.
                 log_info("Pushing to topic: " + topic, object_in)
             producer.flush()
+            return None
         except Exception as e:
             log_exception("Exception while producing: " + str(e), object_in, e)
-            post_error("WFLOW_PRODUCER_ERROR", "Exception while producing: " + str(e), None)
+            return post_error("WFLOW_PRODUCER_ERROR", "Exception while producing: " + str(e), None)
