@@ -149,7 +149,6 @@ class BlockTranslationService:
 
     # Parses the nmt response and builds input for ch
     def get_translations_ip_ch(self, nmt_response, block_translate_input):
-        ch_input = None
         if 'response_body' in nmt_response.keys():
             if nmt_response['response_body']:
                 for translation in nmt_response["response_body"]:
@@ -167,5 +166,4 @@ class BlockTranslationService:
                             s_index = k
                             break
                     block_translate_input["input"]["textBlocks"][b_index]["tokenized_sentences"][s_index] = translation
-                ch_input = {"blocks": block_translate_input["input"]["textBlocks"]}
-        return ch_input
+        return {"blocks": block_translate_input["input"]["textBlocks"], "workflowCode": block_translate_input["input"]["workflowCode"]}
