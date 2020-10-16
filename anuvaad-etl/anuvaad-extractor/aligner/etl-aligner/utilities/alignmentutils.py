@@ -118,7 +118,7 @@ class AlignmentUtils:
         if iswf:
             object_in["state"] = "SENTENCES-ALIGNED"
             object_in["status"] = "FAILED"
-            post_error_wf(code, message, object_in, None)
+            error = post_error_wf(code, message, object_in, None)
         else:
             error = post_error(code, message, None)
-            return error
+        return error

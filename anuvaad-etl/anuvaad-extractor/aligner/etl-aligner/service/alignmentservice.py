@@ -42,7 +42,10 @@ class AlignmentService:
         job_id = util.generate_job_id()
         response = {"input": object_in, "jobID": job_id, "status": "START"}
         self.update_job_details(response, True)
-        producer.push_to_queue(response, align_job_topic)
+        prod_res = producer.push_to_queue(response, align_job_topic)
+        if prod_res:
+            self.update_job_status("FAILED", object_in, prod_res["message"])
+            response = {"input": object_in, "jobID": job_id, "status": "FAILED", "error": prod_res}
         return response
 
 

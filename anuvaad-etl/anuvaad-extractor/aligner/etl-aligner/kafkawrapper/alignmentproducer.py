@@ -26,12 +26,13 @@ class Producer:
     # Method to push records to a topic in the kafka queue
     def push_to_queue(self, object_in, topic):
         producer = self.instantiate()
+        util = AlignmentUtils()
         try:
             if object_in:
                 producer.send(topic, value=object_in)
                 log_info("Pushed to topic: " + topic, object_in)
             producer.flush()
+            return None
         except Exception as e:
-            util = AlignmentUtils()
             log_exception("Exception while producing: " + str(e), None, e)
-            util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None, False)
+            return util.error_handler("ALIGNER_PRODUCER_ERROR", "Exception while producing: " + str(e), None, False)
