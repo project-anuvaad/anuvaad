@@ -54,6 +54,9 @@ def core_consume():
                 try:
                     if msg:
                         data = msg.value
+                        log_info("Logging", None)
+                        log_info(msg.topic, None)
+                        log_info(msg.partition, None)
                         log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + msg.partition, data)
                         wfmservice.initiate_wf(data)
                 except Exception as e:
