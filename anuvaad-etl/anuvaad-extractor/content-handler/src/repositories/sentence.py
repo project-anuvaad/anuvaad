@@ -18,8 +18,21 @@ class SentenceRepositories:
         return sentences
         
     @staticmethod
-    def update_sentences(user_id, sentences):
+    def update_sentences(user_id, sentences, workflowCode):
+        update_s0       = False
+        '''
+            - workflowCode: 
+            - DP_WFLOW_S_TR and DP_WFLOW_S_TTR, changes the sentence structure hence s0 pair needs to be updated
+            - DP_WFLOW_S_C, doesn't changes the sentence structure hence no need to update the s0 pair
+        '''
+        if workflowCode == 'DP_WFLOW_S_TR' or workflowCode == 'DP_WFLOW_S_TTR':
+            update_s0 = True
+
         for sentence in sentences:
+            if update_s0:
+                sentence['s0_tgt']    = sentence['tgt']
+                sentence['s0_src']    = sentence['src']
+
             if SentenceModel.update_sentence_by_s_id(user_id, sentence) == False:
                 return False
         return True

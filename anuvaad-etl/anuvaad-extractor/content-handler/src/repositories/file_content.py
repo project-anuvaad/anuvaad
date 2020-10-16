@@ -41,14 +41,16 @@ class FileContentRepositories:
         return new_block
 
     @staticmethod
-    def update_block_info(block):
+    def update_block_info(block, update_s0):
         new_block                   = {}
         new_block['data']           = block
 
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
-                elem['s0_tgt']    = elem['tgt']
-                elem['s0_src']    = elem['src']
+                if update_s0:
+                    elem['s0_tgt']    = elem['tgt']
+                    elem['s0_src']    = elem['src']
+
                 if 'input_subwords' in elem:
                     del elem['input_subwords']
                 if 'output_subwords' in elem:
@@ -130,11 +132,20 @@ class FileContentRepositories:
         return data
 
     @staticmethod
-    def update(user_id, blocks):
+    def update(user_id, blocks, workflowCode):
         updated_blocks  = []
+        update_s0       = False
+
+        '''
+            - workflowCode: 
+            - DP_WFLOW_S_TR and DP_WFLOW_S_TTR, changes the sentence structure hence s0 pair needs to be updated
+            - DP_WFLOW_S_C, doesn't changes the sentence structure hence no need to update the s0 pair
+        '''
+        if workflowCode == 'DP_WFLOW_S_TR' or workflowCode == 'DP_WFLOW_S_TTR':
+            update_s0 = True
 
         for block in blocks:
-            updated_blocks.append(FileContentRepositories.update_block_info(block))
+            updated_blocks.append(FileContentRepositories.update_block_info(block, update_s0))
         
         if len(updated_blocks) > 0:
             for updated_block in updated_blocks:

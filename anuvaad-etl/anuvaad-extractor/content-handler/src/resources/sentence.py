@@ -38,19 +38,19 @@ class SaveSentenceResource(Resource):
     def post(self):
         body        = request.get_json()
         user_id     = request.headers.get('userid')
-        sentences   = None
-        if 'sentences' in body:
-            sentences = body['sentences']
 
-        if user_id is None or sentences is None:
+        if 'sentences' not in body or user_id is None or 'workflowCode' not in body:
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
+
+        sentences       = body['sentences']
+        workflowCode    = body['workflowCode']
 
         AppContext.addRecordID(None)
         log_info("SaveSentenceResource for user {}, number sentences to update {} request {}".format(user_id, len(sentences), body), AppContext.getContext())
 
         try:
-            result = SentenceRepositories.update_sentences(user_id, sentences)
+            result = SentenceRepositories.update_sentences(user_id, sentences, workflowCode)
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400

@@ -87,7 +87,7 @@ paths:
           required: true
           description: Request format accepted by this API.
           schema:
-            $ref: '#/definitions/Blocks'
+            $ref: '#/definitions/UpdateBlocks'
             
       tags:
       - Content Handler
@@ -141,7 +141,7 @@ paths:
           required: true
           description: Request format accepted by this API.
           schema:
-            $ref: '#/definitions/Sentences'
+            $ref: '#/definitions/UpdateSentences'
       tags:
       - Content Handler
       responses:
@@ -154,7 +154,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
   
-  /v0/save-dictionary:
+  /v0/dictionary/update:
     post:
       summary: API to update or save words
       parameters:
@@ -179,39 +179,6 @@ paths:
           description: On input errors causing a failure in the job.
           schema:
             $ref: '#/definitions/Error'
-            
-    /v0/get-dictionary:
-      post:
-        summary: API to get dictionary meaning of a word in source language and in target language
-        parameters:
-          - name: userid
-            in: header
-            type: string
-            required: true
-          - name: word
-            in: body
-            required: true
-            description: word that is of interest
-          - name: src_locale
-            in: body
-            required: true
-            description: source language code of the word
-          - name: tgt_locale
-            in: body
-            required: true
-            description: target language code in which word meaning is required
-        tags:
-          - Dictionary
-        responses:
-          200:
-            description: On successful completion of the job.
-            schema:
-              $ref: '#/definitions/WordResponse'
-          400:
-            description: On input errors causing a failure in the job.
-            schema:
-              $ref: '#/definitions/Error'
-      
       
 definitions:
 
@@ -236,7 +203,18 @@ definitions:
       s0_tgt:
         type: string
         description: baseline translated sentence, cannot be updated
-        
+
+  UpdateSentences:
+    type: object
+    properties:
+      sentences:
+        type: array
+        items:
+            $ref: '#/definitions/Sentence'
+      workflowCode:
+        type: string
+        description: workflow code to identify update type
+
   Sentences:
     type: object
     properties:
@@ -331,7 +309,19 @@ definitions:
         description: File id for the file to be converted.
         items:
           $ref: '#/definitions/Result'
-          
+  
+  UpdateBlocks:
+    type: object
+    properties:
+        blocks:
+          type: array
+          description: list of blocks to be updated under a given workflow code
+          items:
+              $ref: '#/definitions/Block'
+        workflowCode:
+          type: string
+          description: workflow code to identify update type
+
   Blocks:
     type: object
     properties:
@@ -363,10 +353,9 @@ definitions:
         description: usage of word in the sentence
         items:
           type: string
-      language:
+      parallel_words:
         type: array
         description: parallel word that exists in other language for the given word
-        minItems: 1
         items:
           $ref: '#/definitions/Word'
     
