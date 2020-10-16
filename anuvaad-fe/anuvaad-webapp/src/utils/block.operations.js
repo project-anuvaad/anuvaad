@@ -27,7 +27,9 @@ function get_page_id(blocks) {
 */
 
 function get_blocks(sentences, block_ids) {
-    let blocks = []
+    let blocks  = []
+    sentences   = JSON.parse(JSON.stringify(sentences))
+
     block_ids.forEach(element => {
         let condition           = `$..[*].text_blocks[?(@.block_id == '${element}')]`;
         let selected_blocks     = jp.query(sentences, condition)
@@ -45,6 +47,7 @@ function get_blocks(sentences, block_ids) {
 }
 
 function get_all_text_blocks(sentences) {
+    sentences       = JSON.parse(JSON.stringify(sentences))
     let condition   = '$..[*].text_blocks[*]'
     let blocks      = jp.query(sentences, condition)
     return blocks
@@ -52,6 +55,8 @@ function get_all_text_blocks(sentences) {
 
 function get_sentence_id_blocks(sentences, blocks, s_id) {
     let selected_blocks = []
+    sentences       = JSON.parse(JSON.stringify(sentences))
+    blocks          = JSON.parse(JSON.stringify(blocks))
 
     blocks.forEach(element => {
         let condition   = `$.tokenized_sentences[?(@.s_id == '${s_id}')]`;
@@ -87,38 +92,39 @@ function get_largest_area_block(blocks) {
  * @param {*} blocks selected blocks
  */
 function get_concatenated_text(blocks) {
-  let condition   = '$[*].children[*]'
-  let children    = jp.query(blocks, condition)
+    blocks          = JSON.parse(JSON.stringify(blocks))
+    let condition   = '$[*].children[*]'
+    let children    = jp.query(blocks, condition)
 
-  let sorted_blocks      = children.sort((a, b) => {
+    let sorted_blocks      = children.sort((a, b) => {
 
-      if (a.page_no > b.page_no) {
-          return 1
-      }
-      if (a.page_no < b.page_no) {
-          return -1
-      }
-      if (a.text_top < b.text_top) {
-          return -1
-      }
-      if (a.text_top > b.text_top) {
-          return 1
-      }
-      if (a.text_left > b.text_left) {
-          return 1
-      }
-      if (a.text_left < b.text_left) {
-          return -1
-      }
-      return 0
-  })
+        if (a.page_no > b.page_no) {
+            return 1
+        }
+        if (a.page_no < b.page_no) {
+            return -1
+        }
+        if (a.text_top < b.text_top) {
+            return -1
+        }
+        if (a.text_top > b.text_top) {
+            return 1
+        }
+        if (a.text_left > b.text_left) {
+            return 1
+        }
+        if (a.text_left < b.text_left) {
+            return -1
+        }
+        return 0
+    })
 
-  let texts       = []
-  sorted_blocks.forEach(element => {
-      texts.push(element.text)
-  })
+    let texts       = []
+    sorted_blocks.forEach(element => {
+        texts.push(element.text)
+    })
 
-  return texts.join(' ')
+    return texts.join(' ')
 }
 
 /**

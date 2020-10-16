@@ -31,7 +31,7 @@ class AutoComplete extends React.Component {
             let y = divdata.y
 
             var elem = document.getElementById(this.props.aId)
-            var coordinates = getCaretCoordinates(elem, elem.selectionEnd);
+            var coordinates = getCaretCoordinates(elem, this.props.caretLength);
 
             let topValue = 0
             let leftValue = 0
@@ -70,6 +70,7 @@ class AutoComplete extends React.Component {
     handleEnter = (event) => {
         if (event.key === 'Escape') {
             this.setState({ showSuggestions: false })
+            this.props.showSuggestions(false)
             // let saveData = (this.state.value !== this.props.value || this.state.modified) ? true : false
 
             // if (saveData) {
@@ -96,6 +97,7 @@ class AutoComplete extends React.Component {
                 this.setState({ anchorEl: document.activeElement, topValue, leftValue, caretVal })
             }
             this.setState({ showSuggestions: true })
+            this.props.showSuggestions(true)
             // this.props.fetchSuggestions(this.props.sourceText, this.props.value)
             this.props.fetchSuggestions(this.props.sourceText, this.handleCalc(caretVal, this.state.tokenObject), this.state.tokenObject)
 
@@ -109,6 +111,7 @@ class AutoComplete extends React.Component {
 
     fetchSuggestions(srcText, targetTxt, tokenObject) {
         let targetVal = targetTxt
+        this.props.showSuggestions(false)
         this.setState({ showSuggestions: true, autoCompleteText: null })
         const apiObj = new IntractiveApi(srcText, targetVal, { model_id: this.props.modelId }, true, true);
         this.props.APITransport(apiObj);
@@ -186,12 +189,14 @@ class AutoComplete extends React.Component {
 
     handleSuggestion(suggestion, value, src, tokenObject) {
         this.setState({ showSuggestions: false })
+        this.props.showSuggestions(false)
         // this.props.handleSuggestion(suggestion, value)
         this.setState({ autoCompleteText: null, tokenObject })
 
         let targetVal = value.trim() + suggestion
         setTimeout(() => {
             this.setState({ showSuggestions: true })
+            this.props.showSuggestions(true)
 
         }, 50)
 
@@ -235,6 +240,7 @@ class AutoComplete extends React.Component {
 
     handleSuggestionClose() {
         this.setState({ showSuggestions : false })
+        this.props.showSuggestions(false)
     }
 
     render() {
@@ -265,8 +271,9 @@ class AutoComplete extends React.Component {
                         leftValue={this.state.leftValue}
                         handleSuggetionClick={this.handleSuggetionCLick.bind(this)}
                         handlePopOverClose={this.handleSuggestionClose.bind(this)}
-                        targetVal={this.state.caretVal}
+                        // targetVal={this.state.caretVal}
                         options={this.props.autoCompleteText}
+                        targetVal = {this.props.caretData}
                     ></Menu>}
 
             </div >
