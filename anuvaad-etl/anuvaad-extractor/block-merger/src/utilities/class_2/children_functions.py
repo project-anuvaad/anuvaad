@@ -1,27 +1,15 @@
-# import os
-# import pandas as pd
-# import base64
 import config
 import time
 import cv2
 import pandas as pd
 from src.services import get_xml
 from anuvaad_auditor.loghandler import log_info
-# from anuvaad_auditor.loghandler import log_error
-from anuvaad_auditor.loghandler import log_debug
-# from src.errors.errors_exception import ServiceError
-from anuvaad_auditor.loghandler import log_exception
-from src.services.preprocess import prepocess_pdf_regions
-from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
-from src.services.get_underline import get_underline
-from src.services.ocr_text_utilities import tesseract_ocr
-from src.services.child_text_unify_to_parent import ChildTextUnify
 from src.services.get_response import process_image_df, process_table_df, df_to_json, process_line_df, adopt_child
 from src.utilities.xml_utils import check_text
 import src.utilities.app_context as app_context
 from src.utilities.class_2.break_block_condition_single_column import process_page_blocks as process_block_single_column
-
-
+from src.utilities.class_2.page_layout.double_column import get_column
+from src.utilities.class_2.page_layout.utils import collate_regions
 def doc_pre_processing(filename, base_dir, lang):
     '''
         Preprocessing on input pdf to get:
@@ -59,30 +47,65 @@ def doc_pre_processing(filename, base_dir, lang):
 
 
 
+def get_layout_proposals(pdf_data,flags) :
+    h_dfs =[]
+    if flags['page_layout'] == 'double_column' :
+        for page_index, pdf_image in enumerate(pdf_data['pdf_image_paths']):
+            regions = get_column(pdf_image)
+            sub_in_dfs = collate_regions(regions,pdf_data['in_dfs'][page_index])
+            pdf_data['sub_in_dfs'] = sub_in_dfs
+            sub_h_dfs  = get_xml.get_hdfs(sub_in_dfs,  pdf_data['header_region'], pdf_data['footer_region'])
+            h_dfs.append(sub_h_dfs)
+    return h_dfs
+
+        #integrate pubnet
+    #    pass
+    #if flags['page_layout'] == 'dict' :
+
+
 def vertical_merging(pdf_data,flags):
     v_dfs = []
 
     #to_do : add support for multicolumn documents
-    if  flags['page_layout'] == 'single_column' :
-        columns = ['xml_index', 'text_top', 'text_left', 'text_width', 'text_height',
-                         'text', 'font_size', 'font_family', 'font_color', 'attrib']
-        for h_df in pdf_data['h_dfs'] :
-            v_df = pd.DataFrame(columns=columns)
+
+    columns = ['xml_index', 'text_top', 'text_left', 'text_width', 'text_height',
+                     'text', 'font_size', 'font_family', 'font_color', 'attrib']
+    for h_df in pdf_data['h_dfs'] :
+        v_df = pd.DataFrame(columns=columns)
+        if flags['page_layout'] == 'single_column':
             v_df['text_height'] = [pdf_data['pdf_image_height']]
             v_df['text_width'] = pdf_data['pdf_image_width']
             v_df['text_top'] = 0
             v_df['text_left'] = 0
             v_df['children'] = h_df.to_json()
-            v_dfs.append(v_df)
+        else:
+            for sub_h_df in h_df :
+                sub_dic = {}
+                chunk_df = sub_h_df.copy()
+                chunk_df['text_right'] = chunk_df['text_left'] + chunk_df['text_width']
+                chunk_df['text_bottom'] = chunk_df['text_top'] + chunk_df['text_height']
+
+                sub_dic['text_top'] = chunk_df['text_top'].min()
+                sub_dic['text_left'] = chunk_df['text_left'].min()
+                sub_dic['text_width'] = chunk_df['text_right'].max() - sub_dic['text_left']
+                sub_dic['text_height'] = chunk_df['text_bottom'].max() - sub_dic['text_top']
+                sub_dic['text'] = ''
+
+                sub_dic['children'] = sub_h_df.to_json()
+
+                v_df = v_df.append([sub_dic])
+        v_df = v_df.reset_index(drop=True)
+        v_dfs.append(v_df)
 
     return v_dfs
 
 def breaK_into_paragraphs(pdf_data,flags):
     p_dfs =[]
-    if flags['page_layout'] == 'single_column':
-        for page_index ,v_df in enumerate(pdf_data['v_dfs']) :
-            p_df = pd.concat(process_block_single_column(v_df, pdf_data['pdf_image_width'],page_num= page_index +1, configs=config.BLOCK_BREAK_CONFIG))
-            p_dfs.append(p_df)
+    #if flags['page_layout'] == 'single_column':
+    for page_index ,v_df in enumerate(pdf_data['v_dfs']) :
+
+        p_df = pd.concat(process_block_single_column(v_df, pdf_data['pdf_image_width'],page_num= page_index +1, configs=config.BLOCK_BREAK_CONFIG))
+        p_dfs.append(p_df)
     return p_dfs
 
 

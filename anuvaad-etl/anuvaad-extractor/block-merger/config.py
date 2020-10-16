@@ -67,7 +67,7 @@ TABLE_CONFIGS = {
     "extract_by"           : 'starting_point'
 }
 
-PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.15 ,'repeat_threshold' :0.95 ,'underline_threshold':0.25, 'margin':10 }
+PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.85 ,'repeat_threshold' :0.95 ,'underline_threshold':0.25, 'margin':10 }
 DROP_TEXT          =  ['SUPERSCRIPT']
 
 LANG_MAPPING       =  {
