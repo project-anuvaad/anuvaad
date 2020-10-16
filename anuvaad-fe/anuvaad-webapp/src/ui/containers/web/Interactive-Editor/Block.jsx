@@ -187,7 +187,6 @@ class Block extends Component {
   }
 
   handleBlurCard = (event, id) => {
-    debugger
     if (this.state.editedText !== this.props.selectedBlock.tgt && this.state.editedText && this.state.enteredData) {
 
       let message = "Do you want to save the sentences";
