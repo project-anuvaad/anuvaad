@@ -23,7 +23,7 @@ class WflowConsumer:
     # Method to instantiate the kafka consumer
     def instantiate(self, topics):
         consumer = KafkaConsumer(*topics,
-                                 bootstrap_servers=[kafka_bootstrap_server_host],
+                                 bootstrap_servers=list(str(kafka_bootstrap_server_host).split(",")),
                                  api_version=(1, 0, 0),
                                  group_id=align_job_consumer_grp,
                                  auto_offset_reset='earliest',

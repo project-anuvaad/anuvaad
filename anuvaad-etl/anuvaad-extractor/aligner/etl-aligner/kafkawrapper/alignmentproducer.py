@@ -18,7 +18,7 @@ class Producer:
     # Method to instantiate producer
     # Any other method that needs a producer will get it from her
     def instantiate(self):
-        producer = KafkaProducer(bootstrap_servers=[kafka_bootstrap_server_host],
+        producer = KafkaProducer(bootstrap_servers=list(str(kafka_bootstrap_server_host).split(",")),
                                  api_version=(1, 0, 0),
                                  value_serializer=lambda x: json.dumps(x).encode('utf-8'))
         return producer
