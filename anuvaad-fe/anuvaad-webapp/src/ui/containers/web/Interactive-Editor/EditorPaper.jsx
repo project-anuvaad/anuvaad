@@ -167,14 +167,13 @@ class EditorPaper extends React.Component {
     padding = (padding - 10) + "%";
     let pageNo = sArray[0].page_no;
     if (!sArray[0].is_footer && !sArray[0].is_table) {
-      // eslint-disable-next-line
-      let printPageNo = false;
-      let isFirst = false;
+      //let printPageNo = false;
+      //let isFirst = false;
       if (index === 0) {
-        printPageNo = true;
-        isFirst = true;
+        //printPageNo = true;
+        //isFirst = true;
       } else if (prevSentence && sentence.page_no !== prevSentence.page_no) {
-        printPageNo = true;
+        //printPageNo = true;
       }
 
 

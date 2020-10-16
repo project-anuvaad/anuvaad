@@ -425,7 +425,7 @@ function do_sentences_merging_v1(sentences, sentence_ids) {
     tokenized_sentence.tgt  = ''
     sorted_selected_blocks[0].tokenized_sentences.splice(sentence_indices[0].index, 0, tokenized_sentence)
 
-    return {'blocks': sorted_selected_blocks, 'sentence_id': sentence_indices[0].s_id}
+    return {'blocks': sorted_selected_blocks, 'sentence_id': sentence_indices[0].s_id, 'sentences': sentence_indices}
 }
 
 /**
@@ -481,5 +481,6 @@ module.exports = {
     get_merged_blocks,
     do_sentences_merging,
     do_sentences_merging_v1,
-    do_sentence_splitting
+    do_sentence_splitting,
+    get_sorted_blocks
 }
