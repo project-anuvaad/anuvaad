@@ -13,7 +13,7 @@ import config
 
 def consumer_validator():
     try:
-        consumer_class = Consumer(config.tok_input_topic, config.bootstrap_server)
+        consumer_class = Consumer(config.tok_input_topic, list(str(config.bootstrap_server).split(",")))
         consumer = consumer_class.consumer_instantiate()
         log_info("consumer_validator --- consumer running -----", None)
         return consumer
@@ -37,7 +37,7 @@ def process_fc_kf():
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
     task_id = str("FC-" + str(task_timestamp))
     task_starttime = task_timestamp
-    producer_tok = Producer(config.bootstrap_server)
+    producer_tok = Producer(list(str(config.bootstrap_server).split(",")))
     # instatiation of consumer for respective topic
     try:
         consumer = consumer_validator()
