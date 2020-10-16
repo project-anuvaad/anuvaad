@@ -51,16 +51,14 @@ def core_consume():
         log_info(str(thread) + " Running..........", None)
         while True:
             for msg in consumer:
+                data = {}
                 try:
                     if msg:
                         data = msg.value
-                        log_info("Logging", None)
-                        log_info(msg.topic, None)
-                        log_info(msg.partition, None)
-                        log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + msg.partition, data)
+                        log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         wfmservice.initiate_wf(data)
                 except Exception as e:
-                    log_exception("Exception while consuming: " + str(e), None, e)
+                    log_exception("Exception while consuming: " + str(e), data, e)
                     post_error("WFM_CORE_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
     except Exception as e:
         log_exception("Exception while starting the wfm core consumer: " + str(e), None, e)

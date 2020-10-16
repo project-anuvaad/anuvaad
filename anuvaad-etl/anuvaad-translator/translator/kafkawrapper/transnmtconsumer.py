@@ -48,13 +48,14 @@ def consume_nmt():
         log_info(str(thread) + " Running..........", None)
         while True:
             for msg in consumer:
+                data = {}
                 try:
                     data = msg.value
                     if data:
-                        log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + msg.partition, data)
+                        log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         service.process_nmt_output(data)
                 except Exception as e:
-                    log_exception("Exception in translator nmt while consuming: " + str(e), None, e)
+                    log_exception("Exception in translator nmt while consuming: " + str(e), data, e)
                     post_error("TRANSLATOR_CONSUMER_ERROR", "Exception in translator while consuming: " + str(e), None)
     except Exception as e:
         log_exception("Exception while starting the translator nmt consumer: " + str(e), None, e)

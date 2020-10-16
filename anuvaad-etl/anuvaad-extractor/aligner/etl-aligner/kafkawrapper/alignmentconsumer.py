@@ -40,14 +40,15 @@ class Consumer:
         log_info("Align Consumer running.......", None)
         while True:
             for msg in consumer:
+                data = {}
                 try:
                     data = msg.value
                     if data:
-                        log_info("Align-Cons | Received on Topic: " + msg.topic + " | Partition: " + msg.partition, data)
+                        log_info("Align-Cons | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         service.process(data, False)
                     break
                 except Exception as e:
-                    log_exception("Exception while consuming: " + str(e), None, e)
+                    log_exception("Exception while consuming: " + str(e), data, e)
                     util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None, False)
                     break
 

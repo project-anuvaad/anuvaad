@@ -45,7 +45,7 @@ class WflowConsumer:
                 try:
                     data = msg.value
                     if data:
-                        log_info("WFM-Cons | Received on Topic: " + msg.topic + " | Partition: " + msg.partition, data)
+                        log_info("WFM-Cons | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         service.wf_process(data)
                     break
                 except Exception as e:

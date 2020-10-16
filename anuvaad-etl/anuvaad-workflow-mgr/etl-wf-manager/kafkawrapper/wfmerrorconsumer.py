@@ -51,6 +51,7 @@ def error_consume():
         log_info(str(thread) + " | Running..........", None)
         while True:
             for msg in consumer:
+                data = {}
                 try:
                     if msg:
                         data = msg.value
@@ -58,10 +59,10 @@ def error_consume():
                             job_details = wfmutils.get_job_details(data["jobID"])
                             if job_details:
                                 data["metadata"] = job_details[0]["metadata"]
-                        log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + msg.partition, data)
+                        log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         wfmservice.update_errors(data)
                 except Exception as e:
-                    log_exception("Exception while consuming: " + str(e), None, e)
+                    log_exception("Exception while consuming: " + str(e), data, e)
                     post_error("WFM_ERROR_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
     except Exception as e:
         log_exception("Exception while starting the wfm error consumer: " + str(e), None, e)
