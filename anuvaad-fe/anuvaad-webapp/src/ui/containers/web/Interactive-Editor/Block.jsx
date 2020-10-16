@@ -125,6 +125,8 @@ class Block extends Component {
         this.props.sentence.s_id
       );
       this.props.APITransport(apiObj);
+    } else {
+      this.setState({autoCompleteText: null, caretData: "" })
     }
 
   }
