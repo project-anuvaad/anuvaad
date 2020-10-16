@@ -481,5 +481,6 @@ module.exports = {
     get_merged_blocks,
     do_sentences_merging,
     do_sentences_merging_v1,
-    do_sentence_splitting
+    do_sentence_splitting,
+    get_sorted_blocks
 }
