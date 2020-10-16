@@ -91,8 +91,7 @@ class AlignmentService:
 
     # Wrapper method to categorise sentences into MATCH, ALMOST-MATCH and NO-MATCH
     def process(self, object_in, iswf):
-        if self.check_if_duplicate(object_in["jobID"]):
-            log_info("This job has already been processed. jobID: " + str(object_in["jobID"]), object_in)
+        if self.check_if_duplicate(object_in["jobID"], object_in):
             return None
         log_info("Alignment process starts for job: " + str(object_in["jobID"]), object_in)
         source_reformatted = []
@@ -153,10 +152,15 @@ class AlignmentService:
         else:
             return {}
 
-    def check_if_duplicate(self, job_id):
+    def check_if_duplicate(self, job_id, object_in):
         job = self.search_jobs(job_id)
         if job:
-            return True
+            job = job[0]
+            if job["status"] == "COMPLETED" or job["status"] == "FAILED":
+                log_info("This job has already been processed. jobID: " + str(object_in["jobID"]), object_in)
+                return True
+            else:
+                return False
         else:
             return False
 
