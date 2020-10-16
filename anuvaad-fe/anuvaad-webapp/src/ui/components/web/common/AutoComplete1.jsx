@@ -31,7 +31,7 @@ class AutoComplete extends React.Component {
             let y = divdata.y
 
             var elem = document.getElementById(this.props.aId)
-            var coordinates = getCaretCoordinates(elem, elem.selectionEnd);
+            var coordinates = getCaretCoordinates(elem, this.props.caretLength);
 
             let topValue = 0
             let leftValue = 0
@@ -271,8 +271,9 @@ class AutoComplete extends React.Component {
                         leftValue={this.state.leftValue}
                         handleSuggetionClick={this.handleSuggetionCLick.bind(this)}
                         handlePopOverClose={this.handleSuggestionClose.bind(this)}
-                        targetVal={this.state.caretVal}
+                        // targetVal={this.state.caretVal}
                         options={this.props.autoCompleteText}
+                        targetVal = {this.props.caretData}
                     ></Menu>}
 
             </div >

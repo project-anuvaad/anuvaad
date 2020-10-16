@@ -150,7 +150,6 @@ class PdfFileEditor extends React.Component {
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
     } 
     else if(this.state.title === "Save"){
-      debugger
       this.getUpdatedBlock(this.state.selected_block_id, this.state.operation_type, this.state.editedText)
     }
 
@@ -343,6 +342,7 @@ class PdfFileEditor extends React.Component {
                               updateSentence={this.updateSentence.bind(this)}
                               prevBlock={this.state.prevActiveState}
                               saveCancelled= {this.state.saveCancelled}
+                              getUpdatedBlock= {this.getUpdatedBlock.bind(this)}
                             />
 
                           });

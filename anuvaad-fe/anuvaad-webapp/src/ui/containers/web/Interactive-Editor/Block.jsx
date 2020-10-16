@@ -29,7 +29,9 @@ class Block extends Component {
       showSuggestions: false,
       enteredData: false,
       highlightDivider: false,
-      caret: ""
+      caret: "",
+      caretLength: 0,
+      caretData: ""
     };
   }
 
@@ -71,8 +73,8 @@ class Block extends Component {
       })
     }
 
-    if(prevProps.saveCancelled !== this.props.saveCancelled && this.props.saveCancelled ){
-      this.setState({editedText: this.props.sentence && this.props.sentence.hasOwnProperty("tgt") && this.props.sentence.tgt})
+    if (prevProps.saveCancelled !== this.props.saveCancelled && this.props.saveCancelled) {
+      this.setState({ editedText: this.props.sentence && this.props.sentence.hasOwnProperty("tgt") && this.props.sentence.tgt })
     }
   }
 
@@ -95,7 +97,7 @@ class Block extends Component {
   }
 
   handleChangeEvent = (event) => {
-    this.setState({ editedText: event.target.value , enteredData: true})
+    this.setState({ editedText: event.target.value, enteredData: true })
     // this.props.updateSentence(event.target.value)
     if (this.props.buttonStatus === "selected") {
       this.props.handleClick("typing")
@@ -108,7 +110,12 @@ class Block extends Component {
     if (targetTxt) {
       let targetVal = targetTxt;
 
-      this.setState({ showSuggestions: true, autoCompleteText: null, caret: targetTxt });
+      this.setState({
+        showSuggestions: true,
+        autoCompleteText: null,
+        caret: targetTxt,
+        caretData: targetTxt
+      });
       const apiObj = new IntractiveApi(
         srcText,
         targetVal,
@@ -124,12 +131,19 @@ class Block extends Component {
 
   handleSuggestionClick(suggestion, value, src, tokenObject) {
     let editedSentence = this.state.editedText + suggestion
-    this.props.updateSentence(this.state.editedText + suggestion)
-    this.setState({ editedText: editedSentence })
+    // this.props.updateSentence(this.state.caret + suggestion)
+    let data = this.state.caret
 
-    this.setState({ showSuggestions: false, caret: this.state.caret + suggestion });
+    let editedData = this.state.caret + suggestion + this.state.editedText.slice(this.state.caret.length)
 
-    this.setState({ autoCompleteText: null, tokenObject });
+    this.setState({
+      editedText: editedData,
+      showSuggestions: false,
+      caret: this.state.caret + suggestion,
+      caretData: this.state.caret + suggestion
+    });
+
+    this.setState({ autoCompleteText: null, tokenObject, caretLength: (this.state.caret + suggestion).length });
     let targetVal = this.state.caret + suggestion;
     setTimeout(() => {
       this.setState({ showSuggestions: true });
@@ -157,10 +171,10 @@ class Block extends Component {
       this.setState({
         editedText: this.props.sentence && this.props.sentence.hasOwnProperty("s0_tgt") && this.props.sentence.s0_tgt,
         enteredData: true,
-        dontShowDialog:true
+        // dontShowDialog: true
       });
 
-      
+
 
 
       this.props.handleClick("copy")
@@ -172,21 +186,24 @@ class Block extends Component {
 
   }
 
-  handleBlurCard=(event,id)=>{
+  handleBlurCard = (event, id) => {
     debugger
-    if(this.state.editedText!==this.props.selectedBlock.tgt && this.state.editedText && this.state.enteredData){
+    if (this.state.editedText !== this.props.selectedBlock.tgt && this.state.editedText && this.state.enteredData) {
 
       let message = "Do you want to save the sentences";
       let operation = "Save";
 
-      if((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type!=="button")  && !this.state.dontShowDialog ){
-        this.props.handleDialogMessage(this.props.selectedBlock, "", "", operation, message, this.state.editedText)
+      if ((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type !== "button") && !this.state.dontShowDialog) {
+
+        this.props.getUpdatedBlock(this.props.selectedBlock, operation, this.state.editedText)
+    
+        // this.props.handleDialogMessage(this.props.selectedBlock, "", "", operation, message, this.state.editedText)
       }
-      
-     
+
+
       // this.handleSave(this.props.selectedBlock.s_id) 
     }
-    
+
   }
 
   handleChange = (name) => (event) => {
@@ -202,7 +219,7 @@ class Block extends Component {
 
     if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
       let block = this.props.sen
-      this.setState({ enteredData: false, dontShowDialog:true })
+      this.setState({ enteredData: false, dontShowDialog: true })
 
       block && block.tokenized_sentences && Array.isArray(block.tokenized_sentences) && block.tokenized_sentences.length > 0 && block.tokenized_sentences.map((tokenObj, i) => {
         if (this.state.sentence && this.state.sentence.s_id === tokenObj.s_id) {
@@ -231,8 +248,8 @@ class Block extends Component {
     this.props.handleClick("split");
   }
 
-  showSuggestions(value){
-    this.setState({dontShowDialog:value})
+  showSuggestions(value) {
+    this.setState({ dontShowDialog: value, caretData: "" })
   }
 
   handleCardClick(sentence) {
@@ -243,7 +260,7 @@ class Block extends Component {
   }
 
   render() {
-    const { classes, sentence, selectedBlock} = this.props;
+    const { classes, sentence, selectedBlock } = this.props;
     return (
       <Paper
         variant="outlined"
@@ -265,8 +282,8 @@ class Block extends Component {
         <Grid container spacing={2} style={{ padding: "7px" }}>
           <Grid item xs={12} sm={12} lg={12} xl={12}>
             <div style={{ display: "flex", flexDirection: "row" }}
-            onBlur= {(event)=>{this.handleBlurCard(event, sentence.s_id)}}
-              
+              onBlur={(event) => { this.handleBlurCard(event, sentence.s_id) }}
+
             >
               {/* <Tooltip title="Go to validation mode">
                 <ValidationIcon
@@ -298,7 +315,7 @@ class Block extends Component {
                       fontSize: "16px",
                       border: 'none',
                       outline: "none",
-                      background : sentence.hasOwnProperty("save") && sentence.save && "#ecf5f2",
+                      background: sentence.hasOwnProperty("save") && sentence.save && "#ecf5f2",
                       fontFamily: "Source Sans Pro,Regular,Arial,sans-serif"
                     }}
                     tokenIndex={this.props.tokenIndex}
@@ -322,8 +339,9 @@ class Block extends Component {
                     handleSuggestionClick={this.handleSuggestionClick.bind(this)}
                     handleEditorClick={this.handleEditorClick.bind(this)}
                     autoFocus={this.state.sentence.hasOwnProperty("save")}
-                    showSuggestions = {this.showSuggestions.bind(this)}
-                    
+                    showSuggestions={this.showSuggestions.bind(this)}
+                    caretLength={this.state.caretLength}
+                    caretData={this.state.caretData}
                   />
                   : <div style={{ minHeight: "50px" }}></div>
                 }
