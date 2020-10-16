@@ -100,7 +100,7 @@ class DocumentBlock extends React.Component {
             <TextareaAutosize
               multiline={true}
               autoFocus={true}
-              value={this.state.value}
+              //value={this.state.value}
               style={{
                 width: value.text_width + "px",
                 resize: "none",

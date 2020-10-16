@@ -61,6 +61,7 @@ class PdfUpload extends Component {
       name: "",
       message: "File uplaoded successfully",
       showComponent: false,
+      strategy:"",
     };
   }
 
