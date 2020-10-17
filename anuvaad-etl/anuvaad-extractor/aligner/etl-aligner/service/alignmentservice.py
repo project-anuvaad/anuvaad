@@ -79,10 +79,8 @@ class AlignmentService:
         return source_embeddings, target_embeddings
 
     # Service layer to fetch target sentence for a given source sentence.
-    def get_target_sentence(self, target_embeddings, source_embedding, src_sent):
-        data = np.array(target_embeddings)
-        data = data.reshape(data.shape[0], data.shape[2])
-        distances = distance.cdist(np.array(source_embedding), data, "cosine")[0]
+    def get_target_sentence(self, reshaped_tgt, source_embedding, src_sent):
+        distances = distance.cdist(np.array(source_embedding), reshaped_tgt, "cosine")[0]
         min_index = np.argmin(distances)
         min_distance = 1 - distances[min_index]
         min_cs, max_cs = alignmentutils.get_cs_on_sen_cat(src_sent)
@@ -208,8 +206,10 @@ class AlignmentService:
         try:
             log_info("Aligning the sentences.....", object_in)
             sentence_count, interval = 0, 0
+            reshaped_tgt = np.array(target_embeddings)
+            reshaped_tgt = reshaped_tgt.reshape(reshaped_tgt.shape[0], reshaped_tgt.shape[2])
             for i, embedding in enumerate(source_embeddings):
-                trgt = self.get_target_sentence(target_embeddings, embedding, source[i])
+                trgt = self.get_target_sentence(reshaped_tgt, embedding, source[i])
                 if trgt is not None:
                     if trgt[2] is "MATCH":
                         match_dict[i] = trgt[0], trgt[1]
