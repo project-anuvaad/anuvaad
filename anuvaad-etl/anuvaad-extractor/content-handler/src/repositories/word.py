@@ -11,4 +11,15 @@ class WordRepo:
 
     def store(self, words):
         log_info('attempting to store ({}), words'.format(len(words)), AppContext.getContext())
-        return self.wordModel.save(words)
+        result = self.wordModel.save(words)
+        return result
+
+    def search_english(self, word):
+        log_info('attempting to search ({}), source word'.format(word), AppContext.getContext())
+        result = self.wordModel.search_source(word)
+        return result
+
+    def search_vernacular(self, word, locale):
+        log_info('attempting to search ({}), target word in locale ({})'.format(word, locale), AppContext.getContext())
+        result = self.wordModel.search_target(word, locale)
+        return result
