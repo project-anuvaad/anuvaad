@@ -61,6 +61,8 @@ class TranslatorService:
                     "totalSentences": -1, "translatedSentences": -2, "skippedSentences": -2, "data": data
                 }
                 repo.create(db_in)
+                content_from_db = self.get_content_from_db(str(translate_wf_input["jobID"]) + "|" + str(file_id), None, translate_wf_input)
+                log_info(content_from_db, translate_wf_input)
                 return True
         except Exception as e:
             log_exception("Exception while dumping content to DB: " + str(e), translate_wf_input, e)
@@ -100,6 +102,8 @@ class TranslatorService:
             if total_sentences > 0:
                 repo.update({"totalSentences": total_sentences}, {"recordID": record_id})
                 log_info("recordID: " + record_id + " | TOTAL NO. OF SENTENCES SENT TO NMT : " + str(total_sentences), translate_wf_input)
+                content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
+                log_info(content_from_db, translate_wf_input)
                 return True
             else:
                 log_error("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)
@@ -212,6 +216,8 @@ class TranslatorService:
         repo.update(object_in, query)
         log_info("Batch processed, TRANSLATED: " + str(trans_count) + " | SKIPPED: " + str(skip_count) +
                  " | recordID: " + translate_wf_input["recordID"], translate_wf_input)
+        content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
+        log_info(content_from_db, translate_wf_input)
 
     # Back up method to update sentences from DB.
     def update_sentences(self, record_id, nmt_res_batch, translate_wf_input):
