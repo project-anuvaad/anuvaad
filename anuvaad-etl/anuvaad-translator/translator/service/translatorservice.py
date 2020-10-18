@@ -8,6 +8,7 @@ from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
 from configs.translatorconfig import anu_translator_output_topic
+from configs.translatorconfig import tool_translator
 
 utils = TranslatorUtils()
 producer = Producer()
@@ -31,7 +32,9 @@ class TranslatorService:
                 if not dumped:
                     error_list.append({"inputFile": str(file["path"]), "outputFile": "FAILED", "error": "File received couldn't be downloaded!"})
                 else:
-                    self.push_sentences_to_nmt(file, translate_wf_input)
+                    pushed = self.push_sentences_to_nmt(file, translate_wf_input)
+                    if not pushed:
+                        error_list.append({"inputFile": str(file["path"]), "outputFile": "FAILED", "error": "Error while pushing sentences to NMT"})
             except Exception as e:
                 log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
                 continue
@@ -55,7 +58,7 @@ class TranslatorService:
                 db_in = {
                     "jobID": translate_wf_input["jobID"], "taskID": translate_wf_input["taskID"],
                     "recordID": str(translate_wf_input["jobID"]) + "|" + str(file_id), "transInput": translate_wf_input,
-                    "totalSentences": 0, "translatedSentences": 0, "skippedSentences": 0, "data": data
+                    "totalSentences": -1, "translatedSentences": -2, "skippedSentences": -2, "data": data
                 }
                 repo.create(db_in)
                 return True
@@ -76,6 +79,7 @@ class TranslatorService:
             data = content_from_db["data"]
             if not data:
                 log_error("No data for file, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
+                repo.update({"totalSentences": 0}, {"recordID": record_id})
                 return None
             pages = data["result"]
             total_sentences = 0
@@ -99,6 +103,7 @@ class TranslatorService:
                 return True
             else:
                 log_error("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)
+                repo.update({"totalSentences": 0}, {"recordID": record_id})
                 return None
         except Exception as e:
             log_exception("Exception while pushing sentences to NMT: " + str(e), translate_wf_input, e)
@@ -152,7 +157,7 @@ class TranslatorService:
             recordid_split = str(record_id).split("|")
             job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
             record_id = str(recordid_split[0]) + "|" + str(recordid_split[1])
-            translate_wf_input = {"jobID": job_id}
+            translate_wf_input = {"jobID": job_id, "metadata": {"module": tool_translator}}
             file = self.get_content_from_db(record_id, None, translate_wf_input)
             if not file:
                 log_error("There is no data for this recordID: " + str(record_id), translate_wf_input, nmt_output["status"])
