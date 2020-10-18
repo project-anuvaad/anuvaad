@@ -25,8 +25,30 @@ class DocumentSource extends React.Component {
     };
   }
 
+  componentDidMount() {
+    if (this.props.scrollToPage) {
+      if (this.refs[this.props.scrollToPage]) {
+        this.refs[this.props.scrollToPage].scrollIntoView({
+          behavior: "smooth",
+          inline: "end"
+        });
+      }
+    }
+
+    if (this.props.scrollId) {
+      if (this.refs[this.props.scrollId]) {
+        this.refs[this.props.scrollId].scrollIntoView({
+          behavior: "smooth",
+          inline: "end"
+        });
+      }
+    }
+    
+  }
+
   componentDidUpdate(prevProps) {
-    if ((prevProps.scrollToPage !== this.props.scrollToPage || this.props.scrollToTop || (prevProps.tokenized !== this.props.tokenized)) && this.props.tokenized) {
+
+    if (prevProps.scrollToPage !== this.props.scrollToPage) {
       if (this.refs[this.props.scrollToPage]) {
         this.refs[this.props.scrollToPage].scrollIntoView({
           behavior: "smooth",
@@ -48,8 +70,8 @@ class DocumentSource extends React.Component {
   }
 
 
-  updateContent(value){
-    this.setState({openDialog:true,selectedArray:value, title: "Merge Paragraphs",dialogMessage:"Do you want to merge selected paragraphs ?"})
+  updateContent(value) {
+    this.setState({ openDialog: true, selectedArray: value, title: "Merge Paragraphs", dialogMessage: "Do you want to merge selected paragraphs ?" })
   }
 
   handleCheckbox() {
@@ -58,16 +80,16 @@ class DocumentSource extends React.Component {
   handleDialog() {
     let workflowCode = "DP_WFLOW_S_TR";
     if (this.state.title === "Merge sentence") {
-     let updatedBlocks =   BLOCK_OPS.do_sentences_merging(this.props.sentences,this.state.start_block_id, this.state.start_sentence_id, this.state.end_sentence_id);
-    this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
-     
+      let updatedBlocks = BLOCK_OPS.do_sentences_merging(this.props.sentences, this.state.start_block_id, this.state.start_sentence_id, this.state.end_sentence_id);
+      this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
+
     }
-    else if(this.state.title === "Split sentence" ){
-      let updatedBlocks =   BLOCK_OPS.do_sentence_splitting(this.props.sentences,this.state.start_block_id, this.state.start_sentence_id, this.state.end_sentence_id);
+    else if (this.state.title === "Split sentence") {
+      let updatedBlocks = BLOCK_OPS.do_sentence_splitting(this.props.sentences, this.state.start_block_id, this.state.start_sentence_id, this.state.end_sentence_id);
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
     }
-    
-    else if(this.state.title === "Merge Paragraphs"){
+
+    else if (this.state.title === "Merge Paragraphs") {
 
       this.props.updateContent(this.state.selectedArray)
     }
@@ -84,34 +106,34 @@ class DocumentSource extends React.Component {
     });
   }
 
-  handleSplitSentence(substring){
+  handleSplitSentence(substring) {
     let substringValue;
     let substringArray = substring.split(' ')
-    if(substringArray.length<5){
+    if (substringArray.length < 5) {
       return substring;
     }
-    else{
-      substringValue = substringArray[0] + " " + substringArray[1] + " " + substringArray[2] + " ... "+ substringArray[substringArray.length-2]+" "+substringArray[substringArray.length-1];
+    else {
+      substringValue = substringArray[0] + " " + substringArray[1] + " " + substringArray[2] + " ... " + substringArray[substringArray.length - 2] + " " + substringArray[substringArray.length - 1];
       return substringValue;
     }
-     
-    
+
+
   }
 
 
   handleDialogMessage(title, dialogMessage) {
-    
+
     this.setState({ openDialog: true, title, dialogMessage, openEl: false });
   }
 
-  popUp = (start_block_id, start_sentence_id, end_sentence_id,subString, event,operation) => {
+  popUp = (start_block_id, start_sentence_id, end_sentence_id, subString, event, operation) => {
     // let splitValue = this.handleSplitSentence(subString)
-    
+
 
     this.setState({
       operation_type: operation,
       openEl: true,
-      
+
       topValue: event.clientY - 4,
       leftValue: event.clientX - 2,
       selectedBlock: null,
@@ -128,15 +150,15 @@ class DocumentSource extends React.Component {
     this.props.handleBlur(id, workflowcode, saveData, prevValue, finalValue);
   };
   handleClose = () => {
-    
+
     this.setState({
       openDialog: false,
-      start_block_id:"",
-      start_sentence_id:'',
-      end_sentence_id:'',
+      start_block_id: "",
+      start_sentence_id: '',
+      end_sentence_id: '',
       operation_type: "",
       arrayClear: true,
-      selectedArray:[],
+      selectedArray: [],
       endSentence: "",
       startSentence: "",
       addSentence: false,
@@ -197,11 +219,11 @@ class DocumentSource extends React.Component {
     });
     return resultArray.join(" ");
   }
-  
+
   fetchSuggestions(srcText, targetTxt, tokenObject) {
     let targetVal = targetTxt
 
-    this.setState({ showSuggestions: true, autoCompleteText:null})
+    this.setState({ showSuggestions: true, autoCompleteText: null })
     const apiObj = new IntractiveApi(srcText, targetVal, { model_id: this.props.modelId }, true, true);
     this.props.APITransport(apiObj);
   }
@@ -211,12 +233,12 @@ class DocumentSource extends React.Component {
   }
 
   handleSuggestion(suggestion, value, src, tokenObject) {
-    this.setState({showSuggestions: false})
+    this.setState({ showSuggestions: false })
     this.props.handleSuggestion(suggestion, value)
     this.setState({ autoCompleteText: null, tokenObject })
 
     let targetVal = value.trim() + suggestion
-    setTimeout(()=>{
+    setTimeout(() => {
       this.setState({ showSuggestions: true })
 
     }, 50)
@@ -226,7 +248,7 @@ class DocumentSource extends React.Component {
   }
 
   handleDoubleClickTarget(event, id, text, pageDetails, block_id) {
-    this.setState({autoCompleteText: null})
+    this.setState({ autoCompleteText: null })
     this.props.handleDoubleClickTarget(event, id, text, pageDetails, block_id)
   }
 
@@ -240,7 +262,10 @@ class DocumentSource extends React.Component {
             yAxis = sentence.text_top + sourceSentence.page_no * sourceSentence.page_height;
             //const block_id = sentence.block_id;
             return (
-              <div>
+              <div id={sourceSentence.page_no + "@" + sentence.block_identifier}
+              ref={sourceSentence.page_no + "@" + sentence.block_identifier}
+              style={this.props.scrollId === sourceSentence.page_no + "@" + sentence.block_identifier ? { color: "blue", border: "2px dotted grey" } : {}}
+              >
                 {/* {this.props.tokenized ? */}
 
                 <BlockView
@@ -279,7 +304,7 @@ class DocumentSource extends React.Component {
                   handleSuggestionClose={this.handleSuggestionClose.bind(this)}
                   handleSuggestion={this.handleSuggestion.bind(this)}
                   showSuggestions={this.state.showSuggestions}
-                  popUp = {this.popUp.bind(this)}
+                  popUp={this.popUp.bind(this)}
                 />
               </div>
             );
@@ -298,17 +323,17 @@ class DocumentSource extends React.Component {
         {this.state.openEl && (
           <MenuItems
             isOpen={this.state.openEl}
-            splitValue= {this.state.splitValue}
+            splitValue={this.state.splitValue}
             topValue={this.state.topValue}
             leftValue={this.state.leftValue}
             anchorEl={this.state.anchorEl}
             operation_type={this.state.operation_type}
             handleClose={this.handleClose.bind(this)}
             handleDialog={this.handleDialogMessage.bind(this)}
-            
-            
+
+
             handleCheck={this.handleCheck.bind(this)}
-            
+
           />
         )}
 

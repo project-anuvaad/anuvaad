@@ -10,7 +10,7 @@ import Split from "@material-ui/icons/CallSplit";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import Checkbox from "@material-ui/core/Checkbox";
-//import ValidationIcon from "@material-ui/icons/SettingsEthernet";
+import ValidationIcon from "@material-ui/icons/SettingsEthernet";
 import AutoComplete from "../../../components/web/common/AutoComplete1";
 import IntractiveApi from "../../../../flux/actions/apis/intractive_translate";
 import { bindActionCreators } from "redux";
@@ -126,7 +126,7 @@ class Block extends Component {
       );
       this.props.APITransport(apiObj);
     } else {
-      this.setState({autoCompleteText: null, caretData: "" })
+      this.setState({ autoCompleteText: null, caretData: "" })
     }
 
   }
@@ -197,7 +197,7 @@ class Block extends Component {
       if ((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type !== "button") && !this.state.dontShowDialog) {
 
         this.props.getUpdatedBlock(this.props.selectedBlock, operation, this.state.editedText)
-    
+
         // this.props.handleDialogMessage(this.props.selectedBlock, "", "", operation, message, this.state.editedText)
       }
 
@@ -286,14 +286,16 @@ class Block extends Component {
               onBlur={(event) => { this.handleBlurCard(event, sentence.s_id) }}
 
             >
-              {/* <Tooltip title="Go to validation mode">
-                <ValidationIcon
+              <Tooltip title="Go to validation mode">
+                <ValidationIcon onClick={() => this.props.moveToValidationMode(this.props.pageNo, this.props.blockIdentifier, this.props.block_id)}
                   style={{ color: "#1C9AB7", cursor: "pointer" }}
                 />
-              </Tooltip> */}
-              <div style={{ width: "100%", paddingLeft: "10px" }} onClick={() => selectedBlock &&
-                sentence &&
-                sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}>
+              </Tooltip>
+              <div
+                style={{ width: "100%", paddingLeft: "10px" }}
+                onClick={() => selectedBlock &&
+                  sentence &&
+                  sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}>
                 <div
                   style={{ minHeight: "45px", padding: "5px", fontSize: "16px" }}
                 // onClick={() => this.props.handleSentenceClick(sentence)}

@@ -74,15 +74,10 @@ class Preview extends React.Component {
               }
             }
             else if(this.state.value===1&& sentence.sentence_index === parseInt(this.state.sentenceDetails.startNode.split("_")[1])){
-
-              
-              console.log(paragraph,this.state.value)
-              
               paragraph.tokenized_sentences[index+1].target = this.props.intractiveTrans.tgt;
               paragraph.tokenized_sentences[index+1].tagged_tgt = this.props.intractiveTrans.tagged_tgt;
               paragraph.tokenized_sentences[index+1].tagged_src = this.props.intractiveTrans.tagged_src;
               
-              console.log(paragraph)
             }
          return null;
          });

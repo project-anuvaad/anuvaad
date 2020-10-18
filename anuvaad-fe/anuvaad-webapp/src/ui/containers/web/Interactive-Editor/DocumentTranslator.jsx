@@ -33,32 +33,43 @@ class PdfFileEditor extends React.Component {
     };
   }
 
+  componentDidMount() {
+    if (this.props.scroll) {
+      if (this.refs[this.props.scroll]) {
+        this.refs[this.props.scroll].scrollIntoView({
+          behavior: "smooth",
+          inline: "end"
+        });
+      }
+    }
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (this.props.open && prevProps.open !== this.props.open) {
-      
-        this.props.sentences &&
-          Array.isArray(this.props.sentences) &&
-          this.props.sentences.length > 0 &&
-          this.props.sentences.map((element) => {
-            element &&
-              element.text_blocks &&
-              element.text_blocks.map((sentence) => {
-                sentence.tokenized_sentences.map((value, tokenIndex) => {
-                  if (value.s_id === this.state.SentenceOperationId) {
-                    this.setState({
-                      activeSentence: value,
-                      buttonStatus: "selected",
-                      updateToken: false,
-                      openDialog: false,
-                    });
-                  }
-                  return null;
-                });
+
+      this.props.sentences &&
+        Array.isArray(this.props.sentences) &&
+        this.props.sentences.length > 0 &&
+        this.props.sentences.map((element) => {
+          element &&
+            element.text_blocks &&
+            element.text_blocks.map((sentence) => {
+              sentence.tokenized_sentences.map((value, tokenIndex) => {
+                if (value.s_id === this.state.SentenceOperationId) {
+                  this.setState({
+                    activeSentence: value,
+                    buttonStatus: "selected",
+                    updateToken: false,
+                    openDialog: false,
+                  });
+                }
                 return null;
               });
-            return null;
-          });
-      
+              return null;
+            });
+          return null;
+        });
+
     }
 
     // if (prevState.activeSentence !== this.state.activeSentence) {
@@ -79,12 +90,6 @@ class PdfFileEditor extends React.Component {
 
     // }
 
-  }
-
-  updateSentence(text) {
-    this.setState({
-      editedText: text
-    })
   }
 
   handleSentenceClick(value, saveData, block, blockIdentifier) {
@@ -141,7 +146,7 @@ class PdfFileEditor extends React.Component {
         return true
       })
 
-      if(initialSentences && Array.isArray(initialSentences) && initialSentences.length>0) {
+      if (initialSentences && Array.isArray(initialSentences) && initialSentences.length > 0) {
         TELEMETRY.mergeSentencesEvent(initialSentences, finalSentence)
       }
 
@@ -161,8 +166,8 @@ class PdfFileEditor extends React.Component {
       TELEMETRY.splitSentencesEvent(data, [data.slice(0, this.state.sentence_index), data.slice(this.state.sentence_index)])
 
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
-    } 
-    else if(this.state.title === "Save"){
+    }
+    else if (this.state.title === "Save") {
       this.getUpdatedBlock(this.state.selected_block_id, this.state.operation_type, this.state.editedText)
     }
 
@@ -188,8 +193,8 @@ class PdfFileEditor extends React.Component {
     });
 
     setTimeout(() => {
-      this.setState({saveCancelled: false })
-  }, 50)
+      this.setState({ saveCancelled: false })
+    }, 50)
   };
 
   handleClick(value) {
@@ -250,6 +255,42 @@ class PdfFileEditor extends React.Component {
       this.setState({ dialogToken: false })
     }
   };
+
+  handleSentences(sentence, element) {
+    return sentence.tokenized_sentences.map((value, tokenIndex) => {
+      return <div ref={this.props.sentences.page_no}>
+        <Block
+          handleDialogMessage={this.handleDialogMessage.bind(this)}
+          sentence={value}
+          sen={sentence}
+          block_id={sentence.block_id}
+          handleClick={this.handleClick.bind(this)}
+          buttonStatus={this.state.buttonStatus}
+          pageNo={element.page_no}
+          modelId={this.props.modelId}
+          selectedBlock={this.state.activeSentence}
+          selectedTargetId={this.state.selectedTargetId}
+          handleSentenceClick={this.handleSentenceClick.bind(this)}
+          handleSourceChange={this.props.handleSourceChange}
+          tokenIndex={this.props.tokenIndex}
+          showTargetData={this.showTargetData.bind(this)}
+          handleEditorClick={this.handleEditorClick.bind(this)}
+          highlightId={this.state.highlightId}
+          saveUpdatedSentence={this.saveUpdatedSentence.bind(this)}
+          SentenceOperationId={this.state.SentenceOperationId}
+          blockIdentifier={sentence.block_identifier}
+          handleBlurClick={this.handleBlurClick.bind(this)}
+          dialogToken={this.state.dialogToken}
+          // updateSentence={this.updateSentence.bind(this)}
+          prevBlock={this.state.prevActiveState}
+          saveCancelled={this.state.saveCancelled}
+          getUpdatedBlock={this.getUpdatedBlock.bind(this)}
+          moveToValidationMode={this.props.moveToValidationMode}
+          scroll={this.props.scroll}
+        />
+      </div>
+    });
+  }
 
   render() {
     return (
@@ -323,9 +364,9 @@ class PdfFileEditor extends React.Component {
                               zIndex: 1000,
                             }}
                           />
-                         
+
                         </p>
-                        
+
                       }
                       endMessage={
                         <p style={{ textAlign: "center" }}>
@@ -336,36 +377,16 @@ class PdfFileEditor extends React.Component {
                     >
                       {this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
                         return element && element.text_blocks && element.text_blocks.map((sentence) => {
-                          return sentence.tokenized_sentences.map((value, tokenIndex) => {
-                            return <Block
-                              handleDialogMessage={this.handleDialogMessage.bind(this)}
-                              sentence={value}
-                              sen={sentence}
-                              block_id={sentence.block_id}
-                              handleClick={this.handleClick.bind(this)}
-                              buttonStatus={this.state.buttonStatus}
-                              pageNo={element.page_no}
-                              modelId={this.props.modelId}
-                              selectedBlock={this.state.activeSentence}
-                              selectedTargetId={this.state.selectedTargetId}
-                              handleSentenceClick={this.handleSentenceClick.bind(this)}
-                              handleSourceChange={this.props.handleSourceChange}
-                              tokenIndex={this.props.tokenIndex}
-                              showTargetData={this.showTargetData.bind(this)}
-                              handleEditorClick={this.handleEditorClick.bind(this)}
-                              highlightId={this.state.highlightId}
-                              saveUpdatedSentence={this.saveUpdatedSentence.bind(this)}
-                              SentenceOperationId={this.state.SentenceOperationId}
-                              blockIdentifier={sentence.block_identifier}
-                              handleBlurClick={this.handleBlurClick.bind(this)}
-                              dialogToken={this.state.dialogToken}
-                              updateSentence={this.updateSentence.bind(this)}
-                              prevBlock={this.state.prevActiveState}
-                              saveCancelled= {this.state.saveCancelled}
-                              getUpdatedBlock= {this.getUpdatedBlock.bind(this)}
-                            />
+                          return <div
+                            ref={element.page_no + "@" + sentence.block_identifier}
+                            id={element.page_no + "@" + sentence.block_identifier}
+                          // key={element.page_no + "@" + sentence.block_id}
+                          >
+                            {
+                              this.handleSentences(sentence, element)
+                            }
+                          </div>
 
-                          });
                         })
                       })}
                     </InfiniteScroll>
