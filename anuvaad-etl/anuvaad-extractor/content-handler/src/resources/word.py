@@ -50,7 +50,7 @@ class WordSearch(Resource):
             if body['word_locale'] == 'en':
                 result = wordRepo.search_english(body['word'])
             else:
-                result = wordRepo.search_vernacular(body['word'], body['target_locale'])
+                result = wordRepo.search_vernacular(body['word'], body['word_locale'])
 
             if result == None:
                 '''
@@ -61,6 +61,7 @@ class WordSearch(Resource):
                 log_info('checking google for the searched word ({})'.format(body['word']), AppContext.getContext())
 
                 input_word, translated_word, input_locale = translate.translate_text(body['target_locale'], body['word'])
+                log_info('google returned input ({}), translated ({})'.format(input_word, translated_word), AppContext.getContext())
                 if translated_word == None:
                     res = CustomResponse(Status.SUCCESS.value, None)
                     return res.getres()

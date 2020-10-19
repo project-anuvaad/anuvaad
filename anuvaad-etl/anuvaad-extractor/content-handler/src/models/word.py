@@ -3,10 +3,11 @@ from db import get_db
 import pymongo
 from anuvaad_auditor.loghandler import log_info, log_exception
 
+DB_SCHEMA_NAME  = 'dict_v1'
 
 class WordModel(object):
     def __init__(self):
-        collections = get_db()['dictionary']
+        collections = get_db()[DB_SCHEMA_NAME]
         try:
             collections.create_index([("name", pymongo.TEXT)], unique=True)
         except pymongo.errors.DuplicateKeyError as e:
@@ -16,7 +17,7 @@ class WordModel(object):
 
     def save(self, words):
         try:
-            collections = get_db()['dictionary']
+            collections = get_db()[DB_SCHEMA_NAME]
             results     = collections.insert_many(words, ordered=False)
             if len(words) == len(results.inserted_ids):
                 return True
@@ -29,7 +30,7 @@ class WordModel(object):
 
     def update_word(self, word):
         try:
-            collections = get_db()['dictionary']
+            collections = get_db()[DB_SCHEMA_NAME]
             results     = collections.update({'name': word['name']}, 
                                             {
                                                 '$set': word
@@ -42,6 +43,7 @@ class WordModel(object):
 
         except pymongo.errors.WriteError as e:
             log_info("some of the record has duplicates ",  AppContext.getContext())
+            log_exception("update_word : exception ",  AppContext.getContext(), e)
             return True
         except Exception as e:
             log_exception("db connection exception ",  AppContext.getContext(), e)
@@ -49,7 +51,7 @@ class WordModel(object):
 
     def search_source(self, word):
         try:
-            collections = get_db()['dictionary']
+            collections = get_db()[DB_SCHEMA_NAME]
             docs         = collections.find({'name': word})
             for doc in docs:
                 return normalize_bson_to_json(doc)
@@ -60,8 +62,7 @@ class WordModel(object):
 
     def search_target(self, word, locale):
         try:
-            collections = get_db()['dictionary']
-            # {'parallel_words': {$elemMatch: {'locale':'hi1', 'name': 'प्रथम दुःखद अनुभव'}}}
+            collections = get_db()[DB_SCHEMA_NAME]
             docs         = collections.find({'parallel_words': { '$elemMatch': {'locale': locale, 'name': word }} })
             for doc in docs:
                 return normalize_bson_to_json(doc)
@@ -72,8 +73,7 @@ class WordModel(object):
 
     def search_word(self, src_word, src_locale, tgt_locale):
         try:
-            collections = get_db()['dictionary']
-            # {'parallel_words': {$elemMatch: {'locale':'hi1', 'name': 'प्रथम दुःखद अनुभव'}}}
+            collections = get_db()[DB_SCHEMA_NAME]
             docs         = collections.find({'$or': [
                                                         {'$and': [{'name': src_word, 'locale': src_locale}, {'parallel_words': { '$elemMatch': {'locale': tgt_locale}}}]}, 
                                                         {'$and': [{'locale': tgt_locale}, {'parallel_words': { '$elemMatch': {'locale': src_locale, 'name': src_word }}}]}
