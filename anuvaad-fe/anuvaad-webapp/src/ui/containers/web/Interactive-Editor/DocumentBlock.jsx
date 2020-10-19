@@ -98,7 +98,7 @@ class DocumentBlock extends React.Component {
           {this.props.selectedSentence === value.block_id + "_" + this.props.page_no ? (
 
             <TextareaAutosize
-              multiline={true}
+              multiline="true"
               autoFocus={true}
               //value={this.state.value}
               style={{
