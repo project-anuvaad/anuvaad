@@ -13,6 +13,10 @@ class WordSaveResource(Resource):
         body        = request.json
 
         log_info('received request for WordSaveResource', AppContext.getContext())
+        if body == None:
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
+
         if 'words' not in body:
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
