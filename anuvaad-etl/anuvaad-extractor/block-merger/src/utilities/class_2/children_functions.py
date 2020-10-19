@@ -10,6 +10,9 @@ import src.utilities.app_context as app_context
 from src.utilities.class_2.break_block_condition_single_column import process_page_blocks as process_block_single_column
 from src.utilities.class_2.page_layout.double_column import get_column
 from src.utilities.class_2.page_layout.utils import collate_regions
+
+
+
 def doc_pre_processing(filename, base_dir, lang):
     '''
         Preprocessing on input pdf to get:

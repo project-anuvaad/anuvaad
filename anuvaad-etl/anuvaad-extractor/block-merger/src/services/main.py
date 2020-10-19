@@ -1,24 +1,20 @@
 from src.utilities.class_2  import children_functions
-import src.utilities.app_context as app_context
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
-from anuvaad_auditor.loghandler import log_error
 import src.utilities.app_context as app_context
 from src.services.preprocess import prepocess_pdf_regions
 from src.utilities.craft_pytorch.detect import detect_text
-from src.services import get_xml
 from src.services.ocr_text_utilities import tesseract_ocr
 from src.services.get_underline import get_underline
 from src.services.child_text_unify_to_parent import ChildTextUnify
 from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
-from src.utilities.class_2.break_block_condition_single_column import process_page_blocks as process_block_single_column
 from compose import compose
 import config
 
 def extract_images_and_text_regions(filename, base_dir,lang,page_layout):
     pdf_data , flags = children_functions.doc_pre_processing(filename,base_dir,lang)
-    flags['doc_class'] ='class_2'
+    #flags['doc_class'] ='class_1'
 
     if flags['doc_class'] == 'class_1':
         pass
@@ -59,7 +55,7 @@ def break_blocks(input):
 
     p_dfs = children_functions.breaK_into_paragraphs(pdf_data,flags)
     p_dfs = get_text_from_table_cells(pdf_data['table_dfs'], p_dfs)
-    p_dfs, line_dfs = get_underline(p_dfs, pdf_data['line_dfs'], app_context.application_context)
+    #p_dfs, line_dfs = get_underline(p_dfs, pdf_data['line_dfs'], app_context.application_context)
 
     text_merger = ChildTextUnify()
     p_dfs = text_merger.unify_child_text_blocks(p_dfs)
@@ -75,9 +71,7 @@ def generate_response(input):
     return  response
 
 
-
-
-def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR,page_layout='single_cloumn'):
+def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR,page_layout='single_column'):
     log_debug('Block merger starting processing {}'.format(app_context.application_context), app_context.application_context)
     try:
         doc_structure_compose = compose(generate_response,break_blocks,merge_vertically,merge_horizontally,extract_images_and_text_regions)

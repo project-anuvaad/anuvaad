@@ -149,8 +149,9 @@ def convert_to_in_df(craft_df):
     in_df['font_size'] = in_df['text_height']
     in_df['font_size_updated'] = in_df['text_height']
 
-    in_df = in_df.sort_values(by=['text_top'])
-    in_df = pd.DataFrame(sort_regions(in_df, []))
+    if len(in_df) > 0 :
+        in_df = in_df.sort_values(by=['text_top'])
+        in_df = pd.DataFrame(sort_regions(in_df, []))
 
     return  in_df
 
@@ -181,6 +182,7 @@ def detect_text(image_paths,text_threshold=args.text_threshold,low_text_threshol
             df.at[index,'x2']= int(poly[2]); df.at[index,'y2']= int(poly[3])
             df.at[index,'x3']= int(poly[4]); df.at[index,'y3']= int(poly[5])
             df.at[index,'x4']= int(poly[6]); df.at[index,'y4']= int(poly[7])
+
         in_df = convert_to_in_df(df)
         in_dfs.append(in_df)
 
