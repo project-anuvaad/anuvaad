@@ -166,4 +166,4 @@ class BlockTranslationService:
                             s_index = k
                             break
                     block_translate_input["input"]["textBlocks"][b_index]["tokenized_sentences"][s_index] = translation
-        return {"blocks": block_translate_input["input"]["textBlocks"], "workflowCode": block_translate_input["input"]["workflowCode"]}
+        return {"blocks": block_translate_input["input"]["textBlocks"], "workflowCode": block_translate_input["workflowCode"]}
