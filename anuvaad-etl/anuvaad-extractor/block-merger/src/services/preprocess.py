@@ -154,11 +154,11 @@ def prepocess_pdf_regions(pdf_data,flags, config =preprocess_config ):
         log_info('Footers found {} '.format(len(footer_region)), app_context.application_context)
         log_info('Headers found {}'.format(len(header_region)),app_context.application_context)
 
-        header_region, footer_region
         pdf_data['header_region'], pdf_data['footer_region'] = header_region, footer_region
         return pdf_data
     except Exception as e:
         log_error('Error in finding header/footer ' + e ,app_context.application_context ,e)
+        pdf_data['header_region'], pdf_data['footer_region'] = pd.DataFrame(),pd.DataFrame()
         return pdf_data
 
 

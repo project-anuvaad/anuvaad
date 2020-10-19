@@ -36,7 +36,7 @@ def doc_pre_processing(filename, base_dir, lang):
     pdf_image_width = image.shape[1]
 
     text_blocks_count = check_text(xml_dfs)
-    if text_blocks_count == 0:
+    if (text_blocks_count == 0) or (lang in config.CLASS_2_LANG):
         log_info("DocumentStructure : looks like the file is either empty or scanned", app_context.application_context)
         flags['doc_class'] = 'class_2'
     else:

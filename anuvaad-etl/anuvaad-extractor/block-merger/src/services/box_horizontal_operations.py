@@ -10,6 +10,8 @@ def merge_horizontal_blocks(in_df, configs, debug=False):
 
     connections = []
     index_grams = get_ngram(list(df.index.values), window_size=2)
+    #This fails whten in_df contains only one node
+    #print(index_grams,'index_gramsddddddddddddd')
 
     for index_gram in index_grams:
         if are_hlines(df, configs, index_gram[0], index_gram[1], debug=debug):

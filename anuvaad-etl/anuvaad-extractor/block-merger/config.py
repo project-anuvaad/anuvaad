@@ -97,5 +97,6 @@ CROP_CONFIG = {
     'ma':{'top':5, 'bottom':5,'right':5,'left':5 }
 }
 
-#CRAFT_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"
-CRAFT_MODEL_PATH='/home/dhiraj/Documents/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
+CLASS_2_LANG = ['ta']
+
+CRAFT_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"
