@@ -1,0 +1,2000 @@
+{
+    "count": 8,
+    "data": [
+      {
+        "images": [
+          {
+            "attrib": "IMAGE",
+            "base64": "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",
+            "block_identifier": "69886447-9e92-4222-aa0b-36435a6936cf",
+            "data_type": "images",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "image_id": 0,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text_height": 1263,
+            "text_left": 0,
+            "text_top": 0,
+            "text_width": 893
+          }
+        ],
+        "lines": [
+          {
+            "attrib": "LINE",
+            "block_identifier": "050c1f0c-04ec-46f1-ab41-229a6a6cac46",
+            "data_type": "lines",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "job_id": "",
+            "line_id": 0,
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text_height": 2,
+            "text_left": 151,
+            "text_top": 1130,
+            "text_width": 168
+          }
+        ],
+        "page_height": 1263,
+        "page_no": 1,
+        "page_width": 892,
+        "text_blocks": [
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-0",
+            "block_identifier": "fdc81bcc-84c8-41b4-9905-ecb732484689",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "REPORTABLE",
+            "text_height": 21,
+            "text_left": 688,
+            "text_top": 108,
+            "text_width": 130,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁Report', 'able']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-0",
+                "output_subwords": "['▁रिपोर्ट', '▁योग्य']",
+                "pred_score": -1.7219972610473633,
+                "s_id": "0_0_0",
+                "sentence_id": "0_0_0",
+                "src": "REPORTABLE",
+                "tagged_src": "REPORTABLE",
+                "tagged_tgt": "रिपोर्ट योग्य",
+                "tgt": "रिपोर्ट योग्य"
+              }
+            ],
+            "underline": 1
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-1",
+            "block_identifier": "119f0135-b3fe-450c-978d-b8649d782cb1",
+            "children": [
+              {
+                "attrib": "BOLD",
+                "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-1-0",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "IN THE SUPREME COURT OF INDIA",
+                "text_height": 21,
+                "text_left": 313,
+                "text_top": 150,
+                "text_width": 343
+              },
+              {
+                "attrib": "BOLD",
+                "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-1-1",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "CIVIL APPELLATE JURISDICTION",
+                "text_height": 21,
+                "text_left": 326,
+                "text_top": 192,
+                "text_width": 316
+              }
+            ],
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": " IN THE SUPREME COURT OF INDIA CIVIL APPELLATE JURISDICTION",
+            "text_height": 63,
+            "text_left": 313,
+            "text_top": 150,
+            "text_width": 343,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁In', '▁The', '▁Supreme', '▁Court', '▁Of', '▁India', '▁Civil', '▁Appellate', '▁Jurisdiction']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-1",
+                "output_subwords": "['▁भारत', '▁के', '▁सर्वोच्च', '▁न्यायालय', '▁में', '▁दीवानी', '▁अपीलीय', '▁क्षेत्राधिकार']",
+                "pred_score": -2.3263444900512695,
+                "s_id": "0_1_0",
+                "sentence_id": "0_1_0",
+                "src": "IN THE SUPREME COURT OF INDIA CIVIL APPELLATE JURISDICTION",
+                "tagged_src": "IN THE SUPREME COURT OF INDIA CIVIL APPELLATE JURISDICTION",
+                "tagged_tgt": "भारत के सर्वोच्च न्यायालय में दीवानी अपीलीय क्षेत्राधिकार",
+                "tgt": "भारत के सर्वोच्च न्यायालय में दीवानी अपीलीय क्षेत्राधिकार"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-2",
+            "block_identifier": "675d3428-f63d-4f1b-98ba-66809e9b5830",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "CIVIL APPEAL NO. 136 OF 2020",
+            "text_height": 21,
+            "text_left": 328,
+            "text_top": 255,
+            "text_width": 313,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁CIVIL', '▁APP', 'EAL', '▁NO', '▁.', '▁', 'NnUuMm', '१', '▁OF', '▁', 'NnUuMm', '०']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-2",
+                "output_subwords": "['▁व्यवहार', '▁अपील', '▁सं', 'क्या', '▁', 'NnUuMm', '१', '▁/', '▁', 'NnUuMm', '०']",
+                "pred_score": -2.1422576904296875,
+                "s_id": "0_2_0",
+                "sentence_id": "0_2_0",
+                "src": "CIVIL APPEAL NO. 136 OF 2020",
+                "tagged_src": "CIVIL APPEAL NO. NnUuMm१ OF NnUuMm०",
+                "tagged_tgt": "व्यवहार अपील संक्या NnUuMm१/NnUuMm०",
+                "tgt": "व्यवहार अपील संक्या 136/2020"
+              }
+            ],
+            "underline": 1
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-3",
+            "block_identifier": "37517a13-bc80-4f94-a453-fdb44bd99574",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "(ARISING OUT OF SLP (CIVIL) NO. 7243 OF 2017)",
+            "text_height": 21,
+            "text_left": 239,
+            "text_top": 276,
+            "text_width": 491,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁(', '▁A', 'RI', 'S', 'ING', '▁O', 'UT', '▁OF', '▁SLP', '▁(', '▁CIVIL', '▁)', '▁NO', '▁.', '▁', 'NnUuMm', '०', '▁OF', '▁', 'NnUuMm', '१', '▁)']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-3",
+                "output_subwords": "['▁(', '▁SLP', '▁(', '▁दीवानी', '▁)', '▁सं', '▁.', '▁', 'NnUuMm', '०', '▁ऑफ', '▁', 'NnUuMm', '१', '▁)']",
+                "pred_score": -4.856235504150391,
+                "s_id": "0_3_0",
+                "sentence_id": "0_3_0",
+                "src": "(ARISING OUT OF SLP (CIVIL) NO. 7243 OF 2017)",
+                "tagged_src": "(ARISING OUT OF SLP (CIVIL) NO. NnUuMm० OF NnUuMm१)",
+                "tagged_tgt": "(SLP (दीवानी) सं. NnUuMm० ऑफ NnUuMm१)",
+                "tgt": "(SLP (दीवानी) सं. 7243 ऑफ 2017)"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-4",
+            "block_identifier": "32476a87-365b-4568-a969-5122dc265ca8",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "MOHD. RASHID",
+            "text_height": 21,
+            "text_left": 152,
+            "text_top": 339,
+            "text_width": 137,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁Mohd', '▁.', '▁Rashid']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-4",
+                "output_subwords": "['▁मोहम्मद', '▁।', '▁Rashid']",
+                "pred_score": -0.6299009323120117,
+                "s_id": "0_4_0",
+                "sentence_id": "0_4_0",
+                "src": "MOHD. RASHID",
+                "tagged_src": "MOHD. RASHID",
+                "tagged_tgt": "मोहम्मद। Rashid",
+                "tgt": "मोहम्मद। Rashid"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-5",
+            "block_identifier": "04aaf678-d279-4faa-a994-1b5cc710c78b",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": ".....APPELLANT(S)",
+            "text_height": 21,
+            "text_left": 667,
+            "text_top": 339,
+            "text_width": 157,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁......', '▁Appellant', '▁(', '▁S', '▁)']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-5",
+                "output_subwords": "['▁.', '▁.', '▁.', '▁.', '▁.', '▁.', '▁अपीलार्थी', '▁(', '▁गण', '▁)']",
+                "pred_score": -3.191617012023926,
+                "s_id": "0_5_0",
+                "sentence_id": "0_5_0",
+                "src": "......APPELLANT(S)",
+                "tagged_src": "......APPELLANT(S)",
+                "tagged_tgt": "...... अपीलार्थी (गण)",
+                "tgt": "...... अपीलार्थी (गण)"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-6",
+            "block_identifier": "9fdf614b-fc46-4f82-991a-a9ef18f3d6c2",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "VERSUS",
+            "text_height": 21,
+            "text_left": 485,
+            "text_top": 381,
+            "text_width": 72,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁Versus']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-6",
+                "output_subwords": "['▁Versus']",
+                "pred_score": -1.6606550216674805,
+                "s_id": "0_6_0",
+                "sentence_id": "0_6_0",
+                "src": "VERSUS",
+                "tagged_src": "VERSUS",
+                "tagged_tgt": " Versus",
+                "tgt": "Versus"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-7",
+            "block_identifier": "ba7db23f-8b4e-4eb5-b0fb-a8e2ce87e84d",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "THE DIRECTOR, LOCAL BODIES, ",
+            "text_height": 21,
+            "text_left": 152,
+            "text_top": 423,
+            "text_width": 290,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁The', '▁Director', '▁,', '▁Local', '▁Bodies', '▁,']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-7",
+                "output_subwords": "['▁निदेशक', '▁,', '▁स्थानीय', '▁निकाय', '▁,']",
+                "pred_score": -0.5662708282470703,
+                "s_id": "0_7_0",
+                "sentence_id": "0_7_0",
+                "src": "THE DIRECTOR, LOCAL BODIES,",
+                "tagged_src": "THE DIRECTOR, LOCAL BODIES,",
+                "tagged_tgt": "निदेशक, स्थानीय निकाय,",
+                "tgt": "निदेशक, स्थानीय निकाय,"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-8",
+            "block_identifier": "7f5fdb1e-71ef-48bc-b5dd-e93f1375f3b3",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "NEW SECRETARIAT & ORS.",
+            "text_height": 21,
+            "text_left": 152,
+            "text_top": 444,
+            "text_width": 238,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁New', '▁Secretariat', '▁&', 'amp', ';', '▁Ors', '▁.']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-8",
+                "output_subwords": "['▁नया', '▁सचिवालय', '▁और', '▁ओआरएस', '▁।']",
+                "pred_score": -1.9980058670043945,
+                "s_id": "0_8_0",
+                "sentence_id": "0_8_0",
+                "src": "NEW SECRETARIAT & ORS.",
+                "tagged_src": "NEW SECRETARIAT & ORS.",
+                "tagged_tgt": "नया सचिवालय और ओआरएस।",
+                "tgt": "नया सचिवालय और ओआरएस।"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-9",
+            "block_identifier": "6594fd08-628a-46a4-aff9-9e826577cb2d",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": ".....RESPONDENT(S)",
+            "text_height": 21,
+            "text_left": 646,
+            "text_top": 444,
+            "text_width": 177,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁......', '▁Respondent', '▁(', '▁S', '▁)']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-9",
+                "output_subwords": "['▁.', '▁.', '▁.', '▁.', '▁.', '▁प्रतिवादी', '▁(', '▁एस', '▁)']",
+                "pred_score": -2.60382080078125,
+                "s_id": "0_9_0",
+                "sentence_id": "0_9_0",
+                "src": "......RESPONDENT(S)",
+                "tagged_src": "......RESPONDENT(S)",
+                "tagged_tgt": "..... प्रतिवादी (एस)",
+                "tgt": "..... प्रतिवादी (एस)"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-10",
+            "block_identifier": "6fc7f273-974f-4bbe-9eeb-fa53b3d4b92a",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "W I T H",
+            "text_height": 21,
+            "text_left": 448,
+            "text_top": 486,
+            "text_width": 73,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁W', '▁I', '▁T', '▁H']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-10",
+                "output_subwords": "['▁डब्ल्यू', '▁आई', '▁टी', '▁एच']",
+                "pred_score": -2.427474021911621,
+                "s_id": "0_10_0",
+                "sentence_id": "0_10_0",
+                "src": "W I T H",
+                "tagged_src": "W I T H",
+                "tagged_tgt": "डब्ल्यू आई टी एच",
+                "tgt": "डब्ल्यू आई टी एच"
+              }
+            ],
+            "underline": 1
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-11",
+            "block_identifier": "0575055e-8653-48c8-8bc4-d704460e60d8",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "CIVIL APPEAL NO. 137 OF 2020",
+            "text_height": 21,
+            "text_left": 328,
+            "text_top": 528,
+            "text_width": 313,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁CIVIL', '▁APP', 'EAL', '▁NO', '▁.', '▁', 'NnUuMm', '१', '▁OF', '▁', 'NnUuMm', '०']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-11",
+                "output_subwords": "['▁व्यवहार', '▁अपील', '▁सं', 'क्या', '▁', 'NnUuMm', '१', '▁/', '▁', 'NnUuMm', '०']",
+                "pred_score": -2.1422576904296875,
+                "s_id": "0_11_0",
+                "sentence_id": "0_11_0",
+                "src": "CIVIL APPEAL NO. 137 OF 2020",
+                "tagged_src": "CIVIL APPEAL NO. NnUuMm१ OF NnUuMm०",
+                "tagged_tgt": "व्यवहार अपील संक्या NnUuMm१/NnUuMm०",
+                "tgt": "व्यवहार अपील संक्या 137/2020"
+              }
+            ],
+            "underline": 1
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-12",
+            "block_identifier": "1639ccd4-a54d-4119-9a03-646b58e69123",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "(ARISING OUT OF SLP (CIVIL) NO. 19912 OF 2017)",
+            "text_height": 21,
+            "text_left": 233,
+            "text_top": 549,
+            "text_width": 503,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁(', '▁A', 'RI', 'S', 'ING', '▁O', 'UT', '▁OF', '▁SLP', '▁(', '▁CIVIL', '▁)', '▁NO', '▁.', '▁', 'NnUuMm', '०', '▁OF', '▁', 'NnUuMm', '१', '▁)']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-12",
+                "output_subwords": "['▁(', '▁SLP', '▁(', '▁दीवानी', '▁)', '▁सं', '▁.', '▁', 'NnUuMm', '०', '▁ऑफ', '▁', 'NnUuMm', '१', '▁)']",
+                "pred_score": -4.856235504150391,
+                "s_id": "0_12_0",
+                "sentence_id": "0_12_0",
+                "src": "(ARISING OUT OF SLP (CIVIL) NO. 19912 OF 2017)",
+                "tagged_src": "(ARISING OUT OF SLP (CIVIL) NO. NnUuMm० OF NnUuMm१)",
+                "tagged_tgt": "(SLP (दीवानी) सं. NnUuMm० ऑफ NnUuMm१)",
+                "tgt": "(SLP (दीवानी) सं. 19912 ऑफ 2017)"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": "BOLD",
+            "avg_line_height": 28,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-13",
+            "block_identifier": "ac506af3-0cbc-4f00-97f9-686f28b7cf07",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 24,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "J U D G M E N T",
+            "text_height": 28,
+            "text_left": 383,
+            "text_top": 640,
+            "text_width": 203,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁J', '▁U', '▁D', '▁G', '▁M', '▁E', '▁N', '▁T']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-13",
+                "output_subwords": "['▁निर्णय']",
+                "pred_score": -3.4197893142700195,
+                "s_id": "0_13_0",
+                "sentence_id": "0_13_0",
+                "src": "J U D G M E N T",
+                "tagged_src": "J U D G M E N T",
+                "tagged_tgt": "निर्णय",
+                "tgt": "निर्णय"
+              }
+            ],
+            "underline": 1
+          },
+          {
+            "attrib": "BOLD",
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-14",
+            "block_identifier": "51afebd8-a96f-4075-86b1-e99f62543327",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "HEMANT GUPTA, J.",
+            "text_height": 21,
+            "text_left": 152,
+            "text_top": 710,
+            "text_width": 187,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁Hemant', '▁Gupta', '▁,', '▁J', '.']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-14",
+                "output_subwords": "['▁हेमंत', '▁गुप्ता', '▁,', '▁जे', '▁.']",
+                "pred_score": -0.3171672821044922,
+                "s_id": "0_14_0",
+                "sentence_id": "0_14_0",
+                "src": "HEMANT GUPTA, J.",
+                "tagged_src": "HEMANT GUPTA, J.",
+                "tagged_tgt": "हेमंत गुप्ता, जे.",
+                "tgt": "हेमंत गुप्ता, जे."
+              }
+            ],
+            "underline": 1
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15",
+            "block_identifier": "01ec5edf-eab7-465c-9777-ae5c0c425a23",
+            "children": [
+              {
+                "attrib": null,
+                "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15-0",
+                "children": [
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15-0-0",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "1.",
+                    "text_height": 21,
+                    "text_left": 152,
+                    "text_top": 752,
+                    "text_width": 17
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15-0-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "The candidates for direct recruitment to the posts of Administrative",
+                    "text_height": 21,
+                    "text_left": 206,
+                    "text_top": 752,
+                    "text_width": 611
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "1. The candidates for direct recruitment to the posts of Administrative",
+                "text_height": 21,
+                "text_left": 152,
+                "text_top": 752,
+                "text_width": 665
+              },
+              {
+                "attrib": null,
+                "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15-1",
+                "children": [
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15-1-0",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "Officer/Assistant Assessor and Collector",
+                    "text_height": 21,
+                    "text_left": 206,
+                    "text_top": 794,
+                    "text_width": 362
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15-1-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 10,
+                    "text": "1",
+                    "text_height": 12,
+                    "text_left": 568,
+                    "text_top": 794,
+                    "text_width": 7
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15-1-2",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": " are in appeals before this",
+                    "text_height": 21,
+                    "text_left": 575,
+                    "text_top": 794,
+                    "text_width": 242
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "Officer/Assistant Assessor and Collector 1  are in appeals before this",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 794,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15-2",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "Court directed against an order passed by the High Court of Delhi",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 836,
+                "text_width": 611
+              },
+              {
+                "attrib": null,
+                "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15-3",
+                "children": [
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15-3-0",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "on 1",
+                    "text_height": 21,
+                    "text_left": 206,
+                    "text_top": 878,
+                    "text_width": 39
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15-3-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 10,
+                    "text": "st",
+                    "text_height": 12,
+                    "text_left": 245,
+                    "text_top": 878,
+                    "text_width": 10
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-15-3-2",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": " September, 2016.",
+                    "text_height": 21,
+                    "text_left": 255,
+                    "text_top": 878,
+                    "text_width": 168
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "on 1 st  September, 2016.",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 878,
+                "text_width": 217
+              }
+            ],
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": " 1. The candidates for direct recruitment to the posts of Administrative Officer/Assistant Assessor and Collector 1  are in appeals before this Court directed against an order passed by the High Court of Delhi on 1 st  September, 2016.",
+            "text_height": 147,
+            "text_left": 152,
+            "text_top": 752,
+            "text_width": 665,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁The', '▁candidates', '▁for', '▁direct', '▁recruitment', '▁to', '▁the', '▁posts', '▁of', '▁Administrative', '▁Officer', '▁/', '▁Assistant', '▁Ass', 'essor', '▁and', '▁Collector', '▁', 'NnUuMm', '१', '▁are', '▁in', '▁appeals', '▁before', '▁this', '▁Court', '▁directed', '▁against', '▁an', '▁order', '▁passed', '▁by', '▁the', '▁High', '▁Court', '▁of', '▁Delhi', '▁on', '▁', 'NnUuMm', '२', '▁st', '▁September', '▁,', '▁', 'NnUuMm', '०', '▁.']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-15",
+                "output_subwords": "['▁प्रशासनिक', '▁अधिकारी', '▁/', '▁सहायक', '▁अधिकारी', '▁और', '▁कलेक्टर', '▁', 'NnUuMm', '१', '▁के', '▁पदों', '▁पर', '▁सीधी', '▁भर्ती', '▁के', '▁लिए', '▁उम्मीदवार', '▁', 'NnUuMm', '२', '▁सितंबर', '▁,', '▁', 'NnUuMm', '०', '▁को', '▁दिल्ली', '▁उच्च', '▁न्यायालय', '▁द्वारा', '▁पारित', '▁एक', '▁आदेश', '▁के', '▁खिलाफ', '▁निर्देश', '▁देने', '▁से', '▁पहले', '▁अपील', '▁में', '▁हैं', '▁।']",
+                "pred_score": -9.699209213256836,
+                "s_id": "0_15_0",
+                "sentence_id": "0_15_0",
+                "src": "1. The candidates for direct recruitment to the posts of Administrative Officer/Assistant Assessor and Collector 1  are in appeals before this Court directed against an order passed by the High Court of Delhi on 1 st  September, 2016.",
+                "tagged_src": "1. The candidates for direct recruitment to the posts of Administrative Officer/Assistant Assessor and Collector NnUuMm१ are in appeals before this Court directed against an order passed by the High Court of Delhi on NnUuMm२ st September, NnUuMm०.",
+                "tagged_tgt": "1. प्रशासनिक अधिकारी/सहायक अधिकारी और कलेक्टर NnUuMm१ के पदों पर सीधी भर्ती के लिए उम्मीदवार NnUuMm२ सितंबर, NnUuMm० को दिल्ली उच्च न्यायालय द्वारा पारित एक आदेश के खिलाफ निर्देश देने से पहले अपील में हैं।",
+                "tgt": "1. प्रशासनिक अधिकारी/सहायक अधिकारी और कलेक्टर 1 के पदों पर सीधी भर्ती के लिए उम्मीदवार 1 सितंबर, 2016 को दिल्ली उच्च न्यायालय द्वारा पारित एक आदेश के खिलाफ निर्देश देने से पहले अपील में हैं।"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "has_sibling":true,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16",
+            "block_identifier": "15c62ded-83e4-4691-9118-39ba4d15582a",
+            "children": [
+              {
+                "attrib": null,
+                "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16-0",
+                "children": [
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16-0-0",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "2.",
+                    "text_height": 21,
+                    "text_left": 152,
+                    "text_top": 939,
+                    "text_width": 17
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16-0-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "The   candidates   who   were   initially   appointed   as   Lower   Division",
+                    "text_height": 21,
+                    "text_left": 206,
+                    "text_top": 939,
+                    "text_width": 611
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "2. The   candidates   who   were   initially   appointed   as   Lower   Division",
+                "text_height": 21,
+                "text_left": 152,
+                "text_top": 939,
+                "text_width": 665
+              },
+              {
+                "attrib": "",
+                "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16-1",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "Clerks and promoted as Upper Division Clerks/Head Clerks invoked",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 981,
+                "text_width": 611
+              },
+              {
+                "attrib": null,
+                "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16-2",
+                "children": [
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16-2-0",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "the jurisdiction of the Central Administrative Tribunal",
+                    "text_height": 21,
+                    "text_left": 206,
+                    "text_top": 1023,
+                    "text_width": 492
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16-2-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 10,
+                    "text": "2",
+                    "text_height": 12,
+                    "text_left": 698,
+                    "text_top": 1023,
+                    "text_width": 7
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16-2-2",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "  challenging",
+                    "text_height": 21,
+                    "text_left": 705,
+                    "text_top": 1023,
+                    "text_width": 112
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "the jurisdiction of the Central Administrative Tribunal 2   challenging",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 1023,
+                "text_width": 611
+              },
+              {
+                "attrib": null,
+                "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16-3",
+                "children": [
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16-3-0",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "Advertisement No. 3 of 2013 dated 12",
+                    "text_height": 21,
+                    "text_left": 206,
+                    "text_top": 1065,
+                    "text_width": 348
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16-3-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 10,
+                    "text": "th",
+                    "text_height": 12,
+                    "text_left": 554,
+                    "text_top": 1065,
+                    "text_width": 11
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16-3-2",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": " September, 2013 whereby,",
+                    "text_height": 21,
+                    "text_left": 565,
+                    "text_top": 1065,
+                    "text_width": 252
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "Advertisement No. 3 of 2013 dated 12 th  September, 2013 whereby,",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 1065,
+                "text_width": 611
+              }
+            ],
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": " 2. The   candidates   who   were   initially   appointed   as   Lower   Division Clerks and promoted as Upper Division Clerks/Head Clerks invoked the jurisdiction of the Central Administrative Tribunal 2   challenging Advertisement No. 3 of 2013 dated 12 th  September, 2013 whereby,",
+            "text_height": 147,
+            "text_left": 152,
+            "text_top": 939,
+            "text_width": 665,
+            "tokenized_sentences": [
+              
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 16,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-17",
+            "block_identifier": "7a3c9fb7-da78-47dc-a042-68e8764df70a",
+            "children": [
+              {
+                "attrib": null,
+                "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-17-0",
+                "children": [
+                  {
+                    "attrib": "SUPERSCRIPT",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-17-0-0",
+                    "font_color": "#000009",
+                    "font_family": "LiberationSerif",
+                    "font_size": 15,
+                    "text": "1",
+                    "text_height": 17,
+                    "text_left": 152,
+                    "text_top": 1136,
+                    "text_width": 8
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-17-0-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 13,
+                    "text": " for short, ‘posts in question’",
+                    "text_height": 16,
+                    "text_left": 177,
+                    "text_top": 1137,
+                    "text_width": 194
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 13,
+                "text": "1  for short, ‘posts in question’",
+                "text_height": 17,
+                "text_left": 152,
+                "text_top": 1136,
+                "text_width": 219
+              },
+              {
+                "attrib": null,
+                "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-17-1",
+                "children": [
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-17-1-0",
+                    "font_color": "#000009",
+                    "font_family": "LiberationSerif",
+                    "font_size": 15,
+                    "text": "2",
+                    "text_height": 17,
+                    "text_left": 152,
+                    "text_top": 1154,
+                    "text_width": 8
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-17-1-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 13,
+                    "text": " for short, ‘Tribunal’",
+                    "text_height": 16,
+                    "text_left": 177,
+                    "text_top": 1154,
+                    "text_width": 132
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 13,
+                "text": "2  for short, ‘Tribunal’",
+                "text_height": 16,
+                "text_left": 152,
+                "text_top": 1154,
+                "text_width": 157
+              }
+            ],
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 13,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "  for short, ‘posts in question’ 2  for short, ‘Tribunal’",
+            "text_height": 34,
+            "text_left": 152,
+            "text_top": 1136,
+            "text_width": 219,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁for', '▁short', '▁,', '▁', '‘', '▁posts', '▁in', '▁question', '▁’', '▁', 'NnUuMm', '०', '▁for', '▁short', '▁,', '▁', '‘', '▁Tribunal', '▁’']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-17",
+                "output_subwords": "['▁संक्षेप', '▁में', '▁,', '▁संक्षेप', '▁में', \"▁'\", '▁प्रश्न', '▁में', '▁पद', \"▁'\", '▁,', \"▁'\", '▁अधिकरण', \"▁'\", '▁के', '▁लिए']",
+                "pred_score": -7.6234517097473145,
+                "s_id": "0_17_0",
+                "sentence_id": "0_17_0",
+                "src": "for short, ‘posts in question’ 2  for short, ‘Tribunal’",
+                "tagged_src": "for short, ‘posts in question’ NnUuMm० for short, ‘Tribunal’",
+                "tagged_tgt": "संक्षेप में, संक्षेप में 'प्रश्न में पद', 'अधिकरण' के लिए",
+                "tgt": "संक्षेप में, संक्षेप में 'प्रश्न में पद', 'अधिकरण' के लिए"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": "FOOTER",
+            "avg_line_height": 17,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-18",
+            "block_identifier": "df39fd7c-b844-417f-9055-8cb62d94c51a",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "LiberationSans",
+            "font_size": 15,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 1,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "1",
+            "text_height": 17,
+            "text_left": 808,
+            "text_top": 1192,
+            "text_width": 8,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-18",
+                "output_subwords": "",
+                "pred_score": 1,
+                "s_id": "0_18_0",
+                "sentence_id": "0_18_0",
+                "src": "1",
+                "tagged_src": "1",
+                "tagged_tgt": "1",
+                "tgt": "1"
+              }
+            ],
+            "underline": 0
+          }
+        ]
+      },
+      {
+        "images": [
+          {
+            "attrib": "IMAGE",
+            "base64": "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",
+            "block_identifier": "662fefe5-636f-4ca6-9b88-6f80058f3ed5",
+            "data_type": "images",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "image_id": 0,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 2,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text_height": 1263,
+            "text_left": 0,
+            "text_top": 0,
+            "text_width": 893
+          }
+        ],
+        "lines": [
+          {
+            "attrib": "LINE",
+            "block_identifier": "3547a824-446b-4871-a387-6ee5751b3bad",
+            "data_type": "lines",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "job_id": "",
+            "line_id": 0,
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 2,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text_height": 2,
+            "text_left": 151,
+            "text_top": 1130,
+            "text_width": 168
+          }
+        ],
+        "page_height": 1263,
+        "page_no": 2,
+        "page_width": 892,
+        "text_blocks": [
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "has_sibling":true,
+            "block_id": "c89c78a4-fca0-11ea-affc-02420a0001c1-16",
+            "block_identifier": "d69cafaf-131d-464e-9135-4f59ca3ddda6",
+            "children": [
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-0",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "the respondents set in process to fill up the posts advertised by",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 108,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-1",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "way of direct recruitment.  The argument was that the Recruitment",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 150,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-2",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "Regulations   for   the   post   of   Administrative   Officer/Assistant",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 192,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-3",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "Assessor and  Collector in North, South and East Delhi Municipal",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 234,
+                "text_width": 611
+              },
+              {
+                "attrib": null,
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-4",
+                "children": [
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-4-0",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "Corporations, 2013",
+                    "text_height": 21,
+                    "text_left": 206,
+                    "text_top": 276,
+                    "text_width": 175
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-4-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 10,
+                    "text": "3",
+                    "text_height": 12,
+                    "text_left": 381,
+                    "text_top": 276,
+                    "text_width": 7
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-4-2",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "  contemplate that the vacancies for the posts",
+                    "text_height": 21,
+                    "text_left": 388,
+                    "text_top": 276,
+                    "text_width": 429
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "Corporations, 2013 3   contemplate that the vacancies for the posts",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 276,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-5",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "in question are to be filled up by promotion failing which by direct",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 318,
+                "text_width": 610
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-6",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "recruitment.     It   was   thus   alleged   that   without   resorting   to",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 360,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-7",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "promotion by convening meeting of the Departmental Promotion",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 402,
+                "text_width": 611
+              },
+              {
+                "attrib": null,
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-8",
+                "children": [
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-8-0",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "Committee",
+                    "text_height": 21,
+                    "text_left": 206,
+                    "text_top": 444,
+                    "text_width": 100
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-8-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 10,
+                    "text": "4",
+                    "text_height": 12,
+                    "text_left": 305,
+                    "text_top": 444,
+                    "text_width": 7
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-8-2",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": ", the alternative process of direct recruitment cannot",
+                    "text_height": 21,
+                    "text_left": 312,
+                    "text_top": 444,
+                    "text_width": 505
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "Committee 4 , the alternative process of direct recruitment cannot",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 444,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-9",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "be resorted to.  The said Original Application was dismissed by the",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 486,
+                "text_width": 611
+              },
+              {
+                "attrib": null,
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-10",
+                "children": [
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-10-0",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "Tribunal   on   28",
+                    "text_height": 21,
+                    "text_left": 206,
+                    "text_top": 528,
+                    "text_width": 141
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-10-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 10,
+                    "text": "th",
+                    "text_height": 12,
+                    "text_left": 347,
+                    "text_top": 528,
+                    "text_width": 11
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-10-2",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "  May,   2015   by   observing   that   the   recruitment",
+                    "text_height": 21,
+                    "text_left": 358,
+                    "text_top": 528,
+                    "text_width": 459
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "Tribunal   on   28 th   May,   2015   by   observing   that   the   recruitment",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 528,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-11",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "process   is   not   against   the   constitutional   provisions   but   the",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 570,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-12",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "promotion must also not be tempered with.   In the writ petition",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 612,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-13",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "directed   against   such   order,   the   High   Court   held   that   the",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 654,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-14",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "respondents have failed to comply with the Recruitment Rules and",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 696,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-15",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "that only after the respondents are unable to fill up the vacancies",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 738,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-16",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "either   by   promotion   or   by   transfer   or   by   deputation,   the",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 780,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-17",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "Department would be entitled to publish the advertisement to fill",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 822,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-18",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "up the vacancies.  It was also found that no effort has been made",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 864,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-19",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "to   hold   DPC   to   carry   out   promotions   nor   the   respondents   have",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 906,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-20",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "explored the possibility to fill up the vacancies either by transfer or",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 948,
+                "text_width": 611
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-0-21",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "deputation.",
+                "text_height": 21,
+                "text_left": 206,
+                "text_top": 990,
+                "text_width": 103
+              }
+            ],
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 2,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": " the respondents set in process to fill up the posts advertised by way of direct recruitment.  The argument was that the Recruitment Regulations   for   the   post   of   Administrative   Officer/Assistant Assessor and  Collector in North, South and East Delhi Municipal Corporations, 2013 3   contemplate that the vacancies for the posts in question are to be filled up by promotion failing which by direct recruitment.     It   was   thus   alleged   that   without   resorting   to promotion by convening meeting of the Departmental Promotion Committee 4 , the alternative process of direct recruitment cannot be resorted to.  The said Original Application was dismissed by the Tribunal   on   28 th   May,   2015   by   observing   that   the   recruitment process   is   not   against   the   constitutional   provisions   but   the promotion must also not be tempered with.   In the writ petition directed   against   such   order,   the   High   Court   held   that   the respondents have failed to comply with the Recruitment Rules and that only after the respondents are unable to fill up the vacancies either   by   promotion   or   by   transfer   or   by   deputation,   the Department would be entitled to publish the advertisement to fill up the vacancies.  It was also found that no effort has been made to   hold   DPC   to   carry   out   promotions   nor   the   respondents   have explored the possibility to fill up the vacancies either by transfer or deputation.",
+            "text_height": 903,
+            "text_left": 206,
+            "text_top": 108,
+            "text_width": 611,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁The', '▁candidates', '▁who', '▁were', '▁initially', '▁appointed', '▁as', '▁Lower', '▁Division', '▁Clerks', '▁and', '▁promoted', '▁as', '▁Upper', '▁Division', '▁Clerks', '▁/', '▁Head', '▁Clerks', '▁invoked', '▁the', '▁jurisdiction', '▁of', '▁the', '▁Central', '▁Administrative', '▁Tribunal', '▁', 'NnUuMm', '४', '▁challenging', '▁Advertisement', '▁No', '▁.', '▁', 'NnUuMm', '३', '▁of', '▁', 'NnUuMm', '०', '▁dated', '▁', 'NnUuMm', '२', '▁th', '▁September', '▁,', '▁', 'NnUuMm', '१', '▁whereby', '▁,']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|1|c89c78a4-fca0-11ea-affc-02420a0001c1-16",
+                "output_subwords": "['▁जिन', '▁उम्मीदवारों', '▁को', '▁शुरू', '▁में', '▁लोअर', '▁डिवीजन', '▁क्लर्क', '▁के', '▁रूप', '▁में', '▁नियुक्त', '▁किया', '▁गया', '▁था', '▁और', '▁अपर', '▁डिवीजन', '▁क्लर्क', '▁/', '▁हेड', '▁क्लर्क', '▁के', '▁रूप', '▁में', '▁पदोन्नत', '▁किया', '▁गया', '▁था', '▁,', '▁उन्होंने', '▁', 'NnUuMm', '०', '▁के', '▁दिनांक', '▁', 'NnUuMm', '२', '▁सितंबर', '▁,', '▁', 'NnUuMm', '१', '▁के', '▁केंद्रीय', '▁प्रशासनिक', '▁न्यायाधिकरण', '▁', 'NnUuMm', '४', '▁चुनौतीपूर्ण', '▁विज्ञापन', '▁सं', '▁.', '▁', 'NnUuMm', '३', '▁के', '▁अधिकार', '▁क्षेत्र', '▁का', '▁आह्वान', '▁किया', '▁,', '▁जिसके', '▁तहत', '▁,']",
+                "pred_score": -10.643511772155762,
+                "s_id": "0_16_0",
+                "sentence_id": "0_16_0",
+                "src": "2. The   candidates   who   were   initially   appointed   as   Lower   Division Clerks and promoted as Upper Division Clerks/Head Clerks invoked the jurisdiction of the Central Administrative Tribunal 2   challenging Advertisement No. 3 of 2013 dated 12 th  September, 2013",
+                "tagged_src": "2. The candidates who were initially appointed as Lower Division Clerks and promoted as Upper Division Clerks/Head Clerks invoked the jurisdiction of the Central Administrative Tribunal NnUuMm४ challenging Advertisement No. NnUuMm३ of NnUuMm० dated NnUuMm२ th September, NnUuMm१ whereby,",
+                "tagged_tgt": "2. जिन उम्मीदवारों को शुरू में लोअर डिवीजन क्लर्क के रूप में नियुक्त किया गया था और अपर डिवीजन क्लर्क/हेड क्लर्क के रूप में पदोन्नत किया गया था, उन्होंने NnUuMm० के दिनांक NnUuMm२ सितंबर, NnUuMm१ के केंद्रीय प्रशासनिक न्यायाधिकरण NnUuMm४ चुनौतीपूर्ण विज्ञापन सं. NnUuMm३ के अधिकार क्षेत्र का आह्वान किया, जिसके तहत,",
+                "tgt": "2. जिन उम्मीदवारों को शुरू में लोअर डिवीजन क्लर्क के रूप में नियुक्त किया गया था और अपर डिवीजन क्लर्क/हेड क्लर्क के रूप में पदोन्नत किया गया था, उन्होंने 2013 के दिनांक 12 सितंबर, 2013 के केंद्रीय प्रशासनिक न्यायाधिकरण 2 चुनौतीपूर्ण विज्ञापन सं. 3 के अधिकार क्षेत्र का आह्वान किया, जिसके तहत,"
+              },{
+                "input_subwords": "['▁the', '▁respondents', '▁set', '▁in', '▁process', '▁to', '▁fill', '▁up', '▁the', '▁posts', '▁advertised', '▁by', '▁way', '▁of', '▁direct', '▁recruitment', '▁.']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|2|c8db105c-fca0-11ea-81ae-02420a0001c1-0",
+                "output_subwords": "['▁उत्तरदाताओं', '▁ने', '▁सीधी', '▁भर्ती', '▁के', '▁माध्यम', '▁से', '▁विज्ञापित', '▁पदों', '▁को', '▁भरने', '▁के', '▁लिए', '▁प्रक्रिया', '▁में', '▁सेट', '▁किया', '▁।']",
+                "pred_score": -3.432583808898926,
+                "s_id": "1_0_0",
+                "sentence_id": "1_0_0",
+                "src": "whereby, the respondents set in process to fill up the posts advertised by way of direct recruitment.",
+                "tagged_src": "the respondents set in process to fill up the posts advertised by way of direct recruitment.",
+                "tagged_tgt": "उत्तरदाताओं ने सीधी भर्ती के माध्यम से विज्ञापित पदों को भरने के लिए प्रक्रिया में सेट किया।",
+                "tgt": "उत्तरदाताओं ने सीधी भर्ती के माध्यम से विज्ञापित पदों को भरने के लिए प्रक्रिया में सेट किया।"
+              },
+              {
+                "input_subwords": "['▁The', '▁argument', '▁was', '▁that', '▁the', '▁Recruitment', '▁Regulations', '▁for', '▁the', '▁post', '▁of', '▁Administrative', '▁Officer', '▁/', '▁Assistant', '▁Ass', 'essor', '▁and', '▁Collector', '▁in', '▁North', '▁,', '▁South', '▁and', '▁East', '▁Delhi', '▁Municipal', '▁Corporations', '▁,', '▁', 'NnUuMm', '०', '▁', 'NnUuMm', '१', '▁contemplate', '▁that', '▁the', '▁vacancies', '▁for', '▁the', '▁posts', '▁in', '▁question', '▁are', '▁to', '▁be', '▁filled', '▁up', '▁by', '▁promotion', '▁failing', '▁which', '▁by', '▁direct', '▁recruitment', '▁.']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|2|c8db105c-fca0-11ea-81ae-02420a0001c1-0",
+                "output_subwords": "['▁तर्क', '▁यह', '▁था', '▁कि', '▁उत्तर', '▁,', '▁दक्षिण', '▁और', '▁पूर्व', '▁दिल्ली', '▁नगर', '▁निगमों', '▁में', '▁प्रशासनिक', '▁अधिकारी', '▁/', '▁सहायक', '▁ठेकेदार', '▁और', '▁कलेक्टर', '▁के', '▁पद', '▁के', '▁लिए', '▁भर्ती', '▁विनियम', '▁,', '▁', 'NnUuMm', '०', '▁', 'NnUuMm', '१', '▁इस', '▁बात', '▁पर', '▁विचार', '▁करते', '▁हैं', '▁कि', '▁विचाराधीन', '▁पदों', '▁के', '▁लिए', '▁रिक्तियों', '▁को', '▁पदोन्नति', '▁द्वारा', '▁भरा', '▁जाना', '▁है', '▁जो', '▁कि', '▁सीधी', '▁भर्ती', '▁।']",
+                "pred_score": -13.35321044921875,
+                "s_id": "1_0_1",
+                "sentence_id": "1_0_1",
+                "src": "The argument was that the Recruitment Regulations   for   the   post   of   Administrative   Officer/Assistant Assessor and  Collector in North, South and East Delhi Municipal Corporations, 2013 3   contemplate that the vacancies for the posts in question are to be filled up by promotion failing which by direct recruitment.",
+                "tagged_src": "The argument was that the Recruitment Regulations for the post of Administrative Officer/Assistant Assessor and Collector in North, South and East Delhi Municipal Corporations, NnUuMm० NnUuMm१ contemplate that the vacancies for the posts in question are to be filled up by promotion failing which by direct recruitment.",
+                "tagged_tgt": "तर्क यह था कि उत्तर, दक्षिण और पूर्व दिल्ली नगर निगमों में प्रशासनिक अधिकारी/सहायक ठेकेदार और कलेक्टर के पद के लिए भर्ती विनियम, NnUuMm० NnUuMm१ इस बात पर विचार करते हैं कि विचाराधीन पदों के लिए रिक्तियों को पदोन्नति द्वारा भरा जाना है जो कि सीधी भर्ती।",
+                "tgt": "तर्क यह था कि उत्तर, दक्षिण और पूर्व दिल्ली नगर निगमों में प्रशासनिक अधिकारी/सहायक ठेकेदार और कलेक्टर के पद के लिए भर्ती विनियम, 2013 3 इस बात पर विचार करते हैं कि विचाराधीन पदों के लिए रिक्तियों को पदोन्नति द्वारा भरा जाना है जो कि सीधी भर्ती।"
+              },
+              {
+                "input_subwords": "['▁It', '▁was', '▁thus', '▁alleged', '▁that', '▁without', '▁resorting', '▁to', '▁promotion', '▁by', '▁convening', '▁meeting', '▁of', '▁the', '▁Departmental', '▁Promotion', '▁Committee', '▁', 'NnUuMm', '०', '▁,', '▁the', '▁alternative', '▁process', '▁of', '▁direct', '▁recruitment', '▁cannot', '▁be', '▁resorted', '▁to', '▁.']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|2|c8db105c-fca0-11ea-81ae-02420a0001c1-0",
+                "output_subwords": "['▁इस', '▁प्रकार', '▁यह', '▁आरोप', '▁लगाया', '▁गया', '▁कि', '▁विभागीय', '▁पदोन्नति', '▁समिति', '▁', 'NnUuMm', '०', '▁की', '▁बैठक', '▁बुलाकर', '▁पदोन्नति', '▁का', '▁सहारा', '▁लिए', '▁बिना', '▁,', '▁सीधी', '▁भर्ती', '▁की', '▁वैकल्पिक', '▁प्रक्रिया', '▁का', '▁सहारा', '▁नहीं', '▁लिया', '▁जा', '▁सकता', '▁है', '▁।']",
+                "pred_score": -3.498546600341797,
+                "s_id": "1_0_2",
+                "sentence_id": "1_0_2",
+                "src": "It   was   thus   alleged   that   without   resorting   to promotion by convening meeting of the Departmental Promotion Committee 4 , the alternative process of direct recruitment cannot be resorted to.",
+                "tagged_src": "It was thus alleged that without resorting to promotion by convening meeting of the Departmental Promotion Committee NnUuMm० , the alternative process of direct recruitment cannot be resorted to.",
+                "tagged_tgt": "इस प्रकार यह आरोप लगाया गया कि विभागीय पदोन्नति समिति NnUuMm० की बैठक बुलाकर पदोन्नति का सहारा लिए बिना, सीधी भर्ती की वैकल्पिक प्रक्रिया का सहारा नहीं लिया जा सकता है।",
+                "tgt": "इस प्रकार यह आरोप लगाया गया कि विभागीय पदोन्नति समिति 4 की बैठक बुलाकर पदोन्नति का सहारा लिए बिना, सीधी भर्ती की वैकल्पिक प्रक्रिया का सहारा नहीं लिया जा सकता है।"
+              },
+              {
+                "input_subwords": "['▁The', '▁said', '▁Original', '▁Application', '▁was', '▁dismissed', '▁by', '▁the', '▁Tribunal', '▁on', '▁', 'NnUuMm', '१', '▁th', '▁May', '▁,', '▁', 'NnUuMm', '०', '▁by', '▁observing', '▁that', '▁the', '▁recruitment', '▁process', '▁is', '▁not', '▁against', '▁the', '▁constitutional', '▁provisions', '▁but', '▁the', '▁promotion', '▁must', '▁also', '▁not', '▁be', '▁tem', 'pered', '▁with', '▁.']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|2|c8db105c-fca0-11ea-81ae-02420a0001c1-0",
+                "output_subwords": "['▁न्यायाधिकरण', '▁द्वारा', '▁', 'NnUuMm', '१', '▁मई', '▁,', '▁', 'NnUuMm', '०', '▁को', '▁उक्त', '▁मूल', '▁आवेदन', '▁को', '▁खारिज', '▁कर', '▁दिया', '▁गया', '▁था', '▁,', '▁यह', '▁देखते', '▁हुए', '▁कि', '▁भर्ती', '▁प्रक्रिया', '▁संवैधानिक', '▁प्रावधानों', '▁के', '▁खिलाफ', '▁नहीं', '▁है', '▁,', '▁लेकिन', '▁पदोन्नति', '▁के', '▁साथ', '▁भी', '▁गुस्सा', '▁नहीं', '▁होना', '▁चाहिए', '▁।']",
+                "pred_score": -6.713715553283691,
+                "s_id": "1_0_3",
+                "sentence_id": "1_0_3",
+                "src": "The said Original Application was dismissed by the Tribunal   on   28 th   May,   2015   by   observing   that   the   recruitment process   is   not   against   the   constitutional   provisions   but   the promotion must also not be tempered with.",
+                "tagged_src": "The said Original Application was dismissed by the Tribunal on NnUuMm१ th May, NnUuMm० by observing that the recruitment process is not against the constitutional provisions but the promotion must also not be tempered with.",
+                "tagged_tgt": "न्यायाधिकरण द्वारा NnUuMm१ मई, NnUuMm० को उक्त मूल आवेदन को खारिज कर दिया गया था, यह देखते हुए कि भर्ती प्रक्रिया संवैधानिक प्रावधानों के खिलाफ नहीं है, लेकिन पदोन्नति के साथ भी गुस्सा नहीं होना चाहिए।",
+                "tgt": "न्यायाधिकरण द्वारा 28 मई, 2015 को उक्त मूल आवेदन को खारिज कर दिया गया था, यह देखते हुए कि भर्ती प्रक्रिया संवैधानिक प्रावधानों के खिलाफ नहीं है, लेकिन पदोन्नति के साथ भी गुस्सा नहीं होना चाहिए।"
+              },
+              {
+                "input_subwords": "['▁In', '▁the', '▁writ', '▁petition', '▁directed', '▁against', '▁such', '▁order', '▁,', '▁the', '▁High', '▁Court', '▁held', '▁that', '▁the', '▁respondents', '▁have', '▁failed', '▁to', '▁comply', '▁with', '▁the', '▁Recruitment', '▁Rules', '▁and', '▁that', '▁only', '▁after', '▁the', '▁respondents', '▁are', '▁unable', '▁to', '▁fill', '▁up', '▁the', '▁vacancies', '▁either', '▁by', '▁promotion', '▁or', '▁by', '▁transfer', '▁or', '▁by', '▁deputation', '▁,', '▁the', '▁Department', '▁would', '▁be', '▁entitled', '▁to', '▁publish', '▁the', '▁advertisement', '▁to', '▁fill', '▁up', '▁the', '▁vacancies', '▁.']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|2|c8db105c-fca0-11ea-81ae-02420a0001c1-0",
+                "output_subwords": "['▁इस', '▁तरह', '▁के', '▁आदेश', '▁के', '▁खिलाफ', '▁निर्देशित', '▁रिट', '▁याचिका', '▁में', '▁,', '▁उच्च', '▁न्यायालय', '▁ने', '▁कहा', '▁कि', '▁उत्तरदाता', '▁भर्ती', '▁नियमों', '▁का', '▁पालन', '▁करने', '▁में', '▁विफल', '▁रहे', '▁हैं', '▁और', '▁केवल', '▁उत्तरदाताओं', '▁के', '▁पदोन्नति', '▁या', '▁स्थानांतरण', '▁या', '▁प्रतिनियुक्ति', '▁द्वारा', '▁रिक्तियों', '▁को', '▁भरने', '▁में', '▁असमर्थ', '▁होने', '▁के', '▁बाद', '▁,', '▁विभाग', '▁रिक्त', '▁पदों', '▁को', '▁भरने', '▁के', '▁लिए', '▁विज्ञापन', '▁प्रकाशित', '▁करने', '▁का', '▁हकदार', '▁होगा', '▁।']",
+                "pred_score": -9.863882064819336,
+                "s_id": "1_0_4",
+                "sentence_id": "1_0_4",
+                "src": "In the writ petition directed   against   such   order,   the   High   Court   held   that   the respondents have failed to comply with the Recruitment Rules and that only after the respondents are unable to fill up the vacancies either   by   promotion   or   by   transfer   or   by   deputation,   the Department would be entitled to publish the advertisement to fill up the vacancies.",
+                "tagged_src": "In the writ petition directed against such order, the High Court held that the respondents have failed to comply with the Recruitment Rules and that only after the respondents are unable to fill up the vacancies either by promotion or by transfer or by deputation, the Department would be entitled to publish the advertisement to fill up the vacancies.",
+                "tagged_tgt": "इस तरह के आदेश के खिलाफ निर्देशित रिट याचिका में, उच्च न्यायालय ने कहा कि उत्तरदाता भर्ती नियमों का पालन करने में विफल रहे हैं और केवल उत्तरदाताओं के पदोन्नति या स्थानांतरण या प्रतिनियुक्ति द्वारा रिक्तियों को भरने में असमर्थ होने के बाद, विभाग रिक्त पदों को भरने के लिए विज्ञापन प्रकाशित करने का हकदार होगा।",
+                "tgt": "इस तरह के आदेश के खिलाफ निर्देशित रिट याचिका में, उच्च न्यायालय ने कहा कि उत्तरदाता भर्ती नियमों का पालन करने में विफल रहे हैं और केवल उत्तरदाताओं के पदोन्नति या स्थानांतरण या प्रतिनियुक्ति द्वारा रिक्तियों को भरने में असमर्थ होने के बाद, विभाग रिक्त पदों को भरने के लिए विज्ञापन प्रकाशित करने का हकदार होगा।"
+              },
+              {
+                "input_subwords": "['▁It', '▁was', '▁also', '▁found', '▁that', '▁no', '▁effort', '▁has', '▁been', '▁made', '▁to', '▁hold', '▁DPC', '▁to', '▁carry', '▁out', '▁promotions', '▁nor', '▁the', '▁respondents', '▁have', '▁expl', 'ored', '▁the', '▁possibility', '▁to', '▁fill', '▁up', '▁the', '▁vacancies', '▁either', '▁by', '▁transfer', '▁or', '▁deputation', '▁.']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|2|c8db105c-fca0-11ea-81ae-02420a0001c1-0",
+                "output_subwords": "['▁यह', '▁भी', '▁पाया', '▁गया', '▁कि', '▁पदोन्नति', '▁करने', '▁के', '▁लिए', '▁डीपीसी', '▁रखने', '▁का', '▁कोई', '▁प्रयास', '▁नहीं', '▁किया', '▁गया', '▁है', '▁और', '▁न', '▁ही', '▁उत्तरदाताओं', '▁ने', '▁स्थानांतरण', '▁या', '▁प्रतिनियुक्ति', '▁द्वारा', '▁रिक्तियों', '▁को', '▁भरने', '▁की', '▁संभावना', '▁का', '▁पता', '▁लगाया', '▁है', '▁।']",
+                "pred_score": -5.185198783874512,
+                "s_id": "1_0_5",
+                "sentence_id": "1_0_5",
+                "src": "It was also found that no effort has been made to   hold   DPC   to   carry   out   promotions   nor   the   respondents   have explored the possibility to fill up the vacancies either by transfer or deputation.",
+                "tagged_src": "It was also found that no effort has been made to hold DPC to carry out promotions nor the respondents have explored the possibility to fill up the vacancies either by transfer or deputation.",
+                "tagged_tgt": "यह भी पाया गया कि पदोन्नति करने के लिए डीपीसी रखने का कोई प्रयास नहीं किया गया है और न ही उत्तरदाताओं ने स्थानांतरण या प्रतिनियुक्ति द्वारा रिक्तियों को भरने की संभावना का पता लगाया है।",
+                "tgt": "यह भी पाया गया कि पदोन्नति करने के लिए डीपीसी रखने का कोई प्रयास नहीं किया गया है और न ही उत्तरदाताओं ने स्थानांतरण या प्रतिनियुक्ति द्वारा रिक्तियों को भरने की संभावना का पता लगाया है।"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 21,
+            "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-1",
+            "block_identifier": "6b24f4d1-7053-4269-9a5c-5bb7a3ba0571",
+            "children": [
+              {
+                "attrib": null,
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-1-0",
+                "children": [
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-1-0-0",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "3.",
+                    "text_height": 21,
+                    "text_left": 153,
+                    "text_top": 1053,
+                    "text_width": 17
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-1-0-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 18,
+                    "text": "The advertisement was published to fill up 30 vacancies by direct",
+                    "text_height": 21,
+                    "text_left": 204,
+                    "text_top": 1053,
+                    "text_width": 612
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "3. The advertisement was published to fill up 30 vacancies by direct",
+                "text_height": 21,
+                "text_left": 153,
+                "text_top": 1053,
+                "text_width": 663
+              },
+              {
+                "attrib": "",
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-1-1",
+                "children": null,
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 18,
+                "text": "recruitment to the posts in question out of which 8 were reserved",
+                "text_height": 21,
+                "text_left": 204,
+                "text_top": 1095,
+                "text_width": 612
+              }
+            ],
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 18,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 2,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": " 3. The advertisement was published to fill up 30 vacancies by direct recruitment to the posts in question out of which 8 were reserved",
+            "text_height": 63,
+            "text_left": 153,
+            "text_top": 1053,
+            "text_width": 663,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁The', '▁advertisement', '▁was', '▁published', '▁to', '▁fill', '▁up', '▁', 'NnUuMm', '०', '▁vacancies', '▁by', '▁direct', '▁recruitment', '▁to', '▁the', '▁posts', '▁in', '▁question', '▁out', '▁of', '▁which', '▁', 'NnUuMm', '१', '▁were', '▁reserved']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|2|c8db105c-fca0-11ea-81ae-02420a0001c1-1",
+                "output_subwords": "['▁विज्ञापन', '▁में', '▁पदों', '▁पर', '▁सीधी', '▁भर्ती', '▁द्वारा', '▁', 'NnUuMm', '०', '▁रिक्तियों', '▁को', '▁भरने', '▁के', '▁लिए', '▁प्रकाशित', '▁किया', '▁गया', '▁था', '▁,', '▁जिसमें', '▁से', '▁', 'NnUuMm', '१', '▁को', '▁हटा', '▁दिया', '▁गया', '▁था', '▁।']",
+                "pred_score": -8.17306900024414,
+                "s_id": "1_1_0",
+                "sentence_id": "1_1_0",
+                "src": "3. The advertisement was published to fill up 30 vacancies by direct recruitment to the posts in question out of which 8 were reserved",
+                "tagged_src": "3. The advertisement was published to fill up NnUuMm० vacancies by direct recruitment to the posts in question out of which NnUuMm१ were reserved",
+                "tagged_tgt": "3. विज्ञापन में पदों पर सीधी भर्ती द्वारा NnUuMm० रिक्तियों को भरने के लिए प्रकाशित किया गया था, जिसमें से NnUuMm१ को हटा दिया गया था।",
+                "tgt": "3. विज्ञापन में पदों पर सीधी भर्ती द्वारा 30 रिक्तियों को भरने के लिए प्रकाशित किया गया था, जिसमें से 8 को हटा दिया गया था।"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": null,
+            "avg_line_height": 16,
+            "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-2",
+            "block_identifier": "9db73cd6-5b8d-410d-8787-e15aec7562e1",
+            "children": [
+              {
+                "attrib": null,
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-2-0",
+                "children": [
+                  {
+                    "attrib": "SUPERSCRIPT",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-2-0-0",
+                    "font_color": "#000009",
+                    "font_family": "LiberationSerif",
+                    "font_size": 15,
+                    "text": "3",
+                    "text_height": 17,
+                    "text_left": 152,
+                    "text_top": 1136,
+                    "text_width": 8
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-2-0-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 13,
+                    "text": " for short, ‘Recruitment Rules’",
+                    "text_height": 16,
+                    "text_left": 177,
+                    "text_top": 1137,
+                    "text_width": 202
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 13,
+                "text": "3  for short, ‘Recruitment Rules’",
+                "text_height": 17,
+                "text_left": 152,
+                "text_top": 1136,
+                "text_width": 227
+              },
+              {
+                "attrib": null,
+                "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-2-1",
+                "children": [
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-2-1-0",
+                    "font_color": "#000009",
+                    "font_family": "LiberationSerif",
+                    "font_size": 15,
+                    "text": "4",
+                    "text_height": 17,
+                    "text_left": 152,
+                    "text_top": 1154,
+                    "text_width": 8
+                  },
+                  {
+                    "attrib": "",
+                    "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-2-1-1",
+                    "font_color": "#000009",
+                    "font_family": "DejaVuSans",
+                    "font_size": 13,
+                    "text": " for short, ‘DPC’",
+                    "text_height": 16,
+                    "text_left": 177,
+                    "text_top": 1154,
+                    "text_width": 107
+                  }
+                ],
+                "font_color": "#000009",
+                "font_family": "DejaVuSans",
+                "font_size": 13,
+                "text": "4  for short, ‘DPC’",
+                "text_height": 16,
+                "text_left": 152,
+                "text_top": 1154,
+                "text_width": 132
+              }
+            ],
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "DejaVuSans",
+            "font_size": 13,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 2,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "  for short, ‘Recruitment Rules’ 4  for short, ‘DPC’",
+            "text_height": 34,
+            "text_left": 152,
+            "text_top": 1136,
+            "text_width": 227,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "['▁for', '▁short', '▁,', '▁', '‘', '▁Recruitment', '▁Rules', '▁’', '▁', 'NnUuMm', '०', '▁for', '▁short', '▁,', '▁', '‘', '▁DPC', '▁’']",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|2|c8db105c-fca0-11ea-81ae-02420a0001c1-2",
+                "output_subwords": "['▁संक्षेप', '▁में', '▁,', '▁संक्षेप', '▁में', \"▁'\", '▁भर्ती', '▁नियम', \"▁'\", '▁', 'NnUuMm', '०', '▁,', \"▁'\", '▁डीपीसी', \"▁'\", '▁के', '▁लिए']",
+                "pred_score": -7.7425947189331055,
+                "s_id": "1_2_0",
+                "sentence_id": "1_2_0",
+                "src": "for short, ‘Recruitment Rules’ 4  for short, ‘DPC’",
+                "tagged_src": "for short, ‘Recruitment Rules’ NnUuMm० for short, ‘DPC’",
+                "tagged_tgt": "संक्षेप में, संक्षेप में 'भर्ती नियम' NnUuMm०, 'डीपीसी' के लिए",
+                "tgt": "संक्षेप में, संक्षेप में 'भर्ती नियम' 4, 'डीपीसी' के लिए"
+              }
+            ],
+            "underline": 0
+          },
+          {
+            "attrib": "FOOTER",
+            "avg_line_height": 17,
+            "block_id": "c8db105c-fca0-11ea-81ae-02420a0001c1-3",
+            "block_identifier": "02126b9f-3695-4f7c-ae00-6abb2ea3aace",
+            "children": null,
+            "data_type": "text_blocks",
+            "file_locale": "d4e0b570-b72a-44e5-9110-5fdd54370a9d",
+            "font_color": "#000009",
+            "font_family": "LiberationSans",
+            "font_size": 15,
+            "job_id": "",
+            "page_info": {
+              "page_height": 1263,
+              "page_no": 2,
+              "page_width": 892
+            },
+            "record_id": "FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json",
+            "text": "2",
+            "text_height": 17,
+            "text_left": 808,
+            "text_top": 1192,
+            "text_width": 8,
+            "tokenized_sentences": [
+              {
+                "input_subwords": "",
+                "n_id": "TEXT-BLOCK|FC-BM-TOK-TRANS-16007577940753803|0-16007578105401626.json|2|c8db105c-fca0-11ea-81ae-02420a0001c1-3",
+                "output_subwords": "",
+                "pred_score": 1,
+                "s_id": "1_3_0",
+                "sentence_id": "1_3_0",
+                "src": "2",
+                "tagged_src": "2",
+                "tagged_tgt": "2",
+                "tgt": "2"
+              }
+            ],
+            "underline": 0
+          }
+        ]
+      }
+    ],
+    "http": {
+      "status": 200
+    },
+    "ok": true,
+    "why": "request successful"
+  }

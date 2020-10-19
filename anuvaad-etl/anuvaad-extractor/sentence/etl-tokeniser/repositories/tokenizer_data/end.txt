@@ -3,4 +3,5 @@ TT__TT
 ?
 !
 :
-END__END
+END_|_END
+END_||_END

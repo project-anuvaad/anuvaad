@@ -10,6 +10,8 @@ def merge_horizontal_blocks(in_df, configs, debug=False):
 
     connections = []
     index_grams = get_ngram(list(df.index.values), window_size=2)
+    #This fails whten in_df contains only one node
+    #print(index_grams,'index_gramsddddddddddddd')
 
     for index_gram in index_grams:
         if are_hlines(df, configs, index_gram[0], index_gram[1], debug=debug):
@@ -63,16 +65,17 @@ def merge_horizontal_blocks(in_df, configs, debug=False):
             block_df.at[index, 'font_size_updated'] = children_df.iloc[-1]['font_size_updated']
             block_df.at[index, 'children'] = children_df.to_json()
             index += 1
+            block_df = block_df.where(block_df.notnull(), None)
 
     return update_superscript_in_horizontal_boxes(block_df, configs, debug=debug)
 
 
 def update_attribute_index(df, index, attrib):
     if (df.iloc[index]['attrib'] == None):
-        df.at[index, 'attrib'] = attrib
+        df['attrib'].loc[index] = attrib
     else:
         if pd.isna(df.iloc[index]['attrib']) or df.iloc[index]['attrib'] == '':
-            df.at[index, 'attrib'] = attrib
+            df['attrib'].loc[index] = attrib
         else:
             prev_attrib = df.iloc[index]['attrib']
             attribs = prev_attrib.split(',')

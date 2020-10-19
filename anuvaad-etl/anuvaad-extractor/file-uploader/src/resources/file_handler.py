@@ -52,6 +52,12 @@ class FileUploader(Resource):
                 break
         if fileallowed:
             f.save(filepath)
+            file_size = os.stat(filepath).st_size
+            file_size = file_size/(1024*1024)
+            if file_size  > 20:
+                os.remove(filepath)
+                res = CustomResponse(Status.ERROR_FILE_SIZE.value, None)
+                return res.getresjson(), 400
             userfile = UserFiles(created_by=request.headers.get('ad-userid'),
                                             filename=filename,file_real_name=file_real_name+file_extension, created_on=datetime.now())
             userfile.save()

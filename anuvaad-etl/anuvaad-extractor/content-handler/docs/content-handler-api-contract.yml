@@ -12,8 +12,6 @@ schemes:
 basePath: '/api'
 
 
-
-
 paths: 
   /v0/save-content:
     post:
@@ -52,8 +50,11 @@ paths:
         - in: query
           name: job_id
           type: string
-          required: true
           description: The job_id for the content
+        - in: query
+          name: record_id
+          type: string
+          description: The record_id for the content
         - in: query
           name: start_page
           type: number
@@ -75,9 +76,7 @@ paths:
           description: On input errors causing a failure in the job.
           schema:
             $ref: '#/definitions/Error'
-            
-            
-            
+  
   /v0/update-content:
     post:
       summary: REST API to update file content.
@@ -102,11 +101,114 @@ paths:
           description: On input errors causing a failure in the job.
           schema:
             $ref: '#/definitions/Error'
-
-
-
-
+  
+  /v0/sentence/{user_id}/{sentence_id}:
+    get:
+      summary: API to get sentence
+      parameters:
+        - in: path
+          name: user_id
+          type: string
+          required: true
+          description: user identifier
+        - in: path
+          name: sentence_id
+          type: string
+          required: true
+          description: sentence identifier
+      tags:
+      - Content Handler
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/SentenceResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v0/sentence/{user_id}:
+    post:
+      summary: API to update a sentence or array of sentence object
+      parameters:
+        - in: path
+          name: user_id
+          type: string
+          required: true
+          description: user identifier
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/Sentences'
+      tags:
+      - Content Handler
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/SentenceResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+        
+      
+      
 definitions:
+
+  Sentence:
+    type: object
+    properties:
+      n_id:
+        type: string
+        description: NMT identifier
+      s_id:
+        type: string
+        description: sentence identifier, once defined this cannot be updated
+      src:
+        type: string
+        description: source sentence
+      tgt:
+        type: string
+        description: translated sentence
+      s0_src:
+        type: string
+        description: baseline source sentence, cannot be updated
+      s0_tgt:
+        type: string
+        description: baseline translated sentence, cannot be updated
+        
+  Sentences:
+    type: object
+    properties:
+      sentences:
+        type: array
+        items:
+            $ref: '#/definitions/Sentence'
+        
+  SentenceResponse:
+    type: object
+    properties:        
+      data:
+        type: object
+        description: "Sentence object"
+        $ref: '#/definitions/Sentence'
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      count:
+        type: number
+        description: Total Available pages
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
         
   HttpOutput:
     type: object
@@ -118,7 +220,6 @@ definitions:
   Obj:
     type: object
     
-        
   Result:
     type: object
     properties:
@@ -148,15 +249,23 @@ definitions:
   Request:
     type: object
     properties:
-      job_id:
+      record_id:
         type: string
-        description: File id for the file to be converted.
+        description: Record id for the file to be converted.
+      file_locale:
+        type: string
+        description: File locale for the file to be converted.
+      src_lang:
+        type: string
+        description: source language code, e.g. en,hi etc
+      tgt_lang:
+        type: string
+        description: target langugage code
       pages:
         type: array
         description: File id for the file to be converted.
         items:
           $ref: '#/definitions/Result'
-          
           
   Blocks:
     type: object
@@ -166,11 +275,9 @@ definitions:
         items:
             $ref: '#/definitions/Block'
         
-        
   Block:
     type: object
 
-        
   Response:
     type: object
     properties:        
@@ -186,7 +293,6 @@ definitions:
         type: object
         description: Final output of this process.
         $ref: '#/definitions/HttpOutput'
-        
         
   ContentResponse:
     type: object
@@ -209,9 +315,6 @@ definitions:
         description: Final output of this process.
         $ref: '#/definitions/HttpOutput'
       
-
-        
-        
   Error:
     type: object
     properties:        
@@ -225,3 +328,4 @@ definitions:
         type: object
         description: Final output of this process.
         $ref: '#/definitions/HttpOutput'
+        

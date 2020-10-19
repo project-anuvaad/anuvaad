@@ -1,0 +1,79 @@
+[
+    {
+      "_id": "5d7a0fcdb053d84641cebd1c",
+      "language_code": "en",
+      "language_name": "English",
+      "status": "ACTIVE",
+      "created_on": "2019-09-12T09:28:45.367Z"
+    },
+    {
+      "_id": "5d7a0fe7b053d84641cebd1d",
+      "language_code": "hi",
+      "language_name": "Hindi",
+      "status": "ACTIVE",
+      "created_on": "2019-09-12T09:29:11.558Z"
+    },
+    {
+      "_id": "5d7f79174dc7f557106e8dca",
+      "language_code": "bn",
+      "language_name": "Bengali",
+      "status": "ACTIVE",
+      "created_on": "2019-09-16T11:59:19.903Z"
+    },
+    {
+      "_id": "5d7f793b4dc7f557106e8dcb",
+      "language_code": "ta",
+      "language_name": "Tamil",
+      "status": "ACTIVE",
+      "created_on": "2019-09-16T11:59:55.831Z"
+    },
+    {
+      "_id": "5d7f794f4dc7f557106e8dcc",
+      "language_code": "gu",
+      "language_name": "Gujarati",
+      "status": "ACTIVE",
+      "created_on": "2019-09-16T12:00:15.193Z"
+    },
+    {
+      "_id": "5d7f79a34dc7f557106e8dcd",
+      "language_code": "mr",
+      "language_name": "Marathi",
+      "status": "ACTIVE",
+      "created_on": "2019-09-16T12:01:39.828Z"
+    },
+    {
+      "_id": "5d877914ddaa077798a1c0b1",
+      "language_code": "kn",
+      "language_name": "Kannada",
+      "status": "ACTIVE",
+      "created_on": "2019-09-22T13:37:24.188Z"
+    },
+    {
+      "_id": "5d877935ddaa077798a1c0b2",
+      "language_code": "te",
+      "language_name": "Telugu",
+      "status": "ACTIVE",
+      "created_on": "2019-09-22T13:37:57.526Z"
+    },
+    {
+      "_id": "5d877959ddaa077798a1c0b3",
+      "language_code": "ml",
+      "language_name": "Malayalam",
+      "status": "ACTIVE",
+      "created_on": "2019-09-22T13:38:33.443Z"
+    },
+    {
+      "_id": "5d87796eddaa077798a1c0b4",
+      "language_code": "pa",
+      "language_name": "Punjabi",
+      "status": "ACTIVE",
+      "created_on": "2019-09-22T13:38:54.201Z"
+    },
+    {
+      "_id": "5e5cb293d8484b7d333e89a6",
+      "language_code": "ur",
+      "language_name": "Urdu",
+      "status": "ACTIVE",
+      "created_on": "2020-03-02T07:15:31.151Z"
+    }
+  ]

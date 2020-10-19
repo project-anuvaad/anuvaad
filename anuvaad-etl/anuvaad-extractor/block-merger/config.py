@@ -59,13 +59,15 @@ BLOCK_CONFIGS = {
     "space_multiply_factor": 1.8
 }
 
+BLOCK_BREAK_CONFIG = {'margin_support': 2, 'width_threshold': 0.65}
+
 TABLE_CONFIGS = {
     "remove_background" : True ,
     "background_threshold" : 50,
     "extract_by"           : 'starting_point'
 }
 
-PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.15 ,'repeat_threshold' :0.95 ,'underline_threshold':0.25, 'margin':10 }
+PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.85 ,'repeat_threshold' :0.95 ,'underline_threshold':0.25, 'margin':10 }
 DROP_TEXT          =  ['SUPERSCRIPT']
 
 LANG_MAPPING       =  {
@@ -87,9 +89,14 @@ FONT_SIZE_CONFIG = {
 }
 
 CROP_CONFIG = {
+    'en' : {'top':1, 'bottom':1,'right':1,'left':1},
     'hi': {'top':15, 'bottom':10,'right':5,'left':5},
     'ml': {'top':15, 'bottom':10,'right':5,'left':5},
     'kn':{'top':15, 'bottom':10,'right':5,'left':5 },
     'ta':{'top':5, 'bottom':15,'right':5,'left':10 },
     'ma':{'top':5, 'bottom':5,'right':5,'left':5 }
 }
+
+CLASS_2_LANG = ['ta']
+
+CRAFT_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"

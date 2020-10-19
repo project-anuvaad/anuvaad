@@ -32,10 +32,11 @@ def push_output(producer, topic_name, output, jobid, task_id):
 
 # main function for async process
 def process_fc_kf():
+    task_timestamp = eval(str(time.time()).replace('.', '')[0:13])
     file_ops = FileOperation()
     DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
-    task_id = str("FC-" + str(time.time()).replace('.', ''))
-    task_starttime = str(time.time()).replace('.', '')
+    task_id = str("FC-" + str(task_timestamp))
+    task_starttime = task_timestamp
     producer_tok = Producer(config.bootstrap_server)
     # instatiation of consumer for respective topic
     try:
@@ -44,8 +45,8 @@ def process_fc_kf():
         for msg in consumer:
             log_info("process_fc_kf : value received from consumer", None)
             data = msg.value
-            task_id = str("FC-" + str(time.time()).replace('.', ''))
-            task_starttime = str(time.time()).replace('.', '')
+            task_id = str("FC-" + str(task_timestamp))
+            task_starttime = task_timestamp
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             response_gen = Response(data, DOWNLOAD_FOLDER)
             file_value_response = response_gen.workflow_response(task_id, task_starttime)

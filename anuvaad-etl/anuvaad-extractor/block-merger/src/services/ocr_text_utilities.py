@@ -31,6 +31,7 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
         bottom = (row['text_top'] + row['text_height'])*h_ratio
         coord  = []
         crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
+        crop_image.save(str(index) + '.jpg')
         if row['text_height']>2*row['font_size']:
             temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
 
@@ -106,16 +107,43 @@ def low_conf_ocr(lang,left,top,width,height,image):
     return text, conf
 
 
-def tesseract_ocr(pdf_image_paths, desired_width, desired_height, dfs, lang ):
+def tesseract_ocr(pdf_data,flags ):
+
+    pdf_image_paths = pdf_data['pdf_image_paths']
+
+    if flags['doc_class'] == 'class_1':
+        page_width = pdf_data['page_width']
+        page_height = pdf_data['page_height']
+    else:
+        page_width = pdf_data['pdf_image_width']
+        page_height = pdf_data['pdf_image_height']
+
+    desired_width   = page_width
+    desired_height  = page_height
+    dfs             = pdf_data['h_dfs']
+    lang            = pdf_data['lang']
 
     log_info('tesseract ocr started  ===>', app_context.application_context)
     start_time          = time.time()
     try:
-        ocr_dfs = []
-        for i, df in enumerate(dfs):
-            filepath   = pdf_image_paths[i]
-            df_updated  = extract_text_from_image(filepath, desired_width, desired_height, df, lang)
-            ocr_dfs.append(df_updated)
+        if (flags['page_layout'] == 'single_column') or (flags['doc_class'] == 'class_1'):
+            ocr_dfs = []
+            for i, df in enumerate(dfs):
+                filepath   = pdf_image_paths[i]
+                df_updated  = extract_text_from_image(filepath, desired_width, desired_height, df, lang)
+                df_updated['children'] = None
+                ocr_dfs.append(df_updated)
+        else :
+            ocr_dfs = []
+            for i, sub_dfs in enumerate(dfs):
+                filepath = pdf_image_paths[i]
+                ocr_sub_dfs =[]
+                for sub_df in sub_dfs :
+                    sub_df_updated = extract_text_from_image(filepath, desired_width, desired_height, sub_df, lang)
+                    sub_df_updated['children'] =None
+                    ocr_sub_dfs.append(sub_df_updated)
+                ocr_dfs.append(ocr_sub_dfs)
+
     except Exception as e :
         log_error("Error in tesseract ocr", app_context.application_context, e)
         return None
