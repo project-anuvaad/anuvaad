@@ -138,7 +138,8 @@ class PdfFileEditor extends React.Component {
       } else {
         temp.map(page=>{
           page.text_blocks = page.text_blocks && BLOCK_OPS.get_sorted_blocks(page.text_blocks );
-        })
+        return null;
+      })
         this.setState({
           sentences: temp,
           open: this.state.apiStatus && true,

@@ -130,9 +130,9 @@ class Block extends Component {
   }
 
   handleSuggestionClick(suggestion, value, src, tokenObject) {
-    let editedSentence = this.state.editedText + suggestion
+    //let editedSentence = this.state.editedText + suggestion
     // this.props.updateSentence(this.state.caret + suggestion)
-    let data = this.state.caret
+    //let data = this.state.caret
 
     let editedData = this.state.caret + suggestion + this.state.editedText.slice(this.state.caret.length)
 
@@ -189,10 +189,10 @@ class Block extends Component {
   handleBlurCard = (event, id) => {
     if (this.state.editedText !== this.props.selectedBlock.tgt && this.state.editedText && this.state.enteredData) {
 
-      let message = "Do you want to save the sentences";
+      //let message = "Do you want to save the sentences";
       let operation = "Save";
 
-      if ((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type !== "button") && !this.state.dontShowDialog) {
+      if ((!event.relatedTarget || (event.relatedTarget && event.relatedTarget.type) !== "button") && !this.state.dontShowDialog) {
 
         this.props.getUpdatedBlock(this.props.selectedBlock, operation, this.state.editedText)
     
@@ -381,7 +381,8 @@ class Block extends Component {
                           <IconButton aria-label="save">
                             <Save style={selectedBlock &&
                               sentence &&
-                              sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "typing" || this.props.buttonStatus === "copy") ? { color: "#1C9AB7" } : {}} onClick={(event) => {
+                              sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "typing" || this.props.buttonStatus === "copy") ? { color: "#1C9AB7" } : {}} 
+                              onClick={(event) => {
                                 this.handleSave(sentence.s_id);
                               }} />
                           </IconButton>

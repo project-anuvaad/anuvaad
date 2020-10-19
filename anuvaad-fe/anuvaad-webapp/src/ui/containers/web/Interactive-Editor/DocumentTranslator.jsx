@@ -138,7 +138,8 @@ class PdfFileEditor extends React.Component {
       result && result.sentences && Array.isArray(result.sentences) && result.sentences.length > 0 && result.sentences.map(sen => {
         initialSentences.push(sen.src)
         finalSentence += sen.src
-      })
+      return null;
+    })
 
       if(initialSentences && Array.isArray(initialSentences) && initialSentences.length>0) {
         TELEMETRY.mergeSentencesEvent(initialSentences, finalSentence)
