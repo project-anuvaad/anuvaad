@@ -371,7 +371,7 @@ definitions:
         description: dictionary word
       locale:
         type: string
-        description: language code or locale of the word
+        description: This value should be 'en' otherwise request will be rejected
       pos:
         type: array
         description: Part-of-speech of the word in the given locale
