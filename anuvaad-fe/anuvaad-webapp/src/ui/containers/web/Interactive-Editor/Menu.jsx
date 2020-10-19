@@ -23,7 +23,7 @@ class Popovers extends React.Component {
             return null;})
             )
         } else {
-            return (<Typography>No Suggention available</Typography>)
+            return (<Typography>No Suggestion available</Typography>)
         }
     }
 
