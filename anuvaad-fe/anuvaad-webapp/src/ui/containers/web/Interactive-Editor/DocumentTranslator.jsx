@@ -212,9 +212,12 @@ class PdfFileEditor extends React.Component {
 
           }
 
-        })
+        return null;
       })
+      return null;
     })
+    return null;
+  })
   }
 
   handleEditorClick(id) {
