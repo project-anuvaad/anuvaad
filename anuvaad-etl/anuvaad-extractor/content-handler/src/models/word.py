@@ -27,6 +27,26 @@ class WordModel(object):
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
 
+    def update_word(self, word):
+        try:
+            collections = get_db()['dictionary']
+            results     = collections.update({'name': word['name']}, 
+                                            {
+                                                '$set': word
+                                            },
+                                            upsert=True
+            )
+            if 'writeError' in list(results.keys()):
+                return False
+            return True 
+
+        except pymongo.errors.WriteError as e:
+            log_info("some of the record has duplicates ",  AppContext.getContext())
+            return True
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+            return False
+
     def search_source(self, word):
         try:
             collections = get_db()['dictionary']
@@ -43,6 +63,23 @@ class WordModel(object):
             collections = get_db()['dictionary']
             # {'parallel_words': {$elemMatch: {'locale':'hi1', 'name': 'प्रथम दुःखद अनुभव'}}}
             docs         = collections.find({'parallel_words': { '$elemMatch': {'locale': locale, 'name': word }} })
+            for doc in docs:
+                return normalize_bson_to_json(doc)
+            return None
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+            return None
+
+    def search_word(self, src_word, src_locale, tgt_locale):
+        try:
+            collections = get_db()['dictionary']
+            # {'parallel_words': {$elemMatch: {'locale':'hi1', 'name': 'प्रथम दुःखद अनुभव'}}}
+            docs         = collections.find({'$or': [
+                                                        {'$and': [{'name': src_word, 'locale': src_locale}, {'parallel_words': { '$elemMatch': {'locale': tgt_locale}}}]}, 
+                                                        {'$and': [{'locale': tgt_locale}, {'parallel_words': { '$elemMatch': {'locale': src_locale, 'name': src_word }}}]}
+                                                    ]
+                                            })
+
             for doc in docs:
                 return normalize_bson_to_json(doc)
             return None
