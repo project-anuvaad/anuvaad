@@ -22,3 +22,4 @@ urllib3==1.25.10
 uuid==1.30
 Werkzeug==1.0.1
 zope.interface==5.1.2
+bravado-core==5.17.0

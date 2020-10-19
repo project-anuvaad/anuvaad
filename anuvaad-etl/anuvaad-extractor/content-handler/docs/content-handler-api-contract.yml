@@ -87,7 +87,7 @@ paths:
           required: true
           description: Request format accepted by this API.
           schema:
-            $ref: '#/definitions/Blocks'
+            $ref: '#/definitions/UpdateBlocks'
             
       tags:
       - Content Handler
@@ -141,7 +141,7 @@ paths:
           required: true
           description: Request format accepted by this API.
           schema:
-            $ref: '#/definitions/Sentences'
+            $ref: '#/definitions/UpdateSentences'
       tags:
       - Content Handler
       responses:
@@ -153,8 +153,32 @@ paths:
           description: On input errors causing a failure in the job.
           schema:
             $ref: '#/definitions/Error'
-        
-      
+  
+  /v0/dictionary/update:
+    post:
+      summary: API to update or save words
+      parameters:
+        - name: userid
+          in: header
+          type: string
+          required: true
+        - name: words
+          in: body
+          required: true
+          description: array of words
+          schema:
+            $ref: '#/definitions/Words'
+      tags:
+      - Dictionary
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/WordResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
       
 definitions:
 
@@ -179,7 +203,18 @@ definitions:
       s0_tgt:
         type: string
         description: baseline translated sentence, cannot be updated
-        
+
+  UpdateSentences:
+    type: object
+    properties:
+      sentences:
+        type: array
+        items:
+            $ref: '#/definitions/Sentence'
+      workflowCode:
+        type: string
+        description: workflow code to identify update type
+
   Sentences:
     type: object
     properties:
@@ -274,7 +309,19 @@ definitions:
         description: File id for the file to be converted.
         items:
           $ref: '#/definitions/Result'
-          
+  
+  UpdateBlocks:
+    type: object
+    properties:
+        blocks:
+          type: array
+          description: list of blocks to be updated under a given workflow code
+          items:
+              $ref: '#/definitions/Block'
+        workflowCode:
+          type: string
+          description: workflow code to identify update type
+
   Blocks:
     type: object
     properties:
@@ -285,7 +332,67 @@ definitions:
         
   Block:
     type: object
-
+  
+      
+  Word:
+    type: object
+    properties:
+      name:
+        type: string
+        description: dictionary word
+      locale:
+        type: string
+        description: language code or locale of the word
+      pos:
+        type: array
+        description: Part-of-speech of the word in the given locale
+        items: 
+          type: string
+      examples:
+        type: array
+        description: usage of word in the sentence
+        items:
+          type: string
+      parallel_words:
+        type: array
+        description: parallel word that exists in other language for the given word
+        items:
+          $ref: '#/definitions/Word'
+    
+  Words:
+    type: object
+    properties:
+      words:
+        type: array
+        minItems: 1
+        items:
+            $ref: '#/definitions/Word'
+            
+  WordResponse:
+    type: object
+    properties:        
+      data:
+        type: object
+        description: "response object"
+        properties:
+          words:
+            type: array
+            items:
+              $ref: '#/definitions/Word'
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      count:
+        type: number
+        description: Total Available pages
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+      
   Response:
     type: object
     properties:        

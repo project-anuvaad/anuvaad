@@ -133,6 +133,17 @@ class PdfFileEditor extends React.Component {
       let updatedBlocks = result.blocks;
       SentenceOperationId = result.sentence_id;
 
+      let initialSentences = []
+      let finalSentence = ""
+      result && result.sentences && Array.isArray(result.sentences) && result.sentences.length > 0 && result.sentences.map(sen => {
+        initialSentences.push(sen.src)
+        finalSentence += sen.src
+      })
+
+      if(initialSentences && Array.isArray(initialSentences) && initialSentences.length>0) {
+        TELEMETRY.mergeSentencesEvent(initialSentences, finalSentence)
+      }
+
       this.props.workFlowApi(workflowCode, updatedBlocks, this.state.title);
     } else if (this.state.title === "Split sentence") {
       let data = this.state.activeSentence && this.state.activeSentence.src

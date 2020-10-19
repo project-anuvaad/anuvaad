@@ -84,17 +84,21 @@ class FileContentUpdateResource(Resource):
     def post(self):
         body        = request.get_json()
         user_id     = request.headers.get('userid')
+        workflowCode= None
         
         if 'blocks' not in body or user_id is None:
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
-        
-        blocks      = body['blocks']
+
+        if 'workflowCode' in body:
+            workflowCode = body['workflowCode']
+
+        blocks          = body['blocks']
         AppContext.addRecordID(None)
-        log_info("FileContentUpdateResource for user ({}), to update ({}) blocks request {}".format(user_id, len(blocks), body), AppContext.getContext())
+        log_info("FileContentUpdateResource for user ({}), to update ({}) blocks".format(user_id, len(blocks)), AppContext.getContext())
 
         try:
-            result  = FileContentRepositories.update(user_id, blocks)
+            result  = FileContentRepositories.update(user_id, blocks, workflowCode)
 
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)

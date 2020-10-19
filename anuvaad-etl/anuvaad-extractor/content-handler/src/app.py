@@ -6,7 +6,7 @@ import routes
 import config
 from utilities import AppContext
 
-server  = Flask(__name__)
+server      = Flask(__name__)
 
 if config.ENABLE_CORS:
     cors    = CORS(server, resources={r"/api/*": {"origins": "*"}})
