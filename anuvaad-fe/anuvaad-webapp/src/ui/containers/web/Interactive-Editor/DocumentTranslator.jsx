@@ -16,7 +16,7 @@ import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 import Dialog from "../../../components/web/common/SimpleDialog";
 import BLOCK_OPS from "../../../../utils/block.operations";
-
+import Dictionary from "./Dictionary";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -111,30 +111,31 @@ class PdfFileEditor extends React.Component {
     sentence_id,
     sentence_index,
     operation,
-    message,
     editedText
   ) => {
+
+    this.handleDialog(sentence_id, selected_block_id,sentence_index,operation,editedText )
     // let splitValue = this.handleSplitSentence(subString)
-    this.setState({
-      operation_type: operation,
-      openDialog: true,
-      title: operation,
-      sentence_id,
-      sentence_index,
-      selected_block_id,
-      dialogMessage: message,
-      editedText
-    });
+   
+
+    // this.handleDialog(sentence_id, selected_block_id,sentence_index,operation,editedText )
   };
 
-  handleDialog() {
+  handleDialog(selected_block_id,
+    sentence_id,
+    sentence_index,
+    title,
+    editedText) {
+
+    debugger
     let SentenceOperationId;
     let workflowCode = "DP_WFLOW_S_TR";
-    if (this.state.title === "Merge sentence") {
+    if (title === "Merge sentence") {
       let result = BLOCK_OPS.do_sentences_merging_v1(
         this.props.sentences,
-        this.state.sentence_id
+        sentence_id
       );
+      
       let updatedBlocks = result.blocks;
       SentenceOperationId = result.sentence_id;
 
@@ -150,25 +151,25 @@ class PdfFileEditor extends React.Component {
         TELEMETRY.mergeSentencesEvent(initialSentences, finalSentence)
       }
 
-      this.props.workFlowApi(workflowCode, updatedBlocks, this.state.title);
-    } else if (this.state.title === "Split sentence") {
+      this.props.workFlowApi(workflowCode, updatedBlocks, title);
+    } else if (title === "Split sentence") {
       let data = this.state.activeSentence && this.state.activeSentence.src
 
       let updatedBlocks = BLOCK_OPS.do_sentence_splitting(
         this.props.sentences,
-        this.state.selected_block_id,
-        this.state.sentence_id,
-        this.state.sentence_index
+        selected_block_id,
+        sentence_id,
+        sentence_index
       );
 
       SentenceOperationId = this.state.activeSentence.s_id;
 
       TELEMETRY.splitSentencesEvent(data, [data.slice(0, this.state.sentence_index), data.slice(this.state.sentence_index)])
 
-      this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
+      this.props.workFlowApi(workflowCode, [updatedBlocks], title);
     }
     else if (this.state.title === "Save") {
-      this.getUpdatedBlock(this.state.selected_block_id, this.state.operation_type, this.state.editedText)
+      this.getUpdatedBlock(selected_block_id, title, editedText)
     }
 
     this.setState({
@@ -260,7 +261,7 @@ class PdfFileEditor extends React.Component {
     return sentence.tokenized_sentences.map((value, tokenIndex) => {
       return <div ref={this.props.sentences.page_no}>
         <Block
-          handleDialogMessage={this.handleDialogMessage.bind(this)}
+          handleDialogMessage={this.handleDialog.bind(this)}
           sentence={value}
           sen={sentence}
           block_id={sentence.block_id}
@@ -406,6 +407,17 @@ class PdfFileEditor extends React.Component {
                     sentence={this.state.activeSentence}
                     buttonStatus={this.state.buttonStatus}
                   />
+<Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  lg={12}
+                  xl={12}
+                  style={{ height: "50%" }}
+                >
+
+{/* <Dictionary/> */}
+</Grid>
                 </Grid>
               </Grid>
             </Grid>
@@ -424,17 +436,6 @@ class PdfFileEditor extends React.Component {
             </Grid>
           </div>
         )}
-
-        {this.state.openDialog && !this.state.updateToken && (
-          <Dialog
-            message={this.state.dialogMessage}
-            handleSubmit={this.handleDialog.bind(this)}
-            handleClose={this.handleClose.bind(this)}
-            open
-            title={this.state.title}
-          />
-        )}
-
         {this.state.open && (
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
