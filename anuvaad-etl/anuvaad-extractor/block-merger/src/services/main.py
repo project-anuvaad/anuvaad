@@ -19,6 +19,7 @@ import config
 def extract_images_and_text_regions(filename, base_dir,lang,page_layout):
     pdf_data , flags = children_functions.doc_pre_processing(filename,base_dir,lang)
     flags['doc_class'] ='class_2'
+
     if flags['doc_class'] == 'class_1':
         pass
     else :
@@ -35,43 +36,33 @@ def extract_images_and_text_regions(filename, base_dir,lang,page_layout):
 
 def merge_horizontally(input) :
     pdf_data, flags = input
-    if flags['doc_class'] == 'class_1':
-        pdf_data['header_region'], pdf_data['footer_region'] = prepocess_pdf_regions(pdf_data['in_dfs'], pdf_data['page_height'])
-    else :
-        pdf_data['header_region'], pdf_data['footer_region'] = prepocess_pdf_regions(pdf_data['in_dfs'], pdf_data['pdf_image_height'])
 
-    if flags['page_layout'] =='single_cloumn' :
-        pdf_data['h_dfs'] = get_xml.get_hdfs(pdf_data['in_dfs'],  pdf_data['header_region'], pdf_data['footer_region'])
-    else :
-        pdf_data['h_dfs']  = children_functions.get_layout_proposals(pdf_data,flags)
+    pdf_data = prepocess_pdf_regions(pdf_data,flags)
+    pdf_data['h_dfs']  = children_functions.get_layout_proposals(pdf_data,flags)
 
     if (pdf_data['lang'] != 'en') or (flags['doc_class'] != 'class_1'):
-        h_dfs = tesseract_ocr(pdf_data,flags)
-        pdf_data['h_dfs'] = h_dfs
+        pdf_data['h_dfs'] = tesseract_ocr(pdf_data,flags)
     #del pdf_data['in_dfs']
     return [pdf_data,flags]
 
 
 def merge_vertically(input):
     pdf_data, flags = input
-    if flags['doc_class'] == 'class_1' :
-        v_dfs = get_xml.get_vdfs(pdf_data['h_dfs'])
-    else :
-        v_dfs = children_functions.vertical_merging(pdf_data,flags)
+
+    v_dfs = children_functions.vertical_merging(pdf_data,flags)
     pdf_data['v_dfs'] = v_dfs
     #del pdf_data['h_dfs']
     return [pdf_data ,flags]
 
 def break_blocks(input):
     pdf_data, flags = input
-    text_merger = ChildTextUnify()
-    if flags['doc_class'] == 'class_1' :
-        p_dfs = get_xml.get_pdfs(pdf_data['v_dfs'], pdf_data['lang'])
-    else :
-        p_dfs = children_functions.breaK_into_paragraphs(pdf_data,flags)
+
+    p_dfs = children_functions.breaK_into_paragraphs(pdf_data,flags)
     p_dfs = get_text_from_table_cells(pdf_data['table_dfs'], p_dfs)
     p_dfs, line_dfs = get_underline(p_dfs, pdf_data['line_dfs'], app_context.application_context)
-    #p_dfs = text_merger.unify_child_text_blocks(p_dfs)
+
+    text_merger = ChildTextUnify()
+    p_dfs = text_merger.unify_child_text_blocks(p_dfs)
     pdf_data['p_dfs'] = p_dfs
     #del pdf_data['v_dfs']
     log_info("document structure analysis successfully completed", app_context.application_context)

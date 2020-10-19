@@ -48,15 +48,23 @@ def doc_pre_processing(filename, base_dir, lang):
 
 
 def get_layout_proposals(pdf_data,flags) :
-    h_dfs =[]
-    if flags['page_layout'] == 'double_column' :
-        for page_index, pdf_image in enumerate(pdf_data['pdf_image_paths']):
-            regions = get_column(pdf_image)
-            sub_in_dfs = collate_regions(regions,pdf_data['in_dfs'][page_index])
-            pdf_data['sub_in_dfs'] = sub_in_dfs
-            sub_h_dfs  = get_xml.get_hdfs(sub_in_dfs,  pdf_data['header_region'], pdf_data['footer_region'])
-            h_dfs.append(sub_h_dfs)
-    return h_dfs
+
+
+    if (flags['page_layout'] =='single_column')or(flags['doc_class'] == 'class_1') :
+        h_dfs = get_xml.get_hdfs(pdf_data['in_dfs'],  pdf_data['header_region'], pdf_data['footer_region'])
+
+        return h_dfs
+    else :
+        h_dfs = []
+        pdf_data['sub_in_dfs'] = []
+        if flags['page_layout'] == 'double_column' :
+            for page_index, pdf_image in enumerate(pdf_data['pdf_image_paths']):
+                regions = get_column(pdf_image)
+                sub_in_dfs = collate_regions(regions,pdf_data['in_dfs'][page_index])
+                pdf_data['sub_in_dfs'].append(sub_in_dfs)
+                sub_h_dfs  = get_xml.get_hdfs(sub_in_dfs,  pdf_data['header_region'], pdf_data['footer_region'])
+                h_dfs.append(sub_h_dfs)
+        return h_dfs
 
         #integrate pubnet
     #    pass
@@ -64,49 +72,52 @@ def get_layout_proposals(pdf_data,flags) :
 
 
 def vertical_merging(pdf_data,flags):
-    v_dfs = []
 
-    #to_do : add support for multicolumn documents
+    if flags['doc_class'] == 'class_1' :
+        return get_xml.get_vdfs(pdf_data['h_dfs'])
+    else :
+        v_dfs = []
+        columns = ['xml_index', 'text_top', 'text_left', 'text_width', 'text_height',
+                         'text', 'font_size', 'font_family', 'font_color', 'attrib']
+        for h_df in pdf_data['h_dfs'] :
+            v_df = pd.DataFrame(columns=columns)
+            if flags['page_layout'] == 'single_column':
+                v_df['text_height'] = [pdf_data['pdf_image_height']]
+                v_df['text_width'] = pdf_data['pdf_image_width']
+                v_df['text_top'] = 0
+                v_df['text_left'] = 0
+                v_df['children'] = h_df.to_json()
+            else:
+                for sub_h_df in h_df :
+                    sub_dic = {}
+                    chunk_df = sub_h_df.copy()
+                    chunk_df['text_right'] = chunk_df['text_left'] + chunk_df['text_width']
+                    chunk_df['text_bottom'] = chunk_df['text_top'] + chunk_df['text_height']
+                    sub_dic['text_top'] = chunk_df['text_top'].min()
+                    sub_dic['text_left'] = chunk_df['text_left'].min()
+                    sub_dic['text_width'] = chunk_df['text_right'].max() - sub_dic['text_left']
+                    sub_dic['text_height'] = chunk_df['text_bottom'].max() - sub_dic['text_top']
+                    sub_dic['text'] = ''
 
-    columns = ['xml_index', 'text_top', 'text_left', 'text_width', 'text_height',
-                     'text', 'font_size', 'font_family', 'font_color', 'attrib']
-    for h_df in pdf_data['h_dfs'] :
-        v_df = pd.DataFrame(columns=columns)
-        if flags['page_layout'] == 'single_column':
-            v_df['text_height'] = [pdf_data['pdf_image_height']]
-            v_df['text_width'] = pdf_data['pdf_image_width']
-            v_df['text_top'] = 0
-            v_df['text_left'] = 0
-            v_df['children'] = h_df.to_json()
-        else:
-            for sub_h_df in h_df :
-                sub_dic = {}
-                chunk_df = sub_h_df.copy()
-                chunk_df['text_right'] = chunk_df['text_left'] + chunk_df['text_width']
-                chunk_df['text_bottom'] = chunk_df['text_top'] + chunk_df['text_height']
+                    sub_dic['children'] = sub_h_df.to_json()
 
-                sub_dic['text_top'] = chunk_df['text_top'].min()
-                sub_dic['text_left'] = chunk_df['text_left'].min()
-                sub_dic['text_width'] = chunk_df['text_right'].max() - sub_dic['text_left']
-                sub_dic['text_height'] = chunk_df['text_bottom'].max() - sub_dic['text_top']
-                sub_dic['text'] = ''
+                    v_df = v_df.append([sub_dic])
+            v_df = v_df.reset_index(drop=True)
+            v_dfs.append(v_df)
 
-                sub_dic['children'] = sub_h_df.to_json()
-
-                v_df = v_df.append([sub_dic])
-        v_df = v_df.reset_index(drop=True)
-        v_dfs.append(v_df)
-
-    return v_dfs
+        return v_dfs
 
 def breaK_into_paragraphs(pdf_data,flags):
-    p_dfs =[]
     #if flags['page_layout'] == 'single_column':
-    for page_index ,v_df in enumerate(pdf_data['v_dfs']) :
 
-        p_df = pd.concat(process_block_single_column(v_df, pdf_data['pdf_image_width'],page_num= page_index +1, configs=config.BLOCK_BREAK_CONFIG))
-        p_dfs.append(p_df)
-    return p_dfs
+    if flags['doc_class'] == 'class_1' :
+        return get_xml.get_pdfs(pdf_data['v_dfs'], pdf_data['lang'])
+    else :
+        p_dfs = []
+        for page_index ,v_df in enumerate(pdf_data['v_dfs']) :
+            p_df = pd.concat(process_block_single_column(v_df, pdf_data['pdf_image_width'],page_num= page_index +1, configs=config.BLOCK_BREAK_CONFIG))
+            p_dfs.append(p_df)
+        return p_dfs
 
 
 def doc_structure_response(pdf_data,flags):
@@ -170,7 +181,7 @@ def response_per_page(p_df, img_df, table_df, line_df, page_no, page_width, page
 
     text_data = df_to_json(p_df, block_key='')
     text_data = adopt_child(text_data)
-    res_dict['images'] = image_data
+    res_dict['images'] = []#image_data
     res_dict['tables'] = table_data
     res_dict['lines'] = line_data
     res_dict['text_blocks'] = text_data

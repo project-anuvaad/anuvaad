@@ -126,7 +126,7 @@ def tesseract_ocr(pdf_data,flags ):
     log_info('tesseract ocr started  ===>', app_context.application_context)
     start_time          = time.time()
     try:
-        if flags['page_layout'] == 'single_column':
+        if (flags['page_layout'] == 'single_column') or (flags['doc_class'] == 'class_1'):
             ocr_dfs = []
             for i, df in enumerate(dfs):
                 filepath   = pdf_image_paths[i]
