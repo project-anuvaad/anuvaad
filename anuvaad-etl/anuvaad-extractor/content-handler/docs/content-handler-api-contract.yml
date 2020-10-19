@@ -156,18 +156,35 @@ paths:
   
   /v0/dictionary/update:
     post:
-      summary: API to update or save words
+      summary: API to update or save words in dictionary
       parameters:
-        - name: userid
-          in: header
-          type: string
-          required: true
         - name: words
           in: body
           required: true
           description: array of words
           schema:
             $ref: '#/definitions/Words'
+      tags:
+      - Dictionary
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/WordResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /v0/dictionary/search:
+    post:
+      summary: API to fetch word(s) meaning
+      parameters:
+        - name: words
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DictionarySearchRequest'
       tags:
       - Dictionary
       responses:
@@ -333,6 +350,18 @@ definitions:
   Block:
     type: object
   
+  DictionarySearchRequest:
+    type: object
+    properties:
+      word:
+        type: string
+        description: word of interest
+      word_locale:
+        type: string
+        description: possible language code, https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+      target_locale:
+        type: string
+        description: language code in word meaning is sought. https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
       
   Word:
     type: object
