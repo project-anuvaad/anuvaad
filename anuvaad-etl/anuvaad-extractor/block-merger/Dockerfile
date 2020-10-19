@@ -19,6 +19,7 @@ ENV DEBUG_FLUSH=$D_F
 #         linux-headers
 
 RUN pip install -r requirements.txt
+RUN pip install torch===1.5.0 torchvision===0.6.0 -f https://download.pytorch.org/whl/torch_stable.html
 #RUN apk update && apk add poppler-utils
 RUN apk update && apk add curl
 RUN curl -L -o /usr/share/tessdata/Devanagari.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/script/Devanagari.traineddata
