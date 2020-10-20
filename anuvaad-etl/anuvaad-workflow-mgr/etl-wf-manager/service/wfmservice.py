@@ -74,7 +74,7 @@ class WFMService:
         else:
             return {"status": "FAILED", "message": "No job ids found"}
         if not job_ids:
-            return {"status": "FAILED", "message": "Empty List"}
+            return {"status": "FAILED", "message": "Empty job IDs List"}
         else:
             try:
                 log_info("Marking jobs inactive......", None)

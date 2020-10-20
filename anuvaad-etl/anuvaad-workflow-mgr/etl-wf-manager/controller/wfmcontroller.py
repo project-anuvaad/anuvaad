@@ -53,7 +53,7 @@ def search_all_jobs():
 def mark_inactive():
     service = WFMService()
     req_criteria = request.get_json()
-    req_criteria["userIDs"] = request.headers["ad-userid"]
+    req_criteria["userIDs"] = [request.headers["ad-userid"]]
     response = service.mark_inactive(req_criteria)
     if response:
         return jsonify(response), 200
