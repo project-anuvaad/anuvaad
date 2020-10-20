@@ -27,6 +27,34 @@ def initiate_workflow():
     return response
 
 
+# REST endpoint to initiate the workflow.
+@wfmapp.route(context_path + '/v1/async/workflow/initiate', methods=["POST"])
+def initiate_async_workflow():
+    service = WFMService()
+    validator = WFMValidator()
+    data = request.get_json()
+    error = validator.validate(data)
+    if error is not None:
+        return error, 400
+    data = add_headers(data, request)
+    response = service.register_job(data)
+    return response
+
+
+# REST endpoint to initiate the workflow.
+@wfmapp.route(context_path + '/v1/sync/workflow/initiate', methods=["POST"])
+def initiate_sync_workflow():
+    service = WFMService()
+    validator = WFMValidator()
+    data = request.get_json()
+    error = validator.validate(data)
+    if error is not None:
+        return error, 400
+    data = add_headers(data, request)
+    response = service.register_job(data)
+    return response
+
+
 # REST endpoint to interrupt the workflow.
 @wfmapp.route(context_path + '/v1/workflow/interrupt', methods=["POST"])
 def interrupt_workflow():
