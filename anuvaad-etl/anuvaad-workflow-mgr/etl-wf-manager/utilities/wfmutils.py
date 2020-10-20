@@ -210,5 +210,5 @@ class WFMUtils:
     def get_job_details(self, job_id):
         query = {"jobID": job_id}
         exclude = {'_id': False}
-        return wfmrepo.search_job(query, exclude)
+        return wfmrepo.search_job(query, exclude, None, None)
 

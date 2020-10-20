@@ -347,12 +347,18 @@ class WFMService:
                 exclude["error"] = False
 
         if not skip_pagination:
-            if 'offset' in req_criteria.keys(): offset = req_criteria["offset"]
-            else: offset = 0
-            if 'limit' in req_criteria.keys(): limit = req_criteria["limit"]
-            else: limit = page_default_limit
+            if 'offset' in req_criteria.keys():
+                offset = req_criteria["offset"]
+            else:
+                offset = 0
+            if 'limit' in req_criteria.keys():
+                limit = req_criteria["limit"]
+            else:
+                limit = page_default_limit
+            log_info("Searching with offset and limit...", None)
             return wfmrepo.search_job(criteria, exclude, offset, limit)
         else:
+            log_info("Searching without offset and limit...", None)
             return wfmrepo.search_job(criteria, exclude, None, None)
 
 
