@@ -683,7 +683,7 @@ class DocumentBlock extends React.Component {
           !this.props.targetSelected &&
           this.props.value !== true
           ? "2px dotted grey"
-          : ""
+          : this.props.scrollId === this.props.page_no+"@"+sentence.block_identifier ? "1px solid #1C9AB7" : ""
     };
 
     return this.props.paperType === "source" ? (

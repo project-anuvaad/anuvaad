@@ -43,7 +43,7 @@ class DocumentSource extends React.Component {
         });
       }
     }
-    
+
   }
 
   componentDidUpdate(prevProps) {
@@ -263,8 +263,7 @@ class DocumentSource extends React.Component {
             //const block_id = sentence.block_id;
             return (
               <div id={sourceSentence.page_no + "@" + sentence.block_identifier}
-              ref={sourceSentence.page_no + "@" + sentence.block_identifier}
-              style={this.props.scrollId === sourceSentence.page_no + "@" + sentence.block_identifier ? { color: "blue", border: "2px dotted grey" } : {}}
+                ref={sourceSentence.page_no + "@" + sentence.block_identifier}
               >
                 {/* {this.props.tokenized ? */}
 
@@ -305,6 +304,7 @@ class DocumentSource extends React.Component {
                   handleSuggestion={this.handleSuggestion.bind(this)}
                   showSuggestions={this.state.showSuggestions}
                   popUp={this.popUp.bind(this)}
+                  scrollId={this.props.scrollId}
                 />
               </div>
             );
