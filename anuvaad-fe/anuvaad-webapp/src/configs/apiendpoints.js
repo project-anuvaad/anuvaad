@@ -69,6 +69,7 @@ const endpoints = {
   documentupload:"/api/v0/upload-file",
   fecthcontent: "/api/v0/fetch-content",
   documentConverter: "/api/v0/document-converter",
+  word_dictionary: "/api/v0/dictionary/search"
 };
 
 export default endpoints;

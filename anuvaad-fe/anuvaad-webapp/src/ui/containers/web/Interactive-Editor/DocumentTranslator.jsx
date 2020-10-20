@@ -14,7 +14,7 @@ import Snackbar from "../../../components/web/common/Snackbar";
 import CancelIcon from "@material-ui/icons/Cancel";
 import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
-import Dialog from "../../../components/web/common/SimpleDialog";
+import WordDictionary from "../../../../flux/actions/apis/word_dictionary";
 import BLOCK_OPS from "../../../../utils/block.operations";
 import Dictionary from "./Dictionary";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -29,7 +29,8 @@ class PdfFileEditor extends React.Component {
       selectedTargetId: "",
       highlightId: "",
       updateToken: false,
-      editedText: ""
+      editedText: "",
+      loading: false
     };
   }
 
@@ -72,6 +73,25 @@ class PdfFileEditor extends React.Component {
 
     }
 
+    if(prevProps.wordDictionary !== this.props.wordDictionary && this.props.wordDictionary){
+      debugger
+      console.log(this.props.wordDictionary)
+      let parallel_words= [];
+      if(this.state.src_locale === "en"){
+        
+        this.props.wordDictionary.parallel_words.map(words=>{
+          parallel_words.push(words.name)
+        })
+        
+      }
+      else{
+        parallel_words.push ( this.props.wordDictionary.name)
+      }
+
+      this.setState({parallel_words, loading: false })
+      
+    }
+
     // if (prevState.activeSentence !== this.state.activeSentence) {
     //   this.setState({
     //     prevActiveState: prevState.activeSentence
@@ -90,6 +110,15 @@ class PdfFileEditor extends React.Component {
 
     // }
 
+  }
+
+  handleDictionary(selectedValue, src_locale, tgt_locale){
+    const apiObj = new WordDictionary(selectedValue, src_locale, tgt_locale);
+    this.props.APITransport(apiObj);
+    this.setState({src_locale,tgt_locale, loading:true})
+    setTimeout(() => {
+      this.setState({ loading: false })
+    }, 2000)
   }
 
   handleSentenceClick(value, saveData, block, blockIdentifier) {
@@ -242,6 +271,7 @@ class PdfFileEditor extends React.Component {
   handleMe(value) {
     this.setState({ mergeButton: value });
   }
+  
 
   showTargetData(blockId) {
     this.setState({ selectedTargetId: blockId, showData: true });
@@ -288,12 +318,14 @@ class PdfFileEditor extends React.Component {
           getUpdatedBlock={this.getUpdatedBlock.bind(this)}
           moveToValidationMode={this.props.moveToValidationMode}
           scroll={this.props.scroll}
+          handleDictionary = {this.handleDictionary.bind(this)}
         />
       </div>
     });
   }
 
   render() {
+    
     return (
       <div>
         {this.props.sentences && (
@@ -416,7 +448,7 @@ class PdfFileEditor extends React.Component {
                   style={{ height: "50%" }}
                 >
 
-{/* <Dictionary/> */}
+ <Dictionary parallel_words ={this.state.parallel_words} loading= {this.state.loading} />
 </Grid>
                 </Grid>
               </Grid>
@@ -456,6 +488,7 @@ const mapStateToProps = (state) => ({
   documentDetails: state.documentDetails,
   fetchContent: state.fetchContent,
   workflowStatus: state.workflowStatus,
+  wordDictionary: state.wordDictionary
 });
 
 const mapDispatchToProps = (dispatch) =>

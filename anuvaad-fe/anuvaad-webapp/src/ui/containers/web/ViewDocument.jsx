@@ -72,7 +72,7 @@ class ViewDocument extends React.Component {
   }
 
   handleClick = rowData => {
-    history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[7]}/${rowData[9]}/${rowData[4]}/${rowData[5]}/${rowData[6]}`, this.state);
+    history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[7]}/${rowData[14]}/${rowData[9]}/${rowData[4]}/${rowData[5]}/${rowData[6]}`, this.state);
     // history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[4]}/${rowData[5]}`);
   };
 
@@ -138,7 +138,7 @@ class ViewDocument extends React.Component {
         }
 
         var b = {}
-
+        b["tgt_locale"] = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.target_language_code
         b["status"] = (value.status === "INPROGRESS" && timeDiff > 300) ? "FAILED" : value.status;
         b["job"] = value.jobID;
         b["name"] = value.input.jobName ? value.input.jobName : value.input.files[0].name;
@@ -362,6 +362,13 @@ class ViewDocument extends React.Component {
         options: {
           display: "excluded"
         },
+      }, 
+      {
+        name: "tgt_locale",
+        label: "tgt_locale",
+        options: {
+          display: "excluded"
+        }
       }
 
     ];

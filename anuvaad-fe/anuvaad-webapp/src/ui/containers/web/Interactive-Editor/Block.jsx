@@ -57,9 +57,8 @@ class Block extends Component {
 
     if (prevProps.buttonStatus !== this.props.buttonStatus) {
       if (this.props.buttonStatus === "mergeSaved" && arr.length > 0) {
-        let message = "Do you want to merge the sentences";
         let operation = "Merge sentence";
-        this.props.handleDialogMessage("", arr, "", operation, message);
+        this.props.handleDialogMessage("", arr, "", operation);
         arr = [];
       } else if (this.props.buttonStatus === "") {
         arr = [];
@@ -92,7 +91,6 @@ class Block extends Component {
       split_index,
       // actual_text.substring(0, split_index),
       opeartion,
-      "Do you want to split the sentence"
     );
   }
 
@@ -253,6 +251,21 @@ class Block extends Component {
     this.setState({ dontShowDialog: value, caretData: "" })
   }
 
+  handleDictionary=()=>{
+     let selectedWord = window.getSelection().toString()
+     let word_locale = this.props.match.params.locale
+     let tgt_locale = this.props.match.params.tgt_locale
+
+     if(this.props.selectedBlock && this.props.selectedBlock.src.includes(selectedWord)){
+      this.props.handleDictionary(selectedWord,word_locale,  tgt_locale)
+     }
+     else if(this.props.selectedBlock && this.props.selectedBlock.tgt.includes(selectedWord)){
+      this.props.handleDictionary(selectedWord,tgt_locale,word_locale)
+     }
+
+     
+  }
+
   handleCardClick(sentence) {
     let saveData = false
     let block = this.props.sen
@@ -262,6 +275,8 @@ class Block extends Component {
 
   render() {
     const { classes, sentence, selectedBlock } = this.props;
+    
+    console.log(this.props.match.params.locale,this.props.match.params.tgt_locale, )
     return (
       <Paper
         variant="outlined"
@@ -295,7 +310,11 @@ class Block extends Component {
                 style={{ width: "100%", paddingLeft: "10px" }}
                 onClick={() => selectedBlock &&
                   sentence &&
-                  sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}>
+                  sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}
+                  onDoubleClick = {()=>this.handleDictionary() }
+                  
+                  >
+                    
                 <div
                   style={{ minHeight: "45px", padding: "5px", fontSize: "16px" }}
                 // onClick={() => this.props.handleSentenceClick(sentence)}
@@ -419,7 +438,7 @@ class Block extends Component {
                                 <CancelIcon
                                   fontSize={"large"}
                                   style={{ color: "#1C9AB7" }}
-                                  onClick={(event) => {
+                                  onClick={() => {
                                     this.props.handleClick("");
                                   }}
                                 />
