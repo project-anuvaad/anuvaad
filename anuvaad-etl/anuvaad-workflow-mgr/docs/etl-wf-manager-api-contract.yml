@@ -50,7 +50,7 @@ paths:
   /v1/workflow/jobs/search/bulk:
     post:
       summary: REST API to search wf job status.
-      description: This API provides a facility to search wf jobs based on various criteria.
+      description: This API provides a facility to search wf jobs based on various criteria. Result is sorted default on startTime descending.
       parameters:
         - name: request
           in: body
@@ -185,6 +185,12 @@ definitions:
         items:
           type: string
         description: Workflow Codes of the etl-wf jobs.
+      offset:
+        type: number
+        description: Starting index of the paginated result
+      limit:
+        type: number
+        description: Count of records to be returned starting from the offset
         
         
   WFJobSearchResponse:
