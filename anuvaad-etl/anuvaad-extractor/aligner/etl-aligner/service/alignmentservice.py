@@ -206,8 +206,10 @@ class AlignmentService:
         try:
             log_info("Aligning the sentences.....", object_in)
             sentence_count, interval = 0, 0
-            reshaped_tgt = np.array(target_embeddings)
-            reshaped_tgt = reshaped_tgt.reshape(reshaped_tgt.shape[0], reshaped_tgt.shape[2])
+            target_array = np.array(target_embeddings)
+            log_info(len(target_embeddings), object_in)
+            log_info(target_array.shape, object_in)
+            reshaped_tgt = target_array.reshape(target_array.shape[0], target_array.shape[2])
             for i, embedding in enumerate(source_embeddings):
                 trgt = self.get_target_sentence(reshaped_tgt, embedding, source[i])
                 if trgt is not None:
