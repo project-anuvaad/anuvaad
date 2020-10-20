@@ -196,7 +196,28 @@ paths:
           description: On input errors causing a failure in the job.
           schema:
             $ref: '#/definitions/Error'
-      
+
+  /v0/records/search:
+    post:
+      summary: API to fetch word(s) meaning
+      parameters:
+        - name: words
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/RecordsSearch'
+      tags:
+      - Content Handler
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/RecordsSearchResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+            
 definitions:
 
   Sentence:
@@ -269,7 +290,51 @@ definitions:
         type: object
         description: Final output of this process.
         $ref: '#/definitions/HttpOutput'
-        
+  
+  RecordsSearch:
+    type: object
+    properties:
+      record_ids:
+        type: array
+        description: array of record_id string
+        items:
+          type: string
+          
+  RecordSearchResponse:
+    type: object
+    properties:
+      total_count:
+        type: integer
+        description: count of total sentences present under that record_id
+      record_id:
+        type: string
+        description: record_id
+      completed_count:
+        type: integer
+        description: count of saved sentences present under that record_id
+  
+  RecordsSearchResponse:
+    type: object
+    properties:
+      data:
+        type: array
+        description: array of s_id string
+        items:
+          $ref: '#/definitions/RecordSearchResponse'
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      count:
+        type: number
+        description: Total Available pages
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+  
   HttpOutput:
     type: object
     properties:
