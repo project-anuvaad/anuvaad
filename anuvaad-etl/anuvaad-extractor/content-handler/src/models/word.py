@@ -49,10 +49,21 @@ class WordModel(object):
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
 
-    def search_source(self, word):
+    def search_source_word(self, word):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
             docs         = collections.find({'name': word})
+            for doc in docs:
+                return normalize_bson_to_json(doc)
+            return None
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+            return None
+    
+    def search_source(self, word, target_locale):
+        try:
+            collections = get_db()[DB_SCHEMA_NAME]
+            docs         = collections.find({'$and': [{'name': word}, {'parallel_words': { '$elemMatch': {'locale': target_locale }} }]})
             for doc in docs:
                 return normalize_bson_to_json(doc)
             return None

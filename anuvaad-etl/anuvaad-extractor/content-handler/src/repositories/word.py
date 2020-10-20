@@ -14,9 +14,9 @@ class WordRepo:
         result = self.wordModel.save(words)
         return result
 
-    def search_english(self, word):
+    def search_english(self, word, target_locale):
         log_info('attempting to search ({}), source word'.format(word), AppContext.getContext())
-        result = self.wordModel.search_source(word)
+        result = self.wordModel.search_source(word, target_locale)
         return result
 
     def search_vernacular(self, word, locale):
@@ -42,7 +42,18 @@ class WordRepo:
                 'examples': [],
             }]
         }
-        result = self.wordModel.update_word(word)
-        if result == True:
-            result = self.search_english(source_word)
-        return result
+        result = self.wordModel.search_source_word(source_word)
+        if result == None:
+            update_result = self.wordModel.update_word(word)
+            return word
+        else:
+            result['parallel_words'].append({
+                'name': target_word,
+                'locale': target_locale,
+                'pos': [],
+                'examples': [],
+            })
+            word['parallel_words'] = result['parallel_words']
+            update_result = self.wordModel.update_word(word)
+            
+        return word
