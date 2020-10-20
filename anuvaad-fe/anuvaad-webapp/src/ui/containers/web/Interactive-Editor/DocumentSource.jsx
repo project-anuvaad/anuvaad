@@ -3,12 +3,10 @@ import BlockView from "./DocumentBlock";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import Paper from "@material-ui/core/Paper";
 import MenuItems from "./PopUp";
 import Dialog from "../../../components/web/common/SimpleDialog";
 import Image from "./Image";
 import { withRouter } from "react-router-dom";
-import IntractiveApi from "../../../../flux/actions/apis/intractive_translate";
 import BLOCK_OPS from "../../../../utils/block.operations";
 
 class DocumentSource extends React.Component {
@@ -60,13 +58,6 @@ class DocumentSource extends React.Component {
       this.setState({ selectedSentence: this.props.createBlockId, value: true });
     }
 
-    if (prevProps.intractiveTrans !== this.props.intractiveTrans) {
-      this.setState({
-        autoCompleteText: this.props.intractiveTrans && this.props.intractiveTrans.length > 0 && this.props.intractiveTrans[0].tgt,
-        autoCompleteTextTaggetTgt: this.props.intractiveTrans && this.props.intractiveTrans.length > 0 && this.props.intractiveTrans[0].tagged_tgt,
-      });
-    }
-
   }
 
 
@@ -74,9 +65,6 @@ class DocumentSource extends React.Component {
     this.setState({ openDialog: true, selectedArray: value, title: "Merge Paragraphs", dialogMessage: "Do you want to merge selected paragraphs ?" })
   }
 
-  handleCheckbox() {
-    this.setState({ checkbox: true, openDialog: false });
-  }
   handleDialog() {
     let workflowCode = "DP_WFLOW_S_TR";
     if (this.state.title === "Merge sentence") {
@@ -95,31 +83,6 @@ class DocumentSource extends React.Component {
     }
     this.setState({ openDialog: false });
   }
-
-  fetchSentence(sourceSentence) {
-    let yAxis = 0;
-
-    sourceSentence.blocks.map((sentence, index) => {
-      yAxis = sentence.text_top + sourceSentence.page_no * sourceSentence.page_height;
-
-      return sentence.status !== "Deleted" && <BlockView sentence={sentence} yAxis={yAxis} page_no={this.props.pageNo} />;
-    });
-  }
-
-  handleSplitSentence(substring) {
-    let substringValue;
-    let substringArray = substring.split(' ')
-    if (substringArray.length < 5) {
-      return substring;
-    }
-    else {
-      substringValue = substringArray[0] + " " + substringArray[1] + " " + substringArray[2] + " ... " + substringArray[substringArray.length - 2] + " " + substringArray[substringArray.length - 1];
-      return substringValue;
-    }
-
-
-  }
-
 
   handleDialogMessage(title, dialogMessage) {
 
@@ -149,6 +112,7 @@ class DocumentSource extends React.Component {
     this.setState({ hoveredSentence: null, value: false, selectedSentence: "" });
     this.props.handleBlur(id, workflowcode, saveData, prevValue, finalValue);
   };
+
   handleClose = () => {
 
     this.setState({
@@ -175,14 +139,6 @@ class DocumentSource extends React.Component {
   handleCheck(block, evt, val) {
     this.props.handleCheck(block, evt, val);
     this.setState({ selectedBlock: null });
-  }
-
-  fetchSuggestions(srcText, targetTxt, tokenObject) {
-    let targetVal = targetTxt
-
-    this.setState({ showSuggestions: true, autoCompleteText: null })
-    const apiObj = new IntractiveApi(srcText, targetVal, { model_id: this.props.modelId }, true, true);
-    this.props.APITransport(apiObj);
   }
 
   handleDoubleClickTarget(event, id, text, pageDetails, block_id) {
@@ -219,24 +175,16 @@ class DocumentSource extends React.Component {
                   handleSourceChange={this.props.handleSourceChange}
                   tokenized={this.props.tokenized}
                   isEditable={this.props.isEditable}
-                  handleCheck={this.handleCheck.bind(this)}
                   selectedSourceText={this.props.selectedSourceText}
-                  heightValue={this.props.heightValue}
                   value={this.state.value}
                   handleBlur={this.handleBlur.bind(this)}
                   selectedSentence={this.state.selectedSentence}
                   handleOnMouseLeave={this.props.handleOnMouseLeave}
-                  checkbox={this.state.checkbox}
                   paperType={this.props.paperType}
                   mergeButton={this.props.mergeButton}
                   updateContent={this.updateContent.bind(this)}
                   handleDoubleClickTarget={this.handleDoubleClickTarget.bind(this)}
                   targetSelected={this.props.targetSelected}
-                  targetText={this.props.targetText}
-                  autoCompleteText={this.state.autoCompleteText}
-                  autoCompleteTextTaggetTgt={this.state.autoCompleteTextTaggetTgt}
-                  fetchSuggestions={this.fetchSuggestions.bind(this)}
-                  showSuggestions={this.state.showSuggestions}
                   popUp={this.popUp.bind(this)}
                   scrollId={this.props.scrollId}
                 />
@@ -324,7 +272,6 @@ class DocumentSource extends React.Component {
 
 const mapStateToProps = state => ({
   apistatus: state.apistatus,
-  intractiveTrans: state.intractiveTrans
 });
 
 const mapDispatchToProps = dispatch =>
