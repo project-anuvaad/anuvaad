@@ -13,7 +13,6 @@ wfmapp = Flask(__name__)
 log = logging.getLogger('file')
 
 
-
 # REST endpoint to initiate the workflow.
 @wfmapp.route(context_path + '/v1/workflow/initiate', methods=["POST"])
 def initiate_workflow():
@@ -28,7 +27,6 @@ def initiate_workflow():
     return response
 
 
-
 # REST endpoint to interrupt the workflow.
 @wfmapp.route(context_path + '/v1/workflow/interrupt', methods=["POST"])
 def interrupt_workflow():
@@ -40,15 +38,28 @@ def interrupt_workflow():
     return {"response": response}
 
 
-
 # REST endpoint to fetch workflow jobs.
 @wfmapp.route(context_path + '/v1/workflow/jobs/search/bulk', methods=["POST"])
 def search_all_jobs():
     service = WFMService()
     req_criteria = request.get_json()
     req_criteria["userIDs"] = [request.headers["ad-userid"]]
-    response = service.get_job_details_bulk(req_criteria)
-    return jsonify(response)
+    response = service.get_job_details_bulk(req_criteria, False)
+    return jsonify(response), 200
+
+
+# REST endpoint to fetch workflow jobs.
+@wfmapp.route(context_path + '/v1/workflow/jobs/mark-inactive', methods=["POST"])
+def mark_inactive():
+    service = WFMService()
+    req_criteria = request.get_json()
+    req_criteria["userIDs"] = request.headers["ad-userid"]
+    response = service.mark_inactive(req_criteria)
+    if response:
+        return jsonify(response), 200
+    else:
+        return jsonify({"status": "FAILED", "message": "Something went wrong"}), 400
+
 
 # REST endpoint to fetch configs
 @wfmapp.route(context_path + '/v1/workflow/configs/search', methods=["GET"])

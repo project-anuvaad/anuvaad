@@ -34,9 +34,12 @@ class WFMRepository:
         )
 
     # Searches the object into mongo collection
-    def search_job(self, query, exclude):
+    def search_job(self, query, exclude, offset, limit):
         col = self.instantiate()
-        res = col.find(query, exclude)
+        if offset and limit:
+            res = col.find(query, exclude).sort({"startTime": -1}).skip(offset).limit(limit)
+        else:
+            res = col.find(query, exclude)
         result = []
         for record in res:
             result.append(record)

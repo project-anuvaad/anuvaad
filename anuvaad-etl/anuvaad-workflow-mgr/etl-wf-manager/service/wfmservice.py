@@ -11,6 +11,7 @@ from configs.wfmconfig import log_msg_end
 from configs.wfmconfig import module_wfm_name
 from configs.wfmconfig import tool_ch
 from configs.wfmconfig import tool_nmt
+from configs.wfmconfig import page_default_limit
 from anuvaad_auditor.errorhandler import post_error_wf, post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
@@ -65,6 +66,31 @@ class WFMService:
                         log_info("Job INTERRUPTED: " + str(job_id), {"jobID": job_id})
                         response.append({"jobID": job_id, "message": "Interrupted successfully."})
         return response
+
+    # Method to mark the jobs as inactive
+    def mark_inactive(self, req_criteria):
+        if 'jobIDs' in req_criteria:
+            job_ids = req_criteria["jobIDs"]
+        else:
+            return {"status": "FAILED", "message": "No job ids found"}
+        if not job_ids:
+            return {"status": "FAILED", "message": "Empty List"}
+        else:
+            try:
+                log_info("Marking jobs inactive......", None)
+                job_details = self.get_job_details_bulk(req_criteria, True)
+                if job_details:
+                    if len(job_details) < len(job_ids):
+                        return {"status": "FAILED", "message": "This user doesn't have access to all or few of these jobs"}
+                    else:
+                        for job in job_details:
+                            job["active"] = False
+                            self.update_job_details(job, False)
+                            log_info("Job marked as inactive by the user", job)
+                return {"status": "SUCCESS", "message": "Jobs successfully marked as inactive!"}
+            except Exception as e:
+                log_exception("Exception while marking jobs as inactive: " + str(e), None, None)
+                return None
 
     # Method to initiate and process the SYNC workflow.
     def process_sync(self, wf_input):
@@ -259,7 +285,7 @@ class WFMService:
                     client_input["jobName"] = wf_input["jobName"]
 
             client_output = {"input": client_input, "jobID": wf_input["jobID"],
-                             "workflowCode": wf_input["workflowCode"],
+                             "workflowCode": wf_input["workflowCode"], "active": True,
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
                              "startTime": eval(str(time.time()).replace('.', '')[0:13]), "taskDetails": task_details}
         else:
@@ -284,7 +310,7 @@ class WFMService:
         return client_output
 
     # Method to search jobs on multiple criteria.
-    def get_job_details_bulk(self, req_criteria):
+    def get_job_details_bulk(self, req_criteria, skip_pagination):
         criteria = {"metadata.userID": {"$in": req_criteria["userIDs"]}}
         if 'jobIDs' in req_criteria.keys():
             if req_criteria["jobIDs"]:
@@ -319,7 +345,16 @@ class WFMService:
         if 'error' in req_criteria.keys():
             if req_criteria["error"] is False:
                 exclude["error"] = False
-        return wfmrepo.search_job(criteria, exclude)
+
+        if not skip_pagination:
+            if 'offset' in req_criteria.keys(): offset = req_criteria["offset"]
+            else: offset = 0
+            if 'limit' in req_criteria.keys(): limit = req_criteria["limit"]
+            else: limit = page_default_limit
+            return wfmrepo.search_job(criteria, exclude, offset, limit)
+        else:
+            return wfmrepo.search_job(criteria, exclude, None, None)
+
 
     # Method to get wf configs from the remote yaml file.
     def get_wf_configs(self):
