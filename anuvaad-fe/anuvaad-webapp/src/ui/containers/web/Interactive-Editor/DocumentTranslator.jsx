@@ -73,23 +73,23 @@ class PdfFileEditor extends React.Component {
 
     }
 
-    if(prevProps.wordDictionary !== this.props.wordDictionary && this.props.wordDictionary){
+    if (prevProps.wordDictionary !== this.props.wordDictionary && this.props.wordDictionary) {
       debugger
       console.log(this.props.wordDictionary)
-      let parallel_words= [];
-      if(this.state.src_locale === "en"){
-        
-        this.props.wordDictionary.parallel_words.map(words=>{
+      let parallel_words = [];
+      if (this.state.src_locale === "en") {
+
+        this.props.wordDictionary.parallel_words.map(words => {
           parallel_words.push(words.name)
         })
-        
+
       }
-      else{
-        parallel_words.push ( this.props.wordDictionary.name)
+      else {
+        parallel_words.push(this.props.wordDictionary.name)
       }
 
-      this.setState({parallel_words, loading: false })
-      
+      this.setState({ parallel_words, loading: false })
+
     }
 
     // if (prevState.activeSentence !== this.state.activeSentence) {
@@ -112,10 +112,10 @@ class PdfFileEditor extends React.Component {
 
   }
 
-  handleDictionary(selectedValue, src_locale, tgt_locale){
+  handleDictionary(selectedValue, src_locale, tgt_locale) {
     const apiObj = new WordDictionary(selectedValue, src_locale, tgt_locale);
     this.props.APITransport(apiObj);
-    this.setState({src_locale,tgt_locale, loading:true})
+    this.setState({ src_locale, tgt_locale, loading: true })
     setTimeout(() => {
       this.setState({ loading: false })
     }, 2000)
@@ -143,9 +143,9 @@ class PdfFileEditor extends React.Component {
     editedText
   ) => {
 
-    this.handleDialog(sentence_id, selected_block_id,sentence_index,operation,editedText )
+    this.handleDialog(sentence_id, selected_block_id, sentence_index, operation, editedText)
     // let splitValue = this.handleSplitSentence(subString)
-   
+
 
     // this.handleDialog(sentence_id, selected_block_id,sentence_index,operation,editedText )
   };
@@ -164,7 +164,7 @@ class PdfFileEditor extends React.Component {
         this.props.sentences,
         sentence_id
       );
-      
+
       let updatedBlocks = result.blocks;
       SentenceOperationId = result.sentence_id;
 
@@ -237,7 +237,6 @@ class PdfFileEditor extends React.Component {
   }
 
   getUpdatedBlock(tokenObj, operationType, editedText) {
-
     this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
       element && element.text_blocks && element.text_blocks.map((sentence) => {
         sentence.tokenized_sentences.map((value, tokenIndex) => {
@@ -248,7 +247,7 @@ class PdfFileEditor extends React.Component {
               value.save = true
               value.tgt = editedText
               value.tagged_tgt = editedText
-              this.props.saveUpdatedSentence(sentence)
+              this.props.saveUpdatedSentence(value)
             } else {
               if (value.hasOwnProperty("save")) {
                 value.tgt = this.state.prevActiveState && this.state.prevActiveState.tgt
@@ -271,7 +270,7 @@ class PdfFileEditor extends React.Component {
   handleMe(value) {
     this.setState({ mergeButton: value });
   }
-  
+
 
   showTargetData(blockId) {
     this.setState({ selectedTargetId: blockId, showData: true });
@@ -318,14 +317,14 @@ class PdfFileEditor extends React.Component {
           getUpdatedBlock={this.getUpdatedBlock.bind(this)}
           moveToValidationMode={this.props.moveToValidationMode}
           scroll={this.props.scroll}
-          handleDictionary = {this.handleDictionary.bind(this)}
+          handleDictionary={this.handleDictionary.bind(this)}
         />
       </div>
     });
   }
 
   render() {
-    
+
     return (
       <div>
         {this.props.sentences && (
@@ -439,17 +438,17 @@ class PdfFileEditor extends React.Component {
                     sentence={this.state.activeSentence}
                     buttonStatus={this.state.buttonStatus}
                   />
-<Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  lg={12}
-                  xl={12}
-                  style={{ height: "50%" }}
-                >
+                  <Grid
+                    item
+                    xs={12}
+                    sm={12}
+                    lg={12}
+                    xl={12}
+                    style={{ height: "50%" }}
+                  >
 
- <Dictionary parallel_words ={this.state.parallel_words} loading= {this.state.loading} />
-</Grid>
+                    <Dictionary parallel_words={this.state.parallel_words} loading={this.state.loading} />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>

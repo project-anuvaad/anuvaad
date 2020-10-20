@@ -27,6 +27,7 @@ import DownloadIcon from "@material-ui/icons/ArrowDownward";
 import DocumentConverter from "../../../../flux/actions/apis/documentconverter";
 import TranslateView from "./DocumentTranslator";
 import wfcodes from '../../../../configs/workflowcodes'
+import SaveContent from "../../../../flux/actions/apis/savecontent";
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -114,7 +115,7 @@ class PdfFileEditor extends React.Component {
         showLoader: false
       });
     }
-    if (prevProps.workflowStatus !== this.props.workflowStatus) {
+    if (prevProps.workflowStatus !== this.props.workflowStatus || prevProps.saveContent !== this.props.saveContent) {
 
       let telemetryData = this.state.telemetry
       if (telemetryData && telemetryData.hasOwnProperty("save")) {
@@ -392,7 +393,9 @@ class PdfFileEditor extends React.Component {
   saveUpdatedSentence(sentenceObj) {
     this.setState({ selectedSourceText: sentenceObj })
 
-    this.workFlowApi(wfcodes.DP_WFLOW_S_C, [sentenceObj], "update", "edit")
+    const apiObj = new SaveContent(sentenceObj);
+    this.props.APITransport(apiObj);
+
   }
 
   workFlowApi(workflow, blockDetails, update, type) {
@@ -1002,7 +1005,9 @@ const mapStateToProps = state => ({
   documentDetails: state.documentDetails,
   fetchContent: state.fetchContent,
   workflowStatus: state.workflowStatus,
-  documentconverter: state.documentconverter
+  documentconverter: state.documentconverter,
+  saveContent: state.aveContent,
+
 });
 
 const mapDispatchToProps = dispatch =>
