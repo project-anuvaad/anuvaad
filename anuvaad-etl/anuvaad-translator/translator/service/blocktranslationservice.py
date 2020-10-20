@@ -67,7 +67,7 @@ class BlockTranslationService:
         return output
 
     # Method to accept text list and return translations for SYNC flow.
-    def text_translate(self, text_translate_input):
+    def text_translate_wf(self, text_translate_input):
         text_translate_input["taskID"], text_translate_input["state"] = utils.generate_task_id(), "TRANSLATED"
         text_translate_input["taskStartTime"] = eval(str(time.time()).replace('.', '')[0:13])
         log_info("Text Translation started....", text_translate_input)

@@ -5,10 +5,10 @@ import time
 from flask import Flask, jsonify, request
 from service.translatorservice import TranslatorService
 from service.blocktranslationservice import BlockTranslationService
+from service.texttranslationservice import TextTranslationService
 from validator.translatorvalidator import TranslatorValidator
 from configs.translatorconfig import context_path
 from configs.translatorconfig import tool_translator
-from anuvaad_auditor.loghandler import log_info
 
 translatorapp = Flask(__name__)
 log = logging.getLogger('file')
@@ -43,14 +43,28 @@ def block_translate():
 
 # REST endpoint to initiate the workflow.
 @translatorapp.route(context_path + '/v1/text/workflow/translate', methods=["POST"])
-def text_translate():
+def text_translate_wf():
     service = BlockTranslationService()
+    validator = TranslatorValidator()
+    data = request.get_json()
+    error = validator.validate_text_translate_wf(data)
+    if error is not None:
+        data["state"], data["status"], data["error"] = "TRANSLATED", "FAILED", error
+        return data, 400
+    response = service.text_translate_wf(data)
+    return response
+
+# REST endpoint to initiate the workflow.
+@translatorapp.route(context_path + '/v1/text/translate', methods=["POST"])
+def text_translate():
+    service = TextTranslationService()
     validator = TranslatorValidator()
     data = request.get_json()
     error = validator.validate_text_translate(data)
     if error is not None:
-        data["state"], data["status"], data["error"] = "TRANSLATED", "FAILED", error
+        data["status"], data["error"] = "FAILED", error
         return data, 400
+    data["metadata"] = {"userID": request.headers["ad-userid"]}
     response = service.text_translate(data)
     return response
 
