@@ -17,7 +17,9 @@ ENV DEBUG_FLUSH=$D_F
 #         libwebp-dev \
 #         clang-dev \
 #         linux-headers
-
+#RUN /usr/local/bin/python -m pip install --upgrade pip
+RUN apk update
+RUN apk add libc6-compat
 RUN pip install -r requirements.txt
 RUN pip install torch===1.5.0 torchvision===0.6.0 -f https://download.pytorch.org/whl/torch_stable.html
 #RUN apk update && apk add poppler-utils
