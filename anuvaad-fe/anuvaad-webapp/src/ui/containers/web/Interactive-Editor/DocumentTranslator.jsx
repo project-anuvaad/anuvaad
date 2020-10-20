@@ -74,7 +74,6 @@ class PdfFileEditor extends React.Component {
     }
 
     if (prevProps.wordDictionary !== this.props.wordDictionary && this.props.wordDictionary) {
-      debugger
       console.log(this.props.wordDictionary)
       let parallel_words = [];
       if (this.state.src_locale === "en") {
@@ -156,7 +155,6 @@ class PdfFileEditor extends React.Component {
     title,
     editedText) {
 
-    debugger
     let SentenceOperationId;
     let workflowCode = "DP_WFLOW_S_TR";
     if (title === "Merge sentence") {
@@ -242,7 +240,7 @@ class PdfFileEditor extends React.Component {
         sentence.tokenized_sentences.map((value, tokenIndex) => {
           if (tokenObj && tokenObj.s_id === value.s_id) {
             if (operationType === "Save") {
-              TELEMETRY.sentenceChanged(value.tgt, editedText, sentence.block_identifier, "translation")
+              TELEMETRY.sentenceChanged(value.tgt, editedText, sentence.block_id, "translation")
 
               value.save = true
               value.tgt = editedText
