@@ -13,8 +13,7 @@ from kafkawrapper.alignmentproducer import Producer
 from .alignwflowservice import AlignWflowService
 from configs.alignerconfig import directory_path
 from configs.alignerconfig import align_job_topic
-from anuvaad_auditor.loghandler import log_info
-from anuvaad_auditor.loghandler import log_exception
+from anuvaad_auditor.loghandler import log_info, log_exception, log_error
 
 
 log = logging.getLogger('file')
@@ -187,6 +186,14 @@ class AlignmentService:
             src_loc = object_in["input"]["source"]["locale"]
             trgt_loc = object_in["input"]["target"]["locale"]
             source_embeddings, target_embeddings = self.build_index(source, target_corp, src_loc, trgt_loc, object_in)
+            if len(source_embeddings) == 0 or len(target_embeddings) == 0:
+                log_error("Embedding couldn't be fetched. Either source or target is empty", object_in, None)
+                self.update_job_status("FAILED", object_in, "Embedding couldn't be fetched. Either source or target is empty")
+                if iswf:
+                    util.error_handler("INPUT_ERROR", "Embedding couldn't be fetched. Either source or target is empty", object_in, True)
+                else:
+                    util.error_handler("INPUT_ERROR", "Embedding couldn't be fetched. Either source or target is empty", object_in, False)
+                return None
             return source_embeddings, target_embeddings
         except Exception as e:
             log_exception("Exception while fetching embeddings for the sentences: " + str(e), object_in, e)
@@ -207,8 +214,6 @@ class AlignmentService:
             log_info("Aligning the sentences.....", object_in)
             sentence_count, interval = 0, 0
             target_array = np.array(target_embeddings)
-            log_info(len(target_embeddings), object_in)
-            log_info(target_array.shape, object_in)
             reshaped_tgt = target_array.reshape(target_array.shape[0], target_array.shape[2])
             for i, embedding in enumerate(source_embeddings):
                 trgt = self.get_target_sentence(reshaped_tgt, embedding, source[i])
