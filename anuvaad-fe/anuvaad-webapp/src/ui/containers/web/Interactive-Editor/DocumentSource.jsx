@@ -177,73 +177,11 @@ class DocumentSource extends React.Component {
     this.setState({ selectedBlock: null });
   }
 
-  handleCalc(value, tokenText) {
-    const temp = value.split(" ");
-    const tagged_tgt = tokenText.tagged_tgt.split(" ");
-    const tagged_src = tokenText.tagged_src.split(" ");
-    const tgt = tokenText.tgt && tokenText.tgt.split(" ");
-    const src = tokenText.src && tokenText.src.split(" ");
-    const resultArray = [];
-    let index;
-    temp.map(item => {
-      if (item !== " ") {
-        const ind = tgt.indexOf(item, resultArray.length);
-        const arr = [item, `${item},`, `${item}.`];
-        let src_ind = -1;
-        arr.map((el, i) => {
-          if (src_ind === -1) {
-            src_ind = src.indexOf(el);
-            index = i;
-          }
-          return true;
-        });
-        if (ind !== -1) {
-          resultArray.push(tagged_tgt[ind]);
-        } else if (src_ind !== -1) {
-          if (index > 0) {
-            if (src_ind > tagged_src.length - 1) {
-              src_ind = tagged_src.length - 1
-            }
-            const tem = tagged_src[src_ind];
-            resultArray.push(tem.slice(0, tem.length - 1));
-          } else {
-            resultArray.push(tagged_src[src_ind]);
-          }
-        } else {
-          resultArray.push(item);
-        }
-      } else {
-        resultArray.push(item);
-      }
-      return true;
-    });
-    return resultArray.join(" ");
-  }
-
   fetchSuggestions(srcText, targetTxt, tokenObject) {
     let targetVal = targetTxt
 
     this.setState({ showSuggestions: true, autoCompleteText: null })
     const apiObj = new IntractiveApi(srcText, targetVal, { model_id: this.props.modelId }, true, true);
-    this.props.APITransport(apiObj);
-  }
-
-  handleSuggestionClose() {
-    this.setState({ showSuggestions: false })
-  }
-
-  handleSuggestion(suggestion, value, src, tokenObject) {
-    this.setState({ showSuggestions: false })
-    this.props.handleSuggestion(suggestion, value)
-    this.setState({ autoCompleteText: null, tokenObject })
-
-    let targetVal = value.trim() + suggestion
-    setTimeout(() => {
-      this.setState({ showSuggestions: true })
-
-    }, 50)
-
-    const apiObj = new IntractiveApi(src, targetVal, { model_id: this.props.modelId }, true, true);
     this.props.APITransport(apiObj);
   }
 
@@ -265,8 +203,6 @@ class DocumentSource extends React.Component {
               <div id={sourceSentence.page_no + "@" + sentence.block_identifier}
                 ref={sourceSentence.page_no + "@" + sentence.block_identifier}
               >
-                {/* {this.props.tokenized ? */}
-
                 <BlockView
                   block_identifier={this.props.block_identifier}
                   sentences={this.props.sentences}
@@ -300,8 +236,6 @@ class DocumentSource extends React.Component {
                   autoCompleteText={this.state.autoCompleteText}
                   autoCompleteTextTaggetTgt={this.state.autoCompleteTextTaggetTgt}
                   fetchSuggestions={this.fetchSuggestions.bind(this)}
-                  handleSuggestionClose={this.handleSuggestionClose.bind(this)}
-                  handleSuggestion={this.handleSuggestion.bind(this)}
                   showSuggestions={this.state.showSuggestions}
                   popUp={this.popUp.bind(this)}
                   scrollId={this.props.scrollId}
@@ -374,17 +308,6 @@ class DocumentSource extends React.Component {
 
     return (
       <div ref={el => (this.container = el)}>
-        {!this.props.isPreview ? (
-          <Paper
-            style={style}
-            key={sourceSentence.page_no}
-            onMouseEnter={() => {
-              this.props.handlePreviewPageChange(sourceSentence.page_no, 1);
-            }}
-          >
-            {this.getContent()}
-          </Paper>
-        ) : (
             <div
               style={style}
               onMouseEnter={() => {
@@ -393,7 +316,6 @@ class DocumentSource extends React.Component {
             >
               {this.getContent()}
             </div>
-          )}
       </div>
     );
   }
