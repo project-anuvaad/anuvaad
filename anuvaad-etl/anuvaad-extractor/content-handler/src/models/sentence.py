@@ -2,12 +2,13 @@ from utilities import AppContext
 from db import get_db
 from anuvaad_auditor.loghandler import log_info, log_exception
 
+DB_SCHEMA_NAME  = 'file_content'
+
 class SentenceModel(object):
 
-    @staticmethod
-    def get_block_by_s_id(user_id, s_id):
+    def get_block_by_s_id(self, user_id, s_id):
         try:
-            collections = get_db()['file_content']
+            collections = get_db()[DB_SCHEMA_NAME]
             docs         = collections.find({'$and': [{'created_by': user_id}, { 'data.tokenized_sentences': {'$elemMatch': {'s_id': {'$eq': s_id}}}}]})
             for doc in docs:
                 return doc
@@ -16,10 +17,9 @@ class SentenceModel(object):
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return None
         
-    @staticmethod
-    def get_sentence_by_s_id(user_id, s_id):
+    def get_sentence_by_s_id(self, user_id, s_id):
         try:
-            collections = get_db()['file_content']
+            collections = get_db()[DB_SCHEMA_NAME]
             docs        = collections.aggregate([
                     { '$match': {'data.tokenized_sentences.s_id' : s_id } },
                     { '$project': {
@@ -43,15 +43,14 @@ class SentenceModel(object):
                 return sentence
 
             return None
-        except expression as identifier:
+        except Exception as e:
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return None
 
-    @staticmethod
-    def update_sentence_by_s_id(user_id, sentence):
+    def update_sentence_by_s_id(self, user_id, sentence):
         SENTENCE_KEYS   = ['n_id', 'pred_score', 's_id', 'src', 'tgt']
         try:
-            collections     = get_db()['file_content']
+            collections     = get_db()[DB_SCHEMA_NAME]
 
             results         = collections.update({'$and': [{'created_by': user_id}, { 'data.tokenized_sentences': {'$elemMatch': {'s_id': {'$eq': sentence['s_id']}}}}]},
                                                 {
@@ -66,6 +65,38 @@ class SentenceModel(object):
             if 'writeError' in list(results.keys()):
                 return False
             return True        
-        except expression as identifier:
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+            return False
+
+    def get_total_tokenized_sentences_count(self, record_id):
+        try:
+            collections = get_db()[DB_SCHEMA_NAME]
+            docs        = collections.aggregate([
+                                { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'} ]} },
+                                { '$project': { '_id': 0, 'count': { '$size':"$data.tokenized_sentences" } } },
+                                { '$group': { '_id': 0, 'total_count': { '$sum': 1 } } }
+                        ])
+            for doc in docs:
+                count = doc['total_count']
+                return count
+            return None
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+            return False
+
+    def get_completed_tokenized_sentences_count(self, record_id):
+        try:
+            collections = get_db()[DB_SCHEMA_NAME]
+            docs        = collections.aggregate([
+                                { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}, { 'data.tokenized_sentences': {'$elemMatch': {'save': {'$eq': True}}}}]} },
+                                { '$project': { '_id': 0, 'count': { '$size':"$data.tokenized_sentences" } } },
+                                { '$group': { '_id': 0, 'total_count': { '$sum': 1 } } }
+                        ])
+            for doc in docs:
+                count = doc['total_count']
+                return count
+            return None
+        except Exception as e:
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False

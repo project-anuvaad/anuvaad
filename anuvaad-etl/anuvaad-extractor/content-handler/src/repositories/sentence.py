@@ -5,11 +5,13 @@ from utilities import AppContext
 from anuvaad_auditor.loghandler import log_info, log_exception
 
 class SentenceRepositories:
-    @staticmethod
-    def get_sentence(user_id, s_ids):
+    def __init__(self):
+        self.sentenceModel  = SentenceModel()
+
+    def get_sentence(self, user_id, s_ids):
         sentences = []
         for s_id in s_ids:
-            sentence = SentenceModel.get_sentence_by_s_id(user_id, s_id)
+            sentence = self.sentenceModel.get_sentence_by_s_id(user_id, s_id)
             if sentence == None:
                 log_info('could not get sentence for s_id {}'.format(s_id), AppContext.getContext())
                 continue
@@ -17,8 +19,7 @@ class SentenceRepositories:
 
         return sentences
         
-    @staticmethod
-    def update_sentences(user_id, sentences, workflowCode):
+    def update_sentences(self, user_id, sentences, workflowCode):
         update_s0       = False
         '''
             - workflowCode: 
@@ -33,13 +34,34 @@ class SentenceRepositories:
                 sentence['s0_tgt']    = sentence['tgt']
                 sentence['s0_src']    = sentence['src']
 
-            if SentenceModel.update_sentence_by_s_id(user_id, sentence) == False:
+            if self.sentenceModel.update_sentence_by_s_id(user_id, sentence) == False:
                 return False
         return True
 
-    @staticmethod
-    def get_sentence_block(user_id, s_id):
-        result = SentenceModel.get_block_by_s_id(user_id, s_id)
+    def get_sentence_block(self, user_id, s_id):
+        result = self.sentenceModel.get_block_by_s_id(user_id, s_id)
         del result['_id']
         del result['created_on']
         return result
+
+    def get_sentences_counts(self, record_ids):
+        response = []
+        for record_id in record_ids:
+            result          = {}
+            
+            total_count     = self.sentenceModel.get_total_tokenized_sentences_count(record_id)
+            completed_count = self.sentenceModel.get_completed_tokenized_sentences_count(record_id)
+
+            if total_count == None:
+                result['total_count'] = 0
+            else:
+                result['total_count'] = total_count
+
+            if total_count == None:
+                result['completed_count'] = 0
+            else:
+                result['completed_count'] = completed_count
+
+            result['record_id'] = record_id
+            response.append(result)
+        return response

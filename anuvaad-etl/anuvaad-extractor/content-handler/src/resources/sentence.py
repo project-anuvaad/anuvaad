@@ -5,6 +5,8 @@ from utilities import AppContext
 from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import request
 
+sentenceRepo = SentenceRepositories()
+
 class FetchSentenceResource(Resource):
     def post(self):
         body        = request.get_json()
@@ -14,6 +16,7 @@ class FetchSentenceResource(Resource):
             s_ids       = body['sentences']
 
         if user_id is None or s_ids is None:
+            log_info('Missing params in FetchSentenceResource {}, user_id:{}'.format(body, user_id), AppContext.getContext())
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
         
@@ -21,7 +24,7 @@ class FetchSentenceResource(Resource):
         log_info("FetchSentenceResource s_ids {} for user {}".format(len(s_ids), user_id), AppContext.getContext())
 
         try:
-            result  = SentenceRepositories.get_sentence(user_id, s_ids)
+            result  = sentenceRepo.get_sentence(user_id, s_ids)
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
@@ -32,7 +35,6 @@ class FetchSentenceResource(Resource):
             log_exception("FetchSentenceResource ",  AppContext.getContext(), e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
-        
 
 class SaveSentenceResource(Resource):
     def post(self):
@@ -40,6 +42,7 @@ class SaveSentenceResource(Resource):
         user_id     = request.headers.get('userid')
 
         if 'sentences' not in body or user_id is None or 'workflowCode' not in body:
+            log_info('Missing params in SaveSentenceResource {}, user_id:{}'.format(body, user_id), AppContext.getContext())
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
 
@@ -50,7 +53,7 @@ class SaveSentenceResource(Resource):
         log_info("SaveSentenceResource for user {}, number sentences to update {} request {}".format(user_id, len(sentences), body), AppContext.getContext())
 
         try:
-            result = SentenceRepositories.update_sentences(user_id, sentences, workflowCode)
+            result = sentenceRepo.update_sentences(user_id, sentences, workflowCode)
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
@@ -62,6 +65,33 @@ class SaveSentenceResource(Resource):
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
 
+class SentenceStatisticsCount(Resource):
+    def post(self):
+        body        = request.get_json()
+        user_id     = request.headers.get('userid')
+
+        if 'record_ids' not in body or user_id is None:
+            log_info('Missing params in SentenceStatisticsCount {}, user_id:{}'.format(body, user_id), AppContext.getContext())
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
+
+        record_ids       = body['record_ids']
+
+        AppContext.addRecordID(None)
+        log_info("SentenceStatisticsCount for user {}, sentence count for record_ids {}".format(user_id, record_ids), AppContext.getContext())
+
+        try:
+            result = sentenceRepo.get_sentences_counts(record_ids)
+            if result == False:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+                return res.getresjson(), 400
+            
+            res = CustomResponse(Status.SUCCESS.value, result)
+            return res.getres()
+        except Exception as e:
+            log_exception("SentenceStatisticsCount ",  AppContext.getContext(), e)
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
 
 '''
     un-used method
