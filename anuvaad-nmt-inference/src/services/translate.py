@@ -49,7 +49,7 @@ class TranslateService:
 
                 else:
                     log_info("Performing interactive translation on:{}".format(i['id']),MODULE_CONTEXT)
-                    i['src'],date_original,url_original,num_array,num_map = tagger_util.tag_number_date_url_1(i['src'])
+                    i['src'],date_original,url_original,num_array,num_map = tagger_util.tag_number_date_url(i['src'])
                     tag_src = i['src'] 
 
                     if i['id'] == 56:
@@ -147,7 +147,7 @@ class TranslateService:
                     translation = [misc.regex_pass(i,[patterns['p8'],patterns['p9'],patterns['p4'],patterns['p5'],
                                                 patterns['p6'],patterns['p7']]) for i in translation]
                     tag_tgt = translation
-                    translation = [tagger_util.replace_tags_with_original_1(i,date_original,url_original,num_array) for i in translation]
+                    translation = [tagger_util.replace_tags_with_original(i,date_original,url_original,num_array) for i in translation]
                 log_info("interactive translation-experiment-{} output: {}".format(i['id'],translation),MODULE_CONTEXT)    
                 # log_info(log_with_request_info(i.get("s_id"),LOG_TAGS["output"],translation))
                 tgt.append(translation)
@@ -208,7 +208,7 @@ class OpenNMTTranslateService:
                     log_info("translating using NMT-model:{}".format(i['id']),MODULE_CONTEXT)
                     # prefix,suffix, i['src'] = special_case_handler.separate_alphanumeric_and_symbol(i['src'])
                     prefix, i['src'] = special_case_handler.prefix_handler(i['src'])
-                    i['src'],date_original,url_original,num_array,num_map = tagger_util.tag_number_date_url_1(i['src'])
+                    i['src'],date_original,url_original,num_array,num_map = tagger_util.tag_number_date_url(i['src'])
                     tag_src = (prefix +" "+ i['src']).lstrip() 
                     if i['id'] == 5:
                         "hi-en exp-1"
@@ -388,7 +388,7 @@ class OpenNMTTranslateService:
                     translation = misc.regex_pass(translation,[patterns['p8'],patterns['p9'],patterns['p4'],patterns['p5'],
                                                 patterns['p6'],patterns['p7']])
                     tag_tgt = translation                            
-                    translation = tagger_util.replace_tags_with_original_1(translation,date_original,url_original,num_array)
+                    translation = tagger_util.replace_tags_with_original(translation,date_original,url_original,num_array)
                     translation = oc.cleaner(tag_src,translation,i['id'])
                 log_info("trans_function-experiment-{} output: {}".format(i['id'],translation),MODULE_CONTEXT)   
                 # logger.info(log_with_request_info(i.get("s_id"),LOG_TAGS["output"],translation)) 
