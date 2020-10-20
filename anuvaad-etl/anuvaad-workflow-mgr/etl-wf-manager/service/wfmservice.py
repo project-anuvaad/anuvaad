@@ -111,11 +111,7 @@ class WFMService:
                 error = self.validate_tool_response(response, tool_details, wf_input)
                 if error:
                     return error
-                if tool_details["name"] == tool_ch or tool_details["name"] == tool_nmt:
-                    tool_output = wf_input
-                    tool_output["output"] = response
-                else:
-                    tool_output = response
+                tool_output = response
                 tool_output["metadata"] = wf_input["metadata"]
                 previous_tool = tool_details["name"]
                 log_info(tool_details["name"] + log_msg_end, wf_input)
@@ -345,20 +341,11 @@ class WFMService:
         if 'error' in req_criteria.keys():
             if req_criteria["error"] is False:
                 exclude["error"] = False
-
         if not skip_pagination:
-            if 'offset' in req_criteria.keys():
-                offset = req_criteria["offset"]
-            else:
-                offset = 0
-            if 'limit' in req_criteria.keys():
-                limit = req_criteria["limit"]
-            else:
-                limit = page_default_limit
-            log_info("Searching with offset and limit...", None)
+            offset = 0 if 'offset' not in req_criteria.keys() else req_criteria["offset"]
+            limit = page_default_limit if 'limit' not in req_criteria.keys() else req_criteria["limit"]
             return wfmrepo.search_job(criteria, exclude, offset, limit)
         else:
-            log_info("Searching without offset and limit...", None)
             return wfmrepo.search_job(criteria, exclude, None, None)
 
 
