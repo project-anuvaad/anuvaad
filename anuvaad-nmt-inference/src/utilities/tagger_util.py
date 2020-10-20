@@ -9,7 +9,7 @@ import numpy as np
 Below funtions are meant to handle date, numbers and URls as part of pre and post translation processing
 '''
 
-def tag_number_date_url_1(text):
+def tag_number_date_url(text):
   try: 
     if len(text) == 0:
       return "","","","",""
@@ -77,7 +77,7 @@ def tag_number_date_url_1(text):
     logger.error("In handle_date_url:tag_num function parent except block:{}".format(e))
     return text,[],[],(num_array or [])
 
-def replace_tags_with_original_1(text,date_original,url_original,num_array):
+def replace_tags_with_original(text,date_original,url_original,num_array):
   try:
     resultant_str = list()
       
