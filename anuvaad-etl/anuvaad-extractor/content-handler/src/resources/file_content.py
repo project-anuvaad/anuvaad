@@ -10,6 +10,9 @@ class FileContentSaveResource(Resource):
     def post(self):
         body        = request.get_json()
         user_id     = request.headers.get('userid')
+        if user_id == None:
+            user_id = request.headers.get('ad-userid')
+
         pages       = body['pages']
         file_locale = ''
         
@@ -84,6 +87,9 @@ class FileContentUpdateResource(Resource):
     def post(self):
         body        = request.get_json()
         user_id     = request.headers.get('userid')
+        if user_id == None:
+            user_id = request.headers.get('ad-userid')
+            
         workflowCode= None
         
         if 'blocks' not in body or user_id is None:

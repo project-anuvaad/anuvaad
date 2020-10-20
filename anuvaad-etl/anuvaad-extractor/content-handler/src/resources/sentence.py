@@ -11,6 +11,9 @@ class FetchSentenceResource(Resource):
     def post(self):
         body        = request.get_json()
         user_id     = request.headers.get('userid')
+        if user_id == None:
+            user_id = request.headers.get('ad-userid')
+
         s_ids       = None
         if 'sentences' in body:
             s_ids       = body['sentences']
@@ -40,6 +43,8 @@ class SaveSentenceResource(Resource):
     def post(self):
         body        = request.get_json()
         user_id     = request.headers.get('userid')
+        if user_id == None:
+            user_id = request.headers.get('ad-userid')
 
         if 'sentences' not in body or user_id is None or 'workflowCode' not in body:
             log_info('Missing params in SaveSentenceResource {}, user_id:{}'.format(body, user_id), AppContext.getContext())
@@ -69,6 +74,8 @@ class SentenceStatisticsCount(Resource):
     def post(self):
         body        = request.get_json()
         user_id     = request.headers.get('userid')
+        if user_id == None:
+            user_id = request.headers.get('ad-userid')
 
         if 'record_ids' not in body or user_id is None:
             log_info('Missing params in SentenceStatisticsCount {}, user_id:{}'.format(body, user_id), AppContext.getContext())
