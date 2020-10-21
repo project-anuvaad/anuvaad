@@ -4,7 +4,7 @@ WorkflowConfigs:
   - workflowCode: WF_A_AL
     type: ASYNC
     description: Aligns the input files. 
-    useCase: A_AL
+    useCase: A_A
     sequence:
     - order: 0
       tool:
@@ -28,7 +28,7 @@ WorkflowConfigs:
   - workflowCode: WF_A_FC
     type: ASYNC
     description: converts a file into pdf and other formats
-    useCase: A_FC
+    useCase: A_F
     sequence:
     - order: 0
       tool:
@@ -52,7 +52,7 @@ WorkflowConfigs:
   - workflowCode: WF_A_BM
     type: ASYNC
     description: extracts different blocks from a pdf file.
-    useCase: A_BM
+    useCase: A_B
     sequence:
     - order: 0
       tool:
@@ -76,7 +76,7 @@ WorkflowConfigs:
   - workflowCode: WF_A_FCBM
     type: ASYNC
     description: converts file into pdf and then extracts multiple blocks.
-    useCase: A_FCBM
+    useCase: A_FB
     sequence:
     - order: 0
       tool:
@@ -115,7 +115,7 @@ WorkflowConfigs:
   - workflowCode: WF_A_FCBMTK
     type: ASYNC
     description: converts file into pdf and then extracts multiple blocks. Text content of each block is tokenised.
-    useCase: A_FCBMTK
+    useCase: A_FBT
     sequence:
     - order: 0
       tool:
@@ -171,7 +171,7 @@ WorkflowConfigs:
   - workflowCode: WF_A_FCBMTKTR
     type: ASYNC
     description: converts file into pdf and then extracts multiple blocks. Text content of each block is tokenised and translated
-    useCase: A_FCBMTKTR
+    useCase: A_FBTTR
     sequence:
     - order: 0
       tool:
@@ -258,7 +258,7 @@ WorkflowConfigs:
   - workflowCode: WF_S_TKTR
     type: SYNC
     description: Tokenises the text blocks to sentences and Translates them.
-    useCase: S_TKTR
+    useCase: S_TTR
     sequence:
     - order: 0
       tool:
@@ -278,10 +278,10 @@ WorkflowConfigs:
 
 # Conventions:
 # WF - prefix for Workflow
-# A - type of workflow, ASYNC
-# S - type of workflow, SYNC
-# AL - tool, Aligner
-# FC - tool, File Converter
-# BM - tool, Block Merger
-# TK - tool, Tokeniser
-# TR - tool, Translator
+# A - type of workflow: ASYNC
+# S - type of workflow: SYNC
+# AL,A - tool: Aligner
+# FC,F - tool: File Converter
+# BM,B - tool: Block Merger
+# TK,T - tool: Tokeniser
+# TR - tool: Translator

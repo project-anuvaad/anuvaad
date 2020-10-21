@@ -2,30 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1367aa72-5a9a-49e3-af55-1fe2c4fddf78" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/aligner.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../anuvaad-translator/.idea/anuvaad-translator.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../anuvaad-translator/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../anuvaad-translator/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../anuvaad-translator/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../anuvaad-translator/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../anuvaad-translator/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/.idea/anuvaad-workflow-mgr.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/config/etl-wf-manager-config-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/config/etl-wf-manager-config-dev.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/configs/wfmconfig.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/configs/wfmconfig.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/controller/wfmcontroller.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/controller/wfmcontroller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/service/wfmservice.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/service/wfmservice.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/validator/wfmvalidator.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/validator/wfmvalidator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
