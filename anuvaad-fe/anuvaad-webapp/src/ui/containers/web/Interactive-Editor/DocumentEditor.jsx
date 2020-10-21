@@ -115,12 +115,30 @@ class PdfFileEditor extends React.Component {
         showLoader: false
       });
     }
-    if (prevProps.workflowStatus !== this.props.workflowStatus || prevProps.saveContent !== this.props.saveContent) {
+    if (prevProps.workflowStatus !== this.props.workflowStatus) {
 
       const apiObj = new FileContent(this.props.match.params.jobid, this.state.startPage, this.state.endPage);
       this.props.APITransport(apiObj);
       this.setState({ apiStatus: true });
     }
+
+    if (prevProps.saveContent !== this.props.saveContent) {
+      if(this.props.saveContent && this.props.saveContent.hasOwnProperty("s_id")) {
+        this.state.sentences && Array.isArray(this.state.sentences) && this.state.sentences.length>0 && this.state.sentences.map((pageData, i) => {
+          if(pageData.page_no === this.state.selectedPageNo) {
+            pageData && pageData.text_blocks && Array.isArray(pageData.text_blocks) && pageData.text_blocks.length > 0 && pageData.text_blocks.map(blocks => {
+              blocks && blocks.tokenized_sentences && Array.isArray(blocks.tokenized_sentences) && blocks.tokenized_sentences.length > 0 && blocks.tokenized_sentences.map(children => {
+                if(children.s_id === this.props.saveContent.s_id) {
+                  children = this.props.saveContent
+                  return true
+                }
+              })
+            })
+          }
+        })
+      }
+    }
+
 
     /* Pagination api */
     if (prevProps.fetchContent !== this.props.fetchContent) {
@@ -385,8 +403,8 @@ class PdfFileEditor extends React.Component {
     }
   };
 
-  saveUpdatedSentence(sentenceObj) {
-    this.setState({ selectedSourceText: sentenceObj })
+  saveUpdatedSentence(sentenceObj, pageNo) {
+    this.setState({ selectedSourceText: sentenceObj, selectedPageNo: pageNo })
 
     const apiObj = new SaveContent(sentenceObj);
     this.props.APITransport(apiObj);
@@ -394,7 +412,7 @@ class PdfFileEditor extends React.Component {
   }
 
   workFlowApi(workflow, blockDetails, update, type) {
-    TELEMETRY.sentenceChanged(this.state.initialSourceSen, this.state.selectedSourceText.text, this.state.selectedSourceText.block_id, "validation")
+    // TELEMETRY.sentenceChanged(this.state.initialSourceSen, this.state.selectedSourceText.text, this.state.selectedSourceText.block_id, "validation")
 
     if (!type || type !== "edit") {
       this.setState({ telemetry: null })
@@ -1002,7 +1020,7 @@ const mapStateToProps = state => ({
   fetchContent: state.fetchContent,
   workflowStatus: state.workflowStatus,
   documentconverter: state.documentconverter,
-  saveContent: state.aveContent,
+  saveContent: state.saveContent,
 
 });
 
