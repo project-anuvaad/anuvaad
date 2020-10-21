@@ -33,14 +33,15 @@ class DocumentSource extends React.Component {
       }
     }
 
-    if (this.props.scrollId) {
-      if (this.refs[this.props.scrollId]) {
-        this.refs[this.props.scrollId].scrollIntoView({
-          behavior: "smooth",
-          inline: "end"
-        });
-      }
-    }
+    // if (this.props.scrollId) {
+    //   let pageNo = this.props.scrollId.split("@")[0]
+    //   if (this.refs[this.props.scrollId] && pageNo !== 1) {
+    //     this.refs[this.props.scrollId].scrollIntoView({
+    //       behavior: "smooth",
+    //       inline: "end"
+    //     });
+    //   }
+    // }
 
   }
 

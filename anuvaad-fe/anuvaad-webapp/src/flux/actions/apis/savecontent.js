@@ -16,8 +16,8 @@ export default class saveConetent extends API {
 
   processResponse(res) {
     super.processResponse(res);
-    if (res) {
-      this.savedata = res;
+    if (res && res.data && Array.isArray(res.data) && res.data.length>0) {
+      this.savedata = res.data[0];
     }
   }
 

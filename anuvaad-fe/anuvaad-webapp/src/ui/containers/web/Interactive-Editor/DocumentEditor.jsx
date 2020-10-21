@@ -123,12 +123,12 @@ class PdfFileEditor extends React.Component {
     }
 
     if (prevProps.saveContent !== this.props.saveContent) {
-      if(this.props.saveContent && this.props.saveContent.hasOwnProperty("s_id")) {
-        this.state.sentences && Array.isArray(this.state.sentences) && this.state.sentences.length>0 && this.state.sentences.map((pageData, i) => {
-          if(pageData.page_no === this.state.selectedPageNo) {
+      if (this.props.saveContent && this.props.saveContent.hasOwnProperty("s_id")) {
+        this.state.sentences && Array.isArray(this.state.sentences) && this.state.sentences.length > 0 && this.state.sentences.map((pageData, i) => {
+          if (pageData.page_no === this.state.selectedPageNo) {
             pageData && pageData.text_blocks && Array.isArray(pageData.text_blocks) && pageData.text_blocks.length > 0 && pageData.text_blocks.map(blocks => {
               blocks && blocks.tokenized_sentences && Array.isArray(blocks.tokenized_sentences) && blocks.tokenized_sentences.length > 0 && blocks.tokenized_sentences.map(children => {
-                if(children.s_id === this.props.saveContent.s_id) {
+                if (children.s_id === this.props.saveContent.s_id) {
                   children = this.props.saveContent
                   return true
                 }
@@ -374,7 +374,7 @@ class PdfFileEditor extends React.Component {
     } else {
       this.setState({ edited: true, selectedSourceText: type, selectedBlock: selectedBlock });
     }
-    this.setState({initialSourceSen: type && type.text})
+    this.setState({ initialSourceSen: type && type.text })
   }
 
   handleSourceChange = (evt, blockValue) => {
@@ -412,7 +412,9 @@ class PdfFileEditor extends React.Component {
   }
 
   workFlowApi(workflow, blockDetails, update, type) {
-    // TELEMETRY.sentenceChanged(this.state.initialSourceSen, this.state.selectedSourceText.text, this.state.selectedSourceText.block_id, "validation")
+    if (type === "source_edit") {
+      TELEMETRY.sentenceChanged(this.state.initialSourceSen, this.state.selectedSourceText.text, this.state.selectedSourceText.block_id, "validation")
+    }
 
     if (!type || type !== "edit") {
       this.setState({ telemetry: null })
@@ -441,7 +443,6 @@ class PdfFileEditor extends React.Component {
   }
 
   handleBlur(id, wf_code, saveData, prevValue, finalValue) {
-
     let status = "update";
     let idDetails = id.split("_")
     let text = "";

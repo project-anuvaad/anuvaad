@@ -324,11 +324,11 @@ class Block extends Component {
               onBlur={(event) => { this.handleBlurCard(event, sentence.s_id) }}
 
             >
-              <Tooltip title="Go to validation mode">
+              {/* <Tooltip title="Go to validation mode">
                 <ValidationIcon onClick={() => this.props.moveToValidationMode(this.props.pageNo, this.props.blockIdentifier, this.props.block_id)}
                   style={{ color: "#1C9AB7", cursor: "pointer" }}
                 />
-              </Tooltip>
+              </Tooltip> */}
               <div
                 style={{ width: "100%", paddingLeft: "10px" }}
                 onClick={() => selectedBlock &&
