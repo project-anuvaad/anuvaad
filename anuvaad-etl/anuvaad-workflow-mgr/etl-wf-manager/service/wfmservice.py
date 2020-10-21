@@ -9,8 +9,6 @@ from configs.wfmconfig import anu_etl_wfm_core_topic
 from configs.wfmconfig import log_msg_start
 from configs.wfmconfig import log_msg_end
 from configs.wfmconfig import module_wfm_name
-from configs.wfmconfig import tool_ch
-from configs.wfmconfig import tool_nmt
 from configs.wfmconfig import page_default_limit
 from anuvaad_auditor.errorhandler import post_error_wf, post_error
 from anuvaad_auditor.loghandler import log_info
@@ -45,6 +43,28 @@ class WFMService:
             return client_output
         else:
             return self.process_sync(client_output)
+
+    # Method to register the SYNC job.
+    # Generates job ID, creates entry to the DB, passes the request to further processing
+    # Returns client-readable job status.
+    def register_sync_job(self, wf_sync_input):
+        wf_sync_input["jobID"] = wfmutils.generate_job_id(wf_sync_input["workflowCode"])
+        client_output = self.get_wf_details(wf_sync_input, None, False, None)
+        self.update_job_details(client_output, True)
+        return self.process_sync(client_output)
+
+    # Method to register the ASYNC job.
+    # Generates job ID, creates entry to the DB, passes the request to further processing
+    # Returns client-readable job status.
+    def register_async_job(self, wf_async_input):
+        wf_async_input["jobID"] = wfmutils.generate_job_id(wf_async_input["workflowCode"])
+        client_output = self.get_wf_details(wf_async_input, None, False, None)
+        self.update_job_details(client_output, True)
+        prod_res = producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
+        if prod_res:
+            client_output = self.get_wf_details(wf_async_input, None, False, prod_res)
+            self.update_job_details(client_output, False)
+        return client_output
 
     # Method to interrupt the job
     def interrupt_job(self, interrupt_in):

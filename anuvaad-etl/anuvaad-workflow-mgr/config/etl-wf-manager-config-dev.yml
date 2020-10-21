@@ -1,10 +1,10 @@
 WorkflowConfigs:
 
 
-  - workflowCode: DP_WFLOW_A
+  - workflowCode: WF_A_AL
     type: ASYNC
     description: Aligns the input files. 
-    useCase: ALIGN
+    useCase: A_AL
     sequence:
     - order: 0
       tool:
@@ -25,10 +25,10 @@ WorkflowConfigs:
 
 
 
-  - workflowCode: DP_WFLOW_F
+  - workflowCode: WF_A_FC
     type: ASYNC
     description: converts a file into pdf and other formats
-    useCase: FC
+    useCase: A_FC
     sequence:
     - order: 0
       tool:
@@ -49,10 +49,10 @@ WorkflowConfigs:
 
 
 
-  - workflowCode: DP_WFLOW_B
+  - workflowCode: WF_A_BM
     type: ASYNC
     description: extracts different blocks from a pdf file.
-    useCase: BM
+    useCase: A_BM
     sequence:
     - order: 0
       tool:
@@ -73,10 +73,10 @@ WorkflowConfigs:
 
 
 
-  - workflowCode: DP_WFLOW_FB
+  - workflowCode: WF_A_FCBM
     type: ASYNC
     description: converts file into pdf and then extracts multiple blocks.
-    useCase: FC-BM
+    useCase: A_FCBM
     sequence:
     - order: 0
       tool:
@@ -112,10 +112,10 @@ WorkflowConfigs:
       endState: true
 
 
-  - workflowCode: DP_WFLOW_FBT
+  - workflowCode: WF_A_FCBMTK
     type: ASYNC
     description: converts file into pdf and then extracts multiple blocks. Text content of each block is tokenised.
-    useCase: FC-BM-TOK
+    useCase: A_FCBMTK
     sequence:
     - order: 0
       tool:
@@ -168,10 +168,10 @@ WorkflowConfigs:
 
 
 
-  - workflowCode: DP_WFLOW_FBTTR
+  - workflowCode: WF_A_FCBMTKTR
     type: ASYNC
     description: converts file into pdf and then extracts multiple blocks. Text content of each block is tokenised and translated
-    useCase: FC-BM-TOK-TRANS
+    useCase: A_FCBMTKTR
     sequence:
     - order: 0
       tool:
@@ -240,7 +240,7 @@ WorkflowConfigs:
 
 
 
-  - workflowCode: DP_WFLOW_S_TR
+  - workflowCode: WF_S_TR
     type: SYNC
     description: Translates the sentences.
     useCase: S_TR
@@ -255,10 +255,10 @@ WorkflowConfigs:
 
 
 
-  - workflowCode: DP_WFLOW_S_TTR
+  - workflowCode: WF_S_TKTR
     type: SYNC
     description: Tokenises the text blocks to sentences and Translates them.
-    useCase: S_TTR
+    useCase: S_TKTR
     sequence:
     - order: 0
       tool:
@@ -274,3 +274,14 @@ WorkflowConfigs:
         api-details:
         - uri: http://gateway_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/block/workflow/translate
       endState: true
+
+
+# Conventions:
+# WF - prefix for Workflow
+# A - type of workflow, ASYNC
+# S - type of workflow, SYNC
+# AL - tool, Aligner
+# FC - tool, File Converter
+# BM - tool, Block Merger
+# TK - tool, Tokeniser
+# TR - tool, Translator

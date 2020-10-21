@@ -1,5 +1,7 @@
 import json
 import logging
+import random
+import string
 import time
 
 import requests
@@ -14,6 +16,7 @@ from configs.wfmconfig import tool_aligner
 from configs.wfmconfig import tool_translator
 from configs.wfmconfig import tool_ch
 from configs.wfmconfig import tool_nmt
+from configs.wfmconfig import jobid_random_str_length
 from repository.wfmrepository import WFMRepository
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_exception, log_error
@@ -103,12 +106,13 @@ class WFMUtils:
         return tools
 
     # Generates unique job id.
-    # Format: <use_case>-<13_digit_epoch>
+    # Format: <use_case>-<6_char_random>-<13_digit_epoch>
     def generate_job_id(self, workflowCode):
         config = self.get_configs()
         config_to_be_used = config[workflowCode]
-        usecase = config_to_be_used["useCase"]
-        return usecase + "-" + str(time.time()).replace('.', '')[0:13]
+        use_case = config_to_be_used["useCase"]
+        rand_str = ''.join(random.choice(string.ascii_letters) for i in range(jobid_random_str_length))
+        return use_case + "-" + str(rand_str) + "-" + str(time.time()).replace('.', '')[0:13]
 
     # Fetches the order of execution for a given workflow.
     def get_order_of_exc(self, workflowCode):

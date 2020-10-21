@@ -27,31 +27,37 @@ def initiate_workflow():
     return response
 
 
-# REST endpoint to initiate the workflow.
-@wfmapp.route(context_path + '/v1/async/workflow/initiate', methods=["POST"])
+# REST endpoint to initiate the ASYNC workflow.
+@wfmapp.route(context_path + '/v1/workflow/async/initiate', methods=["POST"])
 def initiate_async_workflow():
     service = WFMService()
     validator = WFMValidator()
     data = request.get_json()
-    error = validator.validate(data)
+    error = validator.common_validate(data)
+    if error is not None:
+        return error, 400
+    error = validator.validate_async(data, data["workflowCode"])
     if error is not None:
         return error, 400
     data = add_headers(data, request)
-    response = service.register_job(data)
+    response = service.register_async_job(data)
     return response
 
 
-# REST endpoint to initiate the workflow.
-@wfmapp.route(context_path + '/v1/sync/workflow/initiate', methods=["POST"])
+# REST endpoint to initiate the SYNC workflow.
+@wfmapp.route(context_path + '/v1/workflow/sync/initiate', methods=["POST"])
 def initiate_sync_workflow():
     service = WFMService()
     validator = WFMValidator()
     data = request.get_json()
-    error = validator.validate(data)
+    error = validator.common_validate(data)
+    if error is not None:
+        return error, 400
+    error = validator.validate_sync(data, data["workflowCode"])
     if error is not None:
         return error, 400
     data = add_headers(data, request)
-    response = service.register_job(data)
+    response = service.register_sync_job(data)
     return response
 
 
