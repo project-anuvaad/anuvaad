@@ -4,7 +4,7 @@
     <list default="true" id="28b7c456-6bb7-42d9-bd74-bc01a6deddd3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../anuvaad-extractor/aligner/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../anuvaad-extractor/aligner/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../anuvaad-workflow-mgr/etl-wf-manager/cronjobs/jobsweeper.py" beforeDir="false" afterPath="$PROJECT_DIR$/../anuvaad-workflow-mgr/etl-wf-manager/cronjobs/jobsweeper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/translator/cronjobs/jobsmanager.py" beforeDir="false" afterPath="$PROJECT_DIR$/translator/cronjobs/jobsmanager.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
