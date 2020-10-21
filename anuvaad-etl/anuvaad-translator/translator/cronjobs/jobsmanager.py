@@ -44,7 +44,7 @@ class JobsManger(Thread):
                             completed_jobids.append(record["jobID"])
                             is_added = True
                         if not is_added:
-                            log_info("JobsManger Report ---- " + str(record["jobID"]) + " | " + str(total) + " | " + str(translated) + " | " + str(skipped), None)
+                            log_info("JobsManger InProgress ---- " + str(record["jobID"]) + " | " + str(total) + " | " + str(translated) + " | " + str(skipped), obj)
                             inprogress.append(record)
                     except Exception as e:
                         log_exception("Exception in JobsManger for record: " + record["recordID"], record["transInput"], e)
