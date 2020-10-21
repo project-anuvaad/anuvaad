@@ -33,6 +33,8 @@ class SentenceRepositories:
             if update_s0:
                 sentence['s0_tgt']    = sentence['tgt']
                 sentence['s0_src']    = sentence['src']
+            if 'save' not in sentence:
+                sentence['save'] = False
 
             if self.sentenceModel.update_sentence_by_s_id(user_id, sentence) == False:
                 return False

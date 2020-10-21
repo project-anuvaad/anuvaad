@@ -59,6 +59,7 @@ class SentenceModel(object):
                                                         "data.tokenized_sentences.$.n_id" : sentence['n_id'],
                                                         "data.tokenized_sentences.$.src"  : sentence['src'],
                                                         "data.tokenized_sentences.$.tgt"  : sentence['tgt'],
+                                                        "data.tokenized_sentences.$.save" : sentence['save'],
                                                     }
                                                 }, upsert=False)
 

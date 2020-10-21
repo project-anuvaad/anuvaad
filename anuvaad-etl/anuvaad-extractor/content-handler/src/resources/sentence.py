@@ -62,9 +62,18 @@ class SaveSentenceResource(Resource):
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
-
+            
+            sentence_ids = []
+            for sentence in sentences:
+                sentence_ids.append(sentence['s_id'])
+            
+            result  = sentenceRepo.get_sentence(user_id, sentence_ids)
+            if result == False:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+                return res.getresjson(), 400
             res = CustomResponse(Status.SUCCESS.value, result)
             return res.getres()
+
         except Exception as e:
             log_exception("SaveSentenceResource ",  AppContext.getContext(), e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
