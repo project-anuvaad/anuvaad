@@ -5,12 +5,15 @@ MIT License
 
 # -*- coding: utf-8 -*-
 import numpy as np
-from skimage import io
+#from skimage import io
 import cv2
 
 def loadImage(img_file):
     #if img_class!="double_col":
-    img = io.imread(img_file) 
+
+    #img = io.imread(img_file)
+    img  = cv2.imread(img_file)
+    img  = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
     #else:
         #img = img_file       # RGB order
     if img.shape[0] == 2: img = img[0]
