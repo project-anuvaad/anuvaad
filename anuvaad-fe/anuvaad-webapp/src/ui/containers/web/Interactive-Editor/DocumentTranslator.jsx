@@ -19,6 +19,7 @@ import BLOCK_OPS from "../../../../utils/block.operations";
 import Dictionary from "./Dictionary";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import MenuItems from "./PopUp";
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 class PdfFileEditor extends React.Component {
@@ -74,13 +75,15 @@ class PdfFileEditor extends React.Component {
     }
 
     if(prevProps.wordDictionary !== this.props.wordDictionary && this.props.wordDictionary){
-      debugger
       console.log(this.props.wordDictionary)
       let parallel_words= [];
       if(this.state.src_locale === "en"){
         
         this.props.wordDictionary.parallel_words.map(words=>{
-          parallel_words.push(words.name)
+          if(this.state.tgt_locale=== words.locale){
+            parallel_words.push(words.name)
+          }
+         
         })
         
       }
@@ -126,7 +129,8 @@ class PdfFileEditor extends React.Component {
 
     if (block && this.state.activeSentence && this.state.activeSentence.s_id && this.state.activeSentence.s_id !== value.s_id)
 
-      this.handleClick("")
+      this.handleClick("");
+      this.handleClose();
     this.setState({
       activeSentence: value,
       updateData: saveData && block,
@@ -155,8 +159,6 @@ class PdfFileEditor extends React.Component {
     sentence_index,
     title,
     editedText) {
-
-    debugger
     let SentenceOperationId;
     let workflowCode = "DP_WFLOW_S_TR";
     if (title === "Merge sentence") {
@@ -190,7 +192,6 @@ class PdfFileEditor extends React.Component {
         sentence_id,
         sentence_index
       );
-
       SentenceOperationId = this.state.activeSentence.s_id;
 
       TELEMETRY.splitSentencesEvent(data, [data.slice(0, this.state.sentence_index), data.slice(this.state.sentence_index)])
@@ -211,7 +212,7 @@ class PdfFileEditor extends React.Component {
 
   handleClose = () => {
     this.setState({
-      openDialog: false,
+      openEl: false,
       title: "",
 
       sentence_id: "",
@@ -263,6 +264,49 @@ class PdfFileEditor extends React.Component {
       })
     })
   }
+ 
+
+
+  popUp = (selected_block_id,
+    sentence_id,
+    sentence_index, event, operation, selectedText) => {
+
+      console.log("--------------------",window.getSelection().toString())
+    window.getSelection().toString()&& this.setState({
+      operation_type: operation,
+      openEl: true,
+
+      topValue: event.clientY - 4,
+      leftValue: event.clientX - 2,
+      selected_block_id,
+      sentence_id,
+      sentence_index,
+      selectedText
+
+
+
+    });
+  };
+
+  handlePopApi(status){
+    if(status==="Split sentence"){
+      if(this.state.activeSentence.src.length!==this.state.sentence_index){
+        this.handleDialog( this.state.selected_block_id,this.state.sentence_id,this.state.sentence_index,this.state.operation_type )
+      }
+      else{
+        alert("Please select split sentence correctly")
+      }
+      
+      
+
+    }
+    else if(status==="Dictionary"){
+      let word_locale = this.props.match.params.locale
+     let tgt_locale = this.props.match.params.tgt_locale
+      this.handleDictionary(this.state.selectedText,word_locale,  tgt_locale)
+    }
+    this.setState({openEl: false})
+  }
 
   handleEditorClick(id) {
     this.setState({ highlightId: id });
@@ -279,6 +323,7 @@ class PdfFileEditor extends React.Component {
 
   handleBlurClick = (token) => {
     this.setState({ dialogToken: token });
+    this.handleClose();
   };
 
   handleOutsideClick = () => {
@@ -319,6 +364,7 @@ class PdfFileEditor extends React.Component {
           moveToValidationMode={this.props.moveToValidationMode}
           scroll={this.props.scroll}
           handleDictionary = {this.handleDictionary.bind(this)}
+          popUp={this.popUp.bind(this)}
         />
       </div>
     });
@@ -467,6 +513,23 @@ class PdfFileEditor extends React.Component {
               </Grid>
             </Grid>
           </div>
+        )}
+
+{this.state.openEl &&this.state.activeSentence &&window.getSelection().toString()&& (
+          <MenuItems
+            isOpen={this.state.openEl}
+            splitValue={this.state.splitValue}
+            topValue={this.state.topValue}
+            leftValue={this.state.leftValue}
+            anchorEl={this.state.anchorEl}
+            operation_type={this.state.operation_type}
+            handleClose={this.handleClose.bind(this)}
+            handleDialog={this.handlePopApi.bind(this)}
+
+
+            // handleCheck={this.handleCheck.bind(this)}
+
+          />
         )}
         {this.state.open && (
           <Snackbar

@@ -19,6 +19,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { withRouter } from "react-router-dom";
 
+
 //var getCaretCoordinates = require("textarea-caret");
 
 let arr = [];
@@ -85,13 +86,20 @@ class Block extends Component {
     let actual_text = text.src;
     actual_text = actual_text.replace(/\s{2,}/g, " ");
     actual_text = actual_text.trim();
-    this.props.handleDialogMessage(
-      this.props.block_id,
-      sentenceStartId,
-      split_index,
-      // actual_text.substring(0, split_index),
-      opeartion,
-    );
+
+    if(split_index!== text.src.length){
+      this.props.handleDialogMessage(
+        this.props.block_id,
+        sentenceStartId,
+        split_index,
+        // actual_text.substring(0, split_index),
+        opeartion,
+      );
+    }
+    else{
+      alert("Please select split sentence correctly")
+    }
+    
   }
 
   handleChangeEvent = (event) => {
@@ -186,10 +194,26 @@ class Block extends Component {
 
   }
 
+  getSelectionText(event, text){
+
+    const sentenceStartId = text.s_id;
+    const split_index = window.getSelection().focusOffset;
+    const selectedText = window.getSelection().toString()
+    let opeartion = "Split sentence";
+    // eslint-disable-next-line
+    let actual_text = text.src;
+    actual_text = actual_text.replace(/\s{2,}/g, " ");
+    actual_text = actual_text.trim();
+      
+    this.props.popUp (this.props.block_id,
+      sentenceStartId,
+      split_index,
+      event,
+      opeartion,selectedText )
+  }
+
   handleBlurCard = (event, id) => {
     if (this.state.editedText !== this.props.selectedBlock.tgt && this.state.editedText && this.state.enteredData) {
-
-      let message = "Do you want to save the sentences";
       let operation = "Save";
 
       if ((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type !== "button") && !this.state.dontShowDialog) {
@@ -251,7 +275,7 @@ class Block extends Component {
     this.setState({ dontShowDialog: value, caretData: "" })
   }
 
-  handleDictionary=()=>{
+  handleDictionary=(event)=>{
      let selectedWord = window.getSelection().toString()
      let word_locale = this.props.match.params.locale
      let tgt_locale = this.props.match.params.tgt_locale
@@ -311,7 +335,11 @@ class Block extends Component {
                 onClick={() => selectedBlock &&
                   sentence &&
                   sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}
-                  onDoubleClick = {()=>this.handleDictionary() }
+                  // onDoubleClick = {(event)=>this.handleDictionary(event) }
+
+                  onMouseUp={(event)=>{this.getSelectionText(event,sentence)}}
+                  onKeyUp={(event)=>{this.getSelectionText(event,sentence)}}
+
                   
                   >
                     
@@ -475,6 +503,8 @@ class Block extends Component {
             </div>
           </Grid>
         </Grid>
+
+       
       </Paper >
     );
   }
