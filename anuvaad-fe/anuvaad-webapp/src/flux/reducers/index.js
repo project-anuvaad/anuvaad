@@ -73,6 +73,7 @@ import documentDetails from "./fetch_fileDetails";
 import fetchContent from "./fetchcontent";
 import documentconverter from "./documentconverter";
 import wordDictionary from "./word_dictionary";
+import saveContent from "./savecontent"
 
 export default {
     login,
@@ -149,5 +150,7 @@ export default {
     documentDetails,
     fetchContent,
     documentconverter,
-    wordDictionary
+    wordDictionary,
+    saveContent,
+
 };

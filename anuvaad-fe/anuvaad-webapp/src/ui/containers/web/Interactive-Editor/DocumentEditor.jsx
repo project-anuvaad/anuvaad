@@ -27,6 +27,7 @@ import DownloadIcon from "@material-ui/icons/ArrowDownward";
 import DocumentConverter from "../../../../flux/actions/apis/documentconverter";
 import TranslateView from "./DocumentTranslator";
 import wfcodes from '../../../../configs/workflowcodes'
+import SaveContent from "../../../../flux/actions/apis/savecontent";
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -114,12 +115,7 @@ class PdfFileEditor extends React.Component {
         showLoader: false
       });
     }
-    if (prevProps.workflowStatus !== this.props.workflowStatus) {
-
-      let telemetryData = this.state.telemetry
-      if (telemetryData && telemetryData.hasOwnProperty("save")) {
-        TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
-      }
+    if (prevProps.workflowStatus !== this.props.workflowStatus || prevProps.saveContent !== this.props.saveContent) {
 
       const apiObj = new FileContent(this.props.match.params.jobid, this.state.startPage, this.state.endPage);
       this.props.APITransport(apiObj);
@@ -191,10 +187,10 @@ class PdfFileEditor extends React.Component {
     TELEMETRY.endTranslatorFlow(jobId)
   }
 
-  scrollPage(heightToBescrolled) {
-    window.scrollTo(0, heightToBescrolled);
-    this.setState({ scrollTransMode: false })
-  }
+  // scrollPage(heightToBescrolled) {
+  //   window.scrollTo(0, heightToBescrolled);
+  //   this.setState({ scrollTransMode: false })
+  // }
 
   getPageId(blocks) {
     let page_ids = [];
@@ -360,10 +356,10 @@ class PdfFileEditor extends React.Component {
     } else {
       this.setState({ edited: true, selectedSourceText: type, selectedBlock: selectedBlock });
     }
+    this.setState({initialSourceSen: type && type.text})
   }
 
   handleSourceChange = (evt, blockValue) => {
-
     if (this.state.pageDetails === "target") {
       let sentenceObj = this.state.targetText;
       sentenceObj.tgt = evt.target.value;
@@ -392,10 +388,13 @@ class PdfFileEditor extends React.Component {
   saveUpdatedSentence(sentenceObj) {
     this.setState({ selectedSourceText: sentenceObj })
 
-    this.workFlowApi(wfcodes.DP_WFLOW_S_C, [sentenceObj], "update", "edit")
+    const apiObj = new SaveContent(sentenceObj);
+    this.props.APITransport(apiObj);
+
   }
 
   workFlowApi(workflow, blockDetails, update, type) {
+    TELEMETRY.sentenceChanged(this.state.initialSourceSen, this.state.selectedSourceText.text, this.state.selectedSourceText.block_id, "validation")
 
     if (!type || type !== "edit") {
       this.setState({ telemetry: null })
@@ -1002,7 +1001,9 @@ const mapStateToProps = state => ({
   documentDetails: state.documentDetails,
   fetchContent: state.fetchContent,
   workflowStatus: state.workflowStatus,
-  documentconverter: state.documentconverter
+  documentconverter: state.documentconverter,
+  saveContent: state.aveContent,
+
 });
 
 const mapDispatchToProps = dispatch =>

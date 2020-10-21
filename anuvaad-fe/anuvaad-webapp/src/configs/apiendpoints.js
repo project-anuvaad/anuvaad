@@ -69,7 +69,9 @@ const endpoints = {
   documentupload:"/api/v0/upload-file",
   fecthcontent: "/api/v0/fetch-content",
   documentConverter: "/api/v0/document-converter",
-  word_dictionary: "/api/v0/dictionary/search"
+  word_dictionary: "/api/v0/dictionary/search",
+  save_content: "/api/v0/save-content-sentence",
+  translate: "/anuvaad-etl/translator/v1/text/translate"
 };
 
 export default endpoints;
