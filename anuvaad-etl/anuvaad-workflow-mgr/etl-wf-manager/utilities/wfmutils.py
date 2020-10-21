@@ -111,7 +111,7 @@ class WFMUtils:
         config = self.get_configs()
         config_to_be_used = config[workflowCode]
         use_case = config_to_be_used["useCase"]
-        rand_str = ''.join(random.choice(string.ascii_letters) for i in range(jobid_random_str_length))
+        rand_str = ''.join(random.choice(string.ascii_letters) for i in range(eval(str(jobid_random_str_length))))
         return use_case + "-" + str(rand_str) + "-" + str(time.time()).replace('.', '')[0:13]
 
     # Fetches the order of execution for a given workflow.

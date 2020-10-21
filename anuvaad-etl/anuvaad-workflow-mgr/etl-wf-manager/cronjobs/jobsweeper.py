@@ -19,7 +19,7 @@ class JobSweeper(Thread):
         log_info("WFM Deployed, JobSweeper running......", obj)
         wfmrepo = WFMRepository()
         run = 0
-        while not self.stopped.wait(js_cron_interval_sec):
+        while not self.stopped.wait(eval(str(js_cron_interval_sec))):
             try:
                 criteria, exclude = {"status": {"$in": ["STARTED", "INPROGRESS"]}}, {'_id': False}
                 jobs = wfmrepo.search_job(criteria, exclude)
@@ -29,7 +29,7 @@ class JobSweeper(Thread):
                     for job in jobs:
                         job_start_time = job["startTime"]
                         diff = eval(str(time.time()).replace('.', '')[0:13]) - job_start_time
-                        if diff / 1000 > js_job_failure_interval_sec:
+                        if diff / 1000 > eval(str(js_job_failure_interval_sec)):
                             job["status"] = "FAILED"
                             job["error"] = post_error("ORPHAN_JOB",
                                                       "The job was failed by the system, since it was idle", None)
