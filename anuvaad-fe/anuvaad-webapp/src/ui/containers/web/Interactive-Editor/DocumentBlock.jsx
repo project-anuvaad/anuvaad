@@ -33,7 +33,7 @@ class DocumentBlock extends React.Component {
       }
 
     }
-  
+
   }
 
   // sentenceClear() {
@@ -103,8 +103,7 @@ class DocumentBlock extends React.Component {
                 backgroundColor: "#F4FDFF",
                 borderColor: "#1C9AB7",
                 color: "#000000",
-                fontWeight: (sentence.font_family && sentence.font_family.includes("Bold") && "bold" )|| (sentence.attrib && sentence.attrib.toLowerCase().includes("bold")),
-
+                fontWeight: (sentence.font_family && sentence.font_family.includes("Bold") && "bold") || (sentence.attrib && sentence.attrib.toLowerCase().includes("bold")),
 
               }}
               onChange={event => {
@@ -169,11 +168,13 @@ class DocumentBlock extends React.Component {
           !this.props.targetSelected &&
           this.props.value !== true
           ? "2px dotted grey"
-          : this.props.scrollId === this.props.page_no+"@"+sentence.block_identifier ? "1px solid #1C9AB7" : ""
+          : this.props.scrollId === this.props.page_no + "@" + sentence.block_identifier ? "1px solid #1C9AB7" : ""
     };
 
     return (
-      <div>
+      <div style={{
+        backgroundColor:this.props.scrollId === this.props.page_no + "@" + sentence.block_identifier ? "yellow" : "",
+      }}>
         {/* <div
           id={sentence.block_id + "_" + this.props.page_no + "_" + this.props.paperType}
           style={styles}
