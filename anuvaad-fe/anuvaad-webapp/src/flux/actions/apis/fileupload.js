@@ -11,7 +11,7 @@ export default class RunExperiment extends API {
     this.type = C.WORKFLOW;
     this.file = file;
     this.fileName = fileName;
-    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.workflow}`
+    this.endpoint = workflow  === "WF_A_FCBMTKTR" ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}`: `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`
     this.source = source;
     this.target = target;
     this.path = path;
@@ -38,7 +38,7 @@ export default class RunExperiment extends API {
   }
 
   getBody() {
-    if (this.workflow === "DP_WFLOW_FBTTR") {
+    if (this.workflow === "WF_A_FCBMTKTR") {
       return {
 
         "workflowCode": this.workflow,
@@ -54,7 +54,7 @@ export default class RunExperiment extends API {
 
       };
     }
-    else if (this.workflow === "DP_WFLOW_S_TTR" || this.workflow === "DP_WFLOW_S_C" || this.workflow === "DP_WFLOW_S_TR") {
+    else if (this.workflow === "WF_S_TKTR" ||this.workflow === "WF_S_TR") {
       return {
         "workflowCode": this.workflow,
   "recordID":this.fileName,

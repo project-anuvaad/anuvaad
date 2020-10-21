@@ -14,7 +14,7 @@ export default class NMTSP extends API {
         this.answers = null;
         this.sId = sId;
         this.type = C.INTRACTIVE_TRANSLATE;
-        this.endpoint = v1 ? `${super.apiEndPointAuto()}${ENDPOINTS.workflow}` : `${super.apiEndPointAuto()}${ENDPOINTS.interactive_translate}`
+        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.translate}`
     }
 
     toString() {
@@ -40,6 +40,7 @@ export default class NMTSP extends API {
     getBody() {
         let reqObj = {}
         var modelArray = [];
+        let textListObj = {}
 
         modelArray.push({
             s_id: this.sId,
@@ -49,8 +50,9 @@ export default class NMTSP extends API {
 
         });
 
-        reqObj.workflowCode = "DP_WFLOW_S_IT_T"
-        reqObj.textList = modelArray
+        // reqObj.workflowCode = "DP_WFLOW_S_IT_T"
+        textListObj.textList = modelArray
+        reqObj.input = textListObj
         return reqObj;
 
     }

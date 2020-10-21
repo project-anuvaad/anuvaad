@@ -50,7 +50,8 @@ const endpoints = {
   fetchcompositionworkspacedetails: "/fetch-composition-workspace-detail",
   fetchenchmarkmodel: "/fetch-benchmark-sentences",
   pdffileupload: "/v1/interactive-editor/translate-pdf",
-  workflow:"/anuvaad-etl/wf-manager/v1/workflow/initiate",
+  workflowAsync:"/anuvaad-etl/wf-manager/v1/workflow/async/initiate",
+  workflowSync:"/anuvaad-etl/wf-manager/v1/workflow/sync/initiate",
   signup: "/v1/user/signup-user",
   updatePdfTable: "/v1/interactive-editor/update-pdf-source-table",
   login: "/sysuser/login",
@@ -69,6 +70,10 @@ const endpoints = {
   documentupload:"/api/v0/upload-file",
   fecthcontent: "/api/v0/fetch-content",
   documentConverter: "/api/v0/document-converter",
+  word_dictionary: "/api/v0/dictionary/search",
+  save_content: "/api/v0/save-content-sentence",
+  translate: "/anuvaad-etl/translator/v1/text/translate",
+  jobids: "/api/v0/records/search"
 };
 
 export default endpoints;
