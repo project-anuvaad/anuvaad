@@ -3,12 +3,14 @@ import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 
 export default class RunExperiment extends API {
-  constructor(file, timeout = 2000) {
+  constructor(offset,limit, timeout = 2000) {
     console.log();
     super("POST", timeout, false);
     this.type = C.FETCHDOCUMENT;
-    this.file = file;
+    this.offset = offset;
+    this.limit=limit;
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.fetchducuments}`
+    console.log( this.offset)
   }
 
   toString() {
@@ -30,14 +32,16 @@ export default class RunExperiment extends API {
   getBody() {
     return {
       
-        
+      "offset": this.offset,
+      "limit": this.limit,
             "jobIDs": [
               ""
             ],
             "taskDetails": true,
             "workflowCodes": [
-              "DP_WFLOW_FBT","DP_WFLOW_FBTTR"
-            ]
+              "DP_WFLOW_FBT","WF_A_FCBMTKTR","DP_WFLOW_FBTTR"
+            ],
+            
           }
     
   }

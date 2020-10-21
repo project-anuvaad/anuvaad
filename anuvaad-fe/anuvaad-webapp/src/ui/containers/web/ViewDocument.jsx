@@ -24,6 +24,8 @@ import Fab from '@material-ui/core/Fab';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 //import AddIcon from '@material-ui/icons/Add';
 import PublishIcon from '@material-ui/icons/Publish';
+import JobStatus from "../../../flux/actions/apis/job-status";
+
 const TELEMETRY = require('../../../utils/TelemetryManager')
 
 class ViewDocument extends React.Component {
@@ -41,7 +43,9 @@ class ViewDocument extends React.Component {
       hindiFile: {},
       englishFile: {},
       role: JSON.parse(localStorage.getItem("roles")),
-      showInfo: false
+      showInfo: false,
+      offset: 0,
+      limit:10
     };
   }
 
@@ -67,19 +71,20 @@ class ViewDocument extends React.Component {
   }
 
   componentDidMount() {
-    this.handleRefresh(true)
+    debugger
+    this.handleRefresh(true, this.state.offset, this.state.limit)
     TELEMETRY.pageLoadCompleted('view-document')
   }
 
   handleClick = rowData => {
-    history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[7]}/${rowData[9]}/${rowData[4]}/${rowData[5]}/${rowData[6]}`, this.state);
+    history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[7]}/${rowData[17]}/${rowData[9]}/${rowData[4]}/${rowData[5]}/${rowData[6]}`, this.state);
     // history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[4]}/${rowData[5]}`);
   };
 
 
-  handleRefresh(value) {
+  handleRefresh(value, offset,limit) {
     const { APITransport } = this.props;
-    const apiObj = new FetchDocument();
+    const apiObj = new FetchDocument(offset,limit);
     APITransport(apiObj);
     value && this.setState({ showLoader: true });
   }
@@ -87,75 +92,49 @@ class ViewDocument extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.fetchDocument !== this.props.fetchDocument) {
-      var arr = []
+       var jobArray =this.props.fetchDocument.result.jobIDs;
 
-      this.props.fetchDocument.map((value, i) => {
-        if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && (value.status === "FAILED"|| value.status === "COMPLETED")) {
-          TELEMETRY.endWorkflow(value.jobID)
+      
+      this.setState({ name: this.props.fetchDocument.result.jobs,count:this.props.fetchDocument.result.count, jobArray });
+
+      if(jobArray.length>1){
+        const { APITransport } = this.props;
+      const apiObj = new JobStatus(jobArray);
+      APITransport(apiObj);
+
+      }
+      else{
+        this.setState({ showLoader: false });
+      }
+      
+
+
+
+    }
+
+    if(prevProps.jobStatus!==this.props.jobStatus){
+      var result =this.props.jobStatus;
+      var arr = this.state.name;
+      arr.length>0 && arr.map(element=>{
+        if(this.state.jobArray.includes(element.id)){
+          result.map(value=>{
+
+            console.log(value.record_id===element.id)
+            if(value.record_id===element.id && !element.hasOwnProperty("completed_count") && !element.hasOwnProperty("total_count") ){
+              element["completed_count"] = value.completed_count;
+              element["total_count"] = value.total_count;
+            }
+          })
         }
-
-        let date = value.startTime.toString()
-        let timestamp = date.substring(0, 13)
-        var d = new Date(parseInt(timestamp))
-        let dateStr = d.toISOString()
-        var myDate = new Date(dateStr);
-        let createdAt = (myDate.toLocaleString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }))
-        let currentDate = new Date()
-
-        let timeDiff = Math.floor((currentDate.getTime() - myDate.getTime()) / 60000)
-
-        let taskData = {}
-        taskData.status = (value.status === "INPROGRESS" && timeDiff > 300) ? "FAILED" : value.status;
-        taskData.jobId = value.jobID
-        let tasks = []
-
-        value && value.taskDetails && Array.isArray(value.taskDetails) && value.taskDetails.length > 0 && value.taskDetails.map((task, i) => {
-          let subTask = {}
-          subTask.state = task.state
-          subTask.status = task.status
-          tasks.push(subTask)
-          return null;
-        })
-        taskData.subTasks = tasks
-
-        let sourceLangCode, targetLangCode, sourceLang, targetLang
-        if (value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.source_language_code && value.input.files[0].model.target_language_code) {
-          sourceLangCode = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.source_language_code
-          targetLangCode = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.target_language_code
-
-          let langCodes = LanguageCodes
-          if (langCodes && Array.isArray(langCodes) && langCodes.length > 0) {
-            langCodes.map(lang => {
-              if (lang.language_code === sourceLangCode) {
-                sourceLang = lang.language_name
-              }
-              if (lang.language_code === targetLangCode) {
-                targetLang = lang.language_name
-              }
-              return null
-            })
-          }
-        }
-
-        var b = {}
-
-        b["status"] = (value.status === "INPROGRESS" && timeDiff > 300) ? "FAILED" : value.status;
-        b["job"] = value.jobID;
-        b["name"] = value.input.jobName ? value.input.jobName : value.input.files[0].name;
-        b["id"] = value.output && (value.output[0].hasOwnProperty('outputFilePath') ? value.output[0].outputFilePath : value.output[0].outputFile);
-        b["inputFile"] = value.taskDetails && value.taskDetails.length > 0 && value.taskDetails[0].output && value.taskDetails[0].output.length > 0 && value.taskDetails[0].output[0].outputFile;
-        b["modelId"] = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.model_id
-        b["locale"] = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.source_language_code
-        b["timestamp"] = createdAt
-        b["source"] = sourceLang
-        b["target"] = targetLang
-        b["tasks"] = taskData
-
-        arr.push(b)
-        return null
       })
       this.setState({ name: arr, showLoader: false });
+      if(this.state.count>this.state.offset+10){
+        this.handleRefresh(false,this.state.offset+10, this.state.limit)
+        this.setState({offset:this.state.offset+10})
+      }
     }
+
+    
   }
 
   handleFileDownload(file) {
@@ -197,7 +176,7 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: true,
           // sortOrder: "asc",
-          display: "excluded"
+          // display: "excluded"
 
         }
       },
@@ -307,7 +286,7 @@ class ViewDocument extends React.Component {
 
                 <div style={{ width: '120px' }}>
 
-                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}><div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[1]}</div></div>}
+                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this,false, 0,20)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}><div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[1]}</div></div>}
 
                 </div>
               );
@@ -317,17 +296,57 @@ class ViewDocument extends React.Component {
         }
       },
       {
+        name: "completed_count",
+        label: "completed_count",
+        options: {
+          display: "excluded"
+        }
+      },
+      {
+        name: "total_count",
+        label: "total_count",
+        options: {
+          display: "excluded"
+        }
+      },
+      
+      {
+        name: "status",
+        label: "Progress",
+        options: {
+          filter: true,
+          sort: false,
+          empty: true,
+
+          customBodyRender: (value, tableMeta, updateValue) => {
+            if (tableMeta.rowData) {
+
+
+              return (
+
+                <div style={{ width: '120px' }}>
+                  {tableMeta.rowData[1] === 'COMPLETED' && ((tableMeta.rowData[11] && tableMeta.rowData[12]) ? (Math.round(Number(tableMeta.rowData[11]) / Number(tableMeta.rowData[12])*100)+'%'):"0%")}
+                  
+                </div>
+              );
+            }
+
+          }
+        }
+      },
+
+      {
         name: "timestamp",
         label: translate("common.page.label.timeStamp"),
         options: {
           filter: true,
-          sort: true,
+          sort: false,
           // sortOrder: "asc",
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[11]}</div>
+                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[14]}</div>
                 </div>
               );
             }
@@ -347,7 +366,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div >
-                  <Tooltip title="info" placement="left"><IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[13])}><InfoIcon style={{ color: "#C6C6C6" }} /></IconButton></Tooltip>
+                  <Tooltip title="info" placement="left"><IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[16])}><InfoIcon style={{ color: "#C6C6C6" }} /></IconButton></Tooltip>
                   {tableMeta.rowData[1] === 'COMPLETED' ? <Tooltip title={translate('viewTranslate.page.title.downloadSource')} placement="right"><IconButton style={{ color: '#233466' }} component="a" onClick={() => { this.setState({ fileDownload: true }); this.handleFileDownload(tableMeta.rowData[5]) }}><DeleteOutlinedIcon /></IconButton></Tooltip> : ''}
                 </div>
               );
@@ -362,14 +381,22 @@ class ViewDocument extends React.Component {
         options: {
           display: "excluded"
         },
+      }, 
+      {
+        name: "tgt_locale",
+        label: "tgt_locale",
+        options: {
+          display: "excluded"
+        }
       }
+      
 
     ];
 
     const options = {
       textLabels: {
         body: {
-          noMatch: translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
+          noMatch: this.state.count>0 ? "Loading....":translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
         },
         toolbar: {
           search: translate("graderReport.page.muiTable.search"),
@@ -379,6 +406,7 @@ class ViewDocument extends React.Component {
           rowsPerPage: translate("graderReport.page.muiTable.rowsPerPages")
         }
       },
+      count: this.state.count,
       filterType: "checkbox",
       // onRowClick: rowData => (rowData[1] === "COMPLETED") && this.handleClick(rowData),
       download: false,
@@ -439,7 +467,8 @@ const mapStateToProps = state => ({
   user: state.login,
   apistatus: state.apistatus,
   corp: state.corp,
-  fetchDocument: state.fetchDocument
+  fetchDocument: state.fetchDocument,
+  jobStatus: state.jobStatus
 });
 
 const mapDispatchToProps = dispatch =>

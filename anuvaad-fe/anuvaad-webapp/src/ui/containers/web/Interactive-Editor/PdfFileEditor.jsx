@@ -70,10 +70,8 @@ class PdfFileEditor extends React.Component {
       sentences = window.getSelection();
     }
     if (sentences) {
-      console.log(window.getSelection().anchorNode.parentElement);
       startNode = window.getSelection().anchorNode.parentElement.id;
       endNode = window.getSelection().focusNode.parentElement.id;
-      console.log(startNode, endNode);
       this.state.sentences.map(paragraph => {
         if (paragraph._id === startNode.split("_")[0] && !paragraph.is_table) {
           if (paragraph._id === startNode.split("_")[0] && !paragraph.is_table) {

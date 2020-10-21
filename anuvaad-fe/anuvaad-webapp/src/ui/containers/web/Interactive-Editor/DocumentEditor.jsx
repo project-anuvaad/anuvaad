@@ -27,6 +27,7 @@ import DownloadIcon from "@material-ui/icons/ArrowDownward";
 import DocumentConverter from "../../../../flux/actions/apis/documentconverter";
 import TranslateView from "./DocumentTranslator";
 import wfcodes from '../../../../configs/workflowcodes'
+import SaveContent from "../../../../flux/actions/apis/savecontent";
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -62,11 +63,12 @@ class PdfFileEditor extends React.Component {
       scrollToId: "",
       editableId: "",
       showNextSuggestion: false,
-      workflow: "DP_WFLOW_S_TTR",
+      workflow: "WF_S_TKTR",
       scrollTransMode: false,
       scrollPageNo: "",
       initialSenetenceId: "",
-      initialSenetence: ""
+      initialSenetence: "",
+      scrollId: ""
     };
   }
   getSnapshotBeforeUpdate(prevProps, prevState) {
@@ -115,15 +117,28 @@ class PdfFileEditor extends React.Component {
     }
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
 
-      let telemetryData = this.state.telemetry
-      if (telemetryData && telemetryData.hasOwnProperty("save")) {
-        TELEMETRY.sentenceChanged(telemetryData.initialSenetence, telemetryData.finalSenetence, telemetryData.sId, telemetryData.mode)
-      }
-
       const apiObj = new FileContent(this.props.match.params.jobid, this.state.startPage, this.state.endPage);
       this.props.APITransport(apiObj);
       this.setState({ apiStatus: true });
     }
+
+    if (prevProps.saveContent !== this.props.saveContent) {
+      if (this.props.saveContent && this.props.saveContent.hasOwnProperty("s_id")) {
+        this.state.sentences && Array.isArray(this.state.sentences) && this.state.sentences.length > 0 && this.state.sentences.map((pageData, i) => {
+          if (pageData.page_no === this.state.selectedPageNo) {
+            pageData && pageData.text_blocks && Array.isArray(pageData.text_blocks) && pageData.text_blocks.length > 0 && pageData.text_blocks.map(blocks => {
+              blocks && blocks.tokenized_sentences && Array.isArray(blocks.tokenized_sentences) && blocks.tokenized_sentences.length > 0 && blocks.tokenized_sentences.map(children => {
+                if (children.s_id === this.props.saveContent.s_id) {
+                  children = this.props.saveContent
+                  return true
+                }
+              })
+            })
+          }
+        })
+      }
+    }
+
 
     /* Pagination api */
     if (prevProps.fetchContent !== this.props.fetchContent) {
@@ -136,10 +151,9 @@ class PdfFileEditor extends React.Component {
           pagesToBeLoaded: 2
         });
       } else {
-        temp.map(page=>{
-          page.text_blocks = page.text_blocks && BLOCK_OPS.get_sorted_blocks(page.text_blocks );
-        return null;
-      })
+        temp.map(page => {
+          page.text_blocks = page.text_blocks && BLOCK_OPS.get_sorted_blocks(page.text_blocks);
+        })
         this.setState({
           sentences: temp,
           open: this.state.apiStatus && true,
@@ -160,19 +174,19 @@ class PdfFileEditor extends React.Component {
       }, 3000);
     }
 
-    if (!this.state.tokenized && this.state.scrollPageNo > 1 && this.state.scrollTransMode) {
-      let page = this.state.scrollPageNo
-      let sentences = this.state.sentences
+    // if (!this.state.tokenized && this.state.scrollPageNo > 1 && this.state.scrollTransMode) {
+    //   let page = this.state.scrollPageNo
+    //   let sentences = this.state.sentences
 
-      let height = 0
-      sentences && Array.isArray(sentences) && sentences.length > 0 && sentences.map((sentence, i) => {
-        if (sentence.page_no < page) {
-          height += sentence.page_height
-        }
-        return null;
-      })
-      this.scrollPage(height)
-    }
+    //   let height = 0
+    //   sentences && Array.isArray(sentences) && sentences.length > 0 && sentences.map((sentence, i) => {
+    //     if (sentence.page_no < page) {
+    //       height += sentence.page_height
+    //     }
+    //     return null;
+    //   })
+    //   this.scrollPage(height)
+    // }
 
     if (prevProps.documentconverter !== this.props.documentconverter) {
       let fileName = (this.props.documentconverter && this.props.documentconverter.translated_document) ? this.props.documentconverter.translated_document : ""
@@ -191,10 +205,10 @@ class PdfFileEditor extends React.Component {
     TELEMETRY.endTranslatorFlow(jobId)
   }
 
-  scrollPage(heightToBescrolled) {
-    window.scrollTo(0, heightToBescrolled);
-    this.setState({ scrollTransMode: false })
-  }
+  // scrollPage(heightToBescrolled) {
+  //   window.scrollTo(0, heightToBescrolled);
+  //   this.setState({ scrollTransMode: false })
+  // }
 
   getPageId(blocks) {
     let page_ids = [];
@@ -225,8 +239,10 @@ class PdfFileEditor extends React.Component {
       block_identifier: block_identifier,
       has_sibling: has_sibling,
       scrollPageNo: pageNo,
-      scrollToPage: this.state.scrollToPage !== pageNo ? pageNo : this.state.pageNo
+      scrollToPage: this.state.scrollToPage !== pageNo ? pageNo : this.state.pageNo,
       // pageNo: this.state.pageNo !== pageNo && pageNo
+      scroll: pageNo + "@" + block_identifier,
+      scrollId: null
     });
   }
 
@@ -358,10 +374,10 @@ class PdfFileEditor extends React.Component {
     } else {
       this.setState({ edited: true, selectedSourceText: type, selectedBlock: selectedBlock });
     }
+    this.setState({ initialSourceSen: type && type.text })
   }
 
   handleSourceChange = (evt, blockValue) => {
-
     if (this.state.pageDetails === "target") {
       let sentenceObj = this.state.targetText;
       sentenceObj.tgt = evt.target.value;
@@ -387,16 +403,21 @@ class PdfFileEditor extends React.Component {
     }
   };
 
-  saveUpdatedSentence(sentenceObj) {
-    this.setState({ selectedSourceText: sentenceObj })
+  saveUpdatedSentence(sentenceObj, pageNo) {
+    this.setState({ selectedSourceText: sentenceObj, selectedPageNo: pageNo })
 
-    this.workFlowApi(wfcodes.DP_WFLOW_S_C, [sentenceObj], "update", "edit")
+    const apiObj = new SaveContent(sentenceObj);
+    this.props.APITransport(apiObj);
+
   }
 
   workFlowApi(workflow, blockDetails, update, type) {
+    if (type === "source_edit") {
+      TELEMETRY.sentenceChanged(this.state.initialSourceSen, this.state.selectedSourceText.text, this.state.selectedSourceText.block_id, "validation")
+    }
 
-    if(!type || type !== "edit") {
-    this.setState({ telemetry: null })
+    if (!type || type !== "edit") {
+      this.setState({ telemetry: null })
     }
     let pageInfo = [];
     const apiObj = new WorkFlow(
@@ -412,7 +433,8 @@ class PdfFileEditor extends React.Component {
     blockDetails.map(pageInfoDetails => {
 
       pageInfo.push(pageInfoDetails.page_info && parseInt(pageInfoDetails.page_info.page_no));
-    return null;})
+      return null;
+    })
 
     // pageInfo = update !== "merge" && blockDetails.length > 0 && blockDetails[0].page_info.page_no;
 
@@ -421,7 +443,6 @@ class PdfFileEditor extends React.Component {
   }
 
   handleBlur(id, wf_code, saveData, prevValue, finalValue) {
-    
     let status = "update";
     let idDetails = id.split("_")
     let text = "";
@@ -463,7 +484,7 @@ class PdfFileEditor extends React.Component {
     telemetry.sId = idDetails[0] ? idDetails[0] : id
     telemetry.mode = wf_code ? "translation" : "validation"
 
-    if (blockItem && !wf_code && this.state.textChange) this.workFlowApi("DP_WFLOW_S_TTR", [blockItem], status);
+    if (blockItem && !wf_code && this.state.textChange) this.workFlowApi("WF_S_TKTR", [blockItem], status);
     else if (wf_code && blockItem && saveData) this.workFlowApi(wf_code, [blockItem], status, prevValue);
     this.setState({
       hoveredSentence: "",
@@ -492,7 +513,7 @@ class PdfFileEditor extends React.Component {
     let blockId = block.split("_")[0];
     let pageNo = block.split("_")[1];
     let blockTop,
-     // blockHeight,
+      // blockHeight,
       valueH = 0;
     let docPage = this.state.sentences;
     let strText = this.state.selectedSourceText;
@@ -592,7 +613,7 @@ class PdfFileEditor extends React.Component {
   }
 
   handleBackToTop() {
-    this.setState({ scrollToPage: 1, scrollToTop: true });
+    // this.setState({ scrollToPage: 1, scrollToTop: true });
   }
 
   handleScroll() {
@@ -653,6 +674,15 @@ class PdfFileEditor extends React.Component {
 
     const apiObj = new DocumentConverter(recordId, user_profile.id);
     this.props.APITransport(apiObj);
+  }
+
+  moveToValidationMode(pageNo, blockId, sId) {
+    this.setState({
+      tokenized: !this.state.tokenized,
+      pageNo: pageNo,
+      // scrollToPage: pageNo,
+      scrollId: pageNo + "@" + blockId,
+    })
   }
 
   render() {
@@ -887,7 +917,6 @@ class PdfFileEditor extends React.Component {
                                   selectedCell={this.state.selectedCell}
                                   scrollToPage={this.state.scrollToPage}
                                   scrollToTop={this.state.scrollToTop}
-                                  scrollToId={this.state.scrollToId}
                                   yOffset={this.state.yOffset}
                                   workFlowApi={this.workFlowApi.bind(this)}
                                   handleOnMouseEnter={this.handleOnMouseEnter.bind(this)}
@@ -907,6 +936,8 @@ class PdfFileEditor extends React.Component {
                                   editableId={this.state.editableId}
                                   handleAutoCompleteEditor={this.handleAutoCompleteEditor.bind(this)}
                                   targetSelected={this.state.targetSelected}
+                                  scrollId={this.state.scrollId}
+
                                 />
                               </div>
                             );
@@ -954,6 +985,9 @@ class PdfFileEditor extends React.Component {
                   fetchData={this.fetchData.bind(this)}
                   hasMoreItems={this.state.hasMoreItems}
                   handleScroll={this.handleScroll.bind(this)}
+                  moveToValidationMode={this.moveToValidationMode.bind(this)}
+                  scroll={this.state.scroll}
+
                 />
 
               </Grid>
@@ -965,35 +999,37 @@ class PdfFileEditor extends React.Component {
 
           </div>
         )}
-            {!this.state.sentences && <Spinner />}
-            {this.state.open && (
-              <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                open={this.state.open}
-                autoHideDuration={3000}
-                variant="success"
-                message={this.state.message}
-              />
-            )}
-          </div>
-        );
+        {!this.state.sentences && <Spinner />}
+        {this.state.open && (
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={this.state.open}
+            autoHideDuration={3000}
+            variant="success"
+            message={this.state.message}
+          />
+        )}
+      </div>
+    );
   }
 }
 
 const mapStateToProps = state => ({
-          fetchPdfSentence: state.fetchPdfSentence,
+  fetchPdfSentence: state.fetchPdfSentence,
   fileUpload: state.fileUpload,
   documentDetails: state.documentDetails,
   fetchContent: state.fetchContent,
   workflowStatus: state.workflowStatus,
-  documentconverter: state.documentconverter
+  documentconverter: state.documentconverter,
+  saveContent: state.saveContent,
+
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
-        {
-          APITransport,
-          ClearContent: ClearContent
+    {
+      APITransport,
+      ClearContent: ClearContent
     },
     dispatch
   );

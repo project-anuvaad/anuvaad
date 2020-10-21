@@ -246,7 +246,6 @@ class AutoComplete extends React.Component {
     render() {
         const { aId, refId, style,  sentence } = this.props
         return (
-            // <ClickAwayListener id={tokenIndex} onClickAway={() => this.handleClickAway(tokenIndex, this.state.value, wfcodes.DP_WFLOW_S_C)}>
             <div key={aId}>
                 <textarea
                     id={aId}
@@ -277,7 +276,6 @@ class AutoComplete extends React.Component {
                     ></Menu>}
 
             </div >
-            // </ClickAwayListener>
         );
     }
 }

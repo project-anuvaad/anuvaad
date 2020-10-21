@@ -10,7 +10,7 @@ import Split from "@material-ui/icons/CallSplit";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import Checkbox from "@material-ui/core/Checkbox";
-//import ValidationIcon from "@material-ui/icons/SettingsEthernet";
+import ValidationIcon from "@material-ui/icons/SettingsEthernet";
 import AutoComplete from "../../../components/web/common/AutoComplete1";
 import IntractiveApi from "../../../../flux/actions/apis/intractive_translate";
 import { bindActionCreators } from "redux";
@@ -18,6 +18,7 @@ import { connect } from "react-redux";
 import CancelIcon from '@material-ui/icons/Cancel';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { withRouter } from "react-router-dom";
+
 
 //var getCaretCoordinates = require("textarea-caret");
 
@@ -57,9 +58,8 @@ class Block extends Component {
 
     if (prevProps.buttonStatus !== this.props.buttonStatus) {
       if (this.props.buttonStatus === "mergeSaved" && arr.length > 0) {
-        let message = "Do you want to merge the sentences";
         let operation = "Merge sentence";
-        this.props.handleDialogMessage("", arr, "", operation, message);
+        this.props.handleDialogMessage("", arr, "", operation);
         arr = [];
       } else if (this.props.buttonStatus === "") {
         arr = [];
@@ -86,14 +86,20 @@ class Block extends Component {
     let actual_text = text.src;
     actual_text = actual_text.replace(/\s{2,}/g, " ");
     actual_text = actual_text.trim();
-    this.props.handleDialogMessage(
-      this.props.block_id,
-      sentenceStartId,
-      split_index,
-      // actual_text.substring(0, split_index),
-      opeartion,
-      "Do you want to split the sentence"
-    );
+
+    if(split_index!== text.src.length){
+      this.props.handleDialogMessage(
+        this.props.block_id,
+        sentenceStartId,
+        split_index,
+        // actual_text.substring(0, split_index),
+        opeartion,
+      );
+    }
+    else{
+      alert("Please select split sentence correctly")
+    }
+    
   }
 
   handleChangeEvent = (event) => {
@@ -125,6 +131,8 @@ class Block extends Component {
         this.props.sentence.s_id
       );
       this.props.APITransport(apiObj);
+    } else {
+      this.setState({ autoCompleteText: null, caretData: "" })
     }
 
   }
@@ -186,16 +194,32 @@ class Block extends Component {
 
   }
 
+  getSelectionText(event, text){
+
+    const sentenceStartId = text.s_id;
+    const split_index = window.getSelection().focusOffset;
+    const selectedText = window.getSelection().toString()
+    let opeartion = "Split sentence";
+    // eslint-disable-next-line
+    let actual_text = text.src;
+    actual_text = actual_text.replace(/\s{2,}/g, " ");
+    actual_text = actual_text.trim();
+      
+    this.props.popUp (this.props.block_id,
+      sentenceStartId,
+      split_index,
+      event,
+      opeartion,selectedText )
+  }
+
   handleBlurCard = (event, id) => {
     if (this.state.editedText !== this.props.selectedBlock.tgt && this.state.editedText && this.state.enteredData) {
-
-      //let message = "Do you want to save the sentences";
       let operation = "Save";
 
       if ((!event.relatedTarget || (event.relatedTarget && event.relatedTarget.type) !== "button") && !this.state.dontShowDialog) {
 
         this.props.getUpdatedBlock(this.props.selectedBlock, operation, this.state.editedText)
-    
+
         // this.props.handleDialogMessage(this.props.selectedBlock, "", "", operation, message, this.state.editedText)
       }
 
@@ -251,6 +275,21 @@ class Block extends Component {
     this.setState({ dontShowDialog: value, caretData: "" })
   }
 
+  handleDictionary=(event)=>{
+     let selectedWord = window.getSelection().toString()
+     let word_locale = this.props.match.params.locale
+     let tgt_locale = this.props.match.params.tgt_locale
+
+     if(this.props.selectedBlock && this.props.selectedBlock.src.includes(selectedWord)){
+      this.props.handleDictionary(selectedWord,word_locale,  tgt_locale)
+     }
+     else if(this.props.selectedBlock && this.props.selectedBlock.tgt.includes(selectedWord)){
+      this.props.handleDictionary(selectedWord,tgt_locale,word_locale)
+     }
+
+     
+  }
+
   handleCardClick(sentence) {
     let saveData = false
     let block = this.props.sen
@@ -260,6 +299,7 @@ class Block extends Component {
 
   render() {
     const { classes, sentence, selectedBlock } = this.props;
+    
     return (
       <Paper
         variant="outlined"
@@ -285,13 +325,23 @@ class Block extends Component {
 
             >
               {/* <Tooltip title="Go to validation mode">
-                <ValidationIcon
+                <ValidationIcon onClick={() => this.props.moveToValidationMode(this.props.pageNo, this.props.blockIdentifier, this.props.block_id)}
                   style={{ color: "#1C9AB7", cursor: "pointer" }}
                 />
               </Tooltip> */}
-              <div style={{ width: "100%", paddingLeft: "10px" }} onClick={() => selectedBlock &&
-                sentence &&
-                sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}>
+              <div
+                style={{ width: "100%", paddingLeft: "10px" }}
+                onClick={() => selectedBlock &&
+                  sentence &&
+                  sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}
+                  // onDoubleClick = {(event)=>this.handleDictionary(event) }
+
+                  onMouseUp={(event)=>{this.getSelectionText(event,sentence)}}
+                  onKeyUp={(event)=>{this.getSelectionText(event,sentence)}}
+
+                  
+                  >
+                    
                 <div
                   style={{ minHeight: "45px", padding: "5px", fontSize: "16px" }}
                 // onClick={() => this.props.handleSentenceClick(sentence)}
@@ -416,7 +466,7 @@ class Block extends Component {
                                 <CancelIcon
                                   fontSize={"large"}
                                   style={{ color: "#1C9AB7" }}
-                                  onClick={(event) => {
+                                  onClick={() => {
                                     this.props.handleClick("");
                                   }}
                                 />
@@ -453,6 +503,8 @@ class Block extends Component {
             </div>
           </Grid>
         </Grid>
+
+       
       </Paper >
     );
   }

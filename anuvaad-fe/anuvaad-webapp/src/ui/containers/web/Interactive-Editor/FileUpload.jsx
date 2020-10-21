@@ -64,7 +64,7 @@ class PdfUpload extends Component {
       name: "",
       message: "File uplaoded successfully",
       showComponent: false,
-      workflow :"DP_WFLOW_FBTTR",
+      workflow :"WF_A_FCBMTKTR",
       
     };
   }
