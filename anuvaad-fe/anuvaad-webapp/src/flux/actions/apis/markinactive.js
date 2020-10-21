@@ -17,7 +17,7 @@ export default class MarkInactive extends API {
   processResponse(res) {
     super.processResponse(res);
     if (res) {
-      this.sentences = res;
+      this.data = res;
       
     }
   }
@@ -43,6 +43,6 @@ export default class MarkInactive extends API {
   }
 
   getPayload() {
-    return this.sentences;
+    return this.data;
   }
 }

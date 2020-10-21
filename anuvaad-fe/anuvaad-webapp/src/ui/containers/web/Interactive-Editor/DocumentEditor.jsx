@@ -63,7 +63,7 @@ class PdfFileEditor extends React.Component {
       scrollToId: "",
       editableId: "",
       showNextSuggestion: false,
-      workflow: "DP_WFLOW_S_TTR",
+      workflow: "WF_S_TKTR",
       scrollTransMode: false,
       scrollPageNo: "",
       initialSenetenceId: "",
@@ -484,7 +484,7 @@ class PdfFileEditor extends React.Component {
     telemetry.sId = idDetails[0] ? idDetails[0] : id
     telemetry.mode = wf_code ? "translation" : "validation"
 
-    if (blockItem && !wf_code && this.state.textChange) this.workFlowApi("DP_WFLOW_S_TTR", [blockItem], status, "source_edit");
+    if (blockItem && !wf_code && this.state.textChange) this.workFlowApi("WF_S_TKTR", [blockItem], status);
     else if (wf_code && blockItem && saveData) this.workFlowApi(wf_code, [blockItem], status, prevValue);
     this.setState({
       hoveredSentence: "",

@@ -75,6 +75,7 @@ import documentconverter from "./documentconverter";
 import wordDictionary from "./word_dictionary";
 import saveContent from "./savecontent";
 import markInactive from "./markinactive";
+import jobStatus from "./job-status";
 
 export default {
     login,
@@ -154,4 +155,6 @@ export default {
     wordDictionary,
     saveContent,
     markInactive,
+    jobStatus
+
 };

@@ -160,7 +160,7 @@ class PdfFileEditor extends React.Component {
     title,
     editedText) {
     let SentenceOperationId;
-    let workflowCode = "DP_WFLOW_S_TR";
+    let workflowCode = "WF_S_TR";
     if (title === "Merge sentence") {
       let result = BLOCK_OPS.do_sentences_merging_v1(
         this.props.sentences,

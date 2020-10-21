@@ -67,7 +67,7 @@ class DocumentSource extends React.Component {
   }
 
   handleDialog() {
-    let workflowCode = "DP_WFLOW_S_TR";
+    let workflowCode = "WF_S_TR";
     if (this.state.title === "Merge sentence") {
       let updatedBlocks = BLOCK_OPS.do_sentences_merging(this.props.sentences, this.state.start_block_id, this.state.start_sentence_id, this.state.end_sentence_id);
       this.props.workFlowApi(workflowCode, [updatedBlocks], this.state.title);
