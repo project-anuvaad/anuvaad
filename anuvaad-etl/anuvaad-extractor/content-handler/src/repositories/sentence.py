@@ -57,7 +57,7 @@ class SentenceRepositories:
             else:
                 result['total_count'] = total_count
 
-            if total_count == None:
+            if completed_count == None:
                 result['completed_count'] = 0
             else:
                 result['completed_count'] = completed_count

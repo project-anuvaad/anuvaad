@@ -48,6 +48,7 @@ class WordSearch(Resource):
         if (body['word_locale'] == 'en') or (body['target_locale'] == 'en'):
             result = None
             if body['word_locale'] == 'en':
+                body['word'] = body['word'].lower()
                 result = wordRepo.search_english(body['word'], body['target_locale'])
             else:
                 result = wordRepo.search_vernacular(body['word'], body['word_locale'])
