@@ -140,7 +140,7 @@ class WFMService:
             log_info("Job COMPLETED, jobID: " + str(wf_input["jobID"]), wf_input)
             return client_output
         except Exception as e:
-            log_exception("Exception while processing sync workflow: " + str(e), wf_input, e)
+            log_exception("Exception while processing SYNC workflow: " + str(e), wf_input, e)
             error = post_error("SYNC_WFLOW_ERROR", "Exception while processing the sync workflow: " + str(e), e)
             client_output = self.get_wf_details(wf_input, None, True, error)
             self.update_job_details(client_output, False)
@@ -197,7 +197,7 @@ class WFMService:
             log_info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"], wf_input)
             log_info(first_tool["name"] + log_msg_start, wf_input)
         except Exception as e:
-            log_exception("Exception while initiating workflow: " + str(e), wf_input, e)
+            log_exception("Exception while initiating ASYNC workflow: " + str(e), wf_input, e)
             post_error_wf("WFLOW_INITIATE_ERROR", "Exception while initiating workflow: " + str(e), wf_input, e)
 
     # This method manages the workflow by tailoring the predecessor and successor tools for the workflow.
@@ -245,7 +245,7 @@ class WFMService:
                 client_output = self.get_wf_details(None, task_output, False, task_output["error"])
                 self.update_job_details(client_output, False)
         except Exception as e:
-            log_exception("Exception while managing the workflow: " + str(e), task_output, e)
+            log_exception("Exception while managing the ASYNC workflow: " + str(e), task_output, e)
             post_error_wf("WFLOW_MANAGE_ERROR", "Exception while managing workflow: " + str(e), task_output, e)
 
     # This method computes the input to the next step based on the step just completed.
