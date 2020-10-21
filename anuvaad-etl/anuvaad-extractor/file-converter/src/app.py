@@ -6,12 +6,10 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 import routes
 import config
-import logging
 import time
 import threading
 from db.conmgr_mongo import connectmongo
 
-log = logging.getLogger('file')
 tok_app  = Flask(__name__)
 
 def start_kafka():

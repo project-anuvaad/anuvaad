@@ -42,7 +42,7 @@ class Response(object):
                     file_res = file_ops.one_filename_response(input_filename, input_filename, in_locale, 'pdf')
                     output_file_response.append(file_res)
                 else:
-                    result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=15)
+                    result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=60)
                     copyfile(result, os.path.join(config.download_folder, upload_id+'.pdf'))
                     file_res = file_ops.one_filename_response(input_filename, upload_id+'.pdf', in_locale, 'pdf')
                     output_file_response.append(file_res)
