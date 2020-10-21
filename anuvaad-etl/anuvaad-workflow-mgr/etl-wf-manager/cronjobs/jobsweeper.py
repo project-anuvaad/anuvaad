@@ -22,7 +22,7 @@ class JobSweeper(Thread):
         while not self.stopped.wait(eval(str(js_cron_interval_sec))):
             try:
                 criteria, exclude = {"status": {"$in": ["STARTED", "INPROGRESS"]}}, {'_id': False}
-                jobs = wfmrepo.search_job(criteria, exclude)
+                jobs = wfmrepo.search_job(criteria, exclude, None, None)
                 no_of_jobs = 0
                 if jobs:
                     log_info("JobSweeper - Run: " + str(run) + " | Jobs Fetched: " + str(len(jobs)), obj)
