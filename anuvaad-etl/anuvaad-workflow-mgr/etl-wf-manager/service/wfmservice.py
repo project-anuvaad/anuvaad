@@ -364,7 +364,9 @@ class WFMService:
         if not skip_pagination:
             offset = 0 if 'offset' not in req_criteria.keys() else req_criteria["offset"]
             limit = page_default_limit if 'limit' not in req_criteria.keys() else req_criteria["limit"]
-            return wfmrepo.search_job(criteria, exclude, offset, limit)
+            jobs = wfmrepo.search_job(criteria, exclude, offset, limit)
+            total_count = wfmrepo.search_job(criteria, exclude, None, None)
+            return {"count": total_count, "jobs": jobs}
         else:
             return wfmrepo.search_job(criteria, exclude, None, None)
 

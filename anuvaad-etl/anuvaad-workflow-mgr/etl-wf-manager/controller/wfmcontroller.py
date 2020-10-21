@@ -79,7 +79,7 @@ def search_all_jobs():
     req_criteria = request.get_json()
     req_criteria["userIDs"] = [request.headers["ad-userid"]]
     response = service.get_job_details_bulk(req_criteria, False)
-    return jsonify(response), 200
+    return response, 200
 
 
 # REST endpoint to fetch workflow jobs.
