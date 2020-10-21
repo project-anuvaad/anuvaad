@@ -73,7 +73,8 @@ import documentDetails from "./fetch_fileDetails";
 import fetchContent from "./fetchcontent";
 import documentconverter from "./documentconverter";
 import wordDictionary from "./word_dictionary";
-import saveContent from "./savecontent"
+import saveContent from "./savecontent";
+import jobStatus from "./job-status";
 
 export default {
     login,
@@ -152,5 +153,6 @@ export default {
     documentconverter,
     wordDictionary,
     saveContent,
+    jobStatus
 
 };

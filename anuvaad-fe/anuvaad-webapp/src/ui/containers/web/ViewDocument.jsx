@@ -24,6 +24,8 @@ import Fab from '@material-ui/core/Fab';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 //import AddIcon from '@material-ui/icons/Add';
 import PublishIcon from '@material-ui/icons/Publish';
+import JobStatus from "../../../flux/actions/apis/job-status";
+
 const TELEMETRY = require('../../../utils/TelemetryManager')
 
 class ViewDocument extends React.Component {
@@ -87,7 +89,8 @@ class ViewDocument extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.fetchDocument !== this.props.fetchDocument) {
-      var arr = []
+      var arr = [];
+      var jobArray =[]
 
       this.props.fetchDocument.map((value, i) => {
         if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && (value.status === "FAILED"|| value.status === "COMPLETED")) {
@@ -137,7 +140,7 @@ class ViewDocument extends React.Component {
           }
         }
 
-        var b = {}
+        var b = this.state.name;
         b["tgt_locale"] = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.target_language_code
         b["status"] = (value.status === "INPROGRESS" && timeDiff > 300) ? "FAILED" : value.status;
         b["job"] = value.jobID;
@@ -150,12 +153,48 @@ class ViewDocument extends React.Component {
         b["source"] = sourceLang
         b["target"] = targetLang
         b["tasks"] = taskData
+        if(value.output && value.output[0].outputFile !== "FAILED"&& value.output[0].outputFile ){
+          jobArray.push(value.output[0].outputFile)
+        }
 
         arr.push(b)
+
+
         return null
+      })
+      this.setState({ name: arr, showLoader: false, jobArray });
+
+      if(jobArray.length>1){
+        const { APITransport } = this.props;
+      const apiObj = new JobStatus(jobArray);
+      APITransport(apiObj);
+
+      }
+      
+
+
+
+    }
+
+    if(prevProps.jobStatus!==this.props.jobStatus){
+      var result =this.props.jobStatus;
+      var arr = this.state.name;
+      arr.length>0 && arr.map(element=>{
+        if(this.state.jobArray.includes(element.id)){
+          result.map(value=>{
+
+            console.log(value.record_id===element.id)
+            if(value.record_id===element.id && !element.hasOwnProperty("completed_count") && !element.hasOwnProperty("total_count") ){
+              element["completed_count"] = value.completed_count;
+              element["total_count"] = value.total_count;
+            }
+          })
+        }
       })
       this.setState({ name: arr, showLoader: false });
     }
+
+    
   }
 
   handleFileDownload(file) {
@@ -369,6 +408,13 @@ class ViewDocument extends React.Component {
         options: {
           display: "excluded"
         }
+      },
+      {
+        name: "completed_count",
+        label: "completed_count",
+        options: {
+          
+        }
       }
 
     ];
@@ -446,7 +492,8 @@ const mapStateToProps = state => ({
   user: state.login,
   apistatus: state.apistatus,
   corp: state.corp,
-  fetchDocument: state.fetchDocument
+  fetchDocument: state.fetchDocument,
+  jobStatus: state.jobStatus
 });
 
 const mapDispatchToProps = dispatch =>
