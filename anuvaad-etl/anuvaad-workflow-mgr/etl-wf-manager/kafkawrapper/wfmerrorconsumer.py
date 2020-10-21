@@ -6,6 +6,7 @@ from kafka import KafkaConsumer, TopicPartition
 from logging.config import dictConfig
 from utilities.wfmutils import WFMUtils
 from service.wfmservice import WFMService
+from configs.wfmconfig import anu_etl_wf_error_topic
 from configs.wfmconfig import anu_etl_wfm_consumer_grp
 from configs.wfmconfig import kafka_bootstrap_server_host
 from configs.wfmconfig import wfm_error_cons_no_of_partitions
@@ -15,8 +16,6 @@ from anuvaad_auditor.loghandler import log_exception
 
 
 log = logging.getLogger('file')
-anu_etl_wf_error_topic = 'anuvaad-etl-wf-errors'
-
 
 # Method to instantiate the kafka consumer
 def instantiate(topics):

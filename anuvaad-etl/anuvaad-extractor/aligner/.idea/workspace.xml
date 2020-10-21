@@ -4,6 +4,9 @@
     <list default="true" id="1367aa72-5a9a-49e3-af55-1fe2c4fddf78" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../anuvaad-translator/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-translator/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/configs/wfmconfig.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/configs/wfmconfig.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/kafkawrapper/wfmerrorconsumer.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/kafkawrapper/wfmerrorconsumer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/service/wfmservice.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/service/wfmservice.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

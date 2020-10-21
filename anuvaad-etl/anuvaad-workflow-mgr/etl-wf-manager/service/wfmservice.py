@@ -182,7 +182,7 @@ class WFMService:
             order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
             first_step_details = order_of_execution[0]
             first_tool = first_step_details["tool"][0]
-            input_topic = first_tool["kafka-input"][100]["topic"]
+            input_topic = first_tool["kafka-input"][0]["topic"]
             first_tool_input = wfmutils.get_tool_input(first_tool["name"], None, None, wf_input)
             if first_tool_input is None:
                 error = validator.get_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.")
