@@ -245,7 +245,7 @@ class PdfFileEditor extends React.Component {
               value.save = true
               value.tgt = editedText
               value.tagged_tgt = editedText
-              this.props.saveUpdatedSentence(value)
+              this.props.saveUpdatedSentence(value, element.page_no)
             } else {
               if (value.hasOwnProperty("save")) {
                 value.tgt = this.state.prevActiveState && this.state.prevActiveState.tgt

@@ -1,9 +1,9 @@
 import React from "react";
-import Typography from '@material-ui/core/Typography';
 import Popover from '@material-ui/core/Menu';
 import Button from '@material-ui/core/MenuItem';
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { translate } from "../../../../assets/localisation";
 
 class Popovers extends React.Component {
     constructor(props) {
@@ -20,21 +20,24 @@ class Popovers extends React.Component {
                 if (option && option.length > 0 && option !== " ") {
                     return <Button style={{ textTransform: 'none', width: '100%', justifyContent: 'left' }} onClick={() => this.props.handleSuggetionClick(option, i)}>{option}</Button>
                 }
-            return null;})
+                return null;
+            })
             )
         } else {
-            return (<Typography>No Suggestion available</Typography>)
+            return (<Button style={{ textTransform: 'none', width: '100%', justifyContent: 'left' }} disabled={true}>{translate("intractive_translate.page.message.endOfSuggestion")}</Button>)
+
         }
     }
 
     fetchLoader() {
-        return (<Button style={{ textTransform: 'none', width: '100%', justifyContent: 'left' }} disabled={true}>Loading...</Button>)
+        let message = this.props.targetVal ? translate("intractive_translate.page.message.loading") : translate("intractive_translate.page.message.enterOneWord")
+        return (<Button style={{ textTransform: 'none', width: '100%', justifyContent: 'left' }} disabled={true}>{message}</Button>)
     }
 
     render() {
         const { id, isOpen, topValue, leftValue, targetVal } = this.props;
         let dataArr = []
-        if (this.props.options && this.props.options.length > 0) {
+        if (this.props.options && this.props.options.length > 0 && targetVal) {
             this.props.options.map((option, i) => {
                 if (option && option.length > 0) {
                     let data = option.substring(targetVal ? targetVal.trim().length : 0)
@@ -45,9 +48,9 @@ class Popovers extends React.Component {
                         }
                     }
                 }
-            return null;})
+                return null;
+            })
         }
-        if (!this.props.apistatus.loading) {
             return (
                 <Popover
                     id={id}
@@ -67,34 +70,10 @@ class Popovers extends React.Component {
                     keepMounted
                 >
                     {
-                        this.fetchOptions(dataArr)
+                        !this.props.apistatus.loading && targetVal ? this.fetchOptions(dataArr) : this.fetchLoader()
                     }
                 </Popover>
             )
-        } else {
-            return (<Popover
-                id={id}
-                open={isOpen}
-                anchorReference="anchorPosition"
-                anchorPosition={{ top: topValue, left: leftValue }}
-
-                onClose={() => this.props.handlePopOverClose()}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-                keepMounted
-            >
-                {
-                    this.fetchLoader()
-                }
-            </Popover>)
-
-        }
 
     }
 }

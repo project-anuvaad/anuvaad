@@ -12,7 +12,6 @@ class Dictionary extends React.Component {
 
       render() {
         const { classes} = this.props;
-        console.log(this.props.parallel_words)
           return(
             <Paper className={ classes.dictionary} >
             <div>

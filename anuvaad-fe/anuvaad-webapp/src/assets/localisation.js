@@ -389,7 +389,10 @@ const localization_EN_Data = {
   "profile.page.label.role": "Role",
   "parallel_corpus.page.dialog.message": "Edit source and target sentence here",
   "common.page.label.document_count":"Document Count",
-  "common.page.label.addDropDocument":"Please Add/Drop Document here"
+  "common.page.label.addDropDocument":"Please Add/Drop Document here",
+  "intractive_translate.page.message.enterOneWord": "Please enter at least one word. Then I can make suggestions.",
+  "intractive_translate.page.message.loading": "Getting suggestions for you",
+  "intractive_translate.page.message.endOfSuggestion": "You have reached the end of the sentence."
   // 'newCorpus.page.array.addFileTargetAndDetails':["Add Source file", 'Add target file', 'Add file details']
 };
 
@@ -758,7 +761,11 @@ const localization_HI_Data = {
   "newCorpus.page.stepper.label.addFileDetails": "फ़ाइल विवरण जोड़ें",
   "profile.page.label.role": "भूमिका",
   "parallel_corpus.page.dialog.message": "यहां स्रोत और लक्ष्य वाक्य संपादित करें",
-  "common.page.label.document_count":"डॉक संख्या"
+  "common.page.label.document_count":"डॉक संख्या",
+  "intractive_translate.page.message.enterOneWord": "कृपया कम से कम एक शब्द लिखिए। तब मैं सुझाव दे सकता हूं।",
+  "intractive_translate.page.message.loading": "आपके लिए सुझाव ढूंढ रहा हूँ।",
+  "intractive_translate.page.message.endOfSuggestion": "आप सजा के अंत तक पहुँच चुके हैं।",
+
 };
 
 export function translate(locale_text) {

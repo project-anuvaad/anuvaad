@@ -276,7 +276,6 @@ class Block extends Component {
   render() {
     const { classes, sentence, selectedBlock } = this.props;
     
-    console.log(this.props.match.params.locale,this.props.match.params.tgt_locale, )
     return (
       <Paper
         variant="outlined"
