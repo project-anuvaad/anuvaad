@@ -16,7 +16,7 @@ class JobSweeper(Thread):
     # Cron JOB to fetch status of each record and push it to CH and WFM on completion/failure.
     def run(self):
         obj = {"metadata": {"module": module_wfm_name}}
-        log_info("JobSweeper running......", obj)
+        log_info("WFM Deployed, JobSweeper running......", obj)
         wfmrepo = WFMRepository()
         run = 0
         while not self.stopped.wait(js_cron_interval_sec):

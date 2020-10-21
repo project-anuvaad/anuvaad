@@ -20,8 +20,8 @@ tool_nmt = "NMT"
 module_wfm_name = "WORKFLOW-MANAGER"
 is_sync_flow_enabled = True
 is_async_flow_enabled = True
-js_cron_interval_sec = os.environ.get('WFM_JS_CRON_INTERVAL_SEC', 3600) # 1 hr
-js_job_failure_interval_sec = os.environ.get('WFM_JS_CRON_FAILURE_INTERVAL_SEC', 21600) # 6 hrs
+js_cron_interval_sec = os.environ.get('WFM_JS_CRON_INTERVAL_SEC', 1800) # 1/2 hr
+js_job_failure_interval_sec = os.environ.get('WFM_JS_CRON_FAILURE_INTERVAL_SEC', 7200) # 2 hrs
 page_default_limit = os.environ.get('WFM_PAGE_DEFAULT_LIMIT', 20)
 jobid_random_str_length = os.environ.get('WFM_JOBID_RANDOM_STR_LEN', 5)
 
