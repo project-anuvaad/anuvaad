@@ -241,6 +241,9 @@ definitions:
       s0_tgt:
         type: string
         description: baseline translated sentence, cannot be updated
+      save:
+        type: boolean
+        description: save flag true or false
 
   UpdateSentences:
     type: object
