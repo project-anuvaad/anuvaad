@@ -24,6 +24,9 @@ import Fab from '@material-ui/core/Fab';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 //import AddIcon from '@material-ui/icons/Add';
 import PublishIcon from '@material-ui/icons/Publish';
+import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteJob from "../../../flux/actions/apis/markinactive";
+
 const TELEMETRY = require('../../../utils/TelemetryManager')
 
 class ViewDocument extends React.Component {
@@ -60,10 +63,10 @@ class ViewDocument extends React.Component {
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('view-document')
 
-   /**
-    * getSnapshotBeforeUpdate() must return null
-    */
-   return null;
+    /**
+     * getSnapshotBeforeUpdate() must return null
+     */
+    return null;
   }
 
   componentDidMount() {
@@ -89,8 +92,8 @@ class ViewDocument extends React.Component {
     if (prevProps.fetchDocument !== this.props.fetchDocument) {
       var arr = []
 
-      this.props.fetchDocument.map((value, i) => {
-        if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && (value.status === "FAILED"|| value.status === "COMPLETED")) {
+      this.props.fetchDocument && Array.isArray(this.props.fetchDocument) && this.props.fetchDocument.length>0 && this.props.fetchDocument.map((value, i) => {
+        if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && (value.status === "FAILED" || value.status === "COMPLETED")) {
           TELEMETRY.endWorkflow(value.jobID)
         }
 
@@ -173,6 +176,12 @@ class ViewDocument extends React.Component {
     this.setState({ showInfo: false })
   }
 
+  handleDeleteJob(jobId) {
+    const { APITransport } = this.props;
+    const apiObj = new DeleteJob(jobId);
+    APITransport(apiObj);
+  }
+
   render() {
     const columns = [
       {
@@ -211,7 +220,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                 <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[3]}</div>
+                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[3]}</div>
                 </div>
               );
             }
@@ -264,7 +273,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[8]}</div>
+                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[8]}</div>
                 </div>
               );
             }
@@ -283,7 +292,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[9]}</div>
+                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[9]}</div>
                 </div>
               );
             }
@@ -307,7 +316,7 @@ class ViewDocument extends React.Component {
 
                 <div style={{ width: '120px' }}>
 
-                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}><div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[1]}</div></div>}
+                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}><div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[1]}</div></div>}
 
                 </div>
               );
@@ -327,7 +336,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[11]}</div>
+                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[11]}</div>
                 </div>
               );
             }
@@ -347,7 +356,16 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div >
-                  <Tooltip title="info" placement="left"><IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[13])}><InfoIcon style={{ color: "#C6C6C6" }} /></IconButton></Tooltip>
+                  <Tooltip title="info" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[13])}>
+                      <InfoIcon style={{ color: "#C6C6C6" }} />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="info" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDeleteJob(tableMeta.rowData[13])}>
+                      <DeleteIcon style={{ color: "#C6C6C6" }} />
+                    </IconButton>
+                  </Tooltip>
                   {tableMeta.rowData[1] === 'COMPLETED' ? <Tooltip title={translate('viewTranslate.page.title.downloadSource')} placement="right"><IconButton style={{ color: '#233466' }} component="a" onClick={() => { this.setState({ fileDownload: true }); this.handleFileDownload(tableMeta.rowData[5]) }}><DeleteOutlinedIcon /></IconButton></Tooltip> : ''}
                 </div>
               );
@@ -362,7 +380,7 @@ class ViewDocument extends React.Component {
         options: {
           display: "excluded"
         },
-      }, 
+      },
       {
         name: "tgt_locale",
         label: "tgt_locale",
