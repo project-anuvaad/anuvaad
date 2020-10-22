@@ -6,17 +6,17 @@
             "description":"Has access to every resource in the system"
         },
         {
-            "url":"ADMIN",
+            "code":"ADMIN",
             "active":true,
             "description":"Has access to every resource in the system"
         },
         {
-            "url":"TRANSLATOR",
+            "code":"TRANSLATOR",
             "active":true,
             "description":"Has access to translation related resources"
         },
         {
-            "url":"DEVELOPER",
+            "code":"DEVELOPER",
             "active":true,
             "description":"Has access to technical details of th system"
         }
