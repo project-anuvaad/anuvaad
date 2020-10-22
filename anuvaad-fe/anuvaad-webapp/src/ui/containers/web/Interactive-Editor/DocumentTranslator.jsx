@@ -339,6 +339,8 @@ class PdfFileEditor extends React.Component {
 
   handleSentences(sentence, element) {
     return sentence.tokenized_sentences.map((value, tokenIndex) => {
+
+      console.log(value)
       return <div ref={this.props.sentences.page_no}>
         <Block
           handleDialogMessage={this.handleDialog.bind(this)}

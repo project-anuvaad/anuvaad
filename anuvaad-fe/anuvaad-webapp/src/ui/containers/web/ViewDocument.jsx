@@ -89,8 +89,8 @@ class ViewDocument extends React.Component {
     const { APITransport } = this.props;
     const apiObj = new FetchDocument(offset, limit);
     APITransport(apiObj);
-    value && this.setState({ showLoader: true });
-    value && setTimeout(() => {
+    value && !this.state.refreshStatus&& this.setState({ showLoader: true , refreshStatus: true});
+    value && !this.state.refreshStatus&& setTimeout(() => {
       this.setState({ open: false });
     }, 30000);
   }
@@ -116,7 +116,7 @@ class ViewDocument extends React.Component {
       //  if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && (value.status === "FAILED" || value.status === "COMPLETED")) {
       //   TELEMETRY.endWorkflow(value.jobID)
       // }
-      this.setState({ name: this.props.fetchDocument.result.jobs, count: this.props.fetchDocument.result.count, jobArray, showLoader: false });
+      this.setState({ name: this.props.fetchDocument.result.jobs, count: this.props.fetchDocument.result.count, jobArray, showLoader: false , refreshStatus: false});
       
       // if (jobArray.length > 1) {
       //   const { APITransport } = this.props;
