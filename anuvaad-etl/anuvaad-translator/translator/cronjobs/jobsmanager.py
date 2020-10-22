@@ -18,10 +18,10 @@ class JobsManger(Thread):
 
     # Cron JOB to fetch status of each record and push it to CH and WFM on completion/failure.
     def run(self):
-        log_info("JobsManger running......", None)
+        obj = {"metadata": {"module": tool_translator}}
+        log_info("Translator Deployed, JobsManger running......", obj)
         repo = TranslatorRepository()
         run = 0
-        obj = {"metadata": {"module": tool_translator}}
         while not self.stopped.wait(jm_cron_interval_sec):
             completed, failed, inprogress = [], [], []
             completed_jobids, failed_jobids = [], []
@@ -44,7 +44,6 @@ class JobsManger(Thread):
                             completed_jobids.append(record["jobID"])
                             is_added = True
                         if not is_added:
-                            log_info("JobsManger InProgress ---- " + str(record["jobID"]) + " | " + str(total) + " | " + str(translated) + " | " + str(skipped), obj)
                             inprogress.append(record)
                     except Exception as e:
                         log_exception("Exception in JobsManger for record: " + record["recordID"], record["transInput"], e)
@@ -56,6 +55,11 @@ class JobsManger(Thread):
                     log_info("JobsManger - Run: " + str(run) + " | Completed Jobs: " + str(completed_jobids), obj)
                 if len(failed) > 0:
                     log_info("JobsManger - Run: " + str(run) + " | Failed Jobs: " + str(failed_jobids), obj)
+                if len(inprogress) > 0:
+                    log_info("JobsManger - Run: " + str(run) + " | InProgress Report --------------------------- ", obj)
+                    for record in inprogress:
+                        log_info(str(record["jobID"]) + " | " + str(record["totalSentences"]) +
+                                 " | " + str(record["translatedSentences"]) + " | " + str(record["skippedSentences"]), obj)
                 self.data_sink(completed, failed, obj)
                 run += 1
             except Exception as e:
