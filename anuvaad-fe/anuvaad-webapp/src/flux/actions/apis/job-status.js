@@ -22,7 +22,6 @@ export default class WordDictionary extends API {
       }
     
       processResponse(res) {
-          console.log("------------------------------",res)
         super.processResponse(res);
         if (res) {
           this.workspace = res.data;

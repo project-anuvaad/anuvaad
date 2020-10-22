@@ -15,13 +15,11 @@ export default function(state = initialUserState, action) {
       let existjobs = [];
       arr.map((element,i)=>existjobs.push(element.id))
 
-      console.log(existjobs)
       
       jobDetails.map((value, i)=>{
         
           if(!value.hasOwnProperty("active")|| value.active){
 
-          console.log(value.status)
   
           let date = value.startTime.toString()
           let timestamp = date.substring(0, 13)
@@ -32,7 +30,6 @@ export default function(state = initialUserState, action) {
           let currentDate = new Date()
   
           let timeDiff = Math.floor((currentDate.getTime() - myDate.getTime()) / 60000)
-          console.log(timeDiff)
   
           let taskData = {}
           taskData.status = ((value.status === "INPROGRESS" || value.status === "STARTED") && timeDiff > 300) ? "FAILED" : value.status;
@@ -67,7 +64,6 @@ export default function(state = initialUserState, action) {
             }
           }
 
-          console.log(taskData)
           let id  = value.output && (value.output[0].hasOwnProperty('outputFilePath') ? value.output[0].outputFilePath : value.output[0].outputFile);
           
           var b = {};

@@ -4,7 +4,6 @@ import ENDPOINTS from "../../../configs/apiendpoints";
 
 export default class RunExperiment extends API {
   constructor(sentences,updateSentence, timeout = 2000) {
-    console.log();
     super("POST", timeout, false);
     this.type = C.UPDATESOURCESENTENCE;
     this.sentences = sentences;

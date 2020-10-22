@@ -96,7 +96,6 @@ class Newcorpus extends React.Component {
   }
 
   handleSource = (files) => {
-    console.log(files)
     this.setState({
       englishFile: files
     });

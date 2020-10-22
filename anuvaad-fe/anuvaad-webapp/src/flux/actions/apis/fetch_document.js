@@ -4,13 +4,11 @@ import ENDPOINTS from "../../../configs/apiendpoints";
 
 export default class RunExperiment extends API {
   constructor(offset,limit, timeout = 2000) {
-    console.log();
     super("POST", timeout, false);
     this.type = C.FETCHDOCUMENT;
     this.offset = offset;
     this.limit=limit;
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.fetchducuments}`
-    console.log( this.offset)
   }
 
   toString() {
