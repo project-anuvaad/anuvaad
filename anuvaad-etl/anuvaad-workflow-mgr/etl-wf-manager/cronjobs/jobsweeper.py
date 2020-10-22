@@ -35,7 +35,7 @@ class JobSweeper(Thread):
                                                       "The job was failed by the system, since it was idle", None)
                             job["endTime"] = eval(str(time.time()).replace('.', '')[0:13])
                             wfmrepo.update_job(job, job["jobID"])
-                            log_info("JobSweeper -- JOB FAILED: The job was failed by the system, since it was idle", job)
+                            log_info("JobSweeper -- JOB FAILED: Idle job, force failed. jobID: " + job["jobID"], job)
                             no_of_jobs += 1
                 run += 1
                 log_info("JobSweeper -- Run: " + str(run) + " | Jobs Fetched: " + str(len(jobs)) + " | Jobs Processed: " + str(no_of_jobs), obj)
