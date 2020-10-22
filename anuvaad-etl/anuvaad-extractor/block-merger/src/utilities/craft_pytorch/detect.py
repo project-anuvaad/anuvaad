@@ -135,13 +135,14 @@ def sort_regions(contours_df, sorted_contours=[]):
     return sorted_contours
 
 def convert_to_in_df(craft_df):
+
     in_df_columns = ['xml_index', 'text_top', 'text_left', 'text_width', 'text_height',
                      'text', 'font_size', 'font_family', 'font_color', 'attrib']
     in_df = pd.DataFrame(columns=in_df_columns)
     in_df['text_top'] = craft_df['y1']
     in_df['text_left'] = craft_df['x1']
-    in_df['text_height'] = craft_df['y4'] - craft_df['y1']
-    in_df['text_width'] = craft_df['x2'] - craft_df['x1']
+    in_df['text_height'] =(craft_df['y4'] - craft_df['y1'])
+    in_df['text_width'] = (craft_df['x2'] - craft_df['x1'])
     in_df['text'] = ''
     in_df['attrib'] = None
     in_df['font_family'] = 'Ariel Unicode MS'
@@ -156,8 +157,10 @@ def convert_to_in_df(craft_df):
     return  in_df
 
 
-def detect_text(image_paths,text_threshold=args.text_threshold,low_text_threshold= args.low_text,img_class="single_col"):
-
+def detect_text(pdf_data,text_threshold=args.text_threshold,low_text_threshold= args.low_text,img_class="single_col"):
+    image_paths = pdf_data['pdf_image_paths']
+    width_ratio = pdf_data['page_width'] / pdf_data['pdf_image_width']
+    height_ratio = pdf_data['page_height'] / pdf_data['pdf_image_height']
     in_dfs = []
     number_of_pages = len(image_paths)
     if img_class == "double_col":
@@ -178,10 +181,10 @@ def detect_text(image_paths,text_threshold=args.text_threshold,low_text_threshol
         df = pd.DataFrame(columns = column_names)
         for index, box in enumerate(polys):
             poly = np.array(box).astype(np.int32).reshape((-1))
-            df.at[index,'x1']= int(poly[0]); df.at[index,'y1']= int(poly[1])
-            df.at[index,'x2']= int(poly[2]); df.at[index,'y2']= int(poly[3])
-            df.at[index,'x3']= int(poly[4]); df.at[index,'y3']= int(poly[5])
-            df.at[index,'x4']= int(poly[6]); df.at[index,'y4']= int(poly[7])
+            df.at[index,'x1']= int(poly[0]* width_ratio); df.at[index,'y1']= int(poly[1]* height_ratio)
+            df.at[index,'x2']= int(poly[2]* width_ratio); df.at[index,'y2']= int(poly[3]* height_ratio)
+            df.at[index,'x3']= int(poly[4]* width_ratio); df.at[index,'y3']= int(poly[5]* height_ratio)
+            df.at[index,'x4']= int(poly[6]* width_ratio); df.at[index,'y4']= int(poly[7]* height_ratio)
 
         in_df = convert_to_in_df(df)
         in_dfs.append(in_df)

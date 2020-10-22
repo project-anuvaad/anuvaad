@@ -85,8 +85,8 @@ def vertical_merging(pdf_data,flags):
         for h_df in pdf_data['h_dfs'] :
             v_df = pd.DataFrame(columns=columns)
             if flags['page_layout'] == 'single_column':
-                v_df['text_height'] = [pdf_data['pdf_image_height']]
-                v_df['text_width'] = pdf_data['pdf_image_width']
+                v_df['text_height'] = [pdf_data['page_height']]
+                v_df['text_width'] = pdf_data['page_width']
                 v_df['text_top'] = 0
                 v_df['text_left'] = 0
                 v_df['children'] = h_df.to_json()
@@ -118,7 +118,7 @@ def breaK_into_paragraphs(pdf_data,flags):
     else :
         p_dfs = []
         for page_index ,v_df in enumerate(pdf_data['v_dfs']) :
-            p_df = pd.concat(process_block_single_column(v_df, pdf_data['pdf_image_width'],page_num= page_index +1, configs=config.BLOCK_BREAK_CONFIG))
+            p_df = pd.concat(process_block_single_column(v_df, pdf_data['page_width'],page_num= page_index +1, configs=config.BLOCK_BREAK_CONFIG))
             p_dfs.append(p_df)
         return p_dfs
 
@@ -142,12 +142,12 @@ def doc_structure_response(pdf_data,flags):
     text_block_dfs  = pdf_data['p_dfs']
     table_dfs       = pdf_data['table_dfs']
     line_dfs        = pdf_data['line_dfs']
-    if flags['doc_class'] == 'class_1':
-        page_width      = pdf_data['page_width']
-        page_height     = pdf_data['page_height']
-    else :
-        page_width = pdf_data['pdf_image_width']
-        page_height = pdf_data['pdf_image_height']
+    #if flags['doc_class'] == 'class_1':
+    page_width      = pdf_data['page_width']
+    page_height     = pdf_data['page_height']
+    # else :
+    #     page_width = pdf_data['pdf_image_width']
+    #     page_height = pdf_data['pdf_image_height']
 
     log_info("document structure response started  ===>", app_context.application_context)
     start_time = time.time()

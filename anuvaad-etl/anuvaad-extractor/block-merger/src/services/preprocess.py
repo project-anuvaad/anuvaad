@@ -138,10 +138,10 @@ def add_attrib(page_df, region_to_change, attrib, margin=3):
 
 def prepocess_pdf_regions(pdf_data,flags, config =preprocess_config ):
     xml_dfs = pdf_data['in_dfs']
-    if flags['doc_class'] == 'class_1':
-        page_height=  pdf_data['page_height']
-    else:
-        page_height =  pdf_data['pdf_image_height']
+    #if flags['doc_class'] == 'class_1':
+    page_height=  pdf_data['page_height']
+    #else:
+    #    page_height =  pdf_data['pdf_image_height']
     #header_region = None
     #footer_region =None
     #if len(xml_dfs) > 1 :
@@ -215,7 +215,7 @@ def mask_image(image,df, image_width,image_height,input_json,margin= 0 ,fill=255
                     image[row_top - margin: row_bottom + margin, row_left - margin: row_right + margin,:] = fill
 
             except Exception as e :
-                log_error("Service TableExtractor Error in masking bg image" +e, input_json, e)
+                log_error("Service TableExtractor Error in masking bg image" +str(e), input_json, e)
                 return image
     return image
 

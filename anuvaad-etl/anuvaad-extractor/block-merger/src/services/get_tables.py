@@ -145,10 +145,10 @@ def get_text_from_table_cells(table_dfs, p_dfs):
 def get_text_table_line_df(pdf_data,flags, check=False):
     xml_dfs = pdf_data['in_dfs']
     img_dfs= pdf_data['img_dfs']
-    if flags['doc_class'] == 'class_1':
-        pdf_bg_img_filepaths = pdf_data['pdf_bg_img_filepaths']
-    else :
-        pdf_bg_img_filepaths = pdf_data['pdf_image_paths']
+    #if flags['doc_class'] == 'class_1':
+    pdf_bg_img_filepaths = pdf_data['pdf_bg_img_filepaths']
+    #else :
+    #    pdf_bg_img_filepaths = pdf_data['pdf_image_paths']
 
     log_info("TableExtractor service started", app_context.application_context)
 

@@ -111,12 +111,12 @@ def tesseract_ocr(pdf_data,flags ):
 
     pdf_image_paths = pdf_data['pdf_image_paths']
 
-    if flags['doc_class'] == 'class_1':
-        page_width = pdf_data['page_width']
-        page_height = pdf_data['page_height']
-    else:
-        page_width = pdf_data['pdf_image_width']
-        page_height = pdf_data['pdf_image_height']
+    #if flags['doc_class'] == 'class_1':
+    page_width = pdf_data['page_width']
+    page_height = pdf_data['page_height']
+    # else:
+    #     page_width = pdf_data['pdf_image_width']
+    #     page_height = pdf_data['pdf_image_height']
 
     desired_width   = page_width
     desired_height  = page_height

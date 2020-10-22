@@ -19,7 +19,7 @@ def extract_images_and_text_regions(filename, base_dir,lang,page_layout):
     if flags['doc_class'] == 'class_1':
         pass
     else :
-        pdf_data['in_dfs'] = detect_text(image_paths=pdf_data['pdf_image_paths'])
+        pdf_data['in_dfs'] = detect_text(pdf_data)
 
     pdf_data['in_dfs'], table_dfs, line_dfs, bg_dfs                     = get_text_table_line_df(pdf_data,flags)
     pdf_data['table_dfs'], pdf_data['line_dfs'], pdf_data['bg_dfs']     = table_dfs, line_dfs,bg_dfs
