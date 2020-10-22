@@ -99,7 +99,7 @@ export default function(state = initialUserState, action) {
           
            
           if(value.status === "COMPLETED" && (!existjobs.includes(id))){
-            jobArray.push(value.jobID)
+            jobArray.push(value.output && value.output[0].outputFile)
           }
         }
           
@@ -114,7 +114,8 @@ export default function(state = initialUserState, action) {
      
       
       return {...state,result: resultArray};
-      
+      case C.CLEAR_CONTENT:
+        return initialUserState;
     default:
       return state;
   }
