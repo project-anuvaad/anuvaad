@@ -98,7 +98,6 @@ class ViewDocument extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.markInactive !== this.props.markInactive) {
       let resultArray = this.state.name;
-      debugger;
       resultArray.map((element,i)=>{
         if(this.state.deleteId===element.job){
           resultArray.splice(i, 1);

@@ -17,7 +17,6 @@ export default class MarkInactive extends API {
   processResponse(res) {
     super.processResponse(res);
     if (res) {
-      debugger
       var d = new Date();
       res["timestamp"]= d.getTime()
       this.data = res;
