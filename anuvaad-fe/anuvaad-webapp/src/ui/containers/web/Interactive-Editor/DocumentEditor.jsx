@@ -495,7 +495,7 @@ class PdfFileEditor extends React.Component {
     telemetry.sId = idDetails[0] ? idDetails[0] : id
     telemetry.mode = wf_code ? "translation" : "validation"
 
-    if (blockItem && !wf_code && this.state.textChange) this.workFlowApi("WF_S_TKTR", [blockItem], status);
+    if (blockItem && !wf_code && this.state.textChange) this.workFlowApi("WF_S_TKTR", [blockItem], status,"source_edit");
     else if (wf_code && blockItem && saveData) this.workFlowApi(wf_code, [blockItem], status, prevValue);
     this.setState({
       hoveredSentence: "",
