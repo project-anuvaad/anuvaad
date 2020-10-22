@@ -27,6 +27,7 @@ class TextTranslationService:
             if text_for_nmt:
                 for text in text_for_nmt:
                     text_nmt.append({"s_id": text["s_id"], "id": text["modelID"], "src": text["src"], "tagged_prefix": text["taggedPrefix"]})
+                log_info("NMT IT URI - " + str(nmt_interactive_translate_url), text_translate_input)
                 nmt_response = utils.call_api(nmt_interactive_translate_url, "POST", text_nmt, None, text_translate_input["metadata"]["userID"])
                 if nmt_response:
                     if 'status' in nmt_response.keys():

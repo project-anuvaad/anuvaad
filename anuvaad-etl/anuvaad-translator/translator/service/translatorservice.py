@@ -233,13 +233,16 @@ class TranslatorService:
     # Back up method to update sentences from DB.
     def update_sentences(self, record_id, nmt_res_batch, translate_wf_input):
         job_details = self.get_content_from_db(record_id, None, translate_wf_input)[0]
+        sentence_ids = []
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             page_no, block_id = node[2], node[3]
             p_index, b_index, s_index = None, None, None
             sentence_id = nmt_res_sentence["s_id"]
-            log_info("BLOCK ID" + str(block_id), translate_wf_input)
-            log_info("SENTENCE ID" + str(sentence_id), translate_wf_input)
+            if sentence_id in sentence_ids:
+                log_info("Repeated Sentence: " + str(sentence_id), translate_wf_input)
+            else:
+                sentence_ids.append(sentence_id)
             pages = job_details["data"]["result"]
             for i, page in enumerate(pages):
                 if str(page["page_no"]) == str(page_no):
