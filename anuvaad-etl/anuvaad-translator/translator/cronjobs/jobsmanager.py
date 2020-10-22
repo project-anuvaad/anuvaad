@@ -87,6 +87,8 @@ class JobsManger(Thread):
                     "tgt_lang": complete["transInput"]["input"]["files"][0]["model"]["target_language_code"],
                     "record_id": complete["recordID"], "pages": complete["data"]["result"]
                 }
+                log_info("DATA TO CH: ", complete["transInput"])
+                log_info(complete["data"]["result"], complete["transInput"])
                 user_id = complete["transInput"]["metadata"]["userID"]
                 res = utils.call_api(save_content_url, "POST", ch_input, None, user_id)
                 if res:
