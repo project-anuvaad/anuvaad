@@ -178,6 +178,12 @@ class ViewDocument extends React.Component {
     }, 20000);
   }
 
+  changePage = (page, sortOrder) => {
+    this.setState({
+      isLoading: true,
+    });
+  };
+
   render() {
     const columns = [
       {
@@ -212,6 +218,8 @@ class ViewDocument extends React.Component {
         label: "Filename",
         options: {
           filter: true,
+
+          
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -443,6 +451,21 @@ class ViewDocument extends React.Component {
         },
         pagination: {
           rowsPerPage: translate("graderReport.page.muiTable.rowsPerPages")
+        }
+      },
+
+      onTableChange: (action, tableState) => {
+
+            
+            
+        // a developer could react to change on an action basis or
+        // examine the state as a whole and do whatever they want
+
+        switch (action) {
+          case 'changePage':
+            this.changePage(tableState.page, tableState.sortOrder);
+            break;
+          default:
         }
       },
       count: this.state.count,
