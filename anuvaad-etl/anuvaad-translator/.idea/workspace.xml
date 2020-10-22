@@ -5,7 +5,6 @@
       <change beforePath="$PROJECT_DIR$/../anuvaad-extractor/aligner/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../anuvaad-extractor/aligner/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/translator/cronjobs/jobsmanager.py" beforeDir="false" afterPath="$PROJECT_DIR$/translator/cronjobs/jobsmanager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../anuvaad-workflow-mgr/config/etl-wf-manager-config-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../anuvaad-workflow-mgr/config/etl-wf-manager-config-prod.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
