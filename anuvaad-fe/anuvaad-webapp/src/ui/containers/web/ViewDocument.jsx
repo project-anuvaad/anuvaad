@@ -104,7 +104,7 @@ class ViewDocument extends React.Component {
         
         }
       })
-      this.setState({name:resultArray, loaderDelete: false, open:true, message: this.state.deleteId + "deleted cuccessfully"})
+      this.setState({name:resultArray, loaderDelete: false, open:true, message: this.state.deletedFile + " deleted scuccessfully"})
       setTimeout(() => {
         this.setState({ open: false });
       }, 30000);
@@ -167,11 +167,11 @@ class ViewDocument extends React.Component {
     this.setState({ showInfo: false })
   }
 
-  handleDeleteJob(jobId) {
+  handleDeleteJob(jobId, fileName) {
     const { APITransport } = this.props;
     const apiObj = new MarkInactive(jobId);
     APITransport(apiObj);
-    this.setState({deleteId:jobId, loaderDelete: true})
+    this.setState({deleteId:jobId, loaderDelete: true, deletedFile: fileName})
     setTimeout(() => {
       this.setState({ loaderDelete: false });
     }, 20000);
@@ -397,7 +397,7 @@ class ViewDocument extends React.Component {
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Delete Job" placement="left">
-                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDeleteJob(tableMeta.rowData[2])}>
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDeleteJob(tableMeta.rowData[2], tableMeta.rowData[3])}>
                       <DeleteIcon />
                     </IconButton>
                   </Tooltip>
