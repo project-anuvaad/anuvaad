@@ -42,7 +42,7 @@ class Popovers extends React.Component {
                 if (option && option.length > 0) {
                     let data = option.substring(targetVal ? targetVal.trim().length : 0)
                     if (data && data.length > 0 && data !== " ") {
-                        let arr = data.split(" ", 4)
+                        let arr = data.split(" ", 7)
                         if (arr && arr.length > 0) {
                             dataArr.push(arr.join(" "))
                         }
