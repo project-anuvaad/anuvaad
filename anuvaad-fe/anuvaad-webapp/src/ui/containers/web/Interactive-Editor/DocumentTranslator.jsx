@@ -37,7 +37,8 @@ class PdfFileEditor extends React.Component {
 
   componentDidMount() {
     if (this.props.scroll) {
-      if (this.refs[this.props.scroll]) {
+      let page = this.props.scroll && this.props.scroll.split("@")[0]
+      if (this.refs[this.props.scroll] && page !== 1) {
         this.refs[this.props.scroll].scrollIntoView({
           behavior: "smooth",
           inline: "end"
