@@ -202,7 +202,7 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: true,
           // sortOrder: "asc",
-          // display: "excluded"
+          display: "excluded"
 
         }
       },
