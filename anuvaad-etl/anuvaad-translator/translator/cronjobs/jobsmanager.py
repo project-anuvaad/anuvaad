@@ -1,3 +1,5 @@
+import random
+import string
 import time
 from threading import Thread
 from anuvaad_auditor.loghandler import log_exception, log_info, log_error
@@ -19,7 +21,9 @@ class JobsManger(Thread):
     # Cron JOB to fetch status of each record and push it to CH and WFM on completion/failure.
     def run(self):
         obj = {"metadata": {"module": tool_translator}}
-        log_info("JobsManager -- Translator Deployed, JobsManager running......", obj)
+        rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
+        prefix = "JobsManager(" + rand_str + ")"
+        log_info(prefix + " -- Translator Deployed, JobsManager running......", obj)
         repo = TranslatorRepository()
         run = 0
         while not self.stopped.wait(jm_cron_interval_sec):
@@ -46,24 +50,24 @@ class JobsManger(Thread):
                         if not is_added:
                             inprogress.append(record)
                     except Exception as e:
-                        log_exception("JobsManager -- Exception in JobsManger for record: " + record["recordID"], record["transInput"], e)
-                        log_exception("JobsManager -- Exception - " + str(e), record["transInput"], e)
+                        log_exception(prefix + " -- Exception in JobsManger for record: " + record["recordID"], record["transInput"], e)
+                        log_exception(prefix + " -- Exception - " + str(e), record["transInput"], e)
                         continue
-                log_info("JobsManager | Run: " + str(run)
+                log_info(prefix + " -- Run: " + str(run)
                          + " | Completed: " + str(len(completed)) + " | Failed: " + str(len(failed)) + " | InProgress: " + str(len(inprogress)), obj)
                 if len(completed) > 0:
-                    log_info("JobsManager --  Run: " + str(run) + " | Completed Jobs: " + str(completed_jobids), obj)
+                    log_info(prefix + " --  Run: " + str(run) + " | Completed Jobs: " + str(completed_jobids), obj)
                 if len(failed) > 0:
-                    log_info("JobsManager -- Run: " + str(run) + " | Failed Jobs: " + str(failed_jobids), obj)
+                    log_info(prefix + " -- Run: " + str(run) + " | Failed Jobs: " + str(failed_jobids), obj)
                 if len(inprogress) > 0:
-                    log_info("JobsManager -- Run: " + str(run) + " | InProgress Report --------------------------- ", obj)
+                    log_info(prefix + " -- Run: " + str(run) + " | InProgress Report --------------------------- ", obj)
                     for record in inprogress:
-                        log_info("JobsManager -- " + str(record["jobID"]) + " | " + str(record["totalSentences"]) +
+                        log_info(prefix + " -- " + str(record["jobID"]) + " | " + str(record["totalSentences"]) +
                                  " | " + str(record["translatedSentences"]) + " | " + str(record["skippedSentences"]), obj)
                 self.data_sink(completed, failed, obj)
                 run += 1
             except Exception as e:
-                log_exception("JobsManager -- Run: " + str(run) + " | Exception: " + str(e), obj, e)
+                log_exception(prefix + " -- Run: " + str(run) + " | Exception: " + str(e), obj, e)
                 run += 1
 
     # Method to push data to CH and WFM.
