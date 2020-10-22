@@ -123,6 +123,7 @@ class PdfFileEditor extends React.Component {
     }
 
     if (prevProps.saveContent !== this.props.saveContent) {
+
       if (this.props.saveContent && this.props.saveContent.hasOwnProperty("s_id")) {
         this.state.sentences && Array.isArray(this.state.sentences) && this.state.sentences.length > 0 && this.state.sentences.map((pageData, i) => {
           if (pageData.page_no === this.state.selectedPageNo) {
@@ -137,6 +138,12 @@ class PdfFileEditor extends React.Component {
           }
         })
       }
+
+      this.setState({
+        open: true,
+        message: "Translated sentence saved...!",
+        apiCall: false
+      })
     }
 
 
@@ -404,11 +411,15 @@ class PdfFileEditor extends React.Component {
   };
 
   saveUpdatedSentence(sentenceObj, pageNo) {
-    this.setState({ selectedSourceText: sentenceObj, selectedPageNo: pageNo })
 
     const apiObj = new SaveContent(sentenceObj);
     this.props.APITransport(apiObj);
+    this.setState({ selectedSourceText: sentenceObj, selectedPageNo: pageNo, apiCall: true })
 
+
+    setTimeout(() => {
+      this.setState({ open: false });
+    }, 3000);
   }
 
   workFlowApi(workflow, blockDetails, update, type) {
