@@ -13,13 +13,13 @@ export default function(state = initialUserState, action) {
       let jobDetails = response.jobs;
       var resultArray ={}
       let existjobs = [];
-      arr.map((element,i)=>existjobs.push(element.id))
+      let changedJob = {}
+      arr.map((element,i)=>existjobs.push(element.job))
 
-      
+      console.log(existjobs)
       jobDetails.map((value, i)=>{
         
-          if(!value.hasOwnProperty("active")|| value.active){
-
+         
   
           let date = value.startTime.toString()
           let timestamp = date.substring(0, 13)
@@ -62,9 +62,9 @@ export default function(state = initialUserState, action) {
                 return null
               })
             }
-          }
+          
 
-          let id  = value.output && (value.output[0].hasOwnProperty('outputFilePath') ? value.output[0].outputFilePath : value.output[0].outputFile);
+          let id  = value.jobID;
           
           var b = {};
           b["tgt_locale"] = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.target_language_code
@@ -79,19 +79,28 @@ export default function(state = initialUserState, action) {
           b["source"] = sourceLang
           b["target"] = targetLang
           b["tasks"] = taskData
-          if(value.output && value.output[0].outputFile !== "FAILED"&& value.output[0].outputFile && (!existjobs.includes(id) || value.status !== "COMPLETED" && b.status==="COMPLETED")){
-            jobArray.push(value.output[0].outputFile)
-          }
           
-          if(!existjobs.includes(id)){
+          if(!existjobs.includes(id) && !jobArray.includes(id)){
             arr.push(b)
           }
-          else if(value.status !== "COMPLETED" && b.status==="COMPLETED"){
-            arr[i] = b;
+          else if (b.status){
+            arr.map(elementValue=>{
+              if(elementValue.status!=="COMPLETED" && b.status==="COMPLETED"){
+                elementValue = b
+              }
+            })
+          }
+          
+           
+          if(value.status === "COMPLETED" && (!existjobs.includes(id))){
+            jobArray.push(value.jobID)
           }
         }
           
         })
+
+        
+        
 
         resultArray["jobs"]=arr;
         resultArray["count"]=action.payload.count;

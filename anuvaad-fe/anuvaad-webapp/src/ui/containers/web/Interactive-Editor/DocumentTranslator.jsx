@@ -115,6 +115,7 @@ class PdfFileEditor extends React.Component {
   }
 
   handleDictionary(selectedValue, src_locale, tgt_locale) {
+
     const apiObj = new WordDictionary(selectedValue, src_locale, tgt_locale);
     this.props.APITransport(apiObj);
     this.setState({ src_locale, tgt_locale, loading: true })
@@ -270,7 +271,7 @@ class PdfFileEditor extends React.Component {
 
   popUp = (selected_block_id,
     sentence_id,
-    sentence_index, event, operation, selectedText) => {
+    sentence_index, event, operation, selectedText, targetDict) => {
 
     window.getSelection().toString()&& this.setState({
       operation_type: operation,
@@ -281,7 +282,8 @@ class PdfFileEditor extends React.Component {
       selected_block_id,
       sentence_id,
       sentence_index,
-      selectedText
+      selectedText,
+      targetDict
 
 
 
@@ -303,7 +305,13 @@ class PdfFileEditor extends React.Component {
     else if(status==="Dictionary"){
       let word_locale = this.props.match.params.locale
      let tgt_locale = this.props.match.params.tgt_locale
+     if(this.state.targetDict){
+      this.handleDictionary(this.state.selectedText,  tgt_locale, word_locale)
+     }
+     else{
       this.handleDictionary(this.state.selectedText,word_locale,  tgt_locale)
+     }
+      
     }
     this.setState({openEl: false})
   }
@@ -522,6 +530,8 @@ class PdfFileEditor extends React.Component {
             topValue={this.state.topValue}
             leftValue={this.state.leftValue}
             anchorEl={this.state.anchorEl}
+            targetDict = {this.state.targetDict}
+            selectedText = {this.state.selectedText}
             operation_type={this.state.operation_type}
             handleClose={this.handleClose.bind(this)}
             handleDialog={this.handlePopApi.bind(this)}

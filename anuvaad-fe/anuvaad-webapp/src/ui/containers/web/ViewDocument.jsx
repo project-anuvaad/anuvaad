@@ -48,7 +48,8 @@ class ViewDocument extends React.Component {
       role: JSON.parse(localStorage.getItem("roles")),
       showInfo: false,
       offset: 0,
-      limit: 10
+      limit: 10,
+      prevPage: 0
     };
   }
 
@@ -98,14 +99,13 @@ class ViewDocument extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.markInactive !== this.props.markInactive) {
       let resultArray = this.state.name;
-      debugger;
       resultArray.map((element,i)=>{
         if(this.state.deleteId===element.job){
           resultArray.splice(i, 1);
         
         }
       })
-      this.setState({name:resultArray, loaderDelete: false, open:true, message: this.state.deleteId + "deleted cuccessfully"})
+      this.setState({name:resultArray, loaderDelete: false, open:true, count:this.state.count-1, message: this.state.deleteId + "deleted cuccessfully"})
       setTimeout(() => {
         this.setState({ open: false });
       }, 30000);
@@ -117,13 +117,13 @@ class ViewDocument extends React.Component {
       //   TELEMETRY.endWorkflow(value.jobID)
       // }
       this.setState({ name: this.props.fetchDocument.result.jobs, count: this.props.fetchDocument.result.count, jobArray, showLoader: false });
-
-      if (jobArray.length > 1) {
-        const { APITransport } = this.props;
-        const apiObj = new JobStatus(jobArray);
-        APITransport(apiObj);
-        this.setState({ showProgress: true });
-      }
+      
+      // if (jobArray.length > 1) {
+      //   const { APITransport } = this.props;
+      //   const apiObj = new JobStatus(jobArray);
+      //   APITransport(apiObj);
+      //   this.setState({ showProgress: true });
+      // }
       
 
     }
@@ -144,10 +144,6 @@ class ViewDocument extends React.Component {
         }
       })
       this.setState({ name: arr, showLoader: false , showProgress: false});
-      if (this.state.count > this.state.offset + 10) {
-        this.handleRefresh(false, this.state.offset + 10, this.state.limit)
-        this.setState({ offset: this.state.offset + 10 })
-      }
     }
 
 
@@ -168,15 +164,28 @@ class ViewDocument extends React.Component {
     this.setState({ showInfo: false })
   }
 
-  handleDeleteJob(jobId) {
+  handleDeleteJob(jobId, fileName) {
     const { APITransport } = this.props;
     const apiObj = new MarkInactive(jobId);
     APITransport(apiObj);
-    this.setState({deleteId:jobId, loaderDelete: true})
+    this.setState({deleteId:jobId, loaderDelete: true, deletedFile: fileName})
     setTimeout(() => {
       this.setState({ loaderDelete: false });
     }, 20000);
   }
+
+  changePage = (page, sortOrder) => {
+
+    if(this.state.prevPage<page){
+
+      this.handleRefresh(false, this.state.offset + 10, this.state.limit)
+      this.setState({
+        prevPage:page,
+        offset: this.state.offset+10
+      });
+    }
+   
+  };
 
   render() {
     const columns = [
@@ -212,6 +221,8 @@ class ViewDocument extends React.Component {
         label: "Filename",
         options: {
           filter: true,
+
+          
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -312,7 +323,7 @@ class ViewDocument extends React.Component {
 
                 <div style={{ width: '120px' }}>
 
-                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this, false, 0, 20)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}><div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[1]}</div></div>}
+                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this, false, 0, 10)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}><div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[1]}</div></div>}
 
                 </div>
               );
@@ -351,7 +362,7 @@ class ViewDocument extends React.Component {
               return (
 
                 <div style={{ width: '120px' }}>
-                  {tableMeta.rowData[1] === 'COMPLETED' && (( tableMeta.rowData[12]) ? (Math.round(Number(tableMeta.rowData[11]) / Number(tableMeta.rowData[12]) * 100) + '%') :this.state.showProgress ?"..." :"0%")}
+                  {tableMeta.rowData[1] === 'COMPLETED' && (( tableMeta.rowData[12]) ? (Math.round(Number(tableMeta.rowData[11]) / Number(tableMeta.rowData[12]) * 100) + '%') :this.state.showProgress ?"..." :"...")}
 
                 </div>
               );
@@ -398,7 +409,7 @@ class ViewDocument extends React.Component {
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Delete Job" placement="left">
-                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDeleteJob(tableMeta.rowData[2])}>
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDeleteJob(tableMeta.rowData[2], tableMeta.rowData[3])}>
                       <DeleteIcon />
                     </IconButton>
                   </Tooltip>
@@ -435,7 +446,7 @@ class ViewDocument extends React.Component {
     const options = {
       textLabels: {
         body: {
-          noMatch: this.state.count > 0 ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
+          noMatch: this.state.count > 0 && this.state.count >this.state.offset ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
         },
         toolbar: {
           search: translate("graderReport.page.muiTable.search"),
@@ -443,6 +454,21 @@ class ViewDocument extends React.Component {
         },
         pagination: {
           rowsPerPage: translate("graderReport.page.muiTable.rowsPerPages")
+        }
+      },
+
+      onTableChange: (action, tableState) => {
+
+            
+            
+        // a developer could react to change on an action basis or
+        // examine the state as a whole and do whatever they want
+
+        switch (action) {
+          case 'changePage':
+            this.changePage(tableState.page, tableState.sortOrder);
+            break;
+          default:
         }
       },
       count: this.state.count,
