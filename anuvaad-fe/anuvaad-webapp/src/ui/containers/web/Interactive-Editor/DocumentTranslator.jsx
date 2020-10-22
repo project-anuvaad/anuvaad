@@ -37,7 +37,8 @@ class PdfFileEditor extends React.Component {
 
   componentDidMount() {
     if (this.props.scroll) {
-      if (this.refs[this.props.scroll]) {
+      let page = this.props.scroll && this.props.scroll.split("@")[0]
+      if (this.refs[this.props.scroll] && page !== 1) {
         this.refs[this.props.scroll].scrollIntoView({
           behavior: "smooth",
           inline: "end"
@@ -338,6 +339,8 @@ class PdfFileEditor extends React.Component {
 
   handleSentences(sentence, element) {
     return sentence.tokenized_sentences.map((value, tokenIndex) => {
+
+      console.log(value)
       return <div ref={this.props.sentences.page_no}>
         <Block
           handleDialogMessage={this.handleDialog.bind(this)}

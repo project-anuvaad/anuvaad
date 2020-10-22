@@ -80,13 +80,19 @@ export default function(state = initialUserState, action) {
           b["target"] = targetLang
           b["tasks"] = taskData
           
-          if(!existjobs.includes(id) && !jobArray.includes(id)){
+          if(!existjobs.includes(id)){
             arr.push(b)
           }
-          else if (b.status){
-            arr.map(elementValue=>{
-              if(elementValue.status!=="COMPLETED" && b.status==="COMPLETED"){
-                elementValue = b
+          else if (b.status!=="INPROGRESS"){
+            arr.map((elementValue,i)=>{
+
+              
+              if(elementValue.job === b.job ){
+
+                if(elementValue.status==="INPROGRESS" && b.status!=="INPROGRESS") {
+                  arr[i] = b
+                }
+                
               }
             })
           }
