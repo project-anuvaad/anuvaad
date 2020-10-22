@@ -12,21 +12,6 @@ from configs.wfmconfig import module_wfm_name
 wfmapp = Flask(__name__)
 log = logging.getLogger('file')
 
-
-# REST endpoint to initiate the workflow.
-@wfmapp.route(context_path + '/v1/workflow/initiate', methods=["POST"])
-def initiate_workflow():
-    service = WFMService()
-    validator = WFMValidator()
-    data = request.get_json()
-    error = validator.validate(data)
-    if error is not None:
-        return error, 400
-    data = add_headers(data, request)
-    response = service.register_job(data)
-    return response
-
-
 # REST endpoint to initiate the ASYNC workflow.
 @wfmapp.route(context_path + '/v1/workflow/async/initiate', methods=["POST"])
 def initiate_async_workflow():

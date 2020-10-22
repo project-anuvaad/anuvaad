@@ -26,24 +26,6 @@ class WFMService:
     def __init__(self):
         pass
 
-    # Method to register the job.
-    # Generates job ID, creates entry to the DB, passes the request to further processing
-    # Returns client-readable job status.
-    def register_job(self, wf_input):
-        wf_input["jobID"] = wfmutils.generate_job_id(wf_input["workflowCode"])
-        client_output = self.get_wf_details(wf_input, None, False, None)
-        self.update_job_details(client_output, True)
-        configs = wfmutils.get_configs()
-        wf_type = configs[wf_input["workflowCode"]]["type"]
-        if wf_type == "ASYNC":
-            prod_res = producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
-            if prod_res:
-                client_output = self.get_wf_details(wf_input, None, False, prod_res)
-                self.update_job_details(client_output, False)
-            return client_output
-        else:
-            return self.process_sync(client_output)
-
     # Method to register the SYNC job.
     # Generates job ID, creates entry to the DB, passes the request to further processing
     # Returns client-readable job status.
