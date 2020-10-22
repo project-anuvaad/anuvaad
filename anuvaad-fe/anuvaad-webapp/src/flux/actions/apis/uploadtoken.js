@@ -6,7 +6,6 @@ import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 export default class UploadToken extends API {
   constructor(session_id, workspaceName, configFilepath, csvFilepath, timeout = 2000) {
-    console.log();
     super("POST", timeout, false);
     this.type = C.UPLOAD_TOKEN;
     this.session_id = session_id;

@@ -2,13 +2,12 @@ import API from "./api";
 import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 
-export default class RunExperiment extends API {
-  constructor(offset,limit, timeout = 2000) {
+export default class MarkInactive extends API {
+  constructor(jobId, timeout = 2000) {
     super("POST", timeout, false);
-    this.type = C.FETCHDOCUMENT;
-    this.offset = offset;
-    this.limit=limit;
-    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.fetchducuments}`
+    this.type = C.MARK_INACTIVE ;
+    this.jobId = jobId;
+    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.mark_inactive}`
   }
 
   toString() {
@@ -18,7 +17,10 @@ export default class RunExperiment extends API {
   processResponse(res) {
     super.processResponse(res);
     if (res) {
-      this.sentences = res;
+      debugger
+      var d = new Date();
+      res["timestamp"]= d.getTime()
+      this.data = res;
       
     }
   }
@@ -29,19 +31,8 @@ export default class RunExperiment extends API {
 
   getBody() {
     return {
-      
-      "offset": this.offset,
-      "limit": this.limit,
-            "jobIDs": [
-              ""
-            ],
-            "taskDetails": true,
-            "workflowCodes": [
-              "DP_WFLOW_FBT","WF_A_FCBMTKTR","DP_WFLOW_FBTTR"
-            ],
-            
-          }
-    
+        "jobIDs": [this.jobId]
+    }
   }
 
   getHeaders() {
@@ -55,6 +46,6 @@ export default class RunExperiment extends API {
   }
 
   getPayload() {
-    return this.sentences;
+    return this.data;
   }
 }
