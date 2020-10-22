@@ -42,19 +42,6 @@ def block_translate():
 
 
 # REST endpoint to initiate the workflow.
-@translatorapp.route(context_path + '/v1/text/workflow/translate', methods=["POST"])
-def text_translate_wf():
-    service = BlockTranslationService()
-    validator = TranslatorValidator()
-    data = request.get_json()
-    error = validator.validate_text_translate_wf(data)
-    if error is not None:
-        data["state"], data["status"], data["error"] = "TRANSLATED", "FAILED", error
-        return data, 400
-    response = service.text_translate_wf(data)
-    return response
-
-# REST endpoint to initiate the workflow.
 @translatorapp.route(context_path + '/v1/text/translate', methods=["POST"])
 def text_translate():
     service = TextTranslationService()
