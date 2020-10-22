@@ -23,10 +23,10 @@ class SentenceRepositories:
         update_s0       = False
         '''
             - workflowCode: 
-            - DP_WFLOW_S_TR and DP_WFLOW_S_TTR, changes the sentence structure hence s0 pair needs to be updated
+            - WF_S_TR and WF_S_TKTR, changes the sentence structure hence s0 pair needs to be updated
             - DP_WFLOW_S_C, doesn't changes the sentence structure hence no need to update the s0 pair
         '''
-        if workflowCode == 'DP_WFLOW_S_TR' or workflowCode == 'DP_WFLOW_S_TTR':
+        if workflowCode is not None and (workflowCode == 'WF_S_TR' or workflowCode == 'WF_S_TKTR'):
             update_s0 = True
 
         for sentence in sentences:

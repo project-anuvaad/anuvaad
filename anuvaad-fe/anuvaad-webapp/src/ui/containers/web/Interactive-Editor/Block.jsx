@@ -376,7 +376,7 @@ class Block extends Component {
                     }}
                     tokenIndex={this.props.tokenIndex}
                     // value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData) ? this.state.sentence.tgt : ""}
-                    value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData || (this.props.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
+                    value={(this.props.sentence.hasOwnProperty("s_id") && (this.props.selectedTargetId === this.state.sentence.s_id) || this.state.enteredData || (this.props.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
                     sentence={this.state.sentence}
                     sourceText={sentence.src}
                     page_no={this.props.page_no}
