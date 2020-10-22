@@ -23,7 +23,10 @@ import Dialog from "../../components/web/common/SimpleDialog";
 import Fab from '@material-ui/core/Fab';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 //import AddIcon from '@material-ui/icons/Add';
+import Snackbar from "../../components/web/common/Snackbar";
 import PublishIcon from '@material-ui/icons/Publish';
+import DeleteIcon from '@material-ui/icons/Delete';
+import MarkInactive from "../../../flux/actions/apis/markinactive";
 import JobStatus from "../../../flux/actions/apis/job-status";
 
 const TELEMETRY = require('../../../utils/TelemetryManager')
@@ -45,7 +48,7 @@ class ViewDocument extends React.Component {
       role: JSON.parse(localStorage.getItem("roles")),
       showInfo: false,
       offset: 0,
-      limit:10
+      limit: 10
     };
   }
 
@@ -64,14 +67,13 @@ class ViewDocument extends React.Component {
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('view-document')
 
-   /**
-    * getSnapshotBeforeUpdate() must return null
-    */
-   return null;
+    /**
+     * getSnapshotBeforeUpdate() must return null
+     */
+    return null;
   }
 
   componentDidMount() {
-    debugger
     this.handleRefresh(true, this.state.offset, this.state.limit)
     TELEMETRY.pageLoadCompleted('view-document')
   }
@@ -82,59 +84,73 @@ class ViewDocument extends React.Component {
   };
 
 
-  handleRefresh(value, offset,limit) {
+  handleRefresh(value, offset, limit) {
     const { APITransport } = this.props;
-    const apiObj = new FetchDocument(offset,limit);
+    const apiObj = new FetchDocument(offset, limit);
     APITransport(apiObj);
     value && this.setState({ showLoader: true });
+    value && setTimeout(() => {
+      this.setState({ open: false });
+    }, 30000);
   }
 
 
   componentDidUpdate(prevProps) {
+    if (prevProps.markInactive !== this.props.markInactive) {
+      let resultArray = this.state.name;
+      debugger;
+      resultArray.map((element,i)=>{
+        if(this.state.deleteId===element.job){
+          resultArray.splice(i, 1);
+        
+        }
+      })
+      this.setState({name:resultArray, loaderDelete: false, open:true, message: this.state.deleteId + "deleted cuccessfully"})
+      setTimeout(() => {
+        this.setState({ open: false });
+      }, 30000);
+    }
     if (prevProps.fetchDocument !== this.props.fetchDocument) {
-       var jobArray =this.props.fetchDocument.result.jobIDs;
+      var jobArray = this.props.fetchDocument.result.jobIDs;
 
-      
-      this.setState({ name: this.props.fetchDocument.result.jobs,count:this.props.fetchDocument.result.count, jobArray });
+      //  if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && (value.status === "FAILED" || value.status === "COMPLETED")) {
+      //   TELEMETRY.endWorkflow(value.jobID)
+      // }
+      this.setState({ name: this.props.fetchDocument.result.jobs, count: this.props.fetchDocument.result.count, jobArray, showLoader: false });
 
-      if(jobArray.length>1){
+      if (jobArray.length > 1) {
         const { APITransport } = this.props;
-      const apiObj = new JobStatus(jobArray);
-      APITransport(apiObj);
-
-      }
-      else{
-        this.setState({ showLoader: false });
+        const apiObj = new JobStatus(jobArray);
+        APITransport(apiObj);
+        this.setState({ showProgress: true });
       }
       
-
-
 
     }
 
-    if(prevProps.jobStatus!==this.props.jobStatus){
-      var result =this.props.jobStatus;
+    if (prevProps.jobStatus !== this.props.jobStatus) {
+      var result = this.props.jobStatus;
       var arr = this.state.name;
-      arr.length>0 && arr.map(element=>{
-        if(this.state.jobArray.includes(element.id)){
-          result.map(value=>{
+      arr.length > 0 && arr.map(element => {
+        if (this.state.jobArray.includes(element.id)) {
+          result.map(value => {
 
-            console.log(value.record_id===element.id)
-            if(value.record_id===element.id && !element.hasOwnProperty("completed_count") && !element.hasOwnProperty("total_count") ){
+            // console.log(value.record_id === element.id)
+            if (value.record_id === element.id && !element.hasOwnProperty("completed_count") && !element.hasOwnProperty("total_count")) {
               element["completed_count"] = value.completed_count;
               element["total_count"] = value.total_count;
             }
           })
         }
       })
-      this.setState({ name: arr, showLoader: false });
-      if(this.state.count>this.state.offset+10){
-        this.handleRefresh(false,this.state.offset+10, this.state.limit)
-        this.setState({offset:this.state.offset+10})
+      this.setState({ name: arr, showLoader: false , showProgress: false});
+      if (this.state.count > this.state.offset + 10) {
+        this.handleRefresh(false, this.state.offset + 10, this.state.limit)
+        this.setState({ offset: this.state.offset + 10 })
       }
     }
 
-    
+
   }
 
   handleFileDownload(file) {
@@ -150,6 +166,16 @@ class ViewDocument extends React.Component {
 
   handleDialogClose() {
     this.setState({ showInfo: false })
+  }
+
+  handleDeleteJob(jobId) {
+    const { APITransport } = this.props;
+    const apiObj = new MarkInactive(jobId);
+    APITransport(apiObj);
+    this.setState({deleteId:jobId, loaderDelete: true})
+    setTimeout(() => {
+      this.setState({ loaderDelete: false });
+    }, 20000);
   }
 
   render() {
@@ -190,7 +216,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                 <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[3]}</div>
+                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[3]}</div>
                 </div>
               );
             }
@@ -243,7 +269,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[8]}</div>
+                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[8]}</div>
                 </div>
               );
             }
@@ -262,7 +288,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[9]}</div>
+                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[9]}</div>
                 </div>
               );
             }
@@ -286,7 +312,7 @@ class ViewDocument extends React.Component {
 
                 <div style={{ width: '120px' }}>
 
-                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this,false, 0,20)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}><div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[1]}</div></div>}
+                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this, false, 0, 20)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}><div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[1]}</div></div>}
 
                 </div>
               );
@@ -309,7 +335,7 @@ class ViewDocument extends React.Component {
           display: "excluded"
         }
       },
-      
+
       {
         name: "status",
         label: "Progress",
@@ -325,8 +351,8 @@ class ViewDocument extends React.Component {
               return (
 
                 <div style={{ width: '120px' }}>
-                  {tableMeta.rowData[1] === 'COMPLETED' && ((tableMeta.rowData[11] && tableMeta.rowData[12]) ? (Math.round(Number(tableMeta.rowData[11]) / Number(tableMeta.rowData[12])*100)+'%'):"0%")}
-                  
+                  {tableMeta.rowData[1] === 'COMPLETED' && (( tableMeta.rowData[12]) ? (Math.round(Number(tableMeta.rowData[11]) / Number(tableMeta.rowData[12]) * 100) + '%') :this.state.showProgress ?"..." :"0%")}
+
                 </div>
               );
             }
@@ -346,7 +372,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? {cursor: "pointer"} : {}}>{tableMeta.rowData[14]}</div>
+                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[14]}</div>
                 </div>
               );
             }
@@ -366,8 +392,21 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div >
-                  <Tooltip title="info" placement="left"><IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[16])}><InfoIcon style={{ color: "#C6C6C6" }} /></IconButton></Tooltip>
-                  {tableMeta.rowData[1] === 'COMPLETED' ? <Tooltip title={translate('viewTranslate.page.title.downloadSource')} placement="right"><IconButton style={{ color: '#233466' }} component="a" onClick={() => { this.setState({ fileDownload: true }); this.handleFileDownload(tableMeta.rowData[5]) }}><DeleteOutlinedIcon /></IconButton></Tooltip> : ''}
+                  <Tooltip title="info" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[16])}>
+                      <InfoIcon style={{ color: "#C6C6C6" }} />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete Job" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDeleteJob(tableMeta.rowData[2])}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                  {tableMeta.rowData[1] === 'COMPLETED' ? <Tooltip title={translate('viewTranslate.page.title.downloadSource')} placement="right">
+                    <IconButton style={{ color: '#233466' }} component="a" onClick={() => { this.setState({ fileDownload: true }); this.handleFileDownload(tableMeta.rowData[5]) }}>
+                      <DeleteOutlinedIcon />
+                    </IconButton>
+                  </Tooltip> : ''}
                 </div>
               );
             }
@@ -381,7 +420,7 @@ class ViewDocument extends React.Component {
         options: {
           display: "excluded"
         },
-      }, 
+      },
       {
         name: "tgt_locale",
         label: "tgt_locale",
@@ -389,14 +428,14 @@ class ViewDocument extends React.Component {
           display: "excluded"
         }
       }
-      
+
 
     ];
 
     const options = {
       textLabels: {
         body: {
-          noMatch: this.state.count>0 ? "Loading....":translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
+          noMatch: this.state.count > 0 ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
         },
         toolbar: {
           search: translate("graderReport.page.muiTable.search"),
@@ -447,6 +486,15 @@ class ViewDocument extends React.Component {
         <div style={{ margin: '2% 3% 3% 3%' }}>
           {!this.state.showLoader && <MuiThemeProvider theme={this.getMuiTheme()}> <MUIDataTable title={translate("common.page.title.document")} data={this.state.name} columns={columns} options={options} /></MuiThemeProvider>}
         </div>
+        {this.state.open && (
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={this.state.open}
+            autoHideDuration={3000}
+            variant="success"
+            message={this.state.message}
+          />
+        )}
         {this.state.showInfo &&
           <Dialog message={this.state.message}
             type="info"
@@ -454,7 +502,7 @@ class ViewDocument extends React.Component {
             open
             title="File Process Information" />
         }
-        {this.state.showLoader && < Spinner />}
+        {(this.state.showLoader || this.state.loaderDelete) && < Spinner />}
       </div>
 
     );
@@ -468,7 +516,8 @@ const mapStateToProps = state => ({
   apistatus: state.apistatus,
   corp: state.corp,
   fetchDocument: state.fetchDocument,
-  jobStatus: state.jobStatus
+  jobStatus: state.jobStatus,
+  markInactive: state.markInactive
 });
 
 const mapDispatchToProps = dispatch =>

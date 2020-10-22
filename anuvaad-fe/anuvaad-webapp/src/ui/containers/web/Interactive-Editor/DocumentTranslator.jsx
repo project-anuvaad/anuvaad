@@ -75,7 +75,6 @@ class PdfFileEditor extends React.Component {
     }
 
     if(prevProps.wordDictionary !== this.props.wordDictionary && this.props.wordDictionary){
-      console.log(this.props.wordDictionary)
       let parallel_words= [];
       if(this.state.src_locale === "en"){
         
@@ -273,7 +272,6 @@ class PdfFileEditor extends React.Component {
     sentence_id,
     sentence_index, event, operation, selectedText) => {
 
-      console.log("--------------------",window.getSelection().toString())
     window.getSelection().toString()&& this.setState({
       operation_type: operation,
       openEl: true,

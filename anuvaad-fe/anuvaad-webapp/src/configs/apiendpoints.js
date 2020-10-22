@@ -73,6 +73,7 @@ const endpoints = {
   word_dictionary: "/api/v0/dictionary/search",
   save_content: "/api/v0/save-content-sentence",
   translate: "/anuvaad-etl/translator/v1/text/translate",
+  mark_inactive: "/anuvaad-etl/wf-manager/v1/workflow/jobs/mark-inactive",
   jobids: "/api/v0/records/search"
 };
 
