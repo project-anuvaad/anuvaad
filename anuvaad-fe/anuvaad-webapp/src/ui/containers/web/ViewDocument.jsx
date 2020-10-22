@@ -105,7 +105,7 @@ class ViewDocument extends React.Component {
         
         }
       })
-      this.setState({name:resultArray, showLoader: false, open:true, message: this.state.deleteId + "deleted cuccessfully"})
+      this.setState({name:resultArray, loaderDelete: false, open:true, message: this.state.deleteId + "deleted cuccessfully"})
       setTimeout(() => {
         this.setState({ open: false });
       }, 30000);
@@ -116,18 +116,15 @@ class ViewDocument extends React.Component {
       //  if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && (value.status === "FAILED" || value.status === "COMPLETED")) {
       //   TELEMETRY.endWorkflow(value.jobID)
       // }
-      this.setState({ name: this.props.fetchDocument.result.jobs, count: this.props.fetchDocument.result.count, jobArray });
+      this.setState({ name: this.props.fetchDocument.result.jobs, count: this.props.fetchDocument.result.count, jobArray, showLoader: false });
 
       if (jobArray.length > 1) {
         const { APITransport } = this.props;
         const apiObj = new JobStatus(jobArray);
         APITransport(apiObj);
-
+        this.setState({ showProgress: true });
       }
-      else {
-        this.setState({ showLoader: false });
-      }
-    
+      
 
     }
 
@@ -146,7 +143,7 @@ class ViewDocument extends React.Component {
           })
         }
       })
-      this.setState({ name: arr, showLoader: false });
+      this.setState({ name: arr, showLoader: false , showProgress: false});
       if (this.state.count > this.state.offset + 10) {
         this.handleRefresh(false, this.state.offset + 10, this.state.limit)
         this.setState({ offset: this.state.offset + 10 })
@@ -175,9 +172,9 @@ class ViewDocument extends React.Component {
     const { APITransport } = this.props;
     const apiObj = new MarkInactive(jobId);
     APITransport(apiObj);
-    this.setState({deleteId:jobId, showLoader: true})
+    this.setState({deleteId:jobId, loaderDelete: true})
     setTimeout(() => {
-      this.setState({ showLoader: false });
+      this.setState({ loaderDelete: false });
     }, 20000);
   }
 
@@ -354,7 +351,7 @@ class ViewDocument extends React.Component {
               return (
 
                 <div style={{ width: '120px' }}>
-                  {tableMeta.rowData[1] === 'COMPLETED' && ((tableMeta.rowData[11] && tableMeta.rowData[12]) ? (Math.round(Number(tableMeta.rowData[11]) / Number(tableMeta.rowData[12]) * 100) + '%') : "0%")}
+                  {tableMeta.rowData[1] === 'COMPLETED' && (( tableMeta.rowData[12]) ? (Math.round(Number(tableMeta.rowData[11]) / Number(tableMeta.rowData[12]) * 100) + '%') :this.state.showProgress ?"..." :"0%")}
 
                 </div>
               );
@@ -505,7 +502,7 @@ class ViewDocument extends React.Component {
             open
             title="File Process Information" />
         }
-        {this.state.showLoader && < Spinner />}
+        {(this.state.showLoader || this.state.loaderDelete) && < Spinner />}
       </div>
 
     );
