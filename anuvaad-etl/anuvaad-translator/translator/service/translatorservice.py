@@ -238,6 +238,8 @@ class TranslatorService:
             page_no, block_id = node[2], node[3]
             p_index, b_index, s_index = None, None, None
             sentence_id = nmt_res_sentence["s_id"]
+            log_info("BLOCK ID" + str(block_id), translate_wf_input)
+            log_info("SENTENCE ID" + str(sentence_id), translate_wf_input)
             pages = job_details["data"]["result"]
             for i, page in enumerate(pages):
                 if str(page["page_no"]) == str(page_no):
