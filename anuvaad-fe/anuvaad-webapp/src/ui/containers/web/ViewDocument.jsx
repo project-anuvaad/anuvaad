@@ -23,6 +23,7 @@ import Dialog from "../../components/web/common/SimpleDialog";
 import Fab from '@material-ui/core/Fab';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 //import AddIcon from '@material-ui/icons/Add';
+import Snackbar from "../../components/web/common/Snackbar";
 import PublishIcon from '@material-ui/icons/Publish';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MarkInactive from "../../../flux/actions/apis/markinactive";
@@ -88,12 +89,26 @@ class ViewDocument extends React.Component {
     const apiObj = new FetchDocument(offset, limit);
     APITransport(apiObj);
     value && this.setState({ showLoader: true });
+    value && setTimeout(() => {
+      this.setState({ open: false });
+    }, 30000);
   }
 
 
   componentDidUpdate(prevProps) {
     if (prevProps.markInactive !== this.props.markInactive) {
-      this.handleRefresh(true, this.state.offset, this.state.limit)
+      let resultArray = this.state.name;
+      debugger;
+      resultArray.map((element,i)=>{
+        if(this.state.deleteId===element.job){
+          resultArray.splice(i, 1);
+        
+        }
+      })
+      this.setState({name:resultArray, showLoader: false, open:true, message: this.state.deleteId + "deleted cuccessfully"})
+      setTimeout(() => {
+        this.setState({ open: false });
+      }, 30000);
     }
     if (prevProps.fetchDocument !== this.props.fetchDocument) {
       var jobArray = this.props.fetchDocument.result.jobIDs;
@@ -160,6 +175,10 @@ class ViewDocument extends React.Component {
     const { APITransport } = this.props;
     const apiObj = new MarkInactive(jobId);
     APITransport(apiObj);
+    this.setState({deleteId:jobId, showLoader: true})
+    setTimeout(() => {
+      this.setState({ showLoader: false });
+    }, 20000);
   }
 
   render() {
@@ -470,6 +489,15 @@ class ViewDocument extends React.Component {
         <div style={{ margin: '2% 3% 3% 3%' }}>
           {!this.state.showLoader && <MuiThemeProvider theme={this.getMuiTheme()}> <MUIDataTable title={translate("common.page.title.document")} data={this.state.name} columns={columns} options={options} /></MuiThemeProvider>}
         </div>
+        {this.state.open && (
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={this.state.open}
+            autoHideDuration={3000}
+            variant="success"
+            message={this.state.message}
+          />
+        )}
         {this.state.showInfo &&
           <Dialog message={this.state.message}
             type="info"
