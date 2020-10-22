@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1367aa72-5a9a-49e3-af55-1fe2c4fddf78" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/controller/wfmcontroller.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/controller/wfmcontroller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/service/wfmservice.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/service/wfmservice.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/validator/wfmvalidator.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/validator/wfmvalidator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/cronjobs/jobsweeper.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/cronjobs/jobsweeper.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

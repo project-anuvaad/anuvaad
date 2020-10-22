@@ -16,7 +16,7 @@ class JobSweeper(Thread):
     # Cron JOB to fetch status of each record and push it to CH and WFM on completion/failure.
     def run(self):
         obj = {"metadata": {"module": module_wfm_name}}
-        log_info("WFM Deployed, JobSweeper running......", obj)
+        log_info("JobSweeper -- WFM Deployed, JobSweeper running......", obj)
         wfmrepo = WFMRepository()
         run = 0
         while not self.stopped.wait(eval(str(js_cron_interval_sec))):
@@ -25,20 +25,20 @@ class JobSweeper(Thread):
                 jobs = wfmrepo.search_job(criteria, exclude, None, None)
                 no_of_jobs = 0
                 if jobs:
-                    log_info("JobSweeper - Run: " + str(run) + " | Jobs Fetched: " + str(len(jobs)), obj)
+                    log_info("JobSweeper -- Run: " + str(run) + " | Jobs Fetched: " + str(len(jobs)), obj)
                     for job in jobs:
                         job_start_time = job["startTime"]
                         diff = eval(str(time.time()).replace('.', '')[0:13]) - job_start_time
-                        if diff / 1000 > eval(str(js_job_failure_interval_sec)):
+                        if (diff / 1000) > eval(str(js_job_failure_interval_sec)):
                             job["status"] = "FAILED"
                             job["error"] = post_error("ORPHAN_JOB",
                                                       "The job was failed by the system, since it was idle", None)
                             job["endTime"] = eval(str(time.time()).replace('.', '')[0:13])
                             wfmrepo.update_job(job, job["jobID"])
-                            log_info("JOB FAILED: The job was failed by the system, since it was idle", job)
+                            log_info("JobSweeper -- JOB FAILED: The job was failed by the system, since it was idle", job)
                             no_of_jobs += 1
                 run += 1
-                log_info("JobSweeper - Run: " + str(run) + " | Jobs Processed: " + str(no_of_jobs), obj)
+                log_info("JobSweeper -- Run: " + str(run) + " | Jobs Fetched: " + str(len(jobs)) + " | Jobs Processed: " + str(no_of_jobs), obj)
             except Exception as e:
                 run += 1
-                log_exception("JobSweeper - Run: " + str(run) + " | Exception in JobSweeper: " + str(e), obj, e)
+                log_exception("JobSweeper -- Run: " + str(run) + " | Exception in JobSweeper: " + str(e), obj, e)
