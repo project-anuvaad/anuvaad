@@ -28,7 +28,7 @@ class DocumentSource extends React.Component {
       if (this.refs[this.props.scrollToPage]) {
         this.refs[this.props.scrollToPage].scrollIntoView({
           behavior: "smooth",
-          inline: "end"
+          // inline: "end"
         });
       }
     }
