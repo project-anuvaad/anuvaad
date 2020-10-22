@@ -40,14 +40,15 @@ class MenuClass extends React.Component {
 
 <Button style={{ textTransform: "none", width: "100%", justifyContent: "left" }} onClick={() => this.props.handleDialog( "Dictionary")}>
               {" "}
-              Meaning of the Sentence
+              lookup dictionary {this.props.selectedText}
             </Button>
           
+            {!this.props.targetDict &&
           <div>
             <Button
             style={{  width: "100%", justifyContent: "left" }}
             onClick={() =>
-               this.props.operation_type === "Merge Sentence" ?this.props.handleDialog( "Merge sentence", "Do you want to merge the sentence ?"):this.props.handleDialog( "Split sentence")
+               this.props.handleDialog( "Split sentence")
             }
           >
             {" "}
@@ -73,7 +74,7 @@ class MenuClass extends React.Component {
          </Button> */}
          <br />
        </div>
-        
+  }
 
         </div>
         {splitValue}

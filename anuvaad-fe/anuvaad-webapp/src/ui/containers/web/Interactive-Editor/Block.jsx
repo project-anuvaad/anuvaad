@@ -198,18 +198,25 @@ class Block extends Component {
 
     const sentenceStartId = text.s_id;
     const split_index = window.getSelection().focusOffset;
-    const selectedText = window.getSelection().toString()
+    const selectedText = window.getSelection().toString();
+    let targetDict = false; 
     let opeartion = "Split sentence";
     // eslint-disable-next-line
     let actual_text = text.src;
     actual_text = actual_text.replace(/\s{2,}/g, " ");
     actual_text = actual_text.trim();
       
+    if(this.props.selectedBlock && this.props.selectedBlock.src.includes(selectedText)){
+      
+     }
+     else if(this.props.selectedBlock && this.props.selectedBlock.tgt.includes(selectedText)){
+      targetDict = true
+     }
     this.props.popUp (this.props.block_id,
       sentenceStartId,
       split_index,
       event,
-      opeartion,selectedText )
+      opeartion,selectedText, targetDict )
   }
 
   handleBlurCard = (event, id) => {
@@ -331,7 +338,7 @@ class Block extends Component {
               </Tooltip> */}
               <div
                 style={{ width: "100%", paddingLeft: "10px" }}
-                onClick={() => selectedBlock &&
+                  onMouseDown = {() => selectedBlock &&
                   sentence &&
                   sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}
                   // onDoubleClick = {(event)=>this.handleDictionary(event) }
@@ -407,7 +414,7 @@ class Block extends Component {
                       <div
                         style={{
                           display: "flex",
-                          flexDirection: "row",
+                          flexDirection: "column",
                           paddingLeft: "4%",
                         }}
                       >
@@ -445,7 +452,7 @@ class Block extends Component {
                         paddingLeft: "4%",
                       }}
                     >
-                      {this.props.buttonStatus === "split" && selectedBlock &&
+                      {/* {this.props.buttonStatus === "split" && selectedBlock &&
                         sentence &&
                         sentence.s_id === selectedBlock.s_id ? (
                           <div>
@@ -483,7 +490,7 @@ class Block extends Component {
                               />
                             </IconButton>
                           </Tooltip>
-                        )}
+                        )} */}
                       {this.props.buttonStatus !== "split" && (
                         <Tooltip title="Merge Sentence">
                           <IconButton aria-label="merge">
