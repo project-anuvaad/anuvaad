@@ -75,7 +75,7 @@ class ViewDocument extends React.Component {
   }
 
   componentDidMount() {
-    this.handleRefresh(true, this.state.offset, this.state.limit)
+    this.handleRefresh(true, this.state.offset, this.state.limit, true)
     TELEMETRY.pageLoadCompleted('view-document')
   }
 
@@ -85,12 +85,14 @@ class ViewDocument extends React.Component {
   };
 
 
-  handleRefresh(value, offset, limit) {
+  handleRefresh(value, offset, limit, searchToken) {
+    debugger
     const { APITransport } = this.props;
     const apiObj = new FetchDocument(offset, limit);
     APITransport(apiObj);
-    value && this.setState({ showLoader: true });
-    value && setTimeout(() => {
+    value && !this.state.refreshStatus&& this.setState({ showLoader: true , refreshStatus: true });
+    !this.state.refreshStatus && this.setState({searchToken})
+    value && !this.state.refreshStatus&& setTimeout(() => {
       this.setState({ open: false });
     }, 30000);
   }
@@ -113,17 +115,20 @@ class ViewDocument extends React.Component {
     if (prevProps.fetchDocument !== this.props.fetchDocument) {
       var jobArray = this.props.fetchDocument.result.jobIDs;
 
+
+      console.log(jobArray,this.state.searchToken)
+
       //  if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && (value.status === "FAILED" || value.status === "COMPLETED")) {
       //   TELEMETRY.endWorkflow(value.jobID)
       // }
-      this.setState({ name: this.props.fetchDocument.result.jobs, count: this.props.fetchDocument.result.count, jobArray, showLoader: false });
+      this.setState({ name: this.props.fetchDocument.result.jobs, count: this.props.fetchDocument.result.count, jobArray, showLoader: false , refreshStatus: false});
       
-      // if (jobArray.length > 1) {
-      //   const { APITransport } = this.props;
-      //   const apiObj = new JobStatus(jobArray);
-      //   APITransport(apiObj);
-      //   this.setState({ showProgress: true });
-      // }
+      if (jobArray.length > 1 && this.state.searchToken) {
+        const { APITransport } = this.props;
+        const apiObj = new JobStatus(jobArray);
+        APITransport(apiObj);
+        this.setState({ showProgress: true, searchToken: false });
+      }
       
 
     }
@@ -143,7 +148,7 @@ class ViewDocument extends React.Component {
           })
         }
       })
-      this.setState({ name: arr, showLoader: false , showProgress: false});
+      this.setState({ name: arr, showLoader: false , showProgress: false, searchToken: false});
     }
 
 
@@ -178,7 +183,7 @@ class ViewDocument extends React.Component {
 
     if(this.state.prevPage<page){
 
-      this.handleRefresh(false, this.state.offset + 10, this.state.limit)
+      this.handleRefresh(false, this.state.offset + 10, this.state.limit,true)
       this.setState({
         prevPage:page,
         offset: this.state.offset+10
@@ -323,7 +328,7 @@ class ViewDocument extends React.Component {
 
                 <div style={{ width: '120px' }}>
 
-                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this, false, 0, 10)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}><div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[1]}</div></div>}
+                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this, false, 0, 10, false)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}><div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[1]}</div></div>}
 
                 </div>
               );
