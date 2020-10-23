@@ -26,6 +26,11 @@ const MachineTranslationStyles = theme => ({
       marginTop :"20px"
   },
 
+  sourcediv:{
+    padding:"3%",
+    fontWeight:"bold"
+  }
+
   });
   
   
