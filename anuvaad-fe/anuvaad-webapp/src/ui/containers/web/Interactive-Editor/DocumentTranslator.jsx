@@ -20,6 +20,8 @@ import Dictionary from "./Dictionary";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import MenuItems from "./PopUp";
+import Dialog from "../../../components/web/common/SimpleDialog";
+
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 class PdfFileEditor extends React.Component {
@@ -31,7 +33,8 @@ class PdfFileEditor extends React.Component {
       highlightId: "",
       updateToken: false,
       editedText: "",
-      loading: false
+      loading: false,
+      displayMsg: false
     };
   }
 
@@ -75,15 +78,15 @@ class PdfFileEditor extends React.Component {
 
     }
 
-    if(prevProps.wordDictionary !== this.props.wordDictionary && this.props.wordDictionary){
-      let parallel_words= [];
-      if(this.state.src_locale === "en"){
-        
-        this.props.wordDictionary.parallel_words.map(words=>{
-          if(this.state.tgt_locale=== words.locale){
+    if (prevProps.wordDictionary !== this.props.wordDictionary && this.props.wordDictionary) {
+      let parallel_words = [];
+      if (this.state.src_locale === "en") {
+
+        this.props.wordDictionary.parallel_words.map(words => {
+          if (this.state.tgt_locale === words.locale) {
             parallel_words.push(words.name)
           }
-         
+
         })
 
       }
@@ -99,17 +102,16 @@ class PdfFileEditor extends React.Component {
     //   this.setState({
     //     prevActiveState: prevState.activeSentence
     //   })
+      // if (this.state.editedText && this.state.editedText) {
+      //   if (prevState.activeSentence.tgt !== this.state.editedText) {
+      //     this.setState({
+      //       openDialog: true,
+      //       title: "Save",
+      //       dialogMessage: "Do you want to save the updated sentence"
+      //     })
+      //   }
 
-    //   if (this.state.editedText && this.state.editedText) {
-    //     if (prevState.activeSentence.tgt !== this.state.editedText) {
-    //       this.setState({
-    //         openDialog: true,
-    //         title: "Save",
-    //         dialogMessage: "Do you want to save the updated sentence"
-    //       })
-    //     }
-
-    //   }
+      // }
 
     // }
 
@@ -131,7 +133,7 @@ class PdfFileEditor extends React.Component {
     if (block && this.state.activeSentence && this.state.activeSentence.s_id && this.state.activeSentence.s_id !== value.s_id)
 
       this.handleClick("");
-      this.handleClose();
+    this.handleClose();
     this.setState({
       activeSentence: value,
       updateData: saveData && block,
@@ -234,12 +236,14 @@ class PdfFileEditor extends React.Component {
     this.setState({ buttonStatus: value });
   }
 
-  saveUpdatedSentence(block, sentence, blockIdentifier, editedText) {
+  saveUpdatedSentence(block, sentence, blockIdentifier, editedText, isSaved) {
     this.setState({ SentenceOperationId: sentence.s_id, updateToken: true })
-    this.getUpdatedBlock(sentence, "Save", editedText)
+    this.getUpdatedBlock(sentence, "Save", editedText, isSaved)
   }
 
-  getUpdatedBlock(tokenObj, operationType, editedText) {
+  getUpdatedBlock(tokenObj, operationType, editedText, isSaved) {
+    let callApi = false
+
     this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
       element && element.text_blocks && element.text_blocks.map((sentence) => {
         sentence.tokenized_sentences.map((value, tokenIndex) => {
@@ -247,10 +251,24 @@ class PdfFileEditor extends React.Component {
             if (operationType === "Save") {
               TELEMETRY.sentenceChanged(value.tgt, editedText, sentence.block_id, "translation")
 
+              if (!isSaved) {
+                if (tokenObj.tgt === editedText) {
+                  callApi = false
+                  this.setState({ displayMsg: true, displayTitle: "You have not edited sentence" })
+                } else {
+                  callApi = true
+                }
+              } else {
+                callApi = true
+              }
+
               value.save = true
               value.tgt = editedText
               value.tagged_tgt = editedText
-              this.props.saveUpdatedSentence(value, element.page_no)
+              if (callApi) {
+                this.props.saveUpdatedSentence(value, element.page_no)
+              }
+
             } else {
               if (value.hasOwnProperty("save")) {
                 value.tgt = this.state.prevActiveState && this.state.prevActiveState.tgt
@@ -265,14 +283,14 @@ class PdfFileEditor extends React.Component {
       })
     })
   }
- 
+
 
 
   popUp = (selected_block_id,
     sentence_id,
     sentence_index, event, operation, selectedText, targetDict) => {
 
-    window.getSelection().toString()&& this.setState({
+    window.getSelection().toString() && this.setState({
       operation_type: operation,
       openEl: true,
 
@@ -294,25 +312,25 @@ class PdfFileEditor extends React.Component {
       if(this.state.activeSentence.src.length!==this.state.sentence_index && this.state.sentence_index>0){
         this.handleDialog( this.state.selected_block_id,this.state.sentence_id,this.state.sentence_index,this.state.operation_type )
       }
-      else{
+      else {
         alert("Please select split sentence correctly")
       }
-      
-      
+
+
 
     }
-    else if(status==="Dictionary"){
+    else if (status === "Dictionary") {
       let word_locale = this.props.match.params.locale
-     let tgt_locale = this.props.match.params.tgt_locale
-     if(this.state.targetDict){
-      this.handleDictionary(this.state.selectedText,  tgt_locale, word_locale)
-     }
-     else{
-      this.handleDictionary(this.state.selectedText,word_locale,  tgt_locale)
-     }
-      
+      let tgt_locale = this.props.match.params.tgt_locale
+      if (this.state.targetDict) {
+        this.handleDictionary(this.state.selectedText, tgt_locale, word_locale)
+      }
+      else {
+        this.handleDictionary(this.state.selectedText, word_locale, tgt_locale)
+      }
+
     }
-    this.setState({openEl: false})
+    this.setState({ openEl: false })
   }
 
   handleEditorClick(id) {
@@ -370,11 +388,15 @@ class PdfFileEditor extends React.Component {
           getUpdatedBlock={this.getUpdatedBlock.bind(this)}
           moveToValidationMode={this.props.moveToValidationMode}
           scroll={this.props.scroll}
-          handleDictionary = {this.handleDictionary.bind(this)}
+          handleDictionary={this.handleDictionary.bind(this)}
           popUp={this.popUp.bind(this)}
         />
       </div>
     });
+  }
+
+  handleDialogClose() {
+    this.setState({ displayMsg: false, displayTitle: "" })
   }
 
   render() {
@@ -522,24 +544,33 @@ class PdfFileEditor extends React.Component {
           </div>
         )}
 
-{this.state.openEl &&this.state.activeSentence &&window.getSelection().toString()&& (
+        {this.state.openEl && this.state.activeSentence && window.getSelection().toString() && (
           <MenuItems
             isOpen={this.state.openEl}
             splitValue={this.state.splitValue}
             topValue={this.state.topValue}
             leftValue={this.state.leftValue}
             anchorEl={this.state.anchorEl}
-            targetDict = {this.state.targetDict}
-            selectedText = {this.state.selectedText}
+            targetDict={this.state.targetDict}
+            selectedText={this.state.selectedText}
             operation_type={this.state.operation_type}
             handleClose={this.handleClose.bind(this)}
             handleDialog={this.handlePopApi.bind(this)}
 
 
-            // handleCheck={this.handleCheck.bind(this)}
+          // handleCheck={this.handleCheck.bind(this)}
 
           />
         )}
+        {
+          this.state.displayMsg &&
+          <Dialog
+            message={this.state.displayTitle}
+            type="warning"
+            handleClose={this.handleDialogClose.bind(this)}
+            open
+            title="" />
+        }
         {this.state.open && (
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "right" }}

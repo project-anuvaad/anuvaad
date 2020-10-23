@@ -19,7 +19,6 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { withRouter } from "react-router-dom";
 
-
 //var getCaretCoordinates = require("textarea-caret");
 
 let arr = [];
@@ -171,45 +170,49 @@ class Block extends Component {
 
   }
 
-  getSelectionText(event, text){
+  getSelectionText(event, text) {
 
     const sentenceStartId = text.s_id;
     const split_index = window.getSelection().focusOffset;
     const selectedText = window.getSelection().toString();
-    let targetDict = false; 
+    let targetDict = false;
     let opeartion = "Split sentence";
     // eslint-disable-next-line
     let actual_text = text.src;
     actual_text = actual_text.replace(/\s{2,}/g, " ");
     actual_text = actual_text.trim();
-      
-    if(this.props.selectedBlock && this.props.selectedBlock.src.includes(selectedText)){
-      
-     }
-     else if(this.props.selectedBlock && this.props.selectedBlock.tgt.includes(selectedText)){
+
+    if (this.props.selectedBlock && this.props.selectedBlock.src.includes(selectedText)) {
+
+    }
+    else if (this.props.selectedBlock && this.props.selectedBlock.tgt.includes(selectedText)) {
       targetDict = true
-     }
-    this.props.popUp (this.props.block_id,
+    }
+    this.props.popUp(this.props.block_id,
       sentenceStartId,
       split_index,
       event,
-      opeartion,selectedText, targetDict )
+      opeartion, selectedText, targetDict)
   }
 
   handleBlurCard = (event, id) => {
-    if (this.state.editedText !== this.props.selectedBlock.tgt && this.state.editedText && this.state.enteredData) {
-      let operation = "Save";
+      if (this.state.editedText !== this.props.selectedBlock.tgt && this.state.editedText && this.state.enteredData) {
+        let operation = "Save";
+        let isEdited = false;
 
-      if ((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type !== "button") && !this.state.dontShowDialog) {
+        if ((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type !== "button") && !this.state.dontShowDialog) {
+          if (this.props.selectedBlock && !this.props.selectedBlock.hasOwnProperty("save")) {
+            isEdited = true
+          }
 
-        this.props.getUpdatedBlock(this.props.selectedBlock, operation, this.state.editedText)
+          this.props.getUpdatedBlock(this.props.selectedBlock, operation, this.state.editedText, isEdited)
 
-        // this.props.handleDialogMessage(this.props.selectedBlock, "", "", operation, message, this.state.editedText)
+          // this.props.handleDialogMessage(this.props.selectedBlock, "", "", operation, message, this.state.editedText)
+        }
+
+
+        // this.handleSave(this.props.selectedBlock.s_id) 
       }
-
-
-      // this.handleSave(this.props.selectedBlock.s_id) 
-    }
 
   }
 
@@ -226,11 +229,17 @@ class Block extends Component {
 
     if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
       let block = this.props.sen
+      let isEdited = false
       this.setState({ enteredData: false, dontShowDialog: true })
 
       block && block.tokenized_sentences && Array.isArray(block.tokenized_sentences) && block.tokenized_sentences.length > 0 && block.tokenized_sentences.map((tokenObj, i) => {
         if (this.state.sentence && this.state.sentence.s_id === tokenObj.s_id) {
           let sentence = this.state.sentence
+
+          if (sentence && !sentence.hasOwnProperty("save")) {
+            isEdited = true
+          }
+
           sentence.save = true
           tokenObj = this.state.sentence
 
@@ -239,7 +248,7 @@ class Block extends Component {
         return null;
       })
       this.props.handleClick("")
-      this.props.saveUpdatedSentence(block, this.state.sentence, this.props.blockIdentifier, this.state.editedText)
+      this.props.saveUpdatedSentence(block, this.state.sentence, this.props.blockIdentifier, this.state.editedText, isEdited)
     } else {
       this.props.handleSentenceClick(this.props.sentence)
     }
@@ -259,19 +268,19 @@ class Block extends Component {
     this.setState({ dontShowDialog: value, caretData: "" })
   }
 
-  handleDictionary=(event)=>{
-     let selectedWord = window.getSelection().toString()
-     let word_locale = this.props.match.params.locale
-     let tgt_locale = this.props.match.params.tgt_locale
+  handleDictionary = (event) => {
+    let selectedWord = window.getSelection().toString()
+    let word_locale = this.props.match.params.locale
+    let tgt_locale = this.props.match.params.tgt_locale
 
-     if(this.props.selectedBlock && this.props.selectedBlock.src.includes(selectedWord)){
-      this.props.handleDictionary(selectedWord,word_locale,  tgt_locale)
-     }
-     else if(this.props.selectedBlock && this.props.selectedBlock.tgt.includes(selectedWord)){
-      this.props.handleDictionary(selectedWord,tgt_locale,word_locale)
-     }
+    if (this.props.selectedBlock && this.props.selectedBlock.src.includes(selectedWord)) {
+      this.props.handleDictionary(selectedWord, word_locale, tgt_locale)
+    }
+    else if (this.props.selectedBlock && this.props.selectedBlock.tgt.includes(selectedWord)) {
+      this.props.handleDictionary(selectedWord, tgt_locale, word_locale)
+    }
 
-     
+
   }
 
   handleCardClick(sentence) {
