@@ -22,8 +22,9 @@ const MachineTranslationStyles = theme => ({
     dictionary: {
       border: "1px solid #1C9AB7",
       minHeight:"100%",
-      
-      marginTop :"20px"
+      overflow:"auto" ,
+      marginTop :"20px",
+      maxHeight: window.innerHeight - 600,
   },
 
   sourcediv:{

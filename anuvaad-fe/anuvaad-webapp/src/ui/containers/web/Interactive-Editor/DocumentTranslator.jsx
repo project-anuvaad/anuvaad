@@ -239,7 +239,7 @@ class PdfFileEditor extends React.Component {
 
   getUpdatedBlock(tokenObj, operationType, editedText, isSaved) {
     let callApi = false
-
+    debugger
     this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
       element && element.text_blocks && element.text_blocks.map((sentence) => {
         sentence.tokenized_sentences.map((value, tokenIndex) => {
@@ -287,7 +287,7 @@ class PdfFileEditor extends React.Component {
 
   popUp = (selected_block_id,
     sentence_id,
-    sentence_index, event, operation, selectedText, targetDict) => {
+    sentence_index, event, operation, selectedText) => {
 
     window.getSelection().toString() && this.setState({
       operation_type: operation,
@@ -299,7 +299,7 @@ class PdfFileEditor extends React.Component {
       sentence_id,
       sentence_index,
       selectedText,
-      targetDict
+      parallel_words:[]
 
 
 
@@ -321,12 +321,9 @@ class PdfFileEditor extends React.Component {
     else if (status === "Dictionary") {
       let word_locale = this.props.match.params.locale
       let tgt_locale = this.props.match.params.tgt_locale
-      if (this.state.targetDict) {
-        this.handleDictionary(this.state.selectedText, tgt_locale, word_locale)
-      }
-      else {
+
         this.handleDictionary(this.state.selectedText, word_locale, tgt_locale)
-      }
+
 
     }
     this.setState({ openEl: false })
