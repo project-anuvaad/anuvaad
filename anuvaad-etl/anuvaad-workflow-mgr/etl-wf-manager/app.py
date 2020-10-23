@@ -4,7 +4,6 @@ import os
 import threading
 
 from logging.config import dictConfig
-from cronjobs.jobsweeper import JobSweeper
 from controller.wfmcontroller import wfmapp
 from kafkawrapper.wfmconsumer import consume
 from kafkawrapper.wfmcoreconsumer import core_consume
@@ -36,8 +35,6 @@ def start_consumer():
                 thread = "WFMErrorConsumer-Instance-" + str(instance)
                 wfm_error_consumer_thread = threading.Thread(target=error_consume, name=thread)
                 wfm_error_consumer_thread.start()
-            js_thread = JobSweeper(threading.Event())
-            js_thread.start()
         except Exception as e:
             log_exception("Exception while starting the WFM kafka consumers: " + str(e), None, e)
 

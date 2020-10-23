@@ -2,7 +2,7 @@ import random
 import string
 import time
 from threading import Thread
-from .configs import module_wfm_name
+from .configs import module_name
 from .configs import js_cron_interval_sec
 from .configs import js_job_failure_interval_sec
 from .utils import WFMJMCronUtils
@@ -17,7 +17,7 @@ class WFMJobsManager(Thread):
 
     # Cron JOB to fetch status of each record and push it to CH and WFM on completion/failure.
     def run(self):
-        obj = {"metadata": {"module": module_wfm_name}}
+        obj = {"metadata": {"module": module_name}}
         rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
         prefix = "WFMJobsManager(" + rand_str + ")"
         log_info(prefix + " -- AJS Deployed, WFMJobsManager running......", obj)

@@ -10,4 +10,5 @@ save_content_url = os.environ.get('SAVE_CONTENT_URL', 'http://gateway_anuvaad-co
 
 
 jm_cron_interval_sec = os.environ.get('TRANSLATOR_JM_INTERVAL_SEC', 30)
+module_name = "JOBS-MANAGER"
 tool_translator = "TRANSLATOR"

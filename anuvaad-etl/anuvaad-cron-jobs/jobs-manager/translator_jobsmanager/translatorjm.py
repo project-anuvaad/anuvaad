@@ -6,8 +6,8 @@ from anuvaad_auditor.loghandler import log_exception, log_info, log_error
 from .utils import TranslatorCronUtils
 from .configs import anu_translator_output_topic
 from .configs import save_content_url
-from .configs import tool_translator
 from .configs import jm_cron_interval_sec
+from .configs import module_name
 from anuvaad_auditor.errorhandler import post_error
 
 
@@ -18,7 +18,7 @@ class TranslatorJobsManger(Thread):
 
     # Cron JOB to fetch status of each record and push it to CH and WFM on completion/failure.
     def run(self):
-        obj = {"metadata": {"module": tool_translator}}
+        obj = {"metadata": {"module": module_name}}
         rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
         prefix = "TranslatorJobsManager(" + rand_str + ")"
         log_info(prefix + " -- AJS Deployed, TranslatorJobsManager running......", obj)

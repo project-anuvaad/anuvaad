@@ -6,7 +6,6 @@ import threading
 from controller.translatorcontroller import translatorapp
 from kafkawrapper.translatorconsumer import consume
 from kafkawrapper.transnmtconsumer import consume_nmt
-from cronjobs.jobsmanager import JobsManger
 from anuvaad_auditor.loghandler import log_exception
 from configs.translatorconfig import translator_cons_no_of_instances
 from configs.translatorconfig import translator_nmt_cons_no_of_instances
@@ -30,8 +29,6 @@ def start_consumer():
                 thread = "TranslatorNMTConsumer-Instance-" + str(instance)
                 wfm_consumer_thread = threading.Thread(target=consume_nmt, name=thread)
                 wfm_consumer_thread.start()
-            jm_thread = JobsManger(threading.Event())
-            jm_thread.start()
         except Exception as e:
             log_exception("Exception while starting the Translator kafka consumers: " + str(e), None, e)
 
