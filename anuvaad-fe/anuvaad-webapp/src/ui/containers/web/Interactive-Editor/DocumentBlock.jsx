@@ -60,12 +60,12 @@ class DocumentBlock extends React.Component {
           !this.props.targetSelected && this.props.value !== true && this.handleMouseHover(sentence.block_id + "_" + this.props.page_no + "_" + this.props.paperType, sentence.block_identifier, sentence.has_sibling, this.props.page_no);
         }}
         style={{
-
+          
           position: "absolute",
           top: value.text_top - 2 + "px",
           fontSize: value.font_size + "px",
           fontFamily: sentence.font_family,
-          fontWeight: (sentence.font_family && sentence.font_family.includes("Bold") && "bold") || (sentence.attrib && sentence.attrib.toLowerCase().includes("bold")),
+          fontWeight: (sentence.font_family && sentence.font_family.includes("Bold") || sentence.attrib && sentence.attrib.toLowerCase().includes("bold")&& "bold"),
           outline: "0px solid transparent",
           zIndex: this.props.selectedSentence === value.block_id + "_" + this.props.page_no ? 2 : 1,
 
