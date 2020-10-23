@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="1367aa72-5a9a-49e3-af55-1fe2c4fddf78" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/etl-aligner/service/alignmentservice.py" beforeDir="false" afterPath="$PROJECT_DIR$/etl-aligner/service/alignmentservice.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../anuvaad-translator/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-translator/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/config/etl-wf-manager-config-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/config/etl-wf-manager-config-prod.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +24,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../anuvaad-translator" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="SvnConfiguration">

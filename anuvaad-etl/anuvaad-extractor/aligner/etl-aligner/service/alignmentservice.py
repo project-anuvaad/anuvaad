@@ -39,7 +39,7 @@ class AlignmentService:
     # Service method to register the alignment job.
     def register_job(self, object_in):
         job_id = util.generate_job_id()
-        response = {"input": object_in, "jobID": job_id, "status": "START"}
+        response = {"input": object_in, "jobID": job_id, "status": "STARTED"}
         self.update_job_details(response, True)
         prod_res = producer.push_to_queue(response, align_job_topic)
         if prod_res:
@@ -51,6 +51,7 @@ class AlignmentService:
     # Service method to register the alignment job
     def wf_process(self, object_in):
         object_in["taskID"] = util.generate_task_id()
+        object_in["status"] = "STARTED"
         self.update_job_details(object_in, True)
         result = self.process(object_in, True)
         return result
