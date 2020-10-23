@@ -22,6 +22,7 @@ import { withRouter } from "react-router-dom";
 //var getCaretCoordinates = require("textarea-caret");
 
 let arr = [];
+var tex=""
 class Block extends Component {
   constructor() {
     super();
@@ -80,8 +81,14 @@ class Block extends Component {
 
   handleChangeEvent = (event) => {
     this.setState({ editedText: event.target.value, enteredData: true })
+    
+
     // this.props.updateSentence(event.target.value)
+    if(this.props.buttonStatus === "typing"){
+      tex = event.target.value
+    }
     if (this.props.buttonStatus === "selected") {
+      
       this.props.handleClick("typing")
     }
 
@@ -119,7 +126,7 @@ class Block extends Component {
     //let data = this.state.caret
 
     let editedData = this.state.caret + suggestion + this.state.editedText.slice(this.state.caret.length)
-
+    tex = editedData;
     this.setState({
       editedText: editedData,
       showSuggestions: false,
@@ -175,6 +182,7 @@ class Block extends Component {
     const sentenceStartId = text.s_id;
     const split_index = window.getSelection().focusOffset;
     const selectedText = window.getSelection().toString();
+
     let targetDict = false;
     let opeartion = "Split sentence";
     // eslint-disable-next-line
@@ -183,16 +191,15 @@ class Block extends Component {
     actual_text = actual_text.trim();
 
     if (this.props.selectedBlock && this.props.selectedBlock.src.includes(selectedText)) {
+      this.props.popUp(this.props.block_id,
+        sentenceStartId,
+        split_index,
+        event,
+        opeartion, selectedText)
+    }
 
-    }
-    else if (this.props.selectedBlock && this.props.selectedBlock.tgt.includes(selectedText)) {
-      targetDict = true
-    }
-    this.props.popUp(this.props.block_id,
-      sentenceStartId,
-      split_index,
-      event,
-      opeartion, selectedText, targetDict)
+  
+    
   }
 
   handleBlurCard = (event, id) => {
@@ -225,8 +232,11 @@ class Block extends Component {
     this.setState({ selectedValueArray: arr });
   };
 
-  handleSave(id) {
+  handleBlurSave(selectedSentence, text){
+    this.props.saveUpdatedSentence("",selectedSentence, "", text, true)
+  }
 
+  handleSave(id) {
     if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
       let block = this.props.sen
       let isEdited = false
@@ -283,7 +293,16 @@ class Block extends Component {
 
   }
 
-  handleCardClick(sentence) {
+  handleCardClick(sentence, editedText) {
+
+    if(this.props.buttonStatus==="typing"){
+      this.handleBlurSave(this.props.selectedBlock, tex)
+      // this.handleSave(sentence.s_id);
+    }
+    else if(this.props.buttonStatus==="copy"){
+      debugger
+      this.handleBlurSave(this.props.selectedBlock, this.props.selectedBlock.s0_tgt)
+    }
     let saveData = false
     let block = this.props.sen
 
@@ -292,7 +311,6 @@ class Block extends Component {
 
   render() {
     const { classes, sentence, selectedBlock } = this.props;
-    
     return (
       <Paper
         variant="outlined"
@@ -314,15 +332,13 @@ class Block extends Component {
         <Grid container spacing={2} style={{ padding: "7px" }}>
           <Grid item xs={12} sm={12} lg={12} xl={12}>
             <div style={{ display: "flex", flexDirection: "row" }}
-              onBlur={(event) => { this.handleBlurCard(event, sentence.s_id) }}
-
             >
               <div
                 style={{ width: "100%", paddingLeft: "10px" }}
                   onMouseDown = {() => selectedBlock &&
                   sentence &&
                   sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}
-                  // onDoubleClick = {(event)=>this.handleDictionary(event) }
+                  onDoubleClick = {(event)=>event.preventDefault() }
 
                   onMouseUp={(event)=>{this.getSelectionText(event,sentence)}}
                   onKeyUp={(event)=>{this.getSelectionText(event,sentence)}}
