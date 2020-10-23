@@ -193,6 +193,7 @@ class PdfFileEditor extends React.Component {
         sentence_id,
         sentence_index
       );
+      debugger
       SentenceOperationId = this.state.activeSentence.s_id;
 
       TELEMETRY.splitSentencesEvent(data, [data.slice(0, this.state.sentence_index), data.slice(this.state.sentence_index)])
@@ -290,7 +291,7 @@ class PdfFileEditor extends React.Component {
 
   handlePopApi(status){
     if(status==="Split sentence"){
-      if(this.state.activeSentence.src.length!==this.state.sentence_index){
+      if(this.state.activeSentence.src.length!==this.state.sentence_index && this.state.sentence_index>0){
         this.handleDialog( this.state.selected_block_id,this.state.sentence_id,this.state.sentence_index,this.state.operation_type )
       }
       else{
@@ -340,8 +341,6 @@ class PdfFileEditor extends React.Component {
 
   handleSentences(sentence, element) {
     return sentence.tokenized_sentences.map((value, tokenIndex) => {
-
-      console.log(value)
       return <div ref={this.props.sentences.page_no}>
         <Block
           handleDialogMessage={this.handleDialog.bind(this)}
@@ -502,7 +501,7 @@ class PdfFileEditor extends React.Component {
                     style={{ height: "50%" }}
                   >
 
-                    <Dictionary parallel_words={this.state.parallel_words} loading={this.state.loading} />
+                    <Dictionary parallel_words={this.state.parallel_words} selectedText={this.state.selectedText} loading={this.state.loading} />
                   </Grid>
                 </Grid>
               </Grid>

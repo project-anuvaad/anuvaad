@@ -78,29 +78,6 @@ class Block extends Component {
     }
   }
 
-  handleSplitSentence(event, text) {
-    const sentenceStartId = text.s_id;
-    const split_index = window.getSelection().focusOffset;
-    let opeartion = "Split sentence";
-    // eslint-disable-next-line
-    let actual_text = text.src;
-    actual_text = actual_text.replace(/\s{2,}/g, " ");
-    actual_text = actual_text.trim();
-
-    if(split_index!== text.src.length){
-      this.props.handleDialogMessage(
-        this.props.block_id,
-        sentenceStartId,
-        split_index,
-        // actual_text.substring(0, split_index),
-        opeartion,
-      );
-    }
-    else{
-      alert("Please select split sentence correctly")
-    }
-    
-  }
 
   handleChangeEvent = (event) => {
     this.setState({ editedText: event.target.value, enteredData: true })
@@ -331,11 +308,6 @@ class Block extends Component {
               onBlur={(event) => { this.handleBlurCard(event, sentence.s_id) }}
 
             >
-              {/* <Tooltip title="Go to validation mode">
-                <ValidationIcon onClick={() => this.props.moveToValidationMode(this.props.pageNo, this.props.blockIdentifier, this.props.block_id)}
-                  style={{ color: "#1C9AB7", cursor: "pointer" }}
-                />
-              </Tooltip> */}
               <div
                 style={{ width: "100%", paddingLeft: "10px" }}
                   onMouseDown = {() => selectedBlock &&
@@ -356,7 +328,7 @@ class Block extends Component {
                   {sentence.src}
                 </div>
                 <hr style={{ border: (selectedBlock && sentence && sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "copy" || this.props.buttonStatus === "typing")) ? "1px dashed #1C9AB7" : "1px dashed #00000014" }} />
-                {((selectedBlock && sentence && sentence.s_id === selectedBlock.s_id) || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ?
+                {((selectedBlock && sentence &&sentence.hasOwnProperty("s_id") && sentence.s_id === selectedBlock.s_id) || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ?
                   <AutoComplete
                     aId={sentence.s_id}
                     refId={sentence.s_id}
@@ -376,7 +348,7 @@ class Block extends Component {
                     }}
                     tokenIndex={this.props.tokenIndex}
                     // value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData) ? this.state.sentence.tgt : ""}
-                    value={(this.props.sentence.hasOwnProperty("s_id") && (this.props.selectedTargetId === this.state.sentence.s_id) || this.state.enteredData || (this.props.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
+                    value={(this.state.sentence.hasOwnProperty("s_id") && (this.props.selectedTargetId === this.state.sentence.s_id) || this.state.enteredData || (this.props.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
                     sentence={this.state.sentence}
                     sourceText={sentence.src}
                     page_no={this.props.page_no}
@@ -452,45 +424,6 @@ class Block extends Component {
                         paddingLeft: "4%",
                       }}
                     >
-                      {/* {this.props.buttonStatus === "split" && selectedBlock &&
-                        sentence &&
-                        sentence.s_id === selectedBlock.s_id ? (
-                          <div>
-                            <Tooltip title={window.getSelection().toString() ? "Split" : "Please select sentence to split"}>
-                              <IconButton aria-label="Split">
-                                <Split
-                                  fontSize={"large"}
-                                  style={{ color: "#1C9AB7" }}
-                                  onClick={(event) => {
-                                    window.getSelection().toString() ? this.handleSplitSentence(event, sentence, this.props.block_id) : alert("Please select text to split");
-                                  }}
-                                />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title={"Cancel"}>
-                              <IconButton aria-label="cancel">
-                                <CancelIcon
-                                  fontSize={"large"}
-                                  style={{ color: "#1C9AB7" }}
-                                  onClick={() => {
-                                    this.props.handleClick("");
-                                  }}
-                                />
-                              </IconButton>
-                            </Tooltip>
-                          </div>
-                        ) : this.props.buttonStatus !== "split" && (
-                          <Tooltip title={"Spit sentence"}>
-                            <IconButton aria-label="Split">
-                              <Split
-                                fontSize={"default"}
-                                onClick={(event) => {
-                                  this.handleSplit()
-                                }}
-                              />
-                            </IconButton>
-                          </Tooltip>
-                        )} */}
                       {this.props.buttonStatus !== "split" && (
                         <Tooltip title="Merge Sentence">
                           <IconButton aria-label="merge">
