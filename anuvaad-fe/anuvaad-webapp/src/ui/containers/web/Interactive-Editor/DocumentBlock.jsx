@@ -36,11 +36,6 @@ class DocumentBlock extends React.Component {
 
   }
 
-  // sentenceClear() {
-  //   return arr.map(arrValue => {
-  //     this.setState({ [arrValue]: false })
-  //   return null;})
-  // }
   updateContent(val) {
 
 
@@ -106,9 +101,9 @@ class DocumentBlock extends React.Component {
                 fontWeight: (sentence.font_family && sentence.font_family.includes("Bold") && "bold") || (sentence.attrib && sentence.attrib.toLowerCase().includes("bold")),
 
               }}
-              onChange={event => {
-                this.handleChangeEvent(event);
-              }}
+
+              onChange={this.handleChangeEvent.bind(this)}
+              onKeyDown={this.handleEnter}
               value={this.props.selectedSourceText.text}
               maxRows={4}
             >
@@ -121,16 +116,12 @@ class DocumentBlock extends React.Component {
     );
   };
 
-  // handleChange = name => event => {
+  handleEnter = (event,text)=>{
 
-  //   if (arr.includes(name)) {
-  //     arr = arr.filter(item => item !== name);
-  //   } else {
-  //     arr.push(name);
-  //   }
-
-  //   this.setState({ selectedValueArray: arr });
-  // };
+    if(event.key === "Escape"){
+      this.props.handleBlur(this.props.sentence.block_identifier + "_" + this.props.page_no + "_" + this.props.paperType, "", text)
+    }
+  }
 
 
   handleDoubleClick = (event, val, text, pageDetail) => {
@@ -138,7 +129,7 @@ class DocumentBlock extends React.Component {
     this.props.handleDoubleClick(val, text, pageDetail);
   };
 
-  handleChangeEvent = event => {
+  handleChangeEvent (event){
     this.props.handleSourceChange(event, this.props.sentence);
   };
 
@@ -175,21 +166,6 @@ class DocumentBlock extends React.Component {
       <div style={{
         backgroundColor:this.props.scrollId === this.props.page_no + "@" + sentence.block_identifier ? "yellow" : "",
       }}>
-        {/* <div
-          id={sentence.block_id + "_" + this.props.page_no + "_" + this.props.paperType}
-          style={styles}
-          key={sentence.block_id}
-          onBlur={event => this.props.handleBlur(this.props.sentence.block_identifier + "_" + this.props.page_no + "_" + this.props.paperType)}
-          onMouseLeave={() => {
-            !this.props.targetSelected && this.props.value !== true && this.props.handleOnMouseLeave();
-          }}
-          onMouseEnter={() => {
-            !this.props.targetSelected && this.props.value !== true && this.handleMouseHover(sentence.block_id + "_" + this.props.page_no + "_" + this.props.paperType, sentence.block_identifier, sentence.has_sibling, this.props.page_no);
-          }}
-          ref={sentence.block_id + "_" + this.props.page_no}
-        >
-        </div> */}
-        {/* {!this.props.tokenized && this.props.hoveredSentence.split('_')[0] === this.props.sentence.block_id && this.renderLinesWithTokenizedData(sentence)} */}
         {(this.props.tokenized || this.props.hoveredSentence.split('_')[0] !== this.props.sentence.block_id) && Array.isArray(sentence.children) &&
           sentence.children &&
           sentence.children.map((textValue, tokenIndex) => {
