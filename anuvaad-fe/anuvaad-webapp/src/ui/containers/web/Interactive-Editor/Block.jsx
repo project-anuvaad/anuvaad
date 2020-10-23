@@ -233,7 +233,6 @@ class Block extends Component {
   };
 
   handleBlurSave(selectedSentence, text){
-    debugger
     this.props.saveUpdatedSentence("",selectedSentence, "", text, true)
   }
 
