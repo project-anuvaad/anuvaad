@@ -2,6 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="28b7c456-6bb7-42d9-bd74-bc01a6deddd3" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../anuvaad-cron-jobs/jobs-manager/.idea/jobs-manager.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../anuvaad-cron-jobs/jobs-manager/app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../anuvaad-cron-jobs/jobs-manager/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../anuvaad-cron-jobs/jobs-manager/translator_jobsmanager/configs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../anuvaad-cron-jobs/jobs-manager/translator_jobsmanager/translatorjm.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../anuvaad-cron-jobs/jobs-manager/translator_jobsmanager/utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../anuvaad-cron-jobs/jobs-manager/wfm_jobsmanager/configs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../anuvaad-cron-jobs/jobs-manager/wfm_jobsmanager/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../anuvaad-extractor/aligner/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../anuvaad-extractor/aligner/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,5 +55,16 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="55" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1603261856639" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/translator/repository/translatorrepository.py</url>
+          <line>1</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
