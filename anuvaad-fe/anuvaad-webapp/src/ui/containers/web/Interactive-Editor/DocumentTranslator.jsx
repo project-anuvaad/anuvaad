@@ -139,6 +139,7 @@ class PdfFileEditor extends React.Component {
       updateData: saveData && block,
       updateBlockId: blockIdentifier,
       buttonStatus: "selected",
+      parallel_words:[]
     });
   }
 
