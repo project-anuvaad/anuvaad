@@ -16,7 +16,6 @@ export default function(state = initialUserState, action) {
       let changedJob = {}
       arr.map((element,i)=>existjobs.push(element.job))
 
-      console.log(existjobs)
       jobDetails.map((value, i)=>{
         
          
