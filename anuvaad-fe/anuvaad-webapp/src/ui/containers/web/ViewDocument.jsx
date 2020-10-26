@@ -86,7 +86,6 @@ class ViewDocument extends React.Component {
 
 
   handleRefresh(value, offset, limit, searchToken) {
-    debugger
     const { APITransport } = this.props;
     const apiObj = new FetchDocument(offset, limit);
     APITransport(apiObj);

@@ -300,7 +300,6 @@ class Block extends Component {
       // this.handleSave(sentence.s_id);
     }
     else if(this.props.buttonStatus==="copy"){
-      debugger
       this.handleBlurSave(this.props.selectedBlock, this.props.selectedBlock.s0_tgt)
     }
     let saveData = false
@@ -329,8 +328,8 @@ class Block extends Component {
               : "2px solid #D6D6D6",
         }}
       >
-        <Grid container spacing={2} style={{ padding: "7px" }}>
-          <Grid item xs={12} sm={12} lg={12} xl={12}>
+        <Grid container spacing={2} style={{ padding: "7px 7px 0px 7px" }}>
+          <Grid item xs={12} sm={12} lg={12} xl={12} style={{paddingBottom: "0px"}}>
             <div style={{ display: "flex", flexDirection: "row" }}
             >
               <div

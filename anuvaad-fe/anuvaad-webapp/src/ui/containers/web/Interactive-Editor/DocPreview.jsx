@@ -116,7 +116,7 @@ class PdfPreview extends React.Component {
               )}
           </Grid> */}
         {/* </Toolbar> */}
-        <div style={{ maxHeight: window.innerHeight - 275, overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
+        <div style={{ maxHeight: window.innerHeight - 260, overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
           <Document file={url} onLoadSuccess={this.props.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
 
 

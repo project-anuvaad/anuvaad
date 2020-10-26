@@ -17,9 +17,9 @@ class DocumentBlock extends React.Component {
   }
 
   handleMouseHover(id, block_identifier, has_sibling, pageNo) {
-    if (!this.props.selectedSentence) {
+    // if (!this.props.selectedSentence) {
       this.props.handleOnMouseEnter(id, this.props.parent, 0, block_identifier, has_sibling, pageNo);
-    }
+    // }
   }
 
   componentDidUpdate(prevProps) {
