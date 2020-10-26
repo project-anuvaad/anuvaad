@@ -717,7 +717,7 @@ class PdfFileEditor extends React.Component {
                   {translate("common.page.title.document")}
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={5} lg={7} xl={7} className="GridFileDetails">
+              <Grid item xs={12} sm={6} lg={7} xl={7} className="GridFileDetails">
                 <Button
                   color="primary"
                   className="GridFileDetails"

@@ -39,7 +39,7 @@ class PdfPreview extends React.Component {
     return (
       <div>
      
-        <div style={{ maxHeight: window.innerHeight - 260, overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center", paddingTop: "20px" }} id="pdfDocument">
+        <div style={{ maxHeight: window.innerHeight - 280, overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center", paddingTop: "20px" }} id="pdfDocument">
           <Document file={url} onLoadSuccess={this.props.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
 
             <Page scale={this.state.pageScaleWidth} pageNumber={Number(pageNo)} onLoadSuccess={this.onPageLoad} />
