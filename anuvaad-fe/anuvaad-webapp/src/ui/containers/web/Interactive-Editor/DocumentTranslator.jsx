@@ -504,7 +504,7 @@ class PdfFileEditor extends React.Component {
                   sm={12}
                   lg={12}
                   xl={12}
-                  style={{ height: "50%" }}
+                  style={{ height: "94%" }}
                 >
                   <MachineTranslation
                     sentence={this.state.activeSentence}
