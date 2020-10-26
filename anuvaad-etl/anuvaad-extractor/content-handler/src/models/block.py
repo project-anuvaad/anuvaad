@@ -3,6 +3,15 @@ from db import get_db
 from anuvaad_auditor.loghandler import log_info, log_exception
 
 class BlockModel(object):
+    def __init__(self):
+        collections = get_db()[DB_SCHEMA_NAME]
+        try:
+            collections.create_index([("record_id", pymongo.TEXT)], unique=True)
+            collections.create_index([("block_identifier", pymongo.TEXT)], unique=False)
+        except pymongo.errors.DuplicateKeyError as e:
+            log_info("duplicate key, ignoring", AppContext.getContext())
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
 
     @staticmethod
     def update_block(user_id, block_identifier, block):
