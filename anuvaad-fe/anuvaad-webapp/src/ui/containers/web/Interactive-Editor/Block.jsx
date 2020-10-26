@@ -352,8 +352,8 @@ class Block extends Component {
                 >
                   {sentence.src}
                 </div>
-                <hr style={{ border: (selectedBlock && sentence && sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "copy" || this.props.buttonStatus === "typing")) ? "1px dashed #1C9AB7" : "1px dashed #00000014" }} />
-                {((selectedBlock && sentence &&sentence.hasOwnProperty("s_id") && sentence.s_id === selectedBlock.s_id) || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ?
+                <hr style={{ border: (selectedBlock && sentence && sentence.hasOwnProperty("s_id") && sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "copy" || this.props.buttonStatus === "typing")) ? "1px dashed #1C9AB7" : "1px dashed #00000014" }} />
+                {((selectedBlock && sentence &&sentence.hasOwnProperty("s_id") && selectedBlock.hasOwnProperty("s_id") && sentence.s_id === selectedBlock.s_id) || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ?
                   <AutoComplete
                     aId={sentence.s_id}
                     refId={sentence.s_id}
@@ -373,7 +373,7 @@ class Block extends Component {
                     }}
                     tokenIndex={this.props.tokenIndex}
                     // value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData) ? this.state.sentence.tgt : ""}
-                    value={(this.state.sentence.hasOwnProperty("s_id") && (this.props.selectedTargetId === this.state.sentence.s_id) || this.state.enteredData || (this.props.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
+                    value={(this.state.sentence && this.state.sentence.hasOwnProperty("s_id") && (this.props.selectedTargetId === this.state.sentence.s_id) || this.state.enteredData || (this.props.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
                     sentence={this.state.sentence}
                     sourceText={sentence.src}
                     page_no={this.props.page_no}
@@ -383,7 +383,7 @@ class Block extends Component {
                     showSuggestions={this.props.showSuggestions}
                     handleSuggestionClose={this.props.handleSuggestionClose}
                     tokenObject={sentence}
-                    showTargetLang={this.props.selectedTargetId === sentence.s_id && true}
+                    showTargetLang={this.props.selectedTargetId === sentence.hasOwnProperty("s_id") && sentence.s_id && true}
                     modelId={this.props.modelId}
                     autoCompleteText={this.state.autoCompleteText}
                     autoCompleteTextTaggetTgt={this.state.autoCompleteTextTaggetTgt}
