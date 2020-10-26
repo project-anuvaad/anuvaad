@@ -69,6 +69,9 @@ import insertSentence from './insertSentence';
 import workflowStatus from "./fileupload";
 import documentUplaod from "./documentUpload";
 import fetchDocument from "./fetch_document";
+import job_details from './v1_fetch_job_details';
+import job_progress from './v1_fetch_job_progress'
+
 import documentDetails from "./fetch_fileDetails";
 import fetchContent from "./fetchcontent";
 import documentconverter from "./documentconverter";
@@ -155,6 +158,7 @@ export default {
     wordDictionary,
     saveContent,
     markInactive,
-    jobStatus
-
+    jobStatus,
+    job_details,
+    job_progress
 };

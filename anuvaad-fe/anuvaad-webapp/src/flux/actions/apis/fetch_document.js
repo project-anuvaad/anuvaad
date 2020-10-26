@@ -2,12 +2,12 @@ import API from "./api";
 import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 
-export default class RunExperiment extends API {
-  constructor(offset,limit, timeout = 2000) {
+export default class BulkSearchAPI extends API {
+  constructor(offset, limit, timeout = 2000) {
     super("POST", timeout, false);
-    this.type = C.FETCHDOCUMENT;
-    this.offset = offset;
-    this.limit=limit;
+    this.type     = C.FETCHDOCUMENT;
+    this.offset   = offset;
+    this.limit    = limit;
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.fetchducuments}`
   }
 
