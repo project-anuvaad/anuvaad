@@ -71,10 +71,16 @@ PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.85 ,'repeat_threshold
 DROP_TEXT          =  ['SUPERSCRIPT']
 
 LANG_MAPPING       =  {
-    "en" : ["eng"], "kn" : ["kan"], "gu": ["guj"],"or": ["ori"],
-    "hi" : ["Devanagari","hin","eng"], "bn" : "ben", "mr": ["Devanagari","hin","eng"], "ta": ["tam"],
-    "te" : ["tel"]
-
+    "en" : ["Latin","eng"],
+    "kn" : ['Kannada',"kan"],
+    "gu": ["guj"],
+    "or": ["ori"],
+    "hi" : ["Devanagari","hin","eng"],
+    "bn" : ["Bengali","ben"],
+    "mr": ["Devanagari","hin","eng"],
+    "ta": ['Tamil',"tam"],
+    "te" : ["Telugu","tel"],
+    "ml" :["Malayalam"]
 }
 
 
@@ -94,7 +100,7 @@ CROP_CONFIG = {
     'ml': {'top':15, 'bottom':10,'right':5,'left':5},
     'kn':{'top':15, 'bottom':10,'right':5,'left':5 },
     'ta':{'top':5, 'bottom':15,'right':5,'left':10 },
-    'ma':{'top':5, 'bottom':5,'right':5,'left':5 }
+    'mr':{'top':15, 'bottom':10,'right':5,'left':5}
 }
 
 CLASS_2_LANG = ['ta']
