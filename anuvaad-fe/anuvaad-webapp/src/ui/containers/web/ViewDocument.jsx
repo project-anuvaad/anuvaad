@@ -112,6 +112,11 @@ class ViewDocument extends React.Component {
     }
   }
 
+  getDateTimeFromTimestamp = (t) => {
+    let date = new Date(t);
+    return ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.markInactive !== this.props.markInactive) {
       let resultArray = this.state.name;
@@ -258,6 +263,15 @@ class ViewDocument extends React.Component {
         options: {
           filter: true,
           sort: false,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            if (tableMeta.rowData) {
+              return (
+                <div>
+                {this.getDateTimeFromTimestamp(tableMeta.rowData[7])}
+                </div>
+              )
+            }
+          }
         }
       },
       {
