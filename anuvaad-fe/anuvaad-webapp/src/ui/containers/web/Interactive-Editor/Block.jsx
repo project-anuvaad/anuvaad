@@ -205,7 +205,7 @@ class Block extends Component {
       let isEdited = false;
 
       if ((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type !== "button") && !this.state.dontShowDialog) {
-        if (this.props.selectedBlock && !this.props.selectedBlock.hasOwnProperty("save")) {
+        if (this.props.selectedBlock && !this.props.selectedBlock.hasOwnProperty("save") && !this.props.selectedBlock.save) {
           isEdited = true
         }
 
@@ -239,7 +239,7 @@ class Block extends Component {
         if (this.state.sentence && this.state.sentence.s_id === tokenObj.s_id) {
           let sentence = this.state.sentence
 
-          if (sentence && !sentence.hasOwnProperty("save")) {
+          if (sentence && !sentence.hasOwnProperty("save") && !sentence.save) {
             isEdited = true
           }
 
