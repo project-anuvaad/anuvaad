@@ -385,7 +385,7 @@ class Block extends Component {
                     fetchSuggestions={this.fetchSuggestions.bind(this)}
                     handleSuggestionClick={this.handleSuggestionClick.bind(this)}
                     handleEditorClick={this.handleEditorClick.bind(this)}
-                    autoFocus={this.state.sentence.hasOwnProperty("save")}
+                    autoFocus={ this.state.sentence.hasOwnProperty("save")}
                     showSuggestions={this.showSuggestions.bind(this)}
                     caretLength={this.state.caretLength}
                     caretData={this.state.caretData}
