@@ -708,7 +708,6 @@ class PdfFileEditor extends React.Component {
             >
               <Grid item xs={12} sm={6} lg={2} xl={2} className="GridFileDetails">
                 <Button
-                  // variant="outlined"
                   onClick={event => {
                     this.handleOnClose();
                   }}
@@ -718,10 +717,9 @@ class PdfFileEditor extends React.Component {
                   {translate("common.page.title.document")}
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={5} lg={7} xl={7} className="GridFileDetails">
+              <Grid item xs={12} sm={6} lg={7} xl={7} className="GridFileDetails">
                 <Button
                   color="primary"
-                  // variant="outlined"
                   className="GridFileDetails"
                   style={{
                     textTransform: "capitalize",
@@ -757,8 +755,6 @@ class PdfFileEditor extends React.Component {
               </Grid>
               <Grid item xs={12} sm={6} lg={2} xl={2}>
                 <Button
-                  // variant="contained"
-                  // color="primary"
                   style={{
                     color: "#233466",
                     textTransform: "capitalize",
@@ -777,7 +773,6 @@ class PdfFileEditor extends React.Component {
               </Grid>
 
               {this.state.tokenized &&
-                // <Grid container spacing={2}>
                 <Grid item xs={12} sm={6} lg={6} xl={6}>
                   <Paper elevation={3}>
 
@@ -786,18 +781,6 @@ class PdfFileEditor extends React.Component {
                         Extracted Document
                      </Typography>
 
-                      {/* {this.state.tokenized && !this.state.apiCall && (
-                        <Toolbar
-                          onClick={event => {
-                            this.handleClick(this.state.mergeButton === "save" ? "Merge" : "save");
-                          }}
-                          style={{ paddingRight: "0px" }}
-                        >
-                          <Typography value="" variant="subtitle2" style={{ cursor: "pointer", color: "#233466", paddingLeft: "7px" }}>
-                            {this.state.mergeButton === "save" ? "Save" : "Merge Blocks"}
-                          </Typography>
-                        </Toolbar>
-                      )} */}
                     </Toolbar>
 
                   </Paper>
