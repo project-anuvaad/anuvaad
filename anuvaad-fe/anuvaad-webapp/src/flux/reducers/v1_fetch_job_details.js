@@ -44,6 +44,7 @@ function get_document_details(input) {
         let timelines   = []
         document['filename']                = job['input']['jobName']
         document['filetype']                = job['input']['files'][0]['type']
+        document['converted_filename']      = job['input']['files'][0]['path']
         document['active']                  = job['active'];
         document['jobID']                   = job['jobID'];
 

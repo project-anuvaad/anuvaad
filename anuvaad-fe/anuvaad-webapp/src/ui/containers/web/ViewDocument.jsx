@@ -26,7 +26,9 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Snackbar from "../../components/web/common/Snackbar";
 import PublishIcon from '@material-ui/icons/Publish';
 import DeleteIcon from '@material-ui/icons/Delete';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import MarkInactive from "../../../flux/actions/apis/markinactive";
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import JobStatus from "../../../flux/actions/apis/job-status";
 
 const TELEMETRY = require('../../../utils/TelemetryManager')
@@ -101,6 +103,15 @@ class ViewDocument extends React.Component {
     return jobIds;
   }
 
+  getJobIdDetail = (jobId) => {
+
+    for (var i = this.state.currentPageIndex * this.state.limit; i < (this.state.currentPageIndex * this.state.limit) + this.state.limit; i++) {
+      if (this.props.job_details.documents[i]['jobID'] === jobId) {
+        return this.props.job_details.documents[i]
+      }
+    }
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.markInactive !== this.props.markInactive) {
       let resultArray = this.state.name;
@@ -131,33 +142,38 @@ class ViewDocument extends React.Component {
     }
   }
 
-  handleFileDownload(file) {
-    let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${
-      file ? file : ""
-      }`
-    window.open(url, "_self")
-  }
-
-  handleDialog(rowData) {
-    this.setState({ showInfo: true, message: rowData })
+  processJobTimelinesClick(jobId, recordId) {
+    console.log(this.getJobIdDetail(jobId))
+    // this.setState({ showInfo: true, message: rowData })
   }
 
   handleDialogClose() {
     this.setState({ showInfo: false })
   }
 
-  handleDeleteJob(jobId, fileName) {
-    const { APITransport } = this.props;
-    const apiObj = new MarkInactive(jobId);
+  processDeleteJobClick = (jobId, recordId) => {
+    const { APITransport }  = this.props;
+    const apiObj            = new MarkInactive(jobId);
     APITransport(apiObj);
-    this.setState({deleteId:jobId, loaderDelete: true, deletedFile: fileName})
-    setTimeout(() => {
-      this.setState({ loaderDelete: false });
-    }, 20000);
+    // this.setState({deleteId:jobId, loaderDelete: true, deletedFile: fileName})
+    // setTimeout(() => {
+    //   this.setState({ loaderDelete: false });
+    // }, 20000);
+  }
+
+  processViewDocumentClick = (jobId, recordId) => {
+
+  }
+
+  processDownloadInputFileClick = (jobId, recordId) => {
+    let job = this.getJobIdDetail(jobId);
+    let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${
+      job.converted_filename ? job.converted_filename : ""
+      }`
+    window.open(url, "_self")
   }
 
   processTableClickedNextOrPrevious = (page, sortOrder) => {
-
     if(this.state.currentPageIndex < page) {
       /**
        * user wanted to load next set of records
@@ -169,6 +185,7 @@ class ViewDocument extends React.Component {
       });
     }
   };
+
 
   renderUserDocuments = () => {
     const columns  = [
@@ -189,6 +206,13 @@ class ViewDocument extends React.Component {
       {
         name: "jobID",
         label: 'JobID',
+        options: {
+          display: "excluded"
+        }
+      },
+      {
+        name: "recordId",
+        label: 'RecordId',
         options: {
           display: "excluded"
         }
@@ -244,23 +268,36 @@ class ViewDocument extends React.Component {
           empty: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
+
               return (
                 <div >
-                  <Tooltip title="info" placement="left">
-                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[16])}>
-                      <InfoIcon style={{ color: "#C6C6C6" }} />
+
+                  <Tooltip title="Info" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processJobTimelinesClick(tableMeta.rowData[1], tableMeta.rowData[2])}>
+                      <InfoIcon/>
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Delete Job" placement="left">
-                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDeleteJob(tableMeta.rowData[2], tableMeta.rowData[3])}>
+
+                  <Tooltip title="View document" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processViewDocumentClick(tableMeta.rowData[1], tableMeta.rowData[2])}>
+                      <LibraryBooksIcon />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Delete job" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processDeleteJobClick(tableMeta.rowData[1], tableMeta.rowData[2])}>
                       <DeleteIcon />
                     </IconButton>
                   </Tooltip>
-                  {tableMeta.rowData[1] === 'COMPLETED' ? <Tooltip title={translate('viewTranslate.page.title.downloadSource')} placement="right">
-                    <IconButton style={{ color: '#233466' }} component="a" onClick={() => { this.setState({ fileDownload: true }); this.handleFileDownload(tableMeta.rowData[5]) }}>
-                      <DeleteOutlinedIcon />
+
+                  <Tooltip title="Download input file" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processDownloadInputFileClick(tableMeta.rowData[1], tableMeta.rowData[2])}>
+                      <CloudDownloadIcon />
                     </IconButton>
-                  </Tooltip> : ''}
+                  </Tooltip>
+                  
+                  
+
                 </div>
               );
             }
