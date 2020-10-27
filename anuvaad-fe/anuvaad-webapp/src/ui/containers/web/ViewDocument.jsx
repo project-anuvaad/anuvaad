@@ -58,16 +58,13 @@ class ViewDocument extends React.Component {
       MUIDataTableBodyCell: {
         root: {
           padding: '3px 10px 3px'
-
         }
       },
-
     }
   })
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('view-document')
-
     /**
      * getSnapshotBeforeUpdate() must return null
      */
@@ -104,7 +101,6 @@ class ViewDocument extends React.Component {
       resultArray.map((element,i)=>{
         if(this.state.deleteId===element.job){
           resultArray.splice(i, 1);
-        
         }
       })
       this.setState({name:resultArray, loaderDelete: false, open:true, count:this.state.count-1, message: this.state.deleteId + "deleted cuccessfully"})
@@ -126,8 +122,6 @@ class ViewDocument extends React.Component {
         APITransport(apiObj);
         this.setState({ showProgress: true, searchToken: false });
       }
-      
-
     }
 
     if (prevProps.jobStatus !== this.props.jobStatus) {
@@ -136,7 +130,6 @@ class ViewDocument extends React.Component {
       arr.length > 0 && arr.map(element => {
         if (this.state.jobArray.includes(element.id)) {
           result.map(value => {
-
             // console.log(value.record_id === element.id)
             if (value.record_id === element.id && !element.hasOwnProperty("completed_count") && !element.hasOwnProperty("total_count")) {
               element["completed_count"] = value.completed_count;
@@ -147,8 +140,6 @@ class ViewDocument extends React.Component {
       })
       this.setState({ name: arr, showLoader: false , showProgress: false, searchToken: false});
     }
-
-
   }
 
   handleFileDownload(file) {
@@ -177,9 +168,7 @@ class ViewDocument extends React.Component {
   }
 
   changePage = (page, sortOrder) => {
-
     if(this.state.prevPage<page){
-
       this.handleRefresh(false, this.state.offset + 10, this.state.limit,true)
       this.setState({
         prevPage:page,
@@ -189,124 +178,43 @@ class ViewDocument extends React.Component {
    
   };
 
+  renderUserDocuments = () => {
+    const columns  = [
+      { name: "filename", label: translate("viewCorpus.page.label.fileName"), options: { filter: true, sort: true,} },
+    ]
+  }
+
   render() {
     const columns = [
       {
+        name: "filename",
+        label: 'Filename',
+        options: {
+          filter: false,
+          sort: false,
+        }
+      },
+      {
         name: "jobID",
-        label: translate("common.page.label.basename"),
+        label: 'JobID',
         options: {
           display: "excluded"
         }
       },
       {
-        name: "status",
-        label: translate("viewCorpus.page.label.fileName"),
-        options: {
-
-          display: "excluded"
-        }
-      },
-      {
-        name: "job",
-        label: "Job ID",
-        options: {
-          filter: true,
-          sort: true,
-          // sortOrder: "asc",
-          // display: "excluded"
-
-        }
-      },
-
-      {
-        name: "name",
-        label: "Filename",
-        options: {
-          filter: true,
-
-          
-          customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
-              return (
-                <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[3]}</div>
-                </div>
-              );
-            }
-
-          }
-        }
-      },
-
-      {
-        name: "id",
-        label: "id",
-        options: {
-          display: "excluded"
-        }
-      },
-      {
-        name: "inputFile",
-        label: "inputFile",
-        options: {
-          display: "excluded"
-        },
-
-      },
-      {
-        name: "modelId",
-        label: "modelId",
-        options: {
-          display: "excluded"
-        },
-
-
-      },
-      {
-        name: "locale",
-        label: "locale",
-        options: {
-
-          display: "excluded"
-        }
-      },
-
-      {
-        name: "source",
+        name: "source_language_code",
         label: translate("common.page.label.source"),
         options: {
           filter: false,
           sort: false,
-          // sortDirection: "desc",
-          customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
-              return (
-                <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[8]}</div>
-                </div>
-              );
-            }
-
-          }
         }
       },
       {
-        name: "target",
+        name: "target_language_code",
         label: translate("common.page.label.target"),
         options: {
           filter: false,
           sort: false,
-          // sortDirection: "desc",
-          customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
-              return (
-                <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[9]}</div>
-                </div>
-              );
-            }
-
-          }
         }
       },
       {
@@ -316,81 +224,23 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
-
-          customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
-
-
-              return (
-
-                <div style={{ width: '120px' }}>
-
-                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this, false, 0, 10, false)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}><div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[1]}</div></div>}
-
-                </div>
-              );
-            }
-
-          }
         }
       },
       {
-        name: "completed_count",
-        label: "completed_count",
-        options: {
-          display: "excluded"
-        }
-      },
-      {
-        name: "total_count",
-        label: "total_count",
-        options: {
-          display: "excluded"
-        }
-      },
-
-      {
-        name: "status",
+        name: "progress",
         label: "Progress",
         options: {
           filter: true,
           sort: false,
           empty: true,
-
-          customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
-
-
-              return (
-
-                <div style={{ width: '120px' }}>
-                  {tableMeta.rowData[1] === 'COMPLETED' && (( tableMeta.rowData[12]) ? (Math.round(Number(tableMeta.rowData[11]) / Number(tableMeta.rowData[12]) * 100) + '%') :this.state.showProgress ?"..." :"...")}
-
-                </div>
-              );
-            }
-
-          }
         }
       },
-
       {
-        name: "timestamp",
+        name: "created_on",
         label: translate("common.page.label.timeStamp"),
         options: {
           filter: true,
           sort: false,
-          // sortOrder: "asc",
-          customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
-              return (
-                <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  <div style={tableMeta.rowData[1] === 'COMPLETED' ? { cursor: "pointer" } : {}}>{tableMeta.rowData[14]}</div>
-                </div>
-              );
-            }
-
-          }
         }
       },
       {
@@ -400,7 +250,6 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
-
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -423,26 +272,9 @@ class ViewDocument extends React.Component {
                 </div>
               );
             }
-
           }
         }
       },
-      {
-        name: "tasks",
-        label: "tasks",
-        options: {
-          display: "excluded"
-        },
-      },
-      {
-        name: "tgt_locale",
-        label: "tgt_locale",
-        options: {
-          display: "excluded"
-        }
-      }
-
-
     ];
 
     const options = {
@@ -460,12 +292,8 @@ class ViewDocument extends React.Component {
       },
 
       onTableChange: (action, tableState) => {
-
-            
-            
         // a developer could react to change on an action basis or
         // examine the state as a whole and do whatever they want
-
         switch (action) {
           case 'changePage':
             this.changePage(tableState.page, tableState.sortOrder);
@@ -512,7 +340,7 @@ class ViewDocument extends React.Component {
             )}
         </Toolbar>
         <div style={{ margin: '2% 3% 3% 3%' }}>
-          {!this.state.showLoader && <MuiThemeProvider theme={this.getMuiTheme()}> <MUIDataTable title={translate("common.page.title.document")} data={this.state.name} columns={columns} options={options} /></MuiThemeProvider>}
+          {!this.state.showLoader && <MuiThemeProvider theme={this.getMuiTheme()}> <MUIDataTable title={translate("common.page.title.document")} data={this.props.job_details.documents} columns={columns} options={options} /></MuiThemeProvider>}
         </div>
         {this.state.open && (
           <Snackbar
@@ -545,7 +373,8 @@ const mapStateToProps = state => ({
   corp: state.corp,
   fetchDocument: state.fetchDocument,
   jobStatus: state.jobStatus,
-  markInactive: state.markInactive
+  markInactive: state.markInactive,
+  job_details: state.job_details
 });
 
 const mapDispatchToProps = dispatch =>
