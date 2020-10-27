@@ -91,6 +91,15 @@ class ViewDocument extends React.Component {
     APITransport(apiObj);
   }
 
+  getRecordIds = () => {
+    let jobIds = []
+    for (var i = this.state.currentPageIndex * this.state.limit; i <= (this.state.currentPageIndex * this.state.limit) + this.state.limit; i++) {
+      if ('recordId' in this.props.job_details.documents[i]) {
+        jobIds.push(this.props.job_details.documents[i]['recordId'])
+      }
+    }
+
+  }
 
   componentDidUpdate(prevProps) {
     if (prevProps.markInactive !== this.props.markInactive) {
@@ -105,12 +114,9 @@ class ViewDocument extends React.Component {
         this.setState({ open: false });
       }, 30000);
     }
-    if (prevProps.fetchDocument !== this.props.fetchDocument) {
-      var jobArray = this.props.fetchDocument.result.jobIDs;
 
-      //  if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && (value.status === "FAILED" || value.status === "COMPLETED")) {
-      //   TELEMETRY.endWorkflow(value.jobID)
-      // }
+    if (prevProps.job_details !== this.props.job_details) {
+      var jobArray = this.getRecordIds()
       this.setState({ name: this.props.fetchDocument.result.jobs, count: this.props.fetchDocument.result.count, jobArray, showLoader: false , refreshStatus: false});
       
       if (jobArray.length > 1 && this.state.searchToken) {
