@@ -1,3 +1,5 @@
+from logging.config import dictConfig
+
 from flask_restful import fields, marshal_with, reqparse, Resource
 from flask import request
 from models.response import CustomResponse
@@ -22,11 +24,13 @@ class FileUploader(Resource):
 
     def post(self):
         try:
+            log.info("Uploading file...")
             parse = reqparse.RequestParser()
             parse.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files',
                                help='File is required', required=True)
             args = parse.parse_args()
             f = args['file']
+            log.info("Filename: " + str(f.filename))
             file_real_name, file_extension = os.path.splitext(f.filename)
             fileallowed = False
             filename = str(uuid.uuid4()) + file_extension
@@ -47,9 +51,11 @@ class FileUploader(Resource):
                                      filename=filename, file_real_name=file_real_name + file_extension,
                                      created_on=datetime.now())
                 userfile.save()
+                log.error("SUCCESS: File Uploaded -- " + str(f.filename))
                 res = CustomResponse(Status.SUCCESS.value, filename)
                 return res.getres()
             else:
+                log.error("ERROR: Unsupported File -- " + str(f.filename))
                 res = CustomResponse(Status.ERROR_UNSUPPORTED_FILE.value, None)
                 return res.getresjson(), 400
         except Exception as e:
@@ -97,3 +103,37 @@ class FileServe(Resource):
         else:
             res = CustomResponse(Status.ERROR_NOTFOUND_FILE.value, None)
             return res.getresjson(), 400
+
+
+# Log config
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] {%(filename)s:%(lineno)d} %(threadName)s %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {
+        'info': {
+            'class': 'logging.FileHandler',
+            'level': 'DEBUG',
+            'formatter': 'default',
+            'filename': 'info.log'
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'formatter': 'default',
+            'stream': 'ext://sys.stdout',
+        }
+    },
+    'loggers': {
+        'file': {
+            'level': 'DEBUG',
+            'handlers': ['info', 'console'],
+            'propagate': ''
+        }
+    },
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['info', 'console']
+    }
+})
