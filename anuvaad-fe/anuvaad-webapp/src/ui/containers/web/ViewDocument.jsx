@@ -89,6 +89,11 @@ class ViewDocument extends React.Component {
     const { APITransport }  = this.props;
     const apiObj            = new FetchDocument(offset, limit);
     APITransport(apiObj);
+    value && !this.state.refreshStatus&& this.setState({ showLoader: true , refreshStatus: true });
+    !this.state.refreshStatus && this.setState({searchToken})
+    value && !this.state.refreshStatus&& setTimeout(() => {
+      this.setState({ open: false });
+    }, 30000);
   }
 
   getRecordIds = () => {
@@ -97,7 +102,9 @@ class ViewDocument extends React.Component {
       if ('recordId' in this.props.job_details.documents[i]) {
         jobIds.push(this.props.job_details.documents[i]['recordId'])
       }
+      console.log(jobIds)
     }
+    return jobIds;
 
   }
 
