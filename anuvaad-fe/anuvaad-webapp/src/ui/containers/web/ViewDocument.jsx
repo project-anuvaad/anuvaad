@@ -49,7 +49,7 @@ class ViewDocument extends React.Component {
       showInfo: false,
       offset: 0,
       limit: 10,
-      prevPage: 0
+      currentPageIndex: 0
     };
   }
 
@@ -72,7 +72,10 @@ class ViewDocument extends React.Component {
   }
 
   componentDidMount() {
-    this.handleRefresh(true, this.state.offset, this.state.limit, true)
+    if (this.props.job_details.documents.length < 1) {
+      this.fetchUserDocuments(true, this.state.offset, this.state.limit, true)
+    }
+
     TELEMETRY.pageLoadCompleted('view-document')
   }
 
@@ -82,16 +85,10 @@ class ViewDocument extends React.Component {
   };
 
 
-  handleRefresh(value, offset, limit, searchToken) {
-    debugger
-    const { APITransport } = this.props;
-    const apiObj = new FetchDocument(offset, limit);
+  fetchUserDocuments(value, offset, limit, searchToken) {
+    const { APITransport }  = this.props;
+    const apiObj            = new FetchDocument(offset, limit);
     APITransport(apiObj);
-    value && !this.state.refreshStatus&& this.setState({ showLoader: true , refreshStatus: true });
-    !this.state.refreshStatus && this.setState({searchToken})
-    value && !this.state.refreshStatus&& setTimeout(() => {
-      this.setState({ open: false });
-    }, 30000);
   }
 
 
@@ -167,15 +164,18 @@ class ViewDocument extends React.Component {
     }, 20000);
   }
 
-  changePage = (page, sortOrder) => {
-    if(this.state.prevPage<page){
-      this.handleRefresh(false, this.state.offset + 10, this.state.limit,true)
+  processTableClickedNextOrPrevious = (page, sortOrder) => {
+
+    if(this.state.currentPageIndex < page) {
+      /**
+       * user wanted to load next set of records
+       */
+      this.fetchUserDocuments(false, this.state.offset + 10, this.state.limit, true)
       this.setState({
-        prevPage:page,
+        currentPageIndex:page,
         offset: this.state.offset+10
       });
     }
-   
   };
 
   renderUserDocuments = () => {
@@ -292,20 +292,16 @@ class ViewDocument extends React.Component {
       },
 
       onTableChange: (action, tableState) => {
-        // a developer could react to change on an action basis or
-        // examine the state as a whole and do whatever they want
         switch (action) {
           case 'changePage':
-            this.changePage(tableState.page, tableState.sortOrder);
+            this.processTableClickedNextOrPrevious(tableState.page, tableState.sortOrder);
             break;
           default:
         }
       },
       count: this.state.count,
       filterType: "checkbox",
-      // onRowClick: rowData => (rowData[1] === "COMPLETED") && this.handleClick(rowData),
       download: false,
-      // expandableRowsOnClick: true,
       print: false,
       fixedHeader: true,
       filter: false,
@@ -313,7 +309,8 @@ class ViewDocument extends React.Component {
       sortOrder: {
         name: 'timestamp',
         direction: 'desc'
-      }
+      },
+      page: this.state.currentPageIndex
     };
 
     return (
@@ -362,9 +359,7 @@ class ViewDocument extends React.Component {
       </div>
 
     );
-
   }
-
 }
 
 const mapStateToProps = state => ({
