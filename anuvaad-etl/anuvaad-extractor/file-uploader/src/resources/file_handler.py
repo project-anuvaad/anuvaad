@@ -65,6 +65,7 @@ class FileUploader(Resource):
 
 
 class FileDownloader(Resource):
+
     def get(self):
         parse = reqparse.RequestParser()
         parse.add_argument('filename', type=str, location='args',help='Filename is required', required=True)
