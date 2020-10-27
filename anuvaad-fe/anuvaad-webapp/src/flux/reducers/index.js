@@ -70,7 +70,6 @@ import workflowStatus from "./fileupload";
 import documentUplaod from "./documentUpload";
 import fetchDocument from "./fetch_document";
 import job_details from './v1_fetch_job_details';
-import job_progress from './v1_fetch_job_progress'
 
 import documentDetails from "./fetch_fileDetails";
 import fetchContent from "./fetchcontent";
@@ -159,6 +158,5 @@ export default {
     saveContent,
     markInactive,
     jobStatus,
-    job_details,
-    job_progress
+    job_details
 };

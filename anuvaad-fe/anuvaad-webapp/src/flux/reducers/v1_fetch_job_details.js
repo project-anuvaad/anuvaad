@@ -51,6 +51,7 @@ function get_document_details(input) {
 
         document['created_on']              = job['startTime'];
         document['status']                  = job['status'];
+        document['progress']                = 'loading ..'
 
         job['taskDetails'].forEach(task => {
             let timeline = {}
@@ -77,6 +78,29 @@ function get_document_details(input) {
     return documents;
 }
 
+/**
+ * @description update the progress of individual record
+ * @param {*} documents , existing documents
+ * @param {*} progresses , progress value per document
+ */
+function update_documents_progress(documents, progresses) {
+    let updated_documents = []
+    documents.forEach(document => {
+        let found = false;
+        progresses.forEach(progress => {
+            if (document['recordId'] === progress['record_id']) {
+                document['progress'] =  `${progress['completed_count']} of ${progress['total_count']}`//progress['completed_count'] / progress['total_count']
+                updated_documents.push(document)
+                found = true;
+            }
+        })
+        if (!found)
+            updated_documents.push(document)
+    })
+    return updated_documents
+}
+
+
 export default function(state = initialState, action) {
     
     switch (action.type) {
@@ -86,6 +110,13 @@ export default function(state = initialState, action) {
             state.count     = data.count;
             state.documents.push(...documents)
             return state
+        }
+
+        case C.JOBSTATUS: {
+            let data        = action.payload;
+            let documents   = update_documents_progress(state.documents, data)
+            state.documents = documents;
+            return state;
         }
 
         default:
