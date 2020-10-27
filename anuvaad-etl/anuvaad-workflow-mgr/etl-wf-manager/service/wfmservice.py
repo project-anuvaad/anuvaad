@@ -73,28 +73,38 @@ class WFMService:
 
     # Method to mark the jobs as inactive
     def mark_inactive(self, req_criteria):
+        succeeded, failed, message = [], [], None
         if 'jobIDs' in req_criteria:
             job_ids = req_criteria["jobIDs"]
         else:
-            return {"status": "FAILED", "message": "No job ids found"}
+            return {"status": "FAILED", "message": "No job ids found", "succeeded": [], "failed": []}
         if not job_ids:
-            return {"status": "FAILED", "message": "Empty job IDs List"}
+            return {"status": "FAILED", "message": "Empty job IDs List", "succeeded": [], "failed": []}
         else:
             try:
                 log_info("Marking jobs inactive......", None)
                 job_details = self.get_job_details_bulk(req_criteria, True)
                 if job_details:
                     if len(job_details) < len(job_ids):
-                        return {"status": "FAILED", "message": "This user doesn't have access to all or few of these jobs"}
+                        failed = job_ids
+                        message = "This user doesn't have access to either all or few of these jobs"
                     else:
                         for job in job_details:
                             job["active"] = False
                             self.update_job_details(job, False)
+                            succeeded.append(str(job["jobID"]))
                             log_info("Job marked as inactive by the user", job)
-                return {"status": "SUCCESS", "message": "Jobs successfully marked as inactive!"}
+                else:
+                    failed = job_ids
+                    message = "No jobs were found for these jobIDs"
+                if failed:
+                    return {"status": "FAILED", "message": message, "succeeded": succeeded, "failed": failed}
+                if len(succeeded) == len(job_ids):
+                    message = "All jobs have been successfully marked inactive."
+                    return {"status": "SUCCESS", "message": message, "succeeded": succeeded, "failed": failed}
             except Exception as e:
                 log_exception("Exception while marking jobs as inactive: " + str(e), None, None)
-                return None
+                return {"status": "FAILED", "message": "Exception while marking inactive", "succeeded": [], "failed": job_ids}
 
     # Method to initiate and process the SYNC workflow.
     def process_sync(self, wf_input):

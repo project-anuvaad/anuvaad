@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="28b7c456-6bb7-42d9-bd74-bc01a6deddd3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/translator/service/blocktranslationservice.py" beforeDir="false" afterPath="$PROJECT_DIR$/translator/service/blocktranslationservice.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../anuvaad-workflow-mgr/etl-wf-manager/service/wfmservice.py" beforeDir="false" afterPath="$PROJECT_DIR$/../anuvaad-workflow-mgr/etl-wf-manager/service/wfmservice.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +22,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../anuvaad-workflow-mgr" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="SvnConfiguration">
@@ -39,10 +39,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1603261758830">
+    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1603812342832">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1603261758830" />
+    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1603812342832" />
     <state x="277" y="55" key="SettingsEditor" timestamp="1603261856639">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
