@@ -4,6 +4,7 @@ import LanguageCodes from "../../ui/components/web/common/Languages.json"
 const initialState = {
     count:  0,
     progress_updated: false,
+    document_deleted: false,
     documents: 
     [
     /* 
@@ -103,6 +104,23 @@ function update_documents_progress(documents, progresses) {
     return updated_documents
 }
 
+/**
+ * @description remove document for which job has been deleted
+ * @param {*} documents , original document present in the store
+ * @param {*} deleted_jobIds , deleted jobIds
+ * @returns updated document
+ */
+function update_documents_after_delete(documents, deleted_jobIds) {
+    let updated_documents = []
+    documents.forEach(document => {
+        deleted_jobIds.forEach(deleted_document => {
+            if (document['jobID'] !== deleted_document) {
+                updated_documents.push(document)
+            }
+        })
+    })
+    return updated_documents
+}
 
 export default function(state = initialState, action) {
     
@@ -117,12 +135,21 @@ export default function(state = initialState, action) {
             return {...state, 
                 count: data.count,
                 progress_updated: false,
+                document_deleted: false,
                 documents: newDocuments
             }
         }
 
         case C.MARK_INACTIVE: {
-            let data        = action.payload;
+            let data        = action.payload.succeeded;
+            let documents   = update_documents_after_delete(state.documents, data);
+            return {
+                ...state, 
+                count: (state.count - 1),
+                document_deleted: true,
+                progress_updated: true,
+                documents: documents
+            }
 
         }
 

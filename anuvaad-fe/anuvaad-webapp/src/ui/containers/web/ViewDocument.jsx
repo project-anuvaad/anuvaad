@@ -17,12 +17,10 @@ import Spinner from "../../components/web/common/Spinner";
 import LanguageCodes from "../../components/web/common/Languages.json"
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import DeleteOutlinedIcon from '@material-ui/icons/VerticalAlignBottom';
 import InfoIcon from '@material-ui/icons/Info';
 import Dialog from "../../components/web/common/SimpleDialog";
 import Fab from '@material-ui/core/Fab';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-//import AddIcon from '@material-ui/icons/Add';
 import Snackbar from "../../components/web/common/Snackbar";
 import PublishIcon from '@material-ui/icons/Publish';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -37,16 +35,6 @@ class ViewDocument extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: [],
-      apiCalled: false,
-      hindi: [],
-      english: [],
-      hindi_score: [],
-      english_score: [],
-      file: {},
-      corpus_type: "single",
-      hindiFile: {},
-      englishFile: {},
       role: JSON.parse(localStorage.getItem("roles")),
       showInfo: false,
       offset: 0,
@@ -81,16 +69,27 @@ class ViewDocument extends React.Component {
     TELEMETRY.pageLoadCompleted('view-document')
   }
 
-  handleClick = rowData => {
-    history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[7]}/${rowData[17]}/${rowData[9]}/${rowData[4]}/${rowData[5]}/${rowData[6]}`, this.state);
-    // history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[4]}/${rowData[5]}`);
-  };
-
-
   fetchUserDocuments(value, offset, limit, searchToken) {
     const { APITransport }  = this.props;
     const apiObj            = new FetchDocument(offset, limit);
     APITransport(apiObj);
+  }
+
+  deleteUserDocuments(jobId) {
+    const { APITransport }  = this.props;
+    const apiObj            = new MarkInactive(jobId);
+    APITransport(apiObj);
+    this.setState({ showProgress: true, searchToken: false });
+  }
+
+  fetchUserDocumentsProgressStatus(jobIds) {
+    var recordIds = this.getRecordIds()  
+    if (recordIds.length > 1) {
+      const { APITransport }  = this.props;
+      const apiObj            = new JobStatus(recordIds);
+      APITransport(apiObj);
+      this.setState({ showProgress: true, searchToken: false });      
+    }
   }
 
   getRecordIds = () => {
@@ -104,7 +103,6 @@ class ViewDocument extends React.Component {
   }
 
   getJobIdDetail = (jobId) => {
-
     for (var i = this.state.currentPageIndex * this.state.limit; i < (this.state.currentPageIndex * this.state.limit) + this.state.limit; i++) {
       if (this.props.job_details.documents[i]['jobID'] === jobId) {
         return this.props.job_details.documents[i]
@@ -118,38 +116,21 @@ class ViewDocument extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.markInactive !== this.props.markInactive) {
-      let resultArray = this.state.name;
-      resultArray.map((element,i)=>{
-        if(this.state.deleteId===element.job){
-          resultArray.splice(i, 1);
-        }
-      })
-      this.setState({name:resultArray, loaderDelete: false, open:true, count:this.state.count-1, message: this.state.deleteId + "deleted cuccessfully"})
-      setTimeout(() => {
-        this.setState({ open: false });
-      }, 30000);
-    }
-
     if (prevProps.job_details.documents !== this.props.job_details.documents) {
       /**
        * update job progress status only progress_updated is false
        */
       if (!this.props.job_details.progress_updated) {
-        var jobArray = this.getRecordIds()  
-        if (jobArray.length > 1) {
-          const { APITransport }  = this.props;
-          const apiObj            = new JobStatus(jobArray);
-          APITransport(apiObj);
-          this.setState({ showProgress: true, searchToken: false });
-        }
+        this.fetchUserDocumentsProgressStatus()
+      }
+
+      if (!this.props.job_details.document_deleted) {
       }
     }
   }
 
   processJobTimelinesClick(jobId, recordId) {
     console.log(this.getJobIdDetail(jobId))
-    // this.setState({ showInfo: true, message: rowData })
   }
 
   handleDialogClose() {
@@ -157,13 +138,7 @@ class ViewDocument extends React.Component {
   }
 
   processDeleteJobClick = (jobId, recordId) => {
-    const { APITransport }  = this.props;
-    const apiObj            = new MarkInactive(jobId);
-    APITransport(apiObj);
-    // this.setState({deleteId:jobId, loaderDelete: true, deletedFile: fileName})
-    // setTimeout(() => {
-    //   this.setState({ loaderDelete: false });
-    // }, 20000);
+    this.deleteUserDocuments(jobId);
   }
 
   processViewDocumentClick = (jobId, recordId) => {
@@ -176,7 +151,7 @@ class ViewDocument extends React.Component {
     let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${
       job.converted_filename ? job.converted_filename : ""
       }`
-    window.open(url, "_self")
+      window.open(url, "_self")
   }
 
   processTableClickedNextOrPrevious = (page, sortOrder) => {
@@ -191,13 +166,6 @@ class ViewDocument extends React.Component {
       });
     }
   };
-
-
-  renderUserDocuments = () => {
-    const columns  = [
-      { name: "filename", label: translate("viewCorpus.page.label.fileName"), options: { filter: true, sort: true,} },
-    ]
-  }
 
   render() {
     const columns = [
@@ -409,10 +377,6 @@ class ViewDocument extends React.Component {
 const mapStateToProps = state => ({
   user: state.login,
   apistatus: state.apistatus,
-  corp: state.corp,
-  fetchDocument: state.fetchDocument,
-  jobStatus: state.jobStatus,
-  markInactive: state.markInactive,
   job_details: state.job_details
 });
 
