@@ -22,22 +22,26 @@ class Dictionary extends React.Component {
 
         <div>
           <hr style={{ border: "1px solid #00000014" }} />
-          {!this.props.loading&&this.props.parallel_words && this.props.parallel_words.length>0 &&this.props.parallel_words &&  <div className ={classes.sourcediv}>{this.props.selectedText}</div>}
+          {!this.props.loading && this.props.parallel_words && this.props.parallel_words.length > 0 && this.props.parallel_words &&
+            <div className={classes.sourcediv}>
+              {this.props.selectedText}
+            </div>
+          }
           <div className={classes.div}>
-            {!this.props.loading ?  (
-                this.props.parallel_words &&
-                this.props.parallel_words.map((words) => <div>{words}</div>)
-              
+            {!this.props.loading ? (
+              this.props.parallel_words &&
+              this.props.parallel_words.map((words) => <div className={classes.targetdiv}>{words}</div>)
+
             ) : (
-              <p style={{ textAlign: "center" }}>
-                <CircularProgress
-                  size={20}
-                  style={{
-                    zIndex: 1000,
-                  }}
-                />
-              </p>
-            )}
+                <p style={{ textAlign: "center" }}>
+                  <CircularProgress
+                    size={20}
+                    style={{
+                      zIndex: 1000,
+                    }}
+                  />
+                </p>
+              )}
           </div>
         </div>
       </Paper>
