@@ -365,8 +365,6 @@ const mapStateToProps = state => ({
   configUplaod: state.configUplaod,
   workflowStatus: state.workflowStatus,
   documentUplaod: state.documentUplaod,
-  supportLanguage: state.supportLanguage,
-  langModel: state.langModel,
   fetch_languages: state.fetch_languages,
   fetch_models: state.fetch_models
 });
