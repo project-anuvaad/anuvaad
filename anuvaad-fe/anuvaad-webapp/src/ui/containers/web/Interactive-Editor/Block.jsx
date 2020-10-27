@@ -22,7 +22,7 @@ import { withRouter } from "react-router-dom";
 //var getCaretCoordinates = require("textarea-caret");
 
 let arr = [];
-var tex=""
+var tex = ""
 class Block extends Component {
   constructor() {
     super();
@@ -81,14 +81,13 @@ class Block extends Component {
 
   handleChangeEvent = (event) => {
     this.setState({ editedText: event.target.value, enteredData: true })
-    
 
     // this.props.updateSentence(event.target.value)
-    if(this.props.buttonStatus === "typing"){
+    if (this.props.buttonStatus === "typing") {
       tex = event.target.value
     }
     if (this.props.buttonStatus === "selected") {
-      
+
       this.props.handleClick("typing")
     }
 
@@ -198,28 +197,26 @@ class Block extends Component {
         opeartion, selectedText)
     }
 
-  
-    
   }
 
   handleBlurCard = (event, id) => {
-      if (this.state.editedText !== this.props.selectedBlock.tgt && this.state.editedText && this.state.enteredData) {
-        let operation = "Save";
-        let isEdited = false;
+    if (this.state.editedText !== this.props.selectedBlock.tgt && this.state.editedText && this.state.enteredData) {
+      let operation = "Save";
+      let isEdited = false;
 
-        if ((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type !== "button") && !this.state.dontShowDialog) {
-          if (this.props.selectedBlock && !this.props.selectedBlock.hasOwnProperty("save")) {
-            isEdited = true
-          }
-
-          this.props.getUpdatedBlock(this.props.selectedBlock, operation, this.state.editedText, isEdited)
-
-          // this.props.handleDialogMessage(this.props.selectedBlock, "", "", operation, message, this.state.editedText)
+      if ((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type !== "button") && !this.state.dontShowDialog) {
+        if (this.props.selectedBlock && !this.props.selectedBlock.hasOwnProperty("save")) {
+          isEdited = true
         }
 
+        this.props.getUpdatedBlock(this.props.selectedBlock, operation, this.state.editedText, isEdited)
 
-        // this.handleSave(this.props.selectedBlock.s_id) 
+        // this.props.handleDialogMessage(this.props.selectedBlock, "", "", operation, message, this.state.editedText)
       }
+
+
+      // this.handleSave(this.props.selectedBlock.s_id) 
+    }
 
   }
 
@@ -231,10 +228,6 @@ class Block extends Component {
     }
     this.setState({ selectedValueArray: arr });
   };
-
-  handleBlurSave(selectedSentence, text){
-    this.props.saveUpdatedSentence("",selectedSentence, "", text, true)
-  }
 
   handleSave(id) {
     if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
@@ -295,12 +288,14 @@ class Block extends Component {
 
   handleCardClick(sentence, editedText) {
 
-    if(this.props.buttonStatus==="typing"){
-      this.handleBlurSave(this.props.selectedBlock, tex)
+    if (this.props.buttonStatus === "typing" && tex) {
+      this.props.saveUpdatedSentence("", this.props.selectedBlock, "", tex, true)
+      // this.handleBlurSave(this.props.selectedBlock, tex)
       // this.handleSave(sentence.s_id);
     }
-    else if(this.props.buttonStatus==="copy"){
-      this.handleBlurSave(this.props.selectedBlock, this.props.selectedBlock.s0_tgt)
+    else if (this.props.buttonStatus === "copy") {
+      this.props.saveUpdatedSentence("", this.props.selectedBlock, "", this.props.selectedBlock.s0_tgt, true)
+      // this.handleBlurSave(this.props.selectedBlock, this.props.selectedBlock.s0_tgt)
     }
     let saveData = false
     let block = this.props.sen
@@ -329,22 +324,22 @@ class Block extends Component {
         }}
       >
         <Grid container spacing={2} style={{ padding: "7px 7px 0px 7px" }}>
-          <Grid item xs={12} sm={12} lg={12} xl={12} style={{paddingBottom: "0px"}}>
+          <Grid item xs={12} sm={12} lg={12} xl={12} style={{ paddingBottom: "0px" }}>
             <div style={{ display: "flex", flexDirection: "row" }}
             >
               <div
                 style={{ width: "100%", paddingLeft: "10px" }}
-                  onMouseDown = {() => selectedBlock &&
+                onMouseDown={() => selectedBlock &&
                   sentence &&
                   sentence.s_id !== selectedBlock.s_id && this.props.buttonStatus !== "split" && this.handleCardClick(this.props.sentence)}
-                  onDoubleClick = {(event)=>event.preventDefault() }
+                onDoubleClick={(event) => event.preventDefault()}
 
-                  onMouseUp={(event)=>{this.getSelectionText(event,sentence)}}
-                  onKeyUp={(event)=>{this.getSelectionText(event,sentence)}}
+                onMouseUp={(event) => { this.getSelectionText(event, sentence) }}
+                onKeyUp={(event) => { this.getSelectionText(event, sentence) }}
 
-                  
-                  >
-                    
+
+              >
+
                 <div
                   style={{ minHeight: "45px", padding: "5px", fontSize: "16px" }}
                 // onClick={() => this.props.handleSentenceClick(sentence)}
@@ -352,7 +347,7 @@ class Block extends Component {
                   {sentence.src}
                 </div>
                 <hr style={{ border: (selectedBlock && sentence && sentence.hasOwnProperty("s_id") && sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "copy" || this.props.buttonStatus === "typing")) ? "1px dashed #1C9AB7" : "1px dashed #00000014" }} />
-                {((selectedBlock && sentence &&sentence.hasOwnProperty("s_id") && selectedBlock.hasOwnProperty("s_id") && sentence.s_id === selectedBlock.s_id) || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ?
+                {((selectedBlock && sentence && sentence.hasOwnProperty("s_id") && selectedBlock.hasOwnProperty("s_id") && sentence.s_id === selectedBlock.s_id) || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ?
                   <AutoComplete
                     aId={sentence.s_id}
                     refId={sentence.s_id}
@@ -378,7 +373,7 @@ class Block extends Component {
                     page_no={this.props.page_no}
                     handleSuggestion={this.props.handleSuggestion}
                     heightToBeIncreased={sentence.font_size}
-                    handleBlur={this.props.handleBlur}
+                    // handleBlur={this.props.handleBlur}
                     showSuggestions={this.props.showSuggestions}
                     handleSuggestionClose={this.props.handleSuggestionClose}
                     tokenObject={sentence}
@@ -467,7 +462,7 @@ class Block extends Component {
           </Grid>
         </Grid>
 
-       
+
       </Paper >
     );
   }
