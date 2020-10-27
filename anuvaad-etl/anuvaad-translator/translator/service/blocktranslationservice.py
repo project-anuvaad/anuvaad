@@ -29,14 +29,15 @@ class BlockTranslationService:
                 fail_msg = "Error while translating, there are no tokenised sentences in these blocks"
                 log_error(fail_msg, block_translate_input, None)
             else:
-                nmt_response = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None,
-                                              block_translate_input["metadata"]["userID"])
-                output["taskEndTime"] = eval(str(time.time()).replace('.', ''))
+                log_info("API call to NMT...", block_translate_input)
+                nmt_response = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None, block_translate_input["metadata"]["userID"])
+                log_info("Response received from NMT!", block_translate_input)
                 if nmt_response:
                     ch_input = self.get_translations_ip_ch(nmt_response, block_translate_input)
                     if ch_input:
-                        ch_response = utils.call_api(update_content_url, "POST", ch_input, None,
-                                                     block_translate_input["metadata"]["userID"])
+                        log_info("API call to CH...", block_translate_input)
+                        ch_response = utils.call_api(update_content_url, "POST", ch_input, None, block_translate_input["metadata"]["userID"])
+                        log_info("Response received from CH!", block_translate_input)
                         if ch_response:
                             if ch_response["http"]["status"] == 200:
                                 is_successful = True
@@ -62,6 +63,7 @@ class BlockTranslationService:
             output["status"] = "SUCCESS"
             output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
             output["output"] = {"recordID": record_id}
+        log_info("Block Translation Completed!", block_translate_input)
         return output
 
     # Method to fetch blocks from input and add it to list for translation
@@ -73,6 +75,7 @@ class BlockTranslationService:
                 n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["s_id"])
                 sent_nmt_in = {"s_id": sentence["s_id"], "src": sentence["src"], "id": model_id, "n_id": n_id}
                 nmt_in_txt.append(sent_nmt_in)
+        log_info("Sentences fetched for NMT!", block_translate_input)
         return nmt_in_txt
 
     # Parses the nmt response and builds input for ch
@@ -94,4 +97,5 @@ class BlockTranslationService:
                             s_index = k
                             break
                     block_translate_input["input"]["textBlocks"][b_index]["tokenized_sentences"][s_index] = translation
+        log_info("Input for CH update generated!", block_translate_input)
         return {"blocks": block_translate_input["input"]["textBlocks"], "workflowCode": block_translate_input["workflowCode"]}

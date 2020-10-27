@@ -3,13 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="1367aa72-5a9a-49e3-af55-1fe2c4fddf78" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../../anuvaad-cron-jobs/jobs-manager/translator_jobsmanager/configs.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-cron-jobs/jobs-manager/translator_jobsmanager/configs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-cron-jobs/jobs-manager/translator_jobsmanager/translatorjm.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-cron-jobs/jobs-manager/translator_jobsmanager/translatorjm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-cron-jobs/jobs-manager/wfm_jobsmanager/configs.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-cron-jobs/jobs-manager/wfm_jobsmanager/configs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-cron-jobs/jobs-manager/wfm_jobsmanager/wfmjm.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-cron-jobs/jobs-manager/wfm_jobsmanager/wfmjm.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../anuvaad-translator/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-translator/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-translator/translator/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-translator/translator/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../anuvaad-translator/translator/service/blocktranslationservice.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-translator/translator/service/blocktranslationservice.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/service/wfmservice.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/service/wfmservice.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
