@@ -31,6 +31,7 @@ class WFMService:
     # Returns client-readable job status.
     def register_sync_job(self, wf_sync_input):
         wf_sync_input["jobID"] = wfmutils.generate_job_id(wf_sync_input["workflowCode"])
+        log_info("Initiating SYNC job..", wf_sync_input)
         client_output = self.get_wf_details_sync(wf_sync_input, None, False, None)
         self.update_job_details(client_output, True)
         return self.process_sync(client_output)
@@ -40,6 +41,7 @@ class WFMService:
     # Returns client-readable job status.
     def register_async_job(self, wf_async_input):
         wf_async_input["jobID"] = wfmutils.generate_job_id(wf_async_input["workflowCode"])
+        log_info("Initiating ASYNC job..", wf_async_input)
         client_output = self.get_wf_details_async(wf_async_input, None, False, None)
         self.update_job_details(client_output, True)
         prod_res = producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
@@ -115,10 +117,12 @@ class WFMService:
                     return error
                 tool_output = response
                 previous_tool = tool_details["name"]
+                ctx["metadata"]["module"] = module_wfm_name
                 log_info(tool_details["name"] + log_msg_end, ctx)
             client_output = self.get_wf_details_sync(None, tool_output, True, None)
             self.update_job_details(client_output, False)
             log_info("Job COMPLETED, jobID: " + str(wf_input["jobID"]), ctx)
+            log_info("Returning O/P...", ctx)
             return client_output
         except Exception as e:
             log_exception("Exception while processing SYNC workflow: " + str(e), wf_input, e)
