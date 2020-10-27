@@ -31,7 +31,7 @@ class WFMService:
     # Returns client-readable job status.
     def register_sync_job(self, wf_sync_input):
         wf_sync_input["jobID"] = wfmutils.generate_job_id(wf_sync_input["workflowCode"])
-        client_output = self.get_wf_details(wf_sync_input, None, False, None)
+        client_output = self.get_wf_details_sync(wf_sync_input, None, False, None)
         self.update_job_details(client_output, True)
         return self.process_sync(client_output)
 
@@ -40,11 +40,11 @@ class WFMService:
     # Returns client-readable job status.
     def register_async_job(self, wf_async_input):
         wf_async_input["jobID"] = wfmutils.generate_job_id(wf_async_input["workflowCode"])
-        client_output = self.get_wf_details(wf_async_input, None, False, None)
+        client_output = self.get_wf_details_async(wf_async_input, None, False, None)
         self.update_job_details(client_output, True)
         prod_res = producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
         if prod_res:
-            client_output = self.get_wf_details(wf_async_input, None, False, prod_res)
+            client_output = self.get_wf_details_async(wf_async_input, None, False, prod_res)
             self.update_job_details(client_output, False)
         return client_output
 
@@ -97,34 +97,33 @@ class WFMService:
     # Method to initiate and process the SYNC workflow.
     def process_sync(self, wf_input):
         try:
+            ctx = wf_input
             order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
             tool_output = None
             previous_tool = None
             for tool_order in order_of_execution.keys():
                 step_details = order_of_execution[tool_order]
                 tool_details = step_details["tool"][0]
-                log_info(tool_details["name"] + log_msg_start, wf_input)
-                uri = tool_details["api-details"][0]["uri"]
+                log_info(tool_details["name"] + log_msg_start, ctx)
                 if not tool_output:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], None, None, wf_input)
                 else:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], previous_tool, tool_output, None)
-                response = wfmutils.call_api(uri, tool_input, wf_input["metadata"]["userID"])
+                response = wfmutils.call_api(tool_details["api-details"][0]["uri"], tool_input, wf_input["metadata"]["userID"])
                 error = self.validate_tool_response(response, tool_details, wf_input)
                 if error:
                     return error
                 tool_output = response
-                tool_output["metadata"] = wf_input["metadata"]
                 previous_tool = tool_details["name"]
-                log_info(tool_details["name"] + log_msg_end, wf_input)
-            client_output = self.get_wf_details(None, tool_output, True, None)
+                log_info(tool_details["name"] + log_msg_end, ctx)
+            client_output = self.get_wf_details_sync(None, tool_output, True, None)
             self.update_job_details(client_output, False)
-            log_info("Job COMPLETED, jobID: " + str(wf_input["jobID"]), wf_input)
+            log_info("Job COMPLETED, jobID: " + str(wf_input["jobID"]), ctx)
             return client_output
         except Exception as e:
             log_exception("Exception while processing SYNC workflow: " + str(e), wf_input, e)
             error = post_error("SYNC_WFLOW_ERROR", "Exception while processing the sync workflow: " + str(e), e)
-            client_output = self.get_wf_details(wf_input, None, True, error)
+            client_output = self.get_wf_details_sync(wf_input, None, True, error)
             self.update_job_details(client_output, False)
             log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
             return client_output
@@ -134,7 +133,7 @@ class WFMService:
         if not tool_response:
             log_error("Error from the tool: " + str(tool_details["name"]), wf_input, None)
             error = post_error("ERROR_FROM_TOOL", "Error from the tool: " + str(tool_details["name"]), None)
-            client_output = self.get_wf_details(wf_input, None, True, error)
+            client_output = self.get_wf_details_sync(wf_input, None, True, error)
             self.update_job_details(client_output, False)
             log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
             return client_output
@@ -152,10 +151,43 @@ class WFMService:
             if fail_msg:
                 log_error(fail_msg, wf_input, None)
                 error = post_error("ERROR_FROM_TOOL", fail_msg, None)
-                client_output = self.get_wf_details(wf_input, None, True, error)
+                client_output = self.get_wf_details_sync(wf_input, None, True, error)
                 self.update_job_details(client_output, False)
                 log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
                 return client_output
+
+    # Method fetch wf details in a certain format using wf_input or task_output
+    # This is the format in which the job details are stored in the db and also returned to user for SYNC flow.
+    def get_wf_details_sync(self, wf_input, task_output, isfinal, error):
+        if wf_input is not None:
+            wf_details = wfmutils.get_job_details(wf_input["jobID"])
+        else:
+            wf_details = wfmutils.get_job_details(task_output["jobID"])
+        if wf_details is None or len(wf_details) == 0:
+            client_input = {"workflowCode": wf_input["workflowCode"], "textBlocks": wf_input["textBlocks"],
+                            "recordID": wf_input["recordID"], "locale": wf_input["locale"], "modelID": wf_input["modelID"]}
+            client_output = {"input": client_input, "jobID": wf_input["jobID"],
+                             "workflowCode": wf_input["workflowCode"], "active": True,
+                             "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
+                             "startTime": eval(str(time.time()).replace('.', '')[0:13]), "taskDetails": []}
+        else:
+            wf_details = wf_details[0]
+            if task_output is not None:
+                wf_details["output"] = task_output["output"]
+                wf_details["state"] = task_output["state"]
+            client_output = wf_details
+            if isfinal:
+                client_output["status"] = "COMPLETED"
+                client_output["endTime"] = eval(str(time.time()).replace('.', '')[0:13])
+            else:
+                client_output["status"] = "INPROGRESS"
+            if error is not None:
+                client_output["status"] = "FAILED"
+                client_output["endTime"] = eval(str(time.time()).replace('.', '')[0:13])
+                client_output["error"] = error
+            client_output["metadata"] = wf_details["metadata"]
+        return client_output
+
 
     # Method to initiate the workflow.
     # This fetches the first step of workflow and starts the job.
@@ -168,12 +200,12 @@ class WFMService:
             first_tool_input = wfmutils.get_tool_input(first_tool["name"], None, None, wf_input)
             if first_tool_input is None:
                 error = validator.get_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.")
-                client_output = self.get_wf_details(wf_input, None, True, error)
+                client_output = self.get_wf_details_async(wf_input, None, True, error)
                 self.update_job_details(client_output, False)
                 log_error("The workflow contains incompatible steps.", wf_input, None)
                 return None
             producer.push_to_queue(first_tool_input, input_topic)
-            client_output = self.get_wf_details(wf_input, None, False, None)
+            client_output = self.get_wf_details_async(wf_input, None, False, None)
             self.update_job_details(client_output, False)
             wf_input["metadata"]["module"] = module_wfm_name  # FOR LOGGING ONLY.
             log_info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"], wf_input)
@@ -203,7 +235,7 @@ class WFMService:
                         post_error_wf("NEXT_STEP_EXCEPTION",
                                       "There was an error while fetching the next step for this wf", task_output, None)
                         return None
-                    client_output = self.get_wf_details(None, task_output, False, None)
+                    client_output = self.get_wf_details_async(None, task_output, False, None)
                     self.update_job_details(client_output, False)
                     next_step_input = next_step_details[0]
                     if next_step_input is None:
@@ -219,12 +251,12 @@ class WFMService:
                     producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
                     log_info(next_tool["name"] + log_msg_start, task_output)
                 else:
-                    client_output = self.get_wf_details(None, task_output, True, None)
+                    client_output = self.get_wf_details_async(None, task_output, True, None)
                     self.update_job_details(client_output, False)
                     log_info("Job COMPLETED: " + task_output["jobID"], task_output)
             else:  # Safety else block, in case module fails to push data to error topic
                 log_error("Job FAILED: " + task_output["jobID"], task_output, None)
-                client_output = self.get_wf_details(None, task_output, False, task_output["error"])
+                client_output = self.get_wf_details_async(None, task_output, False, task_output["error"])
                 self.update_job_details(client_output, False)
         except Exception as e:
             log_exception("Exception while managing the ASYNC workflow: " + str(e), task_output, e)
@@ -257,8 +289,8 @@ class WFMService:
             wfmrepo.update_job(wf_details, jobID)
 
     # Method fetch wf details in a certain format using wf_input or task_output
-    # This is the format in which the job details are stored in the db and also returned to user.
-    def get_wf_details(self, wf_input, task_output, isfinal, error):
+    # This is the format in which the job details are stored in the db and also returned to user for ASYNC flow.
+    def get_wf_details_async(self, wf_input, task_output, isfinal, error):
         if wf_input is not None:
             wf_details = wfmutils.get_job_details(wf_input["jobID"])
         else:
@@ -267,21 +299,9 @@ class WFMService:
             task_details = []
             if task_output is not None:
                 task_details = [task_output]
-            client_input = {"workflowCode": wf_input["workflowCode"]}
-            if 'textBlocks' in wf_input.keys():
-                client_input["textBlocks"] = wf_input["textBlocks"]
-                client_input["recordID"] = wf_input["recordID"]
-                client_input["locale"] = wf_input["locale"]
-                if 'modelID' in wf_input.keys():
-                    client_input["modelID"] = wf_input["modelID"]
-            elif 'textList' in wf_input.keys():
-                client_input["textList"] = wf_input["textList"]
-            else:
-                client_input["files"] = wf_input["files"]
+            client_input = {"workflowCode": wf_input["workflowCode"], "files": wf_input["files"]}
             if 'jobName' in wf_input.keys():
-                if wf_input["jobName"]:
                     client_input["jobName"] = wf_input["jobName"]
-
             client_output = {"input": client_input, "jobID": wf_input["jobID"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],

@@ -25,8 +25,7 @@ def initiate_async_workflow():
     if error is not None:
         return error, 400
     data = add_headers(data, request)
-    response = service.register_async_job(data)
-    return response
+    return service.register_async_job(data)
 
 
 # REST endpoint to initiate the SYNC workflow.
@@ -42,8 +41,7 @@ def initiate_sync_workflow():
     if error is not None:
         return error, 400
     data = add_headers(data, request)
-    response = service.register_sync_job(data)
-    return response
+    return service.register_sync_job(data)
 
 
 # REST endpoint to interrupt the workflow.
