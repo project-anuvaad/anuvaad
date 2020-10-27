@@ -50,6 +50,7 @@ function get_document_details(input) {
 
         document['source_language_code']    = job['input']['files'][0]['model']['source_language_code'];
         document['target_language_code']    = job['input']['files'][0]['model']['target_language_code'];
+        document['model_id']                = job['input']['files'][0]['model']['model_id'];
 
         document['created_on']              = job['startTime'];
         document['status']                  = job['status'];
@@ -113,15 +114,16 @@ export default function(state = initialState, action) {
             newDocuments.push(...state.documents)
             newDocuments.push(...documents)
 
-            let newState     = {
-                count: data.count,
-                documents: newDocuments
-            }
             return {...state, 
                 count: data.count,
                 progress_updated: false,
                 documents: newDocuments
             }
+        }
+
+        case C.MARK_INACTIVE: {
+            let data        = action.payload;
+
         }
 
         case C.JOBSTATUS: {

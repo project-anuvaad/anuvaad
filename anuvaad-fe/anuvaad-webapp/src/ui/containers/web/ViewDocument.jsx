@@ -162,7 +162,8 @@ class ViewDocument extends React.Component {
   }
 
   processViewDocumentClick = (jobId, recordId) => {
-
+    let job = this.getJobIdDetail(jobId);
+    history.push(`${process.env.PUBLIC_URL}/interactive-document/${job.source_language_code}/${job.target_language_code}/${job.target_language_code}/${job.recordId}/${job.converted_filename}/${job.model_id}`, this.state);
   }
 
   processDownloadInputFileClick = (jobId, recordId) => {
