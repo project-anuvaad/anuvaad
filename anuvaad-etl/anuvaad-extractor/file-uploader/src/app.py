@@ -3,12 +3,9 @@ from logging.config import dictConfig
 from flask import Flask
 from flask.blueprints import Blueprint
 from flask_cors import CORS
-from anuvaad_auditor.loghandler import log_info
-from anuvaad_auditor.loghandler import log_error
 import routes
 import config
 import logging
-import time
 from db.conmgr_mongo import connectmongo
 
 log = logging.getLogger('file')
