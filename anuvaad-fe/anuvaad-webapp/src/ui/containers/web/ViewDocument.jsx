@@ -89,23 +89,16 @@ class ViewDocument extends React.Component {
     const { APITransport }  = this.props;
     const apiObj            = new FetchDocument(offset, limit);
     APITransport(apiObj);
-    value && !this.state.refreshStatus&& this.setState({ showLoader: true , refreshStatus: true });
-    !this.state.refreshStatus && this.setState({searchToken})
-    value && !this.state.refreshStatus&& setTimeout(() => {
-      this.setState({ open: false });
-    }, 30000);
   }
 
   getRecordIds = () => {
     let jobIds = []
-    for (var i = this.state.currentPageIndex * this.state.limit; i <= (this.state.currentPageIndex * this.state.limit) + this.state.limit; i++) {
-      if ('recordId' in this.props.job_details.documents[i]) {
+    for (var i = this.state.currentPageIndex * this.state.limit; i < (this.state.currentPageIndex * this.state.limit) + this.state.limit; i++) {
+      if (this.props.job_details.documents[i]['recordId']) {
         jobIds.push(this.props.job_details.documents[i]['recordId'])
       }
-      console.log(jobIds)
     }
     return jobIds;
-
   }
 
   componentDidUpdate(prevProps) {
@@ -122,33 +115,19 @@ class ViewDocument extends React.Component {
       }, 30000);
     }
 
-    if (prevProps.job_details !== this.props.job_details) {
-      var jobArray = this.getRecordIds()
-      this.setState({ name: this.props.fetchDocument.result.jobs, count: this.props.fetchDocument.result.count, jobArray, showLoader: false , refreshStatus: false});
-      
-      if (jobArray.length > 1 && this.state.searchToken) {
-        const { APITransport } = this.props;
-        const apiObj = new JobStatus(jobArray);
-        APITransport(apiObj);
-        this.setState({ showProgress: true, searchToken: false });
-      }
-    }
-
-    if (prevProps.jobStatus !== this.props.jobStatus) {
-      var result = this.props.jobStatus;
-      var arr = this.state.name;
-      arr.length > 0 && arr.map(element => {
-        if (this.state.jobArray.includes(element.id)) {
-          result.map(value => {
-            // console.log(value.record_id === element.id)
-            if (value.record_id === element.id && !element.hasOwnProperty("completed_count") && !element.hasOwnProperty("total_count")) {
-              element["completed_count"] = value.completed_count;
-              element["total_count"] = value.total_count;
-            }
-          })
+    if (prevProps.job_details.documents !== this.props.job_details.documents) {
+      /**
+       * update job progress status only progress_updated is false
+       */
+      if (!this.props.job_details.progress_updated) {
+        var jobArray = this.getRecordIds()  
+        if (jobArray.length > 1) {
+          const { APITransport }  = this.props;
+          const apiObj            = new JobStatus(jobArray);
+          APITransport(apiObj);
+          this.setState({ showProgress: true, searchToken: false });
         }
-      })
-      this.setState({ name: arr, showLoader: false , showProgress: false, searchToken: false});
+      }
     }
   }
 
@@ -312,7 +291,7 @@ class ViewDocument extends React.Component {
           default:
         }
       },
-      count: this.state.count,
+      count: this.props.job_details.count,
       filterType: "checkbox",
       download: false,
       print: false,

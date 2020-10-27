@@ -2,7 +2,8 @@ import C from "../actions/constants";
 import LanguageCodes from "../../ui/components/web/common/Languages.json"
 
 const initialState = {
-	count:  0,
+    count:  0,
+    progress_updated: false,
     documents: 
     [
     /* 
@@ -51,7 +52,7 @@ function get_document_details(input) {
 
         document['created_on']              = job['startTime'];
         document['status']                  = job['status'];
-        document['progress']                = 'loading ..'
+        document['progress']                = '...'
 
         job['taskDetails'].forEach(task => {
             let timeline = {}
@@ -107,16 +108,29 @@ export default function(state = initialState, action) {
         case C.FETCHDOCUMENT: {
             let data        = action.payload;
             let documents   = get_document_details(data)
-            state.count     = data.count;
-            state.documents.push(...documents)
-            return state
+            let newDocuments= []
+            newDocuments.push(...state.documents)
+            newDocuments.push(...documents)
+
+            let newState     = {
+                count: data.count,
+                documents: newDocuments
+            }
+            return {...state, 
+                count: data.count,
+                progress_updated: false,
+                documents: newDocuments
+            }
         }
 
         case C.JOBSTATUS: {
             let data        = action.payload;
             let documents   = update_documents_progress(state.documents, data)
-            state.documents = documents;
-            return state;
+            return {
+                ...state, 
+                progress_updated: true,
+                documents: documents
+            }
         }
 
         default:
