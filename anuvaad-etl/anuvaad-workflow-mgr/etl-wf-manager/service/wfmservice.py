@@ -118,6 +118,7 @@ class WFMService:
                 tool_output = response
                 previous_tool = tool_details["name"]
                 ctx["metadata"]["module"] = module_wfm_name
+                tool_output["metadata"] = ctx["metadata"]
                 log_info(tool_details["name"] + log_msg_end, ctx)
             client_output = self.get_wf_details_sync(None, tool_output, True, None)
             self.update_job_details(client_output, False)
