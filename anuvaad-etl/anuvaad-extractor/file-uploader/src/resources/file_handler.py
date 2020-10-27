@@ -16,58 +16,47 @@ import json
 ALLOWED_FILE_TYPES = config.ALLOWED_FILE_TYPES
 ALLOWED_FILE_EXTENSIONS = config.ALLOWED_FILE_EXTENSIONS
 parser = reqparse.RequestParser(bundle_errors=True)
+log = logging.getLogger('file')
 
 class FileUploader(Resource):
 
     def post(self):
-        parse = reqparse.RequestParser()
-        parse.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files',help='File is required', required=True)
-        args = parse.parse_args()
-        f = args['file']
-        # file_real_name, file_extension = os.path.splitext(f.filename)
-        # filename = str(uuid.uuid4())+file_extension
-        # filepath = os.path.join(config.download_folder, filename)
-        # f.save(filepath)
-        # with open(filepath, 'rb') as f:
-        #     filetype = magic.from_buffer(f.read(), mime=True)
-        #     f.close()
-        #     if filetype in ALLOWED_FILE_TYPES:
-        #         userfile = UserFiles(created_by=request.headers.get('ad-userid'),
-        #                                     filename=filename,file_real_name=file_real_name+file_extension, created_on=datetime.now())
-        #         userfile.save()
-        #         res = CustomResponse(Status.SUCCESS.value, filename)
-        #         return res.getres()
-        #     else:
-        #         f.close()
-        #         os.remove(filepath)
-        #         res = CustomResponse(Status.ERROR_UNSUPPORTED_FILE.value, None)
-        #         return res.getresjson(), 400
-        file_real_name, file_extension = os.path.splitext(f.filename)
-        fileallowed = False
-        filename = str(uuid.uuid4())+file_extension
-        filepath = os.path.join(config.download_folder, filename)
-        for allowed_file_extension in ALLOWED_FILE_EXTENSIONS:
-            if file_extension.endswith(allowed_file_extension):
-                fileallowed = True
-                break
-        if fileallowed:
-            f.save(filepath)
-            file_size = os.stat(filepath).st_size
-            file_size = file_size/(1024*1024)
-            if file_size  > 20:
-                os.remove(filepath)
-                res = CustomResponse(Status.ERROR_FILE_SIZE.value, None)
+        try:
+            parse = reqparse.RequestParser()
+            parse.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files',
+                               help='File is required', required=True)
+            args = parse.parse_args()
+            f = args['file']
+            file_real_name, file_extension = os.path.splitext(f.filename)
+            fileallowed = False
+            filename = str(uuid.uuid4()) + file_extension
+            filepath = os.path.join(config.download_folder, filename)
+            for allowed_file_extension in ALLOWED_FILE_EXTENSIONS:
+                if file_extension.endswith(allowed_file_extension):
+                    fileallowed = True
+                    break
+            if fileallowed:
+                f.save(filepath)
+                file_size = os.stat(filepath).st_size
+                file_size = file_size / (1024 * 1024)
+                if file_size > 20:
+                    os.remove(filepath)
+                    res = CustomResponse(Status.ERROR_FILE_SIZE.value, None)
+                    return res.getresjson(), 400
+                userfile = UserFiles(created_by=request.headers.get('ad-userid'),
+                                     filename=filename, file_real_name=file_real_name + file_extension,
+                                     created_on=datetime.now())
+                userfile.save()
+                res = CustomResponse(Status.SUCCESS.value, filename)
+                return res.getres()
+            else:
+                res = CustomResponse(Status.ERROR_UNSUPPORTED_FILE.value, None)
                 return res.getresjson(), 400
-            userfile = UserFiles(created_by=request.headers.get('ad-userid'),
-                                            filename=filename,file_real_name=file_real_name+file_extension, created_on=datetime.now())
-            userfile.save()
-            res = CustomResponse(Status.SUCCESS.value, filename)
-            return res.getres()
-        else:
-            res = CustomResponse(Status.ERROR_UNSUPPORTED_FILE.value, None)
-            return res.getresjson(), 400
+        except Exception as e:
+            log.exception("Exception while uploading the file: " + str(e))
+            res = CustomResponse(Status.FAILURE.value, None)
+            return res.getresjson(), 500
 
-        
 
 class FileDownloader(Resource):
     def get(self):
