@@ -250,8 +250,8 @@ class AutoComplete extends React.Component {
                 <textarea
                     id={aId}
                     ref={refId}
-                    // maxRows={4}
-                    // multiline={true}
+                    rows={4}
+                    multiline={true}
                     autoFocus={this.props.value && !this.props.autoFocus ? true : false}
                     // autoFocus={true}
                     placeholder="Type your translation here"

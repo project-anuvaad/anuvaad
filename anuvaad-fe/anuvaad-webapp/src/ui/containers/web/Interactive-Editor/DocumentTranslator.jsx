@@ -197,7 +197,6 @@ class PdfFileEditor extends React.Component {
         sentence_id,
         sentence_index
       );
-      debugger
       SentenceOperationId = this.state.activeSentence.s_id;
 
       TELEMETRY.splitSentencesEvent(data, [data.slice(0, this.state.sentence_index), data.slice(this.state.sentence_index)])
@@ -240,7 +239,6 @@ class PdfFileEditor extends React.Component {
 
   getUpdatedBlock(tokenObj, operationType, editedText, isSaved) {
     let callApi = false
-    debugger
     this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
       element && element.text_blocks && element.text_blocks.map((sentence) => {
         sentence.tokenized_sentences.map((value, tokenIndex) => {
