@@ -115,6 +115,14 @@ class ViewDocument extends React.Component {
     return ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
   }
 
+  showProgressIndicator = () => {
+    return (
+      <div >
+        <ProgressBar token={true} val={1000} eta={2000 * 1000}></ProgressBar>
+      </div>
+    )
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.job_details.documents !== this.props.job_details.documents) {
       /**
@@ -214,6 +222,13 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            return (
+              <div >
+                {(tableMeta.rowData[5] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? (<ProgressBar token={true} val={1000} eta={2000 * 1000}></ProgressBar>) : (<div>COMPLETED</div>)}
+              </div>
+            )
+          }
         }
       },
       {
