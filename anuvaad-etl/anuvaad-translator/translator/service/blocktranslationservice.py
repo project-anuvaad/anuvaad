@@ -26,7 +26,7 @@ class BlockTranslationService:
         try:
             nmt_in_txt = self.get_sentences_for_translation(block_translate_input)
             if not nmt_in_txt:
-                fail_msg = "Error while translating, there are no tokenised sentences in these blocks"
+                fail_msg = "ERROR: there are no tokenized sentences for translation in these blocks"
                 log_error(fail_msg, block_translate_input, None)
             else:
                 log_info("API call to NMT...", block_translate_input)
@@ -68,15 +68,21 @@ class BlockTranslationService:
 
     # Method to fetch blocks from input and add it to list for translation
     def get_sentences_for_translation(self, block_translate_input):
-        nmt_in_txt = []
+        sent_for_nmt = []
         record_id, model_id = block_translate_input["input"]["recordID"], block_translate_input["input"]["modelID"]
         for block in block_translate_input["input"]["textBlocks"]:
-            for sentence in block["tokenized_sentences"]:
-                n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["s_id"])
-                sent_nmt_in = {"s_id": sentence["s_id"], "src": sentence["src"], "id": model_id, "n_id": n_id}
-                nmt_in_txt.append(sent_nmt_in)
+            if 'tokenized_sentences' in block.keys():
+                for sentence in block["tokenized_sentences"]:
+                    n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["s_id"])
+                    sent_nmt_in = {"s_id": sentence["s_id"], "src": sentence["src"], "id": model_id,
+                                   "n_id": n_id}
+                    if 'save' in sentence.keys():
+                        if not sentence["save"]:
+                            sent_for_nmt.append(sent_nmt_in)
+                    else:
+                        sent_for_nmt.append(sent_nmt_in)
         log_info("Sentences fetched for NMT!", block_translate_input)
-        return nmt_in_txt
+        return sent_for_nmt
 
     # Parses the nmt response and builds input for ch
     def get_translations_ip_ch(self, nmt_response, block_translate_input):
