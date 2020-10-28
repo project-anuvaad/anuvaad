@@ -8,6 +8,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.anuvaad.constants.RequestContextConstants.CORRELATION_ID_HEADER_NAME;
 import static org.anuvaad.constants.RequestContextConstants.CORRELATION_ID_KEY;
 
@@ -29,10 +32,12 @@ public class UserUtils {
      * @return
      */
     public User getUser(String authToken, RequestContext ctx) {
-        String authURL = String.format("%s%s%s", umsHost, umsSearchWithToken, authToken);
+        String authURL = String.format("%s%s", umsHost, umsSearchWithToken);
+        Map<String, String> req_body = new HashMap<>();
+        req_body.put("token", authToken);
         final HttpHeaders headers = new HttpHeaders();
         headers.add(CORRELATION_ID_HEADER_NAME, (String) ctx.get(CORRELATION_ID_KEY));
-        final HttpEntity<Object> httpEntity = new HttpEntity<>(null, headers);
+        final HttpEntity<Object> httpEntity = new HttpEntity<>(req_body, headers);
         return restTemplate.postForObject(authURL, httpEntity, User.class);
     }
 }
