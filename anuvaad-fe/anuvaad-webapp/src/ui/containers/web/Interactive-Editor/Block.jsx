@@ -69,6 +69,7 @@ class Block extends Component {
 
     if (prevProps.sentence !== this.props.sentence) {
       this.setState({
+        sentence: this.props.sentence,
         editedText: this.props.sentence && this.props.sentence.hasOwnProperty("tgt") && this.props.sentence.tgt
       })
     }
@@ -239,7 +240,7 @@ class Block extends Component {
         if (this.state.sentence && this.state.sentence.s_id === tokenObj.s_id) {
           let sentence = this.state.sentence
 
-          if (sentence && !sentence.hasOwnProperty("save") && !sentence.save) {
+          if ((sentence && sentence.hasOwnProperty("save") && !sentence.save) || (sentence && !sentence.hasOwnProperty("save"))) {
             isEdited = true
           }
 
@@ -293,7 +294,7 @@ class Block extends Component {
       // this.handleBlurSave(this.props.selectedBlock, tex)
       // this.handleSave(sentence.s_id);
     }
-    else if (this.props.buttonStatus === "copy") {
+    else if (this.props.buttonStatus === "copy" && this.props.selectedBlock && this.props.selectedBlock.hasOwnProperty("s0_tgt") && this.props.selectedBlock.s0_tgt) {
       this.props.saveUpdatedSentence("", this.props.selectedBlock, "", this.props.selectedBlock.s0_tgt, true)
       // this.handleBlurSave(this.props.selectedBlock, this.props.selectedBlock.s0_tgt)
     }
@@ -385,7 +386,7 @@ class Block extends Component {
                     fetchSuggestions={this.fetchSuggestions.bind(this)}
                     handleSuggestionClick={this.handleSuggestionClick.bind(this)}
                     handleEditorClick={this.handleEditorClick.bind(this)}
-                    autoFocus={ this.state.sentence.hasOwnProperty("save")}
+                    autoFocus={ this.state.sentence && this.state.sentence.hasOwnProperty("save")}
                     showSuggestions={this.showSuggestions.bind(this)}
                     caretLength={this.state.caretLength}
                     caretData={this.state.caretData}
