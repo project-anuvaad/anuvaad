@@ -21,6 +21,7 @@ class Labse:
         pass
 
     def vecotrize_sentences(self, source, target, src_loc, trgt_loc, object_in):
+        log_info("Generating embedding using Labse model",object_in)
         log_info("Vectorizing Source.......", object_in)
         log_info("Text Locale: " + src_loc, object_in)
         embeddings_source = model.encode(source,show_progress_bar=True)
