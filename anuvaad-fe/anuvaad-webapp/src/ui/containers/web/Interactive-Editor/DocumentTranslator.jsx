@@ -21,6 +21,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import MenuItems from "./PopUp";
 import Dialog from "../../../components/web/common/SimpleDialog";
+import copy from 'copy-to-clipboard';
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -129,13 +130,13 @@ class PdfFileEditor extends React.Component {
 
   handleSentenceClick(value, saveData, block, blockIdentifier) {
     // this.setState({ activeSentence: value, selectedTargetId: value.s_id })
-
     if (block && this.state.activeSentence && this.state.activeSentence.s_id && this.state.activeSentence.s_id !== value.s_id)
 
       this.handleClick("");
     this.handleClose();
     this.setState({
       activeSentence: value,
+      SentenceOperationId:blockIdentifier,
       updateData: saveData && block,
       updateBlockId: blockIdentifier,
       buttonStatus: "selected",
@@ -241,6 +242,12 @@ class PdfFileEditor extends React.Component {
     this.getUpdatedBlock(sentence, "Save", editedText, isSaved)
   }
 
+  handleCopy(){
+    copy( this.state.selectedText)
+                    this.handleClose()
+
+  }
+
   getUpdatedBlock(tokenObj, operationType, editedText, isSaved) {
     let callApi = false
     this.props.sentences && Array.isArray(this.props.sentences) && this.props.sentences.length > 0 && this.props.sentences.map((element) => {
@@ -291,7 +298,6 @@ class PdfFileEditor extends React.Component {
   popUp = (selected_block_id,
     sentence_id,
     sentence_index, event, operation, selectedText) => {
-
     window.getSelection().toString() && this.setState({
       operation_type: operation,
       openEl: true,
@@ -555,7 +561,7 @@ class PdfFileEditor extends React.Component {
             operation_type={this.state.operation_type}
             handleClose={this.handleClose.bind(this)}
             handleDialog={this.handlePopApi.bind(this)}
-
+            handleCopy={this.handleCopy.bind(this)}
 
           // handleCheck={this.handleCheck.bind(this)}
 
