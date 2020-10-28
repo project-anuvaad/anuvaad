@@ -6,48 +6,19 @@ import Logout from "./ui/containers/web/Logout";
 import Layout from "./ui/containers/web/Layout";
 import Callback from "./ui/containers/web/Callback";
 import NotFound from "./ui/containers/web/NotFound";
-import Corpus from "./ui/containers/web/Corpus";
-import Translations from "./ui/containers/web/Translations";
-import createcorpus from "./ui/containers/web/UploadBenchmark";
-import newcorpus from "./ui/containers/web/Newcorpus";
-import Corp from "./ui/containers/web/ViewCorpus";
-import Benchmark from "./ui/containers/web/Benchmark";
+
 import history from "./web.history";
 import Home from "./ui/containers/web/Home";
 import Translate from "./ui/containers/web/Translate";
 import UserProfile from "./ui/containers/web/UserProfile";
-import ViewTranslations from "./ui/containers/web/ViewTranslations";
-import DashboardTamil from "./ui/containers/web/Dashboard";
-import AnuvaadGame from "./ui/containers/web/AnuvaadGame";
-import GradeViewCorpus from "./ui/containers/web/GradeViewCorpus";
-import BenchmarkGrade from "./ui/containers/web/BenchmarkGrade";
-import QnA from "./ui/containers/web/QnA";
-import GraderReport from "./ui/containers/web/GraderReport";
-import GraderTranslate from "./ui/containers/web/SentenceTranslate";
-import FileTranslate from "./ui/containers/web/GraderTranslate";
-import ComparisonReport from "./ui/containers/web/ComparisonReport";
 
-import PdfTranslate from "./ui/containers/web/PdfTranslate";
-import EditTranslate from "./ui/containers/web/EditTranslate";
-import ViewTranslate from "./ui/containers/web/ViewTranslate";
 import UserDirectory from "./ui/containers/web/UserDirectory";
-import ViewDoc from "./ui/containers/web/ViewDoc";
-import AnuvaadEditor from "./ui/containers/web/AnuvaadEditor";
-import Editor from "./ui/containers/web/Editor";
-import AnuvaadModels from "./ui/containers/web/TextModels";
-import AddQuestion from "./ui/containers/web/AddQuestion";
-import TranslatePresident from "./ui/containers/web/TranslateJudgement";
 
-import FeedbackForm from "./ui/containers/web/FeedbackForm";
-import PdfUpload from "./ui/containers/web/PdfUpload";
-import PdfToDoc from "./ui/containers/web/PdfToDoc";
-import ViewPdf from "./ui/containers/web/ViewPdfFile";
 import Signup from "./ui/containers/web/SignUp";
 import Activate from "./ui/containers/web/Activate";
 import IntractiveTranslate from "./ui/containers/web/IntractiveTranslation";
 import InteractiveEditor from "./ui/containers/web/Interactive-Editor/InteractiveEditor";
 
-import PdfSentence from "./ui/containers/web/PdfSentence";
 import InteractivePreview from "./ui/containers/web/Interactive-Editor/Preview"
 import { translate } from '../src/assets/localisation';
 import UpdatePassword from './ui/containers/web/UpdatePassword';
@@ -57,10 +28,6 @@ import InteractivePdfFile from './ui/containers/web/Interactive-Editor/Interacti
 import DocumentEditor from './ui/containers/web/Interactive-Editor/DocumentEditor';
 import FileUpload from './ui/containers/web/Interactive-Editor/FileUpload';
 import ViewDocument from './ui/containers/web/ViewDocument';
-
-// import { jQuery, $ }  from 'jquery'
-// import $t from '@project-sunbird/telemetry-sdk/index.js'
-
 
 
 const PrivateRoute = ({ component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
@@ -163,19 +130,6 @@ class AppRoutes extends React.Component {
             <Route exact path={`${process.env.PUBLIC_URL}/callback`} component={Callback} />
             <Route exact path={`${process.env.PUBLIC_URL}/logout`} component={Logout} />
 
-            
-
-            <PrivateRoute
-              exact
-              path={`${process.env.PUBLIC_URL}/translate`}
-              dontShowLoader
-              forDemo
-              title={translate('webroutes.page.title.suvas')}
-              userRoles={["user"]}
-              component={TranslatePresident}
-              authenticate={this.authenticateUser}
-              currentMenu="translate"
-            />
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/profile`}
               title={translate('webroutes.page.title.profile')}
@@ -183,67 +137,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="profile"
             />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/dashboard`}
-              title={translate('dashboard.page.heading.title')}
-              component={DashboardTamil}
-              authenticate={this.authenticateUser}
-              currentMenu="dashboard"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/anuvaad-wheel`}
-              drawer
-              title="Anuvaad Game"
-              component={AnuvaadGame}
-              authenticate={this.authenticateUser}
-              currentMenu="anuvaad-wheel"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/pdf-to-doc`}
-              title={translate('webroutes.page.title.pdfToDoc')}
-              component={PdfToDoc}
-              authenticate={this.authenticateUser}
-              currentMenu="pdf-to-doc"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/pdf-upload`}
-              userRoles={["user", "grader", "dev", "editor", "interactive-editor"]}
-              title={translate('webroutes.page.title.pdfSentences')}
-              component={PdfUpload}
-              authenticate={this.authenticateUser}
-              currentMenu="pdf-upload"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/view-pdf`}
-              dontShowLoader
-              title={translate('webroutes.page.title.pdfList')}
-              component={ViewPdf}
-              authenticate={this.authenticateUser}
-              currentMenu="view-pdf"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/pdf-sentence/:session_id`}
-              title={translate('webroutes.page.title.pdfSentences')}
-              component={PdfSentence}
-              authenticate={this.authenticateUser}
-              currentMenu="pdf-sentence"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/anuvaad-game`}
-              drawer
-              title="Anuvaad Game"
-              component={AnuvaadGame}
-              authenticate={this.authenticateUser}
-              currentMenu="anuvaad-game"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/view-corpus/:basename`}
-              title={translate('webroutes.page.title.corpusDetails')}
-              userRoles={["grader", "dev"]}
-              component={GradeViewCorpus}
-              authenticate={this.authenticateUser}
-              currentMenu="view-corpus"
-            />
+
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/activate/:uid/:rid`}
               title="Activate"
@@ -253,46 +147,7 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
               currentMenu="activate"
             />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/fetch-benchmark-sentences/:basename/:modelid`}
-              title={translate('webroutes.page.title.benchmark')}
-              userRoles={["grader", "dev"]}
-              component={BenchmarkGrade}
-              authenticate={this.authenticateUser}
-              currentMenu="benchmark"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/graderreport`}
-              title={translate('webroutes.page.title.graderReport')}
-              component={GraderReport}
-              userRoles={["admin"]}
-              authenticate={this.authenticateUser}
-              currentMenu="graderreport"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/comparison-report`}
-              title={translate('common.page.title.comparisonReport')}
-              component={ComparisonReport}
-              userRoles={["admin"]}
-              authenticate={this.authenticateUser}
-              currentMenu="comparison-report"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/benchmarktranslate`}
-              userRoles={["analyzer"]}
-              component={FileTranslate}
-              title={translate('webroutes.page.title.fileUpload')}
-              authenticate={this.authenticateUser}
-              currentMenu="benchmarktranslate"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/texttranslate`}
-              userRoles={["analyzer"]}
-              component={GraderTranslate}
-              title={translate('dashboard.page.heading.title')}
-              authenticate={this.authenticateUser}
-              currentMenu="texttranslate"
-            />
+
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-pdf`}
               userRoles={["editor", "dev", "grader", "interactive-editor"]}
@@ -323,56 +178,12 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/view-translations/:basename`}
-              component={ViewTranslations}
-              authenticate={this.authenticateUser}
-              currentMenu="view-translations"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/corpus`}
-              component={Corp}
-              title={translate('webroutes.page.title.corpusList')}
-              userRoles={["grader", "dev"]}
-              authenticate={this.authenticateUser}
-              currentMenu="corpus"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/benchmark`}
-              component={Benchmark}
-              userRoles={["grader", "dev"]}
-              title={translate('webroutes.page.title.benchmark')}
-              authenticate={this.authenticateUser}
-              currentMenu="benchmark"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/parallel-corpus/:basename`}
-              title={translate('webroutes.page.title.corpusDetails')}
-              userRoles={["editor", "dev"]}
-              component={Corpus}
-              authenticate={this.authenticateUser}
-              currentMenu="corpus"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/translations`}
-              component={Translations}
-              authenticate={this.authenticateUser}
-              currentMenu="translations"
-            />
-            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/translate-v1`}
               component={Translate}
               authenticate={this.authenticateUser}
               currentMenu="translate-v1"
             />
             
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/qna`}
-              title={translate('webroutes.page.title.q&a')}
-              userRoles={["editor"]}
-              component={QnA}
-              authenticate={this.authenticateUser}
-              currentMenu="qna"
-            />
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/signup`}
               title="Sign up"
@@ -400,30 +211,7 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
               currentMenu="set-password"
             />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/newcorpus`}
-              title={translate('webroutes.page.title.parallelCorpus')}
-              userRoles={["dev"]}
-              component={newcorpus}
-              authenticate={this.authenticateUser}
-              currentMenu="newcorpus"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/create-corpus`}
-              title={translate('common.page.label.createCorpus')}
-              userRoles={["dev"]}
-              component={createcorpus}
-              authenticate={this.authenticateUser}
-              currentMenu="create-corpus"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/doctranslate`}
-              title={translate('webroutes.page.title.translateFile')}
-              component={PdfTranslate}
-              userRoles={["editor", "user"]}
-              authenticate={this.authenticateUser}
-              currentMenu="doctranslate"
-            />
+            
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/userdirectory`}
               title={translate('webroutes.page.title.userDirectory')}
@@ -432,78 +220,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="userdirectory"
             />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/edittranslate`}
-              title={translate('webroutes.page.title.documentView')}
-              component={EditTranslate}
-              userRoles={["notactive"]}
-              authenticate={this.authenticateUser}
-              currentMenu="edittranslate"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/viewtranslate`}
-              title={translate('common.page.title.document')}
-              component={ViewTranslate}
-              userRoles={["editor", "user"]}
-              authenticate={this.authenticateUser}
-              currentMenu="viewtranslate"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/view-doc/:basename`}
-              title={translate('webroutes.page.title.documentDetails')}
-              component={ViewDoc}
-              userRoles={["editor"]}
-              authenticate={this.authenticateUser}
-              currentMenu="view-doc"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/feedback`}
-              title={translate('webroutes.page.title.addFeedbackQuestion')}
-              userRoles={["admin"]}
-              component={AddQuestion}
-              authenticate={this.authenticateUser}
-              currentMenu="feedback"
-            />
-
-
             
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/feedback-form/:page`}
-              title={translate('webroutes.page.title.feedbackForm')}
-              component={FeedbackForm}
-              authenticate={this.authenticateUser}
-              currentMenu="feedback-form"
-            />
-
-           
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/anuvaad-editor`}
-              title="Anuvaad Editor"
-              dontShowLoader
-              userRoles={["dev"]}
-              component={AnuvaadEditor}
-              authenticate={this.authenticateUser}
-              currentMenu="anuvaad-editor"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/editor`}
-              title="Editor"
-              dontShowLoader
-              userRoles={["dev"]}
-              component={Editor}
-              authenticate={this.authenticateUser}
-              currentMenu="editor"
-            />
-
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/anuvaad-models`}
-              title="Anuvaad Editor"
-              userRoles={["dev"]}
-              component={AnuvaadModels}
-              authenticate={this.authenticateUser}
-              currentMenu="anuvaad-models"
-            />
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-translate`}
               title={translate('webroutes.page.title.anuvaadEditor')}
