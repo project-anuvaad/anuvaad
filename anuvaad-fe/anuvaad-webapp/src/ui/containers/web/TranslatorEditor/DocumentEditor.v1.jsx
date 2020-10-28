@@ -26,6 +26,7 @@ import DownloadIcon from "@material-ui/icons/ArrowDownward";
 import TranslateView from "../Interactive-Editor/DocumentTranslator";
 import SourceView from '../Interactive-Editor/SourceView';
 import PDFRenderer from './PDFRenderer';
+import DocumentRenderer from './DocumentRenderer'
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -68,9 +69,6 @@ class DocumentEditor extends React.Component {
     makeAPICallFetchContent =  (recordId) => {
         const apiObj              = new FileContent(recordId, 1, 2);
         this.props.APITransport(apiObj);
-        let obj                   = {};
-        obj.download_source_path  = this.props.match.params.inputfileid;
-        this.setState({ fileDetails: obj, showLoader: true, buttonDisable: true, pdfPage: 1 });
     }
 
     /**
@@ -201,105 +199,9 @@ class DocumentEditor extends React.Component {
     renderValidationModeView = () =>  {
         return (
             <Grid container spacing={2} style={{ padding: "142px 24px 0px 24px" }}>
-                <Grid item xs={12} sm={6} lg={6} xl={6}>
-                  <Paper
-                    elevation={this.state.edited ? 12 : 2}
-                    style={{
-                      // paddingBottom: "12px"
-                    }}
-                  >
-                    <div
-                      id="scrollableDiv"
-                      style={
-                        this.state.tokenized
-                          ? {
-                            maxHeight: window.innerHeight - 240,
-                            overflowY: this.state.edited ? "hidden" : "scroll",
-                            // overflowX: "auto"
-                          }
-                          : {}
-                      }
-                    >
-                      <InfiniteScroll
-                        next={this.fetchData.bind(this)}
-                        hasMore={this.state.hasMoreItems}
-                        dataLength={this.state.sentences ? this.state.sentences.length : 0}
-                        loader={
-                          <p style={{ textAlign: "center" }}>
-                            <CircularProgress
-                              size={20}
-                              style={{
-                                zIndex: 1000
-                              }}
-                            />
-                          </p>
-                        }
-                        endMessage={
-                          <p style={{ textAlign: "center" }}>
-                            <b>You have seen it all</b>
-                          </p>
-                        }
-                        // style={{ overflowY: "hidden" }}
-                        scrollableTarget={this.state.tokenized ? "scrollableDiv" : null}
-                        onScroll={() => this.handleScroll()}
-                      >
-                        {this.state.sentences &&
-                          this.state.sentences.map((sentence, index) => {
-                            return (
-                              <div>
-                                <SourceView
-                                  block_identifier={this.state.block_identifier}
-                                  sentences={this.state.sentences}
-                                  has_sibling={this.state.has_sibling}
-                                  paperType="source"
-                                  isPreview={true}
-                                  parent={this.state.parent}
-                                  key={sentence.page_no + "_" + index}
-                                  pageNo={sentence.page_no}
-                                  sourceSentence={sentence}
-                                  selectedSourceText={this.state.selectedSourceText}
-                                  createBlockId={this.state.selectedBlockId}
-                                  isEditable={this.state.isEditable}
-                                  hoveredSentence={this.state.hoveredSentence}
-                                  hoveredTableId={this.state.hoveredTableId}
-                                  clear={this.state.clear}
-                                  heightValue={this.state.height}
-                                  popOver={this.state.popOver}
-                                  selectedCell={this.state.selectedCell}
-                                  scrollToPage={this.state.scrollToPage}
-                                  scrollToTop={this.state.scrollToTop}
-                                  yOffset={this.state.yOffset}
-                                  workFlowApi={this.workFlowApi.bind(this)}
-                                  handleOnMouseEnter={this.handleOnMouseEnter.bind(this)}
-                                  handleOnMouseLeave={this.handleOnMouseLeave.bind(this)}
-                                  handleSourceChange={this.handleSourceChange.bind(this)}
-                                  handleEditor={this.handleEditor.bind(this)}
-                                  handleCheck={this.handleCheck.bind(this)}
-                                  handleSource={this.handleSource.bind(this)}
-                                  handleTableHover={this.handleTableHover.bind(this)}
-                                  handlePopUp={this.handlePopUp.bind(this)}
-                                  handleBlur={this.handleBlur.bind(this)}
-                                  handleSentenceOperation={this.handleSentenceOperation.bind(this)}
-                                  tokenized={this.state.tokenized}
-                                  handlePreviewPageChange={this.handlePreviewPageChange.bind(this)}
-                                  mergeButton={this.state.mergeButton}
-                                  updateContent={this.updateContent.bind(this)}
-                                  editableId={this.state.editableId}
-                                  handleAutoCompleteEditor={this.handleAutoCompleteEditor.bind(this)}
-                                  targetSelected={this.state.targetSelected}
-                                  scrollId={this.state.scrollId}
-                                />
-                              </div>
-                            );
-                          })}
-                      </InfiniteScroll>
-                    </div>
-                  </Paper>
-                </Grid>
-
+                {this.renderDocumentPages()}
                 {this.renderPDFDocument()}
-                
-              </Grid>
+            </Grid>
         )
     }
 
@@ -309,8 +211,46 @@ class DocumentEditor extends React.Component {
     renderPDFDocument = () => {
       return (
         <Grid item xs={12} sm={6} lg={6} xl={6}>
-          <Paper style={this.state.tokenized ? { paddingBottom: "12px", paddingTop: "12px",} : {}}>
+          <Paper>
             <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.state.currentPageIndex} />
+          </Paper>
+        </Grid>
+      )
+    }
+
+    /**
+     * render Document pages
+     */
+    renderDocumentPages = () => {
+      return(
+        <Grid item xs={12} sm={6} lg={6} xl={6}>
+          <Paper elevation={2}>
+            <div id="scrollableDiv" style={{ maxHeight: window.innerHeight - 240, overflowY: "scroll"}}>
+              <InfiniteScroll
+                next={this.fetchData.bind(this)}
+                hasMore={this.state.hasMoreItems}
+                dataLength={this.state.sentences ? this.state.sentences.length : 0}
+                loader={
+                  <p style={{ textAlign: "center" }}>
+                    <CircularProgress
+                      size={20}
+                      style={{
+                        zIndex: 1000
+                      }}
+                    />
+                  </p>
+                }
+                endMessage={
+                  <p style={{ textAlign: "center" }}>
+                    <b>You have seen it all</b>
+                  </p>
+                }
+                scrollableTarget={this.state.tokenized ? "scrollableDiv" : null}
+                onScroll={() => this.handleScroll()}
+              >
+                <DocumentRenderer documentData={this.props.document_contents} pageNumber={this.state.currentPageIndex}/>
+              </InfiniteScroll>
+            </div>
           </Paper>
         </Grid>
       )

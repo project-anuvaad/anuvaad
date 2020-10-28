@@ -6,9 +6,9 @@ var jp              = require('jsonpath')
  * @returns pages
  */
 function get_pages_children_information(data) {
-    pages = []
+    let pages = []
     data.forEach(element => {
-        page = {
+        let page = {
             'images': [],
             'texts': [],
             'lines': [],
@@ -57,6 +57,7 @@ function get_pages_children_information(data) {
                         block['font_color']             = child['font_color'];
                         block['font_family']            = child['font_family'];
                         block['font_size']              = child['font_size'];
+                        block['avg_line_height']        = child['avg_line_height'];
                         page['texts'].push(block);
                     } else {
                         child.children.forEach(child_elem => {
@@ -70,6 +71,7 @@ function get_pages_children_information(data) {
                             block['font_color']             = child_elem['font_color'];
                             block['font_family']            = child_elem['font_family'];
                             block['font_size']              = child_elem['font_size'];
+                            block['avg_line_height']        = child_elem['avg_line_height'];
                             page['texts'].push(block);
                         })
                     }
@@ -80,7 +82,6 @@ function get_pages_children_information(data) {
         if ('tokenized_sentences' in element) {
             let condition                       = `$..tokenized_sentences[*]`;
             let selected_tokenized_sentences    = jp.query(element, condition)
-            print()
             page['translated_texts']            = JSON.parse(JSON.stringify(selected_tokenized_sentences))
         }
         pages.push(page)
