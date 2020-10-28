@@ -198,7 +198,7 @@ class Block extends Component {
       let operation = "Save";
       let isEdited = false;
 
-      if ((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type !== "button") && !this.state.dontShowDialog) {
+      if ((!event.relatedTarget || (event.relatedTarget && event.relatedTarget.type) !== "button") && !this.state.dontShowDialog) {
         if (this.props.selectedBlock && !this.props.selectedBlock.hasOwnProperty("save") && !this.props.selectedBlock.save) {
           isEdited = true
         }
@@ -228,7 +228,7 @@ class Block extends Component {
     if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
       let block = this.props.sen
       let isEdited = false
-      let index ;
+      //let index ;
       this.setState({ enteredData: false, dontShowDialog: true })
 
       block && block.tokenized_sentences && Array.isArray(block.tokenized_sentences) && block.tokenized_sentences.length > 0 && block.tokenized_sentences.map((tokenObj, i) => {
@@ -371,7 +371,7 @@ class Block extends Component {
                     }}
                     tokenIndex={this.props.tokenIndex}
                     // value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData) ? this.state.sentence.tgt : ""}
-                    value={(this.state.sentence && this.state.sentence.hasOwnProperty("s_id") && (this.state.buttonStatus!=="split" && this.props.selectedTargetId === this.state.sentence.s_id) || this.state.enteredData || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
+                    value={((this.state.sentence && this.state.sentence.hasOwnProperty("s_id") && (this.state.buttonStatus!=="split" && this.props.selectedTargetId === this.state.sentence.s_id)) || this.state.enteredData || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
                     sentence={this.state.sentence}
                     sourceText={sentence.src}
                     page_no={this.props.page_no}
