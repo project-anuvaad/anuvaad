@@ -17,14 +17,9 @@ import InstantTranslate from "./ui/containers/web/Dashboard";
 import Signup from "./ui/containers/web/SignUp";
 import Activate from "./ui/containers/web/Activate";
 import IntractiveTranslate from "./ui/containers/web/IntractiveTranslation";
-import InteractiveEditor from "./ui/containers/web/Interactive-Editor/InteractiveEditor";
-
-import InteractivePreview from "./ui/containers/web/Interactive-Editor/Preview"
 import { translate } from '../src/assets/localisation';
 import UpdatePassword from './ui/containers/web/UpdatePassword';
 import SetPassword from './ui/containers/web/SetPassword';
-import pdfFileEditor from './ui/containers/web/Interactive-Editor/PdfFileEditor';
-import InteractivePdfFile from './ui/containers/web/Interactive-Editor/InteractivePdfFile';
 import DocumentEditor from './ui/containers/web/Interactive-Editor/DocumentEditor';
 import FileUpload from './ui/containers/web/Interactive-Editor/FileUpload';
 import ViewDocument from './ui/containers/web/ViewDocument';
@@ -120,15 +115,6 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/interactive-pdf`}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
-              component={InteractivePdfFile}
-              title={translate('dashboard.page.heading.title')}
-              authenticate={this.authenticateUser}
-              currentMenu="texttranslate"
-            />
-
-            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:locale/:tgt_locale/:targetlang/:jobid/:inputfileid/:modelId`}
               // path={`${process.env.PUBLIC_URL}/interactive-document/:fileid/:inputfileid`}
               userRoles={["editor", "dev", "grader", "interactive-editor"]}
@@ -193,30 +179,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="interactive-translate"
             />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/interactive-editor/:fileid`}
-              title={"Document Translate"}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
-              component={InteractiveEditor}
-              authenticate={this.authenticateUser}
-              currentMenu="view-pdf"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/interactive-preview/:fileid`}
-              title={translate('webroutes.page.title.anuvaadEditor')}
-              userRoles={["editor", "dev", "interactive-editor"]}
-              component={InteractivePreview}
-              authenticate={this.authenticateUser}
-              currentMenu="view-pdf"
-            />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/pdf-file-editor`}
-              title={translate('webroutes.page.title.anuvaadEditor')}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
-              component={pdfFileEditor}
-              authenticate={this.authenticateUser}
-              currentMenu="view-pdf"
-            />
+
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-document`}
               dontShowLoader
