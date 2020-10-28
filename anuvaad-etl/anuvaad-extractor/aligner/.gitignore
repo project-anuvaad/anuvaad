@@ -1,0 +1,11 @@
+# pycache
+__pycache__
+
+#vscode
+.vscode
+
+# test folder
+test
+
+# log file
+info.log

@@ -31,17 +31,17 @@ class AlignmentUtils:
         source = []
         target_corp = []
         if two_files:
-            with codecs.open(path_eng, 'r', file_encoding) as txt_file:
+            with codecs.open(path_indic, 'r') as txt_file:
                 for row in txt_file:
                     if len(row.rstrip()) != 0:
                         source.append(row.rstrip())
-            with codecs.open(path_indic, 'r', file_encoding) as txt_file:
+            with codecs.open(path_eng, 'r') as txt_file:
                 for row in txt_file:
                     if len(row.rstrip()) != 0:
                         target_corp.append(row.rstrip())
 
         else:
-            with codecs.open(path_eng, 'r', file_encoding) as csv_file:
+            with codecs.open(path_eng, 'r') as csv_file:
                 csv_reader = csv.reader((l.replace('\0', '') for l in csv_file))
                 for row in csv_reader:
                     if len(row) != 0:
