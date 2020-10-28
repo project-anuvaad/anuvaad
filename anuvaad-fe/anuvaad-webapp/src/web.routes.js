@@ -20,6 +20,8 @@ import { translate } from '../src/assets/localisation';
 import UpdatePassword from './ui/containers/web/UpdatePassword';
 import SetPassword from './ui/containers/web/SetPassword';
 import DocumentEditor from './ui/containers/web/Interactive-Editor/DocumentEditor';
+import DocumentEditorV1 from './ui/containers/web/TranslatorEditor/DocumentEditor.v1';
+
 import FileUpload from './ui/containers/web/Interactive-Editor/FileUpload';
 import ViewDocument from './ui/containers/web/ViewDocument';
 
@@ -115,9 +117,8 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:locale/:tgt_locale/:targetlang/:jobid/:inputfileid/:modelId`}
-              // path={`${process.env.PUBLIC_URL}/interactive-document/:fileid/:inputfileid`}
               userRoles={["editor", "dev", "grader", "interactive-editor"]}
-              component={DocumentEditor}
+              component={DocumentEditorV1}
               title={translate('dashboard.page.heading.title')}
               authenticate={this.authenticateUser}
               dontShowLoader
