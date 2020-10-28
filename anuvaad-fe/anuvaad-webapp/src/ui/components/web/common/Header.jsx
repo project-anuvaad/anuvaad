@@ -314,7 +314,7 @@ class Header extends React.Component {
                         button
                         onClick={() => {
                           this.handleDrawerClose();
-                          history.push(`${process.env.PUBLIC_URL}/dashboard`);
+                          history.push(`${process.env.PUBLIC_URL}/instant-translate`);
                         }}
                       >
 
