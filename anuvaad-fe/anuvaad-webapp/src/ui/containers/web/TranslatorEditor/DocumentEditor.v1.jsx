@@ -24,8 +24,8 @@ import LanguageCodes from "../../../components/web/common/Languages.json"
 import DownloadIcon from "@material-ui/icons/ArrowDownward";
 
 import TranslateView from "../Interactive-Editor/DocumentTranslator";
-import DocPreview from "../Interactive-Editor/DocPreview";
 import SourceView from '../Interactive-Editor/SourceView';
+import PDFRenderer from './PDFRenderer';
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -34,8 +34,43 @@ class DocumentEditor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isModeTranslation: false
+            isModeTranslation: false,
+            currentPageIndex: 1
         }
+    }
+
+    /**
+     * life cycle methods
+     */
+    componentDidMount() {
+      TELEMETRY.pageLoadCompleted('document-editor')
+      let recordId  = this.props.match.params.jobid;
+      let jobId     = recordId ? recordId.split("|")[0] : ""
+  
+      let langCodes = LanguageCodes
+      let sourceLang = ''
+      if (langCodes && Array.isArray(langCodes) && langCodes.length > 0) {
+        langCodes.map(lang => {
+          if (lang.language_code === this.props.match.params.locale) {
+            sourceLang = lang.language_name
+          }
+          return true
+        })
+      }
+      TELEMETRY.startTranslatorFlow(sourceLang, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
+      this.setState({ showLoader: true });
+      this.makeAPICallFetchContent(recordId);
+    }
+
+    /**
+     * API methods
+     */
+    makeAPICallFetchContent =  (recordId) => {
+        const apiObj              = new FileContent(recordId, 1, 2);
+        this.props.APITransport(apiObj);
+        let obj                   = {};
+        obj.download_source_path  = this.props.match.params.inputfileid;
+        this.setState({ fileDetails: obj, showLoader: true, buttonDisable: true, pdfPage: 1 });
     }
 
     /**
@@ -59,6 +94,14 @@ class DocumentEditor extends React.Component {
         this.setState({
             isModeTranslation: !this.state.isModeTranslation
         })
+    }
+
+    handleOnClose = () => {
+      let recordId  = this.props.match.params.jobid;
+      let jobId     = recordId ? recordId.split("|")[0] : ""
+      TELEMETRY.endTranslatorFlow(jobId)
+  
+      history.push(`${process.env.PUBLIC_URL}/view-document`);
     }
 
 
@@ -253,32 +296,24 @@ class DocumentEditor extends React.Component {
                     </div>
                   </Paper>
                 </Grid>
-                <Grid item xs={12} sm={6} lg={6} xl={6}>
-                  <Paper
-                    style={this.state.tokenized ? {
-                      paddingBottom: "12px",
-                      paddingTop: "12px",
-                      // height: "98%"
-                    } : {}}
-                  >
-                    {this.state.tokenized && (
-                      <DocPreview
-                        parent="document-editor"
-                        data={this.state.fileId}
-                        pageNo={this.state.pageNo}
-                        numPages={this.state.numPages}
-                        zoom={this.state.zoom}
-                        handlePageChange={this.handlePageChange.bind(this)}
-                        onDocumentLoadSuccess={this.onDocumentLoadSuccess.bind(this)}
-                        fileDetails={this.state.fileDetails}
-                        handleChange={this.handleZoomChange.bind(this)}
-                        handleClick={this.handleCompareDocClose.bind(this)}
-                      ></DocPreview>
-                    )}
-                  </Paper>
-                </Grid>
+
+                {this.renderPDFDocument()}
+                
               </Grid>
         )
+    }
+
+    /**
+     * renders PDF document
+     */
+    renderPDFDocument = () => {
+      return (
+        <Grid item xs={12} sm={6} lg={6} xl={6}>
+          <Paper style={this.state.tokenized ? { paddingBottom: "12px", paddingTop: "12px",} : {}}>
+            <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.state.currentPageIndex} />
+          </Paper>
+        </Grid>
+      )
     }
 
     /***
@@ -326,7 +361,7 @@ const mapStateToProps = state => ({
     workflowStatus: state.workflowStatus,
     documentconverter: state.documentconverter,
     saveContent: state.saveContent,
-  
+    document_contents: state.document_contents
 });
   
 const mapDispatchToProps = dispatch =>
