@@ -6,6 +6,7 @@ import numpy as np
 import time
 from scipy.spatial import distance
 from laser.laser import Laser
+from embedder.labse import Labse
 from utilities.alignmentutils import AlignmentUtils
 from repository.alignmentrepository import AlignmentRepository
 from validator.alignmentvalidator import AlignmentValidator
@@ -25,6 +26,7 @@ file_path_delimiter = '/'
 
 alignmentutils = AlignmentUtils()
 repo = AlignmentRepository()
+labse = Labse()
 laser = Laser()
 producer = Producer()
 util = AlignmentUtils()
@@ -75,12 +77,15 @@ class AlignmentService:
 
     # Service layer to fetch vectors for all the source and target sentences.
     def build_index(self, source, target_corp, src_loc, trgt_loc, object_in):
-        source_embeddings, target_embeddings = laser.vecotrize_sentences(source, target_corp, src_loc, trgt_loc, object_in)
+        source_embeddings, target_embeddings = labse.vecotrize_sentences(source, target_corp, src_loc, trgt_loc, object_in)
         return source_embeddings, target_embeddings
 
     # Service layer to fetch target sentence for a given source sentence.
     def get_target_sentence(self, reshaped_tgt, source_embedding, src_sent):
-        distances = distance.cdist(np.array(source_embedding), reshaped_tgt, "cosine")[0]
+        source_embedding = np.array(source_embedding)
+        source_embedding = source_embedding.reshape(source_embedding.shape[0],1)
+        source_embedding = np.transpose(source_embedding)
+        distances = distance.cdist(source_embedding, reshaped_tgt, "cosine")[0]
         min_index = np.argmin(distances)
         min_distance = 1 - distances[min_index]
         min_cs, max_cs = alignmentutils.get_cs_on_sen_cat(src_sent)
@@ -99,8 +104,8 @@ class AlignmentService:
         target_refromatted = []
         manual_src = []
         manual_trgt = []
-        path = object_in["input"]["source"]["filepath"]
-        path_indic = object_in["input"]["target"]["filepath"]
+        path = object_in["input"]["target"]["filepath"]
+        path_indic = object_in["input"]["source"]["filepath"]
         full_path = directory_path + file_path_delimiter + path
         full_path_indic = directory_path + file_path_delimiter + path_indic
         object_in["status"] = "INPROGRESS"
@@ -214,10 +219,8 @@ class AlignmentService:
         try:
             log_info("Aligning the sentences.....", object_in)
             sentence_count, interval = 0, 0
-            target_array = np.array(target_embeddings)
-            reshaped_tgt = target_array.reshape(target_array.shape[0], target_array.shape[2])
             for i, embedding in enumerate(source_embeddings):
-                trgt = self.get_target_sentence(reshaped_tgt, embedding, source[i])
+                trgt = self.get_target_sentence(target_embeddings, embedding, source[i])
                 if trgt is not None:
                     if trgt[2] is "MATCH":
                         match_dict[i] = trgt[0], trgt[1]
@@ -246,11 +249,11 @@ class AlignmentService:
     def generate_output(self, source_reformatted, target_refromatted, manual_src, manual_trgt, nomatch_src, path, path_indic, object_in):
         try:
             log_info("Generating the output.....", object_in)
-            output_source = directory_path + file_path_delimiter + res_suffix + path
-            output_target = directory_path + file_path_delimiter + res_suffix + path_indic
-            output_manual_src = directory_path + file_path_delimiter + man_suffix + path
-            output_manual_trgt = directory_path + file_path_delimiter + man_suffix + path_indic
-            output_nomatch = directory_path + file_path_delimiter + nomatch_suffix + path
+            output_source = directory_path + file_path_delimiter + res_suffix + path_indic
+            output_target = directory_path + file_path_delimiter + res_suffix + path
+            output_manual_src = directory_path + file_path_delimiter + man_suffix + path_indic
+            output_manual_trgt = directory_path + file_path_delimiter + man_suffix + path
+            output_nomatch = directory_path + file_path_delimiter + nomatch_suffix + path_indic
             alignmentutils.write_output(source_reformatted, output_source)
             alignmentutils.write_output(target_refromatted, output_target)
             alignmentutils.write_output(manual_src, output_manual_src)

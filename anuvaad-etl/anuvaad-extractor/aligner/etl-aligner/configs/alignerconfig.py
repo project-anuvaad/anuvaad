@@ -21,7 +21,7 @@ mongo_alignment_col = os.environ.get('MONGO_ETL_ALIGNMENT_COL', 'extractor-align
 
 #module-configs
 context_path = os.environ.get('SA_CONTEXT_PATH', '/anuvaad-etl/extractor/aligner')
-directory_path = os.environ.get('SA_DIRECTORY_PATH', r'C:\Users\Vishal\Desktop\anuvaad\Facebook LASER\resources\Input\length-wise')
+directory_path = os.environ.get('SA_DIRECTORY_PATH', "")
 laser_url = os.environ.get('LASER_PATH', 'http://127.0.0.1:8050/vectorize')
 no_of_processes = os.environ.get("ALIGNER_NO_OF_PARALLEL_PROC", 5)
 
