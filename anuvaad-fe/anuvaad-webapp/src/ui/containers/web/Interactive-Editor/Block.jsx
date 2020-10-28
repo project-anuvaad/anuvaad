@@ -178,19 +178,13 @@ class Block extends Component {
   }
 
   getSelectionText(event, text) {
-
     const sentenceStartId = text.s_id;
     const split_index = window.getSelection().focusOffset;
     const selectedText = window.getSelection().toString();
-
-    let targetDict = false;
     let opeartion = "Split sentence";
-    // eslint-disable-next-line
-    let actual_text = text.src;
-    actual_text = actual_text.replace(/\s{2,}/g, " ");
-    actual_text = actual_text.trim();
 
-    if (this.props.selectedBlock && this.props.selectedBlock.src.includes(selectedText)) {
+    
+    if (this.props.selectedBlock && this.props.selectedBlock.src.includes(selectedText.split(" ")[0])) {
       this.props.popUp(this.props.block_id,
         sentenceStartId,
         split_index,
