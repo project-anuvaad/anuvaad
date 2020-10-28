@@ -5,7 +5,6 @@ import Button from "@material-ui/core/Button";
 class MenuClass extends React.Component {
 
   findWord(word){
-    debugger
     let splitWord = word.split(' ');
     let resultArray=[];
     let result = word;
@@ -66,6 +65,11 @@ class MenuClass extends React.Component {
           >
             {" "}
             {this.props.operation_type === "Merge Sentence" ? "Merge Sentence" : "Split sentence"}
+          </Button>
+
+          <Button style={{ textTransform: "none", width: "100%", justifyContent: "left" }} onClick={() => this.props.handleCopy()}>
+            {" "}
+            Copy
           </Button>
 
          
