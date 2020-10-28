@@ -11,7 +11,6 @@ import history from "./web.history";
 import Home from "./ui/containers/web/Home";
 import UserProfile from "./ui/containers/web/UserProfile";
 
-import UserDirectory from "./ui/containers/web/UserDirectory";
 import InstantTranslate from "./ui/containers/web/Dashboard";
 
 import Signup from "./ui/containers/web/SignUp";
@@ -160,15 +159,6 @@ class AppRoutes extends React.Component {
               drawer
               dontShowHeader={true}
               currentMenu="set-password"
-            />
-            
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/userdirectory`}
-              title={translate('webroutes.page.title.userDirectory')}
-              component={UserDirectory}
-              userRoles={["admin"]}
-              authenticate={this.authenticateUser}
-              currentMenu="userdirectory"
             />
             
             <PrivateRoute
