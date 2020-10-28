@@ -131,13 +131,13 @@ class PdfFileEditor extends React.Component {
 
   handleSentenceClick(value, saveData, block, blockIdentifier) {
     // this.setState({ activeSentence: value, selectedTargetId: value.s_id })
-
     if (block && this.state.activeSentence && this.state.activeSentence.s_id && this.state.activeSentence.s_id !== value.s_id)
 
       this.handleClick("");
     this.handleClose();
     this.setState({
       activeSentence: value,
+      SentenceOperationId:blockIdentifier,
       updateData: saveData && block,
       updateBlockId: blockIdentifier,
       buttonStatus: "selected",
