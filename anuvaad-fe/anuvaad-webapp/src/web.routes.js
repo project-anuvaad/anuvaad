@@ -9,7 +9,6 @@ import NotFound from "./ui/containers/web/NotFound";
 
 import history from "./web.history";
 import Home from "./ui/containers/web/Home";
-import Translate from "./ui/containers/web/Translate";
 import UserProfile from "./ui/containers/web/UserProfile";
 
 import UserDirectory from "./ui/containers/web/UserDirectory";
@@ -149,13 +148,6 @@ class AppRoutes extends React.Component {
               currentMenu="texttranslate"
             />
 
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/translate-v1`}
-              component={Translate}
-              authenticate={this.authenticateUser}
-              currentMenu="translate-v1"
-            />
-            
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/signup`}
               title="Sign up"
