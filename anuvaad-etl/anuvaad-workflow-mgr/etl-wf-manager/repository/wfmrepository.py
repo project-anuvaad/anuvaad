@@ -37,10 +37,10 @@ class WFMRepository:
     def search_job(self, query, exclude, offset, res_limit):
         col = self.instantiate()
         if offset is None and res_limit is None:
-            res = col.find(query, exclude)
+            res = col.find(query, exclude).sort([('_id', 1)])
         else:
             res = col.find(query, exclude).sort([('_id', -1)]).skip(offset).limit(res_limit)
         result = []
         for record in res:
-            result.append(record).sort([('_id', 1)])
+            result.append(record)
         return result
