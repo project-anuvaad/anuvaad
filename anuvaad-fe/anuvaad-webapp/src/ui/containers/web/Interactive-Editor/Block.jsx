@@ -156,7 +156,9 @@ class Block extends Component {
     this.setState({ highlightDivider: true, highlightId: id });
   }
 
-  handleShowTarget(id) {
+  handleShowTarget(id, prevId) {
+
+    id!==prevId && this.handleApiCallSave();
     if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
 
       this.setState({
@@ -164,9 +166,6 @@ class Block extends Component {
         enteredData: true,
         // dontShowDialog: true
       });
-
-
-
 
       this.props.handleClick("copy")
       this.props.showTargetData(id)
@@ -205,6 +204,7 @@ class Block extends Component {
         }
 
         this.props.getUpdatedBlock(this.props.selectedBlock, operation, this.state.editedText, isEdited)
+       
 
         // this.props.handleDialogMessage(this.props.selectedBlock, "", "", operation, message, this.state.editedText)
       }
@@ -247,6 +247,7 @@ class Block extends Component {
       })
       this.props.handleClick("")
       this.props.saveUpdatedSentence(block, this.state.sentence, this.props.blockIdentifier, this.state.editedText, isEdited)
+      tex=""
     } else {
       this.props.handleSentenceClick(this.props.sentence)
     }
@@ -281,21 +282,25 @@ class Block extends Component {
 
   }
 
-  handleCardClick(sentence, editedText) {
+  handleApiCallSave(){
 
     if (this.props.buttonStatus === "typing" && tex) {
       this.props.saveUpdatedSentence("", this.props.selectedBlock, "", tex, true)
-      // this.handleBlurSave(this.props.selectedBlock, tex)
-      // this.handleSave(sentence.s_id);
     }
     else if (this.props.buttonStatus === "copy" && this.props.selectedBlock && this.props.selectedBlock.hasOwnProperty("s0_tgt") && this.props.selectedBlock.s0_tgt) {
       this.props.saveUpdatedSentence("", this.props.selectedBlock, "", this.props.selectedBlock.s0_tgt, true)
-      // this.handleBlurSave(this.props.selectedBlock, this.props.selectedBlock.s0_tgt)
     }
+    
+  }
+
+  handleCardClick(sentence, editedText) {
+
+    this.handleApiCallSave()
     let saveData = false
     let block = this.props.sen
 
     this.props.handleSentenceClick(this.props.sentence, saveData, block, this.props.blockIdentifier)
+    tex=""
   }
 
   render() {
@@ -362,7 +367,7 @@ class Block extends Component {
                     }}
                     tokenIndex={this.props.tokenIndex}
                     // value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData) ? this.state.sentence.tgt : ""}
-                    value={(this.state.sentence && this.state.sentence.hasOwnProperty("s_id") && (this.props.selectedTargetId === this.state.sentence.s_id) || this.state.enteredData || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
+                    value={(this.state.sentence && this.state.sentence.hasOwnProperty("s_id") && (this.state.buttonStatus!=="split" && this.props.selectedTargetId === this.state.sentence.s_id) || this.state.enteredData || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
                     sentence={this.state.sentence}
                     sourceText={sentence.src}
                     page_no={this.props.page_no}
@@ -408,7 +413,7 @@ class Block extends Component {
                           <IconButton
                             aria-label="validation mode"
                             onClick={() => {
-                              this.handleShowTarget(sentence.s_id);
+                              this.handleShowTarget(sentence.s_id, selectedBlock.s_id);
                             }}
                             style={selectedBlock &&
                               sentence &&
