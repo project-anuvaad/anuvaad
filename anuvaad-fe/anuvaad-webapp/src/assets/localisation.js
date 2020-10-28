@@ -1,5 +1,5 @@
 const localization_EN_Data = {
-  "dashboard.page.heading.title": "Translate",
+  "dashboard.page.heading.title": "Translate sentence",
   "common.page.label.sourceLang": "Select Source Language",
   "common.page.label.targetLang": "Select Target Language",
   "common.page.button.submit": "submit",
