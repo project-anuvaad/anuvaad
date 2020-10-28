@@ -228,6 +228,7 @@ class Block extends Component {
     if (this.props.selectedBlock && this.props.selectedBlock.s_id === id) {
       let block = this.props.sen
       let isEdited = false
+      let index ;
       this.setState({ enteredData: false, dontShowDialog: true })
 
       block && block.tokenized_sentences && Array.isArray(block.tokenized_sentences) && block.tokenized_sentences.length > 0 && block.tokenized_sentences.map((tokenObj, i) => {
@@ -237,6 +238,10 @@ class Block extends Component {
           if ((sentence && sentence.hasOwnProperty("save") && !sentence.save) || (sentence && !sentence.hasOwnProperty("save"))) {
             isEdited = true
           }
+
+          // if(tokenObj.s_id===this.props.selectedBlock.s_id){
+          //   index = i;
+          // }
 
           sentence.save = true
           tokenObj = this.state.sentence
@@ -283,13 +288,13 @@ class Block extends Component {
   }
 
   handleApiCallSave(){
-
     if (this.props.buttonStatus === "typing" && tex) {
       this.props.saveUpdatedSentence("", this.props.selectedBlock, "", tex, true)
     }
     else if (this.props.buttonStatus === "copy" && this.props.selectedBlock && this.props.selectedBlock.hasOwnProperty("s0_tgt") && this.props.selectedBlock.s0_tgt) {
       this.props.saveUpdatedSentence("", this.props.selectedBlock, "", this.props.selectedBlock.s0_tgt, true)
     }
+    
     
   }
 
@@ -298,7 +303,6 @@ class Block extends Component {
     this.handleApiCallSave()
     let saveData = false
     let block = this.props.sen
-
     this.props.handleSentenceClick(this.props.sentence, saveData, block, this.props.blockIdentifier)
     tex=""
   }
@@ -346,7 +350,7 @@ class Block extends Component {
                 >
                   {sentence.src}
                 </div>
-                <hr style={{ border: (selectedBlock && sentence && sentence.hasOwnProperty("s_id") && sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "copy" || this.props.buttonStatus === "typing")) ? "1px dashed #1C9AB7" : "1px dashed #00000014" }} />
+                <hr style={{ border: (selectedBlock && sentence && sentence.hasOwnProperty("s_id") && sentence.s_id === selectedBlock.s_id && (this.props.buttonStatus === "copy" || this.props.buttonStatus === "selected"||this.props.buttonStatus === "typing")) ? "1px dashed #1C9AB7" : "1px dashed #00000014" }} />
                 {((selectedBlock && sentence && sentence.hasOwnProperty("s_id") && selectedBlock.hasOwnProperty("s_id") && sentence.s_id === selectedBlock.s_id) || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ?
                   <AutoComplete
                     aId={sentence.s_id}
