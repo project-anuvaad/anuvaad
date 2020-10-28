@@ -12,7 +12,6 @@ from anuvaad_auditor.loghandler import log_info
 from sentence_transformers import SentenceTransformer
 
 model = SentenceTransformer('LaBSE')
-print("*****************************************")
 
 log = logging.getLogger('file')
 
