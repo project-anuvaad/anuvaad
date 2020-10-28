@@ -3,6 +3,19 @@ import Popover from "@material-ui/core/Popover";
 import Button from "@material-ui/core/Button";
 
 class MenuClass extends React.Component {
+
+  findWord(word){
+    debugger
+    let splitWord = word.split(' ');
+    let resultArray=[];
+    let result = word;
+    if(splitWord.length>3){
+      resultArray = [...splitWord.slice(0, 3)," ... "]
+      result =resultArray.join(" ");
+
+    }
+    return result;
+  }
   render() {
 
     const { topValue, leftValue, isOpen, splitValue } = this.props;
@@ -40,7 +53,7 @@ class MenuClass extends React.Component {
 
 <Button style={{ textTransform: "none", width: "100%", justifyContent: "left" }} onClick={() => this.props.handleDialog( "Dictionary")}>
               {" "}
-              lookup dictionary {this.props.selectedText}
+              lookup dictionary <span style={{fontWeight:"bold", paddingLeft:"5px"}}>{this.findWord(this.props.selectedText)}</span>
             </Button>
           
             {!this.props.targetDict &&
