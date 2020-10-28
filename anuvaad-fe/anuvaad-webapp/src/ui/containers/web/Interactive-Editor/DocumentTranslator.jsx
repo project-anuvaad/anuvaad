@@ -87,7 +87,7 @@ class PdfFileEditor extends React.Component {
             parallel_words.push(words.name)
           }
 
-        })
+        return null;})
 
       }
       else {

@@ -26,7 +26,7 @@ import LanguageCodes from "../../../components/web/common/Languages.json"
 import DownloadIcon from "@material-ui/icons/ArrowDownward";
 import DocumentConverter from "../../../../flux/actions/apis/documentconverter";
 import TranslateView from "./DocumentTranslator";
-import wfcodes from '../../../../configs/workflowcodes'
+//import wfcodes from '../../../../configs/workflowcodes'
 import SaveContent from "../../../../flux/actions/apis/savecontent";
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -133,10 +133,10 @@ class PdfFileEditor extends React.Component {
                   children = this.props.saveContent
                   return true
                 }
-              })
-            })
+              return null;})
+            return null;})
           }
-        })
+       return null; })
       }
 
       this.setState({
@@ -160,7 +160,7 @@ class PdfFileEditor extends React.Component {
       } else {
         temp.map(page => {
           page.text_blocks = page.text_blocks && BLOCK_OPS.get_sorted_blocks(page.text_blocks);
-        })
+        return null;})
         this.setState({
           sentences: temp,
           open: this.state.apiStatus && true,

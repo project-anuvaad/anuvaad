@@ -13,7 +13,7 @@ export default function(state = initialUserState, action) {
       let jobDetails = response.jobs;
       var resultArray ={}
       let existjobs = [];
-      let changedJob = {}
+      //let changedJob = {}
       arr.map((element,i)=>existjobs.push(element.job))
 
       jobDetails.map((value, i)=>{
@@ -93,7 +93,8 @@ export default function(state = initialUserState, action) {
                 }
                 
               }
-            })
+            return null;
+          })
           }
           
            
@@ -102,7 +103,7 @@ export default function(state = initialUserState, action) {
           }
         }
           
-        })
+        return null;})
 
         
         

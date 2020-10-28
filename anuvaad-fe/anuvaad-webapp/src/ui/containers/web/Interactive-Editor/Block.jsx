@@ -6,16 +6,16 @@ import Merge from "@material-ui/icons/CallMerge";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Grid from "@material-ui/core/Grid";
 import Save from "@material-ui/icons/CheckCircleOutline";
-import Split from "@material-ui/icons/CallSplit";
+//import Split from "@material-ui/icons/CallSplit";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import Checkbox from "@material-ui/core/Checkbox";
-import ValidationIcon from "@material-ui/icons/SettingsEthernet";
+//import ValidationIcon from "@material-ui/icons/SettingsEthernet";
 import AutoComplete from "../../../components/web/common/AutoComplete1";
 import IntractiveApi from "../../../../flux/actions/apis/intractive_translate";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import CancelIcon from '@material-ui/icons/Cancel';
+//import CancelIcon from '@material-ui/icons/Cancel';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { withRouter } from "react-router-dom";
 
@@ -183,7 +183,7 @@ class Block extends Component {
     const split_index = window.getSelection().focusOffset;
     const selectedText = window.getSelection().toString();
 
-    let targetDict = false;
+    //let targetDict = false;
     let opeartion = "Split sentence";
     // eslint-disable-next-line
     let actual_text = text.src;
@@ -207,7 +207,7 @@ class Block extends Component {
         let operation = "Save";
         let isEdited = false;
 
-        if ((!event.relatedTarget || event.relatedTarget && event.relatedTarget.type !== "button") && !this.state.dontShowDialog) {
+        if ((!event.relatedTarget || (event.relatedTarget && event.relatedTarget.type) !== "button") && !this.state.dontShowDialog) {
           if (this.props.selectedBlock && !this.props.selectedBlock.hasOwnProperty("save")) {
             isEdited = true
           }
@@ -372,7 +372,7 @@ class Block extends Component {
                     }}
                     tokenIndex={this.props.tokenIndex}
                     // value={(this.props.selectedTargetId === this.state.sentence.s_id || this.state.enteredData) ? this.state.sentence.tgt : ""}
-                    value={(this.state.sentence && this.state.sentence.hasOwnProperty("s_id") && (this.props.selectedTargetId === this.state.sentence.s_id) || this.state.enteredData || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
+                    value={((this.state.sentence && this.state.sentence.hasOwnProperty("s_id") && (this.props.selectedTargetId === this.state.sentence.s_id)) || this.state.enteredData || (this.state.sentence && this.state.sentence.hasOwnProperty("save") && this.state.sentence.save)) ? this.state.editedText : ""}
                     sentence={this.state.sentence}
                     sourceText={sentence.src}
                     page_no={this.props.page_no}
