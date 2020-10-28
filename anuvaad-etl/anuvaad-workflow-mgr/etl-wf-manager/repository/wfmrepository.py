@@ -39,8 +39,8 @@ class WFMRepository:
         if offset is None and res_limit is None:
             res = col.find(query, exclude)
         else:
-            res = col.find(query, exclude).sort([("startTime", -1)]).skip(offset).limit(res_limit)
+            res = col.find(query, exclude).sort([('_id', -1)]).skip(offset).limit(res_limit)
         result = []
         for record in res:
-            result.append(record)
+            result.append(record).sort([('_id', 1)])
         return result
