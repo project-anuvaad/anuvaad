@@ -34,7 +34,7 @@ class DocumentEditor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isModeTranslation: false,
+            isModeSentences: true,
             currentPageIndex: 1
         }
     }
@@ -89,7 +89,7 @@ class DocumentEditor extends React.Component {
 
     handleViewModeToggle = () => {
         this.setState({
-            isModeTranslation: !this.state.isModeTranslation
+          isModeSentences: !this.state.isModeSentences
         })
     }
 
@@ -145,7 +145,7 @@ class DocumentEditor extends React.Component {
                         }}
                         >
                         <div style={{ fontSize: "15px", fontWeight: "bold" }}>
-                            {!this.state.apiCall ? (this.state.tokenized ? "You are in validation mode" : "You are in Translation mode") : "Saving....."}
+                            {!this.state.apiCall ? (this.state.isModeSentences ? "Sentences" : "PDF") : "Saving....."}
                         </div>
                     </Button>
                 </Grid>
@@ -188,18 +188,6 @@ class DocumentEditor extends React.Component {
                     </Button>
                 </Grid>
 
-            </Grid>
-        )
-    }
-
-    /**
-     * render the document view
-     */
-    renderValidationModeView = () =>  {
-        return (
-            <Grid container spacing={2} style={{ padding: "142px 24px 0px 24px" }}>
-                {this.renderDocumentPages()}
-                {this.renderPDFDocument()}
             </Grid>
         )
     }
@@ -256,9 +244,9 @@ class DocumentEditor extends React.Component {
     }
 
     /***
-     * render translation view
+     * render sentences
      */
-    renderTranslationModeView = () => {
+    renderSentences = () => {
         return (
           <Grid item xs={12} sm={6} lg={6} xl={6}>
             <Paper>
@@ -269,18 +257,6 @@ class DocumentEditor extends React.Component {
     }
 
     /**
-     * render composite view
-     */
-    renderCompositeView = () => {
-      return (
-        <Grid container spacing={2} style={{ padding: "142px 24px 0px 24px" }}>
-                {this.renderDocumentPages()}
-                {this.renderTranslationModeView()}
-        </Grid>
-      )
-    }
-
-    /**
      * render functions ends here
      */
 
@@ -288,7 +264,10 @@ class DocumentEditor extends React.Component {
         return (
         <div>
             {this.renderToolBar()}
-            {this.renderCompositeView()}
+            <Grid container spacing={2} style={{ padding: "142px 24px 0px 24px" }}>
+                {this.renderDocumentPages()}
+                {this.state.isModeSentences ? this.renderSentences() : this.renderPDFDocument()}
+            </Grid>
         </div>
         )
     }
