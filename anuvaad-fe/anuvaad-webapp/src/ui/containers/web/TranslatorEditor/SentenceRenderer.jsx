@@ -9,10 +9,10 @@ const PAGE_OPS = require("../../../../utils/page.operations");
 
 class SentenceRenderer extends React.Component {
 
-    renderText = (text) => {
+    renderSentence = (sentence) => {
         return (
-            <div id={text.s_id} >
-                <SentenceCard key={text.s_id} s0_src={text.s0_src} s0_tgt={text.s0_tgt} />
+            <div id={sentence.s_id}>
+                <SentenceCard key={v4()} sentence={sentence} />
                 <Divider />
             </div>
         )
@@ -20,7 +20,7 @@ class SentenceRenderer extends React.Component {
 
     renderPage = (page) => {
         if (page['translated_texts']) {
-            return ( <div> {page['translated_texts'].map(text => this.renderText(text))} </div>)
+            return ( <div> {page['translated_texts'].map(text => this.renderSentence(text))} </div>)
         }
         return(
             <div></div>
