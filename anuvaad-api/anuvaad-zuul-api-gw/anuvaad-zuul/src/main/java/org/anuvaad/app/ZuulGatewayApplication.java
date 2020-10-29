@@ -2,6 +2,7 @@ package org.anuvaad.app;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.anuvaad.cache.ZuulConfigCache;
+import org.anuvaad.filters.error.ErrorFilterFilter;
 import org.anuvaad.filters.pre.AuthFilter;
 import org.anuvaad.filters.pre.CorrelationFilter;
 import org.anuvaad.filters.pre.RbacFilter;
@@ -52,5 +53,10 @@ public class ZuulGatewayApplication {
     @Bean
     public RbacFilter rbacFilter(){
         return new RbacFilter(resourceLoader);
+    }
+
+    @Bean
+    public ErrorFilterFilter errorFilterFilter(){
+        return new ErrorFilterFilter();
     }
 }
