@@ -161,8 +161,12 @@ class AlignmentService:
     def check_if_duplicate(self, job_id, object_in):
         job = self.search_jobs(job_id)
         if job:
-            log_info("This job is already in the system. jobID: " + str(object_in["jobID"]), object_in)
-            return True
+            job = job[0]
+            if job["status"] != "STARTED":
+                log_info("This job is already present in the system. jobID: " + str(object_in["jobID"]), object_in)
+                return True
+            else:
+                return False
         else:
             return False
 

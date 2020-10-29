@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1367aa72-5a9a-49e3-af55-1fe2c4fddf78" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/etl-aligner/configs/alignerconfig.py" beforeDir="false" afterPath="$PROJECT_DIR$/etl-aligner/configs/alignerconfig.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/etl-aligner/kafkawrapper/alignmentconsumer.py" beforeDir="false" afterPath="$PROJECT_DIR$/etl-aligner/kafkawrapper/alignmentconsumer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/etl-aligner/kafkawrapper/alignmentwflowconsumer.py" beforeDir="false" afterPath="$PROJECT_DIR$/etl-aligner/kafkawrapper/alignmentwflowconsumer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/etl-aligner/service/alignmentservice.py" beforeDir="false" afterPath="$PROJECT_DIR$/etl-aligner/service/alignmentservice.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/../../anuvaad-workflow-mgr/etl-wf-manager/info.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
