@@ -79,11 +79,9 @@ function get_pages_children_information(data) {
             })
         }
 
-        if ('tokenized_sentences' in element) {
-            let condition                       = `$..tokenized_sentences[*]`;
-            let selected_tokenized_sentences    = jp.query(element, condition)
-            page['translated_texts']            = JSON.parse(JSON.stringify(selected_tokenized_sentences))
-        }
+        let condition                       = `$..tokenized_sentences[*]`;
+        let selected_tokenized_sentences    = jp.query(element, condition)
+        page['translated_texts']            = JSON.parse(JSON.stringify(selected_tokenized_sentences))
         pages.push(page)
     });
 

@@ -23,10 +23,9 @@ import TextButton from '@material-ui/core/Button';
 import LanguageCodes from "../../../components/web/common/Languages.json"
 import DownloadIcon from "@material-ui/icons/ArrowDownward";
 
-import TranslateView from "../Interactive-Editor/DocumentTranslator";
-import SourceView from '../Interactive-Editor/SourceView';
 import PDFRenderer from './PDFRenderer';
-import DocumentRenderer from './DocumentRenderer'
+import DocumentRenderer from './DocumentRenderer';
+import SentenceRenderer from './SentenceRenderer';
 
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -261,21 +260,11 @@ class DocumentEditor extends React.Component {
      */
     renderTranslationModeView = () => {
         return (
-            <Grid container spacing={2} style={{ padding: "122px 24px 0px 24px" }}>
-                <TranslateView
-                modelId={this.props.match.params.modelId}
-                sentences={this.state.sentences}
-                handleSourceChange={this.handleSourceChange.bind(this)}
-                saveUpdatedSentence={this.saveUpdatedSentence.bind(this)}
-                workFlowApi={this.workFlowApi.bind(this)}
-                open={this.state.open}
-                fetchData={this.fetchData.bind(this)}
-                hasMoreItems={this.state.hasMoreItems}
-                handleScroll={this.handleScroll.bind(this)}
-                moveToValidationMode={this.moveToValidationMode.bind(this)}
-                scroll={this.state.scroll}
-                />
+          <Grid container spacing={2} style={{ padding: "122px 24px 0px 24px" }}>
+            <Grid item xs={12}>
+              <SentenceRenderer documentData={this.props.document_contents} pageNumber={this.state.currentPageIndex}/>
             </Grid>
+          </Grid>
         )
     }
 

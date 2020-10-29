@@ -4,10 +4,6 @@ const { v4 }        = require('uuid');
 const PAGE_OPS = require("../../../../utils/page.operations");
 
 class DocumentRenderer extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
     renderText = (text) => {
         let style = {
             position: "relative",
