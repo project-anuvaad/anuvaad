@@ -1,11 +1,7 @@
 package org.anuvaad.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class Action {
 
     @JsonProperty("id")
@@ -73,4 +69,27 @@ public class Action {
     public void setWhiteList(Boolean whiteList) {
         this.whiteList = whiteList;
     }
+
+    @Override
+    public String toString() {
+        return "Action{" +
+                "id='" + id + '\'' +
+                ", uri='" + uri + '\'' +
+                ", module='" + module + '\'' +
+                ", active=" + active +
+                ", whiteList=" + whiteList +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
+    public Action(String id, String uri, String module, Boolean active, Boolean whiteList, String description) {
+        this.id = id;
+        this.uri = uri;
+        this.module = module;
+        this.active = active;
+        this.whiteList = whiteList;
+        this.description = description;
+    }
+
+    public Action() {}
 }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,10 +29,7 @@ import static org.anuvaad.constants.RequestContextConstants.*;
  */
 public class RbacFilter extends ZuulFilter {
 
-    @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
     public ResourceLoader resourceLoader;
 
     @Autowired
@@ -52,6 +50,11 @@ public class RbacFilter extends ZuulFilter {
         return true;
     }
 
+    public RbacFilter(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+        objectMapper = new ObjectMapper();
+    }
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String AUTH_TOKEN_HEADER_NAME = "auth-token";
@@ -65,6 +68,7 @@ public class RbacFilter extends ZuulFilter {
 
     @Override
     public Object run() {
+        logger.info("RBAC Filter...");
         RequestContext ctx = RequestContext.getCurrentContext();
         String uri = ctx.getRequest().getRequestURI();
         String authToken = ctx.getRequest().getHeader(AUTH_TOKEN_HEADER_NAME);

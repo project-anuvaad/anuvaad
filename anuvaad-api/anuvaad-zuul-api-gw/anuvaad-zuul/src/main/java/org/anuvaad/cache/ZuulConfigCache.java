@@ -12,14 +12,13 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class ZuulConfigCache implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -32,14 +31,13 @@ public class ZuulConfigCache implements ApplicationRunner {
     @Value("${anuvaad.role-action.configs}")
     private String roleActionConfigsUrl;
 
-    @Autowired
-    public static ResourceLoader resourceLoader;
+    public ResourceLoader resourceLoader;
+    private final ObjectMapper objectMapper;
 
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    public ZuulConfigCache(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+        objectMapper = new ObjectMapper();
+    }
 
     public static List<Role> roles;
     public static List<Action> actions;
@@ -103,7 +101,8 @@ public class ZuulConfigCache implements ApplicationRunner {
     public Map<String, List<String>> buildRoleActionMap(List<RoleAction> roleActions, Map<String, String> actionMap){
         logger.info("Building roleActionMap..");
         Map<String, List<String>> roleActionMap = new HashMap<>();
-        for(RoleAction roleAction: roleActions){
+        for(Object obj: roleActions){
+            RoleAction roleAction = objectMapper.convertValue(obj, RoleAction.class);
             if (roleAction.getActive()){
                 if (null != roleActionMap.get(roleAction.getRole())){
                     List<String> actionListOftheRole = roleActionMap.get(roleAction.getRole());
@@ -125,8 +124,13 @@ public class ZuulConfigCache implements ApplicationRunner {
      */
     public Map<String, String> fetchActionMap(List<Action> actions){
         logger.info("Fetching actionMap..");
-        return actions.stream()
-                .filter(Action::getActive).collect(Collectors.toMap(Action:: getId, Action::getUri));
+        Map<String, String> actionMap = new HashMap<>();
+        for(Object obj: actions){
+            Action action = objectMapper.convertValue(obj, Action.class);
+            if(action.getActive())
+                actionMap.put(action.getId(), action.getUri());
+        }
+        return actionMap;
     }
 
     /**
@@ -135,8 +139,13 @@ public class ZuulConfigCache implements ApplicationRunner {
      */
     public List<String> fetchRoleCodes(List<Role> configRoles){
         logger.info("Fetching roleCodes..");
-        return configRoles.stream()
-                .filter(Role::getActive).map(Role::getCode).collect(Collectors.toList());
+        List<String> roles = new ArrayList<>();
+        for(Object obj: configRoles){
+            Role role = objectMapper.convertValue(obj, Role.class);
+            if(role.getActive())
+                roles.add(role.getCode());
+        }
+        return roles;
     }
 
     /**
@@ -145,8 +154,13 @@ public class ZuulConfigCache implements ApplicationRunner {
      */
     public List<String> fetchWhiteListEndpoints(List<Action> actions){
         logger.info("Fetching whileListEndpoints..");
-        return actions.stream()
-                .filter(Action::getWhiteList).map(Action::getUri).collect(Collectors.toList());
+        List<String> whiteList = new ArrayList<>();
+        for(Object obj: actions){
+            Action action = objectMapper.convertValue(obj, Action.class);
+            if(action.getWhiteList())
+                whiteList.add(action.getUri());
+        }
+        return whiteList;
     }
 
 }

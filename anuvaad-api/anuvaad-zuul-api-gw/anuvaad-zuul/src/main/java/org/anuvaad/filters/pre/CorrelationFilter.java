@@ -44,6 +44,7 @@ public class CorrelationFilter extends ZuulFilter {
      */
     @Override
     public Object run() {
+        logger.info("Correlation ID Filter...");
         RequestContext ctx = RequestContext.getCurrentContext();
         final String correlationId = UUID.randomUUID().toString();
         MDC.put(CORRELATION_ID_KEY, correlationId);

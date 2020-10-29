@@ -1,11 +1,14 @@
 package org.anuvaad.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.zuul.context.RequestContext;
 import org.anuvaad.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -14,6 +17,7 @@ import java.util.Map;
 import static org.anuvaad.constants.RequestContextConstants.CORRELATION_ID_HEADER_NAME;
 import static org.anuvaad.constants.RequestContextConstants.CORRELATION_ID_KEY;
 
+@Service
 public class UserUtils {
 
     @Value("${anuvaad.ums.host}")
@@ -22,8 +26,11 @@ public class UserUtils {
     @Value("${anuvaad.ums.token.search}")
     private String umsSearchWithToken;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
+
+    public UserUtils(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     /**
      * Fetches user from the UMS via API.
