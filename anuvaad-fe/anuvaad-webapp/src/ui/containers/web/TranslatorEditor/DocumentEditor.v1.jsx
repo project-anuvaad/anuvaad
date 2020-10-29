@@ -212,32 +212,7 @@ class DocumentEditor extends React.Component {
       return(
         <Grid item xs={12} sm={6} lg={6} xl={6}>
           <Paper elevation={2}>
-            <div id="scrollableDiv" style={{ maxHeight: window.innerHeight - 240, overflowY: "scroll"}}>
-              <InfiniteScroll
-                next={this.fetchData.bind(this)}
-                hasMore={this.state.hasMoreItems}
-                dataLength={this.state.sentences ? this.state.sentences.length : 0}
-                loader={
-                  <p style={{ textAlign: "center" }}>
-                    <CircularProgress
-                      size={20}
-                      style={{
-                        zIndex: 1000
-                      }}
-                    />
-                  </p>
-                }
-                endMessage={
-                  <p style={{ textAlign: "center" }}>
-                    <b>You have seen it all</b>
-                  </p>
-                }
-                scrollableTarget={this.state.tokenized ? "scrollableDiv" : null}
-                onScroll={() => this.handleScroll()}
-              >
-                <DocumentRenderer documentData={this.props.document_contents} pageNumber={this.state.currentPageIndex}/>
-              </InfiniteScroll>
-            </div>
+            <DocumentRenderer documentData={this.props.document_contents} pageNumber={this.state.currentPageIndex}/>
           </Paper>
         </Grid>
       )

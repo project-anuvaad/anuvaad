@@ -1,4 +1,6 @@
 import React from "react";
+import {Paper, Divider} from "@material-ui/core";
+
 const { v4 }        = require('uuid');
 
 const PAGE_OPS = require("../../../../utils/page.operations");
@@ -45,11 +47,17 @@ class DocumentRenderer extends React.Component {
     }
 
     renderPage = (page) => {
-        if (page['texts']) {
-            return ( <div> {page['texts'].map(text => this.renderText(text))} </div>)
-        }
-        if (page['images']) {
-            return ( <div> {page['images'].map(image => this.renderImage(image))} </div>)
+        if (page['texts'] || (page['texts'] && page['images'])) {
+            return (
+                <div>
+                    <Paper elevation={2}>
+                        {page['texts'].map(text => this.renderText(text))}
+                        {page['images'].map(image => this.renderImage(image))} 
+                    </Paper>
+                    <Divider />
+                </div>
+                
+            )
         }
         return(
             <div></div>
