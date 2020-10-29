@@ -27,7 +27,6 @@ class Consumer:
                                  group_id=align_job_consumer_grp,
                                  auto_offset_reset='latest',
                                  enable_auto_commit=True,
-                                 max_poll_records=1,
                                  value_deserializer=lambda x: self.handle_json(x))
         return consumer
 
