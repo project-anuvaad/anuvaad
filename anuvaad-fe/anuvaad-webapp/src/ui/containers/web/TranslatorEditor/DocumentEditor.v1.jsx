@@ -260,12 +260,24 @@ class DocumentEditor extends React.Component {
      */
     renderTranslationModeView = () => {
         return (
-          <Grid container spacing={2} style={{ padding: "122px 24px 0px 24px" }}>
-            <Grid item xs={12}>
+          <Grid item xs={12} sm={6} lg={6} xl={6}>
+            <Paper>
               <SentenceRenderer documentData={this.props.document_contents} pageNumber={this.state.currentPageIndex}/>
-            </Grid>
+            </Paper>
           </Grid>
         )
+    }
+
+    /**
+     * render composite view
+     */
+    renderCompositeView = () => {
+      return (
+        <Grid container spacing={2} style={{ padding: "142px 24px 0px 24px" }}>
+                {this.renderDocumentPages()}
+                {this.renderTranslationModeView()}
+        </Grid>
+      )
     }
 
     /**
@@ -276,7 +288,7 @@ class DocumentEditor extends React.Component {
         return (
         <div>
             {this.renderToolBar()}
-            {this.state.isModeTranslation ? this.renderTranslationModeView() : this.renderValidationModeView()}
+            {this.renderCompositeView()}
         </div>
         )
     }
