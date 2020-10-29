@@ -4,6 +4,8 @@ import os
 #CROSS-MODULE-COMMON-CONFIGS
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
 mongo_server_host = os.environ.get('MONGO_SERVER_HOST', 'mongodb://localhost:27017/')
+app_host = os.environ.get('ANUVAAD_ETL_WFM_HOST', '0.0.0.0')
+app_port = os.environ.get('ANUVAD_ETL_WFM_PORT', 5002)
 
 
 #MODULE-SPECIFIC-CONFIGS

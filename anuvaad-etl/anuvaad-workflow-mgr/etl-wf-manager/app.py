@@ -12,11 +12,12 @@ from anuvaad_auditor.loghandler import log_exception
 from configs.wfmconfig import wfm_cons_no_of_instances
 from configs.wfmconfig import wfm_core_cons_no_of_instances
 from configs.wfmconfig import wfm_error_cons_no_of_instances
+from configs.wfmconfig import app_host
+from configs.wfmconfig import app_port
+
 
 
 log = logging.getLogger('file')
-app_host = os.environ.get('ANU_ETL_WFM_HOST', 'localhost')
-app_port = os.environ.get('ANU_ETL_WFM_PORT', 5002)
 
 
 # Starts the kafka consumer in a different thread
@@ -41,7 +42,7 @@ def start_consumer():
 
 if __name__ == '__main__':
     start_consumer()
-    wfmapp.run(host=app_host, port=app_port)
+    wfmapp.run(host=app_host, port=eval(str(app_port)))
 
 
 # Log config
