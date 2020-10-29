@@ -359,6 +359,12 @@ class PdfFileEditor extends React.Component {
     }
   };
 
+  handleSaveDialog(message) {
+    this.setState({
+      displayMsg: true, displayTitle: message
+    })
+  }
+
   handleSentences(sentence, element) {
     return sentence.tokenized_sentences.map((value, tokenIndex) => {
       return <div ref={this.props.sentences.page_no}>
@@ -392,6 +398,8 @@ class PdfFileEditor extends React.Component {
           scroll={this.props.scroll}
           handleDictionary={this.handleDictionary.bind(this)}
           popUp={this.popUp.bind(this)}
+          handleSaveDialog={this.handleSaveDialog.bind(this)}
+          handleDialogClose={this.handleDialogClose.bind(this)}
         />
       </div>
     });
