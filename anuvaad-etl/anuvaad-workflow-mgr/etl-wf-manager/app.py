@@ -15,7 +15,7 @@ from configs.wfmconfig import wfm_error_cons_no_of_instances
 
 
 log = logging.getLogger('file')
-app_host = os.environ.get('ANU_ETL_WFM_HOST', '0.0.0.0')
+app_host = os.environ.get('ANU_ETL_WFM_HOST', 'localhost')
 app_port = os.environ.get('ANU_ETL_WFM_PORT', 5002)
 
 

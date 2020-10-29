@@ -9,8 +9,8 @@ file_upload_url = os.environ.get('FILE_UPLOAD_URL', 'https://auth.anuvaad.org/up
 #MODULE-SPECIFIC-CONFIGS
 #common-variables
 align_job_topic = "anuvaad-etl-alignment-jobs-v7"
-anu_dp_wf_aligner_in_topic = "anuvaad-dp-tools-aligner-input-v2"
-anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-output-v2"
+anu_dp_wf_aligner_in_topic = "anuvaad-dp-tools-aligner-input-v3"
+anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-output-v3"
 
 #kafka-configs
 align_job_consumer_grp = os.environ.get('ANU_ETL_WF_CONSUMER_GRP', 'anu-etl-align-consumer-group')

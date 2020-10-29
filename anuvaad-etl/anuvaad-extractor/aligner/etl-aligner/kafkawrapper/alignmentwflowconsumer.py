@@ -1,5 +1,7 @@
 import json
 import logging
+import random
+import string
 
 from kafka import KafkaConsumer, TopicPartition
 from service.alignmentservice import AlignmentService
@@ -37,14 +39,16 @@ class WflowConsumer:
         consumer = self.instantiate(topics)
         service = AlignmentService()
         util = AlignmentUtils()
-        log_info("Align WFM Consumer running.......", None)
+        rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
+        prefix = "Align WFM Consumer(" + rand_str + ")"
+        log_info(prefix + " running.......", None)
         while True:
             for msg in consumer:
                 data = {}
                 try:
                     data = msg.value
                     if data:
-                        log_info("WFM-Cons | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
+                        log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         service.wf_process(data)
                     break
                 except Exception as e:
