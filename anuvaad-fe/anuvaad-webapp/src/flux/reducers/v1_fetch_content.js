@@ -11,7 +11,12 @@ export default function(state = initialState, action) {
             let data            = action.payload;
             let pages           = data.data
 
-            pages.push(...state.pages)
+            if (state.pages.length == 0) {
+                return {
+                    count: data.count,
+                    pages: pages
+                }
+            }
             pages.push(...pages)
             return {
                 ...state,

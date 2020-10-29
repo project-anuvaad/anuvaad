@@ -212,7 +212,7 @@ class DocumentEditor extends React.Component {
       return(
         <Grid item xs={12} sm={6} lg={6} xl={6}>
           <Paper elevation={2}>
-            <DocumentRenderer documentData={this.props.document_contents} pageNumber={this.state.currentPageIndex}/>
+            <DocumentRenderer documentData={this.props.document_contents} pageNumber={this.state.currentPageIndex - 1}/>
           </Paper>
         </Grid>
       )
@@ -225,7 +225,7 @@ class DocumentEditor extends React.Component {
         return (
           <Grid item xs={12} sm={6} lg={6} xl={6}>
             <Paper>
-              <SentenceRenderer documentData={this.props.document_contents} pageNumber={this.state.currentPageIndex}/>
+              <SentenceRenderer documentData={this.props.document_contents} pageNumber={this.state.currentPageIndex - 1}/>
             </Paper>
           </Grid>
         )
