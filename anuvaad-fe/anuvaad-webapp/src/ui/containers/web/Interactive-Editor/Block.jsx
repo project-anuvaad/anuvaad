@@ -185,7 +185,8 @@ class Block extends Component {
     const selectedText = window.getSelection().toString();
     let opeartion = "Split sentence";
 
-    if (this.props.selectedBlock && this.props.selectedBlock.src.includes(selectedText.split(" ")[0])) {
+    
+    if (this.props.selectedBlock && this.props.selectedBlock.src.includes(selectedText.split(" ").splice(0,2).join(" "))) {
       // this.setState({enteredData: false})
       this.props.popUp(this.props.block_id,
         sentenceStartId,
