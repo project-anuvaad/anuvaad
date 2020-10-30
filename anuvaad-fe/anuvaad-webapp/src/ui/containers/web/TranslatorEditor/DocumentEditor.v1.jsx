@@ -24,9 +24,12 @@ import LanguageCodes from "../../../components/web/common/Languages.json"
 import DownloadIcon from "@material-ui/icons/ArrowDownward";
 
 import PDFRenderer from './PDFRenderer';
-import DocumentRenderer from './DocumentRenderer';
-import SentenceRenderer from './SentenceRenderer';
+import DocumentRenderer from './PageCard';
+import SentenceCard from './SentenceCard';
+import PageCard from "./PageCard";
+const { v4 }        = require('uuid');
 
+const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
@@ -183,7 +186,7 @@ class DocumentEditor extends React.Component {
                         disabled={this.state.apiCall ? true : false}
                         onClick={() => this.handleViewModeToggle()}
                     >
-                        {this.state.tokenized ? "Go to Translational mode" : "Go to Validation mode"}
+                        {this.state.isModeSentences ? "See PDF" : "See sentences"}
                         <ChevronRightIcon fontSize="large" />
                     </Button>
                 </Grid>
@@ -209,10 +212,16 @@ class DocumentEditor extends React.Component {
      * render Document pages
      */
     renderDocumentPages = () => {
+      let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages);
+      if (pages.length < 1) {
+        return(
+            <div></div>
+        )
+      }
       return(
         <Grid item xs={12} sm={6} lg={6} xl={6}>
-          <Paper elevation={2}>
-            <DocumentRenderer documentData={this.props.document_contents} pageNumber={this.state.currentPageIndex - 1}/>
+          <Paper>
+            {pages.map(page => <PageCard key={v4()} page={page} />)}
           </Paper>
         </Grid>
       )
@@ -222,13 +231,19 @@ class DocumentEditor extends React.Component {
      * render sentences
      */
     renderSentences = () => {
-        return (
-          <Grid item xs={12} sm={6} lg={6} xl={6}>
-            <Paper>
-              <SentenceRenderer documentData={this.props.document_contents} pageNumber={this.state.currentPageIndex - 1}/>
-            </Paper>
-          </Grid>
+      let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages);
+      if (pages.length < 1) {
+        return(
+            <div></div>
         )
+      }
+      return (
+        <Grid item xs={12} sm={6} lg={6} xl={6}>
+          <Paper>
+            {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} sentence={sentence}/>) )}
+          </Paper>
+        </Grid>
+      )
     }
 
     /**

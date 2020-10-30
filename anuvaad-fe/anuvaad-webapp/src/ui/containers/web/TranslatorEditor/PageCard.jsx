@@ -5,7 +5,7 @@ const { v4 }        = require('uuid');
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 
-class DocumentRenderer extends React.Component {
+class PageCard extends React.Component {
     renderText = (text) => {
         let style = {
             position: "relative",
@@ -64,28 +64,14 @@ class DocumentRenderer extends React.Component {
         )
     }
 
-    renderPages = () => {
-        let pages = PAGE_OPS.get_pages_children_information(this.props.documentData.pages);
-        if (pages.length < 1) {
-            return(
-                <div></div>
-            )
-        }
-        console.log(pages)
-
-        return (
-            <div>{pages.map(page => this.renderPage(page))}</div>
-        )
-    }
-
     render() {
         return (
             <div>
-                {this.renderPages()}
+                {this.renderPage(this.props.page)}
             </div>
         )
     }
 
 }
 
-export default DocumentRenderer;
+export default PageCard;

@@ -120,7 +120,6 @@ class SentenceCard extends React.Component {
     }
 
     processFormSubmitPressed(event) {
-        console.log('form submit pressed')
         this.setState({
             value: 'this.props.sentence.s0_tgt',
             showSuggestions: false
@@ -249,7 +248,7 @@ class SentenceCard extends React.Component {
     renderSentenceSaveStatus = () => {
         if (this.props.sentence.save) {
             return (
-                <Chip size="medium" label={"sentence saved"} style={{'margin': 4}} color="green"/>
+                <Chip size="medium" label={"sentence saved"} style={{'margin': 4}} color="primary"/>
             )
         }
         return (
@@ -263,7 +262,7 @@ class SentenceCard extends React.Component {
             <Card style={{color: "green"}}>
                 <CardContent>
                     {this.renderSourceSentence()}
-                    {this.renderMTTargetSentence()}
+                    {this.props.sentence.save ? <div></div> : this.renderMTTargetSentence()}
                     <br />
                     {this.renderUserInputArea()}
                     <br />
