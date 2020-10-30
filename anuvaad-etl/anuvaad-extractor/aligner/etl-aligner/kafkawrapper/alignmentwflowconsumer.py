@@ -2,6 +2,7 @@ import json
 import logging
 import random
 import string
+import threading
 
 from kafka import KafkaConsumer, TopicPartition
 from service.alignmentservice import AlignmentService
@@ -43,14 +44,18 @@ class WflowConsumer:
         prefix = "Align WFM Consumer(" + rand_str + ")"
         log_info(prefix + " running.......", None)
         while True:
+            thread_count = 0
             for msg in consumer:
                 data = {}
                 try:
                     data = msg.value
                     if data:
                         log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
-                        service.wf_process(data)
-                    break
+                        thread_name = prefix + "--" + "thread--" + str(thread_count)
+                        log_info(prefix + " | Forked thread: " + thread_name, data)
+                        align_cons_thread = threading.Thread(target=service.wf_process, args=data, name=thread_name)
+                        align_cons_thread.start()
+                        thread_count += 1
                 except Exception as e:
                     log_exception("Exception while consuming: " + str(e), data, e)
                     data["taskID"] = "taskID"

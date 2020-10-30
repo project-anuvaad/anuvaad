@@ -2,6 +2,7 @@ import json
 import logging
 import random
 import string
+import threading
 
 from kafka import KafkaConsumer, TopicPartition
 from service.alignmentservice import AlignmentService
@@ -39,17 +40,21 @@ class Consumer:
         service = AlignmentService()
         util = AlignmentUtils()
         rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
-        prefix = "Align Consumer(" + rand_str + ")"
+        prefix = "Align-Consumer(" + rand_str + ")"
         log_info(prefix + " running.......", None)
         while True:
+            thread_count = 0
             for msg in consumer:
                 data = {}
                 try:
                     data = msg.value
                     if data:
                         log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
-                        service.process(data, False)
-                    break
+                        thread_name = prefix + "--" + "thread--" + str(thread_count)
+                        log_info(prefix + " | Forked thread: " + thread_name, data)
+                        align_cons_thread = threading.Thread(target=service.process, args=(data, False), name=thread_name)
+                        align_cons_thread.start()
+                        thread_count += 1
                 except Exception as e:
                     log_exception("Exception while consuming: " + str(e), data, e)
                     util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming: " + str(e), None, False)
