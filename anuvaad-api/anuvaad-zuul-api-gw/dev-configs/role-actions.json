@@ -11,6 +11,11 @@
             "active":true
         },
         {
+            "role":"SUPERUSER",
+            "actionID": "01803b45-67fb-4b24-a6b3-083dfb9b09d9",
+            "active":true
+        },
+        {
             "role":"TRANSLATOR",
             "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
             "active":true

@@ -2,11 +2,19 @@
     "actions":[
         {
             "id":"30b20c13-db5a-465c-a6b4-50a7c0daee57",
-            "uri":"/anuvaad-etl/wf-manager/v1/workflow/initiate",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/async/initiate",
             "module":"WORKFLOW-MANAGER",
             "active":true,
             "whiteList":false,
-            "description":"API to initiate workflows"
+            "description":"API to initiate ASYNC workflows"
+        },
+        {
+            "id":"01803b45-67fb-4b24-a6b3-083dfb9b09d9",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/sync/initiate",
+            "module":"WORKFLOW-MANAGER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to initiate SYNC workflows"
         },
         {
             "id":"c720db5f-986c-4e84-892c-b5c34a349f74",
