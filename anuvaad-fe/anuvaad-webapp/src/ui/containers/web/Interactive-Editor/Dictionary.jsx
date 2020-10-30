@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
 import Styles from "../../../styles/web/MachineTranslationStyle";
@@ -11,9 +11,16 @@ class Dictionary extends React.Component {
   //   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, offsetHeight } = this.props;
     return (
-      <Paper className={classes.dictionary}>
+      <Paper 
+      // className={classes.dictionary}
+        style={{
+          border: "1px solid #1C9AB7",
+          minHeight: "90%",
+          overflow: "auto", 
+          maxHeight: (offsetHeight - 25) + "px"
+        }}>
         <div>
           <Typography variant="h5" gutterBottom className={classes.header}>
             Dictionary
@@ -30,7 +37,7 @@ class Dictionary extends React.Component {
           <div className={classes.div}>
             {!this.props.loading ? (
               this.props.parallel_words &&
-              this.props.parallel_words.map((words) => <div className={classes.targetdiv}>{words}</div>)
+              this.props.parallel_words.map((words) => <div><hr style={{ border: "1px solid #00000014" }} /><div className={classes.targetdiv}>{words}</div></div>)
 
             ) : (
                 <p style={{ textAlign: "center" }}>
