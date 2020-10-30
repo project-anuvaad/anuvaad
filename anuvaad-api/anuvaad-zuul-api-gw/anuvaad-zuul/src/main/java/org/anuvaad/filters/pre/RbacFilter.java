@@ -71,14 +71,13 @@ public class RbacFilter extends ZuulFilter {
         logger.info("RBAC Filter...");
         RequestContext ctx = RequestContext.getCurrentContext();
         String uri = ctx.getRequest().getRequestURI();
-        String authToken = ctx.getRequest().getHeader(AUTH_TOKEN_HEADER_NAME);
         List<String> openEndpointsWhitelist = ZuulConfigCache.whiteListEndpoints;
         if ((openEndpointsWhitelist.contains(uri))) {
             ctx.set(RBAC_BOOLEAN_FLAG_NAME, false);
             logger.info(SKIP_RBAC, uri);
             return null;
         }
-        Boolean isUserAuthorised = verifyAuthorization(ctx, authToken, uri);
+        Boolean isUserAuthorised = verifyAuthorization(ctx, uri);
         if (isUserAuthorised){
             logger.info(PROCEED_ROUTING_MESSAGE, uri);
             return null;
@@ -92,16 +91,15 @@ public class RbacFilter extends ZuulFilter {
     /**
      * Verifies if the user has the necessary authorization for the resource.
      * @param ctx
-     * @param authToken
      * @param uri
      * @return
      */
-    public Boolean verifyAuthorization(RequestContext ctx, String authToken, String uri) {
+    public Boolean verifyAuthorization(RequestContext ctx, String uri) {
         try {
             User user = (User) ctx.get(USER_INFO_KEY);
-            Boolean isRolesCorrect = verifyRoles(user.getUserRoles());
+            Boolean isRolesCorrect = verifyRoles(user.getRoles());
             if(isRolesCorrect)
-                return verifyRoleActions(user.getUserRoles(), uri);
+                return verifyRoleActions(user.getRoles(), uri);
             else return false;
         } catch (Exception ex) {
             logger.error(RETRIEVING_USER_FAILED_MESSAGE, ex);
@@ -157,9 +155,9 @@ public class RbacFilter extends ZuulFilter {
             }
             if (fail == roles.size()){
                 logger.info(INVALID_ROLES_ACTIONS_MESSAGE);
-                return true;
+                return false;
             }
-            else return false;
+            else return true;
         }catch (Exception e) {
             logger.error("Exception while verifying role-actions: ", e);
             return false;

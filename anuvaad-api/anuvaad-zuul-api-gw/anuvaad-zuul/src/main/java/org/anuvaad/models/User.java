@@ -16,17 +16,14 @@ public class User {
     @JsonProperty("userName")
     public String userName;
 
-    @JsonProperty("password")
-    public String password;
-
     @JsonProperty("email")
     public String email;
 
     @JsonProperty("phoneNo")
     public String phoneNo;
 
-    @JsonProperty("phoneNo")
-    public List<UserRole> userRoles;
+    @JsonProperty("roles")
+    public List<UserRole> roles;
 
     public String getUserID() {
         return userID;
@@ -52,14 +49,6 @@ public class User {
         this.userName = userName;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -76,11 +65,12 @@ public class User {
         this.phoneNo = phoneNo;
     }
 
-    public List<UserRole> getUserRoles() {
-        return userRoles;
+    public List<UserRole> getRoles() {
+        return roles;
     }
 
-    public void setUserRoles(List<UserRole> userRoles) {
-        this.userRoles = userRoles;
+    public void setRoles(List<UserRole> roles) {
+        this.roles = roles;
     }
 }
+

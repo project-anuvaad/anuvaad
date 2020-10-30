@@ -2,6 +2,7 @@ package org.anuvaad.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.zuul.context.RequestContext;
+import org.anuvaad.models.UMSResponse;
 import org.anuvaad.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,17 +52,16 @@ public class UserUtils {
         headers.add(CORRELATION_ID_HEADER_NAME, (String) ctx.get(CORRELATION_ID_KEY));
         final HttpEntity<Object> httpEntity = new HttpEntity<>(req_body, headers);
         try{
-            Object userServiceRes = restTemplate.postForObject(authURL, req_body, Object.class);
+            UMSResponse userServiceRes = restTemplate.postForObject(authURL, httpEntity, UMSResponse.class);
             if (null != userServiceRes){
-                userServiceRes = ((Map<String, Object>) userServiceRes).get("data");
-                return objectMapper.convertValue(userServiceRes, User.class);
+                return userServiceRes.getData();
             }
             else{
                 logger.info("The UMS service is down.");
                 return null;
             }
         }catch (Exception e){
-            logger.error("Exception while fetching user: ", e);
+            logger.error("Exception while fetching user");
             return null;
         }
     }

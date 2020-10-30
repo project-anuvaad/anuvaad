@@ -85,9 +85,7 @@ public class ExceptionUtils {
     }
 
     public static void raiseErrorFilterException( RequestContext ctx) {
-//        RequestContext ctx = RequestContext.getCurrentContext();
         Throwable e = ctx.getThrowable() == null ? (Throwable)ctx.get("error.exception") : ctx.getThrowable();
-
         try {
             if (e == null) {
                 if (ctx.getResponseStatusCode() == HttpStatus.NOT_FOUND.value()) {

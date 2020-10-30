@@ -6,7 +6,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.6.RELEASE</version>
-        <relativePath></relativePath>
     </parent>
     <groupId>com.example</groupId>
     <artifactId>anuvaad-zuul</artifactId>
@@ -91,18 +90,6 @@
                 </executions>
                 <configuration>
                     <jsonLibrary>jackson2</jsonLibrary>
-                    <classes>
-                        <class>org.egov.model.AuthorizationRequestWrapper</class>
-                        <class>org.egov.model.UserDetailResponse</class>
-                        <class>org.egov.model.UserSearchRequest</class>
-                    </classes>
-                    <customTypeMappings>
-                        <customTypeMapping>org.egov.common.contract.request.RequestInfo:RequestInfo</customTypeMapping>
-                        <customTypeMapping>org.egov.common.contract.response.ResponseInfo:ResponseInfo</customTypeMapping>
-                    </customTypeMappings>
-                    <namespace>Digit</namespace>
-                    <debug>true</debug>
-                    <outputKind>module</outputKind>
                 </configuration>
             </plugin>
         </plugins>
