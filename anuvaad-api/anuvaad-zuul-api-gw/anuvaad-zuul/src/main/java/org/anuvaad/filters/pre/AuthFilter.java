@@ -35,9 +35,10 @@ public class AuthFilter extends ZuulFilter {
     private static final String SKIP_AUTH_CHECK = "Auth check skipped - whitelisted endpoint | {}";
     private static final String AUTH_TOKEN_HEADER_NAME = "auth-token";
     private static final String ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE = "Routing to protected endpoint {} restricted, due to authentication failure - No auth token";
-    private static final String UNAUTH_USER_MESSAGE = "You are not authenticated to access this resource";
     private static final String RETRIEVING_USER_FAILED_MESSAGE = "Retrieving user failed";
     private static final String PROCEED_ROUTING_MESSAGE = "Routing to protected endpoint: {} - auth provided";
+    private static final String UNAUTH_USER_MESSAGE = "You don't have access to this resource - authentication failed.";
+
 
     @Override
     public String filterType() {
@@ -72,18 +73,21 @@ public class AuthFilter extends ZuulFilter {
             ExceptionUtils.raiseCustomException(HttpStatus.BAD_REQUEST, AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE);
             return null;
         }
-        ctx.set(AUTH_TOKEN_KEY, authToken);
         if (authToken == null) {
-            logger.info(ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE, getRequestURI());
-            ExceptionUtils.raiseCustomException(HttpStatus.UNAUTHORIZED, UNAUTH_USER_MESSAGE);
+            logger.info(AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE);
+            ExceptionUtils.raiseCustomException(HttpStatus.BAD_REQUEST, AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE);
             return null;
         } else {
+            ctx.set(AUTH_TOKEN_KEY, authToken);
             User user = verifyAuthenticity(ctx, authToken);
-            if (null == user)
-                ExceptionUtils.raiseCustomException(HttpStatus.INTERNAL_SERVER_ERROR, "User authentication service is down");
-            else
+            if (null == user){
+                logger.info(ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE, getRequestURI());
+                ExceptionUtils.raiseCustomException(HttpStatus.UNAUTHORIZED, UNAUTH_USER_MESSAGE);
+            }
+            else {
                 logger.info(PROCEED_ROUTING_MESSAGE, getRequestURI());
                 setShouldDoAuth(true);
+            }
         }
         return null;
     }

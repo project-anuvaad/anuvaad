@@ -26,14 +26,12 @@ public class ExceptionUtils {
         return new ObjectMapper().writeValueAsString(obj);
     }
 
-    private static HashMap<String, Object> getErrorInfoObject(String code, String message, String description) {
+    private static HashMap<String, Object> getErrorInfoObject(String code, String message) {
         String errorTemplate = "{\n" +
                 "    \"Errors\": [\n" +
                 "        {\n" +
                 "            \"code\": \"Exception\",\n" +
-                "            \"message\": null,\n" +
-                "            \"description\": null,\n" +
-                "            \"params\": null\n" +
+                "            \"message\": null\n" +
                 "        }\n" +
                 "    ]\n" +
                 "}";
@@ -44,7 +42,6 @@ public class ExceptionUtils {
             HashMap<String, Object> error = (HashMap<String, Object>) ((List<Object>) errorInfo.get("Errors")).get(0);
             error.put("code", code);
             error.put("message", message);
-            error.put("description", description);
             return errorInfo;
         } catch (IOException e) {
             e.printStackTrace();
@@ -55,7 +52,7 @@ public class ExceptionUtils {
 
     public static void setCustomException(HttpStatus status, String message)  {
         try {
-            _setExceptionBody(status, getErrorInfoObject("CustomException", message, message));
+            _setExceptionBody(status, getErrorInfoObject("CustomException", message));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -95,7 +92,7 @@ public class ExceptionUtils {
             if (e == null) {
                 if (ctx.getResponseStatusCode() == HttpStatus.NOT_FOUND.value()) {
                     _setExceptionBody(HttpStatus.NOT_FOUND, getErrorInfoObject("ResourceNotFoundException",
-                            "The resource - " + ctx.getRequest().getRequestURI() + " not found", null));
+                            "The resource - " + ctx.getRequest().getRequestURI() + " not found"));
                 } else if (ctx.getResponseStatusCode() == HttpStatus.BAD_REQUEST.value()) {
                     String existingResponse = getResponseBody(ctx);
 
@@ -113,10 +110,10 @@ public class ExceptionUtils {
 
             if (exceptionName.equalsIgnoreCase("HttpHostConnectException") ||
                     exceptionName.equalsIgnoreCase("ResourceAccessException")) {
-                _setExceptionBody(HttpStatus.BAD_GATEWAY, getErrorInfoObject(exceptionName, "The backend service is unreachable", null));
+                _setExceptionBody(HttpStatus.BAD_GATEWAY, getErrorInfoObject(exceptionName, "The backend service is unreachable"));
             } else if (exceptionName.equalsIgnoreCase("NullPointerException")) {
                 e.printStackTrace();
-                _setExceptionBody(HttpStatus.INTERNAL_SERVER_ERROR, getErrorInfoObject(exceptionName, exceptionMessage, exceptionMessage));
+                _setExceptionBody(HttpStatus.INTERNAL_SERVER_ERROR, getErrorInfoObject(exceptionName, exceptionMessage));
             } else if (exceptionName.equalsIgnoreCase("HttpClientErrorException")) {
                 String existingResponse = ((HttpClientErrorException) e).getResponseBodyAsString();
                 if (existingResponse.contains("InvalidAccessTokenException"))
@@ -124,12 +121,12 @@ public class ExceptionUtils {
                 else
                     _setExceptionBody(((HttpClientErrorException) e).getStatusCode(), existingResponse);
             } else if (exceptionName.equalsIgnoreCase("InvalidAccessTokenException")) {
-                _setExceptionBody(HttpStatus.UNAUTHORIZED, getErrorInfoObject(exceptionName, exceptionMessage, exceptionMessage));
+                _setExceptionBody(HttpStatus.UNAUTHORIZED, getErrorInfoObject(exceptionName, exceptionMessage));
             } else if (exceptionName.equalsIgnoreCase("CustomException")) {
                 CustomException ce = (CustomException)e;
-                _setExceptionBody(HttpStatus.valueOf(ce.nStatusCode), getErrorInfoObject(exceptionName, exceptionMessage, exceptionMessage));
+                _setExceptionBody(HttpStatus.valueOf(ce.nStatusCode), getErrorInfoObject(exceptionName, exceptionMessage));
             } else {
-                _setExceptionBody(HttpStatus.INTERNAL_SERVER_ERROR, getErrorInfoObject(exceptionName, exceptionMessage, exceptionMessage));
+                _setExceptionBody(HttpStatus.INTERNAL_SERVER_ERROR, getErrorInfoObject(exceptionName, exceptionMessage));
             }
         } catch (Exception e1) {
             e1.printStackTrace();

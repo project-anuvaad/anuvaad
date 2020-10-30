@@ -3,6 +3,8 @@ package org.anuvaad.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.zuul.context.RequestContext;
 import org.anuvaad.models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
@@ -27,9 +29,12 @@ public class UserUtils {
     private String umsSearchWithToken;
 
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public UserUtils(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+        objectMapper = new ObjectMapper();
     }
 
     /**
@@ -45,6 +50,19 @@ public class UserUtils {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(CORRELATION_ID_HEADER_NAME, (String) ctx.get(CORRELATION_ID_KEY));
         final HttpEntity<Object> httpEntity = new HttpEntity<>(req_body, headers);
-        return restTemplate.postForObject(authURL, httpEntity, User.class);
+        try{
+            Object userServiceRes = restTemplate.postForObject(authURL, req_body, Object.class);
+            if (null != userServiceRes){
+                userServiceRes = ((Map<String, Object>) userServiceRes).get("data");
+                return objectMapper.convertValue(userServiceRes, User.class);
+            }
+            else{
+                logger.info("The UMS service is down.");
+                return null;
+            }
+        }catch (Exception e){
+            logger.error("Exception while fetching user: ", e);
+            return null;
+        }
     }
 }

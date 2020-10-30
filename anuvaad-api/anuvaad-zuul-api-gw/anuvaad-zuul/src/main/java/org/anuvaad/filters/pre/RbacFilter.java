@@ -98,7 +98,7 @@ public class RbacFilter extends ZuulFilter {
      */
     public Boolean verifyAuthorization(RequestContext ctx, String authToken, String uri) {
         try {
-            User user = userUtils.getUser(authToken, ctx);
+            User user = (User) ctx.get(USER_INFO_KEY);
             Boolean isRolesCorrect = verifyRoles(user.getUserRoles());
             if(isRolesCorrect)
                 return verifyRoleActions(user.getUserRoles(), uri);
