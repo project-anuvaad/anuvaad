@@ -41,7 +41,7 @@ class WflowConsumer:
         service = AlignmentService()
         util = AlignmentUtils()
         rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
-        prefix = "Align WFM Consumer(" + rand_str + ")"
+        prefix = "Align-WFM-Consumer(" + rand_str + ")"
         log_info(prefix + " running.......", None)
         while True:
             thread_count = 0

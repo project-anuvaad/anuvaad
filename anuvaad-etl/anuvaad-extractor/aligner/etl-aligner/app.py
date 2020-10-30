@@ -24,10 +24,10 @@ def start_consumer():
         consumer = Consumer()
         wflowconsumer = WflowConsumer()
         try:
-            alignConsumerThread = threading.Thread(target=consumer.consume, name='AlignerConsumer-Thread')
-            alignWflowConsumerThread = threading.Thread(target=wflowconsumer.consume, name='AlignerWflowConsumer-Thread')
-            alignConsumerThread.start()
-            alignWflowConsumerThread.start()
+            align_consumer_thread = threading.Thread(target=consumer.consume, name='AlignerConsumer-Thread')
+            align_wflow_consumer_thread = threading.Thread(target=wflowconsumer.consume, name='AlignerWflowConsumer-Thread')
+            align_consumer_thread.start()
+            align_wflow_consumer_thread.start()
         except Exception as e:
             log.exception("Exception while starting the kafka consumer: " + str(e))
 
