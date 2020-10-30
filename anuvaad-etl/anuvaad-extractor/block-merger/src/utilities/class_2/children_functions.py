@@ -62,7 +62,8 @@ def get_layout_proposals(pdf_data,flags) :
         pdf_data['sub_in_dfs'] = []
         if flags['page_layout'] == 'double_column' :
             for page_index, pdf_image in enumerate(pdf_data['pdf_image_paths']):
-                regions = get_column(pdf_image)
+                width_ratio = pdf_data['page_width'] / pdf_data['pdf_image_width']
+                regions = get_column(pdf_image, width_ratio)
                 sub_in_dfs = collate_regions(regions,pdf_data['in_dfs'][page_index])
                 pdf_data['sub_in_dfs'].append(sub_in_dfs)
                 sub_h_dfs  = get_xml.get_hdfs(sub_in_dfs,  pdf_data['header_region'], pdf_data['footer_region'])

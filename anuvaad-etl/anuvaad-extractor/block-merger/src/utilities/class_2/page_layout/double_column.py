@@ -25,7 +25,7 @@ def sum_along_h(binary):
     return sum_h
 
 
-def get_column(image):
+def get_column(image,width_ratio):
     # images = glob.glob(image_dir + '*.jpg')
     # for image in images:
     roll_number = cv2.imread(image, 0)
@@ -40,8 +40,8 @@ def get_column(image):
     sum_w = sum_along_w(binary_5)
     temp_index = sum_w[int(w / 2) - 200:int(w / 2) + 200].index(min(sum_w[int(w / 2) - 200:int(w / 2) + 200]))
     real_index = temp_index + int(w / 2) - 200
+    real_index = int(real_index * width_ratio)
     regions = [{'text_top':0,'text_left':0,'text_width':real_index,'text_height':h},{'text_top':0,'text_left':real_index,'text_width':w - real_index,'text_height':h}]
-
     #
     # image1 = roll_number[:, 0:real_index]
     # image2 = roll_number[:, real_index:]
@@ -54,4 +54,3 @@ def get_column(image):
 # ver_crop_image(image_dir, save_dir)
 #
 #
-

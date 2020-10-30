@@ -64,7 +64,7 @@ args = parser.parse_args(args=[])
 
 def test_net(image, text_threshold, link_threshold, low_text, cuda, poly, refine_net=None):
     t0 = time.time()
-    
+
     # resize
     img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, args.canvas_size, interpolation=cv2.INTER_LINEAR, mag_ratio=args.mag_ratio)
     ratio_h = ratio_w = 1 / target_ratio
@@ -161,12 +161,16 @@ def detect_text(pdf_data,text_threshold=args.text_threshold,low_text_threshold= 
     image_paths = pdf_data['pdf_image_paths']
     width_ratio = pdf_data['page_width'] / pdf_data['pdf_image_width']
     height_ratio = pdf_data['page_height'] / pdf_data['pdf_image_height']
+
+    pdf_data['width_ratio'] = width_ratio
+    pdf_data['height_ratio'] = height_ratio
+
     in_dfs = []
     number_of_pages = len(image_paths)
     if img_class == "double_col":
         number_of_pages = 1
         image_paths = [image_paths]
-    
+
     t = time.time()
     for image_path in image_paths :
 

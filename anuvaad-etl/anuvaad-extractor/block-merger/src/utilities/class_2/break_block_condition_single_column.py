@@ -250,10 +250,10 @@ class BlockBreak:
 
         if line_id == last_line:
             # Adding exception for last line of page
-            if (start_delta < 3 * self.median_height) & (end_delta < 2 * self.median_height):
-                return 0
-            else:
-                return 1
+            #if (start_delta < 3 * self.median_height) & (end_delta < 2 * self.median_height):
+            #return 0
+            #else:
+            return 1
         else:
             # First pages uses centre alignment for headings and titles
             # if page_number == 1:
@@ -267,14 +267,16 @@ class BlockBreak:
                         return 1
 
             # Supreme court uses justified text alignment
-            if start_delta < 2 * self.median_height:
-                if end_delta > 2 * self.median_height:
+            # if start_delta < 2 * self.median_height:
+            #     if end_delta > 2 * self.median_height:
+            #         return 1
+            #     else :
+            #         return 0
+            #
+            # else:
+            if abs(line_start - self.line_df['start'][line_id + 1]) > 2 * self.median_height:
+                if abs(line_ending - self.line_df['end'][line_id + 1]) > 2 * self.median_height:
                     return 1
-
-            else:
-                if abs(line_start - self.line_df['start'][line_id + 1]) > 2 * self.median_height:
-                    if abs(line_ending - self.line_df['end'][line_id + 1]) > 2 * self.median_height:
-                        return 1
 
         return 0
 
@@ -363,4 +365,3 @@ def draw_sub_blocks(list_of_blocks, image, margin=2, color="green", save=False):
                 bottom = int(row["text_height"] + top) - 2 * margin
                 draw.rectangle(((left, top), (right, bottom)), outline=color,width =3)
     return image
-

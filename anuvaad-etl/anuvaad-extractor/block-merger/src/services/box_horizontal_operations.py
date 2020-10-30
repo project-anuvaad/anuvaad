@@ -11,8 +11,7 @@ def merge_horizontal_blocks(in_df, configs, debug=False):
     connections = []
     index_grams = get_ngram(list(df.index.values), window_size=2)
     #This fails whten in_df contains only one node
-    #print(index_grams,'index_gramsddddddddddddd')
-
+    
     for index_gram in index_grams:
         if are_hlines(df, configs, index_gram[0], index_gram[1], debug=debug):
             connections.append((index_gram[1], index_gram[0], 'CONNECTED'))
@@ -44,7 +43,7 @@ def merge_horizontal_blocks(in_df, configs, debug=False):
             children_df.sort_values('text_top', axis=0, ascending=True, inplace=True)
             height = (children_df.iloc[-1]['text_top'] + children_df.iloc[-1]['text_height']) - children_df[
                 'text_top'].min()
-            
+
 
             block_df.at[index, 'text_top'] = top
             block_df.at[index, 'text_left'] = left

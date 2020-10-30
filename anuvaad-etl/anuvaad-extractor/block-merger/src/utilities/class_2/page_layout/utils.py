@@ -1,5 +1,5 @@
 
-def extract_and_delete_region(dic, df, extract_by='Intersection'):
+def extract_and_delete_region(dic, df, extract_by='starting_point'):
     left_key = 'text_left'
     top_key = 'text_top'
     width_key = 'text_width'
