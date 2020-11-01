@@ -75,15 +75,15 @@ class PdfUpload extends Component {
     let model = "";
     let target_lang_name = ''
     let source_lang_name = ''
-    if (this.state.modelLanguage) {
-      this.state.modelLanguage.map(item =>
+    if (this.props.fetch_models.models) {
+      this.props.fetch_models.models.map(item =>
         item.target_language_code === this.state.target &&
           item.source_language_code === this.state.source &&
           item.is_primary
           ? (model = item)
           : ""
       );
-      this.state.language.map((lang) => {
+      this.props.fetch_languages.languages.map((lang) => {
         if (lang.language_code === this.state.target) {
           target_lang_name = lang.language_name
         } if (lang.language_code === this.state.source) {

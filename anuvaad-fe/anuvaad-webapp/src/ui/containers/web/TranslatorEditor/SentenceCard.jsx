@@ -123,6 +123,8 @@ class SentenceCard extends React.Component {
         });
     }
 
+    
+
     /**
      * user actions handlers
      */
