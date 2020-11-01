@@ -271,10 +271,10 @@ class SentenceCard extends React.Component {
         return (
             <div>
                 <Button onClick={this.processMergeNowButtonClicked} variant="outlined" color="primary">
-                    Merge Now
+                    MERGE NOW
                 </Button>
                 <Button onClick={this.processMergeCancelButtonClicked} variant="outlined" color="primary">
-                    Merge Cancel
+                    CANCEL MERGE
                 </Button>
             </div>
         )
@@ -297,7 +297,7 @@ class SentenceCard extends React.Component {
                 <Checkbox
                     checked={this.state.cardChecked}
                     onChange={this.processMergeSelectionToggle}
-                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                    style={{color: 'green'}}
                 />
             )
         }
