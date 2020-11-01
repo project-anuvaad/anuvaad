@@ -82,13 +82,7 @@ class DocumentEditor extends React.Component {
     }
     workFlowApi(workflow, blockDetails, update, type) {
     }
-    fetchData() {
-    }
-    handleScroll() {
-        this.setState({ scrollToTop: false });
-    }
-    moveToValidationMode(pageNo, blockId, sId) {
-    }
+
 
     handleViewModeToggle = () => {
         this.setState({
@@ -103,7 +97,6 @@ class DocumentEditor extends React.Component {
   
       history.push(`${process.env.PUBLIC_URL}/view-document`);
     }
-
 
     /**
      * all render functions starts here
@@ -208,6 +201,7 @@ class DocumentEditor extends React.Component {
       )
     }
 
+
     /**
      * render Document pages
      */
@@ -220,9 +214,15 @@ class DocumentEditor extends React.Component {
       }
       return(
         <Grid item xs={12} sm={6} lg={6} xl={6}>
-          <Paper>
+          <InfiniteScroll height={1200}
+            next={this.makeAPICallFetchContent}
+            hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false }
+            dataLength={pages.length}
+            loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
+            endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
+          >
             {pages.map(page => <PageCard key={v4()} page={page} />)}
-          </Paper>
+          </InfiniteScroll>
         </Grid>
       )
     }
@@ -238,13 +238,21 @@ class DocumentEditor extends React.Component {
         )
       }
       return (
-        <Grid item xs={12} sm={6} lg={6} xl={6}>
-          <Paper>
-            {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} sentence={sentence}/>) )}
-          </Paper>
-        </Grid>
+          <Grid item xs={12} sm={6} lg={6} xl={6}>
+            <InfiniteScroll height={1200}
+                next={this.makeAPICallFetchContent}
+                hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false }
+                dataLength={pages.length}
+                loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
+                endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
+            >
+              {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} sentence={sentence}/>) )}
+            </InfiniteScroll>
+          </Grid>
+        
       )
     }
+
 
     /**
      * render functions ends here

@@ -30,6 +30,11 @@ import documentconverter from "./documentconverter";
 import wordDictionary from "./word_dictionary";
 import saveContent from "./savecontent";
 
+import block_highlight from './blockReducer'
+import sentence_highlight from './sentenceReducer'
+import sentence_merge_operation from './sentenceMergeReducer'
+
+
 export default {
     login,
     automl,
@@ -60,5 +65,9 @@ export default {
     job_details,
     document_contents,
     fetch_languages,
-    fetch_models
+    fetch_models,
+
+    block_highlight,
+    sentence_highlight,
+    sentence_merge_operation
 };

@@ -7,129 +7,127 @@ import Divider from '@material-ui/core/Divider';
 import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField'
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import Checkbox from '@material-ui/core/Checkbox';
 
-  const top100Films = [
-    { title: 'The Shawshank Redemption', year: 1994 },
-    { title: 'The Godfather', year: 1972 },
-    { title: 'The Godfather: Part II', year: 1974 },
-    { title: 'The Dark Knight', year: 2008 },
-    { title: '12 Angry Men', year: 1957 },
-    { title: "Schindler's List", year: 1993 },
-    { title: 'Pulp Fiction', year: 1994 },
-    { title: 'The Lord of the Rings: The Return of the King', year: 2003 },
-    { title: 'The Good, the Bad and the Ugly', year: 1966 },
-    { title: 'Fight Club', year: 1999 },
-    { title: 'The Lord of the Rings: The Fellowship of the Ring', year: 2001 },
-    { title: 'Star Wars: Episode V - The Empire Strikes Back', year: 1980 },
-    { title: 'Forrest Gump', year: 1994 },
-    { title: 'Inception', year: 2010 },
-    { title: 'The Lord of the Rings: The Two Towers', year: 2002 },
-    { title: "One Flew Over the Cuckoo's Nest", year: 1975 },
-    { title: 'Goodfellas', year: 1990 },
-    { title: 'The Matrix', year: 1999 },
-    { title: 'Seven Samurai', year: 1954 },
-    { title: 'Star Wars: Episode IV - A New Hope', year: 1977 },
-    { title: 'City of God', year: 2002 },
-    { title: 'Se7en', year: 1995 },
-    { title: 'The Silence of the Lambs', year: 1991 },
-    { title: "It's a Wonderful Life", year: 1946 },
-    { title: 'Life Is Beautiful', year: 1997 },
-    { title: 'The Usual Suspects', year: 1995 },
-    { title: 'Léon: The Professional', year: 1994 },
-    { title: 'Spirited Away', year: 2001 },
-    { title: 'Saving Private Ryan', year: 1998 },
-    { title: 'Once Upon a Time in the West', year: 1968 },
-    { title: 'American History X', year: 1998 },
-    { title: 'Interstellar', year: 2014 },
-    { title: 'Casablanca', year: 1942 },
-    { title: 'City Lights', year: 1931 },
-    { title: 'Psycho', year: 1960 },
-    { title: 'The Green Mile', year: 1999 },
-    { title: 'The Intouchables', year: 2011 },
-    { title: 'Modern Times', year: 1936 },
-    { title: 'Raiders of the Lost Ark', year: 1981 },
-    { title: 'Rear Window', year: 1954 },
-    { title: 'The Pianist', year: 2002 },
-    { title: 'The Departed', year: 2006 },
-    { title: 'Terminator 2: Judgment Day', year: 1991 },
-    { title: 'Back to the Future', year: 1985 },
-    { title: 'Whiplash', year: 2014 },
-    { title: 'Gladiator', year: 2000 },
-    { title: 'Memento', year: 2000 },
-    { title: 'The Prestige', year: 2006 },
-    { title: 'The Lion King', year: 1994 },
-    { title: 'Apocalypse Now', year: 1979 },
-    { title: 'Alien', year: 1979 },
-    { title: 'Sunset Boulevard', year: 1950 },
-    { title: 'Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb', year: 1964 },
-    { title: 'The Great Dictator', year: 1940 },
-    { title: 'Cinema Paradiso', year: 1988 },
-    { title: 'The Lives of Others', year: 2006 },
-    { title: 'Grave of the Fireflies', year: 1988 },
-    { title: 'Paths of Glory', year: 1957 },
-    { title: 'Django Unchained', year: 2012 },
-    { title: 'The Shining', year: 1980 },
-    { title: 'WALL·E', year: 2008 },
-    { title: 'American Beauty', year: 1999 },
-    { title: 'The Dark Knight Rises', year: 2012 },
-    { title: 'Princess Mononoke', year: 1997 },
-    { title: 'Aliens', year: 1986 },
-    { title: 'Oldboy', year: 2003 },
-    { title: 'Once Upon a Time in America', year: 1984 },
-    { title: 'Witness for the Prosecution', year: 1957 },
-    { title: 'Das Boot', year: 1981 },
-    { title: 'Citizen Kane', year: 1941 },
-    { title: 'North by Northwest', year: 1959 },
-    { title: 'Vertigo', year: 1958 },
-    { title: 'Star Wars: Episode VI - Return of the Jedi', year: 1983 },
-    { title: 'Reservoir Dogs', year: 1992 },
-    { title: 'Braveheart', year: 1995 },
-    { title: 'M', year: 1931 },
-    { title: 'Requiem for a Dream', year: 2000 },
-    { title: 'Amélie', year: 2001 },
-    { title: 'A Clockwork Orange', year: 1971 },
-    { title: 'Like Stars on Earth', year: 2007 },
-    { title: 'Taxi Driver', year: 1976 },
-    { title: 'Lawrence of Arabia', year: 1962 },
-    { title: 'Double Indemnity', year: 1944 },
-    { title: 'Eternal Sunshine of the Spotless Mind', year: 2004 },
-    { title: 'Amadeus', year: 1984 },
-    { title: 'To Kill a Mockingbird', year: 1962 },
-    { title: 'Toy Story 3', year: 2010 },
-    { title: 'Logan', year: 2017 },
-    { title: 'Full Metal Jacket', year: 1987 },
-    { title: 'Dangal', year: 2016 },
-    { title: 'The Sting', year: 1973 },
-    { title: '2001: A Space Odyssey', year: 1968 },
-    { title: "Singin' in the Rain", year: 1952 },
-    { title: 'Toy Story', year: 1995 },
-    { title: 'Bicycle Thieves', year: 1948 },
-    { title: 'The Kid', year: 1921 },
-    { title: 'Inglourious Basterds', year: 2009 },
-    { title: 'Snatch', year: 2000 },
-    { title: '3 Idiots', year: 2009 },
-    { title: 'Monty Python and the Holy Grail', year: 1975 },
-  ];
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
+import { highlightBlock, startMergeSentence, inProgressMergeSentence, finishMergeSentence, cancelMergeSentence, clearHighlighBlock } from '../../../../flux/actions/apis/translator_actions';
+
+import Collapse from '@material-ui/core/Collapse';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import IconButton from "@material-ui/core/IconButton";
+
+
+const styles = {
+    card_active: {
+        background: 'rgb(211,211,211)',
+        borderRadius: 10,
+        border: 0,
+        color: 'green',
+        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+    },
+    card_inactive: {
+        color: 'grey',
+    },
+    expand: {
+        transform: 'rotate(0deg)',
+    },
+    expandOpen: {
+        transform: 'rotate(180deg)',
+    }
+}
+
+function sleep(delay = 0) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, delay);
+    });
+}
+
+const filterOptions = (options, { inputValue }) => options;
 
 class SentenceCard extends React.Component {
     constructor(props) {
         super(props);
-        this.state                      = {value: '', showSuggestions: false};
-        this.handleUserInputText        = this.handleUserInputText.bind(this);
-        this.processFormSubmitPressed   = this.processFormSubmitPressed.bind(this);
+        this.state = {
+            value: '',
+            showSuggestions: false,
+            suggestions: [],
+            cardInFocus: false,
+            cardChecked: false,
+            isModeMerge: false
+        };
+        this.textInput                          = React.createRef();
+        this.handleUserInputText                = this.handleUserInputText.bind(this);
+        
+        this.processSaveButtonClicked           = this.processSaveButtonClicked.bind(this);
+        this.processMergeButtonClicked          = this.processMergeButtonClicked.bind(this);
+        this.processMergeNowButtonClicked       = this.processMergeNowButtonClicked.bind(this);
+        this.processMergeCancelButtonClicked    = this.processMergeCancelButtonClicked.bind(this);
     }
 
-    processFormSubmitPressed(event) {
+    componentDidUpdate(prevProps) {
+        if ((prevProps.sentence_merge_operation.finished !== this.props.sentence_merge_operation.finished) ) {
+            this.setState({
+                cardChecked: false
+            })
+        }
+      }
+
+    /**
+     * api calls
+     */
+    async makeAPICallInteractiveTranslation() {
+        const response  = await fetch('https://country.register.gov.uk/records.json?page-size=5000');
+        await sleep(1e3);
+        const countries = await response.json();
         this.setState({
-            value: 'this.props.sentence.s0_tgt',
-            showSuggestions: false
-        });
-        event.preventDefault();
+            suggestions: Object.keys(countries).map((key) => countries[key].item[0])
+        })
+    }
+
+    processSaveButtonClicked() {
+        if (this.state.value === '' && this.props.sentence.s0_tgt !== '') {
+            this.setState({
+                value: this.props.sentence.s0_tgt
+            })
+        }
+    }
+
+    /**
+     * Merge mode user action handlers
+     */
+    processMergeButtonClicked() {
+        this.setState({
+            isModeMerge: true
+        })
+        this.props.startMergeSentence()
+    }
+
+    processMergeNowButtonClicked() {
+        this.setState({
+            isModeMerge: false,
+        })
+        this.props.finishMergeSentence()
+    }
+
+    processMergeCancelButtonClicked() {
+        this.setState({
+            isModeMerge: false,
+        })
+        this.props.cancelMergeSentence()
+    }
+
+    processMergeSelectionToggle = () => {
+        this.props.inProgressMergeSentence(this.props.sentence)
+        this.setState({
+            cardChecked: !this.state.cardChecked
+        })
     }
 
     handleUserInputText(event) {
-        console.log(event.target.value)
-        this.setState({value: event.target.value});
+        this.setState({ value: event.target.value });
     }
 
     handleKeyDown = (event) => {
@@ -137,24 +135,48 @@ class SentenceCard extends React.Component {
         /**
          * Ctrl+s
          */
-        if((event.ctrlKey || event.metaKey )&& charCode === 's') {
+        if ((event.ctrlKey || event.metaKey) && charCode === 's') {
+            console.log('Ctrl+S pressed, moving hardcode data')
+            this.setState({ value: this.props.sentence.s0_tgt });
             event.preventDefault();
-            this.setState({value: this.props.s0_tgt});
             return false
         }
 
+        /**
+         * user requesting for suggestions
+         */
         var TABKEY = 9;
-        if(event.keyCode == TABKEY) {
+        if (event.keyCode === TABKEY) {
+            this.setState({ showSuggestions: true })
+            this.makeAPICallInteractiveTranslation()
             event.preventDefault();
-            this.setState({showSuggestions: true})
             return false
         }
     }
 
+    handleClickAway = () => {
+        /**
+         * Unroll the card only in normal operation
+         * - in merge mode do not collapse the current card.
+         */
+        if (this.state.cardInFocus && this.state.isModeMerge) {
+            this.props.cancelMergeSentence()
+            this.setState({
+                isModeMerge: false,
+                cardInFocus: false,
+            })
+            this.props.clearHighlighBlock()
+        }
+        if (!this.state.isModeMerge) {
+            this.setState({
+                cardInFocus: false
+            })
+        }
+    };
+
     renderSourceSentence = () => {
         return (
             <div>
-                <Divider />
                 <Typography color="textSecondary" gutterBottom>
                     Source sentence
                     <br />
@@ -164,7 +186,6 @@ class SentenceCard extends React.Component {
                     {this.props.sentence.s0_src}
                     <br />
                 </Typography>
-                <Divider />
             </div>
         )
     }
@@ -189,90 +210,169 @@ class SentenceCard extends React.Component {
 
     renderUserInputArea = () => {
         return (
-            <form  onSubmit={this.processFormSubmitPressed}>
+            <form name={this.props.sentence.s_id}>
                 <div>
                     <Autocomplete
-                        options={top100Films}
-                        value={this.state.value}
+                        filterOptions={filterOptions}
                         getOptionLabel={(option) => {
-                            // Value selected with enter, right from the input
-                            if (typeof option === 'string') {
-                              return option;
-                            }
-                            // Add "xxx" option created dynamically
-                            if (option.inputValue) {
-                              return option.inputValue;
-                            }
-                            // Regular option
-                            return option.title;
+                            return option.name
                         }}
+                        renderOption={(option, index) => {
+                            return (<Typography noWrap>{option.name}</Typography>)
+                        }}
+                        options={this.state.suggestions}
+
+                        inputValue={this.state.value}
                         fullWidth
-                        clearOnBlur
                         open={this.state.showSuggestions}
                         loading={true}
                         loadingText={'Loading ...'}
                         onChange={(event, newValue) => {
-                            console.log('onChange of autocomplete is fired')
+                            console.log('onChange of autocomplete is fired: ', newValue)
+                            this.setState({
+                                value: this.state.value + ' ' + newValue.name,
+                                showSuggestions: false
+                            });
+                        }}
+                        onClose={(event, newValue) => {
                             this.setState({
                                 showSuggestions: false
                             });
-                            // filterOptions(event, newValue);
-                        }}
-                        onClose={(event, newValue) => {
-                            
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
                                 helperText="Ctrl+s to save, TAB key to get suggestions of your choice"
                                 type="text"
+                                name={this.props.sentence.s_id}
                                 value={this.state.value}
                                 onChange={this.handleUserInputText}
                                 fullWidth
                                 multiline
-                                variant="outlined" 
+                                variant="outlined"
                                 onKeyDown={this.handleKeyDown}
+                                inputRef={this.textInput}
+                                onFocus={event => {
+                                    this.props.highlightBlock(this.props.sentence)
+                                }}
                             />
-                    )}/>
+                        )} />
                 </div>
                 <br />
-                <Button type="submit" variant="outlined" color="primary">
-                    SAVE
-                </Button>
-                <Button type="submit" variant="outlined" color="primary">
-                    MERGE
-                </Button>
             </form>
         )
     }
-    
-    renderSentenceSaveStatus = () => {
-        if (this.props.sentence.save) {
-            return (
-                <Chip size="medium" label={"sentence saved"} style={{'margin': 4}} color="primary"/>
-            )
-        }
-        return (
-            <Chip size="medium" label={"sentence saved"} style={{'margin': 4}} color="primary"/>
-        )
-    }
 
-    render() {
+    renderNormaModeButtons = () => {
         return (
-            <div key={12}>
-            <Card style={{color: "green"}}>
-                <CardContent>
-                    {this.renderSourceSentence()}
-                    {this.props.sentence.save ? <div></div> : this.renderMTTargetSentence()}
-                    <br />
-                    {this.renderUserInputArea()}
-                    <br />
-                    {this.renderSentenceSaveStatus()}
-                </CardContent>
-            </Card>
+            <div>
+                <Button onClick={this.processSaveButtonClicked} variant="outlined" color="primary">
+                    SAVE
+                </Button>
+                <Button onClick={this.processMergeButtonClicked} variant="outlined" color="primary">
+                    MERGE
+                </Button>
             </div>
         )
     }
 
+    renderMergeModeButtons = () => {
+        return (
+            <div>
+                <Button onClick={this.processMergeNowButtonClicked} variant="outlined" color="primary">
+                    Merge Now
+                </Button>
+                <Button onClick={this.processMergeCancelButtonClicked} variant="outlined" color="primary">
+                    Merge Cancel
+                </Button>
+            </div>
+        )
+    }
+
+    renderSentenceSaveStatus = () => {
+        if (this.props.sentence.save) {
+            return (
+                <Chip size="medium" label={"sentence saved"} style={{ 'margin': 4 }} color="primary" />
+            )
+        }
+        return (
+            <Chip size="medium" label={"sentence saved"} style={{ 'margin': 4 }} color="primary" />
+        )
+    }
+
+    renderCardSelectedForMerge = () => {
+        if (this.props.sentence_merge_operation.progress) {
+            return (
+                <Checkbox
+                    checked={this.state.cardChecked}
+                    onChange={this.processMergeSelectionToggle}
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                />
+            )
+        }
+        return(<div></div>)
+    }
+
+    handleCardExpandClick = () => {
+        this.setState({ cardInFocus: !this.state.cardInFocus })
+        
+        this.textInput && this.textInput.current && this.textInput.current.focus();
+    }
+
+    render() {
+
+        return (
+            <ClickAwayListener mouseEvent="onMouseDown" onClickAway={this.handleClickAway}>
+                <div key={12} style={{ padding: "1%" }}>
+                    <Card style={this.state.cardInFocus ? styles.card_active : styles.card_inactive}>
+                        <CardContent style={{ display: "flex", flexDirection: "row" }}>
+                            <div style={{ width: "90%" }}>
+                                {this.renderSourceSentence()}
+                            </div>
+                            <div style={{ width: "10%", textAlign: "right" }}>
+                                <IconButton aria-label="settings"
+                                    style={this.state.cardInFocus ? styles.expandOpen : styles.expand}
+                                     onClick={this.handleCardExpandClick}>
+                                    <ExpandMoreIcon />
+                                </IconButton>
+                            </div>
+                            {this.renderCardSelectedForMerge()}
+
+                        </CardContent>
+
+                        <Collapse in={this.state.cardInFocus} timeout="auto" unmountOnExit>
+                            <CardContent>
+                                {this.props.sentence.save ? <div></div> : this.renderMTTargetSentence()}
+                                <br />
+                                {this.renderUserInputArea()}
+                                <br />
+                                {this.state.isModeMerge ? this.renderMergeModeButtons() : this.renderNormaModeButtons()}
+                                <br />
+                                {this.renderSentenceSaveStatus()}
+                            </CardContent>
+                        </Collapse>
+                    </Card>
+                </div>
+            </ClickAwayListener>
+        )
+    }
 }
 
-export default SentenceCard;
+const mapStateToProps = state => ({
+    document_contents: state.document_contents,
+    sentence_merge_operation: state.sentence_merge_operation,
+    sentence_highlight: state.sentence_highlight
+});
+  
+const mapDispatchToProps = dispatch =>bindActionCreators(
+    {
+        highlightBlock, 
+        startMergeSentence, 
+        inProgressMergeSentence, 
+        finishMergeSentence,
+        cancelMergeSentence,
+        clearHighlighBlock
+    },
+    dispatch
+);
+  
+export default connect(mapStateToProps, mapDispatchToProps)(SentenceCard);
