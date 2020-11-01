@@ -225,7 +225,7 @@ class ViewDocument extends React.Component {
           customBodyRender: (value, tableMeta, updateValue) => {
             return (
               <div >
-                {(tableMeta.rowData[5] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? (<ProgressBar token={true} val={1000} eta={2000 * 1000}></ProgressBar>) : (<div>COMPLETED</div>)}
+                {(tableMeta.rowData[5] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? (<div>IN PROGRESS</div>) : (<div>COMPLETED</div>)}
               </div>
             )
           }
