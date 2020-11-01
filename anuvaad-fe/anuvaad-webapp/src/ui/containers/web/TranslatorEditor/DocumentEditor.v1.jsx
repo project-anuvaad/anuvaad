@@ -62,15 +62,19 @@ class DocumentEditor extends React.Component {
       }
       TELEMETRY.startTranslatorFlow(sourceLang, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
       this.setState({ showLoader: true });
-      this.makeAPICallFetchContent(recordId);
+      this.makeAPICallFetchContent();
     }
 
     /**
      * API methods
      */
-    makeAPICallFetchContent =  (recordId) => {
-        const apiObj              = new FileContent(recordId, 1, 2);
-        this.props.APITransport(apiObj);
+    makeAPICallFetchContent =  () => {
+      let start_page    = this.props.document_contents.pages.length + 1;
+      let end_page      = start_page + 1;
+      console.log(`fetching document content, start_page: ${start_page}, end_page: ${end_page}`);
+
+      const apiObj      = new FileContent(this.props.match.params.jobid, start_page, end_page);
+      this.props.APITransport(apiObj);
     }
 
     /**

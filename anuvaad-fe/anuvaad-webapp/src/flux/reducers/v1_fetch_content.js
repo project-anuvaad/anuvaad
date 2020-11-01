@@ -9,19 +9,12 @@ export default function(state = initialState, action) {
     switch (action.type) {
         case C.FETCH_CONTENT: {
             let data            = action.payload;
-            let pages           = data.data
+            let pages           = data.data.filter(value => Object.keys(value).length !== 0);
 
-            if (state.pages.length == 0) {
-                return {
-                    count: data.count,
-                    pages: pages
-                }
-            }
-            pages.push(...pages)
             return {
                 ...state,
                 count: data.count,
-                pages: pages
+                pages: [...state.pages, ...pages]
             }
         }
 
