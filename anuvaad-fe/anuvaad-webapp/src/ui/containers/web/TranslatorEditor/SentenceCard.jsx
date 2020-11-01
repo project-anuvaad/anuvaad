@@ -9,7 +9,6 @@ import TextField from '@material-ui/core/TextField'
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import Checkbox from '@material-ui/core/Checkbox';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -32,6 +31,9 @@ const styles = {
     },
     card_inactive: {
         color: 'grey',
+    },
+    card_saved: {
+        color: 'green',
     },
     expand: {
         transform: 'rotate(0deg)',
@@ -60,6 +62,7 @@ class SentenceCard extends React.Component {
             cardChecked: false,
             isModeMerge: false,
             apiInProgress: false,
+            sentence_saved: false
         };
         this.textInput                          = React.createRef();
         this.handleUserInputText                = this.handleUserInputText.bind(this);
@@ -113,7 +116,8 @@ class SentenceCard extends React.Component {
             return response;
         }).then((returnedResponse) => {
            this.setState({
-            apiInProgress: false
+            apiInProgress: false,
+            sentence_saved: true
            });
         }).catch((error) => {
             console.log('api failed because of server or network')
@@ -123,7 +127,9 @@ class SentenceCard extends React.Component {
         });
     }
 
-    
+    async makeAPICallMergeSentence() {
+        
+    }
 
     /**
      * user actions handlers
@@ -135,7 +141,7 @@ class SentenceCard extends React.Component {
             })
             this.makeAPICallSaveSentence()
         } else {
-            alert('Please enter translation to save')
+            alert('Please enter translated sentence before saving')
         }
     }
 
@@ -364,12 +370,22 @@ class SentenceCard extends React.Component {
         this.textInput && this.textInput.current && this.textInput.current.focus();
     }
 
+    /**
+     * utility functions
+     */
+    isSentenceSaved = () => {
+        if (this.props.sentence.save) {
+            return true;
+        }
+        return this.state.sentence_saved;
+    }
+
     render() {
 
         return (
             <ClickAwayListener mouseEvent="onMouseDown" onClickAway={this.handleClickAway}>
                 <div key={12} style={{ padding: "1%" }}>
-                    <Card style={this.state.cardInFocus ? styles.card_active : styles.card_inactive}>
+                    <Card style={this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
                         <CardContent style={{ display: "flex", flexDirection: "row" }}>
                             <div style={{ width: "90%" }}>
                                 {this.renderSourceSentence()}
@@ -387,13 +403,12 @@ class SentenceCard extends React.Component {
 
                         <Collapse in={this.state.cardInFocus} timeout="auto" unmountOnExit>
                             <CardContent>
-                                {this.props.sentence.save ? <div></div> : this.renderMTTargetSentence()}
+                                {this.renderMTTargetSentence()}
                                 <br />
                                 {this.renderUserInputArea()}
                                 <br />
                                 {this.state.isModeMerge ? this.renderMergeModeButtons() : this.renderNormaModeButtons()}
                                 <br />
-                                {this.renderSentenceSaveStatus()}
                             </CardContent>
                         </Collapse>
                     </Card>
