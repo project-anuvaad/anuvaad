@@ -8,6 +8,7 @@ import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField'
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import Checkbox from '@material-ui/core/Checkbox';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { connect } from "react-redux";
@@ -19,6 +20,7 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import IconButton from "@material-ui/core/IconButton";
 
+import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
 
 const styles = {
     card_active: {
@@ -56,7 +58,8 @@ class SentenceCard extends React.Component {
             suggestions: [],
             cardInFocus: false,
             cardChecked: false,
-            isModeMerge: false
+            isModeMerge: false,
+            apiInProgress: false,
         };
         this.textInput                          = React.createRef();
         this.handleUserInputText                = this.handleUserInputText.bind(this);
@@ -87,11 +90,50 @@ class SentenceCard extends React.Component {
         })
     }
 
+    async makeAPICallSaveSentence() {
+        let sentence    = {...this.props.sentence};
+        sentence.save   = true;
+
+        this.setState({
+            apiInProgress: true
+        })
+
+        let apiObj      = new SaveSentenceAPI(sentence)
+        const apiReq    = await fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            body: JSON.stringify(apiObj.getBody()),
+            headers: apiObj.getHeaders().headers
+        }).then((response) => {
+            if (response.status >= 400 && response.status < 600) {
+                console.log('api failed because of server or network')
+                this.setState({
+                    apiInProgress: false
+                })
+            }
+            return response;
+        }).then((returnedResponse) => {
+           this.setState({
+            apiInProgress: false
+           });
+        }).catch((error) => {
+            console.log('api failed because of server or network')
+            this.setState({
+                apiInProgress: false
+            })
+        });
+    }
+
+    /**
+     * user actions handlers
+     */
     processSaveButtonClicked() {
         if (this.state.value === '' && this.props.sentence.s0_tgt !== '') {
             this.setState({
                 value: this.props.sentence.s0_tgt
             })
+            this.makeAPICallSaveSentence()
+        } else {
+            alert('Please enter translation to save')
         }
     }
 
@@ -136,8 +178,8 @@ class SentenceCard extends React.Component {
          * Ctrl+s
          */
         if ((event.ctrlKey || event.metaKey) && charCode === 's') {
-            console.log('Ctrl+S pressed, moving hardcode data')
-            this.setState({ value: this.props.sentence.s0_tgt });
+            console.log('Ctrl+S pressed, saving user data')
+            this.processSaveButtonClicked()
             event.preventDefault();
             return false
         }
@@ -240,12 +282,22 @@ class SentenceCard extends React.Component {
                                 onChange={this.handleUserInputText}
                                 fullWidth
                                 multiline
+                                disabled={this.state.apiInProgress ? true : false}
                                 variant="outlined"
                                 onKeyDown={this.handleKeyDown}
                                 inputRef={this.textInput}
                                 onFocus={event => {
                                     this.props.highlightBlock(this.props.sentence)
                                 }}
+                                InputProps={{
+                                    ...params.InputProps,
+                                    endAdornment: (
+                                      <React.Fragment>
+                                        {this.state.apiInProgress ? <CircularProgress color="inherit" size={20} /> : null}
+                                        {params.InputProps.endAdornment}
+                                      </React.Fragment>
+                                    ),
+                                  }}
                             />
                         )} />
                 </div>
