@@ -19,7 +19,7 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import IconButton from "@material-ui/core/IconButton";
 
-import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
+import SENTENCE_ACTION from './SentenceActions'
 
 const styles = {
     card_active: {
@@ -61,7 +61,7 @@ class SentenceCard extends React.Component {
             cardInFocus: false,
             cardChecked: false,
             isModeMerge: false,
-            apiInProgress: false,
+            isCardBusy: false,
             sentence_saved: false
         };
         this.textInput                          = React.createRef();
@@ -74,12 +74,31 @@ class SentenceCard extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if ((prevProps.sentence_merge_operation.finished !== this.props.sentence_merge_operation.finished) ) {
+        if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished) ) {
             this.setState({
                 cardChecked: false
             })
         }
-      }
+        if ((prevProps.sentence_action_operation.api_status !== this.props.sentence_action_operation.api_status) ) {
+            this.setState({
+                isCardBusy: (this.isCurrentSentenceInProps() ? this.props.sentence_action_operation.api_status : false)
+            })
+        }
+    }
+
+    /**
+     * utility function
+     */
+    isCurrentSentenceInProps = () => {
+        let found = false
+        this.props.sentence_action_operation.sentences.forEach(sentence => {
+            if (sentence.s_id === this.props.sentence.s_id) {
+                console.log('matched, showing busy')
+                found = true;
+            }
+        })
+        return found;
+    }
 
     /**
      * api calls
@@ -93,44 +112,6 @@ class SentenceCard extends React.Component {
         })
     }
 
-    async makeAPICallSaveSentence() {
-        let sentence    = {...this.props.sentence};
-        sentence.save   = true;
-
-        this.setState({
-            apiInProgress: true
-        })
-
-        let apiObj      = new SaveSentenceAPI(sentence)
-        const apiReq    = await fetch(apiObj.apiEndPoint(), {
-            method: 'post',
-            body: JSON.stringify(apiObj.getBody()),
-            headers: apiObj.getHeaders().headers
-        }).then((response) => {
-            if (response.status >= 400 && response.status < 600) {
-                console.log('api failed because of server or network')
-                this.setState({
-                    apiInProgress: false
-                })
-            }
-            return response;
-        }).then((returnedResponse) => {
-           this.setState({
-            apiInProgress: false,
-            sentence_saved: true
-           });
-        }).catch((error) => {
-            console.log('api failed because of server or network')
-            this.setState({
-                apiInProgress: false
-            })
-        });
-    }
-
-    async makeAPICallMergeSentence() {
-        
-    }
-
     /**
      * user actions handlers
      */
@@ -139,9 +120,34 @@ class SentenceCard extends React.Component {
             this.setState({
                 value: this.props.sentence.s0_tgt
             })
-            this.makeAPICallSaveSentence()
+            if (this.props.onAction) {
+                let sentence    = {...this.props.sentence};
+                sentence.save   = true;
+                sentence.tgt    = this.state.value;
+                delete sentence.block_identifier;
+
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, [sentence])
+            }
         } else {
             alert('Please enter translated sentence before saving')
+        }
+    }
+
+    processMergeNowButtonClicked() {
+        this.setState({
+            isModeMerge: false,
+        })
+        this.props.finishMergeSentence()
+        if (this.props.onAction) {
+            this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.sentence_action_operation.sentences, this.props.sentence)
+        }
+    }
+
+    processSplitButtonClicked() {
+        let start_index = 0;
+        let end_index   = 0;
+        if (this.props.onAction) {
+            this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, [this.props.sentence], start_index, end_index)
         }
     }
 
@@ -153,13 +159,6 @@ class SentenceCard extends React.Component {
             isModeMerge: true
         })
         this.props.startMergeSentence()
-    }
-
-    processMergeNowButtonClicked() {
-        this.setState({
-            isModeMerge: false,
-        })
-        this.props.finishMergeSentence()
     }
 
     processMergeCancelButtonClicked() {
@@ -290,7 +289,7 @@ class SentenceCard extends React.Component {
                                 onChange={this.handleUserInputText}
                                 fullWidth
                                 multiline
-                                disabled={this.state.apiInProgress ? true : false}
+                                disabled={this.state.isCardBusy}
                                 variant="outlined"
                                 onKeyDown={this.handleKeyDown}
                                 inputRef={this.textInput}
@@ -301,7 +300,7 @@ class SentenceCard extends React.Component {
                                     ...params.InputProps,
                                     endAdornment: (
                                       <React.Fragment>
-                                        {this.state.apiInProgress ? <CircularProgress color="inherit" size={20} /> : null}
+                                        {this.state.isCardBusy ? <CircularProgress color="inherit" size={20} /> : null}
                                         {params.InputProps.endAdornment}
                                       </React.Fragment>
                                     ),
@@ -352,7 +351,7 @@ class SentenceCard extends React.Component {
     }
 
     renderCardSelectedForMerge = () => {
-        if (this.props.sentence_merge_operation.progress) {
+        if (this.props.sentence_action_operation.progress) {
             return (
                 <Checkbox
                     checked={this.state.cardChecked}
@@ -420,7 +419,7 @@ class SentenceCard extends React.Component {
 
 const mapStateToProps = state => ({
     document_contents: state.document_contents,
-    sentence_merge_operation: state.sentence_merge_operation,
+    sentence_action_operation: state.sentence_action_operation,
     sentence_highlight: state.sentence_highlight
 });
   

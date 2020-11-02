@@ -18,15 +18,18 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import Typography from "@material-ui/core/Typography";
 import Snackbar from "../../../components/web/common/Snackbar";
-import WorkFlow from "../../../../flux/actions/apis/fileupload";
+import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
 import TextButton from '@material-ui/core/Button';
 import LanguageCodes from "../../../components/web/common/Languages.json"
 import DownloadIcon from "@material-ui/icons/ArrowDownward";
 
 import PDFRenderer from './PDFRenderer';
-import DocumentRenderer from './PageCard';
+import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
 import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
+import SENTENCE_ACTION from './SentenceActions'
+import { sentenceActionApiStarted, sentenceActionApiStopped } from '../../../../flux/actions/apis/translator_actions';
+
 const { v4 }        = require('uuid');
 
 const PAGE_OPS = require("../../../../utils/page.operations");
@@ -38,7 +41,8 @@ class DocumentEditor extends React.Component {
         super(props);
         this.state = {
             isModeSentences: true,
-            currentPageIndex: 1
+            currentPageIndex: 1,
+            apiInProgress: false,
         }
     }
 
@@ -77,6 +81,37 @@ class DocumentEditor extends React.Component {
       this.props.APITransport(apiObj);
     }
 
+    makeAPICallMergeSentence(sentences) {
+      let sentence_ids   = sentences.map(sentence => sentence.s_id)
+      let updated_blocks = BLOCK_OPS.do_sentences_merging_v1(this.props.document_contents.pages, sentence_ids);
+      console.log(updated_blocks)
+
+      // this.setState({apiInProgress: true})
+      let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale, '', '', parseInt(this.props.match.params.modelsId))
+      this.props.APITransport(apiObj);
+    }
+
+    async makeAPICallSaveSentence(sentence) {
+      
+      let apiObj      = new SaveSentenceAPI(sentence)
+      const apiReq    = await fetch(apiObj.apiEndPoint(), {
+          method: 'post',
+          body: JSON.stringify(apiObj.getBody()),
+          headers: apiObj.getHeaders().headers
+      }).then((response) => {
+          if (response.status >= 400 && response.status < 600) {
+              console.log('api failed because of server or network')
+              this.props.sentenceActionApiStopped()
+          }
+          return response;
+      }).then((returnedResponse) => {
+        this.props.sentenceActionApiStopped()
+      }).catch((error) => {
+          console.log('api failed because of server or network')
+          this.props.sentenceActionApiStopped()
+      });
+    }
+
     /**
      * workhorse functions
      */
@@ -87,6 +122,27 @@ class DocumentEditor extends React.Component {
     workFlowApi(workflow, blockDetails, update, type) {
     }
 
+    processSentenceAction = (action, sentences, sentence) => {
+      console.log('processSentenceAction', action, sentences, sentence)
+      switch(action) {
+        case SENTENCE_ACTION.SENTENCE_SAVED: {
+          this.props.sentenceActionApiStarted(sentences[0])
+          this.makeAPICallSaveSentence(sentences[0])
+        }
+
+        case SENTENCE_ACTION.SENTENCE_SPLITTED: {
+
+        }
+        case SENTENCE_ACTION.SENTENCE_MERGED: {
+
+          /**
+           * make card busy as merge operation is started by it.
+           */
+          this.props.sentenceActionApiStarted(null)
+          this.makeAPICallMergeSentence(sentences);
+        }
+      }
+    }
 
     handleViewModeToggle = () => {
         this.setState({
@@ -250,7 +306,7 @@ class DocumentEditor extends React.Component {
                 loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
                 endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
             >
-              {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} sentence={sentence}/>) )}
+              {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} sentence={sentence} onAction={this.processSentenceAction}/>) )}
             </InfiniteScroll>
           </Grid>
         
@@ -286,11 +342,12 @@ const mapStateToProps = state => ({
     document_contents: state.document_contents
 });
   
-const mapDispatchToProps = dispatch =>
-bindActionCreators(
+const mapDispatchToProps = dispatch => bindActionCreators(
     {
-    APITransport,
-    ClearContent: ClearContent
+      sentenceActionApiStarted,
+      sentenceActionApiStopped, 
+      APITransport,
+      ClearContent: ClearContent
     },
     dispatch
 );

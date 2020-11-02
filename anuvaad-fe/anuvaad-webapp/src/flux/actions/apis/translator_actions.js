@@ -62,3 +62,24 @@ export function cancelMergeSentence() {
         }
     }
 }
+
+/**
+ * following two apis action is needed to show which is participating in the
+ * actions.
+ */
+export function sentenceActionApiStarted (sentence) {
+    return {
+        type: C.SENTENCE_ACTION_API_STARTED,
+        payload: {
+            sentence: sentence
+        }
+    }
+}
+
+export function sentenceActionApiStopped () {
+    return {
+        type: C.SENTENCE_ACTION_API_STOPPED,
+        payload: {
+        }
+    }
+}

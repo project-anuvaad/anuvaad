@@ -423,6 +423,7 @@ function do_sentences_merging_v1(sentences, sentence_ids) {
 
     tokenized_sentence.src  = merged_sentence
     tokenized_sentence.tgt  = ''
+    tokenized_sentence.save = false
     sorted_selected_blocks[0].tokenized_sentences.splice(sentence_indices[0].index, 0, tokenized_sentence)
 
     return {'blocks': sorted_selected_blocks, 'sentence_id': sentence_indices[0].s_id, 'sentences': sentence_indices}
