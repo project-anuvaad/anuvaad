@@ -62,7 +62,7 @@ class SentenceCard extends React.Component {
             cardChecked: false,
             isModeMerge: false,
             isCardBusy: false,
-            sentence_saved: false,
+            sentenceSaved: false,
             userEnteredText: false
         };
         this.textInput                          = React.createRef();
@@ -129,13 +129,35 @@ class SentenceCard extends React.Component {
              * sentence to text field.
              */
             if (this.state.value === '' && this.props.sentence.s0_tgt !== '') {
-                this.setState({
-                    value: this.props.sentence.s0_tgt
-                })
+                if (this.props.onAction) {
+                    this.setState({sentenceSaved: true,
+                        value: this.props.sentence.s0_tgt
+                    })
+
+                    let sentence    = {...this.props.sentence};
+                    sentence.save   = true;
+                    sentence.tgt    = this.props.sentence.s0_tgt;
+                    delete sentence.block_identifier;
+        
+                    this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+                }
+            }
+
+            /**
+             * textfield has data but user has not entered anything
+             */
+            if (this.state.value.length > 0) {
+                return;
             }
         }
-        
+
+        this.setState({
+            userEnteredText: false
+        })
+
         if (this.props.onAction) {
+            this.setState({sentenceSaved: true})
+
             let sentence    = {...this.props.sentence};
             sentence.save   = true;
             sentence.tgt    = this.state.value;
@@ -300,7 +322,7 @@ class SentenceCard extends React.Component {
                                 helperText="Ctrl+s to save, TAB key to get suggestions of your choice"
                                 type="text"
                                 name={this.props.sentence.s_id}
-                                value={this.state.value}
+                                value={this.isSentenceSaved() ? this.props.sentence.tgt : this.state.value}
                                 onChange={this.handleUserInputText}
                                 fullWidth
                                 multiline
@@ -391,7 +413,7 @@ class SentenceCard extends React.Component {
         if (this.props.sentence.save) {
             return true;
         }
-        return this.state.sentence_saved;
+        return this.state.sentenceSaved;
     }
 
     render() {
