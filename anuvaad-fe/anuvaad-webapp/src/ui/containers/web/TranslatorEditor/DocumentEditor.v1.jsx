@@ -31,6 +31,7 @@ import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
 import SENTENCE_ACTION from './SentenceActions'
 import { sentenceActionApiStarted, sentenceActionApiStopped } from '../../../../flux/actions/apis/translator_actions';
+import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 
 const { v4 }        = require('uuid');
 
@@ -69,6 +70,12 @@ class DocumentEditor extends React.Component {
       TELEMETRY.startTranslatorFlow(sourceLang, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
       this.setState({ showLoader: true });
       this.makeAPICallFetchContent();
+    }
+
+    componentDidUpdate(prevProps) {
+      if (prevProps.document_contents.content_updated !== this.props.document_contents.content_updated) {
+        this.props.sentenceActionApiStopped()
+      }
     }
 
     /**
@@ -120,19 +127,17 @@ class DocumentEditor extends React.Component {
     async makeAPICallSaveSentence(sentence, pageNumber) {
       
       let apiObj      = new SaveSentenceAPI(sentence)
-      const apiReq    = await fetch(apiObj.apiEndPoint(), {
+      const apiReq    = fetch(apiObj.apiEndPoint(), {
           method: 'post',
           body: JSON.stringify(apiObj.getBody()),
           headers: apiObj.getHeaders().headers
-      }).then((response) => {
-          if (response.status >= 400 && response.status < 600) {
-              console.log('api failed because of server or network')
-              this.props.sentenceActionApiStopped()
+      }).then(async response => {
+        const rsp_data = await response.json();
+          if (!response.ok) {
+            this.props.sentenceActionApiStopped()
+            return Promise.reject('');
           }
-          return response;
-      }).then((returnedResponse) => {
-        this.props.sentenceActionApiStopped()
-        this.makeAPICallFetchContentPerPage(pageNumber);
+          this.props.update_sentences(pageNumber, rsp_data.data);
       }).catch((error) => {
           console.log('api failed because of server or network')
           this.props.sentenceActionApiStopped()
@@ -376,6 +381,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
       sentenceActionApiStarted,
       sentenceActionApiStopped, 
       APITransport,
+      update_sentences, 
+      update_blocks,
       ClearContent: ClearContent
     },
     dispatch

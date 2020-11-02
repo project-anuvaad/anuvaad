@@ -417,7 +417,6 @@ class SentenceCard extends React.Component {
      */
     isSentenceSaved = () => {
         if (this.props.sentence.save) {
-            console.log(this.props.sentence.tgt)
             return true;
         }
         return this.state.sentenceSaved;

@@ -1,8 +1,10 @@
 import C from "../actions/constants";
+const PAGE_OPERATION = require('../../utils/page.operations')
 
 const initialState = {
     count: 0,
-    pages: []
+    pages: [],
+    content_updated: false
 }
 
 export default function(state = initialState, action) {
@@ -14,21 +16,42 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 count: data.count,
-                pages: [...state.pages, ...pages]
+                pages: [...state.pages, ...pages],
+                content_updated: false
             }
         }
 
-        case C.FETCH_CONTENT_UPDATE: {
+        case C.UPDATE_SENTENCE_CONTENT: {
             let data            = action.payload;
             let page_number     = data.page_number;
             let sentences       = data.sentences;
-            let pages           = sentences.data.filter(value => Object.keys(value).length !== 0);
-            
-            let modified_pages  = state.pages;
-            modified_pages.splice(page_number - 1, 1, pages[0])
+
+            let page            = state.pages[page_number-1];
+            let updated_page    = PAGE_OPERATION.update_tokenized_sentences(page, sentences)
+            let pages           = state.pages
+            pages.splice(page_number - 1, 1, updated_page)
+
             return {
                 ...state,
-                pages: modified_pages
+                pages: pages,
+                content_updated: true
+            }
+        }
+
+        case C.UPDATE_BLOCK_CONTENT: {
+            let data            = action.payload;
+            let page_number     = data.page_number;
+            let blocks          = data.blocks;
+
+            let page            = state.pages[page_number-1];
+            let updated_page    = PAGE_OPERATION.update_blocks(page, blocks)
+            let pages           = state.pages
+            pages.splice(page_number - 1, 1, updated_page)
+
+            return {
+                ...state,
+                pages: pages,
+                content_updated: true
             }
         }
 
