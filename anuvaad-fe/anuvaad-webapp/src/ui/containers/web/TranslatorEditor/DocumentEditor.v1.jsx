@@ -30,7 +30,8 @@ import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
 import SENTENCE_ACTION from './SentenceActions'
 
-import { sentenceActionApiStarted, sentenceActionApiStopped } from '../../../../flux/actions/apis/translator_actions';
+import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted } from '../../../../flux/actions/apis/translator_actions';
+import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 
 const { v4 }        = require('uuid');
 
@@ -73,16 +74,15 @@ class DocumentEditor extends React.Component {
       this.makeAPICallFetchContent();
     }
 
-
-    componentDidUpdate(prevProps, prevState) {
-      if (prevProps.fetchContent !== this.props.fetchContent) {
-        
-            this.setState({isShowSnackbar: true})
+    componentDidUpdate(prevProps) {
+      if (prevProps.document_contents.content_updated !== this.props.document_contents.content_updated) {
+        if (this.props.document_contents.content_updated) {
+          this.props.sentenceActionApiStopped()
+          this.setState({isShowSnackbar: true})
             setTimeout(() => {
               this.setState({ isShowSnackbar: false, snackBarMessage:'' })
             }, 3000)
-            
-        
+        }
       }
     }
 
@@ -136,19 +136,19 @@ class DocumentEditor extends React.Component {
     async makeAPICallSaveSentence(sentence, pageNumber) {
       
       let apiObj      = new SaveSentenceAPI(sentence)
-      const apiReq    = await fetch(apiObj.apiEndPoint(), {
+      const apiReq    = fetch(apiObj.apiEndPoint(), {
           method: 'post',
           body: JSON.stringify(apiObj.getBody()),
           headers: apiObj.getHeaders().headers
-      }).then((response) => {
-          if (response.status >= 400 && response.status < 600) {
-              console.log('api failed because of server or network')
-              this.props.sentenceActionApiStopped()
+      }).then(async response => {
+        const rsp_data = await response.json();
+          if (!response.ok) {
+            this.props.sentenceActionApiStopped()
+            return Promise.reject('');
+          } else {
+            this.props.contentUpdateStarted()
+            this.props.update_sentences(pageNumber, rsp_data.data);
           }
-          return response;
-      }).then((returnedResponse) => {
-        this.props.sentenceActionApiStopped()
-        this.makeAPICallFetchContentPerPage(pageNumber);
       }).catch((error) => {
           console.log('api failed because of server or network')
           this.props.sentenceActionApiStopped()
@@ -414,7 +414,10 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     {
       sentenceActionApiStarted,
       sentenceActionApiStopped, 
+      contentUpdateStarted,
       APITransport,
+      update_sentences, 
+      update_blocks,
       ClearContent: ClearContent
     },
     dispatch
