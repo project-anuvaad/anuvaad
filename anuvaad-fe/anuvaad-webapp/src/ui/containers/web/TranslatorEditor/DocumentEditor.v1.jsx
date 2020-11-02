@@ -9,6 +9,8 @@ import { translate } from "../../../../assets/localisation";
 import history from "../../../../web.history";
 import ClearContent from "../../../../flux/actions/apis/clearcontent";
 import FileContent from "../../../../flux/actions/apis/fetchcontent";
+import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_update";
+
 import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -22,13 +24,14 @@ import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
 import TextButton from '@material-ui/core/Button';
 import LanguageCodes from "../../../components/web/common/Languages.json"
 import DownloadIcon from "@material-ui/icons/ArrowDownward";
-
 import PDFRenderer from './PDFRenderer';
 import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
 import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
 import SENTENCE_ACTION from './SentenceActions'
-import { sentenceActionApiStarted, sentenceActionApiStopped } from '../../../../flux/actions/apis/translator_actions';
+
+import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted } from '../../../../flux/actions/apis/translator_actions';
+import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 
 const { v4 }        = require('uuid');
 
@@ -43,6 +46,8 @@ class DocumentEditor extends React.Component {
             isModeSentences: true,
             currentPageIndex: 1,
             apiInProgress: false,
+            snackBarMessage: '',
+            isShowSnackbar: false
         }
     }
 
@@ -69,9 +74,22 @@ class DocumentEditor extends React.Component {
       this.makeAPICallFetchContent();
     }
 
+    componentDidUpdate(prevProps) {
+      if (prevProps.document_contents.content_updated !== this.props.document_contents.content_updated) {
+        if (this.props.document_contents.content_updated) {
+          this.props.sentenceActionApiStopped()
+          this.setState({isShowSnackbar: true})
+            setTimeout(() => {
+              this.setState({ isShowSnackbar: false, snackBarMessage:'' })
+            }, 3000)
+        }
+      }
+    }
+
     /**
      * API methods
      */
+
     makeAPICallFetchContent =  () => {
       let start_page    = this.props.document_contents.pages.length + 1;
       let end_page      = start_page + 1;
@@ -82,15 +100,13 @@ class DocumentEditor extends React.Component {
     }
 
     makeAPICallFetchContentPerPage = (start_page) => {
-      let end_page      = start_page + 1;
-      console.log(`fetching modified document content, start_page: ${start_page}, end_page: ${end_page}`);
+      console.log(`fetching modified document content, start_page: ${start_page}, end_page: ${start_page}`);
 
-      const apiObj      = new FileContent(this.props.match.params.jobid, start_page, end_page);
+      const apiObj      = new FetchContentUpdate(this.props.match.params.jobid, start_page, start_page);
       this.props.APITransport(apiObj);
     }
 
     async makeAPICallMergeSentence(sentences, pageNumber) {
-
       let sentence_ids   = sentences.map(sentence => sentence.s_id)
       let updated_blocks = BLOCK_OPS.do_sentences_merging_v1(this.props.document_contents.pages, sentence_ids);
       console.log(updated_blocks)
@@ -120,19 +136,19 @@ class DocumentEditor extends React.Component {
     async makeAPICallSaveSentence(sentence, pageNumber) {
       
       let apiObj      = new SaveSentenceAPI(sentence)
-      const apiReq    = await fetch(apiObj.apiEndPoint(), {
+      const apiReq    = fetch(apiObj.apiEndPoint(), {
           method: 'post',
           body: JSON.stringify(apiObj.getBody()),
           headers: apiObj.getHeaders().headers
-      }).then((response) => {
-          if (response.status >= 400 && response.status < 600) {
-              console.log('api failed because of server or network')
-              this.props.sentenceActionApiStopped()
+      }).then(async response => {
+        const rsp_data = await response.json();
+          if (!response.ok) {
+            this.props.sentenceActionApiStopped()
+            return Promise.reject('');
+          } else {
+            this.props.contentUpdateStarted()
+            this.props.update_sentences(pageNumber, rsp_data.data);
           }
-          return response;
-      }).then((returnedResponse) => {
-        this.props.sentenceActionApiStopped()
-        this.makeAPICallFetchContentPerPage(pageNumber);
       }).catch((error) => {
           console.log('api failed because of server or network')
           this.props.sentenceActionApiStopped()
@@ -150,15 +166,18 @@ class DocumentEditor extends React.Component {
     }
 
     processSentenceAction = (action, pageNumber, sentences, sentence) => {
+
       console.log('processSentenceAction', action, pageNumber, sentences, sentence)
       switch(action) {
         case SENTENCE_ACTION.SENTENCE_SAVED: {
           this.props.sentenceActionApiStarted(sentences[0])
           this.makeAPICallSaveSentence(sentences[0], pageNumber)
+          this.setState({snackBarMessage:translate("common.page.label.saveMessage")})
           return;
         }
 
         case SENTENCE_ACTION.SENTENCE_SPLITTED: {
+          this.setState({snackBarMessage: translate("common.page.label.splitMessage")})
           return;
         }
         case SENTENCE_ACTION.SENTENCE_MERGED: {
@@ -168,9 +187,26 @@ class DocumentEditor extends React.Component {
            */
           this.props.sentenceActionApiStarted(null)
           this.makeAPICallMergeSentence(sentences, pageNumber);
+          this.setState({snackBarMessage:translate("common.page.label.mergeMessage") })
           return;
         }
       }
+    }
+
+    snackBarMessage = () =>{
+
+      return (
+        <div>
+        <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={this.state.isShowSnackbar}
+            autoHideDuration={3000}
+            variant="success"
+            message={this.state.snackBarMessage}
+          />
+          </div>
+      )
+      
     }
 
     handleViewModeToggle = () => {
@@ -355,6 +391,7 @@ class DocumentEditor extends React.Component {
                 {this.renderDocumentPages()}
                 {this.state.isModeSentences ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>
+            {this.state.snackBarMessage&& this.state.isShowSnackbar&& this.snackBarMessage()}
         </div>
         )
     }
@@ -375,7 +412,10 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     {
       sentenceActionApiStarted,
       sentenceActionApiStopped, 
+      contentUpdateStarted,
       APITransport,
+      update_sentences, 
+      update_blocks,
       ClearContent: ClearContent
     },
     dispatch

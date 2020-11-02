@@ -83,3 +83,14 @@ export function sentenceActionApiStopped () {
         }
     }
 }
+
+/**
+ * content update started
+ */
+export function contentUpdateStarted () {
+    return {
+        type: C.CONTENT_UPDATE_STARTED,
+        payload: {
+        }
+    }
+}
