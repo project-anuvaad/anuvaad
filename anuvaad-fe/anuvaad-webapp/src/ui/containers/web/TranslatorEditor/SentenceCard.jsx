@@ -82,6 +82,12 @@ class SentenceCard extends React.Component {
         this.processMergeCancelButtonClicked    = this.processMergeCancelButtonClicked.bind(this);
     }
 
+    componentDidMount() {
+        if (this.isSentenceSaved()) {
+            this.setState({value: this.props.sentence.tgt})
+        }
+    }
+
     componentDidUpdate(prevProps) {
         if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished) ) {
             this.setState({
@@ -339,7 +345,7 @@ class SentenceCard extends React.Component {
                                 helperText="Ctrl+s to save, TAB key to get suggestions of your choice"
                                 type="text"
                                 name={this.props.sentence.s_id}
-                                value={this.isSentenceSaved() ? this.props.sentence.tgt : this.state.value}
+                                value={this.state.value}
                                 onChange={this.handleUserInputText}
                                 fullWidth
                                 multiline
@@ -497,6 +503,7 @@ class SentenceCard extends React.Component {
      */
     isSentenceSaved = () => {
         if (this.props.sentence.save) {
+            console.log(this.props.sentence.tgt)
             return true;
         }
         return this.state.sentenceSaved;

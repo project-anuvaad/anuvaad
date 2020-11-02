@@ -9,6 +9,8 @@ import { translate } from "../../../../assets/localisation";
 import history from "../../../../web.history";
 import ClearContent from "../../../../flux/actions/apis/clearcontent";
 import FileContent from "../../../../flux/actions/apis/fetchcontent";
+import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_update";
+
 import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -98,15 +100,13 @@ class DocumentEditor extends React.Component {
     }
 
     makeAPICallFetchContentPerPage = (start_page) => {
-      let end_page      = start_page + 1;
-      console.log(`fetching modified document content, start_page: ${start_page}, end_page: ${end_page}`);
+      console.log(`fetching modified document content, start_page: ${start_page}, end_page: ${start_page}`);
 
-      const apiObj      = new FileContent(this.props.match.params.jobid, start_page, end_page);
+      const apiObj      = new FetchContentUpdate(this.props.match.params.jobid, start_page, start_page);
       this.props.APITransport(apiObj);
     }
 
     async makeAPICallMergeSentence(sentences, pageNumber) {
-
       let sentence_ids   = sentences.map(sentence => sentence.s_id)
       let updated_blocks = BLOCK_OPS.do_sentences_merging_v1(this.props.document_contents.pages, sentence_ids);
       console.log(updated_blocks)
