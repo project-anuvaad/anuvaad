@@ -78,11 +78,12 @@ class DocumentEditor extends React.Component {
       if (prevProps.document_contents.content_updated !== this.props.document_contents.content_updated) {
         if (this.props.document_contents.content_updated) {
           this.props.sentenceActionApiStopped()
+          this.setState({isShowSnackbar: true})
+            setTimeout(() => {
+              this.setState({ isShowSnackbar: false, snackBarMessage:'' })
+            }, 3000)
         }
       }
-        // this.setState({isShowSnackbar: true})
-        //     setTimeout(() => {this.setState({ isShowSnackbar: false, snackBarMessage:'' })}, 3000)
-        //   }
     }
 
     /**
