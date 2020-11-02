@@ -20,6 +20,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import IconButton from "@material-ui/core/IconButton";
 
 import SENTENCE_ACTION from './SentenceActions'
+import InteractiveTranslate from '../../../../flux/actions/apis/intractive_translate';
 
 const styles = {
     card_active: {
@@ -104,13 +105,40 @@ class SentenceCard extends React.Component {
     /**
      * api calls
      */
-    async makeAPICallInteractiveTranslation() {
-        const response = await fetch('https://country.register.gov.uk/records.json?page-size=5000');
-        await sleep(1e3);
-        const countries = await response.json();
-        this.setState({
-            suggestions: Object.keys(countries).map((key) => countries[key].item[0])
-        })
+    async makeAPICallInteractiveTranslation(sentence) {
+        var self = this
+        let apiObj = new InteractiveTranslate(
+            sentence.s0_src,
+            this.state.value,
+            this.props.modelId,
+            true,
+            true,
+            sentence.s_id)
+
+        const apiReq = await fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            body: JSON.stringify(apiObj.getBody()),
+            headers: apiObj.getHeaders().headers
+        }).then(
+            function (response) {
+                if (response.status >= 400 && response.status < 600) {
+                    console.log('api failed because of server or network')
+                    this.props.sentenceActionApiStopped()
+                }
+                response.text().then(function (data) {
+                    let val = JSON.parse(data)
+                   
+                    self.setState({
+                        suggestions: val && val.output && val.output.predictions && val.output.predictions[0] && val.output.predictions[0].tgt
+                    })
+                });
+
+            })
+            .catch((error) => {
+                console.log('api failed because of server or network')
+                this.props.sentenceActionApiStopped()
+            });
+
     }
 
     /**
@@ -235,7 +263,7 @@ class SentenceCard extends React.Component {
         var TABKEY = 9;
         if (event.keyCode === TABKEY) {
             this.setState({ showSuggestions: true })
-            this.makeAPICallInteractiveTranslation()
+            this.makeAPICallInteractiveTranslation(this.props.sentence)
             event.preventDefault();
             return false
         }
@@ -294,10 +322,10 @@ class SentenceCard extends React.Component {
                     <Autocomplete
                         filterOptions={filterOptions}
                         getOptionLabel={(option) => {
-                            return option.name
+                            return option
                         }}
                         renderOption={(option, index) => {
-                            return (<Typography noWrap>{option.name}</Typography>)
+                            return (<Typography noWrap>{option}</Typography>)
                         }}
                         options={this.state.suggestions}
 
@@ -309,13 +337,15 @@ class SentenceCard extends React.Component {
                         onChange={(event, newValue) => {
                             console.log('onChange of autocomplete is fired: ', newValue)
                             this.setState({
-                                value: this.state.value + ' ' + newValue.name,
-                                showSuggestions: false
+                                value: newValue,
+                                showSuggestions: false,
+                                suggestions: []
                             });
                         }}
                         onClose={(event, newValue) => {
                             this.setState({
-                                showSuggestions: false
+                                showSuggestions: false,
+                                suggestions: []
                             });
                         }}
                         renderInput={params => (
