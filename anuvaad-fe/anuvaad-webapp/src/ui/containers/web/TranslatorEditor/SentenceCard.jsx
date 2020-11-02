@@ -126,7 +126,7 @@ class SentenceCard extends React.Component {
                 sentence.tgt    = this.state.value;
                 delete sentence.block_identifier;
 
-                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, [sentence])
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
             }
         } else {
             alert('Please enter translated sentence before saving')
@@ -139,7 +139,7 @@ class SentenceCard extends React.Component {
         })
         this.props.finishMergeSentence()
         if (this.props.onAction) {
-            this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.sentence_action_operation.sentences, this.props.sentence)
+            this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, this.props.sentence_action_operation.sentences, this.props.sentence)
         }
     }
 
@@ -147,7 +147,7 @@ class SentenceCard extends React.Component {
         let start_index = 0;
         let end_index   = 0;
         if (this.props.onAction) {
-            this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, [this.props.sentence], start_index, end_index)
+            this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
         }
     }
 

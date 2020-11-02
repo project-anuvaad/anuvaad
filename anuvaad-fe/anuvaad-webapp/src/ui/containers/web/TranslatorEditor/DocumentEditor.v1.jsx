@@ -122,8 +122,8 @@ class DocumentEditor extends React.Component {
     workFlowApi(workflow, blockDetails, update, type) {
     }
 
-    processSentenceAction = (action, sentences, sentence) => {
-      console.log('processSentenceAction', action, sentences, sentence)
+    processSentenceAction = (action, pageNumber, sentences, sentence) => {
+      console.log('processSentenceAction', action, pageNumber, sentences, sentence)
       switch(action) {
         case SENTENCE_ACTION.SENTENCE_SAVED: {
           this.props.sentenceActionApiStarted(sentences[0])
@@ -306,7 +306,7 @@ class DocumentEditor extends React.Component {
                 loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
                 endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
             >
-              {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} sentence={sentence} onAction={this.processSentenceAction}/>) )}
+              {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} pageNumber={page.page_no} sentence={sentence} onAction={this.processSentenceAction}/>) )}
             </InfiniteScroll>
           </Grid>
         
