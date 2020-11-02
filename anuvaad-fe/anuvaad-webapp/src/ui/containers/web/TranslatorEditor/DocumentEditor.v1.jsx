@@ -81,17 +81,43 @@ class DocumentEditor extends React.Component {
       this.props.APITransport(apiObj);
     }
 
-    makeAPICallMergeSentence(sentences) {
+    makeAPICallFetchContentPerPage = (start_page) => {
+      let end_page      = start_page + 1;
+      console.log(`fetching modified document content, start_page: ${start_page}, end_page: ${end_page}`);
+
+      const apiObj      = new FileContent(this.props.match.params.jobid, start_page, end_page);
+      this.props.APITransport(apiObj);
+    }
+
+    async makeAPICallMergeSentence(sentences, pageNumber) {
+
       let sentence_ids   = sentences.map(sentence => sentence.s_id)
       let updated_blocks = BLOCK_OPS.do_sentences_merging_v1(this.props.document_contents.pages, sentence_ids);
       console.log(updated_blocks)
 
       // this.setState({apiInProgress: true})
       let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale, '', '', parseInt(this.props.match.params.modelsId))
-      this.props.APITransport(apiObj);
+      // this.props.APITransport(apiObj);
+      const apiReq    = await fetch(apiObj.apiEndPoint(), {
+          method: 'post',
+          body: JSON.stringify(apiObj.getBody()),
+          headers: apiObj.getHeaders().headers
+      }).then((response) => {
+          if (response.status >= 400 && response.status < 600) {
+              console.log('api failed because of server or network')
+              this.props.sentenceActionApiStopped()
+          }
+          return response;
+      }).then((returnedResponse) => {
+        this.props.sentenceActionApiStopped()
+        this.makeAPICallFetchContentPerPage(pageNumber);
+      }).catch((error) => {
+          console.log('api failed because of server or network')
+          this.props.sentenceActionApiStopped()
+      });
     }
 
-    async makeAPICallSaveSentence(sentence) {
+    async makeAPICallSaveSentence(sentence, pageNumber) {
       
       let apiObj      = new SaveSentenceAPI(sentence)
       const apiReq    = await fetch(apiObj.apiEndPoint(), {
@@ -106,6 +132,7 @@ class DocumentEditor extends React.Component {
           return response;
       }).then((returnedResponse) => {
         this.props.sentenceActionApiStopped()
+        this.makeAPICallFetchContentPerPage(pageNumber);
       }).catch((error) => {
           console.log('api failed because of server or network')
           this.props.sentenceActionApiStopped()
@@ -127,11 +154,12 @@ class DocumentEditor extends React.Component {
       switch(action) {
         case SENTENCE_ACTION.SENTENCE_SAVED: {
           this.props.sentenceActionApiStarted(sentences[0])
-          this.makeAPICallSaveSentence(sentences[0])
+          this.makeAPICallSaveSentence(sentences[0], pageNumber)
+          return;
         }
 
         case SENTENCE_ACTION.SENTENCE_SPLITTED: {
-
+          return;
         }
         case SENTENCE_ACTION.SENTENCE_MERGED: {
 
@@ -139,7 +167,8 @@ class DocumentEditor extends React.Component {
            * make card busy as merge operation is started by it.
            */
           this.props.sentenceActionApiStarted(null)
-          this.makeAPICallMergeSentence(sentences);
+          this.makeAPICallMergeSentence(sentences, pageNumber);
+          return;
         }
       }
     }

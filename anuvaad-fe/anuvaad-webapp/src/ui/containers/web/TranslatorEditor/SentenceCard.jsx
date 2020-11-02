@@ -62,7 +62,8 @@ class SentenceCard extends React.Component {
             cardChecked: false,
             isModeMerge: false,
             isCardBusy: false,
-            sentence_saved: false
+            sentence_saved: false,
+            userEnteredText: false
         };
         this.textInput                          = React.createRef();
         this.handleUserInputText                = this.handleUserInputText.bind(this);
@@ -116,20 +117,31 @@ class SentenceCard extends React.Component {
      * user actions handlers
      */
     processSaveButtonClicked() {
-        if (this.state.value === '' && this.props.sentence.s0_tgt !== '') {
-            this.setState({
-                value: this.props.sentence.s0_tgt
-            })
-            if (this.props.onAction) {
-                let sentence    = {...this.props.sentence};
-                sentence.save   = true;
-                sentence.tgt    = this.state.value;
-                delete sentence.block_identifier;
 
-                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+        if (!this.state.userEnteredText) {
+            // user has not entered anything, check availability  of s0_tgt
+            if (this.state.value === '' && this.props.sentence.s0_tgt === '') {
+                alert('Please translate the source sentence and then save .. ')
+                return;
             }
-        } else {
-            alert('Please enter translated sentence before saving')
+            /**
+             * textfield is empty but MT sentence exists, then transfer the MT
+             * sentence to text field.
+             */
+            if (this.state.value === '' && this.props.sentence.s0_tgt !== '') {
+                this.setState({
+                    value: this.props.sentence.s0_tgt
+                })
+            }
+        }
+        
+        if (this.props.onAction) {
+            let sentence    = {...this.props.sentence};
+            sentence.save   = true;
+            sentence.tgt    = this.state.value;
+            delete sentence.block_identifier;
+
+            this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
         }
     }
 
@@ -176,7 +188,10 @@ class SentenceCard extends React.Component {
     }
 
     handleUserInputText(event) {
-        this.setState({ value: event.target.value });
+        this.setState({ 
+            value: event.target.value,
+            userEnteredText: true
+         });
     }
 
     handleKeyDown = (event) => {
