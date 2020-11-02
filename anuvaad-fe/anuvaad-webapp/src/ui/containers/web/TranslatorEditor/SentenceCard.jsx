@@ -20,6 +20,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import IconButton from "@material-ui/core/IconButton";
 import copy from 'copy-to-clipboard';
 import SENTENCE_ACTION from './SentenceActions'
+import { value } from 'jsonpath';
 
 const styles = {
     card_active: {
@@ -70,7 +71,9 @@ class SentenceCard extends React.Component {
             positionX:0,
             positionY:0,
             sentenceSource:'',
-            isopenMenuItems:false
+            isopenMenuItems:false,
+            parallel_words:null,
+            dictionaryWord:''
 
         };
         this.textInput                          = React.createRef();
@@ -88,7 +91,7 @@ class SentenceCard extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished) ) {
             this.setState({
                 cardChecked: false
@@ -98,6 +101,9 @@ class SentenceCard extends React.Component {
             this.setState({
                 isCardBusy: (this.isCurrentSentenceInProps() ? this.props.sentence_action_operation.api_status : false)
             })
+        }
+        if(this.state.selectedSentence!== prevState.selectedSentence){
+            this.setState({dictionaryWord: prevState.selectedSentence})
         }
     }
 
@@ -261,14 +267,15 @@ class SentenceCard extends React.Component {
          */
         if (!this.state.isModeMerge) {
             this.setState({
-                cardInFocus: false
+                cardInFocus: false,
+                parallel_words:null
             })
         }
     };
 
     getSelectionText = (event) =>{
-        let selectedSentence = window.getSelection().toString();
-        let sentenceSource = event.target.innerHTML;
+        let selectedSentence    = window.getSelection().toString();
+        let sentenceSource      = event.target.innerHTML;
         if(selectedSentence && sentenceSource.includes(selectedSentence)){
             this.setState({selectedSentence, sentenceSource, positionX: event.clientX , positionY:event.clientY, isopenMenuItems : true})
         }
@@ -283,7 +290,7 @@ class SentenceCard extends React.Component {
                     <br />
                 </Typography>
 
-                <Typography variant="subtitle1" gutterBottom onMouseUp={(event)=>{this.getSelectionText(event)}}>
+                <Typography variant = "subtitle1" gutterBottom onMouseUp = {(event) => {this.getSelectionText(event)}}>
                     {this.props.sentence.s0_src}
                     <br />
                 </Typography>
@@ -295,7 +302,7 @@ class SentenceCard extends React.Component {
         return (
             <div>
                 <Divider />
-                <Typography color="textSecondary" gutterBottom>
+                <Typography color = "textSecondary" gutterBottom>
                     Matchine translated
                     <br />
                 </Typography>
@@ -304,6 +311,22 @@ class SentenceCard extends React.Component {
                     {this.props.sentence.s0_tgt}
                     <br />
                 </Typography>
+                <Divider />
+            </div>
+        )
+    }
+
+    renderDictionarySentence = () => {
+        return (
+            <div>
+                <Divider />
+                <Typography color="textSecondary" gutterBottom>
+                    Meaning of {this.state.dictionaryWord}
+                    <br />
+                </Typography>
+                {this.state.parallel_words.map((words) => <Typography variant="subtitle1" gutterBottom>{words}</Typography>)}
+                    <br />
+                
                 <Divider />
             </div>
         )
@@ -401,26 +424,40 @@ class SentenceCard extends React.Component {
 
 
     async makeAPICallDictionary() {
-        // debugger
+        debugger
         // let word_locale = this.props.match.params.locale;
         // let tgt_locale = this.props.match.params.tgt_locale;
-        // let apiObj      = new DictionaryAPI(this.state.selectedSentence,word_locale,tgt_locale )
-        // const apiReq    = await fetch(apiObj.apiEndPoint(), {
-        //     method: 'post',
-        //     body: JSON.stringify(apiObj.getBody()),
-        //     headers: apiObj.getHeaders().headers
-        // }).then((response) => {
-        //     if (response.status >= 400 && response.status < 600) {
-        //         console.log('api failed because of server or network')
-        //         this.props.sentenceActionApiStopped()
-        //     }
-        //     return response;
-        // }).then((returnedResponse) => {
-          
-        // }).catch((error) => {
-        //     console.log('api failed because of server or network')
-        //     this.props.sentenceActionApiStopped()
-        // });
+        let apiObj      = new DictionaryAPI(this.state.selectedSentence,this.props.word_locale, this.props.tgt_locale )
+        const apiReq    = await fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            body: JSON.stringify(apiObj.getBody()),
+            headers: apiObj.getHeaders().headers
+        }).then ( (response)=> {
+                    if (response.status >= 400 && response.status < 600) {
+                        console.log('api failed because of server or network')
+                        this.props.sentenceActionApiStopped()
+                    }
+                    response.text().then( (data)=> {
+                        let val = JSON.parse(data)
+                        return val.data;
+                    }).then((result)=>{
+                        let parallel_words = []
+                        result.parallel_words.map((words) =>{
+                            if(this.props.tgt_locale === words.locale)
+                                parallel_words.push(words.name)
+                        } )
+                        
+                        this.setState({
+                            parallel_words: parallel_words
+                    })
+                })
+                })
+             
+              
+
+            
+            
+       
       }
 
     handleClose = () => {
@@ -530,6 +567,14 @@ class SentenceCard extends React.Component {
                             {this.renderCardSelectedForMerge()}
 
                         </CardContent>
+
+                        {this.state.parallel_words && <CardContent style={{ display: "flex", flexDirection: "row" }}>
+                            <div style={{ width: "90%" }}>
+                                {this.renderDictionarySentence()}
+                            </div>
+                           
+
+                        </CardContent>}
 
                         <Collapse in={this.state.cardInFocus} timeout="auto" unmountOnExit>
                             <CardContent>
