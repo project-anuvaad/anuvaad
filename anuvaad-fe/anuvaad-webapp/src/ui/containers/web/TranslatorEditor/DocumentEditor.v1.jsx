@@ -24,12 +24,12 @@ import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
 import TextButton from '@material-ui/core/Button';
 import LanguageCodes from "../../../components/web/common/Languages.json"
 import DownloadIcon from "@material-ui/icons/ArrowDownward";
-
 import PDFRenderer from './PDFRenderer';
 import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
 import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
 import SENTENCE_ACTION from './SentenceActions'
+
 import { sentenceActionApiStarted, sentenceActionApiStopped } from '../../../../flux/actions/apis/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 
@@ -46,6 +46,8 @@ class DocumentEditor extends React.Component {
             isModeSentences: true,
             currentPageIndex: 1,
             apiInProgress: false,
+            snackBarMessage: '',
+            isShowSnackbar: false
         }
     }
 
@@ -74,13 +76,17 @@ class DocumentEditor extends React.Component {
 
     componentDidUpdate(prevProps) {
       if (prevProps.document_contents.content_updated !== this.props.document_contents.content_updated) {
-        this.props.sentenceActionApiStopped()
+          this.props.sentenceActionApiStopped()
       }
+        // this.setState({isShowSnackbar: true})
+        //     setTimeout(() => {this.setState({ isShowSnackbar: false, snackBarMessage:'' })}, 3000)
+        //   }
     }
 
     /**
      * API methods
      */
+
     makeAPICallFetchContent =  () => {
       let start_page    = this.props.document_contents.pages.length + 1;
       let end_page      = start_page + 1;
@@ -155,15 +161,18 @@ class DocumentEditor extends React.Component {
     }
 
     processSentenceAction = (action, pageNumber, sentences, sentence) => {
+
       console.log('processSentenceAction', action, pageNumber, sentences, sentence)
       switch(action) {
         case SENTENCE_ACTION.SENTENCE_SAVED: {
           this.props.sentenceActionApiStarted(sentences[0])
           this.makeAPICallSaveSentence(sentences[0], pageNumber)
+          this.setState({snackBarMessage:translate("common.page.label.saveMessage")})
           return;
         }
 
         case SENTENCE_ACTION.SENTENCE_SPLITTED: {
+          this.setState({snackBarMessage: translate("common.page.label.splitMessage")})
           return;
         }
         case SENTENCE_ACTION.SENTENCE_MERGED: {
@@ -173,9 +182,26 @@ class DocumentEditor extends React.Component {
            */
           this.props.sentenceActionApiStarted(null)
           this.makeAPICallMergeSentence(sentences, pageNumber);
+          this.setState({snackBarMessage:translate("common.page.label.mergeMessage") })
           return;
         }
       }
+    }
+
+    snackBarMessage = () =>{
+
+      return (
+        <div>
+        <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={this.state.isShowSnackbar}
+            autoHideDuration={3000}
+            variant="success"
+            message={this.state.snackBarMessage}
+          />
+          </div>
+      )
+      
     }
 
     handleViewModeToggle = () => {
@@ -360,6 +386,7 @@ class DocumentEditor extends React.Component {
                 {this.renderDocumentPages()}
                 {this.state.isModeSentences ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>
+            {this.state.snackBarMessage&& this.state.isShowSnackbar&& this.snackBarMessage()}
         </div>
         )
     }
