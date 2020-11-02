@@ -17,6 +17,12 @@ class PageCard extends React.Component {
        
     }
 
+    componentDidUpdate(prevProps) {
+        if(prevProps.block_highlight !== this.props.block_highlight && this.props.block_highlight && this.props.block_highlight.block_identifier) {
+            this.handleSourceScroll(this.props.block_highlight.block_identifier)
+            console.log(this.props.block_highlight)
+        }
+    }
 
     /**
      * render Sentences
@@ -40,7 +46,7 @@ class PageCard extends React.Component {
         };
         return (
            
-            <div style={style} key ={text.block_id}>
+            <div style={style} key ={text.block_id} ref ={text.block_identifier}>
                 {text.block_id === this.state.selectedSentenceID ?
                     this.renderTextField(text)
                 :
@@ -109,6 +115,14 @@ class PageCard extends React.Component {
 
         this.setState({selectedSentenceID:''})
     }
+
+    handleSourceScroll(id) {
+        this.refs[id] && this.refs[id].scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          });
+    }
+    
 
     renderBlock = (block) =>{
         return(

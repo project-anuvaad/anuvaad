@@ -45,7 +45,7 @@ const styles = {
 
 function sleep(delay = 0) {
     return new Promise((resolve) => {
-      setTimeout(resolve, delay);
+        setTimeout(resolve, delay);
     });
 }
 
@@ -65,22 +65,22 @@ class SentenceCard extends React.Component {
             sentenceSaved: false,
             userEnteredText: false
         };
-        this.textInput                          = React.createRef();
-        this.handleUserInputText                = this.handleUserInputText.bind(this);
-        
-        this.processSaveButtonClicked           = this.processSaveButtonClicked.bind(this);
-        this.processMergeButtonClicked          = this.processMergeButtonClicked.bind(this);
-        this.processMergeNowButtonClicked       = this.processMergeNowButtonClicked.bind(this);
-        this.processMergeCancelButtonClicked    = this.processMergeCancelButtonClicked.bind(this);
+        this.textInput = React.createRef();
+        this.handleUserInputText = this.handleUserInputText.bind(this);
+
+        this.processSaveButtonClicked = this.processSaveButtonClicked.bind(this);
+        this.processMergeButtonClicked = this.processMergeButtonClicked.bind(this);
+        this.processMergeNowButtonClicked = this.processMergeNowButtonClicked.bind(this);
+        this.processMergeCancelButtonClicked = this.processMergeCancelButtonClicked.bind(this);
     }
 
     componentDidUpdate(prevProps) {
-        if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished) ) {
+        if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished)) {
             this.setState({
                 cardChecked: false
             })
         }
-        if ((prevProps.sentence_action_operation.api_status !== this.props.sentence_action_operation.api_status) ) {
+        if ((prevProps.sentence_action_operation.api_status !== this.props.sentence_action_operation.api_status)) {
             this.setState({
                 isCardBusy: (this.isCurrentSentenceInProps() ? this.props.sentence_action_operation.api_status : false)
             })
@@ -105,7 +105,7 @@ class SentenceCard extends React.Component {
      * api calls
      */
     async makeAPICallInteractiveTranslation() {
-        const response  = await fetch('https://country.register.gov.uk/records.json?page-size=5000');
+        const response = await fetch('https://country.register.gov.uk/records.json?page-size=5000');
         await sleep(1e3);
         const countries = await response.json();
         this.setState({
@@ -130,15 +130,16 @@ class SentenceCard extends React.Component {
              */
             if (this.state.value === '' && this.props.sentence.s0_tgt !== '') {
                 if (this.props.onAction) {
-                    this.setState({sentenceSaved: true,
+                    this.setState({
+                        sentenceSaved: true,
                         value: this.props.sentence.s0_tgt
                     })
 
-                    let sentence    = {...this.props.sentence};
-                    sentence.save   = true;
-                    sentence.tgt    = this.props.sentence.s0_tgt;
+                    let sentence = { ...this.props.sentence };
+                    sentence.save = true;
+                    sentence.tgt = this.props.sentence.s0_tgt;
                     delete sentence.block_identifier;
-        
+
                     this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
                 }
             }
@@ -156,11 +157,11 @@ class SentenceCard extends React.Component {
         })
 
         if (this.props.onAction) {
-            this.setState({sentenceSaved: true})
+            this.setState({ sentenceSaved: true })
 
-            let sentence    = {...this.props.sentence};
-            sentence.save   = true;
-            sentence.tgt    = this.state.value;
+            let sentence = { ...this.props.sentence };
+            sentence.save = true;
+            sentence.tgt = this.state.value;
             delete sentence.block_identifier;
 
             this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
@@ -179,7 +180,7 @@ class SentenceCard extends React.Component {
 
     processSplitButtonClicked() {
         let start_index = 0;
-        let end_index   = 0;
+        let end_index = 0;
         if (this.props.onAction) {
             this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
         }
@@ -210,10 +211,10 @@ class SentenceCard extends React.Component {
     }
 
     handleUserInputText(event) {
-        this.setState({ 
+        this.setState({
             value: event.target.value,
             userEnteredText: true
-         });
+        });
     }
 
     handleKeyDown = (event) => {
@@ -330,18 +331,18 @@ class SentenceCard extends React.Component {
                                 variant="outlined"
                                 onKeyDown={this.handleKeyDown}
                                 inputRef={this.textInput}
-                                onFocus={event => {
-                                    this.props.highlightBlock(this.props.sentence)
-                                }}
+                                // onFocus={event => {
+                                //     this.props.highlightBlock(this.props.sentence)
+                                // }}
                                 InputProps={{
                                     ...params.InputProps,
                                     endAdornment: (
-                                      <React.Fragment>
-                                        {this.state.isCardBusy ? <CircularProgress color="inherit" size={20} /> : null}
-                                        {params.InputProps.endAdornment}
-                                      </React.Fragment>
+                                        <React.Fragment>
+                                            {this.state.isCardBusy ? <CircularProgress color="inherit" size={20} /> : null}
+                                            {params.InputProps.endAdornment}
+                                        </React.Fragment>
                                     ),
-                                  }}
+                                }}
                             />
                         )} />
                 </div>
@@ -393,16 +394,25 @@ class SentenceCard extends React.Component {
                 <Checkbox
                     checked={this.state.cardChecked}
                     onChange={this.processMergeSelectionToggle}
-                    style={{color: 'green'}}
+                    style={{ color: 'green' }}
                 />
             )
         }
-        return(<div></div>)
+        return (<div></div>)
     }
 
     handleCardExpandClick = () => {
+        if (this.state.cardInFocus) {
+            this.props.clearHighlighBlock()
+        } else {
+            this.props.highlightBlock(this.props.sentence)
+        }
+
         this.setState({ cardInFocus: !this.state.cardInFocus })
-        
+
+        /**
+        * For highlighting textarea on card expand
+        */
         this.textInput && this.textInput.current && this.textInput.current.focus();
     }
 
@@ -429,7 +439,7 @@ class SentenceCard extends React.Component {
                             <div style={{ width: "10%", textAlign: "right" }}>
                                 <IconButton aria-label="settings"
                                     style={this.state.cardInFocus ? styles.expandOpen : styles.expand}
-                                     onClick={this.handleCardExpandClick}>
+                                    onClick={this.handleCardExpandClick}>
                                     <ExpandMoreIcon />
                                 </IconButton>
                             </div>
@@ -459,17 +469,17 @@ const mapStateToProps = state => ({
     sentence_action_operation: state.sentence_action_operation,
     sentence_highlight: state.sentence_highlight
 });
-  
-const mapDispatchToProps = dispatch =>bindActionCreators(
+
+const mapDispatchToProps = dispatch => bindActionCreators(
     {
-        highlightBlock, 
-        startMergeSentence, 
-        inProgressMergeSentence, 
+        highlightBlock,
+        startMergeSentence,
+        inProgressMergeSentence,
         finishMergeSentence,
         cancelMergeSentence,
         clearHighlighBlock
     },
     dispatch
 );
-  
+
 export default connect(mapStateToProps, mapDispatchToProps)(SentenceCard);
