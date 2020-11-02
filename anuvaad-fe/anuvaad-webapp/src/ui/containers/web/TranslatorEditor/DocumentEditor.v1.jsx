@@ -249,7 +249,7 @@ class DocumentEditor extends React.Component {
           </Button>
         </Grid>
 
-        <Grid item xs={12} sm={5} lg={7} xl={7} className="GridFileDetails">
+        <Grid item xs={12} sm={6} lg={6} xl={6} className="GridFileDetails">
           <Button
             color="primary"
             // variant="outlined"
@@ -271,7 +271,7 @@ class DocumentEditor extends React.Component {
           </Button>
         </Grid>
 
-        <Grid item xs={12} sm={6} lg={1} xl={1}>
+        <Grid item xs={12} sm={6} lg={2} xl={2}>
           <Button
             onClick={() => this.handleTargetDownload()}
             style={{
