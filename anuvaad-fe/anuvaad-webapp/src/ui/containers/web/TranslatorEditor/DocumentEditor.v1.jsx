@@ -30,7 +30,7 @@ import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
 import SENTENCE_ACTION from './SentenceActions'
 
-import { sentenceActionApiStarted, sentenceActionApiStopped } from '../../../../flux/actions/apis/translator_actions';
+import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted } from '../../../../flux/actions/apis/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 
 const { v4 }        = require('uuid');
@@ -76,7 +76,9 @@ class DocumentEditor extends React.Component {
 
     componentDidUpdate(prevProps) {
       if (prevProps.document_contents.content_updated !== this.props.document_contents.content_updated) {
+        if (this.props.document_contents.content_updated) {
           this.props.sentenceActionApiStopped()
+        }
       }
         // this.setState({isShowSnackbar: true})
         //     setTimeout(() => {this.setState({ isShowSnackbar: false, snackBarMessage:'' })}, 3000)
@@ -142,8 +144,10 @@ class DocumentEditor extends React.Component {
           if (!response.ok) {
             this.props.sentenceActionApiStopped()
             return Promise.reject('');
+          } else {
+            this.props.contentUpdateStarted()
+            this.props.update_sentences(pageNumber, rsp_data.data);
           }
-          this.props.update_sentences(pageNumber, rsp_data.data);
       }).catch((error) => {
           console.log('api failed because of server or network')
           this.props.sentenceActionApiStopped()
@@ -407,6 +411,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     {
       sentenceActionApiStarted,
       sentenceActionApiStopped, 
+      contentUpdateStarted,
       APITransport,
       update_sentences, 
       update_blocks,

@@ -17,6 +17,12 @@ export default function(state = initialState, action) {
                 ...state,
                 count: data.count,
                 pages: [...state.pages, ...pages],
+            }
+        }
+
+        case C.CONTENT_UPDATE_STARTED: {
+            return {
+                ...state,
                 content_updated: false
             }
         }

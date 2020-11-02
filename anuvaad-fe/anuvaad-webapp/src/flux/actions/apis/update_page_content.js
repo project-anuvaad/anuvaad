@@ -19,3 +19,4 @@ export function update_blocks(page_number, blocks) {
         }
     }
 }
+
