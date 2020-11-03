@@ -7,6 +7,18 @@ import { highlightSentence } from '../../../../flux/actions/apis/translator_acti
 
 // const { v4 } = require('uuid');
 
+
+const styles = {
+    textField: {
+        width: "100%", background: "white",
+        background: 'rgb(211,211,211)',
+        borderRadius: 10,
+        border: 0,
+        color: 'green',
+    }
+    
+}
+
 class PageCard extends React.Component {
     constructor(props) {
         super(props);
@@ -81,10 +93,10 @@ class PageCard extends React.Component {
     /**
      * render sentence edit
      */
-    renderTextField = () => {
+    renderTextField = (text) => {
         return (
             <TextField
-                style={{ width: "100%", background: "white" }}
+                style= {styles.textField} 
                 type="text" className="form-control"
                 value={this.state.text}
                 variant="outlined"
@@ -132,7 +144,7 @@ class PageCard extends React.Component {
                 left: block.text_left + 'px',
                 width: block.text_width + 'px',
                 height: block.text_height + 'px',
-
+                zIndex:2,
                 border: this.props.block_highlight.block_identifier == block.block_identifier ? "2px solid #1C9AB7" : ''
             }}
                 id={block.block_identifier}
@@ -179,6 +191,7 @@ class PageCard extends React.Component {
     }
 
     render() {
+        console.log(this.props.block_highlight)
         return (
             <div>
                 {this.renderPage(this.props.page)}

@@ -45,6 +45,10 @@ const styles = {
     },
     expandOpen: {
         transform: 'rotate(180deg)',
+        
+    },
+    card_open: {
+        background: "#F4FDFF"
     }
 }
 
@@ -599,7 +603,7 @@ class SentenceCard extends React.Component {
             <div ref={this.props.sentence.s_id}>
             <ClickAwayListener mouseEvent="onMouseDown" onClickAway={this.handleClickAway}>
                 <div key={12} style={{ padding: "1%" }}>
-                    <Card style={this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
+                    <Card style={this.state.cardInFocus ? styles.card_open : this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
                         <CardContent style={{ display: "flex", flexDirection: "row" }}>
                             <div style={{ width: "90%" }}>
                                 {this.renderSourceSentence()}
