@@ -446,12 +446,6 @@ class DocumentEditor extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    fetchPdfSentence: state.fetchPdfSentence,
-    fileUpload: state.fileUpload,
-    documentDetails: state.documentDetails,
-    fetchContent: state.fetchContent,
-    workflowStatus: state.workflowStatus,
-    documentconverter: state.documentconverter,
     saveContent: state.saveContent,
     document_contents: state.document_contents
 });

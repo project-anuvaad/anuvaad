@@ -63,6 +63,7 @@ class ViewDocument extends React.Component {
   componentDidMount() {
     if (this.props.job_details.documents.length < 1) {
       this.fetchUserDocuments(true, this.state.offset, this.state.limit, true)
+      this.setState({showLoader:true})
     }
 
     TELEMETRY.pageLoadCompleted('view-document')
@@ -129,6 +130,7 @@ class ViewDocument extends React.Component {
        */
       if (!this.props.job_details.progress_updated) {
         this.fetchUserDocumentsProgressStatus()
+        this.setState({showLoader:false})
       }
 
       if (!this.props.job_details.document_deleted) {
