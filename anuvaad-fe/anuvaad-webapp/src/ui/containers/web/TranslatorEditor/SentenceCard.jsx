@@ -380,7 +380,8 @@ class SentenceCard extends React.Component {
                             console.log('onChange of autocomplete is fired: ', newValue)
                             this.setState({
                                 value: newValue.tgt, //this.state.value + ' ' + newValue.name,
-                                showSuggestions: false
+                                showSuggestions: false,
+                                userEnteredText: true
                             });
                         }}
                         onClose={(event, newValue) => {
