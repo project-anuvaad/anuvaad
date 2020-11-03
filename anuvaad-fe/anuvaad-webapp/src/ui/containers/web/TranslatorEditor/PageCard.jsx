@@ -43,7 +43,7 @@ class PageCard extends React.Component {
 
         let style = {
             position: "absolute",
-            top: (text.block_id === this.state.selectedSentenceID ? text.text_top - block.text_top - 20 : text.text_top - block.text_top) + 'px',
+            top: (text.block_id === this.props.sele ? text.text_top - block.text_top - 20 : text.text_top - block.text_top) + 'px',
             left: text.text_left - block.text_left + 'px',
             width: text.text_width + 'px',
             height: text.text_height + 'px',
@@ -191,7 +191,6 @@ class PageCard extends React.Component {
     }
 
     render() {
-        console.log(this.props.block_highlight)
         return (
             <div>
                 {this.renderPage(this.props.page)}
@@ -204,7 +203,8 @@ class PageCard extends React.Component {
 
 const mapStateToProps = state => ({
     document_contents: state.document_contents,
-    block_highlight: state.block_highlight
+    block_highlight: state.block_highlight,
+    sentence_highlight: state.sentence_highlight
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

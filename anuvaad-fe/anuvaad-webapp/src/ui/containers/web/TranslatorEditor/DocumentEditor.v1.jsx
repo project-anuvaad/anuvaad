@@ -78,9 +78,9 @@ class DocumentEditor extends React.Component {
       if (prevProps.document_contents.content_updated !== this.props.document_contents.content_updated) {
         if (this.props.document_contents.content_updated) {
           this.props.sentenceActionApiStopped()
-          this.setState({isShowSnackbar: true})
+          this.setState({ snackBarMessage:'',apiCall: false })
             setTimeout(() => {
-              this.setState({ isShowSnackbar: false, snackBarMessage:'' })
+              this.setState({ isShowSnackbar: false, snackBarSavedMessage:'', })
             }, 3000)
         }
       }
@@ -170,12 +170,13 @@ class DocumentEditor extends React.Component {
         case SENTENCE_ACTION.SENTENCE_SAVED: {
           this.props.sentenceActionApiStarted(sentences[0])
           this.makeAPICallSaveSentence(sentences[0], pageNumber)
-          this.setState({snackBarMessage:translate("common.page.label.saveMessage")})
+          this.setMessages(SENTENCE_ACTION.SENTENCE_SAVED, "savedMessage")
+         
           return;
         }
 
         case SENTENCE_ACTION.SENTENCE_SPLITTED: {
-          this.setState({snackBarMessage: translate("common.page.label.splitMessage")})
+          this.setMessages(SENTENCE_ACTION.SENTENCE_SPLITTED, "splittedMessage")
           return;
         }
         case SENTENCE_ACTION.SENTENCE_MERGED: {
@@ -185,22 +186,29 @@ class DocumentEditor extends React.Component {
            */
           this.props.sentenceActionApiStarted(null)
           this.makeAPICallMergeSentence(sentences, pageNumber);
-          this.setState({snackBarMessage:translate("common.page.label.mergeMessage") })
+          this.setMessages(SENTENCE_ACTION.SENTENCE_MERGED, "mergedMessage")
           return;
         }
       }
     }
 
-    snackBarMessage = () =>{
+    setMessages = (pendingAction, completedAction) =>{
+              this.setState({snackBarMessage:translate(`common.page.label.${pendingAction}`), 
+              snackBarSavedMessage:translate(`common.page.label.${completedAction}`), 
+              apiCall:true
+            })
+    }
 
+    snackBarMessage = () =>{
+      console.log(this.state.apliCall ,this.state.snackBarMessage, this.state.snackBarSavedMessage)
       return (
         <div>
         <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
             open={this.state.isShowSnackbar}
-            autoHideDuration={3000}
+            autoHideDuration={!this.state.apiCall && 3000}
             variant="success"
-            message={this.state.snackBarMessage}
+            message={this.state.apiCall ? this.state.snackBarMessage : this.state.snackBarSavedMessage}
           />
           </div>
       )
@@ -217,6 +225,7 @@ class DocumentEditor extends React.Component {
       let recordId  = this.props.match.params.jobid;
       let jobId     = recordId ? recordId.split("|")[0] : ""
       TELEMETRY.endTranslatorFlow(jobId)
+      this.props.ClearContent()
   
       history.push(`${process.env.PUBLIC_URL}/view-document`);
     }
@@ -264,7 +273,8 @@ class DocumentEditor extends React.Component {
                         }}
                         >
                         <div style={{ fontSize: "15px", fontWeight: "bold" }}>
-                            {!this.state.apiCall ? (this.state.isModeSentences ? "Sentences" : "PDF") : "Saving....."}
+                            {/* {!this.state.apiCall ? (this.state.isModeSentences ? "Sentences" : "PDF") : "Saving....."} */}
+                            { (this.state.isModeSentences ? "Sentences" : "PDF")}
                         </div>
                     </Button>
                 </Grid>
@@ -402,7 +412,7 @@ class DocumentEditor extends React.Component {
                 {this.renderDocumentPages()}
                 {this.state.isModeSentences ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>
-            {this.state.snackBarMessage&& this.state.isShowSnackbar&& this.snackBarMessage()}
+            {(this.state.snackBarMessage || this.state.snackBarSavedMessage) && this.snackBarMessage()}
         </div>
         )
     }

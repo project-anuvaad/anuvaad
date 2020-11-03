@@ -521,19 +521,19 @@ class SentenceCard extends React.Component {
       
     handleOperation = (action) =>{
         switch(action) {
-            case "Dictionary": {
+            case 0: {
               this.makeAPICallDictionary();
               this.handleClose();
               return;
             }
     
-            case "Split sentence": {
+            case 1: {
                 console.log("-------",this.state.startIndex, this.state.endIndex, this.props.block_highlight.block_identifier)
               this.processSplitButtonClicked();
               this.handleClose();
               return;
             }
-            case "Copy": {
+            case 2: {
     
                 this.handleCopy()
               return;
