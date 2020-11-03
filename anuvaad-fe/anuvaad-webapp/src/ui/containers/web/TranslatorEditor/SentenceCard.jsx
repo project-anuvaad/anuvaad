@@ -99,6 +99,20 @@ class SentenceCard extends React.Component {
                 isCardBusy: (this.isCurrentSentenceInProps() ? this.props.sentence_action_operation.api_status : false)
             })
         }
+
+        if (prevProps.sentence_highlight !== this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight.sentence_id) {
+            this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
+            // this.setState({
+            //     cardInFocus: true
+            // })
+        }
+    }
+
+    handleSourceScroll(id) {
+        this.refs[id] && this.refs[id].scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
     }
 
     /**
@@ -550,7 +564,7 @@ class SentenceCard extends React.Component {
     render() {
 
         return (
-            <div>
+            <div ref={this.props.sentence.s_id}>
             <ClickAwayListener mouseEvent="onMouseDown" onClickAway={this.handleClickAway}>
                 <div key={12} style={{ padding: "1%" }}>
                     <Card style={this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
