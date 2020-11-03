@@ -154,7 +154,27 @@ class DocumentEditor extends React.Component {
     }
 
     async makeAPICallSplitSentence(sentence, pageNumber, startIndex, endIndex) {
+      let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
 
+      let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, this.props.match.params.locale, 
+                                                '', '', parseInt(this.props.match.params.modelId))
+      const apiReq    = fetch(apiObj.apiEndPoint(), {
+          method: 'post',
+          body: JSON.stringify(apiObj.getBody()),
+          headers: apiObj.getHeaders().headers
+      }).then(async response => {
+        const rsp_data = await response.json();
+          if (!response.ok) {
+            this.props.sentenceActionApiStopped()
+            return Promise.reject('');
+          } else {
+            this.props.contentUpdateStarted();
+            this.props.update_blocks(pageNumber, rsp_data.input.textBlocks);
+          }
+      }).catch((error) => {
+          console.log('api failed because of server or network')
+          this.props.sentenceActionApiStopped()
+      });
     }
 
     /**

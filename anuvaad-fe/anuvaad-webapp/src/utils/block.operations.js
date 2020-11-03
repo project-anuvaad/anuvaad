@@ -46,6 +46,26 @@ function get_blocks(sentences, block_ids) {
     return blocks
 }
 
+function get_blocks_with_block_identifier(sentences, block_identifiers) {
+    let blocks  = []
+    sentences   = JSON.parse(JSON.stringify(sentences))
+
+    block_identifiers.forEach(element => {
+        let condition           = `$..text_blocks[?(@.block_identifier == '${element}')]`;
+        let selected_blocks     = jp.query(sentences, condition)
+
+        selected_blocks.forEach(element => {
+
+            element.children.forEach(child => {
+                child.page_no = element.page_info.page_no
+            })
+            blocks.push(element)
+        })
+
+    })
+    return blocks
+}
+
 function get_all_text_blocks(sentences) {
     sentences       = JSON.parse(JSON.stringify(sentences))
     let condition   = '$..[*].text_blocks[*]'
@@ -478,11 +498,81 @@ function do_sentence_splitting(sentences, block_id, sentence_id, character_count
     return tokenized_sentences_block
 }
 
+/**
+ * @description splitted string  array
+ * @param {*} sentence , input sentence
+ * @param {*} start , start index
+ * @param {*} end , end index
+ * @returns  array of string
+ */
+function split_sentence(sentence, start, end) {
+    let splitted_sentences   = []
+    let start_index = Math.min(start, end);
+    let end_index   = Math.max(start, end);
+
+    let s1          = sentence.slice(0, start_index);
+    splitted_sentences.push(s1);
+
+    let s2          = sentence.slice(start_index, end_index);
+    splitted_sentences.push(s2);
+
+    let s3          = sentence.slice(end_index, sentence.length);
+    splitted_sentences.push(s3);
+
+    return splitted_sentences.filter(e => {
+        if (e.trim().length > 1) {
+            return true;
+        }
+        return false;
+    }).map(e => e.trim())
+}
+
+/**
+ * @description splits the sentence based upon start and end index
+ * @param {*} pages , fetch content data portion
+ * @param {*} block_identifier, unique block identifier where sentence object resides
+ * @param {*} sentence , sentence object
+ * @param {*} start_index , start index of selection
+ * @param {*} end_index , end index of selection
+ * @returns updated blocks
+ */
+function do_sentence_splitting_v1(pages, block_identifer, sentence, start_index, end_index) {
+    let selected_block_ids          = []
+    selected_block_ids.push(block_identifer)
+    let selected_blocks             = get_blocks_with_block_identifier(pages, selected_block_ids)
+
+    selected_blocks.forEach((text_block, index) => {
+        text_block['tokenized_sentences'].forEach((tokenized_sentence, sentence_index) => {
+            if (tokenized_sentence.s_id === sentence.s_id) {
+                let splitted_sentences = split_sentence(tokenized_sentence.src, start_index, end_index);
+                for (let i = 0; i < splitted_sentences.length; i++) {
+                    if (i === 0) {
+                        let s1  = {...sentence}
+                        s1.src  = splitted_sentences[i];
+                        s1.save = false;
+                        s1.tgt  = '';
+                        text_block['tokenized_sentences'].splice(sentence_index, 1, s1);
+                    } else {
+                        text_block['tokenized_sentences'].splice(sentence_index+i, 0, {
+                            s_id: v4(),
+                            src: splitted_sentences[i],
+                            tgt: ''
+                        });
+                    }
+                }
+            }
+        })
+    })
+    return selected_blocks;
+}
+
+
 module.exports = {
     get_merged_blocks,
     do_sentences_merging,
     do_sentences_merging_v1,
     do_sentence_splitting,
+    do_sentence_splitting_v1,
     get_sorted_blocks,
     get_sentence_id_blocks
 }
