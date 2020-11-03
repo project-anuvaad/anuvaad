@@ -49,6 +49,7 @@ class DocumentEditor extends React.Component {
             snackBarMessage: '',
             isShowSnackbar: false
         }
+        console.log(this.props.match.params.modelId)
     }
 
     /**
@@ -109,24 +110,22 @@ class DocumentEditor extends React.Component {
     async makeAPICallMergeSentence(sentences, pageNumber) {
       let sentence_ids   = sentences.map(sentence => sentence.s_id)
       let updated_blocks = BLOCK_OPS.do_sentences_merging_v1(this.props.document_contents.pages, sentence_ids);
-      console.log(updated_blocks)
 
-      // this.setState({apiInProgress: true})
-      let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale, '', '', parseInt(this.props.match.params.modelsId))
-      // this.props.APITransport(apiObj);
-      const apiReq    = await fetch(apiObj.apiEndPoint(), {
+      let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale, 
+                                          '', '', parseInt(this.props.match.params.modelId))
+      const apiReq    = fetch(apiObj.apiEndPoint(), {
           method: 'post',
           body: JSON.stringify(apiObj.getBody()),
           headers: apiObj.getHeaders().headers
-      }).then((response) => {
-          if (response.status >= 400 && response.status < 600) {
-              console.log('api failed because of server or network')
-              this.props.sentenceActionApiStopped()
+      }).then(async response => {
+        const rsp_data = await response.json();
+          if (!response.ok) {
+            this.props.sentenceActionApiStopped()
+            return Promise.reject('');
+          } else {
+            this.props.contentUpdateStarted();
+            this.props.update_blocks(pageNumber, rsp_data.input.textBlocks);
           }
-          return response;
-      }).then((returnedResponse) => {
-        this.props.sentenceActionApiStopped()
-        this.makeAPICallFetchContentPerPage(pageNumber);
       }).catch((error) => {
           console.log('api failed because of server or network')
           this.props.sentenceActionApiStopped()
