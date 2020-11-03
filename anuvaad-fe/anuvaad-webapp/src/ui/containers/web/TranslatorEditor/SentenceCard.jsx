@@ -18,6 +18,8 @@ import MenuItems from "./PopUp";
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import IconButton from "@material-ui/core/IconButton";
+import InteractiveTranslateAPI from "../../../../flux/actions/apis/intractive_translate";
+
 import copy from 'copy-to-clipboard';
 import SENTENCE_ACTION from './SentenceActions'
 
@@ -118,12 +120,34 @@ class SentenceCard extends React.Component {
      * api calls
      */
     async makeAPICallInteractiveTranslation() {
-        const response  = await fetch('https://country.register.gov.uk/records.json?page-size=5000');
-        await sleep(1e3);
-        const countries = await response.json();
-        this.setState({
-            suggestions: Object.keys(countries).map((key) => countries[key].item[0])
-        })
+        // const response  = await fetch('https://country.register.gov.uk/records.json?page-size=5000');
+        // await sleep(1e3);
+        // const countries = await response.json();
+        // this.setState({
+        //     suggestions: Object.keys(countries).map((key) => countries[key].item[0])
+        // })
+        // console.log(this.state.suggestions)
+
+        let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, this.state.value, {model_id: this.props.modelId}, true, '', this.props.sentence.s_id);
+        const apiReq    = fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            body: JSON.stringify(apiObj.getBody()),
+            headers: apiObj.getHeaders().headers
+        }).then(async response => {
+            const rsp_data = await response.json();
+            if (!response.ok) {
+                return Promise.reject('');
+            } else {
+                console.log(rsp_data.output.predictions)
+                this.setState({
+                    suggestions: rsp_data.output.predictions
+                })
+            }
+        }).catch((error) => {
+            this.setState({
+                suggestions: []
+            })
+        });
     }
 
     /**
@@ -314,10 +338,10 @@ class SentenceCard extends React.Component {
                     <Autocomplete
                         filterOptions={filterOptions}
                         getOptionLabel={(option) => {
-                            return option.name
+                            return option.tgt
                         }}
                         renderOption={(option, index) => {
-                            return (<Typography noWrap>{option.name}</Typography>)
+                            return (<Typography noWrap>{option.tgt}</Typography>)
                         }}
                         options={this.state.suggestions}
 
@@ -329,7 +353,7 @@ class SentenceCard extends React.Component {
                         onChange={(event, newValue) => {
                             console.log('onChange of autocomplete is fired: ', newValue)
                             this.setState({
-                                value: this.state.value + ' ' + newValue.name,
+                                value: newValue.tgt, //this.state.value + ' ' + newValue.name,
                                 showSuggestions: false
                             });
                         }}

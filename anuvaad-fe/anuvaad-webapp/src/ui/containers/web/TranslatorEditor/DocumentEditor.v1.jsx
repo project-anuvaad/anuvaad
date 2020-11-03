@@ -49,7 +49,6 @@ class DocumentEditor extends React.Component {
             snackBarMessage: '',
             isShowSnackbar: false
         }
-        console.log(this.props.match.params.modelId)
     }
 
     /**
@@ -370,7 +369,11 @@ class DocumentEditor extends React.Component {
                 loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
                 endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
             >
-              {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} pageNumber={page.page_no} sentence={sentence} onAction={this.processSentenceAction}/>) )}
+              {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} 
+                                                                                  pageNumber={page.page_no} 
+                                                                                  modelId={parseInt(this.props.match.params.modelId)}
+                                                                                  sentence={sentence} 
+                                                                                  onAction={this.processSentenceAction}/>) )}
             </InfiniteScroll>
           </Grid>
         
