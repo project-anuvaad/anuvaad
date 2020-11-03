@@ -11,17 +11,13 @@ import ClearContent from "../../../../flux/actions/apis/clearcontent";
 import FileContent from "../../../../flux/actions/apis/fetchcontent";
 import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_update";
 
-import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
-import Toolbar from "@material-ui/core/Toolbar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import Typography from "@material-ui/core/Typography";
 import Snackbar from "../../../components/web/common/Snackbar";
 import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
-import TextButton from '@material-ui/core/Button';
 import LanguageCodes from "../../../components/web/common/Languages.json"
 import DownloadIcon from "@material-ui/icons/ArrowDownward";
 import PDFRenderer from './PDFRenderer';

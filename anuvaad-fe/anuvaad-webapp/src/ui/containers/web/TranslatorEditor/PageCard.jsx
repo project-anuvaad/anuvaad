@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { highlightSentence } from '../../../../flux/actions/apis/translator_actions';
 
-const { v4 } = require('uuid');
+// const { v4 } = require('uuid');
 
 class PageCard extends React.Component {
     constructor(props) {

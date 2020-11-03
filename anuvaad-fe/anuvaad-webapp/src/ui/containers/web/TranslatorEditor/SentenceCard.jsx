@@ -6,13 +6,12 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField'
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import Checkbox from '@material-ui/core/Checkbox';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import DictionaryAPI from '../../../../flux/actions/apis/word_dictionary';
 import { highlightBlock, startMergeSentence, inProgressMergeSentence, finishMergeSentence, cancelMergeSentence, clearHighlighBlock } from '../../../../flux/actions/apis/translator_actions';
 import MenuItems from "./PopUp";
 import Collapse from '@material-ui/core/Collapse';

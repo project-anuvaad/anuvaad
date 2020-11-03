@@ -6,7 +6,6 @@ import Merge from "@material-ui/icons/CallMerge";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Grid from "@material-ui/core/Grid";
 import Save from "@material-ui/icons/CheckCircleOutline";
-import Split from "@material-ui/icons/CallSplit";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import Checkbox from "@material-ui/core/Checkbox";

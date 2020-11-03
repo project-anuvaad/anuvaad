@@ -14,7 +14,6 @@ import APITransport from "../../../flux/actions/apitransport/apitransport";
 import { translate } from "../../../assets/localisation";
 import ProgressBar from "../../components/web/common/ProgressBar";
 import Spinner from "../../components/web/common/Spinner";
-import LanguageCodes from "../../components/web/common/Languages.json"
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';

@@ -1,5 +1,5 @@
 import C from "../actions/constants";
-import LanguageCodes from "../../ui/components/web/common/Languages.json"
+// import LanguageCodes from "../../ui/components/web/common/Languages.json"
 
 const initialState = {
     count:  0,

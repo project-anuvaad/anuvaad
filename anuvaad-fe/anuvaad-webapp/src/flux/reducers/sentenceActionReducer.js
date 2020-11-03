@@ -3,7 +3,7 @@ import C from '../actions/constants';
 export default function sentenceMergeReducer(state={started: false, progress: false, finished: false, cancel: false, api_status: false, sentences:[]}, action){
     switch(action.type) {
         case C.MERGE_SENTENCE_STARTED: {
-          let data      = action.payload;
+        //   let data      = action.payload;
           return {
               ...state,
               sentences:[],
@@ -26,7 +26,7 @@ export default function sentenceMergeReducer(state={started: false, progress: fa
           }
 
         case C.MERGE_SENTENCE_FINISHED: {
-            let data      = action.payload;
+            // let data      = action.payload;
             return {
                 ...state,
                 progress: false,
@@ -35,7 +35,7 @@ export default function sentenceMergeReducer(state={started: false, progress: fa
         }
 
         case C.MERGE_SENTENCE_CANCEL: {
-            let data      = action.payload;
+            // let data      = action.payload;
             return {
                 ...state,
                 started: false,
@@ -70,7 +70,7 @@ export default function sentenceMergeReducer(state={started: false, progress: fa
         }
 
         case C.SENTENCE_ACTION_API_STOPPED: {
-            let data        = action.payload
+            // let data        = action.payloads
             return {
                 ...state,
                 api_status: false,
