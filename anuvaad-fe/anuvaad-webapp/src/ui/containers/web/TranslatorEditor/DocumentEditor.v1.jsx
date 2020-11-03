@@ -362,6 +362,7 @@ class DocumentEditor extends React.Component {
       }
       return (
           <Grid item xs={12} sm={6} lg={6} xl={6}>
+            
             <InfiniteScroll height={1200}
                 next={this.makeAPICallFetchContent}
                 hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false }
