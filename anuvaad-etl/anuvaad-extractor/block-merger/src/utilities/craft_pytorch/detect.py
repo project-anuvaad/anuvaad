@@ -47,8 +47,8 @@ net = load_craft_model()
 
 parser = argparse.ArgumentParser(description='CRAFT Text Detection')
 parser.add_argument('--trained_model', default='./model/craft_mlt_25k.pth', type=str, help='pretrained model')
-parser.add_argument('--text_threshold', default=0.3, type=float, help='text confidence threshold')
-parser.add_argument('--low_text', default=0.4, type=float, help='text low-bound score')
+parser.add_argument('--text_threshold', default=0.4, type=float, help='text confidence threshold')
+parser.add_argument('--low_text', default=0.3, type=float, help='text low-bound score')
 parser.add_argument('--link_threshold', default=0.4, type=float, help='link confidence threshold')
 parser.add_argument('--cuda', default=False, type=str2bool, help='Use cuda for inference')
 parser.add_argument('--canvas_size', default=1280, type=int, help='image size for inference')
@@ -57,10 +57,39 @@ parser.add_argument('--poly', default=False, action='store_true', help='enable p
 parser.add_argument('--show_time', default=False, action='store_true', help='show processing time')
 parser.add_argument('--test_folder', default='/data/', type=str, help='folder path to input images')
 parser.add_argument('--refine', default=False, action='store_true', help='enable link refiner')
-parser.add_argument('--refiner_model', default='weights/craft_refiner_CTW1500.pth', type=str, help='pretrained refiner model')
+parser.add_argument('--refiner_model', default='./model/craft_refiner_CTW1500.pth', type=str, help='pretrained refiner model')
 args = parser.parse_args(args=[])
 
+def load_model():
+    net = CRAFT()     # initialize
+    if args.cuda:
+        net.load_state_dict(copyStateDict(torch.load(config.CRAFT_MODEL_PATH)))
+    else:
+        net.load_state_dict(copyStateDict(torch.load(config.CRAFT_MODEL_PATH, map_location='cpu')))
 
+    if args.cuda:
+        net = net.cuda()
+        net = torch.nn.DataParallel(net)
+        cudnn.benchmark = False
+
+    net.eval()
+
+    # LinkRefiner
+    refine_net = None
+    if args.refine:
+        from .refinenet import RefineNet
+        refine_net = RefineNet()
+        print('Loading weights of refiner from checkpoint (' + args.refiner_model + ')')
+        if args.cuda:
+            refine_net.load_state_dict(copyStateDict(torch.load(config.CRAFT_REFINE_MODEL_PATH)))
+            refine_net = refine_net.cuda()
+            refine_net = torch.nn.DataParallel(refine_net)
+        else:
+            refine_net.load_state_dict(copyStateDict(torch.load(config.CRAFT_REFINE_MODEL_PATH, map_location='cpu')))
+
+        refine_net.eval()
+    return net,refine_net
+#net ,refine_net= load_model()
 
 def test_net(image, text_threshold, link_threshold, low_text, cuda, poly, refine_net=None):
     t0 = time.time()
@@ -145,8 +174,8 @@ def convert_to_in_df(craft_df):
     in_df['text_width'] = (craft_df['x2'] - craft_df['x1'])
     in_df['text'] = ''
     in_df['attrib'] = None
-    in_df['font_family'] = 'Ariel Unicode MS'
-    in_df['font_family_updated'] = 'Ariel Unicode MS'
+    in_df['font_family'] = 'Arial Unicode MS'
+    in_df['font_family_updated'] = 'Arial Unicode MS'
     in_df['font_size'] = in_df['text_height']
     in_df['font_size_updated'] = in_df['text_height']
 

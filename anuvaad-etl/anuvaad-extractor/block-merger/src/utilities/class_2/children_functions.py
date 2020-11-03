@@ -10,8 +10,7 @@ import src.utilities.app_context as app_context
 from src.utilities.class_2.break_block_condition_single_column import process_page_blocks as process_block_single_column
 from src.utilities.class_2.page_layout.double_column import get_column
 from src.utilities.class_2.page_layout.utils import collate_regions
-
-
+from src.utilities.primalaynet.infer import predict_primanet
 
 def doc_pre_processing(filename, base_dir, lang):
     '''
@@ -61,12 +60,19 @@ def get_layout_proposals(pdf_data,flags) :
         h_dfs = []
         pdf_data['sub_in_dfs'] = []
         if flags['page_layout'] == 'double_column' :
+            width_ratio = pdf_data['page_width'] / pdf_data['pdf_image_width']
+            height_ratio = pdf_data['page_height'] / pdf_data['pdf_image_height']
             for page_index, pdf_image in enumerate(pdf_data['pdf_image_paths']):
-                width_ratio = pdf_data['page_width'] / pdf_data['pdf_image_width']
-                regions = get_column(pdf_image, width_ratio)
+                
+                #regions = get_column(pdf_image, width_ratio)
+                regions = predict_primanet(pdf_image, pdf_data['in_dfs'][page_index],width_ratio,height_ratio)
                 sub_in_dfs = collate_regions(regions,pdf_data['in_dfs'][page_index])
                 pdf_data['sub_in_dfs'].append(sub_in_dfs)
                 sub_h_dfs  = get_xml.get_hdfs(sub_in_dfs,  pdf_data['header_region'], pdf_data['footer_region'])
+                for df in sub_in_dfs:
+                    if len(df)<=1:
+                        df['children']=None
+                        sub_h_dfs.append(df)  
                 h_dfs.append(sub_h_dfs)
         return h_dfs
 
@@ -93,19 +99,21 @@ def vertical_merging(pdf_data,flags):
                 v_df['children'] = h_df.to_json()
             else:
                 for sub_h_df in h_df :
-                    sub_dic = {}
-                    chunk_df = sub_h_df.copy()
-                    chunk_df['text_right'] = chunk_df['text_left'] + chunk_df['text_width']
-                    chunk_df['text_bottom'] = chunk_df['text_top'] + chunk_df['text_height']
-                    sub_dic['text_top'] = chunk_df['text_top'].min()
-                    sub_dic['text_left'] = chunk_df['text_left'].min()
-                    sub_dic['text_width'] = chunk_df['text_right'].max() - sub_dic['text_left']
-                    sub_dic['text_height'] = chunk_df['text_bottom'].max() - sub_dic['text_top']
-                    sub_dic['text'] = ''
+                    if len(sub_h_df)>0:
+                        sub_dic = {}
+                        chunk_df = sub_h_df.copy()
+                        chunk_df['text_right'] = chunk_df['text_left'] + chunk_df['text_width']
+                        chunk_df['text_bottom'] = chunk_df['text_top'] + chunk_df['text_height']
+                        sub_dic['text_top'] = chunk_df['text_top'].min()
+                        sub_dic['text_left'] = chunk_df['text_left'].min()
+                        sub_dic['text_width'] = chunk_df['text_right'].max() - sub_dic['text_left']
+                        sub_dic['text_height'] = chunk_df['text_bottom'].max() - sub_dic['text_top']
+                        sub_dic['text'] = ''
 
-                    sub_dic['children'] = sub_h_df.to_json()
+                        sub_dic['children'] = sub_h_df.to_json()
 
-                    v_df = v_df.append([sub_dic])
+                        v_df = v_df.append([sub_dic])
+                    
             v_df = v_df.reset_index(drop=True)
             v_dfs.append(v_df)
 
@@ -114,14 +122,16 @@ def vertical_merging(pdf_data,flags):
 def breaK_into_paragraphs(pdf_data,flags):
     #if flags['page_layout'] == 'single_column':
 
-    if flags['doc_class'] == 'class_1' :
-        return get_xml.get_pdfs(pdf_data['v_dfs'], pdf_data['lang'])
-    else :
-        p_dfs = []
-        for page_index ,v_df in enumerate(pdf_data['v_dfs']) :
-            p_df = pd.concat(process_block_single_column(v_df, pdf_data['page_width'],page_num= page_index +1, configs=config.BLOCK_BREAK_CONFIG))
-            p_dfs.append(p_df)
-        return p_dfs
+    #if flags['doc_class'] == 'class_1' :
+    return get_xml.get_pdfs(pdf_data['v_dfs'], pdf_data['lang'])
+    
+    #else : 
+    '''
+    p_dfs = []
+    for page_index ,v_df in enumerate(pdf_data['v_dfs']) :
+        p_df = pd.concat(process_block_single_column(v_df, pdf_data['page_width'],page_num= page_index +1, configs=config.BLOCK_BREAK_CONFIG))
+        p_dfs.append(p_df)
+    return p_dfs  '''
 
 
 def doc_structure_response(pdf_data,flags):

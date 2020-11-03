@@ -10,9 +10,9 @@ def are_hlines(df, configs, idx1, idx2, debug=False):
     if debug:
         print('are_hlines:: idx1: %d, idx2: %d, space: %d' % (idx1, idx2, space))
 
-    diff_threshold = df.iloc[idx1]['text_height'] *0.5
+    diff_threshold = df.iloc[idx1]['text_height'] *0.50
 
-    return ((space <= diff_threshold) or(sepration <= 2 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 ) #configs['SUPERSCRIPT_HEIGHT_DIFFERENCE']
+    return ((space <= diff_threshold ) or(sepration <= 3 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 ) #configs['SUPERSCRIPT_HEIGHT_DIFFERENCE']
 
 
 def are_hlines_superscript(df, configs, idx1, idx2, debug=False):

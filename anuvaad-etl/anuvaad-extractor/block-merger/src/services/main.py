@@ -14,7 +14,7 @@ import config
 
 def extract_images_and_text_regions(filename, base_dir,lang,page_layout):
     pdf_data , flags = children_functions.doc_pre_processing(filename,base_dir,lang)
-    #flags['doc_class'] ='class_2'
+    flags['doc_class'] ='class_2'
 
     if flags['doc_class'] == 'class_1':
         pass
@@ -25,7 +25,7 @@ def extract_images_and_text_regions(filename, base_dir,lang,page_layout):
     pdf_data['table_dfs'], pdf_data['line_dfs'], pdf_data['bg_dfs']     = table_dfs, line_dfs,bg_dfs
     pdf_data['lang']        = lang
     #to_do : add page_layout detection module
-    flags['page_layout']    = page_layout
+    flags['page_layout']    = "double_column"
     #del pdf_data['img_dfs']
     return [pdf_data ,flags]
 
@@ -36,8 +36,8 @@ def merge_horizontally(input) :
     pdf_data = prepocess_pdf_regions(pdf_data,flags)
     pdf_data['h_dfs']  = children_functions.get_layout_proposals(pdf_data,flags)
 
-    if (pdf_data['lang'] != 'en') or (flags['doc_class'] != 'class_1'):
-        pdf_data['h_dfs'] = tesseract_ocr(pdf_data,flags)
+    #if (pdf_data['lang'] != 'en') or (flags['doc_class'] != 'class_1'):
+    #    pdf_data['h_dfs'] = tesseract_ocr(pdf_data,flags)
     #del pdf_data['in_dfs']
     return [pdf_data,flags]
 
