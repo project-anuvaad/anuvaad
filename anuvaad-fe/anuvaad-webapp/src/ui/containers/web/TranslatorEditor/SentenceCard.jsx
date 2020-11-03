@@ -126,6 +126,9 @@ class SentenceCard extends React.Component {
      * api calls
      */
     async makeAPICallInteractiveTranslation() {
+        /**
+         * left dead code to test
+         */
         // const response  = await fetch('https://country.register.gov.uk/records.json?page-size=5000');
         // await sleep(1e3);
         // const countries = await response.json();
@@ -446,9 +449,6 @@ class SentenceCard extends React.Component {
 
 
     async makeAPICallDictionary() {
-        debugger
-        // let word_locale = this.props.match.params.locale;
-        // let tgt_locale = this.props.match.params.tgt_locale;
         let apiObj      = new DictionaryAPI(this.state.selectedSentence,this.props.word_locale, this.props.tgt_locale )
         const apiReq    = await fetch(apiObj.apiEndPoint(), {
             method: 'post',
