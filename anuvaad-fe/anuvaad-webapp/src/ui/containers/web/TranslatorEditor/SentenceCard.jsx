@@ -288,13 +288,8 @@ class SentenceCard extends React.Component {
                     <br />
                 </Typography>
 
-<<<<<<< HEAD
-                <Typography variant = "subtitle1" gutterBottom onMouseUp = {(event) => {this.getSelectionText(event)}}>
-                    {this.props.sentence.s0_src}
-=======
                 <Typography variant="subtitle1" gutterBottom onMouseUp={(event)=>{this.getSelectionText(event)}}>
                     {this.props.sentence.src}
->>>>>>> d8ad2a61d504ea363c9a7025cf576f77167c8c15
                     <br />
                 </Typography>
             </div>
