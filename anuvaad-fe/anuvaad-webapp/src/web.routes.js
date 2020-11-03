@@ -121,7 +121,6 @@ class AppRoutes extends React.Component {
               component={DocumentEditorV1}
               title={translate('dashboard.page.heading.title')}
               authenticate={this.authenticateUser}
-              dontShowLoader
               currentMenu="texttranslate"
             />
 

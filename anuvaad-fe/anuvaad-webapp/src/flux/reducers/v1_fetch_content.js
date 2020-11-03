@@ -54,6 +54,9 @@ export default function(state = initialState, action) {
             }
         }
 
+        case C.CLEAR_CONTENT:
+            return initialState;
+
         default:
             return state;
     }
