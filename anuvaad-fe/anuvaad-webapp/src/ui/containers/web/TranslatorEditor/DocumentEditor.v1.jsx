@@ -234,7 +234,7 @@ class DocumentEditor extends React.Component {
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
             open={this.state.isShowSnackbar}
             autoHideDuration={!this.state.apiCall && 3000}
-            variant="success"
+            variant={this.state.apiCall ? "info" : "success"}
             message={this.state.apiCall ? this.state.snackBarMessage : this.state.snackBarSavedMessage}
           />
           </div>

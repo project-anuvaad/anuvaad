@@ -27,11 +27,13 @@ const styles1 = theme => ({
         backgroundColor: '#FF0000',
     },
     info: {
-        backgroundColor: '#FFFF',
+        backgroundColor: '#2196f3',
     },
+    
     icon: {
         fontSize: 20,
     },
+
     iconVariant: {
         opacity: 0.9,
         marginRight: theme.spacing(1),
@@ -106,6 +108,7 @@ class CustomizedSnackbars extends React.Component {
                         vertical: 'bottom',
                         horizontal: 'left',
                     }}
+                    variant = {variant}
                     open={this.state.open }
                     autoHideDuration={6000}
                     onClose={this.handleClose}
