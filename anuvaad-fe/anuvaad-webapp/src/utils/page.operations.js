@@ -73,12 +73,16 @@ function get_pages_children_information(data) {
                              grandchildren.children.forEach(child_elem => {
                             child_elem['block_identifier']  = text_block['block_identifier'];
                             child_elem['tag']               = 'GRAND_CHILDREN'
-                            child_elem['sentence_id']    = text_block['tokenized_sentences'][0].s_id;
+                            if (text_block['tokenized_sentences'].length > 1) {
+                                child_elem['sentence_id']    = text_block['tokenized_sentences'][0].s_id;
+                            }
                             blockValue["texts"].push(child_elem);
                         })
                     } else {
                         grandchildren['block_identifier']   = text_block['block_identifier'];
-                        grandchildren['sentence_id']           = text_block['tokenized_sentences'][0].s_id;
+                        if (text_block['tokenized_sentences'].length > 1) {
+                            grandchildren['sentence_id']    = text_block['tokenized_sentences'][0].s_id;
+                        }
                         grandchildren['tag']                = 'CHILDREN'
                         blockValue["texts"].push(grandchildren);
                     }
@@ -95,44 +99,48 @@ function get_pages_children_information(data) {
 
 /**
  * @description updates the tokenized sentence array based upon s_id found
- * @param {*} data , page of the document
+ * @param {*} data , pages of the document
  * @param {*} sentences 
  * @returns updated page data
  */
 function update_tokenized_sentences(data, sentences) {
     let copied_data = JSON.parse(JSON.stringify(data))
 
-    if (copied_data['text_blocks']) {
-        copied_data['text_blocks'].forEach(text_block => {
-            text_block['tokenized_sentences'].forEach((tokenized_sentence, index) => {
-                sentences.forEach(sentence => {
-                    if (tokenized_sentence.s_id === sentence.s_id) {
-                        text_block['tokenized_sentences'].splice(index, 1, sentence)
-                    }
+    copied_data.forEach(element => {
+        if (element['text_blocks']) {
+            element['text_blocks'].forEach(text_block => {
+                text_block['tokenized_sentences'].forEach((tokenized_sentence, index) => {
+                    sentences.forEach(sentence => {
+                        if (tokenized_sentence.s_id === sentence.s_id) {
+                            text_block['tokenized_sentences'].splice(index, 1, sentence)
+                        }
+                    })
                 })
-            })
-        });
-    }
+            });
+        }
+    });
     return copied_data;
 }
 
 /**
  * @description updates the block array based upon block_identifier found
- * @param {*} data , page of the document
+ * @param {*} data , pages of the document
  * @param {*} sentences 
  * @returns updated page data
  */
 function update_blocks(data, blocks) {
     let copied_data = JSON.parse(JSON.stringify(data))
-    if (copied_data['text_blocks']) {
-        copied_data['text_blocks'].forEach((text_block, index) => {
-            blocks.forEach(block => {
-                if (text_block.block_identifier === block.block_identifier) {
-                    copied_data['text_blocks'].splice(index, 1, block)
-                }
-            })
-        });
-    }
+    copied_data.forEach(element => {
+        if (element['text_blocks']) {
+            element['text_blocks'].forEach((text_block, index) => {
+                blocks.forEach(block => {
+                    if (text_block.block_identifier === block.block_identifier) {
+                        element['text_blocks'].splice(index, 1, block)
+                    }
+                })
+            });
+        }
+    });
     return copied_data;
 }
 

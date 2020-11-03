@@ -31,15 +31,11 @@ export default function(state = initialState, action) {
             let data            = action.payload;
             let page_number     = data.page_number;
             let sentences       = data.sentences;
-
-            let page            = state.pages[page_number-1];
-            let updated_page    = PAGE_OPERATION.update_tokenized_sentences(page, sentences)
-            let pages           = state.pages
-            pages.splice(page_number - 1, 1, updated_page)
+            let updated_pages   = PAGE_OPERATION.update_tokenized_sentences(state.pages, sentences)
 
             return {
                 ...state,
-                pages: pages,
+                pages: updated_pages,
                 content_updated: true
             }
         }
@@ -49,14 +45,11 @@ export default function(state = initialState, action) {
             let page_number     = data.page_number;
             let blocks          = data.blocks;
 
-            let page            = state.pages[page_number-1];
-            let updated_page    = PAGE_OPERATION.update_blocks(page, blocks)
-            let pages           = state.pages
-            pages.splice(page_number - 1, 1, updated_page)
+            let updated_page    = PAGE_OPERATION.update_blocks(state.pages, blocks)
 
             return {
                 ...state,
-                pages: pages,
+                pages: updated_page,
                 content_updated: true
             }
         }

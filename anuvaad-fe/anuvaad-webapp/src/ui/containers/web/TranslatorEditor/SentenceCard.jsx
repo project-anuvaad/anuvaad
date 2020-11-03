@@ -64,7 +64,6 @@ class SentenceCard extends React.Component {
             cardChecked: false,
             isModeMerge: false,
             isCardBusy: false,
-            sentenceSaved: false,
             userEnteredText: false,
             selectedSentence: '',
             positionX:0,
@@ -144,7 +143,7 @@ class SentenceCard extends React.Component {
              */
             if (this.state.value === '' && this.props.sentence.s0_tgt !== '') {
                 if (this.props.onAction) {
-                    this.setState({sentenceSaved: true,
+                    this.setState({
                         value: this.props.sentence.s0_tgt
                     })
 
@@ -170,7 +169,6 @@ class SentenceCard extends React.Component {
         })
 
         if (this.props.onAction) {
-            this.setState({sentenceSaved: true})
 
             let sentence    = {...this.props.sentence};
             sentence.save   = true;
@@ -284,7 +282,7 @@ class SentenceCard extends React.Component {
                 </Typography>
 
                 <Typography variant="subtitle1" gutterBottom onMouseUp={(event)=>{this.getSelectionText(event)}}>
-                    {this.props.sentence.s0_src}
+                    {this.props.sentence.src}
                     <br />
                 </Typography>
             </div>
@@ -505,7 +503,7 @@ class SentenceCard extends React.Component {
         if (this.props.sentence.save) {
             return true;
         }
-        return this.state.sentenceSaved;
+        return false;
     }
 
     render() {
