@@ -95,7 +95,7 @@ class ViewDocument extends React.Component {
   getRecordIds = () => {
     let jobIds = []
     for (var i = this.state.currentPageIndex * this.state.limit; i < (this.state.currentPageIndex * this.state.limit) + this.state.limit; i++) {
-      if (this.props.job_details.documents[i]['recordId']) {
+      if (this.props.job_details.documents.hasOwnProperty("recordId") && this.props.job_details.documents[i]['recordId']) {
         jobIds.push(this.props.job_details.documents[i]['recordId'])
       }
     }
@@ -124,6 +124,7 @@ class ViewDocument extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    console.log(this.props.job_details)
     if (prevProps.job_details.documents !== this.props.job_details.documents) {
       /**
        * update job progress status only progress_updated is false
@@ -308,7 +309,7 @@ class ViewDocument extends React.Component {
     const options = {
       textLabels: {
         body: {
-          noMatch: this.state.count > 0 && this.state.count >this.state.offset ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
+          noMatch: this.props.job_details.count > 0 && this.props.job_details.count > this.props.job_details.documents.length ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
         },
         toolbar: {
           search: translate("graderReport.page.muiTable.search"),
