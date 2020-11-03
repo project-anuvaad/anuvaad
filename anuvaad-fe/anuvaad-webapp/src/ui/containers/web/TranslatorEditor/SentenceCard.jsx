@@ -79,7 +79,9 @@ class SentenceCard extends React.Component {
             sentenceSource:'',
             isopenMenuItems:false,
             parallel_words:null,
-            dictionaryWord:''
+            dictionaryWord:'',
+            startIndex: null,
+            endIndex: null
 
         };
         this.textInput = React.createRef();
@@ -321,9 +323,11 @@ class SentenceCard extends React.Component {
 
     getSelectionText = (event) =>{
         let selectedSentence    = window.getSelection().toString();
+        let endIndex            = window.getSelection().focusOffset;
+        let startIndex         = window.getSelection().anchorOffset;
         let sentenceSource      = event.target.innerHTML;
         if(selectedSentence && sentenceSource.includes(selectedSentence)){
-            this.setState({selectedSentence, sentenceSource, positionX: event.clientX , positionY:event.clientY, isopenMenuItems : true})
+            this.setState({selectedSentence, sentenceSource, positionX: event.clientX,startIndex, endIndex, positionY:event.clientY, isopenMenuItems : true})
         }
         
     }
@@ -506,7 +510,7 @@ class SentenceCard extends React.Component {
       }
 
     handleClose = () => {
-        this.setState({selectedSentence: '',  positionX:0, positionY:0,isopenMenuItems : false})
+        this.setState({selectedSentence: '',  positionX:0, positionY:0,isopenMenuItems : false, endIndex : null, startIndex: null})
     }
 
     handleCopy = () => {
@@ -524,7 +528,9 @@ class SentenceCard extends React.Component {
             }
     
             case "Split sentence": {
-              this.processSplitButtonClicked()
+                console.log("-------",this.state.startIndex, this.state.endIndex, this.props.block_highlight.block_identifier)
+              this.processSplitButtonClicked();
+              this.handleClose();
               return;
             }
             case "Copy": {
@@ -598,7 +604,6 @@ class SentenceCard extends React.Component {
     }
 
     render() {
-
         return (
             <div ref={this.props.sentence.s_id}>
             <ClickAwayListener mouseEvent="onMouseDown" onClickAway={this.handleClickAway}>
@@ -652,7 +657,8 @@ class SentenceCard extends React.Component {
 const mapStateToProps = state => ({
     document_contents: state.document_contents,
     sentence_action_operation: state.sentence_action_operation,
-    sentence_highlight: state.sentence_highlight
+    sentence_highlight: state.sentence_highlight,
+    block_highlight: state.block_highlight,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
