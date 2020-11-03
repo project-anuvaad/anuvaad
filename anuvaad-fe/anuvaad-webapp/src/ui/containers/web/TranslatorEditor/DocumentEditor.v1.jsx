@@ -153,6 +153,10 @@ class DocumentEditor extends React.Component {
       });
     }
 
+    async makeAPICallSplitSentence(sentence, pageNumber, startIndex, endIndex) {
+
+    }
+
     /**
      * workhorse functions
      */
@@ -163,9 +167,9 @@ class DocumentEditor extends React.Component {
     workFlowApi(workflow, blockDetails, update, type) {
     }
 
-    processSentenceAction = (action, pageNumber, sentences, sentence) => {
+    processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex) => {
 
-      console.log('processSentenceAction', action, pageNumber, sentences, sentence)
+      console.log('processSentenceAction', action, pageNumber, sentences, startIndex, endIndex)
       switch(action) {
         case SENTENCE_ACTION.SENTENCE_SAVED: {
           this.props.sentenceActionApiStarted(sentences[0])
@@ -175,6 +179,8 @@ class DocumentEditor extends React.Component {
         }
 
         case SENTENCE_ACTION.SENTENCE_SPLITTED: {
+          this.props.sentenceActionApiStarted(null)
+          this.makeAPICallSplitSentence(sentences[0], pageNumber, startIndex, endIndex);
           this.setState({snackBarMessage: translate("common.page.label.splitMessage")})
           return;
         }

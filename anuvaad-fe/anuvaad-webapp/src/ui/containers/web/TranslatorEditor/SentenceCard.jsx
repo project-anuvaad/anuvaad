@@ -245,9 +245,7 @@ class SentenceCard extends React.Component {
         }
     }
 
-    processSplitButtonClicked() {
-        let start_index = 0;
-        let end_index = 0;
+    processSplitButtonClicked(start_index, end_index) {
         if (this.props.onAction) {
             this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
         }
@@ -321,15 +319,14 @@ class SentenceCard extends React.Component {
         }
     };
 
-    getSelectionText = (event) =>{
+    getSelectionText = (event) => {
         let selectedSentence    = window.getSelection().toString();
         let endIndex            = window.getSelection().focusOffset;
-        let startIndex         = window.getSelection().anchorOffset;
+        let startIndex          = window.getSelection().anchorOffset;
         let sentenceSource      = event.target.innerHTML;
         if(selectedSentence && sentenceSource.includes(selectedSentence)){
             this.setState({selectedSentence, sentenceSource, positionX: event.clientX,startIndex, endIndex, positionY:event.clientY, isopenMenuItems : true})
         }
-        
     }
 
     renderSourceSentence = () => {
@@ -482,32 +479,25 @@ class SentenceCard extends React.Component {
             body: JSON.stringify(apiObj.getBody()),
             headers: apiObj.getHeaders().headers
         }).then ( (response)=> {
-                    if (response.status >= 400 && response.status < 600) {
-                        console.log('api failed because of server or network')
-                        this.props.sentenceActionApiStopped()
-                    }
-                    response.text().then( (data)=> {
-                        let val = JSON.parse(data)
-                        return val.data;
-                    }).then((result)=>{
-                        let parallel_words = []
-                        result.parallel_words.map((words) =>{
-                            if(this.props.tgt_locale === words.locale)
-                                parallel_words.push(words.name)
-                        } )
-                        
-                        this.setState({
-                            parallel_words: parallel_words
-                    })
+            if (response.status >= 400 && response.status < 600) {
+                console.log('api failed because of server or network')
+                this.props.sentenceActionApiStopped()
+            }
+            response.text().then( (data)=> {
+                let val = JSON.parse(data)
+                return val.data;
+            }).then((result)=>{
+                let parallel_words = []
+                result.parallel_words.map((words) => {
+                    if(this.props.tgt_locale === words.locale)
+                        parallel_words.push(words.name)
+                } )
+                this.setState({
+                    parallel_words: parallel_words
                 })
-                })
-             
-              
-
-            
-            
-       
-      }
+            })
+        })
+    }
 
     handleClose = () => {
         this.setState({selectedSentence: '',  positionX:0, positionY:0,isopenMenuItems : false, endIndex : null, startIndex: null})
@@ -517,7 +507,7 @@ class SentenceCard extends React.Component {
         copy(this.state.selectedSentence)
         this.handleClose()
     
-      }
+    }
       
     handleOperation = (action) =>{
         switch(action) {
@@ -528,9 +518,8 @@ class SentenceCard extends React.Component {
             }
     
             case "Split sentence": {
-                console.log("-------",this.state.startIndex, this.state.endIndex, this.props.block_highlight.block_identifier)
-              this.processSplitButtonClicked();
-              this.handleClose();
+                this.processSplitButtonClicked(this.state.startIndex, this.state.endIndex);
+                this.handleClose();
               return;
             }
             case "Copy": {
@@ -541,8 +530,7 @@ class SentenceCard extends React.Component {
           }
     }
 
-    renderMenuItems = () =>{
-
+    renderMenuItems = () => {
         return (
         <MenuItems
             splitValue={this.state.selectedSentence}
