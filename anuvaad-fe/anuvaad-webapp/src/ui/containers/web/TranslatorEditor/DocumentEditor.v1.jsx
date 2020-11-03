@@ -153,6 +153,30 @@ class DocumentEditor extends React.Component {
       });
     }
 
+    async makeAPICallSplitSentence(sentence, pageNumber, startIndex, endIndex) {
+      let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
+
+      let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, this.props.match.params.locale, 
+                                                '', '', parseInt(this.props.match.params.modelId))
+      const apiReq    = fetch(apiObj.apiEndPoint(), {
+          method: 'post',
+          body: JSON.stringify(apiObj.getBody()),
+          headers: apiObj.getHeaders().headers
+      }).then(async response => {
+        const rsp_data = await response.json();
+          if (!response.ok) {
+            this.props.sentenceActionApiStopped()
+            return Promise.reject('');
+          } else {
+            this.props.contentUpdateStarted();
+            this.props.update_blocks(pageNumber, rsp_data.input.textBlocks);
+          }
+      }).catch((error) => {
+          console.log('api failed because of server or network')
+          this.props.sentenceActionApiStopped()
+      });
+    }
+
     /**
      * workhorse functions
      */
@@ -163,9 +187,9 @@ class DocumentEditor extends React.Component {
     workFlowApi(workflow, blockDetails, update, type) {
     }
 
-    processSentenceAction = (action, pageNumber, sentences, sentence) => {
+    processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex) => {
 
-      console.log('processSentenceAction', action, pageNumber, sentences, sentence)
+      console.log('processSentenceAction', action, pageNumber, sentences, startIndex, endIndex)
       switch(action) {
         case SENTENCE_ACTION.SENTENCE_SAVED: {
           this.props.sentenceActionApiStarted(sentences[0])
@@ -176,6 +200,9 @@ class DocumentEditor extends React.Component {
         }
 
         case SENTENCE_ACTION.SENTENCE_SPLITTED: {
+          
+          this.props.sentenceActionApiStarted(null)
+          this.makeAPICallSplitSentence(sentences[0], pageNumber, startIndex, endIndex);
           this.setMessages(SENTENCE_ACTION.SENTENCE_SPLITTED, "splittedMessage")
           return;
         }

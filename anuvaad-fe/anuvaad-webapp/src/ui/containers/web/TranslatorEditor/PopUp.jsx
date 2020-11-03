@@ -15,7 +15,6 @@ class MenuClass extends React.Component {
   }
   render() {
     const { positionX,positionY, splitValue } = this.props;
-    console.log(positionX, positionY)
     return (
       <Popover
         id="menu-appbar"

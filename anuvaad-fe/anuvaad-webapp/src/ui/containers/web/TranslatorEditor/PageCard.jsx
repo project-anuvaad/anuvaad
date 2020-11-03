@@ -16,7 +16,6 @@ const styles = {
         border: 0,
         color: 'green',
     }
-    
 }
 
 class PageCard extends React.Component {
@@ -106,7 +105,6 @@ class PageCard extends React.Component {
                 autoFocus={true}
                 fullWidth
                 multiline
-
             />
         )
     }
@@ -118,7 +116,6 @@ class PageCard extends React.Component {
     handleSelectedSentenceId = (text) => {
         this.setState({ selectedSentenceID: text.block_id, text: text.text })
         this.props.highlightSentence(text)
-
     }
     /**
      * click away listner
@@ -138,7 +135,6 @@ class PageCard extends React.Component {
 
     renderBlock = (block) => {
         return (
-
             <div style={{
                 position: "relative", top: block.text_top + 'px',
                 left: block.text_left + 'px',
@@ -182,7 +178,6 @@ class PageCard extends React.Component {
                     </Paper>
                     <Divider />
                 </div>
-
             )
         }
         return (
@@ -199,7 +194,6 @@ class PageCard extends React.Component {
     }
 
 }
-
 
 const mapStateToProps = state => ({
     document_contents: state.document_contents,
