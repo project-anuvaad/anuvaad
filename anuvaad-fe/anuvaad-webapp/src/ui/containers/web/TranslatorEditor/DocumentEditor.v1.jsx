@@ -373,6 +373,8 @@ class DocumentEditor extends React.Component {
               {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} 
                                                                                   pageNumber={page.page_no} 
                                                                                   modelId={parseInt(this.props.match.params.modelId)}
+                                                                                  word_locale={this.props.match.params.locale}
+                                                                                  tgt_locale={this.props.match.params.tgt_locale}
                                                                                   sentence={sentence} 
                                                                                   onAction={this.processSentenceAction}/>) )}
             </InfiniteScroll>
