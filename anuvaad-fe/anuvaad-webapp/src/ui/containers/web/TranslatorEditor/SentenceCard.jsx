@@ -111,9 +111,9 @@ class SentenceCard extends React.Component {
 
         if (prevProps.sentence_highlight !== this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight.sentence_id) {
             this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
-            // this.setState({
-            //     cardInFocus: true
-            // })
+            if (this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id) {
+                this.setState({ cardInFocus: true })
+            }
         }
     }
 
