@@ -11,6 +11,7 @@ import ClearContent from "../../../../flux/actions/apis/clearcontent";
 import FileContent from "../../../../flux/actions/apis/fetchcontent";
 import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_update";
 
+import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -46,15 +47,13 @@ class DocumentEditor extends React.Component {
       isShowSnackbar: false
     }
   }
-
   /**
    * life cycle methods
    */
   componentDidMount() {
-    TELEMETRY.pageLoadCompleted('document-editor')
+    TELEMETRY.pageLoadCompleted('document - editor')
     let recordId = this.props.match.params.jobid;
     let jobId = recordId ? recordId.split("|")[0] : ""
-
     let langCodes = LanguageCodes
     let sourceLang = ''
     if (langCodes && Array.isArray(langCodes) && langCodes.length > 0) {
@@ -105,24 +104,22 @@ class DocumentEditor extends React.Component {
   async makeAPICallMergeSentence(sentences, pageNumber) {
     let sentence_ids = sentences.map(sentence => sentence.s_id)
     let updated_blocks = BLOCK_OPS.do_sentences_merging_v1(this.props.document_contents.pages, sentence_ids);
-    console.log(updated_blocks)
 
-    // this.setState({apiInProgress: true})
-    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale, '', '', parseInt(this.props.match.params.modelsId))
-    // this.props.APITransport(apiObj);
-    const apiReq = await fetch(apiObj.apiEndPoint(), {
+    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
+      '', '', parseInt(this.props.match.params.modelId))
+    const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
       headers: apiObj.getHeaders().headers
-    }).then((response) => {
-      if (response.status >= 400 && response.status < 600) {
-        console.log('api failed because of server or network')
+    }).then(async response => {
+      const rsp_data = await response.json();
+      if (!response.ok) {
         this.props.sentenceActionApiStopped()
+        return Promise.reject('');
+      } else {
+        this.props.contentUpdateStarted();
+        this.props.update_blocks(pageNumber, rsp_data.input.textBlocks);
       }
-      return response;
-    }).then((returnedResponse) => {
-      this.props.sentenceActionApiStopped()
-      this.makeAPICallFetchContentPerPage(pageNumber);
     }).catch((error) => {
       console.log('api failed because of server or network')
       this.props.sentenceActionApiStopped()
@@ -187,219 +184,247 @@ class DocumentEditor extends React.Component {
         return;
       }
     }
-  }
 
-  snackBarMessage = () => {
+    snackBarMessage = () =>{
 
-    return (
-      <div>
+      return (
+        <div>
         <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          open={this.state.isShowSnackbar}
-          autoHideDuration={3000}
-          variant="success"
-          message={this.state.snackBarMessage}
-        />
-      </div>
-    )
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={this.state.isShowSnackbar}
+            autoHideDuration={3000}
+            variant="success"
+            message={this.state.snackBarMessage}
+          />
+          </div>
+      )
 
+    }
+
+    handleViewModeToggle = () => {
+        this.setState({
+          isModeSentences: !this.state.isModeSentences
+        })
   }
+}
 
-  handleViewModeToggle = () => {
-    this.setState({
-      isModeSentences: !this.state.isModeSentences
-    })
-  }
+snackBarMessage = () => {
 
-  handleOnClose = () => {
-    let recordId = this.props.match.params.jobid;
-    let jobId = recordId ? recordId.split("|")[0] : ""
-    TELEMETRY.endTranslatorFlow(jobId)
+  return (
+    <div>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={this.state.isShowSnackbar}
+        autoHideDuration={3000}
+        variant="success"
+        message={this.state.snackBarMessage}
+      />
+    </div>
+  )
 
-    history.push(`${process.env.PUBLIC_URL}/view-document`);
-  }
+}
 
-  /**
-   * all render functions starts here
-   */
+handleViewModeToggle = () => {
+  this.setState({
+    isModeSentences: !this.state.isModeSentences
+  })
+}
 
-  /**
-   * render the toolbar
-   */
-  renderToolBar = () => {
-    return (
-      <Grid container
-        spacing={2}
-        style={{ marginTop: "-10px", padding: "10px 5px 0px ", width: "100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}>
+handleOnClose = () => {
+  let recordId = this.props.match.params.jobid;
+  let jobId = recordId ? recordId.split("|")[0] : ""
+  TELEMETRY.endTranslatorFlow(jobId)
 
-        <Grid item xs={12} sm={6} lg={2} xl={2} className="GridFileDetails">
-          <Button
-            // variant="outlined"
-            onClick={event => {
-              this.handleOnClose();
-            }}
-            style={{ textTransform: "capitalize", width: "100%", minWidth: "150px", borderRadius: "30px", color: "#233466" }}
-          >
-            <ChevronLeftIcon fontSize="small" />
-            {translate("common.page.title.document")}
-          </Button>
-        </Grid>
+  history.push(`${process.env.PUBLIC_URL}/view-document`);
+}
 
-        <Grid item xs={12} sm={6} lg={6} xl={6} className="GridFileDetails">
-          <Button
-            color="primary"
-            // variant="outlined"
-            className="GridFileDetails"
-            style={{
-              textTransform: "capitalize",
-              justifyContent: "center",
-              height: "100%",
-              width: "100%",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              pointerEvents: "none",
-              borderRadius: "30px"
-            }}
-          >
-            <div style={{ fontSize: "15px", fontWeight: "bold" }}>
-              {!this.state.apiCall ? (this.state.isModeSentences ? "Sentences" : "PDF") : "Saving....."}
-            </div>
-          </Button>
-        </Grid>
+/**
+ * all render functions starts here
+ */
 
-        <Grid item xs={12} sm={6} lg={2} xl={2}>
-          <Button
-            onClick={() => this.handleTargetDownload()}
-            style={{
-              color: "#233466",
-              textTransform: "capitalize",
-              width: "100%",
-              minWidth: "110px",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              borderRadius: "30px"
-            }}
-          >
-            <DownloadIcon fontSize="large" style={{ color: "#233466", fontSize: "x-large" }} />&nbsp;Download
+/**
+ * render the toolbar
+ */
+renderToolBar = () => {
+  return (
+    <Grid container
+      spacing={2}
+      style={{ marginTop: "-10px", padding: "10px 5px 0px ", width: "100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}>
+
+      <Grid item xs={12} sm={6} lg={2} xl={2} className="GridFileDetails">
+        <Button
+          // variant="outlined"
+          onClick={event => {
+            this.handleOnClose();
+          }}
+          style={{ textTransform: "capitalize", width: "100%", minWidth: "150px", borderRadius: "30px", color: "#233466" }}
+        >
+          <ChevronLeftIcon fontSize="small" />
+          {translate("common.page.title.document")}
+        </Button>
+      </Grid>
+
+      <Grid item xs={12} sm={6} lg={6} xl={6} className="GridFileDetails">
+        <Button
+          color="primary"
+          // variant="outlined"
+          className="GridFileDetails"
+          style={{
+            textTransform: "capitalize",
+            justifyContent: "center",
+            height: "100%",
+            width: "100%",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            pointerEvents: "none",
+            borderRadius: "30px"
+          }}
+        >
+          <div style={{ fontSize: "15px", fontWeight: "bold" }}>
+            {!this.state.apiCall ? (this.state.isModeSentences ? "Sentences" : "PDF") : "Saving....."}
+          </div>
+        </Button>
+      </Grid>
+
+      <Grid item xs={12} sm={6} lg={2} xl={2}>
+        <Button
+          onClick={() => this.handleTargetDownload()}
+          style={{
+            color: "#233466",
+            textTransform: "capitalize",
+            width: "100%",
+            minWidth: "110px",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            borderRadius: "30px"
+          }}
+        >
+          <DownloadIcon fontSize="large" style={{ color: "#233466", fontSize: "x-large" }} />&nbsp;Download
                     </Button>
-        </Grid>
-
-        <Grid item xs={12} sm={6} lg={2} xl={2}>
-          <Button
-            // variant="contained"
-            // color="primary"
-            style={{
-              color: "#233466",
-              textTransform: "capitalize",
-              width: "100%",
-              minWidth: "110px",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              borderRadius: "30px"
-            }}
-            disabled={this.state.apiCall ? true : false}
-            onClick={() => this.handleViewModeToggle()}
-          >
-            {this.state.isModeSentences ? "See PDF" : "See sentences"}
-            <ChevronRightIcon fontSize="large" />
-          </Button>
-        </Grid>
-
       </Grid>
-    )
-  }
 
-  /**
-   * renders PDF document
-   */
-  renderPDFDocument = () => {
+      <Grid item xs={12} sm={6} lg={2} xl={2}>
+        <Button
+          // variant="contained"
+          // color="primary"
+          style={{
+            color: "#233466",
+            textTransform: "capitalize",
+            width: "100%",
+            minWidth: "110px",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            borderRadius: "30px"
+          }}
+          disabled={this.state.apiCall ? true : false}
+          onClick={() => this.handleViewModeToggle()}
+        >
+          {this.state.isModeSentences ? "See PDF" : "See sentences"}
+          <ChevronRightIcon fontSize="large" />
+        </Button>
+      </Grid>
+
+    </Grid>
+  )
+}
+
+/**
+ * renders PDF document
+ */
+renderPDFDocument = () => {
+  return (
+    <Grid item xs={12} sm={6} lg={6} xl={6} >
+      <Paper>
+        <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.state.currentPageIndex} />
+      </Paper>
+    </Grid>
+  )
+}
+
+
+/**
+ * render Document pages
+ */
+renderDocumentPages = () => {
+  let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages);
+  if (pages.length < 1) {
     return (
-      <Grid item xs={12} sm={6} lg={6} xl={6} >
-        <Paper>
-          <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.state.currentPageIndex} />
-        </Paper>
-      </Grid>
-    )
-  }
+          <Grid item xs={12} sm={6} lg={6} xl={6}>
 
+            <InfiniteScroll height={1200}
+                next={this.makeAPICallFetchContent}
+                hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false }
+                dataLength={pages.length}
+                loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
+                endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
+            >
+              {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()}
+                                                                                  pageNumber={page.page_no}
+                                                                                  modelId={parseInt(this.props.match.params.modelId)}
+                                                                                  word_locale={this.props.match.params.locale}
+                                                                                  tgt_locale={this.props.match.params.tgt_locale}
+                                                                                  sentence={sentence}
+                                                                                  onAction={this.processSentenceAction}/>) )}
+            </InfiniteScroll>
+          </Grid>
 
-  /**
-   * render Document pages
-   */
-  renderDocumentPages = () => {
-    let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages);
-    if (pages.length < 1) {
-      return (
-        <div></div>
       )
     }
-    return (
-      <Grid item xs={12} sm={6} lg={6} xl={6}>
-        <InfiniteScroll
-          // height={1200}
-          style={{
-            maxHeight: window.innerHeight - 160,
-            overflowY: "auto",
-          }}
-          next={this.makeAPICallFetchContent}
-          hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
-          dataLength={pages.length}
-          loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{ zIndex: 1000 }} /></div>}
-          endMessage={<div style={{ textAlign: "center" }}><b>You have seen it all</b></div>}
-        >
-          {pages.map(page => <PageCard key={v4()} page={page} />)}
-        </InfiniteScroll>
+
+
+    /**
+     * render functions ends here
+     */
+
+    render() {
+        return (
+        <div>
+            {this.renderToolBar()}
+            <Grid container spacing={2} style={{ padding: "142px 24px 0px 24px" }}>
+                {this.renderDocumentPages()}
+                {this.state.isModeSentences ? this.renderSentences() : this.renderPDFDocument()}
+            </Grid>
+            {this.state.snackBarMessage&& this.state.isShowSnackbar&& this.snackBarMessage()}
+        </div>
+        )
+  }
+  return (
+    <Grid item xs={12} sm={6} lg={6} xl={6}>
+      <InfiniteScroll
+        style={{
+          maxHeight: window.innerHeight - 160,
+          overflowY: "auto",
+        }}
+        next={this.makeAPICallFetchContent}
+        hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
+        dataLength={pages.length}
+        loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{ zIndex: 1000 }} /></div>}
+        endMessage={<div style={{ textAlign: "center" }}><b>You have seen it all</b></div>}
+      >
+        {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} modelId={this.props.match.params.modelId} pageNumber={page.page_no} sentence={sentence} onAction={this.processSentenceAction} />))}
+      </InfiniteScroll>
+    </Grid>
+
+  )
+}
+
+
+/**
+ * render functions ends here
+ */
+
+render() {
+  return (
+    <div>
+      {this.renderToolBar()}
+      <Grid container spacing={2} style={{ padding: "70px 24px 0px 24px" }}>
+        {this.renderDocumentPages()}
+        {this.state.isModeSentences ? this.renderSentences() : this.renderPDFDocument()}
       </Grid>
-    )
-  }
-
-  /***
-   * render sentences
-   */
-  renderSentences = () => {
-    let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages);
-    if (pages.length < 1) {
-      return (
-        <div></div>
-      )
-    }
-    return (
-      <Grid item xs={12} sm={6} lg={6} xl={6}>
-        <InfiniteScroll
-          style={{
-            maxHeight: window.innerHeight - 160,
-            overflowY: "auto",
-          }}
-          next={this.makeAPICallFetchContent}
-          hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
-          dataLength={pages.length}
-          loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{ zIndex: 1000 }} /></div>}
-          endMessage={<div style={{ textAlign: "center" }}><b>You have seen it all</b></div>}
-        >
-          {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} modelId={this.props.match.params.modelId} pageNumber={page.page_no} sentence={sentence} onAction={this.processSentenceAction} />))}
-        </InfiniteScroll>
-      </Grid>
-
-    )
-  }
-
-
-  /**
-   * render functions ends here
-   */
-
-  render() {
-    return (
-      <div>
-        {this.renderToolBar()}
-        <Grid container spacing={2} style={{ padding: "70px 24px 0px 24px"}}>
-          {this.renderDocumentPages()}
-          {this.state.isModeSentences ? this.renderSentences() : this.renderPDFDocument()}
-        </Grid>
-        {this.state.snackBarMessage && this.state.isShowSnackbar && this.snackBarMessage()}
-      </div>
-    )
-  }
+      {this.state.snackBarMessage && this.state.isShowSnackbar && this.snackBarMessage()}
+    </div>
+  )
+}
 }
 
 const mapStateToProps = state => ({
@@ -414,16 +439,16 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
-  {
-    sentenceActionApiStarted,
-    sentenceActionApiStopped,
-    contentUpdateStarted,
-    APITransport,
-    update_sentences,
-    update_blocks,
-    ClearContent: ClearContent
-  },
-  dispatch
+    {
+      sentenceActionApiStarted,
+      sentenceActionApiStopped,
+      contentUpdateStarted,
+      APITransport,
+      update_sentences,
+      update_blocks,
+      ClearContent: ClearContent
+    },
+    dispatch
 );
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DocumentEditor));

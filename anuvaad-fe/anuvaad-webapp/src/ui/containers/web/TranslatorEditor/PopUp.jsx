@@ -14,7 +14,7 @@ class MenuClass extends React.Component {
     return result;
   }
   render() {
-    const { positionX,positionY } = this.props;
+    const { positionX,positionY, splitValue } = this.props;
     console.log(positionX, positionY)
     return (
       <Popover
