@@ -84,6 +84,19 @@ class DocumentEditor extends React.Component {
             // }, 3000)
         }
       }
+
+      // if (prevProps.sentence_highlight !== this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight.sentence_id) {
+      if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
+        this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
+      }
+    }
+
+    handleSourceScroll(id) {
+      this.refs[id] && this.refs[id].scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+  
     }
 
     /**
@@ -177,6 +190,30 @@ class DocumentEditor extends React.Component {
       });
     }
 
+    async makeAPICallSourceSaveSentence(sentence, pageNumber) {
+
+      let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, this.props.match.params.locale,
+        '', '', parseInt(this.props.match.params.modelId))
+        debugger
+      const apiReq = fetch(apiObj.apiEndPoint(), {
+        method: 'post',
+        body: JSON.stringify(apiObj.getBody()),
+        headers: apiObj.getHeaders().headers
+      }).then(async response => {
+        const rsp_data = await response.json();
+        if (!response.ok) {
+          this.props.sentenceActionApiStopped()
+          return Promise.reject('');
+        } else {
+          this.props.contentUpdateStarted()
+          this.props.update_sentences(pageNumber, rsp_data.data);
+        }
+      }).catch((error) => {
+        console.log('api failed because of server or network')
+        this.props.sentenceActionApiStopped()
+      });
+    }
+
     /**
      * workhorse functions
      */
@@ -207,13 +244,32 @@ class DocumentEditor extends React.Component {
           return;
         }
         case SENTENCE_ACTION.SENTENCE_MERGED: {
-
           /**
            * make card busy as merge operation is started by it.
            */
           this.props.sentenceActionApiStarted(null)
+
+          let telemetryFinalData = ""
+          let initialArr = []
+          if(sentences && Array.isArray(sentences) && sentences.length > 0) {
+            sentences.map((text, i) => {
+              if(i !== 0) {
+                telemetryFinalData += " "
+              }
+              telemetryFinalData += text.src
+              initialArr.push(text.src)
+            })
+          }
+  
+          TELEMETRY.mergeSentencesEvent(initialArr, telemetryFinalData)
           this.makeAPICallMergeSentence(sentences, pageNumber);
           this.setMessages(SENTENCE_ACTION.SENTENCE_MERGED, "mergedMessage")
+          return;
+        }
+        case SENTENCE_ACTION.SENTENCE_SOURCE_EDITED: {
+          this.props.sentenceActionApiStarted(sentences)
+          this.makeAPICallSourceSaveSentence(sentences, pageNumber)
+          this.setState({ snackBarMessage: translate("common.page.label.saveMessage") })
           return;
         }
       }
@@ -412,13 +468,14 @@ class DocumentEditor extends React.Component {
                 loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
                 endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
             >
-              {pages.map(page => page['translated_texts'].map(sentence => <SentenceCard key={v4()} 
+              {pages.map(page => page['translated_texts'].map(sentence => <div ref={sentence.s_id}><SentenceCard key={v4()} 
                                                                                   pageNumber={page.page_no} 
                                                                                   modelId={parseInt(this.props.match.params.modelId)}
                                                                                   word_locale={this.props.match.params.locale}
                                                                                   tgt_locale={this.props.match.params.tgt_locale}
                                                                                   sentence={sentence} 
-                                                                                  onAction={this.processSentenceAction}/>) )}
+                                                                                  onAction={this.processSentenceAction}/>
+                                                                                  </div>))}
             </InfiniteScroll>
           </Grid>
         
@@ -447,16 +504,17 @@ class DocumentEditor extends React.Component {
 
 const mapStateToProps = state => ({
     saveContent: state.saveContent,
-    document_contents: state.document_contents
+    document_contents: state.document_contents,
+    sentence_highlight: state.sentence_highlight.sentence,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
       sentenceActionApiStarted,
-      sentenceActionApiStopped, 
+      sentenceActionApiStopped,
       contentUpdateStarted,
       APITransport,
-      update_sentences, 
+      update_sentences,
       update_blocks,
       ClearContent: ClearContent
     },

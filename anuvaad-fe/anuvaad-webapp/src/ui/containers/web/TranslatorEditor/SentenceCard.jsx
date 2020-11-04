@@ -23,6 +23,7 @@ import InteractiveTranslateAPI from "../../../../flux/actions/apis/intractive_tr
 import copy from 'copy-to-clipboard';
 import SENTENCE_ACTION from './SentenceActions'
 import { value } from 'jsonpath';
+const TELEMETRY = require('../../../../utils/TelemetryManager')
 
 const styles = {
     card_active: {
@@ -115,20 +116,12 @@ class SentenceCard extends React.Component {
             this.setState({dictionaryWord: prevState.selectedSentence})
         }
 
-        if (prevProps.sentence_highlight !== this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight.sentence_id) {
-            this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
+        if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
+        
             if (this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id) {
                 this.setState({ cardInFocus: true })
             }
         }
-    }
-
-    handleSourceScroll(id) {
-        this.refs[id] && this.refs[id].scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-       
     }
 
     /**
@@ -228,6 +221,7 @@ class SentenceCard extends React.Component {
         if (this.props.onAction) {
 
             let sentence = { ...this.props.sentence };
+            TELEMETRY.sentenceChanged(sentence.tgt, this.state.value , sentence.s_id , "translation")
             sentence.save = true;
             sentence.tgt = this.state.value;
             delete sentence.block_identifier;
@@ -592,6 +586,8 @@ class SentenceCard extends React.Component {
     }
 
     render() {
+        // console.log(this.props.sentence_highlight)
+
         return (
             <div ref={this.props.sentence.s_id}>
             <ClickAwayListener mouseEvent="onMouseDown" onClickAway={this.handleClickAway}>

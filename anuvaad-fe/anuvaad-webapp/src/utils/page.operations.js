@@ -1,4 +1,4 @@
-const BLOCK_OPS     = require('./block.operations.js')
+const BLOCK_OPS = require('./block.operations.js')
 
 /**
  * @description sort sentence of a page by position
@@ -6,7 +6,7 @@ const BLOCK_OPS     = require('./block.operations.js')
  * @returns sorted sentences
  */
 function get_page_sorted_sentences(sentences) {
-    let sorted_sentences      = sentences.sort((a, b) => {
+    let sorted_sentences = sentences.sort((a, b) => {
 
         if (a.text_top < b.text_top) {
             return -1
@@ -154,8 +154,64 @@ function update_blocks(data, blocks) {
     return copied_data;
 }
 
+function get_updated_page_blocks(data, pageNo, updatedText, id) {
+    let blockId = "187bbff7673841ff8c25062f0aaf8e81"
+    let updatedblock = {}
+    if (data && data.pages && Array.isArray(data.pages) && data.pages.length > 0) {
+        data.pages.map(pages => {
+            if (pages.page_no === pageNo) {
+                if (pages && pages.text_blocks && Array.isArray(pages.text_blocks) && pages.text_blocks.length > 0) {
+                    pages.text_blocks.map(block => {
+
+                        let src = ""
+                        if (blockId === block.block_id) {
+                            console.log(block)
+
+                            if (block && block.children && Array.isArray(block.children) && block.children.length > 0) {
+                                block.children.map(children => {
+
+                                    if (children && children.hasOwnProperty("children") && Array.isArray(children.children) && children.children && children.children.length > 0) {
+                                        children.children.map(grandChildren => {
+
+                                            if (grandChildren.block_id && grandChildren.block_id === id) {
+                                                src = src + " " + updatedText
+                                                grandChildren.text = updatedText
+                                                updatedblock = block
+                                            } else {
+                                                src = src + " " + grandChildren.text
+                                            }
+
+                                        })
+                                    } else {
+                                        if (children && children.block_id && children.block_id === id) {
+                                            src = src + " " + updatedText
+                                            children.text = updatedText
+                                            updatedblock = block
+
+                                        } else {
+                                            src = src + " " + children.text
+                                        }
+                                    }
+
+                                    updatedblock.text = src
+                                })
+                            }
+                        }
+
+                    })
+                }
+
+            }
+        })
+        return updatedblock
+    }
+
+}
+
+
 module.exports = {
     get_pages_children_information,
     update_tokenized_sentences,
-    update_blocks
+    update_blocks,
+    get_updated_page_blocks
 }
