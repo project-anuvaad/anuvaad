@@ -430,25 +430,32 @@ class DocumentEditor extends React.Component {
     let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages);
     if (pages.length < 1) {
       return (
-        <div></div>
+        <div>
+          <Grid item xs={12} sm={6} lg={6} xl={6}>
+            
+            <InfiniteScroll  height={1200}  style={{
+            maxHeight: window.innerHeight - 160,
+            overflowY: "auto",
+          }}
+                next={this.makeAPICallFetchContent}
+                hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false }
+                dataLength={pages.length}
+                loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
+                endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
+            >
+              {pages.map(page => page['translated_texts'].map(sentence => <div key={v4()}  ref={sentence.s_id}><SentenceCard key={v4()} 
+                                                                                  pageNumber={page.page_no} 
+                                                                                  modelId={parseInt(this.props.match.params.modelId)}
+                                                                                  word_locale={this.props.match.params.locale}
+                                                                                  tgt_locale={this.props.match.params.tgt_locale}
+                                                                                  sentence={sentence} 
+                                                                                  onAction={this.processSentenceAction}/>
+                                                                                  </div>))}
+            </InfiniteScroll>
+          </Grid>
+          </div>
       )
     }
-    return (
-      <Grid item xs={12} sm={6} lg={6} xl={6}>
-        <InfiniteScroll style={{
-          maxHeight: window.innerHeight - 160,
-          overflowY: "auto",
-        }}
-          next={this.makeAPICallFetchContent}
-          hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
-          dataLength={pages.length}
-          loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{ zIndex: 1000 }} /></div>}
-          endMessage={<div style={{ textAlign: "center" }}><b>You have seen it all</b></div>}
-        >
-          {pages.map(page => <PageCard key={v4()} page={page} onAction={this.processSentenceAction} />)}
-        </InfiniteScroll>
-      </Grid>
-    )
   }
 
   /***
