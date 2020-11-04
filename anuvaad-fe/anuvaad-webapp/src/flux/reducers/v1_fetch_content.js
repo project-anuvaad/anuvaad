@@ -12,11 +12,16 @@ export default function(state = initialState, action) {
         case C.FETCH_CONTENT: {
             let data            = action.payload;
             let pages           = data.data.filter(value => Object.keys(value).length !== 0);
+            let new_pages       = [...state.pages, ...pages].filter((v,i,a)=>a.findIndex(t=>(t.page_no === v.page_no))===i).sort((a,b) => {
+                if (a.page_no > b.page_no)
+                    return 1
+                return -1
+            })
 
             return {
                 ...state,
                 count: data.count,
-                pages: [...state.pages, ...pages],
+                pages: new_pages,
             }
         }
 
