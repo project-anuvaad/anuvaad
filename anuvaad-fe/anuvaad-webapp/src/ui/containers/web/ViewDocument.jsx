@@ -185,43 +185,37 @@ class ViewDocument extends React.Component {
     let job = this.getJobIdDetail(jobId);
     if(status==="COMPLETED"){
       history.push(`${process.env.PUBLIC_URL}/interactive-document/${job.source_language_code}/${job.target_language_code}/${job.target_language_code}/${job.recordId}/${job.converted_filename}/${job.model_id}`, this.state);
-
     }
     else if(status==="INPROGRESS"){
       this.setState({dialogMessage:"Please wait process is Inprogress!" })
-     
+      this.handleMessageClear()
     }
     else{
       this.setState({dialogMessage:"Document conversion failed!" })
-     
+      this.handleMessageClear()
     }
-    this.handleMessageClear()
  }
 
   handleMessageClear = () =>{
-
     setTimeout(() => {
         this.setState({dialogMessage:""});
     }, 3000)
   }
 
-    snackBarMessage = () =>{
-      return (
-        <div>
-        <Snackbar
-            anchorOrigin      = {{ vertical: "top", horizontal: "right" }}
-            open              = {true}
-            autoHideDuration  = {3000}
-            variant           = {"info"}
-            message           = {this.state.dialogMessage}
-          />
-          </div>
-      )
+  snackBarMessage = () =>{
+    return (
+      <div>
+      <Snackbar
+          anchorOrigin      = {{ vertical: "top", horizontal: "right" }}
+          open              = {true}
+          autoHideDuration  = {3000}
+          variant           = {"info"}
+          message           = {this.state.dialogMessage}
+        />
+        </div>
+    )
+  }
       
-    }
-
-      
-
   processDownloadInputFileClick = (jobId, recordId) => {
     let job = this.getJobIdDetail(jobId);
     let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${

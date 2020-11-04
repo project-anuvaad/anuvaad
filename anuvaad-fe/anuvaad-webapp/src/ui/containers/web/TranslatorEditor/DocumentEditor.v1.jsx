@@ -119,6 +119,25 @@ class DocumentEditor extends React.Component {
       let sentence_ids   = sentences.map(sentence => sentence.s_id)
       let updated_blocks = BLOCK_OPS.do_sentences_merging_v1(this.props.document_contents.pages, sentence_ids);
 
+      let initialArr = []
+    let telemetryFinalData = ""
+    if (sentences && Array.isArray(sentences) && sentences.length > 0) {
+      sentences.map((text, i) => {
+        initialArr.push(text.src)
+      })
+    }
+
+    if (updated_blocks.sentences && Array.isArray(updated_blocks.sentences) && updated_blocks.sentences.length > 0) {
+      updated_blocks.sentences.map((text, i) => {
+        if (i !== 0) {
+          telemetryFinalData += " "
+        }
+        telemetryFinalData += text.src
+      })
+    }
+
+    TELEMETRY.mergeSentencesEvent(initialArr, telemetryFinalData)
+
       let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale, 
                                           '', '', parseInt(this.props.match.params.modelId))
       const apiReq    = fetch(apiObj.apiEndPoint(), {
@@ -164,6 +183,7 @@ class DocumentEditor extends React.Component {
 
     async makeAPICallSplitSentence(sentence, pageNumber, startIndex, endIndex) {
       let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
+    TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
 
       let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, this.props.match.params.locale, 
                                                 '', '', parseInt(this.props.match.params.modelId))
@@ -190,7 +210,6 @@ class DocumentEditor extends React.Component {
 
       let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, this.props.match.params.locale,
         '', '', parseInt(this.props.match.params.modelId))
-        debugger
       const apiReq = fetch(apiObj.apiEndPoint(), {
         method: 'post',
         body: JSON.stringify(apiObj.getBody()),
@@ -245,19 +264,6 @@ class DocumentEditor extends React.Component {
            */
           this.props.sentenceActionApiStarted(null)
 
-          let telemetryFinalData = ""
-          let initialArr = []
-          if(sentences && Array.isArray(sentences) && sentences.length > 0) {
-            sentences.map((text, i) => {
-              if(i !== 0) {
-                telemetryFinalData += " "
-              }
-              telemetryFinalData += text.src
-              initialArr.push(text.src)
-            })
-          }
-  
-          TELEMETRY.mergeSentencesEvent(initialArr, telemetryFinalData)
           this.makeAPICallMergeSentence(sentences, pageNumber);
           this.setMessages(SENTENCE_ACTION.SENTENCE_MERGED, "mergedMessage")
           return;
@@ -435,7 +441,7 @@ class DocumentEditor extends React.Component {
             loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
             endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
           >
-            {pages.map(page => <PageCard key={v4()} page={page} onAction={this.processSentenceAction}/>)}
+            {pages.map(page => <PageCard key={v4()} page={page} />)}
           </InfiniteScroll>
         </Grid>
       )
