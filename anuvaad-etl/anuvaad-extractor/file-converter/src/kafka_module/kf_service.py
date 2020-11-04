@@ -24,7 +24,8 @@ def consumer_validator():
 def push_output(producer, topic_name, output, jobid, task_id):
     try:
         producer.push_data_to_queue(topic_name, output)
-        log_info("push_output : producer flushed value on topic %s"%(topic_name), jobid)
+        ctx = {"jobID": jobid, "taskID": task_id, "metadata": {"module": "FILE-CONVERTER"}}
+        log_info("push_output : producer flushed value on topic %s"%(topic_name), ctx)
     except Exception as e:
         response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
         log_exception("push_output : Response can't be pushed to queue %s"%(topic_name), jobid, None)
