@@ -299,7 +299,6 @@ class Block extends Component {
       // this.handleSave(sentence.s_id);
     }
     else if(this.props.buttonStatus==="copy"){
-      debugger
       this.handleBlurSave(this.props.selectedBlock, this.props.selectedBlock.s0_tgt)
     }
     let saveData = false
