@@ -82,10 +82,18 @@ const styles2 = theme => ({
     },
 });
 
+
 class CustomizedSnackbars extends React.Component {
     state = {
         open: true,
     };
+
+    componentDidUpdate(prevProps) {
+        if(this.props.open!== prevProps.open && this.props.open){
+            this.setState({open:true})
+        }
+    }
+    
 
     handleClick = () => {
         this.setState({ open: true });
@@ -97,10 +105,12 @@ class CustomizedSnackbars extends React.Component {
         }
 
         this.setState({ open: false });
+
     };
 
     render() {
-        const { variant, message, autoHideDuration } = this.props;
+        const { variant, message, autoHideDuration, open } = this.props;
+        
         return (
             <div>
                 <Snackbar
@@ -112,6 +122,7 @@ class CustomizedSnackbars extends React.Component {
                     open={this.state.open }
                     autoHideDuration={autoHideDuration ? autoHideDuration : null}
                     onClose={this.handleClose}
+                    
                 >
                     <MySnackbarContentWrapper
                         onClose={this.handleClose}
