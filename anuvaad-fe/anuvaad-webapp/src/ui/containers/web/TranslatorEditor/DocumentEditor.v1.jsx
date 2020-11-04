@@ -269,7 +269,7 @@ class DocumentEditor extends React.Component {
         case SENTENCE_ACTION.SENTENCE_SOURCE_EDITED: {
           this.props.sentenceActionApiStarted(sentences)
           this.makeAPICallSourceSaveSentence(sentences, pageNumber)
-          this.setState({ snackBarMessage: translate("common.page.label.saveMessage") })
+          this.setMessages("editedMessage", "intractive_translate.page.message.savedSuccessfully")
           return;
         }
       }
@@ -439,7 +439,7 @@ class DocumentEditor extends React.Component {
             loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
             endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
           >
-            {pages.map(page => <PageCard key={v4()} page={page} />)}
+            {pages.map(page => <PageCard key={v4()} page={page} onAction={this.processSentenceAction}/>)}
           </InfiniteScroll>
         </Grid>
       )

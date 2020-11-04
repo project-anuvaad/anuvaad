@@ -119,10 +119,12 @@ class PageCard extends React.Component {
     /**
      * click away listner
      */
-    handleClickAway = (pageNo) => {
-        let data = PAGE_OPS.get_updated_page_blocks(this.props.document_contents, pageNo.page_no, this.state.text, this.state.selectedSentenceID)
-        //  this.props.onAction("SENTENCE_SOURCE_EDITED", pageNo, [data], "") 
-        this.props.clearHighlighBlock()
+    handleClickAway = (blockData) => {
+        if(this.state.text) {
+            let data = PAGE_OPS.get_updated_page_blocks(this.props.document_contents, blockData, this.state.text)
+             this.props.onAction("SENTENCE_SOURCE_EDITED", blockData.page_no, [data], "") 
+        }
+       this.props.clearHighlighBlock()
     }
 
     handleSourceScroll(id) {

@@ -589,7 +589,7 @@ class SentenceCard extends React.Component {
         // console.log(this.props.sentence_highlight)
 
         return (
-            <div ref={this.props.sentence.s_id}>
+            <div >
             <ClickAwayListener mouseEvent="onMouseDown" onClickAway={this.handleClickAway}>
                 <div key={12} style={{ padding: "1%" }}>
                     <Card style={this.state.cardInFocus ? styles.card_open : this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
