@@ -78,10 +78,6 @@ class DocumentEditor extends React.Component {
       if (prevProps.document_contents.content_updated !== this.props.document_contents.content_updated) {
         if (this.props.document_contents.content_updated) {
           this.props.sentenceActionApiStopped()
-          this.setState({ snackBarMessage:'',apiCall: false })
-            // setTimeout(() => {
-            //   this.setState({ isShowSnackbar: false, snackBarSavedMessage:'', })
-            // }, 3000)
         }
       }
 
@@ -284,7 +280,7 @@ class DocumentEditor extends React.Component {
     setMessages = (pendingAction, completedAction) =>{
               this.setState({snackBarMessage:translate(`common.page.label.${pendingAction}`), 
               snackBarSavedMessage:translate(`common.page.label.${completedAction}`), 
-              apiCall:true
+              
             })
     }
 
@@ -293,10 +289,10 @@ class DocumentEditor extends React.Component {
         <div>
         <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            open={this.state.isShowSnackbar}
-            autoHideDuration={!this.state.apiCall && 2000}
-            variant={this.state.apiCall ? "info" : "success"}
-            message={this.state.apiCall ? this.state.snackBarMessage : this.state.snackBarSavedMessage}
+            open={this.props.sentence_action_operation}
+            autoHideDuration={!this.props.sentence_action_operation && 2000}
+            variant={this.props.sentence_action_operation ? "info" : "success"}
+            message={this.props.sentence_action_operation ? this.state.snackBarMessage : this.state.snackBarSavedMessage}
           />
           </div>
       )
@@ -512,6 +508,7 @@ const mapStateToProps = state => ({
     saveContent: state.saveContent,
     document_contents: state.document_contents,
     sentence_highlight: state.sentence_highlight.sentence,
+    sentence_action_operation : state.sentence_action_operation.api_status
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

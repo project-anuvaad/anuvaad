@@ -291,6 +291,7 @@ const localization_EN_Data = {
   "common.page.label.selectLanguage": "Select Language",
   "common.page.label.savedMessage": "Translation saved.",
   "common.page.label.mergedMessage": "Merged sentence successfully",
+  "common.page.label.savedSuccessfully": "Sentence saved successfully !...",
   "common.page.label.splittedMessage":"Splitted sentence successfully",
   "common.page.label.SENTENCE_SAVED": "Translation saving...",
   "common.page.label.SENTENCE_MERGED": "Merging sentences...",
