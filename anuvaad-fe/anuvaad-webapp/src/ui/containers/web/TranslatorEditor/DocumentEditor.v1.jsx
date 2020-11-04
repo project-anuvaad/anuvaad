@@ -269,7 +269,7 @@ class DocumentEditor extends React.Component {
         case SENTENCE_ACTION.SENTENCE_SOURCE_EDITED: {
           this.props.sentenceActionApiStarted(sentences)
           this.makeAPICallSourceSaveSentence(sentences, pageNumber)
-          this.setState({ snackBarMessage: translate("common.page.label.saveMessage") })
+          this.setMessages("editedMessage", "intractive_translate.page.message.savedSuccessfully")
           return;
         }
       }
