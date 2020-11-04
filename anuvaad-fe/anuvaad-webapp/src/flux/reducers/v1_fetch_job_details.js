@@ -133,11 +133,42 @@ export default function(state = initialState, action) {
             let data        = action.payload;
             let documents   = get_document_details(data)
             let newDocuments= []
+            newDocuments.push(...documents)
+
+            return {
+                ...state, 
+                count: data.count,
+                progress_updated: false,
+                document_deleted: false,
+                documents: newDocuments
+            }
+        }
+
+        case C.FETCHDOCUMENT_NEXTPAGE: {
+            let data        = action.payload;
+            let documents   = get_document_details(data)
+            let newDocuments= []
             newDocuments.push(...state.documents)
             newDocuments.push(...documents)
 
-            return {...state, 
-                count: data.count,
+            return {
+                ...state, 
+                progress_updated: false,
+                document_deleted: false,
+                documents: newDocuments
+            }
+        }
+
+        case C.FETCHDOCUMENT_NEWJOB: {
+            let data        = action.payload;
+            let documents   = get_document_details(data)
+            let newDocuments= []
+
+            newDocuments.push(...documents)
+            newDocuments.push(...state.documents)
+            return {
+                ...state,
+                count: state.count + 1,
                 progress_updated: false,
                 document_deleted: false,
                 documents: newDocuments

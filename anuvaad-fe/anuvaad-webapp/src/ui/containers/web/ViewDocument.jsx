@@ -42,6 +42,40 @@ class ViewDocument extends React.Component {
     };
   }
 
+  /**
+   * life cycle methods
+   */
+  componentDidMount() {
+    if (this.props.job_details.documents.length < 1) {
+      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, false, false)
+      this.setState({showLoader:true})
+    }
+
+    if (this.props.workflowStatus.jobID) {
+      /**
+       * a job got started, fetch it status
+       */
+      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, [this.props.workflowStatus.jobID], true, false)
+    }
+
+    TELEMETRY.pageLoadCompleted('view-document')
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.job_details.documents !== this.props.job_details.documents) {
+      /**
+       * update job progress status only progress_updated is false
+       */
+      if (!this.props.job_details.progress_updated) {
+        this.makeAPICallDocumentsTranslationProgress()
+        this.setState({showLoader:false})
+      }
+
+      if (!this.props.job_details.document_deleted) {
+      }
+    }
+  }
+
   getMuiTheme = () => createMuiTheme({
     overrides: {
       MUIDataTableBodyCell: {
@@ -60,29 +94,23 @@ class ViewDocument extends React.Component {
     return null;
   }
 
-  componentDidMount() {
-    if (this.props.job_details.documents.length < 1) {
-      this.fetchUserDocuments(true, this.state.offset, this.state.limit, true)
-      this.setState({showLoader:true})
-    }
-
-    TELEMETRY.pageLoadCompleted('view-document')
-  }
-
-  fetchUserDocuments(value, offset, limit, searchToken) {
+  /**
+   * API calls
+   */
+  makeAPICallJobsBulkSearch(offset, limit, jobIds=[''], searchForNewJob=false, searchNextPage=false) {
     const { APITransport }  = this.props;
-    const apiObj            = new FetchDocument(offset, limit);
+    const apiObj            = new FetchDocument(offset, limit, jobIds, searchForNewJob, searchNextPage);
     APITransport(apiObj);
   }
 
-  deleteUserDocuments(jobId) {
+  makeAPICallJobDelete(jobId) {
     const { APITransport }  = this.props;
     const apiObj            = new MarkInactive(jobId);
     APITransport(apiObj);
     this.setState({ showProgress: true, searchToken: false });
   }
 
-  fetchUserDocumentsProgressStatus(jobIds) {
+  makeAPICallDocumentsTranslationProgress(jobIds) {
     var recordIds = this.getRecordIds()  
     if (recordIds.length > 1) {
       const { APITransport }  = this.props;
@@ -123,21 +151,9 @@ class ViewDocument extends React.Component {
     )
   }
 
-  componentDidUpdate(prevProps) {
-    console.log(this.props.job_details)
-    if (prevProps.job_details.documents !== this.props.job_details.documents) {
-      /**
-       * update job progress status only progress_updated is false
-       */
-      if (!this.props.job_details.progress_updated) {
-        this.fetchUserDocumentsProgressStatus()
-        this.setState({showLoader:false})
-      }
-
-      if (!this.props.job_details.document_deleted) {
-      }
-    }
-  }
+  /**
+   * handlers to process user clicks
+   */
 
   processJobTimelinesClick(jobId, recordId) {
     console.log(this.getJobIdDetail(jobId))
@@ -148,7 +164,7 @@ class ViewDocument extends React.Component {
   }
 
   processDeleteJobClick = (jobId, recordId) => {
-    this.deleteUserDocuments(jobId);
+    this.makeAPICallJobDelete(jobId);
   }
 
   processViewDocumentClick = (jobId, recordId) => {
@@ -169,7 +185,7 @@ class ViewDocument extends React.Component {
       /**
        * user wanted to load next set of records
        */
-      this.fetchUserDocuments(false, this.state.offset + 10, this.state.limit, true)
+      this.makeAPICallJobsBulkSearch(this.state.offset + 10, this.state.limit, false, true)
       this.setState({
         currentPageIndex:page,
         offset: this.state.offset+10
@@ -240,7 +256,7 @@ class ViewDocument extends React.Component {
         label: translate("common.page.label.timeStamp"),
         options: {
           filter: true,
-          sort: false,
+          sort: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -310,7 +326,8 @@ class ViewDocument extends React.Component {
         },
         pagination: {
           rowsPerPage: translate("graderReport.page.muiTable.rowsPerPages")
-        }
+        },
+        options: { sortDirection: 'desc' }
       },
 
       onTableChange: (action, tableState) => {
@@ -387,7 +404,8 @@ class ViewDocument extends React.Component {
 const mapStateToProps = state => ({
   user: state.login,
   apistatus: state.apistatus,
-  job_details: state.job_details
+  job_details: state.job_details,
+  workflowStatus: state.workflowStatus
 });
 
 const mapDispatchToProps = dispatch =>
