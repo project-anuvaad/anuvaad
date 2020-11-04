@@ -209,6 +209,7 @@ class SentenceCard extends React.Component {
                     delete sentence.block_identifier;
 
                     this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+                    return;
                 }
             }
 
