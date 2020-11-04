@@ -20,15 +20,27 @@ class PDFRenderer extends React.Component {
         }
     };
 
-    onDocumentLoadSuccess = () => {
-
-    }
+    onDocumentLoadSuccess = ({ numPages }) => {
+        this.setState({ numPages });
+      }
+    
 
     renderPDF = (url, pageNo) => {
         return (
             <div style={{ maxHeight: window.innerHeight - 150, overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
                 <Document file={url} onLoadSuccess={this.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
-                    <Page scale={this.state.pageScaleWidth} pageNumber={Number(pageNo)} onLoadSuccess={this.onPageLoad} />
+                {
+                Array.from(
+                  new Array(this.state.numPages),
+                  (el, index) => (
+                    <Page
+                      key={`page_${index + 1}`}
+                      pageNumber={index + 1}
+                    />
+                  ),
+                )
+              }
+                    {/* <Page scale={this.state.pageScaleWidth} pageNumber={Number(pageNo)} onLoadSuccess={this.onPageLoad} /> */}
                 </Document>
             </div>
         )

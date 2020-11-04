@@ -476,26 +476,25 @@ class SentenceCard extends React.Component {
     async makeAPICallDictionary() {
         let apiObj      = new DictionaryAPI(this.state.selectedSentence,this.props.word_locale, this.props.tgt_locale )
         const apiReq    = await fetch(apiObj.apiEndPoint(), {
-            method: 'post',
-            body: JSON.stringify(apiObj.getBody()),
-            headers: apiObj.getHeaders().headers
+            method  : 'post',
+            body    : JSON.stringify(apiObj.getBody()),
+            headers : apiObj.getHeaders().headers
         }).then ( (response)=> {
             if (response.status >= 400 && response.status < 600) {
-                console.log('api failed because of server or network')
-                this.props.sentenceActionApiStopped()
+                    this.props.sentenceActionApiStopped()
             }
             response.text().then( (data)=> {
-                let val = JSON.parse(data)
-                return val.data;
+                    let val = JSON.parse(data)
+                    return val.data;
             }).then((result)=>{
-                let parallel_words = []
-                result.parallel_words.map((words) => {
+                    let parallel_words = []
+                    result.parallel_words.map((words) => {
                     if(this.props.tgt_locale === words.locale)
-                        parallel_words.push(words.name)
-                } )
-                this.setState({
-                    parallel_words: parallel_words
-                })
+                            parallel_words.push(words.name)
+                    } )
+                    this.setState({
+                            parallel_words: parallel_words
+                    })
             })
         })
     }
