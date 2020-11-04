@@ -79,9 +79,9 @@ class DocumentEditor extends React.Component {
         if (this.props.document_contents.content_updated) {
           this.props.sentenceActionApiStopped()
           this.setState({ snackBarMessage:'',apiCall: false })
-            setTimeout(() => {
-              this.setState({ isShowSnackbar: false, snackBarSavedMessage:'', })
-            }, 3000)
+            // setTimeout(() => {
+            //   this.setState({ isShowSnackbar: false, snackBarSavedMessage:'', })
+            // }, 3000)
         }
       }
     }
@@ -227,13 +227,12 @@ class DocumentEditor extends React.Component {
     }
 
     snackBarMessage = () =>{
-      console.log(this.state.apliCall ,this.state.snackBarMessage, this.state.snackBarSavedMessage)
       return (
         <div>
         <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
             open={this.state.isShowSnackbar}
-            autoHideDuration={!this.state.apiCall && 3000}
+            autoHideDuration={!this.state.apiCall && 2000}
             variant={this.state.apiCall ? "info" : "success"}
             message={this.state.apiCall ? this.state.snackBarMessage : this.state.snackBarSavedMessage}
           />

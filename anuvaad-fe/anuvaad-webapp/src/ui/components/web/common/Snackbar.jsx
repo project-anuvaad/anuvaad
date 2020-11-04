@@ -100,7 +100,7 @@ class CustomizedSnackbars extends React.Component {
     };
 
     render() {
-        const { variant, message } = this.props;
+        const { variant, message, autoHideDuration } = this.props;
         return (
             <div>
                 <Snackbar
@@ -110,7 +110,7 @@ class CustomizedSnackbars extends React.Component {
                     }}
                     variant = {variant}
                     open={this.state.open }
-                    autoHideDuration={6000}
+                    autoHideDuration={autoHideDuration ? autoHideDuration : null}
                     onClose={this.handleClose}
                 >
                     <MySnackbarContentWrapper
