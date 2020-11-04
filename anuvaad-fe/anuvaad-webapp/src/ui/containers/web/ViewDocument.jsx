@@ -224,13 +224,6 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
-          customBodyRender: (value, tableMeta, updateValue) => {
-            return (
-              <div >
-                {(tableMeta.rowData[5] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? (<div>IN PROGRESS</div>) : (<div>COMPLETED</div>)}
-              </div>
-            )
-          }
         }
       },
       {
