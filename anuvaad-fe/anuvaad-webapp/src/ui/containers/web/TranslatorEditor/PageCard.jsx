@@ -96,6 +96,7 @@ class PageCard extends React.Component {
             <TextField
                 style= {styles.textField} 
                 type="text" className="form-control"
+                defaultValue = {text.text}
                 value={this.state.text}
                 variant="outlined"
                 id="mui-theme-provider-outlined-input"
@@ -113,7 +114,7 @@ class PageCard extends React.Component {
      * render sentence edit
      */
     handleSelectedSentenceId = (text) => {
-        this.setState({ selectedSentenceID: text.block_id, text: text.text })
+        // this.setState({text: text.text })
         this.props.highlightSentence(text)
     }
     /**

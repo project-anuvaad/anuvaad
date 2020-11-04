@@ -440,6 +440,7 @@ class DocumentEditor extends React.Component {
                 {this.state.isModeSentences ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>
             {(this.state.snackBarMessage || this.state.snackBarSavedMessage) && this.snackBarMessage()}
+            {(this.props.document_contents.pages.length<1) && < Spinner />}
         </div>
         )
     }
