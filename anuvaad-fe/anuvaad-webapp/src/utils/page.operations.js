@@ -41,6 +41,7 @@ function get_pages_children_information(data) {
             "page_height": element['page_height'],
             "page_no": element['page_no'],
             "page_width": element['page_width'],
+            
         }
 
         if (element['images']) {
@@ -59,26 +60,34 @@ function get_pages_children_information(data) {
             let sorted_text_blocks  = BLOCK_OPS.get_sorted_blocks(element['text_blocks'])
             
             sorted_text_blocks.forEach(text_block => {
+                
                 let blockValue={
-                    'texts': []
+                    'texts': [],
+                    
                 }
+
                 page['translated_texts'].push(...text_block['tokenized_sentences'].map(v => ({...v, block_identifier: text_block.block_identifier})));
                 blockValue['text_height']   = text_block['text_height'];
                 blockValue['text_left']     = text_block.text_left;
+                
                 blockValue['text_top']      = text_block.text_top;
                 blockValue['text_width']    = text_block.text_width;
                 blockValue['block_identifier']  = text_block['block_identifier'];
+               
                 text_block.children.forEach(grandchildren => {
                     if (grandchildren['children']) {
                              grandchildren.children.forEach(child_elem => {
                             child_elem['block_identifier']  = text_block['block_identifier'];
-                            child_elem['tag']               = 'GRAND_CHILDREN'
+                            child_elem['tag']               = 'GRAND_CHILDREN';
+                            child_elem["parent_block_id"]   = text_block.block_id
                             if (text_block['tokenized_sentences'].length > 0) {
                                 child_elem['sentence_id']    = text_block['tokenized_sentences'][0].s_id;
                             }
+                            
                             blockValue["texts"].push(child_elem);
                         })
                     } else {
+                        grandchildren["parent_block_id"]       = text_block.block_id
                         grandchildren['block_identifier']   = text_block['block_identifier'];
                         if (text_block['tokenized_sentences'].length > 0) {
                             grandchildren['sentence_id']    = text_block['tokenized_sentences'][0].s_id;
@@ -88,6 +97,7 @@ function get_pages_children_information(data) {
                     }
                 })
                 page['blocks'].push(blockValue)
+                
             })
         }
 

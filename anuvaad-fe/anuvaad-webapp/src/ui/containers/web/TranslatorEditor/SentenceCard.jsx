@@ -115,7 +115,7 @@ class SentenceCard extends React.Component {
             this.setState({dictionaryWord: prevState.selectedSentence})
         }
 
-        if (prevProps.sentence_highlight !== this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight.sentence_id) {
+        if (prevProps.sentence_highlight !== this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight.sentence_id) {
             this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
             if (this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id) {
                 this.setState({ cardInFocus: true })
@@ -645,7 +645,7 @@ class SentenceCard extends React.Component {
 const mapStateToProps = state => ({
     document_contents: state.document_contents,
     sentence_action_operation: state.sentence_action_operation,
-    sentence_highlight: state.sentence_highlight,
+    sentence_highlight: state.sentence_highlight.sentence,
     block_highlight: state.block_highlight,
 });
 
