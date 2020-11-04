@@ -439,7 +439,7 @@ class DocumentEditor extends React.Component {
             loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
             endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
           >
-            {pages.map(page => <PageCard key={v4()} page={page} />)}
+            {pages.map(page => <PageCard key={v4()} page={page} onAction={this.processSentenceAction}/>)}
           </InfiniteScroll>
         </Grid>
       )
