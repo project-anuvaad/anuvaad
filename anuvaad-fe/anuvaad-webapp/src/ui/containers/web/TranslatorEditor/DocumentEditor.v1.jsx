@@ -225,7 +225,7 @@ class DocumentEditor extends React.Component {
           return Promise.reject('');
         } else {
           this.props.contentUpdateStarted()
-          this.props.update_sentences(pageNumber, rsp_data.data);
+          this.props.update_sentences(pageNumber, rsp_data.input.textBlocks);
         }
       }).catch((error) => {
         console.log('api failed because of server or network')
@@ -273,9 +273,9 @@ class DocumentEditor extends React.Component {
           return;
         }
         case SENTENCE_ACTION.SENTENCE_SOURCE_EDITED: {
-          this.props.sentenceActionApiStarted(sentences)
+          this.props.sentenceActionApiStarted(null)
           this.makeAPICallSourceSaveSentence(sentences, pageNumber)
-          this.setState({ snackBarMessage: translate("common.page.label.saveMessage") })
+          this.setMessages(SENTENCE_ACTION.SENTENCE_SOURCE_EDITED, "editedMessage")
           return;
         }
       }
@@ -445,7 +445,7 @@ class DocumentEditor extends React.Component {
             loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
             endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
           >
-            {pages.map(page => <PageCard key={v4()} page={page} />)}
+            {pages.map(page => <PageCard key={v4()} page={page} onAction={this.processSentenceAction}/>)}
           </InfiniteScroll>
         </Grid>
       )

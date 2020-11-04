@@ -400,7 +400,7 @@ const localization_EN_Data = {
   "intractive_translate.page.message.loading": "Getting suggestions for you",
   "intractive_translate.page.message.endOfSuggestion": "You have reached the end of the sentence.",
   "common.page.label.editedMessage": "Sentence edited successfully",
-
+  "common.page.label.SENTENCE_SOURCE_EDITED": "Saving sentence...",
   // 'newCorpus.page.array.addFileTargetAndDetails':["Add Source file", 'Add target file', 'Add file details']
 };
 
@@ -774,6 +774,7 @@ const localization_HI_Data = {
   "intractive_translate.page.message.loading": "आपके लिए सुझाव ढूंढ रहा हूँ।",
   "intractive_translate.page.message.endOfSuggestion": "आप सजा के अंत तक पहुँच चुके हैं।",
   "common.page.label.editedMessage": "Sentence edited successfully",
+  "common.page.label.SENTENCE_SOURCE_EDITED": "Saving sentence...",
 };
 
 export function translate(locale_text) {
