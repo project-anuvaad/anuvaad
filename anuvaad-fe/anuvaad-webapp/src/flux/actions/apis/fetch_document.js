@@ -3,7 +3,7 @@ import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 
 export default class BulkSearchAPI extends API {
-  constructor(offset, limit, jobIds=[''], searchForNewJob=false, isNextPage=false, timeout = 2000) {
+  constructor(offset, limit, jobIds=[''], searchForNewJob=false, isNextPage=false, updateExisting=false, timeout = 2000) {
     super("POST", timeout, false);
     this.type     = C.FETCHDOCUMENT;
 
@@ -12,6 +12,9 @@ export default class BulkSearchAPI extends API {
     }
     if (isNextPage) {
       this.type   = C.FETCHDOCUMENT_NEWJOB;
+    }
+    if (updateExisting) {
+      this.type   = C.FETCHDOCUMENT_EXISTING;
     }
 
     this.offset   = offset;

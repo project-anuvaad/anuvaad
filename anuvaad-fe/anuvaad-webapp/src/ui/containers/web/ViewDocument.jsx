@@ -46,6 +46,8 @@ class ViewDocument extends React.Component {
    * life cycle methods
    */
   componentDidMount() {
+    this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
+
     if (this.props.job_details.documents.length < 1) {
       this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, false, false)
       this.setState({showLoader:true})
@@ -59,6 +61,10 @@ class ViewDocument extends React.Component {
     }
 
     TELEMETRY.pageLoadCompleted('view-document')
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.timerId);
   }
 
   componentDidUpdate(prevProps) {
@@ -97,9 +103,16 @@ class ViewDocument extends React.Component {
   /**
    * API calls
    */
-  makeAPICallJobsBulkSearch(offset, limit, jobIds=[''], searchForNewJob=false, searchNextPage=false) {
+  checkInprogressJobStatus = () => {
+    let inprogressJobIds = this.props.job_details.documents.filter(job => (job.status === 'INPROGRESS')).map(job => job.jobID)
+    if (inprogressJobIds.length > 0) {
+      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, inprogressJobIds, false, false, true)
+    }
+  }
+
+  makeAPICallJobsBulkSearch(offset, limit, jobIds=[''], searchForNewJob=false, searchNextPage=false, updateExisting=false) {
     const { APITransport }  = this.props;
-    const apiObj            = new FetchDocument(offset, limit, jobIds, searchForNewJob, searchNextPage);
+    const apiObj            = new FetchDocument(offset, limit, jobIds, searchForNewJob, searchNextPage, updateExisting);
     APITransport(apiObj);
   }
 

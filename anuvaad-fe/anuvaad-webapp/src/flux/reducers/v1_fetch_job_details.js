@@ -175,6 +175,27 @@ export default function(state = initialState, action) {
             }
         }
 
+        case C.FETCHDOCUMENT_EXISTING: {
+            let data            = action.payload;
+            let documents       = get_document_details(data);
+            let updated_docs    = [...state.documents];
+
+            documents.forEach(job => {
+                updated_docs.forEach((existing_job, index) => {
+                    if (existing_job.jobID === job.jobID) {
+                        updated_docs.splice(index, 1, job)
+                    }
+                })
+            })
+
+            return {
+                ...state,
+                progress_updated: false,
+                document_deleted: false,
+                documents: updated_docs
+            }
+        }
+
         case C.MARK_INACTIVE: {
             let data        = action.payload.succeeded;
             let documents   = update_documents_after_delete(state.documents, data);
