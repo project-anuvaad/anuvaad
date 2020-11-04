@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import re
 from pathlib import Path
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
@@ -52,6 +53,7 @@ class FileOperation(object):
             input_txt_filepath = self.input_path(input_filename)
             with open(input_txt_filepath, 'r', encoding='utf-16') as f:
                 input_file_data = f.readlines()
+            input_file_data = [' '.join([re.sub('\r\n|\n', '', text) for text in input_file_data])]
             return input_file_data
         except:
             raise FileEncodingError( 400, "Tokenisation failed due to encoding. Service supports only utf-16 encoded file.")

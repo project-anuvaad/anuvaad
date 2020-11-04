@@ -66,13 +66,10 @@ class AnuvaadHindiTokenizer(object):
 
     def tokenize(self, text):
         print('--------------Process started-------------')
-        text = self.serialize_with_abbrevations(text)
-        text = self.serialize_colon_abbreviations(text)
         text = self.serialize_dates(text)
         text = self.serialize_time(text)
         text = self.serialize_table_points(text)
         text = self.serialize_url(text)
-        text = self.serialize_pattern(text)
         text = self.serialize_dots(text)
         text = self.serialize_brackets(text)
         text = self.serialize_dot_with_number(text)
@@ -80,6 +77,9 @@ class AnuvaadHindiTokenizer(object):
         text = self.serialize_quotes_with_number(text)
         text = self.serialize_bullet_points(text)
         text = self.serialize_decimal(text)
+        text = self.serialize_pattern(text)
+        text = self.serialize_with_abbrevations(text)
+        text = self.serialize_colon_abbreviations(text)
         text = self.add_space_after_sentence_end(text)
         text = self.serialize_end(text)
         sentences = self._tokenizer.tokenize(text)
@@ -221,7 +221,7 @@ class AnuvaadHindiTokenizer(object):
         return text
     
     def serialize_dates(self, text):
-        patterns = re.findall(r'[0-9]{1,4}[.][0-9]{1,2}[.][0-9]{1,4}',text)   # [0-9]{,2}[.][0-9]{,2}[.][0-9]{2,4}   [0-9]{1,4}[.][0-9]{1,2}[.][0-9]{1,4}
+        patterns = re.findall(r'[0-9|\u0966-\u096F]{1,4}[.][0-9|\u0966-\u096F]{1,2}[.][0-9|\u0966-\u096F]{1,4}',text)   # [0-9]{,2}[.][0-9]{,2}[.][0-9]{2,4}   [0-9]{1,4}[.][0-9]{1,2}[.][0-9]{1,4}
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -281,7 +281,7 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def serialize_dot_with_number_beginning(self, text):
-        patterns = re.findall(r'(^[\s]?[0-9]{1,}[-]?[.])',text)
+        patterns = re.findall(r'(^[\s]?[0-9|\u0966-\u096F]{1,}[-]?[.])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -301,7 +301,7 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def serialize_dot_with_number(self, text):
-        patterns = re.findall(r'(?:[ ][0-9]{,2}[.][ ])',text)
+        patterns = re.findall(r'(?:[ ][0-9|\u0966-\u096F]{,2}[-]?[.][ ])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:

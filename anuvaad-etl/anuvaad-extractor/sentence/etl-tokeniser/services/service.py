@@ -60,7 +60,7 @@ class Tokenisation(object):
             write_file.write("%s\n"%item)
         log_info("writing_tokenised_sentence_in_file : File write for tokenised sentence completed", self.input_json_data)
 
-    # calling service function to convert paragragh into tokenised sentences for their respective language
+    # calling service function to convert paragragh into tokenised sentences for their respective language for txt files
     def tokenisation_response(self, input_file_data, in_locale, index):
         try:
             output_filepath , output_filename = file_ops.output_path(index, self.DOWNLOAD_FOLDER, '.txt')
@@ -84,13 +84,13 @@ class Tokenisation(object):
             log_error("Keys in block merger response changed or tokenisation went wrong.", self.input_json_data, None) 
             raise ServiceError(400, "Tokenisation failed. Keys in block merger response changed or tokenisation went wrong.")
 
-    def writing_json_file_blockmerger(self, index, json_output_data):
-        output_filepath , output_json_filename = file_ops.output_path(index, self.DOWNLOAD_FOLDER, '.json')
-        write_file = open(output_filepath, 'w', encoding='utf-8')
-        json_object = json.dumps(json_output_data)
-        write_file.write(json_object)
-        log_info("Service : Json file write done!", self.input_json_data)
-        return output_json_filename
+    # def writing_json_file_blockmerger(self, index, json_output_data):
+    #     output_filepath , output_json_filename = file_ops.output_path(index, self.DOWNLOAD_FOLDER, '.json')
+    #     write_file = open(output_filepath, 'w', encoding='utf-8')
+    #     json_object = json.dumps(json_output_data)
+    #     write_file.write(json_object)
+    #     log_info("Service : Json file write done!", self.input_json_data)
+    #     return output_json_filename
 
     def making_object_for_tokenised_text(self, text):
         object_text = {
@@ -113,7 +113,7 @@ class Tokenisation(object):
     def remove_extra_spaces(self,text):
         text = text.strip()
         text = text.replace("\\", '')
-        text = re.sub('\u200d|\u200c', '', text)
+        text = re.sub('\u200d|\u200c|\n|\r\n', '', text)
         text = re.sub('[\s]{1,}', ' ', text)
         return text
 
