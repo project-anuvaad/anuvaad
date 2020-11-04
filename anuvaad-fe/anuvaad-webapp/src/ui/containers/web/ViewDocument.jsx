@@ -38,7 +38,8 @@ class ViewDocument extends React.Component {
       showInfo: false,
       offset: 0,
       limit: 10,
-      currentPageIndex: 0
+      currentPageIndex: 0,
+      dialogMessage:null
     };
   }
 
@@ -180,10 +181,46 @@ class ViewDocument extends React.Component {
     this.makeAPICallJobDelete(jobId);
   }
 
-  processViewDocumentClick = (jobId, recordId) => {
+  processViewDocumentClick = (jobId, recordId, status) => {
     let job = this.getJobIdDetail(jobId);
-    history.push(`${process.env.PUBLIC_URL}/interactive-document/${job.source_language_code}/${job.target_language_code}/${job.target_language_code}/${job.recordId}/${job.converted_filename}/${job.model_id}`, this.state);
+    if(status==="COMPLETED"){
+      history.push(`${process.env.PUBLIC_URL}/interactive-document/${job.source_language_code}/${job.target_language_code}/${job.target_language_code}/${job.recordId}/${job.converted_filename}/${job.model_id}`, this.state);
+
+    }
+    else if(status==="INPROGRESS"){
+      this.setState({dialogMessage:"Please wait process is Inprogress!" })
+     
+    }
+    else{
+      this.setState({dialogMessage:"Document conversion failed!" })
+     
+    }
+    this.handleMessageClear()
+ }
+
+  handleMessageClear = () =>{
+
+    setTimeout(() => {
+        this.setState({dialogMessage:""});
+    }, 3000)
   }
+
+    snackBarMessage = () =>{
+      return (
+        <div>
+        <Snackbar
+            anchorOrigin      = {{ vertical: "top", horizontal: "right" }}
+            open              = {true}
+            autoHideDuration  = {3000}
+            variant           = {"info"}
+            message           = {this.state.dialogMessage}
+          />
+          </div>
+      )
+      
+    }
+
+      
 
   processDownloadInputFileClick = (jobId, recordId) => {
     let job = this.getJobIdDetail(jobId);
@@ -301,7 +338,7 @@ class ViewDocument extends React.Component {
                   </Tooltip>
 
                   <Tooltip title="View document" placement="left">
-                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processViewDocumentClick(tableMeta.rowData[1], tableMeta.rowData[2])}>
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processViewDocumentClick(tableMeta.rowData[1], tableMeta.rowData[2],tableMeta.rowData[5] )}>
                       <LibraryBooksIcon />
                     </IconButton>
                   </Tooltip>
@@ -366,6 +403,7 @@ class ViewDocument extends React.Component {
     };
 
     return (
+     
       <div>
         <Toolbar style={{ marginLeft: "-5.4%", marginRight: "1.5%", marginTop: "20px" }}>
           <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
@@ -388,18 +426,10 @@ class ViewDocument extends React.Component {
               ""
             )}
         </Toolbar>
+        { this.state.dialogMessage && this.snackBarMessage()}
         <div style={{ margin: '2% 3% 3% 3%' }}>
           {!this.state.showLoader && <MuiThemeProvider theme={this.getMuiTheme()}> <MUIDataTable title={translate("common.page.title.document")} data={this.props.job_details.documents} columns={columns} options={options} /></MuiThemeProvider>}
         </div>
-        {this.state.open && (
-          <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            open={this.state.open}
-            autoHideDuration={3000}
-            variant="success"
-            message={this.state.message}
-          />
-        )}
         {this.state.showInfo &&
           <Dialog message={this.state.message}
             type="info"
@@ -407,6 +437,7 @@ class ViewDocument extends React.Component {
             open
             title="File Process Information" />
         }
+        
         {(this.state.showLoader || this.state.loaderDelete) && < Spinner />}
       </div>
 
