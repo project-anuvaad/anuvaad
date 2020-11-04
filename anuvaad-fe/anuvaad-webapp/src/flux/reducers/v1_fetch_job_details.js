@@ -69,6 +69,10 @@ function get_document_details(input) {
             timeline['stepOrder']           = task['stepOrder'];
             timeline['status']              = task['status'];
 
+            if (task['stepOrder'] === 0) {
+                document['converted_filename']  = task['output'][0]['outputFile'];
+            }
+            
             if (task['stepOrder'] === 3) {
                 document['recordId']        = task['output'][0]['outputFile'];
             }
@@ -129,14 +133,66 @@ export default function(state = initialState, action) {
             let data        = action.payload;
             let documents   = get_document_details(data)
             let newDocuments= []
-            newDocuments.push(...state.documents)
             newDocuments.push(...documents)
 
-            return {...state, 
+            return {
+                ...state, 
                 count: data.count,
                 progress_updated: false,
                 document_deleted: false,
                 documents: newDocuments
+            }
+        }
+
+        case C.FETCHDOCUMENT_NEXTPAGE: {
+            let data        = action.payload;
+            let documents   = get_document_details(data)
+            let newDocuments= []
+            newDocuments.push(...state.documents)
+            newDocuments.push(...documents)
+
+            return {
+                ...state, 
+                progress_updated: false,
+                document_deleted: false,
+                documents: newDocuments
+            }
+        }
+
+        case C.FETCHDOCUMENT_NEWJOB: {
+            let data        = action.payload;
+            let documents   = get_document_details(data)
+            let newDocuments= []
+
+            newDocuments.push(...documents)
+            newDocuments.push(...state.documents)
+            return {
+                ...state,
+                count: state.count + 1,
+                progress_updated: false,
+                document_deleted: false,
+                documents: newDocuments
+            }
+        }
+
+        case C.FETCHDOCUMENT_EXISTING: {
+            let data            = action.payload;
+            let documents       = get_document_details(data);
+            let updated_docs    = [...state.documents];
+
+            documents.forEach(job => {
+                updated_docs.forEach((existing_job, index) => {
+                    if (existing_job.jobID === job.jobID) {
+                        updated_docs.splice(index, 1, job)
+                    }
+                })
+            })
+
+            return {
+                ...state,
+                progress_updated: false,
+                document_deleted: false,
+                documents: updated_docs
             }
         }
 
