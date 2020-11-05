@@ -30,10 +30,10 @@ def handle_single_token(token):
             print("handling single token and returning character as it is")
             return (token)            
        else:
-            logger.info("returning null to allow token to go to model")
+            log_info("returning null to allow token to go to model",MODULE_CONTEXT)
             return ""
    except:
-       logger.info("returning null to allow token to go to model")
+       log_info("returning null to allow token to go to model",MODULE_CONTEXT)
        return ""
           
 
@@ -94,7 +94,7 @@ def special_case_fits(text):
 def handle_special_cases(text,model_id):
     try:
         if len(text) == 0 :
-            logger.info("Null src for this request")
+            log_info("Null src for this request",MODULE_CONTEXT)
             return ""
         elif misc.token_is_date(text):
             hindi_months = ['जनवरी', 'फ़रवरी', 'मार्च', 'अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्टूबर','नवंबर','दिसंबर']
@@ -109,15 +109,15 @@ def handle_special_cases(text,model_id):
                 for i in eng_months : 
                     text = text.casefold().replace(i.casefold(),tamil_months[eng_months.index(i)])
 
-            logger.info('handling dates before model in long alpha-numeric format')
+            log_info('handling dates before model in long alpha-numeric format',MODULE_CONTEXT)
             return text
         elif len(text.split()) == 1 and misc.token_is_url(text):
-            logger.info('handling single token-url before model and returning as it is')
+            log_info('handling single token-url before model and returning as it is',MODULE_CONTEXT)
             return text   
         elif len(text.split()) == 1 and len(handle_single_token(text))>0:
             return handle_single_token(text) 
     except Exception as e:
-        logger.info("error when handling special cases :{}".format(e))
+        log_exception("error when handling special cases :{}".format(e),MODULE_CONTEXT,e)
         return text
 
 def prefix_handler(text):
@@ -133,10 +133,10 @@ def prefix_handler(text):
         if not all(v is None for v in matches):
             prefix = token_p
             text = str(" ".join(tokens[1:]))
-        logger.info("Returning from prefix_handler")    
+        log_info("Returning from prefix_handler",MODULE_CONTEXT)    
         return prefix,text
     except Exception as e:
-        logger.error("Error in prefix handler, returning original text,error:{}".format(e))
+        log_exception("Error in prefix handler, returning original text,error:{}".format(e),MODULE_CONTEXT,e)
         return "",text
 
 def suffix_handler(text):

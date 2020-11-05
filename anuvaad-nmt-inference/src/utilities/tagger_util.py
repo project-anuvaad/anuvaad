@@ -38,8 +38,8 @@ def tag_number_date_url(text):
         print("count exceeding 30")
         count_number = 30
 
-    logger.info("number-tag mappings-{}".format(num_map))
-    logger.info("Number tagging done")
+    log_info("number-tag mappings-{}".format(num_map),MODULE_CONTEXT)
+    log_info("Number tagging done",MODULE_CONTEXT)
     for word in text.split():
         # if len(word)>4 and len(word)<12 and token_is_date(word):
         try:
@@ -64,17 +64,17 @@ def tag_number_date_url(text):
             count_url +=1
         except Exception as e:
           print(e)
-          logger.error("In handle_date_url:tag_num function:{}".format(e))
+          log_exception("In handle_date_url:tag_num function:{}".format(e),MODULE_CONTEXT,e)
           word = word
         
 
         resultant_str.append(word)   
         s = [str(i) for i in resultant_str] 
         res = str(" ".join(s))   
-    logger.info("tagged response:{} and date:{} and url:{}".format(res,date_original,url_original)) 
+    log_info("tagged response:{} and date:{} and url:{}".format(res,date_original,url_original),MODULE_CONTEXT) 
     return res,date_original,url_original,num_array,num_map 
   except Exception as e:
-    logger.error("In handle_date_url:tag_num function parent except block:{}".format(e))
+    log_exception("In handle_date_url:tag_num function parent except block:{}".format(e),MODULE_CONTEXT,e)
     return text,[],[],(num_array or [])
 
 def replace_tags_with_original(text,date_original,url_original,num_array):
@@ -93,9 +93,9 @@ def replace_tags_with_original(text,date_original,url_original,num_array):
       s = [str(i) for i in resultant_str] 
       res = str(" ".join(s))
 
-    logger.info("response after url and date replacemnt:{}".format(res))
+    log_info("response after url and date replacemnt:{}".format(res),MODULE_CONTEXT)
     array = re.findall(r'NnUuMm..|NnUuMm.', res)   
-    logger.info("NnUuMm array after translation:{}".format(array))
+    log_info("NnUuMm array after translation:{}".format(array),MODULE_CONTEXT)
     for j in array:
       try:
         if j[-2:] in hindi_numbers:
@@ -113,13 +113,13 @@ def replace_tags_with_original(text,date_original,url_original,num_array):
           res = res.replace(j,str(num_array[index]),1)
       
       except Exception as e:
-        logger.info("inside str.replace error,but handling it:{}".format(e))
+        log_info("inside str.replace error,but handling it:{}".format(e),MODULE_CONTEXT)
         res = res.replace(j,"",1)
 
-    logger.info("response after tags replacement:{}".format(res))
+    log_info("response after tags replacement:{}".format(res),MODULE_CONTEXT)
     return res    
   except Exception as e:
-    logger.error("Error in parent except block of replace_tags_with_original_1 function, returning tagged output:{}".format(e))
+    log_exception("Error in parent except block of replace_tags_with_original_1 function, returning tagged output:{}".format(e),MODULE_CONTEXT,e)
     return text
 
 def get_indices_of_num_with_zero_prefix(num_arr):
@@ -150,5 +150,5 @@ def update_num_arr(num_array,zero_prefix_num,i_zero,num_array_orignal):
       num_array[l] = num_array_orignal[i_zero[k]]
     return num_array
   except Exception as e:
-    logger.error("Error in handle_date_url:update_num_arr,returning incoming num_array:{}".format(e))
+    log_exception("Error in handle_date_url:update_num_arr,returning incoming num_array:{}".format(e),MODULE_CONTEXT,e)
     return num_array_o
