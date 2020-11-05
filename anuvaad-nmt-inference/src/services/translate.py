@@ -34,7 +34,7 @@ class TranslateService:
                 if  any(v not in i for v in ['src','id']):
                     # out['status'] = statusCode["ID_OR_SRC_MISSING"]
                     out['response_body'] = []
-                    log_info("either id or src missing in some input")
+                    log_info("either id or src missing in some input",MODULE_CONTEXT)
                     out = CustomResponse(Status.ID_OR_SRC_MISSING.value, out['response_body'])
                     return out
 
@@ -180,10 +180,11 @@ class OpenNMTTranslateService:
         i_src,tgt = list(),list()
         tagged_tgt,tagged_src = list(),list()
         s_id,n_id = [0000],[0000]
+        i_s0_src,i_s0_tgt,i_save = list(),list(),list()
 
         try:
             for i in inputs:
-                # log_info(log_with_request_info(i.get("s_id"),LOG_TAGS["input"],i),MODULE_CONTEXT)
+                s0_src,s0_tgt,save = "NA","NA",False
                 if all(v in i for v in ['s_id','n_id']):
                     s_id = [i['s_id']]
                     n_id = [i['n_id']]  
@@ -194,6 +195,11 @@ class OpenNMTTranslateService:
                     log_info("either id or src missing in some input",MODULE_CONTEXT)
                     out = CustomResponse(Status.ID_OR_SRC_MISSING.value, out['response_body'])
                     return (out) 
+               
+                if any(v in i for v in ['s0_src','s0_tgt','save']):
+                    s0_src,s0_tgt,save = handle_custome_input(i,s0_src,s0_tgt,save)
+                    
+                i_s0_src.append(s0_src),i_s0_tgt.append(s0_tgt),i_save.append(save)    
 
                 log_info("input sentences:{}".format(i['src']),MODULE_CONTEXT) 
                 i_src.append(i['src'])   
@@ -402,7 +408,7 @@ class OpenNMTTranslateService:
             out['response_body'] = [{"tgt": tgt[i],
                     "pred_score": pred_score[i], "s_id": sentence_id[i],"input_subwords": input_subwords[i],
                     "output_subwords":output_subwords[i],"n_id":node_id[i],"src":i_src[i],
-                    "tagged_tgt":tagged_tgt[i],"tagged_src":tagged_src[i]}
+                    "tagged_tgt":tagged_tgt[i],"tagged_src":tagged_src[i],"save":i_save[i],"s0_src":i_s0_src[i],"s0_tgt":i_s0_tgt[i]}
                     for i in range(len(tgt))]
             out = CustomResponse(Status.SUCCESS.value, out['response_body'])
         except ServerModelError as e:
@@ -460,8 +466,7 @@ def encode_translate_decode(i,translation_server,sp_encoder,sp_decoder):
         # translation, scores, n_best, times = translation_server.run([i])
         m_out = translator.translate_batch([i_final],beam_size = 5,num_hypotheses=1)
         log_info("output from model: %s"%m_out[0],MODULE_CONTEXT)
-        output_sw = m_out[0]
-        print(m_out)
+        output_sw = " ".join(m_out[0][0]['tokens'])
         scores = m_out[0][0]['score']
         # translation = sp.decode_line(sp_decoder,translation[0])
         translation = multiple_hypothesis_decoding(m_out[0],sp_decoder)[0]
@@ -515,3 +520,16 @@ def multiple_hypothesis_decoding(hypotheses,sp_decoder):
         log_exception("Error in interactive translation-multiple_hypothesis_decoding:{}".format(e),MODULE_CONTEXT,e)
         raise
        
+       
+def handle_custome_input(i,s0_src,s0_tgt,save):
+    '''
+    Meant for translate_anuvaad api to support save operation in UI
+    '''
+    if 'save' in i:
+        save = i["save"]
+    if "s0_src" in i:  
+        s0_src = i["s0_src"]       
+    if "s0_tgt" in i:      
+        s0_tgt = i["s0_tgt"] 
+        
+    return s0_src,s0_tgt,save       
