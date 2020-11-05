@@ -69,7 +69,7 @@ class ViewDocument extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.job_details.documents !== this.props.job_details.documents) {
+    if (prevProps.job_details.documents.length !== this.props.job_details.documents.length) {
       /**
        * update job progress status only progress_updated is false
        */
@@ -125,7 +125,7 @@ class ViewDocument extends React.Component {
   }
 
   makeAPICallDocumentsTranslationProgress(jobIds) {
-    var recordIds = this.getRecordIds()  
+    var recordIds = this.getRecordIds() 
     if (recordIds.length > 1) {
       const { APITransport }  = this.props;
       const apiObj            = new JobStatus(recordIds);
@@ -137,7 +137,7 @@ class ViewDocument extends React.Component {
   getRecordIds = () => {
     let jobIds = []
     for (var i = this.state.currentPageIndex * this.state.limit; i < (this.state.currentPageIndex * this.state.limit) + this.state.limit; i++) {
-      if (this.props.job_details.documents.hasOwnProperty("recordId") && this.props.job_details.documents[i]['recordId']) {
+      if (this.props.job_details.documents[i].hasOwnProperty("recordId") && this.props.job_details.documents[i]['recordId']) {
         jobIds.push(this.props.job_details.documents[i]['recordId'])
       }
     }

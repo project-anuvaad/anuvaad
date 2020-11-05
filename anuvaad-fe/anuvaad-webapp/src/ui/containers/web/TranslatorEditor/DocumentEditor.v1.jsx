@@ -119,24 +119,12 @@ class DocumentEditor extends React.Component {
       let sentence_ids   = sentences.map(sentence => sentence.s_id)
       let updated_blocks = BLOCK_OPS.do_sentences_merging_v1(this.props.document_contents.pages, sentence_ids);
 
-      let initialArr = []
-    let telemetryFinalData = ""
-    if (sentences && Array.isArray(sentences) && sentences.length > 0) {
-      sentences.map((text, i) => {
-        initialArr.push(text.src)
-      })
-    }
-
-    if (updated_blocks.sentences && Array.isArray(updated_blocks.sentences) && updated_blocks.sentences.length > 0) {
-      updated_blocks.sentences.map((text, i) => {
-        if (i !== 0) {
-          telemetryFinalData += " "
-        }
-        telemetryFinalData += text.src
-      })
-    }
-
-    TELEMETRY.mergeSentencesEvent(initialArr, telemetryFinalData)
+      /**
+       * telemetry information.
+       */
+      let initial_sentences = sentences.map(sentence => sentence.src);
+      let final_sentence    = updated_blocks['blocks'][0].tokenized_sentences.src;
+      TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
 
       let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale, 
                                           '', '', parseInt(this.props.match.params.modelId))
@@ -221,7 +209,7 @@ class DocumentEditor extends React.Component {
           return Promise.reject('');
         } else {
           this.props.contentUpdateStarted()
-          this.props.update_sentences(pageNumber, rsp_data.input.textBlocks);
+          this.props.update_blocks(pageNumber, rsp_data.input.textBlocks);
         }
       }).catch((error) => {
         console.log('api failed because of server or network')
