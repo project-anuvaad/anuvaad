@@ -183,9 +183,9 @@ class DocumentEditor extends React.Component {
 
     async makeAPICallSplitSentence(sentence, pageNumber, startIndex, endIndex) {
       let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
-    TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
+      TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
 
-      let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, this.props.match.params.locale, 
+      let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale, 
                                                 '', '', parseInt(this.props.match.params.modelId))
       const apiReq    = fetch(apiObj.apiEndPoint(), {
           method: 'post',
