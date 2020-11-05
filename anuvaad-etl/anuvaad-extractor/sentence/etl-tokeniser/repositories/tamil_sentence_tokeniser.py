@@ -43,7 +43,7 @@ class AnuvaadTamilTokenizer(object):
         self._tokenizer = PunktSentenceTokenizer(lang_vars=SentenceEndLangVars())
 
     def tokenize(self, text):
-        print('--------------Process kn started-------------')
+        print('--------------Process ta started-------------')
         text = self.serialize_with_abbrevations(text)
         text = self.serialize_dates(text)
         text = self.serialize_time(text)
