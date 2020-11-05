@@ -14,7 +14,7 @@ import APITransport from "../../../flux/actions/apitransport/apitransport";
 import { translate } from "../../../assets/localisation";
 import ProgressBar from "../../components/web/common/ProgressBar";
 import Spinner from "../../components/web/common/Spinner";
-import LanguageCodes from "../../components/web/common/Languages.json"
+//import LanguageCodes from "../../components/web/common/Languages.json"
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteOutlinedIcon from '@material-ui/icons/VerticalAlignBottom';
@@ -105,7 +105,8 @@ class ViewDocument extends React.Component {
           resultArray.splice(i, 1);
         
         }
-      })
+      return null;
+    })
       this.setState({name:resultArray, loaderDelete: false, open:true, count:this.state.count-1, message: this.state.deleteId + "deleted cuccessfully"})
       setTimeout(() => {
         this.setState({ open: false });
@@ -141,9 +142,10 @@ class ViewDocument extends React.Component {
               element["completed_count"] = value.completed_count;
               element["total_count"] = value.total_count;
             }
-          })
+         return null;
+         })
         }
-      })
+      return null;})
       this.setState({ name: arr, showLoader: false , showProgress: false, searchToken: false});
     }
 
