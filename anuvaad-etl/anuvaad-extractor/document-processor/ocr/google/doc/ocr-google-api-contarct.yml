@@ -1,154 +1,124 @@
 swagger: "2.0"
 info:
   version: 1.0.0
-  title: Anuvaad wrod detection by CRAFT
-  description: A python based microservice to trigger and orchestrate word level information present in the given file
+  title: Anuvaad Google OCR
+  description: A python based microservice to trigger and orchestrate text extraion given eihter an image and coordinates or only an image
   contact:
     name: Naresh & Dhiraj, dhiraj.daga@tarento.com
     email: naresh.kumar@tarento.com
-
 schemes:
   - https
 basePath: '/api'
-
-paths: 
-  
-  /v0/word-detector/craft:
+paths:
+  /v0/ocr/google:
     post:
-      summary: API to extract words from the given file
+      summary: API to extract text from image file.
       parameters:
         - name: filename
           in: body
           required: true
           schema:
-            $ref: '#/definitions/WordDetectorRequest'
+            $ref: '#/definitions/GoogleOcrRequest'
       tags:
-      - Word Detector
+      - Google OCR
       responses:
         200:
           description: On successful completion of the job.
           schema:
-            $ref: '#/definitions/WordDetectorResponse'
+            $ref: '#/definitions/GoogleOcrResponse'
         400:
           description: On input errors causing a failure in the job.
           schema:
             $ref: '#/definitions/Error'
-   
 definitions:
-  WordDetectorRequest:
+  GoogleOcrRequest:
     type : object
     properties:
       files :
         type : array
-        description : a list of objets having file_name, file_type and language
+        description : a list of objets having file name, type and language.
         items :
-          $ref : '#/definitions/FilesRequest'
-
-  WordDetectorResponse:
+          $ref : '#/definitions/PageRequest'
+          
+          
+  GoogleOcrResponse:
     type : object
     properties:
       files :
         type : array
         description : a list of file level results
         items :
-         $ref: '#/definitions/FilesRespone'
-  
-  FilesRequest:
+         $ref: '#/definitions/PageRespone'
+
+  PageRequest:
     type: object
     properties :
-      file_name : 
+      path : 
         type: string
         description: name of input file
-        
-      file_type : 
+      type : 
         type: string
         description: type of input file
-        
-      file_id:
+      identifier:
         type: string
         description: unique identifier for a file
-        
       language :
         type : string
         description: 'ISO 639-1  language code' 
-        
       ocr_config:
         type: object
         description: configuration for tuning speed and accuracy of ocr mdoule
         $ref: '#/definitions/OcrConfig'
-
-  FilesRespone:
+      coordinates :
+        type : array
+        description: if given ocr will be performed only on the coordinates, else on entire page
+        items :
+          $ref: '#/definitions/Coordinates'
+          
+  
+ 
+ 
+  PageRespone:
     type: object
     properties :
-      file_name : 
+      path : 
         type: string
         description: name of input file
-      file_id:
+      type : 
+        type: string
+        description: type of input file
+      identifier:
         type: string
         description: unique identifier for a file
-        
       language :
         type : string
         description: 'ISO 639-1  language code' 
-        
       ocr_config:
         type: object
         description: configuration for tuning speed and accuracy of ocr mdoule
         $ref: '#/definitions/OcrConfig'
-        
-      pages :
+      ocr_output :
         type : array
-        description: page level word and line coordinates
+        description: extrated text, confidence and coordinates
         items :
-          $ref: '#/definitions/PageResponse'
-    
-  PageResponse:
-    type: object
-    properties:
-      page_id:
-        type: string
-        description: unique page identifier
-      page_width:
-        type: integer
-        description:  page width  
-      page_height:
-        type: integer
-        description:  page height 
-      page_path:
-        type: string
-        description:  page image name
-      words :
-        type : array
-        description: coordinates of extracted words
-        items:
-          $ref: '#/definitions/Words'
-      lines :
-        type : array
-        description: coordinates and attributes extracted lines
-        items:
-          $ref: '#/definitions/Lines'
-          
-  Words:
-    type: object
-    properties:
-      coordinates:
-        type: object
-        description: word coordinates extracted by craft
-        $ref: '#/definitions/Coordinates'
-          
-  Lines:
-    type: object
-    properties:
-      coordinates:
-        type: object
-        description: line coordinates extracted by craft
-        $ref: '#/definitions/Coordinates'
-      line_id:
-        type: string
-        description: unique identifier for line
-      attribute:
-        type: string
-        description: HEADER, FOOTER or None
+          allOf:
+          - $ref: '#/definitions/Coordinates'
+          properties:
+            identifier:
+              type: string
+            text:
+              type: string
+            words:
+              type: array
+              description: word level text,coordinates and confidence
+              items:
+               allOf:
+               - $ref: '#/definitions/Coordinates'
+               properties:
+                identifier:
+                  type: string
+                text:
+                  type: string
           
   Coordinates:
     type: object
@@ -169,7 +139,7 @@ definitions:
         type: number
         description: detection confidence
   
-
+  
   OcrConfig:
     type: object
     description: configuration for tuning speed and accuracy of ocr mdoule
@@ -180,19 +150,16 @@ definitions:
       mode:
         type: string
         enum: ['ACCURRATE','FAST']  
-    
-  
-  
+ 
   HttpOutput:
     type: object
     properties:
       status:
         type: number
-        description: Status code. 
-  
+        description: Status code.
   Error:
     type: object
-    properties:        
+    properties:
       ok:
         type: boolean
         description: request successful indicator.
@@ -202,4 +169,5 @@ definitions:
       http:
         type: object
         description: Final output of this process.
-        $ref: '#/definitions/HttpOutput'
+        items:
+          $ref: '#/definitions/HttpOutput'
