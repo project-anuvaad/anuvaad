@@ -13,8 +13,7 @@ server  = Flask(__name__)
 
 def kafka_function():
     log_info('starting kafka from nmt-server on thread-1',MODULE_CONTEXT)
-    KafkaTranslate.doc_translator([config.kafka_topic[0]['consumer'],config.kafka_topic[1]['consumer'],config.kafka_topic[2]['consumer'],
-                                       config.kafka_topic[3]['consumer'],config.kafka_topic[4]['consumer']])     
+    KafkaTranslate.doc_translator([config.kafka_topic[0]['consumer'],config.kafka_topic[1]['consumer'],config.kafka_topic[2]['consumer']])     
 
 if config.bootstrap_server_boolean:
     t1 = threading.Thread(target=kafka_function)

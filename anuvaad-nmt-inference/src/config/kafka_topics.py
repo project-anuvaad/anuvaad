@@ -21,24 +21,14 @@ kafka_topic = [
     "description":"Document translation,also used in Suvas"
   },
   {
-    "consumer":os.environ.get('KAFKA_ANUVAAD_PDF_DEV_INPUT_TOPIC', nmt_input_topic_default),
-    "producer":os.environ.get('KAFKA_ANUVAAD_PDF_DEV_OUTPUT_TOPIC', nmt_output_topic_default),
-    "description":"Pdf dev environment translation"
+    "consumer":os.environ.get('KAFKA_ANUVAAD_PDF_INPUT_TOPIC', nmt_input_topic_default),
+    "producer":os.environ.get('KAFKA_ANUVAAD_PDF_OUTPUT_TOPIC', nmt_output_topic_default),
+    "description":"Pdf without WFM translation"
   },
   {
-    "consumer":os.environ.get('KAFKA_ANUVAAD_PDF_PROD_INPUT_TOPIC', nmt_input_topic_default),
-    "producer":os.environ.get('KAFKA_ANUVAAD_PDF_PROD_OUTPUT_TOPIC', nmt_output_topic_default),
-    "description":"Pdf production translation"
-  },
-  {
-    "consumer":os.environ.get('KAFKA_ANUVAAD_WFM_DEV_INPUT_TOPIC', nmt_input_topic_default),
-    "producer":os.environ.get('KAFKA_ANUVAAD_WFM_DEV_OUTPUT_TOPIC', nmt_output_topic_default),
-    "description":"kafka topics for WFM Dev environment"
-  },
-  {
-    "consumer":os.environ.get('KAFKA_ANUVAAD_WFM_PROD_INPUT_TOPIC', nmt_input_topic_default),
-    "producer":os.environ.get('KAFKA_ANUVAAD_WFM_PROD_OUTPUT_TOPIC', nmt_output_topic_default),
-    "description":"kafka topics for WFM Production environment"
+    "consumer":os.environ.get('KAFKA_ANUVAAD_WFM_INPUT_TOPIC', nmt_input_topic_default),
+    "producer":os.environ.get('KAFKA_ANUVAAD_WFM_OUTPUT_TOPIC', nmt_output_topic_default),
+    "description":"kafka topics with WFM"
   }
 ]
 
