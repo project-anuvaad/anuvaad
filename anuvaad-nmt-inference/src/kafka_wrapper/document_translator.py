@@ -34,9 +34,7 @@ class KafkaTranslate:
                         # log_info(log_with_record_id(record_id,LOG_TAGS["output"],out),MODULE_CONTEXT)
                     else:
                         log_info("Incorrect url_end_point for KAFKA",MODULE_CONTEXT)
-                        # out['status'] = statusCode["KAFKA_INVALID_REQUEST"]
-                        out['response_body'] = []
-                        out = CustomResponse(Status.KAFKA_INVALID_REQUEST.value, out['response_body'])
+                        out = CustomResponse(Status.KAFKA_INVALID_REQUEST.value, [])
                     out = out.getresjson()
                     
                     if record_id: out['record_id'] = record_id  
