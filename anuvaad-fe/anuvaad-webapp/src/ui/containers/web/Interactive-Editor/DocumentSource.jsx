@@ -7,8 +7,8 @@ import MenuItems from "./PopUp";
 import Dialog from "../../../components/web/common/SimpleDialog";
 import Image from "./Image";
 import { withRouter } from "react-router-dom";
-import BLOCK_OPS from "../../../../utils/block.operations";
-
+// import BLOCK_OPS from "../../../../utils/block.operations";
+const BLOCK_OPS = require("../../../../utils/block.operations");
 class DocumentSource extends React.Component {
   constructor(props) {
     super(props);
