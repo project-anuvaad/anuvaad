@@ -75,14 +75,8 @@ definitions:
       ocr_config:
         type: object
         description: configuration for tuning speed and accuracy of ocr mdoule
-        properties:
-          level:
-            type: string
-            enum: ['PAGE','LINE','BLOCK' ]
-          mode:
-            type: string
-            enum: ['ACCURRATE','FAST']      
-        
+        $ref: '#/definitions/OcrConfig'
+
   FilesRespone:
     type: object
     properties :
@@ -100,13 +94,7 @@ definitions:
       ocr_config:
         type: object
         description: configuration for tuning speed and accuracy of ocr mdoule
-        properties:
-          level:
-            type: string
-            enum: ['PAGE','LINE','BLOCK' ]
-          mode:
-            type: string
-            enum: ['ACCURRATE','FAST']  
+        $ref: '#/definitions/OcrConfig'
         
       pages :
         type : array
@@ -180,6 +168,20 @@ definitions:
       confidence:
         type: number
         description: detection confidence
+  
+
+  OcrConfig:
+    type: object
+    description: configuration for tuning speed and accuracy of ocr mdoule
+    properties:
+      level:
+        type: string
+        enum: ['PAGE','LINE','BLOCK' ]
+      mode:
+        type: string
+        enum: ['ACCURRATE','FAST']  
+    
+  
   
   HttpOutput:
     type: object
