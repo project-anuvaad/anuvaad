@@ -568,8 +568,7 @@ function do_sentence_splitting_v1(pages, block_identifer, sentence, start_index,
     return response_block;
 }
 
-
-module.exports = {
+export default {
     get_merged_blocks,
     do_sentences_merging,
     do_sentences_merging_v1,
@@ -577,4 +576,4 @@ module.exports = {
     do_sentence_splitting_v1,
     get_sorted_blocks,
     get_sentence_id_blocks
-}
+};

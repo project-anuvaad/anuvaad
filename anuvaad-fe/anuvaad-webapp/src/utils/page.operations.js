@@ -213,7 +213,7 @@ function get_updated_page_blocks(data, blockData, updatedText, id) {
 }
 
 
-module.exports = {
+export default {
     get_pages_children_information,
     update_tokenized_sentences,
     update_blocks,
