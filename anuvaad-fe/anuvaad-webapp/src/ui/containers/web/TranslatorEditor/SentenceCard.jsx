@@ -384,12 +384,13 @@ class SentenceCard extends React.Component {
                             return option.tgt
                         }}
                         renderOption={(option, index) => {
-                            return (<Typography noWrap>{option.tgt}</Typography>)
+                            return (<Typography>{option.tgt}</Typography>)
                         }}
                         options={this.state.suggestions}
 
                         inputValue={this.state.value}
                         fullWidth
+                        freeSolo={true}
                         open={this.state.showSuggestions}
                         loading={true}
                         loadingText={'Loading ...'}
