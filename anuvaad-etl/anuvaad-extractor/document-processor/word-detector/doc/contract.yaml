@@ -155,10 +155,10 @@ definitions:
     properties:
       top:
         type: integer
-        description: x co-ordinate of the bounding box
+        description: y co-ordinate of the bounding box
       left:
         type: integer
-        description: y co-ordinate of the bounding box
+        description: x co-ordinate of the bounding box
       width:
         type: integer
         description: width of the bounding box
