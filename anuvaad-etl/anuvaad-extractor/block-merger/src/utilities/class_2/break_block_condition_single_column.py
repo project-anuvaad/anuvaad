@@ -254,17 +254,17 @@ class BlockBreak:
             #return 0
             #else:
             return 1
-        else:
+        #else:
             # First pages uses centre alignment for headings and titles
             # if page_number == 1:
-
+            '''
             if (line_width / self.page_width) < self.config['width_threshold']:
                 # print(line_width / self.page_width)
                 if page_number == 1:
                     return 1
                 else:
                     if (line_width / self.page_width) < (self.config['width_threshold'] / 2):
-                        return 1
+                        return 1  '''
 
             # Supreme court uses justified text alignment
             # if start_delta < 2 * self.median_height:
