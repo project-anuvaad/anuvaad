@@ -15,7 +15,7 @@ paths:
   
   /v0/word-detector/craft:
     post:
-      summary: API to extract words from the given image file
+      summary: API to extract words from the given file
       parameters:
         - name: filename
           in: body
