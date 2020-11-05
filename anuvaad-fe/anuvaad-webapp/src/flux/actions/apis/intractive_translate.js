@@ -9,7 +9,7 @@ export default class NMTSP extends API {
         super("POST", timeout, false);
         this.src = source;
         this.target = target;
-        this.model = model.model_id;
+        this.model = model;
         this.dontshowloader = dontshowloader;
         this.answers = null;
         this.sId = sId;

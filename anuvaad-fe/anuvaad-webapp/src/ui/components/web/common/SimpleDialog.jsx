@@ -12,7 +12,6 @@ export default class SimpleDialog extends React.Component {
 
     render() {
         var { value, message, handleSubmit, handleClose, open, title, status } = this.props
-
         return (
             <div>
 
@@ -33,26 +32,26 @@ export default class SimpleDialog extends React.Component {
                     </DialogTitle>
                     <DialogContent style={{minWidth: "500px"}}>
                         {this.props.type && this.props.type !== "warning"?
-                            <DialogContentText>
-                                <div><span style={{ fontWeight: "bold" }}>Job ID: </span><span>{message.jobId}</span></div>
+                            <div>
+                                <div><span style={{ fontWeight: "bold" }}>Job ID: </span><span>{message.jobID}</span></div>
                                 <div><span style={{ fontWeight: "bold" }}>Status: </span><span>{message.status}</span></div>
-                                {message.subTasks && Array.isArray(message.subTasks) && message.subTasks.length > 0 &&
+                                 {message.timelines && Array.isArray(message.timelines) && message.timelines.length > 0 &&
                                     <div>
                                         <div>&nbsp;</div>
-                                        <div style={{ fontWeight: "bold", fontSize: "20px" }}>Completed Tasks:</div>
+                                        <div style={{ fontWeight: "bold", fontSize: "18px" }}>Completed Tasks:</div>
                                         {
-                                            message.subTasks.map((task, i) => {
+                                            message.timelines.map((task, i) => {
                                                 return (
-                                                    <div>
+                                                    <div key={i}>
                                                         <div>&nbsp;</div>
-                                                        <div><span style={{ fontWeight: "bold" }}>State: </span><span>{task.state}</span></div>
+                                                        <div><span style={{ fontWeight: "bold" }}>State: </span><span>{task.module}</span></div>
                                                         <div><span style={{ fontWeight: "bold" }}>Status: </span><span>{task.status}</span></div>
                                                     </div>
                                                 )
                                             })
                                         }
                                     </div>}
-                            </DialogContentText>
+                            </div>
                             : <DialogContentText id="alert-dialog-slide-description">
                                 {message}
                             </DialogContentText>}

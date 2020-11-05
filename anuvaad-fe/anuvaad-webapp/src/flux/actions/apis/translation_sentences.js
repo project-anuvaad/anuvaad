@@ -4,6 +4,7 @@
 import API from "./api";
 import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
+
 export default class FetchSentences extends API {
     constructor(basename, timeout = 200000) {
         super("GET", timeout, false);

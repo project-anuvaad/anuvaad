@@ -27,11 +27,13 @@ const styles1 = theme => ({
         backgroundColor: '#FF0000',
     },
     info: {
-        backgroundColor: '#FFFF',
+        backgroundColor: '#2196f3',
     },
+    
     icon: {
         fontSize: 20,
     },
+
     iconVariant: {
         opacity: 0.9,
         marginRight: theme.spacing(1),
@@ -80,10 +82,18 @@ const styles2 = theme => ({
     },
 });
 
+
 class CustomizedSnackbars extends React.Component {
     state = {
         open: true,
     };
+
+    componentDidUpdate(prevProps) {
+        if(this.props.open!== prevProps.open && this.props.open){
+            this.setState({open:true})
+        }
+    }
+    
 
     handleClick = () => {
         this.setState({ open: true });
@@ -95,10 +105,12 @@ class CustomizedSnackbars extends React.Component {
         }
 
         this.setState({ open: false });
+
     };
 
     render() {
-        const { variant, message } = this.props;
+        const { variant, message, autoHideDuration, open } = this.props;
+        
         return (
             <div>
                 <Snackbar
@@ -106,9 +118,11 @@ class CustomizedSnackbars extends React.Component {
                         vertical: 'bottom',
                         horizontal: 'left',
                     }}
+                    variant = {variant}
                     open={this.state.open }
-                    autoHideDuration={6000}
+                    autoHideDuration={autoHideDuration ? autoHideDuration : null}
                     onClose={this.handleClose}
+                    
                 >
                     <MySnackbarContentWrapper
                         onClose={this.handleClose}

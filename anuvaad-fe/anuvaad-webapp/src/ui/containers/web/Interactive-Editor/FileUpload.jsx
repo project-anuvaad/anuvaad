@@ -75,15 +75,15 @@ class PdfUpload extends Component {
     let model = "";
     let target_lang_name = ''
     let source_lang_name = ''
-    if (this.state.modelLanguage) {
-      this.state.modelLanguage.map(item =>
+    if (this.props.fetch_models.models) {
+      this.props.fetch_models.models.map(item =>
         item.target_language_code === this.state.target &&
           item.source_language_code === this.state.source &&
           item.is_primary
           ? (model = item)
           : ""
       );
-      this.state.language.map((lang) => {
+      this.props.fetch_languages.languages.map((lang) => {
         if (lang.language_code === this.state.target) {
           target_lang_name = lang.language_name
         } if (lang.language_code === this.state.source) {
@@ -157,35 +157,29 @@ class PdfUpload extends Component {
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('document-upload')
 
-    const { APITransport } = this.props;
-    const apiObj = new FetchLanguage();
-    APITransport(apiObj);
-    this.setState({ showLoader: true });
-    const apiModel = new FetchModel();
-    APITransport(apiModel);
-    this.setState({ showLoader: true });
+    if (this.props.fetch_languages.languages.length < 1) {
+      const { APITransport }  = this.props;
+      const apiObj            = new FetchLanguage();
+      APITransport(apiObj);
+      this.setState({ showLoader: true });
+    }
+
+    if (this.props.fetch_models.models.length < 1) {
+      const { APITransport }  = this.props;
+      const apiModel          = new FetchModel();
+      APITransport(apiModel);
+      this.setState({ showLoader: true });
+    }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.supportLanguage !== this.props.supportLanguage) {
-      this.setState({
-        language: this.props.supportLanguage
-      });
-    }
-
-    if (prevProps.langModel !== this.props.langModel) {
-      this.setState({
-        modelLanguage: this.props.langModel
-      });
-    }
     if (prevProps.documentUplaod !== this.props.documentUplaod) {
-
-      const { APITransport } = this.props;
-      const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName,this.state.source,
-        this.state.target,this.state.path, this.state.model);
+      const { APITransport }  = this.props;
+      const apiObj            = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName,this.state.source,
+      this.state.target,this.state.path, this.state.model);
       APITransport(apiObj);
-      // history.push(`${process.env.PUBLIC_URL}/interactive-document/${this.props.configUplaod.configUplaod}`);
     }
+
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
       TELEMETRY.startWorkflow(this.state.source, this.state.target, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
       history.push(`${process.env.PUBLIC_URL}/view-document`);
@@ -278,7 +272,7 @@ class PdfUpload extends Component {
                     id="outlined-age-simple"
                     selectValue="language_code"
                     fullWidth
-                    MenuItemValues={this.state.modelLanguage.length > 0 && this.handleSource(this.state.modelLanguage, this.state.language)}
+                    MenuItemValues={this.props.fetch_languages.languages.length > 0 && this.handleSource(this.props.fetch_models.models, this.props.fetch_languages.languages)}
                     // MenuItemValues={["English"]}
                     handleChange={this.handleSelectChange}
                     value={this.state.source}
@@ -304,7 +298,7 @@ class PdfUpload extends Component {
                   <Select
                     id="outlined-age-simple"
                     selectValue="language_code"
-                    MenuItemValues={this.state.source && this.state.modelLanguage.length > 0 ? this.handleTarget(this.state.modelLanguage, this.state.language, this.state.source) : []}
+                    MenuItemValues={this.state.source && this.props.fetch_languages.languages.length > 0 ? this.handleTarget(this.props.fetch_models.models, this.props.fetch_languages.languages, this.state.source) : []}
                     // MenuItemValues={["Hindi"]}
                     handleChange={this.handleSelectChange}
                     value={this.state.target}
@@ -371,8 +365,8 @@ const mapStateToProps = state => ({
   configUplaod: state.configUplaod,
   workflowStatus: state.workflowStatus,
   documentUplaod: state.documentUplaod,
-  supportLanguage: state.supportLanguage,
-  langModel: state.langModel
+  fetch_languages: state.fetch_languages,
+  fetch_models: state.fetch_models
 });
 
 const mapDispatchToProps = dispatch =>
