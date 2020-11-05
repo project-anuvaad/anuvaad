@@ -1,0 +1,182 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Anuvaad wrod detection by CRAFT
+  description: A python based microservice to trigger and orchestrate word level information present in the given file
+  contact:
+    name: Naresh & Dhiraj, dhiraj.daga@tarento.com
+    email: naresh.kumar@tarento.com
+
+schemes:
+  - https
+basePath: '/api'
+
+paths: 
+  
+  /v0/word-detector/craft:
+    post:
+      summary: API to extract words from the given image file
+      parameters:
+        - name: filename
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WordDetectorRequest'
+      tags:
+      - Word Detector
+      responses:
+        200:
+          description: On successful completion of the job.
+          schema:
+            $ref: '#/definitions/WordDetectorResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: '#/definitions/Error'
+   
+definitions:
+  WordDetectorRequest:
+    type : object
+    properties:
+      files :
+        type : array
+        description : a list of objets having file_name, file_type and language
+        items :
+          $ref : '#/definitions/FilesRequest'
+
+  WordDetectorResponse:
+    type : object
+    properties:
+      files :
+        type : array
+        description : a list of file level results
+        items :
+         $ref: '#/definitions/FilesRespone'
+  
+  FilesRequest:
+    type: object
+    properties :
+      file_name : 
+        type: string
+        description: name of input file
+        
+      file_type : 
+        type: string
+        description: type of input file
+        
+      file_id:
+        type: string
+        description: unique identifier for a file
+        
+      language :
+        type : string
+        description: 'ISO 639-1  language code' 
+      
+  FilesRespone:
+    type: object
+    properties :
+      file_name : 
+        type: string
+        description: name of input file
+      file_id:
+        type: string
+        description: unique identifier for a file
+        
+      language :
+        type : string
+        description: 'ISO 639-1  language code' 
+        
+      pages :
+        type : array
+        description: page level word and line coordinates
+        items :
+          $ref: '#/definitions/PageResponse'
+    
+  PageResponse:
+    type: object
+    properties:
+      page_id:
+        type: string
+        description: unique page identifier
+      page_width:
+        type: integer
+        description:  page width  
+      page_height:
+        type: integer
+        description:  page height 
+      page_path:
+        type: string
+        description:  page image name
+      words :
+        type : array
+        description: coordinates of extracted words
+        items:
+          $ref: '#/definitions/Words'
+      lines :
+        type : array
+        description: coordinates and attributes extracted lines
+        items:
+          $ref: '#/definitions/Lines'
+          
+  Words:
+    type: object
+    properties:
+      coordinates:
+        type: object
+        description: word coordinates extracted by craft
+        $ref: '#/definitions/Coordinates'
+          
+  Lines:
+    type: object
+    properties:
+      coordinates:
+        type: object
+        description: line coordinates extracted by craft
+        $ref: '#/definitions/Coordinates'
+      line_id:
+        type: string
+        description: unique identifier for line
+      attribute:
+        type: string
+        description: HEADER, FOOTER or None
+          
+  Coordinates:
+    type: object
+    properties:
+      top:
+        type: integer
+        description: x co-ordinate of the bounding box
+      left:
+        type: integer
+        description: y co-ordinate of the bounding box
+      width:
+        type: integer
+        description: width of the bounding box
+      height:
+        type: integer
+        description: height of bounding box
+      confidence:
+        type: number
+        description: detection confidence
+  
+  HttpOutput:
+    type: object
+    properties:
+      status:
+        type: number
+        description: Status code. 
+  
+  Error:
+    type: object
+    properties:        
+      ok:
+        type: boolean
+        description: request successful indicator.
+      why:
+        type: string
+        description: Response message.
+      http:
+        type: object
+        description: Final output of this process.
+        $ref: '#/definitions/HttpOutput'
+        
