@@ -32,10 +32,8 @@ class TranslateService:
                 # log_info(log_with_request_info(i.get("s_id"),LOG_TAGS["input"],i))
                 sentence_id.append(i.get("s_id") or "NA")
                 if  any(v not in i for v in ['src','id']):
-                    # out['status'] = statusCode["ID_OR_SRC_MISSING"]
-                    out['response_body'] = []
                     log_info("either id or src missing in some input",MODULE_CONTEXT)
-                    out = CustomResponse(Status.ID_OR_SRC_MISSING.value, out['response_body'])
+                    out = CustomResponse(Status.ID_OR_SRC_MISSING.value, [])
                     return out
 
                 log_info("input sentence:{}".format(i['src']),MODULE_CONTEXT) 
@@ -154,19 +152,17 @@ class TranslateService:
                 tagged_tgt.append(tag_tgt)
                 tagged_src.append(tag_src)
 
-            # out['status'] = statusCode["SUCCESS"]
             out['response_body'] = [{"tgt": tgt[i],"tagged_tgt":tagged_tgt[i],
                                     "tagged_src":tagged_src[i],"s_id":sentence_id[i],"src":i_src[i]}
                     for i in range(len(tgt))]
             out = CustomResponse(Status.SUCCESS.value, out['response_body'])
         except Exception as e:
-            # out['status'] = statusCode["SYSTEM_ERR"]
-            # out['status']['why'] = str(e)
-            out['response_body'] = []
+            status = Status.SYSTEM_ERR.value
+            status['why'] = str(e)
             log_exception("Unexpected error:%s and %s"% (e,sys.exc_info()[0]),MODULE_CONTEXT,e) 
-            out = CustomResponse(Status.SYSTEM_ERR.value, out['response_body'])  
+            out = CustomResponse(status, [])  
 
-        return (out)
+        return out
 
 class OpenNMTTranslateService:
     @staticmethod
@@ -190,11 +186,9 @@ class OpenNMTTranslateService:
                     n_id = [i['n_id']]  
                     
                 if  any(v not in i for v in ['src','id']):
-                    # out['status'] = statusCode["ID_OR_SRC_MISSING"]
-                    out['response_body'] = []
                     log_info("either id or src missing in some input",MODULE_CONTEXT)
-                    out = CustomResponse(Status.ID_OR_SRC_MISSING.value, out['response_body'])
-                    return (out) 
+                    out = CustomResponse(Status.ID_OR_SRC_MISSING.value, [])
+                    return out
                
                 if any(v in i for v in ['s0_src','s0_tgt','save']):
                     s0_src,s0_tgt,save = handle_custome_input(i,s0_src,s0_tgt,save)
@@ -404,7 +398,6 @@ class OpenNMTTranslateService:
                 input_subwords.append(input_sw), output_subwords.append(output_sw)
                 tagged_tgt.append(tag_tgt), tagged_src.append(tag_src)
 
-            # out['status'] = statusCode["SUCCESS"]
             out['response_body'] = [{"tgt": tgt[i],
                     "pred_score": pred_score[i], "s_id": sentence_id[i],"input_subwords": input_subwords[i],
                     "output_subwords":output_subwords[i],"n_id":node_id[i],"src":i_src[i],
@@ -412,19 +405,17 @@ class OpenNMTTranslateService:
                     for i in range(len(tgt))]
             out = CustomResponse(Status.SUCCESS.value, out['response_body'])
         except ServerModelError as e:
-            # out['status'] = statusCode["SEVER_MODEL_ERR"]
-            # out['status']['why'] = str(e)
-            out['response_body'] = []
+            status = Status.SEVER_MODEL_ERR.value
+            status['why'] = str(e)
             log_exception("ServerModelError error in TRANSLATE_UTIL-translate_func: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
-            out = CustomResponse(Status.SEVER_MODEL_ERR.value, out['response_body'])  
+            out = CustomResponse(status, [])  
         except Exception as e:
-            # out['status'] = statusCode["SYSTEM_ERR"]
-            # out['status']['why'] = str(e)
-            out['response_body'] = []
+            status = Status.SYSTEM_ERR.value
+            status['why'] = str(e)
             log_exception("Unexpected error:%s and %s"% (e,sys.exc_info()[0]),MODULE_CONTEXT,e) 
-            out = CustomResponse(Status.SYSTEM_ERR.value, out['response_body'])    
+            out = CustomResponse(status, [])    
 
-        return (out)
+        return out
      
 def encode_itranslate_decode(i,sp_encoder,sp_decoder,num_map,tp_tokenizer,num_hypotheses=3):
     try:
@@ -463,12 +454,10 @@ def encode_translate_decode(i,translation_server,sp_encoder,sp_decoder):
         log_info("SP encoded sent: %s"%i['src'],MODULE_CONTEXT)
         input_sw = i['src']
         i_final = format_converter(i['src'])
-        # translation, scores, n_best, times = translation_server.run([i])
         m_out = translator.translate_batch([i_final],beam_size = 5,num_hypotheses=1)
         log_info("output from model: %s"%m_out[0],MODULE_CONTEXT)
         output_sw = " ".join(m_out[0][0]['tokens'])
         scores = m_out[0][0]['score']
-        # translation = sp.decode_line(sp_decoder,translation[0])
         translation = multiple_hypothesis_decoding(m_out[0],sp_decoder)[0]
         log_info("SP decoded sent: %s"%translation,MODULE_CONTEXT)
         return translation,scores,input_sw,output_sw

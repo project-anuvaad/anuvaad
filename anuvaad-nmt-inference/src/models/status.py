@@ -19,3 +19,4 @@ class Status(enum.Enum):
     INCORRECT_ID = { "ok": "false",  "statusCode": 401 , "why": "wrong model id for some input" }
     INVALID_API_REQUEST = {"ok": "false",  "statusCode": 401 , "why": "invalid api request,either incorrect format or empty request"}
     KAFKA_INVALID_REQUEST = {"ok": "false",  "statusCode": 401 , "why": "incorrect url_end_point for KAFKA"}
+    INCOMPLETE_API_REQUEST = { "ok": "false",  "statusCode": 401 , "why": "Mandatory input parameters missing" }

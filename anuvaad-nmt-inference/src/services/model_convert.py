@@ -13,10 +13,9 @@ class ModelConvertService:
     def model_conversion(inputs):
         out = {}
         if any(v not in inputs for v in ['inp_model_path','out_dir']):
-            # out['status'] = Status["INVALID_API_REQUEST"]
-            out = CustomResponse(Status.INVALID_API_REQUEST.value, None)
+            out = CustomResponse(Status.INCOMPLETE_API_REQUEST.value, [])
             log_info("Missing either inp_model_path,out_dir in model conversion request",MODULE_CONTEXT)
-            return out.getres()
+            return out
         with open(ICONFG_FILE) as f:
             confs = json.load(f)
             model_root = confs['models_root']
@@ -30,17 +29,12 @@ class ModelConvertService:
                         vmap=None,                                          # Path to a vocabulary mapping file.
                         quantization=None,                                  # Weights quantization: "int8" or "int16".
                         force=False)
-            log_info("Interactive model converted and saved at: {}".format(output_dir),MODULE_CONTEXT)
-            # out['status'] = Status["SUCCESS"]    
-            print("sucessssssssssssssssssssssssssss")    
+            log_info("Interactive model converted and saved at: {}".format(output_dir),MODULE_CONTEXT)   
             out = CustomResponse(Status.SUCCESS.value, None)   
-            print("out")
         except Exception as e:
             log_exception("Error in model_conversion interactive translate: {} and {}".format(sys.exc_info()[0],e),MODULE_CONTEXT,e)
-            # out['status'] = Status["SYSTEM_ERR"]
-            # out['status']['why'] = str(e)
-            out = CustomResponse(Status.SYSTEM_ERR.value, None)  
+            status = Status.SYSTEM_ERR.value
+            status['why'] = str(e)
+            out = CustomResponse(status, None)  
 
-        print(out)
-        print(out.getresjson())
         return out
