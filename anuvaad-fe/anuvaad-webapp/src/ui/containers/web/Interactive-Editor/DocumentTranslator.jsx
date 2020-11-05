@@ -15,14 +15,14 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 import WordDictionary from "../../../../flux/actions/apis/word_dictionary";
-import BLOCK_OPS from "../../../../utils/block.operations";
+// import BLOCK_OPS from "../../../../utils/block.operations";
 import Dictionary from "./Dictionary";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import MenuItems from "./PopUp";
 import Dialog from "../../../components/web/common/SimpleDialog";
 import copy from 'copy-to-clipboard';
-
+const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 class PdfFileEditor extends React.Component {
