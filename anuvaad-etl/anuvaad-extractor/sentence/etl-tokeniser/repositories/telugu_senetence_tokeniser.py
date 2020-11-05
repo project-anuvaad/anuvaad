@@ -48,7 +48,7 @@ class AnuvaadTeluguTokenizer(object):
     def tokenize(self, text):
         print('--------------Process kn started-------------')
         text = self.serialize_with_abbrevations(text)
-        #text = self.serialize_colon_abbreviations(text)
+        # text = self.serialize_colon_abbreviations(text)
         text = self.serialize_dates(text)
         text = self.serialize_time(text)
         text = self.serialize_table_points(text)
@@ -62,7 +62,7 @@ class AnuvaadTeluguTokenizer(object):
         text = self.serialize_bullet_points(text)
         text = self.serialize_decimal(text)
         text = self.add_space_after_sentence_end(text)
-        test = self.serialize_end(text)
+        text = self.serialize_end(text)
         sentences = self._tokenizer.tokenize(text)
         output = []
         for se in sentences:
