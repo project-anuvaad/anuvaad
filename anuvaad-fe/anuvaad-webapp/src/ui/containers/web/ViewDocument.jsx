@@ -170,7 +170,9 @@ class ViewDocument extends React.Component {
    */
 
   processJobTimelinesClick(jobId, recordId) {
-    console.log(this.getJobIdDetail(jobId))
+    let taskDetails = this.getJobIdDetail(jobId)
+    this.setState({ showInfo: true, message: taskDetails })
+
   }
 
   handleDialogClose() {
