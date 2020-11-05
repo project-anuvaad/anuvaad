@@ -486,7 +486,6 @@ function do_sentence_splitting(sentences, block_id, sentence_id, character_count
 
     let final_tokenized_sentences   = []
     split_sentence_obj.src  = first_portion
-    split_sentence_obj.save = false
     final_tokenized_sentences.push(split_sentence_obj)
     final_tokenized_sentences.push({
         'src': second_portion,
