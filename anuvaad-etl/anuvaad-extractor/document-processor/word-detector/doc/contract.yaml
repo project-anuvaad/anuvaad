@@ -71,7 +71,18 @@ definitions:
       language :
         type : string
         description: 'ISO 639-1  language code' 
-      
+        
+      ocr_config:
+        type: object
+        description: configuration for tuning speed and accuracy of ocr mdoule
+        properties:
+          level:
+            type: string
+            enum: ['PAGE','LINE','BLOCK' ]
+          mode:
+            type: string
+            enum: ['ACCURRATE','FAST']      
+        
   FilesRespone:
     type: object
     properties :
@@ -85,6 +96,17 @@ definitions:
       language :
         type : string
         description: 'ISO 639-1  language code' 
+        
+      ocr_config:
+        type: object
+        description: configuration for tuning speed and accuracy of ocr mdoule
+        properties:
+          level:
+            type: string
+            enum: ['PAGE','LINE','BLOCK' ]
+          mode:
+            type: string
+            enum: ['ACCURRATE','FAST']  
         
       pages :
         type : array
@@ -179,4 +201,3 @@ definitions:
         type: object
         description: Final output of this process.
         $ref: '#/definitions/HttpOutput'
-        
