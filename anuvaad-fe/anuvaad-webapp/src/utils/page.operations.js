@@ -30,7 +30,7 @@ function get_page_sorted_sentences(sentences) {
  * @param {*} data 
  * @returns pages
  */
-function get_pages_children_information(data) {
+export const get_pages_children_information = (data) => {
     let pages = []
     data.forEach(element => {
         let page = {
@@ -115,7 +115,7 @@ function get_pages_children_information(data) {
  * @param {*} sentences 
  * @returns updated page data
  */
-function update_tokenized_sentences(data, sentences) {
+export const update_tokenized_sentences = (data, sentences) => {
     let copied_data = JSON.parse(JSON.stringify(data))
 
     copied_data.forEach(element => {
@@ -140,7 +140,7 @@ function update_tokenized_sentences(data, sentences) {
  * @param {*} sentences 
  * @returns updated page data
  */
-function update_blocks(data, blocks) {
+export const update_blocks = (data, blocks) => {
     let copied_data = JSON.parse(JSON.stringify(data))
     copied_data.forEach(element => {
         if (element['text_blocks']) {
@@ -156,7 +156,7 @@ function update_blocks(data, blocks) {
     return copied_data;
 }
 
-function get_updated_page_blocks(data, blockData, updatedText, id) {
+export const get_updated_page_blocks = (data, blockData, updatedText, id)=> {
     let blockId = blockData.parent_block_id
     
     let updatedblock = {}
@@ -212,10 +212,3 @@ function get_updated_page_blocks(data, blockData, updatedText, id) {
 
 }
 
-
-export default {
-    get_pages_children_information,
-    update_tokenized_sentences,
-    update_blocks,
-    get_updated_page_blocks
-}

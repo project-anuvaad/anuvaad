@@ -73,7 +73,7 @@ function get_all_text_blocks(sentences) {
     return blocks
 }
 
-function get_sentence_id_blocks(sentences, blocks, s_id) {
+export const get_sentence_id_blocks = (sentences, blocks, s_id) => {
     let selected_blocks = []
     sentences       = JSON.parse(JSON.stringify(sentences))
     blocks          = JSON.parse(JSON.stringify(blocks))
@@ -152,7 +152,7 @@ function get_concatenated_text(blocks) {
  * @param {*} sentences, list of all the sentences in which merge operation has to be performed
  * @param {*} selected_block_ids, selected block_ids
  */
-function get_merged_blocks(sentences, selected_block_ids) {
+export const get_merged_blocks = (sentences, selected_block_ids) => {
     let selected_blocks     = get_blocks(sentences, get_block_id(selected_block_ids))
     let largest_block       = get_largest_area_block(selected_blocks)
     let text                = get_concatenated_text(selected_blocks)
@@ -222,7 +222,7 @@ function get_unique_blocks(blocks) {
  * @param {*} blocks 
  * @returns sorted blocks
  */
-function get_sorted_blocks(blocks) {
+export const get_sorted_blocks=(blocks) => {
     let sorted_blocks      = blocks.sort((a, b) => {
         if (a.page_info.page_no > b.page_info.page_no) {
             return 1
@@ -340,7 +340,7 @@ function get_sentence_ids_in_ascending_order(blocks, sentence_ids) {
  *
  * @returns updated block
  */
-function do_sentences_merging(sentences, block_id, sentence_id_1, sentence_id_2) {
+export const do_sentences_merging = (sentences, block_id, sentence_id_1, sentence_id_2) => {
     let selected_block_ids          = []
     selected_block_ids.push(block_id)
 
@@ -400,7 +400,7 @@ function do_sentences_merging(sentences, block_id, sentence_id_1, sentence_id_2)
  * @param {*} sentences 
  * @param {*} sentence_ids 
  */
-function do_sentences_merging_v1(sentences, sentence_ids) {
+export const do_sentences_merging_v1 = (sentences, sentence_ids) => {
     let text_blocks     = get_all_text_blocks(sentences)
     let selected_blocks = []
 
@@ -458,7 +458,7 @@ function do_sentences_merging_v1(sentences, sentence_ids) {
  *
  * @returns updated block
  */
-function do_sentence_splitting(sentences, block_id, sentence_id, character_count) {
+export const do_sentence_splitting = (sentences, block_id, sentence_id, character_count) => {
     let selected_block_ids          = []
     selected_block_ids.push(block_id)
 
@@ -536,7 +536,7 @@ function split_sentence(sentence, start, end) {
  * @param {*} end_index , end index of selection
  * @returns updated blocks
  */
-function do_sentence_splitting_v1(pages, block_identifer, sentence, start_index, end_index) {
+export const do_sentence_splitting_v1 = (pages, block_identifer, sentence, start_index, end_index) => {
     let selected_block_ids          = []
     let response_block              = {}
     selected_block_ids.push(block_identifer)
@@ -567,13 +567,3 @@ function do_sentence_splitting_v1(pages, block_identifer, sentence, start_index,
     response_block['blocks'] = selected_blocks;
     return response_block;
 }
-
-export default {
-    get_merged_blocks,
-    do_sentences_merging,
-    do_sentences_merging_v1,
-    do_sentence_splitting,
-    do_sentence_splitting_v1,
-    get_sorted_blocks,
-    get_sentence_id_blocks
-};

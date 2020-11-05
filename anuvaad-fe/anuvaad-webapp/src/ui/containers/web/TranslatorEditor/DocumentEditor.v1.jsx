@@ -29,11 +29,16 @@ import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
 import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
 import SENTENCE_ACTION from './SentenceActions'
+// import PAGE_OPS from "../../../../utils/page.operations";
+// import BLOCK_OPS from "../../../../utils/block.operations";
+// import TELEMETRY from '../../../../utils/TelemetryManager';
 
 import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted } from '../../../../flux/actions/apis/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 
 const { v4 }        = require('uuid');
+
+
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
