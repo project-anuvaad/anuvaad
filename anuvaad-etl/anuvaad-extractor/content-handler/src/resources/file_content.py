@@ -115,7 +115,8 @@ class FileContentUpdateResource(Resource):
 
             log_info("FileContentUpdateResource for user ({}) updated".format(user_id), AppContext.getContext())
             response = {
-                'blocks': updated_blocks
+                'blocks': updated_blocks,
+                'workflowCode': workflowCode
             }
             res = CustomResponse(Status.SUCCESS.value, response, len(updated_blocks))
             return res.getres()            
