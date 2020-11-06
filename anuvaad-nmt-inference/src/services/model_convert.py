@@ -5,8 +5,7 @@ from utilities import MODULE_CONTEXT
 import os
 import json 
 import sys
-
-ICONFG_FILE = "src/config/iconf.json"
+import config
 
 class ModelConvertService:
     @staticmethod  
@@ -16,7 +15,7 @@ class ModelConvertService:
             out = CustomResponse(Status.INCOMPLETE_API_REQUEST.value, [])
             log_info("Missing either inp_model_path,out_dir in model conversion request",MODULE_CONTEXT)
             return out
-        with open(ICONFG_FILE) as f:
+        with open(config.ICONFG_FILE) as f:
             confs = json.load(f)
             model_root = confs['models_root']
         final_dir =  os.path.join(model_root, inputs['out_dir'])  

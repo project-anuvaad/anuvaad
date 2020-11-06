@@ -7,3 +7,6 @@ HOST = '0.0.0.0'
 PORT = 5001
 
 ENABLE_CORS = True
+
+## config file 
+ICONFG_FILE = "src/config/iconf.json"
