@@ -107,14 +107,17 @@ class FileContentUpdateResource(Resource):
         log_info("FileContentUpdateResource for user ({}), to update ({}) blocks".format(user_id, len(blocks)), AppContext.getContext())
 
         try:
-            result  = fileContentRepo.update(user_id, blocks, workflowCode)
+            result, updated_blocks  = fileContentRepo.update(user_id, blocks, workflowCode)
 
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
 
             log_info("FileContentUpdateResource for user ({}) updated".format(user_id), AppContext.getContext())
-            res = CustomResponse(Status.SUCCESS.value, result, None)
+            response = {
+                'blocks': updated_blocks
+            }
+            res = CustomResponse(Status.SUCCESS.value, response, len(updated_blocks))
             return res.getres()            
         except Exception as e:
             log_exception("FileContentGetResource ",  AppContext.getContext(), e)

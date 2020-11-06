@@ -64,6 +64,18 @@ class BlockModel(object):
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
 
+    def get_block_by_block_identifier(self, user_id, block_identifier):
+        try:
+            collections = get_db()[DB_SCHEMA_NAME]
+            results     = collections.aggregate([
+                { '$match' : { 'block_identifier': block_identifier, 'created_by': user_id } },
+                { '$group': { '_id': '$data_type', 'data': { '$push': "$data" } } }
+            ])
+            return results
+        except Exception as e:
+            log_exception('db connection exception ', AppContext.getContext(), e)
+            return None
+
     def get_document_total_page_count(self, user_id, record_id):
         try:
             collections = get_db()[DB_SCHEMA_NAME]

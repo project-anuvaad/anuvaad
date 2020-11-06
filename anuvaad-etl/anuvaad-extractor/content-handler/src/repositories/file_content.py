@@ -131,6 +131,7 @@ class FileContentRepositories:
 
     def update(self, user_id, blocks, workflowCode):
         updated_blocks  = []
+        saved_blocks    = []
         update_s0       = False
 
         '''
@@ -147,5 +148,9 @@ class FileContentRepositories:
         if len(updated_blocks) > 0:
             for updated_block in updated_blocks:
                 if self.blockModel.update_block(user_id, updated_block['data']['block_identifier'], updated_block) == False:
-                    return False
-        return True
+                    return False, saved_blocks
+                saved_block_results = self.blockModel.get_block_by_block_identifier(user_id, updated_block['data']['block_identifier'])
+                for saved_block in saved_block_results:
+                    saved_blocks.append(saved_block['data'])
+                
+        return True, saved_blocks
