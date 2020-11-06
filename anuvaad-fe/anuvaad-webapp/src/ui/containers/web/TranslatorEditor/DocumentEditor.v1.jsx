@@ -29,6 +29,8 @@ import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
 import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
 import SENTENCE_ACTION from './SentenceActions'
+import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverter";
+
 // import PAGE_OPS from "../../../../utils/page.operations";
 // import BLOCK_OPS from "../../../../utils/block.operations";
 // import TELEMETRY from '../../../../utils/TelemetryManager';
@@ -222,6 +224,37 @@ class DocumentEditor extends React.Component {
       });
     }
 
+    handleTargetDownload() {
+    
+      let recordId = this.props.match.params.jobid
+      let user_profile = JSON.parse(localStorage.getItem('userProfile'))
+  
+      let apiObj = new DocumentConverterAPI(recordId, user_profile.id)
+      const apiReq = fetch(apiObj.apiEndPoint(), {
+        method: 'post',
+        body: JSON.stringify(apiObj.getBody()),
+        headers: apiObj.getHeaders().headers
+      }).then(async response => {
+        const rsp_data = await response.json();
+        if (!response.ok) {
+          this.props.sentenceActionApiStopped()
+          return Promise.reject('');
+        } else {
+          let fileName = rsp_data && rsp_data.translated_document && rsp_data.translated_document ? rsp_data.translated_document : ""
+          console.log(fileName)
+          if (fileName) {
+            let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
+            window.open(url, "_self")
+          }
+          this.props.sentenceActionApiStopped()
+  
+        }
+      }).catch((error) => {
+        console.log('api failed because of server or network')
+        this.props.sentenceActionApiStopped()
+      });
+    }
+
     /**
      * workhorse functions
      */
@@ -358,7 +391,10 @@ class DocumentEditor extends React.Component {
 
                 <Grid item xs={12} sm={6} lg={1} xl={1}>
                     <Button
-                        onClick={() => this.handleTargetDownload()}
+                        onClick={() => { 
+                          this.props.sentenceActionApiStarted(null);
+                          this.handleTargetDownload();
+                          this.setMessages("download", "downloadCompleted")}}
                         style={{
                         color: "#233466",
                         textTransform: "capitalize",
