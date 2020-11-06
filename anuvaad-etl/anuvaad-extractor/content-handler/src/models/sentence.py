@@ -76,7 +76,7 @@ class SentenceModel(object):
             docs        = collections.aggregate([
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'} ]} },
                                 { '$project': { '_id': 0, 'count': { '$size':"$data.tokenized_sentences" } } },
-                                { '$group': { '_id': 0, 'total_count': { '$sum': 1 } } }
+                                { '$group': { '_id' : {'count': '$count'}, 'total_count': { '$sum': '$count' } } }
                         ])
             for doc in docs:
                 count = doc['total_count']

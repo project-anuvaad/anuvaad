@@ -380,24 +380,22 @@ class SentenceCard extends React.Component {
                 <div>
                     <Autocomplete
                         filterOptions={filterOptions}
-                        getOptionLabel={(option) => {
-                            return option.tgt
-                        }}
+                        getOptionLabel={option => option.tgt[0]}
                         renderOption={(option, index) => {
-                            return (<Typography>{option.tgt}</Typography>)
+                            return (<Typography>{option.tgt[0]}</Typography>)
                         }}
                         options={this.state.suggestions}
 
                         inputValue={this.state.value}
                         fullWidth
-                        freeSolo={true}
                         open={this.state.showSuggestions}
                         loading={true}
+                        freeSolo={true}
                         loadingText={'Loading ...'}
                         onChange={(event, newValue) => {
-                            console.log('onChange of autocomplete is fired: ', newValue)
+                            console.log('onChange of autocomplete is fired: [%s] [%s]', newValue.tgt[0], this.state.value)
                             this.setState({
-                                value: newValue.tgt, //this.state.value + ' ' + newValue.name,
+                                value: newValue.tgt[0], //this.state.value + ' ' + newValue.name,
                                 showSuggestions: false,
                                 userEnteredText: true
                             });
