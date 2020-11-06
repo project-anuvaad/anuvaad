@@ -2,16 +2,32 @@
     "models_root": "./src/available_nmt_models",
     "models": [
         {
-            "id": 56,
-            "path":"nmt/56"
+            "id": 5,
+            "path":"nmt/5"
         },
         {
-            "id": 17,
-            "path":"nmt/en-ml"
+            "id":6,
+            "path":"nmt/hi-en"
         },
         {
             "id": 7,
             "path":"nmt/en-ta"
+        },
+        {
+            "id":8,
+            "path":"nmt/ta-en"
+        },
+        {
+            "id":10,
+            "path":"nmt/en-gu"
+        },
+        {
+            "id":11,
+            "path":"nmt/en-bn"
+        },
+        {
+            "id":12,
+            "path":"nmt/12"
         },
         {
             "id": 15,
@@ -22,60 +38,112 @@
             "path":"nmt/en-te"
         },
         {
+            "id": 17,
+            "path":"nmt/en-ml"
+        },
+        {
             "id":18,
             "path":"nmt/en-pa"
         },
         {
-            "id":11,
-            "path":"nmt/en-bn"
+            "id":21,
+            "path":"nmt/21"
+        },
+        {
+            "id":30,
+            "path":"nmt/30"
+        },
+        {
+            "id":32,
+            "path":"nmt/32"
         },
         {
             "id":42,
             "path":"nmt/en-mr"
         },
         {
-            "id":10,
-            "path":"nmt/en-gu"
+            "id":43,
+            "path":"nmt/43"
         },
         {
-            "id":50,
-            "path":"nmt/te-en"
+            "id":44,
+            "path":"nmt/44"
         },
         {
-            "id":6,
-            "path":"nmt/hi-en"
+            "id":45,
+            "path":"nmt/45"
         },
         {
-            "id":62,
-            "path":"nmt/mr-en"
+            "id":46,
+            "path":"nmt/46"
         },
         {
-            "id":58,
-            "path":"nmt/bn-en"
-        },
-        {
-            "id":8,
-            "path":"nmt/ta-en"
-        },
-        {
-            "id":55,
-            "path":"nmt/pa-en"
+            "id":47,
+            "path":"nmt/47"
         },
         {
             "id":48,
             "path":"nmt/kn-en"
         },
         {
-            "id":60,
-            "path":"nmt/ml-en"
+            "id":49,
+            "path":"nmt/49"
+        },
+        {
+            "id":50,
+            "path":"nmt/te-en"
+        },
+        {
+            "id":51,
+            "path":"nmt/51"
         },
         {
             "id":52,
             "path":"nmt/gu-en"
         },
         {
-            "id":100,
-            "path":"nmt/en-hi-int8"
-        }
+            "id":53,
+            "path":"nmt/53"
+        },
+        {
+            "id": 54,
+            "path":"nmt/54"
+        },
+        {
+            "id":55,
+            "path":"nmt/pa-en"
+        },
+        {
+            "id": 56,
+            "path":"nmt/56"
+        },
+        {
+            "id": 57,
+            "path":"nmt/57"
+        },
+        {
+            "id":58,
+            "path":"nmt/bn-en"
+        },
+        {
+            "id":59,
+            "path":"nmt/59"
+        },
+        {
+            "id":60,
+            "path":"nmt/ml-en"
+        },
+        {
+            "id":61,
+            "path":"nmt/61"
+        },
+        {
+            "id":62,
+            "path":"nmt/mr-en"
+        },
+        {
+            "id":63,
+            "path":"nmt/63"
+        }   
     ]
 }
