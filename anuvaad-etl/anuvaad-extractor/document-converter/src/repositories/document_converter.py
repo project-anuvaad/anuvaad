@@ -97,6 +97,7 @@ class DocumentConversion(object):
                 df.sort_values('text_top', axis = 0, ascending = True, inplace=True) 
                 df = df.reset_index()
                 dfs.append(df)
+            dfs = dfs.where(pd.notnull(dfs), None)
             return dfs, page_layout
         except Exception as e:
             log_exception("dataframe formation error", MODULE_CONTEXT, e)
@@ -142,7 +143,7 @@ class DocumentConversion(object):
                             run.bold                   = True
                         font                           = run.font
                         font.name                      = 'Arial'
-                        if row['font_size'] is not None and row['font_size'] != 'NaN':
+                        if row['font_size'] != None or row['font_size'] != 'NaN':
                             font.size                      = Twips(doc_utils.pixel_to_twips(row['font_size'])) 
                         run.add_text(row['text'])
                 run.add_break(WD_BREAK.PAGE)
