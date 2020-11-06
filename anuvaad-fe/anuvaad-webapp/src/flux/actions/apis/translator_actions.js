@@ -37,11 +37,12 @@ export function startMergeSentence() {
     }
 }
 
-export function inProgressMergeSentence(sentence) {
+export function inProgressMergeSentence(sentence, isSelected) {
     return {
         type: C.MERGE_SENTENCE_INPROGRESS,
         payload: {
-            sentence: sentence
+            sentence: sentence,
+            selected: isSelected
         }
     }
 }

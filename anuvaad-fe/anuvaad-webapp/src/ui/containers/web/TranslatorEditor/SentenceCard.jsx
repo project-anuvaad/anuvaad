@@ -277,10 +277,11 @@ class SentenceCard extends React.Component {
     }
 
     processMergeSelectionToggle = () => {
-        this.props.inProgressMergeSentence(this.props.sentence)
+        
         this.setState({
             cardChecked: !this.state.cardChecked
         })
+        this.props.inProgressMergeSentence(this.props.sentence, this.state.cardChecked)
     }
 
     handleUserInputText(event) {

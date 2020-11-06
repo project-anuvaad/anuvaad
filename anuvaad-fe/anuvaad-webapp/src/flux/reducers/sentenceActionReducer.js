@@ -15,13 +15,41 @@ export default function sentenceMergeReducer(state={started: false, progress: fa
           }
         }
         case C.MERGE_SENTENCE_INPROGRESS: {
-            let data      = action.payload;
+            let data        = action.payload;
+            let sentence    = data.sentence;
+            let selected    = data.selected;
+
             let sentences = state.sentences;
-            sentences.push(data.sentence)
-            return {
-                ...state,
-                sentences: sentences,
-                progress: true
+            if (selected) {
+                /**
+                 * user selected a sentence
+                 */
+                if(sentences.filter(sent => sent.s_id === sentence.s_id).length === 0) {
+                    /**
+                     * s_id is not added, so add it.
+                     */
+                    sentences.push(data.sentence)
+                    return {
+                        ...state,
+                        sentences: sentences,
+                        progress: true
+                    }
+                } else {
+                    return {
+                        ...state,
+                        progress: true
+                    }
+                }
+            } else {
+                /**
+                 * user de-selected a sentence
+                 */
+                let updated_sentences = sentences.filter(sent => sent.s_id !== sentence.s_id)
+                return {
+                    ...state,
+                    sentences: updated_sentences,
+                    progress: true
+                }
             }
           }
 
