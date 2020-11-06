@@ -142,7 +142,8 @@ class DocumentConversion(object):
                             run.bold                   = True
                         font                           = run.font
                         font.name                      = 'Arial'
-                        font.size                      = Twips(doc_utils.pixel_to_twips(row['font_size'])) 
+                        if row['font_size'] not None and row['font_size'] != 'NaN':
+                            font.size                      = Twips(doc_utils.pixel_to_twips(row['font_size'])) 
                         run.add_text(row['text'])
                 run.add_break(WD_BREAK.PAGE)
             out_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '_translated.docx'
