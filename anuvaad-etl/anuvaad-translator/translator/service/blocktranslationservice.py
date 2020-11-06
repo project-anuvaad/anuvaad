@@ -22,7 +22,7 @@ class BlockTranslationService:
         block_translate_input["state"] = "TRANSLATED"
         log_info("Block Translation started....", block_translate_input)
         output = block_translate_input
-        is_successful, fail_msg, record_id, ch_input = False, None, block_translate_input["input"]["recordID"], None
+        is_successful, fail_msg, record_id, op_blocks = False, None, block_translate_input["input"]["recordID"], None
         try:
             nmt_in_txt = self.get_sentences_for_translation(block_translate_input)
             if not nmt_in_txt:
@@ -40,6 +40,7 @@ class BlockTranslationService:
                         log_info("Response received from CH!", block_translate_input)
                         if ch_response:
                             if ch_response["http"]["status"] == 200:
+                                op_blocks = ch_response["data"]["blocks"]
                                 is_successful = True
                             else:
                                 fail_msg = "Error while updating blocks to CH: " + ch_response["why"]
@@ -62,7 +63,7 @@ class BlockTranslationService:
             output["input"] = None
             output["status"] = "SUCCESS"
             output["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
-            output["output"] = {"textBlocks": ch_input["blocks"]}
+            output["output"] = {"textBlocks": op_blocks}
         log_info("Block Translation Completed!", block_translate_input)
         return output
 

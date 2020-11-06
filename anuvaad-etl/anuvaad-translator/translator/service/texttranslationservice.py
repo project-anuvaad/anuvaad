@@ -68,8 +68,13 @@ class TextTranslationService:
         if ch_response:
             for translation in ch_response:
                 if translation["s_id"] in sent_map.keys():
-                    if sent_map[translation["s_id"]]["src"] in translation["src"]:
-                        translation["tgt"] = [translation["s0_tgt"], translation["tgt"]]
+                    tgt_list = []
+                    if sent_map[translation["s_id"]]["taggedPrefix"] in translation["tgt"]:
+                        tgt_list.append(translation["tgt"])
+                    if sent_map[translation["s_id"]]["taggedPrefix"] in translation["s0_tgt"]:
+                        tgt_list.append(translation["s0_tgt"])
+                    if tgt_list:
+                        translation["tgt"] = tgt_list
                         ch_res[translation["s_id"]] = translation
         for s_id in sent_map.keys():
             if s_id not in ch_res.keys():
