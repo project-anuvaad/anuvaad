@@ -138,7 +138,7 @@ class DocumentConversion(object):
                         else:
                             paragraph_format.space_after = Twips(0)
                         run                            = paragraph.add_run()
-                        if "Bold" in row['font_family']:
+                        if row['font_family'] != None and "Bold" in row['font_family']:
                             run.bold                   = True
                         font                           = run.font
                         font.name                      = 'Arial'
