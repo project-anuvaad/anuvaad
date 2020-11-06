@@ -214,7 +214,7 @@ class DocumentEditor extends React.Component {
           return Promise.reject('');
         } else {
           this.props.contentUpdateStarted()
-          this.props.update_blocks(pageNumber, rsp_data.input.textBlocks);
+          this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
         }
       }).catch((error) => {
         console.log('api failed because of server or network')
@@ -318,7 +318,7 @@ class DocumentEditor extends React.Component {
         return (
             <Grid container
                 spacing={2}
-                style={{ marginTop: "-10px", padding: "10px 5px 0px ", width: "100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}>
+                style={{ marginTop: "1px", padding: "10px 5px 0px ", width: "100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}>
             
                 <Grid item xs={12} sm={6} lg={2} xl={2} className="GridFileDetails">
                     <Button

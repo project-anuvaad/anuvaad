@@ -38,7 +38,7 @@ const styles = {
     },
     card_saved: {
         color: 'green',
-        background: "#ecf5f2"
+        background: "rgb(199, 228, 219)"
 
     },
     expand: {
@@ -49,7 +49,7 @@ const styles = {
         
     },
     card_open: {
-        background: "#F4FDFF"
+        background: "rgb(206, 231, 236)"
     }
 }
 
@@ -115,9 +115,9 @@ class SentenceCard extends React.Component {
         if(this.state.selectedSentence!== prevState.selectedSentence){
             this.setState({dictionaryWord: prevState.selectedSentence})
         }
-
-        if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
         
+        if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
+            
             if (this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id) {
                 this.setState({ cardInFocus: true })
             }
@@ -561,14 +561,55 @@ class SentenceCard extends React.Component {
         return (<div></div>)
     }
 
+    renderSentenceCard = () =>{
+        return (
+            <div key={12} style={{ padding: "1%" }}>
+                    <Card style={(this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id || (this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id)) ? styles.card_open : this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
+                        <CardContent style={{ display: "flex", flexDirection: "row" }}>
+                            <div style={{ width: "90%" }}>
+                                {this.renderSourceSentence()}
+                            </div>
+                            <div style={{ width: "10%", textAlign: "right" }}>
+                                <IconButton aria-label="settings"
+                                    style={(this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id) ? styles.expandOpen : styles.expand}
+                                    onClick={this.handleCardExpandClick}>
+                                    <ExpandMoreIcon />
+                                </IconButton>
+                            </div>
+                            {this.renderCardSelectedForMerge()}
+
+                        </CardContent>
+
+                        {this.state.parallel_words && <CardContent style={{ display: "flex", flexDirection: "row" }}>
+                            <div style={{ width: "90%" }}>
+                                {this.renderDictionarySentence()}
+                            </div>
+                           
+
+                        </CardContent>}
+
+                        <Collapse in={(this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id)} timeout="auto" unmountOnExit>
+                            <CardContent>
+                                {this.renderMTTargetSentence()}
+                                <br />
+                                {this.renderUserInputArea()}
+                                <br />
+                                {this.state.isModeMerge ? this.renderMergeModeButtons() : this.renderNormaModeButtons()}
+                                <br />
+                            </CardContent>
+                        </Collapse>
+                    </Card>
+                </div>
+        )
+    }
+
     handleCardExpandClick = () => {
-        if (this.state.cardInFocus) {
+        debugger
+        if (this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id || (this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id)) {
             this.props.clearHighlighBlock()
         } else {
             this.props.highlightBlock(this.props.sentence)
         }
-
-        this.setState({ cardInFocus: !this.state.cardInFocus })
 
         /**
         * For highlighting textarea on card expand
@@ -587,52 +628,10 @@ class SentenceCard extends React.Component {
     }
 
     render() {
-        // console.log(this.props.sentence_highlight)
-
         return (
             <div >
-            <ClickAwayListener mouseEvent="onMouseDown" onClickAway={this.handleClickAway}>
-                <div key={12} style={{ padding: "1%" }}>
-                    <Card style={this.state.cardInFocus ? styles.card_open : this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
-                        <CardContent style={{ display: "flex", flexDirection: "row" }}>
-                            <div style={{ width: "90%" }}>
-                                {this.renderSourceSentence()}
-                            </div>
-                            <div style={{ width: "10%", textAlign: "right" }}>
-                                <IconButton aria-label="settings"
-                                    style={this.state.cardInFocus ? styles.expandOpen : styles.expand}
-                                    onClick={this.handleCardExpandClick}>
-                                    <ExpandMoreIcon />
-                                </IconButton>
-                            </div>
-                            {this.renderCardSelectedForMerge()}
-
-                        </CardContent>
-
-                        {this.state.parallel_words && <CardContent style={{ display: "flex", flexDirection: "row" }}>
-                            <div style={{ width: "90%" }}>
-                                {this.renderDictionarySentence()}
-                            </div>
-                           
-
-                        </CardContent>}
-
-                        <Collapse in={this.state.cardInFocus} timeout="auto" unmountOnExit>
-                            <CardContent>
-                                {this.renderMTTargetSentence()}
-                                <br />
-                                {this.renderUserInputArea()}
-                                <br />
-                                {this.state.isModeMerge ? this.renderMergeModeButtons() : this.renderNormaModeButtons()}
-                                <br />
-                            </CardContent>
-                        </Collapse>
-                    </Card>
-                </div>
-                
-                    
-            </ClickAwayListener>
-            {this.state.isopenMenuItems && this.renderMenuItems()}
+                {this.renderSentenceCard()}
+                {this.state.isopenMenuItems && this.renderMenuItems()}
             </div>
 
         )
@@ -643,7 +642,7 @@ const mapStateToProps = state => ({
     document_contents: state.document_contents,
     sentence_action_operation: state.sentence_action_operation,
     sentence_highlight: state.sentence_highlight.sentence,
-    block_highlight: state.block_highlight,
+    block_highlight: state.block_highlight.block,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

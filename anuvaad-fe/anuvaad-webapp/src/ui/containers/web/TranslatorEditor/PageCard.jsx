@@ -116,6 +116,7 @@ class PageCard extends React.Component {
      */
     handleSelectedSentenceId = (text) => {
         // this.setState({text: text.text })
+        this.props.clearHighlighBlock()
         this.props.highlightSentence(text)
     }
     /**

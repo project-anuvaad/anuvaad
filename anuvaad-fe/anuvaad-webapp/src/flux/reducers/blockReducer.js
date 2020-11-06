@@ -6,7 +6,7 @@ export default function blockReducer(state={}, action) {
           let data = action.payload;
           return {
             ...state,
-            block_identifier: data.sentence.block_identifier
+            block : data.sentence
             
           }
         }
@@ -16,7 +16,7 @@ export default function blockReducer(state={}, action) {
           console.log(data)
           return {
             ...state,
-            block_identifier: "",
+            block: {},
            
           }
         }
