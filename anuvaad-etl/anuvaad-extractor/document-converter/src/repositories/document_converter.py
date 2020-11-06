@@ -96,8 +96,8 @@ class DocumentConversion(object):
                                                     'text', 'font_size', 'font_family', 'font_color', 'base64'])
                 df.sort_values('text_top', axis = 0, ascending = True, inplace=True) 
                 df = df.reset_index()
+                df = df.where(pd.notnull(df), None)
                 dfs.append(df)
-            dfs = dfs.where(pd.notnull(dfs), None)
             return dfs, page_layout
         except Exception as e:
             log_exception("dataframe formation error", MODULE_CONTEXT, e)
