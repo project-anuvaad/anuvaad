@@ -7,75 +7,75 @@
         },
         {
             "id": 17,
-            "path":"en-ml"
+            "path":"nmt/en-ml"
         },
         {
             "id": 7,
-            "path":"en-ta"
+            "path":"nmt/en-ta"
         },
         {
             "id": 15,
-            "path":"en-kn"
+            "path":"nmt/en-kn"
         },
         {
             "id":16,
-            "path":"en-te"
+            "path":"nmt/en-te"
         },
         {
             "id":18,
-            "path":"en-pa"
+            "path":"nmt/en-pa"
         },
         {
             "id":11,
-            "path":"en-bn"
+            "path":"nmt/en-bn"
         },
         {
             "id":42,
-            "path":"en-mr"
+            "path":"nmt/en-mr"
         },
         {
             "id":10,
-            "path":"en-gu"
+            "path":"nmt/en-gu"
         },
         {
             "id":50,
-            "path":"te-en"
+            "path":"nmt/te-en"
         },
         {
             "id":6,
-            "path":"hi-en"
+            "path":"nmt/hi-en"
         },
         {
             "id":62,
-            "path":"mr-en"
+            "path":"nmt/mr-en"
         },
         {
             "id":58,
-            "path":"bn-en"
+            "path":"nmt/bn-en"
         },
         {
             "id":8,
-            "path":"ta-en"
+            "path":"nmt/ta-en"
         },
         {
             "id":55,
-            "path":"pa-en"
+            "path":"nmt/pa-en"
         },
         {
             "id":48,
-            "path":"kn-en"
+            "path":"nmt/kn-en"
         },
         {
             "id":60,
-            "path":"ml-en"
+            "path":"nmt/ml-en"
         },
         {
             "id":52,
-            "path":"gu-en"
+            "path":"nmt/gu-en"
         },
         {
             "id":100,
-            "path":"en-hi-int8"
+            "path":"nmt/en-hi-int8"
         }
     ]
 }
