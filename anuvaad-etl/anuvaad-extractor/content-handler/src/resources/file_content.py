@@ -121,7 +121,7 @@ class FileContentUpdateResource(Resource):
             res = CustomResponse(Status.SUCCESS.value, response, len(updated_blocks))
             return res.getres()            
         except Exception as e:
-            log_exception("FileContentGetResource ",  AppContext.getContext(), e)
+            log_exception("FileContentUpdateResource ",  AppContext.getContext(), e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
         

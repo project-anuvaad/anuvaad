@@ -4,6 +4,7 @@ import datetime
 import uuid
 from utilities import AppContext
 from anuvaad_auditor.loghandler import log_info, log_exception
+import json
 
 class FileContentRepositories:
     def __init__(self):
@@ -44,6 +45,7 @@ class FileContentRepositories:
     def update_block_info(self, block, update_s0):
         new_block                   = {}
         new_block['data']           = block
+        log_info("update_block_info payload {}".format(json.dumps(block)), AppContext.getContext())
 
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
