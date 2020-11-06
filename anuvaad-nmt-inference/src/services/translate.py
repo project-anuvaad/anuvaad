@@ -15,8 +15,8 @@ import utilities.output_cleaner as oc
 from config import sentencepiece_model_loc as sp_model
 from config.regex_patterns import patterns
 from onmt.translate import ServerModelError
+import config
 
-ICONFG_FILE = "src/config/iconf.json"
 class TranslateService:  
     @staticmethod
     def interactive_translation(inputs):
@@ -475,7 +475,7 @@ def format_converter(input):
     return inp_2
 
 def get_model_path(model_id):
-    with open(ICONFG_FILE) as f:
+    with open(config.ICONFG_FILE) as f:
         confs = json.load(f)
         model_root = confs['models_root']
         models = confs['models']
