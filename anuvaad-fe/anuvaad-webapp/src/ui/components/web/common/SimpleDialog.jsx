@@ -6,6 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import { translate } from "../../../../assets/localisation";
+import Typography from '@material-ui/core/Typography';
 
 export default class SimpleDialog extends React.Component {
 
@@ -33,19 +34,19 @@ export default class SimpleDialog extends React.Component {
                     <DialogContent style={{minWidth: "500px"}}>
                         {this.props.type && this.props.type !== "warning"?
                             <div>
-                                <div><span style={{ fontWeight: "bold" }}>Job ID: </span><span>{message.jobID}</span></div>
-                                <div><span style={{ fontWeight: "bold" }}>Status: </span><span>{message.status}</span></div>
+                                <Typography style={{ fontWeight: "bold" }}>Job ID: {message.jobID}</Typography>
+                                <Typography style={{ fontWeight: "bold" }}>Status: {message.status}</Typography>
                                  {message.timelines && Array.isArray(message.timelines) && message.timelines.length > 0 &&
                                     <div>
                                         <div>&nbsp;</div>
-                                        <div style={{ fontWeight: "bold", fontSize: "18px" }}>Completed Tasks:</div>
+                                        <Typography style={{ fontWeight: "bold", fontSize: "18px" }}>Completed Tasks:</Typography>
                                         {
                                             message.timelines.map((task, i) => {
                                                 return (
                                                     <div key={i}>
                                                         <div>&nbsp;</div>
-                                                        <div><span style={{ fontWeight: "bold" }}>State: </span><span>{task.module}</span></div>
-                                                        <div><span style={{ fontWeight: "bold" }}>Status: </span><span>{task.status}</span></div>
+                                                        <Typography>State: {task.module}</Typography>
+                                                        <Typography>Status: {task.status}</Typography>
                                                     </div>
                                                 )
                                             })
