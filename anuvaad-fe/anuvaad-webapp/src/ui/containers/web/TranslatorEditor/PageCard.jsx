@@ -4,11 +4,10 @@ import TextField from '@material-ui/core/TextField';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { highlightSentence, clearHighlighBlock } from '../../../../flux/actions/apis/translator_actions';
+import SENTENCE_ACTION from './SentenceActions'
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
-
-// const { v4 } = require('uuid');
 
 const styles = {
     textField: {
@@ -127,7 +126,7 @@ class PageCard extends React.Component {
             TELEMETRY.sentenceChanged(blockData.text, this.state.text, blockData.block_id,"validation")
 
             let data = PAGE_OPS.get_updated_page_blocks(this.props.document_contents, blockData, this.state.text)
-             this.props.onAction("SENTENCE_SOURCE_EDITED", blockData.page_no, [data], "") 
+             this.props.onAction(SENTENCE_ACTION.SENTENCE_SOURCE_EDITED, blockData.page_no, [data], "") 
         }
        this.props.clearHighlighBlock()
     }
