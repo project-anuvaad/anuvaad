@@ -20,7 +20,7 @@ export default function sentenceMergeReducer(state={started: false, progress: fa
             let selected    = data.selected;
 
             let sentences = state.sentences;
-            if (selected) {
+            if (!selected) {
                 /**
                  * user selected a sentence
                  */
