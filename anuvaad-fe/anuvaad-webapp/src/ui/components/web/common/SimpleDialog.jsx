@@ -6,6 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import { translate } from "../../../../assets/localisation";
+import Typography from "@material-ui/core/Typography";
 
 export default class SimpleDialog extends React.Component {
 
@@ -33,19 +34,19 @@ export default class SimpleDialog extends React.Component {
                     <DialogContent style={{minWidth: "500px"}}>
                         {this.props.type && this.props.type !== "warning"?
                             <div>
-                                <div><span style={{ fontWeight: "bold" }}>Job ID: </span><span>{message.jobID}</span></div>
-                                <div><span style={{ fontWeight: "bold" }}>Status: </span><span>{message.status}</span></div>
+                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Job ID: </Typography><Typography>&nbsp; {message.jobID}</Typography></div>
+                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Status: </Typography><Typography>&nbsp; {message.status}</Typography></div>
                                  {message.timelines && Array.isArray(message.timelines) && message.timelines.length > 0 &&
                                     <div>
                                         <div>&nbsp;</div>
-                                        <div style={{ fontWeight: "bold", fontSize: "18px" }}>Completed Tasks:</div>
+                                        <Typography style={{ fontWeight: "bold", fontSize: "18px" }}>Completed Tasks:</Typography>
                                         {
                                             message.timelines.map((task, i) => {
                                                 return (
                                                     <div key={i}>
                                                         <div>&nbsp;</div>
-                                                        <div><span style={{ fontWeight: "bold" }}>State: </span><span>{task.module}</span></div>
-                                                        <div><span style={{ fontWeight: "bold" }}>Status: </span><span>{task.status}</span></div>
+                                                        <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>State: </Typography><Typography>&nbsp; {task.module}</Typography></div>
+                                                        <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Status: </Typography><Typography>&nbsp; {task.status}</Typography></div>
                                                     </div>
                                                 )
                                             })

@@ -318,7 +318,7 @@ class DocumentEditor extends React.Component {
         return (
             <Grid container
                 spacing={2}
-                style={{ marginTop: "1px", padding: "10px 5px 0px ", width: "100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}>
+                style={{ marginTop: "-3px", padding: "10px 5px 0px 17px", width: "100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}>
             
                 <Grid item xs={12} sm={6} lg={2} xl={2} className="GridFileDetails">
                     <Button
@@ -486,7 +486,7 @@ class DocumentEditor extends React.Component {
         return (
         <div>
             {this.renderToolBar()}
-            <Grid container spacing={2} style={{ padding: "70px 24px 0px 24px" }}>
+            <Grid container spacing={2} style={{ padding: "73px 24px 0px 24px" }}>
                 {this.renderDocumentPages()}
                 {this.state.isModeSentences ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>
