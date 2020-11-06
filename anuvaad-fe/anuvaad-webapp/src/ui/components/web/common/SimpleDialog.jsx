@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import { translate } from "../../../../assets/localisation";
-import Typography from '@material-ui/core/Typography';
+import Typography from "@material-ui/core/Typography";
 
 export default class SimpleDialog extends React.Component {
 
@@ -34,8 +34,8 @@ export default class SimpleDialog extends React.Component {
                     <DialogContent style={{minWidth: "500px"}}>
                         {this.props.type && this.props.type !== "warning"?
                             <div>
-                                <Typography style={{ fontWeight: "bold" }}>Job ID: {message.jobID}</Typography>
-                                <Typography style={{ fontWeight: "bold" }}>Status: {message.status}</Typography>
+                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Job ID: </Typography><Typography>&nbsp; {message.jobID}</Typography></div>
+                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Status: </Typography><Typography>&nbsp; {message.status}</Typography></div>
                                  {message.timelines && Array.isArray(message.timelines) && message.timelines.length > 0 &&
                                     <div>
                                         <div>&nbsp;</div>
@@ -45,8 +45,8 @@ export default class SimpleDialog extends React.Component {
                                                 return (
                                                     <div key={i}>
                                                         <div>&nbsp;</div>
-                                                        <Typography>State: {task.module}</Typography>
-                                                        <Typography>Status: {task.status}</Typography>
+                                                        <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>State: </Typography><Typography>&nbsp; {task.module}</Typography></div>
+                                                        <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Status: </Typography><Typography>&nbsp; {task.status}</Typography></div>
                                                     </div>
                                                 )
                                             })
