@@ -11,13 +11,13 @@ schemes:
   - https
 basePath: '/api'
 
-paths: 
-  
+paths:
+
   /v0/word-detector/craft:
     post:
       summary: API to extract words from the given file
       parameters:
-        - name: filename
+        - name: inputs
           in: body
           required: true
           schema:
@@ -33,73 +33,85 @@ paths:
           description: On input errors causing a failure in the job.
           schema:
             $ref: '#/definitions/Error'
-   
+
 definitions:
   WordDetectorRequest:
     type : object
     properties:
-      files :
-        type : array
-        description : a list of objets having file_name, file_type and language
-        items :
-          $ref : '#/definitions/FilesRequest'
+      input :
+        type : object
+        properties:
+          files:
+            type: array
+            description : a list of objets having file and file config
+            items:
+              type: object
+              properties:
+                file:
+                  type: object
+                  $ref : '#/definitions/File'
+                file_config:
+                  type: object
+                  $ref : '#/definitions/FileConfig'
+
+
 
   WordDetectorResponse:
     type : object
     properties:
-      files :
-        type : array
-        description : a list of file level results
-        items :
-         $ref: '#/definitions/FilesRespone'
-  
-  FilesRequest:
+      output :
+        type : object
+        properties:
+          files:
+            type: array
+            description : a list of objets having file and file config
+            items:
+              type: object
+              properties:
+                file:
+                  type: object
+                  $ref : '#/definitions/File'
+                file_config:
+                  type: object
+                  $ref : '#/definitions/FileConfig'
+
+                pages :
+                  type : array
+                  description: page level word and line coordinates
+                  items :
+                    $ref: '#/definitions/Page'
+
+
+
+  File:
     type: object
     properties :
-      name : 
+      name :
         type: string
         description: name of input file
-      type : 
+      type :
         type: string
         description: type of input file
       identifier:
         type: string
         description: unique identifier for a file
+
+
+  FileConfig:
+    type: object
+    properties:
       language :
         type : string
-        description: 'ISO 639-1  language code' 
+        description: 'ISO 639-1  language code'
       ocr_config:
         type: object
         description: configuration for tuning speed and accuracy of ocr mdoule
         $ref: '#/definitions/OcrConfig'
 
-  FilesRespone:
-    type: object
-    properties :
-      name : 
-        type: string
-        description: name of input file
-      type : 
-        type: string
-        description: type of input file
-      identifier:
-        type: string
-        description: unique identifier for a file
-      language :
-        type : string
-        description: 'ISO 639-1  language code' 
-      ocr_config:
-        type: object
-        description: configuration for tuning speed and accuracy of ocr mdoule
-        $ref: '#/definitions/OcrConfig'
-        
-      pages :
-        type : array
-        description: page level word and line coordinates
-        items :
-          $ref: '#/definitions/PageResponse'
-    
-  PageResponse:
+
+
+
+  Page:
     type: object
     properties:
       identifier:
@@ -107,10 +119,10 @@ definitions:
         description: unique page identifier
       width:
         type: integer
-        description:  page width  
+        description:  page width
       height:
         type: integer
-        description:  page height 
+        description:  page height
       path:
         type: string
         description:  page image name
@@ -124,7 +136,7 @@ definitions:
         description: coordinates and attributes extracted lines
         items:
           $ref: '#/definitions/Line'
-  
+
   Word:
     type: object
     properties:
@@ -133,29 +145,29 @@ definitions:
         description: unique identifier for word
       text:
         type: string
-        description:   extracted text 
+        description:   extracted text
       ocr_confidence:
         type : number
         description: confidence of OCR tool
-      
+
       font_size:
         type: integer
         description: font size
       font_family:
         type: string
         description: font family of extracted text
-      
+
       attributes:
         type: array
         items:
           type: string
           enum: ['BOLD','ITALIC','UNDERLINE']
-      
+
       coordinates:
         type: object
         description: word coordinates extracted by craft
         $ref: '#/definitions/Coordinates'
-          
+
   Line:
     type: object
     properties:
@@ -165,7 +177,7 @@ definitions:
         $ref: '#/definitions/Coordinates'
       text:
         type: string
-        description:   extracted text 
+        description:   extracted text
       font_size:
         type: integer
         description: font size
@@ -179,7 +191,7 @@ definitions:
       attribute:
         type: string
         enum: ['HEADER', 'FOOTER', 'NONE']
-          
+
   Coordinates:
     type: object
     properties:
@@ -198,7 +210,7 @@ definitions:
       confidence:
         type: number
         description: detection confidence
-  
+
 
   OcrConfig:
     type: object
@@ -209,20 +221,20 @@ definitions:
         enum: ['PAGE','LINE','BLOCK' ]
       mode:
         type: string
-        enum: ['ACCURRATE','FAST']  
-    
-  
-  
+        enum: ['ACCURRATE','FAST']
+
+
+
   HttpOutput:
     type: object
     properties:
       status:
         type: number
-        description: Status code. 
-  
+        description: Status code.
+
   Error:
     type: object
-    properties:        
+    properties:
       ok:
         type: boolean
         description: request successful indicator.

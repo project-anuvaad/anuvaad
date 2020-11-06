@@ -31,51 +31,88 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 definitions:
+
   BlockSegmenterRequest:
     type : object
     properties:
-      files :
-        type : array
-        description : a list of objets having file name, type and language.
-        items :
-          $ref : '#/definitions/FilesRequest'
-          
-          
+      input :
+        type : object
+        properties:
+          files:
+            type: array
+            description : a list of objets having file, file_config and pages
+            items:
+              type: object
+              properties:
+                file:
+                  type: object
+                  $ref : '#/definitions/File'
+                file_config:
+                  type: object
+                  $ref : '#/definitions/FileConfig'
+
+                pages :
+                  type : array
+                  description: page level word and line coordinates
+                  items :
+                    $ref: '#/definitions/PageInput'
+
+
   BlockSegmenterResponse:
     type : object
     properties:
-      files :
-        type : array
-        description : a list of file level results
-        items :
-         $ref: '#/definitions/FilesRespone'
+      output :
+        type : object
+        properties:
+          files:
+            type: array
+            description : a list of objets having file, file_config and pages
+            items:
+              type: object
+              properties:
+                file:
+                  type: object
+                  $ref : '#/definitions/File'
+                file_config:
+                  type: object
+                  $ref : '#/definitions/FileConfig'
 
-  FilesRequest:
+                pages :
+                  type : array
+                  description: page level word and line coordinates
+                  items :
+                    $ref: '#/definitions/PageOutput'
+
+  File:
     type: object
     properties :
-      name : 
+      name :
         type: string
         description: name of input file
-      type : 
+      type :
         type: string
         description: type of input file
       identifier:
         type: string
         description: unique identifier for a file
+
+
+  FileConfig:
+    type: object
+    properties:
       language :
         type : string
-        description: 'ISO 639-1  language code' 
+        description: 'ISO 639-1  language code'
       ocr_config:
         type: object
         description: configuration for tuning speed and accuracy of ocr mdoule
         $ref: '#/definitions/OcrConfig'
-      pages :
-        type : array
-        description: page level word and line coordinates
-        items :
-          $ref: '#/definitions/PageRequest'
-          
-  PageRequest:
+
+
+
+
+
+  PageInput:
     type: object
     properties:
       identifier:
@@ -83,10 +120,10 @@ definitions:
         description: unique page identifier
       width:
         type: integer
-        description:  page width  
+        description:  page width
       height:
         type: integer
-        description:  page height 
+        description:  page height
       path:
         type: string
         description:  page image name
@@ -100,42 +137,15 @@ definitions:
         description: coordinates and attributes extracted lines
         items:
           $ref: '#/definitions/Line'
-        
-      layout : 
+      layout :
         type: array
         description: class and coordinates of layout units
         items:
           $ref: '#/definitions/Layout'
-          
-          
- 
- 
-  FilesRespone:
-    type: object
-    properties :
-      name : 
-        type: string
-        description: name of input file
-      type : 
-        type: string
-        description: type of input file
-      identifier:
-        type: string
-        description: unique identifier for a file
-      language :
-        type : string
-        description: 'ISO 639-1  language code' 
-      ocr_config:
-        type: object
-        description: configuration for tuning speed and accuracy of ocr mdoule
-        $ref: '#/definitions/OcrConfig'
-      pages :
-        type : array
-        description: page level word, line and block coordinates with layout class
-        items :
-          $ref: '#/definitions/PageResponse'
- 
-  PageResponse:
+
+
+
+  PageOutput:
     type: object
     properties:
       identifier:
@@ -143,10 +153,10 @@ definitions:
         description: unique page identifier
       width:
         type: integer
-        description:  page width  
+        description:  page width
       height:
         type: integer
-        description:  page height 
+        description:  page height
       path:
         type: string
         description:  page image name
@@ -155,7 +165,7 @@ definitions:
         description: coordinates of extracted blocks
         items:
           $ref: '#/definitions/Block'
- 
+
   Block:
     type: object
     properties:
@@ -173,7 +183,7 @@ definitions:
           enum : ['TEXT', 'IMAGE', 'TABLE', 'SEPARATOR', 'MATHEMATICAL_FORMULA', 'OTHER']
       text:
         type: string
-        description:  collated text at block level 
+        description:  collated text at block level
       font_size:
         type: integer
         description: font size
@@ -191,7 +201,7 @@ definitions:
         description: coordinates of extracted words
         items:
           $ref: '#/definitions/Word'
-  
+
   Layout:
     type: object
     properties:
@@ -206,33 +216,33 @@ definitions:
       identifier:
         type: string
         description: unique identifier
-        
-          
+
+
   Line:
     type: object
     properties:
       text:
         type: string
-        description:   extracted text 
+        description:   extracted text
       coordinates:
         type: object
         description: line coordinates extracted by craft
         $ref: '#/definitions/Coordinates'
-      
+
       font_size:
         type: integer
         description: font size
       font_family:
         type: string
         description: font family of extracted text
-      
+
       identifier:
         type: string
         description: unique identifier for line
       attribute:
         type: string
         enum: ['HEADER', 'FOOTER', 'NONE']
-     
+
   Word:
     type: object
     properties:
@@ -241,7 +251,7 @@ definitions:
         description: unique identifier for word
       text:
         type: string
-        description:   extracted text 
+        description:   extracted text
       ocr_confidence:
         type : number
         description: confidence of OCR tool
@@ -252,7 +262,7 @@ definitions:
       font_family:
         type: string
         description: font family of extracted text
-      
+
       attributes:
         type: array
         items:
@@ -264,7 +274,7 @@ definitions:
         description: word coordinates extracted by craft
         $ref: '#/definitions/Coordinates'
 
-          
+
   Coordinates:
     type: object
     properties:
@@ -283,8 +293,8 @@ definitions:
       confidence:
         type: number
         description: detection confidence
-  
-  
+
+
   OcrConfig:
     type: object
     description: configuration for tuning speed and accuracy of ocr mdoule
@@ -294,8 +304,8 @@ definitions:
         enum: ['PAGE','LINE','BLOCK' ]
       mode:
         type: string
-        enum: ['ACCURRATE','FAST']  
- 
+        enum: ['ACCURRATE','FAST']
+
   HttpOutput:
     type: object
     properties:
