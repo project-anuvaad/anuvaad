@@ -153,7 +153,7 @@ class SentenceCard extends React.Component {
         // })
         // console.log(this.state.suggestions)
 
-        let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, this.state.value, {model_id: this.props.modelId}, true, '', this.props.sentence.s_id);
+        let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, this.state.value, this.props.modelId, true, '', this.props.sentence.s_id);
         const apiReq    = fetch(apiObj.apiEndPoint(), {
             method: 'post',
             body: JSON.stringify(apiObj.getBody()),
