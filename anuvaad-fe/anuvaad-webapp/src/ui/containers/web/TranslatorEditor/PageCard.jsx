@@ -31,7 +31,7 @@ class PageCard extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.block_highlight !== this.props.block_highlight && this.props.block_highlight && this.props.block_highlight.block_identifier) {
+        if (prevProps.block_highlight !== this.props.block_highlight && this.props.block_highlight.block_identifier) {
             this.handleSourceScroll(this.props.block_highlight.block_identifier)
         }
     }
@@ -141,6 +141,7 @@ class PageCard extends React.Component {
 
 
     renderBlock = (block) => {
+        
         return (
             <div style={{
                 position: "relative", top: block.text_top + 'px',
@@ -148,7 +149,7 @@ class PageCard extends React.Component {
                 width: block.text_width + 'px',
                 height: block.text_height + 'px',
                 zIndex:2,
-                border: this.props.block_highlight.block_identifier == block.block_identifier ? "2px solid #1C9AB7" : ''
+                border: this.props.block_highlight && this.props.block_highlight.block_identifier == block.block_identifier ? "2px solid #1C9AB7" : ''
             }}
                 id={block.block_identifier}
                 key={block.block_identifier}>
@@ -204,7 +205,7 @@ class PageCard extends React.Component {
 
 const mapStateToProps = state => ({
     document_contents: state.document_contents,
-    block_highlight: state.block_highlight,
+    block_highlight: state.block_highlight.block,
     sentence_highlight: state.sentence_highlight.sentence
 });
 
