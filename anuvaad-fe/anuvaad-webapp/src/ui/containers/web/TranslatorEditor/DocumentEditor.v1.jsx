@@ -146,7 +146,7 @@ class DocumentEditor extends React.Component {
             return Promise.reject('');
           } else {
             this.props.contentUpdateStarted();
-            this.props.update_blocks(pageNumber, rsp_data.input.textBlocks);
+            this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
           }
       }).catch((error) => {
           console.log('api failed because of server or network')
@@ -193,7 +193,7 @@ class DocumentEditor extends React.Component {
             return Promise.reject('');
           } else {
             this.props.contentUpdateStarted();
-            this.props.update_blocks(pageNumber, rsp_data.input.textBlocks);
+            this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
           }
       }).catch((error) => {
           console.log('api failed because of server or network')
