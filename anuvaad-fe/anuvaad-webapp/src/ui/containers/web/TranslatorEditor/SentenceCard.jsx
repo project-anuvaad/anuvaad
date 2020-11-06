@@ -231,19 +231,32 @@ class SentenceCard extends React.Component {
     }
 
     processMergeNowButtonClicked() {
-        this.setState({
-            isModeMerge: false,
-        })
-        this.props.finishMergeSentence()
-        if (this.props.onAction) {
-            this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, this.props.sentence_action_operation.sentences, this.props.sentence)
+        if(this.props.sentence_action_operation.sentences.length>1){
+            this.setState({
+                isModeMerge: false,
+            })
+            this.props.finishMergeSentence()
+            if (this.props.onAction) {
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, this.props.sentence_action_operation.sentences, this.props.sentence)
+            }
         }
+        else{
+            alert("Please select minimum two sentence to merge..!")
+        }
+        
     }
 
     processSplitButtonClicked(start_index, end_index) {
-        if (this.props.onAction) {
-            this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
+        if(start_index!= end_index)
+        {
+            if (this.props.onAction) {
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
+            }
         }
+        else{
+            alert("Please select proper sentence to split..!")
+        }
+        
     }
 
     /**
@@ -308,7 +321,6 @@ class SentenceCard extends React.Component {
          */
         if (!this.state.isModeMerge) {
             this.setState({
-                cardInFocus: false,
                 parallel_words:null
             })
         }
@@ -559,6 +571,22 @@ class SentenceCard extends React.Component {
         return (<div></div>)
     }
 
+    renderCardIcon = () =>{
+        if(!this.props.sentence_action_operation.progress){
+            return (
+                
+                <div style={{ width: "10%", textAlign: "right" }}>
+                    <IconButton aria-label="settings"
+                        style={(this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id) ? styles.expandOpen : styles.expand}
+                        onClick={this.handleCardExpandClick}>
+                        <ExpandMoreIcon />
+                    </IconButton>
+                </div>
+                
+            )
+        }
+    }
+
     renderSentenceCard = () =>{
         return (
             <div key={12} style={{ padding: "1%" }}>
@@ -567,13 +595,7 @@ class SentenceCard extends React.Component {
                             <div style={{ width: "90%" }}>
                                 {this.renderSourceSentence()}
                             </div>
-                            <div style={{ width: "10%", textAlign: "right" }}>
-                                <IconButton aria-label="settings"
-                                    style={(this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id) ? styles.expandOpen : styles.expand}
-                                    onClick={this.handleCardExpandClick}>
-                                    <ExpandMoreIcon />
-                                </IconButton>
-                            </div>
+                            {this.renderCardIcon()}
                             {this.renderCardSelectedForMerge()}
 
                         </CardContent>
@@ -602,7 +624,6 @@ class SentenceCard extends React.Component {
     }
 
     handleCardExpandClick = () => {
-        debugger
         if (this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id || (this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id)) {
             this.props.clearHighlighBlock()
         } else {
