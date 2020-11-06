@@ -45,7 +45,7 @@ class FileContentRepositories:
     def update_block_info(self, block, update_s0):
         new_block                   = {}
         new_block['data']           = block
-        log_info("update_block_info payload {}".format(json.dumps(block)), AppContext.getContext())
+        # log_info("update_block_info payload {}".format(json.dumps(block)), AppContext.getContext())
 
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
@@ -153,6 +153,6 @@ class FileContentRepositories:
                     return False, saved_blocks
                 saved_block_results = self.blockModel.get_block_by_block_identifier(user_id, updated_block['data']['block_identifier'])
                 for saved_block in saved_block_results:
-                    saved_blocks.append(saved_block['data'])
+                    saved_blocks.append(saved_block['data'][0])
                 
         return True, saved_blocks
