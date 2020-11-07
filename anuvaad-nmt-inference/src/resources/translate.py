@@ -37,7 +37,7 @@ class InteractiveMultiTranslateResource(Resource):
             log_info("inputs---{}".format(inputs),MODULE_CONTEXT)
             # log_info(entry_exit_log(LOG_TAGS["input"],inputs))
             out = TranslateService.interactive_translation(inputs)
-            log_info("out from v1/interactive-translation done{}".format(out),MODULE_CONTEXT)
+            log_info("out from v1/interactive-translation done{}".format(out.getres()),MODULE_CONTEXT)
             # log_info(entry_exit_log(LOG_TAGS["output"],out))
             return out.getres()
         else:
@@ -52,7 +52,7 @@ class OpenNMTTranslateResource(Resource):
             log_info("Making translate-anuvaad API call",MODULE_CONTEXT)
             log_info("inputs---{}".format(inputs),MODULE_CONTEXT)
             out = OpenNMTTranslateService.translate_func(inputs, "translation_server")
-            log_info("out from translate_func-trans_util done{}".format(out),MODULE_CONTEXT)
+            log_info("out from translate_func-trans_util done{}".format(out.getres()),MODULE_CONTEXT)
             return out.getres()
         else:
             log_info("null inputs in request in translate-anuvaad API",MODULE_CONTEXT)
