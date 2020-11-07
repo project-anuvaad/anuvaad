@@ -398,7 +398,7 @@ class SentenceCard extends React.Component {
                             return (<Typography>{option.name}</Typography>)
                         }}
                         options={this.state.suggestions}
-
+                        disableClearable
                         inputValue={this.state.value}
                         fullWidth
                         open={this.state.showSuggestions}
