@@ -327,11 +327,12 @@ class SentenceCard extends React.Component {
     };
 
     getSelectionText = (event) => {
+        debugger
         let selectedSentence    = window.getSelection().toString();
         let endIndex            = window.getSelection().focusOffset;
         let startIndex          = window.getSelection().anchorOffset;
         let sentenceSource      = event.target.innerHTML;
-        if(selectedSentence && sentenceSource.includes(selectedSentence)){
+        if(selectedSentence && sentenceSource.includes(selectedSentence) && selectedSentence!== sentenceSource ){
             this.setState({selectedSentence, sentenceSource, positionX: event.clientX,startIndex, endIndex, positionY:event.clientY, isopenMenuItems : true})
         }
     }
@@ -346,7 +347,6 @@ class SentenceCard extends React.Component {
 
                 <Typography variant="subtitle1" gutterBottom onMouseUp={(event)=>{this.getSelectionText(event)}}>
                     {this.props.sentence.src}
-                    <br />
                 </Typography>
             </div>
         )
