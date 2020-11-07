@@ -163,9 +163,8 @@ class SentenceCard extends React.Component {
             if (!response.ok) {
                 return Promise.reject('');
             } else {
-                console.log(rsp_data.output.predictions)
                 this.setState({
-                    suggestions: rsp_data.output.predictions
+                    suggestions: rsp_data.output.predictions[0].tgt.map(s => { return {name: s}})
                 })
             }
         }).catch((error) => {
@@ -393,9 +392,10 @@ class SentenceCard extends React.Component {
                 <div>
                     <Autocomplete
                         filterOptions={filterOptions}
-                        getOptionLabel={option => option.tgt[0]}
+                        getOptionLabel={option => option.name}
+                        getOptionSelected={(option, value) => option.name === value.name}
                         renderOption={(option, index) => {
-                            return (<Typography>{option.tgt[0]}</Typography>)
+                            return (<Typography>{option.name}</Typography>)
                         }}
                         options={this.state.suggestions}
 
@@ -406,9 +406,9 @@ class SentenceCard extends React.Component {
                         freeSolo={true}
                         loadingText={'Loading ...'}
                         onChange={(event, newValue) => {
-                            console.log('onChange of autocomplete is fired: [%s] [%s]', newValue.tgt[0], this.state.value)
+                            console.log('onChange of autocomplete is fired: [%s] [%s]', newValue.name, this.state.value)
                             this.setState({
-                                value: newValue.tgt[0], //this.state.value + ' ' + newValue.name,
+                                value: newValue.name, //this.state.value + ' ' + newValue.name,
                                 showSuggestions: false,
                                 userEnteredText: true
                             });
