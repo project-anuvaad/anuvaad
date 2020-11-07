@@ -455,8 +455,8 @@ def encode_translate_decode(i,translation_server,sp_encoder,sp_decoder):
         input_sw = i['src']
         i_final = format_converter(i['src'])
         m_out = translator.translate_batch([i_final],beam_size = 5,num_hypotheses=1)
-        log_info("output from model: %s"%m_out[0],MODULE_CONTEXT)
         output_sw = " ".join(m_out[0][0]['tokens'])
+        log_info("output from model: {}".format(output_sw),MODULE_CONTEXT)
         scores = m_out[0][0]['score']
         translation = multiple_hypothesis_decoding(m_out[0],sp_decoder)[0]
         log_info("SP decoded sent: %s"%translation,MODULE_CONTEXT)
