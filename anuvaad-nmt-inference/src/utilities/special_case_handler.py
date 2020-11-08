@@ -9,15 +9,11 @@ def handle_single_token(token):
        if misc.isfloat(token):
             return (token)
        elif misc.token_is_date(token):
-           print("returning date")
+           log_info("Returning date as single token",MODULE_CONTEXT)
            return token     
     #    elif token.isalnum():
     #         logger.info("transliterating alphanum")
-    #         return transliterate_text(token)
-    #    elif len(lookup_table(model_id,token))>0:
-    #        token = lookup_table(model_id,token)
-    #        print("handling single token from looku table: ",token)
-    #        return token     
+    #         return transliterate_text(token)    
        elif len(token) > 1 and token_is_alphanumeric_char(token):
             if len(token) ==3 and (token[0].isalnum() == False) and (token[1].isalnum() == True):
                 return token 
@@ -27,8 +23,8 @@ def handle_single_token(token):
             # return prefix+translation_text+suffix
             return ""
        elif len(token)==1:
-            print("handling single token and returning character as it is")
-            return (token)            
+           log_info("Handling single token and returning character as it is",MODULE_CONTEXT)
+           return (token)            
        else:
             log_info("returning null to allow token to go to model",MODULE_CONTEXT)
             return ""
@@ -43,8 +39,7 @@ def token_is_alphanumeric_char(token):
         return True
 
 def separate_alphanumeric_and_symbol(text):
-    try:
-        # print(re.sub(r"^\W+|\W+$", "", text),"in separate")     
+    try:  
         start = re.match(r"^\W+|\W+$", text)
         end = re.match(r'.*?([\W]+)$', text)
         translation_text = re.sub(r"^\W+|\W+$", "", text)    
@@ -54,13 +49,11 @@ def separate_alphanumeric_and_symbol(text):
             if start.endswith('(') and len(translation_text)>1 and translation_text[0].isalnum() and translation_text[1]== ')':
                 start = start + translation_text[0] + translation_text[1]
                 translation_text = translation_text[2:]
-                start_residual_part = re.match(r"^\W+|\W+$", translation_text)
-                # print("1",translation_text)    
+                start_residual_part = re.match(r"^\W+|\W+$", translation_text)   
                 if start_residual_part:
                     start_residual_part = start_residual_part.group(0)
                     start = start+start_residual_part
-                    translation_text = re.sub(r"^\W+|\W+$", "", translation_text) 
-                    # print("2",translation_text)     
+                    translation_text = re.sub(r"^\W+|\W+$", "", translation_text)   
 
         else:
             start = ""           
@@ -74,8 +67,8 @@ def separate_alphanumeric_and_symbol(text):
     
         print(start,end,translation_text)     
         return start,end,translation_text
-    except:
-        print("in except,anciliary fun")
+    except Exception as e:
+        log_exception("Error in separate_alphanumeric_and_symbol Funtion, handling it. Error:{}".format(e),MODULE_CONTEXT,e)
         return "","",text
 
 

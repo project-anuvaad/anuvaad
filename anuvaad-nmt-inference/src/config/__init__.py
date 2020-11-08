@@ -10,3 +10,6 @@ ENABLE_CORS = True
 
 ## config file 
 ICONFG_FILE = "src/config/iconf.json"
+
+## Module name
+MODULE_NAME = "/nmt-inference"

@@ -27,10 +27,10 @@ def token_is_date(token):
     except ValueError:
         return False
     except OverflowError:
-      print("overflow error while parsing date, treating them as Date tag{}".format(token))
+      log_exception("overflow error while parsing date, treating them as Date tag{}".format(token),MODULE_CONTEXT,"OverFlowError")
       return True     
     except Exception as e:
-      print("error in date parsing for token:{} ".format(token),e)
+      log_exception("error in date parsing for token:{} ".format(token),MODULE_CONTEXT,e)
       return False    
 
 def token_is_url(token):
