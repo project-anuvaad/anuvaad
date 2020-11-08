@@ -63,7 +63,6 @@ def tag_number_date_url(text):
             word = 'UuRrLl'+str(count_url)
             count_url +=1
         except Exception as e:
-          print(e)
           log_exception("In handle_date_url:tag_num function:{}".format(e),MODULE_CONTEXT,e)
           word = word
         
