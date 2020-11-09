@@ -52,11 +52,14 @@ class AlignmentService:
 
     # Service method to register the alignment job
     def wf_process(self, object_in):
-        object_in["taskID"] = util.generate_task_id()
-        object_in["status"] = "STARTED"
-        self.update_job_details(object_in, True)
-        result = self.process(object_in, True)
-        return result
+        try:
+            object_in["taskID"] = util.generate_task_id()
+            object_in["status"] = "STARTED"
+            self.update_job_details(object_in, True)
+            return self.process(object_in, True)
+        except Exception as e:
+            log_exception("Exception while starting alignment job through WF: " + str(e), object_in, e)
+            return None
 
     # Method to update the status of job.
     def update_job_details(self, object_in, iscreate):
