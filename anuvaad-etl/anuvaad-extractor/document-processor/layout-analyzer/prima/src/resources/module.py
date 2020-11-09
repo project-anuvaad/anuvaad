@@ -17,14 +17,14 @@ file_ops = FileOperation()
 DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
 
 # rest request for block merging workflow service
-class BlockMergerWF(Resource):
+class Module_Name_WF(Resource):
     
     # reading json request and reurnung final response
     def post(self):
         json_data = request.get_json(force=True)
         app_context.init()
         app_context.application_context = json_data
-        log_info("Resource BlockMergerWF  Block-merger service started", app_context.application_context)
+        log_info("Resource Module_Name_WF  Module_Name service started", app_context.application_context)
         task_id = str("BM-" + str(time.time()).replace('.', '')[0:13])
         task_starttime  =  eval(str(time.time()).replace('.', '')[0:13])
         #json_data = request.get_json(force = True)
@@ -33,27 +33,27 @@ class BlockMergerWF(Resource):
             if error_validator.format_error(json_data) is True:
                 response_gen = Response(json_data, DOWNLOAD_FOLDER)
                 response = response_gen.workflow_response(task_id, task_starttime)
-                log_info("Resource BlockMergerWF Block-merger api response completed", app_context.application_context)
+                log_info("Resource Module_Name_WF Module_Name api response completed", app_context.application_context)
                 return jsonify(response)
         except FormatError as e:
-            log_error("Resource BlockMergerWF Input json format is not correct or dict_key is missing", app_context.application_context, e)
+            log_error("Resource Module_Name_WF Input json format is not correct or dict_key is missing", app_context.application_context, e)
             return Status.ERR_request_input_format.value
 
 
 # rest request for block merging individual service
-class BlockMerger(Resource):
+class Module_Name(Resource):
 
     # reading json request and reurnung final response
     def post(self):
-        log_info("Resource BlockMerger Block-merger service started", app_context.application_context)
+        log_info("Resource Module_Name service started", app_context.application_context)
         json_data = request.get_json(force=True)
         try:
             error_validator = ValidationResponse(DOWNLOAD_FOLDER)
             if error_validator.format_error(json_data) is True:
                 response_gen = Response(json_data, DOWNLOAD_FOLDER)
                 response = response_gen.nonwf_response()
-                log_info("Resource BlockMerger Block-merger api response completed", app_context.application_context)
+                log_info("Resource Module_Name api response completed", app_context.application_context)
                 return jsonify(response)
         except FormatError as e:
-            log_error("Resource BlockMerger Input json format is not correct or dict_key is missing", app_context.application_context, e)
+            log_error("Resource Module_Name Input json format is not correct or dict_key is missing", app_context.application_context, e)
             return Status.ERR_request_input_format.value
