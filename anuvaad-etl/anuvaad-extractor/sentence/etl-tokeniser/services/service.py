@@ -78,7 +78,7 @@ class Tokenisation(object):
             blocks = input_json_data_pagewise['text_blocks']
             if blocks is not None:
                 for block_id, item in enumerate(blocks):
-                    del item['tokenized_sentences']
+                    # del item['tokenized_sentences']
                     text_data = item['text']
                     tokenised_text = self.tokenisation_core([text_data], in_locale)
                     item['tokenized_sentences'] = [self.making_object_for_tokenised_text(text) for i, text in enumerate(tokenised_text)]
