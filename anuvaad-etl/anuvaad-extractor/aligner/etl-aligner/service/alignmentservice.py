@@ -49,14 +49,14 @@ class AlignmentService:
             response = {"input": object_in, "jobID": job_id, "status": "FAILED", "error": prod_res}
         return response
 
-
-    # Service method to register the alignment job
+    # Service method to register the alignment job through wfm.
     def wf_process(self, object_in):
         try:
             object_in["taskID"] = util.generate_task_id()
             object_in["status"] = "STARTED"
             self.update_job_details(object_in, True)
-            return self.process(object_in, True)
+            self.process(object_in, True)
+            return {}
         except Exception as e:
             log_exception("Exception while starting alignment job through WF: " + str(e), object_in, e)
             return None
@@ -162,6 +162,7 @@ class AlignmentService:
             return {}
 
     def check_if_duplicate(self, job_id, object_in):
+        log_info("Duplicate Check....", object_in)
         job = self.search_jobs(job_id)
         if job:
             job = job[0]
