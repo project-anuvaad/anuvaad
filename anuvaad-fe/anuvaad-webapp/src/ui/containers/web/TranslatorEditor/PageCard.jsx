@@ -1,21 +1,22 @@
 import React from "react";
 import { Paper, Divider } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
+import { Textfit } from "react-textfit";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { highlightSentence, clearHighlighBlock, cancelMergeSentence } from '../../../../flux/actions/users/translator_actions';
 import SENTENCE_ACTION from './SentenceActions'
-
+import Image from "./../Interactive-Editor/Image";
 const PAGE_OPS = require("../../../../utils/page.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
 const styles = {
     textField: {
-        width: "100%", background: "white",
-        background: 'rgb(211,211,211)',
+        width       : "100%", background: "white",
+        background  : 'rgb(211,211,211)',
         borderRadius: 10,
-        border: 0,
-        color: 'green',
+        border      : 0,
+        color       : 'green',
     }
 }
 
@@ -23,7 +24,7 @@ class PageCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: ''
+            value   : ''
         };
         this.handleTextChange = this.handleTextChange.bind(this);
 
@@ -39,20 +40,15 @@ class PageCard extends React.Component {
      * render Sentences
      */
     renderText = (text, block) => {
-        let style = {
-            position: "absolute",
-            top: (text.block_id === (this.props.sentence_highlight && this.props.sentence_highlight.block_id) ? text.text_top - block.text_top - 20 : text.text_top - block.text_top) + 'px',
-            left: text.text_left - block.text_left + 'px',
-            width: text.text_width + 'px',
-            height: text.text_height + 'px',
-            fontSize: text.font_size,
-            fontFamily: text.font_family,
-            fontWeight: text.font_family.includes("Bold") || text.attrib && text.attrib.toLowerCase().includes("bold") && 'bold',
-            textAlign: "justify",
-            lineHeight: text.avg_line_height + 'px',
-            // textAlignLast: "justify",
-            zIndex: text.block_id === (this.props.sentence_highlight && this.props.sentence_highlight.block_id) ? 100000 : 2
-            // textDecorationLine: this.props.sentence.underline ? "underline" : ""
+        let style           = {
+            position        : "absolute",
+            top             : (text.block_id === (this.props.sentence_highlight && this.props.sentence_highlight.block_id) ? text.text_top - block.text_top - 20 : text.text_top - block.text_top) + 'px',
+            left            : text.text_left - block.text_left + 'px',
+            width           : text.text_width + 'px',
+            height          : text.text_height + 'px',
+            lineHeight      : text.avg_line_height + 'px',
+            // textAlignLast   : "justify",
+            zIndex          : text.block_id === (this.props.sentence_highlight && this.props.sentence_highlight.block_id) ? 100000 : 2
         };
         return (
             
@@ -60,9 +56,17 @@ class PageCard extends React.Component {
                 {text.block_id == (this.props.sentence_highlight && this.props.sentence_highlight.block_id) ?
                     this.renderTextField(text)
                     :
-                    this.renderTextSpan(text)
+                    this.renderTextFit(text)
                 }
             </div>
+        )
+    }
+
+    renderTextFit = (text) =>{
+        return(
+            <Textfit mode="single" style={{ width: parseInt(text.text_width) }} min={1} max={parseInt(text.font_size)}>
+                {this.renderTextSpan(text)}
+            </Textfit>
         )
     }
 
@@ -72,12 +76,15 @@ class PageCard extends React.Component {
     renderTextSpan = (text) => {
         return (
             <span
-                style={{ zIndex: 1 }}
-                id={text.block_id}
-                onDoubleClick={() => { this.handleSelectedSentenceId(text) }}
-            >
-                {text.text}
-            </span>
+            style={{ zIndex: 1,
+                fontFamily  : text.font_family,
+                fontWeight  : (text.font_family.includes("Bold") || text.attrib && text.attrib.toLowerCase().includes("bold")) && 'bold',
+                }}
+                id          =   {text.block_id}
+            onDoubleClick={() => { this.handleSelectedSentenceId(text) }}
+        >
+            {text.text}
+        </span>
         )
     }
 
@@ -94,15 +101,16 @@ class PageCard extends React.Component {
     renderTextField = (text) => {
         return (
             <TextField
-                style= {styles.textField} 
-                type="text" className="form-control"
-                defaultValue = {text.text}
-                value={this.state.text}
-                variant="outlined"
-                id="mui-theme-provider-outlined-input"
-                onChange={this.handleTextChange}
-                onBlur={() => { this.handleClickAway(text) }}
-                autoFocus={true}
+                style           =   {styles.textField} 
+                type            =   "text" 
+                className       =   "form-control"
+                defaultValue    =   {text.text}
+                value           =   {this.state.text}
+                variant         =   "outlined"
+                id              =   "mui-theme-provider-outlined-input"
+                onChange        =   {this.handleTextChange}
+                onBlur          =   {() => { this.handleClickAway(text) }}
+                autoFocus       =   {true}
                 fullWidth
                 multiline
             />
@@ -125,7 +133,6 @@ class PageCard extends React.Component {
     handleClickAway = (blockData) => {
         if(this.state.text) {
             TELEMETRY.sentenceChanged(blockData.text, this.state.text, blockData.block_id,"validation")
-
             let data = PAGE_OPS.get_updated_page_blocks(this.props.document_contents, blockData, this.state.text)
              this.props.onAction(SENTENCE_ACTION.SENTENCE_SOURCE_EDITED, blockData.page_no, [data], "") 
         }
@@ -144,15 +151,15 @@ class PageCard extends React.Component {
         
         return (
             <div style={{
-                position: "relative", top: block.text_top + 'px',
-                left: block.text_left + 'px',
-                width: block.text_width + 'px',
-                height: block.text_height + 'px',
-                zIndex:2,
-                border: this.props.block_highlight && this.props.block_highlight.block_identifier == block.block_identifier ? "2px solid #1C9AB7" : ''
+                position    : "absolute", top: block.text_top + 'px',
+                left        : block.text_left + 'px',
+                width       : block.text_width + 'px',
+                height      : block.text_height + 'px',
+                zIndex      : 2,
+                border      : this.props.block_highlight && this.props.block_highlight.block_identifier == block.block_identifier ? "2px solid #1C9AB7" : ''
             }}
-                id={block.block_identifier}
-                key={block.block_identifier}>
+                id          =   {block.block_identifier}
+                key         =   {block.block_identifier}>
                 {block['texts'].map(text => this.renderText(text, block))}
             </div>
         )
@@ -160,18 +167,20 @@ class PageCard extends React.Component {
 
     renderImage = (image) => {
         let style = {
-            position: "relative",
-            top: image.text_top + 'px',
-            left: image.text_left + 'px',
-            width: image.text_width + 'px',
-            height: image.text_height + 'px',
-            overflow: "hidden",
-            zIndex: 1
+            position    : "relative",
+            top         : image.text_top + 'px',
+            left        : image.text_left + 'px',
+            width       : image.text_width + 'px',
+            height      : image.text_height + 'px',
+            overflow    : "hidden",
+            zIndex      : 1
         }
 
         return (
             <div style={style} key={image.block_identifier}>
+                
                 <img width={image.text_width + "px"} height={image.text_height + "px"} src={`data:image/png;base64,${image.base64}`} alt=""></img>
+                
             </div>
         )
     }
@@ -180,9 +189,9 @@ class PageCard extends React.Component {
         if (page['blocks'] || (page['blocks'] && page['images'])) {
             return (
                 <div>
-                    <Paper elevation={2}>
+                    <Paper elevation={2} style ={{position:'relative', width:page.page_width + 'px', height:page.page_height +"px"}}>
                         {page['blocks'].map(block => this.renderBlock(block))}
-                        {page['images'].map(image => this.renderImage(image))}
+                        {page['images'].map((images) => this.renderImage(images))}
                     </Paper>
                     <Divider />
                 </div>
@@ -204,9 +213,9 @@ class PageCard extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    document_contents: state.document_contents,
-    block_highlight: state.block_highlight.block,
-    sentence_highlight: state.sentence_highlight.sentence
+    document_contents   : state.document_contents,
+    block_highlight     : state.block_highlight.block,
+    sentence_highlight  : state.sentence_highlight.sentence
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
