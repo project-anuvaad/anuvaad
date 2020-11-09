@@ -151,7 +151,7 @@ class AnuvaadEngTokenizer(object):
         return text
 
     def serialize_quotes_with_number(self, text):
-        patterns = re.findall(r'([ ][“][0-9a-zA-Z]{1,}[.])',text)
+        patterns = re.findall(r'([ ][“][0-9a-zA-Z]{1,}[.]|[“][0-9a-zA-Z]{1,}[.])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
