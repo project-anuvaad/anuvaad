@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   version: 1.0.0
   title: Anuvaad Google OCR
-  description: A python based microservice to trigger and orchestrate text extraion given eihter an image and coordinates or only an image
+  description: A python based microservice to trigger and orchestrate text extraion given eihter a file and coordinates or only an file
   contact:
     name: Naresh & Dhiraj, dhiraj.daga@tarento.com
     email: naresh.kumar@tarento.com
@@ -34,29 +34,91 @@ definitions:
   GoogleOcrRequest:
     type : object
     properties:
-      files :
-        type : array
-        description : a list of objets having file name, type and language.
-        items :
-          $ref : '#/definitions/PageRequest'
-          
-          
+      input :
+        type : object
+        properties:
+          files:
+            type: array
+            description : a list of objets having file, file_config and pages
+            items:
+              type: object
+              properties:
+                file:
+                  type: object
+                  $ref : '#/definitions/File'
+                file_config:
+                  type: object
+                  $ref : '#/definitions/FileConfig'
+
+                cooradinates :
+                  type : array
+                  description: page level word and line coordinates
+                  items :
+                    $ref: '#/definitions/Coordinates'
+
   GoogleOcrResponse:
     type : object
     properties:
-      files :
-        type : array
-        description : a list of file level results
-        items :
-         $ref: '#/definitions/PageRespone'
+      output :
+        type : object
+        properties:
+          files:
+            type: array
+            description : a list of objets having file, file_config and pages
+            items:
+              type: object
+              properties:
+                file:
+                  type: object
+                  $ref : '#/definitions/File'
+                file_config:
+                  type: object
+                  $ref : '#/definitions/FileConfig'
 
-  PageRequest:
+                ocr :
+                  type : array
+                  description: page level word and line coordinates
+                  items :
+                    $ref: '#/definitions/OcrOutput'
+
+
+
+
+
+
+  File:
     type: object
     properties :
-      path : 
+      name :
         type: string
         description: name of input file
-      type : 
+      type :
+        type: string
+        description: type of input file
+      identifier:
+        type: string
+        description: unique identifier for a file
+
+
+  FileConfig:
+    type: object
+    properties:
+      language :
+        type : string
+        description: 'ISO 639-1  language code'
+      ocr_config:
+        type: object
+        description: configuration for tuning speed and accuracy of ocr mdoule
+        $ref: '#/definitions/OcrConfig'
+
+
+  PageInput:
+    type: object
+    properties :
+      path :
+        type: string
+        description: name of input file
+      type :
         type: string
         description: type of input file
       identifier:
@@ -64,7 +126,7 @@ definitions:
         description: unique identifier for a file
       language :
         type : string
-        description: 'ISO 639-1  language code' 
+        description: 'ISO 639-1  language code'
       ocr_config:
         type: object
         description: configuration for tuning speed and accuracy of ocr mdoule
@@ -74,17 +136,17 @@ definitions:
         description: if given ocr will be performed only on the coordinates, else on entire page
         items :
           $ref: '#/definitions/Coordinates'
-          
-  
- 
- 
+
+
+
+
   PageRespone:
     type: object
     properties :
-      path : 
+      path :
         type: string
         description: name of input file
-      type : 
+      type :
         type: string
         description: type of input file
       identifier:
@@ -92,34 +154,42 @@ definitions:
         description: unique identifier for a file
       language :
         type : string
-        description: 'ISO 639-1  language code' 
+        description: 'ISO 639-1  language code'
       ocr_config:
         type: object
         description: configuration for tuning speed and accuracy of ocr mdoule
         $ref: '#/definitions/OcrConfig'
-      ocr_output :
-        type : array
-        description: extrated text, confidence and coordinates
-        items :
-          allOf:
-          - $ref: '#/definitions/Coordinates'
+
+  OcrOutput :
+    type : object
+    properties:
+      pages:
+        type: array
+        items:
+          type: object
           properties:
-            identifier:
-              type: string
-            text:
-              type: string
-            words:
+            regions:
               type: array
-              description: word level text,coordinates and confidence
               items:
-               allOf:
-               - $ref: '#/definitions/Coordinates'
-               properties:
-                identifier:
-                  type: string
-                text:
-                  type: string
-          
+                allOf:
+                - $ref: '#/definitions/Coordinates'
+                properties:
+                  identifier:
+                    type: string
+                  text:
+                    type: string
+                  words:
+                    type: array
+                    description: word level text,coordinates and confidence
+                    items:
+                     allOf:
+                     - $ref: '#/definitions/Coordinates'
+                     properties:
+                      identifier:
+                        type: string
+                      text:
+                        type: string
+
   Coordinates:
     type: object
     properties:
@@ -138,8 +208,8 @@ definitions:
       confidence:
         type: number
         description: detection confidence
-  
-  
+
+
   OcrConfig:
     type: object
     description: configuration for tuning speed and accuracy of ocr mdoule
@@ -149,8 +219,8 @@ definitions:
         enum: ['PAGE','LINE','BLOCK' ]
       mode:
         type: string
-        enum: ['ACCURRATE','FAST']  
- 
+        enum: ['ACCURRATE','FAST']
+
   HttpOutput:
     type: object
     properties:
