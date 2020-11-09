@@ -125,13 +125,9 @@ class Tokenisation(object):
     def getting_incomplete_text_merging_blocks(self, input_data_file):
         for page_idx, page_data in enumerate(input_data_file):
             page_data_blocks = page_data['text_blocks']
-            print("page no.  :  ", page_idx)
             if page_idx+1 < len(input_data_file):
-                # print("no. of blocks: ", len(page_data_blocks))
                 last_text_block_idx = self.get_last_text_block_with_text(page_data_blocks)
                 first_text_block_next_page = self.get_first_text_block_with_text(input_data_file[page_idx+1])
-                print("last text block",last_text_block_idx)
-                print("first text  ", first_text_block_next_page)
                 if not page_data_blocks[last_text_block_idx]['text'].strip().endswith(('.',':','!','?','”',')')) \
                 and input_data_file[page_idx+1]['text_blocks'][first_text_block_next_page]['text'] != None \
                 and input_data_file[page_idx+1]['text_blocks'][first_text_block_next_page]['children'] != None:
