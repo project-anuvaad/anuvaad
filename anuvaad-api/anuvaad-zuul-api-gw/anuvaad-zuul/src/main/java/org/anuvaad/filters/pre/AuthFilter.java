@@ -33,11 +33,10 @@ public class AuthFilter extends ZuulFilter {
 
     private static final String AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE = "Retrieving of auth token failed";
     private static final String SKIP_AUTH_CHECK = "Auth check skipped - whitelisted endpoint | {}";
-    private static final String AUTH_TOKEN_HEADER_NAME = "auth-token";
-    private static final String ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE = "Routing to protected endpoint {} restricted, due to authentication failure - No auth token";
+    private static final String ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE = "Routing to protected endpoint {} restricted - No auth token";
     private static final String RETRIEVING_USER_FAILED_MESSAGE = "Retrieving user failed";
-    private static final String PROCEED_ROUTING_MESSAGE = "Routing to protected endpoint: {} - auth provided";
-    private static final String UNAUTH_USER_MESSAGE = "You don't have access to this resource - authentication failed.";
+    private static final String PROCEED_ROUTING_MESSAGE = "Routing to protected endpoint: {} - authentication check passed!";
+    private static final String UNAUTH_USER_MESSAGE = "You don't have access to this resource - authentication check failed.";
 
 
     @Override
@@ -86,6 +85,9 @@ public class AuthFilter extends ZuulFilter {
             }
             else {
                 logger.info(PROCEED_ROUTING_MESSAGE, getRequestURI());
+                ctx.addZuulRequestHeader(ZUUL_AUTH_TOKEN_HEADER_KEY, authToken);
+                ctx.addZuulRequestHeader(ZUUL_USER_ID_HEADER_KEY, user.getUserID());
+                ctx.addZuulRequestHeader(ZUUL_SESSION_ID_HEADER_KEY, authToken); // A session is User activity per token.
                 setShouldDoAuth(true);
             }
         }

@@ -6,9 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
-import static org.anuvaad.constants.RequestContextConstants.CORRELATION_ID_KEY;
 
 import java.util.UUID;
+
+import static org.anuvaad.constants.RequestContextConstants.*;
 
 /**
  * 1st filter to execute in the request flow.
@@ -47,8 +48,10 @@ public class CorrelationFilter extends ZuulFilter {
         logger.info("Correlation ID Filter...");
         RequestContext ctx = RequestContext.getCurrentContext();
         final String correlationId = UUID.randomUUID().toString();
+        final String requestId = UUID.randomUUID().toString();
         MDC.put(CORRELATION_ID_KEY, correlationId);
         ctx.set(CORRELATION_ID_KEY, correlationId);
+        ctx.addZuulRequestHeader(ZUUL_REQUEST_ID_HEADER_KEY, requestId);
         logger.debug(RECEIVED_REQUEST_MESSAGE, ctx.getRequest().getRequestURI());
         return null;
     }

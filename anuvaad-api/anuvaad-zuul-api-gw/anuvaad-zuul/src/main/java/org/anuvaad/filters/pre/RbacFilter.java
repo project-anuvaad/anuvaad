@@ -60,7 +60,7 @@ public class RbacFilter extends ZuulFilter {
     private static final String AUTH_TOKEN_HEADER_NAME = "auth-token";
     private static final String ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE = "Routing to protected endpoint {} restricted, due to authorization failure";
     private static final String UNAUTHORIZED_USER_MESSAGE = "You are not authorised to access this resource";
-    private static final String PROCEED_ROUTING_MESSAGE = "Routing to protected endpoint: {} - auth provided";
+    private static final String PROCEED_ROUTING_MESSAGE = "Routing to protected endpoint: {} - authorization check passed!";
     private static final String INVALID_ROLES_MESSAGE = "This user contains an invalid/inactive role!";
     private static final String INVALID_ROLES_ACTIONS_MESSAGE = "This user doesn't have access to the action.";
     private static final String RETRIEVING_USER_FAILED_MESSAGE = "Retrieving user failed";
