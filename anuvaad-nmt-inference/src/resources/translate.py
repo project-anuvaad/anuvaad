@@ -19,7 +19,7 @@ class InteractiveTranslateResource(Resource):
                                     "tagged_src":complete_response[i]['tagged_src'],"s_id":complete_response[i]['s_id'],
                                     "src":complete_response[i]["src"]}
                     for i in range(len(complete_response))]
-            log_info("out from interactive-translation done{}".format(out),MODULE_CONTEXT)
+            log_info("out from interactive-translation done: {}".format(out),MODULE_CONTEXT)
             # log_info(entry_exit_log(LOG_TAGS["output"],out))
             return CustomResponse.jsonify(out)
         else:
@@ -36,7 +36,7 @@ class InteractiveMultiTranslateResource(Resource):
             log_info("inputs---{}".format(inputs),MODULE_CONTEXT)
             # log_info(entry_exit_log(LOG_TAGS["input"],inputs))
             out = TranslateService.interactive_translation(inputs)
-            log_info("out from v1/interactive-translation done{}".format(out.getres()),MODULE_CONTEXT)
+            log_info("out from v1/interactive-translation done: {}".format(out.getresjson()),MODULE_CONTEXT)
             # log_info(entry_exit_log(LOG_TAGS["output"],out))
             return out.getres()
         else:
@@ -51,7 +51,7 @@ class OpenNMTTranslateResource(Resource):
             log_info("Making translate-anuvaad API call",MODULE_CONTEXT)
             log_info("inputs---{}".format(inputs),MODULE_CONTEXT)
             out = OpenNMTTranslateService.translate_func(inputs)
-            log_info("out from translate_func-trans_util done{}".format(out.getres()),MODULE_CONTEXT)
+            log_info("out from translate_func-trans_util done: {}".format(out.getresjson()),MODULE_CONTEXT)
             return out.getres()
         else:
             log_info("null inputs in request in translate-anuvaad API",MODULE_CONTEXT)
@@ -65,7 +65,7 @@ class NMTTranslateResource(Resource):
             log_info("Making v3/translate-anuvaad API call",MODULE_CONTEXT)
             log_info("inputs---{}".format(inputs),MODULE_CONTEXT)
             out = OpenNMTTranslateService.translate_func(inputs)
-            log_info("Final output from v3/translate-anuvaad API {}".format(out.getres()),MODULE_CONTEXT)
+            log_info("Final output from v3/translate-anuvaad API: {}".format(out.getresjson()),MODULE_CONTEXT)
             return out.getres()
         else:
             log_info("null inputs in request in translate-anuvaad API",MODULE_CONTEXT)
@@ -80,7 +80,7 @@ class InteractiveMultiTranslateResourceNew(Resource):
             log_info("inputs---{}".format(inputs),MODULE_CONTEXT)
             # log_info(entry_exit_log(LOG_TAGS["input"],inputs))
             out = TranslateService.interactive_translation(inputs)
-            log_info("out from v2/interactive-translation done{}".format(out.getres()),MODULE_CONTEXT)
+            log_info("out from v2/interactive-translation done: {}".format(out.getresjson()),MODULE_CONTEXT)
             # log_info(entry_exit_log(LOG_TAGS["output"],out))
             return out.getres()
         else:
