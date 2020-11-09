@@ -2,12 +2,24 @@ import API from "./api";
 import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 
-export default class RunExperiment extends API {
-  constructor(file, timeout = 2000) {
-    console.log();
+export default class BulkSearchAPI extends API {
+  constructor(offset, limit, jobIds=[''], searchForNewJob=false, isNextPage=false, updateExisting=false, timeout = 2000) {
     super("POST", timeout, false);
-    this.type = C.FETCHDOCUMENT;
-    this.file = file;
+    this.type     = C.FETCHDOCUMENT;
+
+    if (searchForNewJob) {
+      this.type   = C.FETCHDOCUMENT_NEWJOB;
+    }
+    if (isNextPage) {
+      this.type   = C.FETCHDOCUMENT_NEWJOB;
+    }
+    if (updateExisting) {
+      this.type   = C.FETCHDOCUMENT_EXISTING;
+    }
+
+    this.offset   = offset;
+    this.limit    = limit;
+    this.jobIds   = jobIds;
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.fetchducuments}`
   }
 
@@ -19,7 +31,6 @@ export default class RunExperiment extends API {
     super.processResponse(res);
     if (res) {
       this.sentences = res;
-      
     }
   }
 
@@ -29,17 +40,12 @@ export default class RunExperiment extends API {
 
   getBody() {
     return {
-      
-        
-            "jobIDs": [
-              ""
-            ],
-            "taskDetails": true,
-            "workflowCodes": [
-              "DP_WFLOW_FBT","DP_WFLOW_FBTTR"
-            ]
-          }
-    
+      "offset": this.offset,
+      "limit": this.limit,
+      "jobIDs": this.jobIds,
+      "taskDetails": true,
+      "workflowCodes": ["DP_WFLOW_FBT","WF_A_FCBMTKTR","DP_WFLOW_FBTTR"],
+    }
   }
 
   getHeaders() {

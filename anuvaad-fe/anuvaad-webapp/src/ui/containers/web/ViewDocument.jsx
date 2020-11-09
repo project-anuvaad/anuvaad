@@ -14,35 +14,76 @@ import APITransport from "../../../flux/actions/apitransport/apitransport";
 import { translate } from "../../../assets/localisation";
 import ProgressBar from "../../components/web/common/ProgressBar";
 import Spinner from "../../components/web/common/Spinner";
-import LanguageCodes from "../../components/web/common/Languages.json"
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import DeleteOutlinedIcon from '@material-ui/icons/VerticalAlignBottom';
 import InfoIcon from '@material-ui/icons/Info';
 import Dialog from "../../components/web/common/SimpleDialog";
 import Fab from '@material-ui/core/Fab';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-//import AddIcon from '@material-ui/icons/Add';
+import Snackbar from "../../components/web/common/Snackbar";
 import PublishIcon from '@material-ui/icons/Publish';
+import DeleteIcon from '@material-ui/icons/Delete';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import MarkInactive from "../../../flux/actions/apis/markinactive";
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import JobStatus from "../../../flux/actions/apis/translation.progress";
+import { clearJobEntry } from '../../../flux/actions/users/async_job_management';
+
 const TELEMETRY = require('../../../utils/TelemetryManager')
 
 class ViewDocument extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: [],
-      apiCalled: false,
-      hindi: [],
-      english: [],
-      hindi_score: [],
-      english_score: [],
-      file: {},
-      corpus_type: "single",
-      hindiFile: {},
-      englishFile: {},
       role: JSON.parse(localStorage.getItem("roles")),
-      showInfo: false
+      showInfo: false,
+      offset: 0,
+      limit: 10,
+      currentPageIndex: 0,
+      dialogMessage:null
     };
+  }
+
+  /**
+   * life cycle methods
+   */
+  componentDidMount() {
+    this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
+
+    if (this.props.job_details.documents.length < 1) {
+      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, false, false)
+      this.setState({showLoader:true})
+    }
+
+    if (this.props.async_job_status.job) {
+      /**
+       * a job got started, fetch it status
+       */
+      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, [this.props.async_job_status.job.jobID], true, false)
+      this.props.clearJobEntry()
+    }
+    this.makeAPICallDocumentsTranslationProgress()
+    
+    TELEMETRY.pageLoadCompleted('view-document')
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.timerId);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.job_details.documents.length !== this.props.job_details.documents.length) {
+      /**
+       * update job progress status only progress_updated is false
+       */
+      if (!this.props.job_details.progress_updated) {
+        this.makeAPICallDocumentsTranslationProgress()
+        this.setState({showLoader:false})
+      }
+
+      if (!this.props.job_details.document_deleted) {
+      }
+    }
   }
 
   getMuiTheme = () => createMuiTheme({
@@ -50,244 +91,202 @@ class ViewDocument extends React.Component {
       MUIDataTableBodyCell: {
         root: {
           padding: '3px 10px 3px'
-
         }
       },
-
     }
   })
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('view-document')
-
-    //getSnapshotBeforeUpdate() must return null
-    return null; 
+    /**
+     * getSnapshotBeforeUpdate() must return null
+     */
+    return null;
   }
 
-  componentDidMount() {
-    this.handleRefresh(true)
-    TELEMETRY.pageLoadCompleted('view-document')
-  }
-
-  handleClick = rowData => {
-    history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[7]}/${rowData[4]}/${rowData[5]}/${rowData[6]}`);
-
-    // history.push(`${process.env.PUBLIC_URL}/interactive-document/${rowData[4]}/${rowData[5]}`);
-  };
-
-
-  handleRefresh(value) {
-    const { APITransport } = this.props;
-    const apiObj = new FetchDocument();
-    APITransport(apiObj);
-    value && this.setState({ showLoader: true });
-  }
-
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.fetchDocument !== this.props.fetchDocument) {
-      var arr = []
-
-      this.props.fetchDocument.map((value, i) => {
-        if (prevProps.fetchDocument && Array.isArray(prevProps.fetchDocument) && prevProps.fetchDocument.length > 0 && prevProps.fetchDocument[i] && prevProps.fetchDocument[i].status && prevProps.fetchDocument[i].status !== value.status && (value.status === "FAILED"|| value.status === "COMPLETED")) {
-          TELEMETRY.endWorkflow(value.jobID)
-        }
-
-        let date = value.startTime.toString()
-        let timestamp = date.substring(0, 13)
-        var d = new Date(parseInt(timestamp))
-        let dateStr = d.toISOString()
-        var myDate = new Date(dateStr);
-        let createdAt = (myDate.toLocaleString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }))
-        let currentDate = new Date()
-
-        let timeDiff = Math.floor((currentDate.getTime() - myDate.getTime()) / 60000)
-
-        let taskData = {}
-        taskData.status = (value.status === "INPROGRESS" && timeDiff > 300) ? "FAILED" : value.status;
-        taskData.jobId = value.jobID
-        let tasks = []
-
-        value && value.taskDetails && Array.isArray(value.taskDetails) && value.taskDetails.length > 0 && value.taskDetails.map((task, i) => {
-          let subTask = {}
-          subTask.state = task.state
-          subTask.status = task.status
-          tasks.push(subTask)
-          return null;
-        })
-        taskData.subTasks = tasks
-
-        let sourceLangCode, targetLangCode, sourceLang, targetLang
-        if (value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.source_language_code && value.input.files[0].model.target_language_code) {
-          sourceLangCode = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.source_language_code
-          targetLangCode = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.target_language_code
-
-          let langCodes = LanguageCodes
-          if (langCodes && Array.isArray(langCodes) && langCodes.length > 0) {
-            langCodes.map(lang => {
-              if (lang.language_code === sourceLangCode) {
-                sourceLang = lang.language_name
-              }
-              if (lang.language_code === targetLangCode) {
-                targetLang = lang.language_name
-              }
-              return null
-            })
-          }
-        }
-
-        var b = {}
-
-        b["status"] = (value.status === "INPROGRESS" && timeDiff > 300) ? "FAILED" : value.status;
-        b["job"] = value.jobID;
-        b["name"] = value.input.jobName ? value.input.jobName : value.input.files[0].name;
-        b["id"] = value.output && (value.output[0].hasOwnProperty('outputFilePath') ? value.output[0].outputFilePath : value.output[0].outputFile);
-        b["inputFile"] = value.taskDetails && value.taskDetails.length > 0 && value.taskDetails[0].output && value.taskDetails[0].output.length > 0 && value.taskDetails[0].output[0].outputFile;
-        b["modelId"] = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.model_id
-        b["locale"] = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.source_language_code
-        b["timestamp"] = createdAt
-        b["source"] = sourceLang
-        b["target"] = targetLang
-        b["tasks"] = taskData
-
-        arr.push(b)
-        return null
-      })
-      this.setState({ name: arr, showLoader: false });
+  /**
+   * API calls
+   */
+  checkInprogressJobStatus = () => {
+    let inprogressJobIds = this.props.job_details.documents.filter(job => (job.status === 'INPROGRESS')).map(job => job.jobID)
+    if (inprogressJobIds.length > 0) {
+      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, inprogressJobIds, false, false, true)
     }
   }
 
-  handleFileDownload(file) {
-    let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${
-      file ? file : ""
-      }`
-    window.open(url, "_self")
+  makeAPICallJobsBulkSearch(offset, limit, jobIds=[''], searchForNewJob=false, searchNextPage=false, updateExisting=false) {
+    const { APITransport }  = this.props;
+    const apiObj            = new FetchDocument(offset, limit, jobIds, searchForNewJob, searchNextPage, updateExisting);
+    APITransport(apiObj);
   }
 
-  handleDialog(rowData) {
-    this.setState({ showInfo: true, message: rowData })
+  makeAPICallJobDelete(jobId) {
+    const { APITransport }  = this.props;
+    const apiObj            = new MarkInactive(jobId);
+    APITransport(apiObj);
+    this.setState({ showProgress: true, searchToken: false });
+  }
+
+  makeAPICallDocumentsTranslationProgress(jobIds) {
+    var recordIds = this.getRecordIds() 
+    if (recordIds.length > 1) {
+      const { APITransport }  = this.props;
+      const apiObj            = new JobStatus(recordIds);
+      APITransport(apiObj);
+      this.setState({ showProgress: true, searchToken: false });      
+    }
+  }
+
+  /**
+   * helper methods
+   */
+  getJobsSortedByTimestamp = () => {
+    let jobs = this.props.job_details.documents.sort((a, b) => {
+      if (a.created_on < b.created_on) {
+        return 1
+      }
+      return -1
+    })
+    return jobs;
+  }
+
+  getJobsAsPerPageAndLimit = (page, limit) => {
+    return this.getJobsSortedByTimestamp().slice(page * limit, page * limit + limit);
+  }
+
+  getRecordIds = () => {
+    return this.getJobsAsPerPageAndLimit(this.state.currentPageIndex, this.state.limit).map(job => job.recordId)
+  }
+
+  getJobIdDetail = (jobId) => {
+    return this.getJobsSortedByTimestamp().filter(job => job.jobID === jobId)[0]
+  }
+
+  getDateTimeFromTimestamp = (t) => {
+    let date = new Date(t);
+    return ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
+  }
+
+  showProgressIndicator = () => {
+    return (
+      <div >
+        <ProgressBar token={true} val={1000} eta={2000 * 1000}></ProgressBar>
+      </div>
+    )
+  }
+
+  /**
+   * handlers to process user clicks
+   */
+
+  processJobTimelinesClick(jobId, recordId) {
+    let taskDetails = this.getJobIdDetail(jobId)
+    this.setState({ showInfo: true, message: taskDetails })
+
   }
 
   handleDialogClose() {
     this.setState({ showInfo: false })
   }
 
+  processDeleteJobClick = (jobId, recordId) => {
+    this.makeAPICallJobDelete(jobId);
+  }
+
+  processViewDocumentClick = (jobId, recordId, status) => {
+    let job = this.getJobIdDetail(jobId);
+    if(status==="COMPLETED"){
+      history.push(`${process.env.PUBLIC_URL}/interactive-document/${job.source_language_code}/${job.target_language_code}/${job.target_language_code}/${job.recordId}/${job.converted_filename}/${job.model_id}`, this.state);
+    }
+    else if(status==="INPROGRESS"){
+      this.setState({dialogMessage:"Please wait process is Inprogress!" })
+      this.handleMessageClear()
+    }
+    else{
+      this.setState({dialogMessage:"Document conversion failed!" })
+      this.handleMessageClear()
+    }
+ }
+
+  handleMessageClear = () =>{
+    setTimeout(() => {
+        this.setState({dialogMessage:""});
+    }, 3000)
+  }
+
+  snackBarMessage = () =>{
+    return (
+      <div>
+      <Snackbar
+          anchorOrigin      = {{ vertical: "top", horizontal: "right" }}
+          open              = {true}
+          autoHideDuration  = {3000}
+          variant           = {"info"}
+          message           = {this.state.dialogMessage}
+        />
+        </div>
+    )
+  }
+      
+  processDownloadInputFileClick = (jobId, recordId) => {
+    let job = this.getJobIdDetail(jobId);
+    let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${
+      job.converted_filename ? job.converted_filename : ""
+      }`
+      window.open(url, "_self")
+  }
+
+  processTableClickedNextOrPrevious = (page, sortOrder) => {
+    if(this.state.currentPageIndex < page) {
+      /**
+       * user wanted to load next set of records
+       */
+      this.makeAPICallJobsBulkSearch(this.state.offset + this.state.limit, this.state.limit, false, true)
+      this.setState({
+        currentPageIndex:page,
+        offset: this.state.offset+this.state.limit
+      });
+    }
+  };
+
   render() {
     const columns = [
       {
+        name: "filename",
+        label: 'Filename',
+        options: {
+          filter: false,
+          sort: false,
+        }
+      },
+      {
         name: "jobID",
-        label: translate("common.page.label.basename"),
+        label: 'JobID',
         options: {
           display: "excluded"
         }
       },
       {
-        name: "status",
-        label: translate("viewCorpus.page.label.fileName"),
-        options: {
-
-          display: "excluded"
-        }
-      },
-      {
-        name: "job",
-        label: "Job ID",
-        options: {
-          filter: true,
-          sort: true,
-          // sortOrder: "asc",
-          display: "excluded"
-
-        }
-      },
-
-      {
-        name: "name",
-        label: "Filename",
-        options: {
-          filter: true,
-          customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
-              return (
-                <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  {tableMeta.rowData[3]}
-                </div>
-              );
-            }
-
-          }
-        }
-      },
-
-      {
-        name: "id",
-        label: "id",
+        name: "recordId",
+        label: 'RecordId',
         options: {
           display: "excluded"
         }
       },
       {
-        name: "inputFile",
-        label: "inputFile",
-        options: {
-          display: "excluded"
-        },
-
-      },
-      {
-        name: "modelId",
-        label: "modelId",
-        options: {
-          display: "excluded"
-        },
-
-
-      },
-      {
-        name: "locale",
-        label: "locale",
-        options: {
-
-          display: "excluded"
-        }
-      },
-
-      {
-        name: "source",
+        name: "source_language_code",
         label: translate("common.page.label.source"),
         options: {
           filter: false,
           sort: false,
-          // sortDirection: "desc",
-          customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
-              return (
-                <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  {tableMeta.rowData[8]}
-                </div>
-              );
-            }
-
-          }
         }
       },
       {
-        name: "target",
+        name: "target_language_code",
         label: translate("common.page.label.target"),
         options: {
           filter: false,
           sort: false,
-          // sortDirection: "desc",
-          customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
-              return (
-                <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  {tableMeta.rowData[9]}
-                </div>
-              );
-            }
-
-          }
         }
       },
       {
@@ -297,40 +296,31 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
-
-          customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
-
-
-              return (
-
-                <div style={{ width: '120px' }}>
-
-                  {(tableMeta.rowData[1] !== 'COMPLETED' && tableMeta.rowData[1] !== 'FAILED') ? <ProgressBar token={true} val={1000} eta={2000 * 1000} handleRefresh={this.handleRefresh.bind(this)}></ProgressBar> : <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>{tableMeta.rowData[1]}</div>}
-
-                </div>
-              );
-            }
-
-          }
         }
       },
       {
-        name: "timestamp",
+        name: "progress",
+        label: "Progress",
+        options: {
+          filter: true,
+          sort: false,
+          empty: true,
+        }
+      },
+      {
+        name: "created_on",
         label: translate("common.page.label.timeStamp"),
         options: {
           filter: true,
           sort: true,
-          // sortOrder: "asc",
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
-                <div onClick={() => tableMeta.rowData[1] === 'COMPLETED' && this.handleClick(tableMeta.rowData)}>
-                  {tableMeta.rowData[11]}
+                <div>
+                {this.getDateTimeFromTimestamp(tableMeta.rowData[7])}
                 </div>
-              );
+              )
             }
-
           }
         }
       },
@@ -341,34 +331,46 @@ class ViewDocument extends React.Component {
           filter: true,
           sort: false,
           empty: true,
-
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
                 <div >
-                  <Tooltip title="info" placement="left"><IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.handleDialog(tableMeta.rowData[13])}><InfoIcon style={{ color: "#C6C6C6" }} /></IconButton></Tooltip>
-                  {tableMeta.rowData[1] === 'COMPLETED' ? <Tooltip title={translate('viewTranslate.page.title.downloadSource')} placement="right"><IconButton style={{ color: '#233466' }} component="a" onClick={() => { this.setState({ fileDownload: true }); this.handleFileDownload(tableMeta.rowData[5]) }}><DeleteOutlinedIcon /></IconButton></Tooltip> : ''}
+
+                  <Tooltip title="Info" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processJobTimelinesClick(tableMeta.rowData[1], tableMeta.rowData[2])}>
+                      <InfoIcon/>
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="View document" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processViewDocumentClick(tableMeta.rowData[1], tableMeta.rowData[2],tableMeta.rowData[5] )}>
+                      <LibraryBooksIcon />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Delete job" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processDeleteJobClick(tableMeta.rowData[1], tableMeta.rowData[2])}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Download input file" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processDownloadInputFileClick(tableMeta.rowData[1], tableMeta.rowData[2])}>
+                      <CloudDownloadIcon />
+                    </IconButton>
+                  </Tooltip>
                 </div>
               );
             }
-
           }
         }
       },
-      {
-        name: "tasks",
-        label: "tasks",
-        options: {
-          display: "excluded"
-        },
-      }
-
     ];
 
     const options = {
       textLabels: {
         body: {
-          noMatch: translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
+          noMatch: this.props.job_details.count > 0 && this.props.job_details.count > this.props.job_details.documents.length ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
         },
         toolbar: {
           search: translate("graderReport.page.muiTable.search"),
@@ -376,12 +378,21 @@ class ViewDocument extends React.Component {
         },
         pagination: {
           rowsPerPage: translate("graderReport.page.muiTable.rowsPerPages")
+        },
+        options: { sortDirection: 'desc' }
+      },
+
+      onTableChange: (action, tableState) => {
+        switch (action) {
+          case 'changePage':
+            this.processTableClickedNextOrPrevious(tableState.page, tableState.sortOrder);
+            break;
+          default:
         }
       },
+      count: this.props.job_details.count,
       filterType: "checkbox",
-      // onRowClick: rowData => (rowData[1] === "COMPLETED") && this.handleClick(rowData),
       download: false,
-      expandableRowsOnClick: true,
       print: false,
       fixedHeader: true,
       filter: false,
@@ -389,10 +400,12 @@ class ViewDocument extends React.Component {
       sortOrder: {
         name: 'timestamp',
         direction: 'desc'
-      }
+      },
+      page: this.state.currentPageIndex
     };
 
     return (
+     
       <div>
         <Toolbar style={{ marginLeft: "-5.4%", marginRight: "1.5%", marginTop: "20px" }}>
           <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
@@ -415,8 +428,15 @@ class ViewDocument extends React.Component {
               ""
             )}
         </Toolbar>
+        { this.state.dialogMessage && this.snackBarMessage()}
         <div style={{ margin: '2% 3% 3% 3%' }}>
-          {!this.state.showLoader && <MuiThemeProvider theme={this.getMuiTheme()}> <MUIDataTable title={translate("common.page.title.document")} data={this.state.name} columns={columns} options={options} /></MuiThemeProvider>}
+          {
+            !this.state.showLoader && 
+            <MuiThemeProvider theme={this.getMuiTheme()}> 
+              <MUIDataTable title={translate("common.page.title.document")} 
+                    data={this.getJobsSortedByTimestamp()} 
+                    columns={columns} options={options} />
+            </MuiThemeProvider>}
         </div>
         {this.state.showInfo &&
           <Dialog message={this.state.message}
@@ -425,25 +445,25 @@ class ViewDocument extends React.Component {
             open
             title="File Process Information" />
         }
-        {this.state.showLoader && < Spinner />}
+        
+        {(this.state.showLoader || this.state.loaderDelete) && < Spinner />}
       </div>
 
     );
-
   }
-
 }
 
 const mapStateToProps = state => ({
   user: state.login,
   apistatus: state.apistatus,
-  corp: state.corp,
-  fetchDocument: state.fetchDocument
+  job_details: state.job_details,
+  async_job_status: state.async_job_status
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
+      clearJobEntry,
       APITransport,
       CreateCorpus: APITransport
     },

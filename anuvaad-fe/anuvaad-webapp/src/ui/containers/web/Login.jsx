@@ -31,6 +31,10 @@ class Login extends React.Component {
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('login')
+    /**
+    * getSnapshotBeforeUpdate() must return null
+    */
+    return null;
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
   }

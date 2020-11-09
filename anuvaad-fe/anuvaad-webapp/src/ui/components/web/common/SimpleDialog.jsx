@@ -6,21 +6,21 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import { translate } from "../../../../assets/localisation";
+import Typography from "@material-ui/core/Typography";
 
 export default class SimpleDialog extends React.Component {
 
 
     render() {
         var { value, message, handleSubmit, handleClose, open, title, status } = this.props
-
         return (
             <div>
 
                 <Dialog
-                    inputProps={{
-                        name: 'max-width',
-                        id: 'max-width',
-                      }}
+                    // inputProps={{
+                    //     name: 'max-width',
+                    //     id: 'max-width',
+                    //   }}
                     open={open}
                     keepMounted
                     onClose={this.handleClose}
@@ -32,27 +32,27 @@ export default class SimpleDialog extends React.Component {
                         {title}
                     </DialogTitle>
                     <DialogContent style={{minWidth: "500px"}}>
-                        {this.props.type ?
-                            <DialogContentText>
-                                <div><span style={{ fontWeight: "bold" }}>Job ID: </span><span>{message.jobId}</span></div>
-                                <div><span style={{ fontWeight: "bold" }}>Status: </span><span>{message.status}</span></div>
-                                {message.subTasks && Array.isArray(message.subTasks) && message.subTasks.length > 0 &&
+                        {this.props.type && this.props.type !== "warning"?
+                            <div>
+                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Job ID: </Typography><Typography>&nbsp; {message.jobID}</Typography></div>
+                                <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Status: </Typography><Typography>&nbsp; {message.status}</Typography></div>
+                                 {message.timelines && Array.isArray(message.timelines) && message.timelines.length > 0 &&
                                     <div>
                                         <div>&nbsp;</div>
-                                        <div style={{ fontWeight: "bold", fontSize: "20px" }}>Completed Tasks:</div>
+                                        <Typography style={{ fontWeight: "bold", fontSize: "18px" }}>Completed Tasks:</Typography>
                                         {
-                                            message.subTasks.map((task, i) => {
+                                            message.timelines.map((task, i) => {
                                                 return (
-                                                    <div>
+                                                    <div key={i}>
                                                         <div>&nbsp;</div>
-                                                        <div><span style={{ fontWeight: "bold" }}>State: </span><span>{task.state}</span></div>
-                                                        <div><span style={{ fontWeight: "bold" }}>Status: </span><span>{task.status}</span></div>
+                                                        <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>State: </Typography><Typography>&nbsp; {task.module}</Typography></div>
+                                                        <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Status: </Typography><Typography>&nbsp; {task.status}</Typography></div>
                                                     </div>
                                                 )
                                             })
                                         }
                                     </div>}
-                            </DialogContentText>
+                            </div>
                             : <DialogContentText id="alert-dialog-slide-description">
                                 {message}
                             </DialogContentText>}

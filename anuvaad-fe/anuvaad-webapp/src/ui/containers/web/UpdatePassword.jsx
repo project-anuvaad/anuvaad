@@ -30,7 +30,7 @@ class UpdatePassword extends React.Component {
     };
 
     handleSubmit(e) {
-        var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        var mailformat = /^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/;
         if (this.state.email.match(mailformat)) {
             let { APITransport } = this.props;
             let apiObj = new ForgotPasswordApi(this.state.email);
@@ -54,7 +54,7 @@ class UpdatePassword extends React.Component {
                 <div>
                     <Grid container spacing={8}>
                         <Grid item xs={12} sm={4} lg={5} xl={5} >
-                            <img src="Anuvaad.png" width="100%"  height="925px" alt="" />
+                            <img src="Anuvaad.png"  width="100%"  height="925px" alt="" marginBottom="0px" />
                         </Grid>
                         <Grid item xs={12} sm={8} lg={7} xl={7} style={{ backgroundColor: '#f1f5f7' }} >
                             <Typography align='center' style={{ marginTop: '30%', marginBottom: '5%', fontSize: '33px', fontfamily: 'Trebuchet MS, sans-serif', color: '#003366' }}>
@@ -71,7 +71,7 @@ class UpdatePassword extends React.Component {
                                 <Button
                                     disabled={!this.state.email}
                                     variant="contained" aria-label="edit" style={{
-                                        width: '50%', marginBottom: '2%', marginTop: '2%',
+                                        width: '50%', marginBottom: '2%', marginTop: '2%',marginLeft:'25%',borderRadius:"20px 20px 20px 20px",height:'45px',
                                         backgroundColor: this.state.email ? '#1ca9c9' : 'gray', color: 'white',
                                     }} onClick={this.handleSubmit.bind(this)}>
                                     {translate("common.page.button.submit")}

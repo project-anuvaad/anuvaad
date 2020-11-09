@@ -1,8 +1,12 @@
 
-MODULE_CONTEXT = {'metadata':{'module':'CONTENT-HANDLER'}}
+MODULE_CONTEXT = {'metadata':{'module':'CONTENT-HANDLER', 'jobID': None}}
 
-def init():
-    global app_context
-    app_context = {
-        'application_context' : None
-    }
+class AppContext:
+    @staticmethod
+    def addRecordID(record_id):
+        if record_id is not None:
+            MODULE_CONTEXT['metadata']['jobID'] = record_id.split('|')[0]
+
+    @staticmethod
+    def getContext():
+        return MODULE_CONTEXT

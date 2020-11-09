@@ -5,15 +5,16 @@ import API from "./api";
 import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 export default class NMTSP extends API {
-    constructor(source, target, model, dontshowloader, v1, timeout = 200000) {
+    constructor(source, target, model, dontshowloader, v1, sId, timeout = 200000) {
         super("POST", timeout, false);
         this.src = source;
         this.target = target;
-        this.model = model.model_id;
+        this.model = model;
         this.dontshowloader = dontshowloader;
         this.answers = null;
+        this.sId = sId;
         this.type = C.INTRACTIVE_TRANSLATE;
-        this.endpoint = v1 ? `${super.apiEndPointAuto()}${ENDPOINTS.interactive_translate_v1}` : `${super.apiEndPointAuto()}${ENDPOINTS.interactive_translate}`
+        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.translate}`
     }
 
     toString() {
@@ -22,7 +23,10 @@ export default class NMTSP extends API {
 
     processResponse(res) {
         super.processResponse(res);
-        this.answers = res.response_body
+
+        if(res && res.output && res.output.predictions && Array.isArray(res.output.predictions) && res.output.predictions.length>0) {
+            this.answers = res.output.predictions[0]
+        }
     }
 
     apiEndPoint() {
@@ -34,17 +38,22 @@ export default class NMTSP extends API {
     }
 
     getBody() {
-
+        let reqObj = {}
         var modelArray = [];
+        let textListObj = {}
 
         modelArray.push({
+            s_id: this.sId,
             src: this.src,
-            target_prefix: this.target,
-            id: parseInt(this.model, 10),
+            taggedPrefix: this.target,
+            modelID: parseInt(this.model, 10),
 
         });
 
-        return modelArray;
+        // reqObj.workflowCode = "DP_WFLOW_S_IT_T"
+        textListObj.textList = modelArray
+        reqObj.input = textListObj
+        return reqObj;
 
     }
 

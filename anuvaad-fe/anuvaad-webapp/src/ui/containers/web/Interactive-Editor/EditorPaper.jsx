@@ -26,7 +26,7 @@ class EditorPaper extends React.Component {
     if (Array.isArray(this.props.sentences) &&
       this.props.sentences.length > 0) {
       this.props.sentences.map((sentence, index) => {
-        if (previousNode != null && sentence.page_no == 1) {
+        if (previousNode != null && sentence.page_no === 1) {
           if (parseInt(sentence.y) < parseInt(previousNode.y_end)) {
             let difference = (previousNode.y_end - sentence.y) * 100 / previousNode.y_end
             if (difference > 30) {
@@ -35,7 +35,7 @@ class EditorPaper extends React.Component {
           }
         }
         previousNode = sentence
-      })
+     return null; })
     }
   }
 
@@ -70,7 +70,7 @@ class EditorPaper extends React.Component {
 
         supArray.push(
           <span key={index}>
-            <a href="#">
+            <a href="/#">
               <span
                 onClick={() => this.props.handleSuperScript(sentenceId + "_" + 0, "true", this.props.paperType, true)}
                 title={superScripts && superScripts[supScript] ? superScripts[supScript].text : ""}
@@ -90,7 +90,7 @@ class EditorPaper extends React.Component {
   }
 
   getSelectionText(event) {
-    var text = "";
+    //var text = "";
     let selection = {};
     var activeEl = document.activeElement;
     var activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null;
@@ -99,9 +99,9 @@ class EditorPaper extends React.Component {
       activeElTagName === "textarea" ||
       (activeElTagName === "input" && /^(?:text|search|password|tel|url)$/i.test(activeEl.type) && typeof activeEl.selectionStart === "number")
     ) {
-      text = activeEl.value.slice(activeEl.selectionStart, activeEl.selectionEnd);
+      //text = activeEl.value.slice(activeEl.selectionStart, activeEl.selectionEnd);
     } else if (window.getSelection) {
-      text = window.getSelection().toString();
+      //text = window.getSelection().toString();
     }
 
     let sentences = "";
@@ -167,13 +167,13 @@ class EditorPaper extends React.Component {
     padding = (padding - 10) + "%";
     let pageNo = sArray[0].page_no;
     if (!sArray[0].is_footer && !sArray[0].is_table) {
-      let printPageNo = false;
-      let isFirst = false;
+      //let printPageNo = false;
+      //let isFirst = false;
       if (index === 0) {
-        printPageNo = true;
-        isFirst = true;
+        //printPageNo = true;
+        //isFirst = true;
       } else if (prevSentence && sentence.page_no !== prevSentence.page_no) {
-        printPageNo = true;
+        //printPageNo = true;
       }
 
 
@@ -315,7 +315,7 @@ class EditorPaper extends React.Component {
                       }
                   }
                   ref={sentence._id + "_" + tokenText.sentence_index + "_" + this.props.paperType}
-                  key={sentence._id + "_" + tokenText.sentence_index}
+                  //key={sentence._id + "_" + tokenText.sentence_index}
                   onDoubleClick={event => this.props.handleonDoubleClick(sentence._id + "_" + tokenText.sentence_index, tokenText.text, event)}
                   onClick={event => {
                     sentence.text_pending
@@ -646,12 +646,12 @@ class EditorPaper extends React.Component {
               sArray.push(sentence)
               let fontValue = Number(sentence.class_style['font-size'].split('px')[0])
               // if ((index !== sentences.length - 1 && sentences[index + 1].y !== sentence.y) || index === sentences.length - 1) {
-              if ((index !== sentences.length - 1 && ((fontValue + Number(sentence.y_end) < Number(sentences[index + 1].y) || sentence.page_no != sentences[index + 1].page_no))) || index === sentences.length - 1) {
+              if ((index !== sentences.length - 1 && ((fontValue + Number(sentence.y_end) < Number(sentences[index + 1].y) || sentence.page_no !== sentences[index + 1].page_no))) || index === sentences.length - 1) {
                 let a = this.newFetchSentence(sentence, sentences[index - 1], index, sentences[sentences.length - 1].page_no, sArray);
                 sArray = []
                 elems.push(a);
               }
-              if (index == sentences.length - 1 || sentence.page_no != sentences[index + 1].page_no) {
+              if (index === sentences.length - 1 || sentence.page_no !== sentences[index + 1].page_no) {
                 let elemArray = elems
                 elems = []
                 return <div><p>{this.renderPageNumber(sentence.page_no, sentences[sentences.length - 1].page_no)}</p><div style={{ columnCount: this.state.columns }}><p>{elemArray}</p></div></div>
@@ -661,7 +661,7 @@ class EditorPaper extends React.Component {
 
 
 
-            })
+            return null;})
             : sentences &&
             Array.isArray(sentences) &&
             sentences.length > 0 &&

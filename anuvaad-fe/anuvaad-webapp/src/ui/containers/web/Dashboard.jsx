@@ -204,14 +204,13 @@ class Dashboard extends React.Component {
     const { classes } = this.props;
     let gridSizeLarge = role.includes("dev") ? 4 : 12
     let gridSizeSmall = role.includes("dev") ? 6 : 12
-
     return (
       <div className={classes.root}>
         <Typography variant="h4" className={classes.typographyHeader}>
           {translate("dashboard.page.heading.title")}
         </Typography>
         <Paper className={classes.paper}>
-          <Grid container spacing={24}>
+          <Grid container >
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.rowData} style={{ marginTop: "0%" }}>
               <Grid item xs={6} sm={6} lg={8} xl={8} className={classes.label}>
                 <Typography value="" variant="h5">
@@ -433,8 +432,8 @@ const mapStateToProps = state => ({
   automl: state.automl,
   nmt: state.nmt,
   nmtsp: state.nmtsp,
-  supportLanguage: state.supportLanguage,
-  langModel: state.langModel
+  supportLanguage: state.fetch_languages.languages,
+  langModel: state.fetch_models.models
 });
 
 const mapDispatchToProps = dispatch =>

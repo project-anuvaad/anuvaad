@@ -10,18 +10,6 @@ ENABLE_CORS = False
 
 #folders and file path
 download_folder = 'upload'
-
-
-BLOCK_TYPES = [{'key':'lines'},{'key':'images'},{'key':'tables'},{'key':'text_blocks'}]
-
-#mongo
-MONGO_IP = 'MONGO_IP'
-DEFAULT_VALUE = 'localhost'
-MONGO_DB_IDENTIFIER = 'MONGO_DB'
-DEFAULT_MONGO_DB_IDENTIFIER = 'preprocessing'
-MONGO_SERVER_URL = os.environ.get(MONGO_IP, DEFAULT_VALUE)
-MONGO_DB = os.environ.get(MONGO_DB_IDENTIFIER, DEFAULT_MONGO_DB_IDENTIFIER)
-
 # new mongo config
 MONGO_DB_HOST   = os.environ.get('MONGO_IP', '192.168.1.9')
 MONGO_DB_PORT   = os.environ.get('MONGO_PORT', 27017)
