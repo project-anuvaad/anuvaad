@@ -3,7 +3,7 @@ import { Paper, Divider } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { highlightSentence, clearHighlighBlock, cancelMergeSentence } from '../../../../flux/actions/apis/translator_actions';
+import { highlightSentence, clearHighlighBlock, cancelMergeSentence } from '../../../../flux/actions/users/translator_actions';
 import SENTENCE_ACTION from './SentenceActions'
 
 const PAGE_OPS = require("../../../../utils/page.operations");

@@ -1,4 +1,4 @@
-import C from '../actions/constants';
+import C from '../../actions/constants';
 
 export default function sentenceMergeReducer(state={started: false, progress: false, finished: false, cancel: false, api_status: false, sentences:[]}, action){
     switch(action.type) {

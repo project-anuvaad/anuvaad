@@ -26,7 +26,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import MarkInactive from "../../../flux/actions/apis/markinactive";
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import JobStatus from "../../../flux/actions/apis/job-status";
+import JobStatus from "../../../flux/actions/apis/translation.progress";
+import { clearJobEntry } from '../../../flux/actions/users/async_job_management';
 
 const TELEMETRY = require('../../../utils/TelemetryManager')
 
@@ -54,13 +55,15 @@ class ViewDocument extends React.Component {
       this.setState({showLoader:true})
     }
 
-    if (this.props.workflowStatus.jobID) {
+    if (this.props.async_job_status.job) {
       /**
        * a job got started, fetch it status
        */
-      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, [this.props.workflowStatus.jobID], true, false)
+      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, [this.props.async_job_status.job.jobID], true, false)
+      this.props.clearJobEntry()
     }
-
+    this.makeAPICallDocumentsTranslationProgress()
+    
     TELEMETRY.pageLoadCompleted('view-document')
   }
 
@@ -134,22 +137,29 @@ class ViewDocument extends React.Component {
     }
   }
 
-  getRecordIds = () => {
-    let jobIds = []
-    for (var i = this.state.currentPageIndex * this.state.limit; i < (this.state.currentPageIndex * this.state.limit) + this.state.limit; i++) {
-      if (this.props.job_details.documents[i].hasOwnProperty("recordId") && this.props.job_details.documents[i]['recordId']) {
-        jobIds.push(this.props.job_details.documents[i]['recordId'])
+  /**
+   * helper methods
+   */
+  getJobsSortedByTimestamp = () => {
+    let jobs = this.props.job_details.documents.sort((a, b) => {
+      if (a.created_on < b.created_on) {
+        return 1
       }
-    }
-    return jobIds;
+      return -1
+    })
+    return jobs;
+  }
+
+  getJobsAsPerPageAndLimit = (page, limit) => {
+    return this.getJobsSortedByTimestamp().slice(page * limit, page * limit + limit);
+  }
+
+  getRecordIds = () => {
+    return this.getJobsAsPerPageAndLimit(this.state.currentPageIndex, this.state.limit).map(job => job.recordId)
   }
 
   getJobIdDetail = (jobId) => {
-    for (var i = this.state.currentPageIndex * this.state.limit; i < (this.state.currentPageIndex * this.state.limit) + this.state.limit; i++) {
-      if (this.props.job_details.documents[i]['jobID'] === jobId) {
-        return this.props.job_details.documents[i]
-      }
-    }
+    return this.getJobsSortedByTimestamp().filter(job => job.jobID === jobId)[0]
   }
 
   getDateTimeFromTimestamp = (t) => {
@@ -231,10 +241,10 @@ class ViewDocument extends React.Component {
       /**
        * user wanted to load next set of records
        */
-      this.makeAPICallJobsBulkSearch(this.state.offset + 10, this.state.limit, false, true)
+      this.makeAPICallJobsBulkSearch(this.state.offset + this.state.limit, this.state.limit, false, true)
       this.setState({
         currentPageIndex:page,
-        offset: this.state.offset+10
+        offset: this.state.offset+this.state.limit
       });
     }
   };
@@ -323,7 +333,6 @@ class ViewDocument extends React.Component {
           empty: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
-
               return (
                 <div >
 
@@ -350,9 +359,6 @@ class ViewDocument extends React.Component {
                       <CloudDownloadIcon />
                     </IconButton>
                   </Tooltip>
-                  
-                  
-
                 </div>
               );
             }
@@ -424,7 +430,13 @@ class ViewDocument extends React.Component {
         </Toolbar>
         { this.state.dialogMessage && this.snackBarMessage()}
         <div style={{ margin: '2% 3% 3% 3%' }}>
-          {!this.state.showLoader && <MuiThemeProvider theme={this.getMuiTheme()}> <MUIDataTable title={translate("common.page.title.document")} data={this.props.job_details.documents} columns={columns} options={options} /></MuiThemeProvider>}
+          {
+            !this.state.showLoader && 
+            <MuiThemeProvider theme={this.getMuiTheme()}> 
+              <MUIDataTable title={translate("common.page.title.document")} 
+                    data={this.getJobsSortedByTimestamp()} 
+                    columns={columns} options={options} />
+            </MuiThemeProvider>}
         </div>
         {this.state.showInfo &&
           <Dialog message={this.state.message}
@@ -445,12 +457,13 @@ const mapStateToProps = state => ({
   user: state.login,
   apistatus: state.apistatus,
   job_details: state.job_details,
-  workflowStatus: state.workflowStatus
+  async_job_status: state.async_job_status
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
+      clearJobEntry,
       APITransport,
       CreateCorpus: APITransport
     },

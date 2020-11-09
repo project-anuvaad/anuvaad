@@ -13,7 +13,7 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import DictionaryAPI from '../../../../flux/actions/apis/word_dictionary';
-import { highlightBlock, startMergeSentence, inProgressMergeSentence, finishMergeSentence, cancelMergeSentence, clearHighlighBlock } from '../../../../flux/actions/apis/translator_actions';
+import { highlightBlock, startMergeSentence, inProgressMergeSentence, finishMergeSentence, cancelMergeSentence, clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import MenuItems from "./PopUp";
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";

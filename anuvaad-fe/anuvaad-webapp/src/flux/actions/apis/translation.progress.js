@@ -1,13 +1,11 @@
-
-
-
 /**
- * Dictionary API
+ * Document translation progress
  */
 import API from "./api";
 import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
-export default class WordDictionary extends API {
+
+export default class DocumentTranslationProgress extends API {
     constructor(jobId, timeout = 2000) {
         
         super("POST", timeout, false);

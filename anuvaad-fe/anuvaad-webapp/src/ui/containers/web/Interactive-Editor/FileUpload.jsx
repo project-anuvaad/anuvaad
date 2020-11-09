@@ -20,6 +20,8 @@ import DocumentUpload from "../../../../flux/actions/apis/document_upload";
 import TextField from "@material-ui/core/TextField";
 import Select from "../../../components/web/common/Select";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
+
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const theme = createMuiTheme({
@@ -181,6 +183,8 @@ class PdfUpload extends Component {
     }
 
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
+      this.props.createJobEntry(this.props.workflowStatus)
+      
       TELEMETRY.startWorkflow(this.state.source, this.state.target, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
       history.push(`${process.env.PUBLIC_URL}/view-document`);
     }
@@ -372,6 +376,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
+      createJobEntry,
       APITransport,
       CreateCorpus: APITransport
     },

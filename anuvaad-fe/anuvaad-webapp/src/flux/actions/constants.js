@@ -97,6 +97,12 @@ const constants = {
     JOBSTATUS: "JOBSTATUS",
 
     /**
+     * Asynchronous Job action
+     */
+    CREATE_JOB_ENTRY        :   'CREATE_JOB_ENTRY',
+    CLEAR_JOB_ENTRY         :   'CLEAR_JOB_ENTRY',
+
+    /**
      * actions for merge and split operation
      */
     HIGHLIGHT_BLOCK :               'HIGHLIGHT_BLOCK',

@@ -5,7 +5,7 @@ import nmtsp from './nmtsp';
 import apistatus from './apistatus/apistatus';
 import translations from './translations';
 import translation_sentences from './translation_sentences';
-import sentences from './sentences';
+import sentences from './sentences/sentences';
 import userProfile from './userprofile';
 import translation from './translation';
 import userRoles from './userroles';
@@ -19,7 +19,7 @@ import activate from './activate';
 import workflowStatus from "./fileupload";
 import documentUplaod from "./documentUpload";
 import fetchDocument from "./fetch_document";
-import job_details from './v1_fetch_job_details';
+import job_details from './jobs/v1_fetch_job_details';
 import document_contents from './v1_fetch_content';
 import fetch_languages from './v1_fetchlanguages';
 import fetch_models from './v1_fetch_model';
@@ -31,9 +31,9 @@ import wordDictionary from "./word_dictionary";
 import saveContent from "./savecontent";
 
 import block_highlight from './blockReducer'
-import sentence_highlight from './sentenceReducer'
-import sentence_action_operation from './sentenceActionReducer'
-
+import sentence_highlight from './sentences/sentenceReducer'
+import sentence_action_operation from './sentences/sentenceActionReducer'
+import async_job_status from './jobs/async_job_management'
 
 export default {
     login,
@@ -69,5 +69,7 @@ export default {
 
     block_highlight,
     sentence_highlight,
-    sentence_action_operation
+    sentence_action_operation,
+
+    async_job_status,
 };
