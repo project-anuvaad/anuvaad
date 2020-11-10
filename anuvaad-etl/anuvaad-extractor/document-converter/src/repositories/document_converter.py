@@ -183,8 +183,8 @@ class DocumentConversion(object):
             row, column = 1, 0
             tokenised_sentences = self.get_tokenized_sentences(json_data)
             for tokenised_sentence in tokenised_sentences:
-                worksheet.write(row, col, tokenised_sentence['src']) 
-                worksheet.write(row, col + 1, tokenised_sentence['tgt']) 
+                worksheet.write(row, column, tokenised_sentence['src']) 
+                worksheet.write(row, column + 1, tokenised_sentence['tgt']) 
                 row += 1
             workbook.close()
             return out_xlsx_filename
