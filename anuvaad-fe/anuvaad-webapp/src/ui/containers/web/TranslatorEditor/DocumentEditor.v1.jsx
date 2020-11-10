@@ -65,6 +65,9 @@ class DocumentEditor extends React.Component {
       TELEMETRY.pageLoadCompleted('document-editor')
       let recordId  = this.props.match.params.jobid;
       let jobId     = recordId ? recordId.split("|")[0] : ""
+
+      localStorage.setItem("recordId", recordId);
+      localStorage.setItem("inputFile", this.props.match.params.inputfileid)
   
       let langCodes = LanguageCodes
       let sourceLang = ''
@@ -79,7 +82,11 @@ class DocumentEditor extends React.Component {
       TELEMETRY.startTranslatorFlow(sourceLang, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
       this.setState({ showLoader: true });
       this.makeAPICallFetchContent();
+      window.addEventListener('popstate',this.handleOnClose);
     }
+
+
+    
 
     componentDidUpdate(prevProps) {
       if (prevProps.document_contents.content_updated !== this.props.document_contents.content_updated) {
@@ -92,6 +99,11 @@ class DocumentEditor extends React.Component {
       if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
         this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
       }
+    }
+
+    componentWillUnmount() {
+      localStorage.setItem("recordId", "");
+      localStorage.setItem("inputFile", "");
     }
 
     handleSourceScroll(id) {
@@ -331,13 +343,14 @@ class DocumentEditor extends React.Component {
         })
     }
 
-    handleOnClose = () => {
+    handleOnClose = (e) => {
+      e.preventDefault()
       let recordId  = this.props.match.params.jobid;
       let jobId     = recordId ? recordId.split("|")[0] : ""
       TELEMETRY.endTranslatorFlow(jobId)
       this.props.ClearContent()
   
-      history.push(`${process.env.PUBLIC_URL}/view-document`);
+      // history.push(`${process.env.PUBLIC_URL}/view-document`);
     }
 
     /**
@@ -357,7 +370,7 @@ class DocumentEditor extends React.Component {
                     <Button
                     // variant="outlined"
                     onClick={event => {
-                        this.handleOnClose();
+                        this.handleOnClose(event);
                     }}
                     style={{ textTransform: "capitalize", width: "100%", minWidth: "150px", borderRadius: "30px", color: "#233466" }}
                     >
@@ -461,7 +474,7 @@ class DocumentEditor extends React.Component {
       return(
         <Grid item xs={12} sm={6} lg={6} xl={6}>
           <InfiniteScroll  height={1200} style={{
-            maxHeight: window.innerHeight - 160,
+            maxHeight: window.innerHeight - 80,
             overflowY: "auto",
           }}
             next={this.makeAPICallFetchContent}
@@ -490,7 +503,7 @@ class DocumentEditor extends React.Component {
           <Grid item xs={12} sm={6} lg={6} xl={6}>
             
             <InfiniteScroll  height={1200}  style={{
-            maxHeight: window.innerHeight - 160,
+            maxHeight: window.innerHeight - 80,
             overflowY: "auto",
           }}
                 next={this.makeAPICallFetchContent}
@@ -521,10 +534,10 @@ class DocumentEditor extends React.Component {
     render() {
         return (
         <div>
-            {this.renderToolBar()}
-            <Grid container spacing={2} style={{ padding: "73px 24px 0px 24px" }}>
+            {/* {this.renderToolBar()} */}
+            <Grid container spacing={2} style={{ padding: "0px 24px 0px 24px" }}>
                 {this.renderDocumentPages()}
-                {this.state.isModeSentences ? this.renderSentences() : this.renderPDFDocument()}
+                {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>
             {(this.state.snackBarMessage || this.state.snackBarSavedMessage) && this.snackBarMessage()}
             {(this.props.document_contents.pages.length<1) && < Spinner />}
@@ -537,7 +550,8 @@ const mapStateToProps = state => ({
     saveContent: state.saveContent,
     document_contents: state.document_contents,
     sentence_highlight: state.sentence_highlight.sentence,
-    sentence_action_operation : state.sentence_action_operation.api_status
+    sentence_action_operation : state.sentence_action_operation.api_status,
+    show_pdf: state.show_pdf.open
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

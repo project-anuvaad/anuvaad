@@ -24,9 +24,10 @@ import DocumentEditorV1 from './ui/containers/web/TranslatorEditor/DocumentEdito
 
 import FileUpload from './ui/containers/web/Interactive-Editor/FileUpload';
 import ViewDocument from './ui/containers/web/ViewDocument';
+import ViewDocHeader from "./ui/containers/web/TranslatorEditor/ViewDocHeader"
+import IntercativeDocHeader from "./ui/containers/web/TranslatorEditor/InteractiveDocHeader"
 
-
-const PrivateRoute = ({ component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
+const PrivateRoute = ({ headerAttribute: headerAttribute,  component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
     {...rest}
     render={props =>
@@ -36,6 +37,7 @@ const PrivateRoute = ({ component: Component, userRoles, title, drawer, showLogo
           currentMenu={currentMenu}
           showLogo={showLogo}
           component={Component}
+          headerAttribute= {headerAttribute}
           title={title}
           forDemo={forDemo}
           drawer={drawer}
@@ -119,17 +121,18 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/interactive-document/:locale/:tgt_locale/:targetlang/:jobid/:inputfileid/:modelId`}
               userRoles={["editor", "dev", "grader", "interactive-editor"]}
               component={DocumentEditorV1}
-              title={translate('dashboard.page.heading.title')}
+              title="Translate file"
               authenticate={this.authenticateUser}
               dontShowLoader
               currentMenu="texttranslate"
+              headerAttribute={IntercativeDocHeader}
             />
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-upload`}
               userRoles={["editor", "dev", "grader", "interactive-editor"]}
               component={FileUpload}
-              title={translate('dashboard.page.heading.title')}
+              title="Start Translate"
               authenticate={this.authenticateUser}
               currentMenu="texttranslate"
             />
@@ -179,6 +182,7 @@ class AppRoutes extends React.Component {
               component={ViewDocument}
               authenticate={this.authenticateUser}
               currentMenu="view-document"
+              headerAttribute={ViewDocHeader}
             />
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
           </Switch>

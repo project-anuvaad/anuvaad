@@ -203,54 +203,51 @@ class SentenceCard extends React.Component {
      * user actions handlers
      */
     processSaveButtonClicked() {
-
-        if (!this.state.userEnteredText) {
-            // user has not entered anything, check availability  of s0_tgt
-            if (this.state.value === '' && this.props.sentence.s0_tgt === '') {
-                alert('Please translate the source sentence and then save .. ')
+        if (this.state.value.length < 1 || this.state.value === '') {
+            // textfield has no value present.
+            // - check availability of s0_tgt
+            //  - if s0_tgt is not available, alert user
+            //  - if s0_tgt is available, then move s0_tgt to textfield
+            if (this.props.sentence.s0_tgt === '') {
+                alert('Please translate the sentence and then save .. ')
                 return;
             }
-            /**
-             * textfield is empty but MT sentence exists, then transfer the MT
-             * sentence to text field.
-             */
-            if (this.state.value === '' && this.props.sentence.s0_tgt !== '') {
-                if (this.props.onAction) {
-                    this.setState({
-                        value: this.props.sentence.s0_tgt
-                    })
-
-                    let sentence = { ...this.props.sentence };
-                    sentence.save = true;
-                    sentence.tgt = this.props.sentence.s0_tgt;
-                    delete sentence.block_identifier;
-
-                    this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
-                    return;
-                }
-            }
-
-            /**
-             * textfield has data but user has not entered anything
-             */
-            if (this.state.value.length > 0) {
+            if (this.props.sentence.save) {
+                alert('Your will lose saved sentence, please translate the sentence and then save .. ')
                 return;
             }
-        }
+            this.setState({
+                value: this.props.sentence.s0_tgt
+            })
+            if (this.props.onAction) {
+                let sentence    = { ...this.props.sentence };
+                sentence.save   = true;
+                sentence.tgt    = this.props.sentence.s0_tgt;
+                delete sentence.block_identifier;
 
-        this.setState({
-            userEnteredText: false
-        })
+                TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt , sentence.s_id , "translation")
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+                return;
+            }
+        } else {
+            // textfield has value present
+            if (!this.state.userEnteredText) {
+                // value is present, however user hasn't edit it.
+                // no point saving
+                alert('Please edit your sentence and then save .. ')
+                return;
+            }
+            if (this.props.onAction) {
+                this.setState({userEnteredText: false})
 
-        if (this.props.onAction) {
-
-            let sentence = { ...this.props.sentence };
-            sentence.save = true;
-            sentence.tgt = this.state.value;
-            delete sentence.block_identifier;
-
-            TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt , sentence.s_id , "translation")
-            this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+                let sentence    = { ...this.props.sentence };
+                sentence.save   = true;
+                sentence.tgt    = this.state.value;
+                delete sentence.block_identifier;
+    
+                TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt , sentence.s_id , "translation")
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+            }
         }
     }
 

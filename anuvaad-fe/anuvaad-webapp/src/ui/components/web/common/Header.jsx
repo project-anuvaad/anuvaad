@@ -18,6 +18,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import history from "../../../../web.history";
 
 import MenuIcon from '@material-ui/icons/Menu';
+import BackIcon from '@material-ui/icons/ArrowBack';
+
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import logo from '../../../../assets/logo.png';
@@ -26,32 +28,33 @@ import { translate } from '../../../../../src/assets/localisation';
 import DownIcon from '@material-ui/icons/ArrowDropDown';
 import PeopleIcon from '@material-ui/icons/Person';
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
+import Fab from '@material-ui/core/Fab';
 
 const styles = {
-    container:{},
-    containerDemo:{},
-    appBar:{},
-    appBarShift:{},
-    buttonLeft:{},
-    buttonRight:{},
-    editButton:{},
-    hide:{},
-    drawer:{},
-    drawerPaper:{},
-    drawerHeader:{},
-    contentShift:{},
-    drawerPaperClose:{},
-    toolbar:{},
-    title:{},
-    content:{},
-  
+  container: {},
+  containerDemo: {},
+  appBar: {},
+  appBarShift: {},
+  buttonLeft: {},
+  buttonRight: {},
+  editButton: {},
+  hide: {},
+  drawer: {},
+  drawerPaper: {},
+  drawerHeader: {},
+  contentShift: {},
+  drawerPaperClose: {},
+  toolbar: {},
+  title: {},
+  content: {},
+
   root: {
     flexGrow: 1,
-    
+
   },
   flex: {
     flex: 1,
-    
+
   },
   felxDemo: {
     flex: 1,
@@ -139,17 +142,35 @@ class Header extends React.Component {
       useRole.push(item); value !== role.length - 1 && useRole.push(", ")
       return true;
     });
-    return (
-      <div  >
-        <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, open && classes.appBarShift)}>
+    const ToolbarComp = this.props.toolBarComp; // eslint-disable-line
 
-          <Toolbar disableGutters={!open}>
-            <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
-              {this.state.open ?
-                <CloseIcon /> :
-                <MenuIcon />
+    return (
+      <div>
+        <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, open && classes.appBarShift)} style={{ height: '50px' }}>
+
+          <Toolbar disableGutters={!open} style={{ minHeight: "50px" }}>
+
+            {this.state.open ?
+              <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
+                <CloseIcon />
+              </IconButton> :
+              <div style={{ display: "flex", flexDirection: "row" }}>{
+                currentMenu === "texttranslate" &&
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <IconButton onClick={() => {
+                    history.push(`${process.env.PUBLIC_URL}/view-document`);
+                  }} className={classes.menuButton} color="inherit" aria-label="Menu">
+                    <BackIcon />
+                  </IconButton>
+                  <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "1px", marginTop: "5px" }}></div>
+                </div>
               }
-            </IconButton>
+                <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
+                  <MenuIcon />
+                </IconButton>
+              </div>
+            }
+            <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
             {forDemo &&
               <img src={logo}
                 alt=""
@@ -163,83 +184,17 @@ class Header extends React.Component {
             <Typography variant="h5" color="inherit" className={forDemo ? classes.felxDemo : classes.flex}>
               {title}
             </Typography>
-
-            <img src={anuvaadLogo}
-              style={{
-                position: 'absolute',
-                marginLeft: '47%',
-                height: '27px'
-              }}
-              alt="" />
-            <div style={{ position: 'absolute', right: '20px', display: 'flex', flexDirection: 'row' }}>
-              {!dontShowHeader &&
-                <div style={{ display: 'flex', flexDirection: 'row', cursor: "pointer" }} onClick={this.handleMenu.bind(this)}>
-
-                  <PeopleIcon style={{ marginRight: '10px', paddingTop:"4px" }}></PeopleIcon>
-                  <Typography
-                    variant="h5"
-                    color="inherit"
-                    style={{
-                      // position: "absolute",
-                      textTransform: "capitalize",
-
-                      // right: "60px"
-                    }}
-                  >
-                    {this.state.name}
-                  </Typography>
-                </div>
-              }
-              {this.state.drawerClose}
-              {!dontShowHeader && auth && (
-                <div
-                  style={{
-                    paddingLeft: '10px',
-                    top: "20px",
-                  }}
-                >
-                  
-                  <DownIcon onClick={this.handleMenu.bind(this)} style={{ cursor: "pointer", paddingTop:"3px"  }}></DownIcon>
-                  <Menu
-                    id="menu-appbar"
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right"
-                    }}
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right"
-                    }}
-                    open={openEl}
-                    onClose={this.handleClose}
-                  >
-                    <MenuItem
-                      onClick={() => {
-                        this.handleClose();
-                        history.push(`${process.env.PUBLIC_URL}/profile`);
-                      }}
-                    >
-                      {translate('header.page.heading.MyProfile')}
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        this.handleClose();
-                        history.push(`${process.env.PUBLIC_URL}/logout`);
-                      }}
-                    >
-                      {translate('header.page.heading.logout')}
-                    </MenuItem>
-                  </Menu>
-                </div>
-              )}
-            </div>
+            {this.props.toolBarComp &&
+              <div style={{position: 'absolute', right: '3%'}}>
+                <ToolbarComp />
+              </div>
+            }
           </Toolbar>
         </AppBar>
         <div>
           {!drawer &&
             <Grid container spacing={10}>
-              
+
               <Drawer
                 color="inherit"
                 variant="persistent"
@@ -258,20 +213,15 @@ class Header extends React.Component {
                   <ListItem>
                     <ListItemText
                       disableTypography
+                      style={{ textAlign: "left", marginLeft: "6%" }}
                       primary={
-                        <Typography
-                          type="body2"
-                          style={{ color: "#D6D6D6", paddingBottom: "2%", marginLeft: "6%" }}
-                          variant="h5"
-                          color="inherit"
-                          className={classes.flex}
-                        >
-                          {translate("common.page.label.menu")}
-                        </Typography>
+                        <img src={anuvaadLogo}
+                          width={100}
+                          alt="" />
                       }
                     />
                   </ListItem>
-                  
+
                   {role && Array.isArray(role) && !role.includes("analyzer") && !role.includes("admin") && !role.includes("user") && (
                     <div>
                       <Divider className={classes.divider} />
@@ -313,7 +263,7 @@ class Header extends React.Component {
                           disableTypography
                           primary={
                             <Typography type="body2" style={{ color: currentMenu === "view-document" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                            Translate document
+                              Translate document
                             </Typography>
                           }
                         />
@@ -321,13 +271,58 @@ class Header extends React.Component {
                     </div>
                   )}
 
+                  <div>
+                    <Divider className={classes.divider} />
+
+                    <ListItem
+                      style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "profile" && themeAnuvaad.palette.primary.main }}
+                      button
+                      onClick={() => {
+                        this.handleDrawerClose();
+                        history.push(`${process.env.PUBLIC_URL}/profile`);
+                      }}
+                    >
+
+                      <ListItemText
+                        disableTypography
+                        primary={
+                          <Typography type="body2" style={{ color: currentMenu === "profile" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                            {translate('header.page.heading.MyProfile')}
+                          </Typography>
+                        }
+                      />
+                    </ListItem>
+                  </div>
+
+                  <div>
+                    <Divider className={classes.divider} />
+
+                    <ListItem
+                      style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "logout" && themeAnuvaad.palette.primary.main }}
+                      button
+                      onClick={() => {
+                        this.handleDrawerClose();
+                        history.push(`${process.env.PUBLIC_URL}/logout`);
+                      }}
+                    >
+
+                      <ListItemText
+                        disableTypography
+                        primary={
+                          <Typography type="body2" style={{ color: currentMenu === "logout" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                            {translate('header.page.heading.logout')}
+                          </Typography>
+                        }
+                      />
+                    </ListItem>
+                  </div>
                 </List>
               </Drawer>
 
             </Grid>
           }
         </div>
-      </div>
+      </div >
     );
   }
 }
