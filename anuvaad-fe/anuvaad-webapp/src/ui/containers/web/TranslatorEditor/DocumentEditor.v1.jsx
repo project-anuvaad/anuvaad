@@ -82,7 +82,11 @@ class DocumentEditor extends React.Component {
       TELEMETRY.startTranslatorFlow(sourceLang, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
       this.setState({ showLoader: true });
       this.makeAPICallFetchContent();
+      window.addEventListener('popstate',this.handleOnClose);
     }
+
+
+    
 
     componentDidUpdate(prevProps) {
       if (prevProps.document_contents.content_updated !== this.props.document_contents.content_updated) {
@@ -339,13 +343,14 @@ class DocumentEditor extends React.Component {
         })
     }
 
-    handleOnClose = () => {
+    handleOnClose = (e) => {
+      e.preventDefault()
       let recordId  = this.props.match.params.jobid;
       let jobId     = recordId ? recordId.split("|")[0] : ""
       TELEMETRY.endTranslatorFlow(jobId)
       this.props.ClearContent()
   
-      history.push(`${process.env.PUBLIC_URL}/view-document`);
+      // history.push(`${process.env.PUBLIC_URL}/view-document`);
     }
 
     /**
@@ -365,7 +370,7 @@ class DocumentEditor extends React.Component {
                     <Button
                     // variant="outlined"
                     onClick={event => {
-                        this.handleOnClose();
+                        this.handleOnClose(event);
                     }}
                     style={{ textTransform: "capitalize", width: "100%", minWidth: "150px", borderRadius: "30px", color: "#233466" }}
                     >
