@@ -35,7 +35,7 @@ import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverte
 // import BLOCK_OPS from "../../../../utils/block.operations";
 // import TELEMETRY from '../../../../utils/TelemetryManager';
 
-import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted } from '../../../../flux/actions/users/translator_actions';
+import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 
 const { v4 }        = require('uuid');
@@ -108,7 +108,7 @@ class DocumentEditor extends React.Component {
       let recordId  = this.props.match.params.jobid;
       let jobId     = recordId ? recordId.split("|")[0] : ""
       TELEMETRY.endTranslatorFlow(jobId)
-      this.props.ClearContent()
+      this.props.clearFetchContent()
     }
 
     handleSourceScroll(id) {
@@ -566,7 +566,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
       APITransport,
       update_sentences,
       update_blocks,
-      ClearContent: ClearContent
+      ClearContent,
+      clearFetchContent
     },
     dispatch
 );

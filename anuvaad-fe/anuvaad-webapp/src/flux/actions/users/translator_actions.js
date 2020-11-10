@@ -64,6 +64,14 @@ export function cancelMergeSentence() {
     }
 }
 
+export function clearFetchContent() {
+    return {
+        type: C.CLEAR_FETCH_CONTENT,
+        payload: {
+        }
+    }
+}
+
 /**
  * following two apis action is needed to show which is participating in the
  * actions.
