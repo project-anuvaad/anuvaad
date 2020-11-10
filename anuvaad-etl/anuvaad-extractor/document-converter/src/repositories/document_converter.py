@@ -176,7 +176,8 @@ class DocumentConversion(object):
     def generate_xlsx_file(self, record_id, json_data):
         try:
             out_xlsx_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '.xlsx'
-            workbook = xlsxwriter.Workbook(out_xlsx_filename)
+            output_filepath_xlsx = os.path.join(self.DOWNLOAD_FOLDER , out_filename)
+            workbook = xlsxwriter.Workbook(output_filepath_xlsx)
             worksheet = workbook.add_worksheet()
             worksheet.write('A1', 'Source Sentence') 
             worksheet.write('B1', 'Target Sentence')
