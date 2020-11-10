@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  version: 2.0.0
+  version: 3.0.0
   title: Anuvaad OpenNMT Translation system- API Contract
   description: A NMT based translation system in Indic languages
   contact:
@@ -12,10 +12,10 @@ schemes:
 produces:
   - application/json  
 
-base_path: '/translator'
+base_path: '/nmt-inference'
 
 paths: 
-  /translate-anuvaad:
+  /v3/translate-anuvaad:
     post:
       summary: REST API to perform translation at sentence level.
       description: This api takes a list of sentence and model id dictionary as input and outputs translation of each sentence. Supporting 25 input sentences per request.

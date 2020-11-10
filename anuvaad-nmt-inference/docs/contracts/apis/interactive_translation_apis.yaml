@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  version: 1.0.0
+  version: 2.0.0
   title: Anuvaad Interactive Translation - API Contract
   description: A NMT based custom translation system to support document editing 
   contact:
@@ -12,41 +12,10 @@ schemes:
 produces:
   - application/json  
 
-paths: 
-  /interactive-translation:
-    post:
-      summary: REST API to perform interactive translation at sentence level.
-      description: This api takes a sentence, model id and target prefix tokens as input and outputs customised translation based on the prefix.
-      parameters:
-         - in: body
-           name: Single Hypothesis
-           required: true
-           description: List of sentences to be edited/customised using interactive tool.
-           schema:
-            $ref: '#/definitions/interactive_translation_input'
-            
-      tags:
-      - interactive-translation
+base_path: '/nmt-inference'
 
-      responses:
-        200:
-          description: On successful completion of the task.
-          schema:
-            $ref: '#/definitions/interactive_translation_response'
-        401:
-          description: incorrect input data
-          schema:
-            $ref: '#/definitions/error_status'
-        404:
-          description: missing input data
-          schema:
-            $ref: '#/definitions/error_status'
-        500:
-          description: interal server/model error
-          schema:
-            $ref: '#/definitions/error_status'    
-  
-  /v1/interactive-translation:
+paths:   
+  /v2/interactive-translation:
     post:
       summary: REST API to perform interactive translation at sentence level generating multiple possible translation.
       description: This api takes a sentence, model id and target prefix tokens as input and outputs multiple customised translation based on the prefix.
@@ -97,26 +66,6 @@ definitions:
           type: string
           description: target prefix string in target language
       
-
-  interactive_translation_response:
-    type: object
-    properties:        
-      response_body:
-        type: array
-        description: A list of customised translation response along with intermediate data
-        items:
-          properties:
-            tgt: 
-              type: string
-              description: Customised output translation of above src sentence
-            tagged_src:
-              type: string
-              description: Tagged version of src sentence, meant for keep tagging information of numbers in src.
-            tagged_tgt:
-              type: string
-              description : Tagged version of tgt output, meant for keeping information of numbers in tgt.
-      status:
-        $ref: '#/definitions/status_obj'
   
   interactive_translation_multiple_hypothesis_response:
     type: object
