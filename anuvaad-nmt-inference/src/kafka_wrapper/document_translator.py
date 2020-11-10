@@ -29,7 +29,7 @@ class KafkaTranslate:
                     # log_info(log_with_record_id(record_id,LOG_TAGS["input"],inputs))  
                     if inputs['url_end_point'] == "translate-anuvaad":
                         log_info("Running kafka-translation on  {}".format(inputs['message']),MODULE_CONTEXT)  
-                        out = OpenNMTTranslateService.translate_func(inputs['message'], "translation_server")
+                        out = OpenNMTTranslateService.translate_func(inputs['message'])
                         log_info("final output kafka-translate-anuvaad:{}".format(out),MODULE_CONTEXT) 
                         # log_info(log_with_record_id(record_id,LOG_TAGS["output"],out),MODULE_CONTEXT)
                     else:
@@ -50,9 +50,9 @@ class KafkaTranslate:
         except ValueError:  
             '''includes simplejson.decoder.JSONDecodeError '''
             log_exception("Decoding JSON has failed in document_translator: %s"% sys.exc_info()[0],MODULE_CONTEXT,e)
-            doc_translator(translation_server,c_topic)  
+            doc_translator(c_topic)  
         except Exception as e:
             log_exception("Unexpected error in kafak doc_translator: %s"% sys.exc_info()[0],MODULE_CONTEXT,e)
             log_exception("error in doc_translator: {}".format(e),MODULE_CONTEXT,e)
-            doc_translator(translation_server,c_topic)
+            doc_translator(c_topic)
     
