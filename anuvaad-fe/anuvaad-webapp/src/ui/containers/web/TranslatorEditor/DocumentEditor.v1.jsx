@@ -454,7 +454,7 @@ class DocumentEditor extends React.Component {
      * render Document pages
      */
     renderDocumentPages = () => {
-      let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages);
+      let pages = this.props.document_contents.app_pages;
       if (pages.length < 1) {
         return(
             <div></div>
@@ -482,7 +482,8 @@ class DocumentEditor extends React.Component {
      * render sentences
      */
     renderSentences = () => {
-      let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages);
+      console.log('renderSentences')
+      let pages = this.props.document_contents.app_pages;
       if (pages.length < 1) {
         return(
             <div></div>
