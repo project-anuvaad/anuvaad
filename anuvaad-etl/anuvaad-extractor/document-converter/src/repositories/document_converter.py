@@ -14,6 +14,8 @@ from docx.shared import Length
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
 import uuid
+import xlsxwriter
+from jsonpath_rw import jsonpath, parse
 
 class DocumentConversion(object):
 
@@ -31,9 +33,8 @@ class DocumentConversion(object):
             response_data = response.content
             log_info("Received data from fetch-content end point of content handler", MODULE_CONTEXT)
             dict_str = response_data.decode("UTF-8")
-            dict_json = json.loads(dict_str)
-            pages = dict_json['data']
-            return pages
+            dict_json_data = json.loads(dict_str)
+            return dict_json_data
         except Exception as e:
             log_exception("Can not fetch content in content handler: ", MODULE_CONTEXT, e)
 
@@ -160,3 +161,32 @@ class DocumentConversion(object):
         output_filepath = os.path.join(self.DOWNLOAD_FOLDER , out_filename)
         document.save(output_filepath)
         return out_filename
+
+    def get_tokenized_sentences(self, json_data):
+        try:
+            jsonpath_expr = parse('$..tokenized_sentences[*]')
+            matches       = jsonpath_expr.find(json_data)
+            tokenized_sentences = []
+            for match in matches:
+                tokenized_sentences.append(match.value)
+            return tokenized_sentences
+        except Exception as e:
+            log_exception("Getting only tokenised sentence object failed", MODULE_CONTEXT, e)
+
+    def generate_xlsx_file(self, record_id, json_data):
+        try:
+            out_xlsx_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '.xlsx'
+            workbook = xlsxwriter.Workbook(out_xlsx_filename)
+            worksheet = workbook.add_worksheet()
+            worksheet.write('A1', 'Source Sentence') 
+            worksheet.write('B1', 'Target Sentence')
+            row, column = 1, 0
+            tokenised_sentences = self.get_tokenized_sentences(json_data)
+            for tokenised_sentence in tokenised_sentences:
+                worksheet.write(row, col, tokenised_sentence['src']) 
+                worksheet.write(row, col + 1, tokenised_sentence['tgt']) 
+                row += 1
+            workbook.close()
+            return out_xlsx_filename
+        except Exception as e:
+            log_exception("xlsx file formation failed", MODULE_CONTEXT, e)
