@@ -6,7 +6,7 @@ DEBUG = True
 API_URL_PREFIX = "/api/v0"
 HOST = '0.0.0.0'
 PORT = 5001
-BASE_DIR      = 'upload'
+BASE_DIR   = 'upload'
 
 ENABLE_CORS = False
 
