@@ -1,5 +1,4 @@
 from src.utilities.utils import FileOperation
-from src.services.main import DocumentStructure
 from src.utilities.model_response import CustomResponse
 from src.utilities.model_response import Status
 from src.errors.errors_exception import WorkflowkeyError
@@ -15,7 +14,9 @@ import copy
 import threading
 from src.kafka_module.producer import Producer
 import src.utilities.app_context as app_context
-
+###################################
+from src.services.main import test
+#####################################
 
 file_ops = FileOperation()
 
@@ -43,10 +44,12 @@ class Response(object):
                 app_context.application_context             = self.json_data
                 #debug_flush = True
                 if debug_flush == False:
-                    bm_response = DocumentStructure(app_context=app_context, file_name=input_filename, lang=in_locale)
-                    if bm_response['code'] == 200:
+                    ############################
+                    response = test(app_context=app_context)
+                    ##############################
+                    if response['code'] == 200:
                         
-                        output_filename_json = file_ops.writing_json_file(i, bm_response['rsp'], self.DOWNLOAD_FOLDER)
+                        output_filename_json = file_ops.writing_json_file(i, response['rsp'], self.DOWNLOAD_FOLDER)
                         file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
                         output_file_response.append(file_res)
                         task_endtime = eval(str(time.time()).replace('.', '')[0:13])
@@ -57,7 +60,7 @@ class Response(object):
                         
                         return response
                     else:
-                        post_error_wf(bm_response['code'], bm_response['message'], app_context.application_context, None)
+                        post_error_wf(response['code'], response['message'], app_context.application_context, None)
                         return None
                 else:
                     log_info('flushing queue data, not handling file {}'.format(input_files), app_context.application_context)

@@ -121,10 +121,10 @@ class InteractiveDocHeader extends React.Component {
     render() {
         const { anchorEl } = this.state;
         const openEl = Boolean(anchorEl);
-
+ 
         return (
-            <div style={{ marginRight: "20px", display: "flex", flexDirection: "row" }}>
-                <Button variant="outlined" onClick={this.openPDF.bind(this)}>Show PDF</Button>
+            <div style={{ display: "flex", flexDirection: "row", right: "0px !important" }}>
+                <Button variant="outlined" onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" :" Show PDF"}</Button>
                 <Button variant="outlined" style={{marginLeft: "10px"}} onClick={this.handleMenu.bind(this)}>
                     Download
                 <DownIcon/>
@@ -160,7 +160,8 @@ class InteractiveDocHeader extends React.Component {
 
 const mapStateToProps = state => ({
     saveContent: state.saveContent,
-    sentence_action_operation: state.sentence_action_operation.api_status
+    sentence_action_operation: state.sentence_action_operation.api_status,
+    show_pdf: state.show_pdf.open
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

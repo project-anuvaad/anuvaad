@@ -121,7 +121,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/interactive-document/:locale/:tgt_locale/:targetlang/:jobid/:inputfileid/:modelId`}
               userRoles={["editor", "dev", "grader", "interactive-editor"]}
               component={DocumentEditorV1}
-              title={translate('dashboard.page.heading.title')}
+              title="Translate file"
               authenticate={this.authenticateUser}
               dontShowLoader
               currentMenu="texttranslate"
@@ -132,7 +132,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/document-upload`}
               userRoles={["editor", "dev", "grader", "interactive-editor"]}
               component={FileUpload}
-              title={translate('dashboard.page.heading.title')}
+              title="Start Translate"
               authenticate={this.authenticateUser}
               currentMenu="texttranslate"
             />
