@@ -117,6 +117,11 @@ const constants = {
     FETCH_CONTENT_UPDATE:           'FETCH_CONTENT_UPDATE',
     CONTENT_UPDATE_STARTED:         'CONTENT_UPDATE_STARTED',
     UPDATE_SENTENCE_CONTENT    :   'UPDATE_SENTENCE_CONTENT',
-    UPDATE_BLOCK_CONTENT        :   'UPDATE_BLOCK_CONTENT'
+    UPDATE_BLOCK_CONTENT        :   'UPDATE_BLOCK_CONTENT',
+
+     /**
+     * actions for header
+     */
+    SHOW_PDF : 'SHOW_PDF'
 }
 export default constants;

@@ -35,6 +35,8 @@ import sentence_highlight from './sentences/sentenceReducer'
 import sentence_action_operation from './sentences/sentenceActionReducer'
 import async_job_status from './jobs/async_job_management'
 
+import show_pdf from './showPdfReducer'
+
 export default {
     login,
     automl,
@@ -72,4 +74,6 @@ export default {
     sentence_action_operation,
 
     async_job_status,
+
+    show_pdf,
 };
