@@ -44,18 +44,22 @@ class WflowConsumer:
         prefix = "Align-WFM-Consumer(" + rand_str + ")"
         log_info(prefix + " running.......", None)
         while True:
-            thread_count = 0
+            #thread_count = 0
             for msg in consumer:
                 data = {}
                 try:
                     data = msg.value
                     if data:
                         log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
+                        service.wf_process(data)
+                        """
                         thread_name = prefix + "--" + "thread--" + str(thread_count)
                         align_cons_thread = threading.Thread(target=service.wf_process, args=data, name=thread_name)
                         align_cons_thread.start()
                         log_info(prefix + " | Forked thread: " + thread_name, data)
                         thread_count += 1
+                        """
+                    break
                 except Exception as e:
                     log_exception("Exception while consuming: " + str(e), data, e)
                     util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming", data, True)
