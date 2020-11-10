@@ -104,6 +104,11 @@ class DocumentEditor extends React.Component {
     componentWillUnmount() {
       localStorage.setItem("recordId", "");
       localStorage.setItem("inputFile", "");
+
+      let recordId  = this.props.match.params.jobid;
+      let jobId     = recordId ? recordId.split("|")[0] : ""
+      TELEMETRY.endTranslatorFlow(jobId)
+      this.props.ClearContent()
     }
 
     handleSourceScroll(id) {
