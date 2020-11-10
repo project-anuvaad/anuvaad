@@ -40,7 +40,9 @@ class ViewDocument extends React.Component {
       offset: 0,
       limit: 10,
       currentPageIndex: 0,
-      dialogMessage:null
+      dialogMessage:null,
+      timeOut: 3000,
+      variant : "info"
     };
   }
 
@@ -81,8 +83,10 @@ class ViewDocument extends React.Component {
         this.setState({showLoader:false})
       }
 
-      if (!this.props.job_details.document_deleted) {
+      if (this.props.job_details.document_deleted) {
+        this.setState({dialogMessage: "Deleted successfully...!", variant: 'success', timeOut :3000})
       }
+
     }
   }
 
@@ -123,8 +127,10 @@ class ViewDocument extends React.Component {
   makeAPICallJobDelete(jobId) {
     const { APITransport }  = this.props;
     const apiObj            = new MarkInactive(jobId);
+    
     APITransport(apiObj);
-    this.setState({ showProgress: true, searchToken: false });
+    this.setState({ showProgress: true, searchToken: false , dialogMessage: " Selected document is deleting, please wait...!", timeOut :null});
+    
   }
 
   makeAPICallDocumentsTranslationProgress(jobIds) {
@@ -199,11 +205,11 @@ class ViewDocument extends React.Component {
       history.push(`${process.env.PUBLIC_URL}/interactive-document/${job.source_language_code}/${job.target_language_code}/${job.target_language_code}/${job.recordId}/${job.converted_filename}/${job.model_id}`, this.state);
     }
     else if(status==="INPROGRESS"){
-      this.setState({dialogMessage:"Please wait process is Inprogress!" })
+      this.setState({dialogMessage:"Please wait process is Inprogress!", timeOut :3000,variant:'info' })
       this.handleMessageClear()
     }
     else{
-      this.setState({dialogMessage:"Document conversion failed!" })
+      this.setState({dialogMessage:"Document conversion failed!", timeOut :3000,variant:'info' })
       this.handleMessageClear()
     }
  }
@@ -219,9 +225,9 @@ class ViewDocument extends React.Component {
       <div>
       <Snackbar
           anchorOrigin      = {{ vertical: "top", horizontal: "right" }}
-          open              = {true}
-          autoHideDuration  = {3000}
-          variant           = {"info"}
+          open              = {!this.state.timeOut}
+          autoHideDuration  = {this.state.timeOut}
+          variant           = {this.state.variant}
           message           = {this.state.dialogMessage}
         />
         </div>
