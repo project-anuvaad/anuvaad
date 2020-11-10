@@ -63,7 +63,6 @@ class PageCard extends React.Component {
     }
 
     renderTextFit = (text) =>{
-        console.log(text.font_size)
         return(
             <Textfit mode="single" style={{ width: parseInt(text.text_width) }} min={1} max={text.font_size ? parseInt(text.font_size) : 16 }>
                 {this.renderTextSpan(text)}
