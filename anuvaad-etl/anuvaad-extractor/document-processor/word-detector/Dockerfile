@@ -20,13 +20,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 #SHELL ["/bin/bash", "-c", "source bmenv/bin/activate"]
 
 
-RUN pip install --upgrade pip setuptools wheel &&\
-  pip install scikit-build &&\
-  pip install cmake &&\
-  apt install -y libopencv-dev python3-opencv\
-  && apt-get install -y tesseract-ocr \
-  && apt-get install -y poppler-utils \
-  && apt-get install -y curl
 
 RUN pip install -r requirements.txt
 RUN pip cache purge
@@ -81,15 +74,6 @@ ENV DEBUG_FLUSH=$D_F
 
 
 
-RUN curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/eng.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/eng.traineddata
-RUN curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/hin.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/hin.traineddata
-RUN curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Malayalam.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/script/Malayalam.traineddata
-RUN curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Devanagari.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/script/Devanagari.traineddata
-RUN curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Latin.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/master/script/Latin.traineddata
-RUN curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Kannada.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/master/script/Kannada.traineddata
-RUN curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Tamil.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/master/script/Tamil.traineddata
-RUN curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Telugu.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/master/script/Telugu.traineddata
-RUN curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Bengali.traineddata https://github.com/tesseract-ocr/tessdata_best/blob/master/script/Bengali.traineddata
 
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh

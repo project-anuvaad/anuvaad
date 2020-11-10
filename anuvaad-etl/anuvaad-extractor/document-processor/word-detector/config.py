@@ -2,7 +2,7 @@ import logging
 import os
 import time
 
-DEBUG = False
+DEBUG = True
 API_URL_PREFIX = "/api/v0"
 HOST = '0.0.0.0'
 PORT = 5001
@@ -40,69 +40,4 @@ logging.basicConfig(
         pid:%(process)s module:%(module)s %(message)s",
     datefmt="%d/%m/%y %H:%M:%S",
 )
-DOCUMENT_CONFIGS = {
-    'LANGUAGE_TYPE': 'eng',
-    
-    'HORI_BLOCK_WDTH_DIFF_PERC': 0.85,
-    'SUPERSCRIPT_HEIGHT_DIFFERENCE': 7.0,
-    'HORI_SPACE_TOO_CLOSE': 10.0,
-    
-    'VERTICAL_SPACE_TOO_CLOSE': 5.0,
-    'AVERAGE_VERTICAL_SPACE': 12.0,
-    'LEFT_OR_RIGHT_ALIGNMENT_MARGIN': 20.0
-}
 
-BLOCK_CONFIGS = {
-    "right_margin_threshold": 0.10,  "left_margin_threshold": 0.10,
-    "right_break_threshold": 0.06,   "left_break_threshold": 0.05,
-    "header_left_threshold": 0.70,  "header_right_threshold": 0.85,
-    "space_multiply_factor": 1.8
-}
-
-BLOCK_BREAK_CONFIG = {'margin_support': 2, 'width_threshold': 0.65}
-
-TABLE_CONFIGS = {
-    "remove_background" : True ,
-    "background_threshold" : 50,
-    "extract_by"           : 'starting_point'
-}
-
-PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.85 ,'repeat_threshold' :0.95 ,'underline_threshold':0.25, 'margin':10 }
-DROP_TEXT          =  ['SUPERSCRIPT']
-
-LANG_MAPPING       =  {
-    "en" : ["Latin","eng"],
-    "kn" : ['Kannada',"kan"],
-    "gu": ["guj"],
-    "or": ["ori"],
-    "hi" : ["Devanagari","hin","eng"],
-    "bn" : ["Bengali","ben"],
-    "mr": ["Devanagari","hin","eng"],
-    "ta": ['Tamil',"tam"],
-    "te" : ["Telugu","tel"],
-    "ml" :["Malayalam"]
-}
-
-
-FONT_CONFIG   = {
-    "hi": 'Ariel Unicode MS'
-}
-FONT_SIZE_CONFIG = {
-    "hi":{ 'slab_1':{ 'min':0, 'max':15, 'ratio':-0.05},
-           'slab_2':{'min':15, 'max':25, 'ratio':0.05},
-           'slab_3':{'min':25, 'max':50, 'ratio':0.06}
-         }
-}
-
-CROP_CONFIG = {
-    'en' : {'top':1, 'bottom':1,'right':1,'left':1},
-    'hi': {'top':15, 'bottom':10,'right':5,'left':5},
-    'ml': {'top':15, 'bottom':10,'right':5,'left':5},
-    'kn':{'top':15, 'bottom':10,'right':5,'left':5 },
-    'ta':{'top':10, 'bottom':15,'right':5,'left':10 },
-    'mr':{'top':15, 'bottom':10,'right':5,'left':5}
-}
-
-CLASS_2_LANG = ['ta']
-
-CRAFT_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"
