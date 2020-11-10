@@ -27,11 +27,11 @@ def get_response():
 
 
 
-def TextDetection(app_context, file_name, lang='en',base_dir=config.BASE_DIR,page_layout='single_column'):
+def TextDetection(app_context,base_dir=config.BASE_DIR):
     log_debug('Block merger starting processing {}'.format(app_context.application_context), app_context.application_context)
     try:
-        word_detector_compose = compose(get_response,get_text)(app_context,base_dir)
-        response              = word_detector_compose(file_name, base_dir,lang,page_layout)
+        word_detector_compose = compose(get_response,get_text)
+        response              = word_detector_compose(app_context,base_dir)
         return {
                 'code': 200,
                 'message': 'request completed',
