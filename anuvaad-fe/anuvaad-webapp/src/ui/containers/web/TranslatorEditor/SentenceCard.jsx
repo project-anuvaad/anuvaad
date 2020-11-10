@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Checkbox from '@material-ui/core/Checkbox';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import CardActions from '@material-ui/core/CardActions';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import DictionaryAPI from '../../../../flux/actions/apis/word_dictionary';
@@ -19,7 +19,7 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import IconButton from "@material-ui/core/IconButton";
 import InteractiveTranslateAPI from "../../../../flux/actions/apis/intractive_translate";
-
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import copy from 'copy-to-clipboard';
 import SENTENCE_ACTION from './SentenceActions'
 import { value } from 'jsonpath';
@@ -50,8 +50,33 @@ const styles = {
     },
     card_open: {
         background: "rgb(206, 231, 236)"
-    }
+    },
+
 }
+
+const theme = createMuiTheme({
+    overrides: {
+        MuiCardContent: {
+          root: {
+              padding:'0px',
+              paddingLeft:'10px',
+              "&:first-child": {
+                paddingTop: '10px',
+             },
+            "&:last-child": {
+              paddingBottom: 0,
+           },
+
+          },
+        },
+        MuiDivider :{
+            root:{
+                marginTop:'-10px',
+                marginBottom:'10px'
+            }
+        }
+      },
+  });
 
 function sleep(delay = 0) {
     return new Promise((resolve) => {
@@ -118,7 +143,7 @@ class SentenceCard extends React.Component {
         
         if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
             
-            if (this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id) {
+            if (this.cardBlockCompare()) {
                 this.setState({ cardInFocus: true })
             }
         }
@@ -178,54 +203,51 @@ class SentenceCard extends React.Component {
      * user actions handlers
      */
     processSaveButtonClicked() {
-
-        if (!this.state.userEnteredText) {
-            // user has not entered anything, check availability  of s0_tgt
-            if (this.state.value === '' && this.props.sentence.s0_tgt === '') {
-                alert('Please translate the source sentence and then save .. ')
+        if (this.state.value.length < 1 || this.state.value === '') {
+            // textfield has no value present.
+            // - check availability of s0_tgt
+            //  - if s0_tgt is not available, alert user
+            //  - if s0_tgt is available, then move s0_tgt to textfield
+            if (this.props.sentence.s0_tgt === '') {
+                alert('Please translate the sentence and then save .. ')
                 return;
             }
-            /**
-             * textfield is empty but MT sentence exists, then transfer the MT
-             * sentence to text field.
-             */
-            if (this.state.value === '' && this.props.sentence.s0_tgt !== '') {
-                if (this.props.onAction) {
-                    this.setState({
-                        value: this.props.sentence.s0_tgt
-                    })
-
-                    let sentence = { ...this.props.sentence };
-                    sentence.save = true;
-                    sentence.tgt = this.props.sentence.s0_tgt;
-                    delete sentence.block_identifier;
-
-                    this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
-                    return;
-                }
-            }
-
-            /**
-             * textfield has data but user has not entered anything
-             */
-            if (this.state.value.length > 0) {
+            if (this.props.sentence.save) {
+                alert('Your will lose saved sentence, please translate the sentence and then save .. ')
                 return;
             }
-        }
+            this.setState({
+                value: this.props.sentence.s0_tgt
+            })
+            if (this.props.onAction) {
+                let sentence    = { ...this.props.sentence };
+                sentence.save   = true;
+                sentence.tgt    = this.props.sentence.s0_tgt;
+                delete sentence.block_identifier;
 
-        this.setState({
-            userEnteredText: false
-        })
+                TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt , sentence.s_id , "translation")
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+                return;
+            }
+        } else {
+            // textfield has value present
+            if (!this.state.userEnteredText) {
+                // value is present, however user hasn't edit it.
+                // no point saving
+                alert('Please edit your sentence and then save .. ')
+                return;
+            }
+            if (this.props.onAction) {
+                this.setState({userEnteredText: false})
 
-        if (this.props.onAction) {
-
-            let sentence = { ...this.props.sentence };
-            sentence.save = true;
-            sentence.tgt = this.state.value;
-            delete sentence.block_identifier;
-
-            TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt , sentence.s_id , "translation")
-            this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+                let sentence    = { ...this.props.sentence };
+                sentence.save   = true;
+                sentence.tgt    = this.state.value;
+                delete sentence.block_identifier;
+    
+                TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt , sentence.s_id , "translation")
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+            }
         }
     }
 
@@ -340,10 +362,10 @@ class SentenceCard extends React.Component {
     renderSourceSentence = () => {
         return (
             <div >
-                <Typography color="textSecondary" gutterBottom>
+                {/* <Typography color="textSecondary" gutterBottom>
                     Source sentence
                     <br />
-                </Typography>
+                </Typography> */}
 
                 <Typography variant="subtitle1" gutterBottom onMouseUp={(event)=>{this.getSelectionText(event)}}>
                     {this.props.sentence.src}
@@ -356,16 +378,34 @@ class SentenceCard extends React.Component {
         return (
             <div>
                 <Divider />
-                <Typography color = "textSecondary" gutterBottom>
+                {/* <Typography color = "textSecondary" gutterBottom>
                     Matchine translated
                     <br />
-                </Typography>
+                </Typography> */}
 
                 <Typography variant="subtitle1" gutterBottom>
                     {this.props.sentence.s0_tgt}
                     <br />
                 </Typography>
+                
+            </div>
+        )
+    }
+
+    renderSavedTargetSentence = () => {
+        return (
+            <div>
                 <Divider />
+                {/* <Typography color = "textSecondary" gutterBottom>
+                    Matchine translated
+                    <br />
+                </Typography> */}
+
+                <Typography variant="subtitle1" gutterBottom>
+                    {this.props.sentence.tgt}
+                    <br />
+                </Typography>
+                
             </div>
         )
     }
@@ -455,7 +495,7 @@ class SentenceCard extends React.Component {
     renderNormaModeButtons = () => {
         return (
             <div>
-                <Button onClick={this.processSaveButtonClicked} variant="outlined" color="primary">
+                <Button style = {{marginRight:'10px'}} onClick={this.processSaveButtonClicked} variant="outlined" color="primary">
                     SAVE
                 </Button>
                 <Button onClick={this.processMergeButtonClicked} variant="outlined" color="primary">
@@ -468,7 +508,7 @@ class SentenceCard extends React.Component {
     renderMergeModeButtons = () => {
         return (
             <div>
-                <Button onClick={this.processMergeNowButtonClicked} variant="outlined" color="primary">
+                <Button style={{marginRight:'10px'}} onClick={this.processMergeNowButtonClicked} variant="outlined" color="primary">
                     MERGE NOW
                 </Button>
                 <Button onClick={this.processMergeCancelButtonClicked} variant="outlined" color="primary">
@@ -578,7 +618,7 @@ class SentenceCard extends React.Component {
                 
                 <div style={{ width: "10%", textAlign: "right" }}>
                     <IconButton aria-label="settings"
-                        style={(this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id) ? styles.expandOpen : styles.expand}
+                        style={this.cardCompare() ? styles.expandOpen : styles.expand}
                         onClick={this.handleCardExpandClick}>
                         <ExpandMoreIcon />
                     </IconButton>
@@ -591,8 +631,9 @@ class SentenceCard extends React.Component {
     renderSentenceCard = () =>{
         return (
             <div key={12} style={{ padding: "1%" }}>
-                    <Card style={(this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id || (this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id)) ? styles.card_open : this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
-                        <CardContent style={{ display: "flex", flexDirection: "row" }}>
+                <MuiThemeProvider theme={theme}>
+                    <Card style={this.cardBlockCompare() || (this.cardCompare()) ? styles.card_open : this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
+                        <CardContent  style={{ display: "flex", flexDirection: "row" }}>
                             <div style={{ width: "90%" }}>
                                 {this.renderSourceSentence()}
                             </div>
@@ -609,32 +650,57 @@ class SentenceCard extends React.Component {
 
                         </CardContent>}
 
-                        <Collapse in={(this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id)} timeout="auto" unmountOnExit>
+                        {(this.isSentenceSaved() && !this.cardCompare())&& <CardContent style={{ display: "flex", flexDirection: "row" }}>
+                            <div style={{ width: "90%" }}>
+                                {this.renderSavedTargetSentence()}
+                            </div>
+                           
+
+                        </CardContent>}
+
+                        <Collapse in={this.cardCompare()} timeout="auto" unmountOnExit>
                             <CardContent>
                                 {this.renderMTTargetSentence()}
                                 <br />
                                 {this.renderUserInputArea()}
-                                <br />
-                                {this.state.isModeMerge ? this.renderMergeModeButtons() : this.renderNormaModeButtons()}
-                                <br />
                             </CardContent>
+                            <CardActions>
+                                {this.state.isModeMerge ? this.renderMergeModeButtons() : this.renderNormaModeButtons()}
+                            </CardActions>
                         </Collapse>
                     </Card>
+                    </MuiThemeProvider>
                 </div>
         )
     }
 
     handleCardExpandClick = () => {
-        if (this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id || (this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id)) {
+        if (this.cardBlockCompare() || this.cardCompare()) {
+           
             this.props.clearHighlighBlock()
         } else {
             this.props.highlightBlock(this.props.sentence)
-        }
-
-        /**
+            /**
         * For highlighting textarea on card expand
         */
         this.textInput && this.textInput.current && this.textInput.current.focus();
+        }
+
+        
+    }
+
+    cardBlockCompare = () =>{
+        if(this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id){
+            return true;
+        }
+        return false;
+    }
+
+    cardCompare = () => {
+        if(this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -646,6 +712,8 @@ class SentenceCard extends React.Component {
         }
         return false;
     }
+
+    
 
     render() {
         return (

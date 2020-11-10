@@ -63,8 +63,9 @@ class PageCard extends React.Component {
     }
 
     renderTextFit = (text) =>{
+        console.log(text.font_size)
         return(
-            <Textfit mode="single" style={{ width: parseInt(text.text_width) }} min={1} max={parseInt(text.font_size)}>
+            <Textfit mode="single" style={{ width: parseInt(text.text_width) }} min={1} max={text.font_size ? parseInt(text.font_size) : 16 }>
                 {this.renderTextSpan(text)}
             </Textfit>
         )
@@ -78,7 +79,7 @@ class PageCard extends React.Component {
             <span
             style={{ zIndex: 1,
                 fontFamily  : text.font_family,
-                fontWeight  : (text.font_family.includes("Bold") || text.attrib && text.attrib.toLowerCase().includes("bold")) && 'bold',
+                fontWeight  : (text.font_family && text.font_family.includes("Bold") || text.attrib && text.attrib.toLowerCase().includes("bold")) && 'bold',
                 }}
                 id          =   {text.block_id}
             onDoubleClick={() => { this.handleSelectedSentenceId(text) }}
