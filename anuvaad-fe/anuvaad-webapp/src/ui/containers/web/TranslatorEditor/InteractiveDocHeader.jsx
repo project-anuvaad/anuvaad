@@ -123,7 +123,7 @@ class InteractiveDocHeader extends React.Component {
         const openEl = Boolean(anchorEl);
  
         return (
-            <div style={{ display: "flex", flexDirection: "row", right: "0px !important" }}>
+            <div style={{ display: "flex", flexDirection: "row", marginRight: "-36px" }}>
                 <Button variant="outlined" onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" :" Show PDF"}</Button>
                 <Button variant="outlined" style={{marginLeft: "10px"}} onClick={this.handleMenu.bind(this)}>
                     Download
