@@ -55,14 +55,14 @@ class Dashboard extends React.Component {
       nmtTextSP: []
     });
 
-    if (this.props.fetch_languages.languages.length < 1) {
+    if (this.props.fetch_languages && this.props.fetch_languages.languages.length < 1) {
       const { APITransport }  = this.props;
       const apiObj            = new FetchLanguage();
       APITransport(apiObj);
       this.setState({ showLoader: true });
     }
 
-    if (this.props.fetch_models.models.length < 1) {
+    if (this.props.fetch_models && this.props.fetch_models.models.length < 1) {
       const { APITransport }  = this.props;
       const apiModel          = new FetchModel();
       APITransport(apiModel);
