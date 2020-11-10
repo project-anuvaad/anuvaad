@@ -1,10 +1,9 @@
 import React from "react";
 import history from "../../../../web.history";
-import Button from "@material-ui/core/Fab";
-import DownIcon from '@material-ui/icons/DoubleArrow';
+import Button from "@material-ui/core/Button";
 
 class ViewDocHeader extends React.Component {
-   
+
     handleOnClick() {
         history.push(`${process.env.PUBLIC_URL}/document-upload`);
     }
@@ -12,14 +11,21 @@ class ViewDocHeader extends React.Component {
     render() {
         return (
             <div>
-                <Button
+                <Button variant="contained"
+                    color="primary"
+                    style={{
+                        borderRadius: "20px",
+                        color: "#FFFFFF",
+                        backgroundColor: "#1C9AB7",
+                        height: "35px",
+                        fontSize: "16px",
+                    }}
+                    size="large"
                     onClick={event => {
                         this.handleOnClick();
                     }}
-                    style={{ textTransform: "capitalize", width: "100%", minWidth: "150px", borderRadius: "30px", color: "white", backgroundColor: "#1C9AB7", height: "40px", right: "20px", fontSize: "18px"}}
                 >
-                   Start Translate
-                   <DownIcon fontSize="small" />
+                    Start Translate
                 </Button>
             </div >
         );

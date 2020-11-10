@@ -469,7 +469,7 @@ class DocumentEditor extends React.Component {
       return(
         <Grid item xs={12} sm={6} lg={6} xl={6}>
           <InfiniteScroll  height={1200} style={{
-            maxHeight: window.innerHeight - 85,
+            maxHeight: window.innerHeight - 80,
             overflowY: "auto",
           }}
             next={this.makeAPICallFetchContent}
@@ -498,7 +498,7 @@ class DocumentEditor extends React.Component {
           <Grid item xs={12} sm={6} lg={6} xl={6}>
             
             <InfiniteScroll  height={1200}  style={{
-            maxHeight: window.innerHeight - 85,
+            maxHeight: window.innerHeight - 80,
             overflowY: "auto",
           }}
                 next={this.makeAPICallFetchContent}
@@ -530,7 +530,7 @@ class DocumentEditor extends React.Component {
         return (
         <div>
             {/* {this.renderToolBar()} */}
-            <Grid container spacing={2} style={{ padding: "10px 24px 0px 24px" }}>
+            <Grid container spacing={2} style={{ padding: "0px 24px 0px 24px" }}>
                 {this.renderDocumentPages()}
                 {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>
