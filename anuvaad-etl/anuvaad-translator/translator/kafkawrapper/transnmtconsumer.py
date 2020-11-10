@@ -1,5 +1,7 @@
 import json
 import logging
+import random
+import string
 import threading
 
 from kafka import KafkaConsumer, TopicPartition
@@ -44,18 +46,19 @@ def consume_nmt():
         topics = [anu_nmt_output_topic]
         consumer = instantiate(topics)
         service = TranslatorService()
-        thread = threading.current_thread().name
-        log_info(str(thread) + " Running..........", None)
+        rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
+        prefix = "Translator-NMT-" + "(" + rand_str + ")"
+        log_info(prefix + " Running..........", None)
         while True:
             for msg in consumer:
                 data = {}
                 try:
                     data = msg.value
                     if data:
-                        log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
+                        log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         service.process_nmt_output(data)
                 except Exception as e:
-                    log_exception("Exception in translator nmt while consuming: " + str(e), data, e)
+                    log_exception(prefix + " Exception in translator nmt while consuming: " + str(e), data, e)
                     post_error("TRANSLATOR_CONSUMER_ERROR", "Exception in translator while consuming: " + str(e), None)
     except Exception as e:
         log_exception("Exception while starting the translator nmt consumer: " + str(e), None, e)

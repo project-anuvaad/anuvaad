@@ -4,6 +4,7 @@ import os
 #CROSS-MODULE-COMMON-CONFIGS
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
 mongo_server_host = os.environ.get('MONGO_SERVER_HOST', 'mongodb://localhost:27017/')
+redis_host = os.environ.get('REDIS_SERVER_HOST', 'redis://localhost:6379/')
 file_download_url = os.environ.get('FILE_DOWNLOAD_URL', 'https://auth.anuvaad.org/anuvaad/v1/download')
 save_content_url = os.environ.get('SAVE_CONTENT_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/save-content')
 fetch_content_url = os.environ.get('FETCH_CONTENT_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/fetch-content')
@@ -23,6 +24,7 @@ jm_cron_interval_sec = 30
 #kafka-configs
 anu_translator_input_topic = os.environ.get('KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_TOPIC', 'anuvaad-dp-tools-translator-input-v2')
 anu_translator_output_topic = os.environ.get('KAFKA_ANUVAAD_DP_TRANSLATOR_OUTPUT_TOPIC', 'anuvaad-dp-tools-translator-output-v2')
+anu_translator_tmx_in_topic = os.environ.get('KAFKA_ANUVAAD_TRANSLATOR_TMX_INPUT_TOPIC', 'anuvaad-translator-tmx-input-v1')
 anu_translator_consumer_grp = os.environ.get('KAFKA_ANUVAAD_ETL_TRANSLATOR_CONSUMER_GRP', 'anuvaad-etl-translator-consumer-group')
 translator_cons_no_of_instances = 1
 translator_cons_no_of_partitions = 1

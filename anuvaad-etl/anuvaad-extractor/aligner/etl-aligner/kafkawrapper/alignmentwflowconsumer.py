@@ -52,13 +52,12 @@ class WflowConsumer:
                     if data:
                         log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         thread_name = prefix + "--" + "thread--" + str(thread_count)
-                        log_info(prefix + " | Forked thread: " + thread_name, data)
                         align_cons_thread = threading.Thread(target=service.wf_process, args=data, name=thread_name)
                         align_cons_thread.start()
+                        log_info(prefix + " | Forked thread: " + thread_name, data)
                         thread_count += 1
                 except Exception as e:
                     log_exception("Exception while consuming: " + str(e), data, e)
-                    data["taskID"] = "taskID"
                     util.error_handler("ALIGNER_CONSUMER_ERROR", "Exception while consuming", data, True)
                     break
 

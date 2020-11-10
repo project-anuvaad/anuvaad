@@ -7,6 +7,7 @@ from configs.translatorconfig import nmt_translate_url
 from configs.translatorconfig import update_content_url
 from utilities.translatorutils import TranslatorUtils
 
+
 utils = TranslatorUtils()
 
 
