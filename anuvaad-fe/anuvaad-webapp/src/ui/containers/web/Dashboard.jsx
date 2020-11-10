@@ -24,6 +24,7 @@ import NewOrders from "../../components/web/dashboard/NewOrders";
 import { translate } from "../../../assets/localisation";
 import { withStyles } from "@material-ui/core/styles";
 import DashboardStyles from "../../styles/web/DashboardStyles";
+import InteractiveTranslateAPI from "../../../flux/actions/apis/intractive_translate";
 
 
 class Dashboard extends React.Component {
@@ -54,13 +55,19 @@ class Dashboard extends React.Component {
       nmtTextSP: []
     });
 
-    const { APITransport } = this.props;
-    const apiObj = new FetchLanguage();
-    APITransport(apiObj);
-    this.setState({ showLoader: true });
-    const apiModel = new FetchModel();
-    APITransport(apiModel);
-    this.setState({ showLoader: true });
+    if (this.props.fetch_languages && this.props.fetch_languages.languages.length < 1) {
+      const { APITransport }  = this.props;
+      const apiObj            = new FetchLanguage();
+      APITransport(apiObj);
+      this.setState({ showLoader: true });
+    }
+
+    if (this.props.fetch_models && this.props.fetch_models.models.length < 1) {
+      const { APITransport }  = this.props;
+      const apiModel          = new FetchModel();
+      APITransport(apiModel);
+      this.setState({ showLoader: true });
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -199,6 +206,32 @@ class Dashboard extends React.Component {
     });
   }
 
+  async makeAPICallAutoML() {
+
+  }
+
+  async makeAPICallInteractiveTranslation() {
+    let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, this.state.value, this.props.modelId, true, '', this.props.sentence.s_id);
+    const apiReq    = fetch(apiObj.apiEndPoint(), {
+        method: 'post',
+        body: JSON.stringify(apiObj.getBody()),
+        headers: apiObj.getHeaders().headers
+    }).then(async response => {
+        const rsp_data = await response.json();
+        if (!response.ok) {
+            return Promise.reject('');
+        } else {
+            this.setState({
+                suggestions: rsp_data.output.predictions[0].tgt.map(s => { return {name: s}})
+            })
+        }
+    }).catch((error) => {
+        this.setState({
+            suggestions: []
+        })
+    });
+  }
+
   render() {
     const role = JSON.parse(localStorage.getItem("roles"));
     const { classes } = this.props;
@@ -221,7 +254,7 @@ class Dashboard extends React.Component {
               <Grid item xs={6} sm={6} lg={4} xl={4} >
                 <Select
                   className={classes.select}
-                  id="outlined-age-simple"
+                  id="outlined-source"
                   selectValue="language_code"
                   MenuItemValues={this.handleSource(this.state.modelLanguage, this.state.language)}
                   handleChange={this.handleSelectChange}
@@ -249,7 +282,7 @@ class Dashboard extends React.Component {
               </Grid>
               <Grid item xs={6} sm={6} lg={4} xl={4}>
                 <Select
-                  id="outlined-age-simple"
+                  id="outlined-target"
                   selectValue="language_code"
                   MenuItemValues={this.state.source ? this.handleTarget(this.state.modelLanguage, this.state.language, this.state.source) : []}
                   handleChange={this.handleSelectChange}
@@ -292,7 +325,8 @@ class Dashboard extends React.Component {
                       value={this.state.model}
                       onChange={this.handleSelectModelChange}
                       renderValue={selected => selected.join(", ")}
-                      input={<OutlinedInput name={this.state.model} id="select-multiple-checkbox" />}
+                      // input={<OutlinedInput name={this.state.model} id="select-multiple-checkbox" />}
+                      input={<OutlinedInput id="select-multiple-checkbox" />}
                     >
                       {this.state.source && this.state.target
                         ? this.handleModel(this.state.modelLanguage, this.state.source, this.state.target).map(item => (
@@ -316,8 +350,8 @@ class Dashboard extends React.Component {
 
                 {role.includes("dev") && (
                   <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataChip}>
-                    {this.state.model.map(value => (
-                      value ? <div className={classes.divChip}><Chip key={value} label={value} onDelete={this.handleDelete(value)} style={{ marginLeft: "5px", marginTop: "8px" }} /> </div> : <div></div>
+                    {this.state.model.map((value, i) => (
+                      value ? <div className={classes.divChip} key={i}><Chip key={value} label={value} onDelete={this.handleDelete(value)} style={{ marginLeft: "5px", marginTop: "8px" }} /> </div> : <div></div>
                     ))}
                   </Grid>
                 )}
