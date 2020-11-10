@@ -407,29 +407,8 @@ class ViewDocument extends React.Component {
     return (
      
       <div>
-        <Toolbar style={{ marginLeft: "-5.4%", marginRight: "1.5%", marginTop: "20px" }}>
-          <Typography variant="h5" color="inherit" style={{ flex: 1 }} />
-          {this.state.role.includes("dev") || this.state.role.includes("grader") || this.state.role.includes("user") || this.state.role.includes("interactive-editor") ? (
-            <Fab color="primary"
-              variant="extended"
-              aria-label="Add"
-              style={{
-                marginRight: 0,
-                textTransform: 'none'
-              }}
-
-              onClick={() => {
-                history.push(`${process.env.PUBLIC_URL}/document-upload`);
-              }}>
-              <PublishIcon fontSize="small" />
-              {translate("common.page.button.upload")}
-            </Fab>
-          ) : (
-              ""
-            )}
-        </Toolbar>
         { this.state.dialogMessage && this.snackBarMessage()}
-        <div style={{ margin: '2% 3% 3% 3%' }}>
+        <div style={{ margin: '5% 3% 3% 3%' }}>
           {
             !this.state.showLoader && 
             <MuiThemeProvider theme={this.getMuiTheme()}> 

@@ -1,3 +1,4 @@
+var jp = require('jsonpath')
 const BLOCK_OPS = require('./block.operations.js')
 
 /**
@@ -156,59 +157,36 @@ export const update_blocks = (data, blocks) => {
     return copied_data;
 }
 
-export const get_updated_page_blocks = (data, blockData, updatedText, id)=> {
-    let blockId = blockData.parent_block_id
-    
-    let updatedblock = {}
-    if (data && data.pages && Array.isArray(data.pages) && data.pages.length > 0) {
-        data.pages.map(pages => {
-            if (pages.page_no === blockData.page_no) {
-                if (pages && pages.text_blocks && Array.isArray(pages.text_blocks) && pages.text_blocks.length > 0) {
-                    pages.text_blocks.map(block => {
+export const get_updated_page_blocks = (data, blockData, updatedText, id) => {
+    let blockIdentifier = blockData.block_identifier
 
-                        let src = ""
-                        if (blockId === block.block_id) {
-                            
-                            if (block && block.children && Array.isArray(block.children) && block.children.length > 0) {
-                                block.children.map(children => {
+    let condition = `$..[*].text_blocks[?(@.block_identifier == '${blockIdentifier}')]`;
+    let textBlocks = jp.query(data, condition)
+    let src = ""
 
-                                    if (children && children.hasOwnProperty("children") && Array.isArray(children.children) && children.children && children.children.length > 0) {
-                                      
-                                        children.children.map(grandChildren => {
+    let textBlock = textBlocks && Array.isArray(textBlocks) && textBlocks.length > 0 && textBlocks[0]
+    textBlock.children && Array.isArray(textBlock.children) && textBlock.children.length > 0 && textBlock.children.map(children => {
 
-                                            if (grandChildren.block_id && grandChildren.block_id === blockData.block_id) {
-                                                src = src + " " + updatedText
-                                                grandChildren.text = updatedText
-                                                updatedblock = block
-                                            } else {
-                                                src = src + " " + grandChildren.text
-                                            }
-
-                                        })
-                                    } else {
-
-                                        if (children && children.block_id && children.block_id === blockData.block_id) {
-                                            src = src + " " + updatedText
-                                            children.text = updatedText
-                                            updatedblock = block
-
-                                        } else {
-                                            src = src + " " + children.text
-                                        }
-                                    }
-                                   
-                                    updatedblock.text = src
-                                })
-                            }
-                        }
-
-                    })
+        if (children && children.hasOwnProperty("children") && Array.isArray(children.children) && children.children.length > 0) {
+            children.children.map(grandchildren => {
+                if (grandchildren.block_id && grandchildren.block_id === blockData.block_id) {
+                    src = src + " " + updatedText
+                    grandchildren.text = updatedText
+                } else {
+                    src = src + " " + grandchildren.text
                 }
-
+            })
+        } else {
+            if (children && children.block_id && children.block_id === blockData.block_id) {
+                src = src + " " + updatedText
+                children.text = updatedText
+            } else {
+                src = src + " " + children.text
             }
-        })
-        return updatedblock
-    }
+        }
+        textBlock.text = src
+    })
+    return textBlock
 
 }
 
