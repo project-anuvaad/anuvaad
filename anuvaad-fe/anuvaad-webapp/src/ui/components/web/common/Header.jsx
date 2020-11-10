@@ -146,17 +146,17 @@ class Header extends React.Component {
 
     return (
       <div>
-        <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, open && classes.appBarShift)}>
+        <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, open && classes.appBarShift)} style={{ height: '50px' }}>
 
-          <Toolbar disableGutters={!open}>
+          <Toolbar disableGutters={!open} style={{ minHeight: "50px" }}>
 
             {this.state.open ?
               <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
                 <CloseIcon />
               </IconButton> :
-              <div style={{display: "flex", flexDirection: "row"}}>{
+              <div style={{ display: "flex", flexDirection: "row" }}>{
                 currentMenu === "texttranslate" &&
-                <div style={{display: "flex", flexDirection: "row"}}>
+                <div style={{ display: "flex", flexDirection: "row" }}>
                   <IconButton onClick={() => {
                     history.push(`${process.env.PUBLIC_URL}/view-document`);
                   }} className={classes.menuButton} color="inherit" aria-label="Menu">
@@ -185,7 +185,10 @@ class Header extends React.Component {
               {title}
             </Typography>
             {this.props.toolBarComp &&
-              <ToolbarComp />}
+              <div style={{position: 'absolute', right: '20px'}}>
+                <ToolbarComp />
+              </div>
+            }
           </Toolbar>
         </AppBar>
         <div>

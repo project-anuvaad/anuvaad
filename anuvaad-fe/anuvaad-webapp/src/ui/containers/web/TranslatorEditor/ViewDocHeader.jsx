@@ -16,7 +16,7 @@ class ViewDocHeader extends React.Component {
                     onClick={event => {
                         this.handleOnClick();
                     }}
-                    style={{ textTransform: "capitalize", width: "100%", minWidth: "150px", borderRadius: "30px", color: "white", backgroundColor: "#1C9AB7", height: "40px", right: "20px", fontSize: "18px"}}
+                    style={{ textTransform: "capitalize", width: "100%", minWidth: "150px", borderRadius: "30px", color: "white", backgroundColor: "#1C9AB7", height: "30px", fontSize: "18px"}}
                 >
                    Start Translate
                    <DownIcon fontSize="small" />
