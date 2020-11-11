@@ -1,0 +1,50 @@
+node('server_build_slave') {
+
+try {
+
+    stage('checkout') {
+   	checkout scm
+}
+
+    stage('Build') {
+	sh '''
+	if [  -f "$(pwd)/build.zip" ]
+	     then
+	     rm -f $(pwd)/build.zip
+	fi
+	if [ $( docker ps -q -f status=exited --filter "name=$JOB_BASE_NAME" ) ]
+             then
+             docker rm "$JOB_BASE_NAME"
+        fi
+
+     
+    	docker run -v $(pwd):/opt --name "$JOB_BASE_NAME" node:10.15.3-stretch /bin/bash -c "cd /opt && apt update && apt install -y zip && npm install && npm run build:staging && zip -r build.zip build && rm -rf build"
+	docker rm "$JOB_BASE_NAME"
+	   '''
+
+}
+   
+   stage('SonarQube analysis') {
+       def scannerHome = tool 'sonar_scanner';
+       withSonarQubeEnv('sonarqube') {
+            sh "${scannerHome}/bin/sonar-scanner"   
+       }	
+
+}
+   stage("Quality Gate") {
+       timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
+           def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+           if (qg.status != 'OK') {
+               error "Pipeline aborted due to quality gate failure: ${qg.status}"
+            }
+         }
+     }
+
+}
+
+    catch (err) {
+        currentBuild.result = "FAILURE"
+        throw err
+    }
+}
+}
