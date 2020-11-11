@@ -22,10 +22,10 @@ class DocumentConversion(object):
     def __init__(self, DOWNLOAD_FOLDER):
         self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
 
+    # getting document json data from fetch-content end point of content-handler.
     def get_data_from_content_handler(self, record_id, user_id, start_page=0, end_page=0):
         doc_utils = DocumentUtilities()
         try:
-            #json_data = {'record_id' : record_id, 'all' : True}
             headers = {"ad-userid" : user_id, "Content-Type": "application/json"}
             request_url = doc_utils.url_generation(config.CONTENT_HANDLER_ENDPOINT, record_id, start_page, end_page)
             log_info("Intiating request to fetch data from %s"%request_url, MODULE_CONTEXT)
@@ -38,8 +38,8 @@ class DocumentConversion(object):
         except Exception as e:
             log_exception("Can not fetch content in content handler: ", MODULE_CONTEXT, e)
 
+    # converting document json data into pandas dataframes.
     def convert_page_data_into_dataframes(self, pages):
-        print(pages)
         try:
             dfs              = []
             page_width       = None
@@ -102,6 +102,7 @@ class DocumentConversion(object):
         except Exception as e:
             log_exception("dataframe formation error", MODULE_CONTEXT, e)
 
+    # using dataframe of document json data to create docx file of target sentences. 
     def document_creation(self, dataframes, page_layout, record_id):
         try:
             doc_utils = DocumentUtilities()
@@ -131,7 +132,6 @@ class DocumentConversion(object):
                         paragraph_format.left_indent   = Cm(doc_utils.get_cms(row['text_left']))
                         if index != df.index[-1] and df.iloc[index + 1]['text_top'] != row['text_top']:
                             pixel = df.iloc[index + 1]['text_top'] - row['text_top'] - row['font_size']
-                            #print("pixel", pixel, "next top", df.iloc[index + 1]['text_top'], "top", row['text_top'], "font", row['font_size'])
                             if pixel>0:
                                 paragraph_format.space_after = Twips(doc_utils.pixel_to_twips(pixel))
                             else:
@@ -154,13 +154,7 @@ class DocumentConversion(object):
         except Exception as e:
             log_exception("dataframe to doc formation failed", MODULE_CONTEXT, e)
 
-    def dummy_doc(self, record_id):
-        document              = Document()
-        out_filename = os.path.splitext(os.path.basename(record_id))[0] + '_translated.docx'
-        output_filepath = os.path.join(self.DOWNLOAD_FOLDER , out_filename)
-        document.save(output_filepath)
-        return out_filename
-
+    # get all tokenised object from document json data into one list.
     def get_tokenized_sentences(self, json_data):
         try:
             jsonpath_expr = parse('$..tokenized_sentences[*]')
@@ -172,6 +166,7 @@ class DocumentConversion(object):
         except Exception as e:
             log_exception("Getting only tokenised sentence object failed", MODULE_CONTEXT, e)
 
+    # create xlsx file of source sentence in one column and taget sentences in adjacent column
     def generate_xlsx_file(self, record_id, json_data):
         try:
             out_xlsx_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '.xlsx'
