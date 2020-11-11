@@ -487,7 +487,7 @@ class DocumentEditor extends React.Component {
             loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
             endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
           >
-            {pages.map(page => <PageCard key={v4()} page={page} onAction={this.processSentenceAction}/>)}
+            {pages.map((page, index) => <PageCard key={index} page={page} onAction={this.processSentenceAction}/>)}
           </InfiniteScroll>
         </Grid>
       )
@@ -514,12 +514,15 @@ class DocumentEditor extends React.Component {
                 loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
                 endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
             >
-              {pages.map(page => page['translated_texts'].map(sentence => <div key={v4()}  ref={sentence.s_id}><SentenceCard key={v4()} 
+              {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={index}  ref={sentence.s_id}><SentenceCard key={index} 
                                                                                   pageNumber={page.page_no} 
                                                                                   modelId={parseInt(this.props.match.params.modelId)}
                                                                                   word_locale={this.props.match.params.locale}
                                                                                   tgt_locale={this.props.match.params.tgt_locale}
                                                                                   sentence={sentence} 
+                                                                                  sentence_action_operation = {this.props.sentence_action_operation} 
+                                                                                  block_highlight = {this.props.block_highlight} 
+                                                                                  sentence_highlight = {this.props.sentence_highlight}
                                                                                   onAction={this.processSentenceAction}/>
                                                                                   </div>))}
             </InfiniteScroll>
@@ -552,8 +555,9 @@ const mapStateToProps = state => ({
     saveContent: state.saveContent,
     document_contents: state.document_contents,
     sentence_highlight: state.sentence_highlight.sentence,
-    sentence_action_operation : state.sentence_action_operation.api_status,
-    show_pdf: state.show_pdf.open
+    sentence_action_operation : state.sentence_action_operation,
+    show_pdf: state.show_pdf.open,
+    block_highlight: state.block_highlight.block,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
