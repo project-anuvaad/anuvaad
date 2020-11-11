@@ -1,4 +1,4 @@
-from src.services import extract_images
+from src.services.extract_images import extract_images
 from src.utilities.craft_pytorch.detect import detect_text
 import src.utilities.app_context as app_context
 import config
@@ -9,12 +9,12 @@ from compose import compose
 
 def get_text(app_context,base_dir) :
     images   = extract_images(app_context,base_dir)
-    language = get_language(app_context)
+    language = ['en']#get_language(app_context)
     words,lines = detect_text(images,language)
     return  [words,lines,images]
 
-def get_response():
-    return None
+def get_response(input):
+    return input
 
 
 def TextDetection(app_context,base_dir=config.BASE_DIR):
