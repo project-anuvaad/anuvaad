@@ -54,14 +54,13 @@ class DocumentConversion(object):
                 font_colors      = []
                 text_values      = []
                 b64_images       = []
-
+                print(list(page.keys()))
                 if 'images' not in list(page.keys()) or 'text_blocks' not in list(page.keys()):
                     log_info('looks like one of the key is missing {}'.format(page.keys()), MODULE_CONTEXT)
                     continue
                 
                 images       = page['images']
                 texts        = page['text_blocks']
-            #     tables       = page['tables']
                 page_num     = page['page_no']
                 page_width   = page['page_width']
                 page_height  = page['page_height']
@@ -183,10 +182,12 @@ class DocumentConversion(object):
             worksheet.write('B1', 'Target Sentence')
             row, column = 1, 0
             tokenised_sentences = self.get_tokenized_sentences(json_data)
-            for tokenised_sentence in tokenised_sentences:
-                worksheet.write(row, column, tokenised_sentence['src']) 
-                worksheet.write(row, column + 1, tokenised_sentence['tgt']) 
-                row += 1
+            if tokenised_sentences != [] or tokenised_sentences != None:
+                for tokenised_sentence in tokenised_sentences:
+                    if tokenised_sentence != [] or tokenised_sentence != None:
+                        worksheet.write(row, column, tokenised_sentence['src']) 
+                        worksheet.write(row, column + 1, tokenised_sentence['tgt']) 
+                        row += 1
             workbook.close()
             return out_xlsx_filename
         except Exception as e:
