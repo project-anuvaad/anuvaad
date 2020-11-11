@@ -7,24 +7,14 @@ from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 from compose import compose
 
-
-def test(app_context):
-    print("SUCCESSFULLY RUN")
-    return {"code":200,"rsp":[],"message":"success"}
-
-
-
-
 def get_text(app_context,base_dir) :
-    images = extract_images(app_context,base_dir)
-    words,lines = detect_text(images)
-    return  words,lines
-
+    images   = extract_images(app_context,base_dir)
+    language = get_language(app_context)
+    words,lines = detect_text(images,language)
+    return  [words,lines,images]
 
 def get_response():
     return None
-
-
 
 
 def TextDetection(app_context,base_dir=config.BASE_DIR):

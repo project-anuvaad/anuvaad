@@ -7,7 +7,7 @@ import os
 import uuid
 import config
 
-from src.utilities.utils import get_files, get_format,get_name
+from src.utilities.request_parse import get_files, File
 
 def create_pdf_processing_paths(filepath, base_dir):
 
@@ -42,15 +42,17 @@ def extract_pdf_images(filename, base_dir):
 
 
 
-def extract_images(app_context,base_di):
+def extract_images(app_context,base_dir):
 
     files = get_files(app_context.application_context)
     file_images =[]
     try :
         for file in files:
-            file_format = get_format(file)
+            file_properties = File(file)
+            file_format     = file_properties.get_format()
+
             if file_format == 'PDF' :
-                filename = get_name(file)
+                filename = file_properties.get_name()
                 image_paths = extract_pdf_images(filename,base_dir)
                 file_images.append(image_paths)
             else:

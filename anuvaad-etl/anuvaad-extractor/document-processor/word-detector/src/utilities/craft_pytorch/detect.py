@@ -187,9 +187,7 @@ def convert_to_in_df(craft_df):
     return  in_df
 
 
-def detect_text_per_file(image_paths,network,text_threshold=args.text_threshold,low_text_threshold= args.low_text,img_class="single_col"):
-
-
+def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,img_class="single_col"):
     in_dfs = []
     number_of_pages = len(image_paths)
     if img_class == "double_col":
@@ -208,8 +206,6 @@ def detect_text_per_file(image_paths,network,text_threshold=args.text_threshold,
         else :
             bboxes, polys, score_text = test_net(image, text_threshold, args.link_threshold, low_text_threshold,args.cuda, args.poly, None)
         column_names = ["x1","y1" ,"x4","y4", "x2","y2","x3","y3"]
-
-
         df = pd.DataFrame(columns = column_names)
         for index, box in enumerate(bboxes):
             poly = np.array(box).astype(np.int32).reshape((-1))
@@ -220,8 +216,6 @@ def detect_text_per_file(image_paths,network,text_threshold=args.text_threshold,
 
         in_df = convert_to_in_df(df)
         in_dfs.append(in_df)
-
-
     time_taken = time.time() - t
     time_take_per_page = time_taken / number_of_pages
 
@@ -232,13 +226,18 @@ def detect_text_per_file(image_paths,network,text_threshold=args.text_threshold,
 
 
 
-def detect_text(images) :
+def detect_text(images,language) :
     try:
         word_coordinates = []
         line_coordinates = []
-        for image_set in images :
-            word_in_dfs = detect_text_per_file(image_set,refine_net=False,text_threshold=args.text_threshold,low_text_threshold= args.low_text)
-            line_in_df  = detect_text_per_file(image_set,refine_net=True,text_threshold=args.text_threshold,low_text_threshold= args.low_text)
+        for index,image_set in enumerate(images):
+            lang = language[index]
+            word_in_dfs = detect_text_per_file(image_set,refine_net=False,\
+                                               text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
+                                               low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'])
+            line_in_df  = detect_text_per_file(image_set,refine_net=True,\
+                                               text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'],\
+                                               low_text_threshold= config.LANGUAGE_LINE_THRESOLDS_THRESOLDS[lang]['low_text'])
             word_coordinates.append(word_in_dfs)
             line_coordinates.append((line_in_df))
     except Exception as e :

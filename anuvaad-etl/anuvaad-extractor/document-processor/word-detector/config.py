@@ -41,3 +41,20 @@ logging.basicConfig(
     datefmt="%d/%m/%y %H:%M:%S",
 )
 
+LANGUAGE_WORD_THRESOLDS ={
+'en':{'text_threshold':0.5 ,'low_text': 0.4} ,
+'hi':{'text_threshold':0.5 ,'low_text': 0.4},
+'ma':{'text_threshold':0.5 ,'low_text': 0.4} ,
+'ta':{'text_threshold':0.5 ,'low_text': 0.4} ,
+'ml':{'text_threshold':0.5 ,'low_text': 0.4} ,
+'ka':{'text_threshold':0.5 ,'low_text': 0.4}
+}
+
+LANGUAGE_LINE_THRESOLDS ={
+'en':{'text_threshold':0.5 ,'low_text': 0.4} ,
+'hi':{'text_threshold':0.5 ,'low_text': 0.4},
+'ma':{'text_threshold':0.5 ,'low_text': 0.4} ,
+'ta':{'text_threshold':0.5 ,'low_text': 0.4} ,
+'ml':{'text_threshold':0.5 ,'low_text': 0.4} ,
+'ka':{'text_threshold':0.5 ,'low_text': 0.4}
+}
