@@ -39,6 +39,7 @@ class DocumentConversion(object):
             log_exception("Can not fetch content in content handler: ", MODULE_CONTEXT, e)
 
     def convert_page_data_into_dataframes(self, pages):
+        print(pages)
         try:
             dfs              = []
             page_width       = None
@@ -54,7 +55,6 @@ class DocumentConversion(object):
                 font_colors      = []
                 text_values      = []
                 b64_images       = []
-                print(list(page.keys()))
                 if 'images' not in list(page.keys()) or 'text_blocks' not in list(page.keys()):
                     log_info('looks like one of the key is missing {}'.format(page.keys()), MODULE_CONTEXT)
                     continue
