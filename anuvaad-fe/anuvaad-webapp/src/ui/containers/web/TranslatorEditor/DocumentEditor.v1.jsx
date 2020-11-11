@@ -31,20 +31,13 @@ import PageCard from "./PageCard";
 import SENTENCE_ACTION from './SentenceActions'
 import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverter";
 
-// import PAGE_OPS from "../../../../utils/page.operations";
-// import BLOCK_OPS from "../../../../utils/block.operations";
-// import TELEMETRY from '../../../../utils/TelemetryManager';
-
-import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted } from '../../../../flux/actions/users/translator_actions';
+import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 
-const { v4 }        = require('uuid');
-
-
-
-const PAGE_OPS = require("../../../../utils/page.operations");
-const BLOCK_OPS = require("../../../../utils/block.operations");
-const TELEMETRY = require('../../../../utils/TelemetryManager')
+const { v4 }      = require('uuid');
+const PAGE_OPS    = require("../../../../utils/page.operations");
+const BLOCK_OPS   = require("../../../../utils/block.operations");
+const TELEMETRY   = require('../../../../utils/TelemetryManager')
 
 class DocumentEditor extends React.Component {
     constructor(props) {
@@ -69,8 +62,8 @@ class DocumentEditor extends React.Component {
       localStorage.setItem("recordId", recordId);
       localStorage.setItem("inputFile", this.props.match.params.inputfileid)
   
-      let langCodes = LanguageCodes
-      let sourceLang = ''
+      let langCodes   = LanguageCodes
+      let sourceLang  = ''
       if (langCodes && Array.isArray(langCodes) && langCodes.length > 0) {
         langCodes.map(lang => {
           if (lang.language_code === this.props.match.params.locale) {
@@ -84,9 +77,6 @@ class DocumentEditor extends React.Component {
       this.makeAPICallFetchContent();
       window.addEventListener('popstate',this.handleOnClose);
     }
-
-
-    
 
     componentDidUpdate(prevProps) {
       if (prevProps.document_contents.content_updated !== this.props.document_contents.content_updated) {
@@ -104,6 +94,11 @@ class DocumentEditor extends React.Component {
     componentWillUnmount() {
       localStorage.setItem("recordId", "");
       localStorage.setItem("inputFile", "");
+
+      let recordId  = this.props.match.params.jobid;
+      let jobId     = recordId ? recordId.split("|")[0] : ""
+      TELEMETRY.endTranslatorFlow(jobId)
+      this.props.clearFetchContent()
     }
 
     handleSourceScroll(id) {
@@ -111,7 +106,6 @@ class DocumentEditor extends React.Component {
         behavior: "smooth",
         block: "center"
       });
-  
     }
 
     /**
@@ -278,8 +272,6 @@ class DocumentEditor extends React.Component {
     }
 
     processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex) => {
-
-      console.log('processSentenceAction', action, pageNumber, sentences, startIndex, endIndex)
       switch(action) {
         case SENTENCE_ACTION.SENTENCE_SAVED: {
           this.props.sentenceActionApiStarted(sentences[0])
@@ -318,7 +310,6 @@ class DocumentEditor extends React.Component {
     setMessages = (pendingAction, completedAction) =>{
               this.setState({snackBarMessage:translate(`common.page.label.${pendingAction}`), 
               snackBarSavedMessage:translate(`common.page.label.${completedAction}`), 
-              
             })
     }
 
@@ -334,7 +325,6 @@ class DocumentEditor extends React.Component {
           />
           </div>
       )
-      
     }
 
     handleViewModeToggle = () => {
@@ -464,7 +454,7 @@ class DocumentEditor extends React.Component {
      * render Document pages
      */
     renderDocumentPages = () => {
-      let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages);
+      let pages = this.props.document_contents.app_pages;
       if (pages.length < 1) {
         return(
             <div></div>
@@ -492,7 +482,8 @@ class DocumentEditor extends React.Component {
      * render sentences
      */
     renderSentences = () => {
-      let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages);
+      console.log('renderSentences')
+      let pages = this.props.document_contents.app_pages;
       if (pages.length < 1) {
         return(
             <div></div>
@@ -500,11 +491,8 @@ class DocumentEditor extends React.Component {
       }
       return (
           <Grid item xs={12} sm={6} lg={6} xl={6}>
-            
-            <InfiniteScroll  height={1200}  style={{
-            maxHeight: window.innerHeight - 80,
-            overflowY: "auto",
-          }}
+            <InfiniteScroll  height={1200}  style={{  maxHeight: window.innerHeight - 80,
+                                                      overflowY: "auto",}}
                 next={this.makeAPICallFetchContent}
                 hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false }
                 dataLength={pages.length}
@@ -561,7 +549,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
       APITransport,
       update_sentences,
       update_blocks,
-      ClearContent: ClearContent
+      ClearContent,
+      clearFetchContent
     },
     dispatch
 );

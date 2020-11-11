@@ -118,6 +118,7 @@ const constants = {
     CONTENT_UPDATE_STARTED:         'CONTENT_UPDATE_STARTED',
     UPDATE_SENTENCE_CONTENT    :   'UPDATE_SENTENCE_CONTENT',
     UPDATE_BLOCK_CONTENT        :   'UPDATE_BLOCK_CONTENT',
+    CLEAR_FETCH_CONTENT         :    "CLEAR_FETCH_CONTENT",
 
      /**
      * actions for header

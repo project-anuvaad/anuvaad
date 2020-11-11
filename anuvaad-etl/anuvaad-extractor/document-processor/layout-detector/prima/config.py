@@ -24,7 +24,7 @@ kf_local_server     = 'localhost:9092'
 kafka_ip_host       = 'KAFKA_IP_HOST'
 bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 
-TASK_STAT           = 'BLOCK-MERGER'
+TASK_STAT           = 'PRIMA-LAYOUT-ANALYZER'
 
 CONSUMER_GROUP_default       = 'anuvaad-etl-bm-consumer-group'
 CONSUMER_GROUP_identifire    = 'ANUVAAD_ETL_BM_CONSUMER_GROUP_V1'
