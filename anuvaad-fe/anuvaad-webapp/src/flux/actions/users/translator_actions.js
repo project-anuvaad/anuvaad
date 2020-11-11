@@ -103,3 +103,13 @@ export function contentUpdateStarted () {
         }
     }
 }
+
+export function fetchContent(count, data) {
+    return {
+        type: C.FETCH_CONTENT,
+        payload: {
+            count: count,
+            data: data
+        }
+    }
+}

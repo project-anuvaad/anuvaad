@@ -31,7 +31,7 @@ import PageCard from "./PageCard";
 import SENTENCE_ACTION from './SentenceActions'
 import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverter";
 
-import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
+import { sentenceActionApiStarted, sentenceActionApiStopped, fetchContent, contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 
 const { v4 }      = require('uuid');
@@ -116,9 +116,24 @@ class DocumentEditor extends React.Component {
       let start_page    = this.props.document_contents.pages.length + 1;
       let end_page      = start_page + 1;
       console.log(`fetching document content, start_page: ${start_page}, end_page: ${end_page}`);
-
+      
       const apiObj      = new FileContent(this.props.match.params.jobid, start_page, end_page);
-      this.props.APITransport(apiObj);
+      fetch(apiObj.apiEndPoint(), {
+        method: 'get',
+        headers: apiObj.getHeaders().headers
+      }).then(async response => {
+        const rsp_data = await response.json();
+          if (!response.ok) {
+            this.props.sentenceActionApiStopped()
+            return Promise.reject('');
+          } else {
+            console.log(rsp_data)
+            this.props.fetchContent(rsp_data.count, rsp_data.data);
+          }
+      }).catch((error) => {
+          console.log('api failed because of server or network')
+          this.props.sentenceActionApiStopped()
+      });
     }
 
     makeAPICallFetchContentPerPage = (start_page) => {
@@ -550,7 +565,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
       update_sentences,
       update_blocks,
       ClearContent,
-      clearFetchContent
+      clearFetchContent,
+      fetchContent
     },
     dispatch
 );
