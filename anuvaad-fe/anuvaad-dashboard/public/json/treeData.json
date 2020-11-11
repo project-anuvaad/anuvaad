@@ -1,0 +1,49 @@
+{
+  "name": "Leave Hours By Type",
+  "children": [
+    {
+      "name": "Designated Holiday",
+      "children": [{ "name": "Designated Holiday", "value": 5592 }]
+    },
+    {
+      "name": "Earned Leave",
+      "children": [{ "name": "Earned Leave", "value": 4114 }]
+    },
+    {
+      "name": "Sick / Casual Leave",
+      "children": [{ "name": "Sick / Casual Leave", "value": 1987 }]
+    },
+    {
+      "name": "Maternity Leave",
+      "children": [{ "name": "Maternity Leave", "value": 688 }]
+    },
+    {
+      "name": "Loss of Pay",
+      "children": [{ "name": "Loss of Pay", "value": 289 }]
+    },
+    {
+      "name": "Compensatory Off",
+      "children": [{ "name": "Compensatory Off", "value": 296 }]
+    },
+    {
+      "name": "Engagement / Marriage Leave",
+      "children": [{ "name": "Engagement / Marriage Leave", "value": 200 }]
+    },
+    {
+      "name": "Paternity Leave",
+      "children": [{ "name": "Paternity Leave", "value": 184 }]
+    },
+    {
+      "name": "Week - Off",
+      "children": [{ "name": "Week - Off", "value": 160 }]
+    },
+    {
+      "name": "Bereavement Leave",
+      "children": [{ "name": "Bereavement Leave", "value": 96 }]
+    },
+    {
+      "name": "Extended Medical Leave",
+      "children": [{ "name": "Extended Medical Leave", "value": 88 }]
+    }
+  ]
+}
