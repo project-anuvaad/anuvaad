@@ -149,13 +149,13 @@ class SentenceCard extends React.Component {
     //     }
     // }
 
-    shouldComponentUpdate(prevProps, nextState) {
-        console.log(this.props.block_highlight)
-        if (this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id) {
-            return true;
-        }
-        return false;
-    }
+    // shouldComponentUpdate(prevProps, nextState) {
+    //     console.log(this.props.block_highlight)
+    //     if (this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     /**
      * utility function

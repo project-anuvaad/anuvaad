@@ -13,11 +13,9 @@ export default function blockReducer(state={}, action) {
 
         case C.CLEAR_HIGHLIGHT_BLOCK: {
           let data = action.payload;
-          console.log(data)
           return {
             ...state,
             block: {},
-           
           }
         }
 

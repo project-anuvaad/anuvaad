@@ -49,6 +49,7 @@ class DocumentEditor extends React.Component {
             snackBarMessage: '',
             isShowSnackbar: false
         }
+        this.needRendering  = false;
     }
 
     /**
@@ -89,6 +90,41 @@ class DocumentEditor extends React.Component {
       if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
         this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
       }
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+      // if (nextProps.block_highlight !== this.props.block_highlight) {
+      //   this.needRendering  = false;
+      // } 
+
+      if (nextProps.document_contents.pages.length !== this.props.document_contents.pages.length) {
+        this.needRendering = true
+      } else {
+        this.needRendering = false;
+      }
+
+      if (!this.needRendering) {
+        console.log('do not need re-rendering here')
+      } else {
+        console.log('need re-rendering')
+      }
+    }
+
+    shouldComponentUpdate(prevProps, nextState) {
+      // console.log(prevProps.sentence_action_operation)
+      // console.log(prevProps.block_highlight)
+
+      // if (prevProps.sentence_action_operation.progress == true) {
+      //   console.log('not allowing re-rendering when progress is true')
+      //   return false;
+      // }
+      // if (prevProps.document_contents.pages && prevProps.document_contents.pages.length > 1) {
+      //   console.log('re-render when pages content got updated')
+      //     return true;
+      // }
+
+      return this.needRendering;
     }
 
     componentWillUnmount() {
@@ -557,7 +593,7 @@ const mapStateToProps = state => ({
     sentence_highlight: state.sentence_highlight.sentence,
     sentence_action_operation : state.sentence_action_operation,
     show_pdf: state.show_pdf.open,
-    block_highlight: state.block_highlight.block,
+    block_highlight: state.block_highlight,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
