@@ -25,9 +25,9 @@ class DocumentConverter(Resource):
             if 'record_id' not in body or record_id is None or 'user_id' not in body or user_id is None:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
                 return res.getresjson(), 400
-            out_translated_doc, xlsx_file = document_saving(record_id, user_id, DOWNLOAD_FOLDER)
+            out_translated_doc, xlsx_file, txt_file = document_saving(record_id, user_id, DOWNLOAD_FOLDER)
             log_info("document saved successfully", MODULE_CONTEXT)
-            res = CustomResponse(Status.SUCCESS.value, out_translated_doc, xlsx_file)
+            res = CustomResponse(Status.SUCCESS.value, out_translated_doc, xlsx_file, txt_file)
             return res.getres()
         except ServiceError as e:
             log_exception("Error occured at resource level.", MODULE_CONTEXT, e)

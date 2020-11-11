@@ -187,3 +187,19 @@ class DocumentConversion(object):
             return out_xlsx_filename
         except Exception as e:
             log_exception("xlsx file formation failed", MODULE_CONTEXT, e)
+
+    # create txt file for translated sentences 
+    def create_translated_txt_file(self, record_id, dataframes, page_layout):
+        try:
+            out_translated_txt_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '_translated.txt'
+            output_filepath_txt = os.path.join(self.DOWNLOAD_FOLDER , out_translated_txt_filename)
+            out_txt_file_write = open(output_filepath_txt, 'w')
+            page_width = page_layout['page_width']
+            for index, df in enumerate(dataframes):
+                for index, row in df.iterrows():
+                    if row['text'] != None:
+                        out_txt_file_write.write(row['text'])
+            out_txt_file_write.close()
+            return out_translated_txt_filename
+        except Exception as e:
+            log_exception("txt file formation failed", MODULE_CONTEXT, e)
