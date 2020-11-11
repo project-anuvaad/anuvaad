@@ -47,4 +47,5 @@ try {
         throw err
     }
 }
+}
 
