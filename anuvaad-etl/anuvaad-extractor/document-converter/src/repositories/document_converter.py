@@ -98,6 +98,7 @@ class DocumentConversion(object):
                 df = df.reset_index()
                 df = df.where(pd.notnull(df), None)
                 dfs.append(df)
+            log_info("dataframes formed", MODULE_CONTEXT)
             return dfs, page_layout
         except Exception as e:
             log_exception("dataframe formation error", MODULE_CONTEXT, e)
@@ -150,6 +151,7 @@ class DocumentConversion(object):
             out_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '_translated.docx'
             output_filepath = os.path.join(self.DOWNLOAD_FOLDER , out_filename)
             document.save(output_filepath)
+            log_info("docx file formation done!! filename: %s"%out_filename, MODULE_CONTEXT)
             return out_filename
         except Exception as e:
             log_exception("dataframe to doc formation failed", MODULE_CONTEXT, e)
@@ -184,9 +186,34 @@ class DocumentConversion(object):
                         worksheet.write(row, column + 1, tokenised_sentence['tgt']) 
                         row += 1
             workbook.close()
+            log_info("xlsx file write completed!! filename: %s"%out_xlsx_filename, MODULE_CONTEXT)
             return out_xlsx_filename
         except Exception as e:
             log_exception("xlsx file formation failed", MODULE_CONTEXT, e)
+
+    # breaking large sentences into page width fit sentences
+    def break_large_sentence(self, sentence, max_char_in_line):
+        try:
+            sub_str_list = [sentence[i:i+max_char_in_line] for i in range(0, len(sentence), max_char_in_line)]
+            for idx, sub_str in enumerate(sub_str_list):
+                if idx+1 < len(sub_str_list):
+                    if not sub_str.endswith(' ') or not sub_str_list[idx+1].startswith(' '): 
+                        sub_str_split = sub_str.split(' ')
+                        last_word_sub_str = sub_str_split[-1]
+                        next_sub_str_split = sub_str_list[idx+1].split(' ')
+                        first_word_sub_str = next_sub_str_split[0]
+                        if len(last_word_sub_str) < len(first_word_sub_str):
+                            next_sub_str_split[0] = ' ' + last_word_sub_str + first_word_sub_str
+                            del sub_str_split[-1]
+                        else:
+                            sub_str_split[-1] = last_word_sub_str + first_word_sub_str + ' '
+                            del next_sub_str_split[0]
+                        sub_str_list[idx] = ' '.join(sub_str_split)
+                        sub_str_list[idx+1] = ' '.join(next_sub_str_split)
+            log_info("sentence breaking done!!", MODULE_CONTEXT)
+            return sub_str_list
+        except Exception as e:
+            log_exception("sentence breaking failed for txt file writing", MODULE_CONTEXT, e)
 
     # create txt file for translated sentences 
     def create_translated_txt_file(self, record_id, dataframes, page_layout):
@@ -195,11 +222,20 @@ class DocumentConversion(object):
             output_filepath_txt = os.path.join(self.DOWNLOAD_FOLDER , out_translated_txt_filename)
             out_txt_file_write = open(output_filepath_txt, 'w')
             page_width = page_layout['page_width']
+            max_chars_in_line = int(page_width/13)
             for index, df in enumerate(dataframes):
                 for index, row in df.iterrows():
                     if row['text'] != None:
-                        out_txt_file_write.write(row['text'])
+                        extra_spaces = int(row['text_left']/13.5)
+                        write_str = re.sub(r'^', ' '*extra_spaces, row['text'])
+                        if len(write_str) < max_chars_in_line:
+                            out_txt_file_write.write(write_str)
+                        else:
+                            sub_string_list = self.break_large_sentence(write_str, max_chars_in_line)
+                            for item in sub_string_list:
+                                out_txt_file_write.write(item)
             out_txt_file_write.close()
+            log_info("txt file write completed!! filename: %s"%out_translated_txt_filename, MODULE_CONTEXT)
             return out_translated_txt_filename
         except Exception as e:
             log_exception("txt file formation failed", MODULE_CONTEXT, e)

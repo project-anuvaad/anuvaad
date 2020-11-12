@@ -12,9 +12,6 @@ def document_saving(record_id, user_id, download_folder):
         output_filename = doc_conversion.document_creation(dataframes, page_layout, record_id)
         xlsx_filename = doc_conversion.generate_xlsx_file(record_id, json_data)
         txt_filename = doc_conversion.create_translated_txt_file(record_id, dataframes, page_layout)
-        log_info("document saving completed: %s"%output_filename, MODULE_CONTEXT)
-        log_info("xlsx file saving completed: %s"%xlsx_filename, MODULE_CONTEXT)
-        log_info("txt file saving completed: %s"%txt_filename, MODULE_CONTEXT)
         return output_filename, xlsx_filename, txt_filename
     except:
         log_exception("Document saving failed", MODULE_CONTEXT, None)
