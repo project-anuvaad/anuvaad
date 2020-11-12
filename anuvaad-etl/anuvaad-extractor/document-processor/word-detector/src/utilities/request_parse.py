@@ -43,6 +43,10 @@ class File:
     def get_regions(self, page_index):
         return self.file['pages'][page_index]['regions']
 
+    @log_error
+    def get_language(self):
+        return self.file['config']['OCR']['language']
+
 
 
 
@@ -50,3 +54,11 @@ def get_files(application_context):
     files = application_context['inputs']
     return files
 
+
+def get_languages(app_context):
+    languages = []
+    files = get_files(app_context.application_context)
+    for file in files :
+        file_properties = File(file)
+        languages.append(file_properties.get_language())
+    return  languages

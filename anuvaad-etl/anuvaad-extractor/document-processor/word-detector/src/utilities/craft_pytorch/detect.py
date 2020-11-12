@@ -214,8 +214,8 @@ def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,i
             df.at[index,'x3']= int(poly[4]); df.at[index,'y3']= int(poly[5])
             df.at[index,'x4']= int(poly[6]); df.at[index,'y4']= int(poly[7])
 
-        in_df = convert_to_in_df(df)
-        in_dfs.append(in_df)
+        #in_df = convert_to_in_df(df)
+        in_dfs.append(df)
     time_taken = time.time() - t
     time_take_per_page = time_taken / number_of_pages
 
@@ -232,16 +232,17 @@ def detect_text(images,language) :
         line_coordinates = []
         for index,image_set in enumerate(images):
             lang = language[index]
-            word_in_dfs = detect_text_per_file(image_set,refine_net=False,\
+            word_in_dfs = detect_text_per_file(image_set,network=False,\
                                                text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
                                                low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'])
-            line_in_df  = detect_text_per_file(image_set,refine_net=True,\
+            line_in_df  = detect_text_per_file(image_set,network=True,\
                                                text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'],\
-                                               low_text_threshold= config.LANGUAGE_LINE_THRESOLDS_THRESOLDS[lang]['low_text'])
+                                               low_text_threshold= config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'])
             word_coordinates.append(word_in_dfs)
             line_coordinates.append((line_in_df))
     except Exception as e :
         log_error('error detecting text', app_context.application_context, e)
+        return None,None
     return word_coordinates, line_coordinates
 
 
