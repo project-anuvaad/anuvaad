@@ -1,14 +1,14 @@
 from flask import Blueprint
 from flask_restful import Api
-from src.resources.module import Module_Name
-from src.resources.module import Module_Name_WF
+from src.resources.module import Layout_Detector
+from src.resources.module import Layout_Detector_WF
 
 # end-point for independent service
-Module_Name_BLUEPRINT = Blueprint("module_name", __name__)
-api = Api(Module_Name_BLUEPRINT)
-api.add_resource(Module_Name, "/module_name")
+Layout_Detector_BLUEPRINT = Blueprint("layout_detector", __name__)
+api = Api(Layout_Detector_BLUEPRINT)
+api.add_resource(Layout_Detector, "/layout_detector")
 
 # end-point for workflow service
-Module_Name_BLUEPRINT_WF = Blueprint("module_name workflow", __name__)
-api_wf = Api(Module_Name_BLUEPRINT_WF)
-api_wf.add_resource(Module_Name_WF, "/module_name-wf")
+Layout_Detector_BLUEPRINT_WF = Blueprint("layout_detector workflow", __name__)
+api_wf = Api(Layout_Detector_BLUEPRINT_WF)
+api_wf.add_resource(Layout_Detector_WF, "/layout_detector_wf")

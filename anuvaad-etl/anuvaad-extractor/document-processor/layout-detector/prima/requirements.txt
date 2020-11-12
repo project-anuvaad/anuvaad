@@ -15,6 +15,7 @@ anuvaad-auditor==0.1.4
 torch==1.4.0
 torchvision==0.5.0
 opencv-python==4.4.0.40
+layoutparser==0.1.2
 
 #scikit-image==0.17.2
 #scipy==1.5.3

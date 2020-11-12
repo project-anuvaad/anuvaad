@@ -15,7 +15,7 @@ import threading
 from src.kafka_module.producer import Producer
 import src.utilities.app_context as app_context
 ###################################
-from src.services.main import layout_detection
+from src.services.main import LayoutDetection
 #####################################
 
 file_ops = FileOperation()
@@ -45,7 +45,7 @@ class Response(object):
                 #debug_flush = True
                 if debug_flush == False:
                     ############################
-                    response = layout_detection(app_context=app_context)
+                    response = LayoutDetection(app_context=app_context)
                     ##############################
                     if response['code'] == 200:
                         
@@ -86,7 +86,7 @@ class Response(object):
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
             response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
-            log_exception("workflow_response Something went wrong during pdf to block conversion.", app_context.application_context, e)
+            log_exception("workflow_response Something went wrong during layout conversion.", app_context.application_context, e)
             response = copy.deepcopy(response)
             return response
 
@@ -119,7 +119,7 @@ class Response(object):
             response_custom = Status.ERR_STATUS.value
             response_custom['message'] = str(e)
             response = file_ops.error_handler(response_custom, "SERVICE_ERROR", False)
-            log_exception("non workflow_response Something went wrong during pdf to block conversion.", app_context.application_context, e)
+            log_exception("non workflow_response Something went wrong during layout conversion.", app_context.application_context, e)
             response = copy.deepcopy(response)
             return response
 
