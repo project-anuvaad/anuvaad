@@ -8,10 +8,12 @@ try {
 		}
 	stage('Build') {
 	
+        sh  '''
+        
 	 cd anuvaad-api/anuvaad-dashboard/zuul-service
            
-		   sh ' mvn clean install'
-            
+		   mvn clean install
+        '''    
 	}
 	/* stage('SonarQube analysis') {
    			 // requires SonarQube Scanner 2.8+
