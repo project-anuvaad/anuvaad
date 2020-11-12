@@ -8,7 +8,7 @@ stage('Deploy')
             pwd
              echo $vaultpass > vault_pass.txt
                 
-	ansible-playbook -i jenkins_files/ansible/anuvaad-dashboard/$inventory_path jenkins_files/ansible/anuvaad-dashboard/$playbook_path --vault-id vault_pass.txt	
+	ansible-playbook -i /home/jenkins/jenkins_files/ansible/anuvaad-dashboard/$inventory_path /home/jenkins/jenkins_files/ansible/anuvaad-dashboard/$playbook_path --vault-id vault_pass.txt	
 	
 	    rm -rf vault_pass.txt	
         '''
