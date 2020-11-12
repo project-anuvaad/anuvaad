@@ -119,6 +119,9 @@ const constants = {
     UPDATE_SENTENCE_CONTENT    :   'UPDATE_SENTENCE_CONTENT',
     UPDATE_BLOCK_CONTENT        :   'UPDATE_BLOCK_CONTENT',
     CLEAR_FETCH_CONTENT         :    "CLEAR_FETCH_CONTENT",
+    EDITOR_MODE_CLEAR          :   "EDITOR_MODE_CLEAR",
+    EDITOR_MODE_NORMAL          :   "EDITOR_MODE_NORMAL",
+    EDITOR_MODE_MERGE           :   "EDITOR_MODE_MERGE",
 
      /**
      * actions for header

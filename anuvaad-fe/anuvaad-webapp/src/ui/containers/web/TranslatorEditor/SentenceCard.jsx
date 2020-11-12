@@ -66,6 +66,7 @@ const theme = createMuiTheme({
             "&:last-child": {
               paddingBottom: 0,
            },
+
           },
         },
         MuiDivider :{
@@ -109,7 +110,6 @@ class SentenceCard extends React.Component {
             endIndex: null
 
         };
-        this.activeCard = false;
         this.textInput = React.createRef();
         this.handleUserInputText = this.handleUserInputText.bind(this);
 
@@ -125,34 +125,42 @@ class SentenceCard extends React.Component {
     //     }
     // }
 
-    // componentDidUpdate(prevProps, prevState) {
-    //     if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished) ) {
-    //         this.setState({
-    //             cardChecked: false
-    //         })
-    //     }
-    //     if ((prevProps.sentence_action_operation.api_status !== this.props.sentence_action_operation.api_status)) {
-    //         this.setState({
-    //             isCardBusy: (this.isCurrentSentenceInProps() ? this.props.sentence_action_operation.api_status : false)
-    //         })
-    //     }
+    componentWillUpdate(nextProps, nextState) {
+        // if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished) ) {
+        //     this.setState({
+        //         cardChecked: false
+        //     })
+        // }
+        // if ((prevProps.sentence_action_operation.api_status !== this.props.sentence_action_operation.api_status)) {
+        //     this.setState({
+        //         isCardBusy: (this.isCurrentSentenceInProps() ? this.props.sentence_action_operation.api_status : false)
+        //     })
+        // }
 
-    //     if(this.state.selectedSentence!== prevState.selectedSentence){
-    //         this.setState({dictionaryWord: prevState.selectedSentence})
-    //     }
+        // if(this.state.selectedSentence!== prevState.selectedSentence){
+        //     this.setState({dictionaryWord: prevState.selectedSentence})
+        // }
         
-    //     if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
+        // if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
             
-    //         if (this.cardBlockCompare()) {
-    //             this.setState({ cardInFocus: true })
-    //         }
-    //     }
-    // }
+        //     if (this.cardBlockCompare()) {
+        //         this.setState({ cardInFocus: true })
+        //     }
+        // }
+        if (nextProps.document_editor_mode.mode !== this.props.document_editor_mode.mode) {
+            if (this.state.cardChecked)
+                this.setState({cardChecked: false})
+        }
+    }
 
     shouldComponentUpdate(prevProps, nextState) {
-        
         if (prevProps.sentence) {
-            if (prevProps.sentence.s_id === this.props.block_highlight.active_s_id) {
+            if (prevProps.document_editor_mode.page_nos.indexOf(this.props.pageNumber) !== -1) {
+                return true
+            }
+
+            if ((prevProps.sentence.s_id === prevProps.block_highlight.current_sid) || 
+                (prevProps.sentence.s_id === prevProps.block_highlight.prev_sid)) {
                 return true
             }
             return false
@@ -263,28 +271,15 @@ class SentenceCard extends React.Component {
     }
 
     processMergeNowButtonClicked() {
-        if(this.props.sentence_action_operation.sentences.length>1){
-            this.setState({
-                isModeMerge: false,
-            })
-            this.props.finishMergeSentence()
-            if (this.props.onAction) {
-                this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, this.props.sentence_action_operation.sentences, this.props.sentence)
-            }
-        }
-        else {
-            alert("Please select minimum two sentence to merge..!")
+        this.props.finishMergeSentence()
+        if (this.props.onAction) {
+            this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, null, this.props.sentence)
         }
     }
 
     processSplitButtonClicked(start_index, end_index) {
-        if(start_index !== end_index) {
-            if (this.props.onAction) {
-                this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
-            }
-        }
-        else {
-            alert("Please select proper sentence to split..!")
+        if (this.props.onAction) {
+            this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
         }
     }
 
@@ -292,21 +287,17 @@ class SentenceCard extends React.Component {
      * Merge mode user action handlers
      */
     processMergeButtonClicked() {
-        this.setState({
-            isModeMerge: true
-        })
         this.props.startMergeSentence()
+        this.props.onAction(SENTENCE_ACTION.START_MODE_MERGE, this.props.pageNumber, [this.props.sentence])
     }
 
     processMergeCancelButtonClicked() {
-        this.setState({
-            isModeMerge: false,
-        })
         this.props.cancelMergeSentence()
+        this.props.onAction(SENTENCE_ACTION.END_MODE_MERGE, this.props.pageNumber, [this.props.sentence])
+        this.setState({cardChecked: false})
     }
 
     processMergeSelectionToggle = () => {
-        
         this.setState({
             cardChecked: !this.state.cardChecked
         })
@@ -543,10 +534,10 @@ class SentenceCard extends React.Component {
                     let parallel_words = []
                     result.parallel_words.map((words) => {
                     if(this.props.tgt_locale === words.locale)
-                            parallel_words.push(words.name)
+                        parallel_words.push(words.name)
                     } )
                     this.setState({
-                            parallel_words: parallel_words
+                        parallel_words: parallel_words
                     })
             })
         })
@@ -607,7 +598,7 @@ class SentenceCard extends React.Component {
     }
 
     renderCardSelectedForMerge = () => {
-        if (this.props.sentence_action_operation.progress) {
+        if (this.props.document_editor_mode.mode === 'EDITOR_MODE_MERGE') {
             return (
                 <Checkbox
                     checked={this.state.cardChecked}
@@ -619,25 +610,21 @@ class SentenceCard extends React.Component {
         return (<div></div>)
     }
 
-    renderCardIcon = () =>{
-        if(!this.props.sentence_action_operation.progress){
-            return (
-                
-                <div style={{ width: "10%", textAlign: "right" }}>
-                    <IconButton aria-label="settings"
-                        style={this.cardCompare() ? styles.expandOpen : styles.expand}
-                        onClick={this.handleCardExpandClick}>
-                        <ExpandMoreIcon />
-                    </IconButton>
-                </div>
-                
-            )
-        }
+    renderCardIcon = () => {
+        return (
+            <div style={{ width: "10%", textAlign: "right" }}>
+                <IconButton aria-label="settings"
+                    style={this.cardCompare() ? styles.expandOpen : styles.expand}
+                    onClick={this.handleCardExpandClick}>
+                    <ExpandMoreIcon />
+                </IconButton>
+            </div>
+        )
     }
 
     renderSentenceCard = () =>{
         return (
-            <div style={{ padding: "1%" }}>
+            <div key={12} style={{ padding: "1%" }}>
                 <MuiThemeProvider theme={theme}>
                     <Card style={this.cardBlockCompare() || (this.cardCompare()) ? styles.card_open : this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
                         <CardContent  style={{ display: "flex", flexDirection: "row" }}>
@@ -665,14 +652,14 @@ class SentenceCard extends React.Component {
 
                         </CardContent>}
 
-                        <Collapse in={this.activeCard} timeout="auto" unmountOnExit>
+                        <Collapse in={this.cardCompare()} timeout="auto" unmountOnExit>
                             <CardContent>
                                 {this.renderMTTargetSentence()}
                                 <br />
                                 {this.renderUserInputArea()}
                             </CardContent>
                             <CardActions>
-                                {this.state.isModeMerge ? this.renderMergeModeButtons() : this.renderNormaModeButtons()}
+                                {(this.props.document_editor_mode.mode === 'EDITOR_MODE_MERGE') ? this.renderMergeModeButtons() : this.renderNormaModeButtons()}
                             </CardActions>
                         </Collapse>
                     </Card>
@@ -682,32 +669,21 @@ class SentenceCard extends React.Component {
     }
 
     handleCardExpandClick = () => {
-        console.log('handleCardExpandClick')
-        // this.setState({cardInFocus: !this.state.cardInFocus})
-        if (!this.activeCard) {
-            this.activeCard = true
-            this.props.highlightBlock(this.props.sentence)
-            this.textInput && this.textInput.current && this.textInput.current.focus();
-        } else {
-            this.activeCard = false;
+        if (this.cardCompare()) {
+            this.setState({cardInFocus: false})
             this.props.clearHighlighBlock()
+        } else {
+            this.setState({cardInFocus: true})
+            this.props.highlightBlock(this.props.sentence)
+            /**
+             * For highlighting textarea on card expand
+             */
+            this.textInput && this.textInput.current && this.textInput.current.focus();
         }
-        // if (this.cardBlockCompare() || this.cardCompare()) {
-           
-            
-        // } else {
-            
-        //     this.setState({cardInFocus: true})
-        //     /**
-        // * For highlighting textarea on card expand
-        // */
-        
-        // }
-
         
     }
 
-    cardBlockCompare = () =>{
+    cardBlockCompare = () => {
         if(this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id){
             return true;
         }
@@ -715,7 +691,8 @@ class SentenceCard extends React.Component {
     }
 
     cardCompare = () => {
-        if(this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id){
+
+        if(this.props.block_highlight.current_sid === this.props.sentence.s_id ) {
             return true;
         }
         return false;
@@ -744,7 +721,10 @@ class SentenceCard extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    block_highlight: state.block_highlight
+    document_contents: state.document_contents,
+    sentence_highlight: state.sentence_highlight.sentence,
+    block_highlight: state.block_highlight,
+    document_editor_mode: state.document_editor_mode,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

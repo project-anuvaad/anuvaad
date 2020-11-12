@@ -34,6 +34,7 @@ import block_highlight from './blockReducer'
 import sentence_highlight from './sentences/sentenceReducer'
 import sentence_action_operation from './sentences/sentenceActionReducer'
 import async_job_status from './jobs/async_job_management'
+import document_editor_mode from './editor/document_editor_mode';
 
 import show_pdf from './showPdfReducer'
 
@@ -74,6 +75,7 @@ export default {
     sentence_action_operation,
 
     async_job_status,
+    document_editor_mode,
 
     show_pdf,
 };
