@@ -46,7 +46,7 @@ try {
 		   sh '''
 		   commit_id=$(git rev-parse --short HEAD)
 		   echo $commit_id> commit_id.txt
-
+     cd /home/jenkins/workspace/anuvaad/Dashboard_FE-BE/anuvaad-be-analytics-service/backend_analytics_build/anuvaad-api/anuvaad-dashboard/analytics-service
 		   pwd
 		   docker build -t docker.idc.tarento.com/$docker_repo:$commit_id .
 		   '''
@@ -59,7 +59,7 @@ try {
 	   
 	      sh '''
 	       
-	       cd /home/jenkins/workspace/anuvaad/Dashboard_FE-BE/anuvaad-be-analytics-service/backend_analytics_build/anuvaad-api/anuvaad-dashboard/analytics-service
+	       
 		     pwd
 		     	commit_id=$(git rev-parse --short HEAD)
 		    	echo $registry_pass > registry_pass.txt
