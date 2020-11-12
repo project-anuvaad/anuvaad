@@ -25,7 +25,7 @@ try {
 	   '''
 
 }
-   
+  /*  
    stage('SonarQube analysis') {
        def scannerHome = tool 'sonar_scanner';
        withSonarQubeEnv('sonarqube') {
@@ -40,7 +40,7 @@ try {
                error "Pipeline aborted due to quality gate failure: ${qg.status}"
             }
          }
-     }
+     }    */
 
 }
 
