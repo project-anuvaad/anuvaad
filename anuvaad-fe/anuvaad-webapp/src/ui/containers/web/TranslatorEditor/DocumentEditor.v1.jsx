@@ -37,10 +37,7 @@ import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverte
 
 import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
-
-const { v4 }        = require('uuid');
-
-
+import { editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -54,7 +51,8 @@ class DocumentEditor extends React.Component {
             currentPageIndex: 1,
             apiInProgress: false,
             snackBarMessage: '',
-            isShowSnackbar: false
+            isShowSnackbar: false,
+            isModeMerge: false
         }
     }
 
@@ -160,6 +158,7 @@ class DocumentEditor extends React.Component {
           } else {
             this.props.contentUpdateStarted();
             this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
+            this.props.editorModeNormal([], [])
           }
       }).catch((error) => {
           console.log('api failed because of server or network')
@@ -297,6 +296,7 @@ class DocumentEditor extends React.Component {
           this.setMessages(SENTENCE_ACTION.SENTENCE_SPLITTED, "splittedMessage")
           return;
         }
+
         case SENTENCE_ACTION.SENTENCE_MERGED: {
           /**
            * make card busy as merge operation is started by it.
@@ -307,20 +307,38 @@ class DocumentEditor extends React.Component {
           this.setMessages(SENTENCE_ACTION.SENTENCE_MERGED, "mergedMessage")
           return;
         }
+
         case SENTENCE_ACTION.SENTENCE_SOURCE_EDITED: {
           this.props.sentenceActionApiStarted(null)
           this.makeAPICallSourceSaveSentence(sentences, pageNumber)
           this.setMessages(SENTENCE_ACTION.SENTENCE_SOURCE_EDITED, "editedMessage")
           return;
         }
+
+        case SENTENCE_ACTION.START_MODE_MERGE: {
+          if (pageNumber === 1) {
+            this.props.editorModeMerge([], [1, 2])
+          } else {
+            this.props.editorModeMerge([], [(pageNumber - 1), pageNumber, (pageNumber + 1)])
+          }
+          return;
+        }
+
+        case SENTENCE_ACTION.END_MODE_MERGE: {
+          if (pageNumber === 1) {
+            this.props.editorModeNormal([], [1, 2])
+          } else {
+            this.props.editorModeNormal([], [(pageNumber - 1), pageNumber, (pageNumber + 1)])
+          }
+          return;
+        }
       }
     }
 
-    setMessages = (pendingAction, completedAction) =>{
-              this.setState({snackBarMessage:translate(`common.page.label.${pendingAction}`), 
-              snackBarSavedMessage:translate(`common.page.label.${completedAction}`), 
-              
-            })
+    setMessages = (pendingAction, completedAction) => {
+        this.setState({snackBarMessage:translate(`common.page.label.${pendingAction}`), 
+        snackBarSavedMessage:translate(`common.page.label.${completedAction}`), 
+      })
     }
 
     snackBarMessage = () =>{
@@ -335,7 +353,6 @@ class DocumentEditor extends React.Component {
           />
           </div>
       )
-      
     }
 
     handleViewModeToggle = () => {
@@ -460,7 +477,6 @@ class DocumentEditor extends React.Component {
       )
     }
 
-
     /**
      * render Document pages
      */
@@ -563,7 +579,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
       update_sentences,
       update_blocks,
       ClearContent,
-      clearFetchContent
+      clearFetchContent,
+      editorModeNormal, editorModeMerge
     },
     dispatch
 );
