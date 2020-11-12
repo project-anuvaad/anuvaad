@@ -57,7 +57,9 @@ class FileResponse:
             self.file['status'] = {"code": 200, "message": "word-detector successful"}
         else:
             self.file['status'] = {"code": 400, "message": "word-detector failed"}
-
+    
+    def get_file(self):
+        return self.file
 
 class Page:
     def __int__(self):
