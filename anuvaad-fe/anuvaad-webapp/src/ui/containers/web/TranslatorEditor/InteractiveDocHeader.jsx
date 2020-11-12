@@ -159,9 +159,9 @@ class InteractiveDocHeader extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    // saveContent: state.saveContent,
-    // sentence_action_operation: state.sentence_action_operation.api_status,
-    // show_pdf: state.show_pdf.open
+    saveContent: state.saveContent,
+    sentence_action_operation: state.sentence_action_operation.api_status,
+    show_pdf: state.show_pdf.open
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

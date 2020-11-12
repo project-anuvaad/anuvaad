@@ -20,7 +20,7 @@ const styles = {
     }
 }
 
-class PageCard extends React.PureComponent {
+class PageCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
