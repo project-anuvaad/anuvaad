@@ -1,16 +1,19 @@
 from src.services.extract_images import extract_images
 from src.utilities.craft_pytorch.detect import detect_text
 import src.utilities.app_context as app_context
+from src.utilities.request_parse import get_languages
 import config
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 from compose import compose
 
+
+
 def get_text(app_context,base_dir) :
     images   = extract_images(app_context,base_dir)
-    language = ['en']#get_language(app_context)
-    words,lines = detect_text(images,language)
+    languages = get_languages(app_context)
+    words,lines = detect_text(images,languages)
     return  [words,lines,images]
 
 def get_response(input):

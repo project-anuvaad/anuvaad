@@ -232,16 +232,17 @@ def detect_text(images,language) :
         line_coordinates = []
         for index,image_set in enumerate(images):
             lang = language[index]
-            word_in_dfs = detect_text_per_file(image_set,refine_net=False,\
+            word_in_dfs = detect_text_per_file(image_set,network=False,\
                                                text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
                                                low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'])
-            line_in_df  = detect_text_per_file(image_set,refine_net=True,\
+            line_in_df  = detect_text_per_file(image_set,network=True,\
                                                text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'],\
-                                               low_text_threshold= config.LANGUAGE_LINE_THRESOLDS_THRESOLDS[lang]['low_text'])
+                                               low_text_threshold= config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'])
             word_coordinates.append(word_in_dfs)
             line_coordinates.append((line_in_df))
     except Exception as e :
         log_error('error detecting text', app_context.application_context, e)
+        return None,None
     return word_coordinates, line_coordinates
 
 
