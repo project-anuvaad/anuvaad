@@ -125,34 +125,37 @@ class SentenceCard extends React.Component {
     //     }
     // }
 
-    // componentDidUpdate(prevProps, prevState) {
-    //     if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished) ) {
-    //         this.setState({
-    //             cardChecked: false
-    //         })
-    //     }
-    //     if ((prevProps.sentence_action_operation.api_status !== this.props.sentence_action_operation.api_status)) {
-    //         this.setState({
-    //             isCardBusy: (this.isCurrentSentenceInProps() ? this.props.sentence_action_operation.api_status : false)
-    //         })
-    //     }
+    componentWillUpdate(nextProps, nextState) {
+        // if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished) ) {
+        //     this.setState({
+        //         cardChecked: false
+        //     })
+        // }
+        // if ((prevProps.sentence_action_operation.api_status !== this.props.sentence_action_operation.api_status)) {
+        //     this.setState({
+        //         isCardBusy: (this.isCurrentSentenceInProps() ? this.props.sentence_action_operation.api_status : false)
+        //     })
+        // }
 
-    //     if(this.state.selectedSentence!== prevState.selectedSentence){
-    //         this.setState({dictionaryWord: prevState.selectedSentence})
-    //     }
+        // if(this.state.selectedSentence!== prevState.selectedSentence){
+        //     this.setState({dictionaryWord: prevState.selectedSentence})
+        // }
         
-    //     if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
+        // if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
             
-    //         if (this.cardBlockCompare()) {
-    //             this.setState({ cardInFocus: true })
-    //         }
-    //     }
-    // }
+        //     if (this.cardBlockCompare()) {
+        //         this.setState({ cardInFocus: true })
+        //     }
+        // }
+        if (nextProps.document_editor_mode.mode !== this.props.document_editor_mode.mode) {
+            if (this.state.cardChecked)
+                this.setState({cardChecked: false})
+        }
+    }
 
     shouldComponentUpdate(prevProps, nextState) {
         if (prevProps.sentence) {
             if (prevProps.document_editor_mode.page_nos.indexOf(this.props.pageNumber) !== -1) {
-                console.log('rendering allowed for ', this.props.pageNumber)
                 return true
             }
 
@@ -160,7 +163,6 @@ class SentenceCard extends React.Component {
                 (prevProps.sentence.s_id === prevProps.block_highlight.prev_sid)) {
                 return true
             }
-            console.log('rendering not allowed for ', this.props.pageNumber)
             return false
         }
         return true;
@@ -269,25 +271,15 @@ class SentenceCard extends React.Component {
     }
 
     processMergeNowButtonClicked() {
-        if(this.props.sentence_action_operation.sentences.length > 1) {
-            this.props.finishMergeSentence()
-            if (this.props.onAction) {
-                this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, this.props.sentence_action_operation.sentences, this.props.sentence)
-            }
-        }
-        else {
-            alert("Please select minimum two sentence to merge..!")
+        this.props.finishMergeSentence()
+        if (this.props.onAction) {
+            this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, null, this.props.sentence)
         }
     }
 
     processSplitButtonClicked(start_index, end_index) {
-        if(start_index !== end_index) {
-            if (this.props.onAction) {
-                this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
-            }
-        }
-        else {
-            alert("Please select proper sentence to split..!")
+        if (this.props.onAction) {
+            this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
         }
     }
 
@@ -295,20 +287,14 @@ class SentenceCard extends React.Component {
      * Merge mode user action handlers
      */
     processMergeButtonClicked() {
+        this.props.startMergeSentence()
         this.props.onAction(SENTENCE_ACTION.START_MODE_MERGE, this.props.pageNumber, [this.props.sentence])
-        // this.setState({
-        //     isModeMerge: true
-        // })
-        // this.props.startMergeSentence()
     }
 
     processMergeCancelButtonClicked() {
+        this.props.cancelMergeSentence()
         this.props.onAction(SENTENCE_ACTION.END_MODE_MERGE, this.props.pageNumber, [this.props.sentence])
         this.setState({cardChecked: false})
-        // this.setState({
-        //     isModeMerge: false,
-        // })
-        // this.props.cancelMergeSentence()
     }
 
     processMergeSelectionToggle = () => {
@@ -613,7 +599,6 @@ class SentenceCard extends React.Component {
 
     renderCardSelectedForMerge = () => {
         if (this.props.document_editor_mode.mode === 'EDITOR_MODE_MERGE') {
-            console.log('MERGE MODE', this.props.sentence.s0_tgt)
             return (
                 <Checkbox
                     checked={this.state.cardChecked}
@@ -622,7 +607,6 @@ class SentenceCard extends React.Component {
                 />
             )
         }
-        console.log('MERGE NORMAL', this.props.sentence.s0_tgt);
         return (<div></div>)
     }
 
@@ -738,7 +722,6 @@ class SentenceCard extends React.Component {
 
 const mapStateToProps = state => ({
     document_contents: state.document_contents,
-    sentence_action_operation: state.sentence_action_operation,
     sentence_highlight: state.sentence_highlight.sentence,
     block_highlight: state.block_highlight,
     document_editor_mode: state.document_editor_mode,

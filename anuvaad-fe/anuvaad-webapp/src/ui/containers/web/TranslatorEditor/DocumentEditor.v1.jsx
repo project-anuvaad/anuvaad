@@ -37,7 +37,7 @@ import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverte
 
 import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
-import { editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
+import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -52,7 +52,8 @@ class DocumentEditor extends React.Component {
             apiInProgress: false,
             snackBarMessage: '',
             isShowSnackbar: false,
-            isModeMerge: false
+            isModeMerge: false,
+            mergeModePages: []
         }
     }
 
@@ -158,11 +159,12 @@ class DocumentEditor extends React.Component {
           } else {
             this.props.contentUpdateStarted();
             this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
-            this.props.editorModeNormal([], [])
+            this.processEndMergeMode(pageNumber)
           }
       }).catch((error) => {
-          console.log('api failed because of server or network')
+          console.log('api failed because of server or network', error)
           this.props.sentenceActionApiStopped()
+          this.processEndMergeMode(pageNumber)
       });
     }
 
@@ -270,11 +272,25 @@ class DocumentEditor extends React.Component {
     /**
      * workhorse functions
      */
-    handleSourceChange = (evt, blockValue) => {
+    processStartMergeMode(pageNumber) {
+      if (pageNumber === 1) {
+        this.props.editorModeMerge([], [pageNumber, pageNumber+1])
+      } else {
+        this.props.editorModeMerge([], [pageNumber-1, pageNumber, pageNumber+1])
+      }
     }
-    saveUpdatedSentence(sentenceObj, pageNo) {
-    }
-    workFlowApi(workflow, blockDetails, update, type) {
+
+    processEndMergeMode(pageNumber) {
+      if (pageNumber === 1) {
+        this.props.editorModeNormal([], [pageNumber, pageNumber+1])
+      } else {
+        this.props.editorModeNormal([], [pageNumber-1, pageNumber, pageNumber+1])
+      }
+      /**
+       * hack :- clear off the eligible page to avoid further checking and then re-render
+       *        in SentenceCard
+       */
+      setTimeout(() => { this.props.editorModeClear()}, 50)
     }
 
     processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex) => {
@@ -303,7 +319,7 @@ class DocumentEditor extends React.Component {
            */
           this.props.sentenceActionApiStarted(null)
 
-          this.makeAPICallMergeSentence(sentences, pageNumber);
+          this.makeAPICallMergeSentence(this.props.sentence_action_operation.sentences, pageNumber);
           this.setMessages(SENTENCE_ACTION.SENTENCE_MERGED, "mergedMessage")
           return;
         }
@@ -316,20 +332,13 @@ class DocumentEditor extends React.Component {
         }
 
         case SENTENCE_ACTION.START_MODE_MERGE: {
-          if (pageNumber === 1) {
-            this.props.editorModeMerge([], [1, 2])
-          } else {
-            this.props.editorModeMerge([], [(pageNumber - 1), pageNumber, (pageNumber + 1)])
-          }
+          this.processStartMergeMode(pageNumber)
+          
           return;
         }
 
         case SENTENCE_ACTION.END_MODE_MERGE: {
-          if (pageNumber === 1) {
-            this.props.editorModeNormal([], [1, 2])
-          } else {
-            this.props.editorModeNormal([], [(pageNumber - 1), pageNumber, (pageNumber + 1)])
-          }
+          this.processEndMergeMode(pageNumber)
           return;
         }
       }
@@ -346,10 +355,10 @@ class DocumentEditor extends React.Component {
         <div>
         <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            open={this.props.sentence_action_operation}
-            autoHideDuration={!this.props.sentence_action_operation && 2000}
-            variant={this.props.sentence_action_operation ? "info" : "success"}
-            message={this.props.sentence_action_operation ? this.state.snackBarMessage : this.state.snackBarSavedMessage}
+            open={this.props.sentence_action_operation.api_status}
+            autoHideDuration={!this.props.sentence_action_operation.api_status && 2000}
+            variant={this.props.sentence_action_operation.api_status ? "info" : "success"}
+            message={this.props.sentence_action_operation.api_status ? this.state.snackBarMessage : this.state.snackBarSavedMessage}
           />
           </div>
       )
@@ -548,6 +557,7 @@ class DocumentEditor extends React.Component {
      */
 
     render() {
+      console.log('DE render')
         return (
         <div>
             {/* {this.renderToolBar()} */}
@@ -565,8 +575,7 @@ class DocumentEditor extends React.Component {
 const mapStateToProps = state => ({
     saveContent: state.saveContent,
     document_contents: state.document_contents,
-    sentence_highlight: state.sentence_highlight.sentence,
-    sentence_action_operation : state.sentence_action_operation.api_status,
+    sentence_action_operation : state.sentence_action_operation,
     show_pdf: state.show_pdf.open
 });
 
@@ -580,7 +589,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
       update_blocks,
       ClearContent,
       clearFetchContent,
-      editorModeNormal, editorModeMerge
+      editorModeNormal, editorModeMerge, editorModeClear
     },
     dispatch
 );
