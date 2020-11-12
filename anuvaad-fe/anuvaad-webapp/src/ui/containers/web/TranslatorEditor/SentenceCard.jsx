@@ -66,7 +66,6 @@ const theme = createMuiTheme({
             "&:last-child": {
               paddingBottom: 0,
            },
-
           },
         },
         MuiDivider :{
@@ -86,7 +85,7 @@ function sleep(delay = 0) {
 
 const filterOptions = (options, { inputValue }) => options;
 
-class SentenceCard extends React.PureComponent {
+class SentenceCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -110,6 +109,7 @@ class SentenceCard extends React.PureComponent {
             endIndex: null
 
         };
+        this.activeCard = false;
         this.textInput = React.createRef();
         this.handleUserInputText = this.handleUserInputText.bind(this);
 
@@ -149,9 +149,16 @@ class SentenceCard extends React.PureComponent {
     //     }
     // }
 
-    // shouldComponentUpdate(prevProps, nextState) {
-    //     return this.state.cardInFocus;
-    // }
+    shouldComponentUpdate(prevProps, nextState) {
+        
+        if (prevProps.sentence) {
+            if (prevProps.sentence.s_id === this.props.block_highlight.active_s_id) {
+                return true
+            }
+            return false
+        }
+        return true;
+    }
 
     /**
      * utility function
@@ -265,23 +272,20 @@ class SentenceCard extends React.PureComponent {
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, this.props.sentence_action_operation.sentences, this.props.sentence)
             }
         }
-        else{
+        else {
             alert("Please select minimum two sentence to merge..!")
         }
-        
     }
 
     processSplitButtonClicked(start_index, end_index) {
-        if(start_index!= end_index)
-        {
+        if(start_index !== end_index) {
             if (this.props.onAction) {
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
             }
         }
-        else{
+        else {
             alert("Please select proper sentence to split..!")
         }
-        
     }
 
     /**
@@ -661,7 +665,7 @@ class SentenceCard extends React.PureComponent {
 
                         </CardContent>}
 
-                        <Collapse in={this.state.cardInFocus} timeout="auto" unmountOnExit>
+                        <Collapse in={this.activeCard} timeout="auto" unmountOnExit>
                             <CardContent>
                                 {this.renderMTTargetSentence()}
                                 <br />
@@ -680,12 +684,12 @@ class SentenceCard extends React.PureComponent {
     handleCardExpandClick = () => {
         console.log('handleCardExpandClick')
         // this.setState({cardInFocus: !this.state.cardInFocus})
-        if (!this.state.cardInFocus) {
-            this.setState({cardInFocus: true})
+        if (!this.activeCard) {
+            this.activeCard = true
             this.props.highlightBlock(this.props.sentence)
             this.textInput && this.textInput.current && this.textInput.current.focus();
         } else {
-            this.setState({cardInFocus: false})
+            this.activeCard = false;
             this.props.clearHighlighBlock()
         }
         // if (this.cardBlockCompare() || this.cardCompare()) {
@@ -740,7 +744,7 @@ class SentenceCard extends React.PureComponent {
 }
 
 const mapStateToProps = state => ({
-    
+    block_highlight: state.block_highlight
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
