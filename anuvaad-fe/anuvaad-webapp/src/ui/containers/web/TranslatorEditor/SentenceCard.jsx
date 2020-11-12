@@ -360,7 +360,6 @@ class SentenceCard extends React.Component {
     };
 
     getSelectionText = (event) => {
-        debugger
         let selectedSentence    = window.getSelection().toString();
         let endIndex            = window.getSelection().focusOffset;
         let startIndex          = window.getSelection().anchorOffset;
