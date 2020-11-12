@@ -1,6 +1,7 @@
 import requests
 import config
 import os
+import re
 import base64
 import json
 import pandas as pd
