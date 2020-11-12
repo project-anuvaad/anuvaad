@@ -150,7 +150,6 @@ class SentenceCard extends React.Component {
     // }
 
     shouldComponentUpdate(prevProps, nextState) {
-        console.log(prevProps)
         if (prevProps.sentence) {
             if (prevProps.sentence.s_id === this.props.block_highlight.active_s_id) {
                 return true
