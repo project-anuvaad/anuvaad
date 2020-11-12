@@ -230,11 +230,11 @@ class DocumentConversion(object):
                         extra_spaces = int(row['text_left']/13.5)
                         write_str = re.sub(r'^', ' '*extra_spaces, row['text'])
                         if len(write_str) < max_chars_in_line:
-                            out_txt_file_write.write(write_str)
+                            out_txt_file_write.write("%s\n"%write_str)
                         else:
                             sub_string_list = self.break_large_sentence(write_str, max_chars_in_line)
                             for item in sub_string_list:
-                                out_txt_file_write.write(item)
+                                out_txt_file_write.write("%s\n"%item)
             out_txt_file_write.close()
             log_info("txt file write completed!! filename: %s"%out_translated_txt_filename, MODULE_CONTEXT)
             return out_translated_txt_filename
