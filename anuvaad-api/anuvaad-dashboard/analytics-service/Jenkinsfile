@@ -13,7 +13,7 @@ try {
             pwd
              echo $vaultpass > vault_pass.txt
                 
-	      ansible-playbook -i /home/jenkins/jenkins_files/ansible/anuvaad-dashboard/inventory/local /home/jenkins/jenkins_files/ansible/anuvaad-dashboard/backend_cred_encryption.yml -e "var_file=$var_file_name" --vault-id vault_pass.txt	
+	      ansible-playbook -i /home/jenkins/jenkins_files/ansible/anuvaad-dashboard/inventory/local /backend_cred_encryption.yml -e "var_file=$var_file_name" --vault-id vault_pass.txt	
 	
 	    rm -rf vault_pass.txt
 		
