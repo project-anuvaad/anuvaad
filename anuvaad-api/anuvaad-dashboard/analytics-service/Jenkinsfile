@@ -24,9 +24,8 @@ try {
         '''
 	
           
-            
-	}
-	stage('SonarQube analysis') {
+            }
+     /*	stage('SonarQube analysis') {
    			 // requires SonarQube Scanner 2.8+
    				 def scannerHome = tool 'sonar_scanner';
    				 withSonarQubeEnv('sonarqube') {
@@ -54,7 +53,7 @@ try {
 		  archiveArtifacts 'commit_id.txt'
 
 		   	
-      }
+      } */
       stage('Docker push') 
 	  withCredentials([string(credentialsId: 'docker_registry', variable: 'registry_pass')]){
 	   
