@@ -61,5 +61,4 @@ def get_languages(app_context):
     for file in files :
         file_properties = File(file)
         languages.append(file_properties.get_language())
-
     return  languages

@@ -214,8 +214,8 @@ def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,i
             df.at[index,'x3']= int(poly[4]); df.at[index,'y3']= int(poly[5])
             df.at[index,'x4']= int(poly[6]); df.at[index,'y4']= int(poly[7])
 
-        in_df = convert_to_in_df(df)
-        in_dfs.append(in_df)
+        #in_df = convert_to_in_df(df)
+        in_dfs.append(df)
     time_taken = time.time() - t
     time_take_per_page = time_taken / number_of_pages
 
