@@ -1,10 +1,11 @@
 import C from "../constants";
 
-export function highlightBlock(sentence) {
+export function highlightBlock(sentence, pageNumber) {
     return {     
         type: C.HIGHLIGHT_BLOCK,
         payload: {
-            sentence: sentence
+            sentence: sentence,
+            page_no: pageNumber
         }
     }
 }

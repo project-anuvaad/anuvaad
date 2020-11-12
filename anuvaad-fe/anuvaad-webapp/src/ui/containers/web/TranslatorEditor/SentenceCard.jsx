@@ -151,7 +151,8 @@ class SentenceCard extends React.Component {
 
     shouldComponentUpdate(prevProps, nextState) {
         if (prevProps.sentence) {
-            if (prevProps.sentence.s_id === this.props.block_highlight.active_s_id) {
+            if ((prevProps.sentence.s_id === this.props.block_highlight.current_sid) || 
+                (prevProps.sentence.s_id === this.props.block_highlight.prev_sid)) {
                 return true
             }
             return false
@@ -685,16 +686,16 @@ class SentenceCard extends React.Component {
 
     handleCardExpandClick = () => {
         if (this.cardBlockCompare() || this.cardCompare()) {
-           
+            this.setState({cardInFocus: false})
             this.props.clearHighlighBlock()
         } else {
+            this.setState({cardInFocus: true})
             this.props.highlightBlock(this.props.sentence)
             /**
         * For highlighting textarea on card expand
         */
         this.textInput && this.textInput.current && this.textInput.current.focus();
         }
-
         
     }
 
@@ -706,7 +707,7 @@ class SentenceCard extends React.Component {
     }
 
     cardCompare = () => {
-        if(this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id){
+        if(this.props.block_highlight.prev_sid === this.props.sentence.s_id) {
             return true;
         }
         return false;
