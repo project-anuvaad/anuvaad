@@ -31,7 +31,7 @@ import PageCard from "./PageCard";
 import SENTENCE_ACTION from './SentenceActions'
 import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverter";
 
-import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
+import { sentenceActionApiStarted, sentenceActionApiStopped, fetchContent, contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 
 const { v4 }      = require('uuid');
@@ -49,6 +49,7 @@ class DocumentEditor extends React.Component {
             snackBarMessage: '',
             isShowSnackbar: false
         }
+        this.needRendering  = false;
     }
 
     /**
@@ -91,6 +92,42 @@ class DocumentEditor extends React.Component {
       }
     }
 
+    componentWillReceiveProps(nextProps) {
+
+      // if (nextProps.block_highlight !== this.props.block_highlight) {
+      //   this.needRendering  = false;
+      // } 
+
+      if (nextProps.document_contents.pages.length !== this.props.document_contents.pages.length) {
+        this.needRendering = true
+      } else {
+        this.needRendering = false;
+      }
+
+      if (!this.needRendering) {
+        console.log('do not need re-rendering here')
+      } else {
+        console.log('need re-rendering')
+      }
+    }
+
+    shouldComponentUpdate(prevProps, nextState) {
+      // console.log(prevProps.sentence_action_operation)
+      // console.log(prevProps.block_highlight)
+
+      // if (prevProps.sentence_action_operation.progress == true) {
+      //   console.log('not allowing re-rendering when progress is true')
+      //   return false;
+      // }
+      // if (prevProps.document_contents.pages && prevProps.document_contents.pages.length > 1) {
+      //   console.log('re-render when pages content got updated')
+      //     return true;
+      // }
+
+      // return this.needRendering;
+      return true;
+    }
+
     componentWillUnmount() {
       localStorage.setItem("recordId", "");
       localStorage.setItem("inputFile", "");
@@ -116,9 +153,24 @@ class DocumentEditor extends React.Component {
       let start_page    = this.props.document_contents.pages.length + 1;
       let end_page      = start_page + 1;
       console.log(`fetching document content, start_page: ${start_page}, end_page: ${end_page}`);
-
+      
       const apiObj      = new FileContent(this.props.match.params.jobid, start_page, end_page);
-      this.props.APITransport(apiObj);
+      fetch(apiObj.apiEndPoint(), {
+        method: 'get',
+        headers: apiObj.getHeaders().headers
+      }).then(async response => {
+        const rsp_data = await response.json();
+          if (!response.ok) {
+            this.props.sentenceActionApiStopped()
+            return Promise.reject('');
+          } else {
+            console.log(rsp_data)
+            this.props.fetchContent(rsp_data.count, rsp_data.data);
+          }
+      }).catch((error) => {
+          console.log('api failed because of server or network')
+          this.props.sentenceActionApiStopped()
+      });
     }
 
     makeAPICallFetchContentPerPage = (start_page) => {
@@ -454,6 +506,7 @@ class DocumentEditor extends React.Component {
      * render Document pages
      */
     renderDocumentPages = () => {
+      console.log('DP render')
       let pages = this.props.document_contents.app_pages;
       if (pages.length < 1) {
         return(
@@ -472,7 +525,7 @@ class DocumentEditor extends React.Component {
             loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
             endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
           >
-            {pages.map(page => <PageCard key={v4()} page={page} onAction={this.processSentenceAction}/>)}
+            {pages.map((page, index) => <PageCard key={index} page={page} onAction={this.processSentenceAction}/>)}
           </InfiniteScroll>
         </Grid>
       )
@@ -499,12 +552,15 @@ class DocumentEditor extends React.Component {
                 loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
                 endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
             >
-              {pages.map(page => page['translated_texts'].map(sentence => <div key={v4()}  ref={sentence.s_id}><SentenceCard key={v4()} 
+              {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={index} ref={sentence.s_id}><SentenceCard  key={index} 
                                                                                   pageNumber={page.page_no} 
                                                                                   modelId={parseInt(this.props.match.params.modelId)}
                                                                                   word_locale={this.props.match.params.locale}
                                                                                   tgt_locale={this.props.match.params.tgt_locale}
                                                                                   sentence={sentence} 
+                                                                                  sentence_action_operation = {{}} 
+                                                                                  block_highlight = {{}} 
+                                                                                  sentence_highlight = {{}}
                                                                                   onAction={this.processSentenceAction}/>
                                                                                   </div>))}
             </InfiniteScroll>
@@ -519,6 +575,7 @@ class DocumentEditor extends React.Component {
      */
 
     render() {
+      console.log('DE render')
         return (
         <div>
             {/* {this.renderToolBar()} */}
@@ -534,11 +591,11 @@ class DocumentEditor extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    saveContent: state.saveContent,
     document_contents: state.document_contents,
-    sentence_highlight: state.sentence_highlight.sentence,
-    sentence_action_operation : state.sentence_action_operation.api_status,
-    show_pdf: state.show_pdf.open
+    // sentence_highlight: state.sentence_highlight.sentence,
+    // sentence_action_operation : state.sentence_action_operation,
+    show_pdf: state.show_pdf.open,
+    // block_highlight: state.block_highlight,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -550,7 +607,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
       update_sentences,
       update_blocks,
       ClearContent,
-      clearFetchContent
+      clearFetchContent,
+      fetchContent
     },
     dispatch
 );

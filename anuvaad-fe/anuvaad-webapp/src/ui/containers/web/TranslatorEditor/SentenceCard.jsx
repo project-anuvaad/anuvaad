@@ -66,7 +66,6 @@ const theme = createMuiTheme({
             "&:last-child": {
               paddingBottom: 0,
            },
-
           },
         },
         MuiDivider :{
@@ -110,6 +109,7 @@ class SentenceCard extends React.Component {
             endIndex: null
 
         };
+        this.activeCard = false;
         this.textInput = React.createRef();
         this.handleUserInputText = this.handleUserInputText.bind(this);
 
@@ -119,34 +119,45 @@ class SentenceCard extends React.Component {
         this.processMergeCancelButtonClicked = this.processMergeCancelButtonClicked.bind(this);
     }
 
-    componentDidMount() {
-        if (this.isSentenceSaved()) {
-            this.setState({value: this.props.sentence.tgt})
-        }
-    }
+    // componentDidMount() {
+    //     if (this.isSentenceSaved()) {
+    //         this.setState({value: this.props.sentence.tgt})
+    //     }
+    // }
 
-    componentDidUpdate(prevProps, prevState) {
-        if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished) ) {
-            this.setState({
-                cardChecked: false
-            })
-        }
-        if ((prevProps.sentence_action_operation.api_status !== this.props.sentence_action_operation.api_status)) {
-            this.setState({
-                isCardBusy: (this.isCurrentSentenceInProps() ? this.props.sentence_action_operation.api_status : false)
-            })
-        }
+    // componentDidUpdate(prevProps, prevState) {
+    //     if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished) ) {
+    //         this.setState({
+    //             cardChecked: false
+    //         })
+    //     }
+    //     if ((prevProps.sentence_action_operation.api_status !== this.props.sentence_action_operation.api_status)) {
+    //         this.setState({
+    //             isCardBusy: (this.isCurrentSentenceInProps() ? this.props.sentence_action_operation.api_status : false)
+    //         })
+    //     }
 
-        if(this.state.selectedSentence!== prevState.selectedSentence){
-            this.setState({dictionaryWord: prevState.selectedSentence})
-        }
+    //     if(this.state.selectedSentence!== prevState.selectedSentence){
+    //         this.setState({dictionaryWord: prevState.selectedSentence})
+    //     }
         
-        if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
+    //     if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
             
-            if (this.cardBlockCompare()) {
-                this.setState({ cardInFocus: true })
+    //         if (this.cardBlockCompare()) {
+    //             this.setState({ cardInFocus: true })
+    //         }
+    //     }
+    // }
+
+    shouldComponentUpdate(prevProps, nextState) {
+        
+        if (prevProps.sentence) {
+            if (prevProps.sentence.s_id === this.props.block_highlight.active_s_id) {
+                return true
             }
+            return false
         }
+        return true;
     }
 
     /**
@@ -261,23 +272,20 @@ class SentenceCard extends React.Component {
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, this.props.sentence_action_operation.sentences, this.props.sentence)
             }
         }
-        else{
+        else {
             alert("Please select minimum two sentence to merge..!")
         }
-        
     }
 
     processSplitButtonClicked(start_index, end_index) {
-        if(start_index!= end_index)
-        {
+        if(start_index !== end_index) {
             if (this.props.onAction) {
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
             }
         }
-        else{
+        else {
             alert("Please select proper sentence to split..!")
         }
-        
     }
 
     /**
@@ -349,7 +357,6 @@ class SentenceCard extends React.Component {
     };
 
     getSelectionText = (event) => {
-        debugger
         let selectedSentence    = window.getSelection().toString();
         let endIndex            = window.getSelection().focusOffset;
         let startIndex          = window.getSelection().anchorOffset;
@@ -630,7 +637,7 @@ class SentenceCard extends React.Component {
 
     renderSentenceCard = () =>{
         return (
-            <div key={12} style={{ padding: "1%" }}>
+            <div style={{ padding: "1%" }}>
                 <MuiThemeProvider theme={theme}>
                     <Card style={this.cardBlockCompare() || (this.cardCompare()) ? styles.card_open : this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
                         <CardContent  style={{ display: "flex", flexDirection: "row" }}>
@@ -658,7 +665,7 @@ class SentenceCard extends React.Component {
 
                         </CardContent>}
 
-                        <Collapse in={this.cardCompare()} timeout="auto" unmountOnExit>
+                        <Collapse in={this.activeCard} timeout="auto" unmountOnExit>
                             <CardContent>
                                 {this.renderMTTargetSentence()}
                                 <br />
@@ -675,16 +682,27 @@ class SentenceCard extends React.Component {
     }
 
     handleCardExpandClick = () => {
-        if (this.cardBlockCompare() || this.cardCompare()) {
-           
-            this.props.clearHighlighBlock()
-        } else {
+        console.log('handleCardExpandClick')
+        // this.setState({cardInFocus: !this.state.cardInFocus})
+        if (!this.activeCard) {
+            this.activeCard = true
             this.props.highlightBlock(this.props.sentence)
-            /**
-        * For highlighting textarea on card expand
-        */
-        this.textInput && this.textInput.current && this.textInput.current.focus();
+            this.textInput && this.textInput.current && this.textInput.current.focus();
+        } else {
+            this.activeCard = false;
+            this.props.clearHighlighBlock()
         }
+        // if (this.cardBlockCompare() || this.cardCompare()) {
+           
+            
+        // } else {
+            
+        //     this.setState({cardInFocus: true})
+        //     /**
+        // * For highlighting textarea on card expand
+        // */
+        
+        // }
 
         
     }
@@ -713,9 +731,8 @@ class SentenceCard extends React.Component {
         return false;
     }
 
-    
-
     render() {
+        console.log('SC - render')
         return (
             <div >
                 {this.renderSentenceCard()}
@@ -727,10 +744,7 @@ class SentenceCard extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    document_contents: state.document_contents,
-    sentence_action_operation: state.sentence_action_operation,
-    sentence_highlight: state.sentence_highlight.sentence,
-    block_highlight: state.block_highlight.block,
+    block_highlight: state.block_highlight
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
