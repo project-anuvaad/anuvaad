@@ -1,0 +1,24 @@
+
+node('server_build_slave') {
+
+try {
+	
+     stage('docker pull'){
+          		  step ([$class: 'CopyArtifact',
+          projectName: '$build_job_name',
+          filter: 'commit_id.txt']);
+          
+
+      sh  'ansible-playbook -i jenkins_files/ansible/anuvaad-dashboard/$inventory_path --extra-vars "remote=nxt-app tag_name=`cat commit_id.txt`" jenkins_files/ansible/anuvaad-dashboard$playbook_path'
+
+   }
+
+    
+	}
+
+    catch (err) {
+    currentBuild.result = "FAILURE"
+    throw err
+    }
+
+}
