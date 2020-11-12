@@ -150,9 +150,10 @@ class SentenceCard extends React.Component {
     // }
 
     shouldComponentUpdate(prevProps, nextState) {
+        console.log(prevProps.sentence.s_id, this.props.block_highlight, prevProps.block_highlight)
         if (prevProps.sentence) {
-            if ((prevProps.sentence.s_id === this.props.block_highlight.current_sid) || 
-                (prevProps.sentence.s_id === this.props.block_highlight.prev_sid)) {
+            if ((prevProps.sentence.s_id === prevProps.block_highlight.current_sid) || 
+                (prevProps.sentence.s_id === prevProps.block_highlight.prev_sid)) {
                 return true
             }
             return false
@@ -685,7 +686,7 @@ class SentenceCard extends React.Component {
     }
 
     handleCardExpandClick = () => {
-        if (this.cardBlockCompare() || this.cardCompare()) {
+        if (this.cardCompare()) {
             this.setState({cardInFocus: false})
             this.props.clearHighlighBlock()
         } else {
@@ -707,7 +708,8 @@ class SentenceCard extends React.Component {
     }
 
     cardCompare = () => {
-        if(this.props.block_highlight.prev_sid === this.props.sentence.s_id) {
+
+        if(this.props.block_highlight.current_sid === this.props.sentence.s_id ) {
             return true;
         }
         return false;
