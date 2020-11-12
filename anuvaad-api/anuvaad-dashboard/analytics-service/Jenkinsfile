@@ -58,6 +58,8 @@ try {
 	  withCredentials([string(credentialsId: 'docker_registry', variable: 'registry_pass')]){
 	   
 	      sh '''
+	       
+	       cd /home/jenkins/workspace/anuvaad/Dashboard_FE-BE/anuvaad-be-analytics-service/backend_analytics_build/anuvaad-api/anuvaad-dashboard/analytics-service
 		     pwd
 		     	commit_id=$(git rev-parse --short HEAD)
 		    	echo $registry_pass > registry_pass.txt
