@@ -226,15 +226,25 @@ class DocumentConversion(object):
             max_chars_in_line = int(page_width/13)
             for index, df in enumerate(dataframes):
                 for index, row in df.iterrows():
-                    if row['text'] != None:
+                    if row['text'] != None and index+1 < df.shape[0]:
                         extra_spaces = int(row['text_left']/13.5)
                         write_str = re.sub(r'^', ' '*extra_spaces, row['text'])
-                        if len(write_str) < max_chars_in_line:
-                            out_txt_file_write.write("%s\n"%write_str)
+                        if row['text_top'] != df[index+1]['text_top']:
+                            if len(write_str) < max_chars_in_line:
+                                out_txt_file_write.write("%s\n"%write_str)
+                            else:
+                                sub_string_list = self.break_large_sentence(write_str, max_chars_in_line)
+                                for item in sub_string_list:
+                                    out_txt_file_write.write("%s\n"%item)
                         else:
-                            sub_string_list = self.break_large_sentence(write_str, max_chars_in_line)
-                            for item in sub_string_list:
-                                out_txt_file_write.write("%s\n"%item)
+                            same_line_index = 0
+                            same_line_status = bool(row['text_top'] == df[index+same_line_index+1]['text_top'])
+                            while same_line_status:
+                                onwards_line_space = int((df[index+same_line_index+1]['text_width'] - df[index]['text_left'] - df[index]['text_width'])/13.5)
+                                write_str += ' '*onwards_line_space + df[index+same_line_index+1]['text']
+                                same_line_index += 1
+                                same_line_status = bool(row['text_top'] == df[index+same_line_index+1]['text_top'])
+                            out_txt_file_write.write("%s\n"%write_str)
             out_txt_file_write.close()
             log_info("txt file write completed!! filename: %s"%out_translated_txt_filename, MODULE_CONTEXT)
             return out_translated_txt_filename
