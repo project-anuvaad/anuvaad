@@ -86,7 +86,7 @@ function sleep(delay = 0) {
 
 const filterOptions = (options, { inputValue }) => options;
 
-class SentenceCard extends React.Component {
+class SentenceCard extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -119,11 +119,11 @@ class SentenceCard extends React.Component {
         this.processMergeCancelButtonClicked = this.processMergeCancelButtonClicked.bind(this);
     }
 
-    componentDidMount() {
-        if (this.isSentenceSaved()) {
-            this.setState({value: this.props.sentence.tgt})
-        }
-    }
+    // componentDidMount() {
+    //     if (this.isSentenceSaved()) {
+    //         this.setState({value: this.props.sentence.tgt})
+    //     }
+    // }
 
     // componentDidUpdate(prevProps, prevState) {
     //     if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished) ) {
@@ -150,11 +150,7 @@ class SentenceCard extends React.Component {
     // }
 
     // shouldComponentUpdate(prevProps, nextState) {
-    //     console.log(this.props.block_highlight)
-    //     if (this.props.block_highlight && this.props.block_highlight.s_id === this.props.sentence.s_id) {
-    //         return true;
-    //     }
-    //     return false;
+    //     return this.state.cardInFocus;
     // }
 
     /**
@@ -357,7 +353,6 @@ class SentenceCard extends React.Component {
     };
 
     getSelectionText = (event) => {
-        debugger
         let selectedSentence    = window.getSelection().toString();
         let endIndex            = window.getSelection().focusOffset;
         let startIndex          = window.getSelection().anchorOffset;
@@ -638,7 +633,7 @@ class SentenceCard extends React.Component {
 
     renderSentenceCard = () =>{
         return (
-            <div key={this.props.sentence.s_id} style={{ padding: "1%" }}>
+            <div style={{ padding: "1%" }}>
                 <MuiThemeProvider theme={theme}>
                     <Card style={this.cardBlockCompare() || (this.cardCompare()) ? styles.card_open : this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
                         <CardContent  style={{ display: "flex", flexDirection: "row" }}>

@@ -124,7 +124,8 @@ class DocumentEditor extends React.Component {
       //     return true;
       // }
 
-      return this.needRendering;
+      // return this.needRendering;
+      return true;
     }
 
     componentWillUnmount() {
@@ -505,6 +506,7 @@ class DocumentEditor extends React.Component {
      * render Document pages
      */
     renderDocumentPages = () => {
+      console.log('DP render')
       let pages = this.props.document_contents.app_pages;
       if (pages.length < 1) {
         return(
@@ -550,15 +552,15 @@ class DocumentEditor extends React.Component {
                 loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
                 endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
             >
-              {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={index}  ref={sentence.s_id}><SentenceCard key={index} 
+              {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={index} ref={sentence.s_id}><SentenceCard  
                                                                                   pageNumber={page.page_no} 
                                                                                   modelId={parseInt(this.props.match.params.modelId)}
                                                                                   word_locale={this.props.match.params.locale}
                                                                                   tgt_locale={this.props.match.params.tgt_locale}
                                                                                   sentence={sentence} 
-                                                                                  sentence_action_operation = {this.props.sentence_action_operation} 
-                                                                                  block_highlight = {this.props.block_highlight} 
-                                                                                  sentence_highlight = {this.props.sentence_highlight}
+                                                                                  sentence_action_operation = {{}} 
+                                                                                  block_highlight = {{}} 
+                                                                                  sentence_highlight = {{}}
                                                                                   onAction={this.processSentenceAction}/>
                                                                                   </div>))}
             </InfiniteScroll>
@@ -573,6 +575,7 @@ class DocumentEditor extends React.Component {
      */
 
     render() {
+      console.log('DE render')
         return (
         <div>
             {/* {this.renderToolBar()} */}
@@ -588,12 +591,11 @@ class DocumentEditor extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    saveContent: state.saveContent,
     document_contents: state.document_contents,
-    sentence_highlight: state.sentence_highlight.sentence,
-    sentence_action_operation : state.sentence_action_operation,
+    // sentence_highlight: state.sentence_highlight.sentence,
+    // sentence_action_operation : state.sentence_action_operation,
     show_pdf: state.show_pdf.open,
-    block_highlight: state.block_highlight,
+    // block_highlight: state.block_highlight,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
