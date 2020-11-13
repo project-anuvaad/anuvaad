@@ -1,4 +1,3 @@
-import logging
 import os
 import time
 
@@ -40,12 +39,3 @@ tok_output_topic = os.environ.get(tok_output_topic_identifier, tok_output_topic_
 kf_local_server = 'localhost:9092'
 kafka_ip_host = 'KAFKA_CLUSTER_DETAILS'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
-
-
-logging.basicConfig(
-    filename=os.getenv("SERVICE_LOG", "server.log"),
-    level=logging.DEBUG,
-    format="%(levelname)s: %(asctime)s \
-        pid:%(process)s module:%(module)s %(message)s",
-    datefmt="%d/%m/%y %H:%M:%S",
-)

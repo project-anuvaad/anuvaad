@@ -42,7 +42,7 @@ class Response(object):
                     file_res = file_ops.one_filename_response(input_filename, input_filename, in_locale, 'pdf')
                     output_file_response.append(file_res)
                 else:
-                    result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=15)
+                    result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=60)
                     copyfile(result, os.path.join(config.download_folder, upload_id+'.pdf'))
                     file_res = file_ops.one_filename_response(input_filename, upload_id+'.pdf', in_locale, 'pdf')
                     output_file_response.append(file_res)
@@ -54,14 +54,14 @@ class Response(object):
         except LibreOfficeError as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
-            response_custom['message'] = 'LibreOfficeError'
+            response_custom['message'] = 'workflow_response : Error when converting file to PDF: LibreOfficeError'
             response = file_ops.error_handler(response_custom, "SERVICE_ERROR", True)
             log_exception("workflow_response : Error when converting file to PDF", self.json_data, e)
             return response
         except TimeoutExpired as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
-            response_custom['message'] = 'TimeoutExpired'
+            response_custom['message'] = 'workflow_response : Timeout when converting file to PDF: TimeoutExpired'
             response = file_ops.error_handler(response_custom, "SERVICE_ERROR", True)
             log_exception("workflow_response : Timeout when converting file to PDF", self.json_data, e)
             return response

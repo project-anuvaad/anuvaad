@@ -12,7 +12,7 @@ class Producer(object):
     # publishing massage with kafka producer
     def producer_fn(self):
         try:
-            producer = KafkaProducer(bootstrap_servers = [self.server_address], value_serializer = lambda x:dumps(x).encode('utf-8'))
+            producer = KafkaProducer(bootstrap_servers = self.server_address, value_serializer = lambda x:dumps(x).encode('utf-8'))
             log_info("producer_fn : producer returned succesfully", None)
             return producer
         except Exception as e:
