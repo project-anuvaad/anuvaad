@@ -203,7 +203,7 @@ class ViewDocument extends React.Component {
   processViewDocumentClick = (jobId, recordId, status) => {
     let job = this.getJobIdDetail(jobId);
     if(status==="COMPLETED"){
-      history.push(`${process.env.PUBLIC_URL}/interactive-document/${job.source_language_code}/${job.target_language_code}/${job.target_language_code}/${job.recordId}/${job.converted_filename}/${job.model_id}`, this.state);
+      history.push(`${process.env.PUBLIC_URL}/interactive-document/${job.source_language_code}/${job.target_language_code}/${job.target_language_code}/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`, this.state);
     }
     else if(status==="INPROGRESS"){
       this.setState({dialogMessage:"Please wait process is Inprogress!", timeOut :3000,variant:'info' })

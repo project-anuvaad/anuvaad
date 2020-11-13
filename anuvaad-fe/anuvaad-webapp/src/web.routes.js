@@ -116,7 +116,7 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/interactive-document/:locale/:tgt_locale/:targetlang/:jobid/:inputfileid/:modelId`}
+              path={`${process.env.PUBLIC_URL}/interactive-document/:locale/:tgt_locale/:targetlang/:jobid/:inputfileid/:modelId/:filename`}
               userRoles={["editor", "dev", "grader", "interactive-editor"]}
               component={DocumentEditorV1}
               title="Translate file"
