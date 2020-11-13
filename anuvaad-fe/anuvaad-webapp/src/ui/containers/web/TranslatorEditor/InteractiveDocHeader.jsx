@@ -61,16 +61,6 @@ class InteractiveDocHeader extends React.Component {
         this.setState({ anchorEl: null });
     };
 
-    downloadSourceFile() {
-        this.setState({ anchorEl: null });
-
-        let file = this.props.match.params.inputfileid
-        let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${
-            file ? file : ""
-            }`
-        window.open(url, "_self")
-    }
-
     downloadTargetFile() {
         this.setState({ anchorEl: null });
 
@@ -88,7 +78,7 @@ class InteractiveDocHeader extends React.Component {
             if (!response.ok) {
                 return Promise.reject('');
             } else {
-                let fileName = rsp_data && rsp_data.translated_document && rsp_data.translated_document ? rsp_data.translated_document : ""
+                let fileName = rsp_data && rsp_data.[this.state.fileType] ? rsp_data.[this.state.fileType] : ""
                 if (fileName) {
                     let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
                     window.open(url, "_self")
@@ -98,29 +88,6 @@ class InteractiveDocHeader extends React.Component {
         }).catch((error) => {
             console.log('api failed because of server or network')
         });
-    }
-
-    setMessages = (pendingAction, completedAction) => {
-        this.setState({
-            snackBarMessage: translate(`common.page.label.${pendingAction}`),
-            snackBarSavedMessage: translate(`common.page.label.${completedAction}`),
-
-        })
-    }
-
-    snackBarMessage = () => {
-        return (
-            <div>
-                <Snackbar
-                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                    open={this.props.sentence_action_operation}
-                    autoHideDuration={!this.props.sentence_action_operation && 2000}
-                    variant={this.props.sentence_action_operation ? "info" : "success"}
-                    message={this.props.sentence_action_operation ? this.state.snackBarMessage : this.state.snackBarSavedMessage}
-                />
-            </div>
-        )
-
     }
 
     openPDF = event => {
@@ -147,19 +114,29 @@ class InteractiveDocHeader extends React.Component {
                     onClose={this.handleClose.bind(this)}
                 >
                     <MenuItem
+                        style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.downloadSourceFile();
+                            this.downloadTargetFile(); this.setState({ fileType: "translated_document" })
                         }}
                     >
-                        Source File
+                        As DOCX
                         </MenuItem>
                     <MenuItem
+                        style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.downloadTargetFile();
+                            this.downloadTargetFile(); this.setState({ fileType: "translated_txt_file" })
                         }}
                     >
-                        Translated File
-                        </MenuItem>
+                        As TXT
+                    </MenuItem>
+                    <MenuItem
+                        style={{ borderTop: "1px solid #D6D6D6" }}
+                        onClick={() => {
+                            this.downloadTargetFile(); this.setState({ fileType: "xlsx_file" })
+                        }}
+                    >
+                        As XLSX
+                    </MenuItem>
                 </StyledMenu>
             </div>
         );
@@ -198,7 +175,7 @@ class InteractiveDocHeader extends React.Component {
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
 
                     <Typography variant="h5" color="inherit" className={classes.flex}>
-                        {this.props.match.params.inputfileid}
+                        {this.props.match.params.filename}
                     </Typography>
                     <div style={{ position: 'absolute', right: '30px' }}>
                         {this.renderOptions()}

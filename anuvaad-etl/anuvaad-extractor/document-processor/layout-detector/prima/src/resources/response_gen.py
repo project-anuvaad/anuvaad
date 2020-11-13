@@ -39,7 +39,7 @@ class Response(object):
             error_validator.inputfile_list_error(input_files)
             output_file_response = list()
             for i, item in enumerate(input_files):
-                input_filename, in_file_type, in_locale     = file_ops.accessing_files(item)
+                input_filename, in_file_type, identifier     = file_ops.accessing_files(item['file'])
                 self.json_data['taskID']                    = task_id
                 app_context.application_context             = self.json_data
                 #debug_flush = True
@@ -50,7 +50,7 @@ class Response(object):
                     if response['code'] == 200:
                         
                         output_filename_json = file_ops.writing_json_file(i, response['rsp'], self.DOWNLOAD_FOLDER)
-                        file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
+                        file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_file_type)
                         output_file_response.append(file_res)
                         task_endtime = eval(str(time.time()).replace('.', '')[0:13])
                         response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
@@ -98,10 +98,10 @@ class Response(object):
             error_validator.inputfile_list_empty(input_files)
             output_file_response = list()
             for item in input_files:
-                input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                input_filename, in_file_type, identifier = file_ops.accessing_files(item['file'])
                 output_json_data = DocumentStructure(None, input_filename)
                 output_filename_json = file_ops.writing_json_file(i, output_json_data, self.DOWNLOAD_FOLDER)
-                file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
+                file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_file_type)
                 output_file_response.append(file_res)
             response_true = Status.SUCCESS.value
             response_true['output'] = output_file_response
