@@ -116,7 +116,7 @@ class PageCard extends React.Component {
                 style           =   {styles.textField} 
                 type            =   "text" 
                 className       =   "form-control"
-                defaultValue    =   {text.text}
+                // defaultValue    =   {text.text}
                 value           =   {this.state.text}
                 variant         =   "outlined"
                 id              =   "mui-theme-provider-outlined-input"
