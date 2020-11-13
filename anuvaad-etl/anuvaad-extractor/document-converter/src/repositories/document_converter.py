@@ -22,7 +22,7 @@ from jsonpath_rw import jsonpath, parse
 def zipfile_creation(filepath):
     zip_file = filepath.split('.')[0] + '.zip'
     with ZipFile(zip_file, 'w') as myzip:
-        myzip.write(output_filepath)
+        myzip.write(filepath)
         myzip.close()
     os.remove(filepath)
     return zip_file.split('/')[-1]
