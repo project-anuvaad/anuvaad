@@ -56,7 +56,7 @@ public class AuthFilter extends ZuulFilter {
 
     @Override
     public Object run() {
-        logger.info("Authentication Filter...");
+        logger.info("PRE-FILTER: Authentication");
         String authToken;
         RequestContext ctx = RequestContext.getCurrentContext();
         List<String> openEndpointsWhitelist = ZuulConfigCache.whiteListEndpoints;

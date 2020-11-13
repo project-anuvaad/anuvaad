@@ -85,6 +85,7 @@ public class ExceptionUtils {
     }
 
     public static void raiseErrorFilterException( RequestContext ctx) {
+        logger.info("Building filter exception response....");
         Throwable e = ctx.getThrowable() == null ? (Throwable)ctx.get("error.exception") : ctx.getThrowable();
         try {
             if (e == null) {
@@ -127,7 +128,7 @@ public class ExceptionUtils {
                 _setExceptionBody(HttpStatus.INTERNAL_SERVER_ERROR, getErrorInfoObject(exceptionName, exceptionMessage));
             }
         } catch (Exception e1) {
-            e1.printStackTrace();
+            logger.error("Exception while building filter exception response: ", e1);
         }
     }
 

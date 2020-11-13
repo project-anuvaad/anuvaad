@@ -68,7 +68,7 @@ public class RbacFilter extends ZuulFilter {
 
     @Override
     public Object run() {
-        logger.info("RBAC Filter...");
+        logger.info("PRE-FILTER: RBAC");
         RequestContext ctx = RequestContext.getCurrentContext();
         String uri = ctx.getRequest().getRequestURI();
         List<String> openEndpointsWhitelist = ZuulConfigCache.whiteListEndpoints;
