@@ -29,30 +29,30 @@ public class RestService {
 
 	@Value("${services.esindexer.primary.host}")
 	private String indexServicePrimaryHost;
-	@Value("${services.esindexer.secondary.host}")
-	private String indexServiceSecondaryHost;
-	@Value("${services.esindexer.ternary.host}")
-	private String indexServiceTernaryHost;
+//	@Value("${services.esindexer.secondary.host}")
+//	private String indexServiceSecondaryHost;
+//	@Value("${services.esindexer.ternary.host}")
+//	private String indexServiceTernaryHost;
 	@Value("${es.services.esindexer.host.search}")
 	private String indexServiceHostSearch;
 	@Value("${services.esindexer.primary.username}")
 	private String primaryUsername;
 	@Value("${services.esindexer.primary.password}")
 	private String primaryPassword;
-	@Value("${services.esindexer.secondary.username}")
-	private String secondaryUsername;
-	@Value("${services.esindexer.secondary.password}")
-	private String secondaryPassword;
-	@Value("${services.esindexer.ternary.username}")
-	private String ternaryUsername;
-	@Value("${services.esindexer.ternary.password}")
-	private String ternaryPassword;
-	@Value("${services.esindexer.quadnary.username}")
-	private String quadnaryUsername;
-	@Value("${services.esindexer.quadnary.password}")
-	private String quadnaryPassword;
-	@Value("${services.esindexer.quadnary.host}")
-	private String indexServiceQuadnaryHost;
+//	@Value("${services.esindexer.secondary.username}")
+//	private String secondaryUsername;
+//	@Value("${services.esindexer.secondary.password}")
+//	private String secondaryPassword;
+//	@Value("${services.esindexer.ternary.username}")
+//	private String ternaryUsername;
+//	@Value("${services.esindexer.ternary.password}")
+//	private String ternaryPassword;
+//	@Value("${services.esindexer.quadnary.username}")
+//	private String quadnaryUsername;
+//	@Value("${services.esindexer.quadnary.password}")
+//	private String quadnaryPassword;
+//	@Value("${services.esindexer.quadnary.host}")
+//	private String indexServiceQuadnaryHost;
 
 	@Autowired
 	private RetryTemplate retryTemplate;
@@ -71,13 +71,14 @@ public class RestService {
 		String url = "";
 		if (instance.equals(Constants.PRIMARY)) {
 			url = (indexServicePrimaryHost) + index + indexServiceHostSearch;
-		} else if (instance.equals(Constants.SECONDARY)) {
-			url = (indexServiceSecondaryHost) + index + indexServiceHostSearch;
-		} else if (instance.equals(Constants.TERNARY)) {
-			url = (indexServiceTernaryHost) + index + indexServiceHostSearch;
-		} else if (instance.equals(Constants.QUADNARY)) {
-			url = (indexServiceQuadnaryHost) + index + indexServiceHostSearch;
-		}
+		} 
+//			else if (instance.equals(Constants.SECONDARY)) {
+//				url = (indexServiceSecondaryHost) + index + indexServiceHostSearch;
+//			} else if (instance.equals(Constants.TERNARY)) {
+//				url = (indexServiceTernaryHost) + index + indexServiceHostSearch;
+//			} else if (instance.equals(Constants.QUADNARY)) {
+//				url = (indexServiceQuadnaryHost) + index + indexServiceHostSearch;
+//			}
 
 		HttpHeaders headers = getHttpHeaders(instance);
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -167,16 +168,17 @@ public class RestService {
 		if (instance.equals(Constants.PRIMARY)) {
 			username = primaryUsername;
 			password = primaryPassword;
-		} else if (instance.equals(Constants.SECONDARY)) {
-			username = secondaryUsername;
-			password = secondaryPassword;
-		} else if (instance.equals(Constants.TERNARY)) {
-			username = ternaryUsername;
-			password = ternaryPassword;
-		} else if (instance.equals(Constants.QUADNARY)) {
-			username = quadnaryUsername;
-			password = quadnaryPassword;
-		}
+		} 
+//		else if (instance.equals(Constants.SECONDARY)) {
+//			username = secondaryUsername;
+//			password = secondaryPassword;
+//		} else if (instance.equals(Constants.TERNARY)) {
+//			username = ternaryUsername;
+//			password = ternaryPassword;
+//		} else if (instance.equals(Constants.QUADNARY)) {
+//			username = quadnaryUsername;
+//			password = quadnaryPassword;
+//		}
 		String plainCreds = String.format("%s:%s", username, password);
 		byte[] plainCredsBytes = plainCreds.getBytes();
 		byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
