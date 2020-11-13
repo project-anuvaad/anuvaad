@@ -24,16 +24,16 @@ class PageCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value   : ''
+            value   : '',
+            text:''
         };
         this.handleTextChange = this.handleTextChange.bind(this);
         this.action = null
     }
 
     shouldComponentUpdate(prevProps, nextState) {
-        console.log(prevProps)
         if (prevProps.page) {
-            if (prevProps.page.page_no === prevProps.sentence_highlight.page_no) {
+            if (prevProps.sentence_highlight && (prevProps.page.page_no === prevProps.sentence_highlight.page_no)) {
                 return true
             }
             return false
@@ -53,18 +53,18 @@ class PageCard extends React.Component {
     renderText = (text, block) => {
         let style           = {
             position        : "absolute",
-            top             : (text.block_id === (this.props.sentence_highlight && this.props.sentence_highlight.block_id) ? text.text_top - block.text_top - 20 : text.text_top - block.text_top) + 'px',
+            top             : ((text.block_id === (this.props.sentence_highlight && this.props.sentence_highlight.block_id) && this.action) ? text.text_top - block.text_top - 20 : text.text_top - block.text_top) + 'px',
             left            : text.text_left - block.text_left + 'px',
             width           : text.text_width + 'px',
             height          : text.text_height + 'px',
             lineHeight      : text.avg_line_height + 'px',
             // textAlignLast   : "justify",
-            zIndex          : text.block_id === (this.props.sentence_highlight && this.props.sentence_highlight.block_id) ? 100000 : 2
+            zIndex          : (text.block_id === (this.props.sentence_highlight && this.props.sentence_highlight.block_id) && this.action) ? 100000 : 2
         };
         return (
             
             <div style={style} key={text.block_id} ref={text.block_identifier}>
-                {text.block_id == (this.props.sentence_highlight && this.props.sentence_highlight.block_id) ?
+                {((text.block_id == (this.props.sentence_highlight && this.props.sentence_highlight.block_id)) && this.action) ?
                     this.renderTextField(text)
                     :
                     this.renderTextFit(text)
@@ -98,6 +98,7 @@ class PageCard extends React.Component {
         </span>
         )
     }
+
 
     /**
      * sentence change
@@ -133,11 +134,12 @@ class PageCard extends React.Component {
      * render sentence edit
      */
     handleSelectedSentenceId = (text) => {
-        this.action =  'CLICK'
-        // this.setState({text: text.text })
+        
+        this.setState({text: text.text })
         this.props.clearHighlighBlock()
         this.props.cancelMergeSentence()
         this.props.highlightSentence(text)
+        this.action = "click"
     }
     /**
      * click away listner
@@ -148,8 +150,11 @@ class PageCard extends React.Component {
             let data = PAGE_OPS.get_updated_page_blocks(this.props.document_contents, blockData, this.state.text)
              this.props.onAction(SENTENCE_ACTION.SENTENCE_SOURCE_EDITED, blockData.page_no, [data], "") 
         }
-    this.props.clearHighlighBlock()
-    //    this.action = null;
+    // this.props.clearHighlighBlock()
+    this.setState({text:null})
+            setTimeout(() => { this.props.clearHighlighBlock()}, 50)
+            this.action = null;
+            
     }
 
     handleSourceScroll(id) {
