@@ -37,6 +37,7 @@ import async_job_status from './jobs/async_job_management'
 import document_editor_mode from './editor/document_editor_mode';
 
 import show_pdf from './showPdfReducer'
+import open_sidebar from './showsidebar'
 
 export default {
     login,
@@ -78,4 +79,5 @@ export default {
     document_editor_mode,
 
     show_pdf,
+    open_sidebar
 };

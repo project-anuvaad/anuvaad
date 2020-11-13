@@ -4,7 +4,6 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Fab";
 import { translate } from "../../../../assets/localisation";
 import history from "../../../../web.history";
 import ClearContent from "../../../../flux/actions/apis/clearcontent";
@@ -13,17 +12,11 @@ import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_u
 
 import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
-import Toolbar from "@material-ui/core/Toolbar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import Typography from "@material-ui/core/Typography";
 import Snackbar from "../../../components/web/common/Snackbar";
 import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
-import TextButton from '@material-ui/core/Button';
 import LanguageCodes from "../../../components/web/common/Languages.json"
-import DownloadIcon from "@material-ui/icons/ArrowDownward";
 import PDFRenderer from './PDFRenderer';
 import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
 import SentenceCard from './SentenceCard';
@@ -38,6 +31,8 @@ import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverte
 import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
+
+import InteractiveDocToolBar from "./InteractiveDocHeader"
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -383,95 +378,6 @@ class DocumentEditor extends React.Component {
      * all render functions starts here
      */
 
-    /**
-     * render the toolbar
-     */
-    renderToolBar = () => {
-        return (
-            <Grid container
-                spacing={2}
-                style={{ marginTop: "-3px", padding: "10px 5px 0px 17px", width: "100%", position: "fixed", zIndex: 1000, background: "#F5F9FA" }}>
-            
-                <Grid item xs={12} sm={6} lg={2} xl={2} className="GridFileDetails">
-                    <Button
-                    // variant="outlined"
-                    onClick={event => {
-                        this.handleOnClose(event);
-                    }}
-                    style={{ textTransform: "capitalize", width: "100%", minWidth: "150px", borderRadius: "30px", color: "#233466" }}
-                    >
-                    <ChevronLeftIcon fontSize="small" />
-                    {translate("common.page.title.document")}
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12} sm={5} lg={7} xl={7} className="GridFileDetails">
-                    <Button
-                        color="primary"
-                        // variant="outlined"
-                        className="GridFileDetails"
-                        style={{
-                            textTransform: "capitalize",
-                            justifyContent: "center",
-                            height: "100%",
-                            width: "100%",
-                            overflow: "hidden",
-                            whiteSpace: "nowrap",
-                            pointerEvents: "none",
-                            borderRadius: "30px"
-                        }}
-                        >
-                        <div style={{ fontSize: "15px", fontWeight: "bold" }}>
-                            {/* {!this.state.apiCall ? (this.state.isModeSentences ? "Sentences" : "PDF") : "Saving....."} */}
-                            { (this.state.isModeSentences ? "Sentences" : "PDF")}
-                        </div>
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12} sm={6} lg={1} xl={1}>
-                    <Button
-                        onClick={() => { 
-                          this.props.sentenceActionApiStarted(null);
-                          this.handleTargetDownload();
-                          this.setMessages("download", "downloadCompleted")}}
-                        style={{
-                        color: "#233466",
-                        textTransform: "capitalize",
-                        width: "100%",
-                        minWidth: "110px",
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        borderRadius: "30px"
-                        }}
-                    >
-                        <DownloadIcon fontSize="large" style={{ color: "#233466", fontSize: "x-large" }} />&nbsp;Download
-                    </Button>
-                </Grid>
-
-                <Grid item xs={12} sm={6} lg={2} xl={2}>
-                    <Button
-                        // variant="contained"
-                        // color="primary"
-                        style={{
-                        color: "#233466",
-                        textTransform: "capitalize",
-                        width: "100%",
-                        minWidth: "110px",
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        borderRadius: "30px"
-                        }}
-                        disabled={this.state.apiCall ? true : false}
-                        onClick={() => this.handleViewModeToggle()}
-                    >
-                        {this.state.isModeSentences ? "See PDF" : "See sentences"}
-                        <ChevronRightIcon fontSize="large" />
-                    </Button>
-                </Grid>
-
-            </Grid>
-        )
-    }
 
     /**
      * renders PDF document
@@ -559,9 +465,9 @@ class DocumentEditor extends React.Component {
     render() {
       console.log('DE render')
         return (
-        <div>
-            {/* {this.renderToolBar()} */}
-            <Grid container spacing={2} style={{ padding: "0px 24px 0px 24px" }}>
+        <div style={{height: window.innerHeight}}>
+            <InteractiveDocToolBar />
+            <Grid container spacing={2} style={{ padding: "63px 24px 0px 24px" }}>
                 {this.renderDocumentPages()}
                 {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>

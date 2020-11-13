@@ -126,6 +126,7 @@ const constants = {
      /**
      * actions for header
      */
-    SHOW_PDF : 'SHOW_PDF'
+    SHOW_PDF : 'SHOW_PDF',
+    SHOW_SIDEBAR : "SHOW_SIDEBAR"
 }
 export default constants;
