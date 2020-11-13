@@ -204,7 +204,7 @@ class UserProfile extends React.Component {
             </Grid>
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="h5" gutterBottom="true">
+                <Typography value="" variant="h5">
                   {translate("common.page.label.lastName")}{" "}
                 </Typography>
               </Grid>
@@ -219,7 +219,7 @@ class UserProfile extends React.Component {
             </Grid>
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="h5" gutterBottom="true">
+                <Typography value="" variant="h5" >
                   {translate("common.page.label.email")}{" "}
                 </Typography>
               </Grid>
@@ -235,7 +235,7 @@ class UserProfile extends React.Component {
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
-                <Typography value="" variant="h5" gutterBottom="true">
+                <Typography value="" variant="h5">
                   {translate("profile.page.label.role")}{" "}
                 </Typography>
               </Grid>
@@ -261,7 +261,7 @@ class UserProfile extends React.Component {
                 <br /> */}
 
                 <Select
-                  gutterBottom="true"
+                  // gutterBottom="true"
                   name="selectlanguage"
                   style={{ marginTop: "-1%", minWidth: 120 }}
                   id="outlined-age-simple"

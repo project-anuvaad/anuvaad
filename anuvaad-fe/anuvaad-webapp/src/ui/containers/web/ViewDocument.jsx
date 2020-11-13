@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import MUIDataTable from "mui-datatables";
-import Toolbar from "@material-ui/core/Toolbar";
+// import Toolbar from "@material-ui/core/Toolbar";
 import NewCorpusStyle from "../../styles/web/Newcorpus";
 import history from "../../../web.history";
 import FetchDocument from "../../../flux/actions/apis/fetch_document";
@@ -28,6 +28,7 @@ import MarkInactive from "../../../flux/actions/apis/markinactive";
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import JobStatus from "../../../flux/actions/apis/translation.progress";
 import { clearJobEntry } from '../../../flux/actions/users/async_job_management';
+import ToolBar from "./ViewDocHeader"
 
 const TELEMETRY = require('../../../utils/TelemetryManager')
 
@@ -412,9 +413,10 @@ class ViewDocument extends React.Component {
 
     return (
      
-      <div>
+      <div style={{height: window.innerHeight }}>
         { this.state.dialogMessage && this.snackBarMessage()}
-        <div style={{ margin: '5% 3% 3% 3%' }}>
+        <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
+          <ToolBar />
           {
             !this.state.showLoader && 
             <MuiThemeProvider theme={this.getMuiTheme()}> 

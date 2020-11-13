@@ -30,6 +30,12 @@ import PeopleIcon from '@material-ui/icons/Person';
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
 import Fab from '@material-ui/core/Fab';
 
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+
+import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
+
 const styles = {
   container: {},
   containerDemo: {},
@@ -73,7 +79,6 @@ const styles = {
 
 class Header extends React.Component {
   state = {
-    open: false,
     auth: true,
     anchorEl: null,
     heading: translate('header.page.heading.translation'),
@@ -82,37 +87,31 @@ class Header extends React.Component {
     currentPage: 'dashboard'
   };
 
-  handleDrawerOpen = () => {
-    this.setState({ open: true });
-  };
+  // componentDidUpdate() {
+  //   if (this.state.open && this.props.tocken) {
+  //     this.setState({ open: false });
 
-  componentDidUpdate() {
-    if (this.state.open && this.props.tocken) {
-      this.setState({ open: false });
-
-    }
-    if (this.props.tocken) {
-      this.props.handleTockenChange()
-    }
-  }
+  //   }
+  //   if (this.props.tocken) {
+  //     this.props.handleTockenChange()
+  //   }
+  // }
 
   handleDrawerTranslate = () => {
     this.setState({
-      open: false,
       heading: translate('header.page.heading.translation')
     });
   };
 
   handleDrawerDoc = () => {
     this.setState({
-      open: false,
       heading: translate('common.page.title.document')
     });
   };
   handleDrawerClose() {
-    this.setState({
-      open: false
-    });
+    if (this.props.open_sidebar) {
+      this.props.showSidebar(false)
+    }
   };
 
   handleChange = (event, checked) => {
@@ -124,7 +123,7 @@ class Header extends React.Component {
   };
 
   handleMenuOpenClose = event => {
-    this.setState({ open: !this.state.open });
+    this.props.showSidebar(!this.props.open_sidebar)
   };
 
   handleClose = () => {
@@ -132,9 +131,9 @@ class Header extends React.Component {
   };
 
   render() {
-    const { classes, title, drawer, forDemo, dontShowHeader, currentMenu } = this.props;
+    const { classes, title, drawer, forDemo, dontShowHeader, currentMenu, open_sidebar } = this.props;
 
-    const { auth, anchorEl, open } = this.state;
+    const { auth, anchorEl } = this.state;
     const openEl = Boolean(anchorEl);
     var role = JSON.parse(localStorage.getItem("roles"));
     var useRole = [];
@@ -146,63 +145,53 @@ class Header extends React.Component {
 
     return (
       <div>
-        <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, open && classes.appBarShift)} style={{ height: '50px' }}>
+        {!dontShowHeader &&
+          <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, this.props.open_sidebar && classes.appBarShift)} style={{ height: '50px' }}>
 
-          <Toolbar disableGutters={!open} style={{ minHeight: "50px" }}>
+            <Toolbar disableGutters={!open_sidebar} style={{ minHeight: "50px" }}>
 
-            {this.state.open ?
-              <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
-                <CloseIcon />
-              </IconButton> :
-              <div style={{ display: "flex", flexDirection: "row" }}>{
-                currentMenu === "texttranslate" &&
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                  <IconButton onClick={() => {
-                    history.push(`${process.env.PUBLIC_URL}/view-document`);
-                  }} className={classes.menuButton} color="inherit" aria-label="Menu">
-                    <BackIcon />
+              {open_sidebar ?
+                <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
+                  <CloseIcon />
+                </IconButton> :
+                  <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
+                    <MenuIcon />
                   </IconButton>
-                  <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "1px", marginTop: "5px" }}></div>
+              }
+              <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
+              {forDemo &&
+                <img src={logo}
+                  alt=""
+                  style={{
+                    width: '2%',
+                    display: 'block',
+                    marginLeft: '1%'
+                  }} />
+              }
+
+              <Typography variant="h5" color="inherit" className={forDemo ? classes.felxDemo : classes.flex}>
+                {title}
+              </Typography>
+              {this.props.toolBarComp &&
+                <div style={{ position: 'absolute', right: '3%' }}>
+                  <ToolbarComp />
                 </div>
               }
-                <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
-                  <MenuIcon />
-                </IconButton>
-              </div>
-            }
-            <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
-            {forDemo &&
-              <img src={logo}
-                alt=""
-                style={{
-                  width: '2%',
-                  display: 'block',
-                  marginLeft: '1%'
-                }} />
-            }
-
-            <Typography variant="h5" color="inherit" className={forDemo ? classes.felxDemo : classes.flex}>
-              {title}
-            </Typography>
-            {this.props.toolBarComp &&
-              <div style={{position: 'absolute', right: '3%'}}>
-                <ToolbarComp />
-              </div>
-            }
-          </Toolbar>
-        </AppBar>
+            </Toolbar>
+          </AppBar>
+        }
         <div>
-          {!drawer &&
+          {open_sidebar &&
             <Grid container spacing={10}>
 
               <Drawer
                 color="inherit"
                 variant="persistent"
                 anchor="left"
-                open={open}
+                open={open_sidebar}
 
                 onClick={() => {
-                  this.handleDrawerClose();
+                  this.handleDrawerClose(false);
                 }}
 
                 classes={{
@@ -230,7 +219,7 @@ class Header extends React.Component {
                         style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "dashboard" && themeAnuvaad.palette.primary.main }}
                         button
                         onClick={() => {
-                          this.handleDrawerClose();
+                          this.handleDrawerClose(false);
                           history.push(`${process.env.PUBLIC_URL}/instant-translate`);
                         }}
                       >
@@ -254,7 +243,7 @@ class Header extends React.Component {
                         style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "view-document" && themeAnuvaad.palette.primary.main }}
                         button
                         onClick={() => {
-                          this.handleDrawerClose();
+                          this.handleDrawerClose(false);
                           history.push(`${process.env.PUBLIC_URL}/view-document`);
                         }}
                       >
@@ -278,7 +267,7 @@ class Header extends React.Component {
                       style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "profile" && themeAnuvaad.palette.primary.main }}
                       button
                       onClick={() => {
-                        this.handleDrawerClose();
+                        this.handleDrawerClose(false);
                         history.push(`${process.env.PUBLIC_URL}/profile`);
                       }}
                     >
@@ -301,7 +290,7 @@ class Header extends React.Component {
                       style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "logout" && themeAnuvaad.palette.primary.main }}
                       button
                       onClick={() => {
-                        this.handleDrawerClose();
+                        this.handleDrawerClose(false);
                         history.push(`${process.env.PUBLIC_URL}/logout`);
                       }}
                     >
@@ -327,5 +316,20 @@ class Header extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  open_sidebar: state.open_sidebar.open
+});
 
-export default withStyles(styles)(Header);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      APITransport,
+      showSidebar
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Header));

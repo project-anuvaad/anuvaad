@@ -11,7 +11,7 @@ import Theme from "../../theme/web/theme-anuvaad";
 import APITransport from "../../../flux/actions/apitransport/apitransport";
 import history from "../../../web.history";
 
-
+import { showSidebar } from '../../../flux/actions/apis/showSidebar';
 
 class App extends React.Component {
   constructor(props) {
@@ -30,11 +30,15 @@ class App extends React.Component {
   }
 
   handlDrawerTocken = () => {
-    this.setState({ tocken: true })
+    // this.setState({ tocken: true })
+    if(this.props.open_sidebar === true) {
+      this.props.showSidebar(false)
+    }
   }
 
   handleTockenChange() {
-    this.setState({ tocken: !this.state.tocken })
+    // this.setState({ tocken: !this.state.tocken })
+    this.props.showSidebar()
   }
 
 
@@ -63,9 +67,9 @@ class App extends React.Component {
           {!dontShowLoader &&
             this.renderSpinner()
           }
-          {!dontShowHeader &&
+          {/* {!dontShowHeader && */}
             <Header toolBarComp={ headerAttribute } dontShowHeader={dontShowHeader} currentMenu={currentMenu} forDemo={forDemo || showLogo} classes={classes} theme={theme} title={title} drawer={drawer} tocken={this.state.tocken} handleTockenChange={this.handleTockenChange.bind(this)} />
-          }
+          
           <div style={dontShowHeader ? { width: '100%' } : {}} className={dontShowHeader ? '' : (forDemo ? classes.containerDemo : classes.container)} onClick={this.handlDrawerTocken.bind(this)}>
             {/* {forDemo &&
               <div style={{
@@ -96,13 +100,15 @@ class App extends React.Component {
 const mapStateToProps = state => ({
   user: state.login,
   apistatus: state.apistatus,
-  userProfile: state.userProfile
+  userProfile: state.userProfile,
+  open_sidebar: state.open_sidebar.open
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      APITransport
+      APITransport,
+    showSidebar
     },
     dispatch
   );

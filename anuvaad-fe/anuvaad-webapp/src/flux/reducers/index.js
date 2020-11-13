@@ -36,6 +36,7 @@ import sentence_action_operation from './sentences/sentenceActionReducer'
 import async_job_status from './jobs/async_job_management'
 
 import show_pdf from './showPdfReducer'
+import open_sidebar from './showsidebar'
 
 export default {
     login,
@@ -76,4 +77,5 @@ export default {
     async_job_status,
 
     show_pdf,
+    open_sidebar
 };

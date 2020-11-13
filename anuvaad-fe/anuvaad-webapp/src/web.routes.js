@@ -24,8 +24,6 @@ import DocumentEditorV1 from './ui/containers/web/TranslatorEditor/DocumentEdito
 
 import FileUpload from './ui/containers/web/Interactive-Editor/FileUpload';
 import ViewDocument from './ui/containers/web/ViewDocument';
-import ViewDocHeader from "./ui/containers/web/TranslatorEditor/ViewDocHeader"
-import IntercativeDocHeader from "./ui/containers/web/TranslatorEditor/InteractiveDocHeader"
 
 const PrivateRoute = ({ headerAttribute: headerAttribute,  component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -125,7 +123,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               dontShowLoader
               currentMenu="texttranslate"
-              headerAttribute={IntercativeDocHeader}
+              dontShowHeader={true}
             />
 
             <PrivateRoute
@@ -135,6 +133,7 @@ class AppRoutes extends React.Component {
               title="Start Translate"
               authenticate={this.authenticateUser}
               currentMenu="texttranslate"
+              dontShowHeader={true}
             />
 
             <PrivateRoute
@@ -182,7 +181,7 @@ class AppRoutes extends React.Component {
               component={ViewDocument}
               authenticate={this.authenticateUser}
               currentMenu="view-document"
-              headerAttribute={ViewDocHeader}
+              dontShowHeader={true}
             />
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
           </Switch>
