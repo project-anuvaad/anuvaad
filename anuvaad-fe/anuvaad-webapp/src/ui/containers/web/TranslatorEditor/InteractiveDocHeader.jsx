@@ -88,7 +88,7 @@ class InteractiveDocHeader extends React.Component {
             if (!response.ok) {
                 return Promise.reject('');
             } else {
-                let fileName = rsp_data && rsp_data.translated_document && rsp_data.translated_document ? rsp_data.translated_document : ""
+                let fileName = rsp_data && rsp_data.[this.state.fileType] ? rsp_data.[this.state.fileType]  : ""
                 if (fileName) {
                     let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
                     window.open(url, "_self")
@@ -151,15 +151,32 @@ class InteractiveDocHeader extends React.Component {
                             this.downloadSourceFile();
                         }}
                     >
-                        Source File
+                        Source file
                         </MenuItem>
                     <MenuItem
+                        style={{borderTop: "1px solid #D6D6D6"}}
                         onClick={() => {
-                            this.downloadTargetFile();
+                            this.downloadTargetFile(); this.setState({fileType: "translated_document"})
                         }}
                     >
-                        Translated File
+                        Translated docx file
                         </MenuItem>
+                    <MenuItem
+                        style={{borderTop: "1px solid #D6D6D6"}}
+                        onClick={() => {
+                            this.downloadTargetFile(); this.setState({fileType: "translated_txt_file"})
+                        }}
+                    >
+                        Translated txt file
+                    </MenuItem>
+                    <MenuItem
+                        style={{borderTop: "1px solid #D6D6D6"}}
+                        onClick={() => {
+                            this.downloadTargetFile(); this.setState({fileType: "xlsx_file"})
+                        }}
+                    >
+                        Translated xlsx file
+                    </MenuItem>
                 </StyledMenu>
             </div>
         );
