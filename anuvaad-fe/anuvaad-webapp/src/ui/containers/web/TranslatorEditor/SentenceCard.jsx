@@ -301,7 +301,10 @@ class SentenceCard extends React.Component {
         this.setState({
             cardChecked: !this.state.cardChecked
         })
-        this.props.inProgressMergeSentence(this.props.sentence, this.state.cardChecked)
+        if (!this.state.cardChecked)
+            this.props.onAction(SENTENCE_ACTION.ADD_SENTENCE_FOR_MERGE, this.props.pageNumber, [this.props.sentence])
+        else
+            this.props.onAction(SENTENCE_ACTION.REMOVE_SENTENCE_FOR_MERGE, this.props.pageNumber, [this.props.sentence])
     }
 
     handleUserInputText(event) {
@@ -674,7 +677,7 @@ class SentenceCard extends React.Component {
             this.props.clearHighlighBlock()
         } else {
             this.setState({cardInFocus: true})
-            this.props.highlightBlock(this.props.sentence)
+            this.props.highlightBlock(this.props.sentence, this.props.pageNumber)
             /**
              * For highlighting textarea on card expand
              */

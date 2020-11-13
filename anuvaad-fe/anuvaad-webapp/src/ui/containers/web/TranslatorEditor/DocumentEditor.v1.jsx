@@ -28,7 +28,7 @@ import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverte
 // import BLOCK_OPS from "../../../../utils/block.operations";
 // import TELEMETRY from '../../../../utils/TelemetryManager';
 
-import { sentenceActionApiStarted, sentenceActionApiStopped, contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
+import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 
@@ -46,10 +46,8 @@ class DocumentEditor extends React.Component {
             currentPageIndex: 1,
             apiInProgress: false,
             snackBarMessage: '',
-            isShowSnackbar: false,
-            isModeMerge: false,
-            mergeModePages: []
         }
+        this.forMergeSentences = []
     }
 
     /**
@@ -80,12 +78,6 @@ class DocumentEditor extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-      if (prevProps.document_contents.content_updated !== this.props.document_contents.content_updated) {
-        if (this.props.document_contents.content_updated) {
-          this.props.sentenceActionApiStopped()
-        }
-      }
-
       // if (prevProps.sentence_highlight !== this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight.sentence_id) {
       if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
         this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
@@ -140,6 +132,7 @@ class DocumentEditor extends React.Component {
       let final_sentence    = updated_blocks['blocks'][0].tokenized_sentences.src;
       TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
 
+      this.informAPIProgress(translate('common.page.label.SENTENCE_MERGED'))
       let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale, 
                                           '', '', parseInt(this.props.match.params.modelId))
       const apiReq    = fetch(apiObj.apiEndPoint(), {
@@ -149,22 +142,23 @@ class DocumentEditor extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
           if (!response.ok) {
-            this.props.sentenceActionApiStopped()
+            this.informAPIStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
             return Promise.reject('');
           } else {
             this.props.contentUpdateStarted();
             this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
             this.processEndMergeMode(pageNumber)
+            this.informAPIStatus(translate('common.page.label.SENTENCE_MERGED_SUCCESS'), true)
           }
       }).catch((error) => {
-          console.log('api failed because of server or network', error)
-          this.props.sentenceActionApiStopped()
+          this.informAPIStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
           this.processEndMergeMode(pageNumber)
       });
     }
 
     async makeAPICallSaveSentence(sentence, pageNumber) {
-      
+      this.informAPIProgress(translate('common.page.label.SENTENCE_SAVED'))
+
       let apiObj      = new SaveSentenceAPI(sentence)
       const apiReq    = fetch(apiObj.apiEndPoint(), {
           method: 'post',
@@ -173,15 +167,15 @@ class DocumentEditor extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
           if (!response.ok) {
-            this.props.sentenceActionApiStopped()
+            this.informAPIStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
             return Promise.reject('');
           } else {
             this.props.contentUpdateStarted()
             this.props.update_sentences(pageNumber, rsp_data.data);
+            this.informAPIStatus(translate('common.page.label.SENTENCE_SAVED_SUCCESS'), true)
           }
       }).catch((error) => {
-          console.log('api failed because of server or network')
-          this.props.sentenceActionApiStopped()
+        this.informAPIStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
       });
     }
 
@@ -189,6 +183,7 @@ class DocumentEditor extends React.Component {
       let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
       TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
 
+      this.informAPIProgress(translate('common.page.label.SENTENCE_SPLITTED'))
       let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale, 
                                                 '', '', parseInt(this.props.match.params.modelId))
       const apiReq    = fetch(apiObj.apiEndPoint(), {
@@ -198,15 +193,15 @@ class DocumentEditor extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
           if (!response.ok) {
-            this.props.sentenceActionApiStopped()
+            this.informAPIStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
             return Promise.reject('');
           } else {
             this.props.contentUpdateStarted();
             this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
+            this.informAPIStatus(translate('common.page.label.SENTENCE_SPLITTED_SUCCESS'), true)
           }
       }).catch((error) => {
-          console.log('api failed because of server or network')
-          this.props.sentenceActionApiStopped()
+        this.informAPIStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
       });
     }
 
@@ -221,7 +216,6 @@ class DocumentEditor extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
         if (!response.ok) {
-          this.props.sentenceActionApiStopped()
           return Promise.reject('');
         } else {
           this.props.contentUpdateStarted()
@@ -229,12 +223,10 @@ class DocumentEditor extends React.Component {
         }
       }).catch((error) => {
         console.log('api failed because of server or network')
-        this.props.sentenceActionApiStopped()
       });
     }
 
     handleTargetDownload() {
-    
       let recordId = this.props.match.params.jobid
       let user_profile = JSON.parse(localStorage.getItem('userProfile'))
   
@@ -246,7 +238,6 @@ class DocumentEditor extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
         if (!response.ok) {
-          this.props.sentenceActionApiStopped()
           return Promise.reject('');
         } else {
           let fileName = rsp_data && rsp_data.translated_document && rsp_data.translated_document ? rsp_data.translated_document : ""
@@ -255,8 +246,6 @@ class DocumentEditor extends React.Component {
             let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
             window.open(url, "_self")
           }
-          this.props.sentenceActionApiStopped()
-  
         }
       }).catch((error) => {
         console.log('api failed because of server or network')
@@ -291,42 +280,31 @@ class DocumentEditor extends React.Component {
     processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex) => {
 
       console.log('processSentenceAction', action, pageNumber, sentences, startIndex, endIndex)
+      
       switch(action) {
         case SENTENCE_ACTION.SENTENCE_SAVED: {
-          this.props.sentenceActionApiStarted(sentences[0])
           this.makeAPICallSaveSentence(sentences[0], pageNumber)
-          this.setMessages(SENTENCE_ACTION.SENTENCE_SAVED, "savedMessage")
-         
           return;
         }
 
         case SENTENCE_ACTION.SENTENCE_SPLITTED: {
-          
-          this.props.sentenceActionApiStarted(null)
           this.makeAPICallSplitSentence(sentences[0], pageNumber, startIndex, endIndex);
-          this.setMessages(SENTENCE_ACTION.SENTENCE_SPLITTED, "splittedMessage")
           return;
         }
 
         case SENTENCE_ACTION.SENTENCE_MERGED: {
-          /**
-           * make card busy as merge operation is started by it.
-           */
-          this.props.sentenceActionApiStarted(null)
-
-          this.makeAPICallMergeSentence(this.props.sentence_action_operation.sentences, pageNumber);
-          this.setMessages(SENTENCE_ACTION.SENTENCE_MERGED, "mergedMessage")
+          this.makeAPICallMergeSentence(this.forMergeSentences, pageNumber);
+          this.forMergeSentences  = []
           return;
         }
 
         case SENTENCE_ACTION.SENTENCE_SOURCE_EDITED: {
-          this.props.sentenceActionApiStarted(null)
           this.makeAPICallSourceSaveSentence(sentences, pageNumber)
-          this.setMessages(SENTENCE_ACTION.SENTENCE_SOURCE_EDITED, "editedMessage")
           return;
         }
 
         case SENTENCE_ACTION.START_MODE_MERGE: {
+          this.forMergeSentences  = []
           this.processStartMergeMode(pageNumber)
           
           return;
@@ -334,18 +312,63 @@ class DocumentEditor extends React.Component {
 
         case SENTENCE_ACTION.END_MODE_MERGE: {
           this.processEndMergeMode(pageNumber)
+          this.forMergeSentences  = []
+          return;
+        }
+        case SENTENCE_ACTION.ADD_SENTENCE_FOR_MERGE: {
+          this.forMergeSentences  = [...this.forMergeSentences, ...sentences]
+          return;
+        }
+        case SENTENCE_ACTION.REMOVE_SENTENCE_FOR_MERGE: {
+          this.forMergeSentences  = this.forMergeSentences.filter(sent => sent.s_id !== sentences[0].s_id)
           return;
         }
       }
     }
 
-    setMessages = (pendingAction, completedAction) => {
-        this.setState({snackBarMessage:translate(`common.page.label.${pendingAction}`), 
-        snackBarSavedMessage:translate(`common.page.label.${completedAction}`), 
+    /**
+     * progress information for user from API
+     */
+    informAPIProgress = (message) => {
+      this.setState({
+        apiInProgress: true,
+        apiStopped: false,
+        snackBarMessage: message
+      })
+    }
+    informAPIStatus = (message, isSuccess) => {
+      this.setState({
+        apiInProgress: false,
+        apiStopped: true,
+        snackBarMessage: message,
+        snackBarVariant: isSuccess ? "info" : "error"
       })
     }
 
-    snackBarMessage = () =>{
+    renderAPIProgressInformation = () => {
+      return (
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          open={this.state.apiInProgress}
+          variant={"info"}
+          message={this.state.snackBarMessage}
+        />
+      )
+    }
+
+    renderAPIStoppedInformation = () => {
+      return (
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          open={this.state.apiStopped}
+          autoHideDuration={2000}
+          variant={"info"}
+          message={this.state.snackBarMessage}
+        />
+      )
+    }
+
+    snackBarMessage = () => {
       return (
         <div>
         <Snackbar
@@ -471,7 +494,10 @@ class DocumentEditor extends React.Component {
                 {this.renderDocumentPages()}
                 {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>
-            {(this.state.snackBarMessage || this.state.snackBarSavedMessage) && this.snackBarMessage()}
+
+            {this.state.apiInProgress ? this.renderAPIProgressInformation() : <div />}
+            {this.state.apiStopped ? this.renderAPIStoppedInformation() : <div />}
+
             {(this.props.document_contents.pages.length<1) && < Spinner />}
         </div>
         )
@@ -487,8 +513,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
-      sentenceActionApiStarted,
-      sentenceActionApiStopped,
       contentUpdateStarted,
       APITransport,
       update_sentences,
