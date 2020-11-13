@@ -6,7 +6,7 @@
       "id": 1,
       "name" : "Anuvaad Dashboards",
       "isDefault" : true,
-      "code": "Anuvad",
+      "code": "Anuvaad",
       "urls": [
         {
           "configuration": "/dashboard/getDashboardConfig/Anuvaad/anuvaadtelemetrydashboard",
