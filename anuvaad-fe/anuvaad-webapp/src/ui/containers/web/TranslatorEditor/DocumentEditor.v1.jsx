@@ -132,7 +132,7 @@ class DocumentEditor extends React.Component {
       let final_sentence    = updated_blocks['blocks'][0].tokenized_sentences.src;
       TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
 
-      this.informAPIProgress(translate('common.page.label.SENTENCE_MERGED'))
+      this.informUserProgress(translate('common.page.label.SENTENCE_MERGED'))
       let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale, 
                                           '', '', parseInt(this.props.match.params.modelId))
       const apiReq    = fetch(apiObj.apiEndPoint(), {
@@ -142,22 +142,22 @@ class DocumentEditor extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
           if (!response.ok) {
-            this.informAPIStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
+            this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
             return Promise.reject('');
           } else {
             this.props.contentUpdateStarted();
             this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
             this.processEndMergeMode(pageNumber)
-            this.informAPIStatus(translate('common.page.label.SENTENCE_MERGED_SUCCESS'), true)
+            this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_SUCCESS'), true)
           }
       }).catch((error) => {
-          this.informAPIStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
+          this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
           this.processEndMergeMode(pageNumber)
       });
     }
 
     async makeAPICallSaveSentence(sentence, pageNumber) {
-      this.informAPIProgress(translate('common.page.label.SENTENCE_SAVED'))
+      this.informUserProgress(translate('common.page.label.SENTENCE_SAVED'))
 
       let apiObj      = new SaveSentenceAPI(sentence)
       const apiReq    = fetch(apiObj.apiEndPoint(), {
@@ -167,15 +167,15 @@ class DocumentEditor extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
           if (!response.ok) {
-            this.informAPIStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
+            this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
             return Promise.reject('');
           } else {
             this.props.contentUpdateStarted()
             this.props.update_sentences(pageNumber, rsp_data.data);
-            this.informAPIStatus(translate('common.page.label.SENTENCE_SAVED_SUCCESS'), true)
+            this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_SUCCESS'), true)
           }
       }).catch((error) => {
-        this.informAPIStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
+        this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
       });
     }
 
@@ -183,7 +183,7 @@ class DocumentEditor extends React.Component {
       let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
       TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
 
-      this.informAPIProgress(translate('common.page.label.SENTENCE_SPLITTED'))
+      this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
       let apiObj      = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale, 
                                                 '', '', parseInt(this.props.match.params.modelId))
       const apiReq    = fetch(apiObj.apiEndPoint(), {
@@ -193,20 +193,20 @@ class DocumentEditor extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
           if (!response.ok) {
-            this.informAPIStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
+            this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
             return Promise.reject('');
           } else {
             this.props.contentUpdateStarted();
             this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
-            this.informAPIStatus(translate('common.page.label.SENTENCE_SPLITTED_SUCCESS'), true)
+            this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_SUCCESS'), true)
           }
       }).catch((error) => {
-        this.informAPIStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
+        this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
       });
     }
 
     async makeAPICallSourceSaveSentence(sentence, pageNumber) {
-      this.informAPIProgress(translate('common.page.label.SOURCE_SENTENCE_SAVED'))
+      this.informUserProgress(translate('common.page.label.SOURCE_SENTENCE_SAVED'))
       let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, this.props.match.params.locale,
         '', '', parseInt(this.props.match.params.modelId))
       const apiReq = fetch(apiObj.apiEndPoint(), {
@@ -216,15 +216,15 @@ class DocumentEditor extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
         if (!response.ok) {
-          this.informAPIStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
+          this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
           return Promise.reject('');
         } else {
           this.props.contentUpdateStarted()
           this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
-          this.informAPIStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_SUCCESS'), true)
+          this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_SUCCESS'), true)
         }
       }).catch((error) => {
-        this.informAPIStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
+        this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
       });
     }
 
@@ -290,11 +290,19 @@ class DocumentEditor extends React.Component {
         }
 
         case SENTENCE_ACTION.SENTENCE_SPLITTED: {
+          if(startIndex === endIndex) {
+            this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_INVALID_INPUT'), false)
+            return;
+          }
           this.makeAPICallSplitSentence(sentences[0], pageNumber, startIndex, endIndex);
           return;
         }
 
         case SENTENCE_ACTION.SENTENCE_MERGED: {
+          if (this.forMergeSentences.length < 2) {
+            this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_INVALID_INPUT'), false)
+            return;
+          }
           this.makeAPICallMergeSentence(this.forMergeSentences, pageNumber);
           this.forMergeSentences  = []
           return;
@@ -331,14 +339,14 @@ class DocumentEditor extends React.Component {
     /**
      * progress information for user from API
      */
-    informAPIProgress = (message) => {
+    informUserProgress = (message) => {
       this.setState({
         apiInProgress: true,
         apiStopped: false,
         snackBarMessage: message
       })
     }
-    informAPIStatus = (message, isSuccess) => {
+    informUserStatus = (message, isSuccess) => {
       this.setState({
         apiInProgress: false,
         apiStopped: true,
