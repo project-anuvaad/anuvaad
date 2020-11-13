@@ -116,7 +116,7 @@ class PageCard extends React.Component {
                 style           =   {styles.textField} 
                 type            =   "text" 
                 className       =   "form-control"
-                defaultValue    =   {text.text}
+                // defaultValue    =   {text.text}
                 value           =   {this.state.text}
                 variant         =   "outlined"
                 id              =   "mui-theme-provider-outlined-input"
@@ -152,7 +152,7 @@ class PageCard extends React.Component {
         }
     // this.props.clearHighlighBlock()
     this.setState({text:null})
-            setTimeout(() => { this.props.clearHighlighBlock()}, 50)
+            // setTimeout(() => { this.props.clearHighlighBlock()}, 50)
             this.action = null;
             
     }
@@ -221,7 +221,6 @@ class PageCard extends React.Component {
     }
 
     render() {
-        console.log('PC - render')
         return (
             <div>
                 {this.renderPage(this.props.page)}

@@ -76,6 +76,7 @@ class DocumentEditor extends React.Component {
       this.setState({ showLoader: true });
       this.makeAPICallFetchContent();
       window.addEventListener('popstate',this.handleOnClose);
+      window.addEventListener('beforeunload',this.handleOnClose);
     }
 
     componentDidUpdate(prevProps) {
@@ -109,14 +110,14 @@ class DocumentEditor extends React.Component {
     makeAPICallFetchContent =  () => {
       let start_page    = this.props.document_contents.pages.length + 1;
       let end_page      = start_page + 1;
-      console.log(`fetching document content, start_page: ${start_page}, end_page: ${end_page}`);
+      
 
       const apiObj      = new FileContent(this.props.match.params.jobid, start_page, end_page);
       this.props.APITransport(apiObj);
     }
 
     makeAPICallFetchContentPerPage = (start_page) => {
-      console.log(`fetching modified document content, start_page: ${start_page}, end_page: ${start_page}`);
+      
 
       const apiObj      = new FetchContentUpdate(this.props.match.params.jobid, start_page, start_page);
       this.props.APITransport(apiObj);
@@ -281,7 +282,7 @@ class DocumentEditor extends React.Component {
 
     processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex) => {
 
-      console.log('processSentenceAction', action, pageNumber, sentences, startIndex, endIndex)
+      
       
       switch(action) {
         case SENTENCE_ACTION.SENTENCE_SAVED: {
@@ -485,7 +486,6 @@ class DocumentEditor extends React.Component {
      */
 
     render() {
-      console.log('DE render')
         return (
         <div style={{height: window.innerHeight}}>
             <InteractiveDocToolBar />
