@@ -24,7 +24,7 @@ class SimpleSelect extends React.Component {
         }}>
           <Select
             disabled={disabled}
-            style={{  align: 'right'}}
+            style={{  align: 'right',marginTop:'2%'}}
             value={value}
             onChange={handleChange}
             input={

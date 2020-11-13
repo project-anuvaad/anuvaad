@@ -28,11 +28,30 @@ import PeopleIcon from '@material-ui/icons/Person';
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
 
 const styles = {
+    container:{},
+    containerDemo:{},
+    appBar:{},
+    appBarShift:{},
+    buttonLeft:{},
+    buttonRight:{},
+    editButton:{},
+    hide:{},
+    drawer:{},
+    drawerPaper:{},
+    drawerHeader:{},
+    contentShift:{},
+    drawerPaperClose:{},
+    toolbar:{},
+    title:{},
+    content:{},
+  
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    
   },
   flex: {
     flex: 1,
+    
   },
   felxDemo: {
     flex: 1,
@@ -141,7 +160,7 @@ class Header extends React.Component {
                 }} />
             }
 
-            <Typography variant="title" color="inherit" className={forDemo ? classes.felxDemo : classes.flex}>
+            <Typography variant="h5" color="inherit" className={forDemo ? classes.felxDemo : classes.flex}>
               {title}
             </Typography>
 
@@ -156,13 +175,14 @@ class Header extends React.Component {
               {!dontShowHeader &&
                 <div style={{ display: 'flex', flexDirection: 'row', cursor: "pointer" }} onClick={this.handleMenu.bind(this)}>
 
-                  <PeopleIcon style={{ marginRight: '10px' }}></PeopleIcon>
+                  <PeopleIcon style={{ marginRight: '10px', paddingTop:"4px" }}></PeopleIcon>
                   <Typography
-                    variant="title"
+                    variant="h5"
                     color="inherit"
                     style={{
                       // position: "absolute",
                       textTransform: "capitalize",
+
                       // right: "60px"
                     }}
                   >
@@ -182,7 +202,7 @@ class Header extends React.Component {
                 >
                   {/* <Fab aria-owns={openEl ? "menu-appbar" : null} aria-haspopup="true" onClick={this.handleMenu} color="primary" size="medium">
                 </Fab> */}
-                  <DownIcon onClick={this.handleMenu.bind(this)} style={{ cursor: "pointer" }}></DownIcon>
+                  <DownIcon onClick={this.handleMenu.bind(this)} style={{ cursor: "pointer", paddingTop:"3px"  }}></DownIcon>
                   <Menu
                     id="menu-appbar"
                     anchorEl={anchorEl}
@@ -221,7 +241,7 @@ class Header extends React.Component {
         </AppBar>
         <div>
           {!drawer &&
-            <Grid container spacing={24}>
+            <Grid container spacing={10}>
               {/* <Grid container spacing={24} style={{ padding: 24 }}> */}
               {/* <Grid item xs={12} sm={12} lg={12} xl={12}>
         <div style={{marginLeft:'-5%',marginTop:'-1%'}}>
@@ -253,7 +273,7 @@ class Header extends React.Component {
                         <Typography
                           type="body2"
                           style={{ color: "#D6D6D6", paddingBottom: "2%", marginLeft: "6%" }}
-                          variant="title"
+                          variant="h5"
                           color="inherit"
                           className={classes.flex}
                         >
@@ -262,29 +282,6 @@ class Header extends React.Component {
                       }
                     />
                   </ListItem>
-                  {role && Array.isArray(role) && role.includes("dev") && (
-                    <div>
-                      <Divider className={classes.divider} />
-                      <ListItem
-                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "data-pipeline-tools" && themeAnuvaad.palette.primary.main }}
-                        button
-                        onClick={event => {
-                          this.handleDrawerClose();
-                          history.push("/data-pipeline-tools");
-                        }}
-                      >
-
-                        <ListItemText
-                          disableTypography
-                          primary={
-                            <Typography type="body2" style={{ color: currentMenu === "data-pipeline-tools" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              {translate('header.page.heading.dataPipeline')}
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                    </div>
-                  )}
                   {role && Array.isArray(role) && role.includes("user") && (
                     <div>
                       <Divider className={classes.divider} />
@@ -561,29 +558,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-                  {role && Array.isArray(role) && (role.includes("editor") || role.includes("user")) && (
-                    <div>
-                      <Divider className={classes.divider} />
-                      <ListItem
-                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "doctranslate" && themeAnuvaad.palette.primary.main }}
-                        button
-                        onClick={event => {
-                          this.handleDrawerClose();
-                          history.push("/doctranslate");
-                        }}
-                      >
-
-                        <ListItemText
-                          disableTypography
-                          primary={
-                            <Typography type="body2" style={{ color: currentMenu === "doctranslate" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              {translate('webroutes.page.title.translateFile')}
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                    </div>
-                  )}
+                  
                   {role && Array.isArray(role) && (role.includes("editor") || role.includes("user")) && (
                     <div>
                       <Divider className={classes.divider} />

@@ -30,3 +30,7 @@ class Status(enum.Enum):
     ERROR_NOTFOUND_FILE = {'ok': False, 'http': {'status': 400}, 'why': 'file not found'}
     ERROR_WRONG_PASSWORD = {'ok': False, 'http': {'status': 400}, 'why': 'wrong password '}
     USER_ALREADY_EXISTS = {'ok': False, 'http': {'status': 400}, 'why': 'username already exists '}
+    ERR_SCHEMA_VALIDATION   = {'ok': False, 'http': {'status': 400}, 'why': 'please refer api contract to check your request structure '}
+    ERR_ENGLISH_MANDATORY   = {'ok': False, 'http': {'status': 400}, 'why': 'atleast one of the locale should be en '}
+    ERR_ENGLISH_MANDATORY_WHILE_SAVING   = {'ok': False, 'http': {'status': 400}, 'why': 'source word locale has to be English (en) when you are building dictionary '}
+

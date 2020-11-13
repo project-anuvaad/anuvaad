@@ -9,11 +9,11 @@ const DashboardStyles = theme => ({
     alignItems: 'center'
   },
   margin: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     width: '100%'
   },
   withoutLabel: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3) 
   },
   typographyHeader:{
      paddingBottom: "12px", paddingTop: "2%"
@@ -64,7 +64,7 @@ const DashboardStyles = theme => ({
     
   },
   button1: {
-    width: "100%", borderRadius: "20px 20px 20px 20px", height: '46px'
+    width: "98%", borderRadius: "20px 20px 20px 20px", height: '46px'
   },
   
   button2:{

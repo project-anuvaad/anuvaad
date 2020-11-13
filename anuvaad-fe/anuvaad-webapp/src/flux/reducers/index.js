@@ -70,7 +70,12 @@ import workflowStatus from "./fileupload";
 import documentUplaod from "./documentUpload";
 import fetchDocument from "./fetch_document";
 import documentDetails from "./fetch_fileDetails";
-import fetchContent from "./fetchcontent"
+import fetchContent from "./fetchcontent";
+import documentconverter from "./documentconverter";
+import wordDictionary from "./word_dictionary";
+import saveContent from "./savecontent";
+import markInactive from "./markinactive";
+import jobStatus from "./job-status";
 
 export default {
     login,
@@ -145,5 +150,11 @@ export default {
     documentUplaod,
     fetchDocument,
     documentDetails,
-    fetchContent
+    fetchContent,
+    documentconverter,
+    wordDictionary,
+    saveContent,
+    markInactive,
+    jobStatus
+
 };

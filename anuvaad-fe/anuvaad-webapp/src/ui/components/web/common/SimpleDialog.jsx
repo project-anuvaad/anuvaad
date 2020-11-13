@@ -17,10 +17,10 @@ export default class SimpleDialog extends React.Component {
             <div>
 
                 <Dialog
-                    inputProps={{
-                        name: 'max-width',
-                        id: 'max-width',
-                      }}
+                    // inputProps={{
+                    //     name: 'max-width',
+                    //     id: 'max-width',
+                    //   }}
                     open={open}
                     keepMounted
                     onClose={this.handleClose}
@@ -32,7 +32,7 @@ export default class SimpleDialog extends React.Component {
                         {title}
                     </DialogTitle>
                     <DialogContent style={{minWidth: "500px"}}>
-                        {this.props.type ?
+                        {this.props.type && this.props.type !== "warning"?
                             <DialogContentText>
                                 <div><span style={{ fontWeight: "bold" }}>Job ID: </span><span>{message.jobId}</span></div>
                                 <div><span style={{ fontWeight: "bold" }}>Status: </span><span>{message.status}</span></div>

@@ -6,11 +6,11 @@ const PdfToDocStyles = theme => ({
     flexWrap: 'wrap'
   },
   margin: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     width: '100%'
   },
   withoutLabel: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3) 
   },
   typographyHeader: {
     marginTop: '30%'

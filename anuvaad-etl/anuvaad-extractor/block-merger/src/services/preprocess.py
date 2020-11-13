@@ -162,18 +162,48 @@ def tag_heaader_footer_attrib(header_region , footer_region ,page_df,magrin=5):
 
 
 
+def image_boundry_correction(width, height ,df):
+
+    #try :
+
+    df['text_top'].loc[df['text_top'] <0 ]  = 0
+    df['text_left'].loc[df['text_left'] < 0 ] = 0
+    #df['text_width'] = abs(df['text_width'])
+    #df['text_height'] = abs(df['text_height'])
+
+    df['text_height'].loc[ (df['text_height'] + df['text_top'] ) > height ]  =  (height -1 - (df['text_top'].loc[ (df['text_height'] + df['text_top']  )  > height ]))
+    df['text_width'].loc[(df['text_width'] + df['text_left']) > width] = (width  -1 - (df['text_left'].loc[(df['text_width'] + df['text_left']) > width]))
+
+    return  df
+    # except :
+    #     return  df
+
 # Remove tables and lines from bg image
 
-def mask_image(image,df,input_json,margin= 2 ,fill=255):
+def mask_image(image,df, image_width,image_height,input_json,margin= 0 ,fill=255):
     if len(df) > 0:
+        df = image_boundry_correction(image_width,image_height,df)
         for index, row in df.iterrows():
             try :
                 row_bottom = int(row['text_top'] + row['text_height'])
                 row_right = int(row['text_left'] + row['text_width'])
+                row_left   = row['text_left']
+                row_top    = row['text_top']
+
+                # Some times the image height/width  can be negative
+                if row_right < row['text_left'] :
+                    row_left = row_right
+                    row_right = row['text_left']
+
+                if row_top > row_bottom :
+                    row_top = row_bottom
+                    row_bottom = row['text_top']
+
+
                 if len(image.shape) == 2 :
-                    image[row['text_top'] - margin : row_bottom + margin , row['text_left'] - margin: row_right + margin] = fill
+                    image[row_top - margin : row_bottom + margin , row_left - margin: row_right + margin] = fill
                 if len(image.shape) == 3 :
-                    image[row['text_top'] - margin: row_bottom + margin, row['text_left'] - margin: row_right + margin,:] = fill
+                    image[row_top - margin: row_bottom + margin, row_left - margin: row_right + margin,:] = fill
 
             except Exception as e :
                 log_error("Service TableExtractor Error in masking bg image" +e, input_json, e)

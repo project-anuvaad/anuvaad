@@ -3,7 +3,6 @@ import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 export default class RunExperiment extends API {
   constructor(workspaceName, source, target, filepath, timeout = 2000) {
-    console.log();
     super("POST", timeout, false);
     this.type = C.CREATEWORKSPACE;
     this.title = workspaceName;

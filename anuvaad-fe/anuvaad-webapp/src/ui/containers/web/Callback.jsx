@@ -102,7 +102,7 @@ class Callback extends React.Component {
           <Paper style={{ marginLeft: "30%", width: "30%", marginTop: "8%", textAlign: 'center', padding: '5%' }} >
             <Grid container spacing={8} style={{ paddingBottom:'4%' }}>
               <Grid item xs={12} sm={12} lg={12} xl={12}  >
-                <Typography variant="title">
+                <Typography variant="h5">
                   Select Your Preferred Language{" "}
                 </Typography>
               </Grid>

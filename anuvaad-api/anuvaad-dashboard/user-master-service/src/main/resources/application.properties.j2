@@ -1,0 +1,22 @@
+# SET CONTEXT PATH
+server.port=8081
+
+spring.datasource.driver-class-name= {{ datasource_driver_class_name }}
+spring.datasource.url= {{ datasource_url }}
+spring.datasource.username= {{ datasource_username }}
+spring.datasource.password= {{ datasource_password }}
+
+spring.http.multipart.max-file-size=10MB
+spring.http.multipart.max-request-size=10MB
+
+flyway.enabled=false
+flyway.user= {{ flyway_user }}
+flyway.password= {{ flyway_password }}
+flyway.outOfOrder=false
+flyway.table=retail_user_schema_version
+flyway.baseline-on-migrate=false
+flyway.url= {{ flyway_url }}
+flyway.locations=db/migration/ddl
+
+
+

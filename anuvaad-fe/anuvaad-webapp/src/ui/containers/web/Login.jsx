@@ -9,6 +9,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Input from "@material-ui/core/Input";
 import FormControl from "@material-ui/core/FormControl";
+// import {Link} from 'react-router';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withStyles } from "@material-ui/core";
@@ -30,6 +31,10 @@ class Login extends React.Component {
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('login')
+    /**
+    * getSnapshotBeforeUpdate() must return null
+    */
+    return null;
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
   }

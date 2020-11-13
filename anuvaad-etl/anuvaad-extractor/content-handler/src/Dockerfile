@@ -1,8 +1,9 @@
-FROM python:3.7-slim
+FROM python:3.6-slim-stretch
 COPY / /app
 WORKDIR /app
+RUN apt update
+
 RUN pip3 install -r requirements.txt
-RUN apt update && apt install -y libmagic-dev
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
 CMD ["/usr/bin/start.sh"]

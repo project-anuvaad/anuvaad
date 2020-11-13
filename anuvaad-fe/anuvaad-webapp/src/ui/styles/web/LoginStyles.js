@@ -1,5 +1,5 @@
 // @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
-import { grey500, white } from 'material-ui/styles/colors';
+
 
 
 
@@ -9,11 +9,11 @@ const LoginStyles = theme => ({
     flexWrap: 'wrap'
   },
   margin: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     width: '100%'
   },
   withoutLabel: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3) 
   },
   textField: {
     flexBasis: 200
@@ -62,7 +62,7 @@ const LoginStyles = theme => ({
     padding: 10
   },
   flatButton: {
-    color: grey500
+    color: '#ECEFF1'
   },
   checkRemember: {
     style: {
@@ -71,12 +71,12 @@ const LoginStyles = theme => ({
       paddingTop: 5
     },
     labelStyle: {
-      color: grey500
+      color: '#ECEFF1'
     },
     iconStyle: {
-      color: grey500,
-      borderColor: grey500,
-      fill: grey500
+      color: '#ECEFF1',
+      borderColor: '#ECEFF1',
+      fill: '#ECEFF1'
     }
   },
   loginBtn: {
@@ -84,7 +84,7 @@ const LoginStyles = theme => ({
   },
   btn: {
     background: '#4f81e9',
-    color: white,
+    color: "white",
     padding: 7,
     borderRadius: 2,
     margin: 2,

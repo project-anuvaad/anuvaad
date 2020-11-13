@@ -4,7 +4,7 @@ const drawerWidth = 240;
 
 const GlobalStyles = theme => ({
   container: {
-    margin: '5em 0em 0em 0em',
+    margin: '4em 0em 0em 0em',
     width: '100%',
     background: theme.palette.background.default,
     fontFamily: theme.typography.fontFamily,
@@ -100,7 +100,15 @@ const GlobalStyles = theme => ({
     ...theme.mixins.toolbar,
     justifyContent: "flex-end"
   },
-
+  // content: {
+  //   flexGrow: 1,
+  //   padding: theme.spacing(1) * 3,
+  //   transition: theme.transitions.create("margin", {
+  //     easing: theme.transitions.easing.sharp,
+  //     duration: theme.transitions.duration.leavingScreen
+  //   }),
+  //   marginLeft: -drawerWidth
+  // },
   contentShift: {
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
@@ -114,7 +122,7 @@ const GlobalStyles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    width: theme.spacing(7),
+    width: theme.spacing(7) ,
     [theme.breakpoints.up('sm')]: {
       width: theme.spacing(9)
     }

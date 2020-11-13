@@ -6,7 +6,7 @@ const SignUpStyles = theme => ({
     flexWrap: 'wrap'
   },
   margin: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     width: '100%'
   },
   withoutLabel: {

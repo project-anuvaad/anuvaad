@@ -6,7 +6,7 @@ const PdfUploadStyles = theme => ({
     flexWrap: 'wrap'
   },
   margin: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     width: '100%'
   },
   withoutLabel: {
@@ -29,7 +29,7 @@ const PdfUploadStyles = theme => ({
   },
 
   typography: {
-    marginLeft:"2%",
+    //marginLeft:"2%",
     marginTop:'2%',
     height:"18px"
     
@@ -54,56 +54,63 @@ const PdfUploadStyles = theme => ({
     marginLeft: "5.5%" 
   },
   textfield:{
-    width: '87.9%',
-    marginLeft:"2.3%"
+    width: '91.8%',
+    //marginLeft:"2.3%"
   },
   span:{
     color:'red'
   },
-  button: {
-    marginTop: "6%",
+  // button: {
+  //   marginTop: "6%",
     
-    width: "92%",
-    backgroundColor:'#1C9AB7',
-    borderRadius:"20px 20px 20px 20px",
-    color:"#FFFFFF"
-  },
+  //   width: "87%",
+  //   backgroundColor:'#1C9AB7',
+  //   borderRadius:"20px 20px 20px 20px",
+  //   color:"#FFFFFF"
+  // },
   button1: {
-    marginTop: "6%",
-    
-    width: "90%",
+    //marginTop: "6%",
+    marginLeft:'7%',
+    marginBottom:'3%',
+    width: "93%",
     backgroundColor:'#1C9AB7',
     borderRadius:"20px 20px 20px 20px",
-    color:"#FFFFFF"
+    color:"#FFFFFF",
+    height:'46px'
   },
   button2: {
-    marginTop: "6%",
-    marginLeft: "3%",
-    width: "90%",
+    //marginTop: "6%",
+    //marginLeft: "3%",
+    width: "87%",
+    marginBottom:'3%',
     backgroundColor:'#1C9AB7',
     borderRadius:"20px 20px 20px 20px",
-    color:"#FFFFFF"
+    color:"#FFFFFF",
+    height:'46px'
   },
-  dropZoneArea:{
-    paddingTop: '30%',
-    top: "auto",
-    width:'91%',
-    minHeight:'363px',
-    height: "100%",
-    borderColor:'#1C9AB7',
-    backgroundColor: '#F5F9FA',
-    border: '1px dashed #1C9AB7',
-    fontColor:'#1C9AB7',
-    "& svg":{color:'#1C9AB7',},
-    "& p": {
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      fontSize: "19px",
-      color:'#1C9AB7',
+  simpleselect:{
+    marginTop:'2%'
+  },
+  // dropZoneArea:{
+  //   paddingTop: '30%',
+  //   top: "auto",
+  //   width:'91%',
+  //   minHeight:'363px',
+  //   height: "100%",
+  //   borderColor:'#1C9AB7',
+  //   backgroundColor: '#F5F9FA',
+  //   border: '1px dashed #1C9AB7',
+  //   fontColor:'#1C9AB7',
+  //   "& svg":{color:'#1C9AB7',},
+  //   "& p": {
+  //     textOverflow: "ellipsis",
+  //     whiteSpace: "nowrap",
+  //     overflow: "hidden",
+  //     fontSize: "19px",
+  //     color:'#1C9AB7',
       
-    },
-  },
+  //   },
+  // },
   dropZoneArea1:{
     paddingTop: '12%',
     top: "auto",

@@ -1,6 +1,13 @@
 var jp                = require('jsonpath')
 const { v4 }        = require('uuid');
 
+function flattenArray(array) {
+    return array.reduce(function(memo, el) {
+      var items = Array.isArray(el) ? flattenArray(el) : [el];
+      return memo.concat(items);
+    }, []);
+}
+
 function get_block_id(blocks) {
     let block_ids = []
     blocks.forEach(element => {
@@ -9,6 +16,7 @@ function get_block_id(blocks) {
     return block_ids
 }
 
+/*
 function get_page_id(blocks) {
     let page_ids = []
     blocks.forEach(element => {
@@ -16,11 +24,14 @@ function get_page_id(blocks) {
     });
     return page_ids
 }
+*/
 
 function get_blocks(sentences, block_ids) {
-    let blocks = []
+    let blocks  = []
+    sentences   = JSON.parse(JSON.stringify(sentences))
+
     block_ids.forEach(element => {
-        let condition           = '$..[*].text_blocks[?(@.block_id ==' + '\'' + element + '\'' + ')]'
+        let condition           = `$..[*].text_blocks[?(@.block_id == '${element}')]`;
         let selected_blocks     = jp.query(sentences, condition)
 
         selected_blocks.forEach(element => {
@@ -33,6 +44,29 @@ function get_blocks(sentences, block_ids) {
 
     })
     return blocks
+}
+
+function get_all_text_blocks(sentences) {
+    sentences       = JSON.parse(JSON.stringify(sentences))
+    let condition   = '$..[*].text_blocks[*]'
+    let blocks      = jp.query(sentences, condition)
+    return blocks
+}
+
+function get_sentence_id_blocks(sentences, blocks, s_id) {
+    let selected_blocks = []
+    sentences       = JSON.parse(JSON.stringify(sentences))
+    blocks          = JSON.parse(JSON.stringify(blocks))
+
+    blocks.forEach(element => {
+        let condition   = `$.tokenized_sentences[?(@.s_id == '${s_id}')]`;
+        let selects     = jp.query(element, condition)
+        if (selects.length === 1) {
+            selected_blocks.push(element)
+            return selected_blocks
+        }
+    })
+    return selected_blocks
 }
 
 /**
@@ -58,38 +92,39 @@ function get_largest_area_block(blocks) {
  * @param {*} blocks selected blocks
  */
 function get_concatenated_text(blocks) {
-  let condition   = '$[*].children[*]'
-  let children    = jp.query(blocks, condition)
+    blocks          = JSON.parse(JSON.stringify(blocks))
+    let condition   = '$[*].children[*]'
+    let children    = jp.query(blocks, condition)
 
-  let sorted_blocks      = children.sort((a, b) => {
+    let sorted_blocks      = children.sort((a, b) => {
 
-      if (a.page_no > b.page_no) {
-          return 1
-      }
-      if (a.page_no < b.page_no) {
-          return -1
-      }
-      if (a.text_top < b.text_top) {
-          return -1
-      }
-      if (a.text_top > b.text_top) {
-          return 1
-      }
-      if (a.text_left > b.text_left) {
-          return 1
-      }
-      if (a.text_left < b.text_left) {
-          return -1
-      }
-      return 0
-  })
+        if (a.page_no > b.page_no) {
+            return 1
+        }
+        if (a.page_no < b.page_no) {
+            return -1
+        }
+        if (a.text_top < b.text_top) {
+            return -1
+        }
+        if (a.text_top > b.text_top) {
+            return 1
+        }
+        if (a.text_left > b.text_left) {
+            return 1
+        }
+        if (a.text_left < b.text_left) {
+            return -1
+        }
+        return 0
+    })
 
-  let texts       = []
-  sorted_blocks.forEach(element => {
-      texts.push(element.text)
-  })
+    let texts       = []
+    sorted_blocks.forEach(element => {
+        texts.push(element.text)
+    })
 
-  return texts.join(' ')
+    return texts.join(' ')
 }
 
 /**
@@ -105,7 +140,7 @@ function get_merged_blocks(sentences, selected_block_ids) {
     let updated_blocks      = []
 
     selected_blocks.forEach(element => {
-        if (element.block_identifier == largest_block.block_identifier) {
+        if (element.block_identifier === largest_block.block_identifier) {
             element.text    = text
 
         } else {
@@ -137,10 +172,142 @@ function get_tokenized_sentences_block(blocks) {
  */
 function get_sentence_id_index(tokenized_sentences, sentence_id) {
   for (var i = 0; i < tokenized_sentences.length; i++) {
-    if (tokenized_sentences[i].s_id == sentence_id) {
+    if (tokenized_sentences[i].s_id === sentence_id) {
       return i;
     }
   }
+}
+
+/**
+ * @description get unique blocks based upon block_identifier
+ * @param {*} blocks 
+ */
+function get_unique_blocks(blocks) {
+    let hashMap = new Map();
+
+    let unique  = blocks.filter(el => {
+        const val   = hashMap.get(el.block_identifier);
+        
+        if(val) {
+            return false;
+        }
+        hashMap.set(el.block_identifier, el.block_identifier);
+        return true;
+    });
+    return unique;
+}
+
+/**
+ * @description sort block by page_no and position
+ * @param {*} blocks 
+ * @returns sorted blocks
+ */
+function get_sorted_blocks(blocks) {
+    let sorted_blocks      = blocks.sort((a, b) => {
+        if (a.page_info.page_no > b.page_info.page_no) {
+            return 1
+        }
+        if (a.page_info.page_no < b.page_info.page_no) {
+            return -1
+        }
+        if (a.text_top < b.text_top) {
+            return -1
+        }
+        if (a.text_top > b.text_top) {
+            return 1
+        }
+        if (a.text_left > b.text_left) {
+            return 1
+        }
+        if (a.text_left < b.text_left) {
+            return -1
+        }
+        return 0
+    })
+    return sorted_blocks;
+}
+
+/**
+ * @description get tokenized_sentences of the blocks
+ * @param {*} blocks 
+ * @returns tokenized_sentences
+function get_blocks_tokenized_sentences(blocks) {
+    let condition           = '$..tokenized_sentences[*]'
+    let tokenized_sentences = jp.query(blocks, condition)
+    return tokenized_sentences
+}
+ */
+
+/**
+ * @description, get start and end index of sentence_ids spread across the blocks
+ * @param {*} blocks 
+ * @param {*} sentence_ids 
+function get_start_end_index(blocks, sentence_ids) {
+    let first_block         = blocks[0]
+    let last_block          = blocks[blocks.length - 1]
+
+    let first_block_indices = []
+    for (let i = 0; i < first_block.tokenized_sentences.length; i++) {
+        sentence_ids.forEach(s_id => {
+            if (s_id === first_block.tokenized_sentences[i].s_id) {
+                first_block_indices.push(i)
+            }
+        })
+    }
+
+    first_block_indices     = first_block_indices.sort((a, b) => a - b)
+
+    let last_block_indices  = []
+    for (let j = 0; j < last_block.tokenized_sentences.length; j++) {
+        sentence_ids.forEach(s_id => {
+            if (s_id === last_block.tokenized_sentences[j].s_id) {
+                last_block_indices.push(j)
+            }
+        })
+    }
+
+    last_block_indices      = last_block_indices.sort((a, b) => b - a)
+
+    return {
+        'first': first_block_indices[0],
+        'last' : last_block_indices[0]
+    }
+}
+*/
+
+/**
+ * finds sentence_id index in the given sorted blocks
+ * @param {*} blocks 
+ * @param {*} sentence_ids 
+ * @returns array of sentence_id and its index
+ */
+function get_sentence_ids_in_ascending_order(blocks, sentence_ids) {
+    let sentence_ids_indices = []
+
+    blocks.forEach(block => {
+        let block_sentence_indices = []
+        sentence_ids.forEach(s_id => {
+            for (var i = 0; i < block.tokenized_sentences.length; i++) {
+                if (s_id === block.tokenized_sentences[i].s_id) {
+                    block_sentence_indices.push({'s_id': s_id, 
+                    'index': i, 
+                    'block_identifer': block.block_identifier, 
+                    'src': block.tokenized_sentences[i].src })
+                }
+            }
+            block_sentence_indices     = block_sentence_indices.sort((a, b) => {
+                if (a.index < b.index) {
+                    return -1
+                }
+                if (a.index > b.index) {
+                    return 1
+                }
+                return 0
+            })
+        })
+        sentence_ids_indices.push(block_sentence_indices)
+    })
+    return sentence_ids_indices
 }
 
 /**
@@ -209,6 +376,60 @@ function do_sentences_merging(sentences, block_id, sentence_id_1, sentence_id_2)
 }
 
 /**
+ * @description merge the provided sentence_ids and create new sentences
+ * @param {*} sentences 
+ * @param {*} sentence_ids 
+ */
+function do_sentences_merging_v1(sentences, sentence_ids) {
+    let text_blocks     = get_all_text_blocks(sentences)
+    let selected_blocks = []
+
+    sentence_ids.forEach(element => {
+        let block = get_sentence_id_blocks(sentences, text_blocks, element)
+        if (block.length === 1) {
+            selected_blocks.push(block[0])
+        }
+    })
+
+    let unique_selected_blocks      = get_unique_blocks(selected_blocks);
+    let sorted_selected_blocks      = get_sorted_blocks(unique_selected_blocks);
+    let sentence_indices            = get_sentence_ids_in_ascending_order(sorted_selected_blocks, sentence_ids)
+    sentence_indices                = flattenArray(sentence_indices)
+
+    let merged_sentence             = ""
+    let tokenized_sentence          = sorted_selected_blocks[0].tokenized_sentences[sentence_indices[0].index]
+    sorted_selected_blocks.forEach(block => {
+        sentence_indices.forEach(sentence_index => {
+            block.tokenized_sentences.forEach(sentence => {
+                if (sentence.s_id === sentence_index.s_id) {
+                    merged_sentence= merged_sentence.trim()
+                    merged_sentence += " "+sentence.src
+                    block.tokenized_sentences.splice(sentence_index.index, 1)
+                    block.tokenized_sentences.splice(sentence_index.index, 0, {})
+                }
+            })
+        })
+    })
+
+    sorted_selected_blocks.forEach(block => {
+        let updated_tokenized_sentences = []
+        block.tokenized_sentences.forEach(sentence => {
+            if (Object.keys(sentence).length !== 0) {
+                updated_tokenized_sentences.push(sentence)
+            }
+        })
+        block.tokenized_sentences   = updated_tokenized_sentences
+    })
+
+    tokenized_sentence.src  = merged_sentence
+    tokenized_sentence.tgt  = ''
+    tokenized_sentence.save = false
+    sorted_selected_blocks[0].tokenized_sentences.splice(sentence_indices[0].index, 0, tokenized_sentence)
+
+    return {'blocks': sorted_selected_blocks, 'sentence_id': sentence_indices[0].s_id, 'sentences': sentence_indices}
+}
+
+/**
  *
  * @param {*} sentences, list of all the sentences in which merge operation has to be performed
  * @param {*} block_id, operation performed on specific block
@@ -245,6 +466,7 @@ function do_sentence_splitting(sentences, block_id, sentence_id, character_count
 
     let final_tokenized_sentences   = []
     split_sentence_obj.src  = first_portion
+    split_sentence_obj.save = false
     final_tokenized_sentences.push(split_sentence_obj)
     final_tokenized_sentences.push({
         'src': second_portion,
@@ -260,5 +482,7 @@ function do_sentence_splitting(sentences, block_id, sentence_id, character_count
 module.exports = {
     get_merged_blocks,
     do_sentences_merging,
-    do_sentence_splitting
+    do_sentences_merging_v1,
+    do_sentence_splitting,
+    get_sorted_blocks
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
-import { white, grey900 } from 'material-ui/styles/colors';
-import { typography } from 'material-ui/styles';
+
 
 class InfoBox extends React.Component {
   render() {
@@ -12,17 +11,17 @@ class InfoBox extends React.Component {
         padding: '5px 10px',
         marginLeft: 90,
         height: 80,
-        backgroundColor: grey900
+        backgroundColor: "grey900"
       },
       number: {
         display: 'block',
-        fontWeight: typography.fontWeightMedium,
+        
         fontSize: 18,
-        color: white
+        color: "white"
       },
       text: {
-        fontWeight: typography.fontWeightLight,
-        color: white
+        
+        color: "white"
       },
       iconSpan: {
         float: 'left',
@@ -44,7 +43,7 @@ class InfoBox extends React.Component {
       <Paper>
         <span style={styles.iconSpan}>
           <Icon
-            color={white}
+            color={"white"}
             style={styles.icon}
           />
         </span>

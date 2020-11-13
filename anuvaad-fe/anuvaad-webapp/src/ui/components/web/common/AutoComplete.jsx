@@ -57,24 +57,6 @@ class AutoComplete extends React.Component {
     }
 
     handleEnter = (event) => {
-        let divdata = this.refs[this.props.refId].getBoundingClientRect()
-        let x = divdata.x
-        let y = divdata.y
-
-        var elem = document.getElementById(this.props.aId)
-        let caretVal = this.state.value.substring(0, elem.selectionStart)
-
-        var coordinates = getCaretCoordinates(elem, elem.selectionEnd);
-
-        let topValue = 0
-        let leftValue = 0
-        if (coordinates) {
-            topValue = y + coordinates.top + this.props.heightToBeIncreased
-            leftValue = x + coordinates.left + 5
-
-            this.setState({ anchorEl: document.activeElement, topValue, leftValue, caretVal })
-        }
-
         if (event.key === 'Escape') {
             this.setState({ showSuggestions: false })
             let saveData = (this.state.value !== this.props.value || this.state.modified) ? true : false
@@ -82,21 +64,32 @@ class AutoComplete extends React.Component {
             if (saveData) {
                 this.props.handleChangeEvent({ target: { value: this.state.value } })
             }
-            this.props.handleBlur(this.props.block_identifier_with_page, wfcodes.DP_WFLOW_S_C, saveData)
-        }
+            this.props.handleBlur(this.props.block_identifier_with_page, wfcodes.DP_WFLOW_S_C, saveData, this.props.value, this.state.value)
+        } else  if (event.key === 'Tab') {
+            let divdata = this.refs[this.props.refId].getBoundingClientRect()
+            let x = divdata.x
+            let y = divdata.y
+    
+            var elem = document.getElementById(this.props.aId)
+            let caretVal = this.state.value.substring(0, elem.selectionStart)
+    
+            var coordinates = getCaretCoordinates(elem, elem.selectionEnd);
+    
+            let topValue = 0
+            let leftValue = 0
+            if (coordinates) {
+                topValue = y + coordinates.top + this.props.heightToBeIncreased
+                leftValue = x + coordinates.left + 5
+    
+                this.setState({ anchorEl: document.activeElement, topValue, leftValue, caretVal })
+            }
 
-        if (event.key === 'Tab') {
-            console.log(caretVal)
             this.setState({ showSuggestions: true })
             // this.props.fetchSuggestions(this.props.sourceText, this.props.value)
             this.props.fetchSuggestions(this.props.sourceText, this.handleCalc(caretVal, this.state.tokenObject), this.state.tokenObject)
 
         }
 
-        this.setState({
-            previousKeyPressed: event.key,
-            previousPressedKeyCode: event.keyCode
-        })
     }
 
     handleCalc(value, tokenText) {
@@ -168,7 +161,7 @@ class AutoComplete extends React.Component {
 
     handleClickAway(id, value, wf_code) {
         let saveData = (this.state.value !== this.props.value || this.state.modified) ? true : false
-        this.props.handleClickAway(id, value, wf_code, saveData)
+        this.props.handleClickAway(id, value, wf_code, saveData, this.props.value)
     }
 
     getLoader() {
@@ -194,20 +187,20 @@ class AutoComplete extends React.Component {
     }
 
     render() {
-        const { value, aId, refId, style, tokenIndex, sentence } = this.props
+        const { aId, refId, style, tokenIndex, sentence } = this.props
         return (
             <ClickAwayListener id={tokenIndex} onClickAway={() => this.handleClickAway(sentence.block_identifier + "_" + this.props.page_no, this.state.value, wfcodes.DP_WFLOW_S_C)}>
-                <div>
+                <div key={aId}>
                     <TextareaAutosize
+                        id={aId}
+                        ref={refId}
+                        maxRows={4}
                         multiline={true}
                         autoFocus={true}
-                        ref={refId}
-                        id={aId}
-                        value={this.state.value}
                         style={style}
+                        value={this.state.value}
                         onChange={this.handleChangeEvent.bind(this)}
                         onKeyDown={this.handleEnter}
-                        maxRows={4}
                     >
                     </TextareaAutosize>
                     {

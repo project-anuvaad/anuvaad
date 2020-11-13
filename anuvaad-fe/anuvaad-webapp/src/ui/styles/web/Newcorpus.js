@@ -1,4 +1,4 @@
-import { grey500, white } from 'material-ui/styles/colors';
+
 
 const Newcorpus = theme => ({
   root: {
@@ -9,17 +9,17 @@ const Newcorpus = theme => ({
     alignItems: 'center',
   },
   margin: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     width: '100%'
   },
   withoutLabel: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3) 
   },
   textField: {
     flexBasis:40,
     height:'30%',
     marginLeft: theme.spacing(-0.1),
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
     marginBottom:'10px'
 
   },
@@ -56,6 +56,8 @@ buttons: {
 },
 
 button1: {
+  // justifyContent: 'center',
+  // left: theme.spacing(1)*12,
   marginTop:'5%',
   marginLeft:'0.1%',
   width:'48%',
@@ -84,7 +86,7 @@ btns: {
     padding: 10
   },
   flatButton: {
-    color: grey500
+    color: '#ECEFF1'
   },
   checkRemember: {
     style: {
@@ -93,12 +95,12 @@ btns: {
       paddingTop: 5
     },
     labelStyle: {
-      color: grey500
+      color: '#ECEFF1'
     },
     iconStyle: {
-      color: grey500,
-      borderColor: grey500,
-      fill: grey500
+      color: '#ECEFF1',
+      borderColor: '#ECEFF1',
+      fill: '#ECEFF1'
     }
   },
   loginBtn: {
@@ -106,7 +108,7 @@ btns: {
   },
   btn: {
     background: '#4f81e9',
-    color: white,
+    color: "white",
     padding: 7,
     borderRadius: 2,
     margin: 2,
