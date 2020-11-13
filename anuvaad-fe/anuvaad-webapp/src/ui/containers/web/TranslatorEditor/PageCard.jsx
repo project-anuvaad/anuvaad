@@ -27,7 +27,17 @@ class PageCard extends React.Component {
             value   : ''
         };
         this.handleTextChange = this.handleTextChange.bind(this);
+        this.action = null
+    }
 
+    shouldComponentUpdate(prevProps, nextState) {
+        if (prevProps.page) {
+            if (prevProps.page.page_no === this.props.block_highlight.page_no) {
+                return true
+            }
+            return false
+        }
+        return true;
     }
 
     componentDidUpdate(prevProps) {
@@ -122,6 +132,7 @@ class PageCard extends React.Component {
      * render sentence edit
      */
     handleSelectedSentenceId = (text) => {
+        this.action =  'CLICK'
         // this.setState({text: text.text })
         this.props.clearHighlighBlock()
         this.props.cancelMergeSentence()
@@ -136,7 +147,8 @@ class PageCard extends React.Component {
             let data = PAGE_OPS.get_updated_page_blocks(this.props.document_contents, blockData, this.state.text)
              this.props.onAction(SENTENCE_ACTION.SENTENCE_SOURCE_EDITED, blockData.page_no, [data], "") 
         }
-       this.props.clearHighlighBlock()
+    //    this.props.clearHighlighBlock()
+       this.action = null;
     }
 
     handleSourceScroll(id) {
@@ -203,6 +215,7 @@ class PageCard extends React.Component {
     }
 
     render() {
+        console.log('PC - render')
         return (
             <div>
                 {this.renderPage(this.props.page)}
