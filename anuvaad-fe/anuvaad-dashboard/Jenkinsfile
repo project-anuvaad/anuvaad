@@ -1,3 +1,4 @@
+
 node('server_build_slave') {
 
 try {
@@ -5,11 +6,18 @@ try {
     stage('checkout') {
    	checkout scm
 }
-
-    stage('Build') {
-	sh '''
+stage('Build') 
+	    withCredentials([string(credentialsId: 'vault-password', variable: 'vaultpass')]) {
+    
+     sh  '''
+            pwd
+             echo $vaultpass > vault_pass.txt
+                
+	      ansible-playbook -i /home/jenkins/jenkins_files/ansible/anuvaad-dashboard/inventory/local /home/jenkins/jenkins_files/ansible/anuvaad-dashboard/frontend_cred_encryption.yml -e "var_file=$var_file_name" --vault-id vault_pass.txt	
 	
-	cd anuvaad-fe/anuvaad-dashboard
+	    rm -rf vault_pass.txt
+		
+		cd anuvaad-fe/anuvaad-dashboard
 	
 	if [  -f "$(pwd)/build.zip" ]
 	     then
@@ -19,29 +27,12 @@ try {
              then
              docker rm "$JOB_BASE_NAME"
         fi
-
     	docker run -v $(pwd):/opt --name "$JOB_BASE_NAME" node:10.15.3-stretch /bin/bash -c "cd /opt && apt update && apt install -y zip && npm install && npm run build:staging && zip -r build.zip build && rm -rf build"
 	docker rm "$JOB_BASE_NAME"
 	   '''
 
 }
-  /*  
-   stage('SonarQube analysis') {
-       def scannerHome = tool 'sonar_scanner';
-       withSonarQubeEnv('sonarqube') {
-            sh "${scannerHome}/bin/sonar-scanner"   
-       }	
-
-}
-   stage("Quality Gate") {
-       timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
-           def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-           if (qg.status != 'OK') {
-               error "Pipeline aborted due to quality gate failure: ${qg.status}"
-            }
-         }
-     }    */
-
+ 
 }
 
     catch (err) {
