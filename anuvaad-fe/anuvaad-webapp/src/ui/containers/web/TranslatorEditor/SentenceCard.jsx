@@ -90,12 +90,11 @@ class SentenceCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: '',
+            value: (this.props.sentence.save ? this.props.sentence.tgt : ''),
             showSuggestions: false,
             suggestions: [],
             cardInFocus: false,
             cardChecked: false,
-            isModeMerge: false,
             isCardBusy: false,
             sentenceSaved: false,
             userEnteredText: false,
@@ -119,34 +118,7 @@ class SentenceCard extends React.Component {
         this.processMergeCancelButtonClicked = this.processMergeCancelButtonClicked.bind(this);
     }
 
-    // componentDidMount() {
-    //     if (this.isSentenceSaved()) {
-    //         this.setState({value: this.props.sentence.tgt})
-    //     }
-    // }
-
     componentWillUpdate(nextProps, nextState) {
-        // if ((prevProps.sentence_action_operation.finished !== this.props.sentence_action_operation.finished) ) {
-        //     this.setState({
-        //         cardChecked: false
-        //     })
-        // }
-        // if ((prevProps.sentence_action_operation.api_status !== this.props.sentence_action_operation.api_status)) {
-        //     this.setState({
-        //         isCardBusy: (this.isCurrentSentenceInProps() ? this.props.sentence_action_operation.api_status : false)
-        //     })
-        // }
-
-        // if(this.state.selectedSentence!== prevState.selectedSentence){
-        //     this.setState({dictionaryWord: prevState.selectedSentence})
-        // }
-        
-        // if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
-            
-        //     if (this.cardBlockCompare()) {
-        //         this.setState({ cardInFocus: true })
-        //     }
-        // }
         if (nextProps.document_editor_mode.mode !== this.props.document_editor_mode.mode) {
             if (this.state.cardChecked)
                 this.setState({cardChecked: false})
@@ -196,7 +168,7 @@ class SentenceCard extends React.Component {
         //     suggestions: Object.keys(countries).map((key) => countries[key].item[0])
         // })
         // console.log(this.state.suggestions)
-
+        this.setState({isCardBusy: true})
         let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, this.state.value, this.props.modelId, true, '', this.props.sentence.s_id);
         const apiReq    = fetch(apiObj.apiEndPoint(), {
             method: 'post',
@@ -205,15 +177,18 @@ class SentenceCard extends React.Component {
         }).then(async response => {
             const rsp_data = await response.json();
             if (!response.ok) {
+                this.setState({isCardBusy: false})
                 return Promise.reject('');
             } else {
                 this.setState({
-                    suggestions: rsp_data.output.predictions[0].tgt.map(s => { return {name: s}})
+                    suggestions: rsp_data.output.predictions[0].tgt.map(s => { return {name: s}}),
+                    isCardBusy: false
                 })
             }
         }).catch((error) => {
             this.setState({
-                suggestions: []
+                suggestions: [],
+                isCardBusy: false
             })
         });
     }
@@ -338,18 +313,6 @@ class SentenceCard extends React.Component {
         }
     }
 
-    handleClickAway = () => {
-        /**
-         * Unroll the card only in normal operation
-         * - in merge mode do not collapse the current card.
-         */
-        if (!this.state.isModeMerge) {
-            this.setState({
-                parallel_words:null
-            })
-        }
-    };
-
     getSelectionText = (event) => {
         let selectedSentence    = window.getSelection().toString();
         let endIndex            = window.getSelection().focusOffset;
@@ -419,7 +382,7 @@ class SentenceCard extends React.Component {
                     Meaning of {this.state.dictionaryWord}
                     <br />
                 </Typography>
-                {this.state.parallel_words.map((words) => <Typography variant="subtitle1" gutterBottom>{words}</Typography>)}
+                {this.state.parallel_words.map((words, index) => <Typography key={index} variant="subtitle1" gutterBottom>{words}</Typography>)}
                     <br />
                 
                 <Divider />
