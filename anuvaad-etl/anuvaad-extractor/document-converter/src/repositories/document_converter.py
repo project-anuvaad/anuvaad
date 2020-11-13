@@ -236,7 +236,7 @@ class DocumentConversion(object):
             max_chars_in_line = int(page_width/13)
             for idx, df in enumerate(dataframes):
                 for idx, row in df.iterrows():
-                    if df.iloc[idx]['text'] != None and df.iloc[idx+same_line_index+1]['text'] !=None and idx+1 < df.shape[0]:
+                    if df.iloc[idx]['text'] != None and df.iloc[idx]['text_top'] != None and df.iloc[idx+1]['text_top'] != None and idx+1 < df.shape[0]:
                         extra_spaces = int((df.iloc[idx]['text_left'] - 50)/13.5)
                         write_str = re.sub(r'^', ' '*extra_spaces, df.iloc[idx]['text'])
                         if df.iloc[idx]['text_top'] != df.iloc[idx+1]['text_top']:
@@ -252,8 +252,11 @@ class DocumentConversion(object):
                             while same_line_status:
                                 onwards_line_space = int((df.iloc[idx+same_line_index+1]['text_left'] - df.iloc[idx+same_line_index]['text_left'] \
                                     - df.iloc[idx+same_line_index]['text_width'])/13.5)
-                                write_str += ' '*onwards_line_space + df.iloc[idx+same_line_index+1]['text']
-                                df = df.replace({df.iloc[idx+same_line_index+1]['text'] : None})
+                                if df.iloc[idx+same_line_index+1]['text'] != None:
+                                    write_str += ' '*onwards_line_space + df.iloc[idx+same_line_index+1]['text']
+                                    df = df.replace({df.iloc[idx+same_line_index+1]['text'] : None})
+                                else:
+                                    write_str += ' '*onwards_line_space + ''
                                 same_line_index += 1
                                 same_line_status = bool(df.iloc[idx+same_line_index]['text_top'] == df.iloc[idx+same_line_index+1]['text_top'])
                             out_txt_file_write.write("%s\n"%write_str)
