@@ -9,11 +9,11 @@ spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSou
 #----------------------------- ELASTIC SEARCH CONFIGURATIONS ------------------------------#
 
 # Anuvaad Dashboard
-services.esindexer.primary.host=http: {{ primary_host_http }}
-services.esindexer.primary.host.name= {{ host_name }}
-services.esindexer.primary.host.port= {{ host_port }}
-services.esindexer.primary.username= {{ username }}
-services.esindexer.primary.password= {{ password }}
+services.esindexer.primary.host=http:{{ primary_host_http | b64decode }}
+services.esindexer.primary.host.name={{ host_name | b64decode }}
+services.esindexer.primary.host.port={{ host_port | b64decode }}
+services.esindexer.primary.username={{ username | b64decode }}
+services.esindexer.primary.password={{ password | b64decode }}
 
 
 es.index.name=_transaction
