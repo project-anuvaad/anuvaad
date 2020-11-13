@@ -9,7 +9,7 @@
       "code": "Anuvad",
       "urls": [
         {
-          "configuration": "/dashboard/getDashboardConfig/Anuvaad/home",
+          "configuration": "/dashboard/getDashboardConfig/Anuvaad/anuvaadtelemetrydashboard",
           "getCharts": "/dashboard/getChartV2/Anuvaad"
         }
       ]
