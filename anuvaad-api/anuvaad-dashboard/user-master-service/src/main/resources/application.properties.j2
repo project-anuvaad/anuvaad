@@ -10,12 +10,12 @@ spring.http.multipart.max-file-size=10MB
 spring.http.multipart.max-request-size=10MB
 
 flyway.enabled=false
-flyway.user=
-flyway.password=
+flyway.user= {{ fly.user }}
+flyway.password= {{ fly.password }}
 flyway.outOfOrder=false
 flyway.table=retail_user_schema_version
 flyway.baseline-on-migrate=false
-flyway.url=jdbc:mysql://localhost:3306/retail_user
+flyway.url= {{ fly.url }}
 flyway.locations=db/migration/ddl
 
 
