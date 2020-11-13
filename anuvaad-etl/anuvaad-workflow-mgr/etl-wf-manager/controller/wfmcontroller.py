@@ -18,14 +18,17 @@ def initiate_async_workflow():
     service = WFMService()
     validator = WFMValidator()
     data = request.get_json()
-    error = validator.common_validate(data)
-    if error is not None:
-        return error, 400
-    error = validator.validate_async(data, data["workflowCode"])
-    if error is not None:
-        return error, 400
-    data = add_headers(data, request)
-    return service.register_async_job(data)
+    try:
+        error = validator.common_validate(data)
+        if error is not None:
+            return error, 400
+        error = validator.validate_async(data, data["workflowCode"])
+        if error is not None:
+            return error, 400
+        data = add_headers(data, request)
+        return service.register_async_job(data)
+    except Exception as e:
+        return {"status": "FAILED", "message": "Something went wrong"}, 500
 
 
 # REST endpoint to initiate the SYNC workflow.
@@ -34,14 +37,17 @@ def initiate_sync_workflow():
     service = WFMService()
     validator = WFMValidator()
     data = request.get_json()
-    error = validator.common_validate(data)
-    if error is not None:
-        return error, 400
-    error = validator.validate_sync(data, data["workflowCode"])
-    if error is not None:
-        return error, 400
-    data = add_headers(data, request)
-    return service.register_sync_job(data)
+    try:
+        error = validator.common_validate(data)
+        if error is not None:
+            return error, 400
+        error = validator.validate_sync(data, data["workflowCode"])
+        if error is not None:
+            return error, 400
+        data = add_headers(data, request)
+        return service.register_sync_job(data)
+    except Exception as e:
+        return {"status": "FAILED", "message": "Something went wrong"}, 500
 
 
 # REST endpoint to interrupt the workflow.
@@ -60,9 +66,12 @@ def interrupt_workflow():
 def search_all_jobs():
     service = WFMService()
     req_criteria = request.get_json()
-    req_criteria["userIDs"] = [request.headers["ad-userid"]]
-    response = service.get_job_details_bulk(req_criteria, False)
-    return response, 200
+    try:
+        req_criteria["userIDs"] = [request.headers["ad-userid"]]
+        response = service.get_job_details_bulk(req_criteria, False)
+        return response, 200
+    except Exception as e:
+        return {"status": "FAILED", "message": "Something went wrong"}, 500
 
 
 # REST endpoint to fetch workflow jobs.
