@@ -147,7 +147,7 @@ class SentenceCard extends React.Component {
         let found = false
         this.props.sentence_action_operation.sentences.forEach(sentence => {
             if (sentence.s_id === this.props.sentence.s_id) {
-                console.log('matched, showing busy')
+                
                 found = true;
             }
         })
@@ -167,7 +167,7 @@ class SentenceCard extends React.Component {
         // this.setState({
         //     suggestions: Object.keys(countries).map((key) => countries[key].item[0])
         // })
-        // console.log(this.state.suggestions)
+        
         this.setState({isCardBusy: true})
         let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, this.state.value, this.props.modelId, true, '', this.props.sentence.s_id);
         const apiReq    = fetch(apiObj.apiEndPoint(), {
@@ -295,7 +295,7 @@ class SentenceCard extends React.Component {
          * Ctrl+s
          */
         if ((event.ctrlKey || event.metaKey) && charCode === 's') {
-            console.log('Ctrl+S pressed, saving user data')
+          
             this.processSaveButtonClicked()
             event.preventDefault();
             return false
@@ -410,7 +410,7 @@ class SentenceCard extends React.Component {
                         freeSolo={true}
                         loadingText={'Loading ...'}
                         onChange={(event, newValue) => {
-                            console.log('onChange of autocomplete is fired: [%s] [%s]', newValue.name, this.state.value)
+                            
                             this.setState({
                                 value: newValue.name, //this.state.value + ' ' + newValue.name,
                                 showSuggestions: false,
@@ -675,7 +675,6 @@ class SentenceCard extends React.Component {
     }
 
     render() {
-        console.log('SC - render')
         return (
             <div >
                 {this.renderSentenceCard()}
