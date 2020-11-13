@@ -36,6 +36,9 @@ class PageCard extends React.Component {
             if (prevProps.sentence_highlight && (prevProps.page.page_no === prevProps.sentence_highlight.page_no)) {
                 return true
             }
+            if( prevProps.page.page_no === prevProps.block_page){
+                return true
+            }
             return false
         }
         return true;
@@ -233,6 +236,7 @@ class PageCard extends React.Component {
 const mapStateToProps = state => ({
     document_contents   : state.document_contents,
     block_highlight     : state.block_highlight.block,
+    block_page          : state.block_highlight.page_no,
     sentence_highlight  : state.sentence_highlight.sentence
 });
 

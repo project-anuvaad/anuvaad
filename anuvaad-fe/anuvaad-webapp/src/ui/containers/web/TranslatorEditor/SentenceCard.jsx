@@ -126,6 +126,7 @@ class SentenceCard extends React.Component {
     }
 
     shouldComponentUpdate(prevProps, nextState) {
+        
         if (prevProps.sentence) {
             if (prevProps.document_editor_mode.page_nos.indexOf(this.props.pageNumber) !== -1) {
                 return true
@@ -134,6 +135,10 @@ class SentenceCard extends React.Component {
             if ((prevProps.sentence.s_id === prevProps.block_highlight.current_sid) || 
                 (prevProps.sentence.s_id === prevProps.block_highlight.prev_sid)) {
                 return true
+            }
+
+            if(prevProps.sentence_highlight && (prevProps.sentence.block_identifier === prevProps.sentence_highlight.block_identifier)){
+                return true;
             }
             return false
         }

@@ -79,8 +79,7 @@ class DocumentEditor extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-      // if (prevProps.sentence_highlight !== this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight.sentence_id) {
-      if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
+     if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
         this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
       }
     }
@@ -519,7 +518,8 @@ const mapStateToProps = state => ({
     saveContent: state.saveContent,
     document_contents: state.document_contents,
     sentence_action_operation : state.sentence_action_operation,
-    show_pdf: state.show_pdf.open
+    show_pdf: state.show_pdf.open,
+    sentence_highlight  : state.sentence_highlight.sentence
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
