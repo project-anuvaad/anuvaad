@@ -152,7 +152,7 @@ class PageCard extends React.Component {
         }
     // this.props.clearHighlighBlock()
     this.setState({text:null})
-            setTimeout(() => { this.props.clearHighlighBlock()}, 50)
+            // setTimeout(() => { this.props.clearHighlighBlock()}, 50)
             this.action = null;
             
     }
@@ -221,7 +221,6 @@ class PageCard extends React.Component {
     }
 
     render() {
-        console.log('PC - render')
         return (
             <div>
                 {this.renderPage(this.props.page)}

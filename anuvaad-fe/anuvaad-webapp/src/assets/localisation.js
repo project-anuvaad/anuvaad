@@ -298,10 +298,14 @@ const localization_EN_Data = {
 
   "common.page.label.SENTENCE_MERGED": "Merging sentences ...",
   "common.page.label.SENTENCE_MERGED_FAILED": "Merging sentences failed ...",
+  "common.page.label.SENTENCE_MERGED_INVALID_INPUT": "Please choose atleast 2 sentences to conduct merge ...",
+
   "common.page.label.SENTENCE_MERGED_SUCCESS": "Merging sentences successful ...",
 
   "common.page.label.SENTENCE_SPLITTED":"Splitting sentences ...",
   "common.page.label.SENTENCE_SPLITTED_FAILED":"Splitting sentence failed ...",
+  "common.page.label.SENTENCE_SPLITTED_INVALID_INPUT": "Please select few words to split ...",
+
   "common.page.label.SENTENCE_SPLITTED_SUCCESS":"Splitting sentence successful ...",
 
   "common.page.label.SOURCE_SENTENCE_SAVED": "Saving sentence ...",
