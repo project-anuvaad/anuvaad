@@ -301,6 +301,7 @@ class DocumentEditor extends React.Component {
         case SENTENCE_ACTION.SENTENCE_MERGED: {
           if (this.forMergeSentences.length < 2) {
             this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_INVALID_INPUT'), false)
+            this.processEndMergeMode(pageNumber)
             return;
           }
           this.makeAPICallMergeSentence(this.forMergeSentences, pageNumber);
