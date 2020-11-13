@@ -211,7 +211,7 @@ class DocumentEditor extends React.Component {
     }
 
     async makeAPICallSourceSaveSentence(sentence, pageNumber) {
-
+      this.informAPIProgress(translate('common.page.label.SOURCE_SENTENCE_SAVED'))
       let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, this.props.match.params.locale,
         '', '', parseInt(this.props.match.params.modelId))
       const apiReq = fetch(apiObj.apiEndPoint(), {
@@ -221,13 +221,15 @@ class DocumentEditor extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
         if (!response.ok) {
+          this.informAPIStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
           return Promise.reject('');
         } else {
           this.props.contentUpdateStarted()
           this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
+          this.informAPIStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_SUCCESS'), true)
         }
       }).catch((error) => {
-        console.log('api failed because of server or network')
+        this.informAPIStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
       });
     }
 
@@ -346,7 +348,7 @@ class DocumentEditor extends React.Component {
         apiInProgress: false,
         apiStopped: true,
         snackBarMessage: message,
-        snackBarVariant: isSuccess ? "info" : "error"
+        snackBarVariant: isSuccess ? "success" : "error"
       })
     }
 
@@ -367,7 +369,7 @@ class DocumentEditor extends React.Component {
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           open={this.state.apiStopped}
           autoHideDuration={2000}
-          variant={"info"}
+          variant={this.state.snackBarVariant}
           message={this.state.snackBarMessage}
         />
       )
