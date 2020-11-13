@@ -253,7 +253,7 @@ class DocumentConversion(object):
                                 onwards_line_space = int((df.iloc[idx+same_line_index+1]['text_left'] - df.iloc[idx+same_line_index]['text_left'] \
                                     - df.iloc[idx+same_line_index]['text_width'])/13.5)
                                 write_str += ' '*onwards_line_space + df.iloc[idx+same_line_index+1]['text']
-                                df.replace({df.iloc[idx+same_line_index+1]['text'] : None})
+                                df = df.replace({df.iloc[idx+same_line_index+1]['text'] : None})
                                 same_line_index += 1
                                 same_line_status = bool(df.iloc[idx+same_line_index]['text_top'] == df.iloc[idx+same_line_index+1]['text_top'])
                             out_txt_file_write.write("%s\n"%write_str)
