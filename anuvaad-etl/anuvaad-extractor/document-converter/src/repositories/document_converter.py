@@ -14,9 +14,18 @@ from docx.enum.section import WD_SECTION, WD_ORIENT
 from docx.shared import Length
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
+from zipfile import ZipFile
 import uuid
 import xlsxwriter
 from jsonpath_rw import jsonpath, parse
+
+def zipfile_creation(filepath):
+    zip_file = filepath.split('.')[0] + '.zip'
+    with ZipFile(zip_file, 'w') as myzip:
+        myzip.write(output_filepath)
+        myzip.close()
+    os.remove(filepath)
+    return zip_file.split('/')[-1]
 
 class DocumentConversion(object):
 
@@ -149,11 +158,12 @@ class DocumentConversion(object):
                             font.size                      = Twips(doc_utils.pixel_to_twips(row['font_size'])) 
                         run.add_text(row['text'])
                 run.add_break(WD_BREAK.PAGE)
-            out_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '_translated.docx'
+            out_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '_translated_docx.docx'
             output_filepath = os.path.join(self.DOWNLOAD_FOLDER , out_filename)
             document.save(output_filepath)
+            out_filename_zip = zipfile_creation(output_filepath)
             log_info("docx file formation done!! filename: %s"%out_filename, MODULE_CONTEXT)
-            return out_filename
+            return out_filename_zip
         except Exception as e:
             log_exception("dataframe to doc formation failed", MODULE_CONTEXT, e)
 
@@ -172,7 +182,7 @@ class DocumentConversion(object):
     # create xlsx file of source sentence in one column and taget sentences in adjacent column
     def generate_xlsx_file(self, record_id, json_data):
         try:
-            out_xlsx_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '.xlsx'
+            out_xlsx_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '_src_tgt_xlsx.xlsx'
             output_filepath_xlsx = os.path.join(self.DOWNLOAD_FOLDER , out_xlsx_filename)
             workbook = xlsxwriter.Workbook(output_filepath_xlsx)
             worksheet = workbook.add_worksheet()
@@ -187,8 +197,9 @@ class DocumentConversion(object):
                         worksheet.write(row, column + 1, tokenised_sentence['tgt']) 
                         row += 1
             workbook.close()
+            out_xlsx_filename_zip = zipfile_creation(output_filepath_xlsx)
             log_info("xlsx file write completed!! filename: %s"%out_xlsx_filename, MODULE_CONTEXT)
-            return out_xlsx_filename
+            return out_xlsx_filename_zip
         except Exception as e:
             log_exception("xlsx file formation failed", MODULE_CONTEXT, e)
 
@@ -218,7 +229,7 @@ class DocumentConversion(object):
     # create txt file for translated sentences 
     def create_translated_txt_file(self, record_id, dataframes, page_layout):
         try:
-            out_translated_txt_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '_translated.txt'
+            out_translated_txt_filename = os.path.splitext(os.path.basename(record_id.split('|')[0]))[0] + str(uuid.uuid4()) + '_translated_txt.txt'
             output_filepath_txt = os.path.join(self.DOWNLOAD_FOLDER , out_translated_txt_filename)
             out_txt_file_write = open(output_filepath_txt, 'w')
             page_width = page_layout['page_width']
@@ -242,12 +253,13 @@ class DocumentConversion(object):
                                 onwards_line_space = int((df.iloc[idx+same_line_index+1]['text_left'] - df.iloc[idx+same_line_index]['text_left'] \
                                     - df.iloc[idx+same_line_index]['text_width'])/13.5)
                                 write_str += ' '*onwards_line_space + df.iloc[idx+same_line_index+1]['text']
+                                df.replace({df.iloc[idx+same_line_index+1]['text'] : None})
                                 same_line_index += 1
                                 same_line_status = bool(df.iloc[idx+same_line_index]['text_top'] == df.iloc[idx+same_line_index+1]['text_top'])
-                            df = df.drop(df.index[idx+1:idx+same_line_index])
                             out_txt_file_write.write("%s\n"%write_str)
             out_txt_file_write.close()
+            out_txt_zip = zipfile_creation(output_filepath_txt)
             log_info("txt file write completed!! filename: %s"%out_translated_txt_filename, MODULE_CONTEXT)
-            return out_translated_txt_filename
+            return out_txt_zip
         except Exception as e:
             log_exception("txt file formation failed", MODULE_CONTEXT, e)
