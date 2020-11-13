@@ -20,7 +20,7 @@
             "id":"c720db5f-986c-4e84-892c-b5c34a349f74",
             "uri":"/anuvaad-etl/wf-manager/v1/workflow/interrupt",
             "module":"WORKFLOW-MANAGER",
-            "active":true,
+            "active":false,
             "whiteList":false,
             "description":"API to interrupt workflows"
         },
@@ -36,9 +36,33 @@
             "id":"41e9fca3-fa0b-425c-af2b-847ef35c4734",
             "uri":"/anuvaad-etl/wf-manager/v1/workflow/configs/search",
             "module":"WORKFLOW-MANAGER",
-            "active":true,
+            "active":false,
             "whiteList":false,
             "description":"API to initiate workflow configs"
+        },
+        {
+            "id":"9050cae6-b3f5-4c87-99e0-09019ad86267",
+            "uri":"/user-management/anuvaad/user-mgmt/v1/users/create",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API to create user in the system"
+        },
+        {
+            "id":"216313cc-0668-442f-a13e-3fd022be5eb2",
+            "uri":"/user-management/anuvaad/user-mgmt/v1/users/update",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API to update user in the system"
+        },
+        {
+            "id":"420add6a-c61f-4520-88ab-025378b626b8",
+            "uri":"/user-management/anuvaad/user-mgmt/v1/users/login",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API to login"
         }
     ]
 }
