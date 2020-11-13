@@ -14,7 +14,8 @@ import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Snackbar from "../../../components/web/common/Snackbar";
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
 import LanguageCodes from "../../../components/web/common/Languages.json"
 import PDFRenderer from './PDFRenderer';
@@ -240,18 +241,17 @@ class DocumentEditor extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
         if (!response.ok) {
+          this.informUserStatus(translate('common.page.label.FILE_DOWNLOAD_FAILED'), false)
           return Promise.reject('');
         } else {
           let fileName = rsp_data && rsp_data.translated_document && rsp_data.translated_document ? rsp_data.translated_document : ""
-          
           if (fileName) {
             let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
             window.open(url, "_self")
           }
         }
       }).catch((error) => {
-        
-        this.props.sentenceActionApiStopped()
+        this.informUserStatus(translate('common.page.label.FILE_DOWNLOAD_FAILED'), false)
       });
     }
 
@@ -343,53 +343,41 @@ class DocumentEditor extends React.Component {
     informUserProgress = (message) => {
       this.setState({
         apiInProgress: true,
-        apiStopped: false,
+        showStatus: false,
         snackBarMessage: message
       })
     }
     informUserStatus = (message, isSuccess) => {
       this.setState({
         apiInProgress: false,
-        apiStopped: true,
+        showStatus: true,
         snackBarMessage: message,
         snackBarVariant: isSuccess ? "success" : "error"
       })
     }
 
-    renderAPIProgressInformation = () => {
+    renderProgressInformation = () => {
       return (
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           open={this.state.apiInProgress}
-          variant={"info"}
           message={this.state.snackBarMessage}
-        />
+        >
+          <Alert elevation={6} variant="filled" severity="info">{this.state.snackBarMessage}</Alert>
+        </Snackbar>
       )
     }
 
-    renderAPIStoppedInformation = () => {
+    renderStatusInformation = () => {
       return (
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          open={this.state.apiStopped}
-          autoHideDuration={2000}
-          variant={this.state.snackBarVariant}
-          message={this.state.snackBarMessage}
-        />
-      )
-    }
-
-    snackBarMessage = () => {
-      return (
-        <div>
-        <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            open={this.props.sentence_action_operation.api_status}
-            autoHideDuration={!this.props.sentence_action_operation.api_status && 2000}
-            variant={this.props.sentence_action_operation.api_status ? "info" : "success"}
-            message={this.props.sentence_action_operation.api_status ? this.state.snackBarMessage : this.state.snackBarSavedMessage}
-          />
-          </div>
+          open={this.state.showStatus}
+          onClose={(e, r) => {
+            this.setState({showStatus: false})}}
+        >
+          <Alert elevation={6} variant="filled" severity={this.state.snackBarVariant}>{this.state.snackBarMessage}</Alert>
+        </Snackbar>
       )
     }
 
@@ -505,8 +493,8 @@ class DocumentEditor extends React.Component {
                 {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>
 
-            {this.state.apiInProgress ? this.renderAPIProgressInformation() : <div />}
-            {this.state.apiStopped ? this.renderAPIStoppedInformation() : <div />}
+            {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
+            {this.state.showStatus ? this.renderStatusInformation() : <div />}
 
             {(this.props.document_contents.pages.length<1) && < Spinner />}
         </div>

@@ -13,7 +13,7 @@ import CardActions from '@material-ui/core/CardActions';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import DictionaryAPI from '../../../../flux/actions/apis/word_dictionary';
-import { highlightBlock, startMergeSentence, inProgressMergeSentence, finishMergeSentence, cancelMergeSentence, clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
+import { highlightBlock, clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import MenuItems from "./PopUp";
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -251,7 +251,6 @@ class SentenceCard extends React.Component {
     }
 
     processMergeNowButtonClicked() {
-        this.props.finishMergeSentence()
         if (this.props.onAction) {
             this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, null, this.props.sentence)
         }
@@ -267,12 +266,10 @@ class SentenceCard extends React.Component {
      * Merge mode user action handlers
      */
     processMergeButtonClicked() {
-        this.props.startMergeSentence()
         this.props.onAction(SENTENCE_ACTION.START_MODE_MERGE, this.props.pageNumber, [this.props.sentence])
     }
 
     processMergeCancelButtonClicked() {
-        this.props.cancelMergeSentence()
         this.props.onAction(SENTENCE_ACTION.END_MODE_MERGE, this.props.pageNumber, [this.props.sentence])
         this.setState({cardChecked: false})
     }
@@ -496,7 +493,6 @@ class SentenceCard extends React.Component {
             headers : apiObj.getHeaders().headers
         }).then ( (response)=> {
             if (response.status >= 400 && response.status < 600) {
-                    this.props.sentenceActionApiStopped()
             }
             response.text().then( (data)=> {
                     let val = JSON.parse(data)
@@ -700,10 +696,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         highlightBlock,
-        startMergeSentence,
-        inProgressMergeSentence,
-        finishMergeSentence,
-        cancelMergeSentence,
         clearHighlighBlock
     },
     dispatch

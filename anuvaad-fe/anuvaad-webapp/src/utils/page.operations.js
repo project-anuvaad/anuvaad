@@ -79,13 +79,11 @@ export const get_pages_children_information = (data) => {
                     if (grandchildren['children']) {
                              grandchildren.children.forEach(child_elem => {
                             child_elem['block_identifier']  = text_block['block_identifier'];
-                            child_elem['tag']               = 'GRAND_CHILDREN';
                             child_elem["parent_block_id"]   = text_block.block_id
                             child_elem["page_no"] = text_block && text_block.page_info && text_block.page_info.page_no
                             if (text_block['tokenized_sentences'].length > 0) {
                                 child_elem['sentence_id']    = text_block['tokenized_sentences'][0].s_id;
                             }
-                            
                             blockValue["texts"].push(child_elem);
                         })
                     } else {
@@ -95,7 +93,6 @@ export const get_pages_children_information = (data) => {
                         if (text_block['tokenized_sentences'].length > 0) {
                             grandchildren['sentence_id']    = text_block['tokenized_sentences'][0].s_id;
                         }
-                        grandchildren['tag']                = 'CHILDREN'
                         blockValue["texts"].push(grandchildren);
                     }
                 })
