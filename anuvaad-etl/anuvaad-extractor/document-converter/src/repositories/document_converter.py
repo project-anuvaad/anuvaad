@@ -226,7 +226,7 @@ class DocumentConversion(object):
             for index, df in enumerate(dataframes):
                 for index, row in df.iterrows():
                     if row['text'] != None and index+1 < df.shape[0]:
-                        extra_spaces = int(row['text_left']/13.5)
+                        extra_spaces = int((row['text_left'] - 50)/13.5)
                         write_str = re.sub(r'^', ' '*extra_spaces, row['text'])
                         if row['text_top'] != df.iloc[index+1]['text_top']:
                             if len(write_str) < max_chars_in_line:
@@ -239,8 +239,9 @@ class DocumentConversion(object):
                             same_line_index = 0
                             same_line_status = bool(row['text_top'] == df.iloc[index+same_line_index+1]['text_top'])
                             while same_line_status:
-                                onwards_line_space = int((df.iloc[index+same_line_index+1]['text_width'] - df.iloc[index]['text_left'] - df.iloc[index]['text_width'])/13.5)
+                                onwards_line_space = int((df.iloc[index+same_line_index+1]['text_left'] - df.iloc[index]['text_left'] - df.iloc[index]['text_width'])/13.5)
                                 write_str += ' '*onwards_line_space + df.iloc[index+same_line_index+1]['text']
+                                df.iloc[index+same_line_index+1]['text'] = None
                                 same_line_index += 1
                                 same_line_status = bool(row['text_top'] == df.iloc[index+same_line_index+1]['text_top'])
                             out_txt_file_write.write("%s\n"%write_str)
