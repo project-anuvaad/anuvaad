@@ -304,6 +304,10 @@ const localization_EN_Data = {
   "common.page.label.SENTENCE_SPLITTED_FAILED":"Splitting sentence failed ...",
   "common.page.label.SENTENCE_SPLITTED_SUCCESS":"Splitting sentence successful ...",
 
+  "common.page.label.SOURCE_SENTENCE_SAVED": "Saving sentence ...",
+  "common.page.label.SOURCE_SENTENCE_SAVED_FAILED": "Saving sentence failed ...",
+  "common.page.label.SOURCE_SENTENCE_SAVED_SUCCESS": "Sentence saved ...",
+
   "GraderReport.page.title.graderDetails": "Grader Details",
   "gradeReport.page.muiNoTitle.sorryRecordNotFound": "Sorry, no matching records found",
   "graderReport.page.muiTable.rowsPerPages": "Rows per page:",
