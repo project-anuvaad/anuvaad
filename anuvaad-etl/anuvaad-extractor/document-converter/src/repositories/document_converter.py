@@ -236,10 +236,10 @@ class DocumentConversion(object):
             max_chars_in_line = int(page_width/13)
             for idx, df in enumerate(dataframes):
                 for idx, row in df.iterrows():
-                    if row['text'] != None and idx+1 < df.shape[0]:
-                        extra_spaces = int((row['text_left'] - 50)/13.5)
-                        write_str = re.sub(r'^', ' '*extra_spaces, row['text'])
-                        if row['text_top'] != df.iloc[idx+1]['text_top']:
+                    if df.iloc[idx]['text'] != None and idx+1 < df.shape[0]:
+                        extra_spaces = int((df.iloc[idx]['text_left'] - 50)/13.5)
+                        write_str = re.sub(r'^', ' '*extra_spaces, df.iloc[idx]['text'])
+                        if df.iloc[idx]['text_top'] != df.iloc[idx+1]['text_top']:
                             if len(write_str) < max_chars_in_line:
                                 out_txt_file_write.write("%s\n"%write_str)
                             else:
