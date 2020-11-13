@@ -301,8 +301,10 @@ class SentenceCard extends React.Component {
         this.setState({
             cardChecked: !this.state.cardChecked
         })
-        this.props.onAction(SENTENCE_ACTION.ADD_SENTENCE_FOR_MERGE, this.props.pageNumber, [this.props.sentence])
-        // this.props.inProgressMergeSentence(this.props.sentence, this.state.cardChecked)
+        if (!this.state.cardChecked)
+            this.props.onAction(SENTENCE_ACTION.ADD_SENTENCE_FOR_MERGE, this.props.pageNumber, [this.props.sentence])
+        else
+            this.props.onAction(SENTENCE_ACTION.REMOVE_SENTENCE_FOR_MERGE, this.props.pageNumber, [this.props.sentence])
     }
 
     handleUserInputText(event) {
