@@ -31,8 +31,9 @@ class PageCard extends React.Component {
     }
 
     shouldComponentUpdate(prevProps, nextState) {
+        console.log(prevProps)
         if (prevProps.page) {
-            if (prevProps.page.page_no === this.props.block_highlight.page_no) {
+            if (prevProps.page.page_no === prevProps.sentence_highlight.page_no) {
                 return true
             }
             return false
@@ -147,8 +148,8 @@ class PageCard extends React.Component {
             let data = PAGE_OPS.get_updated_page_blocks(this.props.document_contents, blockData, this.state.text)
              this.props.onAction(SENTENCE_ACTION.SENTENCE_SOURCE_EDITED, blockData.page_no, [data], "") 
         }
-    //    this.props.clearHighlighBlock()
-       this.action = null;
+    this.props.clearHighlighBlock()
+    //    this.action = null;
     }
 
     handleSourceScroll(id) {
