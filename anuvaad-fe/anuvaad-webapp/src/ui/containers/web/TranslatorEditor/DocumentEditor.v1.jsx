@@ -465,7 +465,7 @@ class DocumentEditor extends React.Component {
                 loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
                 endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
             >
-              {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={index}  ref={sentence.s_id}><SentenceCard key={index} 
+              {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={sentence.s_id}  ref={sentence.s_id}><SentenceCard key={sentence.s_id} 
                                                                                   pageNumber={page.page_no} 
                                                                                   modelId={parseInt(this.props.match.params.modelId)}
                                                                                   word_locale={this.props.match.params.locale}
