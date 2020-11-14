@@ -252,12 +252,14 @@ class SentenceCard extends React.Component {
 
     processMergeNowButtonClicked() {
         if (this.props.onAction) {
+            this.setState({value: ''})
             this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, null, this.props.sentence)
         }
     }
 
     processSplitButtonClicked(start_index, end_index) {
         if (this.props.onAction) {
+            this.setState({value: ''})
             this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
         }
     }
@@ -517,7 +519,6 @@ class SentenceCard extends React.Component {
     handleCopy = () => {
         copy(this.state.selectedSentence)
         this.handleClose()
-    
     }
       
     handleOperation = (action) =>{
