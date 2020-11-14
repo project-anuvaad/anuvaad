@@ -27,8 +27,8 @@ class PageCard extends React.Component {
             value   : '',
             text:''
         };
-        this.handleTextChange = this.handleTextChange.bind(this);
-        this.action = null
+        this.handleTextChange   = this.handleTextChange.bind(this);
+        this.action             = null
     }
 
     shouldComponentUpdate(prevProps, nextState) {
@@ -107,6 +107,7 @@ class PageCard extends React.Component {
      * sentence change
      */
     handleTextChange(event) {
+        this.action = 'user_typed'
         this.setState({ text: event.target.value });
     }
 
@@ -148,16 +149,13 @@ class PageCard extends React.Component {
      * click away listner
      */
     handleClickAway = (blockData) => {
-        if(this.state.text) {
+        if(this.state.text && (this.action === 'user_typed')) {
             TELEMETRY.sentenceChanged(blockData.text, this.state.text, blockData.block_id,"validation")
             let data = PAGE_OPS.get_updated_page_blocks(this.props.document_contents, blockData, this.state.text)
-             this.props.onAction(SENTENCE_ACTION.SENTENCE_SOURCE_EDITED, blockData.page_no, [data], "") 
+            this.props.onAction(SENTENCE_ACTION.SENTENCE_SOURCE_EDITED, blockData.page_no, [data], "") 
         }
-    // this.props.clearHighlighBlock()
-    this.setState({text:null})
-            // setTimeout(() => { this.props.clearHighlighBlock()}, 50)
-            this.action = null;
-            
+        this.setState({text:null})
+        this.action = null;
     }
 
     handleSourceScroll(id) {
