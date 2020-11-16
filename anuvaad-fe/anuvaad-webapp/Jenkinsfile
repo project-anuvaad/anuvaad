@@ -16,12 +16,10 @@ if [ -f "$(pwd)/build" ]
 then
   sudo rm -rf $(pwd)/build
 fi
-
 if [  $( docker ps -q -f status=exited --filter "name=$JOB_BASE_NAME" ) ]
 then
 docker rm "$JOB_BASE_NAME"
 fi
-
 docker run --env REACT_APP_BASE_URL=$base_url --env REACT_APP_APIGW_BASE_URL=$apigw_url --env REACT_APP_DOWNLOAD_URL=$download_url --env REACT_APP_CLIENT_ID=$client_id -v $(pwd):/opt --name "$JOB_BASE_NAME" anuvaadio/anuvaad-node-npm6.14.8-base:1 /bin/sh -c "cd /opt && rm -rf package-lock.json && npm install &&  npm run build"
 docker rm "$JOB_BASE_NAME"
 commit_id=${BUILD_ID}-$(git rev-parse --short HEAD)

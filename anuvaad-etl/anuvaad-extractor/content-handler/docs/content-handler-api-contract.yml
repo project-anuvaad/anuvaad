@@ -96,7 +96,7 @@ paths:
         200:
           description: On successful completion of the job.
           schema:
-            $ref: '#/definitions/Response'
+            $ref: '#/definitions/UpdateBlocks'
         400:
           description: On input errors causing a failure in the job.
           schema:

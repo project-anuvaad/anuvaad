@@ -1,5 +1,5 @@
 import os
-import uuid 
+import uuid
 import config
 import logging
 import time
@@ -19,7 +19,7 @@ import src.utilities.app_context as app_context
 
 
 def create_pdf_processing_paths(filepath, base_dir):
-    
+
     filename    = os.path.basename(filepath)
     working_dir = os.path.join(base_dir, os.path.splitext(filename)[0] + '_' + str(uuid.uuid1()))
     ret         = create_directory(working_dir)
@@ -27,9 +27,9 @@ def create_pdf_processing_paths(filepath, base_dir):
     if ret == False:
         log_error('unable to create working directory {}'.format(working_dir), app_context.application_context, None)
         return None, False
-    
+
     log_info('created processing directories successfully {}'.format(working_dir), app_context.application_context)
-    
+
     return working_dir, True
 
 def extract_pdf_metadata(filename, working_dir, base_dir):
@@ -44,7 +44,7 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
         log_error('error extracting xml information of {}'.format(pdf_filepath), app_context.application_context, e)
         return None, None, None
     log_info('Extracting xml of {}'.format(pdf_filepath), app_context.application_context)
-    
+
     try:
         pdf_bg_img_filepaths    = extract_html_bg_image_paths_from_digital_pdf(pdf_filepath, working_dir)
     except Exception as e:
@@ -56,7 +56,7 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
     end_time            = time.time()
     extraction_time     = end_time - start_time
     log_info('Extraction of {} completed in {}'.format(pdf_filepath, extraction_time), app_context.application_context)
-    
+
     return pdf_xml_filepath, pdf_image_paths, pdf_bg_img_filepaths
 
 def process_input_pdf(filename, base_dir, lang):
@@ -69,11 +69,11 @@ def process_input_pdf(filename, base_dir, lang):
     start_time          = time.time()
 
     working_dir, ret = create_pdf_processing_paths(filename, base_dir)
- 
+
     if ret == False:
         log_error('create_pdf_processing_paths failed', app_context.application_context, None)
         return None, None, None, None, None, None, None
-    
+
     pdf_xml_filepath, pdf_image_paths, pdf_bg_img_filepaths   = extract_pdf_metadata(filename, working_dir, base_dir)
     if pdf_xml_filepath == None or pdf_bg_img_filepaths == None or pdf_image_paths == None:
         log_error('extract_pdf_metadata failed', app_context.application_context, None)
@@ -102,12 +102,12 @@ def process_input_pdf(filename, base_dir, lang):
 
     return img_dfs, xml_dfs, page_width, page_height, working_dir, pdf_bg_img_filepaths, pdf_image_paths
 
-    
+
 def get_vdfs(h_dfs):
     start_time          = time.time()
     document_configs    = config.DOCUMENT_CONFIGS
     v_dfs = []
-    
+
     try :
         pages = len(h_dfs)
         for page_index in range(pages):
@@ -124,9 +124,9 @@ def get_vdfs(h_dfs):
 
     return v_dfs
 
-        
+
 def get_hdfs(in_dfs, header_region, footer_region):
-    
+
     start_time          = time.time()
     try:
         pages = len(in_dfs)
@@ -167,7 +167,7 @@ def get_pdfs(page_dfs,lang):
             for index, row in page_df.iterrows():
                 if row['children'] == None:
                     d_tmp = page_df.iloc[index]
-                    d_tmp['avg_line_height'] = int(d_tmp['text_height']) 
+                    d_tmp['avg_line_height'] = int(d_tmp['text_height'])
                     df = df.append(d_tmp)
                 else:
                     dfs = process_block(page_df.iloc[index], block_configs,lang)
@@ -193,7 +193,7 @@ def drop_cols(df,drop_col=None):
     if len(df) !=0:
         if drop_col==None:
             drop_col = ['index', 'xml_index','level_0']
-        
+
         for col in drop_col:
             if col in df.columns:
                 df = df.drop(columns=[col])
@@ -229,10 +229,10 @@ def drop_update_col(page_df):
 
             else:
                 page_lis.append(None)
-        
+
         page_df['children'] = page_lis
         page_df   = drop_cols(page_df,drop_col=['font_family','font_size'])
-        
+
         page_df.rename(columns={'font_family_updated': 'font_family', 'font_size_updated': 'font_size'},inplace=True)
 
         return page_df
@@ -303,8 +303,3 @@ def update_font(p_dfs,lang):
 
 
     return new_dfs    '''
-
-
-    
-                
-                        

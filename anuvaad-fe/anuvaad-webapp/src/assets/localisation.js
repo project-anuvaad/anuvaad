@@ -1,5 +1,5 @@
 const localization_EN_Data = {
-  "dashboard.page.heading.title": "Translate",
+  "dashboard.page.heading.title": "Translate sentence",
   "common.page.label.sourceLang": "Select Source Language",
   "common.page.label.targetLang": "Select Target Language",
   "common.page.button.submit": "submit",
@@ -289,6 +289,30 @@ const localization_EN_Data = {
   "webroutes.page.title.profile": "Profile",
   "common.page.label.maxScore": "Maximum Score",
   "common.page.label.selectLanguage": "Select Language",
+  "common.page.label.mergedMessage": "Merged sentence successfully",
+  "common.page.label.savedSuccessfully": "Sentence saved successfully !...",
+  "common.page.label.splittedMessage":"Splitted sentence successfully",
+  "common.page.label.SENTENCE_SAVED": "Translation saving ...",
+  "common.page.label.SENTENCE_SAVED_FAILED": "Saving failed ...",
+  "common.page.label.SENTENCE_SAVED_SUCCESS": "Translation saved.",
+
+  "common.page.label.SENTENCE_MERGED": "Merging sentences ...",
+  "common.page.label.SENTENCE_MERGED_FAILED": "Merging sentences failed ...",
+  "common.page.label.SENTENCE_MERGED_INVALID_INPUT": "Please choose atleast 2 sentences to conduct merge ...",
+
+  "common.page.label.SENTENCE_MERGED_SUCCESS": "Merging sentences successful ...",
+
+  "common.page.label.SENTENCE_SPLITTED":"Splitting sentences ...",
+  "common.page.label.SENTENCE_SPLITTED_FAILED":"Splitting sentence failed ...",
+  "common.page.label.SENTENCE_SPLITTED_INVALID_INPUT": "Please select few words to split ...",
+
+  "common.page.label.SENTENCE_SPLITTED_SUCCESS":"Splitting sentence successful ...",
+
+  "common.page.label.SOURCE_SENTENCE_SAVED": "Saving sentence ...",
+  "common.page.label.SOURCE_SENTENCE_SAVED_FAILED": "Saving sentence failed ...",
+  "common.page.label.SOURCE_SENTENCE_SAVED_SUCCESS": "Sentence saved ...",
+  "common.page.label.FILE_DOWNLOAD_FAILED": "File download failed ...",
+  
   "GraderReport.page.title.graderDetails": "Grader Details",
   "gradeReport.page.muiNoTitle.sorryRecordNotFound": "Sorry, no matching records found",
   "graderReport.page.muiTable.rowsPerPages": "Rows per page:",
@@ -392,7 +416,12 @@ const localization_EN_Data = {
   "common.page.label.addDropDocument":"Please Add/Drop Document here",
   "intractive_translate.page.message.enterOneWord": "Please enter at least one word. Then I can make suggestions.",
   "intractive_translate.page.message.loading": "Getting suggestions for you",
-  "intractive_translate.page.message.endOfSuggestion": "You have reached the end of the sentence."
+  "intractive_translate.page.message.endOfSuggestion": "You have reached the end of the sentence.",
+  "common.page.label.editedMessage": "Sentence edited successfully",
+  "common.page.label.SENTENCE_SOURCE_EDITED": "Saving sentence...",
+  "common.page.label.download": "Downloading file...",
+  "common.page.label.downloadCompleted": "Download completed...",
+
   // 'newCorpus.page.array.addFileTargetAndDetails':["Add Source file", 'Add target file', 'Add file details']
 };
 
@@ -765,6 +794,10 @@ const localization_HI_Data = {
   "intractive_translate.page.message.enterOneWord": "कृपया कम से कम एक शब्द लिखिए। तब मैं सुझाव दे सकता हूं।",
   "intractive_translate.page.message.loading": "आपके लिए सुझाव ढूंढ रहा हूँ।",
   "intractive_translate.page.message.endOfSuggestion": "आप सजा के अंत तक पहुँच चुके हैं।",
+  "common.page.label.editedMessage": "Sentence edited successfully",
+  "common.page.label.SENTENCE_SOURCE_EDITED": "Saving sentence...",
+  "common.page.label.download": "Downloading file...",
+  "common.page.label.downloadCompleted": "Download completed...",
 
 };
 
