@@ -96,7 +96,7 @@ class Page:
         self.set_resolution()
         self.set_vertices()
         self.set_words()
-        self.set_lines
+        self.set_lines()
 
     @log_error
     def set_vertices(self):
