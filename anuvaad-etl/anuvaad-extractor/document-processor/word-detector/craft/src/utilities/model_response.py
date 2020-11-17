@@ -117,7 +117,7 @@ class Page:
                 self.page['words'].append(word.get_box())
 
     @log_error
-    def set_lines(self, line):
+    def set_lines(self):
         if len(self.lines) > 0 :
             for index, line_corrd in self.lines.iterrows():
                 line = Box(line_corrd)
