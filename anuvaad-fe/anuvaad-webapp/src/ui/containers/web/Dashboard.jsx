@@ -8,15 +8,11 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import SelectModel from "@material-ui/core/Select";
+import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import Chip from "@material-ui/core/Chip";
-import { Tooltip } from "@material-ui/core";
 import TranslateSentence from "../../components/web/dashboard/TranslateSentence";
 import FetchModel from "../../../flux/actions/apis/fetchmodel";
 import FetchLanguage from "../../../flux/actions/apis/fetchlanguage";
-import Select from "../../components/web/common/Select";
 import NMT from "../../../flux/actions/apis/nmt";
 import AutoML from "../../../flux/actions/apis/auto_ml";
 import APITransport from "../../../flux/actions/apitransport/apitransport";
@@ -24,187 +20,217 @@ import NewOrders from "../../components/web/dashboard/NewOrders";
 import { translate } from "../../../assets/localisation";
 import { withStyles } from "@material-ui/core/styles";
 import DashboardStyles from "../../styles/web/DashboardStyles";
+import InteractiveTranslateAPI from "../../../flux/actions/apis/intractive_translate";
+import FormControl from '@material-ui/core/FormControl';
 
+const { v4 }        = require('uuid');
+const LANG_MODEL    = require('../../../utils/language.model')
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: "",
-      apiCalled: false,
-      autoMlText: "",
-      nmtText: [],
-      nmtTextSP: [],
-      tocken: false,
-      source: "",
-      target: "",
-      modelLanguage: [],
-      language: [],
-      model: [],
-      checkedMachine: false,
-      checkedSubwords: false,
-      showSplitted: false
+      text: '',
+      anuvaadText: '',
+      anuvaadAPIInProgress: false,
+      autoMLText: '',
+      autoMLChecked: false,
+      autoMLAPIInProgress: false,
+      source_language_code: '',
+      target_language_code: '',
+      source_languages: [],
+      target_languages: [],
     };
+    this.processTranslateButtonPressed  = this.processTranslateButtonPressed.bind(this);
+    this.processClearButtonPressed      = this.processClearButtonPressed.bind(this);
+    this.processAutoMLCheckboxClicked   = this.processAutoMLCheckboxClicked.bind(this);
+    this.handleTextChange               = this.handleTextChange.bind(this)
   }
 
   componentDidMount() {
-    this.setState({
-      autoMlText: "",
-      nmtText: [],
-      nmtTextSP: []
-    });
+    if (this.props.fetch_languages && this.props.fetch_languages.languages.length < 1) {
+      const { APITransport }  = this.props;
+      const apiObj            = new FetchLanguage();
+      APITransport(apiObj);
+      this.setState({ showLoader: true });
+    }
 
-    const { APITransport } = this.props;
-    const apiObj = new FetchLanguage();
-    APITransport(apiObj);
-    this.setState({ showLoader: true });
-    const apiModel = new FetchModel();
-    APITransport(apiModel);
-    this.setState({ showLoader: true });
+    if (this.props.fetch_models && this.props.fetch_models.models.length < 1) {
+      const { APITransport }  = this.props;
+      const apiModel          = new FetchModel();
+      APITransport(apiModel);
+      this.setState({ showLoader: true });
+    }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.automl !== this.props.automl) {
-      if (this.props.automl.text && this.props.automl.text.message === "Daily Limit Exceeded") {
-        this.setState({
-          autoMlText: this.props.automl.text.message
-        });
-      } else {
-        this.setState({
-          autoMlText: this.props.automl.text
-        });
-      }
-    }
-
-    if (prevProps.nmt !== this.props.nmt) {
+    if (prevProps.fetch_languages.languages != this.props.fetch_languages.languages) {
       this.setState({
-        nmtText: this.props.nmt
-      });
-    }
-
-    if (prevProps.nmtsp !== this.props.nmtsp) {
-      this.setState({
-        nmtTextSP: this.props.nmtsp.text
-      });
-    }
-
-    if (prevProps.supportLanguage !== this.props.supportLanguage) {
-      this.setState({
-        language: this.props.supportLanguage
-      });
-    }
-
-    if (prevProps.langModel !== this.props.langModel) {
-      this.setState({
-        modelLanguage: this.props.langModel
-      });
+        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_languages.languages),
+        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_languages.languages)
+      })
     }
   }
 
-  handleChange = name => event => {
-    this.setState({ [name]: event.target.checked });
+  processClearButtonPressed() {
+  }
+
+  processAutoMLCheckboxClicked() {
+    this.setState({autoMLChecked: !this.state.autoMLChecked});
   };
 
   handleTextChange(key, event) {
     this.setState({
-      [key]: event.target.value
+      text: event.target.value
     });
   }
 
-  handleClear() {
+  processTranslateButtonPressed() {
+    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
+    console.log('submit pressed: %s %s %s %s' , this.state.target_language_code, this.state.source_language_code, this.state.text, modelId)
+
+    this.makeAPICallInteractiveTranslation(this.state.text, modelId)
+    this.makeAPICallAutoML(this.state.text, this.state.source_language_code, this.state.target_language_code)
+  }
+
+  processSourceLanguageSelected = (event) => {
+    this.setState({ source_language_code: event.target.value})
+    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_languages.languages, this.props.fetch_models.models, event.target.value)
     this.setState({
-      text: "",
-      nmtText: "",
-      autoMlText: "",
-      source: "",
-      target: "",
-      model: [],
-      checkedMachine: false,
-      checkedSubwords: false,
-      showSplitted: false
-    });
+      target_languages: languages
+    })
   }
 
-  handleSelectModelChange = event => {
-    this.setState({ model: event.target.value });
-  };
-
-  handleSelectChange = event => {
-    this.setState({ [event.target.name]: event.target.value, model: [] });
-  };
-
-  handleSource(modelLanguage, supportLanguage) {
-    const result = [];
-    modelLanguage.map(item => supportLanguage.map(value => (item.source_language_code === value.language_code ? result.push(value) : null)));
-    const value = new Set(result);
-    const source_language = [...value];
-    return source_language;
+  processTargetLanguageSelected = (event) => {
+    this.setState({ target_language_code: event.target.value})
   }
 
-  handleTarget(modelLanguage, supportLanguage, sourceLanguage) {
-    const result = [];
-    modelLanguage.map(item => {
-      item.source_language_code === sourceLanguage &&
-        supportLanguage.map(value => (item.target_language_code === value.language_code ? result.push(value) : null));
-      return true;
-    });
-    const value = new Set(result);
-    const target_language = [...value];
-    return target_language;
+  /**
+   * api calls
+   */
+  async makeAPICallAutoML(text, source_language_code, target_language_code) {
+    let apiObj      = new AutoML(text, source_language_code, target_language_code)
+    const apiReq    = fetch(apiObj.apiEndPoint(), {
+                          method: 'post',
+                          body: JSON.stringify(apiObj.getBody()),
+                          headers: apiObj.getHeaders().headers
+                        }).then(async response => {
+                          const rsp_data = await response.json();
+                          if (!response.ok) {
+                            this.setState({autoMLAPIInProgress: false})
+                            return Promise.reject('');
+                          } else {
+                            this.setState({
+                              autoMLText: rsp_data,
+                              autoMLAPIInProgress: false
+                            })
+                          }
+                      }).catch((error) => {
+                        this.setState({autoMLAPIInProgress: false})
+                      });
   }
 
-  handleModel(modelLanguage, source, target) {
-    const result = [];
-    modelLanguage.map(item => {
-      item.source_language_code === source && item.target_language_code === target && result.push(item);
-      return true;
-    });
-    return result;
+  async makeAPICallInteractiveTranslation(text, modelId) {
+    let apiObj = new InteractiveTranslateAPI(text, '', modelId, true, '', v4());
+    this.setState({anuvaadAPIInProgress: true})
+
+    const apiReq    = fetch(apiObj.apiEndPoint(), {
+                        method: 'post',
+                        body: JSON.stringify(apiObj.getBody()),
+                        headers: apiObj.getHeaders().headers
+                    }).then(async response => {
+                        const rsp_data = await response.json();
+                        if (!response.ok) {
+                          this.setState({anuvaadAPIInProgress: false})
+                          return Promise.reject('');
+                        } else {
+                          let filteredTexts  = rsp_data.output.predictions[0].tgt.filter(text => text.length > 1);
+                          if (filteredTexts.length > 1) {
+                            this.setState({
+                              anuvaadText: filteredTexts[0],
+                              anuvaadAPIInProgress: false
+                            })
+                          } else {
+                            this.setState({
+                              anuvaadText: '',
+                              anuvaadAPIInProgress: false
+                            })
+                          }
+                        }
+                    }).catch((error) => {
+                      this.setState({anuvaadAPIInProgress: false})
+                    });
   }
 
-  handleDelete = data => () => {
-    this.setState(state => {
-      const chipData = [...state.model];
-      const chipToDelete = chipData.indexOf(data);
-      chipData.splice(chipToDelete, 1);
-      this.setState({ model: chipData });
-    });
-  };
+  renderSourceLanguagesItems = () => {
+    return (
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ marginTop: "0%" }}>
+          <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
+            <Typography value="" variant="h5">
+              {translate("common.page.label.sourceLang")}{" "}
+            </Typography>
+          </Grid>
 
-  handleSubmit(role) {
-    const model = [];
-    const { APITransport, NMTApi } = this.props;
-    role.includes("dev")
-      ? this.state.modelLanguage.map(item =>
-        item.target_language_code === this.state.target &&
-          item.source_language_code === this.state.source &&
-          this.state.model.includes(item.model_name)
-          ? model.push(item)
-          : []
-      )
-      : this.state.modelLanguage.map(item =>
-        item.target_language_code === this.state.target && item.source_language_code === this.state.source && model.length < 1 && item.is_primary
-          ? model.push(item)
-          : []
-      );
-    const apiObj = new AutoML(this.state.text, this.state.source, this.state.target);
-    const nmt = new NMT(this.state.text, model, true, this.state.target, this.state.showSplitted);
-    NMTApi(nmt);
-    this.state.checkedMachine && APITransport(apiObj);
-    this.setState({
-      showLoader: true,
-      autoMlText: "",
-      nmtText: "",
-      apiCalled: true
-    });
+          <Grid item xs={6} sm={6} lg={4} xl={4} >
+            <FormControl variant="outlined" className={this.props.classes.select}>
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                onChange={this.processSourceLanguageSelected}
+                value={this.state.source_language_code}
+                style={{
+                  fullWidth: true,
+                  float: 'right'
+                }}
+              >
+              {
+                this.state.source_languages.map(lang => 
+                <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+              }
+              </Select>
+            </FormControl>
+          </Grid>
+      </Grid>
+    )
+  }
+
+  renderTargetLanguagesItems = () => {
+    return (
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
+        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
+          <Typography value="" variant="h5">
+            {translate("common.page.label.targetLang")}&nbsp;
+          </Typography>
+        </Grid>
+        <Grid item xs={6} sm={6} lg={4} xl={4}>
+          <FormControl variant="outlined" className={this.props.classes.select}>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              value={this.state.target}
+              onChange={this.processTargetLanguageSelected}
+              value={this.state.target_language_code}
+              style={{
+                fullWidth: true,
+                float: 'right'
+              }}
+            >
+              {
+                this.state.target_languages.map(lang => 
+                  <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                }
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+    )
   }
 
   render() {
-    const role = JSON.parse(localStorage.getItem("roles"));
     const { classes } = this.props;
-    let gridSizeLarge = role.includes("dev") ? 4 : 12
-    let gridSizeSmall = role.includes("dev") ? 6 : 12
-
+    let gridSizeLarge = 12
+    let gridSizeSmall = 12
+    
     return (
       <div className={classes.root}>
         <Typography variant="h4" className={classes.typographyHeader}>
@@ -212,120 +238,10 @@ class Dashboard extends React.Component {
         </Typography>
         <Paper className={classes.paper}>
           <Grid container >
-            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.rowData} style={{ marginTop: "0%" }}>
-              <Grid item xs={6} sm={6} lg={8} xl={8} className={classes.label}>
-                <Typography value="" variant="h5">
-                  {translate("common.page.label.sourceLang")}{" "}
-                </Typography>
-              </Grid>
+            
+            {this.renderSourceLanguagesItems()}
+            {this.renderTargetLanguagesItems()}
 
-              <Grid item xs={6} sm={6} lg={4} xl={4} >
-                <Select
-                  className={classes.select}
-                  id="outlined-age-simple"
-                  selectValue="language_code"
-                  MenuItemValues={this.handleSource(this.state.modelLanguage, this.state.language)}
-                  handleChange={this.handleSelectChange}
-                  value={this.state.source}
-                  name="source"
-                  style={{
-                    width: '92%',
-                    fullWidth: true,
-                    display: "flex",
-                    wrap: "nowrap",
-                    // height: '40px',
-                    magin: 'dense',
-                    float: 'right'
-                  }}
-                />
-              </Grid>
-            </Grid>
-
-            {/* </Grid> */}
-            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.rowData}>
-              <Grid item xs={6} sm={6} lg={8} xl={8} className={classes.label}>
-                <Typography value="" variant="h5">
-                  {translate("common.page.label.targetLang")}&nbsp;
-              </Typography>
-              </Grid>
-              <Grid item xs={6} sm={6} lg={4} xl={4}>
-                <Select
-                  id="outlined-age-simple"
-                  selectValue="language_code"
-                  MenuItemValues={this.state.source ? this.handleTarget(this.state.modelLanguage, this.state.language, this.state.source) : []}
-                  handleChange={this.handleSelectChange}
-                  value={this.state.target}
-                  name="target"
-                  style={{
-                    width: '92%',
-                    fullWidth: true,
-                    display: "flex",
-                    wrap: "nowrap",
-                    // height: '40px',
-                    magin: 'dense',
-                    float: 'right'
-                  }}
-                />
-              </Grid>
-            </Grid>
-
-            {role.includes("dev") && (
-              <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.rowData}>
-                  <Grid item xs={6} sm={6} lg={8} xl={8} className={classes.label}>
-                    <Typography value="" variant="h5">
-                      {translate("common.page.label.pleaseSelectModel")}{" "}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6} sm={6} lg={4} xl={4}>
-                    <SelectModel
-                      id="select-multiple-chip"
-                      multiple
-                      style={{
-                        width: '92%',
-                        fullWidth: true,
-                        display: "flex",
-                        wrap: "nowrap",
-                        // height: '40px',
-                        magin: 'dense',
-                        float: 'right'
-                      }}
-                      value={this.state.model}
-                      onChange={this.handleSelectModelChange}
-                      renderValue={selected => selected.join(", ")}
-                      input={<OutlinedInput name={this.state.model} id="select-multiple-checkbox" />}
-                    >
-                      {this.state.source && this.state.target
-                        ? this.handleModel(this.state.modelLanguage, this.state.source, this.state.target).map(item => (
-                          <Tooltip
-                            placement="right"
-                            enterDelay={200}
-                            key={item.model_id}
-                            value={item.model_name}
-                            title={item.description ? item.description : "NA"}
-                          >
-                            <MenuItem key={item.model_id} value={item.model_name}>
-                              {item.model_name}
-                            </MenuItem>
-                          </Tooltip>
-                        ))
-                        : []}
-
-                    </SelectModel>
-                  </Grid>
-                </Grid>
-
-                {role.includes("dev") && (
-                  <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataChip}>
-                    {this.state.model.map(value => (
-                      value ? <div className={classes.divChip}><Chip key={value} label={value} onDelete={this.handleDelete(value)} style={{ marginLeft: "5px", marginTop: "8px" }} /> </div> : <div></div>
-                    ))}
-                  </Grid>
-                )}
-              </Grid>
-            )}
-            {/* <div> */}
-            {/* <Grid container spacing={24} > */}
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
               <textarea
                 id="standard-multiline-static"
@@ -333,7 +249,7 @@ class Dashboard extends React.Component {
                 className="noter-text-area"
                 rows="3"
                 value={this.state.text}
-                disabled={this.state.update || this.state.edit}
+                disabled={this.state.anuvaadAPIInProgress || this.state.autoMLAPIInProgress}
                 placeholder={translate("dashboard.page.alternatetext.enterTextHere")}
                 // cols="50"
                 onChange={event => {
@@ -349,49 +265,21 @@ class Dashboard extends React.Component {
                   control={
                     <Checkbox
                       color="default"
-                      checked={this.state.checkedMachine}
+                      checked={this.state.autoMLChecked}
                       value="checkedMachine"
-                      onChange={this.handleChange("checkedMachine")}
+                      onChange={this.processAutoMLCheckboxClicked}
                     />
                   }
                   label={translate("dashboard.page.checkbox.mt")}
                 />
               </Grid>
-              {role.includes("dev") && (
-                <Grid item xs={gridSizeSmall} sm={gridSizeSmall} lg={gridSizeLarge} xl={gridSizeLarge} style={{ textAlign: 'left', paddingLeft: '0px' }}>
-                  <FormControlLabel
-                    style={{ marginLeft: "0%" }}
-                    control={
-                      <Checkbox color="default" checked={this.state.showSplitted} value="showSplitted" onChange={this.handleChange("showSplitted")} />
-                    }
-                    label={translate("dashboard.page.checkbox.splitted")}
-                  />
-                </Grid>
-              )}
-              {role.includes("dev") && (
-                <Grid item xs={gridSizeSmall} sm={gridSizeSmall} lg={gridSizeLarge} xl={gridSizeLarge} style={{ textAlign: 'left', paddingLeft: '0px' }}>
-                  <FormControlLabel
-                    style={{ margin: '0%' }}
-                    control={
-                      <Checkbox
-                        color="default"
-                        checked={this.state.checkedSubwords}
-                        value="checkedSubwords"
-                        onChange={this.handleChange("checkedSubwords")}
-                        style={{ paddingLeft: '0px !important' }}
-                      />
-                    }
-                    label={translate("dashboard.page.checkbox.ioSubwords")}
-                  />
-                </Grid>
-              )}
-              {/* </Grid> */}
+
             </Grid>
             <Grid item xs={6} sm={6} lg={6} xl={6}>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={this.handleClear.bind(this)}
+                onClick={this.processClearButtonPressed}
                 aria-label="edit"
                 className={classes.button1}
               >
@@ -402,7 +290,7 @@ class Dashboard extends React.Component {
               <Button
                 color="primary"
                 variant="contained"
-                onClick={this.handleSubmit.bind(this, role)}
+                onClick={this.processTranslateButtonPressed}
                 aria-label="edit"
                 className={classes.button1}
               >
@@ -410,40 +298,38 @@ class Dashboard extends React.Component {
               </Button>
             </Grid>
             {/* </div> */}
-            {this.state.nmtText[0] && (
+
+            {this.state.anuvaadText && (
               <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
-                <NewOrders title={translate("dashbord.page.title.anuvaadModel")} data={this.state.nmtText} status={this.state.checkedSubwords} isSubWordsNotRequired={!this.state.checkedSubwords} />
+                <Typography variant="h4" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{translate("dashbord.page.title.anuvaadModel")}</Typography>
+                <Typography variant="h6" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{this.state.anuvaadText}</Typography>
               </Grid>
             )}
-            {this.state.checkedMachine && this.state.autoMlText && this.state.nmtText && (
+
+            {this.state.autoMLText && this.state.autoMLChecked && (
+              
               <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
-                <TranslateSentence title={translate("dashboard.page.checkbox.mt")} data={this.state.autoMlText} />
+                <Typography variant="h4" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{translate("dashboard.page.checkbox.mt")}</Typography>
+                <Typography variant="h6" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{this.state.anuvaadText}</Typography>
               </Grid>
             )}
           </Grid>
         </Paper>
-      </div >
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
   user: state.login,
-  apistatus: state.apistatus,
-  automl: state.automl,
-  nmt: state.nmt,
-  nmtsp: state.nmtsp,
-  supportLanguage: state.supportLanguage,
-  langModel: state.langModel
+  fetch_languages: state.fetch_languages,
+  fetch_models: state.fetch_models
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      APITransport,
-      NMTApi: APITransport,
-      NMTSPApi: APITransport,
-      MODELApi: APITransport
+      APITransport
     },
     dispatch
   );

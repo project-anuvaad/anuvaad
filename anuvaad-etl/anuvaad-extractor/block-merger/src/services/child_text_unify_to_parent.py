@@ -87,6 +87,6 @@ class ChildTextUnify(object):
         
         end_time         = time.time()
         elapsed_time     = end_time - start_time
-        log_info('Processing of unify_child_text_blocks completed in {}/{}, average per page {}'.format(elapsed_time, len(p_dfs), (elapsed_time/len(p_dfs))), app_context.application_context)
+        log_info('Processing of unify_child_text_blocks completed in {}/{}, average per page {}'.format(elapsed_time, len(p_dfs), elapsed_time/(len(p_dfs) +1)), app_context.application_context)
         return merge_dfs
 

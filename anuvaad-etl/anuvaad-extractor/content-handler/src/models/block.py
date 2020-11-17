@@ -1,13 +1,23 @@
 from utilities import AppContext
 from db import get_db
 from anuvaad_auditor.loghandler import log_info, log_exception
+import pymongo
+
+DB_SCHEMA_NAME  = 'file_content'
 
 class BlockModel(object):
-
-    @staticmethod
-    def update_block(user_id, block_identifier, block):
+    def __init__(self):
+        collections = get_db()[DB_SCHEMA_NAME]
         try:
-            collections = get_db()['file_content']
+            collections.create_index([("record_id" , pymongo.TEXT),("block_identifier", pymongo.TEXT)], name="file_content_index")
+        except pymongo.errors.DuplicateKeyError as e:
+            log_info("duplicate key, ignoring", AppContext.getContext())
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+    
+    def update_block(self, user_id, block_identifier, block):
+        try:
+            collections = get_db()[DB_SCHEMA_NAME]
             results     = collections.update({'$and': [{'created_by': user_id}, { 'block_identifier': block_identifier }]},
             { '$set': block }, upsert=True)
 
@@ -19,10 +29,9 @@ class BlockModel(object):
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
 
-    @staticmethod
-    def store_bulk_blocks(blocks):
+    def store_bulk_blocks(self, blocks):
         try:
-            collections = get_db()['file_content']
+            collections = get_db()[DB_SCHEMA_NAME]
             results     = collections.insert_many(blocks)
             if len(blocks) == len(results.inserted_ids):
                 return True
@@ -30,10 +39,9 @@ class BlockModel(object):
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
 
-    @staticmethod
-    def get_all_blocks(user_id, record_id):
+    def get_all_blocks(self, user_id, record_id):
         try:
-            collections = get_db()['file_content']
+            collections = get_db()[DB_SCHEMA_NAME]
             docs        = collections.find({
                 'record_id': record_id,
                 'created_by': user_id
@@ -44,10 +52,9 @@ class BlockModel(object):
             return False
         
 
-    @staticmethod
-    def get_blocks_by_page(user_id, record_id, page_number):
+    def get_blocks_by_page(self, user_id, record_id, page_number):
         try:
-            collections = get_db()['file_content']
+            collections = get_db()[DB_SCHEMA_NAME]
             results        = collections.aggregate([
                                 { '$match' : { 'page_no': page_number, 'record_id': record_id, 'created_by': user_id } },
                                 { '$group': { '_id': '$data_type', 'data': { '$push': "$data" } } }
@@ -57,10 +64,21 @@ class BlockModel(object):
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
 
-    @staticmethod
-    def get_document_total_page_count(user_id, record_id):
+    def get_block_by_block_identifier(self, user_id, block_identifier):
         try:
-            collections = get_db()['file_content']
+            collections = get_db()[DB_SCHEMA_NAME]
+            results     = collections.aggregate([
+                { '$match' : { 'block_identifier': block_identifier, 'created_by': user_id } },
+                { '$group': { '_id': '$data_type', 'data': { '$push': "$data" } } }
+            ])
+            return results
+        except Exception as e:
+            log_exception('db connection exception ', AppContext.getContext(), e)
+            return None
+
+    def get_document_total_page_count(self, user_id, record_id):
+        try:
+            collections = get_db()[DB_SCHEMA_NAME]
             results     = collections.aggregate([
                 { '$match' : { 'record_id': record_id, 'created_by': user_id } },
                 {

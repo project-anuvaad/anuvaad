@@ -1,10 +1,12 @@
 from flask_restful import fields, marshal_with, reqparse, Resource
-from repositories import SentenceRepositories, FileContentRepositories
+from repositories import FileContentRepositories
 from models import CustomResponse, Status
 import ast
 from utilities import AppContext
 from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import request
+
+fileContentRepo = FileContentRepositories()
 
 class FileContentSaveResource(Resource):
     def post(self):
@@ -35,6 +37,7 @@ class FileContentSaveResource(Resource):
             tgt_lang    = body['tgt_lang']
 
         if 'pages' not in body or user_id is None or record_id == None or src_lang == None or tgt_lang == None:
+            log_info('Missing params in FileContentSaveResource {}, user_id:{}'.format(body, user_id), AppContext.getContext())
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
             return res.getresjson(), 400
         
@@ -42,7 +45,7 @@ class FileContentSaveResource(Resource):
         log_info("FileContentSaveResource record_id ({}) for user ({})".format(record_id, user_id), AppContext.getContext())
         
         try:
-            if FileContentRepositories.store(user_id, file_locale, record_id, pages, src_lang, tgt_lang) == False:
+            if fileContentRepo.store(user_id, file_locale, record_id, pages, src_lang, tgt_lang) == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
 
@@ -70,7 +73,7 @@ class FileContentGetResource(Resource):
         log_info("FileContentGetResource record_id {} for user {}".format(args['record_id'], args['ad-userid']), AppContext.getContext())
 
         try:
-            result  = FileContentRepositories.get(args['ad-userid'], args['record_id'], args['start_page'], args['end_page'])
+            result  = fileContentRepo.get(args['ad-userid'], args['record_id'], args['start_page'], args['end_page'])
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
@@ -104,17 +107,21 @@ class FileContentUpdateResource(Resource):
         log_info("FileContentUpdateResource for user ({}), to update ({}) blocks".format(user_id, len(blocks)), AppContext.getContext())
 
         try:
-            result  = FileContentRepositories.update(user_id, blocks, workflowCode)
+            result, updated_blocks  = fileContentRepo.update(user_id, blocks, workflowCode)
 
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
 
             log_info("FileContentUpdateResource for user ({}) updated".format(user_id), AppContext.getContext())
-            res = CustomResponse(Status.SUCCESS.value, result, None)
+            response = {
+                'blocks': updated_blocks,
+                'workflowCode': workflowCode
+            }
+            res = CustomResponse(Status.SUCCESS.value, response, len(updated_blocks))
             return res.getres()            
         except Exception as e:
-            log_exception("FileContentGetResource ",  AppContext.getContext(), e)
+            log_exception("FileContentUpdateResource ",  AppContext.getContext(), e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
         
