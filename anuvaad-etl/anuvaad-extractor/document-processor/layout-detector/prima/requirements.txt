@@ -14,9 +14,9 @@ uuid==1.30
 anuvaad-auditor==0.1.4
 scikit-build
 cmake
-torch==1.4.0
-torchvision==0.5.0
-opencv-python==4.4.0.40
+#torch==1.4.0
+#torchvision==0.5.0
+#opencv-python==4.4.0.40
 layoutparser==0.1.2
 fvcore
 #scikit-build
