@@ -32,7 +32,7 @@ paths:
           description: On errors causing a failure in the job.
           schema:
             $ref: '#/definitions/HttpOutputError'
-        
+
 definitions:
 
   WordDetectorRequest:
@@ -44,7 +44,7 @@ definitions:
         items:
           type: string
           $ref: '#/definitions/WordDetectorInput'
-          
+
   WordDetectorResponse:
     type: object
     properties:
@@ -60,7 +60,7 @@ definitions:
           $ref: '#/definitions/WordDetectorOutput'
     required:
       - outputs
-          
+
   WordDetectorOutput:
     type: object
     properties:
@@ -73,11 +73,16 @@ definitions:
         description: pages present in the file
         items:
           $ref: '#/definitions/Page'
+      page_info:
+        type: array
+        description: metadata of pages
+        items:
+          type: string
       status:
         type: object
         description: operation result for the file that is processed
         $ref: '#/definitions/ErrorCode'
-      
+
   WordDetectorInput:
     type: object
     properties:
@@ -92,7 +97,7 @@ definitions:
     required:
       - file
       - config
-  
+
   File:
     type: object
     properties:
@@ -106,7 +111,7 @@ definitions:
         type: string
         description: allowed file format
         enum: ['PDF', 'PNG', 'JPEG', 'BMP']
-  
+
   OCR:
     type: object
     properties:
@@ -118,14 +123,14 @@ definitions:
         type: string
         description: indic language code as per ISO 639-1
         enum: ['hi','ma','ta', 'ml', 'ka']
-  
+
   DetectConfig:
     type: object
     properties:
       OCR:
         type: object
         $ref: '#/definitions/OCR'
-  
+
   Point:
     type: object
     properties:
@@ -142,7 +147,7 @@ definitions:
       - x
       - y
       - confidence
-  
+
   Polygon:
     type: object
     properties:
@@ -151,7 +156,7 @@ definitions:
         description: polygon that is enclosing the identification area
         items:
           $ref: '#/definitions/Point'
-        
+
   Font:
     type: object
     properties:
@@ -165,7 +170,7 @@ definitions:
         type: string
         description: font style like BOLD, ITALIC, REGULAR
         enum: ['BOLD', "ITALIC", 'REGULAR']
-  
+
   Line:
     type: object
     description: a group of related words
@@ -178,11 +183,15 @@ definitions:
         type: object
         description: positional information of bounding box
         $ref: '#/definitions/Polygon'
+      class:
+        type: string
+        description: though not grammatical however used extensively in document writings
+        enum: ['HEADER', 'FOOTER','TEXT']
       font:
         type: object
         description: font property
         $ref: '#/definitions/Font'
-        
+
   Word:
     type: object
     description: a language script that can be written together and generates a meaning
@@ -212,7 +221,7 @@ definitions:
     required:
       - identifier
       - boundingBox
-        
+
   Region:
     type: object
     description: the group of related lines object
@@ -266,7 +275,7 @@ definitions:
       - identifier
       - vertices
       - resolution
-  
+
   ErrorCode:
     type: object
     properties:
@@ -279,7 +288,7 @@ definitions:
     required:
       - code
       - message
-  
+
   HttpOutputSuccess:
     type: object
     properties:
@@ -314,7 +323,7 @@ definitions:
         type: integer
         description: should be null object
         default: null
-        
+
 responses:
   ERROR_MISSING_MANDATORY_PARAMETERS:
     description: Input request does not have parameters are the required.

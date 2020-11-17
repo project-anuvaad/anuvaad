@@ -1,6 +1,6 @@
 import src.utilities.app_context as app_context
 from anuvaad_auditor.loghandler import log_exception
-
+import copy
 
 
 def log_error(method):
@@ -47,11 +47,15 @@ class File:
     def get_language(self):
         return self.file['config']['OCR']['language']
 
+    @log_error
+    def get_file(self):
+        return self.file
+
 
 
 
 def get_files(application_context):
-    files = application_context['inputs']
+    files = copy.deepcopy(application_context['inputs'])
     return files
 
 

@@ -41,6 +41,8 @@ logging.basicConfig(
     datefmt="%d/%m/%y %H:%M:%S",
 )
 
+EXRACTION_RESOLUTION = 300
+
 LANGUAGE_WORD_THRESOLDS ={
 'en':{'text_threshold':0.5 ,'low_text': 0.4} ,
 'hi':{'text_threshold':0.5 ,'low_text': 0.4},
