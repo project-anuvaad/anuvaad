@@ -8,11 +8,11 @@ export const APIS = {
     GETCHART: "dashboard/getChartV2/Pulz",
   },
   PROFILE: {
-    GETPROFILE: "dashboard/getDashboardsForProfile/Kronos",
+    GETPROFILE: "dashboard/getDashboardsForProfile/Anuvaad",
   },
   MULTIPLEDASHBOARD: {
-    GETCONFIG: "dashboard/getDashboardConfig/Kronos/",
-    GETCHART: "dashboard/getChartV2/Kronos",
+    GETCONFIG: "dashboard/getDashboardConfig/Anuvaad/",
+    GETCHART: "dashboard/getChartV2/Anuvaad",
   },
   LOGIN: {
     USERLOGIN: "login",
