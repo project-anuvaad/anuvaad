@@ -1,18 +1,13 @@
 import layoutparser as lp
-import cv2,os
+import cv2
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
-from anuvaad_auditor.loghandler import log_debug
-import numpy as np 
 import src.utilities.app_context as app_context
 import uuid
 from collections import namedtuple
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 import sys, random, torch, glob, torchvision
-from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
-from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
-from torchvision.transforms import transforms
-from skimage import io
+
 
 
 seed = 1234
