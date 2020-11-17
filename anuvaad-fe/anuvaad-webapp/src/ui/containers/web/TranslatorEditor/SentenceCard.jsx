@@ -416,7 +416,7 @@ class SentenceCard extends React.Component {
                         onChange={(event, newValue) => {
                             
                             this.setState({
-                                value: newValue.name, //this.state.value + ' ' + newValue.name,
+                                value: newValue.name ? newValue.name :newValue , //this.state.value + ' ' + newValue.name,
                                 showSuggestions: false,
                                 userEnteredText: true
                             });
