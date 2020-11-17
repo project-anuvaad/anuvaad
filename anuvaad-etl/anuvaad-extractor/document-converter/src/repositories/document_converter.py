@@ -237,7 +237,7 @@ class DocumentConversion(object):
             for idx, df in enumerate(dataframes):
                 for idx, row in df.iterrows():
                     if df.iloc[idx]['text'] != None and idx+1 < df.shape[0]:
-                        extra_spaces = int((df.iloc[idx]['text_left'] - 50)/13.5)
+                        extra_spaces = int((df.iloc[idx]['text_left'] - 50)/13)
                         write_str = re.sub(r'^', ' '*extra_spaces, df.iloc[idx]['text'])
                         if df.iloc[idx]['text_top'] != df.iloc[idx+1]['text_top']:
                             if len(write_str) < max_chars_in_line:
@@ -250,16 +250,24 @@ class DocumentConversion(object):
                             same_line_index = 0
                             same_line_status = bool(df.iloc[idx]['text_top'] == df.iloc[idx+same_line_index+1]['text_top'])
                             while same_line_status:
-                                onwards_line_space = int((df.iloc[idx+same_line_index+1]['text_left'] - df.iloc[idx+same_line_index]['text_left'] \
-                                    - df.iloc[idx+same_line_index]['text_width'])/13.5)
-                                if df.iloc[idx+same_line_index+1]['text'] != None:
-                                    write_str += ' '*onwards_line_space + df.iloc[idx+same_line_index+1]['text']
-                                    df = df.replace({df.iloc[idx+same_line_index+1]['text'] : None})
+                                if idx+same_line_index+1 < df.shape[0]:
+                                    onwards_line_space = int((df.iloc[idx+same_line_index+1]['text_left'] - df.iloc[idx+same_line_index]['text_left'] \
+                                        - df.iloc[idx+same_line_index]['text_width'])/13)
+                                    if df.iloc[idx+same_line_index+1]['text'] != None:
+                                        write_str += ' '*onwards_line_space + df.iloc[idx+same_line_index+1]['text']
+                                        df = df.replace({df.iloc[idx+same_line_index+1]['text'] : None})
+                                    else:
+                                        write_str += ' '*onwards_line_space + ''
+                                    same_line_index += 1
+                                    same_line_status = bool(df.iloc[idx+same_line_index]['text_top'] == df.iloc[idx+same_line_index+1]['text_top'])
                                 else:
-                                    write_str += ' '*onwards_line_space + ''
-                                same_line_index += 1
-                                same_line_status = bool(df.iloc[idx+same_line_index]['text_top'] == df.iloc[idx+same_line_index+1]['text_top'])
-                            out_txt_file_write.write("%s\n"%write_str)
+                                    same_line_status = False
+                            if len(write_str) < max_chars_in_line:
+                                out_txt_file_write.write("%s\n"%write_str)
+                            else:
+                                sub_string_list = self.break_large_sentence(write_str, max_chars_in_line)
+                                for item in sub_string_list:
+                                    out_txt_file_write.write("%s\n"%item)
             out_txt_file_write.close()
             out_txt_zip = zipfile_creation(output_filepath_txt)
             log_info("txt file write completed!! filename: %s"%out_translated_txt_filename, MODULE_CONTEXT)
