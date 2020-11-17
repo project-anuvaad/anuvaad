@@ -14,7 +14,8 @@ import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Snackbar from "../../../components/web/common/Snackbar";
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
 import LanguageCodes from "../../../components/web/common/Languages.json"
 import PDFRenderer from './PDFRenderer';
@@ -79,8 +80,7 @@ class DocumentEditor extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-      // if (prevProps.sentence_highlight !== this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight && this.props.sentence_highlight.sentence_id) {
-      if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
+     if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
         this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
       }
     }
@@ -241,18 +241,17 @@ class DocumentEditor extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
         if (!response.ok) {
+          this.informUserStatus(translate('common.page.label.FILE_DOWNLOAD_FAILED'), false)
           return Promise.reject('');
         } else {
           let fileName = rsp_data && rsp_data.translated_document && rsp_data.translated_document ? rsp_data.translated_document : ""
-          
           if (fileName) {
             let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
             window.open(url, "_self")
           }
         }
       }).catch((error) => {
-        
-        this.props.sentenceActionApiStopped()
+        this.informUserStatus(translate('common.page.label.FILE_DOWNLOAD_FAILED'), false)
       });
     }
 
@@ -344,53 +343,41 @@ class DocumentEditor extends React.Component {
     informUserProgress = (message) => {
       this.setState({
         apiInProgress: true,
-        apiStopped: false,
+        showStatus: false,
         snackBarMessage: message
       })
     }
     informUserStatus = (message, isSuccess) => {
       this.setState({
         apiInProgress: false,
-        apiStopped: true,
+        showStatus: true,
         snackBarMessage: message,
         snackBarVariant: isSuccess ? "success" : "error"
       })
     }
 
-    renderAPIProgressInformation = () => {
+    renderProgressInformation = () => {
       return (
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           open={this.state.apiInProgress}
-          variant={"info"}
           message={this.state.snackBarMessage}
-        />
+        >
+          <Alert elevation={6} variant="filled" severity="info">{this.state.snackBarMessage}</Alert>
+        </Snackbar>
       )
     }
 
-    renderAPIStoppedInformation = () => {
+    renderStatusInformation = () => {
       return (
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          open={this.state.apiStopped}
-          autoHideDuration={2000}
-          variant={this.state.snackBarVariant}
-          message={this.state.snackBarMessage}
-        />
-      )
-    }
-
-    snackBarMessage = () => {
-      return (
-        <div>
-        <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            open={this.props.sentence_action_operation.api_status}
-            autoHideDuration={!this.props.sentence_action_operation.api_status && 2000}
-            variant={this.props.sentence_action_operation.api_status ? "info" : "success"}
-            message={this.props.sentence_action_operation.api_status ? this.state.snackBarMessage : this.state.snackBarSavedMessage}
-          />
-          </div>
+          open={this.state.showStatus}
+          onClose={(e, r) => {
+            this.setState({showStatus: false})}}
+        >
+          <Alert elevation={6} variant="filled" severity={this.state.snackBarVariant}>{this.state.snackBarMessage}</Alert>
+        </Snackbar>
       )
     }
 
@@ -478,7 +465,7 @@ class DocumentEditor extends React.Component {
                 loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
                 endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
             >
-              {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={index}  ref={sentence.s_id}><SentenceCard key={index} 
+              {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={sentence.s_id}  ref={sentence.s_id}><SentenceCard key={sentence.s_id} 
                                                                                   pageNumber={page.page_no} 
                                                                                   modelId={parseInt(this.props.match.params.modelId)}
                                                                                   word_locale={this.props.match.params.locale}
@@ -506,8 +493,8 @@ class DocumentEditor extends React.Component {
                 {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>
 
-            {this.state.apiInProgress ? this.renderAPIProgressInformation() : <div />}
-            {this.state.apiStopped ? this.renderAPIStoppedInformation() : <div />}
+            {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
+            {this.state.showStatus ? this.renderStatusInformation() : <div />}
 
             {(this.props.document_contents.pages.length<1) && < Spinner />}
         </div>
@@ -519,7 +506,8 @@ const mapStateToProps = state => ({
     saveContent: state.saveContent,
     document_contents: state.document_contents,
     sentence_action_operation : state.sentence_action_operation,
-    show_pdf: state.show_pdf.open
+    show_pdf: state.show_pdf.open,
+    sentence_highlight  : state.sentence_highlight.sentence
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

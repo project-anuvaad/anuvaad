@@ -13,7 +13,7 @@ import CardActions from '@material-ui/core/CardActions';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import DictionaryAPI from '../../../../flux/actions/apis/word_dictionary';
-import { highlightBlock, startMergeSentence, inProgressMergeSentence, finishMergeSentence, cancelMergeSentence, clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
+import { highlightBlock, clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import MenuItems from "./PopUp";
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -126,6 +126,7 @@ class SentenceCard extends React.Component {
     }
 
     shouldComponentUpdate(prevProps, nextState) {
+        
         if (prevProps.sentence) {
             if (prevProps.document_editor_mode.page_nos.indexOf(this.props.pageNumber) !== -1) {
                 return true
@@ -134,6 +135,10 @@ class SentenceCard extends React.Component {
             if ((prevProps.sentence.s_id === prevProps.block_highlight.current_sid) || 
                 (prevProps.sentence.s_id === prevProps.block_highlight.prev_sid)) {
                 return true
+            }
+
+            if(prevProps.sentence_highlight && (prevProps.sentence.block_identifier === prevProps.sentence_highlight.block_identifier)){
+                return true;
             }
             return false
         }
@@ -246,14 +251,15 @@ class SentenceCard extends React.Component {
     }
 
     processMergeNowButtonClicked() {
-        this.props.finishMergeSentence()
         if (this.props.onAction) {
+            this.setState({value: ''})
             this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, null, this.props.sentence)
         }
     }
 
     processSplitButtonClicked(start_index, end_index) {
         if (this.props.onAction) {
+            this.setState({value: ''})
             this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
         }
     }
@@ -262,12 +268,10 @@ class SentenceCard extends React.Component {
      * Merge mode user action handlers
      */
     processMergeButtonClicked() {
-        this.props.startMergeSentence()
         this.props.onAction(SENTENCE_ACTION.START_MODE_MERGE, this.props.pageNumber, [this.props.sentence])
     }
 
     processMergeCancelButtonClicked() {
-        this.props.cancelMergeSentence()
         this.props.onAction(SENTENCE_ACTION.END_MODE_MERGE, this.props.pageNumber, [this.props.sentence])
         this.setState({cardChecked: false})
     }
@@ -491,7 +495,6 @@ class SentenceCard extends React.Component {
             headers : apiObj.getHeaders().headers
         }).then ( (response)=> {
             if (response.status >= 400 && response.status < 600) {
-                    this.props.sentenceActionApiStopped()
             }
             response.text().then( (data)=> {
                     let val = JSON.parse(data)
@@ -516,7 +519,6 @@ class SentenceCard extends React.Component {
     handleCopy = () => {
         copy(this.state.selectedSentence)
         this.handleClose()
-    
     }
       
     handleOperation = (action) =>{
@@ -695,10 +697,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         highlightBlock,
-        startMergeSentence,
-        inProgressMergeSentence,
-        finishMergeSentence,
-        cancelMergeSentence,
         clearHighlighBlock
     },
     dispatch
