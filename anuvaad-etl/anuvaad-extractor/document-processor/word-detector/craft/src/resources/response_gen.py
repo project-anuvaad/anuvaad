@@ -15,7 +15,7 @@ import threading
 from src.kafka_module.producer import Producer
 import src.utilities.app_context as app_context
 ###################################
-from src.services.main import test
+from src.services.main import LayoutDetection
 #####################################
 
 file_ops = FileOperation()
@@ -39,18 +39,18 @@ class Response(object):
             error_validator.inputfile_list_error(input_files)
             output_file_response = list()
             for i, item in enumerate(input_files):
-                input_filename, in_file_type, in_locale     = file_ops.accessing_files(item)
+                input_filename, in_file_type, identifier     = file_ops.accessing_files(item['file'])
                 self.json_data['taskID']                    = task_id
                 app_context.application_context             = self.json_data
                 #debug_flush = True
                 if debug_flush == False:
                     ############################
-                    response = test(app_context=app_context)
+                    response = LayoutDetection(app_context=app_context)
                     ##############################
                     if response['code'] == 200:
                         
                         output_filename_json = file_ops.writing_json_file(i, response['rsp'], self.DOWNLOAD_FOLDER)
-                        file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
+                        file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_file_type)
                         output_file_response.append(file_res)
                         task_endtime = eval(str(time.time()).replace('.', '')[0:13])
                         response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
@@ -86,7 +86,7 @@ class Response(object):
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
             response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
-            log_exception("workflow_response Something went wrong during pdf to block conversion.", app_context.application_context, e)
+            log_exception("workflow_response Something went wrong during layout conversion.", app_context.application_context, e)
             response = copy.deepcopy(response)
             return response
 
@@ -98,10 +98,10 @@ class Response(object):
             error_validator.inputfile_list_empty(input_files)
             output_file_response = list()
             for item in input_files:
-                input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                input_filename, in_file_type, identifier = file_ops.accessing_files(item['file'])
                 output_json_data = DocumentStructure(None, input_filename)
                 output_filename_json = file_ops.writing_json_file(i, output_json_data, self.DOWNLOAD_FOLDER)
-                file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
+                file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_file_type)
                 output_file_response.append(file_res)
             response_true = Status.SUCCESS.value
             response_true['output'] = output_file_response
@@ -119,7 +119,7 @@ class Response(object):
             response_custom = Status.ERR_STATUS.value
             response_custom['message'] = str(e)
             response = file_ops.error_handler(response_custom, "SERVICE_ERROR", False)
-            log_exception("non workflow_response Something went wrong during pdf to block conversion.", app_context.application_context, e)
+            log_exception("non workflow_response Something went wrong during layout conversion.", app_context.application_context, e)
             response = copy.deepcopy(response)
             return response
 

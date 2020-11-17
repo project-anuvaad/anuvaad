@@ -19,10 +19,11 @@ class FileOperation(object):
         return str(download_dir)
 
     def accessing_files(self,files):
-        filepath = files['path']
-        file_type = files['type']
-        locale = files['locale']
-        return filepath, file_type, locale
+        #print("fillllllllllllllllll",files)
+        filepath = files['name']
+        file_type = files['format']
+        identifier = files['identifier']
+        return filepath, file_type, identifier
 
     # generating input filepath for input filename
     def input_path(self, input_filename):
@@ -31,7 +32,7 @@ class FileOperation(object):
 
     # extracting data from received json input
     def json_input_format(self, json_data):
-        input_data = json_data["input"]['files']
+        input_data = json_data['inputs']
         workflow_id = json_data['workflowCode']
         jobid = json_data['jobID']
         tool_name = json_data['tool']
@@ -39,11 +40,10 @@ class FileOperation(object):
         return input_data, workflow_id, jobid, tool_name, step_order
 
     # output format for individual pdf file
-    def one_filename_response(self, input_filename, output_json_file, in_locale, in_file_type):
+    def one_filename_response(self, input_filename, output_json_file, in_file_type):
         file_res = {
             "inputFile" : input_filename,
             "outputFile" : output_json_file,
-            "outputLocale" : in_locale,
             "outputType" : "json"
         }
         return file_res     
@@ -93,5 +93,3 @@ class FileOperation(object):
             message = object_in['error']['message']
             error = post_error(code, message, None)
             return error
-
-

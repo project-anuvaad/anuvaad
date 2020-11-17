@@ -1,4 +1,4 @@
-from src.kafka_module.kf_service import process_module_name_kf, module_name_request_worker
+from src.kafka_module.kf_service import process_layout_detector_kf, layout_detector_request_worker
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 from flask import Flask
@@ -18,13 +18,13 @@ merge_app = Flask(__name__)
 
 def start_kafka():
     try:
-        t1 = threading.Thread(target=process_module_name_kf, name='module_name-consumer-thread')
+        t1 = threading.Thread(target=process_layout_detector_kf, name='layout-detector-consumer-thread')
         t1.start()
         log_info("multithread Kafka running on multithread", LOG_WITHOUT_CONTEXT)
 
-        t2 = threading.Thread(target=module_name_request_worker, name='module_name-worker-thread')
+        t2 = threading.Thread(target=layout_detector_request_worker, name='layout_detector-worker-thread')
         t2.start()
-        log_info("Starting module_name_request_worker", LOG_WITHOUT_CONTEXT)
+        log_info("Starting layout_detector_request_worker", LOG_WITHOUT_CONTEXT)
 
 
     except Exception as e:
