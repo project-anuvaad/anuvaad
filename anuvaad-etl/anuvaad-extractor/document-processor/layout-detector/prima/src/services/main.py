@@ -2,7 +2,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 import src.utilities.app_context as app_context
-from src.services.get_underline import get_underline
+#from src.services.get_underline import get_underline
 #from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
 from compose import compose
 import config
@@ -32,7 +32,7 @@ def get_layout(app_context) :
         files       = get_files(app_context.application_context)
         file_images = []
         output      = []
-        for file in files:
+        for index,file in enumerate(files):
             file_properties = File(file)
             page_paths      = file_properties.get_pages()
             for idx,page_path in enumerate(page_paths):
@@ -42,6 +42,7 @@ def get_layout(app_context) :
                 regions     = primalaynet.predict_primanet(page_path, line_coords)
                 file['pages'][idx]["regions"]=regions
             output.append(file)
+            output[index]['status']['message']="layout-detector successful"
         app_context.application_context["outputs"] =output
         log_info("successfully completed layout detection", None)
     except Exception as e:
