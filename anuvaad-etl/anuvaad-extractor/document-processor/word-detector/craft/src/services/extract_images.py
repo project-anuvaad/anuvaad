@@ -28,12 +28,12 @@ def extract_pdf_images(filename, base_dir):
     pdf_filepath        = os.path.join(base_dir, filename)
     log_info('filepath {}, working_dir {}'.format(pdf_filepath, working_dir), app_context.application_context)
 
-    try:
-        pdf_image_paths         = extract_image_paths_from_pdf(pdf_filepath, working_dir)
-        log_info('Extracting images of {}'.format(pdf_filepath), app_context.application_context)
-    except Exception as e:
-        log_error('error extracting images of {}'.format(pdf_filepath), app_context.application_context, e)
-        return None
+    #try:
+    pdf_image_paths         = extract_image_paths_from_pdf(pdf_filepath, working_dir)
+    log_info('Extracting images of {}'.format(pdf_filepath), app_context.application_context)
+    # except Exception as e:
+    #     log_error('error extracting images of {}'.format(pdf_filepath), app_context.application_context, e)
+    #     return None
     end_time            = time.time()
     extraction_time     = end_time - start_time
     log_info('Extraction of {} completed in {}'.format(pdf_filepath, extraction_time), app_context.application_context)
