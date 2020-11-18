@@ -43,6 +43,9 @@ logging.basicConfig(
 
 EXRACTION_RESOLUTION = 300
 
+CRAFT_MODEL_PATH=  './src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
+CRAFT_REFINE_MODEL_PATH =  './src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth'
+
 LANGUAGE_WORD_THRESOLDS ={
 'en':{'text_threshold':0.5 ,'low_text': 0.4} ,
 'hi':{'text_threshold':0.5 ,'low_text': 0.4},
@@ -69,3 +72,4 @@ LANGUAGE_LINE_THRESOLDS ={
 'ml':{'text_threshold':0.5 ,'low_text': 0.4} ,
 'ka':{'text_threshold':0.5 ,'low_text': 0.4}
 }
+

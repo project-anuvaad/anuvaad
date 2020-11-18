@@ -15,7 +15,7 @@ import threading
 from src.kafka_module.producer import Producer
 import src.utilities.app_context as app_context
 ###################################
-from src.services.main import LayoutDetection
+from src.services.main import LayoutDetection as Service
 #####################################
 
 file_ops = FileOperation()
@@ -45,7 +45,7 @@ class Response(object):
                 #debug_flush = True
                 if debug_flush == False:
                     ############################
-                    response = LayoutDetection(app_context=app_context)
+                    response = Service(app_context=app_context)
                     ##############################
                     if response['code'] == 200:
                         

@@ -18,13 +18,13 @@ merge_app = Flask(__name__)
 
 def start_kafka():
     try:
-        t1 = threading.Thread(target=process_layout_detector_kf, name='layout-detector-consumer-thread')
+        t1 = threading.Thread(target=process_layout_detector_kf, name='word-detector-consumer-thread')
         t1.start()
         log_info("multithread Kafka running on multithread", LOG_WITHOUT_CONTEXT)
 
-        t2 = threading.Thread(target=layout_detector_request_worker, name='layout_detector-worker-thread')
+        t2 = threading.Thread(target=layout_detector_request_worker, name='word_detector-worker-thread')
         t2.start()
-        log_info("Starting layout_detector_request_worker", LOG_WITHOUT_CONTEXT)
+        log_info("Starting word_detector_request_worker", LOG_WITHOUT_CONTEXT)
 
 
     except Exception as e:
