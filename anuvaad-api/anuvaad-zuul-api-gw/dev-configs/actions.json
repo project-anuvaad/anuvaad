@@ -53,7 +53,7 @@
             "uri":"/anuvaad/user-mgmt/v1/users/update",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
-            "whiteList":true,
+            "whiteList":false,
             "description":"API to update user in the system"
         },
         {
@@ -63,6 +63,14 @@
             "active":true,
             "whiteList":true,
             "description":"API to login"
+        },
+        {
+            "id":"d0875fd6-4ae3-40ca-bb0d-b93feafe459a",
+            "uri":"/anuvaad/user-mgmt/v1/users/auth-token-search",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":true,
+            "description":"API to search users based on an active auth token"
         }
     ]
 }

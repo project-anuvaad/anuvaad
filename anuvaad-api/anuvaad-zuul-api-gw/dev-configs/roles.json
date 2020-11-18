@@ -6,19 +6,9 @@
             "description":"Has access to every resource in the system"
         },
         {
-            "code":"ADMIN",
-            "active":true,
-            "description":"Has access to every resource in the system"
-        },
-        {
             "code":"TRANSLATOR",
             "active":true,
             "description":"Has access to translation related resources"
-        },
-        {
-            "code":"DEVELOPER",
-            "active":true,
-            "description":"Has access to technical details of th system"
         }
     ]
 }
