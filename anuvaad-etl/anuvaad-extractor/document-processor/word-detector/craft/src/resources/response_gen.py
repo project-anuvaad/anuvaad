@@ -15,7 +15,7 @@ import threading
 from src.kafka_module.producer import Producer
 import src.utilities.app_context as app_context
 ###################################
-from src.services.main import LayoutDetection
+from src.services.main import TextDetection as Service
 #####################################
 
 file_ops = FileOperation()
@@ -45,7 +45,7 @@ class Response(object):
                 #debug_flush = True
                 if debug_flush == False:
                     ############################
-                    response = LayoutDetection(app_context=app_context)
+                    response = Service(app_context=app_context)
                     ##############################
                     if response['code'] == 200:
                         
@@ -92,19 +92,26 @@ class Response(object):
 
     def nonwf_response(self):
         log_info("non workflow response started the response generation", app_context.application_context)
-        input_files = self.json_data['files']
+        input_files = self.json_data['inputs']
+        app_context.init()
+        app_context.application_context = self.json_data
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         try:
-            error_validator.inputfile_list_empty(input_files)
-            output_file_response = list()
-            for item in input_files:
-                input_filename, in_file_type, identifier = file_ops.accessing_files(item['file'])
-                output_json_data = DocumentStructure(None, input_filename)
-                output_filename_json = file_ops.writing_json_file(i, output_json_data, self.DOWNLOAD_FOLDER)
-                file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_file_type)
-                output_file_response.append(file_res)
+            error_validator.inputfile_list_error(input_files)
+            # output_file_response = list()
+            # for item in input_files:
+            #     input_filename, in_file_type, identifier = file_ops.accessing_files(item['file'])
+            #     output_json_data = DocumentStructure(None, input_filename)
+            #     output_filename_json = file_ops.writing_json_file(i, output_json_data, self.DOWNLOAD_FOLDER)
+            #     file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_file_type)
+            #     output_file_response.append(file_res)
             response_true = Status.SUCCESS.value
-            response_true['output'] = output_file_response
+            #response_true['output'] = output_file_response
+
+            output_json_data = Service(app_context=app_context)
+            output_filename_json = file_ops.writing_json_file( 0,output_json_data, self.DOWNLOAD_FOLDER)
+            response_true =   file_ops.one_filename_response( output_filename_json)
+
             log_info("non workflow_response successfully generated response for rest server", app_context.application_context)
             response_true = copy.deepcopy(response_true)
             return response_true
