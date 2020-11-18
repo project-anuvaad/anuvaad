@@ -1,2 +1,3 @@
 from .translate import InteractiveTranslateResource, InteractiveMultiTranslateResource, OpenNMTTranslateResource,InteractiveMultiTranslateResourceNew,NMTTranslateResource
 from .model_convert import ModelConvertResource
+from .labse_aligner import LabseAlignerResource
