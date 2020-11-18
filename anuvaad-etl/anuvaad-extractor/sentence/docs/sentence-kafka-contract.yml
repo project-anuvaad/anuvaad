@@ -12,12 +12,14 @@ usecase:
   intiate-tokeniser:
     input-topic: anuvaad-dp-tools-tokeniser-input
     description: In order to get the input for tokeniser tool asynchronously, the below mentioned JSON has to be listened from the above mentioned topic. The tokeniser will consume this data and trigger the tokeniser operation.
-    $ref: '#/definitions/TokenisationRequest'
+    schema:
+      $ref: '#/definitions/TokenisationRequest'
     
   complete-tokeniser:
     output-topic: anuvaad-dp-tools-tokeniser-output
     description: In order to get the output for tokeniser tool asynchronously, the below mentioned JSON has to be pushed to the above mentioned topic.
-    $ref: '#/definitions/TokenisationResponse'
+    schema:
+      $ref: '#/definitions/TokenisationResponse'
     
     
 definitions:
@@ -37,6 +39,7 @@ definitions:
               description: type of the file.
               enum:
                 - txt
+                - json
             locale:
               type: string
               description: The locale of the file. Meaning, in which language is the uploaded file. For instance, 'en' for English, 'hi' for Hindi etc.
@@ -61,6 +64,7 @@ definitions:
               description: type of the file.
               enum:
                 - txt
+                - json
             locale:
               type: string
               description: The locale of the file. Meaning, in which language is the uploaded file. For instance, 'en' for English, 'hi' for Hindi etc.
