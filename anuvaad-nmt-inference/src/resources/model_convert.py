@@ -14,6 +14,6 @@ class ModelConvertResource(Resource):
             return out.getres()
         else:
             log_info("null inputs in request in interactive-translation API",MODULE_CONTEXT)
-            rout = CustomResponse(Status.INVALID_API_REQUEST.value,None)
+            out = CustomResponse(Status.INVALID_API_REQUEST.value,None)
             return out.getres()
     
