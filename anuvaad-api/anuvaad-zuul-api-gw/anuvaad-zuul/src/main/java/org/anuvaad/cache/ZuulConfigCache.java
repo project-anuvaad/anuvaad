@@ -6,17 +6,14 @@ import org.anuvaad.models.Role;
 import org.anuvaad.models.RoleAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ZuulConfigCache implements ApplicationRunner {
@@ -58,6 +55,7 @@ public class ZuulConfigCache implements ApplicationRunner {
             roleCodes = fetchRoleCodes(roles);
             whiteListEndpoints = fetchWhiteListEndpoints(actions);
             roleActionMap = buildRoleActionMap(roleActions, actionMap);
+            logger.info("whiteListEndpoints: {}", whiteListEndpoints.toString());
             logger.info("Zuul config cache...DONE!");
         }catch (Exception e){
             logger.error("Exception while building cache..", e);
