@@ -30,7 +30,7 @@ class KafkaTranslate:
                     if inputs['url_end_point'] == "translate-anuvaad":
                         log_info("Running kafka-translation on  {}".format(inputs['message']),MODULE_CONTEXT)  
                         out = OpenNMTTranslateService.translate_func(inputs['message'])
-                        log_info("final output kafka-translate-anuvaad:{}".format(out),MODULE_CONTEXT) 
+                        log_info("final output kafka-translate-anuvaad:{}".format(out.getresjson()),MODULE_CONTEXT) 
                         # log_info(log_with_record_id(record_id,LOG_TAGS["output"],out),MODULE_CONTEXT)
                     else:
                         log_info("Incorrect url_end_point for KAFKA",MODULE_CONTEXT)

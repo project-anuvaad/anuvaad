@@ -65,7 +65,8 @@ def get_target_sentence(target_embeddings, source_embedding, length_src_phrase):
     distances = distance.cdist(source_embedding, target_embeddings, "cosine")[0]
     min_index = np.argmin(distances)
     min_distance = 1 - distances[min_index]
-    if min_distance >= 0.7:
+    log_info("Match score: {}".format(min_distance),MODULE_CONTEXT)
+    if min_distance >= 0.5:
         return min_index, min_distance, "MATCH"
     else:
         return min_index, min_distance, "NOMATCH"     
