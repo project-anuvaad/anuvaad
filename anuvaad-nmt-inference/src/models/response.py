@@ -3,7 +3,6 @@ from flask import jsonify
 class CustomResponse :
     def __init__(self, statuscode, data):
         self.statuscode = {"status":statuscode, "response_body" : data}
-        # self.statuscode['response_body']     = data
     
     def getres(self):
         return jsonify(self.statuscode)

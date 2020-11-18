@@ -13,3 +13,6 @@ ICONFG_FILE = "src/config/iconf.json"
 
 ## Module name
 MODULE_NAME = "/nmt-inference"
+
+## fetch model details
+FETCH_MODEL_CONFG = "src/config/fetch_models.json"
