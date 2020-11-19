@@ -55,7 +55,7 @@ class AppRoutes extends React.Component {
     let count = 0;
     const token = localStorage.getItem("token");
     if (localStorage.getItem("roles")) {
-      const userRoles = JSON.parse(localStorage.getItem("roles"));
+      const userRoles = ["interactive-editor"] //JSON.parse(localStorage.getItem("roles"));
       if (token) {
         if (allowedRoles && Array.isArray(allowedRoles)) {
           allowedRoles.map(allowedRole => {
