@@ -9,7 +9,7 @@ class AppTextField extends React.Component {
         return (
 
             <div>
-                <TextField id={id} value={value} variant={varient} placeholder={placeholder} style={style} floatingLabelText={floatingLabelText} onChange={onChange} type={type} />
+                <TextField id={id} value={value} variant={varient} placeholder={placeholder} style={style} onChange={onChange} type={type} />
             </div>
 
         )
