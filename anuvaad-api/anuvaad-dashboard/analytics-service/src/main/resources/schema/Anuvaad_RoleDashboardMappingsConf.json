@@ -1,0 +1,31 @@
+{
+	"_comment": "",
+	"roles": [
+		{
+			"_comment": "This is the Tarento Admin role who sees mostly all the dashboards",
+			"roleId": 2068,
+			"roleName": "Tarento Admin",
+			"isSuper": "",
+			"orgId": "",
+			"dashboards": [
+				{
+					"name": "Anuvaad Telemetry Dashboard",
+					"id": "anuvadtelemetrydashboard"
+				}
+			]
+		},
+		{
+			"_comment": "This is the Anuvaad Admin role who sees the anuvaad dashboards",
+			"roleId": 2182,
+			"roleName": "Anuvaad Admin",
+			"isSuper": "",
+			"orgId": "",
+			"dashboards": [
+				{
+					"name": "Anuvaad Telemetry",
+					"id": "anuvaadtelemetrydashboard"
+				}
+			]
+		}
+	]
+}

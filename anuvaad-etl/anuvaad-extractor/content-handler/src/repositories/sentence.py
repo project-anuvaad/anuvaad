@@ -50,20 +50,10 @@ class SentenceRepositories:
         response = []
         for record_id in record_ids:
             result          = {}
+            count_result    = self.sentenceModel.get_tokenized_sentences_count_status(record_id)
             
-            total_count     = self.sentenceModel.get_total_tokenized_sentences_count(record_id)
-            completed_count = self.sentenceModel.get_completed_tokenized_sentences_count(record_id)
-
-            if total_count == None:
-                result['total_count'] = 0
-            else:
-                result['total_count'] = total_count
-
-            if completed_count == None:
-                result['completed_count'] = 0
-            else:
-                result['completed_count'] = completed_count
-
-            result['record_id'] = record_id
+            result['total_count']       = count_result['total']
+            result['completed_count']   = count_result['completed']
+            result['record_id']         = record_id
             response.append(result)
         return response

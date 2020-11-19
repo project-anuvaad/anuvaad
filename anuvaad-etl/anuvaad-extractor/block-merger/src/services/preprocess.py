@@ -87,7 +87,7 @@ def find_header(xml_dfs,page_height, preprocess_config):
 
 
 def find_footer(xml_dfs, page_height,preprocess_config,):
-    pdf_levle = []
+    pdf_level = []
 
     try :
         page_df = xml_dfs[0]
@@ -111,9 +111,9 @@ def find_footer(xml_dfs, page_height,preprocess_config,):
                     iou += bb_intersection_over_union(row1, row2)
 
             page_level.append(iou)
-        pdf_levle.append(page_level)
+        pdf_level.append(page_level)
 
-    iou_df = pd.DataFrame(pdf_levle, columns=sub_df['text'].values)
+    iou_df = pd.DataFrame(pdf_level, columns=sub_df['text'].values)
     check_repeation = iou_df.sum() / len(iou_df)
     regions_to_remove = sub_df[list(check_repeation > preprocess_config['repeat_threshold'])]
 
@@ -136,7 +136,12 @@ def add_attrib(page_df, region_to_change, attrib, margin=3):
     return page_df
 
 
-def prepocess_pdf_regions(xml_dfs, page_height, config =preprocess_config ):
+def prepocess_pdf_regions(pdf_data,flags, config =preprocess_config ):
+    xml_dfs = pdf_data['in_dfs']
+    #if flags['doc_class'] == 'class_1':
+    page_height=  pdf_data['page_height']
+    #else:
+    #    page_height =  pdf_data['pdf_image_height']
     #header_region = None
     #footer_region =None
     #if len(xml_dfs) > 1 :
@@ -149,9 +154,13 @@ def prepocess_pdf_regions(xml_dfs, page_height, config =preprocess_config ):
         log_info('Footers found {} '.format(len(footer_region)), app_context.application_context)
         log_info('Headers found {}'.format(len(header_region)),app_context.application_context)
 
+        pdf_data['header_region'], pdf_data['footer_region'] = header_region, footer_region
+        return pdf_data
     except Exception as e:
         log_error('Error in finding header/footer ' + e ,app_context.application_context ,e)
-        return pd.DataFrame() ,pd.DataFrame()
+        pdf_data['header_region'], pdf_data['footer_region'] = pd.DataFrame(),pd.DataFrame()
+        return pdf_data
+
 
     return header_region , footer_region
 
@@ -206,7 +215,7 @@ def mask_image(image,df, image_width,image_height,input_json,margin= 0 ,fill=255
                     image[row_top - margin: row_bottom + margin, row_left - margin: row_right + margin,:] = fill
 
             except Exception as e :
-                log_error("Service TableExtractor Error in masking bg image" +e, input_json, e)
+                log_error("Service TableExtractor Error in masking bg image" +str(e), input_json, e)
                 return image
     return image
 

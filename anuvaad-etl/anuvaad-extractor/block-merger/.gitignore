@@ -9,5 +9,6 @@ exp_result.py
 .idea
 src/notebooks/sample-data
 upload
+src/utilities/pubnet/model
 venv
 .idea

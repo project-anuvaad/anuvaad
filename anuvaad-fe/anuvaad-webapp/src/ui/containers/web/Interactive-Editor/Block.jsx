@@ -6,7 +6,6 @@ import Merge from "@material-ui/icons/CallMerge";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Grid from "@material-ui/core/Grid";
 import Save from "@material-ui/icons/CheckCircleOutline";
-//import Split from "@material-ui/icons/CallSplit";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -295,8 +294,8 @@ class Block extends Component {
     if (this.props.buttonStatus === "typing" && tex) {
       this.props.saveUpdatedSentence("", this.props.selectedBlock, "", tex, true)
     }
-    else if (this.props.buttonStatus === "copy" && this.props.selectedBlock && this.props.selectedBlock.hasOwnProperty("s0_tgt") && this.props.selectedBlock.s0_tgt) {
-      this.props.saveUpdatedSentence("", this.props.selectedBlock, "", this.props.selectedBlock.s0_tgt, true)
+    else if(this.props.buttonStatus==="copy"){
+      this.handleBlurSave(this.props.selectedBlock, this.props.selectedBlock.s0_tgt)
     }
 
   }

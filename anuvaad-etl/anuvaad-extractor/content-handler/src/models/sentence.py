@@ -76,7 +76,7 @@ class SentenceModel(object):
             docs        = collections.aggregate([
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'} ]} },
                                 { '$project': { '_id': 0, 'count': { '$size':"$data.tokenized_sentences" } } },
-                                { '$group': { '_id': 0, 'total_count': { '$sum': 1 } } }
+                                { '$group': { '_id' : {'count': '$count'}, 'total_count': { '$sum': '$count' } } }
                         ])
             for doc in docs:
                 count = doc['total_count']
@@ -101,3 +101,41 @@ class SentenceModel(object):
         except Exception as e:
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
+
+    def get_tokenized_sentences_count_status(self, record_id):
+        try:
+            collections = get_db()[DB_SCHEMA_NAME]
+            docs        = collections.aggregate([
+                                { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
+                                { '$unwind': "$data" },
+                                { '$unwind': "$data.tokenized_sentences" },
+                                { "$group": {
+                                    "_id": "$data.tokenized_sentences.save",
+                                    "count": { "$sum": 1 }
+                                }}
+                            ])
+
+            empty_count     = 0
+            saved_count     = 0
+            unsaved_count   = 0
+
+            for doc in docs:
+                if doc['_id'] == None:
+                    empty_count = doc['count']
+                if doc['_id'] == True:
+                    saved_count = doc['count']
+                if doc['_id'] == False:
+                    unsaved_count = doc['count']
+
+            return {
+                'total': empty_count + saved_count + unsaved_count,
+                'completed': saved_count
+            }
+                
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+
+            return {
+            'total': 0,
+            'completed': 0
+            }
