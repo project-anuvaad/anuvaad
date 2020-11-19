@@ -23,7 +23,7 @@ class Response(object):
     # Generating response for a workflow request coming from kafka consumer or flask server
     def workflow_response(self, task_id, task_starttime):
         input_key, workflow_id, jobid, tool_name, step_order, user_id = file_ops.json_input_format(self.json_data)
-        log_info("workflow_response : started the response generation", self.json_data)
+        log_info("workflow_response : started the response generation for %s"%jobid, self.json_data)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         tokenisation = Tokenisation(self.DOWNLOAD_FOLDER, self.json_data)
         try:
@@ -41,12 +41,10 @@ class Response(object):
                             output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
                         elif in_file_type == "json":
                             input_jsonfile_data, file_write = file_ops.read_json_file(input_filename)
-                            # input_jsonfile_data['result'] = tokenisation.getting_incomplete_text_merging_blocks(input_jsonfile_data['result'])
                             input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item, in_locale, page_id) 
                                                                 for page_id, item in enumerate(input_jsonfile_data['result'])]
                             input_jsonfile_data['result'] = tokenisation.getting_incomplete_text_merging_blocks(input_jsonfile_data['result'])
                             input_jsonfile_data['file_locale'] = in_locale
-                            #tokenisation.sending_data_to_content_handler(jobid, user_id, input_jsonfile_data)
                             json_data_write = json.dumps(input_jsonfile_data)
                             file_write.seek(0)
                             file_write.truncate()
