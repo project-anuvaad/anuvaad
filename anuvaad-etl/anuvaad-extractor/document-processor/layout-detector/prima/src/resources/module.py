@@ -45,8 +45,11 @@ class Layout_Detector(Resource):
 
     # reading json request and reurnung final response
     def post(self):
-        log_info("Resource Layout_Detector service started", app_context.application_context)
         json_data = request.get_json(force=True)
+        app_context.init()
+        app_context.application_context = json_data
+        log_info("Resource Layout_Detector service started", app_context.application_context)
+
         try:
             error_validator = ValidationResponse(DOWNLOAD_FOLDER)
             if error_validator.format_error(json_data) is True:

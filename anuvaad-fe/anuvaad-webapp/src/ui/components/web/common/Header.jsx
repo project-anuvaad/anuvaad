@@ -135,7 +135,7 @@ class Header extends React.Component {
 
     const { auth, anchorEl } = this.state;
     const openEl = Boolean(anchorEl);
-    var role = JSON.parse(localStorage.getItem("roles"));
+    var role    = ["interactive-editor"] //JSON.parse(localStorage.getItem("roles"));
     var useRole = [];
     role.map((item, value) => {
       useRole.push(item); value !== role.length - 1 && useRole.push(", ")

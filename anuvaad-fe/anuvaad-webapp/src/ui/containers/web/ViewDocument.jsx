@@ -53,17 +53,16 @@ class ViewDocument extends React.Component {
   componentDidMount() {
     this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
 
-    if (this.props.job_details.documents.length < 1) {
-      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, false, false)
-      this.setState({showLoader:true})
-    }
-
     if (this.props.async_job_status.job) {
       /**
        * a job got started, fetch it status
        */
       this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, [this.props.async_job_status.job.jobID], true, false)
       this.props.clearJobEntry()
+    }
+    else if(this.props.job_details.documents.length < 1) {
+      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, false, false)
+      this.setState({showLoader:true})
     }
     this.makeAPICallDocumentsTranslationProgress()
     
@@ -88,6 +87,9 @@ class ViewDocument extends React.Component {
         this.setState({dialogMessage: "Deleted successfully...!", variant: 'success', timeOut :3000})
       }
 
+    }
+    else if(prevProps.job_details.documents.length === 0 && this.props.job_details.documents.length===0 && !this.props.apistatus.progress && this.state.showLoader){
+      this.setState({showLoader:false})
     }
   }
 

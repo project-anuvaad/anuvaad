@@ -38,14 +38,16 @@ const LoginStyles = theme => ({
 
   },
   paper: {
-    width: '100%',
-    minWidth: '260px',
+    width: '30%',
+    // minWidth: '260px',
     paddingLeft: '20%',
     paddingRight: '20%',
     paddingTop: '3%',
     paddingBottom: '3%',
     overflow: 'auto',
-    marginLeft: '0%'
+    marginLeft: '0%',
+    // maxHeight:'400px'
+
   },
   paperSign: {
     width: '100%',
