@@ -8,6 +8,9 @@ from utilities.wfmutils import WFMUtils
 from configs.wfmconfig import is_sync_flow_enabled
 from configs.wfmconfig import is_async_flow_enabled
 from configs.wfmconfig import tool_translator
+from configs.wfmconfig import tool_worddetector
+from configs.wfmconfig import tool_layoutdetector
+
 
 wfmutils = WFMUtils()
 
@@ -88,6 +91,13 @@ class WFMValidator:
                                 if 'url_end_point' not in model.keys():
                                     return post_error("MODEL_URL_ NOT_FOUND",
                                                       "Model url end point is mandatory for this wf.", None)
+                        if tool_worddetector in tools or tool_layoutdetector in tools:
+                            if 'config' not in file.keys():
+                                return post_error("CONFIG_NOT_FOUND", "OCR Config details are mandatory for this wf.", None)
+                            else:
+                                config = file["config"]
+                                if 'OCR' not in config.keys():
+                                    return post_error("CONFIG_NOT_FOUND", "OCR Config details are mandatory for this wf.", None)
         else:
             return post_error("WORKFLOW_TYPE_DISABLED",
                               "This workflow belongs to ASYNC type, which is currently disabled.", None)

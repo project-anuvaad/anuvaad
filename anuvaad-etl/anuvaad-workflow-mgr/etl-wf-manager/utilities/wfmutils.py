@@ -9,11 +9,11 @@ import yaml
 from configs.wfmconfig import config_file_url
 from configs.wfmconfig import tool_blockmerger
 from configs.wfmconfig import tool_tokeniser
-from configs.wfmconfig import tool_pdftohtml
-from configs.wfmconfig import tool_htmltojson
 from configs.wfmconfig import tool_fileconverter
 from configs.wfmconfig import tool_aligner
 from configs.wfmconfig import tool_translator
+from configs.wfmconfig import tool_worddetector
+from configs.wfmconfig import tool_layoutdetector
 from configs.wfmconfig import tool_ch
 from configs.wfmconfig import tool_nmt
 from configs.wfmconfig import jobid_random_str_length
@@ -23,24 +23,24 @@ from anuvaad_auditor.loghandler import log_exception, log_error
 
 from tools.aligner import Aligner
 from tools.tokeniser import Tokeniser
-from tools.pdftohtml import PDFTOHTML
-from tools.htmltojson import HTMLTOJSON
 from tools.file_converter import FileConverter
 from tools.block_merger import BlockMerger
 from tools.translator import Translator
 from tools.contenthandler import ContentHandler
 from tools.nmt import NMT
+from tools.word_detector import WordDetector
+from tools.layout_detector import LayoutDetector
 
 
 aligner = Aligner()
 tokeniser = Tokeniser()
-pdftohtml = PDFTOHTML()
-htmltojson = HTMLTOJSON()
 file_converter = FileConverter()
 block_merger = BlockMerger()
 translator = Translator()
 ch = ContentHandler()
 nmt = NMT()
+word_detector = WordDetector()
+layout_detector = LayoutDetector()
 wfmrepo = WFMRepository()
 
 log = logging.getLogger('file')
@@ -128,17 +128,13 @@ class WFMUtils:
     # current_tool = The tool of which the input is to be computed.
     # previous tool = Previous tool which got executed and produced 'task_output'.
     # wf_input = Input received during initiation of wf.
-    def get_tool_input(self, current_tool, previous_tool, task_output, wf_input):
+    def get_tool_input_async(self, current_tool, previous_tool, task_output, wf_input):
         tool_input = {}
         if wf_input is None:
             if current_tool == tool_aligner:
                 tool_input = aligner.get_aligner_input(task_output, previous_tool)
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input(task_output, previous_tool)
-            if current_tool == tool_pdftohtml:
-                tool_input = pdftohtml.get_pdftohtml_input(task_output, previous_tool)
-            if current_tool == tool_htmltojson:
-                tool_input = htmltojson.get_htmltojson_input(task_output, previous_tool)
             if current_tool == tool_fileconverter:
                 tool_input = file_converter.get_fc_input(task_output, previous_tool)
             if current_tool == tool_blockmerger:
@@ -148,21 +144,32 @@ class WFMUtils:
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 for file in tool_input["input"]["files"]:
                     file["model"] = job_details["input"]["files"][0]["model"]
+            if current_tool == tool_worddetector:
+                tool_input = word_detector.get_wd_input(task_output, previous_tool)
+                job_details = self.get_job_details(task_output["jobID"])[0]
+                for file in tool_input["input"]["inputs"]:
+                    file["config"] = job_details["input"]["files"][0]["config"]
+            if current_tool == tool_layoutdetector:
+                tool_input = layout_detector.get_ld_input(task_output, previous_tool)
+                job_details = self.get_job_details(task_output["jobID"])[0]
+                for file in tool_input["input"]["inputs"]:
+                    file["config"] = job_details["input"]["files"][0]["config"]
+
         else:
             if current_tool == tool_aligner:
                 tool_input = aligner.get_aligner_input_wf(wf_input)
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input_wf(wf_input, False)
-            if current_tool == tool_pdftohtml:
-                tool_input = pdftohtml.get_pdftohtml_input_wf(wf_input)
-            if current_tool == tool_htmltojson:
-                tool_input = htmltojson.get_htmltojson_input_wf(wf_input)
             if current_tool == tool_fileconverter:
                 tool_input = file_converter.get_fc_input_wf(wf_input)
             if current_tool == tool_blockmerger:
                 tool_input = block_merger.get_bm_input_wf(wf_input)
             if current_tool == tool_translator:
                 tool_input = translator.get_translator_input_wf(wf_input, False)
+            if current_tool == tool_worddetector:
+                tool_input = word_detector.get_wd_input_wf(wf_input)
+            if current_tool == tool_layoutdetector:
+                tool_input = layout_detector.get_ld_input_wf(wf_input)
 
         return tool_input
 
