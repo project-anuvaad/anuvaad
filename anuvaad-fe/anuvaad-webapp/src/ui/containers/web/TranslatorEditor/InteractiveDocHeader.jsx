@@ -78,10 +78,10 @@ class InteractiveDocHeader extends React.Component {
             if (!response.ok) {
                 return Promise.reject('');
             } else {
-                let fileName = rsp_data && rsp_data.[this.state.fileType] ? rsp_data.[this.state.fileType] : ""
+                let fileName = rsp_data && rsp_data[this.state.fileType] ? rsp_data[this.state.fileType] : ""
                 if (fileName) {
                     let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
-                    window.open(url, "_self")
+                    window.open(url, "_blank")
                 }
 
             }
