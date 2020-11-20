@@ -21,6 +21,7 @@ output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_OUTPUT'
 output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
 kf_local_server     = 'localhost:9092'
+
 kafka_ip_host       = 'KAFKA_IP_HOST'
 bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 
