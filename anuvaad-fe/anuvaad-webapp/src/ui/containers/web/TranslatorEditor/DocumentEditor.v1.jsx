@@ -25,7 +25,7 @@ import PageCard from "./PageCard";
 import InteractivePagination from './InteractivePagination';
 import SENTENCE_ACTION from './SentenceActions'
 import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverter";
-import JobStatus from "../../../../flux/actions/apis/translation.progress";
+import JobStatus from "../../../../flux/actions/apis/v1_jobprogress";
 // import PAGE_OPS from "../../../../utils/page.operations";
 // import BLOCK_OPS from "../../../../utils/block.operations";
 // import TELEMETRY from '../../../../utils/TelemetryManager';
@@ -77,6 +77,7 @@ class DocumentEditor extends React.Component {
       TELEMETRY.startTranslatorFlow(sourceLang, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
       this.setState({ showLoader: true });
       this.makeAPICallFetchContent(1);
+      this.makeAPICallDocumentsTranslationProgress();
       window.addEventListener('popstate',this.handleOnClose);
       // window.addEventListener('beforeunload',this.handleOnClose);
     }
@@ -555,7 +556,8 @@ const mapStateToProps = state => ({
     show_pdf: state.show_pdf.open,
     sentence_highlight  : state.sentence_highlight.sentence,
     active_page_number : state.active_page_number.page_number,
-    document_editor_mode: state.document_editor_mode
+    document_editor_mode: state.document_editor_mode,
+    
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
