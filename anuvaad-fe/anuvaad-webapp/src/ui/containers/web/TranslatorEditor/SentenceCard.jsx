@@ -23,6 +23,10 @@ import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import copy from 'copy-to-clipboard';
 import SENTENCE_ACTION from './SentenceActions'
 import { value } from 'jsonpath';
+import Popover from "@material-ui/core/Popover";
+import CopyIcon from "@material-ui/icons/FileCopy";
+import Tooltip from '@material-ui/core/Tooltip';
+
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
 const styles = {
@@ -46,7 +50,7 @@ const styles = {
     },
     expandOpen: {
         transform: 'rotate(180deg)',
-        
+
     },
     card_open: {
         background: "rgb(206, 231, 236)"
@@ -99,15 +103,15 @@ class SentenceCard extends React.Component {
             sentenceSaved: false,
             userEnteredText: false,
             selectedSentence: '',
-            positionX:0,
-            positionY:0,
-            sentenceSource:'',
-            isopenMenuItems:false,
-            parallel_words:null,
-            dictionaryWord:'',
+            positionX: 0,
+            positionY: 0,
+            sentenceSource: '',
+            isopenMenuItems: false,
+            parallel_words: null,
+            dictionaryWord: '',
             startIndex: null,
-            endIndex: null
-
+            endIndex: null,
+            isOpenDictionaryOnly: false
         };
         this.textInput = React.createRef();
         this.handleUserInputText = this.handleUserInputText.bind(this);
@@ -121,23 +125,23 @@ class SentenceCard extends React.Component {
     componentWillUpdate(nextProps, nextState) {
         if (nextProps.document_editor_mode.mode !== this.props.document_editor_mode.mode) {
             if (this.state.cardChecked)
-                this.setState({cardChecked: false})
+                this.setState({ cardChecked: false })
         }
     }
 
     shouldComponentUpdate(prevProps, nextState) {
-        
+
         if (prevProps.sentence) {
             if (prevProps.document_editor_mode.page_nos.indexOf(this.props.pageNumber) !== -1) {
                 return true
             }
 
-            if ((prevProps.sentence.s_id === prevProps.block_highlight.current_sid) || 
+            if ((prevProps.sentence.s_id === prevProps.block_highlight.current_sid) ||
                 (prevProps.sentence.s_id === prevProps.block_highlight.prev_sid)) {
                 return true
             }
 
-            if(prevProps.sentence_highlight && (prevProps.sentence.block_identifier === prevProps.sentence_highlight.block_identifier)){
+            if (prevProps.sentence_highlight && (prevProps.sentence.block_identifier === prevProps.sentence_highlight.block_identifier)) {
                 return true;
             }
             return false
@@ -152,7 +156,7 @@ class SentenceCard extends React.Component {
         let found = false
         this.props.sentence_action_operation.sentences.forEach(sentence => {
             if (sentence.s_id === this.props.sentence.s_id) {
-                
+
                 found = true;
             }
         })
@@ -172,21 +176,21 @@ class SentenceCard extends React.Component {
         // this.setState({
         //     suggestions: Object.keys(countries).map((key) => countries[key].item[0])
         // })
-        
-        this.setState({isCardBusy: true})
+
+        this.setState({ isCardBusy: true })
         let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, this.state.value, this.props.modelId, true, '', this.props.sentence.s_id);
-        const apiReq    = fetch(apiObj.apiEndPoint(), {
+        const apiReq = fetch(apiObj.apiEndPoint(), {
             method: 'post',
             body: JSON.stringify(apiObj.getBody()),
             headers: apiObj.getHeaders().headers
         }).then(async response => {
             const rsp_data = await response.json();
             if (!response.ok) {
-                this.setState({isCardBusy: false})
+                this.setState({ isCardBusy: false })
                 return Promise.reject('');
             } else {
                 this.setState({
-                    suggestions: rsp_data.output.predictions[0].tgt.map(s => { return {name: s}}),
+                    suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
                     isCardBusy: false
                 })
             }
@@ -219,12 +223,12 @@ class SentenceCard extends React.Component {
                 value: this.props.sentence.s0_tgt
             })
             if (this.props.onAction) {
-                let sentence    = { ...this.props.sentence };
-                sentence.save   = true;
-                sentence.tgt    = this.props.sentence.s0_tgt;
+                let sentence = { ...this.props.sentence };
+                sentence.save = true;
+                sentence.tgt = this.props.sentence.s0_tgt;
                 delete sentence.block_identifier;
 
-                TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt , sentence.s_id , "translation")
+                TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt, sentence.s_id, "translation")
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
                 return;
             }
@@ -237,14 +241,14 @@ class SentenceCard extends React.Component {
                 return;
             }
             if (this.props.onAction) {
-                this.setState({userEnteredText: false})
+                this.setState({ userEnteredText: false })
 
-                let sentence    = { ...this.props.sentence };
-                sentence.save   = true;
-                sentence.tgt    = this.state.value;
+                let sentence = { ...this.props.sentence };
+                sentence.save = true;
+                sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
-    
-                TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt , sentence.s_id , "translation")
+
+                TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt, sentence.s_id, "translation")
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
             }
         }
@@ -252,14 +256,14 @@ class SentenceCard extends React.Component {
 
     processMergeNowButtonClicked() {
         if (this.props.onAction) {
-            this.setState({value: ''})
+            this.setState({ value: '' })
             this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, null, this.props.sentence)
         }
     }
 
     processSplitButtonClicked(start_index, end_index) {
         if (this.props.onAction) {
-            this.setState({value: ''})
+            this.setState({ value: '' })
             this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
         }
     }
@@ -273,7 +277,7 @@ class SentenceCard extends React.Component {
 
     processMergeCancelButtonClicked() {
         this.props.onAction(SENTENCE_ACTION.END_MODE_MERGE, this.props.pageNumber, [this.props.sentence])
-        this.setState({cardChecked: false})
+        this.setState({ cardChecked: false })
     }
 
     processMergeSelectionToggle = () => {
@@ -299,7 +303,7 @@ class SentenceCard extends React.Component {
          * Ctrl+s
          */
         if ((event.ctrlKey || event.metaKey) && charCode === 's') {
-          
+
             this.processSaveButtonClicked()
             event.preventDefault();
             return false
@@ -318,12 +322,15 @@ class SentenceCard extends React.Component {
     }
 
     getSelectionText = (event) => {
-        let selectedSentence    = window.getSelection().toString();
-        let endIndex            = window.getSelection().focusOffset;
-        let startIndex          = window.getSelection().anchorOffset;
-        let sentenceSource      = event.target.innerHTML;
-        if(selectedSentence && sentenceSource.includes(selectedSentence) && selectedSentence!== sentenceSource ){
-            this.setState({selectedSentence, sentenceSource, positionX: event.clientX,startIndex, endIndex, positionY:event.clientY, isopenMenuItems : true})
+        let selectedSentence = window.getSelection().toString();
+        let endIndex = window.getSelection().focusOffset;
+        let startIndex = window.getSelection().anchorOffset;
+        let sentenceSource = event.target.innerHTML;
+        if (selectedSentence && sentenceSource.includes(selectedSentence) && selectedSentence !== sentenceSource) {
+            this.setState({
+                selectedSentence, sentenceSource, positionX: event.clientX, startIndex, endIndex, positionY: event.clientY, isopenMenuItems: true,
+                dictionaryX: event.clientX, dictionaryY: event.clientY
+            })
         }
     }
 
@@ -335,7 +342,7 @@ class SentenceCard extends React.Component {
                     <br />
                 </Typography> */}
 
-                <Typography variant="subtitle1" gutterBottom onMouseUp={(event)=>{this.getSelectionText(event)}}>
+                <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
                     {this.props.sentence.src}
                 </Typography>
             </div>
@@ -355,7 +362,7 @@ class SentenceCard extends React.Component {
                     {this.props.sentence.s0_tgt}
                     <br />
                 </Typography>
-                
+
             </div>
         )
     }
@@ -373,7 +380,7 @@ class SentenceCard extends React.Component {
                     {this.props.sentence.tgt}
                     <br />
                 </Typography>
-                
+
             </div>
         )
     }
@@ -387,8 +394,8 @@ class SentenceCard extends React.Component {
                     <br />
                 </Typography>
                 {this.state.parallel_words.map((words, index) => <Typography key={index} variant="subtitle1" gutterBottom>{words}</Typography>)}
-                    <br />
-                
+                <br />
+
                 <Divider />
             </div>
         )
@@ -414,9 +421,9 @@ class SentenceCard extends React.Component {
                         freeSolo={true}
                         loadingText={'Loading ...'}
                         onChange={(event, newValue) => {
-                            
+
                             this.setState({
-                                value: newValue.name ? newValue.name :newValue , //this.state.value + ' ' + newValue.name,
+                                value: newValue.name ? newValue.name : newValue, //this.state.value + ' ' + newValue.name,
                                 showSuggestions: false,
                                 userEnteredText: true
                             });
@@ -463,7 +470,7 @@ class SentenceCard extends React.Component {
     renderNormaModeButtons = () => {
         return (
             <div>
-                <Button style = {{marginRight:'10px'}} onClick={this.processSaveButtonClicked} variant="outlined" color="primary">
+                <Button style={{ marginRight: '10px' }} onClick={this.processSaveButtonClicked} variant="outlined" color="primary">
                     SAVE
                 </Button>
                 <Button onClick={this.processMergeButtonClicked} variant="outlined" color="primary">
@@ -476,7 +483,7 @@ class SentenceCard extends React.Component {
     renderMergeModeButtons = () => {
         return (
             <div>
-                <Button style={{marginRight:'10px'}} onClick={this.processMergeNowButtonClicked} variant="outlined" color="primary">
+                <Button style={{ marginRight: '10px' }} onClick={this.processMergeNowButtonClicked} variant="outlined" color="primary">
                     MERGE NOW
                 </Button>
                 <Button onClick={this.processMergeCancelButtonClicked} variant="outlined" color="primary">
@@ -488,70 +495,141 @@ class SentenceCard extends React.Component {
 
 
     async makeAPICallDictionary() {
-        let apiObj      = new DictionaryAPI(this.state.selectedSentence,this.props.word_locale, this.props.tgt_locale )
-        const apiReq    = await fetch(apiObj.apiEndPoint(), {
-            method  : 'post',
-            body    : JSON.stringify(apiObj.getBody()),
-            headers : apiObj.getHeaders().headers
-        }).then ( (response)=> {
+        let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.word_locale, this.props.tgt_locale)
+        const apiReq = await fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            body: JSON.stringify(apiObj.getBody()),
+            headers: apiObj.getHeaders().headers
+        }).then((response) => {
             if (response.status >= 400 && response.status < 600) {
             }
-            response.text().then( (data)=> {
-                    let val = JSON.parse(data)
-                    return val.data;
-            }).then((result)=>{
-                    let parallel_words = []
-                    result.parallel_words.map((words) => {
-                    if(this.props.tgt_locale === words.locale)
+            response.text().then((data) => {
+                let val = JSON.parse(data)
+                return val.data;
+            }).then((result) => {
+                let parallel_words = []
+                result.parallel_words.map((words) => {
+                    if (this.props.tgt_locale === words.locale)
                         parallel_words.push(words.name)
-                    } )
-                    this.setState({
-                        parallel_words: parallel_words
-                    })
+                })
+                this.setState({
+                    parallel_words: parallel_words,
+                    isOpenDictionary: true
+                })
             })
         })
     }
 
     handleClose = () => {
-        this.setState({selectedSentence: '',  positionX:0, positionY:0,isopenMenuItems : false, endIndex : null, startIndex: null})
+        this.setState({ selectedSentence: '', positionX: 0, positionY: 0, isopenMenuItems: false, endIndex: null, startIndex: null })
     }
 
     handleCopy = () => {
         copy(this.state.selectedSentence)
         this.handleClose()
     }
-      
-    handleOperation = (action) =>{
-        switch(action) {
+
+    handleOperation = (action) => {
+        switch (action) {
             case 0: {
-              this.makeAPICallDictionary();
-              this.handleClose();
-              return;
+                this.makeAPICallDictionary();
+                this.handleClose();
+                return;
             }
-    
+
             case 1: {
                 this.processSplitButtonClicked(this.state.startIndex, this.state.endIndex);
-              this.handleClose();
-              return;
+                this.handleClose();
+                return;
             }
             case 2: {
-    
+
                 this.handleCopy()
-              return;
+                return;
             }
-          }
+        }
     }
 
     renderMenuItems = () => {
         return (
-        <MenuItems
-            splitValue={this.state.selectedSentence}
-            positionX={this.state.positionX}
-            positionY = {this.state.positionY}
-            handleClose={this.handleClose.bind(this)}
-            isopenMenuItems = {this.state.isopenMenuItems}
-            handleOperation={this.handleOperation.bind(this)}
-          />)
+            <MenuItems
+                splitValue={this.state.selectedSentence}
+                positionX={this.state.positionX}
+                positionY={this.state.positionY}
+                handleClose={this.handleClose.bind(this)}
+                isopenMenuItems={this.state.isopenMenuItems}
+                handleOperation={this.handleOperation.bind(this)}
+            />)
+    }
+
+
+    handelDictionaryClose = () => {
+        this.setState({
+            isOpenDictionary: false, dictionaryX: null, dictionaryY: null
+        })
+    }
+
+    handleDictionary = () => {
+        return (
+            <Popover
+                id="menu-appbar"
+                open={this.state.isOpenDictionaryOnly}
+                open={true}
+                anchorReference="anchorPosition"
+                anchorPosition={{ top: this.state.dictionaryY + 10, left: this.state.dictionaryX + 5 }}
+                onClose={() => this.handelDictionaryClose()}
+                anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                }}
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                }}
+            >
+                <div style={{ padding: "8px" }}>
+                    Meaning of
+                    <hr style={{ color: "#00000014" }} />
+                    <div style={{ maxHeight: "250px", maxWidth: "300px", overflow: "auto" }} onMouseLeave={() => this.setState({ displayCopy: null })}>
+                        {
+                            this.state.parallel_words && this.state.parallel_words.map((word, i) => {
+                                return <Button key={i} style={{
+                                    textTransform: "none",
+                                    width: "100%",
+                                    justifyContent: "left",
+                                }}
+                                    onMouseOver={() => this.setState({ displayCopy: i })}
+                                >
+                                    {
+                                        this.state.displayCopy === i ? this.renderData("copy", word) : this.renderData("", word)
+                                    }
+
+                                </Button>
+                            })
+                        }
+                    </div>
+
+                </div>
+            </Popover>
+        )
+    }
+
+    renderData = (type, text) => {
+        if (type === "copy") {
+            return (<div style={{ width: "100%", display: "flex", flexDirection: "row" }}>
+                <div style={{ width: "80%", textAlign: 'left' }}>{text}</div>
+                <div style={{ width: "20%", textAlign: 'right' }}>
+                    <Tooltip title="Copy" placement="right">
+                        <CopyIcon style={{ width: "20px" }} onClick={() => { copy(text); this.setState({ dictionaryX: null, dictionaryY: null, isOpenDictionary: false }) }}></CopyIcon>
+                    </Tooltip>
+                </div>
+            </div>
+            )
+        } else {
+            return (
+                <div>{text}</div>
+            )
+        }
     }
 
     renderSentenceSaveStatus = () => {
@@ -590,12 +668,12 @@ class SentenceCard extends React.Component {
         )
     }
 
-    renderSentenceCard = () =>{
+    renderSentenceCard = () => {
         return (
             <div key={12} style={{ padding: "1%" }}>
                 <MuiThemeProvider theme={theme}>
                     <Card style={this.cardBlockCompare() || (this.cardCompare()) ? styles.card_open : this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
-                        <CardContent  style={{ display: "flex", flexDirection: "row" }}>
+                        <CardContent style={{ display: "flex", flexDirection: "row" }}>
                             <div style={{ width: "90%" }}>
                                 {this.renderSourceSentence()}
                             </div>
@@ -604,19 +682,17 @@ class SentenceCard extends React.Component {
 
                         </CardContent>
 
-                        {this.state.parallel_words && <CardContent style={{ display: "flex", flexDirection: "row" }}>
+                        {/* {this.state.parallel_words && <CardContent style={{ display: "flex", flexDirection: "row" }}>
                             <div style={{ width: "90%" }}>
                                 {this.renderDictionarySentence()}
                             </div>
-                           
+                        </CardContent>} */}
 
-                        </CardContent>}
-
-                        {(this.isSentenceSaved() && !this.cardCompare())&& <CardContent style={{ display: "flex", flexDirection: "row" }}>
+                        {(this.isSentenceSaved() && !this.cardCompare()) && <CardContent style={{ display: "flex", flexDirection: "row" }}>
                             <div style={{ width: "90%" }}>
                                 {this.renderSavedTargetSentence()}
                             </div>
-                           
+
 
                         </CardContent>}
 
@@ -631,28 +707,28 @@ class SentenceCard extends React.Component {
                             </CardActions>
                         </Collapse>
                     </Card>
-                    </MuiThemeProvider>
-                </div>
+                </MuiThemeProvider>
+            </div>
         )
     }
 
     handleCardExpandClick = () => {
         if (this.cardCompare()) {
-            this.setState({cardInFocus: false})
+            this.setState({ cardInFocus: false })
             this.props.clearHighlighBlock()
         } else {
-            this.setState({cardInFocus: true})
+            this.setState({ cardInFocus: true })
             this.props.highlightBlock(this.props.sentence, this.props.pageNumber)
             /**
              * For highlighting textarea on card expand
              */
             this.textInput && this.textInput.current && this.textInput.current.focus();
         }
-        
+
     }
 
     cardBlockCompare = () => {
-        if(this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id){
+        if (this.props.sentence_highlight && this.props.sentence_highlight.sentence_id === this.props.sentence.s_id) {
             return true;
         }
         return false;
@@ -660,7 +736,7 @@ class SentenceCard extends React.Component {
 
     cardCompare = () => {
 
-        if(this.props.block_highlight.current_sid === this.props.sentence.s_id ) {
+        if (this.props.block_highlight.current_sid === this.props.sentence.s_id) {
             return true;
         }
         return false;
@@ -681,6 +757,7 @@ class SentenceCard extends React.Component {
             <div >
                 {this.renderSentenceCard()}
                 {this.state.isopenMenuItems && this.renderMenuItems()}
+                {this.state.isOpenDictionary && this.handleDictionary()}
             </div>
 
         )
