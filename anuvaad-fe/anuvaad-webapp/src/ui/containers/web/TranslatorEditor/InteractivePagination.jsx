@@ -121,7 +121,6 @@ class InteractivePagination extends React.Component {
               {!this.props.show_pdf &&
               <>
               {this.sentenceCount() && (
-                  <>
                 <div style={{ position: "absolute", marginLeft: "50%" }}>
                   <Typography variant="h6" component="h2">
                     Sentences
@@ -131,17 +130,17 @@ class InteractivePagination extends React.Component {
                     {this.sentenceCount()}
                   </div>
                 </div>
+              )}
               
-              
-              <div style={{ position: "absolute", marginLeft: "60%" }}>
+              {this.props.job_status && <div style={{ position: "absolute", marginLeft: "60%" }}>
                   <Typography variant="h6" component="h2">
                     Total Sentences
                   </Typography>
 
                   <div style={{ textAlign: "center" }}>
-                  {this.props.job_status ?this.props.job_status : '...'}
+                    {this.props.job_status && this.props.job_status }
                   </div>
-                </div></>)}
+                </div>}
               
               <div style={{ position: "absolute", right: "30px" }}>
                 {this.renderNormaModeButtons()}
