@@ -101,7 +101,7 @@ class SignUp extends React.Component {
               <Typography align='center' variant='h4' className={classes.typographyHeader}>Sign Up</Typography>
              
               <FormControl align='center' fullWidth >
-              <TextField  value={this.state.firstName} id="outlined-margin-dense" placeholder={translate('signUp.page.label.firstName')}
+              <TextField  value={this.state.firstName} id="first-name" placeholder={translate('signUp.page.label.firstName')}
                    varient="outlined" margin="dense" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('firstName')}
                 />
               {/* </FormControl> */}
@@ -111,17 +111,17 @@ class SignUp extends React.Component {
                 />
               </FormControl> */}
               {/* <FormControl align='center' fullWidth> */}
-                <TextField value={this.state.email} id="outlined-required" type="email" placeholder={translate('common.page.placeholder.emailUsername')}
+                <TextField value={this.state.email} id="email" type="email-username" placeholder={translate('common.page.placeholder.emailUsername')}
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('email')}
                 />
               {/* </FormControl>
               <FormControl align='center' fullWidth> */}
-                <TextField value={this.state.password} id="outlined-required" type="password" placeholder={translate('setPassword.page.placeholder.enterPassword')}
+                <TextField value={this.state.password} id="passowrd" type="password" placeholder={translate('setPassword.page.placeholder.enterPassword')}
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('password')}
                 />                
                 {/* </FormControl>
               <FormControl align='center' fullWidth> */}
-                <TextField value={this.state.confirmPassword} id="outlined-required" type="password" placeholder={translate('setPassword.page.placeholder.reEnterPassword')}
+                <TextField value={this.state.confirmPassword} id="re-password" type="password" placeholder={translate('setPassword.page.placeholder.reEnterPassword')}
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('confirmPassword')}
                 />
               {/* </FormControl> */}

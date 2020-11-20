@@ -81,7 +81,7 @@ class InteractiveDocHeader extends React.Component {
                 let fileName = rsp_data && rsp_data[this.state.fileType] ? rsp_data[this.state.fileType] : ""
                 if (fileName) {
                     let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
-                    window.open(url, "_blank")
+                    window.open(url)
                 }
 
             }
