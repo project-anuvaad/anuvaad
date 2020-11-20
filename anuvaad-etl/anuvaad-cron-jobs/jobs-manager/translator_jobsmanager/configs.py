@@ -1,7 +1,7 @@
 import os
 
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
-mongo_server_host = os.environ.get('MONGO_SERVER_HOST', 'mongodb://localhost:27017/')
+mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
 mongo_translator_db = os.environ.get('MONGO_ANUVAAD_TRANSLATOR_DB', 'anuvaad-etl-translator-db')
 mongo_translator_collection = os.environ.get('MONGO_ANUVAAD_TRANSLATOR_COL', 'anuvaad-etl-translator-content-collection')
 

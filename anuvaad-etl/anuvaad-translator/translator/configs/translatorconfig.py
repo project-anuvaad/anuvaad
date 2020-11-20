@@ -3,15 +3,21 @@ import os
 
 #CROSS-MODULE-COMMON-CONFIGS
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
-mongo_server_host = os.environ.get('MONGO_SERVER_HOST', 'mongodb://localhost:27017/')
+mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
 redis_host = os.environ.get('REDIS_SERVER_HOST', 'redis://localhost:6379/')
-file_download_url = os.environ.get('FILE_DOWNLOAD_URL', 'https://auth.anuvaad.org/anuvaad/v1/download')
-save_content_url = os.environ.get('SAVE_CONTENT_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/save-content')
-fetch_content_url = os.environ.get('FETCH_CONTENT_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/fetch-content')
-update_content_url = os.environ.get('UPDATE_CONTENT_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/update-content')
-sentence_fetch_url = os.environ.get('SENTENCE_FETCH_URL', 'http://gateway_anuvaad-content-handler:5001/api/v0/fetch-content-sentence')
+file_download_url = str(os.environ.get('FILE_UPLOADER_HOST', 'http://gateway_anuvaad-fileuploader:5001')) \
+                    + str(os.environ.get('FILE_DOWNLOAD_ENDPOINT', '/anuvaad/v1/download'))
+save_content_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
+                    + str(os.environ.get('SAVE_CONTENT_ENDPOINT', '/api/v0/save-content'))
+fetch_content_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
+                    + str(os.environ.get('FETCH_CONTENT_ENDPOINT', '/api/v0/fetch-content'))
+update_content_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
+                    + str(os.environ.get('UPDATE_CONTENT_ENDPOINT', '/api/v0/update-content'))
+sentence_fetch_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
+                    + str(os.environ.get('SENTENCE_FETCH_ENDPOINT', '/api/v0/fetch-content-sentence'))
 nmt_translate_url = os.environ.get('NMT_TRANSLATE_URL', 'http://52.35.227.215:5001/translate-anuvaad')
 nmt_interactive_translate_url = os.environ.get('NMT_IT_URL', 'http://52.35.227.215:5001/v1/interactive-translation')
+
 
 #MODULE-SPECIFIC-CONFIGS
 #common-variables
@@ -33,8 +39,8 @@ translator_nmt_cons_no_of_partitions = 1
 
 
 #datastore-configs
-mongo_translator_db = os.environ.get('MONGO_ANUVAAD_TRANSLATOR_DB', 'anuvaad-etl-translator-db')
-mongo_translator_collection = os.environ.get('MONGO_ANUVAAD_TRANSLATOR_COL', 'anuvaad-etl-translator-content-collection')
+mongo_translator_db = os.environ.get('MONGO_TRANSLATOR_DB', 'anuvaad-etl-translator-db')
+mongo_translator_collection = os.environ.get('MONGO_TRANSLATOR_CONTENT_COL', 'anuvaad-etl-translator-content-collection')
 mongo_sentences_collection = os.environ.get('MONGO_ANUVAAD_TRANSLATOR_SENTENCES_COL', 'anuvaad-etl-translator-sentences')
 
 #module-configs

@@ -2,7 +2,7 @@ import os
 
 mongo_wfm_db = os.environ.get('MONGO_WFM_DB', 'anuvaad-etl-wfm-db')
 mongo_wfm_jobs_col = os.environ.get('MONGO_WFMJOBS_COL', 'anuvaad-etl-wfm-jobs-collection')
-mongo_server_host = os.environ.get('MONGO_SERVER_HOST', 'mongodb://localhost:27017/')
+mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
 
 module_name = "JOBS-MANAGER"
 js_cron_interval_sec = os.environ.get('WFM_JS_CRON_INTERVAL_SEC', 3600) # 1/2 hr
