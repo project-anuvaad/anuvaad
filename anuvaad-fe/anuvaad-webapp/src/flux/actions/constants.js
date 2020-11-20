@@ -122,12 +122,18 @@ const constants = {
     EDITOR_MODE_CLEAR          :   "EDITOR_MODE_CLEAR",
     EDITOR_MODE_NORMAL          :   "EDITOR_MODE_NORMAL",
     EDITOR_MODE_MERGE           :   "EDITOR_MODE_MERGE",
-    UPDATE_PAGENUMBER           :   "UPDATE_PAGENUMBER",
+    
 
      /**
      * actions for header
      */
     SHOW_PDF : 'SHOW_PDF',
-    SHOW_SIDEBAR : "SHOW_SIDEBAR"
+    SHOW_SIDEBAR : "SHOW_SIDEBAR",
+
+    /**
+     * actions for pagination
+     */
+    JOBPROGRESSSTATUS            : 'JOBPROGRESSSTATUS',
+    UPDATE_PAGENUMBER           :   "UPDATE_PAGENUMBER",
 }
 export default constants;
