@@ -92,38 +92,39 @@ class SignUp extends React.Component {
     return (
       <MuiThemeProvider theme={ThemeDefault}>
 
-        <div >
+        <div style={{height: window.innerHeight}}>
           <Grid container spacing={8} >
-            <Grid item xs={12} sm={4} lg={5} xl={5} >
-              <img src="Anuvaad.png" width="100%" height="956px" alt=""   marginBottom="0px"/>
+            <Grid item xs={12} sm={4} lg={5} xl={5} style={{paddingRight: "0px"}}>
+              <img src="Anuvaad.png" width="100%" height="100%" alt=""/>
             </Grid>
             <Grid item xs={12} sm={8} lg={7} xl={7} className={classes.signUpPaper} >
               <Typography align='center' variant='h4' className={classes.typographyHeader}>Sign Up</Typography>
+             
               <FormControl align='center' fullWidth >
-
-              <TextField  value={this.state.firstName} id="outlined-margin-dense" placeholder={translate('signUp.page.label.firstName')}
+              <TextField  value={this.state.firstName} id="first-name" placeholder={translate('signUp.page.label.firstName')}
                    varient="outlined" margin="dense" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('firstName')}
                 />
-              </FormControl>
+              {/* </FormControl> */}
               {/* <FormControl align='center' fullWidth>
                 <TextField value={this.state.lastName} id="outlined-required" placeholder={translate('signUp.page.label.lastName')}
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('lastName')}
                 />
               </FormControl> */}
-              <FormControl align='center' fullWidth>
-                <TextField value={this.state.email} id="outlined-required" type="email" placeholder={translate('common.page.placeholder.emailUsername')}
+              {/* <FormControl align='center' fullWidth> */}
+                <TextField value={this.state.email} id="email" type="email-username" placeholder={translate('common.page.placeholder.emailUsername')}
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('email')}
                 />
-              </FormControl>
-              <FormControl align='center' fullWidth>
-                <TextField value={this.state.password} id="outlined-required" type="password" placeholder={translate('setPassword.page.placeholder.enterPassword')}
+              {/* </FormControl>
+              <FormControl align='center' fullWidth> */}
+                <TextField value={this.state.password} id="passowrd" type="password" placeholder={translate('setPassword.page.placeholder.enterPassword')}
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('password')}
-                />                </FormControl>
-              <FormControl align='center' fullWidth>
-                <TextField value={this.state.confirmPassword} id="outlined-required" type="password" placeholder={translate('setPassword.page.placeholder.reEnterPassword')}
+                />                
+                {/* </FormControl>
+              <FormControl align='center' fullWidth> */}
+                <TextField value={this.state.confirmPassword} id="re-password" type="password" placeholder={translate('setPassword.page.placeholder.reEnterPassword')}
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('confirmPassword')}
                 />
-              </FormControl>
+              {/* </FormControl> */}
               <FormControlLabel className={classes.formControl}
                 control={
                   <Checkbox
@@ -143,7 +144,7 @@ class SignUp extends React.Component {
                 </div>}
               />
               
-              <FormControl align='center' fullWidth className={classes.formControl}>
+              <div>
                 <Button
                   disabled={!this.state.termsAndCondition}
                   variant="contained" aria-label="edit" style={{
@@ -152,6 +153,8 @@ class SignUp extends React.Component {
                   }} onClick={this.handleSubmit.bind(this)}>
                   {translate('singUp.page.label.signUp')}
                 </Button>
+              </div>
+
               </FormControl>
 
               <Typography className={classes.typography1}>{translate('signUp.page.label.allReadyHaveAccount')}
