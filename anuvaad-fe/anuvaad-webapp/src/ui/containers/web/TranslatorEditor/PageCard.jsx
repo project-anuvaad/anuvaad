@@ -31,18 +31,18 @@ class PageCard extends React.Component {
         this.action             = null
     }
 
-    shouldComponentUpdate(prevProps, nextState) {
-        if (prevProps.page) {
-            if (prevProps.sentence_highlight && (prevProps.page.page_no === prevProps.sentence_highlight.page_no)) {
-                return true
-            }
-            if( prevProps.page.page_no === prevProps.block_page){
-                return true
-            }
-            return false
-        }
-        return true;
-    }
+    // shouldComponentUpdate(prevProps, nextState) {
+    //     if (prevProps.page) {
+    //         if (prevProps.sentence_highlight && (prevProps.page.page_no === prevProps.sentence_highlight.page_no)) {
+    //             return true
+    //         }
+    //         if( prevProps.page.page_no === prevProps.block_page){
+    //             return true
+    //         }
+    //         return false
+    //     }
+    //     return true;
+    // }
 
     componentDidUpdate(prevProps) {
         if (prevProps.block_highlight !== this.props.block_highlight && this.props.block_highlight.block_identifier) {
@@ -223,7 +223,7 @@ class PageCard extends React.Component {
 
     render() {
         return (
-            <div>
+            <div style = {{ overflow:"auto"}}>
                 {this.renderPage(this.props.page)}
             </div>
         )

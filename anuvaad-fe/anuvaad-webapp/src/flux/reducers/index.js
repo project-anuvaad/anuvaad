@@ -23,6 +23,7 @@ import job_details from './jobs/v1_fetch_job_details';
 import document_contents from './v1_fetch_content';
 import fetch_languages from './v1_fetchlanguages';
 import fetch_models from './v1_fetch_model';
+import active_page_number from './v1_pageUpdates';
 
 import documentDetails from "./fetch_fileDetails";
 import fetchContent from "./fetchcontent";
@@ -79,5 +80,7 @@ export default {
     document_editor_mode,
 
     show_pdf,
-    open_sidebar
+    open_sidebar,
+    
+    active_page_number
 };

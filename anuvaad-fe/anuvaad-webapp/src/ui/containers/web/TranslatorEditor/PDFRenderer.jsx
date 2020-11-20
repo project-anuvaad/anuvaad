@@ -27,7 +27,7 @@ class PDFRenderer extends React.Component {
 
     renderPDF = (url, pageNo) => {
         return (
-            <div style={{ maxHeight: window.innerHeight - 85, overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
+            <div style={{ maxHeight: window.innerHeight - 120, overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
                 <Document file={url} onLoadSuccess={this.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
                 {
                 Array.from(

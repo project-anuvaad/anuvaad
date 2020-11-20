@@ -22,9 +22,10 @@ import PDFRenderer from './PDFRenderer';
 import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
 import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
+import InteractivePagination from './InteractivePagination';
 import SENTENCE_ACTION from './SentenceActions'
 import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverter";
-
+import JobStatus from "../../../../flux/actions/apis/translation.progress";
 // import PAGE_OPS from "../../../../utils/page.operations";
 // import BLOCK_OPS from "../../../../utils/block.operations";
 // import TELEMETRY from '../../../../utils/TelemetryManager';
@@ -47,6 +48,7 @@ class DocumentEditor extends React.Component {
             currentPageIndex: 1,
             apiInProgress: false,
             snackBarMessage: '',
+            apiFetchStatus: false
         }
         this.forMergeSentences = []
     }
@@ -74,14 +76,23 @@ class DocumentEditor extends React.Component {
       }
       TELEMETRY.startTranslatorFlow(sourceLang, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
       this.setState({ showLoader: true });
-      this.makeAPICallFetchContent();
+      this.makeAPICallFetchContent(1);
       window.addEventListener('popstate',this.handleOnClose);
-      window.addEventListener('beforeunload',this.handleOnClose);
+      // window.addEventListener('beforeunload',this.handleOnClose);
     }
 
     componentDidUpdate(prevProps) {
      if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
         this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
+      }
+      if(prevProps.active_page_number!== this.props.active_page_number){
+        this.makeAPICallFetchContent(this.props.active_page_number);
+        
+
+      }
+
+      if(prevProps.document_contents !== this.props.document_contents){
+        this.setState({apiFetchStatus:false})
       }
     }
 
@@ -106,14 +117,23 @@ class DocumentEditor extends React.Component {
      * API methods
      */
 
-    makeAPICallFetchContent =  () => {
-      let start_page    = this.props.document_contents.pages.length + 1;
-      let end_page      = start_page + 1;
-      
-
-      const apiObj      = new FileContent(this.props.match.params.jobid, start_page, end_page);
+    makeAPICallFetchContent =  (page_no) => {
+      let status = PAGE_OPS.page_status(this.props.document_contents.pages, page_no);
+      if(status){
+        let start_page    = page_no;
+      const apiObj      = new FileContent(this.props.match.params.jobid, start_page, start_page);
       this.props.APITransport(apiObj);
+      this.setState({apiFetchStatus: true})
+      }
+      
     }
+
+    makeAPICallDocumentsTranslationProgress() {
+      const { APITransport }  = this.props;
+      const apiObj            = new JobStatus([this.props.match.params.jobid]);
+      APITransport(apiObj);  
+
+  }
 
     makeAPICallFetchContentPerPage = (start_page) => {
       
@@ -255,6 +275,8 @@ class DocumentEditor extends React.Component {
       });
     }
 
+  
+
     /**
      * workhorse functions
      */
@@ -281,11 +303,10 @@ class DocumentEditor extends React.Component {
 
     processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex) => {
 
-      
-      
       switch(action) {
         case SENTENCE_ACTION.SENTENCE_SAVED: {
           this.makeAPICallSaveSentence(sentences[0], pageNumber)
+          this.makeAPICallDocumentsTranslationProgress()
           return;
         }
 
@@ -295,6 +316,7 @@ class DocumentEditor extends React.Component {
             return;
           }
           this.makeAPICallSplitSentence(sentences[0], pageNumber, startIndex, endIndex);
+          this.makeAPICallDocumentsTranslationProgress();
           return;
         }
 
@@ -305,6 +327,7 @@ class DocumentEditor extends React.Component {
             return;
           }
           this.makeAPICallMergeSentence(this.forMergeSentences, pageNumber);
+          this.makeAPICallDocumentsTranslationProgress()
           this.forMergeSentences  = []
           return;
         }
@@ -417,8 +440,9 @@ class DocumentEditor extends React.Component {
     /**
      * render Document pages
      */
-    renderDocumentPages = () => {
-      let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages);
+    renderDocumentPages = (page_no) => {
+      
+      let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages, page_no);
       if (pages.length < 1) {
         return(
             <div></div>
@@ -426,15 +450,12 @@ class DocumentEditor extends React.Component {
       }
       return(
         <Grid item xs={12} sm={6} lg={6} xl={6}>
+          
           <InfiniteScroll  height={1200} style={{
-            maxHeight: window.innerHeight - 80,
+            maxHeight:"86vh",
             overflowY: "auto",
           }}
-            next={this.makeAPICallFetchContent}
-            hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false }
             dataLength={pages.length}
-            loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
-            endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
           >
             {pages.map((page, index) => <PageCard key={index} page={page} onAction={this.processSentenceAction}/>)}
           </InfiniteScroll>
@@ -446,7 +467,8 @@ class DocumentEditor extends React.Component {
      * render sentences
      */
     renderSentences = () => {
-      let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages);
+      
+      let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages, this.props.active_page_number);
       if (pages.length < 1) {
         return(
             <div></div>
@@ -456,14 +478,14 @@ class DocumentEditor extends React.Component {
           <Grid item xs={12} sm={6} lg={6} xl={6}>
             
             <InfiniteScroll  height={1200}  style={{
-            maxHeight: window.innerHeight - 80,
+            maxHeight:"86vh",
             overflowY: "auto",
           }}
-                next={this.makeAPICallFetchContent}
+                // next={this.makeAPICallFetchContent}
                 hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false }
                 dataLength={pages.length}
-                loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
-                endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
+                // loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
+                // endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
             >
               {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={sentence.s_id}  ref={sentence.s_id}><SentenceCard key={sentence.s_id} 
                                                                                   pageNumber={page.page_no} 
@@ -485,18 +507,19 @@ class DocumentEditor extends React.Component {
      */
 
     render() {
+        console.log(this.state.apiFetchStatus)
         return (
         <div style={{height: window.innerHeight}}>
             <InteractiveDocToolBar />
-            <Grid container spacing={2} style={{ padding: "63px 24px 0px 24px" }}>
-                {this.renderDocumentPages()}
+            <Grid container spacing={2} style={{height:"88vh", padding: "63px 24px 0px 24px" }}>
+                {this.renderDocumentPages(this.props.active_page_number)}
                 {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>
-
+            <InteractivePagination count={this.props.document_contents.count} data = {this.props.document_contents.pages} onAction={this.processSentenceAction}/>
             {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
             {this.state.showStatus ? this.renderStatusInformation() : <div />}
 
-            {(this.props.document_contents.pages.length<1) && < Spinner />}
+            { this.state.apiFetchStatus && <Spinner />}
         </div>
         )
     }
@@ -507,7 +530,8 @@ const mapStateToProps = state => ({
     document_contents: state.document_contents,
     sentence_action_operation : state.sentence_action_operation,
     show_pdf: state.show_pdf.open,
-    sentence_highlight  : state.sentence_highlight.sentence
+    sentence_highlight  : state.sentence_highlight.sentence,
+    active_page_number : state.active_page_number.page_number
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

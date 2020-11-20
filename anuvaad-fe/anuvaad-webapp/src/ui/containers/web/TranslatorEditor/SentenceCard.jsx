@@ -251,6 +251,8 @@ class SentenceCard extends React.Component {
     }
 
     processMergeNowButtonClicked() {
+
+        console.log( this.props.sentence)
         if (this.props.onAction) {
             this.setState({value: ''})
             this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, null, this.props.sentence)
@@ -273,7 +275,7 @@ class SentenceCard extends React.Component {
 
     processMergeCancelButtonClicked() {
         this.props.onAction(SENTENCE_ACTION.END_MODE_MERGE, this.props.pageNumber, [this.props.sentence])
-        this.setState({cardChecked: false})
+        // this.setState({cardChecked: false})
     }
 
     processMergeSelectionToggle = () => {
@@ -466,25 +468,11 @@ class SentenceCard extends React.Component {
                 <Button style = {{marginRight:'10px'}} onClick={this.processSaveButtonClicked} variant="outlined" color="primary">
                     SAVE
                 </Button>
-                <Button onClick={this.processMergeButtonClicked} variant="outlined" color="primary">
-                    MERGE
-                </Button>
             </div>
         )
     }
 
-    renderMergeModeButtons = () => {
-        return (
-            <div>
-                <Button style={{marginRight:'10px'}} onClick={this.processMergeNowButtonClicked} variant="outlined" color="primary">
-                    MERGE NOW
-                </Button>
-                <Button onClick={this.processMergeCancelButtonClicked} variant="outlined" color="primary">
-                    CANCEL MERGE
-                </Button>
-            </div>
-        )
-    }
+
 
 
     async makeAPICallDictionary() {
@@ -627,7 +615,7 @@ class SentenceCard extends React.Component {
                                 {this.renderUserInputArea()}
                             </CardContent>
                             <CardActions>
-                                {(this.props.document_editor_mode.mode === 'EDITOR_MODE_MERGE') ? this.renderMergeModeButtons() : this.renderNormaModeButtons()}
+                                {this.renderNormaModeButtons()}
                             </CardActions>
                         </Collapse>
                     </Card>

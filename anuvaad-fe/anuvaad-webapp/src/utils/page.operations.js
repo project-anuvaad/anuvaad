@@ -31,9 +31,14 @@ function get_page_sorted_sentences(sentences) {
  * @param {*} data 
  * @returns pages
  */
-export const get_pages_children_information = (data) => {
+export const get_pages_children_information = (data, active_page) => {
     let pages = []
     data.forEach(element => {
+        console.log(element.page_no, active_page)
+        if(element.page_no === active_page){
+
+       
+       
         let page = {
             'images': [],
             'blocks': [],
@@ -102,6 +107,7 @@ export const get_pages_children_information = (data) => {
         }
 
         pages.push(page)
+    }
     });
 
     return pages
@@ -154,6 +160,19 @@ export const update_blocks = (data, blocks) => {
     return copied_data;
 }
 
+
+export const page_status = (data, active_page) => {
+    let status = true;
+    let copied_data = JSON.parse(JSON.stringify(data))
+    copied_data.forEach(element => {
+        if(element.page_no === active_page){
+            status = false;
+        }
+    });
+    
+    return status;
+}
+
 export const get_updated_page_blocks = (data, blockData, updatedText, id) => {
     let blockIdentifier = blockData.block_identifier
 
@@ -185,5 +204,22 @@ export const get_updated_page_blocks = (data, blockData, updatedText, id) => {
     })
     return textBlock
 
+}
+
+export const get_sentence_count = (data, active_page) => {
+    let result = get_pages_children_information(data, active_page);
+    return result.length>0 && result[0].translated_texts.length;
+}
+
+export const get_total_sentence_count = (data , filename) =>{
+    let progress = "";
+    data.documents.map(files =>{
+        console.log(files.converted_filename, filename)
+        if(files.converted_filename === filename){
+            console.log("------------------",files)
+            progress = files.progress; 
+        }
+    })
+    return progress;
 }
 
