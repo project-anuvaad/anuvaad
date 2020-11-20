@@ -534,7 +534,7 @@ class DocumentEditor extends React.Component {
         return (
         <div style={{height: window.innerHeight}}>
             <InteractiveDocToolBar />
-            <Grid container spacing={2} style={{height:"88vh", padding: "63px 24px 0px 24px" }}>
+            <Grid container spacing={2} style={{height:"89vh", padding: "63px 24px 0px 24px" }}>
                 {this.renderDocumentPages()}
                 {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>

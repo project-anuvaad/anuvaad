@@ -102,7 +102,7 @@ class InteractivePagination extends React.Component {
       >
         <Toolbar
           disableGutters={!this.props.open_sidebar}
-          style={{ minHeight: "60px" }}
+          style={{ minHeight: "65px" }}
         >
           {this.props.document_editor_mode.mode === "EDITOR_MODE_MERGE" ? (
             <div style={{ position: "absolute", right: "30px" }}>
