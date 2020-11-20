@@ -93,7 +93,15 @@ class DocumentEditor extends React.Component {
 
       if(prevProps.document_contents !== this.props.document_contents){
         this.setState({apiFetchStatus:false})
+        
       }
+
+      if(prevProps.document_editor_mode!== this.props.document_editor_mode && this.props.document_editor_mode.mode === 'EDITOR_MODE_MERGE'){
+
+        this.makeAPICallFetchContent(this.props.document_editor_mode.page_nos.slice(-1)[0] , true);
+      }
+
+
     }
 
     componentWillUnmount() {
@@ -117,13 +125,13 @@ class DocumentEditor extends React.Component {
      * API methods
      */
 
-    makeAPICallFetchContent =  (page_no) => {
+    makeAPICallFetchContent =  (page_no, apiStatus) => {
       let status = PAGE_OPS.page_status(this.props.document_contents.pages, page_no);
       if(status){
         let start_page    = page_no;
       const apiObj      = new FileContent(this.props.match.params.jobid, start_page, start_page);
       this.props.APITransport(apiObj);
-      this.setState({apiFetchStatus: true})
+      !apiStatus && this.setState({apiFetchStatus: true})
       }
       
     }
@@ -438,11 +446,26 @@ class DocumentEditor extends React.Component {
     }
 
     /**
+     * util to get selected page
+     */
+    getPages = () => {
+      let pages;
+      if(this.props.document_editor_mode.mode === 'EDITOR_MODE_MERGE'){
+        pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages, this.props.active_page_number,this.props.document_editor_mode.page_nos.slice(-1)[0]  );
+      }
+      else{
+        pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages, this.props.active_page_number );
+      
+      }
+      return pages;
+    }
+
+    /**
      * render Document pages
      */
-    renderDocumentPages = (page_no) => {
+    renderDocumentPages = () => {
+      let pages = this.getPages()
       
-      let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages, page_no);
       if (pages.length < 1) {
         return(
             <div></div>
@@ -463,12 +486,13 @@ class DocumentEditor extends React.Component {
       )
     }
 
+
     /***
      * render sentences
      */
     renderSentences = () => {
       
-      let pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages, this.props.active_page_number);
+      let pages = this.getPages()
       if (pages.length < 1) {
         return(
             <div></div>
@@ -481,11 +505,8 @@ class DocumentEditor extends React.Component {
             maxHeight:"86vh",
             overflowY: "auto",
           }}
-                // next={this.makeAPICallFetchContent}
                 hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false }
                 dataLength={pages.length}
-                // loader={<div style={{ textAlign: "center" }}> <CircularProgress size={20} style={{zIndex: 1000}}/></div>}
-                // endMessage={ <div style={{ textAlign: "center" }}><b>You have seen it all</b></div> }
             >
               {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={sentence.s_id}  ref={sentence.s_id}><SentenceCard key={sentence.s_id} 
                                                                                   pageNumber={page.page_no} 
@@ -512,7 +533,7 @@ class DocumentEditor extends React.Component {
         <div style={{height: window.innerHeight}}>
             <InteractiveDocToolBar />
             <Grid container spacing={2} style={{height:"88vh", padding: "63px 24px 0px 24px" }}>
-                {this.renderDocumentPages(this.props.active_page_number)}
+                {this.renderDocumentPages()}
                 {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
             </Grid>
             <InteractivePagination count={this.props.document_contents.count} data = {this.props.document_contents.pages} onAction={this.processSentenceAction}/>
@@ -531,7 +552,8 @@ const mapStateToProps = state => ({
     sentence_action_operation : state.sentence_action_operation,
     show_pdf: state.show_pdf.open,
     sentence_highlight  : state.sentence_highlight.sentence,
-    active_page_number : state.active_page_number.page_number
+    active_page_number : state.active_page_number.page_number,
+    document_editor_mode: state.document_editor_mode
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

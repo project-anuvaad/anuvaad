@@ -31,14 +31,11 @@ function get_page_sorted_sentences(sentences) {
  * @param {*} data 
  * @returns pages
  */
-export const get_pages_children_information = (data, active_page) => {
+export const get_pages_children_information = (data, active_page, active_next_page) => {
     let pages = []
     data.forEach(element => {
         console.log(element.page_no, active_page)
-        if(element.page_no === active_page){
-
-       
-       
+        if(element.page_no === active_page || element.page_no === active_next_page){
         let page = {
             'images': [],
             'blocks': [],
