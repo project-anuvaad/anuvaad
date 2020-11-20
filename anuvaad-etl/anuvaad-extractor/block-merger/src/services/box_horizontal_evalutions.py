@@ -16,12 +16,15 @@ def are_hlines(df, configs, idx1, idx2, debug=False):
 
 
 def are_hlines_superscript(df, configs, idx1, idx2, debug=False):
+
+    top_differenc = df.iloc[idx1]['text_top'] - df.iloc[idx2]['text_top']
+
     if (df.iloc[idx1]['text_top'] > df.iloc[idx2]['text_top']):
-        if (df.iloc[idx1]['text_top'] - df.iloc[idx2]['text_top']) <= configs['SUPERSCRIPT_HEIGHT_DIFFERENCE']:
+        if  (top_differenc <= configs['SUPERSCRIPT_HEIGHT_DIFFERENCE']) &  ( top_differenc >  configs['SUPERSCRIPT_HEIGHT_DIFFERENCE'] /2) :
             return True, idx1, idx2
 
     if (df.iloc[idx2]['text_top'] > df.iloc[idx1]['text_top']):
-        if (df.iloc[idx2]['text_top'] - df.iloc[idx1]['text_top']) <= configs['SUPERSCRIPT_HEIGHT_DIFFERENCE']:
+        if (top_differenc <= configs['SUPERSCRIPT_HEIGHT_DIFFERENCE']) &  ( top_differenc >  configs['SUPERSCRIPT_HEIGHT_DIFFERENCE'] /2):
             return True, idx2, idx1
 
     return False, idx1, idx2
