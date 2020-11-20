@@ -22,7 +22,7 @@ paths:
           schema:
             $ref: '#/definitions/EvaluatorRequest'
       tags:
-      - Word Detector
+      - Evaluator
       responses:
         200:
           description: On successful completion of the job.

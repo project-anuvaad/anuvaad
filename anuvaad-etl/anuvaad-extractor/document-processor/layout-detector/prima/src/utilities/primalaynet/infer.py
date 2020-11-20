@@ -30,13 +30,13 @@ class PRIMA(object):
 		thresh = 0
 		if ar==None:
 			ar=0
-		if area1<area2:
+		if area1<area2 and area1>0:
 			if abs(int(ar)/area1)>0.20:
 				thresh = abs(int(ar)/area1)
 				check=True
-		if area1>area2:
+		if area1>area2 and area2>0:
 			if abs(int(ar)/area2)>0.20:
-				thresh = abs(int(ar)/area1)
+				thresh = abs(int(ar)/area2)
 				check=True
 		if (r2[x] < r1[x] and l2[x] > l1[x] and l2[y] > l1[y] and l2[y] < l1[y]) or (r2[x] > r1[x] and l2[x] < l1[x] and l2[y] < l1[y] and l2[y] > l1[y]):
 			check =True
