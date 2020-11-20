@@ -24,6 +24,7 @@ import copy from 'copy-to-clipboard';
 import SENTENCE_ACTION from './SentenceActions'
 import { value } from 'jsonpath';
 import Dictionary from "./Dictionary"
+
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 
@@ -111,7 +112,9 @@ class SentenceCard extends React.Component {
             dictionaryWord: '',
             startIndex: null,
             endIndex: null,
-            isOpenDictionaryOnly: false
+            isOpenDictionaryOnly: false,
+            showStatus: false,
+            message: null
         };
         this.textInput = React.createRef();
         this.handleUserInputText = this.handleUserInputText.bind(this);
@@ -494,7 +497,7 @@ class SentenceCard extends React.Component {
 
 
     async makeAPICallDictionary() {
-        this.renderProgressInformation()
+        this.setState({ showStatus: true, message: "Fetching meanings"})
         let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.word_locale, this.props.tgt_locale)
         const apiReq = await fetch(apiObj.apiEndPoint(), {
             method: 'post',
@@ -511,6 +514,7 @@ class SentenceCard extends React.Component {
                 result.parallel_words.map((words) => {
                     if (this.props.tgt_locale === words.locale)
                         parallel_words.push(words.name)
+                    this.setState({showStatus: false, message: null})
                 })
                 this.setState({
                     parallel_words: parallel_words,
@@ -524,10 +528,11 @@ class SentenceCard extends React.Component {
         return (
           <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            open={true}
-            message="Fetching meaning"
+            open={this.state.showStatus}
+            message={this.state.message}
+           
           >
-            <Alert elevation={6} variant="filled" severity="info">Fetching words</Alert>
+            <Alert elevation={6} variant="filled" severity="info">{this.state.message}</Alert>
           </Snackbar>
         )
       }
@@ -729,6 +734,7 @@ class SentenceCard extends React.Component {
                 {this.renderSentenceCard()}
                 {this.state.isopenMenuItems && this.renderMenuItems()}
                 {this.state.isOpenDictionary && this.renderDictionary()}
+                {this.state.showStatus && this.renderProgressInformation()}
             </div>
 
         )
