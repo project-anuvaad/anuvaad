@@ -121,6 +121,7 @@ class InteractivePagination extends React.Component {
               {!this.props.show_pdf &&
               <>
               {this.sentenceCount() && (
+                  <>
                 <div style={{ position: "absolute", marginLeft: "50%" }}>
                   <Typography variant="h6" component="h2">
                     Sentences
@@ -130,18 +131,18 @@ class InteractivePagination extends React.Component {
                     {this.sentenceCount()}
                   </div>
                 </div>
-              )}
-              {this.sentenceProgress() && (
-                <div style={{ position: "absolute", marginLeft: "60%" }}>
+              
+              
+              <div style={{ position: "absolute", marginLeft: "60%" }}>
                   <Typography variant="h6" component="h2">
                     Total Sentences
                   </Typography>
 
                   <div style={{ textAlign: "center" }}>
-                    {this.sentenceProgress()}
+                  {this.props.job_status ?this.props.job_status : '...'}
                   </div>
-                </div>
-              )}
+                </div></>)}
+              
               <div style={{ position: "absolute", right: "30px" }}>
                 {this.renderNormaModeButtons()}
               </div>
@@ -156,6 +157,7 @@ class InteractivePagination extends React.Component {
   }
 
   render() {
+      console.log(this.props.job_status)
     return (
       this.footer()
     );
@@ -165,7 +167,8 @@ class InteractivePagination extends React.Component {
 const mapStateToProps = (state) => ({
   document_editor_mode: state.document_editor_mode,
   job_details: state.job_details,
-  show_pdf: state.show_pdf.open
+  show_pdf: state.show_pdf.open,
+  job_status : state.job_status.status
 });
 
 const mapDispatchToProps = (dispatch) =>
