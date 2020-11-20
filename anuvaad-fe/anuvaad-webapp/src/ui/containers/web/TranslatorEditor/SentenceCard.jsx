@@ -23,9 +23,9 @@ import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import copy from 'copy-to-clipboard';
 import SENTENCE_ACTION from './SentenceActions'
 import { value } from 'jsonpath';
-import Popover from "@material-ui/core/Popover";
-import CopyIcon from "@material-ui/icons/FileCopy";
-import Tooltip from '@material-ui/core/Tooltip';
+import Dictionary from "./Dictionary"
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
@@ -61,26 +61,26 @@ const styles = {
 const theme = createMuiTheme({
     overrides: {
         MuiCardContent: {
-          root: {
-              padding:'0px',
-              paddingLeft:'10px',
-              "&:first-child": {
-                paddingTop: '10px',
-             },
-            "&:last-child": {
-              paddingBottom: 0,
-           },
+            root: {
+                padding: '0px',
+                paddingLeft: '10px',
+                "&:first-child": {
+                    paddingTop: '10px',
+                },
+                "&:last-child": {
+                    paddingBottom: 0,
+                },
 
-          },
+            },
         },
-        MuiDivider :{
-            root:{
-                marginTop:'-10px',
-                marginBottom:'10px'
+        MuiDivider: {
+            root: {
+                marginTop: '-10px',
+                marginBottom: '10px'
             }
         }
-      },
-  });
+    },
+});
 
 function sleep(delay = 0) {
     return new Promise((resolve) => {
@@ -322,6 +322,7 @@ class SentenceCard extends React.Component {
     }
 
     getSelectionText = (event) => {
+        this.setState({ selectedSentence: '' })
         let selectedSentence = window.getSelection().toString();
         let endIndex = window.getSelection().focusOffset;
         let startIndex = window.getSelection().anchorOffset;
@@ -495,6 +496,7 @@ class SentenceCard extends React.Component {
 
 
     async makeAPICallDictionary() {
+        this.renderProgressInformation()
         let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.word_locale, this.props.tgt_locale)
         const apiReq = await fetch(apiObj.apiEndPoint(), {
             method: 'post',
@@ -520,8 +522,23 @@ class SentenceCard extends React.Component {
         })
     }
 
+    renderProgressInformation = () => {
+        return (
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={true}
+            message="Fetching meaning"
+          >
+            <Alert elevation={6} variant="filled" severity="info">Fetching words</Alert>
+          </Snackbar>
+        )
+      }
+
     handleClose = () => {
-        this.setState({ selectedSentence: '', positionX: 0, positionY: 0, isopenMenuItems: false, endIndex: null, startIndex: null })
+        this.setState({
+            // selectedSentence: '', 
+            positionX: 0, positionY: 0, isopenMenuItems: false, endIndex: null, startIndex: null
+        })
     }
 
     handleCopy = () => {
@@ -569,67 +586,23 @@ class SentenceCard extends React.Component {
         })
     }
 
-    handleDictionary = () => {
+    renderDictionary = () => {
         return (
-            <Popover
-                id="menu-appbar"
-                open={this.state.isOpenDictionaryOnly}
-                open={true}
-                anchorReference="anchorPosition"
-                anchorPosition={{ top: this.state.dictionaryY + 10, left: this.state.dictionaryX + 5 }}
-                onClose={() => this.handelDictionaryClose()}
-                anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                }}
-                transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                }}
-            >
-                <div style={{ padding: "8px" }}>
-                    Meaning of
-                    <hr style={{ color: "#00000014" }} />
-                    <div style={{ maxHeight: "250px", maxWidth: "300px", overflow: "auto" }} onMouseLeave={() => this.setState({ displayCopy: null })}>
-                        {
-                            this.state.parallel_words && this.state.parallel_words.map((word, i) => {
-                                return <Button key={i} style={{
-                                    textTransform: "none",
-                                    width: "100%",
-                                    justifyContent: "left",
-                                }}
-                                    onMouseOver={() => this.setState({ displayCopy: i })}
-                                >
-                                    {
-                                        this.state.displayCopy === i ? this.renderData("copy", word) : this.renderData("", word)
-                                    }
-
-                                </Button>
-                            })
-                        }
-                    </div>
-
-                </div>
-            </Popover>
+            <Dictionary
+                isOpenDictionaryOnly={this.state.isOpenDictionaryOnly}
+                dictionaryY={this.state.dictionaryY}
+                dictionaryX={this.state.dictionaryX}
+                handelDictionaryClose={this.handelDictionaryClose.bind(this)}
+                selectedSentence={this.state.selectedSentence}
+                parallel_words={this.state.parallel_words}
+                handleMeaningCopy={this.handleMeaningCopy.bind(this)}
+            />
         )
     }
 
-    renderData = (type, text) => {
-        if (type === "copy") {
-            return (<div style={{ width: "100%", display: "flex", flexDirection: "row" }}>
-                <div style={{ width: "80%", textAlign: 'left' }}>{text}</div>
-                <div style={{ width: "20%", textAlign: 'right' }}>
-                    <Tooltip title="Copy" placement="right">
-                        <CopyIcon style={{ width: "20px" }} onClick={() => { copy(text); this.setState({ dictionaryX: null, dictionaryY: null, isOpenDictionary: false }) }}></CopyIcon>
-                    </Tooltip>
-                </div>
-            </div>
-            )
-        } else {
-            return (
-                <div>{text}</div>
-            )
-        }
+    handleMeaningCopy = (text) => {
+        copy(text);
+        this.setState({ dictionaryX: null, dictionaryY: null, isOpenDictionary: false })
     }
 
     renderSentenceSaveStatus = () => {
@@ -757,7 +730,7 @@ class SentenceCard extends React.Component {
             <div >
                 {this.renderSentenceCard()}
                 {this.state.isopenMenuItems && this.renderMenuItems()}
-                {this.state.isOpenDictionary && this.handleDictionary()}
+                {this.state.isOpenDictionary && this.renderDictionary()}
             </div>
 
         )
