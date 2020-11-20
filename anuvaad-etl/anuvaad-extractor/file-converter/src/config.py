@@ -16,9 +16,9 @@ TASK_STAT = 'FILE-CONVERTER'
 CONSUMER_GROUP = 'anuvaad-etl-fc-consumer-group'
 
 #mongo
-MONGO_IP = 'MONGO_IP'
+MONGO_IP = 'MONGO_CLUSTER_URL'
 DEFAULT_VALUE = 'localhost'
-MONGO_DB_IDENTIFIER = 'MONGO_DB'
+MONGO_DB_IDENTIFIER = 'MONGO_FC_DB'
 DEFAULT_MONGO_DB_IDENTIFIER = 'preprocessing'
 MONGO_SERVER_URL = os.environ.get(MONGO_IP, DEFAULT_VALUE)
 MONGO_DB = os.environ.get(MONGO_DB_IDENTIFIER, DEFAULT_MONGO_DB_IDENTIFIER)
@@ -37,5 +37,5 @@ tok_output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_FC_OUTPUT'
 tok_output_topic = os.environ.get(tok_output_topic_identifier, tok_output_topic_default)
 
 kf_local_server = 'localhost:9092'
-kafka_ip_host = 'KAFKA_CLUSTER_DETAILS'
+kafka_ip_host = 'KAFKA_BOOTSTRAP_SERVER_HOST'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
