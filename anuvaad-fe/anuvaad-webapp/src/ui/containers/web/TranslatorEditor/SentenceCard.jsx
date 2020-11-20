@@ -252,7 +252,6 @@ class SentenceCard extends React.Component {
 
     processMergeNowButtonClicked() {
 
-        console.log( this.props.sentence)
         if (this.props.onAction) {
             this.setState({value: ''})
             this.props.onAction(SENTENCE_ACTION.SENTENCE_MERGED, this.props.pageNumber, null, this.props.sentence)

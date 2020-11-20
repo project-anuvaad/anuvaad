@@ -97,8 +97,8 @@ class DocumentEditor extends React.Component {
       }
 
       if(prevProps.document_editor_mode!== this.props.document_editor_mode && this.props.document_editor_mode.mode === 'EDITOR_MODE_MERGE'){
-
-        this.makeAPICallFetchContent(this.props.document_editor_mode.page_nos.slice(-1)[0] , true);
+        let nextPage = this.props.document_editor_mode.page_nos.slice(-1)[0];
+        this.makeAPICallFetchContent( nextPage, true);
       }
 
 
@@ -528,7 +528,6 @@ class DocumentEditor extends React.Component {
      */
 
     render() {
-        console.log(this.state.apiFetchStatus)
         return (
         <div style={{height: window.innerHeight}}>
             <InteractiveDocToolBar />

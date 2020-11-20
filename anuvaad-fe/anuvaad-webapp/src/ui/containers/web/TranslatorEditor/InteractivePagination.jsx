@@ -153,7 +153,6 @@ class InteractivePagination extends React.Component {
   }
 
   render() {
-    console.log(this.props.job_details, this.props.match.params.inputfileid);
     return (
       this.footer()
     );
