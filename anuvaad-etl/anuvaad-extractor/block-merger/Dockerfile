@@ -13,13 +13,13 @@ ENV DEBIAN_FRONTEND="noninteractive"
 
 RUN apt-get update && apt-get install -y software-properties-common build-essential
 
-RUN add-apt-repository -y ppa:deadsnakes/ppa && apt install -y python3.6 && apt install -y python3.6-venv python3.6-dev
+RUN add-apt-repository -y ppa:deadsnakes/ppa && apt install -y python3.6 && apt install -y python3.6-venv
 
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3.6 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev
+RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev python3.6-dev
 
 RUN pip install --upgrade pip setuptools wheel
 #&&\
