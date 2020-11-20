@@ -76,7 +76,7 @@ class DocumentEditor extends React.Component {
       this.setState({ showLoader: true });
       this.makeAPICallFetchContent();
       window.addEventListener('popstate',this.handleOnClose);
-      window.addEventListener('beforeunload',this.handleOnClose);
+      // window.addEventListener('beforeunload',this.handleOnClose);
     }
 
     componentDidUpdate(prevProps) {
