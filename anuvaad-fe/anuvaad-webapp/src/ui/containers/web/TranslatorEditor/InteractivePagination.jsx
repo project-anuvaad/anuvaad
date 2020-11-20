@@ -118,6 +118,8 @@ class InteractivePagination extends React.Component {
                 size={"large"}
                 style={{ marginLeft: "3%" }}
               />
+              {!this.props.show_pdf &&
+              <>
               {this.sentenceCount() && (
                 <div style={{ position: "absolute", marginLeft: "50%" }}>
                   <Typography variant="h6" component="h2">
@@ -143,6 +145,7 @@ class InteractivePagination extends React.Component {
               <div style={{ position: "absolute", right: "30px" }}>
                 {this.renderNormaModeButtons()}
               </div>
+              </>}
             </>
           )}
 
@@ -162,6 +165,7 @@ class InteractivePagination extends React.Component {
 const mapStateToProps = (state) => ({
   document_editor_mode: state.document_editor_mode,
   job_details: state.job_details,
+  show_pdf: state.show_pdf.open
 });
 
 const mapDispatchToProps = (dispatch) =>

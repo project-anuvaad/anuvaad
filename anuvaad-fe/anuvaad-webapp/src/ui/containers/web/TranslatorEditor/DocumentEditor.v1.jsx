@@ -436,13 +436,16 @@ class DocumentEditor extends React.Component {
      * renders PDF document
      */
     renderPDFDocument = () => {
-      return (
-        <Grid item xs={12} sm={6} lg={6} xl={6}>
-          <Paper>
-            <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.state.currentPageIndex} />
-          </Paper>
-        </Grid>
-      )
+      if(!this.state.apiFetchStatus){
+        return (
+          <Grid item xs={12} sm={6} lg={6} xl={6}>
+            <Paper>
+              <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} />
+            </Paper>
+          </Grid>
+        )
+      }
+      
     }
 
     /**
