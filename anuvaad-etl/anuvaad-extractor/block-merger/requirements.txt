@@ -32,7 +32,6 @@ lxml==4.5.1
 numpy==1.19.2
 pdf2image==1.12.1
 pytesseract==0.3.4
-docker_compose==1.27.4
 Pillow==8.0.1
 protobuf==3.14.0
 
