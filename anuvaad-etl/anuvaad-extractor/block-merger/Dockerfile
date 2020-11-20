@@ -1,6 +1,7 @@
 #FROM anuvaadio/python3.6-opencv-4.1.0:7
 #FROM python:3.7-slim
-FROM ubuntu:20.04
+#FROM ubuntu:20.04
+FROM anuvaadio/anuvaad-block-merger:159-41d76a7c
 # both files are explicitly required!
 #COPY Pipfile Pipfile.lock ./
 
