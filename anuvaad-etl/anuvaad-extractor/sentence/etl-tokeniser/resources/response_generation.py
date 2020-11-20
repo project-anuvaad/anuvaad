@@ -35,6 +35,7 @@ class Response(object):
                     output_file_response = list()
                     for i, item in enumerate(input_key['files']):
                         input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                        error_validator.check_language(in_locale)
                         if in_file_type == "txt":
                             input_file_data = file_ops.read_txt_file(input_filename)
                             error_validator.file_encoding_error(input_file_data)
@@ -58,6 +59,7 @@ class Response(object):
                 for paragraph in input_key:
                     input_paragraphs = paragraph['text']
                     input_locale = paragraph['locale']
+                    error_validator.check_language(input_locale)
                     tokenised_sentences = [tokenisation.tokenisation_core([input_paragraph], input_locale) for input_paragraph in input_paragraphs]  
                     output_list_text = [{"inputText" : x, "tokenisedSentences" : y} for x, y in zip(input_paragraphs, tokenised_sentences)]
                     output_per_para = {'tokenisedText' : output_list_text, 'locale':input_locale}
@@ -124,6 +126,7 @@ class Response(object):
             error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)    # Validating Workflow key-values
             error_validator.inputfile_list_empty(input_key)                           # Validating Input key for text block input
             blocks_list, record_id, model_id, in_locale = file_ops.get_input_values_for_block_tokenise(input_key)
+            error_validator.check_language(in_locale)
             input_key = tokenisation.adding_tokenised_text_blockmerger(input_key, in_locale, 0)
             task_endtime = eval(str(time.time()).replace('.', '')[0:13])
             response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
@@ -180,6 +183,7 @@ class Response(object):
                 output_file_response = list()
                 for i, item in enumerate(input_files):
                     input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                    error_validator.check_language(in_locale)
                     input_file_data = file_ops.read_txt_file(input_filename)
                     error_validator.file_encoding_error(input_file_data)
                     output_filename = tokenisation.tokenisation_response(input_file_data, in_locale, i)
@@ -188,6 +192,7 @@ class Response(object):
             else:
                 input_paragraphs = self.json_data['text']
                 input_locale = self.json_data['locale']
+                error_validator.check_language(input_locale)
                 tokenised_sentences = [tokenisation.tokenisation_core([input_paragraph], input_locale) for input_paragraph in input_paragraphs]  
                 output_list_text = [{"inputText" : x, "tokenisedSentences" : y} for x, y in zip(input_paragraphs, tokenised_sentences)]
                 output_file_response = {'tokenisedText' : output_list_text, 'locale':input_locale}
