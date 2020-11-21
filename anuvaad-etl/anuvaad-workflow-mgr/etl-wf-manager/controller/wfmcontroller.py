@@ -28,6 +28,7 @@ def initiate_async_workflow():
         data = add_headers(data, request)
         return service.register_async_job(data)
     except Exception as e:
+        log.exception("Something went wrong: " + str(e))
         return {"status": "FAILED", "message": "Something went wrong"}, 500
 
 
@@ -47,6 +48,7 @@ def initiate_sync_workflow():
         data = add_headers(data, request)
         return service.register_sync_job(data)
     except Exception as e:
+        log.exception("Something went wrong: " + str(e))
         return {"status": "FAILED", "message": "Something went wrong"}, 500
 
 
@@ -71,6 +73,7 @@ def search_all_jobs():
         response = service.get_job_details_bulk(req_criteria, False)
         return response, 200
     except Exception as e:
+        log.exception("Something went wrong: " + str(e))
         return {"status": "FAILED", "message": "Something went wrong"}, 500
 
 

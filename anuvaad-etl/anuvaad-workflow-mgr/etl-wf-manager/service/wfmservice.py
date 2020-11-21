@@ -344,49 +344,53 @@ class WFMService:
 
     # Method to search jobs on multiple criteria.
     def get_job_details_bulk(self, req_criteria, skip_pagination):
-        criteria = {"metadata.userID": {"$in": req_criteria["userIDs"]}}
-        if 'jobIDs' in req_criteria.keys():
-            if req_criteria["jobIDs"]:
-                jobIDs = []
-                for jobID in req_criteria["jobIDs"]:
-                    if jobID:
-                        jobIDs.append(jobID)
-                    if len(jobIDs) > 0:
-                        criteria["jobID"] = {"$in": jobIDs}
-        if 'workflowCodes' in req_criteria.keys():
-            if req_criteria["workflowCodes"]:
-                wCodes = []
-                for wCode in req_criteria["workflowCodes"]:
-                    if wCode:
-                        wCodes.append(wCode)
-                    if len(wCodes) > 0:
-                        criteria["workflowCode"] = {"$in": wCodes}
-        if 'statuses' in req_criteria.keys():
-            if req_criteria["statuses"]:
-                statuses = []
-                for status in statuses:
-                    if status:
-                        statuses.append(status)
-                    if len(statuses) > 0:
-                        criteria["status"] = {"$in": req_criteria["statuses"]}
-        exclude = {'_id': False}
-        if 'taskDetails' not in req_criteria.keys():
-            exclude["taskDetails"] = False
-        else:
-            if req_criteria["taskDetails"] is False:
+        try:
+            criteria = {"metadata.userID": {"$in": req_criteria["userIDs"]}}
+            if 'jobIDs' in req_criteria.keys():
+                if req_criteria["jobIDs"]:
+                    jobIDs = []
+                    for jobID in req_criteria["jobIDs"]:
+                        if jobID:
+                            jobIDs.append(jobID)
+                        if len(jobIDs) > 0:
+                            criteria["jobID"] = {"$in": jobIDs}
+            if 'workflowCodes' in req_criteria.keys():
+                if req_criteria["workflowCodes"]:
+                    wCodes = []
+                    for wCode in req_criteria["workflowCodes"]:
+                        if wCode:
+                            wCodes.append(wCode)
+                        if len(wCodes) > 0:
+                            criteria["workflowCode"] = {"$in": wCodes}
+            if 'statuses' in req_criteria.keys():
+                if req_criteria["statuses"]:
+                    statuses = []
+                    for status in statuses:
+                        if status:
+                            statuses.append(status)
+                        if len(statuses) > 0:
+                            criteria["status"] = {"$in": req_criteria["statuses"]}
+            exclude = {'_id': False}
+            if 'taskDetails' not in req_criteria.keys():
                 exclude["taskDetails"] = False
-        if 'error' in req_criteria.keys():
-            if req_criteria["error"] is False:
-                exclude["error"] = False
-        if not skip_pagination:
-            offset = 0 if 'offset' not in req_criteria.keys() else req_criteria["offset"]
-            limit = eval(str(page_default_limit)) if 'limit' not in req_criteria.keys() else req_criteria["limit"]
-            criteria["active"] = {"$ne": False}
-            jobs = wfmrepo.search_job(criteria, exclude, offset, limit)
-            total_jobs = wfmrepo.search_job(criteria, exclude, None, None)
-            return {"count": len(total_jobs), "jobs": jobs}
-        else:
-            return wfmrepo.search_job(criteria, exclude, None, None)
+            else:
+                if req_criteria["taskDetails"] is False:
+                    exclude["taskDetails"] = False
+            if 'error' in req_criteria.keys():
+                if req_criteria["error"] is False:
+                    exclude["error"] = False
+            if not skip_pagination:
+                offset = 0 if 'offset' not in req_criteria.keys() else req_criteria["offset"]
+                limit = eval(str(page_default_limit)) if 'limit' not in req_criteria.keys() else req_criteria["limit"]
+                criteria["active"] = {"$ne": False}
+                jobs = wfmrepo.search_job(criteria, exclude, offset, limit)
+                total_jobs = wfmrepo.search_job(criteria, exclude, None, None)
+                return {"count": len(total_jobs), "jobs": jobs}
+            else:
+                return wfmrepo.search_job(criteria, exclude, None, None)
+        except Exception as e:
+            log_exception("Exception while searching jobs: " + str(e), None, e)
+            return []
 
 
     # Method to get wf configs from the remote yaml file.
