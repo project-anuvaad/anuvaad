@@ -5,7 +5,7 @@ import os
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
 mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
 app_host = os.environ.get('ANUVAAD_ETL_WFM_HOST', '0.0.0.0')
-app_port = os.environ.get('ANUVAD_ETL_WFM_PORT', 5002)
+app_port = os.environ.get('ANUVAD_ETL_WFM_PORT', 5001)
 
 
 #MODULE-SPECIFIC-CONFIGS
