@@ -8,7 +8,7 @@ import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import Snackbar from "../../../components/web/common/Snackbar";
+import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import { showPdf } from '../../../../flux/actions/apis/showpdf';
 import { withStyles } from '@material-ui/core/styles';
@@ -27,6 +27,7 @@ import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 import history from "../../../../web.history";
+import Alert from '@material-ui/lab/Alert';
 
 const StyledMenu = withStyles({
     paper: {
@@ -49,9 +50,14 @@ const StyledMenu = withStyles({
 ));
 
 class InteractiveDocHeader extends React.Component {
-    state = {
-        anchorEl: null
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            anchorEl: null,
+            showStatus: false,
+            message: null
+        };
+    }
 
     handleMenu = event => {
         this.setState({ anchorEl: event.currentTarget });
@@ -61,8 +67,21 @@ class InteractiveDocHeader extends React.Component {
         this.setState({ anchorEl: null });
     };
 
+    renderProgressInformation = () => {
+        return (
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                open={this.state.showStatus}
+                message={this.state.message}
+            >
+                <Alert elevation={6} variant="filled" severity="info">{this.state.message}</Alert>
+            </Snackbar>
+        )
+    }
+
+
     downloadTargetFile() {
-        this.setState({ anchorEl: null });
+        this.setState({ anchorEl: null, showStatus: true, message: translate("common.page.label.download")});
 
         let recordId = this.props.match.params.jobid;
         let user_profile = JSON.parse(localStorage.getItem('userProfile'))
@@ -82,6 +101,7 @@ class InteractiveDocHeader extends React.Component {
                 if (fileName) {
                     let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
                     window.open(url, "_self")
+                    this.setState({ showStatus: false, message: null})
                 }
 
             }
@@ -180,6 +200,7 @@ class InteractiveDocHeader extends React.Component {
                     <div style={{ position: 'absolute', right: '30px' }}>
                         {this.renderOptions()}
                     </div>
+                    {this.state.showStatus && this.renderProgressInformation()}
                 </Toolbar>
             </AppBar>
         )
