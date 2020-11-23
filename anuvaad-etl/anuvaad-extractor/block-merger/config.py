@@ -21,13 +21,13 @@ output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT'
 output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
 kf_local_server     = 'localhost:9092'
-kafka_ip_host       = 'KAFKA_IP_HOST'
+kafka_ip_host       = 'KAFKA_BOOTSTRAP_SERVER_HOST'
 bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 
 TASK_STAT           = 'BLOCK-MERGER'
 
 CONSUMER_GROUP_default       = 'anuvaad-etl-bm-consumer-group'
-CONSUMER_GROUP_identifire    = 'ANUVAAD_ETL_BM_CONSUMER_GROUP_V1'
+CONSUMER_GROUP_identifire    = 'KAFKA_ANUVAAD_ETL_BM_CONSUMER_GRP'
 CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_default,CONSUMER_GROUP_identifire)
 #folders and file path
 download_folder = 'upload'
