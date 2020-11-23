@@ -100,7 +100,7 @@ public class ExceptionUtils {
                 }
                 return;
             }
-
+            logger.error("EXCEPTION: ", e);
             while ((e instanceof ZuulException || e.getClass().equals(RuntimeException.class)) && e.getCause() != null)
                 e = e.getCause();
 
