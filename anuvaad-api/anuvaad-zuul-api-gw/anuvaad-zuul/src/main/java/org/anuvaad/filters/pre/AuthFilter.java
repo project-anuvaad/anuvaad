@@ -1,8 +1,10 @@
 package org.anuvaad.filters.pre;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.anuvaad.cache.ZuulConfigCache;
+import org.anuvaad.models.Action;
 import org.anuvaad.models.User;
 import org.anuvaad.utils.ExceptionUtils;
 import org.anuvaad.utils.UserUtils;
@@ -29,6 +31,9 @@ public class AuthFilter extends ZuulFilter {
     @Autowired
     public UserUtils userUtils;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE = "Retrieving of auth token failed";
@@ -37,6 +42,7 @@ public class AuthFilter extends ZuulFilter {
     private static final String RETRIEVING_USER_FAILED_MESSAGE = "Retrieving user failed";
     private static final String PROCEED_ROUTING_MESSAGE = "Routing to protected endpoint: {} - authentication check passed!";
     private static final String UNAUTH_USER_MESSAGE = "You don't have access to this resource - authentication check failed.";
+    private static final String INVALID_ENDPOINT_MSG = "You're trying to access an invalid resource";
 
 
     @Override
@@ -60,10 +66,15 @@ public class AuthFilter extends ZuulFilter {
         String authToken;
         RequestContext ctx = RequestContext.getCurrentContext();
         List<String> openEndpointsWhitelist = ZuulConfigCache.whiteListEndpoints;
-        if (openEndpointsWhitelist.contains(getRequestURI())) {
+        String uri = getRequestURI();
+        if (openEndpointsWhitelist.contains(uri)) {
             setShouldDoAuth(false);
-            logger.info(SKIP_AUTH_CHECK, getRequestURI());
+            logger.info(SKIP_AUTH_CHECK, uri);
             return null;
+        }
+        if (!isURIValid(uri)){
+            logger.info("Invalid resource: {}", uri);
+            ExceptionUtils.raiseCustomException(HttpStatus.NOT_FOUND, INVALID_ENDPOINT_MSG);
         }
         try {
             authToken = getAuthTokenFromRequestHeader();
@@ -75,7 +86,6 @@ public class AuthFilter extends ZuulFilter {
         if (authToken == null) {
             logger.info(AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE);
             ExceptionUtils.raiseCustomException(HttpStatus.BAD_REQUEST, AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE);
-            return null;
         } else {
             ctx.set(AUTH_TOKEN_KEY, authToken);
             User user = verifyAuthenticity(ctx, authToken);
@@ -92,6 +102,20 @@ public class AuthFilter extends ZuulFilter {
             }
         }
         return null;
+    }
+
+    /**
+     * Verifies if the URI is valid.
+     * @return
+     */
+    public Boolean isURIValid(String uri){
+        boolean isValid = false;
+        for(Object obj: ZuulConfigCache.actions){
+            Action action = objectMapper.convertValue(obj, Action.class);
+            if (uri.equals(action.getUri()))
+                isValid = true;
+        }
+        return isValid;
     }
 
     /**
