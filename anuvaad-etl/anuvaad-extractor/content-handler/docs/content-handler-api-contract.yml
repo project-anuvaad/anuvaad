@@ -9,7 +9,7 @@ info:
 
 schemes:
   - https
-basePath: '/api'
+basePath: '/anuvaad/content-handler'
 
 
 paths: 
