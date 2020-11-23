@@ -87,6 +87,70 @@
             "active":true,
             "whiteList":false,
             "description":"API to fetch NMT models"
+        },
+        {
+            "id":"b0c793d1-215c-4de6-8d88-714f8394e75a",
+            "uri":"/anuvaad-api/file-uploader/v0/upload-file",
+            "module":"FILE-UPLOADER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to upload files"
+        },
+        {
+            "id":"7f3c15a0-bdc4-4dc5-8ebb-5c7ba80ee016",
+            "uri":"/anuvaad-api/file-uploader/v0/download-file",
+            "module":"FILE-UPLOADER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to download files"
+        },
+        {
+            "id":"634ca662-2ebd-4952-b517-d5fd54d3ac17",
+            "uri":"/anuvaad-api/file-uploader/v0/serve-file",
+            "module":"FILE-UPLOADER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to serve files"
+        },
+        {
+            "id":"b533843f-5259-4723-b670-b9f483d9db43",
+            "uri":"/anuvaad/content-handler/v0/fetch-content",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch content from CH"
+        },
+        {
+            "id":"9cb0222b-a4c1-41da-baa3-67fb84924ada",
+            "uri":"/anuvaad/content-handler/v0/save-content-sentence",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update sentences in CH"
+        },
+        {
+            "id":"95d0525e-d654-496d-a77e-049bffe46ab0",
+            "uri":"/anuvaad/content-handler/v0/dictionary/search",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search dictionary"
+        },
+        {
+            "id":"a50d17b9-1db3-448b-a3b2-90777938fe03",
+            "uri":"/anuvaad/content-handler//v0/fetch-content-sentence",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch sentence details"
+        },
+        {
+            "id":"604a9915-194d-44b3-87c2-300935adc932",
+            "uri":"/anuvaad/content-handler/v0/dictionary/update",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update dictionary"
         }
     ]
 }

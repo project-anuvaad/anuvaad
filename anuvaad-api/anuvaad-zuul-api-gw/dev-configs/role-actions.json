@@ -29,6 +29,46 @@
             "role":"TRANSLATOR",
             "actionID": "e5d0b999-a2bb-41af-a267-2494b15fb6a5",
             "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "b0c793d1-215c-4de6-8d88-714f8394e75a",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "7f3c15a0-bdc4-4dc5-8ebb-5c7ba80ee016",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "634ca662-2ebd-4952-b517-d5fd54d3ac17",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "b533843f-5259-4723-b670-b9f483d9db43",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "9cb0222b-a4c1-41da-baa3-67fb84924ada",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "95d0525e-d654-496d-a77e-049bffe46ab0",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "a50d17b9-1db3-448b-a3b2-90777938fe03",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "604a9915-194d-44b3-87c2-300935adc932",
+            "active":true
         }
     ]
 }
