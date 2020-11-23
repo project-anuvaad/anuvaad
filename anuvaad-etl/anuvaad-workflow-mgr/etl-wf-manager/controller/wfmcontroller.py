@@ -8,7 +8,7 @@ from service.wfmservice import WFMService
 from validator.wfmvalidator import WFMValidator
 from configs.wfmconfig import context_path
 from configs.wfmconfig import module_wfm_name
-from anuvaad_auditor.loghandler import log_exception
+from anuvaad_auditor.loghandler import log_exception, log_info
 
 wfmapp = Flask(__name__)
 log = logging.getLogger('file')
@@ -119,6 +119,7 @@ def health():
 
 # Fetches required headers from the request and adds it to the body.
 def add_headers(data, api_request):
+    log_info(api_request.headers, None)
     headers = {
         "userID": api_request.headers["x-user-id"],
         "requestID": api_request.headers["x-request-id"],
