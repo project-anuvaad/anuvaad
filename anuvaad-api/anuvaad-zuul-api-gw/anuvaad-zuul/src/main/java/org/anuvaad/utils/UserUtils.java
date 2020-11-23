@@ -6,9 +6,7 @@ import org.anuvaad.models.UMSResponse;
 import org.anuvaad.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -61,7 +59,7 @@ public class UserUtils {
                 return null;
             }
         }catch (Exception e){
-            logger.error("Exception while fetching user");
+            logger.error("Exception while fetching user: ", e);
             return null;
         }
     }
