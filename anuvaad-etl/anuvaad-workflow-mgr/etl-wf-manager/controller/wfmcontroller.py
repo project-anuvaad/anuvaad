@@ -8,6 +8,7 @@ from service.wfmservice import WFMService
 from validator.wfmvalidator import WFMValidator
 from configs.wfmconfig import context_path
 from configs.wfmconfig import module_wfm_name
+from anuvaad_auditor.loghandler import log_exception
 
 wfmapp = Flask(__name__)
 log = logging.getLogger('file')
@@ -28,7 +29,7 @@ def initiate_async_workflow():
         data = add_headers(data, request)
         return service.register_async_job(data)
     except Exception as e:
-        log.exception("Something went wrong: " + str(e))
+        log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 500
 
 
@@ -48,7 +49,7 @@ def initiate_sync_workflow():
         data = add_headers(data, request)
         return service.register_sync_job(data)
     except Exception as e:
-        log.exception("Something went wrong: " + str(e))
+        log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 500
 
 
@@ -56,11 +57,15 @@ def initiate_sync_workflow():
 @wfmapp.route(context_path + '/v1/workflow/interrupt', methods=["POST"])
 def interrupt_workflow():
     service = WFMService()
-    data = add_headers(request.get_json(), request)
-    response = service.interrupt_job(data)
-    if not response:
-        return {"response": response}, 400
-    return {"response": response}
+    try:
+        data = add_headers(request.get_json(), request)
+        response = service.interrupt_job(data)
+        if not response:
+            return {"response": response}, 400
+        return {"response": response}
+    except Exception as e:
+        log_exception("Something went wrong: " + str(e), None, e)
+        return {"status": "FAILED", "message": "Something went wrong"}, 500
 
 
 # REST endpoint to fetch workflow jobs.
@@ -73,7 +78,7 @@ def search_all_jobs():
         response = service.get_job_details_bulk(req_criteria, False)
         return response, 200
     except Exception as e:
-        log.exception("Something went wrong: " + str(e))
+        log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 500
 
 
@@ -81,14 +86,18 @@ def search_all_jobs():
 @wfmapp.route(context_path + '/v1/workflow/jobs/mark-inactive', methods=["POST"])
 def mark_inactive():
     service = WFMService()
-    req_criteria = request.get_json()
-    req_criteria["userIDs"] = [request.headers["ad-userid"]]
-    response = service.mark_inactive(req_criteria)
-    if response:
-        return jsonify(response), 200
-    else:
-        return jsonify({"status": "FAILED", "message": "Something went wrong"}), 400
-
+    try:
+        req_criteria = request.get_json()
+        req_criteria["userIDs"] = [request.headers["ad-userid"]]
+        response = service.mark_inactive(req_criteria)
+        if response:
+            return jsonify(response), 200
+        else:
+            return jsonify({"status": "FAILED", "message": "Something went wrong"}), 400
+    except Exception as e:
+        log_exception("Something went wrong: " + str(e), None, e)
+        return {"status": "FAILED", "message": "Something went wrong"}, 500
+        
 
 # REST endpoint to fetch configs
 @wfmapp.route(context_path + '/v1/workflow/configs/search', methods=["GET"])
