@@ -7,9 +7,9 @@ from resources.file_handler import FileUploader, FileDownloader, FileServe
 # end-point for independent service
 FILE_UPLOADER_BLUEPRINT = Blueprint("file_uploader", __name__)
 api = Api(FILE_UPLOADER_BLUEPRINT)
-api.add_resource(FileUploader, "/upload-file")
-api.add_resource(FileDownloader, "/download-file")
-api.add_resource(FileServe, "/serve-file")
+api.add_resource(FileUploader, "/v0/upload-file")
+api.add_resource(FileDownloader, "/v0/download-file")
+api.add_resource(FileServe, "/v0/serve-file")
 
 
 # Log config
