@@ -30,7 +30,7 @@ def initiate_async_workflow():
         return service.register_async_job(data)
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
-        return {"status": "FAILED", "message": "Something went wrong"}, 500
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
 
 
 # REST endpoint to initiate the SYNC workflow.
@@ -50,7 +50,7 @@ def initiate_sync_workflow():
         return service.register_sync_job(data)
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
-        return {"status": "FAILED", "message": "Something went wrong"}, 500
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
 
 
 # REST endpoint to interrupt the workflow.
@@ -65,7 +65,7 @@ def interrupt_workflow():
         return {"response": response}
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
-        return {"status": "FAILED", "message": "Something went wrong"}, 500
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
 
 
 # REST endpoint to fetch workflow jobs.
@@ -82,7 +82,7 @@ def search_all_jobs():
             return jsonify({[]})
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
-        return {"status": "FAILED", "message": "Something went wrong"}, 500
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
 
 
 # REST endpoint to fetch workflow jobs.
@@ -99,7 +99,7 @@ def mark_inactive():
             return jsonify({"status": "FAILED", "message": "Something went wrong"}), 400
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
-        return {"status": "FAILED", "message": "Something went wrong"}, 500
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
 
 
 # REST endpoint to fetch configs
