@@ -6,13 +6,13 @@ from resources import SaveSentenceResource, FetchSentenceResource, SentenceStati
 SENTENCE_BLUEPRINT = Blueprint("sentence", __name__)
 
 Api(SENTENCE_BLUEPRINT).add_resource(
-    FetchSentenceResource, "/fetch-content-sentence"
+    FetchSentenceResource, "/v0/fetch-content-sentence"
 )
 
 Api(SENTENCE_BLUEPRINT).add_resource(
-    SaveSentenceResource, "/save-content-sentence"
+    SaveSentenceResource, "/v0/save-content-sentence"
 )
 
 Api(SENTENCE_BLUEPRINT).add_resource(
-    SentenceStatisticsCount, "/records/search"
+    SentenceStatisticsCount, "/v0/records/search"
 )
