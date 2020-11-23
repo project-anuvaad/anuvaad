@@ -63,7 +63,7 @@ public class ZuulGatewayApplication {
         return new ErrorFilterFilter();
     }
 
-    @Bean
+/*    @Bean
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
@@ -79,5 +79,5 @@ public class ZuulGatewayApplication {
         config.addAllowedMethod("PATCH");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
-    }
+    }*/
 }
