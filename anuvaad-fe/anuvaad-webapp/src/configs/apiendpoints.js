@@ -12,7 +12,7 @@ const endpoints = {
   fetch_filedeatils:"/api/v0/serve-file?",
   workflowAsync:"/anuvaad-etl/wf-manager/v1/workflow/async/initiate",
   workflowSync:"/anuvaad-etl/wf-manager/v1/workflow/sync/initiate",
-  signup: "/v1/user/signup-user",
+  signup: "/user-management/anuvaad/user-mgmt/v1/users/create",
   login: "/anuvaad/user-mgmt/v1/users/login",
   setpassword: "/set-user-password",
   documentupload:"/api/v0/upload-file",
