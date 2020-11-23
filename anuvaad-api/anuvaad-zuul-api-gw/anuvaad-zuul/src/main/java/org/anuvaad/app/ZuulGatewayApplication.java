@@ -2,6 +2,7 @@ package org.anuvaad.app;
 
 import org.anuvaad.cache.ZuulConfigCache;
 import org.anuvaad.filters.error.ErrorFilterFilter;
+import org.anuvaad.filters.post.ResponseFilter;
 import org.anuvaad.filters.pre.AuthFilter;
 import org.anuvaad.filters.pre.CorrelationFilter;
 import org.anuvaad.filters.pre.RbacFilter;
@@ -62,6 +63,9 @@ public class ZuulGatewayApplication {
     public ErrorFilterFilter errorFilterFilter(){
         return new ErrorFilterFilter();
     }
+
+    @Bean
+    public ResponseFilter responseFilter() {return new ResponseFilter();}
 
 /*    @Bean
     public CorsFilter corsFilter() {

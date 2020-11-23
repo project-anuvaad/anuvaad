@@ -61,6 +61,7 @@ public class CorrelationFilter extends ZuulFilter {
         MDC.put(CORRELATION_ID_KEY, correlationId);
         ctx.set(CORRELATION_ID_KEY, correlationId);
         ctx.addZuulRequestHeader(ZUUL_REQUEST_ID_HEADER_KEY, requestId);
+        ctx.addZuulRequestHeader(CORRELATION_ID_HEADER_NAME, correlationId);
         logger.debug(RECEIVED_REQUEST_MESSAGE, ctx.getRequest().getRequestURI());
         return null;
     }
