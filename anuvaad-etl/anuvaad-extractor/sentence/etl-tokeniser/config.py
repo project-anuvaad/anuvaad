@@ -3,7 +3,7 @@ import os
 
 # Flask server
 DEBUG = False
-API_URL_PREFIX = "/api/v0"
+context_path = '/anuvaad-etl/tokeniser'
 HOST = '0.0.0.0'
 PORT = 5001
 ENABLE_CORS = False
