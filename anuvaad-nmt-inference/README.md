@@ -9,11 +9,14 @@ the same is used to generate model predictions.
 - ubuntu 16.04
 
 Install various python libraries as mentioned in requirements.txt file
+
+bash
 pip install -r requirement.txt
 
 ## APIs and Documentation
 Run app.py to start the service with all the packages installed
 
+bash
 python src/app.py
 ```
 ```
