@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { highlightSentence, clearHighlighBlock, cancelMergeSentence } from '../../../../flux/actions/users/translator_actions';
 import SENTENCE_ACTION from './SentenceActions'
-import Image from "./../Interactive-Editor/Image";
 const PAGE_OPS = require("../../../../utils/page.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
