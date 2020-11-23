@@ -2,7 +2,7 @@ import os
 import time
 
 DEBUG = False
-API_URL_PREFIX = "/api/v0"
+context_path = "/anuvaad-etl/document-converter"
 HOST = '0.0.0.0'
 PORT = 5001
 

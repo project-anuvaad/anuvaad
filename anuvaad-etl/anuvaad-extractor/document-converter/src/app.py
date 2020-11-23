@@ -13,7 +13,7 @@ if config.ENABLE_CORS:
 
 for blueprint in vars(routes).values():
     if isinstance(blueprint, Blueprint):
-        doc_app.register_blueprint(blueprint, url_prefix=config.API_URL_PREFIX)
+        doc_app.register_blueprint(blueprint, url_prefix=config.context_path)
 
 
 if __name__ == "__main__":
