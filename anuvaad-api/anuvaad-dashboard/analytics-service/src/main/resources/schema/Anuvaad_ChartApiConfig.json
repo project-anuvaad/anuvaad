@@ -119,7 +119,7 @@
 				"dateRefField": "events.ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"File Translation Count\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Files Translated\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Count\":{\"cardinality\":{\"field\":\"events.edata.final.job_id.keyword\"}}}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"File Translation Count\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Files Translated\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Count\":{\"cardinality\":{\"field\":\"events.context.cdata.id.keyword\"}}}}}}}}"
 			}
 		],
 		"chartType": "line",
