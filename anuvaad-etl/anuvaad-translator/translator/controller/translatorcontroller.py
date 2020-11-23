@@ -52,8 +52,8 @@ def text_translate():
         error = validator.validate_text_translate(data)
         if error is not None:
             data["status"], data["error"] = "FAILED", error
-            return data, 400
-        data["metadata"] = {"userID": request.headers["x-user-id"]}
+            return jsonify(data), 400
+        data = add_headers(data, request)
         response = service.text_translate(data)
         return jsonify(response), 200
     except Exception as e:
