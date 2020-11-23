@@ -74,7 +74,7 @@ def search_all_jobs():
     service = WFMService()
     req_criteria = request.get_json()
     try:
-        req_criteria["userIDs"] = [request.headers["ad-userid"]]
+        req_criteria["userIDs"] = [request.headers["x-user-id"]]
         response = service.get_job_details_bulk(req_criteria, False)
         if response:
             return response, 200
@@ -91,7 +91,7 @@ def mark_inactive():
     service = WFMService()
     try:
         req_criteria = request.get_json()
-        req_criteria["userIDs"] = [request.headers["ad-userid"]]
+        req_criteria["userIDs"] = [request.headers["x-user-id"]]
         response = service.mark_inactive(req_criteria)
         if response:
             return jsonify(response), 200
@@ -119,7 +119,6 @@ def health():
 
 # Fetches required headers from the request and adds it to the body.
 def add_headers(data, api_request):
-    log_info(api_request.headers, None)
     headers = {
         "userID": api_request.headers["x-user-id"],
         "requestID": api_request.headers["x-request-id"],
