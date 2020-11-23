@@ -170,7 +170,7 @@
 						},
 						{
 							"id": 1,
-							"name": "Merge/Split Operations Trend",
+							"name": "Merge Operations Trend",
 							"dimensions": {
 								"height": 250,
 								"width": 4
@@ -180,8 +180,29 @@
 							"isCollapsible": false,
 							"charts": [
 								{
-									"id": "mergeSplitTrend",
-									"name": "Merge/Split Operations Trend",
+									"id": "mergeTrend",
+									"name": "Merge Operations Trend",
+									"code": "",
+									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
+						},
+						{
+							"id": 1,
+							"name": "Split Operations Trend",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "splitTrend",
+									"name": "Split Operations Trend",
 									"code": "",
 									"chartType": "line",
 									"filter": "",

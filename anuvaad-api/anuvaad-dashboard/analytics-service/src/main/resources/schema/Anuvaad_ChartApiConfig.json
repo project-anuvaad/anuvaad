@@ -194,20 +194,20 @@
 		},
 		"_comment": " "
 	},
-	"mergeSplitTrend": {
-		"chartName": "Merge/Split Operations Trend",
+	"mergeTrend": {
+		"chartName": "Merge Operations Trend",
 		"queries": [
 			{
 				"module": "COMMON",
 				"requestQueryMap": "{\r\n  \"ts\":\"events.ets\"\r\n}",
 				"dateRefField": "events.ets",
-				"indexName": "anuvaad-telemetry-users",
+				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\r\n  \"size\": 0, \r\n  \"aggs\": {\r\n    \"Merge Split Operations Trend\": {\r\n      \"date_histogram\": {\r\n        \"field\": \"events.ets\",\r\n        \"interval\": \"day\"\r\n      },\r\n        \"aggs\": {\r\n            \"Merge Split Operation Trend\": {\r\n              \"terms\": {\r\n                \"field\": \"events.edata.action.keyword\"\r\n            }\r\n        }\r\n      }\r\n    }\r\n  }\r\n}"
+				"aggrQuery": "{\"aggs\":{\"Merge Document Filter\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.action.keyword\":\"MERGE\"}}]}},\"aggs\":{\"Merge Operation Trend\":{\"date_histogram\":{\"field\":\"events.ets\",\"interval\":\"day\"},\"aggs\":{\"Merge Split Operation Trend\":{\"value_count\":{\"field\":\"events.context.did.keyword\"}}}}}}}}"
 			}
 		],
 		"chartType": "line",
-		"resultType": "doc_count",
+		"resultType": "value",
 		"valueType": "number",
 		"isDecimal": false,
 		"action": "",
@@ -215,7 +215,37 @@
 		"documentType": "_doc",
 		"drillChart": "none",
 		"aggregationPaths": [
-			"Merge Split Operations Trend"
+			"Merge Operation Trend"
+		],
+		"isCumulative": false,
+		"interval": "day",
+		"insight": {
+			
+		},
+		"_comment": " "
+	},
+	"splitTrend": {
+		"chartName": "Split Operations Trend",
+		"queries": [
+			{
+				"module": "COMMON",
+				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"dateRefField": "ets",
+				"indexName": "anuvaad-telemetry",
+				"esInstance": "PRIMARY",
+				"aggrQuery": "{\"aggs\":{\"Split Document Filter\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.action.keyword\":\"SPLIT\"}}]}},\"aggs\":{\"Split Operation Trend\":{\"date_histogram\":{\"field\":\"events.ets\",\"interval\":\"day\"},\"aggs\":{\"Merge Split Operation Trend\":{\"value_count\":{\"field\":\"events.context.did.keyword\"}}}}}}}}"
+			}
+		],
+		"chartType": "line",
+		"resultType": "value",
+		"valueType": "number",
+		"isDecimal": false,
+		"action": "",
+		"filter": "",
+		"documentType": "_doc",
+		"drillChart": "none",
+		"aggregationPaths": [
+			"Split Operation Trend"
 		],
 		"isCumulative": false,
 		"interval": "day",
