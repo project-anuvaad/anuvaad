@@ -97,7 +97,7 @@ def mark_inactive():
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 500
-        
+
 
 # REST endpoint to fetch configs
 @wfmapp.route(context_path + '/v1/workflow/configs/search', methods=["GET"])
@@ -117,8 +117,9 @@ def health():
 # Fetches required headers from the request and adds it to the body.
 def add_headers(data, api_request):
     headers = {
-        "userID": api_request.headers["ad-userid"],
-        "sessionID": api_request.headers["ad-requestID"],
+        "userID": api_request.headers["x-user-id"],
+        "requestID": api_request.headers["x-request-id"],
+        "sessionID": api_request.headers["x-session-id"],
         "receivedAt": eval(str(time.time()).replace('.', '')[0:13]),
         "module": module_wfm_name
     }

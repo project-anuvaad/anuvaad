@@ -58,12 +58,10 @@ def text_translate():
 
 # Fetches required headers from the request and adds it to the body.
 def add_headers(data, api_request):
-    bearer = api_request.headers["authorization"]
-    bearer = bearer.split(" ")[1]
     headers = {
-        "userID": api_request.headers["ad-userid"],
-        "sessionID": api_request.headers["ad-requestID"],
-        "bearer": bearer,
+        "userID": api_request.headers["x-user-id"],
+        "requestID": api_request.headers["x-request-id"],
+        "sessionID": api_request.headers["x-session-id"],
         "receivedAt": eval(str(time.time()).replace('.', '')),
         "module": tool_translator
     }

@@ -14,7 +14,7 @@ from configs.translatorconfig import translator_nmt_cons_no_of_instances
 
 log = logging.getLogger('file')
 app_host = os.environ.get('ANU_ETL_TRANSLATOR_HOST', '0.0.0.0')
-app_port = os.environ.get('ANU_ETL_TRANSLATOR_PORT', 5004)
+app_port = os.environ.get('ANU_ETL_TRANSLATOR_PORT', 5001)
 
 
 # Starts the kafka consumer in a different thread
