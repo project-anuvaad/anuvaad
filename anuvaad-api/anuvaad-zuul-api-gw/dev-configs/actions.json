@@ -138,7 +138,7 @@
         },
         {
             "id":"a50d17b9-1db3-448b-a3b2-90777938fe03",
-            "uri":"/anuvaad/content-handler//v0/fetch-content-sentence",
+            "uri":"/anuvaad/content-handler/v0/fetch-content-sentence",
             "module":"CONTENT-HANDLER",
             "active":true,
             "whiteList":false,
@@ -151,6 +151,14 @@
             "active":true,
             "whiteList":false,
             "description":"API to update dictionary"
+        },
+        {
+            "id":"9c1da068-aac9-4e93-97c0-e4dfa0306dfd",
+            "uri":"/anuvaad-etl/document-converter/v0/document-converter",
+            "module":"DOCUMENT-CONVERTER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to document conversion"
         }
     ]
 }
