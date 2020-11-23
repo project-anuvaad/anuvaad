@@ -538,7 +538,6 @@ class SentenceCard extends React.Component {
       }
 
     handleClose = () => {
-        console.log("-----------------closing------------")
         this.setState({
             // selectedSentence: '', 
             positionX: 0, positionY: 0, isopenMenuItems: false, endIndex: null, startIndex: null
@@ -572,7 +571,6 @@ class SentenceCard extends React.Component {
     }
 
     renderMenuItems = () => {
-        console.log("--------------------opening menu---------------------")
         return (
             <MenuItems
                 splitValue={this.state.selectedSentence}
@@ -731,7 +729,6 @@ class SentenceCard extends React.Component {
     }
 
     render() {
-        console.log(this.state.isopenMenuItems,'--------------', this.state.cardInFocus)
         return (
             <div >
                 {this.renderSentenceCard()}
