@@ -9,6 +9,7 @@ from service.texttranslationservice import TextTranslationService
 from validator.translatorvalidator import TranslatorValidator
 from configs.translatorconfig import context_path
 from configs.translatorconfig import tool_translator
+from anuvaad_auditor.loghandler import log_exception
 
 translatorapp = Flask(__name__)
 log = logging.getLogger('file')
@@ -24,7 +25,7 @@ def doc_translate_workflow():
     if error is not None:
         return error, 400
     response = service.start_file_translation(data)
-    return response
+    return jsonify(response), 200
 
 
 # REST endpoint to initiate the workflow.
@@ -38,7 +39,7 @@ def block_translate():
         data["state"], data["status"], data["error"] = "TRANSLATED", "FAILED", error
         return data, 400
     response = service.block_translate(data)
-    return response
+    return jsonify(response), 200
 
 
 # REST endpoint to initiate the workflow.
@@ -46,14 +47,18 @@ def block_translate():
 def text_translate():
     service = TextTranslationService()
     validator = TranslatorValidator()
-    data = request.get_json()
-    error = validator.validate_text_translate(data)
-    if error is not None:
-        data["status"], data["error"] = "FAILED", error
-        return data, 400
-    data["metadata"] = {"userID": request.headers["ad-userid"]}
-    response = service.text_translate(data)
-    return response
+    try:
+        data = request.get_json()
+        error = validator.validate_text_translate(data)
+        if error is not None:
+            data["status"], data["error"] = "FAILED", error
+            return data, 400
+        data["metadata"] = {"userID": request.headers["x-user-id"]}
+        response = service.text_translate(data)
+        return jsonify(response), 200
+    except Exception as e:
+        log_exception("Something went wrong: " + str(e), None, e)
+        return {"status": "FAILED", "message": "Something went wrong"}, 400
 
 
 # Fetches required headers from the request and adds it to the body.

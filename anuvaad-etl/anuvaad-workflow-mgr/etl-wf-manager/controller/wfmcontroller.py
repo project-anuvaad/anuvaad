@@ -8,7 +8,7 @@ from service.wfmservice import WFMService
 from validator.wfmvalidator import WFMValidator
 from configs.wfmconfig import context_path
 from configs.wfmconfig import module_wfm_name
-from anuvaad_auditor.loghandler import log_exception, log_info
+from anuvaad_auditor.loghandler import log_exception
 
 wfmapp = Flask(__name__)
 log = logging.getLogger('file')
@@ -27,7 +27,8 @@ def initiate_async_workflow():
         if error is not None:
             return error, 400
         data = add_headers(data, request)
-        return service.register_async_job(data)
+        response = service.register_async_job(data)
+        return jsonify(response), 202
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
@@ -47,7 +48,8 @@ def initiate_sync_workflow():
         if error is not None:
             return error, 400
         data = add_headers(data, request)
-        return service.register_sync_job(data)
+        response = service.register_sync_job(data)
+        return jsonify(response), 200
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
@@ -62,7 +64,7 @@ def interrupt_workflow():
         response = service.interrupt_job(data)
         if not response:
             return {"response": response}, 400
-        return {"response": response}
+        return {"response": response}, 200
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
@@ -77,9 +79,9 @@ def search_all_jobs():
         req_criteria["userIDs"] = [request.headers["x-user-id"]]
         response = service.get_job_details_bulk(req_criteria, False)
         if response:
-            return response, 200
+            return jsonify(response), 200
         else:
-            return jsonify({[]})
+            return jsonify({[]}), 400
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
@@ -107,14 +109,14 @@ def mark_inactive():
 def search_wf_configs():
     service = WFMService()
     response = service.get_wf_configs()
-    return jsonify(response)
+    return jsonify(response), 200
 
 
 # Health endpoint
 @wfmapp.route(context_path + '/health', methods=["GET"])
 def health():
     response = {"code": "200", "status": "ACTIVE"}
-    return jsonify(response)
+    return jsonify(response), 200
 
 
 # Fetches required headers from the request and adds it to the body.
