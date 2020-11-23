@@ -79,6 +79,14 @@
             "active":true,
             "whiteList":false,
             "description":"API to translate text"
+        },
+        {
+            "id":"e5d0b999-a2bb-41af-a267-2494b15fb6a5",
+            "uri":"/nmt-inference/v1/fetch-models",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch NMT models"
         }
     ]
 }
