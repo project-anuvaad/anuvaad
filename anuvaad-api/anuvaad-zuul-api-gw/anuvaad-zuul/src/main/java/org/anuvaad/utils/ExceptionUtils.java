@@ -101,8 +101,9 @@ public class ExceptionUtils {
                 return;
             }
             while ((e instanceof ZuulException || e.getClass().equals(RuntimeException.class)) && e.getCause() != null)
-                e = e.getCause();             
-                logger.error("ZUULEXCEPTION: ", e);
+                e = e.getCause();
+                if (e.getClass().equals(RuntimeException.class))
+                    logger.error("ZUULEXCEPTION: ", e);
             String exceptionName = e.getClass().getSimpleName();
             String exceptionMessage = ((Throwable) e).getMessage();
 
