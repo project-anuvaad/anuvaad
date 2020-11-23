@@ -144,7 +144,6 @@ class Tokenisation(object):
             for block_idx, block in enumerate(page_data):
                 if block['attrib'] not in ["FOOTER", "", "TABLE"]:
                     last_text_block_idx = block_idx
-            print("end    ------     ", page_data[last_text_block_idx])
             return last_text_block_idx
         except:
             log_exception("Finding last text block failed", self.input_json_data, None)
@@ -155,7 +154,6 @@ class Tokenisation(object):
         try:
             for block_idx, block in enumerate(page_data['text_blocks']):
                 if block['attrib'] not in ["FOOTER", "", "TABLE"]:
-                    print("begin    -----   ", block)
                     return block_idx
         except:
             log_exception("Finding First text block failed", self.input_json_data, None)
