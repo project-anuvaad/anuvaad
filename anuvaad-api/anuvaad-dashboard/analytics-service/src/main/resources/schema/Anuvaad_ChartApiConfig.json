@@ -4,7 +4,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\"ts\":\"events.ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_langauge.keyword\"}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_langauge.keyword\"}",
 				"dateRefField": "events.ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -31,7 +31,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\"ts\":\"events.ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_langauge.keyword\"}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_langauge.keyword\"}",
 				"dateRefField": "events.ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -58,7 +58,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"events.ets\"\r\n}",
+				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
 				"dateRefField": "events.ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -115,11 +115,11 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"events.ets\"\r\n}",
+				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
 				"dateRefField": "events.ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"File Translation Count\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Files Translated\":{\"date_histogram\":{\"field\":\"events.ets\",\"interval\":\"day\"},\"aggs\":{\"Count\":{\"cardinality\":{\"field\":\"events.edata.final.job_id.keyword\"}}}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"File Translation Count\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Files Translated\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Count\":{\"cardinality\":{\"field\":\"events.edata.final.job_id.keyword\"}}}}}}}}"
 			}
 		],
 		"chartType": "line",
