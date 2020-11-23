@@ -5,7 +5,7 @@
 			{
 				"module": "COMMON",
 				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_langauge.keyword\"}",
-				"dateRefField": "events.ets",
+				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
 				"aggrQuery": "{\"aggs\":{\"FileTranslateFilter\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Target Language\":{\"terms\":{\"field\":\"events.object.target_langauge.keyword\"}}}}}}"
@@ -32,7 +32,7 @@
 			{
 				"module": "COMMON",
 				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_langauge.keyword\"}",
-				"dateRefField": "events.ets",
+				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
 				"aggrQuery": "{\"aggs\":{\"FileTranslateFilter\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Source Language\":{\"terms\":{\"field\":\"events.object.source_language.keyword\"}}}}}}"
@@ -59,7 +59,7 @@
 			{
 				"module": "COMMON",
 				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
-				"dateRefField": "events.ets",
+				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
 				"aggrQuery": "{\r\n  \"size\": 0, \r\n  \"aggs\": {\r\n    \"UoloadDocFilter\": {\r\n      \"filter\": {\r\n        \"bool\": {\r\n          \"must\": [\r\n            {\r\n              \"term\": {\r\n                \"events.edata.pageid.keyword\": \"document-upload\"\r\n              }\r\n            },\r\n            {\r\n              \"term\": {\r\n                \"events.edata.subtype.keyword\": \"pageLoadStarted\"\r\n              }\r\n            }\r\n          ]\r\n        }\r\n      },\r\n      \"aggs\": {\r\n        \"Total Upload Documents\": {\r\n          \"terms\": {\r\n            \"field\": \"events.edata.pageid.keyword\"\r\n          }\r\n        }\r\n      }\r\n    }\r\n  }\r\n}"
