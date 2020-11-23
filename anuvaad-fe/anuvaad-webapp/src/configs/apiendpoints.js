@@ -13,7 +13,7 @@ const endpoints = {
   workflowAsync:"/anuvaad-etl/wf-manager/v1/workflow/async/initiate",
   workflowSync:"/anuvaad-etl/wf-manager/v1/workflow/sync/initiate",
   signup: "/v1/user/signup-user",
-  login: "/sysuser/login",
+  login: "/anuvaad/user-mgmt/v1/users/login",
   setpassword: "/set-user-password",
   documentupload:"/api/v0/upload-file",
   fecthcontent: "/api/v0/fetch-content",
@@ -22,7 +22,9 @@ const endpoints = {
   save_content: "/api/v0/save-content-sentence",
   translate: "/anuvaad-etl/translator/v1/text/translate",
   mark_inactive: "/anuvaad-etl/wf-manager/v1/workflow/jobs/mark-inactive",
-  jobids: "/api/v0/records/search"
+  jobids: "/api/v0/records/search",
+  profile_details:'/anuvaad/user-mgmt/v1/users/auth-token-search'
+  
 };
 
 export default endpoints;

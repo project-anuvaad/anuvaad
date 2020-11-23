@@ -8,7 +8,7 @@ import Callback from "./ui/containers/web/Callback";
 import NotFound from "./ui/containers/web/NotFound";
 
 import history from "./web.history";
-import Home from "./ui/containers/web/Home";
+import Login from "./ui/containers/web/Login";
 import UserProfile from "./ui/containers/web/UserProfile";
 
 import InstantTranslate from "./ui/containers/web/Dashboard";
@@ -84,8 +84,8 @@ class AppRoutes extends React.Component {
       <Router history={history} basename="/dev">
         <div>
           <Switch>
-            <Route exact path={`${process.env.PUBLIC_URL}/`} component={Home} />
-            <Route exact path={`${process.env.PUBLIC_URL}/callback`} component={Callback} />
+            <Route exact path={`${process.env.PUBLIC_URL}/`} component={Login} />
+            {/* <Route exact path={`${process.env.PUBLIC_URL}/callback`} component={Callback} /> */}
             <Route exact path={`${process.env.PUBLIC_URL}/logout`} component={Logout} />
 
             <PrivateRoute

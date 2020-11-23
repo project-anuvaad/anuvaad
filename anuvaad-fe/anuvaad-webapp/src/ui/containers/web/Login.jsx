@@ -16,8 +16,14 @@ import { withStyles } from "@material-ui/core";
 import ThemeDefault from "../../theme/web/theme-anuvaad";
 import LoginStyles from "../../styles/web/LoginStyles";
 import LoginAPI from "../../../flux/actions/apis/login";
-import APITransport from "../../../flux/actions/apitransport/apitransport";
+
 import history from "../../../web.history";
+import { translate } from "../../../assets/localisation";
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import profileDetails from '../../../flux/actions/apis/profile_details'
+import Link from '@material-ui/core/Link';
+
 const TELEMETRY = require('../../../utils/TelemetryManager')
 
 class Login extends React.Component {
@@ -25,7 +31,8 @@ class Login extends React.Component {
     super(props);
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      error: false
     };
   }
 
@@ -59,68 +66,122 @@ class Login extends React.Component {
    */
   processLoginButtonPressed = () => {
     const { email, password } = this.state;
-    const { APITransporter } = this.props;
-
+    this.setState({ error: false })
     const apiObj = new LoginAPI(email, password);
-    if ((email == "aroop" || email == "ajitesh" || email == "kd" || email == "vivek") && password == "test") {
-      localStorage.setItem("token", "123");
-      setTimeout(() => {
-        history.push(`${process.env.PUBLIC_URL}/corpus`);
-      }, 1000);
-    } else {
-      alert(translate('login.page.alert.wrongCredentials'));
-    }
-    // APITransporter(apiObj);
+    const apiReq = fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      if (!response.ok) {
+        return Promise.reject('');
+      } else {
+        let resData = rsp_data && rsp_data.data
+        localStorage.setItem("token", resData.token)
+        this.fetchUserProfileDetails(resData.token)
+      }
+    }).catch((error) => {
+      this.setState({ error: true })
+    });
   };
 
+  handleRoles = (value) => {
+    let result = []
+    value.roles.map(element => {
+      result.push(element.roleCode)
+    })
+    return result;
+  }
+
+  fetchUserProfileDetails = (token) => {
+
+    const apiObj = new profileDetails(token);
+    const apiReq = fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      if (!response.ok) {
+        return Promise.reject('');
+      } else {
+        let resData = rsp_data && rsp_data.data
+        var roles = this.handleRoles(resData);
+        localStorage.setItem("roles", roles)
+        history.push(`${process.env.PUBLIC_URL}/view-document`);
+
+      }
+    }).catch((error) => {
+      console.log('api failed because of server or network')
+    });
+
+
+
+  }
   render() {
-    const { user, classes, location } = this.props;
     return (
       <MuiThemeProvider theme={ThemeDefault}>
-        <div>
-          <div className={classes.loginContainer}>
-            <Paper className={classes.paper}>
-              <form method="post">
-                <FormControl fullWidth>
-                  <InputLabel htmlFor="email">{translate('common.page.label.name')}</InputLabel>
-                  <Input id="email" floatingLabelText="E-mail" onChange={this.processInputReceived("email")} />
-                </FormControl>
-                <FormControl fullWidth>
-                  <InputLabel htmlFor="password">{translate('common.page.label.password')}</InputLabel>
-                  <Input id="password" floatingLabelText="Password" type="password" onChange={this.processInputReceived("password")} />
-                </FormControl>
-                <div>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        className={classes.checkRemember.className}
-                        labelclassName={classes.checkRemember.labelclassName}
-                        iconclassName={classes.checkRemember.iconclassName}
-                      />
-                    }
-                    label={translate('login.page.label.remeberMe')}
-                  />
+        <div style={{ width: "100%", height: window.innerHeight, display: "flex", flexDirection: "column", textAlign: "center" }}>
+          <Paper style={{ width: "100%", height: "80px", textAlign: "left" }}>
+           <Typography style={{color: "#233466", paddingLeft: "40px", marginTop: "20px"}} variant="h5">Anuvaad Translator</Typography>
+          </Paper>
+          <div style={{ marginTop: "7%" }}>
+            <Typography style={{ fontWeight: '550', fontSize: "36px", color: "#233466" }}>
+              Sign In
+        </Typography>
+            <Paper style={{ width: "40%", marginLeft: '30%', marginTop: "3%", textAlign: "left", alignItems: "center", display: "flex", flexDirection: "column" }}>
+              <FormControl fullWidth style={{ alignItems: "center", display: "flex", flexDirection: "column" }}>
 
-                  {/* <Link to="/"> */}
-                  <Button variant="contained" onClick={this.processLoginButtonPressed} color="secondary" aria-label="edit">
-                    {translate('common.page.button.login')}
-                  </Button>
-                  {/* </Link> */}
+                <TextField
+                  label="Email/UserName"
+                  type="text"
+                  name="email"
+                  fullWidth
+                  value={this.state.email}
+                  onChange={this.processInputReceived('email')}
+                  variant="outlined"
+                  style={{ width: '50%', border: "grey", marginTop: "60px" }}
+
+                />
+                <TextField
+                  label="Password"
+                  type="password"
+                  name="password"
+                  fullWidth
+                  value={this.state.password}
+                  onChange={this.processInputReceived('password')}
+                  variant="outlined"
+                  style={{ width: '50%', border: "grey", marginTop: "40px" }}
+
+                />
+
+                {this.state.error && <Typography style={{ color: "red", alignItems: "left" }}>Incorrect username or password. please try again..!</Typography>}
+
+                <Button
+                  variant="contained" aria-label="edit" style={{
+                    width: '50%', marginTop: '40px', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
+                    color: "#FFFFFF",
+                    backgroundColor: "#1C9AB7",
+                  }} onClick={this.processLoginButtonPressed.bind(this)}>
+                  Sign In
+              </Button>
+
+                <div style={{ marginBottom: '60px', marginTop: "10px", textAlign: "left", width: '50%' }}>
+                  <Link style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/forgot-password") }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
                 </div>
-              </form>
-            </Paper>
 
-            <div className={classes.buttonsDiv} />
+              </FormControl>
+            </Paper>
           </div>
         </div>
       </MuiThemeProvider>
-    );
+    )
   }
 }
 
 Login.propTypes = {
   user: PropTypes.object.isRequired,
-  APITransporter: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -130,7 +191,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      APITransporter: APITransport
     },
     dispatch
   );

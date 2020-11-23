@@ -36,7 +36,7 @@ class ViewDocument extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      role: JSON.parse(localStorage.getItem("roles")),
+      role: localStorage.getItem("roles"),
       showInfo: false,
       offset: 0,
       limit: 10,
