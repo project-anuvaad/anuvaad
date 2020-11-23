@@ -76,7 +76,10 @@ def search_all_jobs():
     try:
         req_criteria["userIDs"] = [request.headers["ad-userid"]]
         response = service.get_job_details_bulk(req_criteria, False)
-        return response, 200
+        if response:
+            return response, 200
+        else:
+            return jsonify({[]})
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 500
@@ -108,7 +111,7 @@ def search_wf_configs():
 
 
 # Health endpoint
-@wfmapp.route('/health', methods=["GET"])
+@wfmapp.route(context_path + '/health', methods=["GET"])
 def health():
     response = {"code": "200", "status": "ACTIVE"}
     return jsonify(response)

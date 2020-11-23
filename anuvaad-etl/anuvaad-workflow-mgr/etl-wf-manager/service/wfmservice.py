@@ -344,7 +344,6 @@ class WFMService:
 
     # Method to search jobs on multiple criteria.
     def get_job_details_bulk(self, req_criteria, skip_pagination):
-        search_result = []
         try:
             criteria = {"metadata.userID": {"$in": req_criteria["userIDs"]}}
             if 'jobIDs' in req_criteria.keys():
@@ -386,12 +385,12 @@ class WFMService:
                 criteria["active"] = {"$ne": False}
                 jobs = wfmrepo.search_job(criteria, exclude, offset, limit)
                 total_jobs = wfmrepo.search_job(criteria, exclude, None, None)
-                search_result = {"count": len(total_jobs), "jobs": jobs}
+                return {"count": len(total_jobs), "jobs": jobs}
             else:
-                search_result = wfmrepo.search_job(criteria, exclude, None, None)
+                return wfmrepo.search_job(criteria, exclude, None, None)
         except Exception as e:
             log_exception("Exception while searching jobs: " + str(e), None, e)
-            return search_result
+            return None
 
 
     # Method to get wf configs from the remote yaml file.
