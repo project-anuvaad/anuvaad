@@ -2,12 +2,19 @@ package org.anuvaad.filters.pre;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import org.anuvaad.cache.ZuulConfigCache;
+import org.anuvaad.models.Action;
+import org.anuvaad.utils.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.boot.logging.LoggerGroup;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.anuvaad.constants.RequestContextConstants.*;
 
@@ -39,6 +46,8 @@ public class CorrelationFilter extends ZuulFilter {
         return true;
     }
 
+    private static final String INVALID_ENDPOINT_MSG = "You're trying to access an invalid resource";
+
     /**
      * Attaches a UUID as correlation id to the request header.
      * @return
@@ -55,5 +64,6 @@ public class CorrelationFilter extends ZuulFilter {
         logger.debug(RECEIVED_REQUEST_MESSAGE, ctx.getRequest().getRequestURI());
         return null;
     }
+
 
 }

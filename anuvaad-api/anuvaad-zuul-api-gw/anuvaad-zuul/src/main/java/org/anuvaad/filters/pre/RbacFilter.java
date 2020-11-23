@@ -10,6 +10,7 @@ import org.anuvaad.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
@@ -55,6 +56,9 @@ public class RbacFilter extends ZuulFilter {
         objectMapper = new ObjectMapper();
     }
 
+    @Value("${anuvaad.superuser.role.code}")
+    private String superUserCode;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String AUTH_TOKEN_HEADER_NAME = "auth-token";
@@ -97,6 +101,8 @@ public class RbacFilter extends ZuulFilter {
     public Boolean verifyAuthorization(RequestContext ctx, String uri) {
         try {
             User user = (User) ctx.get(USER_INFO_KEY);
+            List<String> roleCodes = user.getRoles().stream().map(UserRole::getRoleCode).collect(Collectors.toList());
+            if(roleCodes.contains(superUserCode)) return true;
             Boolean isRolesCorrect = verifyRoles(user.getRoles());
             if(isRolesCorrect)
                 return verifyRoleActions(user.getRoles(), uri);

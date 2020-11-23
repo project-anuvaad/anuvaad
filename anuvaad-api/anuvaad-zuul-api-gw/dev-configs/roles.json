@@ -6,6 +6,11 @@
             "description":"Has access to every resource in the system"
         },
         {
+            "code":"ADMIN",
+            "active":true,
+            "description":"Has access to user management related resources"
+        },
+        {
             "code":"TRANSLATOR",
             "active":true,
             "description":"Has access to translation related resources"

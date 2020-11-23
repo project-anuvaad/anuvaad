@@ -1,26 +1,6 @@
 {
     "role-actions":[
         {
-            "role":"SUPERUSER",
-            "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
-            "active":true
-        },
-        {
-            "role":"SUPERUSER",
-            "actionID": "400bf52e-d7ef-4bdb-9ce5-8f64b42ada9c",
-            "active":true
-        },
-        {
-            "role":"SUPERUSER",
-            "actionID": "01803b45-67fb-4b24-a6b3-083dfb9b09d9",
-            "active":true
-        },
-        {
-            "role":"SUPERUSER",
-            "actionID": "216313cc-0668-442f-a13e-3fd022be5eb2",
-            "active":true
-        },
-        {
             "role":"TRANSLATOR",
             "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
             "active":true
@@ -38,6 +18,11 @@
         {
             "role":"TRANSLATOR",
             "actionID": "216313cc-0668-442f-a13e-3fd022be5eb2",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "bde39a83-8a4f-400e-bcf0-d14b8895f0ae",
             "active":true
         }
     ]

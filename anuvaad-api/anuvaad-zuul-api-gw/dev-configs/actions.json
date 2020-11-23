@@ -71,6 +71,14 @@
             "active":true,
             "whiteList":true,
             "description":"API to search users based on an active auth token"
+        },
+        {
+            "id":"bde39a83-8a4f-400e-bcf0-d14b8895f0ae",
+            "uri":"/anuvaad-etl/translator/v1/text/translate",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to translate text"
         }
     ]
 }
