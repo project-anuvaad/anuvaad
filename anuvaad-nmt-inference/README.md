@@ -9,12 +9,13 @@ the same is used to generate model predictions.
 - ubuntu 16.04
 
 Install various python libraries as mentioned in requirements.txt file
-``pip install -r requirements.txt
-```
+pip install -r requirement.txt
+
 ## APIs and Documentation
-After successful installation of prerequisites, you will have to run app.py
+Run app.py to start the service with all the packages installed
 
 python src/app.py
+```
 ```
 For more information about api documentation, please check @ ```https://github.com/project-anuvaad/anuvaad/blob/dev-nmt-inference/docs/contracts/apis/```
 ## License
