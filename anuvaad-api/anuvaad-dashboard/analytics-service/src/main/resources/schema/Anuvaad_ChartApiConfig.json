@@ -172,9 +172,9 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"events.ets\"\r\n}",
-				"dateRefField": "events.ets",
-				"indexName": "anuvaad-telemetry-users",
+				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"dateRefField": "ets",
+				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
 				"aggrQuery": "{\r\n  \"size\": 0,\r\n  \"aggs\": {\r\n    \"TOTAL SPLIT\": {\r\n      \"filter\": {\r\n        \"bool\": {\r\n          \"must\": [\r\n            {\r\n              \"term\": {\r\n                \"events.edata.action.keyword\": \"SPLIT\"\r\n              }\r\n            }\r\n          ]\r\n        }\r\n      }\r\n    }\r\n  }\r\n}"
 			}
