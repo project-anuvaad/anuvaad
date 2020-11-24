@@ -239,7 +239,7 @@ class ViewDocument extends React.Component {
       
   processDownloadInputFileClick = (jobId, recordId) => {
     let job = this.getJobIdDetail(jobId);
-    let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${
+    let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad-api/file-uploader/v0/download-file?file=${
       job.converted_filename ? job.converted_filename : ""
       }`
       window.open(url, "_self")
