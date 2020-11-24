@@ -24,17 +24,11 @@ class KafkaTranslate:
                 iq = iq +1
                 inputs = (msg.value)
 
-                if inputs is not None and all(v in inputs for v in ['url_end_point','message']) and len(inputs) is not 0:
+                if inputs is not None and all(v in inputs for v in ['message']) and len(inputs) is not 0:
                     record_id =  inputs.get("record_id")
-                    # log_info(log_with_record_id(record_id,LOG_TAGS["input"],inputs))  
-                    if inputs['url_end_point'] == "translate-anuvaad":
-                        log_info("Running kafka-translation on  {}".format(inputs['message']),MODULE_CONTEXT)  
-                        out = OpenNMTTranslateService.translate_func(inputs['message'])
-                        log_info("final output kafka-translate-anuvaad:{}".format(out.getresjson()),MODULE_CONTEXT) 
-                        # log_info(log_with_record_id(record_id,LOG_TAGS["output"],out),MODULE_CONTEXT)
-                    else:
-                        log_info("Incorrect url_end_point for KAFKA",MODULE_CONTEXT)
-                        out = CustomResponse(Status.KAFKA_INVALID_REQUEST.value, [])
+                    log_info("Running kafka-translation on  {}".format(inputs['message']),MODULE_CONTEXT)  
+                    out = OpenNMTTranslateService.translate_func(inputs['message'])
+                    log_info("final output kafka-translate-anuvaad:{}".format(out.getresjson()),MODULE_CONTEXT) 
                     out = out.getresjson()
                     
                     if record_id: out['record_id'] = record_id  
