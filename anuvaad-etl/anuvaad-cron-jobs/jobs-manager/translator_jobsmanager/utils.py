@@ -48,7 +48,7 @@ class TranslatorCronUtils:
     # Util method to make an API call and fetch the result
     def call_api(self, uri, method, api_input, params, user_id):
         try:
-            log_info("URI: " + uri, api_input)
+            log_info("URI: " + uri, None)
             response = None
             if method == "POST":
                 api_headers = {'userid': user_id, 'ad-userid': user_id, 'Content-Type': 'application/json'}
@@ -58,7 +58,7 @@ class TranslatorCronUtils:
                 response = requests.get(url=uri, params=params, headers=api_headers)
             if response is not None:
                 if response.text is not None:
-                    log_info(response.text, api_input)
+                    log_info(response.text, None)
                     return json.loads(response.text)
                 else:
                     log_error("API response was None! URI: " + str(uri), api_input, None)

@@ -19,7 +19,7 @@ from configs.wfmconfig import tool_nmt
 from configs.wfmconfig import jobid_random_str_length
 from repository.wfmrepository import WFMRepository
 from anuvaad_auditor.errorhandler import post_error
-from anuvaad_auditor.loghandler import log_exception, log_error
+from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 
 from tools.aligner import Aligner
 from tools.tokeniser import Tokeniser
@@ -199,10 +199,12 @@ class WFMUtils:
     # Util method to make an API call and fetch the result
     def call_api(self, uri, api_input, user_id):
         try:
+            log_info("URI: " + uri, None)
             api_headers = {'userid': user_id, 'x-user-id': user_id, 'Content-Type': 'application/json'}
             response = requests.post(url=uri, json=api_input, headers=api_headers)
             if response is not None:
                 if response.text is not None:
+                    log_info(response.text, None)
                     data = json.loads(response.text)
                     return data
                 else:
