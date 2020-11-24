@@ -20,9 +20,8 @@ def create_directory(path):
     return False
 
 
-def create_pdf_processing_paths(filepath, base_dir):
+def create_pdf_processing_paths(filename, base_dir):
 
-    filename    = os.path.basename(filepath)
     working_dir = os.path.join(base_dir, os.path.splitext(filename)[0] + '_' + str(uuid.uuid1()))
     ret         = create_directory(working_dir)
 
@@ -43,7 +42,7 @@ def extract_image_paths_from_pdf(filepath, workspace_output_dir):
     image_filename  = os.path.splitext(os.path.basename(filepath))[0]
     
     create_directory(working_dir)
-    paths           = pdf2image.convert_from_path(filepath, dpi=300, output_file=image_filename, output_folder=working_dir, fmt='jpg', paths_only=True)
+    paths           = pdf2image.convert_from_path(filepath, dpi=config.EXRACTION_RESOLUTION, output_file=image_filename, output_folder=working_dir, fmt='jpg', paths_only=True)
     return paths
 
 def extract_pdf_metadata(filename, working_dir, base_dir):

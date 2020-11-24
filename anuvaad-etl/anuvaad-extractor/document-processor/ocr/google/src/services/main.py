@@ -7,37 +7,39 @@ import src.utilities.app_context as app_context
 from compose import compose
 import config
 from src.utilities.request_parse import get_files, File
-from pdf_to_image import doc_pre_processing
-
-def detect_text(image_paths):
-    
+from src.utilities.pdf_to_image import doc_pre_processing
+from src.services.ocr import text_extraction
 
 def process_input(app_context) :
     try:
         files       = get_files(app_context.application_context)
-        file_images = []
-        output      = []
+        output_files= []
+        
         for index,file in enumerate(files):
+            file_output    = {"status":{}}
             file_properties = File(file)
             if "page_info" in file.keys():
                 page_paths = file_properties.get_pages()
             else:
-                page_paths = doc_pre_processing(file['name'],config.BASE_DIR)
-            
-            
-            
-            
-        log_info("successfully completed layout detection", None)
+                page_paths = doc_pre_processing(file['file']['name'],config.BASE_DIR)
+            page_res = text_extraction(page_paths)
+            file_output["page_info"] = page_paths
+            file_output["file"]      = file
+            file_output["pages"]     = page_res
+            file_output['status']['message']="google-vision ocr run successfully"
+            output_files.append(file_output)
+        app_context.application_context["outputs"] =output_files
+        log_info("successfully completed google vision ocr", None)
+        
     except Exception as e:
-        log_exception("Error occured during prima layout detection ",  app_context.application_context, e)
+        log_exception("Error occured during google vision ocr",  app_context.application_context, e)
         return None
 
     return app_context.application_context
 
-
-def GoogleVisionOCR(app_context):
+def GoogleVisionOCR(app_context,base_dir = config.BASE_DIR):
     
-    log_debug('layout detection process starting {}'.format(app_context.application_context), app_context.application_context)
+    log_debug('google vision ocr process starting {}'.format(app_context.application_context), app_context.application_context)
     try:
         response   = process_input(app_context)
         return {
@@ -46,9 +48,9 @@ def GoogleVisionOCR(app_context):
                 'rsp': response
                 }
     except Exception as e:
-        log_exception("Error occured during layout detection ",  app_context.application_context, e)
+        log_exception("Error occured during google vision ocr  ",  app_context.application_context, e)
         return {
             'code': 400,
-            'message': 'Error occured during layout detection ',
+            'message': 'Error occured during google vision ocr ',
             'rsp': None
             }

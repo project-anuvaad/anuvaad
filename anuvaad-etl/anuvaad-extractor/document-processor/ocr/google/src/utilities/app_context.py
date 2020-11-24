@@ -1,5 +1,5 @@
 
-LOG_WITHOUT_CONTEXT = {'metadata':{'module':'PRIMA-LAYOUT-ANALYZER'}}
+LOG_WITHOUT_CONTEXT = {'metadata':{'module':'GOOGLE-VISION-OCR'}}
 
 def init():
     global app_context
