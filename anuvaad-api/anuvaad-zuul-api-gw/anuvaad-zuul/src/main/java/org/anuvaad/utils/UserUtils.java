@@ -50,9 +50,6 @@ public class UserUtils {
         headers.add(CORRELATION_ID_HEADER_NAME, (String) ctx.get(CORRELATION_ID_KEY));
         final HttpEntity<Object> httpEntity = new HttpEntity<>(req_body, headers);
         try{
-            logger.info("URI: {}", authURL);
-            logger.info("req_body: {}", req_body);
-            logger.info("headers: {}", headers);
             UMSResponse userServiceRes = restTemplate.postForObject(authURL, httpEntity, UMSResponse.class);
             if (null != userServiceRes){
                 return userServiceRes.getData();
