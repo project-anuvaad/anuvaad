@@ -33,7 +33,7 @@ export default class FetchQuestions extends API {
   getHeaders() {
     return {
       headers: {
-        Authorization: "Bearer " + decodeURI(localStorage.getItem("token")),
+         'auth-token': `${decodeURI(localStorage.getItem("token"))}`,
         "Content-Type": "application/json"
       }
     };
