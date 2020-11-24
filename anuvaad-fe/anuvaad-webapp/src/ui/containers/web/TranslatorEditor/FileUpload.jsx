@@ -9,8 +9,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import MenuItem from "@material-ui/core/MenuItem";
 import FetchModel from "../../../../flux/actions/apis/fetchmodel";
-import FetchLanguage from "../../../../flux/actions/apis/fetchlanguage";
 import history from "../../../../web.history";
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
@@ -18,12 +18,14 @@ import FileUploadStyles from "../../../styles/web/FileUpload";
 import WorkFlow from "../../../../flux/actions/apis/fileupload";
 import DocumentUpload from "../../../../flux/actions/apis/document_upload";
 import TextField from "@material-ui/core/TextField";
-import Select from "../../../components/web/common/Select";
+import Select from "@material-ui/core/Select";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
 import Toolbar from "./FileUploadHeader"
 
-const TELEMETRY = require('../../../../utils/TelemetryManager')
+const TELEMETRY     = require('../../../../utils/TelemetryManager')
+const LANG_MODEL    = require('../../../../utils/language.model')
+
 const theme = createMuiTheme({
   overrides: {
     MuiDropzoneArea: {
@@ -69,48 +71,54 @@ class PdfUpload extends Component {
       workflow: "WF_A_FCBMTKTR",
       fileName :"",
       workspaceName:"",
-      path:""
-
+      path:"",
+      source_language_code: '',
+      target_language_code: '',
+      source_languages: [],
+      target_languages: [],
     };
   }
 
 
 
   handleSubmit(e) {
-    let model = "";
-    let target_lang_name = ''
-    let source_lang_name = ''
-    if (this.props.fetch_models.models) {
-      this.props.fetch_models.models.map(item =>
-        item.target_language_code === this.state.target &&
-          item.source_language_code === this.state.source &&
-          item.is_primary
-          ? (model = item)
-          : ""
+    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
+    console.log('submit pressed: %s %s %s %s' , this.state.target_language_code, this.state.source_language_code, this.state.files, modelId)
+    console.log(this.state.files)
+    
+    e.preventDefault();
+    this.setState({ model: modelId })
+    if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code) {
+      const { APITransport } = this.props;
+      const apiObj = new DocumentUpload(
+        this.state.files, "docUplaod",
+        modelId,
       );
-      this.props.fetch_languages.languages.map((lang) => {
-        if (lang.language_code === this.state.target) {
-          target_lang_name = lang.language_name
-        } if (lang.language_code === this.state.source) {
-          source_lang_name = lang.language_name
-        }
-        return true
-      })
-      e.preventDefault();
-      this.setState({ model })
-      if (this.state.files.length > 0 && source_lang_name && target_lang_name) {
-        const { APITransport } = this.props;
-
-        const apiObj = new DocumentUpload(
-          this.state.files, "docUplaod",
-          model,
-
-        );
-        APITransport(apiObj);
-      } else {
-        alert("Field should not be empty!");
-      }
+      APITransport(apiObj);
+    } else {
+      alert("Field should not be empty!");
     }
+
+    // let model = "";
+    // let target_lang_name = ''
+    // let source_lang_name = ''
+    // if (this.props.fetch_models.models) {
+    //   this.props.fetch_models.models.map(item =>
+    //     item.target_language_code === this.state.target &&
+    //       item.source_language_code === this.state.source &&
+    //       item.is_primary
+    //       ? (model = item)
+    //       : ""
+    //   );
+    //   this.props.fetch_languages.languages.map((lang) => {
+    //     if (lang.language_code === this.state.target) {
+    //       target_lang_name = lang.language_name
+    //     } if (lang.language_code === this.state.source) {
+    //       source_lang_name = lang.language_name
+    //     }
+    //     return true
+    //   })
+    
   }
   // Source language
   handleSource(modelLanguage, supportLanguage) {
@@ -162,27 +170,20 @@ class PdfUpload extends Component {
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('document-upload')
 
-    if (this.props.fetch_languages.languages.length < 1) {
-      const { APITransport } = this.props;
-      const apiObj = new FetchLanguage();
-      APITransport(apiObj);
-      this.setState({ showLoader: true });
-    }
-
-    if (this.props.fetch_models.models.length < 1) {
-      const { APITransport } = this.props;
-      const apiModel = new FetchModel();
+    if (this.props.fetch_models && this.props.fetch_models.models.length < 1) {
+      const { APITransport }  = this.props;
+      const apiModel          = new FetchModel();
       APITransport(apiModel);
       this.setState({ showLoader: true });
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.documentUplaod !== this.props.documentUplaod) {
-      const { APITransport } = this.props;
-      const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source,
-        this.state.target, this.state.path, this.state.model);
-      APITransport(apiObj);
+    if (prevProps.fetch_models.models != this.props.fetch_models.models) {
+      this.setState({
+        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
+        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models)
+      })
     }
 
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
@@ -191,6 +192,18 @@ class PdfUpload extends Component {
       TELEMETRY.startWorkflow(this.state.source, this.state.target, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
       history.push(`${process.env.PUBLIC_URL}/view-document`);
     }
+  }
+
+  processSourceLanguageSelected = (event) => {
+    this.setState({ source_language_code: event.target.value})
+    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value)
+    this.setState({
+      target_languages: languages
+    })
+  }
+
+  processTargetLanguageSelected = (event) => {
+    this.setState({ target_language_code: event.target.value})
   }
 
   readFileDataAsBinary(file) {
@@ -241,6 +254,73 @@ class PdfUpload extends Component {
     }
   };
 
+  /**
+   * render methods
+   */
+  renderSourceLanguagesItems = () => {
+    const { classes } = this.props;
+
+    return (
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{ marginTop: "0%" }}>
+          <Grid item xs={6} sm={6} lg={8} xl={8} className={classes.grid}>
+            <Typography value="" variant="h5">
+              {translate("common.page.label.sourceLang")}{" "}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={6} sm={6} lg={4} xl={4} >
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="outlined-age-simple"
+                onChange={this.processSourceLanguageSelected}
+                value={this.state.source_language_code}
+                style={{
+                  fullWidth: true,
+                  float: 'right'
+                }}
+              >
+              {
+                this.state.source_languages.map(lang => 
+                <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+              }
+              </Select>
+          </Grid>
+      </Grid>
+    )
+  }
+
+  renderTargetLanguagesItems = () => {
+    const { classes } = this.props;
+
+    return (
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
+        <Grid item xs={6} sm={6} lg={8} xl={8} className={classes.grid}>
+          <Typography value="" variant="h5">
+            {translate("common.page.label.targetLang")}&nbsp;
+          </Typography>
+        </Grid>
+        <Grid item xs={6} sm={6} lg={4} xl={4}>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="outlined-age-simple"
+              value={this.state.target}
+              onChange={this.processTargetLanguageSelected}
+              value={this.state.target_language_code}
+              style={{
+                fullWidth: true,
+                float: 'right'
+              }}
+            >
+              {
+                this.state.target_languages.map(lang => 
+                  <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                }
+            </Select>
+        </Grid>
+      </Grid>
+    )
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -273,50 +353,9 @@ class PdfUpload extends Component {
               </Grid>
 
               <Grid item xs={12} sm={6} lg={6} xl={6}>
-                <Grid container className={classes.grid}>
-                  <Typography gutterBottom variant="h5" className={classes.typography}>
-                    {translate('common.page.label.sourceLang')}<span className={classes.span}>*</span>
-                  </Typography>
-                  <Grid item xs={12} sm={12} lg={12} xl={12}  >
-                    <Select
-                      id="outlined-age-simple"
-                      selectValue="language_code"
-                      fullWidth
-                      MenuItemValues={this.props.fetch_languages.languages.length > 0 && this.handleSource(this.props.fetch_models.models, this.props.fetch_languages.languages)}
-                      // MenuItemValues={["English"]}
-                      handleChange={this.handleSelectChange}
-                      value={this.state.source}
-
-                      name="source"
-                      className={classes.Select}
-                    />
-                  </Grid>
-                </Grid>
+                {this.renderSourceLanguagesItems()}
                 <br /><br />
-                <Grid container className={classes.grid}>
-
-                  <Typography
-                    value="Select target language"
-                    variant="h5"
-                    gutterBottom={true}
-                    className={classes.typography}
-                  >
-                    {translate('common.page.label.targetLang')}<span className={classes.span}>*</span>
-                  </Typography>
-                  <br />
-                  <Grid item xs={12} sm={12} lg={12} xl={12}  >
-                    <Select
-                      id="outlined-age-simple"
-                      selectValue="language_code"
-                      MenuItemValues={this.state.source && this.props.fetch_languages.languages.length > 0 ? this.handleTarget(this.props.fetch_models.models, this.props.fetch_languages.languages, this.state.source) : []}
-                      // MenuItemValues={["Hindi"]}
-                      handleChange={this.handleSelectChange}
-                      value={this.state.target}
-                      name="target"
-                      className={classes.Select}
-                    />
-                  </Grid>
-                </Grid>
+                {this.renderTargetLanguagesItems()}
                 <br /><br />
                 <Grid container className={classes.grid}>
                   <Typography gutterBottom variant="h5" className={classes.typography}>
@@ -376,7 +415,6 @@ const mapStateToProps = state => ({
   configUplaod: state.configUplaod,
   workflowStatus: state.workflowStatus,
   documentUplaod: state.documentUplaod,
-  fetch_languages: state.fetch_languages,
   fetch_models: state.fetch_models
 });
 
