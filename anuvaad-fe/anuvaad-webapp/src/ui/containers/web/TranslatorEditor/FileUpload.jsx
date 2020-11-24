@@ -22,9 +22,10 @@ import Select from "@material-ui/core/Select";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
 import Toolbar from "./FileUploadHeader"
+import OutlinedInput from "@material-ui/core/OutlinedInput";
 
-const TELEMETRY     = require('../../../../utils/TelemetryManager')
-const LANG_MODEL    = require('../../../../utils/language.model')
+const TELEMETRY = require('../../../../utils/TelemetryManager')
+const LANG_MODEL = require('../../../../utils/language.model')
 
 const theme = createMuiTheme({
   overrides: {
@@ -69,9 +70,9 @@ class PdfUpload extends Component {
       message: "File uplaoded successfully",
       showComponent: false,
       workflow: "WF_A_FCBMTKTR",
-      fileName :"",
-      workspaceName:"",
-      path:"",
+      fileName: "",
+      workspaceName: "",
+      path: "",
       source_language_code: '',
       target_language_code: '',
       source_languages: [],
@@ -83,9 +84,9 @@ class PdfUpload extends Component {
 
   handleSubmit(e) {
     let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
-    console.log('submit pressed: %s %s %s %s' , this.state.target_language_code, this.state.source_language_code, this.state.files, modelId)
+    console.log('submit pressed: %s %s %s %s', this.state.target_language_code, this.state.source_language_code, this.state.files, modelId)
     console.log(this.state.files)
-    
+
     e.preventDefault();
     this.setState({ model: modelId })
     if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code) {
@@ -118,7 +119,7 @@ class PdfUpload extends Component {
     //     }
     //     return true
     //   })
-    
+
   }
   // Source language
   handleSource(modelLanguage, supportLanguage) {
@@ -171,8 +172,8 @@ class PdfUpload extends Component {
     TELEMETRY.pageLoadCompleted('document-upload')
 
     if (this.props.fetch_models && this.props.fetch_models.models.length < 1) {
-      const { APITransport }  = this.props;
-      const apiModel          = new FetchModel();
+      const { APITransport } = this.props;
+      const apiModel = new FetchModel();
       APITransport(apiModel);
       this.setState({ showLoader: true });
     }
@@ -195,7 +196,7 @@ class PdfUpload extends Component {
   }
 
   processSourceLanguageSelected = (event) => {
-    this.setState({ source_language_code: event.target.value})
+    this.setState({ source_language_code: event.target.value })
     const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value)
     this.setState({
       target_languages: languages
@@ -203,7 +204,7 @@ class PdfUpload extends Component {
   }
 
   processTargetLanguageSelected = (event) => {
-    this.setState({ target_language_code: event.target.value})
+    this.setState({ target_language_code: event.target.value })
   }
 
   readFileDataAsBinary(file) {
@@ -261,30 +262,36 @@ class PdfUpload extends Component {
     const { classes } = this.props;
 
     return (
-      <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{ marginTop: "0%" }}>
-          <Grid item xs={6} sm={6} lg={8} xl={8} className={classes.grid}>
-            <Typography value="" variant="h5">
-              {translate("common.page.label.sourceLang")}{" "}
-            </Typography>
-          </Grid>
+      <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "3%" }}>
+        <Grid item xs={12} sm={12} lg={12} xl={12}>
+          <Typography value="" variant="h5">
+            {translate("common.page.label.sourceLang")}{" "}
+          </Typography>
+        </Grid>
 
-          <Grid item xs={6} sm={6} lg={4} xl={4} >
-              <Select
-                labelId="demo-simple-select-outlined-label"
-                id="outlined-age-simple"
-                onChange={this.processSourceLanguageSelected}
-                value={this.state.source_language_code}
-                style={{
-                  fullWidth: true,
-                  float: 'right'
-                }}
-              >
-              {
-                this.state.source_languages.map(lang => 
+        <Grid item xs={12} sm={12} lg={12} xl={12} >
+          <Select
+            labelId="demo-simple-select-outlined-label"
+            id="outlined-age-simple"
+            onChange={this.processSourceLanguageSelected}
+            value={this.state.source_language_code}
+            fullWidth
+            className={classes.Select}
+            style={{
+              fullWidth: true,
+              float: 'right',
+              marginBottom: "27px"
+            }}
+            input={
+              <OutlinedInput name="source" id="source" />
+            }
+          >
+            {
+              this.state.source_languages.map(lang =>
                 <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
-              }
-              </Select>
-          </Grid>
+            }
+          </Select>
+        </Grid>
       </Grid>
     )
   }
@@ -293,29 +300,37 @@ class PdfUpload extends Component {
     const { classes } = this.props;
 
     return (
-      <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
-        <Grid item xs={6} sm={6} lg={8} xl={8} className={classes.grid}>
+      <Grid item xs={12} sm={12} lg={12} xl={12}>
+        <Grid item xs={12} sm={12} lg={12} xl={12}>
           <Typography value="" variant="h5">
             {translate("common.page.label.targetLang")}&nbsp;
           </Typography>
         </Grid>
-        <Grid item xs={6} sm={6} lg={4} xl={4}>
-            <Select
-              labelId="demo-simple-select-outlined-label"
-              id="outlined-age-simple"
-              value={this.state.target}
-              onChange={this.processTargetLanguageSelected}
-              value={this.state.target_language_code}
-              style={{
-                fullWidth: true,
-                float: 'right'
-              }}
-            >
-              {
-                this.state.target_languages.map(lang => 
-                  <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
-                }
-            </Select>
+
+        <Grid item xs={12} sm={12} lg={12} xl={12}>
+          <Select
+            labelId="demo-simple-select-outlined-label"
+            id="outlined-age-simple"
+            value={this.state.target}
+            onChange={this.processTargetLanguageSelected}
+            value={this.state.target_language_code}
+            fullWidth
+            style={{
+              width: "100%",
+              float: 'right',
+              marginBottom: "27px",
+            }}
+            input={
+              <OutlinedInput name="target" id="target" />
+            }
+            className={classes.Select}
+
+          >
+            {
+              this.state.target_languages.map(lang =>
+                <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+            }
+          </Select>
         </Grid>
       </Grid>
     )
@@ -324,7 +339,7 @@ class PdfUpload extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div style={{height: window.innerHeight }}>
+      <div style={{ height: window.innerHeight }}>
         <Toolbar />
 
         <div className={classes.div}>
@@ -336,6 +351,7 @@ class PdfUpload extends Component {
           <br />
           <Paper elevation={3} className={classes.paper}>
             <Grid container spacing={8}>
+
               <Grid item xs={12} sm={6} lg={6} xl={6}>
                 <MuiThemeProvider theme={theme}>
                   <DropzoneArea
@@ -353,43 +369,67 @@ class PdfUpload extends Component {
               </Grid>
 
               <Grid item xs={12} sm={6} lg={6} xl={6}>
-                {this.renderSourceLanguagesItems()}
-                <br /><br />
-                {this.renderTargetLanguagesItems()}
-                <br /><br />
-                <Grid container className={classes.grid}>
-                  <Typography gutterBottom variant="h5" className={classes.typography}>
-                    {translate("common.page.label.filename")}
-                  </Typography>
-                  <TextField
-                    className={classes.textfield}
-                    value={this.state.workspaceName}
-                    id="outlined-name"
-                    margin="normal"
-                    onChange={event => {
-                      this.handleTextChange("workspaceName", event);
-                    }}
-                    variant="outlined"
 
-                  />
+                {this.renderSourceLanguagesItems()}
+
+                {this.renderTargetLanguagesItems()}
+
+                <Grid item xs={12} sm={12} lg={12} xl={12}>
+                  <Grid item xs={12} sm={12} lg={12} xl={12}>
+                    <Typography variant="h5">
+                      {translate("common.page.label.filename")}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={12} lg={12} xl={12}>
+                    <TextField
+                      // className={classes.textfield}
+                      value={this.state.workspaceName}
+                      id="outlined-name"
+                      margin="normal"
+                      onChange={event => {
+                        this.handleTextChange("workspaceName", event);
+                      }}
+                      variant="outlined"
+                      style={{ width: "100%", margin: "0px" }}
+                    />
+                  </Grid>
+
                 </Grid>
 
               </Grid>
-              <Grid container spacing={8}>
 
-                <Grid item xs={12} sm={6} lg={6} xl={6} >
-                  <Button variant="contained" color="primary" className={classes.button1} size="large" onClick={this.handleBack.bind(this)}>
-                    {translate("common.page.button.back")}
-                  </Button>
-                </Grid>
-                <Grid item xs={6} sm={6} lg={6} xl={6}>
-
-                  <Button variant="contained" color="primary" className={classes.button2} size="large" onClick={this.handleSubmit.bind(this)}>
+              <Grid item xs={12} sm={6} lg={6} xl={6} style={{paddingTop: "25px"}}>
+                <Button variant="contained" color="primary"
+                  size="large" onClick={this.handleBack.bind(this)}
+                  style={{
+                    width: "100%",
+                    backgroundColor:'#1C9AB7',
+                    borderRadius:"20px 20px 20px 20px",
+                    color:"#FFFFFF",
+                    height:'46px'
+                  }}
+                >
+                  {translate("common.page.button.back")}
+                </Button>
+              </Grid>
+              <Grid item xs={6} sm={6} lg={6} xl={6} style={{paddingTop: "25px"}}>
+                <Grid item xs={12} sm={12} lg={12} xl={12}>
+                  <Button variant="contained" color="primary" 
+                  // className={classes.button1} 
+                  style={{
+                    width: "100%",
+                    backgroundColor:'#1C9AB7',
+                    borderRadius:"20px 20px 20px 20px",
+                    color:"#FFFFFF",
+                    height:'46px'
+                  }}
+                  size="large" onClick={this.handleSubmit.bind(this)}>
                     {translate("common.page.button.upload")}
                   </Button>
                 </Grid>
 
               </Grid>
+
             </Grid>
 
 

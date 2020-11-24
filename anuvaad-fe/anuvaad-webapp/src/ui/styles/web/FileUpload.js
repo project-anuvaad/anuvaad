@@ -56,7 +56,7 @@ const FileUploadStyles = theme => ({
       marginLeft: "5.5%" 
     },
     textfield:{
-      width: '92%',
+      width: '95%',
       //marginLeft:"1%"
     },
     span:{
