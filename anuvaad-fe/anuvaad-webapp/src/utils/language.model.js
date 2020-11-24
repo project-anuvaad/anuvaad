@@ -18,7 +18,7 @@ export const get_supported_languages = (languages) => {
     return []
 }
 
-export const get_counterpart_languages = (languages, models, language_code) => {
+export const get_counterpart_languages = (languages, language_code) => {
     let condition   = `$..[?(@.source_language_code == '${language_code}' && @.is_primary== true)]`
     let result      = jp.query(languages, condition)
     return result.map((lang) => { 

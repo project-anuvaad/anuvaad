@@ -54,10 +54,10 @@ class Dashboard extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.fetch_models.response_body != this.props.fetch_models.response_body) {
+    if (prevProps.fetch_models.models != this.props.fetch_models.models) {
       this.setState({
-        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.response_body),
-        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.response_body)
+        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
+        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models)
       })
     }
   }
@@ -76,7 +76,7 @@ class Dashboard extends React.Component {
   }
 
   processTranslateButtonPressed() {
-    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.response_body, this.state.source_language_code, this.state.target_language_code)
+    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
     console.log('submit pressed: %s %s %s %s' , this.state.target_language_code, this.state.source_language_code, this.state.text, modelId)
 
     this.makeAPICallInteractiveTranslation(this.state.text, modelId)
@@ -85,7 +85,7 @@ class Dashboard extends React.Component {
 
   processSourceLanguageSelected = (event) => {
     this.setState({ source_language_code: event.target.value})
-    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.response_body, event.target.value)
+    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value)
     this.setState({
       target_languages: languages
     })
@@ -249,21 +249,6 @@ class Dashboard extends React.Component {
             </Grid>
 
             <Grid item xs={12} sm={12} lg={12} xl={12} style={{ display: 'flex', flexDirection: 'row' }}>
-              <Grid item xs={gridSizeSmall} sm={gridSizeSmall} lg={gridSizeLarge} xl={gridSizeLarge} style={{ textAlign: 'left', paddingLeft: '0px' }}>
-                <FormControlLabel
-                  style={{ marginLeft: "0%", textAlign: 'left' }}
-                  control={
-                    <Checkbox
-                      color="default"
-                      checked={this.state.autoMLChecked}
-                      value="checkedMachine"
-                      onChange={this.processAutoMLCheckboxClicked}
-                    />
-                  }
-                  label={translate("dashboard.page.checkbox.mt")}
-                />
-              </Grid>
-
             </Grid>
             <Grid item xs={6} sm={6} lg={6} xl={6}>
               <Button
