@@ -41,6 +41,14 @@
             "description":"API to initiate workflow configs"
         },
         {
+            "id":"5e1b1f65-35ad-41b5-8132-d1254cdc17bc",
+            "uri":"/anuvaad-etl/wf-manager/v1/workflow/jobs/mark-inactive",
+            "module":"WORKFLOW-MANAGER",
+            "active":false,
+            "whiteList":false,
+            "description":"API to mark jobs inactive for user"
+        },
+        {
             "id":"9050cae6-b3f5-4c87-99e0-09019ad86267",
             "uri":"/anuvaad/user-mgmt/v1/users/create",
             "module":"USER-MANAGEMENT-SYSTEM",
@@ -153,12 +161,28 @@
             "description":"API to update dictionary"
         },
         {
+            "id":"9b8af8f1-c2a1-4a49-9b10-d7c125712395",
+            "uri":"/anuvaad/content-handler/v0/records/search",
+            "module":"CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search records"
+        },
+        {
             "id":"9c1da068-aac9-4e93-97c0-e4dfa0306dfd",
             "uri":"/anuvaad-etl/document-converter/v0/document-converter",
             "module":"DOCUMENT-CONVERTER",
             "active":true,
             "whiteList":false,
             "description":"API to document conversion"
+        },
+        {
+            "id":"a22e8462-160e-4372-88c0-d1e4713568fd",
+            "uri":"/telemetry/v1/register",
+            "module":"ANUVAAD-TELEMETRY",
+            "active":true,
+            "whiteList":true,
+            "description":"API to register telemetry entries"
         }
     ]
 }

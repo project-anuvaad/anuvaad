@@ -72,7 +72,17 @@
         },
         {
             "role":"TRANSLATOR",
+            "actionID": "9b8af8f1-c2a1-4a49-9b10-d7c125712395",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
             "actionID": "9c1da068-aac9-4e93-97c0-e4dfa0306dfd",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "5e1b1f65-35ad-41b5-8132-d1254cdc17bc",
             "active":true
         }
     ]
