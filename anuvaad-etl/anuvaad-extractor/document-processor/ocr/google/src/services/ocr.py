@@ -1,12 +1,11 @@
-import cv2
 import uuid, os, io
+import config
 from google.cloud import vision
 client = vision.ImageAnnotatorClient()
 
 def get_text(path,page_dict):
     with io.open(path, 'rb') as image_file:
         content = image_file.read()
-    #img = cv2.imread(path)
     image = vision.types.Image(content=content)
     response = client.document_text_detection(image=image)
     page_output = get_document_bounds(response.full_text_annotation,page_dict)
@@ -15,8 +14,7 @@ def get_text(path,page_dict):
 def text_extraction(image_paths):
     page_res = []
     for image_path in image_paths:
-        img = cv2.imread(image_path)
-        page_dict = {"identifier": str(uuid.uuid4()),"resolution": 300 , "vertices":[{"x":0,"y":0},{"x":img.shape[1],"y":0},{"x":img.shape[1],"y":img.shape[0]},{"x":0,"y":img.shape[0]}]}
+        page_dict = {"identifier": str(uuid.uuid4()),"resolution": config.EXRACTION_RESOLUTION }
         page_output = get_text(image_path,page_dict)
         page_res.append(page_output)
     return page_res
@@ -28,6 +26,7 @@ def get_document_bounds(response,page_dict):
     
     
     for i,page in enumerate(response.pages):
+        page_dict["vertices"]=  [{"x":0,"y":0},{"x":page.width,"y":0},{"x":page.width,"y":page.height},{"x":0,"y":page.height}]
         for block in page.blocks:
             block_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}, "class":'PARA',}
             block_vertices = []
