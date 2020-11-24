@@ -82,40 +82,43 @@ class PdfUpload extends Component {
 
 
   handleSubmit(e) {
-    let model = "";
-    let target_lang_name = ''
-    let source_lang_name = ''
-    if (this.props.fetch_models.models) {
-      this.props.fetch_models.models.map(item =>
-        item.target_language_code === this.state.target &&
-          item.source_language_code === this.state.source &&
-          item.is_primary
-          ? (model = item)
-          : ""
+    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
+    console.log('submit pressed: %s %s %s %s' , this.state.target_language_code, this.state.source_language_code, this.state.files, modelId)
+    console.log(this.state.files)
+    
+    e.preventDefault();
+    this.setState({ model: modelId })
+    if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code) {
+      const { APITransport } = this.props;
+      const apiObj = new DocumentUpload(
+        this.state.files, "docUplaod",
+        modelId,
       );
-      this.props.fetch_languages.languages.map((lang) => {
-        if (lang.language_code === this.state.target) {
-          target_lang_name = lang.language_name
-        } if (lang.language_code === this.state.source) {
-          source_lang_name = lang.language_name
-        }
-        return true
-      })
-      e.preventDefault();
-      this.setState({ model })
-      if (this.state.files.length > 0 && source_lang_name && target_lang_name) {
-        const { APITransport } = this.props;
-
-        const apiObj = new DocumentUpload(
-          this.state.files, "docUplaod",
-          model,
-
-        );
-        APITransport(apiObj);
-      } else {
-        alert("Field should not be empty!");
-      }
+      APITransport(apiObj);
+    } else {
+      alert("Field should not be empty!");
     }
+
+    // let model = "";
+    // let target_lang_name = ''
+    // let source_lang_name = ''
+    // if (this.props.fetch_models.models) {
+    //   this.props.fetch_models.models.map(item =>
+    //     item.target_language_code === this.state.target &&
+    //       item.source_language_code === this.state.source &&
+    //       item.is_primary
+    //       ? (model = item)
+    //       : ""
+    //   );
+    //   this.props.fetch_languages.languages.map((lang) => {
+    //     if (lang.language_code === this.state.target) {
+    //       target_lang_name = lang.language_name
+    //     } if (lang.language_code === this.state.source) {
+    //       source_lang_name = lang.language_name
+    //     }
+    //     return true
+    //   })
+    
   }
   // Source language
   handleSource(modelLanguage, supportLanguage) {
