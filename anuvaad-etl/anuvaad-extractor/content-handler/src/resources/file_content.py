@@ -70,14 +70,14 @@ class FileContentGetResource(Resource):
 
         args    = parser.parse_args()
         AppContext.addRecordID(args['record_id'])
-        log_info("FileContentGetResource record_id {} for user {}".format(args['record_id'], args['ad-userid']), AppContext.getContext())
+        log_info("FileContentGetResource record_id {} for user {}".format(args['record_id'], args['x-user-id']), AppContext.getContext())
 
         try:
-            result  = fileContentRepo.get(args['ad-userid'], args['record_id'], args['start_page'], args['end_page'])
+            result  = fileContentRepo.get(args['x-user-id'], args['record_id'], args['start_page'], args['end_page'])
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
-            log_info("FileContentGetResource record_id {} for user {} has {} pages".format(args['record_id'], args['ad-userid'], result['total']), AppContext.getContext())
+            log_info("FileContentGetResource record_id {} for user {} has {} pages".format(args['record_id'], args['x-user-id'], result['total']), AppContext.getContext())
             res = CustomResponse(Status.SUCCESS.value, result['pages'], result['total'])
             return res.getres()
         except Exception as e:
