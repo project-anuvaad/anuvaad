@@ -47,7 +47,7 @@ class FileUploader(Resource):
                     os.remove(filepath)
                     res = CustomResponse(Status.ERROR_FILE_SIZE.value, None)
                     return res.getresjson(), 400
-                userfile = UserFiles(created_by=request.headers.get('ad-userid'),
+                userfile = UserFiles(created_by=request.headers.get('x-user-id'),
                                      filename=filename, file_real_name=file_real_name + file_extension,
                                      created_on=datetime.now())
                 userfile.save()
