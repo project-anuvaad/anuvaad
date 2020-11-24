@@ -7,6 +7,8 @@ import org.anuvaad.filters.pre.AuthFilter;
 import org.anuvaad.filters.pre.CorrelationFilter;
 import org.anuvaad.filters.pre.RbacFilter;
 import org.anuvaad.utils.UserUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,6 +26,8 @@ import org.springframework.web.filter.CorsFilter;
 @EnableCaching
 @SpringBootApplication
 public class ZuulGatewayApplication {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     public static void main(String[] args) {
         SpringApplication.run(ZuulGatewayApplication.class, args);
     }
@@ -68,13 +72,15 @@ public class ZuulGatewayApplication {
 
     @Bean
     public CorsFilter corsFilter() {
+        logger.info("CORS pass-through..");
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("*", config);
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("POST");
+        source.registerCorsConfiguration("http://auth.anuvaad.org/*", config);
         return new CorsFilter(source);
     }
 }
