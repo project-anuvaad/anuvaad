@@ -80,6 +80,7 @@ public class ZuulGatewayApplication {
         config.addAllowedHeader("*");
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
+        config.addAllowedMethod("OPTIONS");
         source.registerCorsConfiguration("https://auth.anuvaad.org/*", config);
         return new CorsFilter(source);
     }
