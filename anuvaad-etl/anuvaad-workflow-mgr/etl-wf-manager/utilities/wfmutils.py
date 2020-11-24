@@ -199,7 +199,7 @@ class WFMUtils:
     # Util method to make an API call and fetch the result
     def call_api(self, uri, api_input, user_id):
         try:
-            api_headers = {'userid': user_id, 'ad-userid': user_id, 'Content-Type': 'application/json'}
+            api_headers = {'userid': user_id, 'x-user-id': user_id, 'Content-Type': 'application/json'}
             response = requests.post(url=uri, json=api_input, headers=api_headers)
             if response is not None:
                 if response.text is not None:

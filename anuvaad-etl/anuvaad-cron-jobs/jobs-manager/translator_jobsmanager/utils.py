@@ -59,7 +59,6 @@ class TranslatorCronUtils:
             if response is not None:
                 if response.text is not None:
                     log_info(response.text, api_input)
-                    log_info(type(response.text), api_input)
                     return json.loads(response.text)
                 else:
                     log_error("API response was None! URI: " + str(uri), api_input, None)
