@@ -59,7 +59,7 @@ public class UserUtils {
                 return null;
             }
         }catch (Exception e){
-            logger.error("Exception while fetching user: ", e);
+            logger.error("Auth Token invalid!");
             return null;
         }
     }
