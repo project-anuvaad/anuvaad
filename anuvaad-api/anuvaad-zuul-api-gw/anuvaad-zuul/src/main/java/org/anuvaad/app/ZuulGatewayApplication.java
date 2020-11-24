@@ -69,14 +69,14 @@ public class ZuulGatewayApplication {
     @Bean
     public ResponseFilter responseFilter() {return new ResponseFilter();}
 
-    @Bean
+/*    @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("*")
-                        .allowedOrigins("/**")
+                        .allowedOrigins("http://localhost:3000")
                         .allowedMethods("GET", "POST", "PUT");
             }
         };
-    }
+    }*/
 }
