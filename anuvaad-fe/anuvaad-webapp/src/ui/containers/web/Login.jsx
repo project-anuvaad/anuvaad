@@ -48,7 +48,7 @@ class Login extends React.Component {
 
   componentDidMount() {
     localStorage.removeItem("token");
-    TELEMETRY.pageLoadCompleted('login')
+    // TELEMETRY.pageLoadCompleted('login')
   }
 
   /**

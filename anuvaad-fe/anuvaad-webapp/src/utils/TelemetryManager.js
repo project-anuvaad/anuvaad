@@ -19,7 +19,7 @@ export const init = () => {
       did: "20d63257084c2dca33f31a8f14d8e94c0d939de4",
       channel: 'developers.anuvaad.org',
       batchsize: 10,
-      endpoint: "/v1/telemetry",
+      endpoint: "v1/telemetry",
       apislug: "/",
     }
   } else {
@@ -34,7 +34,7 @@ export const init = () => {
       did: "20d63257084c2dca33f31a8f14d8e94c0d939de4",
       channel: CONFIGS.BASE_URL_AUTO.replace(/(^\w+:|^)\/\//, ''),
       batchsize: 20,
-      endpoint: "/v1/telemetry",
+      endpoint: "v1/telemetry",
       apislug: "/",
     }
   }
