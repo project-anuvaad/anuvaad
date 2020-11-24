@@ -95,8 +95,7 @@ class TranslatorService:
                 for batch_no in batches.keys():
                     batch = batches[batch_no]
                     record_id_enhanced = record_id + "|" + str(len(batch))
-                    nmt_in = {"url_end_point": file["model"]["url_end_point"], "record_id": record_id_enhanced,
-                              "message": batch}
+                    nmt_in = {"record_id": record_id_enhanced, "message": batch}
                     producer.produce(nmt_in, anu_nmt_input_topic)
                     sentences_per_page += len(batch)
                     total_sentences += len(batch)

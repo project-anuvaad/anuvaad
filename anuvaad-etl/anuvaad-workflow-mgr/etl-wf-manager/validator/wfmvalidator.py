@@ -88,9 +88,6 @@ class WFMValidator:
                                 model = file["model"]
                                 if 'model_id' not in model.keys():
                                     return post_error("MODEL_ID_ NOT_FOUND", "Model ID is mandatory for this wf.", None)
-                                if 'url_end_point' not in model.keys():
-                                    return post_error("MODEL_URL_ NOT_FOUND",
-                                                      "Model url end point is mandatory for this wf.", None)
                         if tool_worddetector in tools or tool_layoutdetector in tools:
                             if 'config' not in file.keys():
                                 return post_error("CONFIG_NOT_FOUND", "OCR Config details are mandatory for this wf.", None)
