@@ -2,7 +2,7 @@ const endpoints = {
   interactive_translate: "/interactive-translation",
   interactive_translate_v1: "/v1/interactive-translation",
   fetchlanguage: "/fetch-languages",
-  fetchmodel: "/fetch-models",
+  fetchmodel: "/nmt-inference/v1/fetch-models",
   forgotpassword: "/v1/user/forgot-user-password",
   fetchducuments: '/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk',
   insertSentence: "/v1/interactive-editor/add-sentence-node",

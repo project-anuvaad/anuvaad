@@ -10,13 +10,10 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import TranslateSentence from "../../components/web/dashboard/TranslateSentence";
 import FetchModel from "../../../flux/actions/apis/fetchmodel";
-import FetchLanguage from "../../../flux/actions/apis/fetchlanguage";
 import NMT from "../../../flux/actions/apis/nmt";
 import AutoML from "../../../flux/actions/apis/auto_ml";
 import APITransport from "../../../flux/actions/apitransport/apitransport";
-import NewOrders from "../../components/web/dashboard/NewOrders";
 import { translate } from "../../../assets/localisation";
 import { withStyles } from "@material-ui/core/styles";
 import DashboardStyles from "../../styles/web/DashboardStyles";
@@ -48,13 +45,6 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.fetch_languages && this.props.fetch_languages.languages.length < 1) {
-      const { APITransport }  = this.props;
-      const apiObj            = new FetchLanguage();
-      APITransport(apiObj);
-      this.setState({ showLoader: true });
-    }
-
     if (this.props.fetch_models && this.props.fetch_models.models.length < 1) {
       const { APITransport }  = this.props;
       const apiModel          = new FetchModel();
@@ -64,10 +54,10 @@ class Dashboard extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.fetch_languages.languages != this.props.fetch_languages.languages) {
+    if (prevProps.fetch_models.response_body != this.props.fetch_models.response_body) {
       this.setState({
-        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_languages.languages),
-        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_languages.languages)
+        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.response_body),
+        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.response_body)
       })
     }
   }
@@ -86,7 +76,7 @@ class Dashboard extends React.Component {
   }
 
   processTranslateButtonPressed() {
-    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
+    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.response_body, this.state.source_language_code, this.state.target_language_code)
     console.log('submit pressed: %s %s %s %s' , this.state.target_language_code, this.state.source_language_code, this.state.text, modelId)
 
     this.makeAPICallInteractiveTranslation(this.state.text, modelId)
@@ -95,7 +85,7 @@ class Dashboard extends React.Component {
 
   processSourceLanguageSelected = (event) => {
     this.setState({ source_language_code: event.target.value})
-    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_languages.languages, this.props.fetch_models.models, event.target.value)
+    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.response_body, event.target.value)
     this.setState({
       target_languages: languages
     })
@@ -322,7 +312,6 @@ class Dashboard extends React.Component {
 
 const mapStateToProps = state => ({
   user: state.login,
-  fetch_languages: state.fetch_languages,
   fetch_models: state.fetch_models
 });
 
