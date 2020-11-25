@@ -6,29 +6,29 @@ import { bindActionCreators } from "redux";
 import { withStyles } from "@material-ui/core/styles";
 import MUIDataTable from "mui-datatables";
 // import Toolbar from "@material-ui/core/Toolbar";
-import NewCorpusStyle from "../../styles/web/Newcorpus";
-import history from "../../../web.history";
-import FetchDocument from "../../../flux/actions/apis/fetch_document";
-import APITransport from "../../../flux/actions/apitransport/apitransport";
-import { translate } from "../../../assets/localisation";
-import ProgressBar from "../../components/web/common/ProgressBar";
-import Spinner from "../../components/web/common/Spinner";
+import NewCorpusStyle from "../../../styles/web/Newcorpus";
+import history from "../../../../web.history";
+import FetchDocument from "../../../../flux/actions/apis/fetch_document";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import { translate } from "../../../../assets/localisation";
+import ProgressBar from "../../../components/web/common/ProgressBar";
+import Spinner from "../../../components/web/common/Spinner";
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
-import Dialog from "../../components/web/common/SimpleDialog";
+import Dialog from "../../../components/web/common/SimpleDialog";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import Snackbar from "../../components/web/common/Snackbar";
+import Snackbar from "../../../components/web/common/Snackbar";
 import DeleteIcon from '@material-ui/icons/Delete';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import MarkInactive from "../../../flux/actions/apis/markinactive";
+import MarkInactive from "../../../../flux/actions/apis/markinactive";
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import JobStatus from "../../../flux/actions/apis/translation.progress";
-import { clearJobEntry } from '../../../flux/actions/users/async_job_management';
+import JobStatus from "../../../../flux/actions/apis/translation.progress";
+import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
 import ToolBar from "./ViewDocHeader"
 // import ENDPOINTS from "../../../configs/apiendpoints";
 
-const TELEMETRY = require('../../../utils/TelemetryManager')
+const TELEMETRY = require('../../../../utils/TelemetryManager')
 
 class ViewDocument extends React.Component {
   constructor(props) {
