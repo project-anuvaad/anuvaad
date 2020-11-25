@@ -142,14 +142,14 @@ class Login extends React.Component {
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.processInputReceived('password')}
                 />
 
-                <div>
+                <div className={classes.wrapper}> 
                   <Button
                     variant="contained" aria-label="edit" style={{
                       width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
                       backgroundColor: this.state.loading ? 'grey' : '#1ca9c9', color: 'white',
                     }} onClick={this.processLoginButtonPressed.bind(this)}
                     disabled={this.state.loading}>
-                    {this.state.loading && <CircularProgress size={24} className={'success'} />}
+                    {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress}/>}
                     Sign In
                 </Button>
                 </div>

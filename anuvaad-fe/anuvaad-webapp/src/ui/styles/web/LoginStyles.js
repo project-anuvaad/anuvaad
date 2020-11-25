@@ -147,6 +147,18 @@ const LoginStyles = theme => ({
     marginBottom: '4%',
     fontfamily: '"Source Sans Pro", sans-serif',
   },
+  buttonProgress: {
+    color: 'green[500]',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
 });
 
 export default LoginStyles;
