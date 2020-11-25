@@ -5,7 +5,7 @@ const endpoints = {
   fetchmodel: "/nmt-inference/v1/fetch-models",
   forgotpassword: "/v1/user/forgot-user-password",
   fetchducuments: '/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk',
-  insertSentence: "/v1/interactive-editor/add-sentence-node",
+  // insertSentence: "/v1/interactive-editor/add-sentence-node",
   activate_user: "/v1/user/activate-account",
   adduser: "/create-user",
   auto_ml: "/translate",
