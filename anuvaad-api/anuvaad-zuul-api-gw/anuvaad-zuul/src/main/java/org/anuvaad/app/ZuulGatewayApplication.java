@@ -76,13 +76,12 @@ public class ZuulGatewayApplication {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
+        config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedHeader("*");
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
-        config.addAllowedMethod("PUT");
         config.addAllowedMethod("OPTIONS");
-        source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("http://auth.anuvaad.org/*", config);
         return new CorsFilter(source);
     }
 }
