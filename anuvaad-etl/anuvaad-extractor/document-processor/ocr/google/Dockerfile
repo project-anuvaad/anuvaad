@@ -9,24 +9,21 @@ WORKDIR /app
 
 ENV DEBIAN_FRONTEND="noninteractive"
 
-RUN apt-get update && apt-get install -y software-properties-common
-RUN add-apt-repository -y ppa:deadsnakes/ppa && apt install -y python3.6 && apt install -y python3.6-venv
+RUN apt-get update && apt-get install -y software-properties-common build-essential
+RUN add-apt-repository -y ppa:deadsnakes/ppa && apt install -y python3.6 && apt install -y python3.6-venv python3.6-dev
 
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3.6 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev
 
 #RUN python3.6 -m venv bmenv
 #SHELL ["/bin/bash", "-c", "source bmenv/bin/activate"]
 
 
 RUN pip install --upgrade pip setuptools wheel &&\
-  pip install scikit-build &&\
-  pip install cmake &&\
-  apt install -y libopencv-dev python3-opencv\
-  && apt-get install -y tesseract-ocr \
-  && apt-get install -y poppler-utils \
-  && apt-get install -y curl
+  && apt-get install -y poppler-utils 
 
 RUN pip install -r requirements.txt
 RUN pip cache purge
