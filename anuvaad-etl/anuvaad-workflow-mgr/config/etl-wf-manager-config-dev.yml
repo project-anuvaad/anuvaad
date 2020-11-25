@@ -226,12 +226,12 @@ WorkflowConfigs:
       - name: TRANSLATOR
         description: Translates sentences from a bm-tok processed json file.
         kafka-input:
-        - topic: anuvaad-dp-tools-translator-input-v2
+        - topic: anuvaad-dp-tools-translator-input-v3
           partitions: 2
           keys: anuvaad-dp-tools-translator-input-key-one, anuvaad-dp-tools-translator-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-translator-output-v2
+        - topic: anuvaad-dp-tools-translator-output-v3
           partitions: 2
           keys: anuvaad-dp-tools-translator-output-key-one, anuvaad-dp-tools-translator-output-key-two
           assignment: round-robin
