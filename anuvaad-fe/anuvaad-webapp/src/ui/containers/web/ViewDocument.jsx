@@ -29,6 +29,7 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import JobStatus from "../../../flux/actions/apis/translation.progress";
 import { clearJobEntry } from '../../../flux/actions/users/async_job_management';
 import ToolBar from "./ViewDocHeader"
+import ENDPOINTS from "../../../configs/apiendpoints";
 
 const TELEMETRY = require('../../../utils/TelemetryManager')
 
@@ -41,9 +42,9 @@ class ViewDocument extends React.Component {
       offset: 0,
       limit: 10,
       currentPageIndex: 0,
-      dialogMessage:null,
+      dialogMessage: null,
       timeOut: 3000,
-      variant : "info"
+      variant: "info"
     };
   }
 
@@ -60,16 +61,16 @@ class ViewDocument extends React.Component {
       this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, [this.props.async_job_status.job.jobID], true, false)
       this.props.clearJobEntry()
     }
-    else if(this.props.job_details.documents.length < 1) {
+    else if (this.props.job_details.documents.length < 1) {
       this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, false, false)
-      this.setState({showLoader:true})
+      this.setState({ showLoader: true })
     }
     this.makeAPICallDocumentsTranslationProgress()
-    
+
     TELEMETRY.pageLoadCompleted('view-document')
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     clearInterval(this.timerId);
   }
 
@@ -80,16 +81,16 @@ class ViewDocument extends React.Component {
        */
       if (!this.props.job_details.progress_updated) {
         this.makeAPICallDocumentsTranslationProgress()
-        this.setState({showLoader:false})
+        this.setState({ showLoader: false })
       }
 
       if (this.props.job_details.document_deleted) {
-        this.setState({dialogMessage: "Deleted successfully...!", variant: 'success', timeOut :3000})
+        this.setState({ dialogMessage: "Deleted successfully...!", variant: 'success', timeOut: 3000 })
       }
 
     }
-    else if(prevProps.job_details.documents.length === 0 && this.props.job_details.documents.length===0 && !this.props.apistatus.progress && this.state.showLoader){
-      this.setState({showLoader:false})
+    else if (prevProps.job_details.documents.length === 0 && this.props.job_details.documents.length === 0 && !this.props.apistatus.progress && this.state.showLoader) {
+      this.setState({ showLoader: false })
     }
   }
 
@@ -121,28 +122,28 @@ class ViewDocument extends React.Component {
     }
   }
 
-  makeAPICallJobsBulkSearch(offset, limit, jobIds=[''], searchForNewJob=false, searchNextPage=false, updateExisting=false) {
-    const { APITransport }  = this.props;
-    const apiObj            = new FetchDocument(offset, limit, jobIds, searchForNewJob, searchNextPage, updateExisting);
+  makeAPICallJobsBulkSearch(offset, limit, jobIds = [''], searchForNewJob = false, searchNextPage = false, updateExisting = false) {
+    const { APITransport } = this.props;
+    const apiObj = new FetchDocument(offset, limit, jobIds, searchForNewJob, searchNextPage, updateExisting);
     APITransport(apiObj);
   }
 
   makeAPICallJobDelete(jobId) {
-    const { APITransport }  = this.props;
-    const apiObj            = new MarkInactive(jobId);
-    
+    const { APITransport } = this.props;
+    const apiObj = new MarkInactive(jobId);
+
     APITransport(apiObj);
-    this.setState({ showProgress: true, searchToken: false , dialogMessage: " Selected document is deleting, please wait...!", timeOut :null});
-    
+    this.setState({ showProgress: true, searchToken: false, dialogMessage: " Selected document is deleting, please wait...!", timeOut: null });
+
   }
 
   makeAPICallDocumentsTranslationProgress(jobIds) {
-    var recordIds = this.getRecordIds() 
+    var recordIds = this.getRecordIds()
     if (recordIds.length > 1) {
-      const { APITransport }  = this.props;
-      const apiObj            = new JobStatus(recordIds);
+      const { APITransport } = this.props;
+      const apiObj = new JobStatus(recordIds);
       APITransport(apiObj);
-      this.setState({ showProgress: true, searchToken: false });      
+      this.setState({ showProgress: true, searchToken: false });
     }
   }
 
@@ -204,56 +205,80 @@ class ViewDocument extends React.Component {
 
   processViewDocumentClick = (jobId, recordId, status) => {
     let job = this.getJobIdDetail(jobId);
-    if(status==="COMPLETED"){
+    if (status === "COMPLETED") {
       history.push(`${process.env.PUBLIC_URL}/interactive-document/${job.source_language_code}/${job.target_language_code}/${job.target_language_code}/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`, this.state);
     }
-    else if(status==="INPROGRESS"){
-      this.setState({dialogMessage:"Please wait process is Inprogress!", timeOut :3000,variant:'info' })
+    else if (status === "INPROGRESS") {
+      this.setState({ dialogMessage: "Please wait process is Inprogress!", timeOut: 3000, variant: 'info' })
       this.handleMessageClear()
     }
-    else{
-      this.setState({dialogMessage:"Document conversion failed!", timeOut :3000,variant:'info' })
+    else {
+      this.setState({ dialogMessage: "Document conversion failed!", timeOut: 3000, variant: 'info' })
       this.handleMessageClear()
     }
- }
+  }
 
-  handleMessageClear = () =>{
+  handleMessageClear = () => {
     setTimeout(() => {
-        this.setState({dialogMessage:""});
+      this.setState({ dialogMessage: "" });
     }, 3000)
   }
 
-  snackBarMessage = () =>{
+  snackBarMessage = () => {
     return (
       <div>
-      <Snackbar
-          anchorOrigin      = {{ vertical: "top", horizontal: "right" }}
-          open              = {!this.state.timeOut}
-          autoHideDuration  = {this.state.timeOut}
-          variant           = {this.state.variant}
-          message           = {this.state.dialogMessage}
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          open={!this.state.timeOut}
+          autoHideDuration={this.state.timeOut}
+          variant={this.state.variant}
+          message={this.state.dialogMessage}
         />
-        </div>
+      </div>
     )
   }
-      
+
   processDownloadInputFileClick = (jobId, recordId) => {
     let job = this.getJobIdDetail(jobId);
-    let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad-api/file-uploader/v0/download-file?file=${
-      job.converted_filename ? job.converted_filename : ""
-      }`
-      window.open(url, "_self")
+
+    let user_profile = JSON.parse(localStorage.getItem('userProfile'));
+    // let url = `${super.apiEndPointAuto()}${ENDPOINTS.download_file}`;
+    let url = `https://auth.anuvaad.org/anuvaad-api/file-uploader/v0/download-file`
+    url += `?filename=` + job.converted_filename + `&userid=` + user_profile.userID;
+
+    const apiReq1 = fetch(url, {
+      method: 'GET',
+      headers: {
+        'auth-token': `${decodeURI(localStorage.getItem("token"))}`,
+        "Content-Type": "application/json"
+      }
+    }).then(async response => {
+      console.log(response)
+      // const rsp_data = await response.json();
+      // if (!response.ok) {
+      //   console.log(response)
+
+      //   return Promise.reject('');
+      // } else {
+      //   console.log(rsp_data)
+      //   console.log(response)
+      //   window.location.href = 'data:application/octet-stream;base64,' + rsp_data;
+
+      // }
+    }).catch((error) => {
+      console.log('api failed because of server or network')
+    });
   }
 
   processTableClickedNextOrPrevious = (page, sortOrder) => {
-    if(this.state.currentPageIndex < page) {
+    if (this.state.currentPageIndex < page) {
       /**
        * user wanted to load next set of records
        */
       this.makeAPICallJobsBulkSearch(this.state.offset + this.state.limit, this.state.limit, false, true)
       this.setState({
-        currentPageIndex:page,
-        offset: this.state.offset+this.state.limit
+        currentPageIndex: page,
+        offset: this.state.offset + this.state.limit
       });
     }
   };
@@ -326,7 +351,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                {this.getDateTimeFromTimestamp(tableMeta.rowData[7])}
+                  {this.getDateTimeFromTimestamp(tableMeta.rowData[7])}
                 </div>
               )
             }
@@ -347,12 +372,12 @@ class ViewDocument extends React.Component {
 
                   <Tooltip title="Info" placement="left">
                     <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processJobTimelinesClick(tableMeta.rowData[1], tableMeta.rowData[2])}>
-                      <InfoIcon/>
+                      <InfoIcon />
                     </IconButton>
                   </Tooltip>
 
                   <Tooltip title="View document" placement="left">
-                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processViewDocumentClick(tableMeta.rowData[1], tableMeta.rowData[2],tableMeta.rowData[5] )}>
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processViewDocumentClick(tableMeta.rowData[1], tableMeta.rowData[2], tableMeta.rowData[5])}>
                       <LibraryBooksIcon />
                     </IconButton>
                   </Tooltip>
@@ -414,17 +439,17 @@ class ViewDocument extends React.Component {
     };
 
     return (
-     
-      <div style={{height: window.innerHeight }}>
-        { this.state.dialogMessage && this.snackBarMessage()}
+
+      <div style={{ height: window.innerHeight }}>
+        {this.state.dialogMessage && this.snackBarMessage()}
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <ToolBar />
           {
-            !this.state.showLoader && 
-            <MuiThemeProvider theme={this.getMuiTheme()}> 
-              <MUIDataTable title={translate("common.page.title.document")} 
-                    data={this.getJobsSortedByTimestamp()} 
-                    columns={columns} options={options} />
+            !this.state.showLoader &&
+            <MuiThemeProvider theme={this.getMuiTheme()}>
+              <MUIDataTable title={translate("common.page.title.document")}
+                data={this.getJobsSortedByTimestamp()}
+                columns={columns} options={options} />
             </MuiThemeProvider>}
         </div>
         {this.state.showInfo &&
@@ -434,7 +459,7 @@ class ViewDocument extends React.Component {
             open
             title="File Process Information" />
         }
-        
+
         {(this.state.showLoader || this.state.loaderDelete) && < Spinner />}
       </div>
 

@@ -7,7 +7,6 @@ export default function(state = initialState, action) {
   switch (action.type) {
       
     case C.JOBPROGRESSSTATUS:{
-        debugger;
         let data        = action.payload[0];
         return {
            

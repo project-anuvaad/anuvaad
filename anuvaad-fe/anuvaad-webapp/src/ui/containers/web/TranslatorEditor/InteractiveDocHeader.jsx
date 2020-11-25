@@ -87,7 +87,7 @@ class InteractiveDocHeader extends React.Component {
         let recordId = this.props.match.params.jobid;
         let user_profile = JSON.parse(localStorage.getItem('userProfile'))
 
-        let apiObj = new DocumentConverterAPI(recordId, user_profile.id)
+        let apiObj = new DocumentConverterAPI(recordId, user_profile.userID)
 
         const apiReq = fetch(apiObj.apiEndPoint(), {
             method: 'post',
@@ -102,13 +102,14 @@ class InteractiveDocHeader extends React.Component {
                 if (fileName) {
                   
                     let url =  `${super.apiEndPointAuto()}${ENDPOINTS.download_file}`;
-                    url += `?filename=` + fileName + `&userid=` + user_profile.id;
+                    url += `?filename=` + fileName + `&userid=` + user_profile.userID;
                     console.log(url)
                     const apiReq1 = fetch(url, {
                         method: 'GET',
                         // body: JSON.stringify(apiObj.getBody()),
                         headers: apiObj.getHeaders().headers
                     }).then(async response => {
+                        console.log(response)
                         const rsp_data = await response.json();
                         if (!response.ok) {
                             return Promise.reject('');
