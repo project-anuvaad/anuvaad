@@ -60,19 +60,3 @@ class TranslatorUtils:
             log_exception("Exception while making the api call: " + str(e), api_input, e)
             return None
 
-    # Stop gap method for fetching sentence from CH.
-    def fetch_sentence_by_id(self, sentence_ids, user_id):
-        try:
-            api_input = {"sentences": sentence_ids}
-            api_headers = {'userid': user_id, 'x-user-id': user_id, 'Content-Type': 'application/json'}
-            response = requests.post(url=sentence_fetch_url, headers=api_headers)
-            if response is not None:
-                if response.text is not None:
-                    return json.loads(response.text)
-                else:
-                    log_error("API response was None! URI: " + str(ch_url), None, None)
-                    return None
-        except Exception as e:
-            log_exception("Exception while making the api call: " + str(e), None, e)
-            return None
-
