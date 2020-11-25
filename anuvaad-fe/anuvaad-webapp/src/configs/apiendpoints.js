@@ -20,7 +20,7 @@ const endpoints = {
   documentupload:"/anuvaad-api/file-uploader/v0/upload-file",
   documentConverter: "/api/v0/document-converter",
   word_dictionary: "/api/v0/dictionary/search",
-  save_content: "/anuvaad/content-handler/api/v0/save-content-sentence",
+  save_content: "/anuvaad/content-handler/v0/save-content-sentence",
   translate: "/anuvaad-etl/translator/v1/text/translate",
   mark_inactive: "/anuvaad-etl/wf-manager/v1/workflow/jobs/mark-inactive",
   jobids: "/anuvaad/content-handler/v0/records/search",
