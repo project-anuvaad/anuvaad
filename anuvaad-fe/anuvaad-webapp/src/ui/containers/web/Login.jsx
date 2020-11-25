@@ -69,7 +69,7 @@ class Login extends React.Component {
    */
   processLoginButtonPressed = () => {
     const { email, password } = this.state;
-    this.setState({ error: false ,loading:true})
+    this.setState({ error: false, loading: true })
     const apiObj = new LoginAPI(email, password);
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
@@ -85,7 +85,7 @@ class Login extends React.Component {
         this.fetchUserProfileDetails(resData.token)
       }
     }).catch((error) => {
-      this.setState({ error: true, loading:false })
+      this.setState({ error: true, loading: false })
     });
   };
 
@@ -146,18 +146,20 @@ class Login extends React.Component {
                   <Button
                     variant="contained" aria-label="edit" style={{
                       width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
-                      backgroundColor:this.state.loading ? 'grey':'#1ca9c9', color: 'white',
+                      backgroundColor: this.state.loading ? 'grey' : '#1ca9c9', color: 'white',
                     }} onClick={this.processLoginButtonPressed.bind(this)}
                     disabled={this.state.loading}>
-                      {this.state.loading && <CircularProgress size={24} className={'success'} />}
+                    {this.state.loading && <CircularProgress size={24} className={'success'} />}
                     Sign In
                 </Button>
                 </div>
 
               </FormControl>
 
-              <Typography className={classes.typographyForgotPwd}>{ }
-                <Link style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/forgot-password") }}> {translate('updatePassword.page.label.forgotPassword')}</Link></Typography>
+              <Typography className={classes.typographyForgotPwd}>
+                <Link style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/forgot-password") }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
+                <Link style={{ cursor: 'pointer', color: '#0C8AA9', marginLeft: '337px' }} href="#" onClick={() => { history.push("/signup") }}> {translate('singUp.page.label.signUp')}</Link>
+              </Typography>
             </Grid>
           </Grid>
           <div className={classes.buttonsDiv} />
