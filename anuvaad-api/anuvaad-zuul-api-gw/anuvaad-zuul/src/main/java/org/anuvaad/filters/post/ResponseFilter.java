@@ -30,7 +30,7 @@ public class ResponseFilter extends ZuulFilter {
     @Override
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
-        if (ctx.getRequest().getRequestURI().contains("/telemetry"))
+        if (!ctx.getRequest().getRequestURI().contains("/telemetry"))
             logger.info(RECEIVED_RESPONSE_MESSAGE,
                     ctx.getResponse().getStatus(), ctx.getRequest().getRequestURI());
         ctx.addZuulResponseHeader(CORRELATION_HEADER_NAME, (String) ctx.get(CORRELATION_ID_HEADER_NAME));
