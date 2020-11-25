@@ -22,7 +22,6 @@ import InteractiveTranslateAPI from "../../../../flux/actions/apis/intractive_tr
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import copy from 'copy-to-clipboard';
 import SENTENCE_ACTION from './SentenceActions'
-import { value } from 'jsonpath';
 import Dictionary from "./Dictionary"
 
 import Snackbar from '@material-ui/core/Snackbar';
@@ -82,12 +81,6 @@ const theme = createMuiTheme({
         }
     },
 });
-
-function sleep(delay = 0) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, delay);
-    });
-}
 
 const filterOptions = (options, { inputValue }) => options;
 

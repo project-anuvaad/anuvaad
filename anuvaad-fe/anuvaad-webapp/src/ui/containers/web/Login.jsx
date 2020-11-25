@@ -2,8 +2,6 @@ import React from "react";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -16,8 +14,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import LoginStyles from "../../styles/web/LoginStyles";
 import Grid from '@material-ui/core/Grid';
-import SignupApi from "../../../flux/actions/apis/signup";
-import APITransport from "../../../flux/actions/apitransport/apitransport";
 import history from "../../../web.history";
 import TextField from '../../components/web/common/TextField';
 import Link from '@material-ui/core/Link';

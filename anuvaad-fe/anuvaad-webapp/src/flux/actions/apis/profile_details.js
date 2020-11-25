@@ -1,5 +1,4 @@
 import API from "./api";
-import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 
 export default class saveConetent extends API {

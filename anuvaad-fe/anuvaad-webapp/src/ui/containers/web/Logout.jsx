@@ -1,5 +1,4 @@
 import React from "react";
-import CONFIG from '../../../configs/apigw'
 import history from "../../../web.history";
 class Logout extends React.Component {
 

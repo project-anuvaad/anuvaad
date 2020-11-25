@@ -6,14 +6,12 @@ import Toolbar from "@material-ui/core/Toolbar";
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Pagination from "@material-ui/lab/Pagination";
 import { currentPageUpdate } from "../../../../flux/actions/apis/pagiantion_update";
 import SENTENCE_ACTION from "./SentenceActions";
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 
-const theme = createMuiTheme();
 class InteractivePagination extends React.Component {
   constructor(props) {
     super(props);

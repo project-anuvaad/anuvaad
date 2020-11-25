@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 //import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import MUIDataTable from "mui-datatables";
 // import Toolbar from "@material-ui/core/Toolbar";
 import NewCorpusStyle from "../../styles/web/Newcorpus";
@@ -18,10 +17,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 import Dialog from "../../components/web/common/SimpleDialog";
-import Fab from '@material-ui/core/Fab';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Snackbar from "../../components/web/common/Snackbar";
-import PublishIcon from '@material-ui/icons/Publish';
 import DeleteIcon from '@material-ui/icons/Delete';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import MarkInactive from "../../../flux/actions/apis/markinactive";
@@ -29,7 +26,7 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import JobStatus from "../../../flux/actions/apis/translation.progress";
 import { clearJobEntry } from '../../../flux/actions/users/async_job_management';
 import ToolBar from "./ViewDocHeader"
-import ENDPOINTS from "../../../configs/apiendpoints";
+// import ENDPOINTS from "../../../configs/apiendpoints";
 
 const TELEMETRY = require('../../../utils/TelemetryManager')
 

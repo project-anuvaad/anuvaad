@@ -3,7 +3,6 @@ import Popover from "@material-ui/core/Popover";
 import Button from "@material-ui/core/Button";
 import CopyIcon from "@material-ui/icons/FileCopy";
 import Tooltip from '@material-ui/core/Tooltip';
-import copy from 'copy-to-clipboard';
 
 class Dictionay extends React.Component {
     constructor(props) {

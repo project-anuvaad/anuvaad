@@ -109,7 +109,7 @@ class CustomizedSnackbars extends React.Component {
     };
 
     render() {
-        const { variant, message, autoHideDuration, open } = this.props;
+        const { variant, message, autoHideDuration } = this.props;
         
         return (
             <div>

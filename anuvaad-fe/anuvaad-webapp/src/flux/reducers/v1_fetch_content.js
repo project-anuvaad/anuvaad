@@ -40,7 +40,6 @@ export default function(state = initialState, action) {
 
         case C.UPDATE_SENTENCE_CONTENT: {
             let data            = action.payload;
-            let page_number     = data.page_number;
             let sentences       = data.sentences;
             let updated_pages   = PAGE_OPERATION.update_tokenized_sentences(state.pages, sentences)
             let app_pages       = PAGE_OPERATION.get_pages_children_information(updated_pages)
@@ -54,7 +53,6 @@ export default function(state = initialState, action) {
 
         case C.UPDATE_BLOCK_CONTENT: {
             let data            = action.payload;
-            let page_number     = data.page_number;
             let blocks          = data.blocks;
 
             let updated_pages   = PAGE_OPERATION.update_blocks(state.pages, blocks)

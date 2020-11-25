@@ -13,7 +13,6 @@ import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_u
 import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import InfiniteScroll from "react-infinite-scroll-component";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
