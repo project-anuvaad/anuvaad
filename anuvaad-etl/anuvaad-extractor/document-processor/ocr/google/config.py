@@ -12,12 +12,12 @@ ENABLE_CORS = False
 
 # kafka
 
-input_topic_default = 'anuvaad-dp-tools-google-vision-ocr-input-v1'
-input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_GOOGLE_VISION_OCR_INPUT'
+input_topic_default = 'anuvaad-dp-tools-ocr-google-vision-input-v1'
+input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_INPUT'
 input_topic = os.environ.get(input_topic_identifier, input_topic_default)
 
-output_topic_default = 'anuvaad-dp-tools-google-vision-ocr-output-v1'
-output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_GOOGLE_VISION_OCR_OUTPUT'
+output_topic_default = 'anuvaad-dp-tools-ocr-google-vision-output-v1'
+output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_OUTPUT'
 output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
 kf_local_server     = 'localhost:9092'

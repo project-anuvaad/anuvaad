@@ -4,7 +4,6 @@ from anuvaad_auditor.loghandler import log_debug
 import src.utilities.app_context as app_context
 #from src.services.get_underline import get_underline
 #from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
-from compose import compose
 import config
 from src.utilities.request_parse import get_files, File
 from src.utilities.pdf_to_image import doc_pre_processing
@@ -30,7 +29,7 @@ def process_input(app_context) :
             output_files.append(file_output)
         app_context.application_context["outputs"] =output_files
         log_info("successfully completed google vision ocr", None)
-        
+
     except Exception as e:
         log_exception("Error occured during google vision ocr",  app_context.application_context, e)
         return None

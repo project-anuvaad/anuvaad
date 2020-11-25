@@ -1,7 +1,6 @@
 import config
 import time
 import pdf2image
-import cv2
 import uuid, os
 import pandas as pd
 from anuvaad_auditor.loghandler import log_info
@@ -22,7 +21,7 @@ def create_directory(path):
 
 def create_pdf_processing_paths(filename, base_dir):
 
-    working_dir = os.path.join(base_dir, os.path.splitext(filename)[0] + '_' + str(uuid.uuid1()))
+    working_dir = os.path.join(base_dir, os.path.splitext(filename)[0] + '_' + str(uuid.uuid4()))
     ret         = create_directory(working_dir)
 
     if ret == False:

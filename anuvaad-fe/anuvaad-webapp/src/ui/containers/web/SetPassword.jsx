@@ -36,7 +36,7 @@ class SetPassword extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         if (this.state.password.length < 6) {
-            alert(translate('setPassword.page.alert.minPasswordLength'))
+            alert("Please provide password with minimum 6 character, 1 number, 1, uppercase, 1 lower case and 1 special character.")
         }
         else if (this.state.password !== this.state.confirmPassword) {
             alert(translate('common.page.alert.passwordDidNotMatch'))
@@ -60,22 +60,22 @@ class SetPassword extends React.Component {
         return (
             <MuiThemeProvider theme={ThemeDefault}>
 
-                <div>
+                <div style={{height: "100vh"}}>
                     <Grid container spacing={8}>
-                        <Grid item xs={12} sm={4} lg={5} xl={5} >
-                            <img src="\Anuvaad.png" width="100%"  height="925px" alt="" />
+                    <Grid item xs={12} sm={4} lg={5} xl={5} style={{ paddingRight: "0px", paddingBottom: "0px", width: "100%", height: "100%"}}>
+                            <img src="\Anuvaad.png" width="100%" height="100%" alt="" />
                         </Grid>
                         <Grid item xs={12} sm={8} lg={7} xl={7} style={{ backgroundColor: '#f1f5f7' }} >
-                            <Typography align='center' style={{ marginTop: '30%', marginBottom: '5%', fontSize: '33px', fontfamily: 'Trebuchet MS, sans-serif	', color: '#003366' }}>{translate('setPassword.page.label.password')}</Typography>
+                            <Typography align='center' style={{ marginTop: '30%', marginBottom: '5%', fontSize: '33px', fontfamily: 'Trebuchet MS, sans-serif	', color: '#003366' }}>Set Password</Typography>
                             <FormControl align='center' fullWidth >
 
                                 <FormControl align='center' fullWidth>
-                                    <TextField value={this.state.password} id="outlined-required" type="password" placeholder={translate('setPassword.page.placeholder.enterPassword')}
+                                    <TextField value={this.state.password} id="outlined-required" type="password" placeholder="Enter password(Min length 6)*"
                                         margin="normal" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }}
                                         onChange={this.handleInputReceived('password')}
                                     />                </FormControl>
                                 <FormControl align='center' fullWidth>
-                                    <TextField value={this.state.confirmPassword} id="outlined-required" type="password" placeholder={translate('setPassword.page.placeholder.reEnterPassword')}
+                                    <TextField value={this.state.confirmPassword} id="outlined-required" type="password" placeholder="Re-enter password(Min length 6)*"
                                         margin="normal" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }}
                                         onChange={this.handleInputReceived('confirmPassword')}
                                     />
@@ -85,10 +85,10 @@ class SetPassword extends React.Component {
                                 <Button
                                     disabled={!this.state.confirmPassword}
                                     variant="contained" aria-label="edit" style={{
-                                        width: '50%',  marginTop: '2%',marginLeft:'25%',borderRadius:"20px 20px 20px 20px",height:'45px',
+                                        width: '50%', marginTop: '2%', marginLeft: '25%', borderRadius: "20px 20px 20px 20px", height: '45px',
                                         backgroundColor: this.state.confirmPassword ? '#1ca9c9' : 'gray', color: 'white',
                                     }} onClick={this.handleSubmit.bind(this)}>
-                                    {translate('setPassword.page.label.createPassword')}
+                                   Create Password
                                 </Button>
                             </FormControl>
                         </Grid>
@@ -105,7 +105,7 @@ class SetPassword extends React.Component {
                     )}
                 </div>
 
-            </MuiThemeProvider>
+             </MuiThemeProvider>
 
         );
     }
