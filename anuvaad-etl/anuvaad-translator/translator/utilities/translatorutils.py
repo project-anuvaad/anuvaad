@@ -51,7 +51,7 @@ class TranslatorUtils:
                     log_info(response.text, None)
                     return json.loads(response.text)
                 else:
-                    log_error("API response was None! URI: " + str(uri), api_input, None)
+                    log_error("API response was None, URI: " + str(uri), api_input, None)
                     return None
             else:
                 log_error("API call failed! URI: " + str(uri), api_input, None)
