@@ -17,9 +17,6 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 
 @EnableZuulProxy
@@ -69,19 +66,4 @@ public class ZuulGatewayApplication {
 
     @Bean
     public ResponseFilter responseFilter() {return new ResponseFilter();}
-
-    @Bean
-    public CorsFilter corsFilter() {
-        logger.info("CORS pass-through..");
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        final CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-/*        config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("GET");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("OPTIONS");*/
-        source.registerCorsConfiguration("http://auth.anuvaad.org/*", config);
-        return new CorsFilter(source);
-    }
 }
