@@ -57,7 +57,6 @@ def consume():
                 data = {}
                 try:
                     data = msg.value
-                    log_info(data, None)
                     if data:
                         log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         error = validator.validate_wf(data, False)

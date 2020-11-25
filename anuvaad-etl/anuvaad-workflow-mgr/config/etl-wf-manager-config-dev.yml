@@ -239,6 +239,61 @@ WorkflowConfigs:
       endState: true
 
 
+  - workflowCode: WF_A_BMTKTR
+    type: ASYNC
+    description: extracts multiple blocks from pdf. Text content of each block is tokenised and translated
+    useCase: A_BTTR
+    sequence:
+    - order: 0
+      tool:
+      - name: BLOCK-MERGER
+        description: extracts different blocks from a pdf file.
+        kafka-input:
+        - topic: anuvaad-dp-tools-block-merger-input-v2
+          partitions: 2
+          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-block-merger-output-v2
+          partitions: 2
+          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 1
+      tool:
+      - name: TOKENISER
+        description: Tokenises a given file with paragraphs
+        kafka-input:
+        - topic: anuvaad-dp-tools-tokeniser-input-v1
+          partitions: 2
+          keys: tokeniser-input-key-one, tokeniser-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-tokeniser-output-v1
+          partitions: 2
+          keys: tokeniser-output-key-one, tokeniser-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 2
+      tool:
+      - name: TRANSLATOR
+        description: Translates sentences from a bm-tok processed json file.
+        kafka-input:
+        - topic: anuvaad-dp-tools-translator-input-v3
+          partitions: 2
+          keys: anuvaad-dp-tools-translator-input-key-one, anuvaad-dp-tools-translator-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-translator-output-v3
+          partitions: 2
+          keys: anuvaad-dp-tools-translator-output-key-one, anuvaad-dp-tools-translator-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
 
   - workflowCode: WF_A_FCWDLD
     type: ASYNC
