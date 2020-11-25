@@ -41,7 +41,7 @@ class SignUp extends React.Component {
     this.setState({ [prop]: event.target.value });
   };
 
-  handleCheckboxChange=()=>{
+  handleCheckboxChange = () => {
     this.setState({ termsAndCondition: !this.state.termsAndCondition });
   }
 
@@ -57,11 +57,20 @@ class SignUp extends React.Component {
           alert(translate('common.page.alert.acceptTerms&Condition'))
         } else {
           // var mailformat = /^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/;
-          var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-          if (this.state.email.match(mailformat)) {
-            let { APITransport } = this.props;
-            let apiObj = new SignupApi(this.state.email, this.state.firstName, this.state.lastName, this.state.password);
-            APITransport(apiObj);
+          var mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+          var passwordFormat = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
+
+          if (this.state.email.match(mailFormat)) {
+            if (this.state.password.match(passwordFormat)) {
+              let { APITransport } = this.props;
+              let apiObj = new SignupApi(this.state.email, this.state.firstName, this.state.lastName, this.state.password);
+              APITransport(apiObj);
+            } else {
+              // alert(translate('common.page.alert.validPassword'))
+              alert("Please provide password with minimum 6 character, 1 number, 1, uppercase, 1 lower case and 1 special character.")
+
+            }
+
           } else {
             alert(translate('common.page.alert.validEmail'))
           }
@@ -92,75 +101,75 @@ class SignUp extends React.Component {
     return (
       <MuiThemeProvider theme={ThemeDefault}>
 
-        <div style={{height: window.innerHeight}}>
+        <div style={{ height: window.innerHeight }}>
           <Grid container spacing={8} >
-            <Grid item xs={12} sm={4} lg={5} xl={5} style={{paddingRight: "0px"}}>
-              <img src="Anuvaad.png" width="100%" height="100%" alt=""/>
+            <Grid item xs={12} sm={4} lg={5} xl={5} style={{ paddingRight: "0px" }}>
+              <img src="Anuvaad.png" width="100%" height="100%" alt="" />
             </Grid>
             <Grid item xs={12} sm={8} lg={7} xl={7} className={classes.signUpPaper} >
               <Typography align='center' variant='h4' className={classes.typographyHeader}>Sign Up</Typography>
-             
+
               <FormControl align='center' fullWidth >
-              <TextField  value={this.state.firstName} id="first-name" placeholder={translate('signUp.page.label.firstName')}
-                   varient="outlined" margin="dense" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('firstName')}
+                <TextField value={this.state.firstName} id="first-name" placeholder={translate('signUp.page.label.firstName')}
+                  varient="outlined" margin="dense" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('firstName')}
                 />
-              {/* </FormControl> */}
-              {/* <FormControl align='center' fullWidth>
+                {/* </FormControl> */}
+                {/* <FormControl align='center' fullWidth>
                 <TextField value={this.state.lastName} id="outlined-required" placeholder={translate('signUp.page.label.lastName')}
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('lastName')}
                 />
               </FormControl> */}
-              {/* <FormControl align='center' fullWidth> */}
+                {/* <FormControl align='center' fullWidth> */}
                 <TextField value={this.state.email} id="email" type="email-username" placeholder={translate('common.page.placeholder.emailUsername')}
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('email')}
                 />
-              {/* </FormControl>
+                {/* </FormControl>
               <FormControl align='center' fullWidth> */}
                 <TextField value={this.state.password} id="passowrd" type="password" placeholder={translate('setPassword.page.placeholder.enterPassword')}
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('password')}
-                />                
+                />
                 {/* </FormControl>
               <FormControl align='center' fullWidth> */}
                 <TextField value={this.state.confirmPassword} id="re-password" type="password" placeholder={translate('setPassword.page.placeholder.reEnterPassword')}
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.handleInputReceived('confirmPassword')}
                 />
-              {/* </FormControl> */}
-              <FormControlLabel className={classes.formControl}
-                control={
-                  <Checkbox
-                  color = {"primary"}
-                    className={classes.checkRemember.className}
-                    value={this.state.termsAndCondition ?  true: false}
-                    checked={this.state.termsAndCondition? true : false}
-                    onChange={()=>this.handleCheckboxChange()}
-                    
-                  />
-                }
-                label={<div><span>{translate('signUp.page.label.iAgree')}</span>
-                  <Link href="#" onClick={() => {
-                    window.open('/Anuvaad-TnC.html', 'T&C', `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+                {/* </FormControl> */}
+                <FormControlLabel className={classes.formControl}
+                  control={
+                    <Checkbox
+                      color={"primary"}
+                      className={classes.checkRemember.className}
+                      value={this.state.termsAndCondition ? true : false}
+                      checked={this.state.termsAndCondition ? true : false}
+                      onChange={() => this.handleCheckboxChange()}
+
+                    />
+                  }
+                  label={<div><span>{translate('signUp.page.label.iAgree')}</span>
+                    <Link href="#" onClick={() => {
+                      window.open('/Anuvaad-TnC.html', 'T&C', `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
                     width=500,height=500`);
-                  }}style={{color:'#0C8AA9'}}> {translate('signUp.page.label.privacyPolicy')}</Link>
-                </div>}
-              />
-              
-              <div>
-                <Button
-                  disabled={!this.state.termsAndCondition}
-                  variant="contained" aria-label="edit" style={{
-                    width: '50%', marginBottom: '2%', marginTop: '2%',borderRadius:'20px',height:'45px',textTransform:'initial',fontWeight:'20px', 
-                    backgroundColor: this.state.termsAndCondition ? '#1ca9c9' : 'gray', color: 'white',
-                  }} onClick={this.handleSubmit.bind(this)}>
-                  {translate('singUp.page.label.signUp')}
-                </Button>
-              </div>
+                    }} style={{ color: '#0C8AA9' }}> {translate('signUp.page.label.privacyPolicy')}</Link>
+                  </div>}
+                />
+
+                <div>
+                  <Button
+                    disabled={!this.state.termsAndCondition}
+                    variant="contained" aria-label="edit" style={{
+                      width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
+                      backgroundColor: this.state.termsAndCondition ? '#1ca9c9' : 'gray', color: 'white',
+                    }} onClick={this.handleSubmit.bind(this)}>
+                    {translate('singUp.page.label.signUp')}
+                  </Button>
+                </div>
 
               </FormControl>
 
               <Typography className={classes.typography1}>{translate('signUp.page.label.allReadyHaveAccount')}
-                <Link style={{ cursor: 'pointer',color:'#0C8AA9' }} href="#" onClick={() => { history.push("/") }}> {translate('signUp.page.label.logIn')}</Link></Typography>
+                <Link style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/") }}> {translate('signUp.page.label.logIn')}</Link></Typography>
 
-            
+
               <hr className={classes.hrTag} />
               <Typography align='center' className={classes.typographyFooter}>{translate('signUp.page.label.enterDetailsToReceiveConfirmation')}<br />{translate('signUp.page.label.clickToActivateAccount')}</Typography>
             </Grid>
