@@ -57,12 +57,15 @@ def consume():
                 data = {}
                 try:
                     data = msg.value
+                    log_info(data)
                     if data:
                         log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         error = validator.validate_wf(data, False)
                         if error is not None:
                             return post_error_wf(error["code"], error["message"], data, None)
                         service.start_file_translation(data)
+                    else:
+                        break
                 except Exception as e:
                     log_exception(prefix + " Exception in translator while consuming: " + str(e), data, e)
                     post_error("TRANSLATOR_CONSUMER_ERROR", "Exception in translator while consuming: " + str(e), None)
