@@ -194,7 +194,7 @@
         },
         {
             "id":"a22e8462-160e-4372-88c0-d1e4713568fd",
-            "uri":"/telemetry/v1/register",
+            "uri":"/anuvaad-telemetry/v1/telemetry",
             "module":"ANUVAAD-TELEMETRY",
             "active":true,
             "whiteList":true,
