@@ -77,7 +77,8 @@ public class RbacFilter extends ZuulFilter {
         List<String> openEndpointsWhitelist = ZuulConfigCache.whiteListEndpoints;
         if ((openEndpointsWhitelist.contains(uri))) {
             ctx.set(RBAC_BOOLEAN_FLAG_NAME, false);
-            logger.info(SKIP_RBAC, uri);
+            if (!uri.contains("/telemetry"))
+                logger.info(SKIP_RBAC, uri);
             return null;
         }
         Boolean isUserAuthorised = verifyAuthorization(ctx, uri);

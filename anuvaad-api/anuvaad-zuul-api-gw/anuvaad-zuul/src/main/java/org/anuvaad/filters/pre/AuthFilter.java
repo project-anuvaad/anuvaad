@@ -68,7 +68,8 @@ public class AuthFilter extends ZuulFilter {
         String uri = getRequestURI();
         if (openEndpointsWhitelist.contains(uri)) {
             setShouldDoAuth(false);
-            logger.info(SKIP_AUTH_CHECK, uri);
+            if (!uri.contains("/telemetry"))
+                logger.info(SKIP_AUTH_CHECK, uri);
             return null;
         }
         if (!isURIValid(uri)){
@@ -89,11 +90,11 @@ public class AuthFilter extends ZuulFilter {
             ctx.set(AUTH_TOKEN_KEY, authToken);
             User user = verifyAuthenticity(ctx, authToken);
             if (null == user){
-                logger.info(ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE, getRequestURI());
+                logger.info(ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE, uri);
                 ExceptionUtils.raiseCustomException(HttpStatus.UNAUTHORIZED, UNAUTH_USER_MESSAGE);
             }
             else {
-                logger.info(PROCEED_ROUTING_MESSAGE, getRequestURI());
+                logger.info(PROCEED_ROUTING_MESSAGE, uri);
                 ctx.addZuulRequestHeader(ZUUL_AUTH_TOKEN_HEADER_KEY, authToken);
                 ctx.addZuulRequestHeader(ZUUL_USER_ID_HEADER_KEY, user.getUserID());
                 ctx.addZuulRequestHeader(ZUUL_SESSION_ID_HEADER_KEY, authToken); // A session is User activity per token.
