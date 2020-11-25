@@ -28,6 +28,7 @@ import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 import history from "../../../../web.history";
 import Alert from '@material-ui/lab/Alert';
+import ENDPOINTS from "../../../../configs/apiendpoints";
 
 const StyledMenu = withStyles({
     paper: {
@@ -99,9 +100,25 @@ class InteractiveDocHeader extends React.Component {
             } else {
                 let fileName = rsp_data && rsp_data[this.state.fileType] ? rsp_data[this.state.fileType] : ""
                 if (fileName) {
-                    let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
-                    window.open(url, "_self")
-                    this.setState({ showStatus: false, message: null})
+                  
+                    let url =  `${super.apiEndPointAuto()}${ENDPOINTS.download_file}`;
+                    url += `?filename=` + fileName + `&userid=` + user_profile.id;
+                    console.log(url)
+                    const apiReq1 = fetch(url, {
+                        method: 'GET',
+                        // body: JSON.stringify(apiObj.getBody()),
+                        headers: apiObj.getHeaders().headers
+                    }).then(async response => {
+                        const rsp_data = await response.json();
+                        if (!response.ok) {
+                            return Promise.reject('');
+                        } else {
+                                this.setState({ showStatus: false, message: null})
+                        }
+                    }).catch((error) => {
+                        console.log('api failed because of server or network')
+                    });
+
                 }
 
             }
