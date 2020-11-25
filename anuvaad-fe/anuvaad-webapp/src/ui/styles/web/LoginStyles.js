@@ -105,6 +105,7 @@ const LoginStyles = theme => ({
   signUpPaper: {
     backgroundColor: '#f1f5f7'
   },
+
   typographyHeader: {
     marginTop: '10%',
     marginBottom: '5%',
@@ -140,9 +141,24 @@ const LoginStyles = theme => ({
     fontSize: "100%",
     marginBottom: "5%",
     fontfamily: '"Source Sans Pro", sans-serif',
-  }
-
+  },
+  typographyForgotPwd: {
+    marginLeft: '25.5%',
+    marginBottom: '4%',
+    fontfamily: '"Source Sans Pro", sans-serif',
+  },
+  buttonProgress: {
+    color: 'green[500]',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
 });
-
 
 export default LoginStyles;

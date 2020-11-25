@@ -1,28 +1,30 @@
 import React from "react";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
-import PropTypes from "prop-types";
-import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
-import InputLabel from "@material-ui/core/InputLabel";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Input from "@material-ui/core/Input";
 import FormControl from "@material-ui/core/FormControl";
-// import {Link} from 'react-router';
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { withStyles } from "@material-ui/core";
-import ThemeDefault from "../../theme/web/theme-anuvaad";
-import LoginStyles from "../../styles/web/LoginStyles";
-import LoginAPI from "../../../flux/actions/apis/login";
+import { withStyles, Typography } from "@material-ui/core";
+import ThemeDefault from "../../theme/web/theme-default";
 
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+
+import LoginStyles from "../../styles/web/LoginStyles";
+import Grid from '@material-ui/core/Grid';
+import SignupApi from "../../../flux/actions/apis/signup";
+import APITransport from "../../../flux/actions/apitransport/apitransport";
 import history from "../../../web.history";
-import { translate } from "../../../assets/localisation";
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import profileDetails from '../../../flux/actions/apis/profile_details'
+import TextField from '../../components/web/common/TextField';
 import Link from '@material-ui/core/Link';
+import Snackbar from "../../components/web/common/Snackbar";
+import { translate } from "../../../assets/localisation";
+import LoginAPI from "../../../flux/actions/apis/login";
+import profileDetails from '../../../flux/actions/apis/profile_details';
 
 const TELEMETRY = require('../../../utils/TelemetryManager')
 
@@ -32,7 +34,8 @@ class Login extends React.Component {
     this.state = {
       email: "",
       password: "",
-      error: false
+      error: false,
+      loading: false
     };
   }
 
@@ -66,7 +69,7 @@ class Login extends React.Component {
    */
   processLoginButtonPressed = () => {
     const { email, password } = this.state;
-    this.setState({ error: false })
+    this.setState({ error: false, loading: true })
     const apiObj = new LoginAPI(email, password);
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
@@ -82,7 +85,7 @@ class Login extends React.Component {
         this.fetchUserProfileDetails(resData.token)
       }
     }).catch((error) => {
-      this.setState({ error: true })
+      this.setState({ error: true, loading: false })
     });
   };
 
@@ -115,74 +118,69 @@ class Login extends React.Component {
     }).catch((error) => {
       console.log('api failed because of server or network')
     });
-
-
-
   }
+
+
   render() {
+    const { classes } = this.props;
     return (
-      <MuiThemeProvider theme={ThemeDefault}>
-        <div style={{ width: "100%", height: window.innerHeight, display: "flex", flexDirection: "column", textAlign: "center" }}>
-          <Paper style={{ width: "100%", height: "80px", textAlign: "left" }}>
-            <Typography style={{ color: "#233466", paddingLeft: "40px", marginTop: "20px" }} variant="h5">Anuvaad Translator</Typography>
-          </Paper>
-          <div style={{ marginTop: "7%" }}>
-            <Typography style={{ fontWeight: '550', fontSize: "36px", color: "#233466" }}>
-              Sign In
-        </Typography>
-            <Paper style={{ width: "40%", marginLeft: '30%', marginTop: "3%", textAlign: "left", alignItems: "center", display: "flex", flexDirection: "column" }}>
-              <FormControl fullWidth style={{ alignItems: "center", display: "flex", flexDirection: "column" }}>
+      <MuiThemeProvider theme={ThemeDefault} >
 
-                <TextField
-                  label="Email/UserName"
-                  type="text"
-                  name="email"
-                  fullWidth
-                  value={this.state.email}
-                  onChange={this.processInputReceived('email')}
-                  variant="outlined"
-                  style={{ width: '50%', border: "grey", marginTop: "60px" }}
+        <div style={{ height: window.innerHeight, overflow: 'hidden' }}>
+          <Grid container spacing={8}>
+            <Grid item xs={12} sm={4} lg={5} xl={5} style={{ paddingRight: "0px" }}>
+              <img src="Anuvaad.png" width="100%" height="81%" alt="" style={{ backgroundRepeat: 'repeat-y' }} />
+            </Grid>
+            <Grid item xs={12} sm={8} lg={7} xl={7} className={classes.signUpPaper} >
+              <Typography align='center' variant='h4' className={classes.typographyHeader} style={{ marginTop: '240px' }}>Sign In</Typography>
 
+              <FormControl align='center' fullWidth >
+                <TextField value={this.state.email} id="email" type="email-username" placeholder={translate('common.page.placeholder.emailUsername')}
+                  margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.processInputReceived('email')}
                 />
-                <TextField
-                  label="Password"
-                  type="password"
-                  name="password"
-                  fullWidth
-                  value={this.state.password}
-                  onChange={this.processInputReceived('password')}
-                  variant="outlined"
-                  style={{ width: '50%', border: "grey", marginTop: "40px" }}
-
+                <TextField value={this.state.password} id="passowrd" type="password" placeholder="Enter Password*"
+                  margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.processInputReceived('password')}
                 />
 
-                {this.state.error && <Typography style={{ color: "red", alignItems: "left" }}>Incorrect username or password. please try again..!</Typography>}
-
-                <Button
-                  variant="contained" aria-label="edit" style={{
-                    width: '50%', marginTop: '40px', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
-                    color: "#FFFFFF",
-                    backgroundColor: "#1C9AB7",
-                  }} onClick={this.processLoginButtonPressed.bind(this)}>
-                  Sign In
-              </Button>
-
-                <div style={{ marginBottom: '60px', marginTop: "10px", width: '50%', display: "flex", flexDirection: "row" }}>
-                  <span style={{ textAlign: "left", width: '50%' }}>
-                    <Link style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/forgot-password") }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
-                  </span>
-                  <span style={{ textAlign: "right", width: '50%' }}>
-                    <Link style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/signup") }}> {translate('singUp.page.label.signUp')}</Link>
-                  </span>
+                <div className={classes.wrapper}> 
+                  <Button
+                    variant="contained" aria-label="edit" style={{
+                      width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
+                      backgroundColor: this.state.loading ? 'grey' : '#1ca9c9', color: 'white',
+                    }} onClick={this.processLoginButtonPressed.bind(this)}
+                    disabled={this.state.loading}>
+                    {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress}/>}
+                    Sign In
+                </Button>
                 </div>
+
               </FormControl>
-            </Paper>
-          </div>
+
+              <Typography className={classes.typographyForgotPwd}>
+                <Link style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/forgot-password") }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
+                <Link style={{ cursor: 'pointer', color: '#0C8AA9', marginLeft: '337px' }} href="#" onClick={() => { history.push("/signup") }}> {translate('singUp.page.label.signUp')}</Link>
+              </Typography>
+            </Grid>
+          </Grid>
+          <div className={classes.buttonsDiv} />
+          {this.state.error && (
+            <Snackbar
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              open={this.state.error}
+              autoHideDuration={4000}
+              onClose={this.handleClose}
+              variant="error"
+              message={"Invalid Username/Password"}
+            />
+          )}
         </div>
+
       </MuiThemeProvider>
-    )
+
+    );
   }
 }
+
 
 Login.propTypes = {
   user: PropTypes.object.isRequired,
@@ -207,3 +205,4 @@ export default withRouter(
     )(Login)
   )
 );
+
