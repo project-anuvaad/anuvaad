@@ -103,6 +103,3 @@ class TranslatorValidator:
                             model = file["model"]
                             if 'model_id' not in model.keys():
                                 return post_error("MODEL_ID_NOT_FOUND", "Model Id is mandatory.", None)
-                            if 'url_end_point' not in model.keys():
-                                return post_error("MODEL_URLENDPOINT_NOT_FOUND", "Model url end point is mandatory.",
-                                                  None)
