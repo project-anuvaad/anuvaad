@@ -124,7 +124,7 @@ class Login extends React.Component {
       <MuiThemeProvider theme={ThemeDefault}>
         <div style={{ width: "100%", height: window.innerHeight, display: "flex", flexDirection: "column", textAlign: "center" }}>
           <Paper style={{ width: "100%", height: "80px", textAlign: "left" }}>
-           <Typography style={{color: "#233466", paddingLeft: "40px", marginTop: "20px"}} variant="h5">Anuvaad Translator</Typography>
+            <Typography style={{ color: "#233466", paddingLeft: "40px", marginTop: "20px" }} variant="h5">Anuvaad Translator</Typography>
           </Paper>
           <div style={{ marginTop: "7%" }}>
             <Typography style={{ fontWeight: '550', fontSize: "36px", color: "#233466" }}>
@@ -167,10 +167,14 @@ class Login extends React.Component {
                   Sign In
               </Button>
 
-                <div style={{ marginBottom: '60px', marginTop: "10px", textAlign: "left", width: '50%' }}>
-                  <Link style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/forgot-password") }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
+                <div style={{ marginBottom: '60px', marginTop: "10px", width: '50%', display: "flex", flexDirection: "row" }}>
+                  <span style={{ textAlign: "left", width: '50%' }}>
+                    <Link style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/forgot-password") }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
+                  </span>
+                  <span style={{ textAlign: "right", width: '50%' }}>
+                    <Link style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/signup") }}> {translate('singUp.page.label.signUp')}</Link>
+                  </span>
                 </div>
-
               </FormControl>
             </Paper>
           </div>
