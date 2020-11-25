@@ -30,9 +30,11 @@ public class ResponseFilter extends ZuulFilter {
     @Override
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
-        if (!ctx.getRequest().getRequestURI().contains("/telemetry"))
-            logger.info(RECEIVED_RESPONSE_MESSAGE,
+        logger.info(RECEIVED_RESPONSE_MESSAGE,
                 ctx.getResponse().getStatus(), ctx.getRequest().getRequestURI());
+/*        if (!ctx.getRequest().getRequestURI().contains("/telemetry"))
+            logger.info(RECEIVED_RESPONSE_MESSAGE,
+                ctx.getResponse().getStatus(), ctx.getRequest().getRequestURI());*/
         ctx.addZuulResponseHeader(CORRELATION_HEADER_NAME, (String) ctx.get(CORRELATION_ID_HEADER_NAME));
         ctx.addZuulResponseHeader("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
         ctx.addZuulResponseHeader("Content-Type", "application/json");
