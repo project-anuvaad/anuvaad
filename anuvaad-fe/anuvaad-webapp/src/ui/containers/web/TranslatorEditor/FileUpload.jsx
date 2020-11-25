@@ -187,6 +187,13 @@ class PdfUpload extends Component {
       })
     }
 
+    if (prevProps.documentUplaod !== this.props.documentUplaod) {
+      const { APITransport } = this.props;
+      const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source,
+      this.state.target, this.state.path, this.state.model);
+      APITransport(apiObj);
+    }
+
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
       this.props.createJobEntry(this.props.workflowStatus)
 
