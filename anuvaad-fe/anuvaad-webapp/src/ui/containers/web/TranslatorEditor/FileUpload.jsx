@@ -84,8 +84,6 @@ class PdfUpload extends Component {
 
   handleSubmit(e) {
     let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
-    console.log('submit pressed: %s %s %s %s', this.state.target_language_code, this.state.source_language_code, this.state.files, modelId)
-    console.log(this.state.files)
 
     e.preventDefault();
     this.setState({ model: modelId })
@@ -189,8 +187,8 @@ class PdfUpload extends Component {
 
     if (prevProps.documentUplaod !== this.props.documentUplaod) {
       const { APITransport } = this.props;
-      const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source,
-      this.state.target, this.state.path, this.state.model);
+      const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
+        this.state.target_language_code, this.state.path, this.state.model);
       APITransport(apiObj);
     }
 

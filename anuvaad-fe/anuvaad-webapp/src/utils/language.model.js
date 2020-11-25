@@ -36,6 +36,6 @@ export const get_model_details = (languages, source_language_code, target_langua
     let condition   = `$..[?(@.source_language_code == '${source_language_code}' && @.is_primary == true && @.target_language_code == '${target_language_code}')]`
     let language    = jp.query(languages, condition)
     if (language.length === 1) {
-        return language[0].model_id
+        return language[0]
     }
 }
