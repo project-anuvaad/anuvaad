@@ -30,7 +30,6 @@ public class ErrorFilterFilter extends ZuulFilter {
 
     @Override
     public Object run() {
-        logger.info("FILTER: Error");
         RequestContext ctx = RequestContext.getCurrentContext();
         ExceptionUtils.raiseErrorFilterException(ctx);
         return null;

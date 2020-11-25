@@ -9,7 +9,7 @@ import static org.anuvaad.constants.RequestContextConstants.CORRELATION_ID_HEADE
 
 public class ResponseFilter extends ZuulFilter {
     private static final String CORRELATION_HEADER_NAME = "x-correlation-id";
-    private static final String RECEIVED_RESPONSE_MESSAGE = "Received response code: {} from upstream URI {}";
+    private static final String RECEIVED_RESPONSE_MESSAGE = "Received response code: {} from upstream URI {} \n";
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
