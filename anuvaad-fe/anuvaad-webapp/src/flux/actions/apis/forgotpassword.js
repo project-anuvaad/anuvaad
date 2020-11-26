@@ -24,7 +24,7 @@ export default class ForgotPassword extends API {
 
     getBody() {
         return {
-            email: this.email
+            userName: this.email
         };
     }
 

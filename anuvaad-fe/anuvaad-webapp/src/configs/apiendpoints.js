@@ -3,7 +3,7 @@ const endpoints = {
   interactive_translate_v1: "/v1/interactive-translation",
   fetchlanguage: "/fetch-languages",
   fetchmodel: "/nmt-inference/v1/fetch-models",
-  forgotpassword: "/v1/user/forgot-user-password",
+  forgotpassword: "/anuvaad/user-mgmt/v1/users/forgot-password",
   fetchducuments: '/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk',
   // insertSentence: "/v1/interactive-editor/add-sentence-node",
   activate_user: "/v1/user/activate-account",
