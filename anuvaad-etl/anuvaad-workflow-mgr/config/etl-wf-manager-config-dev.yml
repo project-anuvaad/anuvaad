@@ -376,7 +376,7 @@ WorkflowConfigs:
       - name: TOKENISER
         description: tokenises the text blocks.
         api-details:
-        - uri: http://gateway_anuvaad-etl-tokeniser:5001/api/v0/blocks-tokenisation-wf
+        - uri: http://gateway_anuvaad-etl-tokeniser:5001/anuvaad-etl/tokeniser/v0/blocks-tokenisation-wf
       endState: false
     - order: 1
       tool:
