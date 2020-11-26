@@ -21,8 +21,8 @@ import UpdatePassword from './ui/containers/web/UpdatePassword';
 import SetPassword from './ui/containers/web/SetPassword';
 import DocumentEditorV1 from './ui/containers/web/TranslatorEditor/DocumentEditor.v1';
 
-import FileUpload from './ui/containers/web/TranslatorEditor/FileUpload';
-import ViewDocument from './ui/containers/web/ViewDocument';
+import FileUpload from './ui/containers/web/DocumentUpload/FileUpload';
+import ViewDocument from './ui/containers/web/DocumentTranslate/ViewDocument';
 
 const PrivateRoute = ({ headerAttribute: headerAttribute,  component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route

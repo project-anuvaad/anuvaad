@@ -178,6 +178,7 @@ class DocumentEditor extends React.Component {
             this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
             this.processEndMergeMode(pageNumber)
             this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_SUCCESS'), true)
+            this.makeAPICallDocumentsTranslationProgress();
           }
       }).catch((error) => {
           this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
@@ -202,6 +203,7 @@ class DocumentEditor extends React.Component {
             this.props.contentUpdateStarted()
             this.props.update_sentences(pageNumber, rsp_data.data);
             this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_SUCCESS'), true)
+            this.makeAPICallDocumentsTranslationProgress();
           }
       }).catch((error) => {
         this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
@@ -228,6 +230,7 @@ class DocumentEditor extends React.Component {
             this.props.contentUpdateStarted();
             this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
             this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_SUCCESS'), true)
+            this.makeAPICallDocumentsTranslationProgress();
           }
       }).catch((error) => {
         this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
@@ -314,7 +317,6 @@ class DocumentEditor extends React.Component {
       switch(action) {
         case SENTENCE_ACTION.SENTENCE_SAVED: {
           this.makeAPICallSaveSentence(sentences[0], pageNumber)
-          this.makeAPICallDocumentsTranslationProgress()
           return;
         }
 
@@ -324,7 +326,7 @@ class DocumentEditor extends React.Component {
             return;
           }
           this.makeAPICallSplitSentence(sentences[0], pageNumber, startIndex, endIndex);
-          this.makeAPICallDocumentsTranslationProgress();
+          
           return;
         }
 
@@ -335,7 +337,6 @@ class DocumentEditor extends React.Component {
             return;
           }
           this.makeAPICallMergeSentence(this.forMergeSentences, pageNumber);
-          this.makeAPICallDocumentsTranslationProgress()
           this.forMergeSentences  = []
           return;
         }

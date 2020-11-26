@@ -31,13 +31,14 @@ class UpdatePassword extends React.Component {
 
     handleSubmit(e) {
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        if (this.state.email.match(mailformat)) {
-            let { APITransport } = this.props;
-            let apiObj = new ForgotPasswordApi(this.state.email);
-            APITransport(apiObj);
-        } else {
-            alert(translate('common.page.alert.validEmail'))
-        }
+        alert("still in progress")
+        // if (this.state.email.match(mailformat)) {
+        //     let { APITransport } = this.props;
+        //     let apiObj = new ForgotPasswordApi(this.state.email);
+        //     APITransport(apiObj);
+        // } else {
+        //     alert(translate('common.page.alert.validEmail'))
+        // }
     }
 
     componentDidUpdate(prevProps) {
@@ -59,15 +60,15 @@ class UpdatePassword extends React.Component {
                         <Grid item xs={12} sm={8} lg={7} xl={7} style={{ backgroundColor: '#f1f5f7' }} >
                             <Typography align='center' style={{ marginTop: '30%', marginBottom: '5%', fontSize: '33px', fontfamily: 'Trebuchet MS, sans-serif', color: '#003366' }}>
                                 {translate('updatePassword.page.label.forgotPassword')}</Typography>
-                            <FormControl align='center' fullWidth >
-
+                           
+                            {/* <FormControl align='center' fullWidth > */}
                                 <TextField id="outlined-required" type="email" placeholder={translate('common.page.placeholder.emailUsername')}
-                                    margin="normal" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }}
+                                    margin="normal" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white', marginLeft: '25%' }}
                                     onChange={this.handleInputReceived('email')}
                                     value={this.state.email}
                                 />
-                            </FormControl>
-                            <FormControl align='center' fullWidth>
+                            {/* </FormControl> */}
+                            {/* <FormControl align='center' fullWidth> */}
                                 <Button
                                     disabled={!this.state.email}
                                     variant="contained" aria-label="edit" style={{
@@ -76,7 +77,7 @@ class UpdatePassword extends React.Component {
                                     }} onClick={this.handleSubmit.bind(this)}>
                                     {translate("common.page.button.submit")}
                                 </Button>
-                            </FormControl>
+                            {/* </FormControl> */}
                         </Grid>
                     </Grid>
                     {this.state.open && (
