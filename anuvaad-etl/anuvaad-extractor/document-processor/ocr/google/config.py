@@ -3,7 +3,7 @@ import os
 import time
 
 DEBUG = False
-API_URL_PREFIX = "/anuvaad-etl/document-processor"
+API_URL_PREFIX = "/anuvaad-etl/document-processor/ocr/google-vision"
 HOST = '0.0.0.0'
 PORT = 5001
 BASE_DIR      = 'upload'
