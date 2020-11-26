@@ -71,6 +71,8 @@ class FileOutput(File):
     @log_error
     def set_page_info(self,info):
         self.file['page_info'].append(info)
+
+
     @log_error
     def set_staus(self,mode):
         if mode :

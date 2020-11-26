@@ -56,21 +56,30 @@ class Activate extends React.Component {
 
     componentDidMount() {
         if (this.props.match.params.uid && this.props.match.params.rid) {
-            const api = new ActivateUser(
-                this.props.match.params.uid,
-                this.props.match.params.rid
-            );
-
-            this.props.APITransport(api);
+            const apiObj = new ActivateUser(this.props.match.params.uid, this.props.match.params.rid);
+            const api = fetch(apiObj.apiEndPoint(), {
+                method: 'post',
+                body: JSON.stringify(apiObj.getBody()),
+                headers: apiObj.getHeaders().headers
+            }).then(async response => {
+                if (response.ok) {
+                    history.push(`${process.env.PUBLIC_URL}`);
+                } else {
+                    this.setState({ open: true, message: 'Oops! Something went wrong. You will be redirected to login page' });
+                    setTimeout(async () => {
+                        const loginPage = await history.push(process.env.PUBLIC_URL);
+                    }, 6000);
+                }
+            })
         }
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.activate !== this.props.activate) {
             this.setState({ message: translate('activate.page.message.accountActivatedSuccess'), open: true })
-            setTimeout(()=>{
+            setTimeout(() => {
                 history.push(`${process.env.PUBLIC_URL}/logout`)
-            },4000)
+            }, 4000)
         }
     }
 
@@ -88,7 +97,7 @@ class Activate extends React.Component {
                 <div>
                     <Grid container>
                         <Grid item xs={12} sm={4} lg={5} xl={5} >
-                            <img src="/Anuvaad.png" width="100%"  alt=""/>
+                            <img src="/Anuvaad.png" width="100%" alt="" />
                         </Grid>
                         <Grid item xs={12} sm={8} lg={7} xl={7} style={{ backgroundColor: '#f1f5f7' }} >
                             {/* <ValidatorForm
@@ -106,7 +115,7 @@ class Activate extends React.Component {
                             open={this.state.open}
                             autoHideDuration={6000}
                             onClose={this.handleClose}
-                            variant="success"
+                            variant="error"
                             message={this.state.message}
                         />
                     )}

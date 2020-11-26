@@ -126,12 +126,21 @@ class DocumentEditor extends React.Component {
      */
 
     makeAPICallFetchContent =  (page_no, apiStatus) => {
-      let status = PAGE_OPS.page_status(this.props.document_contents.pages, page_no);
-      if(status){
-        let start_page    = page_no;
-      const apiObj      = new FileContent(this.props.match.params.jobid, start_page, start_page);
-      this.props.APITransport(apiObj);
-      !apiStatus && this.setState({apiFetchStatus: true})
+      let startStatus    = PAGE_OPS.page_status(this.props.document_contents.pages, page_no);
+      let endStatus       = PAGE_OPS.page_status(this.props.document_contents.pages, page_no+1);
+      if(startStatus && endStatus){
+        const apiObj      = new FileContent(this.props.match.params.jobid, page_no, page_no+1);
+        this.props.APITransport(apiObj);
+        !apiStatus && this.setState({apiFetchStatus: true})
+      }
+      else if(startStatus){
+        const apiObj      = new FileContent(this.props.match.params.jobid, page_no, page_no);
+        this.props.APITransport(apiObj);
+        !apiStatus && this.setState({apiFetchStatus: true})
+      }
+      else if(endStatus){
+        const apiObj      = new FileContent(this.props.match.params.jobid, page_no+1, page_no+1);
+        this.props.APITransport(apiObj);
       }
       
     }

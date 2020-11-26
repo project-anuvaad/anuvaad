@@ -520,7 +520,7 @@ function split_sentence(sentence, start, end) {
     splitted_sentences.push(s3);
 
     return splitted_sentences.filter(e => {
-        if (e.trim().length > 1) {
+        if (e.trim().length > 0) {
             return true;
         }
         return false;
@@ -564,6 +564,7 @@ export const do_sentence_splitting_v1 = (pages, block_identifer, sentence, start
             }
         })
     })
+
     response_block['blocks'] = selected_blocks;
     return response_block;
 }

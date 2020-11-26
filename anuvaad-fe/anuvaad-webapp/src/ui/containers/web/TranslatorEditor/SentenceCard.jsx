@@ -475,19 +475,6 @@ class SentenceCard extends React.Component {
         )
     }
 
-    renderMergeModeButtons = () => {
-        return (
-            <div>
-                <Button style={{ marginRight: '10px' }} onClick={this.processMergeNowButtonClicked} variant="outlined" color="primary">
-                    MERGE NOW
-                </Button>
-                <Button onClick={this.processMergeCancelButtonClicked} variant="outlined" color="primary">
-                    CANCEL MERGE
-                </Button>
-            </div>
-        )
-    }
-
 
     async makeAPICallDictionary() {
         this.setState({ showStatus: true, message: "Fetching meanings"})
@@ -651,12 +638,6 @@ class SentenceCard extends React.Component {
 
                         </CardContent>
 
-                        {/* {this.state.parallel_words && <CardContent style={{ display: "flex", flexDirection: "row" }}>
-                            <div style={{ width: "90%" }}>
-                                {this.renderDictionarySentence()}
-                            </div>
-                        </CardContent>} */}
-
                         {(this.isSentenceSaved() && !this.cardCompare()) && <CardContent style={{ display: "flex", flexDirection: "row" }}>
                             <div style={{ width: "90%" }}>
                                 {this.renderSavedTargetSentence()}
@@ -704,7 +685,6 @@ class SentenceCard extends React.Component {
     }
 
     cardCompare = () => {
-
         if (this.props.block_highlight.current_sid === this.props.sentence.s_id) {
             return true;
         }

@@ -67,7 +67,7 @@ class SignUp extends React.Component {
               APITransport(apiObj);
             } else {
               // alert(translate('common.page.alert.validPassword'))
-              alert("Please provide password with minimum 6 character, 1 number, 1, uppercase, 1 lower case and 1 special character.")
+              alert("Please provide password with minimum 6 character, 1 number, 1 uppercase, 1 lower case and 1 special character.")
 
             }
 
@@ -103,10 +103,10 @@ class SignUp extends React.Component {
 
         <div style={{ height: window.innerHeight }}>
           <Grid container spacing={8} >
-            <Grid item xs={12} sm={4} lg={5} xl={5} style={{ paddingRight: "0px" }}>
+            <Grid item xs={12} sm={12} lg={5} xl={5} style={{ paddingRight: "0px" }}>
               <img src="Anuvaad.png" width="100%" height="100%" alt="" />
             </Grid>
-            <Grid item xs={12} sm={8} lg={7} xl={7} className={classes.signUpPaper} >
+            <Grid item xs={12} sm={12} lg={7} xl={7} className={classes.signUpPaper} >
               <Typography align='center' variant='h4' className={classes.typographyHeader}>Sign Up</Typography>
 
               <FormControl align='center' fullWidth >

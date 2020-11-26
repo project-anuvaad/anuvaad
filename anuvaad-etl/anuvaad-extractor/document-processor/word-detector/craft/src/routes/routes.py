@@ -1,14 +1,14 @@
 from flask import Blueprint
 from flask_restful import Api
-from src.resources.module import Layout_Detector
-from src.resources.module import Layout_Detector_WF
+from src.resources.module import Word_Detector
+from src.resources.module import Word_Detector_WF
 
 # end-point for independent service
-Layout_Detector_BLUEPRINT = Blueprint("layout_detector", __name__)
-api = Api(Layout_Detector_BLUEPRINT)
-api.add_resource(Layout_Detector, "/word-detector/v0/craft/process")
+Word_Detector_BLUEPRINT = Blueprint("word_detector", __name__)
+api = Api(Word_Detector_BLUEPRINT)
+api.add_resource(Word_Detector, "/word-detector/v0/craft/process")
 
 # end-point for workflow service
-Layout_Detector_BLUEPRINT_WF = Blueprint("layout_detector workflow", __name__)
-api_wf = Api(Layout_Detector_BLUEPRINT_WF)
-api_wf.add_resource(Layout_Detector_WF, " /word-detector/v0/craft/process_wf")
+Word_Detector_BLUEPRINT_WF = Blueprint("word_detector workflow", __name__)
+api_wf = Api(Word_Detector_BLUEPRINT_WF)
+api_wf.add_resource(Word_Detector_WF, " /word-detector/v0/craft/process_wf")
