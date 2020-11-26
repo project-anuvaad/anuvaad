@@ -8,7 +8,6 @@ def document_saving(record_id, user_id, download_folder):
         log_info("document formation started", MODULE_CONTEXT)
         doc_conversion = DocumentConversion(download_folder)
         json_data = doc_conversion.get_data_from_content_handler(record_id, user_id)
-        print(json_data)
         dataframes, page_layout = doc_conversion.convert_page_data_into_dataframes(json_data['data'])
         output_filename = doc_conversion.document_creation(dataframes, page_layout, record_id)
         xlsx_filename = doc_conversion.generate_xlsx_file(record_id, json_data)
