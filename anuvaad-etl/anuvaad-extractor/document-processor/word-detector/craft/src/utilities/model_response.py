@@ -9,18 +9,19 @@ from anuvaad_auditor.loghandler import log_exception
 
 from src.utilities.request_parse import File
 # standard error formats
+
 class Status(enum.Enum):
     SUCCESS = {
         "status": "SUCCESS",
-        "state": "BLOCK-MERGER"
+        "state": "WORD-DETECTOR-CRAFT"
     }
     ERR_STATUS = {
         "status": "FAILED",
-        "state": "BLOCK-MERGER",
+        "state": "WORD-DETECTOR-CRAFT",
     }
     ERR_request_input_format = {
         "status" : "FAILED",
-        "state" : "BLOCK-MERGER",
+        "state" : "WORD-DETECTOR-CRAFT",
         "error": {
             "code" : "REQUEST_FORMAT_ERROR",
             "message" : "Json provided by user is not in proper format."

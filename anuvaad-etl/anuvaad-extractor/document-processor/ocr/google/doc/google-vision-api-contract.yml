@@ -12,7 +12,7 @@ schemes:
 basePath: '/google-vision'
 
 paths:
-  /google-vision:
+  /v0/ocr/google-vision:
     post:
       summary: google vision api for ocr
       parameters:
