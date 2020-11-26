@@ -41,13 +41,17 @@ class AlignmentService:
     # Service method to register the alignment job.
     def register_job(self, object_in):
         job_id = util.generate_job_id()
-        response = {"input": object_in, "jobID": job_id, "status": "STARTED"}
-        self.update_job_details(response, True)
-        prod_res = producer.push_to_queue(response, align_job_topic)
-        if prod_res:
-            self.update_job_status("FAILED", object_in, prod_res["message"])
-            response = {"input": object_in, "jobID": job_id, "status": "FAILED", "error": prod_res}
-        return response
+        try:
+            response = {"input": object_in, "jobID": job_id, "status": "STARTED"}
+            self.update_job_details(response, True)
+            prod_res = producer.push_to_queue(response, align_job_topic)
+            if prod_res:
+                self.update_job_status("FAILED", object_in, prod_res["message"])
+                response = {"input": object_in, "jobID": job_id, "status": "FAILED", "error": prod_res}
+            return response
+        except Exception as e:
+            log_exception("Exception while registering the alignment job: " + str(e), object_in, e)
+            return None
 
     # Service method to register the alignment job through wfm.
     def wf_process(self, object_in):
