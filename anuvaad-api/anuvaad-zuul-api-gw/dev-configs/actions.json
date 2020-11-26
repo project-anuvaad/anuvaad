@@ -234,7 +234,7 @@
         },
         {
             "id":"07a03771-08a5-4a95-a4a6-38b9dbdefa91",
-            "uri":"/anuvaad-etl/document-processor/ocr/v0/google-vision",
+            "uri":"/anuvaad-etl/document-processor/ocr/google-vision/v0/extract-text",
             "module":"OCR",
             "active":true,
             "whiteList":true,
