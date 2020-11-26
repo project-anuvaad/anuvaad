@@ -31,13 +31,14 @@ class UpdatePassword extends React.Component {
 
     handleSubmit(e) {
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        if (this.state.email.match(mailformat)) {
-            let { APITransport } = this.props;
-            let apiObj = new ForgotPasswordApi(this.state.email);
-            APITransport(apiObj);
-        } else {
-            alert(translate('common.page.alert.validEmail'))
-        }
+        alert("still in progress")
+        // if (this.state.email.match(mailformat)) {
+        //     let { APITransport } = this.props;
+        //     let apiObj = new ForgotPasswordApi(this.state.email);
+        //     APITransport(apiObj);
+        // } else {
+        //     alert(translate('common.page.alert.validEmail'))
+        // }
     }
 
     componentDidUpdate(prevProps) {
