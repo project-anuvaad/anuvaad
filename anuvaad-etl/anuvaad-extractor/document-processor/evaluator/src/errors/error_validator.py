@@ -22,21 +22,23 @@ class ValidationResponse(object):
             raise FileErrors("NO_INPUT_FILES", "No file details in the input json")
         else:
             for i, item in enumerate(input_files):
-                input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                input_filename, in_file_type, identifier = file_ops.accessing_files(item['file'])
                 input_filepath = file_ops.input_path(input_filename)
                 if input_filename == "" or input_filename is None:
                     raise FileErrors("FILENAME_ERROR", "Filename not found or its empty")
                 #elif not input_filename.endswith('.pdf'):
                     #raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
-                elif file_ops.check_file_extension(in_file_type) is False:
+                if in_file_type == "" or in_file_type is None:
                     raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
+                #elif file_ops.check_file_extension(in_file_type) is False:
+                    #raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
                 elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
                     raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory.")
-                elif in_locale == "" or in_locale is None:
+                elif identifier == "" or identifier is None:
                     raise FileErrors("LOCALE_ERROR", "No language input or unsupported language input.")
 
     def format_error(self, json_data):
-        keys_checked = {'workflowCode','jobID','input','tool','stepOrder'}
+        keys_checked = {'workflowCode','jobID','inputs','tool','stepOrder'}
         if json_data.keys() == {'files'}:
             return True
         elif json_data.keys() >= keys_checked:

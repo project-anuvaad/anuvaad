@@ -3,7 +3,7 @@ import os
 import time
 
 DEBUG = True
-API_URL_PREFIX = "/api/v0"
+API_URL_PREFIX = "/anuvaad-etl/document-processor"
 HOST = '0.0.0.0'
 PORT = 5001
 BASE_DIR   = 'upload'
@@ -11,7 +11,7 @@ BASE_DIR   = 'upload'
 ENABLE_CORS = False
 
 # kafka
-
+/anuvaad-etl/block-merger
 input_topic_default = 'anuvaad-dp-tools-word-detector-craft-input-v1'
 input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_INPUT'
 input_topic = os.environ.get(input_topic_identifier, input_topic_default)

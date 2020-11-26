@@ -59,7 +59,7 @@ def TextDetection(app_context,base_dir=config.BASE_DIR):
                 }
 
     except Exception as e:
-        log_exception("Error occured during pdf to blocks conversion" + str(e),  app_context.application_context, e)
+        log_exception("Error occured during word detection conversion" + str(e),  app_context.application_context, e)
 
         return {
             'code': 400,
