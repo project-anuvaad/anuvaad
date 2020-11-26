@@ -1,5 +1,10 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { logOut } from '../../../flux/actions/users/logout';
 import history from "../../../web.history";
+
 class Logout extends React.Component {
 
     componentDidMount(){
@@ -7,6 +12,7 @@ class Logout extends React.Component {
         localStorage.removeItem('userDetails')
         localStorage.removeItem('userProfile')
         localStorage.removeItem('roles')
+        this.props.logOut()
         history.push(`${process.env.PUBLIC_URL}/`);
         // window.location.href = '${process.env.PUBLIC_URL}'
     }
@@ -19,4 +25,25 @@ class Logout extends React.Component {
 }
 
 
-export default Logout;
+const mapStateToProps = state => ({
+  
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      logOut
+    },
+    dispatch
+  );
+
+export default withRouter(
+ 
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(Logout)
+  
+);
+
+
