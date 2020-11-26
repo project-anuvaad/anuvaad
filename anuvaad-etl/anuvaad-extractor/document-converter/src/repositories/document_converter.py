@@ -36,7 +36,7 @@ class DocumentConversion(object):
     def get_data_from_content_handler(self, record_id, user_id, start_page=0, end_page=0):
         doc_utils = DocumentUtilities()
         try:
-            headers = {"ad-userid" : user_id, "Content-Type": "application/json"}
+            headers = {"x-user-id" : user_id, "Content-Type": "application/json"}
             request_url = doc_utils.url_generation(config.CONTENT_HANDLER_ENDPOINT, record_id, start_page, end_page)
             log_info("Intiating request to fetch data from %s"%request_url, MODULE_CONTEXT)
             response = requests.get(request_url, headers = headers)
