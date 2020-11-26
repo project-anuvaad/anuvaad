@@ -6,7 +6,7 @@ const endpoints = {
   forgotpassword: "/anuvaad/user-mgmt/v1/users/forgot-password",
   fetchducuments: '/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk',
   // insertSentence: "/v1/interactive-editor/add-sentence-node",
-  activate_user: "/v1/user/activate-account",
+  activate_user: "/anuvaad/user-mgmt/v1/users/activate-user",
   adduser: "/create-user",
   auto_ml: "/translate",
   fetch_filedeatils:"/api/v0/serve-file?",

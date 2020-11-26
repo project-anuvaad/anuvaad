@@ -288,7 +288,7 @@ const localization_EN_Data = {
   "userProfile.page.placeholder.resetPassword": "Reset Password",
   "webroutes.page.title.profile": "Profile",
   "common.page.label.maxScore": "Maximum Score",
-  "common.page.label.selectLanguage": "Select Language",
+  "common.page.label.selectLanguage": "Language",
   "common.page.label.mergedMessage": "Merged sentence successfully",
   "common.page.label.savedSuccessfully": "Sentence saved successfully !...",
   "common.page.label.splittedMessage":"Splitted sentence successfully",
