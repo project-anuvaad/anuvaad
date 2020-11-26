@@ -104,7 +104,8 @@ public class ExceptionUtils {
                 e = e.getCause();
             String exceptionName = e.getClass().getSimpleName();
             String exceptionMessage = ((Throwable) e).getMessage();
-
+            if (exceptionName.equalsIgnoreCase("ZuulRuntimeException"))
+                logger.error("ZuulRuntimeException | Cause: ", e);
             if (exceptionName.equalsIgnoreCase("HttpHostConnectException") ||
                     exceptionName.equalsIgnoreCase("ResourceAccessException")) {
                 _setExceptionBody(HttpStatus.BAD_GATEWAY, getErrorInfoObject(exceptionName, "The backend service is unreachable"));
