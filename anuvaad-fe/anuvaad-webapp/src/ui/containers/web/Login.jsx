@@ -108,7 +108,7 @@ class Login extends React.Component {
         let resData = rsp_data && rsp_data.data
         var roles = this.handleRoles(resData);
         localStorage.setItem("roles", roles)
-
+        localStorage.setItem("lang", "en")
         localStorage.setItem("userProfile", JSON.stringify(resData))
         history.push(`${process.env.PUBLIC_URL}/view-document`);
 
