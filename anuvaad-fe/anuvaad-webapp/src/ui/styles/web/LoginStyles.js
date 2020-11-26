@@ -6,7 +6,7 @@
 const LoginStyles = theme => ({
   root: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   margin: {
     margin: theme.spacing(1),
@@ -103,9 +103,14 @@ const LoginStyles = theme => ({
   },
   //for signup page
   signUpPaper: {
-    backgroundColor: '#f1f5f7'
+    backgroundColor: '#f1f5f7',
+
   },
 
+  signInPaper: {
+    backgroundColor: '#f1f5f7',
+  },
+  
   typographyHeader: {
     marginTop: '10%',
     marginBottom: '5%',

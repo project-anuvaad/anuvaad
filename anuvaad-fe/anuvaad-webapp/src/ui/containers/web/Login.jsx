@@ -108,7 +108,7 @@ class Login extends React.Component {
         let resData = rsp_data && rsp_data.data
         var roles = this.handleRoles(resData);
         localStorage.setItem("roles", roles)
-
+        localStorage.setItem("lang", "en")
         localStorage.setItem("userProfile", JSON.stringify(resData))
         history.push(`${process.env.PUBLIC_URL}/view-document`);
 
@@ -154,9 +154,9 @@ class Login extends React.Component {
 
               </FormControl>
 
-              <Typography className={classes.typographyForgotPwd}>
-                <Link style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/forgot-password") }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
-                <Link style={{ cursor: 'pointer', color: '#0C8AA9', marginLeft: '337px' }} href="#" onClick={() => { history.push("/signup") }}> {translate('singUp.page.label.signUp')}</Link>
+              <Typography>
+                <Link style={{ cursor: 'pointer', color: '#0C8AA9',marginLeft:'25%', float:'left'}} href="#" onClick={() => { history.push("/forgot-password") }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
+                <Link style={{ cursor: 'pointer', color: '#0C8AA9',marginRight:'25%', float:'right' }} href="#" onClick={() => { history.push("/signup") }}> {translate('singUp.page.label.signUp')}</Link>
               </Typography>
             </Grid>
           </Grid>
