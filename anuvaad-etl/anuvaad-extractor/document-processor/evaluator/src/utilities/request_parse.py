@@ -1,7 +1,8 @@
 import src.utilities.app_context as app_context
 from anuvaad_auditor.loghandler import log_exception
 import copy
-
+import config
+import json
 
 def log_error(method):
     def wrapper(*args, **kwargs):
@@ -12,6 +13,45 @@ def log_error(method):
             log_exception('Invalid request, required key missing of {}'.format(e), app_context.application_context, e)
             return None
     return wrapper
+
+
+
+class Evalue:
+    def __init__(self,eval):
+        self.eval = eval
+        self.eval['pages'] = []
+
+    def get_strategy(self):
+        return self.eval['config']['strategy']
+
+    def get_boxlevel(self):
+        key_mapping = {'WORD' : 'words' ,'LINE':'lines' , 'PARAGRAPH' : 'regions' }
+        return key_mapping[self.eval['config']['boxLevel']]
+
+    def get_json(self):
+        gt_file_name = self.eval['ground']['name']
+        in_file_name = self.eval['input']['name']
+        gt_path = config.BASE_DIR + '/' + gt_file_name
+        in_path =  config.BASE_DIR + '/' + in_file_name
+        with open(gt_path) as f:
+            gt_json = json.load(f)
+            gt_data = gt_json['rsp']['outputs'][0]
+        with open(in_path) as f:
+            in_json = json.load(f)
+            in_data = in_json['rsp']['outputs'][0]
+        return gt_data ,in_data
+
+    def get_evaluation(self):
+        return self.eval
+
+    def set_page(self,page):
+        self.eval['pages'].append(page)
+
+    def set_staus(self,mode):
+        if mode :
+            self.eval['status'] = {"code": 200, "message": "word-detector successful"}
+        else:
+            self.eval['status'] = {"code": 400, "message": "word-detector failed"}
 
 
 class File:
@@ -42,6 +82,12 @@ class File:
     @log_error
     def get_regions(self, page_index):
         return self.file['pages'][page_index]['regions']
+
+
+    @log_error
+    def get_boxes(self,box_level,page_index):
+        return self.file['pages'][page_index][box_level]
+
 
     @log_error
     def get_language(self):

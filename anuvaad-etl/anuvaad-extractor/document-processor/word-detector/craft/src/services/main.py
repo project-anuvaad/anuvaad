@@ -31,7 +31,7 @@ def get_response(app_context, words, lines, images):
                 page_properties = Page(page_words, page_lines, page)
                 file_prperties.set_page(page_properties.get_page())
                 file_prperties.set_page_info(page)
-                file_prperties.set_staus(True)
+            file_prperties.set_staus(True)
         except Exception as e:
             file_prperties.set_staus(False)
             log_exception("Error occured during response generation" + str(e), app_context.application_context, e)

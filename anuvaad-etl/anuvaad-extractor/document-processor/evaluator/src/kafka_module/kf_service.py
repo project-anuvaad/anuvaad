@@ -40,7 +40,7 @@ def push_output(producer, topic_name, output, jobid, task_id,data):
 
 
 # main function for async process
-def process_layout_detector_kf():
+def process_evaluator_kf():
     file_ops            = FileOperation()
     DOWNLOAD_FOLDER     = file_ops.create_file_download_dir(config.download_folder)
     producer_tok        = Producer(config.bootstrap_server)
@@ -84,7 +84,7 @@ def process_layout_detector_kf():
         file_ops.error_handler(response_custom, "KAFKA_PRODUCER_ERROR", True)
         log_exception("process_layout_detector_kf : response send to topic %s"%(config.output_topic), None, e)
 
-def layout_detector_request_worker():
+def evaluator_request_worker():
     file_ops            = FileOperation()
     DOWNLOAD_FOLDER     = file_ops.create_file_download_dir(config.download_folder)
     producer_tok        = Producer(config.bootstrap_server)
