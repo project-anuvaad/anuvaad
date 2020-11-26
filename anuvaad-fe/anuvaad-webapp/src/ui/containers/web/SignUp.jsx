@@ -67,7 +67,7 @@ class SignUp extends React.Component {
               APITransport(apiObj);
             } else {
               // alert(translate('common.page.alert.validPassword'))
-              alert("Please provide password with minimum 6 character, 1 number, 1, uppercase, 1 lower case and 1 special character.")
+              alert("Please provide password with minimum 6 character, 1 number, 1 uppercase, 1 lower case and 1 special character.")
 
             }
 
