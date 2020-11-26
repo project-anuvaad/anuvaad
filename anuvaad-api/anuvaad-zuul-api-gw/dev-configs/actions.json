@@ -207,6 +207,38 @@
             "active":true,
             "whiteList":true,
             "description":"API to start alignment jobs"
+        },
+        {
+            "id":"33a3d08d-0b3c-496b-9dc0-7428da39608b",
+            "uri":"/anuvaad-etl/document-processor/word-detector/v0/craft/process",
+            "module":"WORD-DETECTOR",
+            "active":true,
+            "whiteList":true,
+            "description":"API for word detection"
+        },
+        {
+            "id":"d0746e99-e744-4dfe-9757-68438e021f3e",
+            "uri":"/anuvaad-etl/document-processor/layout-detector/v0/prima/process",
+            "module":"LAYOUT-DETECTOR",
+            "active":true,
+            "whiteList":true,
+            "description":"API for layout detection"
+        },
+        {
+            "id":"b75a304b-e9a0-42c8-b6e7-1da4f4e50902",
+            "uri":"/anuvaad-etl/document-processor/evaluator/v0/process",
+            "module":"VISUAL-EVALUATOR",
+            "active":true,
+            "whiteList":true,
+            "description":"API for visual evaluator"
+        },
+        {
+            "id":"07a03771-08a5-4a95-a4a6-38b9dbdefa91",
+            "uri":"/anuvaad-etl/document-processor/ocr/v0/google-vision",
+            "module":"OCR",
+            "active":true,
+            "whiteList":true,
+            "description":"API for OCR"
         }
     ]
 }
