@@ -6,7 +6,7 @@ const endpoints = {
   forgotpassword: "/anuvaad/user-mgmt/v1/users/forgot-password",
   fetchducuments: '/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk',
   // insertSentence: "/v1/interactive-editor/add-sentence-node",
-  activate_user: "/v1/user/activate-account",
+  activate_user: "/anuvaad/user-mgmt/v1/users/activate-user",
   adduser: "/create-user",
   auto_ml: "/translate",
   fetch_filedeatils:"/api/v0/serve-file?",
@@ -18,7 +18,7 @@ const endpoints = {
 
   fecthcontent: "/anuvaad/content-handler/v0/fetch-content",
   documentupload:"/anuvaad-api/file-uploader/v0/upload-file",
-  documentConverter: "/anuvaad/content-handler/v0/document-converter",
+  documentConverter: "/anuvaad-etl/document-converter/v0/document-converter",
   word_dictionary: "/anuvaad/content-handler/v0/dictionary/search",
   save_content: "/anuvaad/content-handler/v0/save-content-sentence",
   translate: "/anuvaad-etl/translator/v1/text/translate",
