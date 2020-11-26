@@ -15,7 +15,7 @@ import threading
 from src.kafka_module.producer import Producer
 import src.utilities.app_context as app_context
 ###################################
-from src.services.main import TextDetection as Service
+from src.services.main import Evaluation as Service
 #####################################
 
 file_ops = FileOperation()
@@ -97,7 +97,7 @@ class Response(object):
         app_context.application_context = self.json_data
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         try:
-            error_validator.inputfile_list_error(input_files)
+            #error_validator.inputfile_list_error(input_files)
             # output_file_response = list()
             # for item in input_files:
             #     input_filename, in_file_type, identifier = file_ops.accessing_files(item['file'])
@@ -110,11 +110,12 @@ class Response(object):
 
             output_json_data = Service(app_context=app_context)
             output_filename_json = file_ops.writing_json_file( 0,output_json_data, self.DOWNLOAD_FOLDER)
-            response_true =   file_ops.one_filename_response( output_filename_json)
+            response_true        =   file_ops.one_filename_response( output_filename_json)
 
             log_info("non workflow_response successfully generated response for rest server", app_context.application_context)
             response_true = copy.deepcopy(response_true)
             return response_true
+
         except FileErrors as e:
             response_custom = Status.ERR_STATUS.value
             response_custom['message'] = e.message

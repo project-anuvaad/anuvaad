@@ -1,4 +1,4 @@
-import logging
+#import logging
 import os
 import time
 
@@ -30,13 +30,13 @@ CONSUMER_GROUP_default       = 'anuvaad-etl-gvocr-consumer-group'
 CONSUMER_GROUP_identifire    = 'ANUVAAD_ETL_GVOCR_CONSUMER_GROUP_V1'
 CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_default,CONSUMER_GROUP_identifire)
 download_folder = 'upload'
-
-
-logging.basicConfig(
-    filename=os.getenv("SERVICE_LOG", "server.log"),
-    level=logging.DEBUG,
-    format="%(levelname)s: %(asctime)s \
-        pid:%(process)s module:%(module)s %(message)s",
-    datefmt="%d/%m/%y %H:%M:%S",
-)
+#
+#
+# logging.basicConfig(
+#     filename=os.getenv("SERVICE_LOG", "server.log"),
+#     level=logging.DEBUG,
+#     format="%(levelname)s: %(asctime)s \
+#         pid:%(process)s module:%(module)s %(message)s",
+#     datefmt="%d/%m/%y %H:%M:%S",
+# )
 EXRACTION_RESOLUTION  =  300
