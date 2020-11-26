@@ -42,5 +42,5 @@ class DocumentUtilities():
         return math.ceil(px * px_to_inches * INCH_TO_TWIPS)
 
     def url_generation(self, url_pre, record_id, start_page, end_page):
-        url_modified = url_pre + 'api/v0/fetch-content?record_id={}&start_page={}&end_page={}'.format(record_id, start_page, end_page)
+        url_modified = url_pre + '/anuvaad/content-handler/v0/fetch-content?record_id={}&start_page={}&end_page={}'.format(record_id, start_page, end_page)
         return url_modified
