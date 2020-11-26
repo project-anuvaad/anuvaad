@@ -16,9 +16,9 @@ ALLOWED_FILE_TYPES = ['application/vnd.openxmlformats-officedocument.presentatio
 ALLOWED_FILE_EXTENSIONS = ['json','xlm', 'xla', 'xls' ,'xlsx' ,'excel','xlsm','xlt','xltx','xlsb','odt','pdf','txt','ods','pptx','ppt','doc','docx','docm','png','jpg','jpeg','bmp']
 
 #mongo
-MONGO_IP = 'MONGO_IP'
+MONGO_IP = 'MONGO_CLUSTER_URL'
 DEFAULT_VALUE = 'localhost'
-MONGO_DB_IDENTIFIER = 'MONGO_DB'
+MONGO_DB_IDENTIFIER = 'MONGO_FU_DB'
 DEFAULT_MONGO_DB_IDENTIFIER = 'preprocessing'
 MONGO_SERVER_URL = os.environ.get(MONGO_IP, DEFAULT_VALUE)
 MONGO_DB = os.environ.get(MONGO_DB_IDENTIFIER, DEFAULT_MONGO_DB_IDENTIFIER)
