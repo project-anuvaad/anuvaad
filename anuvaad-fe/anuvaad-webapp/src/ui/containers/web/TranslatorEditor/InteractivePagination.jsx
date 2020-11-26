@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Pagination from "@material-ui/lab/Pagination";
 import { currentPageUpdate } from "../../../../flux/actions/apis/pagiantion_update";
 import SENTENCE_ACTION from "./SentenceActions";
+import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 
@@ -42,6 +43,7 @@ class InteractivePagination extends React.Component {
    * Merge mode user action handlers
    */
   processMergeButtonClicked = () => {
+    this.props.clearHighlighBlock();
     this.props.onAction(SENTENCE_ACTION.START_MODE_MERGE, this.state.offset);
   };
 
@@ -154,7 +156,6 @@ class InteractivePagination extends React.Component {
   }
 
   render() {
-      console.log(this.props.job_status)
     return (
       this.footer()
     );
@@ -172,6 +173,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       currentPageUpdate,
+      clearHighlighBlock
     },
     dispatch
   );
