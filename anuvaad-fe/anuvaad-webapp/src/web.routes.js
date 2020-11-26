@@ -75,7 +75,7 @@ class AppRoutes extends React.Component {
       }
       return false;
     }
-    alert(translate('webroutes.page.alert.somethingWentWrongTryAgain'));
+    return false;
   };
 
   render() {
