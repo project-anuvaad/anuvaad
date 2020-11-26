@@ -69,9 +69,9 @@ class TextTranslationService:
             for translation in ch_response:
                 if translation["s_id"] in sent_map.keys():
                     tgt_list = []
-                    if sent_map[translation["s_id"]]["taggedPrefix"] in translation["tgt"]:
+                    if str(translation["tgt"]).startswith(str(sent_map[translation["s_id"]]["taggedPrefix"])):
                         tgt_list.append(translation["tgt"])
-                    if sent_map[translation["s_id"]]["taggedPrefix"] in translation["s0_tgt"]:
+                    if str(translation["s0_tgt"]).startswith(str(sent_map[translation["s_id"]]["taggedPrefix"])):
                         tgt_list.append(translation["s0_tgt"])
                     if tgt_list:
                         translation["tgt"] = tgt_list
