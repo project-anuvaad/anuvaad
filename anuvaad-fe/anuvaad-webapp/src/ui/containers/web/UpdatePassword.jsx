@@ -61,14 +61,11 @@ class UpdatePassword extends React.Component {
                             <Typography align='center' style={{ marginTop: '30%', marginBottom: '5%', fontSize: '33px', fontfamily: 'Trebuchet MS, sans-serif', color: '#003366' }}>
                                 {translate('updatePassword.page.label.forgotPassword')}</Typography>
                            
-                            {/* <FormControl align='center' fullWidth > */}
                                 <TextField id="outlined-required" type="email" placeholder={translate('common.page.placeholder.emailUsername')}
                                     margin="normal" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white', marginLeft: '25%' }}
                                     onChange={this.handleInputReceived('email')}
                                     value={this.state.email}
                                 />
-                            {/* </FormControl> */}
-                            {/* <FormControl align='center' fullWidth> */}
                                 <Button
                                     disabled={!this.state.email}
                                     variant="contained" aria-label="edit" style={{
@@ -77,7 +74,6 @@ class UpdatePassword extends React.Component {
                                     }} onClick={this.handleSubmit.bind(this)}>
                                     {translate("common.page.button.submit")}
                                 </Button>
-                            {/* </FormControl> */}
                         </Grid>
                     </Grid>
                     {this.state.open && (

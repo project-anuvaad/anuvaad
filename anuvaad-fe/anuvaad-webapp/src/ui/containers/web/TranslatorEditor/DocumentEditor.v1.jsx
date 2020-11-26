@@ -260,34 +260,6 @@ class DocumentEditor extends React.Component {
       });
     }
 
-    handleTargetDownload() {
-      let recordId = this.props.match.params.jobid
-      let user_profile = JSON.parse(localStorage.getItem('userProfile'))
-  
-      let apiObj = new DocumentConverterAPI(recordId, user_profile.id)
-      const apiReq = fetch(apiObj.apiEndPoint(), {
-        method: 'post',
-        body: JSON.stringify(apiObj.getBody()),
-        headers: apiObj.getHeaders().headers
-      }).then(async response => {
-        const rsp_data = await response.json();
-        if (!response.ok) {
-          this.informUserStatus(translate('common.page.label.FILE_DOWNLOAD_FAILED'), false)
-          return Promise.reject('');
-        } else {
-          let fileName = rsp_data && rsp_data.translated_document && rsp_data.translated_document ? rsp_data.translated_document : ""
-          if (fileName) {
-            let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
-            window.open(url, "_self")
-          }
-        }
-      }).catch((error) => {
-        this.informUserStatus(translate('common.page.label.FILE_DOWNLOAD_FAILED'), false)
-      });
-    }
-
-  
-
     /**
      * workhorse functions
      */
