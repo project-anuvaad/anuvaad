@@ -113,6 +113,8 @@ class Tokenisation(object):
                 if page_idx+1 < len(input_data_file):
                     last_text_block_idx = self.get_last_text_block_with_text(page_data_blocks)
                     first_text_block_next_page = self.get_first_text_block_with_text(input_data_file[page_idx+1])
+                    log_info("index of, last text block of current page: {}, first text block of next page: {}".format(last_text_block_idx, \
+                        first_text_block_next_page), self.input_json_data)
                     try:
                         if last_text_block_idx != None and first_text_block_next_page != None:
                             if not page_data_blocks[last_text_block_idx]['text'].strip().endswith(('.',':','!','?','”',')')) \
