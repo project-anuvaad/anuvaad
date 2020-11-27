@@ -17,14 +17,14 @@ file_ops = FileOperation()
 DOWNLOAD_FOLDER =file_ops.create_file_download_dir(config.download_folder)
 
 # rest request for block merging workflow service
-class Layout_Detector_WF(Resource):
+class Evaluator_WF(Resource):
     
     # reading json request and reurnung final response
     def post(self):
         json_data = request.get_json(force=True)
         app_context.init()
         app_context.application_context = json_data
-        log_info("Resource Layout_Detector_WF  Layout_Detector service started", app_context.application_context)
+        log_info("Resource Evaluator_WF  Evaluator service started", app_context.application_context)
         task_id = str("LD-" + str(time.time()).replace('.', '')[0:13])
         task_starttime  =  eval(str(time.time()).replace('.', '')[0:13])
         #json_data = request.get_json(force = True)
@@ -33,30 +33,30 @@ class Layout_Detector_WF(Resource):
             if error_validator.format_error(json_data) is True:
                 response_gen = Response(json_data, DOWNLOAD_FOLDER)
                 response = response_gen.workflow_response(task_id, task_starttime)
-                log_info("Resource Layout_Detector_WF Layout_Detector api response completed", app_context.application_context)
+                log_info("Resource Evaluator_WF Evaluator api response completed", app_context.application_context)
                 return jsonify(response)
         except FormatError as e:
-            log_error("Resource Layout_Detector_WF Input json format is not correct or dict_key is missing", app_context.application_context, e)
+            log_error("Resource Evaluator_WF Input json format is not correct or dict_key is missing", app_context.application_context, e)
             return Status.ERR_request_input_format.value
 
 
 # rest request for layout detection individual service
-class Layout_Detector(Resource):
+class Evaluator(Resource):
 
     # reading json request and reurnung final response
     def post(self):
         json_data = request.get_json(force=True)
         app_context.init()
         app_context.application_context = json_data
-        log_info("Resource Layout_Detector service started", app_context.application_context)
+        log_info("Resource Evaluator service started", app_context.application_context)
 
         try:
             error_validator = ValidationResponse(DOWNLOAD_FOLDER)
             if error_validator.format_error(json_data) is True:
                 response_gen = Response(json_data, DOWNLOAD_FOLDER)
                 response = response_gen.nonwf_response()
-                log_info("Resource Layout_Detector api response completed", app_context.application_context)
+                log_info("Resource Evaluator api response completed", app_context.application_context)
                 return jsonify(response)
         except FormatError as e:
-            log_error("Resource Layout_Detector Input json format is not correct or dict_key is missing", app_context.application_context, e)
+            log_error("Resource Evaluator Input json format is not correct or dict_key is missing", app_context.application_context, e)
             return Status.ERR_request_input_format.value

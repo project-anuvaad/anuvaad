@@ -13,15 +13,15 @@ from src.utilities.request_parse import File
 class Status(enum.Enum):
     SUCCESS = {
         "status": "SUCCESS",
-        "state": "WORD-DETECTOR-CRAFT"
+        "state": "evaluator"
     }
     ERR_STATUS = {
         "status": "FAILED",
-        "state": "WORD-DETECTOR-CRAFT",
+        "state": "evaluator",
     }
     ERR_request_input_format = {
         "status" : "FAILED",
-        "state" : "WORD-DETECTOR-CRAFT",
+        "state" : "evaluator",
         "error": {
             "code" : "REQUEST_FORMAT_ERROR",
             "message" : "Json provided by user is not in proper format."
@@ -76,9 +76,9 @@ class FileOutput(File):
     @log_error
     def set_staus(self,mode):
         if mode :
-            self.file['status'] = {"code": 200, "message": "word-detector successful"}
+            self.file['status'] = {"code": 200, "message": "evaluator successful"}
         else:
-            self.file['status'] = {"code": 400, "message": "word-detector failed"}
+            self.file['status'] = {"code": 400, "message": "evaluator failed"}
 
 
 class Page:
