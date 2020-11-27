@@ -4,7 +4,6 @@ from src.utilities.utils import FileOperation
 from src.kafka_module.producer import Producer
 from src.kafka_module.consumer import Consumer
 from src.resources.response_gen import Response
-#from src.resources.response_gen import multi_thred_block_merger
 from src.errors.errors_exception import KafkaConsumerError
 from src.errors.errors_exception import KafkaProducerError
 from anuvaad_auditor.loghandler import log_info
@@ -48,22 +47,22 @@ def process_evaluator_kf():
     # instatiation of consumer for respective topic
     try:
         consumer = consumer_validator()
-        log_info("process_layout_detector_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
+        log_info("process_evaluator_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
         
         for msg in consumer:
             if Consumer.get_json_data(msg.value) == None:
-                log_info('process_layout_detector_kf - received invalid data {}'.format(msg.value), None)
+                log_info('process_evaluator_kf - received invalid data {}'.format(msg.value), None)
                 continue
             data            = Consumer.get_json_data(msg.value)
             jobid           = data['jobID']
-            log_info('process_layout_detector_kf - received message from kafka, dumping into internal queue', data)
+            log_info('process_evaluator_kf - received message from kafka, dumping into internal queue', data)
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             
             #if input_files[0]['locale'] == 'en':
                 #############
             ####################################
             Queue.put(data)
-            log_info('process_layout_detector_kf - request in internal queue {}'.format(Queue.qsize()),
+            log_info('process_evaluator_kf - request in internal queue {}'.format(Queue.qsize()),
                         data)
             ########################################
             # else:
@@ -77,28 +76,28 @@ def process_evaluator_kf():
         response_custom = {}
         response_custom['message'] = str(e)
         file_ops.error_handler(response_custom, "KAFKA_CONSUMER_ERROR", True)
-        log_exception("process_layout_detector_kf : Consumer didn't instantiate", None, e)
+        log_exception("process_evaluator_kf : Consumer didn't instantiate", None, e)
     except KafkaProducerError as e:
         response_custom = {}
         response_custom['message'] = e.message      
         file_ops.error_handler(response_custom, "KAFKA_PRODUCER_ERROR", True)
-        log_exception("process_layout_detector_kf : response send to topic %s"%(config.output_topic), None, e)
+        log_exception("process_evaluator_kf : response send to topic %s"%(config.output_topic), None, e)
 
 def evaluator_request_worker():
     file_ops            = FileOperation()
     DOWNLOAD_FOLDER     = file_ops.create_file_download_dir(config.download_folder)
     producer_tok        = Producer(config.bootstrap_server)
-    log_info("layout_detector_request_worker : starting thread ", LOG_WITHOUT_CONTEXT)
+    log_info("evaluator_request_worker : starting thread ", LOG_WITHOUT_CONTEXT)
 
     while True:
         data            = Queue.get(block=True)
         #################
-        task_id         = str("layout_detector" + str(time.time()).replace('.', ''))
+        task_id         = str("evaluator" + str(time.time()).replace('.', ''))
         ###################
         task_starttime  = str(time.time()).replace('.', '')
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
         
-        log_info("layout_detector_request_worker processing -- received message "+str(jobid), data)
+        log_info("evaluator_request_worker processing -- received message "+str(jobid), data)
 
         try:
             response_gen    = Response(data, DOWNLOAD_FOLDER)
@@ -107,13 +106,13 @@ def evaluator_request_worker():
             if file_value_response != None:
                 if "errorID" not in file_value_response.keys():
                     push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
-                    log_info("layout_detector_request_worker : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
+                    log_info("evaluator_request_worker : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
                 else:
-                    log_info("layout_detector_request_worker : error send to error handler", data)
+                    log_info("evaluator_request_worker : error send to error handler", data)
 
-            log_info('layout_detector_request_worker - request in internal queue {}'.format(Queue.qsize()), data)
+            log_info('evaluator_request_worker - request in internal queue {}'.format(Queue.qsize()), data)
 
             Queue.task_done()
         except Exception as e:
-            log_exception("layout_detector_request_worker ",  LOG_WITHOUT_CONTEXT, e)
+            log_exception("evaluator_request_worker ",  LOG_WITHOUT_CONTEXT, e)
 

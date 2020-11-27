@@ -1,3 +1,3 @@
-from .routes import Layout_Detector_BLUEPRINT
-from .routes import Layout_Detector_BLUEPRINT_WF
+from .routes import Evaluator_BLUEPRINT
+from .routes import Evaluator_BLUEPRINT_WF
 #from .documentstructure import DOCUMENTSTRUCTURE_BLUEPRINT

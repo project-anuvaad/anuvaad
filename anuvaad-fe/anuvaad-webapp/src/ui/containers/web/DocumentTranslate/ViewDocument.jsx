@@ -27,7 +27,6 @@ import JobStatus from "../../../../flux/actions/apis/translation.progress";
 import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
 import ToolBar from "./ViewDocHeader"
 import DownloadFile from "../../../../flux/actions/apis/download_file"
-import base64 from 'binary-base64';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
@@ -237,7 +236,7 @@ class ViewDocument extends React.Component {
   }
 
   processDownloadInputFileClick = (jobId, recordId) => {
-    this.setState({dialogMessage: "Downloading file...",})
+    this.setState({ dialogMessage: "Downloading file...", })
     let job = this.getJobIdDetail(jobId);
     let user_profile = JSON.parse(localStorage.getItem('userProfile'));
 
@@ -248,37 +247,28 @@ class ViewDocument extends React.Component {
       headers: obj.getHeaders().headers
     }).then(async response => {
       if (!response.ok) {
-        this.setState({dialogMessage: "Failed to download file...",})
+        this.setState({ dialogMessage: "Failed to download file...", })
         console.log("api failed")
       } else {
         const buffer = new Uint8Array(await response.arrayBuffer());
-        const type = response.headers.get('content-type');
-        let res = `data:${type};base64,${base64.encode(buffer)}`
+        let res = Buffer.from(buffer).toString('base64')
 
-        /* Base64 to Blob */
-        const blob = await this.getBlobFromDataUri(res);
-
-        let a = document.createElement('a');
-        let url = URL.createObjectURL(blob);
-        a.href = url;
-        a.download = job.converted_filename;
-        a.click();
+        fetch("data:image/jpeg;base64," + res)
+          .then(res => res.blob())
+          .then(blob => {
+            let a = document.createElement('a');
+            let url = URL.createObjectURL(blob);
+            a.href = url;
+            a.download = job.converted_filename;
+            a.click();
+          });
+        
       }
     }).catch((error) => {
       this.setState({ dialogMessage: "Failed to download file..." })
       console.log('api failed because of server or network', error)
     });
 
-  }
-
-  getBlobFromDataUri(uri) {
-    return new Promise(function (resolve, reject) {
-      const [, type, base64EncodedString] = uri.match('data:([^;]+);base64,(.+)') || [];
-      if (typeof type === 'undefined' && typeof base64EncodedString === 'undefined') {
-        return reject(new TypeError('Invalid data URI.'));
-      }
-      return resolve(new Blob([base64.decode(base64EncodedString)], { type }));
-    });
   }
 
   processTableClickedNextOrPrevious = (page, sortOrder) => {
