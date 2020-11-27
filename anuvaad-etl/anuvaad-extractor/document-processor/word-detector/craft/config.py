@@ -5,7 +5,7 @@ import time
 DEBUG = False
 API_URL_PREFIX = "/anuvaad-etl/document-processor/word-detector"
 HOST = '0.0.0.0'
-PORT = 5002
+PORT = 5001
 BASE_DIR   = 'upload'
 
 ENABLE_CORS = False

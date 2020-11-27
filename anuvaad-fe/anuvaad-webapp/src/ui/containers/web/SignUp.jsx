@@ -31,10 +31,13 @@ class SignUp extends React.Component {
       email: "",
       password: "",
       confirmPassword: "",
-      termsAndCondition: null
+      termsAndCondition: null,
+      variantType: '',
+      open: false,
+      message: ''
 
     }
-    this.handleSubmit = this.handleSubmit.bind(this);
+    // this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleInputReceived = prop => event => {
@@ -44,11 +47,8 @@ class SignUp extends React.Component {
   handleCheckboxChange = () => {
     this.setState({ termsAndCondition: !this.state.termsAndCondition });
   }
-
-  handleSubmit(e) {
-
-    e.preventDefault();
-
+  handleSubmit=()=>{
+    // e.preventDefault();
     if (this.handleValidation('firstName') && this.handleValidation('email') && this.handleValidation('password') && this.handleValidation('confirmPassword') && this.handleValidation('termsAndCondition')) {
       if (this.state.password !== this.state.confirmPassword) {
         alert(translate('common.page.alert.passwordDidNotMatch'))
@@ -61,9 +61,35 @@ class SignUp extends React.Component {
 
           if (this.state.email.match(mailFormat)) {
             if (this.state.password.match(passwordFormat)) {
-              let { APITransport } = this.props;
+              // let { APITransport } = this.props;
               let apiObj = new SignupApi(this.state.email, this.state.firstName, this.state.lastName, this.state.password);
-              APITransport(apiObj);
+              try {
+                fetch(apiObj.apiEndPoint(), {
+                  method: 'post',
+                  body: JSON.stringify(apiObj.getBody()),
+                  headers: apiObj.getHeaders().headers,
+                })
+                  .then(resp => {
+                    console.log(resp);
+                    if (resp.ok) {
+                     this.setState({ message: translate('signUp.page.message.successfullyCreatedACcount'), 
+                     open: true, firstName: '', email: '', password: '', 
+                     confirmPassword: '', termsAndCondition: '',
+                      variantType: 'success' },()=>{
+                        console.log(this.state.open)
+                      })
+                    } else {
+                      console.log(resp);
+                      if (resp.status === 400) {
+                        resp.json().then((object) => {
+                          this.setState({ message: object.message, open: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: '', variantType: 'error' })
+                        })
+                      }
+                    }
+                  })
+              } catch (error) {
+                this.setState({ message: 'Opps! Something went wrong, please try after sometime', open: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: '', variantType: 'error' })
+              }
             } else {
               alert("Please provide password with minimum 6 character, 1 number, 1 uppercase, 1 lower case and 1 special character.")
 
@@ -80,12 +106,12 @@ class SignUp extends React.Component {
 
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.signup !== this.props.signup) {
-      this.setState({ message: translate('signUp.page.message.successfullyCreatedACcount'), open: true, firstName: '', lastName: '', email: '', password: '', confirmPassword: '', termsAndCondition: '' })
-    }
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.signup !== this.props.signup) {
+  //     this.setState({ message: translate('signUp.page.message.successfullyCreatedACcount'), open: true, firstName: '', lastName: '', email: '', password: '', confirmPassword: '', termsAndCondition: '' })
+  //   }
 
-  }
+  // }
 
   handleValidation(key) {
     if (!this.state[key] || this.state[key].length < 2) {
@@ -157,7 +183,7 @@ class SignUp extends React.Component {
                     variant="contained" aria-label="edit" style={{
                       width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
                       backgroundColor: this.state.termsAndCondition ? '#1ca9c9' : 'gray', color: 'white',
-                    }} onClick={this.handleSubmit.bind(this)}>
+                    }} onClick={this.handleSubmit}>
                     {translate('singUp.page.label.signUp')}
                   </Button>
                 </div>
@@ -173,16 +199,16 @@ class SignUp extends React.Component {
             </Grid>
           </Grid>
           <div className={classes.buttonsDiv} />
-          {this.state.open && (
+          {this.state.open ?
             <Snackbar
               anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
               open={this.state.open}
               autoHideDuration={6000}
               onClose={this.handleClose}
-              variant="success"
+              variant={this.state.variantType}
               message={this.state.message}
             />
-          )}
+            : ''}
         </div>
 
       </MuiThemeProvider>
@@ -210,5 +236,4 @@ export default withRouter(
       mapStateToProps,
       mapDispatchToProps
     )(SignUp)
-  )
-);
+  ));

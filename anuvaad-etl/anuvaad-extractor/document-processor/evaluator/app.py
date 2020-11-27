@@ -6,9 +6,7 @@ from flask.blueprints import Blueprint
 from flask_cors import CORS
 from src import routes
 import config
-import torch
 import threading
-import time
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 
 
@@ -18,13 +16,13 @@ evaluate_app = Flask(__name__)
 
 def start_kafka():
     try:
-        t1 = threading.Thread(target=process_evaluator_kf, name='layout-detector-consumer-thread')
+        t1 = threading.Thread(target=process_evaluator_kf, name='evaluator-consumer-thread')
         t1.start()
         log_info("multithread Kafka running on multithread", LOG_WITHOUT_CONTEXT)
 
-        t2 = threading.Thread(target=evaluator_request_worker, name='layout_detector-worker-thread')
+        t2 = threading.Thread(target=evaluator_request_worker, name='evaluator-worker-thread')
         t2.start()
-        log_info("Starting layout_detector_request_worker", LOG_WITHOUT_CONTEXT)
+        log_info("Starting evaluator_request_worker", LOG_WITHOUT_CONTEXT)
 
 
     except Exception as e:
