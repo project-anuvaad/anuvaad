@@ -84,6 +84,16 @@
             "role":"TRANSLATOR",
             "actionID": "5e1b1f65-35ad-41b5-8132-d1254cdc17bc",
             "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "f08cb87c-9e10-4b23-9de5-52c6ff70d405",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "75a424ae-ae00-44da-86f8-3809dd9a6458",
+            "active":true
         }
     ]
 }
