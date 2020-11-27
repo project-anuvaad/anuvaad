@@ -87,7 +87,7 @@ class Page:
         self.path  = path
 
         self.page = {}
-        self.page['identifier'] = uuid.uuid4().hex
+        self.page['identifier'] = str( uuid.uuid4())
         self.page['vertices']   = []
         self.page['resolution'] = 0
         self.page['regions']    = []
@@ -135,7 +135,7 @@ class Box:
         self.coords = coordinates
         self.box= {}
         self.box['boundingBox'] = {}
-        self.box['identifier'] = uuid.uuid4().hex
+        self.box['identifier'] = str(uuid.uuid4())
         self.box['class']  ='TEXT'
         self.box['font'] = {'family':'Arial Unicode MS', 'size':0, 'style':'REGULAR'}
         self.get_coords()

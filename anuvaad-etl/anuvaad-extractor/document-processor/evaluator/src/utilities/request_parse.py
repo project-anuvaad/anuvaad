@@ -42,6 +42,9 @@ class Evalue:
         return gt_data ,in_data
 
     def get_evaluation(self):
+        del self.eval['ground']
+        del self.eval['input']
+        del self.eval['config']
         return self.eval
 
     def set_page(self,page):
