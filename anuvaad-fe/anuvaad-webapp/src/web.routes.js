@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Logout from "./ui/containers/web/Logout";
 import Layout from "./ui/containers/web/Layout";
-import Callback from "./ui/containers/web/Callback";
 import NotFound from "./ui/containers/web/NotFound";
 
 import history from "./web.history";
