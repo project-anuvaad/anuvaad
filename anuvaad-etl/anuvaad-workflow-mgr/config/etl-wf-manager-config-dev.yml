@@ -350,6 +350,54 @@ WorkflowConfigs:
       endState: true
 
 
+  
+  - workflowCode: WF_A_WD
+    type: ASYNC
+    description: word detecton wf.
+    useCase: A_W
+    sequence:
+    - order: 0
+      tool:
+      - name: WORD-DETECTOR
+        description: detects word blocks from a given file
+        kafka-input:
+        - topic: anuvaad-dp-tools-word-detector-craft-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-word-detector-craft-input-key-one, anuvaad-dp-tools-word-detector-craft-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-word-detector-craft-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-word-detector-craft-output-key-one, anuvaad-dp-tools-word-detector-craft-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
+
+  - workflowCode: WF_A_OGV
+    type: ASYNC
+    description: gv-ocr wf.
+    useCase: A_OGV
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-GOOGLE-VISION
+        description: detects word blocks from a given file
+        kafka-input:
+        - topic: anuvaad-dp-tools-ocr-google-vision-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-ocr-google-vision-input-key-one, anuvaad-dp-tools-ocr-google-vision-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-ocr-google-vision-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-ocr-google-vision-output-key-one, anuvaad-dp-tools-ocr-google-vision-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
 
   - workflowCode: WF_S_TR
     type: SYNC

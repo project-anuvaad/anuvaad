@@ -10,6 +10,7 @@ from configs.wfmconfig import is_async_flow_enabled
 from configs.wfmconfig import tool_translator
 from configs.wfmconfig import tool_worddetector
 from configs.wfmconfig import tool_layoutdetector
+from configs.wfmconfig import tool_ocrgooglevision
 
 
 wfmutils = WFMUtils()
@@ -88,7 +89,7 @@ class WFMValidator:
                                 model = file["model"]
                                 if 'model_id' not in model.keys():
                                     return post_error("MODEL_ID_ NOT_FOUND", "Model ID is mandatory for this wf.", None)
-                        if tool_worddetector in tools or tool_layoutdetector in tools:
+                        if tool_worddetector in tools or tool_layoutdetector in tools or tool_ocrgooglevision in tools:
                             if 'config' not in file.keys():
                                 return post_error("CONFIG_NOT_FOUND", "OCR Config details are mandatory for this wf.", None)
                             else:

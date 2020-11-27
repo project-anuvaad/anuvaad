@@ -21,6 +21,7 @@ tool_ch = "CONTENT-HANDLER"
 tool_nmt = "NMT"
 tool_worddetector = "WORD-DETECTOR"
 tool_layoutdetector = "LAYOUT-DETECTOR"
+tool_ocrgooglevision = "OCR-GOOGLE-VISION"
 module_wfm_name = "WORKFLOW-MANAGER"
 is_sync_flow_enabled = True
 is_async_flow_enabled = True
