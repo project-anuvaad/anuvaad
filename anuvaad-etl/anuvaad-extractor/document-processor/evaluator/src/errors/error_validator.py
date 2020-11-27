@@ -22,19 +22,23 @@ class ValidationResponse(object):
             raise FileErrors("NO_INPUT_FILES", "No file details in the input json")
         else:
             for i, item in enumerate(input_files):
-                input_filename, in_file_type, identifier = file_ops.accessing_files(item['file'])
+                input_filename, in_file_type, identifier = file_ops.accessing_files(item['input'])
+                input_filename_target, in_file_type_target, identifier_target = file_ops.accessing_files(item['ground'])
                 input_filepath = file_ops.input_path(input_filename)
-                if input_filename == "" or input_filename is None:
+                input_filepath_target = file_ops.input_path(input_filename_target)
+                if input_filename == "" or input_filename is None or input_filename_target == "" or input_filename_target is None:
                     raise FileErrors("FILENAME_ERROR", "Filename not found or its empty")
                 #elif not input_filename.endswith('.pdf'):
                     #raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
-                if in_file_type == "" or in_file_type is None:
+                if in_file_type == "" or in_file_type is None or in_file_type_target == "" or in_file_type_target is None:
                     raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
                 #elif file_ops.check_file_extension(in_file_type) is False:
                     #raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
                 elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
-                    raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory.")
-                elif identifier == "" or identifier is None:
+                    raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory for input.")
+                elif file_ops.check_path_exists(input_filepath_target) is False or file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
+                    raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory for ground.")
+                elif identifier == "" or identifier is None or identifier_target == "" or identifier_target is None:
                     raise FileErrors("LOCALE_ERROR", "No language input or unsupported language input.")
 
     def format_error(self, json_data):
