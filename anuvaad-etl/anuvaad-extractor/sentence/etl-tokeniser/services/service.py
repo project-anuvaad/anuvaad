@@ -4,6 +4,7 @@ from repositories.kannada_sentence_tokeniser import AnuvaadKannadaTokenizer
 from repositories.tamil_sentence_tokeniser import AnuvaadTamilTokenizer
 from repositories.malayalam_sentence_tokeniser import AnuvaadMalayalamTokenizer
 from repositories.telugu_senetence_tokeniser import AnuvaadTeluguTokenizer
+from repositories.bengali_sentence_tokeniser import AnuvaadBengaliTokenizer
 from repositories.general_tokeniser import AnuvaadTokenizer
 from errors.errors_exception import ServiceError
 from utilities.utils import FileOperation
@@ -47,6 +48,9 @@ class Tokenisation(object):
                         tokenised_text.extend(tokenised_sentence_data)
                     elif text_locale == 'te':
                         tokenised_sentence_data = AnuvaadTeluguTokenizer().tokenize(paragraph)
+                        tokenised_text.extend(tokenised_sentence_data)
+                    elif text_locale == 'bn':
+                        tokenised_sentence_data = AnuvaadBengaliTokenizer().tokenize(paragraph)
                         tokenised_text.extend(tokenised_sentence_data)
                 except:
                     log_exception("Received error in this text :  %s"%(paragraph), self.input_json_data, None)

@@ -5,23 +5,22 @@ from nltk.tokenize import sent_tokenize
 """
 Utility tokenizer class for anuvaad project
 """
-class AnuvaadHindiTokenizer(object):
+class AnuvaadBengaliTokenizer(object):
     """
     Default abbrevations
-    incomplete char range = ([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])
-    complete char range = ([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])    
-    (\u0972-\u097F) represents character used in different lnguages other than hindi which use devanagri script
-    number range = ([\u0966-\u096F])
-    devanagri abbreviation symbol = ([\u0970-\u0971])
-    source for unicodes : https://unicode.org/charts/PDF/U0900.pdf
+    incomplete char range = ([\u0980-\u0983,\u09BC-\u09CD,\u09D7,\u09E2-\u09E3, \u09FA-\u09FE])
+    complete char range = ([\u0985-\u09B9,\u09CE,\u09DC-\u09E1,\u09F0-\u09F9])    
+    (\u09F0-\u09F9) represents character used in different lnguages other than bengali which use bengali script
+    number range = ([\u09E6-\u09EF])
+    additional consonants and vowels = ([\u09CE,\u09DC-\u09E1])
+    source for unicodes : https://unicode.org/charts/PDF/U0980.pdf
     """
-    _abbrevations_with_non_generalize_pattern = [r'[ ]क्यू[.]',r'[ ]डब्लू[.]',r'[ ]एक्स[.]',r'[ ]वायी[.]',r'[ ]ज़ेड[.]',r'क्यू[.]',r'डब्लू[.]',r'एक्स[.]',r'वायी[.]',r'ज़ेड[.]',r'प्रो[.]',r'[ ]प्रो[.]',r'प्रा[.]',r'[ ]प्रा[.]', r'[ ]संख्या[.]']
-    _abbrevations_with_non_generalize = [' क्यू.',' डब्लू.',' एक्स.',' वायी.',' ज़ेड.','क्यू.','डब्लू.','एक्स.','वायी.','ज़ेड.','प्रो.', ' प्रो.','प्रा.', ' प्रा.', ' संख्या.']
-    _text_abbrevations_pattern_cic = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?(\u002e)(\s)?){1,})'
-    #_text_abbrevations_pattern_cii = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?){1,})'
-    _text_abbrevations_pattern_cci = r'((\s)(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?){1,})'
-    _text_colon_abbreviations_pattern = r'(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097f])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0970-\u0971])?[:](\s)?[\u0900-\u097F|-])'
-    _text_abbrevations_without_space_pattern = r'(^(([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?([\u0904-\u0939,\u0950,\u0958-\u0961,\u0972-\u097F])?([\u0900-\u0903,\u093A-\u094F,\u0951-\u0957,\u0962-\u0963])?(\u002e)(\s)?){1,})'
+    _abbrevations_with_non_generalize_pattern = []
+    _abbrevations_with_non_generalize = []
+    _text_abbrevations_pattern_cic = r'((\s)(([\u0985-\u09B9,\u09CE,\u09DC-\u09E1,\u09F0-\u09F9])([\u0980-\u0983,\u09BC-\u09CD,\u09D7,\u09E2-\u09E3, \u09FA-\u09FE])?([\u0985-\u09B9,\u09CE,\u09DC-\u09E1,\u09F0-\u09F9])?(\u002e)(\s)?){1,})'
+    _text_abbrevations_pattern_cci = r'((\s)(([\u0985-\u09B9,\u09CE,\u09DC-\u09E1,\u09F0-\u09F9])([\u0985-\u09B9,\u09CE,\u09DC-\u09E1,\u09F0-\u09F9])?([\u0980-\u0983,\u09BC-\u09CD,\u09D7,\u09E2-\u09E3, \u09FA-\u09FE])?(\u002e)(\s)?){1,})'
+    _text_colon_abbreviations_pattern = r'(([\u0985-\u09B9,\u09CE,\u09DC-\u09E1,\u09F0-\u09F9])([\u0980-\u0983,\u09BC-\u09CD,\u09D7,\u09E2-\u09E3, \u09FA-\u09FE])?[:](\s)?[\u0980-\u09FE|-])'
+    _text_abbrevations_without_space_pattern = r'(^(([\u0985-\u09B9,\u09CE,\u09DC-\u09E1,\u09F0-\u09F9])([\u0980-\u0983,\u09BC-\u09CD,\u09D7,\u09E2-\u09E3, \u09FA-\u09FE])?([\u0985-\u09B9,\u09CE,\u09DC-\u09E1,\u09F0-\u09F9])?([\u0980-\u0983,\u09BC-\u09CD,\u09D7,\u09E2-\u09E3, \u09FA-\u09FE])?(\u002e)(\s)?){1,})'
     _text_abbrevations_cic = []
     _text_abbrevations_cci = []
     _text_colon_abbreviations = []
@@ -63,11 +62,11 @@ class AnuvaadHindiTokenizer(object):
         print('--------------Process started-------------')
         text = self.serialize_with_abbrevations(text)
         text = self.serialize_colon_abbreviations(text)
-        text = self.serialize_pattern(text)
         text = self.serialize_dates(text)
         text = self.serialize_time(text)
         text = self.serialize_table_points(text)
         text = self.serialize_url(text)
+        text = self.serialize_pattern(text)
         text = self.serialize_dots(text)
         text = self.serialize_brackets(text)
         text = self.serialize_dot_with_number(text)
@@ -95,7 +94,7 @@ class AnuvaadHindiTokenizer(object):
             se = self.deserialize_bullet_points(se)
             se = self.deserialize_table_points(se)
             se = self.deserialize_end(se)
-            if se != '' and se!= 'END_|_END':
+            if se != '':
                 output.append(se.strip())
         print('--------------Process finished-------------')
         return output
@@ -176,13 +175,13 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def serialize_table_points(self, text):
-        patterns = re.findall(r'(?:(?:(?:[ ][(]?(?:(?:[0,9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0900-\u097F]{1,1})[)])|(?:[ ](?:(?:[0-9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0900-\u097F]{1,1})[.][ ])))',text)
+        patterns = re.findall(r'(?:(?:(?:[ ][(]?(?:(?:[0,9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0980-\u09FE]{1,1})[)])|(?:[ ](?:(?:[0-9]|[i]|[x]|[v]){1,3}|[a-zA-Z\u0980-\u09FE]{1,1})[.][ ])))',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
                 pattern_obj = re.compile(re.escape(pattern))
                 self._table_points_abbrevations.append(pattern)
-                text = pattern_obj.sub(' TT__TT RR_'+str(index)+'_RR', text)
+                text = pattern_obj.sub('RR_'+str(index)+'_RR', text)
                 index+=1
         return text
 
@@ -196,7 +195,7 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def serialize_brackets(self, text):
-        patterns = re.findall(r'(?:[(](?:[0-9\u0900-\u097Fa-zA-Z][.]?|[ ]){1,}[)]?).',text)
+        patterns = re.findall(r'(?:[(](?:[0-9\u0980-\u09FEa-zA-Z][.]?|[ ]){1,}[)]?).',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -216,7 +215,7 @@ class AnuvaadHindiTokenizer(object):
         return text
     
     def serialize_dates(self, text):
-        patterns = re.findall(r'[0-9|\u0966-\u096F]{1,4}[.][0-9|\u0966-\u096F]{1,2}[.][0-9|\u0966-\u096F]{1,4}',text)   # [0-9]{,2}[.][0-9]{,2}[.][0-9]{2,4}   [0-9]{1,4}[.][0-9]{1,2}[.][0-9]{1,4}
+        patterns = re.findall(r'[0-9]{1,4}[.][0-9]{1,2}[.][0-9]{1,4}',text)   # [0-9]{,2}[.][0-9]{,2}[.][0-9]{2,4}   [0-9]{1,4}[.][0-9]{1,2}[.][0-9]{1,4}
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -256,7 +255,7 @@ class AnuvaadHindiTokenizer(object):
         return text
     
     def serialize_quotes_with_number(self, text):
-        patterns = re.findall(r'([ ][“][0-9a-zA-Z\u0900-\u097F]{1,}[.])',text)
+        patterns = re.findall(r'([ ][“][0-9a-zA-Z\u0980-\u09FE]{1,}[.])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -276,7 +275,7 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def serialize_dot_with_number_beginning(self, text):
-        patterns = re.findall(r'(^[\s]?[0-9|\u0966-\u096F]{1,}[-]?[.])',text)
+        patterns = re.findall(r'(^[\s]?[0-9]{1,}[-]?[.])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -296,7 +295,7 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def serialize_dot_with_number(self, text):
-        patterns = re.findall(r'(?:[ ][0-9|\u0966-\u096F]{,2}[-]?[.][ ])',text)
+        patterns = re.findall(r'(?:[ ][0-9]{,2}[.][ ])',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -316,7 +315,7 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def serialize_dots(self, text):
-        pattern = re.compile(r'([.]{3,})')
+        pattern = re.compile(r'([.]{3,})|[.](\s)([.](\s)?){1,}')
         text = pattern.sub('XX__XX', text)
         return text
 
@@ -326,7 +325,7 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def serialize_pattern(self, text):
-        patterns = re.findall(r'([\u0900-\u097F][.]){2,}',text)
+        patterns = re.findall(r'([\u0980-\u09FE][.]){2,}',text)
         index = 0
         if patterns is not None and isinstance(patterns, list):
             for pattern in patterns:
@@ -441,12 +440,4 @@ class SentenceEndLangVars(PunktLanguageVars):
     with open('repositories/tokenizer_data/end.txt', encoding='utf8') as f:
         text = f.read()
     sent_end_chars = text.split('\n')
-    
-    # # punkt = PunktTrainer()
-    # # punkt.train(text,finalize=False, verbose=False)
-    # # punkt.finalize_training(verbose=True)
-# text = "जिन मुख्य जिन्स समूहों  के मूल्यों में अप्रैल 2020 में अप्रैल 2019 की तुलना में नकारात्मक वृद्धि दर्ज की गई वो हैं- रत्न और आभूषण (-98.74%), चमड़ा और चमड़े के उत्पाद (-93.28%), "
-# # with open('data5.txt', encoding='utf8') as f:
-# #     text = f.read()
-# tokenizer = AnuvaadHinTokenizer()
-# print(tokenizer.tokenize(text))
+    sent_end_chars.remove('TT__TT')
