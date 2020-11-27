@@ -465,7 +465,7 @@ def encode_translate_decode(i):
     try:
         log_info("Inside encode_translate_decode function",MODULE_CONTEXT)
         model_path,sp_encoder,sp_decoder = get_model_path(i['id'])
-        translator = ctranslate2.Translator(model_path)
+        translator = load_models.loaded_models[i['id']]
         i['src'] = str(sp.encode_line(sp_encoder,i['src']))
         log_info("SP encoded sent: %s"%i['src'],MODULE_CONTEXT)
         input_sw = i['src']
