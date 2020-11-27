@@ -30,7 +30,7 @@ class PDFRenderer extends React.Component {
     let user_profile = JSON.parse(localStorage.getItem('userProfile'));
     let obj = new DownloadFile(this.props.filename, user_profile.userID)
 
-
+    console.log("---Fetching Document---")
     const apiReq1 = fetch(obj.apiEndPoint(), {
       method: 'get',
       headers: obj.getHeaders().headers

@@ -56,7 +56,6 @@ class SignUp extends React.Component {
         if (!this.state.termsAndCondition) {
           alert(translate('common.page.alert.acceptTerms&Condition'))
         } else {
-          // var mailformat = /^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/;
           var mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
           var passwordFormat = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
 
@@ -66,7 +65,6 @@ class SignUp extends React.Component {
               let apiObj = new SignupApi(this.state.email, this.state.firstName, this.state.lastName, this.state.password);
               APITransport(apiObj);
             } else {
-              // alert(translate('common.page.alert.validPassword'))
               alert("Please provide password with minimum 6 character, 1 number, 1 uppercase, 1 lower case and 1 special character.")
 
             }
