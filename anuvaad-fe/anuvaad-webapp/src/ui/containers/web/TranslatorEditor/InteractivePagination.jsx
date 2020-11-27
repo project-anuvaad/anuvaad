@@ -23,6 +23,10 @@ class InteractivePagination extends React.Component {
     this.setState({ offset: value });
   };
 
+  componentDidMount(){
+    this.props.currentPageUpdate(1);
+  }
+
   sentenceCount = () => {
     let sentenceCount = PAGE_OPS.get_sentence_count(
       this.props.data,
