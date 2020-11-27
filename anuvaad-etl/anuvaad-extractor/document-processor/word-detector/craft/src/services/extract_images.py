@@ -12,7 +12,7 @@ from src.utilities.request_parse import get_files, File
 def create_pdf_processing_paths(filepath, base_dir):
 
     filename    = os.path.basename(filepath)
-    working_dir = os.path.join(base_dir, os.path.splitext(filename)[0] + '_' + str(uuid.uuid1()))
+    working_dir = os.path.join(base_dir, os.path.splitext(filename)[0] + '_' + str(uuid.uuid4()))
     ret         = create_directory(working_dir)
 
     if ret == False:
