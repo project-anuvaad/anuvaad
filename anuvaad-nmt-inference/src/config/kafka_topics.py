@@ -5,9 +5,9 @@ IS_RUN_KAFKA = 'IS_RUN_KAFKA'
 IS_RUN_KAFKA_DEFAULT_VALUE = False
 bootstrap_server_boolean = os.environ.get(IS_RUN_KAFKA, IS_RUN_KAFKA_DEFAULT_VALUE)
 
-KAFKA_IP_HOST = 'KAFKA_IP_HOST'
+KAFKA_BOOTSTRAP_SERVER_HOST = 'KAFKA_BOOTSTRAP_SERVER_HOST'
 default_value = 'localhost:9092'
-bootstrap_server = os.environ.get(KAFKA_IP_HOST, default_value)
+bootstrap_server = os.environ.get(KAFKA_BOOTSTRAP_SERVER_HOST, default_value)
 
 ## "description":"Kafka topics and variables"
 nmt_input_topic_default = "anuvaad-nmt-input-default"
