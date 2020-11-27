@@ -17,6 +17,9 @@ from config.regex_patterns import patterns
 from onmt.translate import ServerModelError
 import config
 import datetime
+from services.model_loader import Loadmodels
+
+load_models = Loadmodels()
 
 class TranslateService:  
     @staticmethod
@@ -428,7 +431,8 @@ def encode_itranslate_decode(i,num_map,tp_tokenizer,num_hypotheses=3):
         log_info("3.1: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
         model_path,sp_encoder,sp_decoder = get_model_path(i['id'])
         log_info("3.2: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
-        translator = ctranslate2.Translator(model_path)
+        translator = load_models.loaded_models[i['id']]
+        print(translator)
         log_info("4: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
         i['src'] = str(sp.encode_line(sp_encoder,i['src']))
         log_info("5: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
