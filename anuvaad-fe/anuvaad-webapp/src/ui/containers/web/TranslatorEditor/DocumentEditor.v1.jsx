@@ -126,12 +126,21 @@ class DocumentEditor extends React.Component {
      */
 
     makeAPICallFetchContent =  (page_no, apiStatus) => {
-      let status = PAGE_OPS.page_status(this.props.document_contents.pages, page_no);
-      if(status){
-        let start_page    = page_no;
-      const apiObj      = new FileContent(this.props.match.params.jobid, start_page, start_page);
-      this.props.APITransport(apiObj);
-      !apiStatus && this.setState({apiFetchStatus: true})
+      let startStatus    = PAGE_OPS.page_status(this.props.document_contents.pages, page_no);
+      let endStatus       = PAGE_OPS.page_status(this.props.document_contents.pages, page_no+1);
+      if(startStatus && endStatus){
+        const apiObj      = new FileContent(this.props.match.params.jobid, page_no, page_no+1);
+        this.props.APITransport(apiObj);
+        !apiStatus && this.setState({apiFetchStatus: true})
+      }
+      else if(startStatus){
+        const apiObj      = new FileContent(this.props.match.params.jobid, page_no, page_no);
+        this.props.APITransport(apiObj);
+        !apiStatus && this.setState({apiFetchStatus: true})
+      }
+      else if(endStatus){
+        const apiObj      = new FileContent(this.props.match.params.jobid, page_no+1, page_no+1);
+        this.props.APITransport(apiObj);
       }
       
     }
@@ -259,34 +268,6 @@ class DocumentEditor extends React.Component {
         this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
       });
     }
-
-    handleTargetDownload() {
-      let recordId = this.props.match.params.jobid
-      let user_profile = JSON.parse(localStorage.getItem('userProfile'))
-  
-      let apiObj = new DocumentConverterAPI(recordId, user_profile.id)
-      const apiReq = fetch(apiObj.apiEndPoint(), {
-        method: 'post',
-        body: JSON.stringify(apiObj.getBody()),
-        headers: apiObj.getHeaders().headers
-      }).then(async response => {
-        const rsp_data = await response.json();
-        if (!response.ok) {
-          this.informUserStatus(translate('common.page.label.FILE_DOWNLOAD_FAILED'), false)
-          return Promise.reject('');
-        } else {
-          let fileName = rsp_data && rsp_data.translated_document && rsp_data.translated_document ? rsp_data.translated_document : ""
-          if (fileName) {
-            let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
-            window.open(url, "_self")
-          }
-        }
-      }).catch((error) => {
-        this.informUserStatus(translate('common.page.label.FILE_DOWNLOAD_FAILED'), false)
-      });
-    }
-
-  
 
     /**
      * workhorse functions
@@ -459,7 +440,6 @@ class DocumentEditor extends React.Component {
       }
       else{
         pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages, this.props.active_page_number );
-      
       }
       return pages;
     }

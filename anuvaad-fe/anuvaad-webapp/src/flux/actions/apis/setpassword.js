@@ -25,8 +25,7 @@ export default class SetPassword extends API {
 
   getBody() {
     return {
-      u_id: this.uid,
-      r_id: this.rid,
+      userName: this.uid,
       password: this.password
     };
   }

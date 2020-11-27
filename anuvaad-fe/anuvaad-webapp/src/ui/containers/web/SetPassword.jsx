@@ -2,7 +2,6 @@ import React from "react";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import FormControl from "@material-ui/core/FormControl";
 
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -17,6 +16,7 @@ import history from "../../../web.history";
 import TextField from '../../components/web/common/TextField';
 import Snackbar from "../../components/web/common/Snackbar";
 import { translate } from "../../../assets/localisation";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class SetPassword extends React.Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class SetPassword extends React.Component {
 
             password: "",
             confirmPassword: "",
-
+            loading: false
 
         }
 
@@ -33,6 +33,7 @@ class SetPassword extends React.Component {
     handleInputReceived = prop => event => {
         this.setState({ [prop]: event.target.value });
     };
+
     handleSubmit(e) {
         e.preventDefault();
         if (this.state.password.length < 6) {
@@ -41,56 +42,61 @@ class SetPassword extends React.Component {
         else if (this.state.password !== this.state.confirmPassword) {
             alert(translate('common.page.alert.passwordDidNotMatch'))
         } else {
-            let { APITransport } = this.props;
             let apiObj = new SetPasswordApi(this.props.match.params.uid, this.props.match.params.rid, this.state.password);
-            APITransport(apiObj);
+            this.setState({ loading: true })
+            const apiReq = fetch(apiObj.apiEndPoint(), {
+                method: 'post',
+                body: JSON.stringify(apiObj.getBody()),
+                headers: apiObj.getHeaders().headers
+            }).then(async response => {
+                if (!response.ok) {
+                    this.setState({ loading: false })
+                    return Promise.reject('');
+                } else {
+                    this.setState({ message: translate('setPassword.page.message.passwordResetSuccessfull'), open: true })
+                    setTimeout(() => {
+                        history.push(`${process.env.PUBLIC_URL}/logout`)
+                    }, 3000)
+                }
+            }).catch((error) => {
+                this.setState({ loading: false })
+            });
         }
-    }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.setpassword !== this.props.setpassword) {
-            this.setState({ message: translate('setPassword.page.message.passwordResetSuccessfull'), open: true })
-            setTimeout(() => {
-                history.push(`${process.env.PUBLIC_URL}/logout`)
-            }, 4000)
-        }
+
     }
 
     render() {
+        const { classes } = this.props;
+
         return (
             <MuiThemeProvider theme={ThemeDefault}>
 
-                <div style={{height: "100vh"}}>
+                <div style={{ height: window.innerHeight, overflow: 'hidden' }}>
                     <Grid container spacing={8}>
-                    <Grid item xs={12} sm={4} lg={5} xl={5} style={{ paddingRight: "0px", paddingBottom: "0px", width: "100%", height: "100%"}}>
+                        <Grid item xs={12} sm={4} lg={5} xl={5} style={{ paddingRight: "0px", paddingBottom: "0px", width: "100%", height: "100%" }}>
                             <img src="\Anuvaad.png" width="100%" height="100%" alt="" />
                         </Grid>
-                        <Grid item xs={12} sm={8} lg={7} xl={7} style={{ backgroundColor: '#f1f5f7' }} >
-                            <Typography align='center' style={{ marginTop: '30%', marginBottom: '5%', fontSize: '33px', fontfamily: 'Trebuchet MS, sans-serif	', color: '#003366' }}>Set Password</Typography>
-                            <FormControl align='center' fullWidth >
+                        <Grid item xs={12} sm={8} lg={7} xl={7} style={{ backgroundColor: '#f1f5f7', textAlign: "center" }} >
+                            <Typography align='center' style={{ marginTop: '25%', marginBottom: '5%', fontSize: '33px', fontfamily: 'Trebuchet MS, sans-serif	', color: '#003366' }}>Set Password</Typography>
 
-                                <FormControl align='center' fullWidth>
-                                    <TextField value={this.state.password} id="outlined-required" type="password" placeholder="Enter password(Min length 6)*"
-                                        margin="normal" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }}
-                                        onChange={this.handleInputReceived('password')}
-                                    />                </FormControl>
-                                <FormControl align='center' fullWidth>
-                                    <TextField value={this.state.confirmPassword} id="outlined-required" type="password" placeholder="Re-enter password(Min length 6)*"
-                                        margin="normal" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }}
-                                        onChange={this.handleInputReceived('confirmPassword')}
-                                    />
-                                </FormControl>
-                            </FormControl>
-                            <FormControl align='center' fullWidth>
-                                <Button
-                                    disabled={!this.state.confirmPassword}
-                                    variant="contained" aria-label="edit" style={{
-                                        width: '50%', marginTop: '2%', marginLeft: '25%', borderRadius: "20px 20px 20px 20px", height: '45px',
-                                        backgroundColor: this.state.confirmPassword ? '#1ca9c9' : 'gray', color: 'white',
-                                    }} onClick={this.handleSubmit.bind(this)}>
-                                   Create Password
+                            <TextField value={this.state.password} id="password" type="password" placeholder="Enter password(Min length 6)*"
+                                margin="normal" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }}
+                                onChange={this.handleInputReceived('password')}
+                            />
+                            <TextField value={this.state.confirmPassword} id="re-password" type="password" placeholder="Re-enter password(Min length 6)*"
+                                margin="normal" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }}
+                                onChange={this.handleInputReceived('confirmPassword')}
+                            />
+                            <Button
+                                disabled={!this.state.confirmPassword}
+                                variant="contained" aria-label="edit" style={{
+                                    width: '50%', marginTop: '2%', borderRadius: "20px 20px 20px 20px", height: '45px',
+                                    backgroundColor: this.state.confirmPassword && !this.state.loading ? '#1ca9c9' : 'gray', color: 'white',
+                                }} onClick={this.handleSubmit.bind(this)}>
+                                {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress} />}
+                                Create Password
                                 </Button>
-                            </FormControl>
                         </Grid>
                     </Grid>
                     {this.state.open && (
@@ -105,13 +111,13 @@ class SetPassword extends React.Component {
                     )}
                 </div>
 
-             </MuiThemeProvider>
+            </MuiThemeProvider>
 
         );
     }
 }
 const mapStateToProps = state => ({
-    setpassword: state.setpassword
+    // setpassword: state.setpassword
 });
 
 const mapDispatchToProps = dispatch =>

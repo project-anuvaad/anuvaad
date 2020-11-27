@@ -23,12 +23,14 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
 import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
+import DownloadFile from "../../../../flux/actions/apis/download_file";
+
 import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 import history from "../../../../web.history";
 import Alert from '@material-ui/lab/Alert';
-import ENDPOINTS from "../../../../configs/apiendpoints";
+import base64 from 'binary-base64';
 
 const StyledMenu = withStyles({
     paper: {
@@ -82,7 +84,7 @@ class InteractiveDocHeader extends React.Component {
 
 
     downloadTargetFile() {
-        this.setState({ anchorEl: null, showStatus: true, message: translate("common.page.label.download")});
+        this.setState({ anchorEl: null, showStatus: true, message: translate("common.page.label.download") });
 
         let recordId = this.props.match.params.jobid;
         let user_profile = JSON.parse(localStorage.getItem('userProfile'))
@@ -100,31 +102,52 @@ class InteractiveDocHeader extends React.Component {
             } else {
                 let fileName = rsp_data && rsp_data[this.state.fileType] ? rsp_data[this.state.fileType] : ""
                 if (fileName) {
-                  
-                    let url =  `${super.apiEndPointAuto()}${ENDPOINTS.download_file}`;
-                    url += `?filename=` + fileName + `&userid=` + user_profile.userID;
-                    console.log(url)
-                    const apiReq1 = fetch(url, {
-                        method: 'GET',
-                        // body: JSON.stringify(apiObj.getBody()),
-                        headers: apiObj.getHeaders().headers
+
+                    let obj = new DownloadFile(fileName, user_profile.userID)
+
+                    const apiReq1 = fetch(obj.apiEndPoint(), {
+                        method: 'get',
+                        headers: obj.getHeaders().headers
                     }).then(async response => {
-                        console.log(response)
-                        const rsp_data = await response.json();
                         if (!response.ok) {
-                            return Promise.reject('');
+                            this.setState({ showStatus: false, message: null })
+                            console.log('api failed')
                         } else {
-                                this.setState({ showStatus: false, message: null})
+                            const buffer = new Uint8Array(await response.arrayBuffer());
+                            const type = response.headers.get('content-type');
+                            let res = `data:${type};base64,${base64.encode(buffer)}`
+
+                            /* Base64 to Blob */
+                            const blob = await this.getBlobFromDataUri(res);
+
+                            let a = document.createElement('a');
+                            let url = URL.createObjectURL(blob);
+                            a.href = url;
+                            a.download = fileName;
+                            a.click();
                         }
+
                     }).catch((error) => {
-                        console.log('api failed because of server or network')
+                        this.setState({ showStatus: false, message: null })
+                        console.log('api failed because of server or network', error)
                     });
 
                 }
 
             }
         }).catch((error) => {
-            console.log('api failed because of server or network')
+            this.setState({ showStatus: false, message: null })
+            console.log('api failed because of server or network', error)
+        });
+    }
+
+    getBlobFromDataUri(uri) {
+        return new Promise(function (resolve, reject) {
+            const [, type, base64EncodedString] = uri.match('data:([^;]+);base64,(.+)') || [];
+            if (typeof type === 'undefined' && typeof base64EncodedString === 'undefined') {
+                return reject(new TypeError('Invalid data URI.'));
+            }
+            return resolve(new Blob([base64.decode(base64EncodedString)], { type }));
         });
     }
 

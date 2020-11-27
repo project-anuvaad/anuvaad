@@ -259,7 +259,7 @@ class UserProfile extends React.Component {
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
                 <Typography value="" variant="h5" >
-                  {translate("common.page.label.selectLanguage")}{" "}
+                  Language{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'initial' }}>

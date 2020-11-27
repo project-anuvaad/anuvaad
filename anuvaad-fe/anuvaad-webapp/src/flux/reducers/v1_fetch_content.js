@@ -12,15 +12,15 @@ export default function(state = initialState, action) {
     switch (action.type) {
         case C.FETCH_CONTENT: {
             let data            = action.payload;
-            let pages           = data.data.filter(value => Object.keys(value).length !== 0);
-            let new_pages       = [...state.pages, ...pages]
+            let pages           = data.data.filter(value => (Object.keys(value).length !== 0));
+            // let new_pages       = [...state.pages, ...pages]
             let app_pages       = [...state.app_pages, ...PAGE_OPERATION.get_pages_children_information(pages)]
 
-            // let new_pages       = [...state.pages, ...pages].filter((v,i,a)=>a.findIndex(t=>(t.page_no === v.page_no))===i).sort((a,b) => {
-            //     if (a.page_no > b.page_no)
-            //         return 1
-            //     return -1
-            // })
+            let new_pages       = [...state.pages, ...pages].filter((v,i,a)=>a.findIndex(t=>(t.page_no === v.page_no))===i).sort((a,b) => {
+                if (a.page_no > b.page_no)
+                    return 1
+                return -1
+            })
             // let app_pages       = PAGE_OPERATION.get_pages_children_information(new_pages)
 
             return {
