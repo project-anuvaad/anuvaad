@@ -20,6 +20,7 @@ import TextField from '../../components/web/common/TextField';
 import Link from '@material-ui/core/Link';
 import Snackbar from "../../components/web/common/Snackbar";
 import { translate } from "../../../assets/localisation";
+import CircularProgress from '@material-ui/core/CircularProgress';
 // import SignUpStyles from "../../styles/web/SignUpStyles";
 
 class SignUp extends React.Component {
@@ -33,8 +34,9 @@ class SignUp extends React.Component {
       confirmPassword: "",
       termsAndCondition: null,
       variantType: '',
-      open: false,
-      message: ''
+      openSnackBar: '',
+      message: '',
+      loading:false
 
     }
     // this.handleSubmit = this.handleSubmit.bind(this);
@@ -43,12 +45,12 @@ class SignUp extends React.Component {
   handleInputReceived = prop => event => {
     this.setState({ [prop]: event.target.value });
   };
-
+  
   handleCheckboxChange = () => {
-    this.setState({ termsAndCondition: !this.state.termsAndCondition });
-  }
-  handleSubmit=()=>{
-    // e.preventDefault();
+    this.setState({termsAndCondition:!this.state.termsAndCondition})
+}
+
+  handleSubmit = () => {
     if (this.handleValidation('firstName') && this.handleValidation('email') && this.handleValidation('password') && this.handleValidation('confirmPassword') && this.handleValidation('termsAndCondition')) {
       if (this.state.password !== this.state.confirmPassword) {
         alert(translate('common.page.alert.passwordDidNotMatch'))
@@ -64,7 +66,9 @@ class SignUp extends React.Component {
             if (this.state.password.match(passwordFormat)) {
               // let { APITransport } = this.props;
               let apiObj = new SignupApi(this.state.email, this.state.firstName, this.state.lastName, this.state.password);
+              this.SignUpBtn.style.backgroundColor='gray';
               try {
+                this.setState({loading:true})
                 fetch(apiObj.apiEndPoint(), {
                   method: 'post',
                   body: JSON.stringify(apiObj.getBody()),
@@ -73,24 +77,26 @@ class SignUp extends React.Component {
                   .then(resp => {
                     console.log(resp);
                     if (resp.ok) {
-                     this.setState({ message: translate('signUp.page.message.successfullyCreatedACcount'), 
-                     open: true, firstName: '', email: '', password: '', 
-                     confirmPassword: '', termsAndCondition: '',
-                      variantType: 'success' },()=>{
-                        console.log(this.state.open)
+                      this.setState({
+                        message: translate('signUp.page.message.successfullyCreatedACcount'),
+                        loading:false,
+                        openSnackBar: true, firstName: '', email: '', password: '',
+                        confirmPassword: '', termsAndCondition: null,
+                        variantType: 'success'
                       })
                     } else {
                       console.log(resp);
                       if (resp.status === 400) {
                         resp.json().then((object) => {
-                          this.setState({ message: object.message, open: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: '', variantType: 'error' })
+                          this.setState({ message: object.message, loading:false, openSnackBar: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: null, variantType: 'error' })
                         })
                       }
                     }
                   })
               } catch (error) {
-                this.setState({ message: 'Opps! Something went wrong, please try after sometime', open: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: '', variantType: 'error' })
+                this.setState({ message: 'Opps! Something went wrong, please try after sometime', loading:false, openSnackBar: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: null, variantType: 'error' })
               }
+
             } else {
               // alert(translate('common.page.alert.validPassword'))
               alert("Please provide password with minimum 6 character, 1 number, 1 uppercase, 1 lower case and 1 special character.")
@@ -105,15 +111,8 @@ class SignUp extends React.Component {
     } else {
       alert(translate('common.page.alert.provideValidDetails'))
     }
-
+    this.setState({openSnackBar:false}); 
   }
-
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.signup !== this.props.signup) {
-  //     this.setState({ message: translate('signUp.page.message.successfullyCreatedACcount'), open: true, firstName: '', lastName: '', email: '', password: '', confirmPassword: '', termsAndCondition: '' })
-  //   }
-
-  // }
 
   handleValidation(key) {
     if (!this.state[key] || this.state[key].length < 2) {
@@ -163,13 +162,13 @@ class SignUp extends React.Component {
                 <FormControlLabel className={classes.formControl}
                   control={
                     <Checkbox
-                      color={"primary"}
-                      className={classes.checkRemember.className}
-                      value={this.state.termsAndCondition ? true : false}
-                      checked={this.state.termsAndCondition ? true : false}
-                      onChange={() => this.handleCheckboxChange()}
+                    color={"primary"}
+                    className={classes.checkRemember.className}
+                    value={this.state.termsAndCondition ? true : false}
+                    checked={(this.state.termsAndCondition || this.state.loading)? true : false}
+                    onChange={() => this.handleCheckboxChange()}
 
-                    />
+                  />
                   }
                   label={<div><span>{translate('signUp.page.label.iAgree')}</span>
                     <Link href="#" onClick={() => {
@@ -179,14 +178,17 @@ class SignUp extends React.Component {
                   </div>}
                 />
 
-                <div>
+                <div className={classes.wrapper}>
                   <Button
                     disabled={!this.state.termsAndCondition}
                     variant="contained" aria-label="edit" style={{
                       width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
-                      backgroundColor: this.state.termsAndCondition ? '#1ca9c9' : 'gray', color: 'white',
-                    }} onClick={this.handleSubmit}>
+                      color: 'white',
+                      backgroundColor: this.state.termsAndCondition ? '#1ca9c9':'gray'
+                    }}onClick={this.handleSubmit}
+                    ref={e=>this.SignUpBtn=e}>
                     {translate('singUp.page.label.signUp')}
+                    {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress}/>}
                   </Button>
                 </div>
 
@@ -201,16 +203,16 @@ class SignUp extends React.Component {
             </Grid>
           </Grid>
           <div className={classes.buttonsDiv} />
-          {this.state.open ?
+          {this.state.openSnackBar &&
             <Snackbar
               anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-              open={this.state.open}
+              open={this.state.openSnackBar}
               autoHideDuration={6000}
               onClose={this.handleClose}
               variant={this.state.variantType}
               message={this.state.message}
             />
-            : ''}
+          }
         </div>
 
       </MuiThemeProvider>
