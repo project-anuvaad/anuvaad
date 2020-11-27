@@ -61,7 +61,6 @@ public class RbacFilter extends ZuulFilter {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String AUTH_TOKEN_HEADER_NAME = "auth-token";
     private static final String ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE = "Routing to protected endpoint {} restricted, due to authorization failure";
     private static final String UNAUTHORIZED_USER_MESSAGE = "You are not authorised to access this resource";
     private static final String PROCEED_ROUTING_MESSAGE = "Routing to protected endpoint: {} - authorization check passed!";

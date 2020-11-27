@@ -44,7 +44,7 @@
             "id":"5e1b1f65-35ad-41b5-8132-d1254cdc17bc",
             "uri":"/anuvaad-etl/wf-manager/v1/workflow/jobs/mark-inactive",
             "module":"WORKFLOW-MANAGER",
-            "active":false,
+            "active":true,
             "whiteList":false,
             "description":"API to mark jobs inactive for user"
         },

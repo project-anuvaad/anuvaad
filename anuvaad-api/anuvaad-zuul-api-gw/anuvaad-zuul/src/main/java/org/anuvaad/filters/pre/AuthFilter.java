@@ -42,7 +42,7 @@ public class AuthFilter extends ZuulFilter {
     private static final String RETRIEVING_USER_FAILED_MESSAGE = "Retrieving user failed";
     private static final String PROCEED_ROUTING_MESSAGE = "Routing to protected endpoint: {} - authentication check passed!";
     private static final String UNAUTH_USER_MESSAGE = "You don't have access to this resource - authentication check failed.";
-    private static final String INVALID_ENDPOINT_MSG = "You're trying to access an invalid resource";
+    private static final String INVALID_ENDPOINT_MSG = "You're trying to access an invalid/inactive resource";
 
 
     @Override
@@ -112,7 +112,7 @@ public class AuthFilter extends ZuulFilter {
         boolean isValid = false;
         for(Object obj: ZuulConfigCache.actions){
             Action action = objectMapper.convertValue(obj, Action.class);
-            if (uri.equals(action.getUri()))
+            if (uri.equals(action.getUri()) && action.getActive())
                 isValid = true;
         }
         return isValid;
