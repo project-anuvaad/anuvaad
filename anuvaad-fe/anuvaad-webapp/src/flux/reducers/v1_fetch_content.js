@@ -12,7 +12,7 @@ export default function(state = initialState, action) {
     switch (action.type) {
         case C.FETCH_CONTENT: {
             let data            = action.payload;
-            let pages           = data.data.filter(value => (console.log(value.page_no,Object.keys(value) ),Object.keys(value).length !== 0));
+            let pages           = data.data.filter(value => (Object.keys(value).length !== 0));
             // let new_pages       = [...state.pages, ...pages]
             let app_pages       = [...state.app_pages, ...PAGE_OPERATION.get_pages_children_information(pages)]
 

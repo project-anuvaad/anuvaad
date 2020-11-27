@@ -440,7 +440,6 @@ class DocumentEditor extends React.Component {
       }
       else{
         pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages, this.props.active_page_number );
-      
       }
       return pages;
     }
