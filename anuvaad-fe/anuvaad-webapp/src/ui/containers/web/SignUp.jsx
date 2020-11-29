@@ -50,7 +50,14 @@ class SignUp extends React.Component {
     this.setState({termsAndCondition:!this.state.termsAndCondition})
 }
 
-  handleSubmit = () => {
+componentDidMount(){
+  window.addEventListener('keypress',(key)=>{
+    if(key.code === 'Enter' ){
+        this.handleSubmit();
+    }
+  })
+} 
+handleSubmit = () => {
     if (this.handleValidation('firstName') && this.handleValidation('email') && this.handleValidation('password') && this.handleValidation('confirmPassword') && this.handleValidation('termsAndCondition')) {
       if (this.state.password !== this.state.confirmPassword) {
         alert(translate('common.page.alert.passwordDidNotMatch'))
@@ -60,7 +67,6 @@ class SignUp extends React.Component {
         } else {
           var mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
           var passwordFormat = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
-
           if (this.state.email.match(mailFormat)) {
             if (this.state.password.match(passwordFormat)) {
               // let { APITransport } = this.props;
@@ -74,7 +80,6 @@ class SignUp extends React.Component {
                   headers: apiObj.getHeaders().headers,
                 })
                   .then(resp => {
-                    console.log(resp);
                     if (resp.ok) {
                       this.setState({
                         message: translate('signUp.page.message.successfullyCreatedACcount'),
@@ -84,7 +89,6 @@ class SignUp extends React.Component {
                         variantType: 'success'
                       })
                     } else {
-                      console.log(resp);
                       if (resp.status === 400) {
                         resp.json().then((object) => {
                           this.setState({ message: object.message, loading:false, openSnackBar: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: null, variantType: 'error' })
