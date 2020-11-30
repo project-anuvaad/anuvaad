@@ -168,6 +168,63 @@ WorkflowConfigs:
 
 
 
+  - workflowCode: WF_A_BMTKTR
+    type: ASYNC
+    description: extracts multiple blocks from pdf. Text content of each block is tokenised and translated
+    useCase: A_BTTR
+    sequence:
+    - order: 0
+      tool:
+      - name: BLOCK-MERGER
+        description: extracts different blocks from a pdf file.
+        kafka-input:
+        - topic: ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT_V2
+          partitions: 2
+          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT_V2
+          partitions: 2
+          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 1
+      tool:
+      - name: TOKENISER
+        description: Tokenises a given file with paragraphs
+        kafka-input:
+        - topic: ANUVAAD_DP_TOOLS_TOKENISER_INPUT_V1
+          partitions: 2
+          keys: tokeniser-input-key-one, tokeniser-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT_V1
+          partitions: 2
+          keys: tokeniser-output-key-one, tokeniser-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 2
+      tool:
+      - name: TRANSLATOR
+        description: Translates sentences from a bm-tok processed json file.
+        kafka-input:
+        - topic: ANUVAAD_DP_TOOLS_TRANSLATOR_INPUT_V2
+          partitions: 2
+          keys: anuvaad-dp-tools-translator-input-key-one, anuvaad-dp-tools-translator-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: ANUVAAD_DP_TOOLS_TRANSLATOR_OUTPUT_V2
+          partitions: 2
+          keys: anuvaad-dp-tools-translator-output-key-one, anuvaad-dp-tools-translator-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
+
+
   - workflowCode: WF_S_TR
     type: SYNC
     description: Translates the sentences.
@@ -178,7 +235,7 @@ WorkflowConfigs:
       - name: TRANSLATOR
         description: Translates the sentences.
         api-details:
-        - uri: http://user_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/block/workflow/translate
+        - uri: http://user_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
       endState: true
 
 
@@ -193,12 +250,12 @@ WorkflowConfigs:
       - name: TOKENISER
         description: tokenises the text blocks.
         api-details:
-        - uri: http://user_anuvaad-etl-tokeniser:5001/api/v0/blocks-tokenisation-wf
+        - uri: http://user_anuvaad-etl-tokeniser:5001/anuvaad-etl/translator/v1/block/workflow/translate
       endState: false
     - order: 1
       tool:
       - name: TRANSLATOR
         description: Translates the sentences.
         api-details:
-        - uri: http://user_anuvaad-etl-translator:5004/anuvaad-etl/translator/v1/block/workflow/translate
+        - uri: http://user_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
       endState: true
