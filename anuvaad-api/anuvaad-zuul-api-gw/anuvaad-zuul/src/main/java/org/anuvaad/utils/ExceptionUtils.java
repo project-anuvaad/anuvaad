@@ -122,6 +122,7 @@ public class ExceptionUtils {
                 _setExceptionBody(HttpStatus.UNAUTHORIZED, getErrorInfoObject(exceptionName, exceptionMessage));
             } else if (exceptionName.equalsIgnoreCase("CustomException")) {
                 CustomException ce = (CustomException)e;
+                exceptionName = "InvalidAccessException";
                 _setExceptionBody(HttpStatus.valueOf(ce.nStatusCode), getErrorInfoObject(exceptionName, exceptionMessage));
             } else {
                 _setExceptionBody(HttpStatus.INTERNAL_SERVER_ERROR, getErrorInfoObject(exceptionName, exceptionMessage));

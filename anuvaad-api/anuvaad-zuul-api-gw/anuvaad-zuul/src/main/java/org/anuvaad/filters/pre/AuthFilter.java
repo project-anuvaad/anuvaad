@@ -36,7 +36,7 @@ public class AuthFilter extends ZuulFilter {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE = "Retrieving of auth token failed";
+    private static final String AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE = "Couldn't find auth-token in the request.";
     private static final String SKIP_AUTH_CHECK = "Auth check skipped - whitelisted endpoint | {}";
     private static final String ROUTING_TO_PROTECTED_ENDPOINT_RESTRICTED_MESSAGE = "Routing to protected endpoint {} restricted - No auth token";
     private static final String RETRIEVING_USER_FAILED_MESSAGE = "Retrieving user failed";
