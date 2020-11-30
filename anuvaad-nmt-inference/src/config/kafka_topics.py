@@ -16,18 +16,8 @@ group_id = 'anuvaad'
 
 kafka_topic = [
   {
-    "consumer":os.environ.get('KAFKA_ANUVAAD_DOC_INPUT_TOPIC', nmt_input_topic_default),
-    "producer":os.environ.get('KAFKA_ANUVAAD_DOC_OUTPUT_TOPIC', nmt_output_topic_default),
-    "description":"Document translation,also used in Suvas"
-  },
-  {
-    "consumer":os.environ.get('KAFKA_ANUVAAD_PDF_INPUT_TOPIC', nmt_input_topic_default),
-    "producer":os.environ.get('KAFKA_ANUVAAD_PDF_OUTPUT_TOPIC', nmt_output_topic_default),
-    "description":"Pdf without WFM translation"
-  },
-  {
-    "consumer":os.environ.get('KAFKA_ANUVAAD_WFM_INPUT_TOPIC', nmt_input_topic_default),
-    "producer":os.environ.get('KAFKA_ANUVAAD_WFM_OUTPUT_TOPIC', nmt_output_topic_default),
+    "consumer":os.environ.get('KAFKA_NMT_TRANSLATION_INPUT_TOPIC', nmt_input_topic_default),
+    "producer":os.environ.get('KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC', nmt_output_topic_default),
     "description":"kafka topics with WFM"
   }
 ]
