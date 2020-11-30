@@ -14,6 +14,7 @@ from subprocess import TimeoutExpired
 import time
 import os
 import config
+from models.user_files import UserFiles
 
 from uuid import uuid4
 from shutil import copyfile
@@ -92,6 +93,13 @@ class Response(object):
             log_exception("workflow_response : service supports only utf-16 encoded file", self.json_data, e)
             return response
         except ServiceError as e:
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = str(e)
+            response = file_ops.error_handler(response_custom, "SERVICE_ERROR", True)
+            log_exception("workflow_response : Error occured during file conversion or file writing", self.json_data, e)
+            return response
+        except Exception as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
             response_custom['message'] = str(e)
