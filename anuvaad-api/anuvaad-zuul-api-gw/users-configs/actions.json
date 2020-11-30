@@ -105,6 +105,14 @@
             "description":"API for User activation"
         },
         {
+            "id":"8ef47a2a-0a85-4efe-865e-8c52b567bf74",
+            "uri":"/anuvaad/user-mgmt/v1/users/onboard-users",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API for Onboarding new users"
+        },
+        {
             "id":"bde39a83-8a4f-400e-bcf0-d14b8895f0ae",
             "uri":"/anuvaad-etl/translator/v1/text/translate",
             "module":"ANUVAAD-TRANSLATOR",
