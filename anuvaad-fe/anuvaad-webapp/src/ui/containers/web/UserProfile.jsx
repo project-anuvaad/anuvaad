@@ -134,10 +134,10 @@ class UserProfile extends React.Component {
               message: ""
             });
             const apiObj = new Updatepassword(
-              this.state.userDetails.id,
-              this.state.userDetails.username,
-              this.state.oldpassword,
-              this.state.newpassword
+              this.state.userDetails.userName,
+              
+              this.state.newpassword,
+              this.state.oldpassword
             );
             this.props.APITransport(apiObj);
             this.setState({ showLoader: true });
