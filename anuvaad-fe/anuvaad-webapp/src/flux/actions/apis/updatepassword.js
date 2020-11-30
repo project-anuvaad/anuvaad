@@ -2,15 +2,14 @@ import API from "./api";
 import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 export default class UpdatePassword extends API {
-  constructor(id, user_name, old_password, new_password, timeout = 2000) {
+  constructor(user_name, new_password,old_password, timeout = 2000) {
     super("POST", timeout, false);
     this.type = C.UPDATE_PASSWORD;
-    this.user_id = id;
     this.old_password = old_password;
     this.user_name = user_name;
     this.new_password = new_password;
     this.updatePassword = "";
-    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.interactivesourceupdate}`
+    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.updatePassword}`
   }
 
   toString() {
@@ -25,15 +24,13 @@ export default class UpdatePassword extends API {
   }
 
   apiEndPoint() {
-    return `${super.apiEndPointAuto()}/corpus/update-password`;
+    return this.endpoint;
   }
 
   getBody() {
     return {
-      user_id: this.user_id,
-      user_name: this.user_name,
-      old_password: this.old_password,
-      new_password: this.new_password
+      userName: this.user_name,
+      password: this.new_password
     };
   }
 
