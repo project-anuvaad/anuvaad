@@ -13,8 +13,8 @@ class Logout extends React.Component {
         localStorage.removeItem('userProfile')
         localStorage.removeItem('roles')
         this.props.logOut()
-        history.push(`${process.env.PUBLIC_URL}/`);
-        // window.location.href = '${process.env.PUBLIC_URL}'
+        // history.push(`${process.env.PUBLIC_URL}/`);
+        window.location.href = `${process.env.PUBLIC_URL}/`
     }
 
   render() {
