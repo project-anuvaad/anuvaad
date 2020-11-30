@@ -81,7 +81,7 @@ class FileDownloader(Resource):
                 result.headers["x-suggested-filename"] = filename
                 return result
             else:
-                res = CustomResponse(Status.ERROR_NOTFOUND_FILE.value, None)
+                res = CustomResponse(Status.ERROR_UNSUPPORTED_FILE.value, None)
                 return res.getresjson(), 400
         else:
             res = CustomResponse(Status.ERROR_NOTFOUND_FILE.value, None)
