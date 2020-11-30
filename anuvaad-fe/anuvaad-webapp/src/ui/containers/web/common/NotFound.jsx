@@ -1,5 +1,5 @@
 import React from 'react';
-import { translate } from '../../../assets/localisation';
+import { translate } from '../../../../assets/localisation';
 
 const NotFound = () => (
   <div>

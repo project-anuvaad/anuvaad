@@ -5,16 +5,16 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withStyles, Typography } from "@material-ui/core";
-import ThemeDefault from "../../theme/web/theme-anuvaad";
+import ThemeDefault from "../../../theme/web/theme-anuvaad";
 
-import LoginStyles from "../../styles/web/LoginStyles";
+import LoginStyles from "../../../styles/web/LoginStyles";
 import Grid from '@material-ui/core/Grid';
-import SignupApi from "../../../flux/actions/apis/signup";
-import ActivateUser from "../../../flux/actions/apis/activate_user";
-import APITransport from "../../../flux/actions/apitransport/apitransport";
-import history from "../../../web.history";
-import Snackbar from "../../components/web/common/Snackbar";
-import { translate } from "../../../assets/localisation";
+import SignupApi from "../../../../flux/actions/apis/signup";
+import ActivateUser from "../../../../flux/actions/apis/activate_user";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import history from "../../../../web.history";
+import Snackbar from "../../../components/web/common/Snackbar";
+import { translate } from "../../../../assets/localisation";
 
 class Activate extends React.Component {
     constructor(props) {

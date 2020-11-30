@@ -19,11 +19,11 @@ import { bindActionCreators } from "redux";
 // import MenuItem from "@material-ui/core/MenuItem";
 // import Select from "@material-ui/core/Select";
 // import OutlinedInput from "@material-ui/core/OutlinedInput";
-import Updatepassword from "../../../flux/actions/apis/updatepassword";
-import APITransport from "../../../flux/actions/apitransport/apitransport";
-import history from "../../../web.history";
-import MySnackbarContentWrapper from "../../components/web/common/Snackbar";
-import { translate } from "../../../assets/localisation";
+import Updatepassword from "../../../../flux/actions/apis/updatepassword";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import history from "../../../../web.history";
+import MySnackbarContentWrapper from "../../../components/web/common/Snackbar";
+import { translate } from "../../../../assets/localisation";
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = {

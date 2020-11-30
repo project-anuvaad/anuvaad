@@ -7,22 +7,22 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withStyles, Typography } from "@material-ui/core";
-import ThemeDefault from "../../theme/web/theme-default";
+import ThemeDefault from "../../../theme/web/theme-default";
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
-import LoginStyles from "../../styles/web/LoginStyles";
+import LoginStyles from "../../../styles/web/LoginStyles";
 import Grid from '@material-ui/core/Grid';
-import history from "../../../web.history";
-import TextField from '../../components/web/common/TextField';
+import history from "../../../../web.history";
+import TextField from '../../../components/web/common/TextField';
 import Link from '@material-ui/core/Link';
-import Snackbar from "../../components/web/common/Snackbar";
-import { translate } from "../../../assets/localisation";
-import LoginAPI from "../../../flux/actions/apis/login";
-import profileDetails from '../../../flux/actions/apis/profile_details';
+import Snackbar from "../../../components/web/common/Snackbar";
+import { translate } from "../../../../assets/localisation";
+import LoginAPI from "../../../../flux/actions/apis/login";
+import profileDetails from '../../../../flux/actions/apis/profile_details';
 
-const TELEMETRY = require('../../../utils/TelemetryManager')
+const TELEMETRY = require('../../../../utils/TelemetryManager')
 
 class Login extends React.Component {
   constructor(props) {

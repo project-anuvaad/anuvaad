@@ -8,17 +8,17 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import FetchModel from "../../../flux/actions/apis/fetchmodel";
-import AutoML from "../../../flux/actions/apis/auto_ml";
-import APITransport from "../../../flux/actions/apitransport/apitransport";
-import { translate } from "../../../assets/localisation";
+import FetchModel from "../../../../flux/actions/apis/fetchmodel";
+import AutoML from "../../../../flux/actions/apis/auto_ml";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import { translate } from "../../../../assets/localisation";
 import { withStyles } from "@material-ui/core/styles";
-import DashboardStyles from "../../styles/web/DashboardStyles";
-import InteractiveTranslateAPI from "../../../flux/actions/apis/intractive_translate";
+import DashboardStyles from "../../../styles/web/DashboardStyles";
+import InteractiveTranslateAPI from "../../../../flux/actions/apis/intractive_translate";
 import FormControl from '@material-ui/core/FormControl';
 
 const { v4 }        = require('uuid');
-const LANG_MODEL    = require('../../../utils/language.model')
+const LANG_MODEL    = require('../../../../utils/language.model')
 
 class Dashboard extends React.Component {
   constructor(props) {

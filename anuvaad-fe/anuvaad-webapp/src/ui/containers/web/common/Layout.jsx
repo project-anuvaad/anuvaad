@@ -2,16 +2,17 @@ import React from "react";
 import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Header from "../../components/web/common/Header";
-import GlobalStyles from "../../styles/web/styles";
-import Spinner from "../../components/web/common/Spinner";
-// import Theme from "../../theme/web/theme-red";
-import Snackbars from '../../components/web/common/Snackbar'
-import Theme from "../../theme/web/theme-anuvaad";
-import APITransport from "../../../flux/actions/apitransport/apitransport";
-import history from "../../../web.history";
 
-import { showSidebar } from '../../../flux/actions/apis/showSidebar';
+import Header from "../../../components/web/common/Header";
+import GlobalStyles from "../../../styles/web/styles";
+import Spinner from "../../../components/web/common/Spinner";
+// import Theme from "../../theme/web/theme-red";
+import Snackbars from '../../../components/web/common/Snackbar'
+import Theme from "../../../theme/web/theme-anuvaad";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import history from "../../../../web.history";
+
+import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
 
 class App extends React.Component {
   constructor(props) {

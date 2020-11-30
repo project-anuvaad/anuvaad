@@ -20,14 +20,14 @@ import IconButton from "@material-ui/core/IconButton";
 import Input from "@material-ui/core/Input";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import APITransport from "../../../flux/actions/apitransport/apitransport";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import AddUser from "../../../flux/actions/apis/adduser";
 import FetchCourtList from "../../../flux/actions/apis/fetchcourtlist";
-import UserRolesList from "../../../flux/actions/apis/userroles";
-import Updatepassword from "../../../flux/actions/apis/updateadminpassword";
-import Snackbar from "../../components/web/common/Snackbar";
-import UserDirectoryList from "../../../flux/actions/apis/userdirectory";
-import { translate } from "../../../assets/localisation";
+import UserRolesList from "../../../../flux/actions/apis/userroles";
+import Updatepassword from "../../../../flux/actions/apis/updateadminpassword";
+import Snackbar from "../../../components/web/common/Snackbar";
+import UserDirectoryList from "../../../../flux/actions/apis/userdirectory";
+import { translate } from "../../../../assets/localisation";
 
 class UserUpdate extends React.Component {
   constructor(props) {

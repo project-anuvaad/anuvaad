@@ -2,8 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { logOut } from '../../../flux/actions/users/logout';
-import history from "../../../web.history";
+import { logOut } from '../../../../flux/actions/users/logout';
 
 class Logout extends React.Component {
 
