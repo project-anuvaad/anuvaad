@@ -16,9 +16,9 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
+// import MenuItem from "@material-ui/core/MenuItem";
+// import Select from "@material-ui/core/Select";
+// import OutlinedInput from "@material-ui/core/OutlinedInput";
 import Updatepassword from "../../../flux/actions/apis/updatepassword";
 import APITransport from "../../../flux/actions/apitransport/apitransport";
 import history from "../../../web.history";
@@ -53,8 +53,8 @@ class UserProfile extends React.Component {
       status: "",
       open: false,
       messageSnack: "",
-      lang: localStorage.getItem(`lang${JSON.parse(localStorage.getItem("userProfile")).id}`),
-
+      // lang: localStorage.getItem(`lang${JSON.parse(localStorage.getItem("userProfile")).userID}`),
+      lang: "English",
       userDetails: JSON.parse(localStorage.getItem("userProfile"))
     };
   }
@@ -166,7 +166,7 @@ class UserProfile extends React.Component {
 
   handleChangeLanguage(event) {
     const userProfile = JSON.parse(localStorage.getItem("userProfile"));
-    localStorage.setItem(`lang${userProfile.id}`, event.target.value);
+    localStorage.setItem(`lang${userProfile.userID}`, event.target.value);
     this.setState({
       lang: event.target.value
     });
@@ -174,12 +174,17 @@ class UserProfile extends React.Component {
   }
 
   render() {
-    let useRole = []
+    // let lang = localStorage.getItem(`lang${JSON.parse(localStorage.getItem("userProfile")).userID}`)
+    let useRole1 = []
+
     this.state.userDetails.roles && Array.isArray(this.state.userDetails.roles) && this.state.userDetails.roles.length > 0 && this.state.userDetails.roles.map((item, value) => {
-      useRole.push(item); value !== this.state.userDetails.roles.length - 1 && useRole.push(", ")
+      // useRole.push(item); 
+      // value !== this.state.userDetails.roles.length - 1 && useRole.push(", ")
+      useRole1.push(item.roleCode)
       return true;
     });
     const { classes } = this.props;
+
     return (
       <div className={classes.root}>
         <Typography variant="h4" className={classes.header}>
@@ -187,10 +192,10 @@ class UserProfile extends React.Component {
         </Typography>
         <Paper className={classes.paper}>
           <Grid container spacing={4}>
-            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow} style={{marginTop: '0px'}}>
+            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow} style={{ marginTop: '0px' }}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
                 <Typography value="" variant="h5" >
-                  {translate("common.page.label.firstName")}{" "}
+                 Name{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
@@ -198,11 +203,11 @@ class UserProfile extends React.Component {
                 {/* <br /> */}
                 <Typography value="" variant="h5" style={{ textTransform: "capitalize" }}>
                   {" "}
-                  {this.state.userDetails.firstname}{" "}
+                  {this.state.userDetails.name}{" "}
                 </Typography>
               </Grid>
             </Grid>
-            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
+            {/* <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
                 <Typography value="" variant="h5">
                   {translate("common.page.label.lastName")}{" "}
@@ -211,12 +216,12 @@ class UserProfile extends React.Component {
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
                 {/* <br />
                 <br /> */}
-                <Typography value="" variant="h5" style={{ textTransform: "capitalize" }}>
+                {/* <Typography value="" variant="h5" style={{ textTransform: "capitalize" }}>
                   {" "}
                   {this.state.userDetails.lastname}{" "}
                 </Typography>
               </Grid>
-            </Grid>
+            </Grid>  */}
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
                 <Typography value="" variant="h5" >
@@ -245,7 +250,8 @@ class UserProfile extends React.Component {
                 <br /> */}
                 <Typography value="" variant="h5" style={{ marginTop: "-1%" }}>
                   {" "}
-                  [{useRole}]{" "}
+                  {useRole1 ? useRole1.join() : ""}
+                  {/* [{useRole}]{" "} */}
                 </Typography>
               </Grid>
             </Grid>
@@ -253,13 +259,17 @@ class UserProfile extends React.Component {
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
                 <Typography value="" variant="h5" >
-                  {translate("common.page.label.selectLanguage")}{" "}
+                  Language{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'initial' }}>
                 {/* <br />
                 <br /> */}
-
+                <Typography value="" variant="h5" style={{ marginTop: "-1%" }}>
+                  {" "}
+                  {this.state.lang}{" "}
+                </Typography>
+{/* 
                 <Select
                   // gutterBottom="true"
                   name="selectlanguage"
@@ -271,17 +281,17 @@ class UserProfile extends React.Component {
                 >
                   <MenuItem value="en">English</MenuItem>
                   <MenuItem value="hi">हिंदी</MenuItem>
-                </Select>
+                </Select> */}
               </Grid>
             </Grid>
           </Grid>
 
-            <Grid item xs={12} sm={12} lg={12} xl={12} style={{ textAlign: 'right' }}>
-              <Tooltip title={translate("userProfile.page.placeholder.resetPassword")}>
-                <Fab aria-haspopup="true" onClick={this.handleReset} color="primary" size="medium">
-                  <AccountCircle />
-                </Fab>
-              </Tooltip>
+          <Grid item xs={12} sm={12} lg={12} xl={12} style={{ textAlign: 'right' }}>
+            <Tooltip title={translate("userProfile.page.placeholder.resetPassword")}>
+              <Fab aria-haspopup="true" onClick={this.handleReset} color="primary" size="medium">
+                <AccountCircle />
+              </Fab>
+            </Tooltip>
           </Grid>
         </Paper>
 
@@ -362,7 +372,7 @@ class UserProfile extends React.Component {
                       onClick={this.handleCancel}
                       color='primary'
                       aria-label="edit"
-                      style={{ width: "50%", marginBottom: "4%", marginTop: "4%",  marginLeft: "0px", borderRadius: "20px 20px 20px 20px" }}
+                      style={{ width: "50%", marginBottom: "4%", marginTop: "4%", marginLeft: "0px", borderRadius: "20px 20px 20px 20px" }}
                     >
                       {translate("common.page.button.cancel")}
                     </Button>

@@ -32,8 +32,8 @@ export default class ActivateUser extends API {
 
     getBody() {
         return {
-            u_id: this.uid,
-            r_id: this.rid,
+            uid: this.uid,
+            rid: this.rid,
         };
     }
 

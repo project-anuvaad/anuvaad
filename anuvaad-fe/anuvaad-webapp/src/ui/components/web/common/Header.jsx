@@ -10,25 +10,19 @@ import Divider from "@material-ui/core/Divider";
 
 import Grid from "@material-ui/core/Grid";
 
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import history from "../../../../web.history";
 
 import MenuIcon from '@material-ui/icons/Menu';
-import BackIcon from '@material-ui/icons/ArrowBack';
 
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import logo from '../../../../assets/logo.png';
 import anuvaadLogo from '../../../../assets/AnuvaadLogo.svg';
 import { translate } from '../../../../../src/assets/localisation';
-import DownIcon from '@material-ui/icons/ArrowDropDown';
-import PeopleIcon from '@material-ui/icons/Person';
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
-import Fab from '@material-ui/core/Fab';
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -131,10 +125,8 @@ class Header extends React.Component {
   };
 
   render() {
-    const { classes, title, drawer, forDemo, dontShowHeader, currentMenu, open_sidebar } = this.props;
+    const { classes, title, forDemo, dontShowHeader, currentMenu, open_sidebar } = this.props;
 
-    const { auth, anchorEl } = this.state;
-    const openEl = Boolean(anchorEl);
     var role    = ["interactive-editor"] //JSON.parse(localStorage.getItem("roles"));
     var useRole = [];
     role.map((item, value) => {

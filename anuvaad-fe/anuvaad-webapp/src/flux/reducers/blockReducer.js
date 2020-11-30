@@ -25,7 +25,6 @@ export default function blockReducer(state={current_sid:null, prev_sid:null}, ac
         }
 
         case C.CLEAR_HIGHLIGHT_BLOCK: {
-          let data = action.payload;
           let existing_sid = state.current_sid;
           return {
             ...state,

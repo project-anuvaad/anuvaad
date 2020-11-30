@@ -41,11 +41,8 @@ export default class LoginAPI extends API {
 
   getBody() {
     return {
-      email: this.email,
-      password: this.password,
-      role: this.role,
-      userid: this.userid,
-      name: this.name
+      userName: this.email,
+      password: this.password
     };
   }
 

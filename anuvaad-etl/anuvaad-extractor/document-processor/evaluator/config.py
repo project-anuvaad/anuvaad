@@ -3,7 +3,7 @@ import os
 import time
 
 DEBUG = False
-API_URL_PREFIX = "/api/v0"
+API_URL_PREFIX = "/anuvaad-etl/document-processor/evaluator"
 HOST = '0.0.0.0'
 PORT = 5001
 BASE_DIR      = 'upload'
@@ -12,15 +12,15 @@ ENABLE_CORS = False
 
 # kafka
 
-input_topic_default = 'anuvaad-dp-tools-block-merger-input-v2'
-input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT'
+input_topic_default = 'anuvaad-dp-tools-visual-evaluator-input-v1'
+input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_EVALUATOR_INPUT'
 input_topic = os.environ.get(input_topic_identifier, input_topic_default)
 
-output_topic_default = 'anuvaad-dp-tools-block-merger-output-v2'
-output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT'
+output_topic_default = 'anuvaad-dp-tools-visual-evaluator-output-v1'
+output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_EVALUATOR_OUTPUT'
 output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
-kf_local_server     = 'localhost:9092'
+kf_local_server     = 'localhost:9093'
 kafka_ip_host       = 'KAFKA_IP_HOST'
 bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 

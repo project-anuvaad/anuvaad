@@ -4,11 +4,10 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Logout from "./ui/containers/web/Logout";
 import Layout from "./ui/containers/web/Layout";
-import Callback from "./ui/containers/web/Callback";
 import NotFound from "./ui/containers/web/NotFound";
 
 import history from "./web.history";
-import Home from "./ui/containers/web/Home";
+import Login from "./ui/containers/web/Login";
 import UserProfile from "./ui/containers/web/UserProfile";
 
 import InstantTranslate from "./ui/containers/web/Dashboard";
@@ -19,11 +18,10 @@ import IntractiveTranslate from "./ui/containers/web/IntractiveTranslation";
 import { translate } from '../src/assets/localisation';
 import UpdatePassword from './ui/containers/web/UpdatePassword';
 import SetPassword from './ui/containers/web/SetPassword';
-import DocumentEditor from './ui/containers/web/Interactive-Editor/DocumentEditor';
 import DocumentEditorV1 from './ui/containers/web/TranslatorEditor/DocumentEditor.v1';
 
-import FileUpload from './ui/containers/web/Interactive-Editor/FileUpload';
-import ViewDocument from './ui/containers/web/ViewDocument';
+import FileUpload from './ui/containers/web/DocumentUpload/FileUpload';
+import ViewDocument from './ui/containers/web/DocumentTranslate/ViewDocument';
 
 const PrivateRoute = ({ headerAttribute: headerAttribute,  component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -76,7 +74,7 @@ class AppRoutes extends React.Component {
       }
       return false;
     }
-    alert(translate('webroutes.page.alert.somethingWentWrongTryAgain'));
+    return false;
   };
 
   render() {
@@ -85,9 +83,17 @@ class AppRoutes extends React.Component {
       <Router history={history} basename="/dev">
         <div>
           <Switch>
-            <Route exact path={`${process.env.PUBLIC_URL}/`} component={Home} />
-            <Route exact path={`${process.env.PUBLIC_URL}/callback`} component={Callback} />
+            <Route exact path={`${process.env.PUBLIC_URL}/`} component={Login} />
+            {/* <Route exact path={`${process.env.PUBLIC_URL}/callback`} component={Callback} /> */}
             <Route exact path={`${process.env.PUBLIC_URL}/logout`} component={Logout} />
+            <Route
+            exact
+              path={`${process.env.PUBLIC_URL}/signup`}
+              title="Sign up"
+              component={Signup}
+              dontShowHeader={true}
+              currentMenu="signup"
+            />
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/profile`}
@@ -136,15 +142,7 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
 
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/signup`}
-              title="Sign up"
-              authenticate={() => true}
-              component={Signup}
-              drawer
-              dontShowHeader={true}
-              currentMenu="signup"
-            />
+          
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/forgot-password`}
               title="Forgot Password"

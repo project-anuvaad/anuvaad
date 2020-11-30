@@ -20,7 +20,7 @@ export const init = () => {
       channel: 'developers.anuvaad.org',
       batchsize: 10,
       endpoint: "/v1/telemetry",
-      apislug: "/",
+      apislug: "/anuvaad-telemetry",
     }
   } else {
     config  = {
@@ -35,7 +35,7 @@ export const init = () => {
       channel: CONFIGS.BASE_URL_AUTO.replace(/(^\w+:|^)\/\//, ''),
       batchsize: 20,
       endpoint: "/v1/telemetry",
-      apislug: "/",
+      apislug: "/anuvaad-telemetry",
     }
   }
 

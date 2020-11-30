@@ -61,7 +61,7 @@ export default class NMTSP extends API {
         this.headers = {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + decodeURI(localStorage.getItem("token"))
+                 'auth-token': `${decodeURI(localStorage.getItem("token"))}`
             }
         };
         return this.headers;

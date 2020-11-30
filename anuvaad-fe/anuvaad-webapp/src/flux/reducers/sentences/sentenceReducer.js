@@ -12,7 +12,6 @@ export default function sentenceReducer(state={}, action){
         }
 
         case C.CLEAR_HIGHLIGHT_BLOCK: {
-          let data = action.payload;
           return {
             ...state,
             sentence: {},

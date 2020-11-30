@@ -8,7 +8,7 @@ import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import Snackbar from "../../../components/web/common/Snackbar";
+import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import { showPdf } from '../../../../flux/actions/apis/showpdf';
 import { withStyles } from '@material-ui/core/styles';
@@ -23,10 +23,14 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
 import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
+import DownloadFile from "../../../../flux/actions/apis/download_file";
+
 import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 import history from "../../../../web.history";
+import Alert from '@material-ui/lab/Alert';
+import base64 from 'binary-base64';
 
 const StyledMenu = withStyles({
     paper: {
@@ -49,9 +53,14 @@ const StyledMenu = withStyles({
 ));
 
 class InteractiveDocHeader extends React.Component {
-    state = {
-        anchorEl: null
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            anchorEl: null,
+            showStatus: false,
+            message: null
+        };
+    }
 
     handleMenu = event => {
         this.setState({ anchorEl: event.currentTarget });
@@ -61,13 +70,26 @@ class InteractiveDocHeader extends React.Component {
         this.setState({ anchorEl: null });
     };
 
+    renderProgressInformation = () => {
+        return (
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                open={this.state.showStatus}
+                message={this.state.message}
+            >
+                <Alert elevation={6} variant="filled" severity="info">{this.state.message}</Alert>
+            </Snackbar>
+        )
+    }
+
+
     downloadTargetFile() {
-        this.setState({ anchorEl: null });
+        this.setState({ anchorEl: null, showStatus: true, message: translate("common.page.label.download") });
 
         let recordId = this.props.match.params.jobid;
         let user_profile = JSON.parse(localStorage.getItem('userProfile'))
 
-        let apiObj = new DocumentConverterAPI(recordId, user_profile.id)
+        let apiObj = new DocumentConverterAPI(recordId, user_profile.userID)
 
         const apiReq = fetch(apiObj.apiEndPoint(), {
             method: 'post',
@@ -78,15 +100,44 @@ class InteractiveDocHeader extends React.Component {
             if (!response.ok) {
                 return Promise.reject('');
             } else {
-                let fileName = rsp_data && rsp_data.[this.state.fileType] ? rsp_data.[this.state.fileType] : ""
+                let fileName = rsp_data && rsp_data[this.state.fileType] ? rsp_data[this.state.fileType] : ""
                 if (fileName) {
-                    let url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${fileName}`
-                    window.open(url, "_self")
+
+                    let obj = new DownloadFile(fileName, user_profile.userID)
+
+                    const apiReq1 = fetch(obj.apiEndPoint(), {
+                        method: 'get',
+                        headers: obj.getHeaders().headers
+                    }).then(async response => {
+                        if (!response.ok) {
+                            this.setState({ showStatus: false, message: null })
+                            console.log('api failed')
+                        } else {
+                            const buffer = new Uint8Array(await response.arrayBuffer());
+                            let res = Buffer.from(buffer).toString('base64')
+
+                            fetch("data:image/jpeg;base64," + res)
+                                .then(res => res.blob())
+                                .then(blob => {
+                                    let a = document.createElement('a');
+                                    let url = URL.createObjectURL(blob);
+                                    a.href = url;
+                                    a.download = fileName;
+                                    a.click();
+                                });
+                        }
+
+                    }).catch((error) => {
+                        this.setState({ showStatus: false, message: null })
+                        console.log('api failed because of server or network', error)
+                    });
+
                 }
 
             }
         }).catch((error) => {
-            console.log('api failed because of server or network')
+            this.setState({ showStatus: false, message: null })
+            console.log('api failed because of server or network', error)
         });
     }
 
@@ -180,6 +231,7 @@ class InteractiveDocHeader extends React.Component {
                     <div style={{ position: 'absolute', right: '30px' }}>
                         {this.renderOptions()}
                     </div>
+                    {this.state.showStatus && this.renderProgressInformation()}
                 </Toolbar>
             </AppBar>
         )

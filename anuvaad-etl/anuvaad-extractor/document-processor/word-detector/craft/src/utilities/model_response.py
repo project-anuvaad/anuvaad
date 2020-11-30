@@ -9,18 +9,19 @@ from anuvaad_auditor.loghandler import log_exception
 
 from src.utilities.request_parse import File
 # standard error formats
+
 class Status(enum.Enum):
     SUCCESS = {
         "status": "SUCCESS",
-        "state": "BLOCK-MERGER"
+        "state": "WORD-DETECTOR-CRAFT"
     }
     ERR_STATUS = {
         "status": "FAILED",
-        "state": "BLOCK-MERGER",
+        "state": "WORD-DETECTOR-CRAFT",
     }
     ERR_request_input_format = {
         "status" : "FAILED",
-        "state" : "BLOCK-MERGER",
+        "state" : "WORD-DETECTOR-CRAFT",
         "error": {
             "code" : "REQUEST_FORMAT_ERROR",
             "message" : "Json provided by user is not in proper format."
@@ -86,7 +87,7 @@ class Page:
         self.path  = path
 
         self.page = {}
-        self.page['identifier'] = uuid.uuid4().hex
+        self.page['identifier'] = str( uuid.uuid4())
         self.page['vertices']   = []
         self.page['resolution'] = 0
         self.page['regions']    = []
@@ -134,7 +135,7 @@ class Box:
         self.coords = coordinates
         self.box= {}
         self.box['boundingBox'] = {}
-        self.box['identifier'] = uuid.uuid4().hex
+        self.box['identifier'] = str(uuid.uuid4())
         self.box['class']  ='TEXT'
         self.box['font'] = {'family':'Arial Unicode MS', 'size':0, 'style':'REGULAR'}
         self.get_coords()

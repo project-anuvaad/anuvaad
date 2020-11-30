@@ -1,35 +1,65 @@
 import React from "react";
 import "../../../styles/web/InteractivePreview.css";
 import { Document, Page } from "react-pdf/dist/entry.webpack";
+import DownloadFile from "../../../../flux/actions/apis/download_file"
 
 class PDFRenderer extends React.Component {
-    constructor(props) {
-        super(props);
-        this.textInput = React.createRef();
-        this.state = {
-            scale: 1.0
-        };
-    }
-
-    onPageLoad = page => {
-        const parentDiv     = document.querySelector("#pdfDocument");
-        let pageScale       = parentDiv.clientHeight / page.originalHeight;
-        let pageScaleWidth  = parentDiv.clientWidth / page.originalWidth;
-        if (this.state.scale !== pageScale) {
-          this.setState({ scale: pageScale, pageScaleWidth });
-        }
+  constructor(props) {
+    super(props);
+    this.textInput = React.createRef();
+    this.state = {
+      scale: 1.0
     };
+  }
 
-    onDocumentLoadSuccess = ({ numPages }) => {
-        this.setState({ numPages });
+  onPageLoad = page => {
+    const parentDiv = document.querySelector("#pdfDocument");
+    let pageScale = parentDiv.clientHeight / page.originalHeight;
+    let pageScaleWidth = parentDiv.clientWidth / page.originalWidth;
+    if (this.state.scale !== pageScale) {
+      this.setState({ scale: pageScale, pageScaleWidth });
+    }
+  };
+
+  onDocumentLoadSuccess = ({ numPages }) => {
+    this.setState({ numPages });
+  }
+
+  componentDidMount() {
+
+    let user_profile = JSON.parse(localStorage.getItem('userProfile'));
+    let obj = new DownloadFile(this.props.filename, user_profile.userID)
+
+    console.log("---Fetching Document---")
+    const apiReq1 = fetch(obj.apiEndPoint(), {
+      method: 'get',
+      headers: obj.getHeaders().headers
+    }).then(async response => {
+      if (!response.ok) {
+        this.setState({ dialogMessage: "Failed to download file...", })
+        console.log("api failed")
+      } else {
+        const buffer = new Uint8Array(await response.arrayBuffer());
+        let res = Buffer.from(buffer).toString('base64')
+
+        fetch("data:image/jpeg;base64," + res)
+          .then(res => res.blob())
+          .then(blob => {
+            let url = URL.createObjectURL(blob);
+            this.setState({ url })
+          });
       }
-    
+    }).catch((error) => {
+      console.log('api failed because of server or network', error)
+    });
 
-    renderPDF = (url, pageNo) => {
-        return (
-            <div style={{ maxHeight: window.innerHeight - 85, overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
-                <Document file={url} onLoadSuccess={this.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
-                {
+  }
+
+  renderPDF = (url, pageNo) => {
+    return (
+      <div style={{ maxHeight: "88vh", overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
+        <Document file={this.state.url} onLoadSuccess={this.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
+          {/* {
                 Array.from(
                   new Array(this.state.numPages),
                   (el, index) => (
@@ -39,24 +69,24 @@ class PDFRenderer extends React.Component {
                     />
                   ),
                 )
-              }
-                    {/* <Page scale={this.state.pageScaleWidth} pageNumber={Number(pageNo)} onLoadSuccess={this.onPageLoad} /> */}
-                </Document>
-            </div>
-        )
-    }
+              } */}
+          <Page scale={this.state.pageScaleWidth} pageNumber={Number(pageNo)} onLoadSuccess={this.onPageLoad} />
+        </Document>
+      </div>
+    )
+  }
 
-    render() {
-        const { pageNo, filename } = this.props;
-        const url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${filename}`;
+  render() {
+    const { pageNo, filename } = this.props;
+    const url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${filename}`;
 
-        return  (
-            <div>
-                {this.renderPDF(url, pageNo)}
-            </div>
-        )
+    return (
+      <div>
+        {this.renderPDF(url, pageNo)}
+      </div>
+    )
 
-    }
+  }
 
 }
 

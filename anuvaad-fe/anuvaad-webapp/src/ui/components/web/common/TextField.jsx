@@ -4,7 +4,7 @@ import React from "react";
 class AppTextField extends React.Component {
 
     render() {
-        const { id, varient, value, style, floatingLabelText, onChange, type, placeholder } = this.props;
+        const { id, varient, value, style, onChange, type, placeholder } = this.props;
 
         return (
 

@@ -1,12 +1,20 @@
 import React from "react";
-import CONFIG from '../../../configs/apigw'
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { logOut } from '../../../flux/actions/users/logout';
+import history from "../../../web.history";
 
 class Logout extends React.Component {
 
     componentDidMount(){
         localStorage.removeItem('token')
         localStorage.removeItem('userDetails')
-        window.location.href = CONFIG.BASE_URL+CONFIG.LOGOUT_ENDPOINT+'?'+CONFIG.POST_LOGOUT_URL
+        localStorage.removeItem('userProfile')
+        localStorage.removeItem('roles')
+        this.props.logOut()
+        // history.push(`${process.env.PUBLIC_URL}/`);
+        window.location.href = `${process.env.PUBLIC_URL}/`
     }
 
   render() {
@@ -17,4 +25,25 @@ class Logout extends React.Component {
 }
 
 
-export default Logout;
+const mapStateToProps = state => ({
+  
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      logOut
+    },
+    dispatch
+  );
+
+export default withRouter(
+ 
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(Logout)
+  
+);
+
+

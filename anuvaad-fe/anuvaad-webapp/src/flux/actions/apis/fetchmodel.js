@@ -19,7 +19,7 @@ export default class FetchModel extends API {
 
   processResponse(res) {
     super.processResponse(res);
-    this.fetch_model = res.data;
+    this.fetch_model = res.response_body;
   }
 
   apiEndPoint() {
@@ -34,7 +34,7 @@ export default class FetchModel extends API {
     return {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + decodeURI(localStorage.getItem("token"))
+         'auth-token': `${decodeURI(localStorage.getItem("token"))}`
       }
     };
   }

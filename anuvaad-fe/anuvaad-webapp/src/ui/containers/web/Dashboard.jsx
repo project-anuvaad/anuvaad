@@ -6,17 +6,11 @@ import { bindActionCreators } from "redux";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import TranslateSentence from "../../components/web/dashboard/TranslateSentence";
 import FetchModel from "../../../flux/actions/apis/fetchmodel";
-import FetchLanguage from "../../../flux/actions/apis/fetchlanguage";
-import NMT from "../../../flux/actions/apis/nmt";
 import AutoML from "../../../flux/actions/apis/auto_ml";
 import APITransport from "../../../flux/actions/apitransport/apitransport";
-import NewOrders from "../../components/web/dashboard/NewOrders";
 import { translate } from "../../../assets/localisation";
 import { withStyles } from "@material-ui/core/styles";
 import DashboardStyles from "../../styles/web/DashboardStyles";
@@ -48,13 +42,6 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.fetch_languages && this.props.fetch_languages.languages.length < 1) {
-      const { APITransport }  = this.props;
-      const apiObj            = new FetchLanguage();
-      APITransport(apiObj);
-      this.setState({ showLoader: true });
-    }
-
     if (this.props.fetch_models && this.props.fetch_models.models.length < 1) {
       const { APITransport }  = this.props;
       const apiModel          = new FetchModel();
@@ -64,10 +51,10 @@ class Dashboard extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.fetch_languages.languages != this.props.fetch_languages.languages) {
+    if (prevProps.fetch_models.models != this.props.fetch_models.models) {
       this.setState({
-        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_languages.languages),
-        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_languages.languages)
+        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
+        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models)
       })
     }
   }
@@ -95,7 +82,7 @@ class Dashboard extends React.Component {
 
   processSourceLanguageSelected = (event) => {
     this.setState({ source_language_code: event.target.value})
-    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_languages.languages, this.props.fetch_models.models, event.target.value)
+    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value)
     this.setState({
       target_languages: languages
     })
@@ -259,21 +246,6 @@ class Dashboard extends React.Component {
             </Grid>
 
             <Grid item xs={12} sm={12} lg={12} xl={12} style={{ display: 'flex', flexDirection: 'row' }}>
-              <Grid item xs={gridSizeSmall} sm={gridSizeSmall} lg={gridSizeLarge} xl={gridSizeLarge} style={{ textAlign: 'left', paddingLeft: '0px' }}>
-                <FormControlLabel
-                  style={{ marginLeft: "0%", textAlign: 'left' }}
-                  control={
-                    <Checkbox
-                      color="default"
-                      checked={this.state.autoMLChecked}
-                      value="checkedMachine"
-                      onChange={this.processAutoMLCheckboxClicked}
-                    />
-                  }
-                  label={translate("dashboard.page.checkbox.mt")}
-                />
-              </Grid>
-
             </Grid>
             <Grid item xs={6} sm={6} lg={6} xl={6}>
               <Button
@@ -322,7 +294,6 @@ class Dashboard extends React.Component {
 
 const mapStateToProps = state => ({
   user: state.login,
-  fetch_languages: state.fetch_languages,
   fetch_models: state.fetch_models
 });
 

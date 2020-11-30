@@ -34,7 +34,7 @@ export default class FetchLanguage extends API {
     return {
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + decodeURI(localStorage.getItem("token"))
+         'auth-token': `${decodeURI(localStorage.getItem("token"))}`
       }
     };
   }
