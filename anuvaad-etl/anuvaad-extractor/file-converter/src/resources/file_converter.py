@@ -29,7 +29,7 @@ class FileConverter(Resource):
         try:
             result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=60)
             copyfile(result, os.path.join(config.download_folder, upload_id+'.pdf'))
-            userfile = UserFiles(created_by=request.headers.get('ad-userid'),
+            userfile = UserFiles(created_by=request.headers.get('x-user-id'),
                                             filename=upload_id+'.pdf', created_on=datetime.now())
             userfile.save()
         except LibreOfficeError as e:
