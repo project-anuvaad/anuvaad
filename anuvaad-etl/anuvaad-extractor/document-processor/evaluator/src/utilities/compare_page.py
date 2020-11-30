@@ -40,7 +40,11 @@ def compare_regions(gt_regions, predicted_regions):
             intersecting_region = None
             for intr_index in region_index:
                 compare_poly = compare_polys[intr_index]
-                region_iou = base_poly.intersection(compare_poly).area / base_poly.union(compare_poly).area
+                check_union = base_poly.union(compare_poly).area != 0
+                if check_union :
+                    region_iou = base_poly.intersection(compare_poly).area / base_poly.union(compare_poly).area
+                else :
+                    region_iou =0
                 # iou of 0.33 coressponds to 50% overlap
                 if (region_iou > iou) and (region_iou > 0.33):
                     iou = region_iou

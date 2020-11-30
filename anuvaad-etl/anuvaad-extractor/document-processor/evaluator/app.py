@@ -6,9 +6,7 @@ from flask.blueprints import Blueprint
 from flask_cors import CORS
 from src import routes
 import config
-import torch
 import threading
-import time
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 
 

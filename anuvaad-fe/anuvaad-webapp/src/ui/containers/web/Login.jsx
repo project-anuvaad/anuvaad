@@ -47,6 +47,12 @@ class Login extends React.Component {
 
   componentDidMount() {
     localStorage.removeItem("token");
+    window.addEventListener('keypress', (key) => {
+      if (key.code === 'Enter') {
+        this.processLoginButtonPressed();
+      }
+    })
+
     // TELEMETRY.pageLoadCompleted('login')
   }
 
@@ -140,14 +146,14 @@ class Login extends React.Component {
                   margin="dense" varient="outlined" style={{ width: '50%', marginBottom: '2%', backgroundColor: 'white' }} onChange={this.processInputReceived('password')}
                 />
 
-                <div className={classes.wrapper}> 
+                <div className={classes.wrapper}>
                   <Button
                     variant="contained" aria-label="edit" style={{
                       width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
                       backgroundColor: this.state.loading ? 'grey' : '#1ca9c9', color: 'white',
                     }} onClick={this.processLoginButtonPressed.bind(this)}
                     disabled={this.state.loading}>
-                    {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress}/>}
+                    {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress} />}
                     Sign In
                 </Button>
                 </div>
@@ -155,8 +161,8 @@ class Login extends React.Component {
               </FormControl>
 
               <Typography>
-                <Link style={{ cursor: 'pointer', color: '#0C8AA9',marginLeft:'25%', float:'left'}} href="#" onClick={() => { history.push("/forgot-password") }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
-                <Link style={{ cursor: 'pointer', color: '#0C8AA9',marginRight:'25%', float:'right' }} href="#" onClick={() => { history.push("/signup") }}> {translate('singUp.page.label.signUp')}</Link>
+                <Link style={{ cursor: 'pointer', color: '#0C8AA9', marginLeft: '25%', float: 'left' }} href="#" onClick={() => { history.push(`${process.env.PUBLIC_URL}/forgot-password`); }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
+                <Link style={{ cursor: 'pointer', color: '#0C8AA9', marginRight: '25%', float: 'right' }} href="#" onClick={() =>{ history.push(`${process.env.PUBLIC_URL}/signup`); }}> {translate('singUp.page.label.signUp')}</Link>
               </Typography>
             </Grid>
           </Grid>
