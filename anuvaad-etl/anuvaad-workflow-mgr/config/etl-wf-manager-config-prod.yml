@@ -235,7 +235,7 @@ WorkflowConfigs:
       - name: TRANSLATOR
         description: Translates the sentences.
         api-details:
-        - uri: http://user_anuvaad-etl-tokeniser:5001/anuvaad-etl/tokeniser/v0/blocks-tokenisation-wf
+        - uri: http://user_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
       endState: true
 
 
