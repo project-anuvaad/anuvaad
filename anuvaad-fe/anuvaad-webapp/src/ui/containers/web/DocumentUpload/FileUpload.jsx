@@ -168,13 +168,11 @@ class PdfUpload extends Component {
 
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('document-upload')
-
-    if (this.props.fetch_models && this.props.fetch_models.models.length < 1) {
       const { APITransport } = this.props;
       const apiModel = new FetchModel();
       APITransport(apiModel);
       this.setState({ showLoader: true });
-    }
+    
   }
 
   componentDidUpdate(prevProps) {

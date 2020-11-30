@@ -50,17 +50,16 @@ class ViewDocument extends React.Component {
    */
   componentDidMount() {
     this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
-
-    if (this.props.async_job_status.job) {
+    if (this.props.job_details.documents.length < 1) {
+      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, false, false)
+      this.setState({ showLoader: true })
+    }
+    else if (this.props.async_job_status.job) {
       /**
        * a job got started, fetch it status
        */
       this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, [this.props.async_job_status.job.jobID], true, false)
       this.props.clearJobEntry()
-    }
-    else if (this.props.job_details.documents.length < 1) {
-      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, false, false)
-      this.setState({ showLoader: true })
     }
     this.makeAPICallDocumentsTranslationProgress()
 
