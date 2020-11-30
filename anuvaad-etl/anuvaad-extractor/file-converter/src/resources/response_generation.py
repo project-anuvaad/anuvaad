@@ -44,6 +44,11 @@ class Response(object):
                 else:
                     result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=60)
                     copyfile(result, os.path.join(config.download_folder, upload_id+'.pdf'))
+
+                    userfile = UserFiles(created_by=self.json_data['metadata']['userID'],
+                                            filename=upload_id+'.pdf', created_on=datetime.now())
+                    userfile.save()
+
                     file_res = file_ops.one_filename_response(input_filename, upload_id+'.pdf', in_locale, 'pdf')
                     output_file_response.append(file_res)
             task_endtime = eval(str(time.time()).replace('.', '')[0:13])
