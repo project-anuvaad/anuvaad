@@ -85,8 +85,8 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"events.ets\"\r\n}",
-				"dateRefField": "events.ets",
+				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
 				"aggrQuery": "{\r\n   \"size\": 0, \r\n  \"aggs\": {\r\n    \"Total Upload Documents\": {\r\n      \"filter\": {\r\n        \"bool\": {\r\n          \"must\": [\r\n            {\r\n              \"term\": {\r\n                \"events.edata.pageid.keyword\": \"document-upload\"\r\n              }\r\n            },\r\n            {\r\n              \"term\": {\r\n                \"events.edata.subtype.keyword\": \"pageLoadStarted\"\r\n              }\r\n            }\r\n          ]\r\n        }\r\n      },\r\n      \"aggs\": {\r\n        \"Total Upload Documents\": {\r\n          \"date_histogram\": {\r\n            \"field\": \"events.ets\",\r\n            \"interval\": \"day\"\r\n          },\r\n      \"aggs\": {\r\n        \"Total Upload Documents\": {\r\n          \"terms\": {\r\n            \"field\": \"events.edata.pageid.keyword\"\r\n          }\r\n        }\r\n      }\r\n        }\r\n      }\r\n    }\r\n  }\r\n}"
@@ -116,7 +116,7 @@
 			{
 				"module": "COMMON",
 				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
-				"dateRefField": "events.ets",
+				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
 				"aggrQuery": "{\"aggs\":{\"File Translation Count\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Files Translated\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Count\":{\"cardinality\":{\"field\":\"events.context.cdata.id.keyword\"}}}}}}}}"
@@ -199,8 +199,8 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"events.ets\"\r\n}",
-				"dateRefField": "events.ets",
+				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
 				"aggrQuery": "{\"aggs\":{\"Merge Document Filter\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.action.keyword\":\"MERGE\"}}]}},\"aggs\":{\"Merge Operation Trend\":{\"date_histogram\":{\"field\":\"events.ets\",\"interval\":\"day\"},\"aggs\":{\"Merge Split Operation Trend\":{\"value_count\":{\"field\":\"events.context.did.keyword\"}}}}}}}}"
