@@ -23,14 +23,13 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
 import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
-import DownloadFile from "../../../../flux/actions/apis/download_file";
+import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
 
 import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 import history from "../../../../web.history";
 import Alert from '@material-ui/lab/Alert';
-import base64 from 'binary-base64';
 
 const StyledMenu = withStyles({
     paper: {
@@ -82,7 +81,6 @@ class InteractiveDocHeader extends React.Component {
         )
     }
 
-
     downloadTargetFile() {
         this.setState({ anchorEl: null, showStatus: true, message: translate("common.page.label.download") });
 
@@ -103,7 +101,7 @@ class InteractiveDocHeader extends React.Component {
                 let fileName = rsp_data && rsp_data[this.state.fileType] ? rsp_data[this.state.fileType] : ""
                 if (fileName) {
 
-                    let obj = new DownloadFile(fileName, user_profile.userID)
+                    let obj = new DownloadFile(fileName)
 
                     const apiReq1 = fetch(obj.apiEndPoint(), {
                         method: 'get',
