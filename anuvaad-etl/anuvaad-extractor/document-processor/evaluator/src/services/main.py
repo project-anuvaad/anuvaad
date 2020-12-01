@@ -7,38 +7,83 @@ from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 
 
+
+
+
+
+
 def get_iou(evalue_file) :
 
+    comparison = []
     gt_json, in_json = evalue_file.get_json()
-    gt_file, in_file = File(gt_json), File(in_json)
+    check_files = len(gt_json) == len(in_json)
 
-    gt_pages = gt_file.get_pages()
-    in_pages = in_file.get_pages()
-
-    check_pages = len(gt_pages) == len(in_pages)
-
-    if check_pages:
+    if check_files :
         boxlevel = evalue_file.get_boxlevel()
-        for page_index, page in enumerate(gt_pages):
-            gt_boxex = gt_file.get_boxes(boxlevel, page_index)
-            in_boxex = in_file.get_boxes(boxlevel, page_index)
-            comparision = compare_regions(gt_boxex, in_boxex)
-            evalue_file.set_page(comparision)
-        evalue_file.set_staus(True)
-        iou_comparison = evalue_file.get_evaluation()
+        for gt_index , gt in enumerate(gt_json):
+
+            gt_file, in_file = File(gt), File(in_json[gt_index])
+
+            gt_pages = gt_file.get_pages()
+            in_pages = in_file.get_pages()
+            check_pages = len(gt_pages) == len(in_pages)
+
+            if check_pages:
+
+                pages = []
+                for page_index, page in enumerate(gt_pages):
+                    gt_boxex = gt_file.get_boxes(boxlevel, page_index)
+                    in_boxex = in_file.get_boxes(boxlevel, page_index)
+                    pages.append(compare_regions(gt_boxex, in_boxex))
+                evalue_file.set_staus(True)
+                #file_comparison = evalue_file.get_evaluation()
+                comparison.append({'pages': pages})
+            else:
+                log_info('Seems like input and ground belong to different files ', app_context)
+                comparison = []
     else:
-        log_info('Seems like input and ground belong to different files ', app_context)
-        iou_comparison = {}
-    return iou_comparison
+        log_info('Seems like input and ground belong to different job  ', app_context)
+        comparison = []
+
+    return comparison
+
+
+
+
+#
+# def get_iou(evalue_file) :
+#
+#     gt_json, in_json = evalue_file.get_json()
+#     gt_file, in_file = File(gt_json), File(in_json)
+#
+#     gt_pages = gt_file.get_pages()
+#     in_pages = in_file.get_pages()
+#
+#     check_pages = len(gt_pages) == len(in_pages)
+#
+#     if check_pages:
+#         boxlevel = evalue_file.get_boxlevel()
+#         for page_index, page in enumerate(gt_pages):
+#             gt_boxex = gt_file.get_boxes(boxlevel, page_index)
+#             in_boxex = in_file.get_boxes(boxlevel, page_index)
+#             comparision = compare_regions(gt_boxex, in_boxex)
+#             evalue_file.set_page(comparision)
+#         evalue_file.set_staus(True)
+#         iou_comparison = evalue_file.get_evaluation()
+#     else:
+#         log_info('Seems like input and ground belong to different files ', app_context)
+#         iou_comparison = {}
+#     return iou_comparison
 
 
 def compare_overlapp(app_context):
     output = []
     files = get_files(app_context.application_context)
+
     for file_index, file in enumerate(files):
         evalue_file = Evalue(file)
         if evalue_file.get_strategy() == 'IOU':
-            output.append(get_iou(evalue_file))
+            output = output + get_iou(evalue_file)
         else :
             log_info('currently supports only iou comparison  ', app_context)
             output.append({})
