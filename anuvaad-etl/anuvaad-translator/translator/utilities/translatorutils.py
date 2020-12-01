@@ -4,7 +4,7 @@ import time
 import urllib
 
 import requests
-from configs.translatorconfig import file_download_url
+from configs.translatorconfig import download_folder
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 
 log = logging.getLogger('file')
@@ -20,17 +20,12 @@ class TranslatorUtils:
 
     # Generates unique task id.
     def download_file(self, file_id, task_input):
-        url = str(file_download_url) + "?filename=" + str(file_id) + "&userid=" + str(task_input["metadata"]["userID"])
-        log_info("URI: " + str(url), task_input)
+        file_path = download_folder + file_id
+        log_info("File: " + str(file_path), task_input)
         try:
-            with urllib.request.urlopen(url) as url:
-                response = url.read().decode()
-                if response:
-                    data = json.loads(response)
-                    return data
-                else:
-                    log_error("File received on input is empty", task_input, None)
-                    return None
+            with open(file_path) as file:
+                data = json.loads(file)
+                return data
         except Exception as e:
             log_exception("Exception while reading the json file: " + str(e), task_input, e)
             return None

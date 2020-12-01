@@ -26,6 +26,7 @@ nmt_max_batch_size = 25
 anu_nmt_input_topic = os.environ.get('KAFKA_NMT_TRANSLATION_INPUT_TOPIC', 'anuvaad_nmt_translate')
 anu_nmt_output_topic = os.environ.get('KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC', 'anuvaad_nmt_translate_processed')
 jm_cron_interval_sec = 30
+download_folder = "/app/upload"
 
 #kafka-configs
 anu_translator_input_topic = os.environ.get('KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_TOPIC', 'anuvaad-dp-tools-translator-input-v3')
