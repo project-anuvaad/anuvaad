@@ -71,7 +71,7 @@
             "active":true,
             "whiteList":false,
             "description":"API to search users from the system"
-        }
+        },
         {
             "id":"420add6a-c61f-4520-88ab-025378b626b8",
             "uri":"/anuvaad/user-mgmt/v1/users/login",
