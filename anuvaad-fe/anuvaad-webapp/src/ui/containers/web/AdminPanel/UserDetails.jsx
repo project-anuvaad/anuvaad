@@ -2,10 +2,8 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-//import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import MUIDataTable from "mui-datatables";
-// import Toolbar from "@material-ui/core/Toolbar";
 import NewCorpusStyle from "../../../styles/web/Newcorpus";
 import history from "../../../../web.history";
 import FetchDocument from "../../../../flux/actions/apis/fetch_document";
@@ -27,6 +25,7 @@ import JobStatus from "../../../../flux/actions/apis/translation.progress";
 import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
 import ToolBar from "../AdminPanel/AdminPanelHeader"
 import DownloadFile from "../../../../flux/actions/apis/download_file"
+import UserInfo from "../../../../flux/actions/apis/userdetails";
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
@@ -49,21 +48,9 @@ class UserDetails extends React.Component {
    * life cycle methods
    */
   componentDidMount() {
-    this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
-    if (this.props.job_details.documents.length < 1) {
-      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, false, false)
-      this.setState({ showLoader: true })
-    }
-    else if (this.props.async_job_status.job) {
-      /**
-       * a job got started, fetch it status
-       */
-      this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, [this.props.async_job_status.job.jobID], true, false)
-      this.props.clearJobEntry()
-    }
-    this.makeAPICallDocumentsTranslationProgress()
-
-    TELEMETRY.pageLoadCompleted('user-details')
+   const userObj = new UserInfo();
+   console.log('User Object',userObj)
+   APITransport(userObj);
   }
 
   componentWillUnmount() {
@@ -284,6 +271,7 @@ class UserDetails extends React.Component {
   };
 
   render() {
+    console.log(this.props.userinfo)
     const columns = [
       {
         name: "name",
@@ -460,6 +448,7 @@ class UserDetails extends React.Component {
 
 const mapStateToProps = state => ({
     user: state.login,
+    userinfo: state.userinfo,
     apistatus: state.apistatus,
     job_details: state.job_details,
     async_job_status: state.async_job_status
@@ -469,6 +458,7 @@ const mapStateToProps = state => ({
     bindActionCreators(
       {
         clearJobEntry,
+        UserInfo,
         APITransport,
         CreateCorpus: APITransport
       },

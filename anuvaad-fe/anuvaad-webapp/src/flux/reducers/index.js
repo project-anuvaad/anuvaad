@@ -40,6 +40,9 @@ import document_editor_mode from './editor/document_editor_mode';
 import show_pdf from './showPdfReducer'
 import open_sidebar from './showsidebar'
 import job_status from './v1.job_progress';
+
+import userinfo from '../reducers/userdetails';
+
 export default {
     login,
     automl,
@@ -83,5 +86,6 @@ export default {
     open_sidebar,
     
     active_page_number,
-    job_status
+    job_status,
+    userinfo
 };
