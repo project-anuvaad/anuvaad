@@ -42,12 +42,12 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.fetch_models && this.props.fetch_models.models.length < 1) {
+   
       const { APITransport }  = this.props;
       const apiModel          = new FetchModel();
       APITransport(apiModel);
       this.setState({ showLoader: true });
-    }
+    
   }
 
   componentDidUpdate(prevProps) {
@@ -60,6 +60,8 @@ class Dashboard extends React.Component {
   }
 
   processClearButtonPressed() {
+    this.setState({text:'',source_languages: [],
+      target_languages: [],anuvaadText:""})
   }
 
   processAutoMLCheckboxClicked() {
@@ -74,10 +76,9 @@ class Dashboard extends React.Component {
 
   processTranslateButtonPressed() {
     let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
-    console.log('submit pressed: %s %s %s %s' , this.state.target_language_code, this.state.source_language_code, this.state.text, modelId)
 
-    this.makeAPICallInteractiveTranslation(this.state.text, modelId)
-    this.makeAPICallAutoML(this.state.text, this.state.source_language_code, this.state.target_language_code)
+    this.makeAPICallInteractiveTranslation(this.state.text, modelId.model_id)
+    // this.makeAPICallAutoML(this.state.text, this.state.source_language_code, this.state.target_language_code)
   }
 
   processSourceLanguageSelected = (event) => {
@@ -91,6 +92,7 @@ class Dashboard extends React.Component {
   processTargetLanguageSelected = (event) => {
     this.setState({ target_language_code: event.target.value})
   }
+  
 
   /**
    * api calls
