@@ -37,6 +37,7 @@ class CreateUser extends React.Component {
       target_language_code: '',
       source_languages: [],
       target_languages: [],
+      roles:['Translator','Editor','Dev','Interactive-Editor']
     };
     this.processTranslateButtonPressed = this.processTranslateButtonPressed.bind(this);
     this.processClearButtonPressed = this.processClearButtonPressed.bind(this);
@@ -167,7 +168,7 @@ class CreateUser extends React.Component {
               labelId="demo-simple-select-outlined-label"
               id="demo-simple-select-outlined"
               // onChange={this.processSourceLanguageSelected}
-              // value={this.state.source_language_code}
+               value={this.state.roles}
             >
               {/* {
                 this.state.source_languages.map(lang => 
@@ -240,7 +241,7 @@ class CreateUser extends React.Component {
         <Paper className={classes.paper}>
           <Grid container >
             {this.renderItems()}
-            {this.renderCourtItems()}
+            {/* {this.renderCourtItems()} */}
             {this.renderRoleItems()}
             <Grid item xs={12} sm={12} lg={12} xl={12} style={{ display: 'flex', flexDirection: 'column' }}>
             </Grid>

@@ -25,7 +25,7 @@ import JobStatus from "../../../../flux/actions/apis/translation.progress";
 import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
 import ToolBar from "../AdminPanel/AdminPanelHeader"
 import DownloadFile from "../../../../flux/actions/apis/download_file"
-import UserInfo from "../../../../flux/actions/apis/userdetails";
+import FetchUserDetails from "../../../../flux/actions/apis/userdetails";
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
@@ -48,9 +48,9 @@ class UserDetails extends React.Component {
    * life cycle methods
    */
   componentDidMount() {
-   const userObj = new UserInfo();
-   console.log('User Object',userObj)
-   APITransport(userObj);
+   const userObj = new FetchUserDetails(2000);
+   console.log('User Object',userObj,this.props)
+   this.props.APITransport(userObj);
   }
 
   componentWillUnmount() {
@@ -271,7 +271,7 @@ class UserDetails extends React.Component {
   };
 
   render() {
-    console.log(this.props.userinfo)
+    console.log('inside render',this.props.apistatus.message)
     const columns = [
       {
         name: "name",
@@ -458,7 +458,6 @@ const mapStateToProps = state => ({
     bindActionCreators(
       {
         clearJobEntry,
-        UserInfo,
         APITransport,
         CreateCorpus: APITransport
       },

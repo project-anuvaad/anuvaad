@@ -97,7 +97,7 @@ const constants = {
     SAVE_CONTENT: "SAVE_CONTENT",
     MARK_INACTIVE: "MARK_INACTIVE",
     JOBSTATUS: "JOBSTATUS",
-    USERINFO:"USERINFO",
+    FETCH_USERINFO:"FETCH_USERINFO",
     /**
      * Asynchronous Job action
      */
