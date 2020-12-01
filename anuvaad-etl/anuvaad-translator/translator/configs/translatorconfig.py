@@ -5,8 +5,8 @@ import os
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
 mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
 redis_host = os.environ.get('REDIS_SERVER_HOST', 'redis://localhost:6379/')
-file_download_url = str(os.environ.get('FILE_UPLOADER_HOST', 'http://gateway_anuvaad-fileuploader:5001')) \
-                    + str(os.environ.get('FILE_DOWNLOAD_ENDPOINT', '/anuvaad/v1/download'))
+file_download_url = str(os.environ.get('FILE_UPLOADER_HOST', 'http://gateway_anuvaad-user-fileuploader:5001')) \
+                    + str(os.environ.get('FILE_DOWNLOAD_ENDPOINT', '/anuvaad-api/file-uploader/v0/download-file'))
 save_content_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
                     + str(os.environ.get('SAVE_CONTENT_ENDPOINT', '/api/v0/save-content'))
 fetch_content_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
@@ -15,8 +15,8 @@ update_content_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_
                     + str(os.environ.get('UPDATE_CONTENT_ENDPOINT', '/api/v0/update-content'))
 sentence_fetch_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
                     + str(os.environ.get('SENTENCE_FETCH_ENDPOINT', '/api/v0/fetch-content-sentence'))
-nmt_translate_url = os.environ.get('NMT_TRANSLATE_URL', 'http://52.35.227.215:5001/translate-anuvaad')
-nmt_interactive_translate_url = os.environ.get('NMT_IT_URL', 'http://52.35.227.215:5001/v1/interactive-translation')
+nmt_translate_url = os.environ.get('NMT_TRANSLATE_URL', 'http://172.30.0.234:5001/nmt-inference/v3/translate-anuvaad')
+nmt_interactive_translate_url = os.environ.get('NMT_IT_URL', 'http://172.30.0.234:5001/nmt-inference/v2/interactive-translation')
 
 
 #MODULE-SPECIFIC-CONFIGS
