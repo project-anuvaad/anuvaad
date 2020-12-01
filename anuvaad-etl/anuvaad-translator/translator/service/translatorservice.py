@@ -5,6 +5,7 @@ from utilities.translatorutils import TranslatorUtils
 from kafkawrapper.translatorproducer import Producer
 from repository.translatorrepository import TranslatorRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
+from anuvaad_auditor.errorhandler import post_error
 from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
 from configs.translatorconfig import anu_translator_output_topic
@@ -26,22 +27,26 @@ class TranslatorService:
         translate_wf_input["state"] = "TRANSLATED"
         log_info("Translator process initiated... jobID: " + str(translate_wf_input["jobID"]), translate_wf_input)
         error_list = []
+        error = None
         for file in translate_wf_input["input"]["files"]:
             try:
                 dumped = self.dump_file_to_db(file["path"], translate_wf_input)
                 if not dumped:
                     error_list.append({"inputFile": str(file["path"]), "outputFile": "FAILED",
                                        "error": "File received couldn't be downloaded!"})
+                    error = post_error("FILE_DOWNLOAD_FAILED", "File received couldn't be downloaded!", None)
                 else:
                     pushed = self.push_sentences_to_nmt(file, translate_wf_input)
                     if not pushed:
                         error_list.append({"inputFile": str(file["path"]), "outputFile": "FAILED",
                                            "error": "Error while pushing sentences to NMT"})
+                        error = post_error("NMT_PUSH_FAILED", "Error while pushing sentences to NMT", None)
             except Exception as e:
                 log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
                 continue
-        if error_list:
+        if error_list and error is not None:
             translate_wf_input["output"], translate_wf_input["status"] = error_list, "FAILED"
+            translate_wf_input["error"] = error
             translate_wf_input["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
             producer.produce(translate_wf_input, anu_translator_output_topic)
             return {"status": "failed", "message": "Some/All files failed"}
