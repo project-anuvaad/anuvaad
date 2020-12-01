@@ -22,6 +22,8 @@ import DocumentEditorV1 from './ui/containers/web/TranslatorEditor/DocumentEdito
 
 import FileUpload from './ui/containers/web/DocumentUpload/FileUpload';
 import ViewDocument from './ui/containers/web/DocumentTranslate/ViewDocument';
+import UserDetails from "./ui/containers/web/AdminPanel/UserDetails";
+import CreateUser from "./ui/containers/web/AdminPanel/CreateUser";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute,  component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -181,7 +183,31 @@ class AppRoutes extends React.Component {
               currentMenu="view-document"
               dontShowHeader={true}
             />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/create-user`}
+              title={translate('create.user.page.heading.title')}
+              component={CreateUser}
+              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              authenticate={this.authenticateUser}
+              currentMenu="create-user"
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/user-details`}
+              dontShowLoader={'user-details'}
+              title={"User Details"}
+              userRoles={["ADMIN"]}
+              component={UserDetails}
+              authenticate={this.authenticateUser}
+              currentMenu="user-details"
+              dontShowHeader={true}
+            />
+
+
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
+
+
           </Switch>
         </div>
       </Router>

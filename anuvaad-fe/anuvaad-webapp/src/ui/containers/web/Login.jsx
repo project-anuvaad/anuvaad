@@ -115,9 +115,12 @@ class Login extends React.Component {
         var roles = this.handleRoles(resData);
         localStorage.setItem("roles", roles)
         localStorage.setItem("lang", "en")
-        localStorage.setItem("userProfile", JSON.stringify(resData))
-        history.push(`${process.env.PUBLIC_URL}/view-document`);
-
+        localStorage.setItem("userProfile", JSON.stringify(resData));
+        if (roles.includes('ADMIN')){
+          history.push(`${process.env.PUBLIC_URL}/user-details`);
+        }else{
+          history.push(`${process.env.PUBLIC_URL}/view-document`);
+        }
       }
     }).catch((error) => {
       console.log('api failed because of server or network')
