@@ -18,7 +18,7 @@ import Activate from "./ui/containers/web/User/Activate";
 import { translate } from '../src/assets/localisation';
 import UpdatePassword from './ui/containers/web/User/UpdatePassword';
 import SetPassword from './ui/containers/web/User/SetPassword';
-import DocumentEditorV1 from './ui/containers/web/TranslatorEditor/DocumentEditor.v1';
+import DocumentEditorV1 from './ui/containers/web/DocumentEditor/DocumentEditor.v1';
 
 import FileUpload from './ui/containers/web/DocumentUpload/FileUpload';
 import ViewDocument from './ui/containers/web/DocumentTranslate/ViewDocument';
