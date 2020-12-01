@@ -65,6 +65,14 @@
             "description":"API to update user in the system"
         },
         {
+            "id":"36677274-7ac3-4319-8170-f2e007341ecf",
+            "uri":"/anuvaad/user-mgmt/v1/users/search",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search users from the system"
+        }
+        {
             "id":"420add6a-c61f-4520-88ab-025378b626b8",
             "uri":"/anuvaad/user-mgmt/v1/users/login",
             "module":"USER-MANAGEMENT-SYSTEM",
