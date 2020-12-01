@@ -15,7 +15,7 @@ import copy
 import threading
 from src.kafka_module.producer import Producer
 import src.utilities.app_context as app_context
-
+import requests
 
 file_ops = FileOperation()
 
