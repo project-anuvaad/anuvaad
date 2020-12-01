@@ -97,10 +97,9 @@ class FileServe(Resource):
         filename = args['filename']
         filepath = os.path.join(config.download_folder, filename)
         if(os.path.exists(filepath)):
-            with open(filepath) as json_file:
-                data = json.load(json_file)
-                res = CustomResponse(Status.SUCCESS.value, data)
-                return res.getres()
+            result = send_file(filepath, as_attachment=True)
+            result.headers["x-suggested-filename"] = filename
+            return result
         else:
             res = CustomResponse(Status.ERROR_NOTFOUND_FILE.value, None)
             return res.getresjson(), 400
