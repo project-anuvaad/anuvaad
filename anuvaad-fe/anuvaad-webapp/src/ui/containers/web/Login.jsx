@@ -84,7 +84,7 @@ class Login extends React.Component {
       } else {
         let resData = rsp_data && rsp_data.data
         localStorage.setItem("token", resData.token)
-        await this.fetchUserProfileDetails(resData.token)
+        this.fetchUserProfileDetails(resData.token)
       }
     }).catch((error) => {
       this.setState({ error: true, loading: false })
