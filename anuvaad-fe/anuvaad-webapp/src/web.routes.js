@@ -55,7 +55,8 @@ class AppRoutes extends React.Component {
     let count = 0;
     const token = localStorage.getItem("token");
     if (localStorage.getItem("roles")) {
-      const userRoles = ["interactive-editor"] //JSON.parse(localStorage.getItem("roles"));
+      console.log(localStorage.getItem("roles"), allowedRoles)
+      const userRoles = [localStorage.getItem("roles")] //JSON.parse(localStorage.getItem("roles"));
       if (token) {
         if (allowedRoles && Array.isArray(allowedRoles)) {
           allowedRoles.map(allowedRole => {
@@ -117,7 +118,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:locale/:tgt_locale/:targetlang/:jobid/:inputfileid/:modelId/:filename`}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              userRoles={["TRANSLATOR"]}
               component={DocumentEditorV1}
               title="Translate file"
               authenticate={this.authenticateUser}
@@ -128,7 +129,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-upload`}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              userRoles={["TRANSLATOR"]}
               component={FileUpload}
               title="Start Translate"
               authenticate={this.authenticateUser}
@@ -167,7 +168,7 @@ class AppRoutes extends React.Component {
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-translate`}
               title={translate('webroutes.page.title.anuvaadEditor')}
-              userRoles={["editor", "dev", "interactive-editor", "grader"]}
+              userRoles={["TRANSLATOR"]}
               component={IntractiveTranslate}
               authenticate={this.authenticateUser}
               currentMenu="interactive-translate"
@@ -177,7 +178,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/view-document`}
               dontShowLoader
               title={"Document Translate"}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              userRoles={["TRANSLATOR"]}
               component={ViewDocument}
               authenticate={this.authenticateUser}
               currentMenu="view-document"
@@ -188,7 +189,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/create-user`}
               title={translate('create.user.page.heading.title')}
               component={CreateUser}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              userRoles={["ADMIN"]}
               authenticate={this.authenticateUser}
               currentMenu="create-user"
             />
@@ -197,7 +198,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/user-details`}
               dontShowLoader
               title={"User Details"}
-              //  userRoles={["ADMIN"]}
+              userRoles={["ADMIN"]}
               component={UserDetails}
               authenticate={this.authenticateUser}
               currentMenu="user-details"
