@@ -15,7 +15,7 @@ export default class CreateUsers extends API {
         this.token = token;
         this.password = password;
         this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.createuser}`;
-        console.log('type',this.type,'email',this.email,'name',this.name,'UserName',this.userName,'Roles',this.roles,'endpoint',this.endpoint)
+        // console.log('type',this.type,'email',this.email,'name',this.name,'UserName',this.userName,'Roles',this.roles,'endpoint',this.endpoint)
     }
 
     toString() {

@@ -84,7 +84,7 @@ class Login extends React.Component {
       } else {
         let resData = rsp_data && rsp_data.data
         localStorage.setItem("token", resData.token)
-        this.fetchUserProfileDetails(resData.token)
+        await this.fetchUserProfileDetails(resData.token)
       }
     }).catch((error) => {
       this.setState({ error: true, loading: false })
@@ -117,12 +117,11 @@ class Login extends React.Component {
         localStorage.setItem("lang", "en")
         localStorage.setItem("userProfile", JSON.stringify(resData));
         if (roles.includes('ADMIN')){
-          // history.push(`${process.env.PUBLIC_URL}/user-details`);
-          history.push(`${process.env.PUBLIC_URL}/create-user`)
+          history.push(`${process.env.PUBLIC_URL}/user-details`);
         }else{
           history.push(`${process.env.PUBLIC_URL}/view-document`);
         }
-        
+        // history.push(`${process.env.PUBLIC_URL}/create-user`)
       }
     }).catch((error) => {
       console.log('api failed because of server or network')

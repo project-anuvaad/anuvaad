@@ -24,7 +24,16 @@ const DashboardStyles = theme => ({
     width: "40%", 
     marginTop: "2%", 
     marginBottom: "2%", 
-    padding: '3%'
+    padding: '3%',
+    
+  },
+  userdetailspaper:{
+    width: "40%", 
+    marginTop: "2%", 
+    marginBottom: "2%", 
+    paddingTop:'3%',
+    paddingBottom:'3%',
+    boxSizing:"border-box"
   },
   grid1:{
     marginLeft: "6.5%"
@@ -83,8 +92,20 @@ const DashboardStyles = theme => ({
   },
   dataChip: {
     display: 'flex', flexDirection: 'row', marginLeft: '0px',flexWrap: 'wrap'
-  }
- 
+  },
+  buttonProgress: {
+    color: 'green[500]',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
+  
   
 });
 
