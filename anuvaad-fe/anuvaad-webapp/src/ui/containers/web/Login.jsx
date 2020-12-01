@@ -121,7 +121,7 @@ class Login extends React.Component {
         // }else{
         //   history.push(`${process.env.PUBLIC_URL}/view-document`);
         // }
-        history.push(`${process.env.PUBLIC_URL}/user-details`)
+        history.push(`${process.env.PUBLIC_URL}/create-user`)
       }
     }).catch((error) => {
       console.log('api failed because of server or network')

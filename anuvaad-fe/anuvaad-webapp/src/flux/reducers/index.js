@@ -42,6 +42,7 @@ import open_sidebar from './showsidebar'
 import job_status from './v1.job_progress';
 
 import userinfo from '../reducers/userdetails';
+import createusers from '../reducers/createusers';
 
 export default {
     login,
@@ -87,5 +88,6 @@ export default {
     
     active_page_number,
     job_status,
-    userinfo
+    userinfo,
+    createusers,
 };

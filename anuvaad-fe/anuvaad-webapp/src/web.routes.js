@@ -197,7 +197,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/user-details`}
               dontShowLoader
               title={"User Details"}
-              // userRoles={["ADMIN"]}
+              //  userRoles={["ADMIN"]}
               component={UserDetails}
               authenticate={this.authenticateUser}
               currentMenu="user-details"
