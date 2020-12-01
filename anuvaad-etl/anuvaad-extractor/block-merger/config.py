@@ -31,7 +31,8 @@ CONSUMER_GROUP_identifire    = 'KAFKA_ANUVAAD_ETL_BM_CONSUMER_GRP'
 CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_default,CONSUMER_GROUP_identifire)
 #folders and file path
 download_folder = 'upload'
-
+file_upload_url = str(os.environ.get('USER_FILE_UPLOADER_HOST', 'http://gateway_anuvaad-user-fileuploader:5001')) \
+                    + str(os.environ.get('USER_FILE_UPLOAD_ENDPOINT', '/anuvaad-api/file-uploader/v0/upload-file'))
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),

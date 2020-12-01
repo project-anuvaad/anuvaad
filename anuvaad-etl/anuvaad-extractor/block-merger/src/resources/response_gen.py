@@ -24,7 +24,11 @@ class Response(object):
     def __init__(self, json_data, DOWNLOAD_FOLDER):
         self.json_data          = json_data
         self.DOWNLOAD_FOLDER    = DOWNLOAD_FOLDER
-
+    def upload(self,json_file):
+        url = config.file_upload_url
+        r = requests.post(url, files = json_file)
+        filename = r["data"]
+        return filename
     def workflow_response(self, task_id, task_starttime, debug_flush=False):
 
         app_context.init()
@@ -46,8 +50,11 @@ class Response(object):
                     bm_response = DocumentStructure(app_context=app_context, file_name=input_filename, lang=in_locale)
                     if bm_response['code'] == 200:
                         
-                        output_filename_json = file_ops.writing_json_file(i, bm_response['rsp'], self.DOWNLOAD_FOLDER)
-                        file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
+                        #output_filename_json = file_ops.writing_json_file(i, bm_response['rsp'], self.DOWNLOAD_FOLDER)
+                        output_filename = self.upload(bm_response['rsp'])
+
+                        file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
+                        #file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
                         output_file_response.append(file_res)
                         task_endtime = eval(str(time.time()).replace('.', '')[0:13])
                         response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
