@@ -5,7 +5,6 @@ import urllib
 
 import requests
 from configs.translatorconfig import file_download_url
-from configs.translatorconfig import sentence_fetch_url
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 
 log = logging.getLogger('file')
@@ -21,7 +20,8 @@ class TranslatorUtils:
 
     # Generates unique task id.
     def download_file(self, file_id, task_input):
-        url = str(file_download_url) + "?file=" + str(file_id)
+        url = str(file_download_url) + "?filename=" + str(file_id) + "&userid=" + str(task_input["metadata"]["userID"])
+        log_info("URI: " + str(url), task_input)
         try:
             with urllib.request.urlopen(url) as url:
                 response = url.read().decode()

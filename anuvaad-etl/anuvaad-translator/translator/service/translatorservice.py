@@ -41,7 +41,7 @@ class TranslatorService:
                 log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
                 continue
         if error_list:
-            translate_wf_input["output"], translate_wf_input["state"] = error_list, "FAILED"
+            translate_wf_input["output"], translate_wf_input["status"] = error_list, "FAILED"
             translate_wf_input["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
             producer.produce(translate_wf_input, anu_translator_output_topic)
             return {"status": "failed", "message": "Some/All files failed"}
