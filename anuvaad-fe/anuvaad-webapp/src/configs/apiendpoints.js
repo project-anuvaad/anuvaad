@@ -15,7 +15,7 @@ const endpoints = {
   signup: "/anuvaad/user-mgmt/v1/users/create",
   login: "/anuvaad/user-mgmt/v1/users/login",
   setpassword: "/anuvaad/user-mgmt/v1/users/reset-password",
-
+  updatePassword : '/anuvaad/user-mgmt/v1/users/reset-password',
   fecthcontent: "/anuvaad/content-handler/v0/fetch-content",
   documentupload:"/anuvaad-api/file-uploader/v0/upload-file",
   documentConverter: "/anuvaad-etl/document-converter/v0/document-converter",
@@ -27,7 +27,9 @@ const endpoints = {
   profile_details:'/anuvaad/user-mgmt/v1/users/auth-token-search',
   
   // download_file : '/anuvaad-api/file-uploader/v0/download-file?filename=cda6d224-5f9b-4805-a1c3-34222b238dab.pdf&userid=9812e561524e4dc3bca79ff62d9f40041606296824855'
-  download_file : '/anuvaad-api/file-uploader/v0/download-file'
+  download_file : '/anuvaad-api/file-uploader/v0/download-file',
+  download_zip_file : '/anuvaad-api/file-uploader/v0/serve-file'
+
 };
 
 export default endpoints;

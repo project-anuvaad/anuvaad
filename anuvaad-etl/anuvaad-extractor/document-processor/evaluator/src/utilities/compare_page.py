@@ -23,7 +23,7 @@ def compare_regions(gt_regions, predicted_regions):
         gt_base = False
     else :
         base_regions = gt_regions
-        compare_regions = base_regions
+        compare_regions = predicted_regions
         gt_base    = True
     base_exists = len(base_regions) > 0
     if base_exists:
@@ -46,7 +46,7 @@ def compare_regions(gt_regions, predicted_regions):
                 else :
                     region_iou =0
                 # iou of 0.33 coressponds to 50% overlap
-                if (region_iou > iou) and (region_iou > 0.33):
+                if (region_iou > iou): #and (region_iou > 0.33):
                     iou = region_iou
                     intersecting_region = compare_regions[intr_index]
             if gt_base :
