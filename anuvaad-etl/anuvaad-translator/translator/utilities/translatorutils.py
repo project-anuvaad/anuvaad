@@ -24,7 +24,7 @@ class TranslatorUtils:
         log_info("File: " + str(file_path), task_input)
         try:
             with open(file_path) as file:
-                data = json.loads(file)
+                data = json.loads(file.read())
                 return data
         except Exception as e:
             log_exception("Exception while reading the json file: " + str(e), task_input, e)
