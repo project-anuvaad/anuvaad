@@ -22,12 +22,15 @@ const endpoints = {
   word_dictionary: "/anuvaad/content-handler/v0/dictionary/search",
   save_content: "/anuvaad/content-handler/v0/save-content-sentence",
   translate: "/anuvaad-etl/translator/v1/text/translate",
+  instant_translate: "/nmt-inference/v3/translate-anuvaad",
   mark_inactive: "/anuvaad-etl/wf-manager/v1/workflow/jobs/mark-inactive",
   jobids: "/anuvaad/content-handler/v0/records/search",
   profile_details:'/anuvaad/user-mgmt/v1/users/auth-token-search',
   
   // download_file : '/anuvaad-api/file-uploader/v0/download-file?filename=cda6d224-5f9b-4805-a1c3-34222b238dab.pdf&userid=9812e561524e4dc3bca79ff62d9f40041606296824855'
-  download_file : '/anuvaad-api/file-uploader/v0/download-file'
+  download_file : '/anuvaad-api/file-uploader/v0/download-file',
+  download_zip_file : '/anuvaad-api/file-uploader/v0/serve-file'
+
 };
 
 export default endpoints;

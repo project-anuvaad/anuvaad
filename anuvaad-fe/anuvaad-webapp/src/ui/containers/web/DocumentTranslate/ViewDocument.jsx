@@ -59,7 +59,7 @@ class ViewDocument extends React.Component {
        * a job got started, fetch it status
        */
       this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, [this.props.async_job_status.job.jobID], true, false)
-      this.props.clearJobEntry()
+      
     }
     this.makeAPICallDocumentsTranslationProgress()
 
@@ -71,6 +71,8 @@ class ViewDocument extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+
+
     if (prevProps.job_details.documents.length !== this.props.job_details.documents.length) {
       /**
        * update job progress status only progress_updated is false
@@ -81,13 +83,15 @@ class ViewDocument extends React.Component {
       }
 
       if (this.props.job_details.document_deleted) {
-        this.setState({ dialogMessage: "Deleted successfully...!", variant: 'success', timeOut: 3000 })
+        this.setState({ dialogMessage: "Deleted successfully ", variant: 'success', timeOut: 3000 })
       }
+      this.props.clearJobEntry()
 
     }
     else if (prevProps.job_details.documents.length === 0 && this.props.job_details.documents.length === 0 && !this.props.apistatus.progress && this.state.showLoader) {
       this.setState({ showLoader: false })
     }
+    
   }
 
   getMuiTheme = () => createMuiTheme({
@@ -135,7 +139,7 @@ class ViewDocument extends React.Component {
 
   makeAPICallDocumentsTranslationProgress(jobIds) {
     var recordIds = this.getRecordIds()
-    if (recordIds.length > 1) {
+    if (recordIds.length > 0) {
       const { APITransport } = this.props;
       const apiObj = new JobStatus(recordIds);
       APITransport(apiObj);
