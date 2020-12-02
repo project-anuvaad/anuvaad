@@ -6,9 +6,11 @@ from anuvaad_auditor.errorhandler import post_error
 from configs.translatorconfig import nmt_translate_url
 from configs.translatorconfig import update_content_url
 from utilities.translatorutils import TranslatorUtils
+from tmx.tmxservice import TMXService
 
 
 utils = TranslatorUtils()
+tmxservice = TMXService()
 
 
 class BlockTranslationService:
@@ -75,9 +77,10 @@ class BlockTranslationService:
         for block in block_translate_input["input"]["textBlocks"]:
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
+                    tmx_phrases = self.fetch_tmx(sentence["src"], block_translate_input)
                     n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["s_id"])
                     sent_nmt_in = {"s_id": sentence["s_id"], "src": sentence["src"], "id": model_id,
-                                   "n_id": n_id}
+                                   "n_id": n_id, "tmx_phrases": tmx_phrases}
                     if 'save' in sentence.keys():
                         if not sentence["save"]:
                             sent_for_nmt.append(sent_nmt_in)
@@ -86,14 +89,23 @@ class BlockTranslationService:
         log_info("Sentences fetched for NMT!", block_translate_input)
         return sent_for_nmt
 
+    # Fetches tmx phrases
+    def fetch_tmx(self, sentence, block_translate_input):
+        context = block_translate_input["context"]
+        user_id = block_translate_input["metadata"]["userID"]
+        locale = block_translate_input["model"]["source_language_code"] + "|" + block_translate_input["model"]["target_language_code"]
+        return tmxservice.get_tmx_phrases(user_id, context, locale, sentence, block_translate_input)
+
     # Parses the nmt response and builds input for ch
     def get_translations_ip_ch(self, nmt_response, block_translate_input):
         if 'response_body' in nmt_response.keys():
             if nmt_response['response_body']:
                 for translation in nmt_response["response_body"]:
+                    if translation["tmx_phrases"]:
+                        translation["tgt"] = tmxservice.replace_nmt_tgt_with_user_tgt(translation["tmx_phrases"],
+                                                                                      translation["tgt"], block_translate_input)
                     b_index, s_index = None, None
-                    block_id, sentence_id = str(translation["n_id"]).split("|")[2], str(translation["n_id"]).split("|")[
-                        3]
+                    block_id, sentence_id = str(translation["n_id"]).split("|")[2], str(translation["n_id"]).split("|")[3]
                     blocks = block_translate_input["input"]["textBlocks"]
                     for j, block in enumerate(blocks):
                         if str(block["block_identifier"]) == str(block_id):

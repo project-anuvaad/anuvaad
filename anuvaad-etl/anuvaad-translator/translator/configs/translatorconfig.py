@@ -4,7 +4,7 @@ import os
 #CROSS-MODULE-COMMON-CONFIGS
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
 mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
-redis_host = os.environ.get('REDIS_SERVER_HOST', 'redis://localhost:6379/')
+redis_server_host = os.environ.get('REDIS_SERVER_HOST', 'redis://localhost:6379/')
 file_download_url = str(os.environ.get('USER_FILE_UPLOADER_HOST', 'http://gateway_anuvaad-user-fileuploader:5001')) \
                     + str(os.environ.get('USER_FILE_DOWNLOAD_ENDPOINT', '/anuvaad-api/file-uploader/v0/download-file'))
 save_content_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
@@ -17,6 +17,7 @@ sentence_fetch_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_
                     + str(os.environ.get('SENTENCE_FETCH_ENDPOINT', '/api/v0/fetch-content-sentence'))
 nmt_translate_url = os.environ.get('NMT_TRANSLATE_URL', 'http://172.30.0.234:5001/nmt-inference/v3/translate-anuvaad')
 nmt_interactive_translate_url = os.environ.get('NMT_IT_URL', 'http://172.30.0.234:5001/nmt-inference/v2/interactive-translation')
+nmt_labse_align_url = os.environ.get('NMT_LABSE_ALIGN_URL', 'http://172.30.0.234:5001/nmt-inference/v1/labse-aligner')
 
 
 #MODULE-SPECIFIC-CONFIGS
@@ -27,6 +28,7 @@ anu_nmt_input_topic = os.environ.get('KAFKA_NMT_TRANSLATION_INPUT_TOPIC', 'anuva
 anu_nmt_output_topic = os.environ.get('KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC', 'anuvaad_nmt_translate_processed')
 jm_cron_interval_sec = 30
 download_folder = "/app/upload/"
+tmx_default_context = "JUDICIARY"
 
 #kafka-configs
 anu_translator_input_topic = os.environ.get('KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_TOPIC', 'anuvaad-dp-tools-translator-input-v3')

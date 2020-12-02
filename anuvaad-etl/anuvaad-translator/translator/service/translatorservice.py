@@ -4,6 +4,7 @@ import uuid
 from utilities.translatorutils import TranslatorUtils
 from kafkawrapper.translatorproducer import Producer
 from repository.translatorrepository import TranslatorRepository
+from tmx.tmxservice import TMXService
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from anuvaad_auditor.errorhandler import post_error
 from configs.translatorconfig import nmt_max_batch_size
@@ -14,6 +15,7 @@ from configs.translatorconfig import tool_translator
 utils = TranslatorUtils()
 producer = Producer()
 repo = TranslatorRepository()
+tmxservice = TMXService()
 
 
 class TranslatorService:
@@ -144,9 +146,10 @@ class TranslatorService:
             block_id = block["block_id"]
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
+                    tmx_phrases = self.fetch_tmx(sentence["src"], file, translate_wf_input)
                     node_id = str(record_id) + "|" + str(page_no) + "|" + str(block_id)
                     sent_nmt_in = {"src": sentence["src"], "s_id": sentence["s_id"], "id": file["model"]["model_id"],
-                                   "n_id": node_id}
+                                   "n_id": node_id, "tmx_phrases": tmx_phrases}
                     if batch_key in sentences_for_trans.keys():
                         sentence_list = sentences_for_trans[batch_key]
                         sentence_list.append(sent_nmt_in)
@@ -160,6 +163,13 @@ class TranslatorService:
                 log_error("There are no tokenised sentences in block: " + str(block_id), translate_wf_input, None)
                 continue
         return sentences_for_trans, batch_key
+
+    # Fetches tmx phrases
+    def fetch_tmx(self, sentence, file, translate_wf_input):
+        context = file["context"]
+        user_id = translate_wf_input["metadata"]["userID"]
+        locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
+        return tmxservice.get_tmx_phrases(user_id, context, locale, sentence, translate_wf_input)
 
     # Method to process the output received from the NMT
     def process_nmt_output(self, nmt_output):
@@ -240,6 +250,9 @@ class TranslatorService:
         sentence_ids = []
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
+            if nmt_res_sentence["tmx_phrases"]:
+                nmt_res_sentence["tgt"] = tmxservice.replace_nmt_tgt_with_user_tgt(nmt_res_sentence["tmx_phrases"],
+                                                                                   nmt_res_sentence["tgt"], translate_wf_input)
             page_no, block_id = node[2], node[3]
             p_index, b_index, s_index = None, None, None
             sentence_id = nmt_res_sentence["s_id"]
