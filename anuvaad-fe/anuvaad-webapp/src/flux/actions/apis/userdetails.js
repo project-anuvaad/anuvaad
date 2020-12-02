@@ -6,10 +6,11 @@ import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 
 export default class FetchUserDetails extends API {
-  constructor(timeout = 200000) {
-    super("POST", timeout, false);
+  constructor(token,timeout = 200000) {
+    super("GET", timeout, false);
     this.type = C.FETCH_USERINFO;
-    this.fetch_model = null;
+    this.token = token;
+    this.fetch_response = null;
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.userdetails}`;
   }
 
@@ -19,7 +20,7 @@ export default class FetchUserDetails extends API {
 
   processResponse(res) {
     super.processResponse(res);
-    this.fetch_model = res.response_body;
+    this.fetch_response = res.response_body;
   }
 
   apiEndPoint() {
@@ -34,12 +35,12 @@ export default class FetchUserDetails extends API {
     return {
       headers: {
         "Content-Type": "application/json",
-         'auth-token': `${decodeURI(localStorage.getItem("token"))}`
+         'auth-token': `${this.token}`
       }
     };
   }
 
   getPayload() {
-    return this.fetch_model;
+    return this.fetch_response;
   }
 }

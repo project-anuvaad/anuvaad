@@ -41,23 +41,21 @@ class CreateUser extends React.Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} style={{ display: 'flex', flexDirection: 'row' }}>
         <Grid item xs={6} sm={6} lg={7} xl={4} style={{ textAlign: 'left' }}>
-          <Typography value="" variant="h5" style={{ marginLeft: '21%', marginTop: '5%' }}>
+          <Typography value="" variant="h5" style={{ marginLeft: '25%', marginTop: '2vh'}}>
             {translate("common.page.label.name")}&nbsp;
           </Typography>
-          <Typography value="" variant="h5" style={{ marginLeft: '21%', marginTop: '10%' }}>
+          <Typography value="" variant="h5" style={{ marginLeft: '25%', marginTop: '3vh'}}>
             {translate("common.page.label.email")}&nbsp;
           </Typography>
-          <Typography value="" variant="h5" style={{ marginLeft: '21%', marginTop: '10%' }}>
+          <Typography value="" variant="h5" style={{ marginLeft: '25%', marginTop: '3vh'}}>
             {translate("common.page.label.password")}&nbsp;
           </Typography>
         </Grid>
-        <Grid item xs={6} sm={6} lg={4} xl={6}>
           <FormControl variant="outlined" >
-            <TextField variant="outlined" value={this.state.name} onChange={this.handleInputReceived('name')} style={{ marginBottom: '10%' }}></TextField>
-            <TextField variant="outlined" value={this.state.emailid} onChange={this.handleInputReceived('emailid')} type="email-username" style={{ marginBottom: '10%' }}></TextField>
-            <TextField variant="outlined" value={this.state.password} onChange={this.handleInputReceived('password')} type="password" ></TextField>
+            <TextField variant="outlined" value={this.state.name} onChange={this.handleInputReceived('name')} style={{ marginBottom: '1vh' ,width:'12.5vw'}}></TextField>
+            <TextField variant="outlined" value={this.state.emailid} onChange={this.handleInputReceived('emailid')} type="email-username" style={{ marginBottom: '1vh',width:'12.5vw' }}></TextField>
+            <TextField variant="outlined" value={this.state.password} onChange={this.handleInputReceived('password')} type="password" style={{ marginBottom: '1vh',width:'12.5vw' }}></TextField>
           </FormControl>
-        </Grid>
       </Grid>
     )
 
@@ -66,24 +64,27 @@ class CreateUser extends React.Component {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
         <Grid item xs={6} sm={6} lg={7} xl={6} className={this.props.classes.label}>
-          <Typography value="" variant="h5" style={{ marginLeft: '21%', }}>
+          <Typography value="" variant="h5" style={{ marginLeft: '25%', marginTop: '1vh'}}>
             {translate("common.page.roles")}&nbsp;
           </Typography>
         </Grid>
-        <Grid item xs={6} sm={6} lg={4} xl={4}>
-          <FormControl variant="outlined" style={{ marginLeft: '1%', width: '91%' }}>
+          <FormControl variant="outlined">
             <Select
               labelId="demo-simple-select-outlined-label"
               id="demo-simple-select-outlined"
               value={this.state.roleCode}
               onChange={this.processOnSelect}
+              style={
+              {
+                width:'12.5vw'
+              }
+              }
             >
               {
                 roles.map((role, i) => <MenuItem key={role.roleCode} value={role.roleCode}>{role.roleCode}</MenuItem>)
               }
             </Select>
           </FormControl>
-        </Grid>
       </Grid>
     )
   }
@@ -202,30 +203,31 @@ class CreateUser extends React.Component {
           {translate("create.user.page.heading.title")}
         </Typography>
         <Paper className={classes.userdetailspaper}>
-          <Grid container >
+          <Grid container>
+            <Grid item xs={12} sm={12} lg={12} xl={12} style={{ display: 'flex', flexDirection: 'column' }}>
             {this.renderItems()}
             {this.renderRoleItems()}
-            <Grid item xs={12} sm={12} lg={12} xl={12} style={{ display: 'flex', flexDirection: 'column' }}>
             </Grid>
-            <Grid item xs={6} sm={6} lg={5} xl={4} style={{ marginTop: '3%', marginLeft: '10%' }}>
+            <Grid item xs={6} sm={6} lg={6} xl={6} style={{ marginTop: '3%' }}>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={this.processClearButton}
                 aria-label="edit"
                 className={classes.button1}
+                style={{marginLeft:'27%'}}
               >
                 {translate("common.page.button.reset")}
               </Button>
             </Grid>
-            <Grid item xs={6} sm={6} lg={5} xl={6} style={{ marginTop: '3%' }}>
+            <Grid item xs={6} sm={6} lg={6} xl={6} style={{ marginTop: '3%'}}>
               <Button
                 color="primary"
                 variant="contained"
                 onClick={this.processCreateUser}
                 aria-label="edit"
                 className={classes.button1}
-                style={{backgroundColor: this.state.loading && "grey"}}
+                style={{backgroundColor: this.state.loading && "grey",marginRight:'19%',marginLeft:'5%'}}
               >
                 {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress} />}
                 {translate("common.page.button.save")}

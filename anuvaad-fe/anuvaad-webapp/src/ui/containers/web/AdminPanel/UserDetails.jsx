@@ -41,7 +41,8 @@ class UserDetails extends React.Component {
    */
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('user-details');
-    const userObj = new FetchUserDetails(2000);
+    const token = localStorage.getItem("token");
+    const userObj = new FetchUserDetails(token);
     console.log('User Object', userObj, this.props)
     this.props.APITransport(userObj);
   }

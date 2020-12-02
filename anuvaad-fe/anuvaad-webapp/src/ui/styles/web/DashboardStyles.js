@@ -73,7 +73,7 @@ const DashboardStyles = theme => ({
     
   },
   button1: {
-    width: "98%", borderRadius: "20px 20px 20px 20px", height: '46px'
+    width: "15vw", borderRadius: "20px 20px 20px 20px", height: '46px'
   },
   
   button2:{
@@ -85,10 +85,10 @@ const DashboardStyles = theme => ({
 
   },
   label:{
-    textAlign: 'left', marginTop: 'auto', marginBottom: 'auto'
+    textAlign: 'left',
   },
   rowData: {
-    display: 'flex', flexDirection: 'row', marginTop: '3%'
+    display: 'flex', flexDirection: 'row'
   },
   dataChip: {
     display: 'flex', flexDirection: 'row', marginLeft: '0px',flexWrap: 'wrap'
