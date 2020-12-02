@@ -271,6 +271,15 @@ class DocumentConversion(object):
                                 sub_string_list = self.break_large_sentence(write_str, max_chars_in_line)
                                 for item in sub_string_list:
                                     out_txt_file_write.write("%s\n"%item)
+                    elif df.iloc[idx]['text'] != None and idx+1 == df.shape[0]:
+                        extra_spaces = int((df.iloc[idx]['text_left'] - 50)/13)
+                        write_str = re.sub(r'^', ' '*extra_spaces, df.iloc[idx]['text'])
+                        if len(write_str) < max_chars_in_line:
+                            out_txt_file_write.write("%s\n"%write_str)
+                        else:
+                            sub_string_list = self.break_large_sentence(write_str, max_chars_in_line)
+                            for item in sub_string_list:
+                                out_txt_file_write.write("%s\n"%item)
             out_txt_file_write.close()
             out_txt_zip = zipfile_creation(output_filepath_txt)
             log_info("txt file write completed!! filename: %s"%out_translated_txt_filename, MODULE_CONTEXT)
