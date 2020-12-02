@@ -23,7 +23,7 @@ class InteractivePagination extends React.Component {
     this.setState({ offset: value });
   };
 
-  componentDidMount(){
+  componentDidMount() {
     this.props.currentPageUpdate(1);
   }
 
@@ -97,66 +97,70 @@ class InteractivePagination extends React.Component {
     this.props.onAction(SENTENCE_ACTION.END_MODE_MERGE, this.state.offset);
   };
 
-  footer = () =>{
-      return (
-        <AppBar
-        position={"relative"}
-        style={{ marginTop: "60px", bottom: "0" }}
+  footer = () => {
+    return (
+      <AppBar
+        position={"fixed"}
+        style={{
+          top: 'auto',
+          bottom: 0,
+          // marginTop: "13px"
+        }}
         color="secondary"
       >
         <Toolbar
           disableGutters={!this.props.open_sidebar}
-          style={{ minHeight: "65px" }}
+          style={{ height: "65px" }}
         >
           {this.props.document_editor_mode.mode === "EDITOR_MODE_MERGE" ? (
             <div style={{ position: "absolute", right: "30px" }}>
               {this.renderMergeModeButtons()}
             </div>
           ) : (
-            <>
-              <Pagination
-                count={this.props.count}
-                page={this.state.offset}
-                onChange={this.handleClick}
-                color="primary"
-                size={"large"}
-                style={{ marginLeft: "3%" }}
-              />
-              {!this.props.show_pdf &&
               <>
-              {this.sentenceCount() && (
-                <div style={{ position: "absolute", marginLeft: "50%" }}>
-                  <Typography variant="h6" component="h2">
-                    Sentences
+                <Pagination
+                  count={this.props.count}
+                  page={this.state.offset}
+                  onChange={this.handleClick}
+                  color="primary"
+                  size={"large"}
+                  style={{ marginLeft: "3%" }}
+                />
+                {!this.props.show_pdf &&
+                  <>
+                    {this.sentenceCount() && (
+                      <div style={{ position: "absolute", marginLeft: "50%" }}>
+                        <Typography variant="h6" component="h2">
+                          Sentences
                   </Typography>
 
-                  <div style={{ textAlign: "center" }}>
-                    {this.sentenceCount()}
-                  </div>
-                </div>
-              )}
-              
-              {this.props.job_status && <div style={{ position: "absolute", marginLeft: "60%" }}>
-                  <Typography variant="h6" component="h2">
-                    Total Sentences
+                        <div style={{ textAlign: "center" }}>
+                          {this.sentenceCount()}
+                        </div>
+                      </div>
+                    )}
+
+                    {this.props.job_status && <div style={{ position: "absolute", marginLeft: "60%" }}>
+                      <Typography variant="h6" component="h2">
+                        Total Sentences
                   </Typography>
 
-                  <div style={{ textAlign: "center" }}>
-                    {this.props.job_status && this.props.job_status }
-                  </div>
-                </div>}
-              
-              <div style={{ position: "absolute", right: "30px" }}>
-                {this.renderNormaModeButtons()}
-              </div>
-              </>}
-            </>
-          )}
+                      <div style={{ textAlign: "center" }}>
+                        {this.props.job_status && this.props.job_status}
+                      </div>
+                    </div>}
+
+                    <div style={{ position: "absolute", right: "30px" }}>
+                      {this.renderNormaModeButtons()}
+                    </div>
+                  </>}
+              </>
+            )}
 
           {/* {this.wordCount()} */}
         </Toolbar>
       </AppBar>
-      )
+    )
   }
 
   render() {
@@ -170,7 +174,7 @@ const mapStateToProps = (state) => ({
   document_editor_mode: state.document_editor_mode,
   job_details: state.job_details,
   show_pdf: state.show_pdf.open,
-  job_status : state.job_status.status
+  job_status: state.job_status.status
 });
 
 const mapDispatchToProps = (dispatch) =>
