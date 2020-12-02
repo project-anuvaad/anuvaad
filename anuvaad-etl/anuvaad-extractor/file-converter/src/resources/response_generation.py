@@ -14,7 +14,8 @@ from subprocess import TimeoutExpired
 import time
 import os
 import config
-
+from models.user_files import UserFiles
+from datetime import datetime
 from uuid import uuid4
 from shutil import copyfile
 
@@ -44,6 +45,11 @@ class Response(object):
                 else:
                     result = convert_to(os.path.join(config.download_folder, 'pdf', upload_id), filepath, timeout=60)
                     copyfile(result, os.path.join(config.download_folder, upload_id+'.pdf'))
+
+                    userfile = UserFiles(created_by=self.json_data['metadata']['userID'],
+                                            filename=upload_id+'.pdf', created_on=datetime.now())
+                    userfile.save()
+
                     file_res = file_ops.one_filename_response(input_filename, upload_id+'.pdf', in_locale, 'pdf')
                     output_file_response.append(file_res)
             task_endtime = eval(str(time.time()).replace('.', '')[0:13])
@@ -87,6 +93,13 @@ class Response(object):
             log_exception("workflow_response : service supports only utf-16 encoded file", self.json_data, e)
             return response
         except ServiceError as e:
+            response_custom = self.json_data
+            response_custom['taskID'] = task_id
+            response_custom['message'] = str(e)
+            response = file_ops.error_handler(response_custom, "SERVICE_ERROR", True)
+            log_exception("workflow_response : Error occured during file conversion or file writing", self.json_data, e)
+            return response
+        except Exception as e:
             response_custom = self.json_data
             response_custom['taskID'] = task_id
             response_custom['message'] = str(e)
