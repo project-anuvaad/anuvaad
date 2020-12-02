@@ -2,6 +2,7 @@
 import json
 from anuvaad_auditor.loghandler import log_exception
 from configs.translatorconfig import redis_server_host
+from configs.translatorconfig import redis_server_port
 import redis
 
 redis_client = None
@@ -13,7 +14,7 @@ class TMXRepository:
 
     # Initialises and fetches redis client
     def redis_instantiate(self):
-        redis_client = redis.Redis(redis_server_host)
+        redis_client = redis.Redis(host=redis_server_host, port=redis_server_port)
         return redis_client
 
     def get_redis_instance(self):
