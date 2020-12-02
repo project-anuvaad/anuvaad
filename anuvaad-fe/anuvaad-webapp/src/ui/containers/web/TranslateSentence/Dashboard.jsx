@@ -61,8 +61,10 @@ class Dashboard extends React.Component {
 
   processClearButtonPressed() {
     this.setState({
-      text: '', source_languages: [],
-      target_languages: [], anuvaadText: ""
+      text: '', 
+      target_language_code: '',
+      source_language_code: '',
+      anuvaadText: ""
     })
   }
 
@@ -181,7 +183,7 @@ class Dashboard extends React.Component {
 
   renderTargetLanguagesItems = () => {
     return (
-      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{paddingTop: "20px"}}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
           <Typography value="" variant="h5">
             {translate("common.page.label.targetLang")}&nbsp;
@@ -227,7 +229,7 @@ class Dashboard extends React.Component {
             {this.renderSourceLanguagesItems()}
             {this.renderTargetLanguagesItems()}
 
-            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
+            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{paddingTop: "20px"}}>
               <textarea
                 id="standard-multiline-static"
                 style={{ padding: "1%", height: '100px', fontFamily: '"Source Sans Pro", "Arial", sans-serif', fontSize: "21px", width: '97.8%', borderRadius: '4px' }}
