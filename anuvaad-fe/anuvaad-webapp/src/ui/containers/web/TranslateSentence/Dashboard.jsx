@@ -8,14 +8,17 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from '@material-ui/core/FormControl';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+import { withStyles } from "@material-ui/core/styles";
+
 import FetchModel from "../../../../flux/actions/apis/fetchmodel";
 import AutoML from "../../../../flux/actions/apis/auto_ml";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { translate } from "../../../../assets/localisation";
-import { withStyles } from "@material-ui/core/styles";
 import DashboardStyles from "../../../styles/web/DashboardStyles";
 import InstantTranslateAPI from "../../../../flux/actions/apis/instant_translate";
-import FormControl from '@material-ui/core/FormControl';
 
 const { v4 } = require('uuid');
 const LANG_MODEL = require('../../../../utils/language.model')
@@ -34,6 +37,9 @@ class Dashboard extends React.Component {
       target_language_code: '',
       source_languages: [],
       target_languages: [],
+      showStatus: false,
+      message: null,
+      dialogMessage: null
     };
     this.processTranslateButtonPressed = this.processTranslateButtonPressed.bind(this);
     this.processClearButtonPressed = this.processClearButtonPressed.bind(this);
@@ -61,7 +67,7 @@ class Dashboard extends React.Component {
 
   processClearButtonPressed() {
     this.setState({
-      text: '', 
+      text: '',
       target_language_code: '',
       source_language_code: '',
       anuvaadText: ""
@@ -78,7 +84,37 @@ class Dashboard extends React.Component {
     });
   }
 
+  renderProgressInformation = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={this.state.showStatus}
+        message={this.state.message}
+      >
+        <Alert elevation={6} variant="filled" severity="info">{this.state.message}</Alert>
+      </Snackbar>
+    )
+  }
+
+  renderStatusInformation = () => {
+    return (
+      <div>
+        <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          open={true}
+          autoHideDuration={3000}
+          variant={"error"}
+          message={this.state.dialogMessage}
+          onClose={() => this.setState({ dialogMessage: null })}
+        >
+          <Alert elevation={6} variant="filled" severity="error">{this.state.dialogMessage}</Alert>
+        </Snackbar>
+      </div>
+    )
+  }
+
   processTranslateButtonPressed() {
+    this.setState({ showStatus: true, message: "Fetching translation..." })
     let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
 
     this.makeAPICallInteractiveTranslation(this.state.text, modelId.model_id)
@@ -124,7 +160,7 @@ class Dashboard extends React.Component {
   }
 
   async makeAPICallInteractiveTranslation(text, modelId) {
-    let apiObj = new InstantTranslateAPI( v4(), '', text, "", false, text, "", modelId);
+    let apiObj = new InstantTranslateAPI(v4(), '', text, "", false, text, "", modelId);
 
     this.setState({ anuvaadAPIInProgress: true })
 
@@ -135,17 +171,28 @@ class Dashboard extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        this.setState({ anuvaadAPIInProgress: false })
+        this.setState({ anuvaadAPIInProgress: false, showStatus: false, message: null, dialogMessage: "Unable to fetch translation..." })
         return Promise.reject('');
       } else {
         let filteredTexts = rsp_data && rsp_data.response_body && rsp_data.response_body[0] && rsp_data.response_body[0].tgt ? rsp_data.response_body[0].tgt : ""
+
+        if (filteredTexts) {
+          this.setState({})
           this.setState({
             anuvaadText: filteredTexts,
-            anuvaadAPIInProgress: false
+            anuvaadAPIInProgress: false,
+            showStatus: false,
+            message: null
           })
+        } else {
+          this.setState({ showStatus: false, message: null, dialogMessage: "No translation available..." })
+        }
+
+
+
       }
     }).catch((error) => {
-      this.setState({ anuvaadAPIInProgress: false })
+      this.setState({ anuvaadAPIInProgress: false, showStatus: false, message: null, dialogMessage: "Unable to fetch translation..." })
     });
   }
 
@@ -183,7 +230,7 @@ class Dashboard extends React.Component {
 
   renderTargetLanguagesItems = () => {
     return (
-      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{paddingTop: "20px"}}>
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ paddingTop: "20px" }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
           <Typography value="" variant="h5">
             {translate("common.page.label.targetLang")}&nbsp;
@@ -215,8 +262,6 @@ class Dashboard extends React.Component {
 
   render() {
     const { classes } = this.props;
-    let gridSizeLarge = 12
-    let gridSizeSmall = 12
 
     return (
       <div className={classes.root}>
@@ -229,7 +274,7 @@ class Dashboard extends React.Component {
             {this.renderSourceLanguagesItems()}
             {this.renderTargetLanguagesItems()}
 
-            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{paddingTop: "20px"}}>
+            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{ paddingTop: "20px" }}>
               <textarea
                 id="standard-multiline-static"
                 style={{ padding: "1%", height: '100px', fontFamily: '"Source Sans Pro", "Arial", sans-serif', fontSize: "21px", width: '97.8%', borderRadius: '4px' }}
@@ -245,29 +290,29 @@ class Dashboard extends React.Component {
               />
             </Grid>
 
-            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{display: "flex", flexDirection: "row"}}>
-            <Grid item xs={6} sm={6} lg={6} xl={6}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.processClearButtonPressed}
-                aria-label="edit"
-                className={classes.button1}
-              >
-                {translate("common.page.button.clear")}
-              </Button>
-            </Grid>
-            <Grid item xs={6} sm={6} lg={6} xl={6}>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={this.processTranslateButtonPressed}
-                aria-label="edit"
-                className={classes.button1}
-              >
-                {translate("common.page.button.submit")}
-              </Button>
-            </Grid>
+            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{ display: "flex", flexDirection: "row" }}>
+              <Grid item xs={6} sm={6} lg={6} xl={6}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.processClearButtonPressed}
+                  aria-label="edit"
+                  className={classes.button1}
+                >
+                  {translate("common.page.button.clear")}
+                </Button>
+              </Grid>
+              <Grid item xs={6} sm={6} lg={6} xl={6}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={this.processTranslateButtonPressed}
+                  aria-label="edit"
+                  className={classes.button1}
+                >
+                  {translate("common.page.button.submit")}
+                </Button>
+              </Grid>
             </Grid>
 
             {this.state.anuvaadText && (
@@ -286,6 +331,8 @@ class Dashboard extends React.Component {
             )}
           </Grid>
         </Paper>
+        {this.state.showStatus && this.renderProgressInformation()}
+        {this.state.dialogMessage && this.renderStatusInformation()}
       </div>
     );
   }

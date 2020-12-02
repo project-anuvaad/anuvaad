@@ -88,7 +88,7 @@ class InteractiveDocHeader extends React.Component {
         return (
             <div>
                 <Snackbar
-                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                     open={true}
                     autoHideDuration={3000}
                     variant={this.state.variant}
