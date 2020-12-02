@@ -19,7 +19,6 @@ from configs.wfmconfig import tool_nmt
 from configs.wfmconfig import tool_ocrgooglevision
 from configs.wfmconfig import jobid_random_str_length
 from repository.wfmrepository import WFMRepository
-from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 
 from tools.aligner import Aligner
@@ -73,8 +72,6 @@ class WFMUtils:
                     configs_global[key] = obj
         except Exception as exc:
             log_exception("Exception while reading configs: " + str(exc), None, exc)
-            post_error("CONFIG_READ_ERROR", "Exception while reading configs: " + str(exc), None)
-
 
     # Method that returns configs
     def get_configs(self):
