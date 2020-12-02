@@ -15,7 +15,7 @@ const endpoints = {
   signup: "/anuvaad/user-mgmt/v1/users/create",
   login: "/anuvaad/user-mgmt/v1/users/login",
   setpassword: "/anuvaad/user-mgmt/v1/users/reset-password",
-  userdetails:"/anuvaad/user-mgmt/v1/users/search",
+  userdetails:"/anuvaad/user-mgmt/v1/users/fetch-users-records",
   createuser:"/anuvaad/user-mgmt/v1/users/onboard-users",
 
   fecthcontent: "/anuvaad/content-handler/v0/fetch-content",
