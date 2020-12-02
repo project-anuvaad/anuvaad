@@ -88,7 +88,13 @@ class WFMValidator:
                             else:
                                 model = file["model"]
                                 if 'model_id' not in model.keys():
-                                    return post_error("MODEL_ID_ NOT_FOUND", "Model ID is mandatory for this wf.", None)
+                                    return post_error("MODEL_ID_NOT_FOUND", "Model Id is mandatory.", None)
+                                if 'source_language_code' not in model.keys():
+                                    return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
+                                if 'target_language_code' not in model.keys():
+                                    return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
+                            if 'context' not in file.keys():
+                                return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
                         if tool_worddetector in tools or tool_layoutdetector in tools or tool_ocrgooglevision in tools:
                             if 'config' not in file.keys():
                                 return post_error("CONFIG_NOT_FOUND", "OCR Config details are mandatory for this wf.", None)

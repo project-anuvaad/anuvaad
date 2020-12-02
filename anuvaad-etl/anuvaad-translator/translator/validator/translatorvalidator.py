@@ -44,6 +44,8 @@ class TranslatorValidator:
                             return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
                     if 'locale' not in api_input.keys():
                         return post_error("LOCALE_NOT_FOUND", "Locale is mandatory", None)
+                    if 'context' not in api_input.keys():
+                        return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
 
     def validate_text_translate(self, data):
         if 'input' not in data.keys():
@@ -108,10 +110,12 @@ class TranslatorValidator:
                         if 'model' not in file.keys():
                             return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
                         else:
-                            model = file["model"]
+                            model = ["model"]
                             if 'model_id' not in model.keys():
                                 return post_error("MODEL_ID_NOT_FOUND", "Model Id is mandatory.", None)
                             if 'source_language_code' not in model.keys():
                                 return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
                             if 'target_language_code' not in model.keys():
                                 return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
+                        if 'context' not in file.keys():
+                            return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)

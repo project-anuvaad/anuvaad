@@ -11,6 +11,7 @@ from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
 from configs.translatorconfig import anu_translator_output_topic
 from configs.translatorconfig import tool_translator
+from configs.translatorconfig import tmx_default_context
 
 utils = TranslatorUtils()
 producer = Producer()
@@ -166,7 +167,7 @@ class TranslatorService:
 
     # Fetches tmx phrases
     def fetch_tmx(self, sentence, file, translate_wf_input):
-        context = file["context"]
+        context = tmx_default_context if 'context' not in file.keys() else file["context"]
         user_id = translate_wf_input["metadata"]["userID"]
         locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
         return tmxservice.get_tmx_phrases(user_id, context, locale, sentence, translate_wf_input)
