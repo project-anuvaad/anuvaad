@@ -259,7 +259,10 @@ class DocumentConversion(object):
                                     else:
                                         write_str += ' '*onwards_line_space + ''
                                     same_line_index += 1
-                                    same_line_status = bool(df.iloc[idx+same_line_index]['text_top'] == df.iloc[idx+same_line_index+1]['text_top'])
+                                    if idx+same_line_index+1 < df.shape[0]:
+                                        same_line_status = bool(df.iloc[idx+same_line_index]['text_top'] == df.iloc[idx+same_line_index+1]['text_top'])
+                                    else:
+                                        same_line_status = False
                                 else:
                                     same_line_status = False
                             if len(write_str) < max_chars_in_line:
