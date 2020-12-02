@@ -1,7 +1,6 @@
 import json
 import logging
 import time
-import urllib
 
 import requests
 from configs.translatorconfig import download_folder
