@@ -104,6 +104,16 @@
             "role":"ADMIN",
             "actionID": "36677274-7ac3-4319-8170-f2e007341ecf",
             "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "1bf2b56f-9b83-404f-98c6-e59ab89e24a6",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "986bb1b6-ac89-4430-a7ec-ba04f1ab470d",
+            "active":true
         }
     ]
 }
