@@ -10,7 +10,7 @@ export default class FetchUserDetails extends API {
     super("GET", timeout, false);
     this.type = C.FETCH_USERINFO;
     this.token = token;
-    this.fetch_response = null;
+    this.data = null;
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.userdetails}`;
   }
 
@@ -20,15 +20,11 @@ export default class FetchUserDetails extends API {
 
   processResponse(res) {
     super.processResponse(res);
-    this.fetch_response = res.response_body;
+    this.data = res.data;
   }
 
   apiEndPoint() {
     return this.endpoint;
-  }
-
-  getBody() {
-    return {};
   }
 
   getHeaders() {
@@ -41,6 +37,6 @@ export default class FetchUserDetails extends API {
   }
 
   getPayload() {
-    return this.fetch_response;
+    return this.data;
   }
 }

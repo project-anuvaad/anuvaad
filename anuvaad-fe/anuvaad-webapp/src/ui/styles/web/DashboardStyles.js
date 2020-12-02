@@ -1,5 +1,4 @@
 
-
 const DashboardStyles = theme => ({
   root: {
     display: 'flex', 
@@ -24,16 +23,7 @@ const DashboardStyles = theme => ({
     width: "40%", 
     marginTop: "2%", 
     marginBottom: "2%", 
-    padding: '3%',
-    
-  },
-  userdetailspaper:{
-    width: "40%", 
-    marginTop: "2%", 
-    marginBottom: "2%", 
-    paddingTop:'3%',
-    paddingBottom:'3%',
-    boxSizing:"border-box"
+    padding: '3%'
   },
   grid1:{
     marginLeft: "6.5%"
@@ -73,7 +63,7 @@ const DashboardStyles = theme => ({
     
   },
   button1: {
-    width: "15vw", borderRadius: "20px 20px 20px 20px", height: '46px'
+    width: "98%", borderRadius: "20px 20px 20px 20px", height: '46px'
   },
   
   button2:{
@@ -85,27 +75,15 @@ const DashboardStyles = theme => ({
 
   },
   label:{
-    textAlign: 'left',
+    textAlign: 'left', marginTop: 'auto', marginBottom: 'auto'
   },
   rowData: {
-    display: 'flex', flexDirection: 'row'
+    display: 'flex', flexDirection: 'row', marginTop: '3%'
   },
   dataChip: {
     display: 'flex', flexDirection: 'row', marginLeft: '0px',flexWrap: 'wrap'
-  },
-  buttonProgress: {
-    color: 'green[500]',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
-  },
-  wrapper: {
-    margin: theme.spacing(1),
-    position: 'relative',
-  },
-  
+  }
+ 
   
 });
 

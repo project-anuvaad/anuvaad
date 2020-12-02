@@ -9,14 +9,15 @@ import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { translate } from "../../../../assets/localisation";
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import DeleteIcon from '@material-ui/icons/Delete';
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import Spinner from "../../../components/web/common/Spinner";
 import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
 import ToolBar from "../AdminPanel/AdminPanelHeader"
 import FetchUserDetails from "../../../../flux/actions/apis/userdetails";
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
@@ -32,8 +33,10 @@ class UserDetails extends React.Component {
       dialogMessage: null,
       timeOut: 3000,
       variant: "info",
-      open: false
+      open: false,
+      checked: false
     };
+
   }
 
   /**
@@ -41,11 +44,18 @@ class UserDetails extends React.Component {
    */
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('user-details');
+    this.setState({ showLoader: true })
     const token = localStorage.getItem("token");
     const userObj = new FetchUserDetails(token);
-    console.log('User Object', userObj, this.props)
     this.props.APITransport(userObj);
   }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
+      this.setState({ showLoader: false })
+    }
+  }
+
 
 
   getMuiTheme = () => createMuiTheme({
@@ -58,7 +68,12 @@ class UserDetails extends React.Component {
     }
   })
 
- 
+
+  getDateTimeFromTimestamp = (t) => {
+    let date = new Date(t);
+    return ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
+  }
+
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('user-details')
     /**
@@ -70,6 +85,10 @@ class UserDetails extends React.Component {
     this.setState({ open: true });
   }
 
+  toggleChecked = (e) => {
+    this.setState({ checked: !e.target.checked });
+  };
+
   render() {
     const columns = [
       {
@@ -78,20 +97,6 @@ class UserDetails extends React.Component {
         options: {
           filter: false,
           sort: false,
-        }
-      },
-      {
-        name: "jobID",
-        label: 'JobID',
-        options: {
-          display: "excluded"
-        }
-      },
-      {
-        name: "recordId",
-        label: 'RecordId',
-        options: {
-          display: "excluded"
         }
       },
       {
@@ -111,25 +116,8 @@ class UserDetails extends React.Component {
         }
       },
       {
-        name: "court",
-        label: translate('userDirectory.page.label.courtName'),
-        options: {
-          filter: true,
-          sort: false,
-          empty: true,
-        }
-      },
-      {
-        name: "created_on",
-        label: translate("common.page.label.timeStamp"),
-        options: {
-          filter: true,
-          sort: true,
-        }
-      },
-      {
-        name: "active",
-        label: translate('common.page.label.active'),
+        name: "is_verified",
+        label: translate('common.page.table.status'),
         options: {
           filter: true,
           sort: false,
@@ -137,29 +125,14 @@ class UserDetails extends React.Component {
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
-                <div >
-
-                  <Tooltip title="Info" placement="left">
-                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processJobTimelinesClick(tableMeta.rowData[1], tableMeta.rowData[2])}>
-                      <InfoIcon />
-                    </IconButton>
-                  </Tooltip>
-
-                  <Tooltip title="View document" placement="left">
-                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processViewDocumentClick(tableMeta.rowData[1], tableMeta.rowData[2], tableMeta.rowData[5])}>
-                      <LibraryBooksIcon />
-                    </IconButton>
-                  </Tooltip>
-
-                  <Tooltip title="Delete job" placement="left">
-                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processDeleteJobClick(tableMeta.rowData[1], tableMeta.rowData[2])}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
-
-                  <Tooltip title="Download input file" placement="left">
-                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.processDownloadInputFileClick(tableMeta.rowData[1], tableMeta.rowData[2])}>
-                      <CloudDownloadIcon />
+                <div>
+                  <Tooltip key={tableMeta.rowIndex} title="Active/Inactive" placement="left">
+                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
+                      <FormGroup>
+                        <FormControlLabel
+                          control={<Switch checked={tableMeta.rowData[3]} onChange={this.toggleChecked} />}
+                        />
+                      </FormGroup>
                     </IconButton>
                   </Tooltip>
                 </div>
@@ -198,6 +171,7 @@ class UserDetails extends React.Component {
       },
       page: this.state.currentPageIndex
     };
+
     return (
       <div style={{ height: window.innerHeight }}>
 
@@ -207,9 +181,10 @@ class UserDetails extends React.Component {
             !this.state.showLoader &&
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <MUIDataTable title={translate("common.page.title.userdetails")}
-                columns={columns} options={options} />
+                columns={columns} options={options} data={this.props.userinfo.data} />
             </MuiThemeProvider>}
         </div>
+        {(this.state.showLoader || this.state.loaderDelete) && < Spinner />}
       </div>
 
     );
@@ -217,11 +192,11 @@ class UserDetails extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  // user: state.login,
+  user: state.login,
   userinfo: state.userinfo,
-  // apistatus: state.apistatus,
+  apistatus: state.apistatus,
   job_details: state.job_details,
-  // async_job_status: state.async_job_status
+  async_job_status: state.async_job_status
 });
 
 const mapDispatchToProps = dispatch =>

@@ -30,71 +30,145 @@ class CreateUser extends React.Component {
       emailid: '',
       password: '',
       roleCode: '',
-      roleInfo:'',
+      roleInfo: '',
       isenabled: false,
       variantType: '',
       message: '',
-      loading:false,
+      loading: false,
     };
   }
-  renderItems = () => {
+  renderNameItems = () => {
     return (
-      <Grid item xs={12} sm={12} lg={12} xl={12} style={{ display: 'flex', flexDirection: 'row' }}>
-        <Grid item xs={6} sm={6} lg={7} xl={4} style={{ textAlign: 'left' }}>
-          <Typography value="" variant="h5" style={{ marginLeft: '25%', marginTop: '2vh'}}>
-            {translate("common.page.label.name")}&nbsp;
-          </Typography>
-          <Typography value="" variant="h5" style={{ marginLeft: '25%', marginTop: '3vh'}}>
-            {translate("common.page.label.email")}&nbsp;
-          </Typography>
-          <Typography value="" variant="h5" style={{ marginLeft: '25%', marginTop: '3vh'}}>
-            {translate("common.page.label.password")}&nbsp;
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{marginTop:'0%'}}>
+        <Grid item xs={6} sm={6} lg={8} xl={8} style={{textAlign: 'left', marginTop: 'auto', marginBottom: '0'}}>
+          <Typography value="" variant="h5">
+            {translate("common.page.label.name")}{" "}
           </Typography>
         </Grid>
-          <FormControl variant="outlined" >
-            <TextField variant="outlined" value={this.state.name} onChange={this.handleInputReceived('name')} style={{ marginBottom: '1vh' ,width:'12.5vw'}}></TextField>
-            <TextField variant="outlined" value={this.state.emailid} onChange={this.handleInputReceived('emailid')} type="email-username" style={{ marginBottom: '1vh',width:'12.5vw' }}></TextField>
-            <TextField variant="outlined" value={this.state.password} onChange={this.handleInputReceived('password')} type="password" style={{ marginBottom: '1vh',width:'12.5vw' }}></TextField>
+
+        <Grid item xs={6} sm={6} lg={4} xl={4} >
+          <FormControl variant="outlined" style={{
+            width: '92%',
+            fullWidth: true,
+            display: "flex",
+            wrap: "nowrap",
+            height: '40px',
+            magin: 'dense',
+            marginLeft: '4.3%',
+            marginBottom: '4%'
+          }}>
+            <TextField type="email" onChange={this.handleInputReceived('name')} value={this.state.emailid} variant="outlined">
+
+            </TextField>
           </FormControl>
+        </Grid>
       </Grid>
     )
 
   }
+
+  renderEmaiIdItems = () => {
+    return (
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
+        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{marginTop:'2%'}}>
+          <Typography value="" variant="h5">
+            {translate("common.page.label.email")}{" "}
+          </Typography>
+        </Grid>
+
+        <Grid item xs={6} sm={6} lg={4} xl={4} >
+          <FormControl variant="outlined" style={{
+            width: '92%',
+            fullWidth: true,
+            display: "flex",
+            wrap: "nowrap",
+            height: '40px',
+            magin: 'dense',
+            marginLeft: '4.3%',
+            marginBottom: '11.5%'
+          }}>
+            <TextField type="email" onChange={this.handleInputReceived('emailid')} value={this.state.emailid} variant="outlined">
+
+            </TextField>
+          </FormControl>
+        </Grid>
+      </Grid>
+    )
+  }
+
+  renderPasswordItems = () => {
+    return (
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ marginTop: "0%" }}>
+        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
+          <Typography value="" variant="h5">
+            {translate("common.page.label.password")}{" "}
+          </Typography>
+        </Grid>
+
+        <Grid item xs={6} sm={6} lg={4} xl={4} >
+          <FormControl variant="outlined"  style={{
+            width: '92%',
+            fullWidth: true,
+            display: "flex",
+            wrap: "nowrap",
+            height: '40px',
+            magin: 'dense',
+            marginLeft: '4.3%',
+            marginBottom: '4%'
+          }}>
+            <TextField type="password" onChange={this.handleInputReceived('password')} value={this.state.password} variant="outlined">
+            </TextField>
+          </FormControl>
+        </Grid>
+      </Grid>
+    )
+  }
+
   renderRoleItems = () => {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
-        <Grid item xs={6} sm={6} lg={7} xl={6} className={this.props.classes.label}>
-          <Typography value="" variant="h5" style={{ marginLeft: '25%', marginTop: '1vh'}}>
-            {translate("common.page.roles")}&nbsp;
+        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
+          <Typography value="" variant="h5">
+            {translate("common.page.label.role")}{" "}
           </Typography>
         </Grid>
-          <FormControl variant="outlined">
+
+        <Grid item xs={6} sm={6} lg={4} xl={4} >
+          <FormControl variant="outlined" style={{
+            width: '92%',
+            fullWidth: true,
+            display: "flex",
+            wrap: "nowrap",
+            height: '40px',
+            magin: 'dense',
+            marginLeft: '4.3%',
+            marginBottom: '5%'
+          }}>
             <Select
               labelId="demo-simple-select-outlined-label"
               id="demo-simple-select-outlined"
-              value={this.state.roleCode}
               onChange={this.processOnSelect}
-              style={
-              {
-                width:'12.5vw'
-              }
-              }
+              value={this.state.roleCode}
+              style={{
+                fullWidth: true,
+              }}
             >
               {
                 roles.map((role, i) => <MenuItem key={role.roleCode} value={role.roleCode}>{role.roleCode}</MenuItem>)
               }
             </Select>
           </FormControl>
+        </Grid>
       </Grid>
     )
   }
 
 
   processOnSelect = (e) => {
-    const roleInfo = roles.filter(role=>{
+    const roleInfo = roles.filter(role => {
       return role["roleCode"].includes(e.target.value)
     });
-    this.setState({roleCode:e.target.value,roleInfo:roleInfo})
+    this.setState({ roleCode: e.target.value, roleInfo: roleInfo })
   }
 
 
@@ -104,12 +178,12 @@ class CreateUser extends React.Component {
       emailid: '',
       password: '',
       roleCode: '',
-      roleInfo:''
+      roleInfo: ''
     })
   }
 
   processCreateUser = () => {
-    if (this.handleValidation('name') && this.handleValidation('emailid') && this.handleValidation('password')  && this.handleValidation('roleCode'))  {
+    if (this.handleValidation('name') && this.handleValidation('emailid') && this.handleValidation('password') && this.handleValidation('roleCode')) {
       var mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
       var passwordFormat = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
       if (this.state.emailid.match(mailFormat)) {
@@ -123,8 +197,8 @@ class CreateUser extends React.Component {
               emailid: '',
               password: '',
               roleCode: '',
-              roleInfo:'',
-              loading:true,
+              roleInfo: '',
+              loading: true,
             })
             fetch(createUserObj.apiEndPoint(), {
               method: 'post',
@@ -135,7 +209,7 @@ class CreateUser extends React.Component {
                 if (res.ok) {
                   res.json().then(obj => {
                     this.setState({
-                      loading:false,
+                      loading: false,
                       isenabled: true,
                       variantType: "success",
                       message: obj.why
@@ -148,7 +222,7 @@ class CreateUser extends React.Component {
                   if (res.status === 400) {
                     res.json().then(obj => {
                       this.setState({
-                        loading:false,
+                        loading: false,
                         isenabled: true,
                         variantType: "error",
                         message: obj.message
@@ -163,9 +237,9 @@ class CreateUser extends React.Component {
               emailid: '',
               password: '',
               roleCode: '',
-              roleInfo:'',
+              roleInfo: '',
               isenabled: true,
-              loading:false,
+              loading: false,
               variantType: "error",
               message: "Oops! Something went wrong, please try again later"
             });
@@ -180,7 +254,7 @@ class CreateUser extends React.Component {
     } else {
       alert(translate('common.page.alert.provideValidDetails'))
     }
-    this.setState({isenabled:false})
+    this.setState({ isenabled: false })
   }
 
   handleInputReceived = prop => event => this.setState({ [prop]: event.target.value });
@@ -202,34 +276,36 @@ class CreateUser extends React.Component {
         <Typography variant="h4" className={classes.typographyHeader}>
           {translate("create.user.page.heading.title")}
         </Typography>
-        <Paper className={classes.userdetailspaper}>
+        <Paper className={classes.paper}>
           <Grid container>
-            <Grid item xs={12} sm={12} lg={12} xl={12} style={{ display: 'flex', flexDirection: 'column' }}>
-            {this.renderItems()}
+
+            {this.renderNameItems()}
+            {this.renderEmaiIdItems()}
+            {this.renderPasswordItems()}
             {this.renderRoleItems()}
+
+            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
             </Grid>
-            <Grid item xs={6} sm={6} lg={6} xl={6} style={{ marginTop: '3%' }}>
+            
+            <Grid item xs={6} sm={6} lg={6} xl={6}>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={this.processClearButton}
                 aria-label="edit"
                 className={classes.button1}
-                style={{marginLeft:'27%'}}
               >
                 {translate("common.page.button.reset")}
               </Button>
             </Grid>
-            <Grid item xs={6} sm={6} lg={6} xl={6} style={{ marginTop: '3%'}}>
+            <Grid item xs={6} sm={6} lg={6} xl={6}>
               <Button
                 color="primary"
                 variant="contained"
                 onClick={this.processCreateUser}
                 aria-label="edit"
                 className={classes.button1}
-                style={{backgroundColor: this.state.loading && "grey",marginRight:'19%',marginLeft:'5%'}}
               >
-                {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress} />}
                 {translate("common.page.button.save")}
               </Button>
             </Grid>
