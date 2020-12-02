@@ -112,7 +112,7 @@ class TranslatorValidator:
                         if 'model' not in file.keys():
                             return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
                         else:
-                            model = ["model"]
+                            model = file["model"]
                             if 'model_id' not in model.keys():
                                 return post_error("MODEL_ID_NOT_FOUND", "Model Id is mandatory.", None)
                             if 'source_language_code' not in model.keys():
