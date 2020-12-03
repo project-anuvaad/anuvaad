@@ -68,18 +68,6 @@
             "sp_decoder":"sentencepiece_models/punjabi-2019-09-20-10k.model"
         },
         {
-            "id":21,
-            "path":"nmt/21",
-            "sp_encoder":"sentencepiece_models/en_exp-1-2019-10-01-15k.model",
-            "sp_decoder":"sentencepiece_models/hi_exp-1-2019-10-01-15k.model"
-        },
-        {
-            "id":30,
-            "path":"nmt/30",
-            "sp_encoder":"sentencepiece_models/en_exp-10-2019-10-25-24k.model",
-            "sp_decoder":"sentencepiece_models/hi_exp-10-2019-10-25-24k.model"
-        },
-        {
             "id":32,
             "path":"nmt/32",
             "sp_encoder":"sentencepiece_models/en_exp-12-2019-10-29-24k.model",
@@ -156,12 +144,6 @@
             "path":"nmt/53",
             "sp_encoder":"sentencepiece_models/enPun-en-to-pun-2-2020-02-16-24k.model",
             "sp_decoder":"sentencepiece_models/punjabi-en-to-pun-2-2020-02-16-24k.model"
-        },
-        {
-            "id": 54,
-            "path":"nmt/54",
-            "sp_encoder":"sentencepiece_models/en_exp-5.4-2019-10-29-24k.model",
-            "sp_decoder":"sentencepiece_models/hi_exp-5.4-2019-10-29-24k.model"
         },
         {
             "id":55,

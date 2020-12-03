@@ -96,7 +96,7 @@
           "is_primary": false,
           "description": "BPE model with varying vocab size 15k for both hindi and english,Orders data augmented,pre_tokenization",
           "created_on": "2019-10-07T10:58:10.331Z",
-          "status": "ACTIVE",
+          "status": "INACTIVE",
           "source_language_name":"English",
           "target_language_name":"Hindi"
         },
@@ -108,7 +108,7 @@
           "is_primary": false,
           "description": "BPE-24K, Old data+ india kanoon 800k(including 1.5 lakhs names,no learned_counsel)+74k shabkosh,50knmt",
           "created_on": "2019-10-31T15:55:43.084Z",
-          "status": "ACTIVE",
+          "status": "INACTIVE",
           "source_language_name":"English",
           "target_language_name":"Hindi"
         },

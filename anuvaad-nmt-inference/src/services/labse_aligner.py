@@ -43,8 +43,13 @@ class LabseAlignerService:
 
 def split_tgt(length_src_phrase,tgt):
     tgt_token_list = list()
-    tokenised_tgt =  indic_tok.trivial_tokenize(tgt)
+    # tokenised_tgt_ =  indic_tok.trivial_tokenize(tgt)
+    tokenised_tgt = tgt.split()
     tgt_token_list = [tokenised_tgt[i:i+length_src_phrase] for i in range(len(tokenised_tgt)) if (i + length_src_phrase) <= len(tokenised_tgt)]
+    tgt_token_list_plus = [tokenised_tgt[i:i+length_src_phrase+1] for i in range(len(tokenised_tgt)) if (i + length_src_phrase+1) <= len(tokenised_tgt)]
+    tgt_token_list_minus = [tokenised_tgt[i:i+length_src_phrase-1] for i in range(len(tokenised_tgt)) if (i + length_src_phrase-1) <= len(tokenised_tgt) and 
+                            length_src_phrase != 1]
+    tgt_token_list = tgt_token_list + tgt_token_list_plus + tgt_token_list_minus
     tgt_token_list = [" ".join(j) for j in tgt_token_list]
     return tgt_token_list
         
