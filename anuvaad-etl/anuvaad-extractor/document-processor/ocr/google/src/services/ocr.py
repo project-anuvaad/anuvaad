@@ -36,7 +36,7 @@ def extract_line(paragraph):
             bottom_right_x = max(bottom_right_x,symbol.bounding_box.vertices[2].x);bottom_right_y = max(bottom_right_y,symbol.bounding_box.vertices[2].y)
             if symbol.property.detected_break.type == breaks.SPACE:
                 line += ' '  
-            if symbol.property.detected_break.type == breaks.EOL_SURE_SPACE:
+            if symbol.property.detected_break.type == breaks.EOL_SURE_SPACE or symbol.property.detected_break.type == breaks.HYPHEN:
                 line += ' '
                 lines_coord = []
                 line_text.append(line)
