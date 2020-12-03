@@ -2,7 +2,6 @@ import json
 import logging
 import random
 import string
-from random import random
 
 from kafka import KafkaConsumer, TopicPartition
 from logging.config import dictConfig

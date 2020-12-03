@@ -2,10 +2,8 @@ import json
 import logging
 import random
 import string
-from random import random
 
 from kafka import KafkaConsumer, TopicPartition
-import os
 from logging.config import dictConfig
 from service.wfmservice import WFMService
 from anuvaad_auditor.errorhandler import post_error
