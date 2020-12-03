@@ -187,6 +187,8 @@ class WFMUtils:
                 tool_input = tokeniser.get_tokeniser_input(task_output, previous_tool)
             if current_tool == tool_translator:
                 tool_input = translator.get_translator_input(task_output, previous_tool, True)
+                job_details = self.get_job_details(task_output["jobID"])[0]
+                tool_input["input"]["model"] = job_details["input"]["model"]
         else:
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input_wf(wf_input, True)

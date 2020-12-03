@@ -15,7 +15,7 @@ class Tokeniser:
         else:
             tool_input = {
                 "record_id": wf_input["input"]["recordID"],
-                "model_id": wf_input["input"]["modelID"],
+                "model_id": wf_input["input"]["model"]["model_id"],
                 "locale": wf_input["input"]["locale"],
                 "text_blocks": wf_input["input"]["textBlocks"]
             }

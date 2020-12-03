@@ -32,7 +32,6 @@ class Translator:
                 tool_input = {
                     "recordID": task_output["output"]["record_id"],
                     "locale": task_output["output"]["locale"],
-                    "modelID": task_output["output"]["model_id"],
                     "textBlocks": task_output["output"]["text_blocks"]
                 }
             else:

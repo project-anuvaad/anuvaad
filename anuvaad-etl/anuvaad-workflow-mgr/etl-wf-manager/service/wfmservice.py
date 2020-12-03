@@ -180,7 +180,7 @@ class WFMService:
             wf_details = wfmutils.get_job_details(task_output["jobID"])
         if wf_details is None or len(wf_details) == 0:
             client_input = {"workflowCode": wf_input["workflowCode"], "textBlocks": wf_input["textBlocks"],
-                            "recordID": wf_input["recordID"], "locale": wf_input["locale"], "modelID": wf_input["modelID"]}
+                            "recordID": wf_input["recordID"], "locale": wf_input["locale"], "model": wf_input["model"]}
             client_output = {"input": client_input, "jobID": wf_input["jobID"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
