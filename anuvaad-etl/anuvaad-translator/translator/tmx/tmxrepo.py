@@ -24,14 +24,9 @@ class TMXRepository:
             return redis_client
 
     def upsert(self, input_dict):
-        try:
-            client = self.get_redis_instance()
-            pipe = client.pipeline()
-            for key in input_dict.keys():
-                pipe.hmset(key, input_dict[key])
-            pipe.execute()
-        except Exception as e:
-            log_exception("Exception in REPO: upsert | Cause: " + str(e), None, e)
+        client = self.get_redis_instance()
+        for key in input_dict.keys():
+            client.hmset(key, input_dict[key])
 
     def search(self, key_list):
         try:
