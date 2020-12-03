@@ -3,6 +3,7 @@ import json
 from anuvaad_auditor.loghandler import log_exception
 from configs.translatorconfig import redis_server_host
 from configs.translatorconfig import redis_server_port
+from configs.translatorconfig import redis_tmx_db
 import redis
 
 redis_client = None
