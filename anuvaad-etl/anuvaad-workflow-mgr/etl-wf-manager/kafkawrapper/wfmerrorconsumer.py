@@ -1,7 +1,7 @@
 import json
 import logging
+import random
 import string
-import threading
 from random import random
 
 from kafka import KafkaConsumer, TopicPartition
