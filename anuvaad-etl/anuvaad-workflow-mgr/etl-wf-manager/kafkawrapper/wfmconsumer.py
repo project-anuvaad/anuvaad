@@ -1,6 +1,8 @@
 import json
 import logging
+import string
 import threading
+from random import random
 
 from kafka import KafkaConsumer, TopicPartition
 from logging.config import dictConfig
@@ -47,8 +49,10 @@ def consume():
         configs = wfmutils.get_configs()
         topics = wfmutils.fetch_output_topics(configs)
         consumer = instantiate(topics)
-        thread = threading.current_thread().name
-        log_info(str(thread) + " Running..........", None)
+        rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
+        prefix = "WFM--" + "(" + rand_str + ")"
+        log_info(prefix + " | Running..........", None)
+        log_info(prefix + " | Topics: " + str(topics), None)
         while True:
             for msg in consumer:
                 data = {}
@@ -59,10 +63,10 @@ def consume():
                             job_details = wfmutils.get_job_details(data["jobID"])
                             if job_details:
                                 data["metadata"] = job_details[0]["metadata"]
-                        log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
+                        log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         wfmservice.manage_wf(data)
                 except Exception as e:
-                    log_exception("Exception while consuming: " + str(e), data, e)
+                    log_exception(prefix + " | Exception while consuming: " + str(e), data, e)
                     post_error("WFM_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
     except Exception as e:
         log_exception("Exception while starting the wfm consumer: " + str(e), None, e)

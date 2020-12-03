@@ -1,7 +1,9 @@
 import json
 import logging
+import string
 import threading
 import traceback
+from random import random
 
 from kafka import KafkaConsumer, TopicPartition
 import os
@@ -47,18 +49,20 @@ def core_consume():
         wfmservice = WFMService()
         topics = [anu_etl_wfm_core_topic]
         consumer = instantiate(topics)
-        thread = threading.current_thread().name
-        log_info(str(thread) + " Running..........", None)
+        rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
+        prefix = "WFM-Core-" + "(" + rand_str + ")"
+        log_info(prefix + " | Running..........", None)
+        log_info(prefix + " | Topics: " + str(topics), None)
         while True:
             for msg in consumer:
                 data = {}
                 try:
                     if msg:
                         data = msg.value
-                        log_info(str(thread) + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
+                        log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         wfmservice.initiate_wf(data)
                 except Exception as e:
-                    log_exception("Exception while consuming: " + str(e), data, e)
+                    log_exception(prefix + " | Exception while consuming: " + str(e), data, e)
                     post_error("WFM_CORE_CONSUMER_ERROR", "Exception while consuming: " + str(e), None)
     except Exception as e:
         log_exception("Exception while starting the wfm core consumer: " + str(e), None, e)
