@@ -14,7 +14,7 @@ class TMXRepository:
 
     # Initialises and fetches redis client
     def redis_instantiate(self):
-        redis_client = redis.Redis(host=redis_server_host, port=redis_server_port)
+        redis_client = redis.Redis(host=redis_server_host, port=redis_server_port, db=redis_tmx_db)
         return redis_client
 
     def get_redis_instance(self):
@@ -33,9 +33,9 @@ class TMXRepository:
             client = self.get_redis_instance()
             result = []
             for key in key_list:
-                record = json.loads(client.get(key))
-                if record:
-                    result.append(record)
+                data = client.get(key)
+                if data:
+                    result.append(json.loads(data))
             return result
         except Exception as e:
             log_exception("Exception in REPO: search | Cause: " + str(e), None, e)
