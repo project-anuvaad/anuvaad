@@ -185,6 +185,7 @@ class OpenNMTTranslateService:
         tagged_tgt,tagged_src = list(),list()
         s_id,n_id = [0000],[0000]
         i_s0_src,i_s0_tgt,i_save = list(),list(),list()
+        i_tmx_phrases = list()
 
         try:
             for i in inputs:
@@ -256,23 +257,8 @@ class OpenNMTTranslateService:
                     elif i['id'] == 18:  
                         "english-punjabi"
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)
-                    elif i['id'] == 21:  
-                        "exp-1 BPE model with varying vocab size 15k for both hindi and english +tokenization"
-                        i['src'] = sentence_processor.moses_tokenizer(i['src'])
-                        translation,scores,input_sw,output_sw = encode_translate_decode(i)                      
-                        translation = sentence_processor.indic_detokenizer(translation)  
-                    elif i['id'] == 30:
-                        "25/10/2019 experiment 10, Old data + dictionary,BPE-24k, nolowercasing,pretok,shuffling,50k nmt"
-                        i['src'] = sentence_processor.moses_tokenizer(i['src'])
-                        translation,scores,input_sw,output_sw = encode_translate_decode(i)                      
-                        translation = sentence_processor.indic_detokenizer(translation)   
                     elif i['id'] == 32:
                         "29/10/2019 Exp-12: old_data_original+lc_cleaned+ ik names translated from google(100k)+shabdkosh(appended 29k new),BPE-24K,50knmt,shuff,pretok"
-                        i['src'] = sentence_processor.moses_tokenizer(i['src'])
-                        translation,scores,input_sw,output_sw = encode_translate_decode(i)                      
-                        translation = sentence_processor.indic_detokenizer(translation)
-                    elif i['id'] == 54:
-                        "29-30/10/19Exp-5.4: -data same as 5.1 exp...old data+ india kanoon 830k(including 1.5 lakhs names n no learned counsel)+72192k shabkosh, BPE 24k, nolowercasing,pretok,shuffling"
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)                      
                         translation = sentence_processor.indic_detokenizer(translation)
@@ -398,18 +384,19 @@ class OpenNMTTranslateService:
                     tag_tgt = translation                            
                     translation = tagger_util.replace_tags_with_original(translation,date_original,url_original,num_array)
                     translation = oc.cleaner(tag_src,translation,i['id'])
-                log_info("trans_function-experiment-{} output: {}".format(i['id'],translation),MODULE_CONTEXT)   
-                # logger.info(log_with_request_info(i.get("s_id"),LOG_TAGS["output"],translation)) 
+                log_info("translate_function-experiment-{} output: {}".format(i['id'],translation),MODULE_CONTEXT) 
                 tgt.append(translation)
                 pred_score.append(scores)
                 sentence_id.append(s_id[0]), node_id.append(n_id[0])
                 input_subwords.append(input_sw), output_subwords.append(output_sw)
                 tagged_tgt.append(tag_tgt), tagged_src.append(tag_src)
+                i_tmx_phrases.append(i.get("tmx_phrases",[]))
 
             out['response_body'] = [{"tgt": tgt[i],
                     "pred_score": pred_score[i], "s_id": sentence_id[i],"input_subwords": input_subwords[i],
                     "output_subwords":output_subwords[i],"n_id":node_id[i],"src":i_src[i],
-                    "tagged_tgt":tagged_tgt[i],"tagged_src":tagged_src[i],"save":i_save[i],"s0_src":i_s0_src[i],"s0_tgt":i_s0_tgt[i]}
+                    "tagged_tgt":tagged_tgt[i],"tagged_src":tagged_src[i],"save":i_save[i],"s0_src":i_s0_src[i],"s0_tgt":i_s0_tgt[i],
+                    "tmx_phrases":i_tmx_phrases[i]}
                     for i in range(len(tgt))]
             out = CustomResponse(Status.SUCCESS.value, out['response_body'])
         except ServerModelError as e:
