@@ -55,7 +55,7 @@ LANGUAGE_WORD_THRESOLDS ={
 'ka':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5}
 }
 LANGUAGE_LINE_THRESOLDS ={
-'en':{'text_threshold':0.2 ,'low_text': 0.4,'link_threshold':0.4},
+'en':{'text_threshold':0.2 ,'low_text': 0.4,'link_threshold':0.7},
 'hi':{'text_threshold':0.2 ,'low_text': 0.3,'link_threshold':0.7},
 'ma':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5},
 'ta':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5},
