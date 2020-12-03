@@ -9,7 +9,7 @@ from service.translatorservice import TranslatorService
 from validator.translatorvalidator import TranslatorValidator
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
-from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_info, log_exception, log_error
 from anuvaad_auditor.loghandler import log_exception
 
 from configs.translatorconfig import anu_translator_input_topic
@@ -61,6 +61,7 @@ def consume():
                         log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
                         error = validator.validate_wf(data, False)
                         if error is not None:
+                            log_error(prefix + " | Error: " + str(error), data, error)
                             return post_error_wf(error["code"], error["message"], data, None)
                         service.start_file_translation(data)
                     else:
