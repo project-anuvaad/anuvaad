@@ -28,6 +28,7 @@ import JobStatus from "../../../../flux/actions/apis/v1_jobprogress";
 // import PAGE_OPS from "../../../../utils/page.operations";
 // import BLOCK_OPS from "../../../../utils/block.operations";
 // import TELEMETRY from '../../../../utils/TelemetryManager';
+import FetchModel from "../../../../flux/actions/apis/fetchmodel";
 
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
@@ -77,8 +78,12 @@ class DocumentEditor extends React.Component {
     this.setState({ showLoader: true });
     this.makeAPICallFetchContent(1);
     this.makeAPICallDocumentsTranslationProgress();
+    
     window.addEventListener('popstate', this.handleOnClose);
     // window.addEventListener('beforeunload',this.handleOnClose);
+    const { APITransport } = this.props;
+    const apiModel = new FetchModel();
+    APITransport(apiModel);
   }
 
   componentDidUpdate(prevProps) {
@@ -169,10 +174,10 @@ class DocumentEditor extends React.Component {
     let initial_sentences = sentences.map(sentence => sentence.src);
     let final_sentence = updated_blocks['blocks'][0].tokenized_sentences.src;
     TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
-
+    let model = this.fetchModel(parseInt(this.props.match.params.modelId))
     this.informUserProgress(translate('common.page.label.SENTENCE_MERGED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', parseInt(this.props.match.params.modelId))
+      '', '', model)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -220,12 +225,14 @@ class DocumentEditor extends React.Component {
   }
 
   async makeAPICallSplitSentence(sentence, pageNumber, startIndex, endIndex) {
+
     let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
     TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
+    let model = this.fetchModel(parseInt(this.props.match.params.modelId))
 
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', parseInt(this.props.match.params.modelId))
+      '', '', model)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -248,8 +255,10 @@ class DocumentEditor extends React.Component {
 
   async makeAPICallSourceSaveSentence(sentence, pageNumber) {
     this.informUserProgress(translate('common.page.label.SOURCE_SENTENCE_SAVED'))
+    let model = this.fetchModel(parseInt(this.props.match.params.modelId))
+
     let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', parseInt(this.props.match.params.modelId))
+      '', '', model)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -267,6 +276,17 @@ class DocumentEditor extends React.Component {
     }).catch((error) => {
       this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
     });
+  }
+
+  fetchModel(modelId) {
+    let docs = this.props.fetch_models && this.props.fetch_models.models
+    let model = ""
+    docs && Array.isArray(docs) && docs.length > 0 && docs.map(doc => {
+      if (doc.model_id == modelId) {
+        model = doc
+      }
+    })
+    return model
   }
 
   /**
@@ -421,7 +441,7 @@ class DocumentEditor extends React.Component {
   renderPDFDocument = () => {
     if (!this.state.apiFetchStatus) {
       return (
-        <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px"}}>
+        <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
           <Paper>
             <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} />
           </Paper>
@@ -457,10 +477,10 @@ class DocumentEditor extends React.Component {
       )
     }
     return (
-      <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px"}}>
+      <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
 
-        <InfiniteScroll height={window.innerHeight -141} style={{
-          maxHeight: window.innerHeight -141,
+        <InfiniteScroll height={window.innerHeight - 141} style={{
+          maxHeight: window.innerHeight - 141,
           overflowY: "auto",
         }}
           dataLength={pages.length}
@@ -484,10 +504,10 @@ class DocumentEditor extends React.Component {
       )
     }
     return (
-      <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px"}}>
+      <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
 
-        <InfiniteScroll height={window.innerHeight -141} style={{
-          maxHeight:window.innerHeight -141,
+        <InfiniteScroll height={window.innerHeight - 141} style={{
+          maxHeight: window.innerHeight - 141,
           overflowY: "auto",
         }}
           hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
@@ -517,11 +537,11 @@ class DocumentEditor extends React.Component {
       <div style={{ height: window.innerHeight }}>
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar /></div>
 
-        <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden" ,padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
-                {this.renderDocumentPages()}
-                {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
+        <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
+          {this.renderDocumentPages()}
+          {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
         </div>
-        <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute",width: "100%" }}>
+        <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
           <InteractivePagination count={this.props.document_contents.count} data={this.props.document_contents.pages} onAction={this.processSentenceAction} />
         </div>
         {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
@@ -541,7 +561,8 @@ const mapStateToProps = state => ({
   sentence_highlight: state.sentence_highlight.sentence,
   active_page_number: state.active_page_number.page_number,
   document_editor_mode: state.document_editor_mode,
-
+  fetchDocument: state.fetchDocument,
+  fetch_models: state.fetch_models
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

@@ -60,7 +60,7 @@ export default class RunExperiment extends API {
         "workflowCode": this.workflow,
         "recordID": this.fileName,
         "locale": this.source, // Only when tokenisation and/or translation is needed
-        "modelID": this.model, //Only when Translation is needed
+        "model": this.model, //Only when Translation is needed
         "textBlocks": this.file,
         "context": "JUDICIARY"
 
