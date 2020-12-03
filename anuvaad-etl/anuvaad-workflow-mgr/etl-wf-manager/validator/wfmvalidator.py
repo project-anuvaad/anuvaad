@@ -53,8 +53,18 @@ class WFMValidator:
                                               None)
                     tools = wfmutils.get_tools_of_wf(workflowCode)
                     if tool_translator in tools:
-                        if 'modelID' not in data.keys():
-                            return post_error("MODEL_NOT_FOUND", "Model ID is mandatory.", None)
+                        if 'model' not in data.keys():
+                            return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
+                        else:
+                            model = data["model"]
+                            if 'model_id' not in model.keys():
+                                return post_error("MODEL_ID_NOT_FOUND", "Model Id is mandatory.", None)
+                            if 'source_language_code' not in model.keys():
+                                return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
+                            if 'target_language_code' not in model.keys():
+                                return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
+                        if 'context' not in data.keys():
+                            return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
         else:
             return post_error("WORKFLOW_TYPE_DISABLED",
                               "This workflow belongs to SYNC type, which is currently disabled.", None)
