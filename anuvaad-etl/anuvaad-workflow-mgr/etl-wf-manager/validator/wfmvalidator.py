@@ -46,23 +46,18 @@ class WFMValidator:
             else:
                 if not data["textBlocks"]:
                     return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory.", None)
-                else:
-                    for block in data["textBlocks"]:
-                        if 'block_identifier' not in block.keys():
-                            return post_error("BLOCK_ID_NOT_FOUND", "block_identifier for all text blocks in the input",
-                                              None)
-                    tools = wfmutils.get_tools_of_wf(workflowCode)
-                    if tool_translator in tools:
-                        if 'model' not in data.keys():
-                            return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
-                        else:
-                            model = data["model"]
-                            if 'model_id' not in model.keys():
-                                return post_error("MODEL_ID_NOT_FOUND", "Model Id is mandatory.", None)
-                            if 'source_language_code' not in model.keys():
-                                return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
-                            if 'target_language_code' not in model.keys():
-                                return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
+                tools = wfmutils.get_tools_of_wf(workflowCode)
+                if tool_translator in tools:
+                    if 'model' not in data.keys():
+                        return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
+                    else:
+                        model = dict(data["model"])
+                        if 'model_id' not in model.keys():
+                            return post_error("MODEL_ID_NOT_FOUND", "Model Id is mandatory.", None)
+                        if 'source_language_code' not in model.keys():
+                            return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
+                        if 'target_language_code' not in model.keys():
+                            return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
                         if 'context' not in data.keys():
                             return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
         else:
