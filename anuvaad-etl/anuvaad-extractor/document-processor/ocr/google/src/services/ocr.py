@@ -1,7 +1,9 @@
 import uuid, os, io
 import config
+import sys
 from google.cloud import vision
 client = vision.ImageAnnotatorClient()
+breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
 def get_text(path,page_dict):
     with io.open(path, 'rb') as image_file:
@@ -18,6 +20,50 @@ def text_extraction(image_paths):
         page_output = get_text(image_path,page_dict)
         page_res.append(page_output)
     return page_res
+
+def extract_line(paragraph):
+    line_coord = []
+    line_text  = []
+    line = ""
+    top_left_x    = sys.maxsize; top_left_y    = sys.maxsize; top_right_x = -1; top_right_y    = sys.maxsize
+    bottom_left_x = sys.maxsize; bottom_left_y = -1;      bottom_right_x  = -1; bottom_right_y =-1
+    for word in paragraph.words:
+        for symbol in word.symbols:
+            line += symbol.text
+            top_left_x     = min(top_left_x,symbol.bounding_box.vertices[0].x);    top_left_y     = min(top_left_y,symbol.bounding_box.vertices[0].y)
+            top_right_x    = max(top_right_x,symbol.bounding_box.vertices[1].x);   top_right_y    = min(top_right_y,symbol.bounding_box.vertices[1].y)
+            bottom_left_x  = min(bottom_left_x,symbol.bounding_box.vertices[3].x); bottom_left_y  = max(bottom_left_y,symbol.bounding_box.vertices[3].y)
+            bottom_right_x = max(bottom_right_x,symbol.bounding_box.vertices[2].x);bottom_right_y = max(bottom_right_y,symbol.bounding_box.vertices[2].y)
+            if symbol.property.detected_break.type == breaks.SPACE:
+                line += ' '  
+            if symbol.property.detected_break.type == breaks.EOL_SURE_SPACE:
+                line += ' '
+                lines_coord = []
+                line_text.append(line)
+                lines_coord.append({'x':top_left_x,'y':top_left_y});lines_coord.append({'x':top_right_x,'y':top_right_y})
+                lines_coord.append({'x':bottom_right_x,'y':bottom_right_y});lines_coord.append({'x':bottom_left_x,'y':bottom_left_y})
+                line_coord.append(lines_coord)
+                line = ''
+                top_left_x    = sys.maxsize ;top_left_y   = sys.maxsize; top_right_x = -1;top_right_y    = sys.maxsize
+                bottom_left_x = sys.maxsize;bottom_left_y = -1  ; bottom_right_x     = -1;bottom_right_y =-1
+            if symbol.property.detected_break.type == breaks.LINE_BREAK:
+                lines_coord = []
+                lines_coord.append({'x':top_left_x,'y':top_left_y});lines_coord.append({'x':top_right_x,'y':top_right_y})
+                lines_coord.append({'x':bottom_right_x,'y':bottom_right_y});lines_coord.append({'x':bottom_left_x,'y':bottom_left_y})
+                line_coord.append(lines_coord)
+                line_text.append(line)
+                line = ''
+                top_left_x    = sys.maxsize ;top_left_y   = sys.maxsize; top_right_x = -1;top_right_y    = sys.maxsize
+                bottom_left_x = sys.maxsize;bottom_left_y = -1  ; bottom_right_x     = -1;bottom_right_y = -1
+    return line_coord, line_text
+
+def add_line(page_dict, line_coord, line_text):
+    for coord, text in zip(line_coord, line_text):
+        line_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}}
+        line_region["boundingBox"]["vertices"] = coord
+        line_region["text"] = text
+        page_dict["lines"].append(line_region)
+    return page_dict
 
 def get_document_bounds(response,page_dict):
     page_dict["regions"] = []
@@ -38,6 +84,8 @@ def get_document_bounds(response,page_dict):
             page_dict["regions"].append(block_region)
 
             for paragraph in block.paragraphs:
+                line_coord, line_text = extract_line(paragraph)
+                page_dict = add_line(page_dict, line_coord, line_text)
                 for word in paragraph.words:
                     word_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}}
                     word_vertices = []
