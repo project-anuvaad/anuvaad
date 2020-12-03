@@ -7,6 +7,7 @@ from service.translatorservice import TranslatorService
 from service.blocktranslationservice import BlockTranslationService
 from service.texttranslationservice import TextTranslationService
 from validator.translatorvalidator import TranslatorValidator
+from tmx.tmxservice import TMXService
 from configs.translatorconfig import context_path
 from configs.translatorconfig import tool_translator
 from anuvaad_auditor.loghandler import log_exception
@@ -59,6 +60,22 @@ def text_translate():
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
         return {"status": "FAILED", "message": "Something went wrong"}, 400
+
+
+@translatorapp.route(context_path + '/v1/tmx/bulk/create/xls-upload', methods=["POST"])
+def tmx_create_bulk():
+    service = TMXService()
+    data = request.get_json()
+    data["userID"] = request.headers["x-user-id"]
+    return service.push_csv_to_tmx_store(data)
+
+
+@translatorapp.route(context_path + '/v1/tmx/create', methods=["POST"])
+def tmx_create():
+    service = TMXService()
+    data = request.get_json()
+    data["userID"] = request.headers["x-user-id"]
+    return service.push_to_tmx_store(data)
 
 
 # Fetches required headers from the request and adds it to the body.
