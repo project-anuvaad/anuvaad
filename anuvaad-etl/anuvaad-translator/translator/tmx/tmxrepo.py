@@ -28,8 +28,7 @@ class TMXRepository:
             client = self.get_redis_instance()
             pipe = client.pipeline()
             for key in input_dict.keys():
-                pipe.append(key, input_dict[key])
-                #client.hmset(key, input_dict[key])
+                pipe.hmset(key, input_dict[key])
             pipe.execute()
         except Exception as e:
             log_exception("Exception in REPO: upsert | Cause: " + str(e), None, e)
