@@ -62,6 +62,7 @@ def consume():
                         error = validator.validate_wf(data, False)
                         if error is not None:
                             log_error(prefix + " | Error: " + str(error), data, error)
+                            log_info(prefix + " | Input: " + str(data), data)
                             return post_error_wf(error["code"], error["message"], data, None)
                         service.start_file_translation(data)
                     else:
