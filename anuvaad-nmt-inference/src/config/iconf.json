@@ -38,12 +38,15 @@
             "sp_decoder":"sentencepiece_models/beng-2019-09-12-10k.model"
         },
         {
+<<<<<<< HEAD
             "id":12,
             "path":"nmt/12",
             "sp_encoder":"sentencepiece_models/enMr-2019-09-14-10k.model",
             "sp_decoder":"sentencepiece_models/marathi-2019-09-14-10k.model"
         },
         {
+=======
+>>>>>>> dev-nmt-inference
             "id": 15,
             "path":"nmt/en-kn",
             "sp_encoder":"sentencepiece_models/enKn-2019-09-20-10k.model",
@@ -80,12 +83,15 @@
             "sp_decoder":"sentencepiece_models/marathi_exp-2-2019-11-07-24k.model"
         },
         {
+<<<<<<< HEAD
             "id":43,
             "path":"nmt/43",
             "sp_encoder":"sentencepiece_models/marathi-mr-en-1.2-2020-01-27-24k.model",
             "sp_decoder":"sentencepiece_models/enMr-mr-en-1.2-2020-01-27-24k.model"
         },
         {
+=======
+>>>>>>> dev-nmt-inference
             "id":44,
             "path":"nmt/44",
             "sp_encoder":"sentencepiece_models/enMr-en-mr-3-2020-02-06-24k.model",
@@ -98,12 +104,15 @@
             "sp_decoder":"sentencepiece_models/tamil-eng-tam-2020-02-08-24k.model"
         },
         {
+<<<<<<< HEAD
             "id":46,
             "path":"nmt/46",
             "sp_encoder":"sentencepiece_models/tamil-ta-to-en-2-2020-02-10-24k.model",
             "sp_decoder":"sentencepiece_models/enTa-ta-to-en-2-2020-02-10-24k.model"
         },
         {
+=======
+>>>>>>> dev-nmt-inference
             "id":47,
             "path":"nmt/47",
             "sp_encoder":"sentencepiece_models/enKann-en-to-kn-2-2020-02-10-24k.model",
