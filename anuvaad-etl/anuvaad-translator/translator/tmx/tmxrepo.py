@@ -26,14 +26,14 @@ class TMXRepository:
     def upsert(self, input_dict):
         client = self.get_redis_instance()
         for key in input_dict.keys():
-            client.hmset(key, input_dict[key])
+            client.set(key, json.dumps(input_dict[key]))
 
     def search(self, key_list):
         try:
             client = self.get_redis_instance()
             result = []
             for key in key_list:
-                record = client.hgetall(key)
+                record = json.loads(client.get(key))
                 if record:
                     result.append(record)
             return result
