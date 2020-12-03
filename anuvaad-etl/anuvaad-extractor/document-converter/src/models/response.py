@@ -12,8 +12,6 @@ class CustomResponse :
     def __init__(self, statuscode, data, xlsx_file, txt_file):
         self.statuscode = statuscode
         self.statuscode['translated_document'] = data
-        self.statuscode['xlsx_file'] = xlsx_file
-        self.statuscode['translated_txt_file'] = txt_file
     
     def getres(self):
         return jsonify(self.statuscode)

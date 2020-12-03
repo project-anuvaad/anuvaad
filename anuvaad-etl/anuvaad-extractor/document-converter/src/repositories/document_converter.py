@@ -162,7 +162,7 @@ class DocumentConversion(object):
             output_filepath = os.path.join(self.DOWNLOAD_FOLDER , out_filename)
             document.save(output_filepath)
             out_filename_zip = zipfile_creation(output_filepath)
-            log_info("docx file formation done!! filename: %s"%out_filename, MODULE_CONTEXT)
+            log_info("docx file formation done!! filename: %s"%out_filename_zip, MODULE_CONTEXT)
             return out_filename_zip
         except Exception as e:
             log_exception("dataframe to doc formation failed", MODULE_CONTEXT, e)
@@ -198,7 +198,7 @@ class DocumentConversion(object):
                         row += 1
             workbook.close()
             out_xlsx_filename_zip = zipfile_creation(output_filepath_xlsx)
-            log_info("xlsx file write completed!! filename: %s"%out_xlsx_filename, MODULE_CONTEXT)
+            log_info("xlsx file write completed!! filename: %s"%out_xlsx_filename_zip, MODULE_CONTEXT)
             return out_xlsx_filename_zip
         except Exception as e:
             log_exception("xlsx file formation failed", MODULE_CONTEXT, e)
@@ -282,7 +282,7 @@ class DocumentConversion(object):
                                 out_txt_file_write.write("%s\n"%item)
             out_txt_file_write.close()
             out_txt_zip = zipfile_creation(output_filepath_txt)
-            log_info("txt file write completed!! filename: %s"%out_translated_txt_filename, MODULE_CONTEXT)
+            log_info("txt file write completed!! filename: %s"%out_txt_zip, MODULE_CONTEXT)
             return out_txt_zip
         except Exception as e:
             log_exception("txt file formation failed", MODULE_CONTEXT, e)

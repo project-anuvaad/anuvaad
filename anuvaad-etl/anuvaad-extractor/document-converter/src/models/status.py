@@ -15,7 +15,7 @@ class Status(enum.Enum):
     ERR_GLOBAL_SYSTEM = {'ok': False, 'http': {
         'status': 500}, 'why': "Internal Server Error"}
     ERR_GLOBAL_MISSING_PARAMETERS = {
-        'ok': False, 'http': {'status': 400}, 'why': "Data Missing"}
+        'ok': False, 'http': {'status': 400}, 'why': "Data Missing in request foramt. Require user_id, record_id, file_type"}
     FAILURE = {'ok': False,'http':{'status':500},
                 'why':'request failed'}
     CORRUPT_FILE = {'ok': False,'http':{'status':500},
