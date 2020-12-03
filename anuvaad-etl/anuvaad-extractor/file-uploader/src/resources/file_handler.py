@@ -43,7 +43,7 @@ class FileUploader(Resource):
                 f.save(filepath)
                 file_size = os.stat(filepath).st_size
                 file_size = file_size / (1024 * 1024)
-                if file_size > 50:
+                if file_size > config.MAX_UPLOAD_SIZE:
                     os.remove(filepath)
                     res = CustomResponse(Status.ERROR_FILE_SIZE.value, None)
                     return res.getresjson(), 400
