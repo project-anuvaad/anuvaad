@@ -9,7 +9,7 @@
 from flask import jsonify
 
 class CustomResponse :
-    def __init__(self, statuscode, data, xlsx_file, txt_file):
+    def __init__(self, statuscode, data):
         self.statuscode = statuscode
         self.statuscode['translated_document'] = data
     
