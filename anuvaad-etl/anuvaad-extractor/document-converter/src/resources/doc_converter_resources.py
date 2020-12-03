@@ -32,6 +32,10 @@ class DocumentConverter(Resource):
             res = CustomResponse(Status.SUCCESS.value, formated_document)
             return res.getres()
         except ServiceError as e:
-            log_exception("Error occured at resource level.", MODULE_CONTEXT, e)
+            log_exception("Error occured in at resource level due to service operation", MODULE_CONTEXT, e)
+            res = CustomResponse(Status.OPERATION_NOT_PERMITTED.value,None)
+            return res.getresjson(), 400
+        except Exception as e:
+            log_exception("Error occured at resource level due to wrong request format", MODULE_CONTEXT, e)
             res = CustomResponse(Status.OPERATION_NOT_PERMITTED.value,None)
             return res.getresjson(), 400
