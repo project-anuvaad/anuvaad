@@ -19,6 +19,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
+
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
 class UserDetails extends React.Component {
@@ -53,6 +54,8 @@ class UserDetails extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
       this.setState({ showLoader: false })
+    }else if(prevProps.userinfo.data !== this.props.userinfo.data){
+      this.setState({ showLoader: false })
     }
   }
 
@@ -86,7 +89,7 @@ class UserDetails extends React.Component {
   }
 
   toggleChecked = (e) => {
-    this.setState({ checked: !e.target.checked });
+    // this.setState({ checked: !e.target.checked });
   };
 
   render() {

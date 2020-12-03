@@ -16,7 +16,7 @@ export default function (state = initialUserState, action) {
                     }).join(', '), is_verified: (user.is_verified ? true : false)
                 }
             })
-            return { ...state, data: data }
+            return { ...state, data: data.reverse() }
         default:
             return state;
     }
