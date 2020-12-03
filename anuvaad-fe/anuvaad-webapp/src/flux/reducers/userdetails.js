@@ -11,7 +11,7 @@ export default function (state = initialUserState, action) {
             const users = Object.assign([], action.payload);
             const data = users.map(user => {
                 return {
-                    name: user.name, email_id: user.email, roles: user.roles.map(role => {
+                    userID:user.userID,name: user.name, email_id: user.email, roles: user.roles.map(role => {
                         return role.roleCode
                     }).join(', '), is_verified: (user.is_verified ? true : false)
                 }

@@ -14,6 +14,8 @@ import Spinner from "../../../components/web/common/Spinner";
 import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
 import ToolBar from "../AdminPanel/AdminPanelHeader"
 import FetchUserDetails from "../../../../flux/actions/apis/userdetails";
+import ActivateUser from "../../../../flux/actions/apis/activate_exisiting_user";
+import DeactivateUser from "../../../../flux/actions/apis/deactivate_exisiting_user";
 import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -88,12 +90,30 @@ class UserDetails extends React.Component {
     this.setState({ open: true });
   }
 
-  toggleChecked = (e) => {
-    // this.setState({ checked: !e.target.checked });
+  toggleChecked = (userID,userName,currentState) => {
+    const {APITransport} = this.props;
+    const token = localStorage.getItem("token");
+    if(currentState){
+      const deactivateObj = new DeactivateUser(userName,userID,token)
+      APITransport(deactivateObj);
+    }else{
+      const activateObj = new ActivateUser(userName,userID,token)
+      APITransport(activateObj);
+    }
   };
 
   render() {
+    const data = this.props.userinfo.data;
     const columns = [
+      {
+        name: "userID",
+        label: "userID",
+        options: {
+          filter: false,
+          sort: false,
+        display:"exclude"
+        }
+      },
       {
         name: "name",
         label: 'Name',
@@ -117,7 +137,7 @@ class UserDetails extends React.Component {
           filter: false,
           sort: false,
         }
-      },
+      },      
       {
         name: "is_verified",
         label: translate('common.page.table.status'),
@@ -127,13 +147,14 @@ class UserDetails extends React.Component {
           empty: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
+              console.log(tableMeta.rowData);
               return (
                 <div>
                   <Tooltip key={tableMeta.rowIndex} title="Active/Inactive" placement="left">
                     <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
                       <FormGroup>
                         <FormControlLabel
-                          control={<Switch checked={tableMeta.rowData[3]} onChange={this.toggleChecked} />}
+                          control={<Switch checked={tableMeta.rowData[4]} onChange={this.toggleChecked(tableMeta.rowData[0],tableMeta.rowData[2],tableMeta.rowData[4])} />}
                         />
                       </FormGroup>
                     </IconButton>

@@ -43,6 +43,8 @@ import job_status from './v1.job_progress';
 
 import userinfo from '../reducers/userdetails';
 import createusers from '../reducers/createusers';
+import activateuser from '../reducers/activate_exisiting_user';
+import deactivateuser from '../reducers/deactivate_existing_user';
 
 export default {
     login,
@@ -90,4 +92,6 @@ export default {
     job_status,
     userinfo,
     createusers,
+    activateuser,
+    deactivateuser,
 };
