@@ -2,14 +2,13 @@ import json
 import logging
 import random
 import string
-import threading
 
 from kafka import KafkaConsumer, TopicPartition
 from service.translatorservice import TranslatorService
 from validator.translatorvalidator import TranslatorValidator
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
-from anuvaad_auditor.loghandler import log_info, log_exception, log_error
+from anuvaad_auditor.loghandler import log_info, log_error
 from anuvaad_auditor.loghandler import log_exception
 
 from configs.translatorconfig import anu_translator_input_topic

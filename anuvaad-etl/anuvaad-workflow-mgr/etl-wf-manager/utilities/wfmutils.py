@@ -144,9 +144,7 @@ class WFMUtils:
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 for file in tool_input["input"]["files"]:
                     file["model"] = job_details["input"]["files"][0]["model"]
-                    log_info("model added", task_output)
                     file["context"] = job_details["input"]["files"][0]["context"]
-                    log_info("context added", task_output)
             if current_tool == tool_worddetector:
                 tool_input = word_detector.get_wd_input(task_output, previous_tool)
                 job_details = self.get_job_details(task_output["jobID"])[0]
