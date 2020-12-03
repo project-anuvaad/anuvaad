@@ -2,23 +2,23 @@ import React from "react";
 import { Route, Redirect, Switch, Router } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Logout from "./ui/containers/web/Logout";
-import Layout from "./ui/containers/web/Layout";
-import NotFound from "./ui/containers/web/NotFound";
+import Logout from "./ui/containers/web/User/Logout";
+import Layout from "./ui/containers/web/common/Layout";
+import NotFound from "./ui/containers/web/common/NotFound";
 
 import history from "./web.history";
-import Login from "./ui/containers/web/Login";
-import UserProfile from "./ui/containers/web/UserProfile";
+import Login from "./ui/containers/web/User/Login";
+import UserProfile from "./ui/containers/web/User/UserProfile";
 
-import InstantTranslate from "./ui/containers/web/Dashboard";
+import InstantTranslate from "./ui/containers/web/TranslateSentence/Dashboard";
 
-import Signup from "./ui/containers/web/SignUp";
-import Activate from "./ui/containers/web/Activate";
-import IntractiveTranslate from "./ui/containers/web/IntractiveTranslation";
+import Signup from "./ui/containers/web/User/SignUp";
+import Activate from "./ui/containers/web/User/Activate";
+// import IntractiveTranslate from "./ui/containers/web/IntractiveTranslation";
 import { translate } from '../src/assets/localisation';
-import UpdatePassword from './ui/containers/web/UpdatePassword';
-import SetPassword from './ui/containers/web/SetPassword';
-import DocumentEditorV1 from './ui/containers/web/TranslatorEditor/DocumentEditor.v1';
+import UpdatePassword from './ui/containers/web/User/UpdatePassword';
+import SetPassword from './ui/containers/web/User/SetPassword';
+import DocumentEditorV1 from './ui/containers/web/DocumentEditor/DocumentEditor.v1';
 
 import FileUpload from './ui/containers/web/DocumentUpload/FileUpload';
 import ViewDocument from './ui/containers/web/DocumentTranslate/ViewDocument';
@@ -89,6 +89,14 @@ class AppRoutes extends React.Component {
             <Route exact path={`${process.env.PUBLIC_URL}/`} component={Login} />
             {/* <Route exact path={`${process.env.PUBLIC_URL}/callback`} component={Callback} /> */}
             <Route exact path={`${process.env.PUBLIC_URL}/logout`} component={Logout} />
+            <Route
+            exact
+              path={`${process.env.PUBLIC_URL}/signup`}
+              title="Sign up"
+              component={Signup}
+              dontShowHeader={true}
+              currentMenu="signup"
+            />
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/profile`}
@@ -137,15 +145,7 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
 
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/signup`}
-              title="Sign up"
-              authenticate={() => true}
-              component={Signup}
-              drawer
-              dontShowHeader={true}
-              currentMenu="signup"
-            />
+          
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/forgot-password`}
               title="Forgot Password"
@@ -165,14 +165,14 @@ class AppRoutes extends React.Component {
               currentMenu="set-password"
             />
             
-            <PrivateRoute
+            {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-translate`}
               title={translate('webroutes.page.title.anuvaadEditor')}
               userRoles={["TRANSLATOR"]}
               component={IntractiveTranslate}
               authenticate={this.authenticateUser}
               currentMenu="interactive-translate"
-            />
+            /> */}
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-document`}
