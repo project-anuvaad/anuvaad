@@ -32,9 +32,9 @@ class TMXService:
                 if row == 0:
                     if values[0] != "Source":
                         return {"message": "Source Missing", "status": "FAILED"}
-                    if values[0] != "Target":
+                    if values[1] != "Target":
                         return {"message": "Target Missing", "status": "FAILED"}
-                    if values[0] != "Locale":
+                    if values[2] != "Locale":
                         return {"message": "Locale Missing", "status": "FAILED"}
                 else:
                     tmx_input.append({"src": values[0], "tgt": values[1], "locale": values[2]})
