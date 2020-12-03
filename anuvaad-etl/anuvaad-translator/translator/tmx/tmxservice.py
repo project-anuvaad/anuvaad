@@ -67,14 +67,8 @@ class TMXService:
 
     # Method to fetch tmx phrases for a given src
     def get_tmx_phrases(self, user_id, context, locale, sentence, ctx):
-        log_info("Fetching tmx phrases.....", ctx)
         tmx_record = {"userID": user_id, "context": context, "locale": locale, "src": sentence}
-        tmx_phrases = self.tmx_phrase_search(tmx_record)
-        if not tmx_phrases:
-            log_info("No phrases found in TMX | src: " + sentence, ctx)
-        else:
-            log_info("Found phrases in TMX | src: " + sentence, ctx)
-        return tmx_phrases
+        return self.tmx_phrase_search(tmx_record)
 
     # Searches for all tmx phrases within a given sentence
     # Uses a custom implementation of the sliding window search algorithm.
