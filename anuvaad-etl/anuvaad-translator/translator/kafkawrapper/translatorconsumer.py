@@ -62,7 +62,8 @@ def consume():
                         if error is not None:
                             log_error(prefix + " | Error: " + str(error), data, error)
                             log_info(prefix + " | Input: " + str(data), data)
-                            return post_error_wf(error["code"], error["message"], data, None)
+                            post_error_wf(error["code"], error["message"], data, None)
+                            break
                         service.start_file_translation(data)
                     else:
                         break

@@ -38,7 +38,7 @@ class TMXRepository:
             client = self.get_redis_instance()
             result = []
             for key in key_list:
-                record = json.loads(client.hgetall(key)[b'info'].decode('utf-8').replace("'", '"'))
+                record = json.loads(client.hgetall(key))
                 if record:
                     result.append(record)
             return result
