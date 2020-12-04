@@ -91,9 +91,9 @@ class BlockTranslationService:
 
     # Fetches tmx phrases
     def fetch_tmx(self, sentence, block_translate_input):
-        context = block_translate_input["context"]
+        context = block_translate_input["input"]["context"]
         user_id = block_translate_input["metadata"]["userID"]
-        locale = block_translate_input["model"]["source_language_code"] + "|" + block_translate_input["model"]["target_language_code"]
+        locale = block_translate_input["input"]["model"]["source_language_code"] + "|" + block_translate_input["input"]["model"]["target_language_code"]
         return tmxservice.get_tmx_phrases(user_id, context, locale, sentence, block_translate_input)
 
     # Parses the nmt response and builds input for ch
