@@ -82,7 +82,7 @@ def tmx_create():
 def tmx_get_all_keys():
     service = TMXService()
     data = request.get_json()
-    return service.get_tmx_data(data)
+    return jsonify(service.get_tmx_data(data)), 200
 
 
 

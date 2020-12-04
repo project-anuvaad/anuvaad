@@ -43,14 +43,12 @@ class TMXRepository:
     def get_all_records(self, key_list):
         try:
             client = self.get_redis_instance()
+            result = []
             if not key_list:
                 key_list = client.keys('*')
-            result = []
             for key in key_list:
-                log_info("GETALLKEY | fetchkey: " + str(key), None)
                 val = client.get(key)
                 if val:
-                    log_info("GETALLKEY | fetchval: " + str(val), None)
                     result.append(json.loads(val))
             return result
         except Exception as e:
