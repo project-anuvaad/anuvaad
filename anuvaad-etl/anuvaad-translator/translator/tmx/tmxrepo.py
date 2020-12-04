@@ -23,12 +23,9 @@ class TMXRepository:
         else:
             return redis_client
 
-    def upsert(self, tmx_records):
+    def upsert(self, key, value):
         client = self.get_redis_instance()
-        for tmx_record in tmx_records:
-            log_info("GETALLKEY | key: " + str(tmx_record["hash"]), None)
-            log_info("GETALLKEY | value: " + str(tmx_record), None)
-            client.set(tmx_record["hash"], json.dumps(tmx_record))
+        client.set(key, json.dumps(value))
 
     def search(self, key_list):
         try:

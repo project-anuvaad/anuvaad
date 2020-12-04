@@ -25,14 +25,13 @@ class TMXService:
             tmx_input = []
             for row in range(2, number_of_rows):
                 values = []
-                log_info("GETALLKEY | ROW: " + str(row), None)
                 for col in range(number_of_columns):
-                    log_info("GETALLKEY | COL: " + str(col), None)
-                    val = sheet.cell(row, col).value
-                    log_info("GETALLKEY | VAL: " + str(col), None)
-                    values.append(val)
+                    values.append(sheet.cell(row, col).value)
                 log_info("GETALLKEY | VALUES: " + str(values), None)
-                tmx_input.append({"src": values[0], "tgt": values[1], "locale": values[2]})
+                values_dict = {"src": values[0], "tgt": values[1], "locale": values[2]}
+                log_info("GETALLKEY | VALUES DICT: " + str(values_dict), None)
+                tmx_input.append(values_dict)
+                log_info("GETALLKEY | TMX LIST: " + str(tmx_input), None)
             self.push_to_tmx_store({"userID": api_input["userID"], "context": api_input["context"], "sentences": tmx_input})
             log_info("Bulk Create DONE!", None)
             return {"message": "bulk creation successful", "status": "SUCCESS"}
@@ -43,22 +42,20 @@ class TMXService:
 
     # Pushes translations to the tmx.
     def push_to_tmx_store(self, tmx_input):
-        tmx_records = []
+        log_info("Pushing to TMX......", None)
         try:
-            tmx_record = {"userID": tmx_input["userID"], "context": tmx_input["context"]}
             for sentence in tmx_input["sentences"]:
-                tmx_record["src"] = sentence["src"]
-                tmx_record["nmt_tgt"] = []
-                tmx_record["user_tgt"] = sentence["tgt"]
-                tmx_record["locale"] = sentence["locale"]
+                tmx_record = {"userID": tmx_input["userID"], "context": tmx_input["context"], "src": sentence["src"],
+                              "nmt_tgt": [], "user_tgt": sentence["tgt"], "locale": sentence["locale"]}
                 tmx_record["hash"] = self.get_hash_key(tmx_record)
-                tmx_records.append(tmx_record)
-            repo.upsert(tmx_records)
-            log_info("Translations pushed to TMX...", None)
-            return {"message": "created", "status": "success"}
+                log_info("GETALLKEY | RKEY: " + str(tmx_record["hash"]), None)
+                log_info("GETALLKEY | RVALUE: " + str(tmx_record), None)
+                repo.upsert(tmx_record["hash"], tmx_record)
+            log_info("Translations pushed to TMX!", None)
+            return {"message": "created", "status": "SUCCESS"}
         except Exception as e:
             log_exception("Exception while pushing to TMX: " + str(e), None, e)
-            return {"message": "creation failed", "status": "failed"}
+            return {"message": "creation failed", "status": "FAILED"}
 
     # Method to fetch tmx phrases for a given src
     def get_tmx_phrases(self, user_id, context, locale, sentence, ctx):
