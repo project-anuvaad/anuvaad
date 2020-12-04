@@ -23,21 +23,11 @@ class TMXService:
             number_of_rows = sheet.nrows
             number_of_columns = sheet.ncols
             tmx_input = []
-            for row in range(0, number_of_rows):
-                if row == 1:
-                    continue
+            for row in range(2, number_of_rows):
                 values = []
                 for col in range(number_of_columns):
                     values.append(sheet.cell(row, col).value)
-                if row == 0:
-                    if values[0] != "Source":
-                        return {"message": "Source Missing", "status": "FAILED"}
-                    if values[1] != "Target":
-                        return {"message": "Target Missing", "status": "FAILED"}
-                    if values[2] != "Locale":
-                        return {"message": "Locale Missing", "status": "FAILED"}
-                else:
-                    tmx_input.append({"src": values[0], "tgt": values[1], "locale": values[2]})
+                tmx_input.append({"src": values[0], "tgt": values[1], "locale": values[2]})
             self.push_to_tmx_store({"userID": api_input["userID"], "context": api_input["context"], "sentences": tmx_input})
             log_info("Bulk Create DONE!", None)
             return {"message": "bulk creation successful", "status": "SUCCESS"}
@@ -48,7 +38,7 @@ class TMXService:
 
     # Pushes translations to the tmx.
     def push_to_tmx_store(self, tmx_input):
-        tmx_records = { }
+        tmx_records = []
         try:
             tmx_record = {"userID": tmx_input["userID"], "context": tmx_input["context"]}
             for sentence in tmx_input["sentences"]:
@@ -57,7 +47,7 @@ class TMXService:
                 tmx_record["user_tgt"] = sentence["tgt"]
                 tmx_record["locale"] = sentence["locale"]
                 tmx_record["hash"] = self.get_hash_key(tmx_record)
-                tmx_records[tmx_record["hash"]] = tmx_record
+                tmx_records.append(tmx_record)
             repo.upsert(tmx_records)
             log_info("Translations pushed to TMX...", None)
             return {"message": "created", "status": "success"}
