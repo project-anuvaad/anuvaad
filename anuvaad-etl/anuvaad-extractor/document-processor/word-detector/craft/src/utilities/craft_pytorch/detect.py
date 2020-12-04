@@ -237,8 +237,8 @@ def detect_text(images,language) :
                                                text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
                                                low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
             line_in_df  = detect_text_per_file(image_set,network=True,\
-                                               text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
-                                               low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
+                                               text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'],\
+                                               low_text_threshold= config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])
             word_coordinates.append(word_in_dfs)
             line_coordinates.append((line_in_df))
     except Exception as e :

@@ -57,7 +57,10 @@ class InteractiveDocHeader extends React.Component {
         this.state = {
             anchorEl: null,
             showStatus: false,
-            message: null
+            message: null,
+            timeOut: 3000,
+            variant: "info",
+            dialogMessage: null
         };
     }
 
@@ -81,13 +84,28 @@ class InteractiveDocHeader extends React.Component {
         )
     }
 
-    downloadTargetFile() {
+    renderStatusInformation = () => {
+        return (
+            <div>
+                <Snackbar
+                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                    open={true}
+                    autoHideDuration={3000}
+                    variant={this.state.variant}
+                    message={this.state.dialogMessage}
+                    onClose={() => this.setState({ dialogMessage: null })}
+
+                >
+                    <Alert elevation={6} variant="filled" severity="error">{this.state.dialogMessage}</Alert>
+                </Snackbar>
+            </div>
+        )
+    }
+
+    fetchFile(fileType) {
         this.setState({ anchorEl: null, showStatus: true, message: translate("common.page.label.download") });
 
-        let recordId = this.props.match.params.jobid;
-        let user_profile = JSON.parse(localStorage.getItem('userProfile'))
-
-        let apiObj = new DocumentConverterAPI(recordId, user_profile.userID)
+        let apiObj = new DocumentConverterAPI(fileType, this.props.match.params.jobid, JSON.parse(localStorage.getItem('userProfile')) ? JSON.parse(localStorage.getItem('userProfile')).userID : '')
 
         const apiReq = fetch(apiObj.apiEndPoint(), {
             method: 'post',
@@ -96,53 +114,61 @@ class InteractiveDocHeader extends React.Component {
         }).then(async response => {
             const rsp_data = await response.json();
             if (!response.ok) {
+                this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
                 return Promise.reject('');
             } else {
                 let fileName = rsp_data && rsp_data[this.state.fileType] ? rsp_data[this.state.fileType] : ""
-                if (fileName) {
 
+                if (fileName) {
                     let obj = new DownloadFile(fileName)
 
                     const apiReq1 = fetch(obj.apiEndPoint(), {
-                        method: 'get',
-                        headers: obj.getHeaders().headers
+                        method: 'get', dialogMessage: "Unable to download file", headers: obj.getHeaders().headers
                     }).then(async response => {
                         if (!response.ok) {
-                            this.setState({ showStatus: false, message: null })
+                            this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
                             console.log('api failed')
                         } else {
                             const buffer = new Uint8Array(await response.arrayBuffer());
                             let res = Buffer.from(buffer).toString('base64')
-
-                            fetch("data:image/jpeg;base64," + res)
-                                .then(res => res.blob())
-                                .then(blob => {
-                                    let a = document.createElement('a');
-                                    let url = URL.createObjectURL(blob);
-                                    a.href = url;
-                                    a.download = fileName;
-                                    a.click();
-                                });
+                            this.downloadFile(res, fileName)
                         }
 
                     }).catch((error) => {
-                        this.setState({ showStatus: false, message: null })
+                        this.setState({ dialogMessage: "Unable to download file" })
                         console.log('api failed because of server or network', error)
                     });
 
+                } else {
+                    this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
                 }
-
             }
         }).catch((error) => {
-            this.setState({ showStatus: false, message: null })
+            this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
             console.log('api failed because of server or network', error)
         });
+    }
+
+    downloadFile = (res, fileName) => {
+        fetch("data:image/jpeg;base64," + res)
+            .then(res => res.blob())
+            .then(blob => {
+                let a = document.createElement('a');
+                let url = URL.createObjectURL(blob);
+                a.href = url;
+                a.download = fileName;
+                this.setState({ showStatus: false, message: null })
+                a.click();
+
+            }).catch((error) => {
+                this.setState({ dialogMessage: "Unable to download file" })
+                console.log("Unable to download file")
+            });
     }
 
     openPDF = event => {
         this.props.showPdf(true)
     };
-
 
     renderOptions() {
         const { anchorEl } = this.state;
@@ -165,7 +191,7 @@ class InteractiveDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.downloadTargetFile(); this.setState({ fileType: "translated_document" })
+                            this.fetchFile("docx"); this.setState({ fileType: "translated_document" })
                         }}
                     >
                         As DOCX
@@ -173,7 +199,7 @@ class InteractiveDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.downloadTargetFile(); this.setState({ fileType: "translated_txt_file" })
+                            this.fetchFile("txt"); this.setState({ fileType: "translated_txt_file" })
                         }}
                     >
                         As TXT
@@ -181,7 +207,7 @@ class InteractiveDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.downloadTargetFile(); this.setState({ fileType: "xlsx_file" })
+                            this.fetchFile("xlsx"); this.setState({ fileType: "xlsx_file" })
                         }}
                     >
                         As XLSX
@@ -195,7 +221,7 @@ class InteractiveDocHeader extends React.Component {
         const { classes, open_sidebar } = this.props;
         return (
 
-            <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, open_sidebar && classes.appBarShift)} style={{ height: '50px' }}>
+            <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, open_sidebar && classes.appBarShift)} style={{ height: '50px', marginBottom: "13px" }}>
 
                 <Toolbar disableGutters={!this.props.open_sidebar} style={{ minHeight: "50px" }}>
 
@@ -230,6 +256,8 @@ class InteractiveDocHeader extends React.Component {
                         {this.renderOptions()}
                     </div>
                     {this.state.showStatus && this.renderProgressInformation()}
+                    {this.state.dialogMessage && this.renderStatusInformation()}
+
                 </Toolbar>
             </AppBar>
         )

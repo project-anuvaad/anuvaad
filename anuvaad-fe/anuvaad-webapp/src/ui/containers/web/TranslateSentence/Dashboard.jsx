@@ -8,17 +8,20 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from '@material-ui/core/FormControl';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+import { withStyles } from "@material-ui/core/styles";
+
 import FetchModel from "../../../../flux/actions/apis/fetchmodel";
 import AutoML from "../../../../flux/actions/apis/auto_ml";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { translate } from "../../../../assets/localisation";
-import { withStyles } from "@material-ui/core/styles";
 import DashboardStyles from "../../../styles/web/DashboardStyles";
-import InteractiveTranslateAPI from "../../../../flux/actions/apis/intractive_translate";
-import FormControl from '@material-ui/core/FormControl';
+import InstantTranslateAPI from "../../../../flux/actions/apis/instant_translate";
 
-const { v4 }        = require('uuid');
-const LANG_MODEL    = require('../../../../utils/language.model')
+const { v4 } = require('uuid');
+const LANG_MODEL = require('../../../../utils/language.model')
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -34,20 +37,23 @@ class Dashboard extends React.Component {
       target_language_code: '',
       source_languages: [],
       target_languages: [],
+      showStatus: false,
+      message: null,
+      dialogMessage: null
     };
-    this.processTranslateButtonPressed  = this.processTranslateButtonPressed.bind(this);
-    this.processClearButtonPressed      = this.processClearButtonPressed.bind(this);
-    this.processAutoMLCheckboxClicked   = this.processAutoMLCheckboxClicked.bind(this);
-    this.handleTextChange               = this.handleTextChange.bind(this)
+    this.processTranslateButtonPressed = this.processTranslateButtonPressed.bind(this);
+    this.processClearButtonPressed = this.processClearButtonPressed.bind(this);
+    this.processAutoMLCheckboxClicked = this.processAutoMLCheckboxClicked.bind(this);
+    this.handleTextChange = this.handleTextChange.bind(this)
   }
 
   componentDidMount() {
-   
-      const { APITransport }  = this.props;
-      const apiModel          = new FetchModel();
-      APITransport(apiModel);
-      this.setState({ showLoader: true });
-    
+
+    const { APITransport } = this.props;
+    const apiModel = new FetchModel();
+    APITransport(apiModel);
+    this.setState({ showLoader: true });
+
   }
 
   componentDidUpdate(prevProps) {
@@ -60,12 +66,16 @@ class Dashboard extends React.Component {
   }
 
   processClearButtonPressed() {
-    this.setState({text:'',source_languages: [],
-      target_languages: [],anuvaadText:""})
+    this.setState({
+      text: '',
+      target_language_code: '',
+      source_language_code: '',
+      anuvaadText: ""
+    })
   }
 
   processAutoMLCheckboxClicked() {
-    this.setState({autoMLChecked: !this.state.autoMLChecked});
+    this.setState({ autoMLChecked: !this.state.autoMLChecked });
   };
 
   handleTextChange(key, event) {
@@ -74,7 +84,37 @@ class Dashboard extends React.Component {
     });
   }
 
+  renderProgressInformation = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={this.state.showStatus}
+        message={this.state.message}
+      >
+        <Alert elevation={6} variant="filled" severity="info">{this.state.message}</Alert>
+      </Snackbar>
+    )
+  }
+
+  renderStatusInformation = () => {
+    return (
+      <div>
+        <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          open={true}
+          autoHideDuration={3000}
+          variant={"error"}
+          message={this.state.dialogMessage}
+          onClose={() => this.setState({ dialogMessage: null })}
+        >
+          <Alert elevation={6} variant="filled" severity="error">{this.state.dialogMessage}</Alert>
+        </Snackbar>
+      </div>
+    )
+  }
+
   processTranslateButtonPressed() {
+    this.setState({ showStatus: true, message: "Fetching translation..." })
     let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
 
     this.makeAPICallInteractiveTranslation(this.state.text, modelId.model_id)
@@ -82,7 +122,7 @@ class Dashboard extends React.Component {
   }
 
   processSourceLanguageSelected = (event) => {
-    this.setState({ source_language_code: event.target.value})
+    this.setState({ source_language_code: event.target.value })
     const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value)
     this.setState({
       target_languages: languages
@@ -90,102 +130,107 @@ class Dashboard extends React.Component {
   }
 
   processTargetLanguageSelected = (event) => {
-    this.setState({ target_language_code: event.target.value})
+    this.setState({ target_language_code: event.target.value })
   }
-  
+
 
   /**
    * api calls
    */
   async makeAPICallAutoML(text, source_language_code, target_language_code) {
-    let apiObj      = new AutoML(text, source_language_code, target_language_code)
-    const apiReq    = fetch(apiObj.apiEndPoint(), {
-                          method: 'post',
-                          body: JSON.stringify(apiObj.getBody()),
-                          headers: apiObj.getHeaders().headers
-                        }).then(async response => {
-                          const rsp_data = await response.json();
-                          if (!response.ok) {
-                            this.setState({autoMLAPIInProgress: false})
-                            return Promise.reject('');
-                          } else {
-                            this.setState({
-                              autoMLText: rsp_data,
-                              autoMLAPIInProgress: false
-                            })
-                          }
-                      }).catch((error) => {
-                        this.setState({autoMLAPIInProgress: false})
-                      });
+    let apiObj = new AutoML(text, source_language_code, target_language_code)
+    const apiReq = fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      if (!response.ok) {
+        this.setState({ autoMLAPIInProgress: false })
+        return Promise.reject('');
+      } else {
+        this.setState({
+          autoMLText: rsp_data,
+          autoMLAPIInProgress: false
+        })
+      }
+    }).catch((error) => {
+      this.setState({ autoMLAPIInProgress: false })
+    });
   }
 
   async makeAPICallInteractiveTranslation(text, modelId) {
-    let apiObj = new InteractiveTranslateAPI(text, '', modelId, true, '', v4());
-    this.setState({anuvaadAPIInProgress: true})
+    let apiObj = new InstantTranslateAPI(v4(), '', text, "", false, text, "", modelId);
 
-    const apiReq    = fetch(apiObj.apiEndPoint(), {
-                        method: 'post',
-                        body: JSON.stringify(apiObj.getBody()),
-                        headers: apiObj.getHeaders().headers
-                    }).then(async response => {
-                        const rsp_data = await response.json();
-                        if (!response.ok) {
-                          this.setState({anuvaadAPIInProgress: false})
-                          return Promise.reject('');
-                        } else {
-                          let filteredTexts  = rsp_data.output.predictions[0].tgt.filter(text => text.length > 1);
-                          if (filteredTexts.length > 1) {
-                            this.setState({
-                              anuvaadText: filteredTexts[0],
-                              anuvaadAPIInProgress: false
-                            })
-                          } else {
-                            this.setState({
-                              anuvaadText: '',
-                              anuvaadAPIInProgress: false
-                            })
-                          }
-                        }
-                    }).catch((error) => {
-                      this.setState({anuvaadAPIInProgress: false})
-                    });
+    this.setState({ anuvaadAPIInProgress: true })
+
+    const apiReq = fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      if (!response.ok) {
+        this.setState({ anuvaadAPIInProgress: false, showStatus: false, message: null, dialogMessage: "Unable to fetch translation..." })
+        return Promise.reject('');
+      } else {
+        let filteredTexts = rsp_data && rsp_data.response_body && rsp_data.response_body[0] && rsp_data.response_body[0].tgt ? rsp_data.response_body[0].tgt : ""
+
+        if (filteredTexts) {
+          this.setState({})
+          this.setState({
+            anuvaadText: filteredTexts,
+            anuvaadAPIInProgress: false,
+            showStatus: false,
+            message: null
+          })
+        } else {
+          this.setState({ showStatus: false, message: null, dialogMessage: "No translation available..." })
+        }
+
+
+
+      }
+    }).catch((error) => {
+      this.setState({ anuvaadAPIInProgress: false, showStatus: false, message: null, dialogMessage: "Unable to fetch translation..." })
+    });
   }
 
   renderSourceLanguagesItems = () => {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ marginTop: "0%" }}>
-          <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
-            <Typography value="" variant="h5">
-              {translate("common.page.label.sourceLang")}{" "}
-            </Typography>
-          </Grid>
+        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
+          <Typography value="" variant="h5">
+            {translate("common.page.label.sourceLang")}{" "}
+          </Typography>
+        </Grid>
 
-          <Grid item xs={6} sm={6} lg={4} xl={4} >
-            <FormControl variant="outlined" className={this.props.classes.select}>
-              <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
-                onChange={this.processSourceLanguageSelected}
-                value={this.state.source_language_code}
-                style={{
-                  fullWidth: true,
-                  float: 'right'
-                }}
-              >
+        <Grid item xs={6} sm={6} lg={4} xl={4} >
+          <FormControl variant="outlined" className={this.props.classes.select}>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              onChange={this.processSourceLanguageSelected}
+              value={this.state.source_language_code}
+              style={{
+                fullWidth: true,
+                float: 'right'
+              }}
+            >
               {
-                this.state.source_languages.map(lang => 
-                <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                this.state.source_languages.map(lang =>
+                  <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
               }
-              </Select>
-            </FormControl>
-          </Grid>
+            </Select>
+          </FormControl>
+        </Grid>
       </Grid>
     )
   }
 
   renderTargetLanguagesItems = () => {
     return (
-      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ paddingTop: "20px" }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
           <Typography value="" variant="h5">
             {translate("common.page.label.targetLang")}&nbsp;
@@ -205,9 +250,9 @@ class Dashboard extends React.Component {
               }}
             >
               {
-                this.state.target_languages.map(lang => 
+                this.state.target_languages.map(lang =>
                   <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
-                }
+              }
             </Select>
           </FormControl>
         </Grid>
@@ -217,9 +262,7 @@ class Dashboard extends React.Component {
 
   render() {
     const { classes } = this.props;
-    let gridSizeLarge = 12
-    let gridSizeSmall = 12
-    
+
     return (
       <div className={classes.root}>
         <Typography variant="h4" className={classes.typographyHeader}>
@@ -227,11 +270,11 @@ class Dashboard extends React.Component {
         </Typography>
         <Paper className={classes.paper}>
           <Grid container >
-            
+
             {this.renderSourceLanguagesItems()}
             {this.renderTargetLanguagesItems()}
 
-            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
+            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{ paddingTop: "20px" }}>
               <textarea
                 id="standard-multiline-static"
                 style={{ padding: "1%", height: '100px', fontFamily: '"Source Sans Pro", "Arial", sans-serif', fontSize: "21px", width: '97.8%', borderRadius: '4px' }}
@@ -247,31 +290,30 @@ class Dashboard extends React.Component {
               />
             </Grid>
 
-            <Grid item xs={12} sm={12} lg={12} xl={12} style={{ display: 'flex', flexDirection: 'row' }}>
+            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{ display: "flex", flexDirection: "row" }}>
+              <Grid item xs={6} sm={6} lg={6} xl={6}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.processClearButtonPressed}
+                  aria-label="edit"
+                  className={classes.button1}
+                >
+                  {translate("common.page.button.clear")}
+                </Button>
+              </Grid>
+              <Grid item xs={6} sm={6} lg={6} xl={6}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={this.processTranslateButtonPressed}
+                  aria-label="edit"
+                  className={classes.button1}
+                >
+                  {translate("common.page.button.submit")}
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={6} sm={6} lg={6} xl={6}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.processClearButtonPressed}
-                aria-label="edit"
-                className={classes.button1}
-              >
-                {translate("common.page.button.clear")}
-              </Button>
-            </Grid>
-            <Grid item xs={6} sm={6} lg={6} xl={6}>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={this.processTranslateButtonPressed}
-                aria-label="edit"
-                className={classes.button1}
-              >
-                {translate("common.page.button.submit")}
-              </Button>
-            </Grid>
-            {/* </div> */}
 
             {this.state.anuvaadText && (
               <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
@@ -281,7 +323,7 @@ class Dashboard extends React.Component {
             )}
 
             {this.state.autoMLText && this.state.autoMLChecked && (
-              
+
               <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
                 <Typography variant="h4" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{translate("dashboard.page.checkbox.mt")}</Typography>
                 <Typography variant="h6" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{this.state.anuvaadText}</Typography>
@@ -289,6 +331,8 @@ class Dashboard extends React.Component {
             )}
           </Grid>
         </Paper>
+        {this.state.showStatus && this.renderProgressInformation()}
+        {this.state.dialogMessage && this.renderStatusInformation()}
       </div>
     );
   }

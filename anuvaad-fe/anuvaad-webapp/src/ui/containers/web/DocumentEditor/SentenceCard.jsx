@@ -300,8 +300,15 @@ class SentenceCard extends React.Component {
          * Ctrl+s
          */
         if ((event.ctrlKey || event.metaKey) && charCode === 's') {
-
             this.processSaveButtonClicked()
+            event.preventDefault();
+            return false
+        }
+
+        if ((event.ctrlKey || event.metaKey) && charCode === 'm') {
+            this.setState({
+                value: this.props.sentence.s0_tgt
+            })
             event.preventDefault();
             return false
         }
@@ -434,7 +441,7 @@ class SentenceCard extends React.Component {
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
-                                helperText="Ctrl+s to save, TAB key to get suggestions of your choice"
+                                helperText="Ctrl+s to save, Ctrl+m to move text, TAB key to get suggestions of your choice"
                                 type="text"
                                 name={this.props.sentence.s_id}
                                 value={this.state.value}
