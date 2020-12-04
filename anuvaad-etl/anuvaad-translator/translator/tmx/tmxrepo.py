@@ -26,8 +26,9 @@ class TMXRepository:
     def upsert(self, input_dict):
         client = self.get_redis_instance()
         for key in input_dict.keys():
+            log_info("GETALLKEY | key: " + str(key), None)
+            log_info("GETALLKEY | value: " + str(input_dict[key]), None)
             client.set(key, json.dumps(input_dict[key]))
-        log_info("GETALLKEY | Created count: " + str(len(input_dict.keys())), None)
 
     def search(self, key_list):
         try:
@@ -43,35 +44,17 @@ class TMXRepository:
             return None
 
     def get_all_records(self, key_list):
-        log_info("GETALLKEY | Fetching all data......", None)
         try:
             client = self.get_redis_instance()
             if not key_list:
                 key_list = client.keys('*')
             result = []
             for key in key_list:
-                log_info("GETALLKEY | " + str(key), None)
-                key_type = client.type(key)
-                val = None
-                if key_type == "string":
-                    log_info("GETALLKEY | STRING", None)
-                    val = client.get(key)
-                if key_type == "hash":
-                    log_info("GETALLKEY | HASH", None)
-                    val = client.hgetall(key)
-                if key_type == "zset":
-                    log_info("GETALLKEY | ZSET", None)
-                    val = client.zrange(key, 0, -1)
-                if key_type == "list":
-                    log_info("GETALLKEY | LIST", None)
-                    val = client.lrange(key, 0, -1)
-                if key_type == "set":
-                    log_info("GETALLKEY | SET", None)
-                    val = client.smembers(key)
+                log_info("GETALLKEY | fetchkey: " + str(key), None)
+                val = client.get(key)
                 if val:
-                    log_info(val, None)
+                    log_info("GETALLKEY | fetchval: " + str(val), None)
                     result.append(json.loads(val))
-            log_info("GETALLKEY | RESULT LENGTH: " + str(len(result)), None)
             return result
         except Exception as e:
             log_exception("Exception in REPO: search | Cause: " + str(e), None, e)
