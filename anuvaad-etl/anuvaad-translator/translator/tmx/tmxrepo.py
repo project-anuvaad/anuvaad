@@ -41,3 +41,18 @@ class TMXRepository:
             log_exception("Exception in REPO: search | Cause: " + str(e), None, e)
             return None
 
+    def get_all(self, key_list):
+        try:
+            client = self.get_redis_instance()
+            if not key_list:
+                key_list = client.keys()
+            result = []
+            for key in key_list:
+                data = client.get(key)
+                if data:
+                    result.append(json.loads(data))
+            return result
+        except Exception as e:
+            log_exception("Exception in REPO: search | Cause: " + str(e), None, e)
+            return None
+

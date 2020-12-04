@@ -78,6 +78,14 @@ def tmx_create():
     return service.push_to_tmx_store(data)
 
 
+@translatorapp.route(context_path + '/v1/tmx/get-all-keys', methods=["POST"])
+def tmx_create():
+    service = TMXService()
+    data = request.get_json()
+    return service.get_data(data)
+
+
+
 # Fetches required headers from the request and adds it to the body.
 def add_headers(data, api_request):
     headers = {

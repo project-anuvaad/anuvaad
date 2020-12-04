@@ -153,6 +153,11 @@ class TMXService:
         else:
             return None
 
+    # Method to fetch all keys from the redis db
+    def get_data(self, req):
+        keys = req["keys"]
+        return repo.get_all(keys)
+
     # Creates a md5 hash using userID, context and src.
     def get_hash_key(self, tmx_record):
         key = tmx_record["userID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + tmx_record["src"]
