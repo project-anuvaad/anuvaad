@@ -13,7 +13,7 @@ constructor(userName,userID,token,timeout=2000){
     this.userName = userName;
     this.userID = userID;
     this.token = token;
-    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.activate_existing_user}`;
+    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.activate_user}`;
 }
 toString() {
     return `${super.toString()} , type: ${this.type}`;
@@ -32,8 +32,8 @@ apiEndPoint() {
 
 getBody() {
     return {
-        userName: this.userName,
-        userID: this.userID,
+        uid: this.userName,
+        rid: this.userID,
     };
 }
 

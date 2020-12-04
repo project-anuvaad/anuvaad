@@ -32,8 +32,8 @@ export default class DeactivateUser extends API{
     
     getBody() {
         return {
-            userName: this.userName,
-            userID: this.userID,
+            uid: this.userName,
+            rid: this.userID,
         };
     }
     

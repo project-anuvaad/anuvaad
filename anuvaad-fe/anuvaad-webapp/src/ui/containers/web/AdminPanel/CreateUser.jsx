@@ -39,8 +39,8 @@ class CreateUser extends React.Component {
   }
   renderNameItems = () => {
     return (
-      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ marginTop: '0%' }}>
-        <Grid item xs={6} sm={6} lg={8} xl={8} style={{ textAlign: 'left', marginTop: 'auto', marginBottom: '0' }}>
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{marginTop:'0%'}}>
+        <Grid item xs={6} sm={6} lg={8} xl={8} style={{textAlign: 'left', marginTop: 'auto', marginBottom: '0'}}>
           <Typography value="" variant="h5">
             {translate("common.page.label.name")}{" "}
           </Typography>
@@ -70,7 +70,7 @@ class CreateUser extends React.Component {
   renderEmaiIdItems = () => {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
-        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
+        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{marginTop:'2%'}}>
           <Typography value="" variant="h5">
             {translate("common.page.label.email")}{" "}
           </Typography>
@@ -106,7 +106,7 @@ class CreateUser extends React.Component {
         </Grid>
 
         <Grid item xs={6} sm={6} lg={4} xl={4} >
-          <FormControl variant="outlined" style={{
+          <FormControl variant="outlined"  style={{
             width: '92%',
             fullWidth: true,
             display: "flex",
@@ -286,7 +286,7 @@ class CreateUser extends React.Component {
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
             </Grid>
-
+            
             <Grid item xs={6} sm={6} lg={6} xl={6}>
               <Button
                 variant="contained"
@@ -299,24 +299,21 @@ class CreateUser extends React.Component {
               </Button>
             </Grid>
             <Grid item xs={6} sm={6} lg={6} xl={6}>
-              <div style={{
-                spacing: 1,
-                position: 'relative'
-              }}>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={this.processCreateUser}
-                  aria-label="edit"
-                  className={classes.button1}
-                  disabled={this.state.loading}
-                  style={{
-                    backgroundColor: this.state.loading ? 'grey' : 'primary',
-                  }}
-                >
-                  {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress} />}
-                  {translate("common.page.button.save")}
-                </Button>
+            <div style={{spacing:1,
+    position: 'relative'}}>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={this.processCreateUser}
+                aria-label="edit"
+                className={classes.button1}
+                disabled={this.state.loading}
+                style={{backgroundColor: this.state.loading ? 'grey' : 'primary',
+              }}
+              >
+                {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress} />}
+                {translate("common.page.button.save")}
+              </Button>
               </div>
             </Grid>
           </Grid>

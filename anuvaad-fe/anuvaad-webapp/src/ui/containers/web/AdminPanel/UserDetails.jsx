@@ -18,7 +18,9 @@ import ActivateUser from "../../../../flux/actions/apis/activate_exisiting_user"
 import DeactivateUser from "../../../../flux/actions/apis/deactivate_exisiting_user";
 import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
+import Snackbar from "../../../components/web/common/Snackbar";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import history from "../../../../web.history";
 
 
 
@@ -35,9 +37,9 @@ class UserDetails extends React.Component {
       currentPageIndex: 0,
       dialogMessage: null,
       timeOut: 3000,
-      variant: "info",
       open: false,
-      checked: false
+      isenabled: false,
+      variantType: ''
     };
 
   }
@@ -54,14 +56,16 @@ class UserDetails extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
+    console.log(prevProps.activateuser.ok)
+    if (prevProps.userinfo.data !== this.props.userinfo.data) {
       this.setState({ showLoader: false })
-    }else if(prevProps.userinfo.data !== this.props.userinfo.data){
+    }
+    else if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
+      this.setState({ showLoader: false })
+    } else if ((prevProps.activateuser.ok !== this.props.activateuser.ok) || (prevProps.deactivateuser.ok !== this.props.deactivateuser.ok)) {
       this.setState({ showLoader: false })
     }
   }
-
-
 
   getMuiTheme = () => createMuiTheme({
     overrides: {
@@ -90,20 +94,56 @@ class UserDetails extends React.Component {
     this.setState({ open: true });
   }
 
-  toggleChecked = (userID,userName,currentState) => {
-    const {APITransport} = this.props;
+  toggleChecked = (e, data, columns, option) => {
+    // e.preventDefault();
+    console.log(data, columns, option)
+    const { APITransport } = this.props;
+    const userdata = Object.assign([], this.props.data)
     const token = localStorage.getItem("token");
-    if(currentState){
-      const deactivateObj = new DeactivateUser(userName,userID,token)
-      APITransport(deactivateObj);
-    }else{
-      const activateObj = new ActivateUser(userName,userID,token)
-      APITransport(activateObj);
-    }
-  };
+    console.log(e.target.checked)
+    const forwardData = userdata.map(user => {
+      if (user.userID === data.userID) {
+        console.log(user.is_verified)
+        return { ...user, is_verified: e.target.checked }
+      }
+      return { ...user }
+    })
 
+    this.processMuiTable(e, columns, option, forwardData)
+    // this.processMuiTable(e,userdata);
+    // if(currentState){
+    //   const deactivateObj = new DeactivateUser(userName, userID, token)
+    //   APITransport(deactivateObj);
+
+    // }else{
+    //   const activateObj = new ActivateUser(userName, userID, token)
+    //   this.setState({showLoader:true})
+    //   APITransport(activateObj)
+    //   history.push(`${process.env.PUBLIC_URL}/user-details`)
+    // }
+  }
+
+  processMuiTable = (e, columns, options, data) => {
+    if (e != '') {
+      this.setState({ showLoader: false })
+    }
+    return (<>
+      <MuiThemeProvider theme={this.getMuiTheme()}>
+        <MUIDataTable title={translate("common.page.title.userdetails")}
+          columns={columns} options={options} data={data} />
+      </MuiThemeProvider>
+    </>)
+  }
+
+  updateStatus = async (e, userID) => {
+    this.props.activateuser.ok !== undefined && this.setState({ [`checked${userID}`]: e.target.checked, showLoader: true }, () => {
+      console.log('activateuser', this.state)
+    });
+    this.props.activateuser.ok !== undefined && this.setState({ [`checked${userID}`]: e.target.checked, showLoader: true }, () => {
+      console.log('activateuser', this.state)
+    })
+  }
   render() {
-    const data = this.props.userinfo.data;
     const columns = [
       {
         name: "userID",
@@ -111,7 +151,16 @@ class UserDetails extends React.Component {
         options: {
           filter: false,
           sort: false,
-        display:"exclude"
+          display: "exclude"
+        }
+      },
+      {
+        name: "userName",
+        label: "userName",
+        options: {
+          filter: false,
+          sort: false,
+          display: "exclude"
         }
       },
       {
@@ -137,7 +186,24 @@ class UserDetails extends React.Component {
           filter: false,
           sort: false,
         }
-      },      
+      },
+      {
+        name: "registered_time",
+        label: translate("common.page.label.timeStamp"),
+        options: {
+          filter: true,
+          sort: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            if (tableMeta.rowData) {
+              return (
+                <div>
+                  {tableMeta.rowData[5]}
+                </div>
+              )
+            }
+          }
+        }
+      },
       {
         name: "is_verified",
         label: translate('common.page.table.status'),
@@ -147,16 +213,14 @@ class UserDetails extends React.Component {
           empty: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
-              console.log(tableMeta.rowData);
+              console.log(`this.state.${tableMeta.rowData[1]}${tableMeta.rowData[0]}` === undefined)
               return (
                 <div>
-                  <Tooltip key={tableMeta.rowIndex} title="Active/Inactive" placement="left">
+                  <Tooltip title="Active/Inactive" placement="left">
                     <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
-                      <FormGroup>
-                        <FormControlLabel
-                          control={<Switch checked={tableMeta.rowData[4]} onChange={this.toggleChecked(tableMeta.rowData[0],tableMeta.rowData[2],tableMeta.rowData[4])} />}
-                        />
-                      </FormGroup>
+                      <Switch name={`${tableMeta.rowData[1]}${tableMeta.rowData[0]}`}
+                        checked={tableMeta.rowData[6]}
+                        onChange={(e) => this.toggleChecked(e, tableMeta.rowData, columns, options)} />
                     </IconButton>
                   </Tooltip>
                 </div>
@@ -203,12 +267,20 @@ class UserDetails extends React.Component {
           <ToolBar />
           {
             !this.state.showLoader &&
-            <MuiThemeProvider theme={this.getMuiTheme()}>
-              <MUIDataTable title={translate("common.page.title.userdetails")}
-                columns={columns} options={options} data={this.props.userinfo.data} />
-            </MuiThemeProvider>}
+            this.processMuiTable('', columns, options, this.props.userinfo.data)
+          }
         </div>
         {(this.state.showLoader || this.state.loaderDelete) && < Spinner />}
+        {this.state.isenabled &&
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={this.state.isenabled}
+            autoHideDuration={3000}
+            onClose={this.handleClose}
+            variant={this.state.variantType}
+            message={this.state.message}
+          />
+        }
       </div>
 
     );
@@ -218,9 +290,9 @@ class UserDetails extends React.Component {
 const mapStateToProps = state => ({
   user: state.login,
   userinfo: state.userinfo,
-  apistatus: state.apistatus,
   job_details: state.job_details,
-  async_job_status: state.async_job_status
+  activateuser: state.activateuser,
+  deactivateuser: state.deactivateuser
 });
 
 const mapDispatchToProps = dispatch =>
