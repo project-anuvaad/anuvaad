@@ -46,14 +46,9 @@ EXRACTION_RESOLUTION = 300
 CRAFT_MODEL_PATH=  './src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
 CRAFT_REFINE_MODEL_PATH =  './src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth'
 
-LANGUAGE_WORD_THRESOLDS ={
-<<<<<<< HEAD
+LANGUAGE_WORD_THRESOLDS = {
 'en':{'text_threshold':0.2 ,'low_text': 0.4,'link_threshold':0.4},
-'hi':{'text_threshold':0.2 ,'low_text': 0.3,'link_threshold':0.8},
-=======
-'en':{'text_threshold':0.2 ,'low_text': 0.3,'link_threshold':0.4},
 'hi':{'text_threshold':0.2 ,'low_text': 0.4,'link_threshold':0.8},
->>>>>>> 80e8a0cb69ca6d8224344074e1aaae3b63dd1260
 'ma':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5} ,
 'ta':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5} ,
 'ml':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5} ,
