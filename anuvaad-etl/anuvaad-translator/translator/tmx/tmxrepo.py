@@ -27,6 +27,7 @@ class TMXRepository:
         client = self.get_redis_instance()
         for key in input_dict.keys():
             client.set(key, json.dumps(input_dict[key]))
+        log_info("GETALLKEY | Created count: " + str(len(input_dict.keys())), None)
 
     def search(self, key_list):
         try:
@@ -70,7 +71,7 @@ class TMXRepository:
                 if val:
                     log_info(val, None)
                     result.append(json.loads(val))
-            log_info("GETALLKEY | RESULT LENGTH: " + str(len(result)))
+            log_info("GETALLKEY | RESULT LENGTH: " + str(len(result)), None)
             return result
         except Exception as e:
             log_exception("Exception in REPO: search | Cause: " + str(e), None, e)
