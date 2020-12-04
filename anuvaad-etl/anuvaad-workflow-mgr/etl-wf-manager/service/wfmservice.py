@@ -314,7 +314,9 @@ class WFMService:
             task_details = []
             if task_output is not None:
                 task_details = [task_output]
-            client_input = {"workflowCode": wf_input["workflowCode"], "files": wf_input["files"], 'jobName': wf_input["jobName"]}
+            client_input = {"workflowCode": wf_input["workflowCode"], "files": wf_input["files"]}
+            if 'jobName' in wf_input.keys():
+                client_input["jobName"] = wf_input["jobName"]
             client_output = {"input": client_input, "jobID": wf_input["jobID"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
