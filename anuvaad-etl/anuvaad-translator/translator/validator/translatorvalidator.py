@@ -26,12 +26,12 @@ class TranslatorValidator:
                 else:
                     if not api_input["textBlocks"]:
                         return post_error("TEXT_BLOCKS_EMPTY", "Text blocks cannot be empty", None)
-                    else:
-                        for block in api_input["textBlocks"]:
-                            if 'block_identifier' not in block.keys():
-                                return post_error("BLOCK_ID_NOT_FOUND", "block_identifier is mandatory", None)
                     if 'recordID' not in api_input.keys():
                         return post_error("RECORD_ID_NOT_FOUND", "Record id is mandatory", None)
+                    if 'locale' not in api_input.keys():
+                        return post_error("LOCALE_NOT_FOUND", "Locale is mandatory", None)
+                    if 'context' not in api_input.keys():
+                        return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
                     if 'model' not in api_input.keys():
                         return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
                     else:
@@ -42,10 +42,6 @@ class TranslatorValidator:
                             return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
                         if 'target_language_code' not in model.keys():
                             return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
-                    if 'locale' not in api_input.keys():
-                        return post_error("LOCALE_NOT_FOUND", "Locale is mandatory", None)
-                    if 'context' not in api_input.keys():
-                        return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
 
     def validate_text_translate(self, data):
         if 'input' not in data.keys():

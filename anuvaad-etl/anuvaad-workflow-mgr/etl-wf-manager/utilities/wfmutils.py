@@ -142,9 +142,12 @@ class WFMUtils:
             if current_tool == tool_translator:
                 tool_input = translator.get_translator_input(task_output, previous_tool, False)
                 job_details = self.get_job_details(task_output["jobID"])[0]
+                files = []
                 for file in tool_input["input"]["files"]:
                     file["model"] = job_details["input"]["files"][0]["model"]
                     file["context"] = job_details["input"]["files"][0]["context"]
+                    files.append(file)
+                tool_input["input"]["files"] = files
             if current_tool == tool_worddetector:
                 tool_input = word_detector.get_wd_input(task_output, previous_tool)
                 job_details = self.get_job_details(task_output["jobID"])[0]
@@ -189,6 +192,7 @@ class WFMUtils:
                 tool_input = translator.get_translator_input(task_output, previous_tool, True)
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 tool_input["input"]["model"] = job_details["input"]["model"]
+                tool_input["input"]["context"] = job_details["input"]["context"]
         else:
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input_wf(wf_input, True)

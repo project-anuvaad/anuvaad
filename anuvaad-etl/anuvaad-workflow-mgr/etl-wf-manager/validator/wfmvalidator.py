@@ -43,6 +43,8 @@ class WFMValidator:
                 return post_error("LOCALE_NOT_FOUND", "Locale is mandatory.", None)
             if 'textBlocks' not in data.keys():
                 return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory", None)
+            if 'context' not in data.keys():
+                return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
             else:
                 if not data["textBlocks"]:
                     return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory.", None)
@@ -58,8 +60,6 @@ class WFMValidator:
                             return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
                         if 'target_language_code' not in model.keys():
                             return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
-                        if 'context' not in data.keys():
-                            return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
         else:
             return post_error("WORKFLOW_TYPE_DISABLED",
                               "This workflow belongs to SYNC type, which is currently disabled.", None)
@@ -87,6 +87,8 @@ class WFMValidator:
                         if 'locale' not in file.keys():
                             return post_error("FILES_LOCALE_NOT_FOUND",
                                               "Locale is mandatory for all files in the input", None)
+                        if 'context' not in file.keys():
+                            return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
                         if tool_translator in tools:
                             if 'model' not in file.keys():
                                 return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
@@ -98,8 +100,6 @@ class WFMValidator:
                                     return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
                                 if 'target_language_code' not in model.keys():
                                     return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
-                            if 'context' not in file.keys():
-                                return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
                         if tool_worddetector in tools or tool_layoutdetector in tools or tool_ocrgooglevision in tools:
                             if 'config' not in file.keys():
                                 return post_error("CONFIG_NOT_FOUND", "OCR Config details are mandatory for this wf.", None)

@@ -1,5 +1,4 @@
 #!/bin/python
-import logging
 import time
 
 from flask import Flask, jsonify, request
@@ -10,10 +9,9 @@ from validator.translatorvalidator import TranslatorValidator
 from tmx.tmxservice import TMXService
 from configs.translatorconfig import context_path
 from configs.translatorconfig import tool_translator
-from anuvaad_auditor.loghandler import log_exception
+from anuvaad_auditor.loghandler import log_exception, log_error
 
 translatorapp = Flask(__name__)
-log = logging.getLogger('file')
 
 
 # REST endpoint to initiate the workflow.
@@ -37,6 +35,8 @@ def block_translate():
     data = request.get_json()
     error = validator.validate_block_translate(data)
     if error is not None:
+        log_error("Error in Block Translate: " + str(error), data, None)
+        log_error("Input: " + str(data), data, None)
         data["state"], data["status"], data["error"] = "TRANSLATED", "FAILED", error
         return data, 400
     response = service.block_translate(data)
