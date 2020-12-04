@@ -73,7 +73,7 @@ class BlockTranslationService:
     # Method to fetch blocks from input and add it to list for translation
     def get_sentences_for_translation(self, block_translate_input):
         sent_for_nmt = []
-        record_id, model_id = block_translate_input["input"]["recordID"], block_translate_input["input"]["modelID"]
+        record_id, model_id = block_translate_input["input"]["recordID"], block_translate_input["input"]["model"]["model_id"]
         for block in block_translate_input["input"]["textBlocks"]:
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
@@ -102,6 +102,7 @@ class BlockTranslationService:
             if nmt_response['response_body']:
                 for translation in nmt_response["response_body"]:
                     if translation["tmx_phrases"]:
+                        log_info("Modifying tgt with TMX for src: " + translation["src"], block_translate_input)
                         translation["tgt"] = tmxservice.replace_nmt_tgt_with_user_tgt(translation["tmx_phrases"],
                                                                                       translation["tgt"], block_translate_input)
                     b_index, s_index = None, None
