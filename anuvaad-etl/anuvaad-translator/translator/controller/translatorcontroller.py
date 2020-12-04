@@ -79,10 +79,10 @@ def tmx_create():
 
 
 @translatorapp.route(context_path + '/v1/tmx/get-all-keys', methods=["POST"])
-def tmx_create():
+def tmx_get_all_keys():
     service = TMXService()
     data = request.get_json()
-    return service.get_data(data)
+    return service.get_tmx_data(data)
 
 
 
