@@ -161,6 +161,14 @@
             "description":"API to create TMX records via XLS upload"
         },
         {
+            "id":"98360963-7f7b-4b4b-93d5-5f055d283868",
+            "uri":"/anuvaad-etl/translator/v1/tmx/get-all-keys",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch TMX data through API"
+        },
+        {
             "id":"e5d0b999-a2bb-41af-a267-2494b15fb6a5",
             "uri":"/nmt-inference/v1/fetch-models",
             "module":"ANUVAAD-NMT",
