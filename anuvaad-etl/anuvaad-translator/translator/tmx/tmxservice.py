@@ -24,14 +24,21 @@ class TMXService:
             number_of_columns = sheet.ncols
             tmx_input = []
             for row in range(2, number_of_rows):
+                if row == 1:
+                    continue
                 values = []
                 for col in range(number_of_columns):
                     values.append(sheet.cell(row, col).value)
-                log_info("GETALLKEY | VALUES: " + str(values), None)
-                values_dict = {"src": values[0], "tgt": values[1], "locale": values[2]}
-                log_info("GETALLKEY | VALUES DICT: " + str(values_dict), None)
-                tmx_input.append(values_dict)
-                log_info("GETALLKEY | TMX LIST: " + str(tmx_input), None)
+                if row == 0:
+                    if values[0] != "Source":
+                        return {"message": "Source is Missing", "status": "FAILED"}
+                    if values[1] != "Target":
+                        return {"message": "Target is Missing", "status": "FAILED"}
+                    if values[2] != "Locale":
+                        return {"message": "Locale is Missing", "status": "FAILED"}
+                else:
+                    values_dict = {"src": values[0], "tgt": values[1], "locale": values[2]}
+                    tmx_input.append(values_dict)
             self.push_to_tmx_store({"userID": api_input["userID"], "context": api_input["context"], "sentences": tmx_input})
             log_info("Bulk Create DONE!", None)
             return {"message": "bulk creation successful", "status": "SUCCESS"}
@@ -48,8 +55,6 @@ class TMXService:
                 tmx_record = {"userID": tmx_input["userID"], "context": tmx_input["context"], "src": sentence["src"],
                               "nmt_tgt": [], "user_tgt": sentence["tgt"], "locale": sentence["locale"]}
                 tmx_record["hash"] = self.get_hash_key(tmx_record)
-                log_info("GETALLKEY | RKEY: " + str(tmx_record["hash"]), None)
-                log_info("GETALLKEY | RVALUE: " + str(tmx_record), None)
                 repo.upsert(tmx_record["hash"], tmx_record)
             log_info("Translations pushed to TMX!", None)
             return {"message": "created", "status": "SUCCESS"}
