@@ -64,18 +64,21 @@ class TMXService:
 
     # Method to fetch tmx phrases for a given src
     def get_tmx_phrases(self, user_id, context, locale, sentence, ctx):
+        log_info("Fetching TMX phrases for: " + str(sentence), ctx)
         tmx_record = {"userID": user_id, "context": context, "locale": locale, "src": sentence}
-        return self.tmx_phrase_search(tmx_record)
+        return self.tmx_phrase_search(tmx_record, ctx)
 
     # Searches for all tmx phrases within a given sentence
     # Uses a custom implementation of the sliding window search algorithm.
-    def tmx_phrase_search(self, tmx_record):
+    def tmx_phrase_search(self, tmx_record, ctx):
         sentence, tmx_phrases = tmx_record["src"], []
         start_pivot, sliding_pivot, i = 0, len(sentence), 1
         while start_pivot < len(sentence):
             phrase = sentence[start_pivot:sliding_pivot]
+            log_info("PHRASE: " + str(phrase), ctx)
             tmx_record["src"] = phrase
             hash_key = self.get_hash_key(tmx_record)
+            log_info("PHRASE-HASH: " + str(hash_key), ctx)
             tmx_result = repo.search([hash_key])
             if tmx_result:
                 tmx_phrases.append(tmx_result[0])
