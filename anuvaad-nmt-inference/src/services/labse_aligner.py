@@ -5,8 +5,9 @@ import tools.indic_tokenize as indic_tok
 from sentence_transformers import SentenceTransformer
 import numpy as np
 from scipy.spatial import distance
+import config
 
-model = SentenceTransformer('LaBSE')
+model = SentenceTransformer(config.LABSE_PATH)
 
 class LabseAlignerService:
     @staticmethod  
