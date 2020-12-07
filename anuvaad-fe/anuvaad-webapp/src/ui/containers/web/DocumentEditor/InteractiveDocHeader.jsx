@@ -88,7 +88,7 @@ class InteractiveDocHeader extends React.Component {
         return (
             <div>
                 <Snackbar
-                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                     open={true}
                     autoHideDuration={3000}
                     variant={this.state.variant}
@@ -102,10 +102,10 @@ class InteractiveDocHeader extends React.Component {
         )
     }
 
-    fetchFile() {
+    fetchFile(fileType) {
         this.setState({ anchorEl: null, showStatus: true, message: translate("common.page.label.download") });
 
-        let apiObj = new DocumentConverterAPI(this.props.match.params.jobid, JSON.parse(localStorage.getItem('userProfile')) ? JSON.parse(localStorage.getItem('userProfile')).userID : '')
+        let apiObj = new DocumentConverterAPI(fileType, this.props.match.params.jobid, JSON.parse(localStorage.getItem('userProfile')) ? JSON.parse(localStorage.getItem('userProfile')).userID : '')
 
         const apiReq = fetch(apiObj.apiEndPoint(), {
             method: 'post',
@@ -191,7 +191,7 @@ class InteractiveDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.fetchFile(); this.setState({ fileType: "translated_document" })
+                            this.fetchFile("docx"); this.setState({ fileType: "translated_document" })
                         }}
                     >
                         As DOCX
@@ -199,7 +199,7 @@ class InteractiveDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.fetchFile(); this.setState({ fileType: "translated_txt_file" })
+                            this.fetchFile("txt"); this.setState({ fileType: "translated_txt_file" })
                         }}
                     >
                         As TXT
@@ -207,7 +207,7 @@ class InteractiveDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.fetchFile(); this.setState({ fileType: "xlsx_file" })
+                            this.fetchFile("xlsx"); this.setState({ fileType: "xlsx_file" })
                         }}
                     >
                         As XLSX
