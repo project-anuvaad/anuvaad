@@ -98,26 +98,6 @@ class PdfUpload extends Component {
       alert("Field should not be empty!");
     }
 
-    // let model = "";
-    // let target_lang_name = ''
-    // let source_lang_name = ''
-    // if (this.props.fetch_models.models) {
-    //   this.props.fetch_models.models.map(item =>
-    //     item.target_language_code === this.state.target &&
-    //       item.source_language_code === this.state.source &&
-    //       item.is_primary
-    //       ? (model = item)
-    //       : ""
-    //   );
-    //   this.props.fetch_languages.languages.map((lang) => {
-    //     if (lang.language_code === this.state.target) {
-    //       target_lang_name = lang.language_name
-    //     } if (lang.language_code === this.state.source) {
-    //       source_lang_name = lang.language_name
-    //     }
-    //     return true
-    //   })
-
   }
   // Source language
   handleSource(modelLanguage, supportLanguage) {

@@ -22,6 +22,8 @@ import DocumentEditorV1 from './ui/containers/web/DocumentEditor/DocumentEditor.
 
 import FileUpload from './ui/containers/web/DocumentUpload/FileUpload';
 import ViewDocument from './ui/containers/web/DocumentTranslate/ViewDocument';
+import UserDetails from "./ui/containers/web/AdminPanel/UserDetails";
+import CreateUser from "./ui/containers/web/AdminPanel/CreateUser";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute,  component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -53,7 +55,8 @@ class AppRoutes extends React.Component {
     let count = 0;
     const token = localStorage.getItem("token");
     if (localStorage.getItem("roles")) {
-      const userRoles = ["interactive-editor"] //JSON.parse(localStorage.getItem("roles"));
+      console.log(localStorage.getItem("roles"), allowedRoles)
+      const userRoles = [localStorage.getItem("roles")] //JSON.parse(localStorage.getItem("roles"));
       if (token) {
         if (allowedRoles && Array.isArray(allowedRoles)) {
           allowedRoles.map(allowedRole => {
@@ -123,7 +126,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:locale/:tgt_locale/:targetlang/:jobid/:inputfileid/:modelId/:filename`}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              userRoles={["TRANSLATOR"]}
               component={DocumentEditorV1}
               title="Translate file"
               authenticate={this.authenticateUser}
@@ -134,7 +137,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-upload`}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              userRoles={["TRANSLATOR"]}
               component={FileUpload}
               title="Start Translate"
               authenticate={this.authenticateUser}
@@ -165,7 +168,7 @@ class AppRoutes extends React.Component {
             {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-translate`}
               title={translate('webroutes.page.title.anuvaadEditor')}
-              userRoles={["editor", "dev", "interactive-editor", "grader"]}
+              userRoles={["TRANSLATOR"]}
               component={IntractiveTranslate}
               authenticate={this.authenticateUser}
               currentMenu="interactive-translate"
@@ -175,13 +178,37 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/view-document`}
               dontShowLoader
               title={"Document Translate"}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              userRoles={["TRANSLATOR"]}
               component={ViewDocument}
               authenticate={this.authenticateUser}
               currentMenu="view-document"
               dontShowHeader={true}
             />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/create-user`}
+              title={translate('create.user.page.heading.title')}
+              component={CreateUser}
+              userRoles={["ADMIN"]}
+              authenticate={this.authenticateUser}
+              currentMenu="create-user"
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/user-details`}
+              dontShowLoader
+              title={"User Details"}
+              userRoles={["ADMIN"]}
+              component={UserDetails}
+              authenticate={this.authenticateUser}
+              currentMenu="user-details"
+              dontShowHeader={true}
+            />
+
+
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
+
+
           </Switch>
         </div>
       </Router>
