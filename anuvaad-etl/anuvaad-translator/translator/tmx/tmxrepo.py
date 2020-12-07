@@ -32,9 +32,9 @@ class TMXRepository:
             client = self.get_redis_instance()
             result = []
             for key in key_list:
-                data = client.get(key)
-                if data:
-                    result.append(json.loads(data))
+                val = client.get(key)
+                if val:
+                    result.append(json.loads(val))
             return result
         except Exception as e:
             log_exception("Exception in REPO: search | Cause: " + str(e), None, e)
