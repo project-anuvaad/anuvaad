@@ -117,7 +117,7 @@ class InteractiveDocHeader extends React.Component {
                 this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
                 return Promise.reject('');
             } else {
-                let fileName = rsp_data && rsp_data[this.state.fileType] ? rsp_data[this.state.fileType] : ""
+                let fileName = rsp_data && rsp_data.translated_document ? rsp_data.translated_document : ""
 
                 if (fileName) {
                     let obj = new DownloadFile(fileName)
@@ -191,7 +191,7 @@ class InteractiveDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.fetchFile("docx"); this.setState({ fileType: "translated_document" })
+                            this.fetchFile("docx")
                         }}
                     >
                         As DOCX
@@ -199,7 +199,7 @@ class InteractiveDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.fetchFile("txt"); this.setState({ fileType: "translated_txt_file" })
+                            this.fetchFile("txt")
                         }}
                     >
                         As TXT
@@ -207,7 +207,7 @@ class InteractiveDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.fetchFile("xlsx"); this.setState({ fileType: "xlsx_file" })
+                            this.fetchFile("xlsx")
                         }}
                     >
                         As XLSX
