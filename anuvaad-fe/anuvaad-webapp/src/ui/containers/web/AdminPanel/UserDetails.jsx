@@ -36,7 +36,8 @@ class UserDetails extends React.Component {
       timeOut: 3000,
       open: false,
       isenabled: false,
-      variantType: ''
+      variantType: '',
+      message: ''
     };
 
   }
@@ -73,10 +74,8 @@ class UserDetails extends React.Component {
       MUIDataTableBodyCell: {
         root: {
           padding: '3px 10px 3px',
+          marginLeft: '-2%'
         },
-        TableViewCol:{
-          margin:'10%'
-        }
       },
     }
   })
@@ -95,13 +94,33 @@ class UserDetails extends React.Component {
     const { APITransport } = this.props;
     const token = localStorage.getItem("token");
     if (currentState) {
-      const deactivate_exisiting_user = new DeactivateUser(userName, userID, token);
+      const deactivate_exisiting_user = new DeactivateUser(userName, token);
       this.setState({ isenabled: true, variantType: 'info', message: 'Please wait, deactivating the user' });
-      APITransport(deactivate_exisiting_user);
+      fetch(deactivate_exisiting_user.apiEndPoint(), {
+        method: 'post',
+        body: JSON.stringify(deactivate_exisiting_user.getBody()),
+        headers: deactivate_exisiting_user.getHeaders().headers
+      }).then(res => {
+        if (res.ok) {
+          this.setState({ isenabled: true, variantType: 'success', message: `${userName} deactivated successfully` })
+        } else {
+          this.setState({ isenabled: true, variantType: 'error', message: 'Something went wrong' })
+        }
+      })
     } else {
       const activate_exisiting_user = new ActivateUser(userName, userID, token);
       this.setState({ isenabled: true, variantType: 'info', message: 'Please wait, activating the user' });
-      APITransport(activate_exisiting_user);
+      fetch(activate_exisiting_user.apiEndPoint(), {
+        method: 'post',
+        body: JSON.stringify(activate_exisiting_user.getBody()),
+        headers: activate_exisiting_user.getHeaders().headers
+      }).then(res => {
+        if (res.ok) {
+          this.setState({ isenabled: true, variantType: 'success', message: `${userName} activated successfully` })
+        } else {
+          this.setState({ isenabled: true, variantType: 'error', message: 'Something went wrong, please try again later' })
+        }
+      })
     }
   }
 
@@ -118,7 +137,7 @@ class UserDetails extends React.Component {
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={this.state.isenabled}
-        autoHideDuration={100000}
+        autoHideDuration={10000}
         onClose={this.handleClose}
         variant={this.state.variantType}
         message={this.state.message}
@@ -126,13 +145,13 @@ class UserDetails extends React.Component {
     );
   }
 
-  processSwitch = (userId, userName, isverified) => {
+  processSwitch = (userId, userName, isactive) => {
     return (<div>
       <Tooltip title="Active/Inactive" placement="left">
         <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
           <Switch
-            checked={isverified}
-            onChange={(e) => this.toggleChecked(e, userName, userId, isverified)} />
+            checked={isactive}
+            onChange={(e) => this.toggleChecked(e, userName, userId, isactive)} />
         </IconButton>
       </Tooltip>
     </div>);
@@ -200,7 +219,7 @@ class UserDetails extends React.Component {
         }
       },
       {
-        name: "is_verified",
+        name: "is_active",
         label: translate('common.page.table.status'),
         options: {
           filter: true,
@@ -209,7 +228,7 @@ class UserDetails extends React.Component {
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
-                this.processSwitch(tableMeta.rowData[0],tableMeta.rowData[1],tableMeta.rowData[6]) //userId, userName, isverified
+                this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[6]) //userId, userName, isactive
               );
             }
           }

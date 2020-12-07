@@ -193,11 +193,6 @@ class CreateUser extends React.Component {
           const createUserObj = new CreateUsers(emailid, name, password, roleInfo, token);
           try {
             this.setState({
-              name: '',
-              emailid: '',
-              password: '',
-              roleCode: '',
-              roleInfo: '',
               loading: true,
             })
             fetch(createUserObj.apiEndPoint(), {
