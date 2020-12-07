@@ -163,15 +163,6 @@ class SentenceCard extends React.Component {
      * api calls
      */
     async makeAPICallInteractiveTranslation() {
-        /**
-         * left dead code to test
-         */
-        // const response  = await fetch('https://country.register.gov.uk/records.json?page-size=5000');
-        // await sleep(1e3);
-        // const countries = await response.json();
-        // this.setState({
-        //     suggestions: Object.keys(countries).map((key) => countries[key].item[0])
-        // })
 
         this.setState({ isCardBusy: true })
         let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, this.state.value, this.props.modelId, true, '', this.props.sentence.s_id);
@@ -300,8 +291,15 @@ class SentenceCard extends React.Component {
          * Ctrl+s
          */
         if ((event.ctrlKey || event.metaKey) && charCode === 's') {
-
             this.processSaveButtonClicked()
+            event.preventDefault();
+            return false
+        }
+
+        if ((event.ctrlKey || event.metaKey) && charCode === 'm') {
+            this.setState({
+                value: this.props.sentence.s0_tgt
+            })
             event.preventDefault();
             return false
         }
@@ -335,11 +333,6 @@ class SentenceCard extends React.Component {
     renderSourceSentence = () => {
         return (
             <div >
-                {/* <Typography color="textSecondary" gutterBottom>
-                    Source sentence
-                    <br />
-                </Typography> */}
-
                 <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
                     {this.props.sentence.src}
                 </Typography>
@@ -351,11 +344,6 @@ class SentenceCard extends React.Component {
         return (
             <div>
                 <Divider />
-                {/* <Typography color = "textSecondary" gutterBottom>
-                    Matchine translated
-                    <br />
-                </Typography> */}
-
                 <Typography variant="subtitle1" gutterBottom>
                     {this.props.sentence.s0_tgt}
                     <br />
@@ -369,11 +357,6 @@ class SentenceCard extends React.Component {
         return (
             <div>
                 <Divider />
-                {/* <Typography color = "textSecondary" gutterBottom>
-                    Matchine translated
-                    <br />
-                </Typography> */}
-
                 <Typography variant="subtitle1" gutterBottom>
                     {this.props.sentence.tgt}
                     <br />
@@ -434,7 +417,7 @@ class SentenceCard extends React.Component {
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
-                                helperText="Ctrl+s to save, TAB key to get suggestions of your choice"
+                                helperText="Ctrl+s to save, Ctrl+m to move text, TAB key to get suggestions of your choice"
                                 type="text"
                                 name={this.props.sentence.s_id}
                                 value={this.state.value}
@@ -445,9 +428,6 @@ class SentenceCard extends React.Component {
                                 variant="outlined"
                                 onKeyDown={this.handleKeyDown}
                                 inputRef={this.textInput}
-                                // onFocus={event => {
-                                //     this.props.highlightBlock(this.props.sentence)
-                                // }}
                                 InputProps={{
                                     ...params.InputProps,
                                     endAdornment: (

@@ -9,7 +9,6 @@ import history from "../../../../web.history";
 import ClearContent from "../../../../flux/actions/apis/clearcontent";
 import FileContent from "../../../../flux/actions/apis/fetchcontent";
 import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_update";
-
 import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -23,13 +22,8 @@ import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
 import InteractivePagination from './InteractivePagination';
 import SENTENCE_ACTION from './SentenceActions'
-import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverter";
 import JobStatus from "../../../../flux/actions/apis/v1_jobprogress";
-// import PAGE_OPS from "../../../../utils/page.operations";
-// import BLOCK_OPS from "../../../../utils/block.operations";
-// import TELEMETRY from '../../../../utils/TelemetryManager';
 import FetchModel from "../../../../flux/actions/apis/fetchmodel";
-
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
@@ -39,6 +33,7 @@ import InteractiveDocToolBar from "./InteractiveDocHeader"
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
+var jp = require('jsonpath')
 
 class DocumentEditor extends React.Component {
   constructor(props) {
@@ -78,12 +73,15 @@ class DocumentEditor extends React.Component {
     this.setState({ showLoader: true });
     this.makeAPICallFetchContent(1);
     this.makeAPICallDocumentsTranslationProgress();
-    
+
+    if (!this.props.fetch_models || !this.props.fetch_models.length > 0) {
+      const apiModel = new FetchModel();
+      this.props.APITransport(apiModel);
+    }
+
     window.addEventListener('popstate', this.handleOnClose);
     // window.addEventListener('beforeunload',this.handleOnClose);
-    const { APITransport } = this.props;
-    const apiModel = new FetchModel();
-    APITransport(apiModel);
+
   }
 
   componentDidUpdate(prevProps) {
@@ -279,14 +277,15 @@ class DocumentEditor extends React.Component {
   }
 
   fetchModel(modelId) {
-    let docs = this.props.fetch_models && this.props.fetch_models.models
     let model = ""
-    docs && Array.isArray(docs) && docs.length > 0 && docs.map(doc => {
-      if (doc.model_id == modelId) {
-        model = doc
-      }
-    })
-    return model
+
+    let docs = this.props.fetch_models
+    if (docs && docs.length > 0) {
+      let condition = `$[?(@.model_id == '${modelId}')]`;
+      model = jp.query(docs, condition)
+    }
+
+    return model.length > 0 ? model[0] : null
   }
 
   /**
@@ -367,6 +366,8 @@ class DocumentEditor extends React.Component {
         this.forMergeSentences = this.forMergeSentences.filter(sent => sent.s_id !== sentences[0].s_id)
         return;
       }
+      default:
+            return;
     }
   }
 
@@ -562,7 +563,7 @@ const mapStateToProps = state => ({
   active_page_number: state.active_page_number.page_number,
   document_editor_mode: state.document_editor_mode,
   fetchDocument: state.fetchDocument,
-  fetch_models: state.fetch_models
+  fetch_models: state.fetch_models.models
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

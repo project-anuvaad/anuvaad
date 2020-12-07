@@ -35,7 +35,7 @@ def get_response(app_context, words, lines, images):
         except Exception as e:
             file_prperties.set_staus(False)
             log_exception("Error occured during response generation" + str(e), app_context.application_context, e)
-
+        
         output.append(file_prperties.get_file())
 
     app_context.application_context['outputs'] = output
