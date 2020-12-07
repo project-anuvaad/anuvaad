@@ -21,20 +21,16 @@ def get_iou(evalue_file) :
     if check_files :
         boxlevel = evalue_file.get_boxlevel()
         for gt_index , gt in enumerate(gt_json):
-
             gt_file, in_file = File(gt), File(in_json[gt_index])
-
             gt_pages = gt_file.get_pages()
             in_pages = in_file.get_pages()
             check_pages = len(gt_pages) == len(in_pages)
-
             if check_pages:
-
                 pages = []
                 for page_index, page in enumerate(gt_pages):
-                    gt_boxex = gt_file.get_boxes(boxlevel, page_index)
-                    in_boxex = in_file.get_boxes(boxlevel, page_index)
-                    pages.append(compare_regions(gt_boxex, in_boxex))
+                    gt_boxes = gt_file.get_boxes(boxlevel, page_index)
+                    in_boxes = in_file.get_boxes(boxlevel, page_index)
+                    pages.append(compare_regions(gt_boxes, in_boxes))
                 evalue_file.set_staus(True)
                 #file_comparison = evalue_file.get_evaluation()
                 comparison.append({'pages': pages})
