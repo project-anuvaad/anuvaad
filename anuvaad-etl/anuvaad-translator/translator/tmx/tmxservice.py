@@ -64,7 +64,6 @@ class TMXService:
 
     # Method to fetch tmx phrases for a given src
     def get_tmx_phrases(self, user_id, context, locale, sentence, ctx):
-        log_info("Fetching TMX phrases for: " + str(sentence), ctx)
         tmx_record = {"userID": user_id, "context": context, "locale": locale, "src": sentence}
         return self.tmx_phrase_search(tmx_record, ctx)
 
@@ -142,7 +141,7 @@ class TMXService:
                             modified_nmt_tgt = phrase["nmt_tgt"]
                             modified_nmt_tgt.append(nmt_aligned_phrases[aligned_phrase])
                             phrase["nmt_tgt"] = modified_nmt_tgt
-                            repo.upsert({phrase["hash"]: phrase})
+                            repo.upsert(phrase["hash"], phrase)
                     else:
                         log_info("No LaBSE alignments available!", ctx)
                     return tgt
