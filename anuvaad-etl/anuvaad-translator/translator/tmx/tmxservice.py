@@ -75,10 +75,8 @@ class TMXService:
         start_pivot, sliding_pivot, i = 0, len(sentence), 1
         while start_pivot < len(sentence):
             phrase = sentence[start_pivot:sliding_pivot]
-            log_info("PHRASE: " + str(phrase), ctx)
             tmx_record["src"] = phrase
             hash_key = self.get_hash_key(tmx_record)
-            log_info("PHRASE-HASH: " + str(hash_key), ctx)
             tmx_result = repo.search([hash_key])
             if tmx_result:
                 tmx_phrases.append(tmx_result[0])
