@@ -11,7 +11,7 @@ export default class RunExperiment extends API {
     this.type = C.WORKFLOW;
     this.file = file;
     this.fileName = fileName;
-    this.endpoint = workflow  === "WF_A_FCBMTKTR" ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}`: `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`
+    this.endpoint = workflow === "WF_A_FCBMTKTR" ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}` : `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`
     this.source = source;
     this.target = target;
     this.path = path;
@@ -48,19 +48,22 @@ export default class RunExperiment extends API {
             "path": this.file,
             "type": this.path,
             "locale": this.source,
-            "model": this.model
+            "model": this.model,
+            "context": "JUDICIARY"
           }
         ]
 
       };
     }
-    else if (this.workflow === "WF_S_TKTR" ||this.workflow === "WF_S_TR") {
+    else if (this.workflow === "WF_S_TKTR" || this.workflow === "WF_S_TR") {
       return {
         "workflowCode": this.workflow,
-  "recordID":this.fileName,
-  "locale":this.source, // Only when tokenisation and/or translation is needed
-  "modelID":this.model, //Only when Translation is needed
-  "textBlocks":this.file
+        "recordID": this.fileName,
+        "locale": this.source, // Only when tokenisation and/or translation is needed
+        "model": this.model, //Only when Translation is needed
+        "textBlocks": this.file,
+        "context": "JUDICIARY"
+
       }
       //List of text 
     }

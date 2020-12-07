@@ -3,11 +3,12 @@ import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 
 export default class DocumentConverter extends API {
-    constructor(recordID, userId, timeout = 2000) {
+    constructor(file_type, recordID, userId, timeout = 2000) {
         super('POST', timeout, false);
         this.type = C.DOCUMENT_CONVERTER;
         this.record_id = recordID;
         this.user_id = userId
+        this.file_type = file_type
         this.result = "";
         this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.documentConverter}`;
     }
@@ -30,7 +31,8 @@ export default class DocumentConverter extends API {
     getBody() {
         return {
             record_id: this.record_id,
-            user_id: this.user_id
+            user_id: this.user_id,
+            file_type: this.file_type
         };
     }
 

@@ -15,6 +15,8 @@ const endpoints = {
   signup: "/anuvaad/user-mgmt/v1/users/create",
   login: "/anuvaad/user-mgmt/v1/users/login",
   setpassword: "/anuvaad/user-mgmt/v1/users/reset-password",
+  userdetails:"/anuvaad/user-mgmt/v1/users/fetch-users-records",
+  createuser:"/anuvaad/user-mgmt/v1/users/onboard-users",
   updatePassword : '/anuvaad/user-mgmt/v1/users/reset-password',
   fecthcontent: "/anuvaad/content-handler/v0/fetch-content",
   documentupload:"/anuvaad-api/file-uploader/v0/upload-file",
@@ -26,7 +28,7 @@ const endpoints = {
   mark_inactive: "/anuvaad-etl/wf-manager/v1/workflow/jobs/mark-inactive",
   jobids: "/anuvaad/content-handler/v0/records/search",
   profile_details:'/anuvaad/user-mgmt/v1/users/auth-token-search',
-  
+  deactivate_existing_user:"/anuvaad/user-mgmt/v1/users/deactivate-user",
   // download_file : '/anuvaad-api/file-uploader/v0/download-file?filename=cda6d224-5f9b-4805-a1c3-34222b238dab.pdf&userid=9812e561524e4dc3bca79ff62d9f40041606296824855'
   download_file : '/anuvaad-api/file-uploader/v0/download-file',
   download_zip_file : '/anuvaad-api/file-uploader/v0/serve-file'

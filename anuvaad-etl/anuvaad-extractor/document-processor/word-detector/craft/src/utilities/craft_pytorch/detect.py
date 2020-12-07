@@ -207,7 +207,8 @@ def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,l
             bboxes, polys, score_text = test_net(image, text_threshold, link_threshold, low_text_threshold,args.cuda, args.poly, None)
         column_names = ["x1","y1" ,"x4","y4", "x2","y2","x3","y3"]
         df = pd.DataFrame(columns = column_names)
-        for index, box in enumerate(bboxes):
+        #for index, box in enumerate(bboxes):
+        for index, box in enumerate(polys):
             poly = np.array(box).astype(np.int32).reshape((-1))
             df.at[index,'x1']= int(poly[0]); df.at[index,'y1']= int(poly[1])
             df.at[index,'x2']= int(poly[2]); df.at[index,'y2']= int(poly[3])
@@ -236,8 +237,8 @@ def detect_text(images,language) :
                                                text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
                                                low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
             line_in_df  = detect_text_per_file(image_set,network=True,\
-                                               text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
-                                               low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
+                                               text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'],\
+                                               low_text_threshold= config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])
             word_coordinates.append(word_in_dfs)
             line_coordinates.append((line_in_df))
     except Exception as e :

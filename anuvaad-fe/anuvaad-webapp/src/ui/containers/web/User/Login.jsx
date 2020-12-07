@@ -8,10 +8,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withStyles, Typography } from "@material-ui/core";
 import ThemeDefault from "../../../theme/web/theme-default";
-
 import CircularProgress from '@material-ui/core/CircularProgress';
-
-
 import LoginStyles from "../../../styles/web/LoginStyles";
 import Grid from '@material-ui/core/Grid';
 import history from "../../../../web.history";
@@ -115,9 +112,14 @@ class Login extends React.Component {
         var roles = this.handleRoles(resData);
         localStorage.setItem("roles", roles)
         localStorage.setItem("lang", "en")
-        localStorage.setItem("userProfile", JSON.stringify(resData))
-        history.push(`${process.env.PUBLIC_URL}/view-document`);
-
+        localStorage.setItem("userProfile", JSON.stringify(resData));
+        if (roles.includes('ADMIN')){
+          history.push(`${process.env.PUBLIC_URL}/user-details`);
+          // history.push(`${process.env.PUBLIC_URL}/create-user`)
+        }else{
+          history.push(`${process.env.PUBLIC_URL}/view-document`);
+        }
+        // history.push(`${process.env.PUBLIC_URL}/create-user`)
       }
     }).catch((error) => {
       console.log('api failed because of server or network')
