@@ -9,7 +9,6 @@ import history from "../../../../web.history";
 import ClearContent from "../../../../flux/actions/apis/clearcontent";
 import FileContent from "../../../../flux/actions/apis/fetchcontent";
 import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_update";
-
 import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -24,11 +23,7 @@ import PageCard from "./PageCard";
 import InteractivePagination from './InteractivePagination';
 import SENTENCE_ACTION from './SentenceActions'
 import JobStatus from "../../../../flux/actions/apis/v1_jobprogress";
-// import PAGE_OPS from "../../../../utils/page.operations";
-// import BLOCK_OPS from "../../../../utils/block.operations";
-// import TELEMETRY from '../../../../utils/TelemetryManager';
 import FetchModel from "../../../../flux/actions/apis/fetchmodel";
-
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
