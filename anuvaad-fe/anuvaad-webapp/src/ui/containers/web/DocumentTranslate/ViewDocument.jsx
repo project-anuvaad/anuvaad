@@ -239,7 +239,7 @@ class ViewDocument extends React.Component {
   }
 
   processDownloadInputFileClick = (jobId, recordId) => {
-    this.setState({ dialogMessage: "Downloading file...", })
+    this.setState({ dialogMessage: "Downloading file...", timeOut: null, variant: "info" })
     let job = this.getJobIdDetail(jobId);
     let user_profile = JSON.parse(localStorage.getItem('userProfile'));
 
@@ -250,7 +250,7 @@ class ViewDocument extends React.Component {
       headers: obj.getHeaders().headers
     }).then(async response => {
       if (!response.ok) {
-        this.setState({ dialogMessage: "Failed to download file...", })
+        this.setState({ dialogMessage: "Failed to download file...", timeOut: 3000, variant: "info"})
         console.log("api failed")
       } else {
         const buffer = new Uint8Array(await response.arrayBuffer());
@@ -263,12 +263,13 @@ class ViewDocument extends React.Component {
             let url = URL.createObjectURL(blob);
             a.href = url;
             a.download = job.converted_filename;
+            this.setState({dialogMessage: null})
             a.click();
           });
         
       }
     }).catch((error) => {
-      this.setState({ dialogMessage: "Failed to download file..." })
+      this.setState({ dialogMessage: "Failed to download file...", timeOut: 3000, variant: "info" })
       console.log('api failed because of server or network', error)
     });
 
@@ -445,7 +446,6 @@ class ViewDocument extends React.Component {
     return (
 
       <div style={{ height: window.innerHeight }}>
-        {this.state.dialogMessage && this.snackBarMessage()}
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <ToolBar />
           {
@@ -465,6 +465,7 @@ class ViewDocument extends React.Component {
         }
 
         {(this.state.showLoader || this.state.loaderDelete) && < Spinner />}
+        {this.state.dialogMessage && this.snackBarMessage()}
       </div>
 
     );
