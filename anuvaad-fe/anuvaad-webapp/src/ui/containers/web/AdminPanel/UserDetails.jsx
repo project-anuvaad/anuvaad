@@ -41,15 +41,19 @@ class UserDetails extends React.Component {
 
   }
 
+
+  processFetchUserDetailAPI = () => {
+    const token = localStorage.getItem("token");
+    const userObj = new FetchUserDetails(token);
+    this.props.APITransport(userObj);
+  }
   /**
    * life cycle methods
    */
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('user-details');
     this.setState({ showLoader: true })
-    const token = localStorage.getItem("token");
-    const userObj = new FetchUserDetails(token);
-    this.props.APITransport(userObj);
+    this.processFetchUserDetailAPI();
   }
 
   componentDidUpdate(prevProps) {
@@ -60,32 +64,23 @@ class UserDetails extends React.Component {
       this.setState({ showLoader: false })
     }
     if (prevProps.activateuser !== this.props.activateuser || prevProps.deactivateuser !== this.props.deactivateuser) {
-      const token = localStorage.getItem("token");
-      const userObj = new FetchUserDetails(token);
-      this.props.APITransport(userObj);
+      this.processFetchUserDetailAPI();
     }
-    // this.updateComponent(prevProps);
-    TELEMETRY.pageLoadCompleted('user-details')
   }
-
-  // updateComponent = async (prevProps) => {
-  // }
 
   getMuiTheme = () => createMuiTheme({
     overrides: {
       MUIDataTableBodyCell: {
         root: {
-          padding: '3px 10px 3px'
+          padding: '3px 10px 3px',
+        },
+        TableViewCol:{
+          margin:'10%'
         }
       },
     }
   })
 
-
-  getDateTimeFromTimestamp = (t) => {
-    let date = new Date(t);
-    return ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
-  }
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('user-details')
@@ -94,9 +89,7 @@ class UserDetails extends React.Component {
      */
     return null;
   }
-  handleMessageClear = () => {
-    this.setState({ open: true });
-  }
+
 
   toggleChecked = async (e, userName, userID, currentState) => {
     const { APITransport } = this.props;
@@ -114,22 +107,37 @@ class UserDetails extends React.Component {
 
   processTableClickedNextOrPrevious = (page) => {
     if (this.state.currentPageIndex < page) {
-      /**
-       * user wanted to load next set of records
-       */
-      // this.makeAPICallJobsBulkSearch(this.state.offset + this.state.limit, this.state.limit, false, true)
       this.setState({
         currentPageIndex: page,
-        // offset: this.state.offset + this.state.limit
       });
     }
   };
 
-  makeAPICallJobsBulkSearch(offset, limit, jobIds = [''], searchForNewJob = false, searchNextPage = false, updateExisting = false) {
-    const { APITransport } = this.props;
-    const apiObj = new FetchUserDetails(offset, limit, jobIds, searchForNewJob, searchNextPage, updateExisting);
-    APITransport(apiObj);
+  processSnackBar = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={this.state.isenabled}
+        autoHideDuration={100000}
+        onClose={this.handleClose}
+        variant={this.state.variantType}
+        message={this.state.message}
+      />
+    );
   }
+
+  processSwitch = (userId, userName, isverified) => {
+    return (<div>
+      <Tooltip title="Active/Inactive" placement="left">
+        <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
+          <Switch
+            checked={isverified}
+            onChange={(e) => this.toggleChecked(e, userName, userId, isverified)} />
+        </IconButton>
+      </Tooltip>
+    </div>);
+  }
+
   render() {
     const columns = [
       {
@@ -201,15 +209,7 @@ class UserDetails extends React.Component {
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
-                <div>
-                  <Tooltip title="Active/Inactive" placement="left">
-                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
-                      <Switch
-                        checked={tableMeta.rowData[6]}
-                        onChange={(e) => this.toggleChecked(e, tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[6])} />
-                    </IconButton>
-                  </Tooltip>
-                </div>
+                this.processSwitch(tableMeta.rowData[0],tableMeta.rowData[1],tableMeta.rowData[6]) //userId, userName, isverified
               );
             }
           }
@@ -231,16 +231,7 @@ class UserDetails extends React.Component {
         },
         options: { sortDirection: 'desc' }
       },
-      // onTableChange: (action, tableState) => {
-      //   switch (action) {
-      //     case 'changePage':
-      //       this.processTableClickedNextOrPrevious(tableState.page, tableState.sortOrder);
-      //       break;
-      //     default:
-      //   }
-      // },
       onChangePage: (pageNumber) => {
-        console.log('PageNumber', pageNumber);
         this.processTableClickedNextOrPrevious(pageNumber);
       },
       count: this.props.job_details.count,
@@ -251,7 +242,7 @@ class UserDetails extends React.Component {
       filter: false,
       selectableRows: "none",
       sortOrder: {
-        name: 'timestamp',
+        name: 'registered_time',
         direction: 'desc'
       },
       page: this.state.currentPageIndex
@@ -272,14 +263,7 @@ class UserDetails extends React.Component {
         </div>
         {(this.state.showLoader || this.state.loaderDelete) && < Spinner />}
         {this.state.isenabled &&
-          <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            open={this.state.isenabled}
-            autoHideDuration={100000}
-            onClose={this.handleClose}
-            variant={this.state.variantType}
-            message={this.state.message}
-          />
+          this.processSnackBar()
         }
       </div>
 
