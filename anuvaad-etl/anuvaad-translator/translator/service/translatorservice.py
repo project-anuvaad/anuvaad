@@ -142,12 +142,13 @@ class TranslatorService:
 
     # Iterates through the blocks and creates batches of sentences for translation
     def fetch_batches_of_blocks(self, record_id, page_no, text_blocks, file, sentences_for_trans, translate_wf_input):
-        batch_key = 0
+        batch_key, tmx_count = 0, 0
         for block in text_blocks:
             block_id = block["block_id"]
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
                     tmx_phrases = self.fetch_tmx(sentence["src"], file, translate_wf_input)
+                    tmx_count += len(tmx_phrases)
                     node_id = str(record_id) + "|" + str(page_no) + "|" + str(block_id)
                     sent_nmt_in = {"src": sentence["src"], "s_id": sentence["s_id"], "id": file["model"]["model_id"],
                                    "n_id": node_id, "tmx_phrases": tmx_phrases}
@@ -163,6 +164,7 @@ class TranslatorService:
             else:
                 log_error("There are no tokenised sentences in block: " + str(block_id), translate_wf_input, None)
                 continue
+        log_info("Count of TMX phrases fetched for this doc: " + str(tmx_count), translate_wf_input)
         return sentences_for_trans, batch_key
 
     # Fetches tmx phrases
