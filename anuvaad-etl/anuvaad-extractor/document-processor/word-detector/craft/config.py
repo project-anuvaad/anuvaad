@@ -2,8 +2,8 @@ import logging
 import os
 import time
 
-DEBUG = True
-API_URL_PREFIX = "/api/v0"
+DEBUG = False
+API_URL_PREFIX = "/anuvaad-etl/document-processor/word-detector"
 HOST = '0.0.0.0'
 PORT = 5001
 BASE_DIR   = 'upload'
@@ -21,7 +21,7 @@ output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_OUTPUT'
 output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
 kf_local_server     = 'localhost:9092'
-kafka_ip_host       = 'KAFKA_IP_HOST'
+kafka_ip_host       = 'KAFKA_BOOTSTRAP_SERVER_HOST'
 bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 
 TASK_STAT           = 'WORD-DETECTOR-CRAFT'
@@ -47,29 +47,17 @@ CRAFT_MODEL_PATH=  './src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
 CRAFT_REFINE_MODEL_PATH =  './src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth'
 
 LANGUAGE_WORD_THRESOLDS ={
-'en':{'text_threshold':0.5 ,'low_text': 0.4} ,
-'hi':{'text_threshold':0.5 ,'low_text': 0.4},
-'ma':{'text_threshold':0.5 ,'low_text': 0.4} ,
-'ta':{'text_threshold':0.5 ,'low_text': 0.4} ,
-'ml':{'text_threshold':0.5 ,'low_text': 0.4} ,
-'ka':{'text_threshold':0.5 ,'low_text': 0.4}
+<<<<<<< HEAD
+'en':{'text_threshold':0.2 ,'low_text': 0.4,'link_threshold':0.4},
+'hi':{'text_threshold':0.2 ,'low_text': 0.3,'link_threshold':0.8},
+=======
+'en':{'text_threshold':0.2 ,'low_text': 0.3,'link_threshold':0.4},
+'hi':{'text_threshold':0.2 ,'low_text': 0.4,'link_threshold':0.8},
+>>>>>>> 80e8a0cb69ca6d8224344074e1aaae3b63dd1260
+'ma':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5} ,
+'ta':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5} ,
+'ml':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5} ,
+'ka':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5}
 }
 
-LANGUAGE_LINK_THRESOLDS ={
-'en':{'link_threshold':0.5 ,'low_text': 0.4} ,
-'hi':{'link_threshold':0.5 ,'low_text': 0.4},
-'ma':{'link_threshold':0.5 ,'low_text': 0.4} ,
-'ta':{'link_threshold':0.5 ,'low_text': 0.4} ,
-'ml':{'link_threshold':0.5 ,'low_text': 0.4} ,
-'ka':{'link_threshold':0.5 ,'low_text': 0.4}
-}
-
-LANGUAGE_LINE_THRESOLDS ={
-'en':{'text_threshold':0.5 ,'low_text': 0.4} ,
-'hi':{'text_threshold':0.5 ,'low_text': 0.4},
-'ma':{'text_threshold':0.5 ,'low_text': 0.4} ,
-'ta':{'text_threshold':0.5 ,'low_text': 0.4} ,
-'ml':{'text_threshold':0.5 ,'low_text': 0.4} ,
-'ka':{'text_threshold':0.5 ,'low_text': 0.4}
-}
 

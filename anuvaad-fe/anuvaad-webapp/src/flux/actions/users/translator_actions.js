@@ -27,6 +27,8 @@ export function clearHighlighBlock() {
     }
 }
 
+
+
 /**
  * sentence merge related user action
  */

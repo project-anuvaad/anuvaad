@@ -32,7 +32,7 @@ export default class FetchBenchmarkCompareModel extends API {
   getHeaders() {
     this.headers = {
       headers: {
-        Authorization: "Bearer " + decodeURI(localStorage.getItem("token"))
+         'auth-token': `${decodeURI(localStorage.getItem("token"))}`
       }
     };
     return this.headers;

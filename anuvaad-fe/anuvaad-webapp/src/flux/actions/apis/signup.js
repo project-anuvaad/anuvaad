@@ -9,11 +9,11 @@ export default class Signup extends API {
         super("POST", timeout, false);
         this.type = C.SIGNUP;
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.name = firstName;
+        // this.lastName = lastName;
         this.password = password;
         this.signupres = null
-        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.signup}`
+        this.endpoint =`${super.apiEndPointAuto()}${ENDPOINTS.signup}`; 
     }
 
     toString() {
@@ -32,12 +32,14 @@ export default class Signup extends API {
     }
 
     getBody() {
-        return {
-            firstname: this.firstName,
-            lastname: this.lastName,
-            email: this.email,
-            password: this.password
-        };
+        return {"users":
+        [{"name":this.name,
+        "userName":this.email,
+        "password":this.password,
+        "email":this.email,
+        "phoneNo":"",
+        "roles":[{"roleCode":"TRANSLATOR","roleDesc":"Has access to translation related resources"}]
+    }]}
     }
 
     getHeaders() {

@@ -6,16 +6,16 @@ import apistatus from './apistatus/apistatus';
 import translations from './translations';
 import translation_sentences from './translation_sentences';
 import sentences from './sentences/sentences';
-import userProfile from './userprofile';
+import userProfile from './user/userprofile';
 import translation from './translation';
-import userRoles from './userroles';
-import updatePasswordstatus from './updatepassword';
-import uploadTokenValue from './uploadtoken';
+import userRoles from './user/userroles';
+import updatePasswordstatus from './user/updatepassword';
+import uploadTokenValue from './user/uploadtoken';
 import intractiveTrans from './intractive_translate';
-import signup from './signup';
-import forgotpassword from './forgotpassword';
-import setpassword from './setpassword';
-import activate from './activate';
+import signup from './user/signup';
+import forgotpassword from './user/forgotpassword';
+import setpassword from './user/setpassword';
+import activate from './user/activate';
 import workflowStatus from "./fileupload";
 import documentUplaod from "./documentUpload";
 import fetchDocument from "./fetch_document";
@@ -23,6 +23,7 @@ import job_details from './jobs/v1_fetch_job_details';
 import document_contents from './v1_fetch_content';
 import fetch_languages from './v1_fetchlanguages';
 import fetch_models from './v1_fetch_model';
+import active_page_number from './v1_pageUpdates';
 
 import documentDetails from "./fetch_fileDetails";
 import fetchContent from "./fetchcontent";
@@ -38,7 +39,7 @@ import document_editor_mode from './editor/document_editor_mode';
 
 import show_pdf from './showPdfReducer'
 import open_sidebar from './showsidebar'
-
+import job_status from './v1.job_progress';
 export default {
     login,
     automl,
@@ -79,5 +80,8 @@ export default {
     document_editor_mode,
 
     show_pdf,
-    open_sidebar
+    open_sidebar,
+    
+    active_page_number,
+    job_status
 };

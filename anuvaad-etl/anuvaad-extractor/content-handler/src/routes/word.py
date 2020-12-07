@@ -6,9 +6,9 @@ from resources import WordSaveResource, WordSearch
 WORD_BLUEPRINT = Blueprint("word", __name__)
 
 Api(WORD_BLUEPRINT).add_resource(
-    WordSaveResource, "/dictionary/update"
+    WordSaveResource, "/v0/dictionary/update"
 )
 
 Api(WORD_BLUEPRINT).add_resource(
-    WordSearch, "/dictionary/search"
+    WordSearch, "/v0/dictionary/search"
 )

@@ -13,6 +13,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.20.0",
+    "binary-base64": "^1.1.0",
     "classnames": "^2.2.6",
     "copy-to-clipboard": "^3.3.1",
     "history": "^4.7.2",

@@ -38,9 +38,6 @@ for blueprint in vars(routes).values():
         merge_app.register_blueprint(blueprint, url_prefix=config.API_URL_PREFIX)
 
 
-    
-
-
 
 if __name__ == "__main__":
     start_kafka()

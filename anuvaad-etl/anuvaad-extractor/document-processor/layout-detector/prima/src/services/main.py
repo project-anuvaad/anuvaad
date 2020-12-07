@@ -53,6 +53,7 @@ def get_layout(app_context) :
 
 
 def LayoutDetection(app_context):
+    
     log_debug('layout detection process starting {}'.format(app_context.application_context), app_context.application_context)
     try:
         response   = get_layout(app_context)
