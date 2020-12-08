@@ -1,11 +1,18 @@
 #!/bin/python
 import json
+
+import redis
 from anuvaad_auditor.loghandler import log_exception, log_info
 from configs.translatorconfig import redis_server_host
 from configs.translatorconfig import redis_server_port
-import redis
+
+import pymongo
+from configs.translatorconfig import mongo_server_host
+from configs.translatorconfig import mongo_translator_db
+from configs.translatorconfig import mongo_tmx_collection
 
 redis_client = None
+mongo_client = None
 
 class TMXRepository:
 
@@ -22,6 +29,19 @@ class TMXRepository:
             return self.redis_instantiate()
         else:
             return redis_client
+
+    # Initialises and fetches mongo client
+    def instantiate(self, collection):
+        client = pymongo.MongoClient(mongo_server_host)
+        db = client[mongo_translator_db]
+        mongo_client = db[collection]
+        return mongo_client
+
+    def get_mongo_instance(self):
+        if not mongo_client:
+            return self.instantiate(mongo_tmx_collection)
+        else:
+            return mongo_client
 
     def upsert(self, key, value):
         client = self.get_redis_instance()
@@ -54,4 +74,9 @@ class TMXRepository:
         except Exception as e:
             log_exception("Exception in REPO: search | Cause: " + str(e), None, e)
             return None
+
+    # Inserts the object into mongo collection
+    def mongo_create(self, object_in):
+        col = self.get_mongo_instance()
+        col.insert_one(object_in)
 
