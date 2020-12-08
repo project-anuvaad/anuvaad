@@ -91,7 +91,6 @@ class UserDetails extends React.Component {
 
 
   toggleChecked = async (e, userName, userID, currentState) => {
-    const { APITransport } = this.props;
     const token = localStorage.getItem("token");
     if (currentState) {
       const deactivate_exisiting_user = new DeactivateUser(userName, token);
