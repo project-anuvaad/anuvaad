@@ -14,8 +14,7 @@ import Spinner from "../../../components/web/common/Spinner";
 import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
 import ToolBar from "../AdminPanel/AdminPanelHeader"
 import FetchUserDetails from "../../../../flux/actions/apis/userdetails";
-import ActivateUser from "../../../../flux/actions/apis/activate_exisiting_user";
-import DeactivateUser from "../../../../flux/actions/apis/deactivate_exisiting_user";
+import ActivateDeactivateUser from "../../../../flux/actions/apis/activate_exisiting_user";
 import Switch from '@material-ui/core/Switch';
 import Snackbar from "../../../components/web/common/Snackbar";
 
@@ -43,9 +42,9 @@ class UserDetails extends React.Component {
   }
 
 
-  processFetchUserDetailAPI = () => {
+  processFetchBulkUserDetailAPI = (offset, limit, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = []) => {
     const token = localStorage.getItem("token");
-    const userObj = new FetchUserDetails(token);
+    const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes);
     this.props.APITransport(userObj);
   }
   /**
@@ -54,7 +53,7 @@ class UserDetails extends React.Component {
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('user-details');
     this.setState({ showLoader: true })
-    this.processFetchUserDetailAPI();
+    this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
   }
 
   componentDidUpdate(prevProps) {
@@ -62,10 +61,8 @@ class UserDetails extends React.Component {
       this.setState({ showLoader: false, isenabled: false })
     }
     else if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
-      this.setState({ showLoader: false })
-    }
-    if (prevProps.activateuser !== this.props.activateuser || prevProps.deactivateuser !== this.props.deactivateuser) {
-      this.processFetchUserDetailAPI();
+      console.log('inside else if')
+      this.setState({ showLoader: false, isenabled: false })
     }
   }
 
@@ -90,44 +87,38 @@ class UserDetails extends React.Component {
   }
 
 
-  toggleChecked = async (e, userName, userID, currentState) => {
+  toggleChecked = (userId, userName, currentState) => {
     const { APITransport } = this.props;
     const token = localStorage.getItem("token");
-    if (currentState) {
-      const deactivate_exisiting_user = new DeactivateUser(userName, token);
-      this.setState({ isenabled: true, variantType: 'info', message: 'Please wait, deactivating the user' });
-      fetch(deactivate_exisiting_user.apiEndPoint(), {
-        method: 'post',
-        body: JSON.stringify(deactivate_exisiting_user.getBody()),
-        headers: deactivate_exisiting_user.getHeaders().headers
-      }).then(res => {
+    const userObj = new ActivateDeactivateUser(userName, !currentState, token);
+    this.setState({ showLoader: true });
+    fetch(userObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(userObj.getBody()),
+      headers: userObj.getHeaders().headers
+    })
+      .then(res => {
         if (res.ok) {
-          this.setState({ isenabled: true, variantType: 'success', message: `${userName} deactivated successfully` })
-        } else {
-          this.setState({ isenabled: true, variantType: 'error', message: 'Something went wrong' })
+          this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit, false, true);
+          if (currentState) {
+            setTimeout(() => {
+              this.setState({ isenabled: true, variantType: 'success', message: `${userName} is deactivated successfully` })
+            }, 2000)
+          } else {
+            setTimeout(() => {
+              this.setState({ isenabled: true, variantType: 'success', message: `${userName} is activated successfully` })
+            }, 2000)
+          }
         }
       })
-    } else {
-      const activate_exisiting_user = new ActivateUser(userName, userID, token);
-      this.setState({ isenabled: true, variantType: 'info', message: 'Please wait, activating the user' });
-      fetch(activate_exisiting_user.apiEndPoint(), {
-        method: 'post',
-        body: JSON.stringify(activate_exisiting_user.getBody()),
-        headers: activate_exisiting_user.getHeaders().headers
-      }).then(res => {
-        if (res.ok) {
-          this.setState({ isenabled: true, variantType: 'success', message: `${userName} activated successfully` })
-        } else {
-          this.setState({ isenabled: true, variantType: 'error', message: 'Something went wrong, please try again later' })
-        }
-      })
-    }
   }
 
   processTableClickedNextOrPrevious = (page) => {
     if (this.state.currentPageIndex < page) {
+      this.processFetchBulkUserDetailAPI(this.state.limit + this.state.offset, this.state.limit, true, false)
       this.setState({
         currentPageIndex: page,
+        offset: this.state.offset + this.state.limit
       });
     }
   };
@@ -137,7 +128,7 @@ class UserDetails extends React.Component {
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={this.state.isenabled}
-        autoHideDuration={10000}
+        autoHideDuration={3000}
         onClose={this.handleClose}
         variant={this.state.variantType}
         message={this.state.message}
@@ -151,7 +142,7 @@ class UserDetails extends React.Component {
         <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
           <Switch
             checked={isactive}
-            onChange={(e) => this.toggleChecked(e, userName, userId, isactive)} />
+            onChange={() => this.toggleChecked(userId, userName, isactive)} />
         </IconButton>
       </Tooltip>
     </div>);
@@ -186,7 +177,7 @@ class UserDetails extends React.Component {
         }
       },
       {
-        name: "email_id",
+        name: "userName",
         label: translate("common.page.label.email"),
         options: {
           filter: false,
@@ -236,10 +227,11 @@ class UserDetails extends React.Component {
       },
     ];
 
+
     const options = {
       textLabels: {
         body: {
-          noMatch: this.props.job_details.count > 0 && this.props.job_details.count > this.props.job_details.documents.length ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
+          noMatch: this.props.count > 0 && this.props.count > this.props.userinfo.data.length ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
         },
         toolbar: {
           search: translate("graderReport.page.muiTable.search"),
@@ -250,10 +242,15 @@ class UserDetails extends React.Component {
         },
         options: { sortDirection: 'desc' }
       },
-      onChangePage: (pageNumber) => {
-        this.processTableClickedNextOrPrevious(pageNumber);
+      onTableChange: (action, tableState) => {
+        switch (action) {
+          case 'changePage':
+            this.processTableClickedNextOrPrevious(tableState.page)
+            break;
+          default:
+        }
       },
-      count: this.props.job_details.count,
+      count: this.props.count,
       filterType: "checkbox",
       download: false,
       print: false,
@@ -293,9 +290,9 @@ class UserDetails extends React.Component {
 const mapStateToProps = state => ({
   user: state.login,
   userinfo: state.userinfo,
+  count: state.userinfo.count,
   job_details: state.job_details,
   activateuser: state.activateuser,
-  deactivateuser: state.deactivateuser
 });
 
 const mapDispatchToProps = dispatch =>
