@@ -106,7 +106,7 @@
         },
         {
             "id":"0f2e4131-1207-4f22-9ddd-77ba8d22066f",
-            "uri":"/anuvaad/user-mgmt/v1/users/activate-user",
+            "uri":"/anuvaad/user-mgmt/v1/users/verify-user",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
             "whiteList":true,
@@ -130,7 +130,7 @@
         },
         {
             "id":"986bb1b6-ac89-4430-a7ec-ba04f1ab470d",
-            "uri":"/anuvaad/user-mgmt/v1/users/deactivate-user",
+            "uri":"/anuvaad/user-mgmt/v1/users/activate-user",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
             "whiteList":false,
