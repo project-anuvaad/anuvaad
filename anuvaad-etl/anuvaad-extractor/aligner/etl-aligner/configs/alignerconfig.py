@@ -3,8 +3,8 @@ import os
 #CROSS-MODULE-COMMON-CONFIGS
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
 mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
-file_upload_url = os.environ.get('FILE_UPLOAD_URL', 'https://auth.anuvaad.org/upload')
-
+file_upload_url = str(os.environ.get('USER_FILE_UPLOADER_HOST', 'http://gateway_anuvaad-user-fileuploader:5001')) \
+                    + str(os.environ.get('USER_FILE_UPLOAD_ENDPOINT', '/anuvaad-api/file-uploader/v0/upload-file'))
 
 #MODULE-SPECIFIC-CONFIGS
 #common-variables
@@ -21,7 +21,7 @@ mongo_alignment_col = os.environ.get('MONGO_ETL_ALIGNMENT_COL', 'extractor-align
 
 #module-configs
 context_path = os.environ.get('SA_CONTEXT_PATH', '/anuvaad-etl/extractor/aligner')
-directory_path = os.environ.get('SA_DIRECTORY_PATH', "")
+directory_path = os.environ.get('ALIGNER_UPLOAD_PATH', "/app/upload")
 laser_url = os.environ.get('LASER_PATH', 'http://127.0.0.1:8050/vectorize')
 no_of_processes = os.environ.get("ALIGNER_NO_OF_PARALLEL_PROC", 5)
 

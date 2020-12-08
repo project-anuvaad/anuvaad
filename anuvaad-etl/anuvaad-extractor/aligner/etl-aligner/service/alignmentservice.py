@@ -253,9 +253,9 @@ class AlignmentService:
                 util.error_handler("ALIGNMENT_ERROR", "Exception while aligning sentences: " + str(e), object_in, False)
             return None
 
-
     # Service layer to generate output
-    def generate_output(self, source_reformatted, target_refromatted, manual_src, manual_trgt, nomatch_src, path, path_indic, object_in):
+    def generate_output(self, source_reformatted, target_refromatted, manual_src, manual_trgt,
+                        nomatch_src, path, path_indic, object_in):
         try:
             log_info("Generating the output.....", object_in)
             output_source = directory_path + file_path_delimiter + res_suffix + path_indic
@@ -268,25 +268,11 @@ class AlignmentService:
             alignmentutils.write_output(manual_src, output_manual_src)
             alignmentutils.write_output(manual_trgt, output_manual_trgt)
             alignmentutils.write_output(nomatch_src, output_nomatch)
-            return self.get_response_paths(output_source, output_target,
-                                           output_manual_src, output_manual_trgt, output_nomatch, object_in)
+            return {"source": res_suffix + path_indic, "target": res_suffix + path,
+                       "manual_src": man_suffix + path_indic, "manual_trgt": man_suffix + path,
+                       "nomatch": nomatch_suffix + path_indic}
         except Exception as e:
             log_exception("Exception while writing output to files: " + str(e), object_in, e)
-            return None
-
-    # Service layer to upload the files generated as output to the alignment process
-    def get_response_paths(self, output_src, output_trgt, output_manual_src, output_manual_trgt, output_nomatch, object_in):
-        try:
-            output_src = alignmentutils.upload_file_binary(output_src, object_in)
-            output_trgt = alignmentutils.upload_file_binary(output_trgt, object_in)
-            output_manual_src = alignmentutils.upload_file_binary(output_manual_src, object_in)
-            output_manual_trgt = alignmentutils.upload_file_binary(output_manual_trgt, object_in)
-            output_nomatch = alignmentutils.upload_file_binary(output_nomatch, object_in)
-            output_dict = {"source": output_src, "target": output_trgt, "manual_src": output_manual_src,
-                           "manual_trgt": output_manual_trgt, "nomatch": output_nomatch}
-            return output_dict
-        except Exception as e:
-            log_exception("Exception while uploading output files: " + str(e), object_in, e)
             return None
 
     # Response formatter

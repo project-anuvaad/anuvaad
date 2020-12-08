@@ -5,15 +5,17 @@ import json
 import logging
 import os
 import time
+from shutil import copyfile
 
 import requests
 import numpy as np
 import csv
-from configs.alignerconfig import file_upload_url
+from configs.alignerconfig import directory_path
+
+import uuid
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
-from anuvaad_auditor.loghandler import log_info
-from anuvaad_auditor.loghandler import log_error
+from anuvaad_auditor.loghandler import log_exception
 
 log = logging.getLogger('file')
 two_files = True
@@ -79,18 +81,15 @@ class AlignmentUtils:
         b = bin(int(x, 16)).replace('b', '')
         return b
 
-    # Utility to upload files to anuvaad's upload service
+    # Utility to upload files to shared memory
     def upload_file_binary(self, file, object_in):
-        data = open(file, 'rb')
-        response = requests.post(url=file_upload_url, data=data,
-                                 headers={'Content-Type': 'application/x-www-form-urlencoded'})
-        if response is not None:
-            data = json.loads(response.text)
-            for key, value in data.items():
-                if key == "data":
-                    return value["filepath"]
-        else:
-            log_error("Upload Failed!", object_in, None)
+        op_file = str(uuid.uuid4())
+        try:
+            copyfile(file, os.path.join(directory_path, op_file))
+            return op_file
+        except Exception as e:
+            log_exception("Exception while writing to shared memory: " + str(e), object_in, e)
+            return None
 
     # Utility to decide (min,max) cs thresholds based on length of setences.
     def get_cs_on_sen_cat(self, sentence):
