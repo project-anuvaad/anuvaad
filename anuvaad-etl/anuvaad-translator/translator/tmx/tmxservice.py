@@ -42,7 +42,9 @@ class TMXService:
                 else:
                     values_dict = {"src": values[0], "tgt": values[1], "locale": values[2]}
                     tmx_input.append(values_dict)
-            self.push_to_tmx_store({"userID": api_input["userID"], "context": api_input["context"], "sentences": tmx_input})
+            res = self.push_to_tmx_store({"userID": api_input["userID"], "context": api_input["context"], "sentences": tmx_input})
+            if res["status"] == "FAILED":
+                return {"message": "bulk creation failed", "status": "FAILED"}
             db_record = {"userID": api_input["userID"], "context": api_input["context"], "sentences": len(tmx_input),
                          "file": file_path, "timeStamp": eval(str(time.time()).replace('.', '')[0:13])}
             repo.mongo_create(db_record)
