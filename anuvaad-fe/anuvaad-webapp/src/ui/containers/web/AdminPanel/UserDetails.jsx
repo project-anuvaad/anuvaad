@@ -86,12 +86,9 @@ class UserDetails extends React.Component {
   }
 
 
-<<<<<<< HEAD
+
   toggleChecked = (userId, userName, roleCodes, currentState) => {
     const { APITransport } = this.props;
-=======
-  toggleChecked = async (e, userName, userID, currentState) => {
->>>>>>> 277fa1dbe6c503c9eb9407faed16df1fcc422fb0
     const token = localStorage.getItem("token");
     const userObj = new ActivateDeactivateUser(userName, !currentState, token);
     this.setState({ showLoader: true });
@@ -254,6 +251,7 @@ class UserDetails extends React.Component {
         }
       },
       count: this.props.count,
+      rowsPerPageOptions: [10],
       filterType: "checkbox",
       download: false,
       print: false,
@@ -273,7 +271,7 @@ class UserDetails extends React.Component {
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <ToolBar />
           {
-            !this.state.showLoader &&
+            (!this.state.showLoader|| this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <MUIDataTable title={translate("common.page.title.userdetails")}
                 columns={columns} options={options} data={this.props.userinfo.data} />
