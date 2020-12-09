@@ -2,9 +2,9 @@
 Activate Exisitng User API
 */ 
 
-import API from "./api";
-import C from "../constants";
-import ENDPOINTS from "../../../configs/apiendpoints";
+import API from "../api";
+import C from "../../constants";
+import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class ActivateExistingUser extends API{
 constructor(userName,is_active,token,timeout=2000){
