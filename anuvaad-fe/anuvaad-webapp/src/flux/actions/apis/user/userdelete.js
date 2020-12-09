@@ -2,9 +2,9 @@
  * Corpus API
  */
 
-import API from "./api";
-import C from "../constants";
-import ENDPOINTS from "../../../configs/apiendpoints";
+import API from "../api";
+import C from "../../constants";
+import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class AddUser extends API {
     constructor(username, status, timeout = 2000) {
         super('POST', timeout, false);

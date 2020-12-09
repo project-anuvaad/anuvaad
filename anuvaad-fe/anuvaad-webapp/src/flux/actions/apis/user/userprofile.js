@@ -1,6 +1,6 @@
-import API from "./api";
-import C from "../constants";
-import ENDPOINTS from "../../../configs/apiendpoints";
+import API from "../api";
+import C from "../../constants";
+import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class Translation extends API {
     constructor(username="21d9047d-683c-48ab-a3d5-c427cc2ccb78", timeout = 2000) {
         super('GET', timeout, false);

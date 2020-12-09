@@ -1,9 +1,9 @@
 /**
  * CreateUsers API
  */
-import API from "./api";
-import C from "../constants";
-import ENDPOINTS from "../../../configs/apiendpoints";
+import API from "../api";
+import C from "../../constants";
+import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class CreateUsers extends API {
     constructor(email, firstName, password, roles,token,timeout = 2000) {
         super("POST", timeout, false);

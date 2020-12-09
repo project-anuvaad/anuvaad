@@ -1,6 +1,7 @@
 import React from "react";
 import "../../../styles/web/InteractivePreview.css";
 import { Document, Page } from "react-pdf/dist/entry.webpack";
+
 import DownloadFile from "../../../../flux/actions/apis/download/download_file"
 
 class PDFRenderer extends React.Component {

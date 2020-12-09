@@ -1,9 +1,9 @@
 /**
  * UserInfo API
  */
-import API from "./api";
-import C from "../constants";
-import ENDPOINTS from "../../../configs/apiendpoints";
+import API from "../api";
+import C from "../../constants";
+import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class FetchUserDetails extends API {
   constructor(offset = null, limit = null, token, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = [], timeout = 2000) {

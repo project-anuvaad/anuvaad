@@ -4,8 +4,11 @@ import TextField from '@material-ui/core/TextField';
 import { Textfit } from "react-textfit";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+
 import { highlightSentence, clearHighlighBlock, cancelMergeSentence } from '../../../../flux/actions/users/translator_actions';
+
 import SENTENCE_ACTION from './SentenceActions'
+
 const PAGE_OPS = require("../../../../utils/page.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 

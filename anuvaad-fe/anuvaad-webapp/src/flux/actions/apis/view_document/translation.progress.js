@@ -1,9 +1,9 @@
 /**
  * Document translation progress
  */
-import API from "./api";
-import C from "../constants";
-import ENDPOINTS from "../../../configs/apiendpoints";
+import API from "../api";
+import C from "../../constants";
+import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class DocumentTranslationProgress extends API {
     constructor(jobId, timeout = 2000) {

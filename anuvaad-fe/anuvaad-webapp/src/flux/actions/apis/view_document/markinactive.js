@@ -1,6 +1,6 @@
-import API from "./api";
-import C from "../constants";
-import ENDPOINTS from "../../../configs/apiendpoints";
+import API from "../api";
+import C from "../../constants";
+import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class MarkInactive extends API {
   constructor(jobId, timeout = 2000) {

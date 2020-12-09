@@ -2,9 +2,9 @@
 Deactivate Exisitng User API
 */ 
 
-import API from "./api";
-import C from "../constants";
-import ENDPOINTS from "../../../configs/apiendpoints";
+import API from "../api";
+import C from "../../constants";
+import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class DeactivateUser extends API{
     constructor(userName,token,timeout=2000){

@@ -15,7 +15,7 @@ import DashboardStyles from "../../../styles/web/DashboardStyles";
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Toolbar from "../../web/AdminPanel/CreateUserHeader";
-import CreateUsers from "../../../../flux/actions/apis/createusers";
+import CreateUsers from "../../../../flux/actions/apis/user/createusers";
 import Snackbar from "../../../components/web/common/Snackbar";
 import history from "../../../../web.history";
 import CircularProgress from "@material-ui/core/CircularProgress"

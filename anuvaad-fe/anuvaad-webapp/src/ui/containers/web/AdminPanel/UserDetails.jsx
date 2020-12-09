@@ -13,7 +13,7 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Spinner from "../../../components/web/common/Spinner";
 import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
 import ToolBar from "../AdminPanel/AdminPanelHeader"
-import FetchUserDetails from "../../../../flux/actions/apis/userdetails";
+import FetchUserDetails from "../../../../flux/actions/apis/user/userdetails";
 import ActivateDeactivateUser from "../../../../flux/actions/apis/user/activate_exisiting_user";
 import Switch from '@material-ui/core/Switch';
 import Snackbar from "../../../components/web/common/Snackbar";

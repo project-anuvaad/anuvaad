@@ -1,6 +1,6 @@
-import API from "./api";
-import C from "../constants";
-import ENDPOINTS from "../../../configs/apiendpoints";
+import API from "../api";
+import C from "../../constants";
+import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class BulkSearchAPI extends API {
   constructor(offset, limit, jobIds=[''], searchForNewJob=false, isNextPage=false, updateExisting=false, timeout = 2000) {
