@@ -27,6 +27,7 @@ import FetchModel from "../../../../flux/actions/apis/fetchmodel";
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
+import { showPdf } from '../../../../flux/actions/apis/showpdf';
 
 import InteractiveDocToolBar from "./InteractiveDocHeader"
 
@@ -115,6 +116,7 @@ class DocumentEditor extends React.Component {
     let jobId = recordId ? recordId.split("|")[0] : ""
     TELEMETRY.endTranslatorFlow(jobId)
     this.props.clearFetchContent()
+    this.props.showPdf(false)
   }
 
   handleSourceScroll(id) {
@@ -574,7 +576,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     update_blocks,
     ClearContent,
     clearFetchContent,
-    editorModeNormal, editorModeMerge, editorModeClear
+    editorModeNormal, editorModeMerge, editorModeClear,
+    showPdf
   },
   dispatch
 );

@@ -114,11 +114,11 @@ class Dashboard extends React.Component {
   }
 
   processTranslateButtonPressed() {
-    this.setState({ showStatus: true, message: "Fetching translation..." })
-    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
+      this.setState({ showStatus: true, message: "Fetching translation..." })
+      let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
 
-    this.makeAPICallInteractiveTranslation(this.state.text, modelId.model_id)
-    // this.makeAPICallAutoML(this.state.text, this.state.source_language_code, this.state.target_language_code)
+      this.makeAPICallInteractiveTranslation(this.state.text, modelId.model_id)
+      // this.makeAPICallAutoML(this.state.text, this.state.source_language_code, this.state.target_language_code)
   }
 
   processSourceLanguageSelected = (event) => {
@@ -201,7 +201,7 @@ class Dashboard extends React.Component {
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ marginTop: "0%" }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
           <Typography value="" variant="h5">
-            {translate("common.page.label.sourceLang")}{" "}
+            {translate("common.page.label.sourceLang")}&nbsp;<span style={{color: "red"}}>*</span>
           </Typography>
         </Grid>
 
@@ -233,7 +233,7 @@ class Dashboard extends React.Component {
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ paddingTop: "20px" }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
           <Typography value="" variant="h5">
-            {translate("common.page.label.targetLang")}&nbsp;
+            {translate("common.page.label.targetLang")}&nbsp;<span style={{color: "red"}}>*</span>
           </Typography>
         </Grid>
         <Grid item xs={6} sm={6} lg={4} xl={4}>
@@ -309,6 +309,7 @@ class Dashboard extends React.Component {
                   onClick={this.processTranslateButtonPressed}
                   aria-label="edit"
                   className={classes.button1}
+                  disabled={!this.state.text || !this.state.source_language_code || !this.state.target_language_code}
                 >
                   {translate("common.page.button.submit")}
                 </Button>
