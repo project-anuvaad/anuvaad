@@ -1,6 +1,6 @@
-import API from "./api";
-import C from "../constants";
-import ENDPOINTS from "../../../configs/apiendpoints";
+import API from "../api";
+import C from "../../constants";
+import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class Pagination extends API {
     constructor(file_name, user_id, timeout = 200000) {

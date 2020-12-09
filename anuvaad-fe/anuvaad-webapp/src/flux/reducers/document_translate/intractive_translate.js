@@ -1,9 +1,8 @@
-import C from '../actions/constants';
+import C from '../../actions/constants';
 
 export default function (state = {}, action) {
     switch (action.type) {
-        
-        case C.DOCUMENT_CONVERTER:
+        case C.INTRACTIVE_TRANSLATE:
             return action.payload;
 
         default:

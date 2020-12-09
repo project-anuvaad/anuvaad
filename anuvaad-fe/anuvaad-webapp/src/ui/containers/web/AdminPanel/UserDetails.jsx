@@ -14,8 +14,7 @@ import Spinner from "../../../components/web/common/Spinner";
 import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
 import ToolBar from "../AdminPanel/AdminPanelHeader"
 import FetchUserDetails from "../../../../flux/actions/apis/userdetails";
-import ActivateUser from "../../../../flux/actions/apis/activate_exisiting_user";
-import DeactivateUser from "../../../../flux/actions/apis/deactivate_exisiting_user";
+import ActivateDeactivateUser from "../../../../flux/actions/apis/activate_exisiting_user";
 import Switch from '@material-ui/core/Switch';
 import Snackbar from "../../../components/web/common/Snackbar";
 
@@ -36,20 +35,25 @@ class UserDetails extends React.Component {
       timeOut: 3000,
       open: false,
       isenabled: false,
-      variantType: ''
+      variantType: '',
+      message: ''
     };
 
   }
 
+
+  processFetchBulkUserDetailAPI = (offset, limit, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = []) => {
+    const token = localStorage.getItem("token");
+    const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes);
+    this.props.APITransport(userObj);
+  }
   /**
    * life cycle methods
    */
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('user-details');
     this.setState({ showLoader: true })
-    const token = localStorage.getItem("token");
-    const userObj = new FetchUserDetails(token);
-    this.props.APITransport(userObj);
+    this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
   }
 
   componentDidUpdate(prevProps) {
@@ -57,35 +61,21 @@ class UserDetails extends React.Component {
       this.setState({ showLoader: false, isenabled: false })
     }
     else if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
-      this.setState({ showLoader: false })
+      this.setState({ showLoader: false, isenabled: false })
     }
-    if (prevProps.activateuser !== this.props.activateuser || prevProps.deactivateuser !== this.props.deactivateuser) {
-      const token = localStorage.getItem("token");
-      const userObj = new FetchUserDetails(token);
-      this.props.APITransport(userObj);
-    }
-    // this.updateComponent(prevProps);
-    TELEMETRY.pageLoadCompleted('user-details')
   }
-
-  // updateComponent = async (prevProps) => {
-  // }
 
   getMuiTheme = () => createMuiTheme({
     overrides: {
       MUIDataTableBodyCell: {
         root: {
-          padding: '3px 10px 3px'
-        }
+          padding: '3px 10px 3px',
+          marginLeft: '-2%'
+        },
       },
     }
   })
 
-
-  getDateTimeFromTimestamp = (t) => {
-    let date = new Date(t);
-    return ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
-  }
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('user-details')
@@ -94,42 +84,70 @@ class UserDetails extends React.Component {
      */
     return null;
   }
-  handleMessageClear = () => {
-    this.setState({ open: true });
-  }
 
-  toggleChecked = async (e, userName, userID, currentState) => {
+
+
+  toggleChecked = (userId, userName, roleCodes, currentState) => {
     const { APITransport } = this.props;
     const token = localStorage.getItem("token");
-    if (currentState) {
-      const deactivate_exisiting_user = new DeactivateUser(userName, userID, token);
-      this.setState({ isenabled: true, variantType: 'info', message: 'Please wait, deactivating the user' });
-      APITransport(deactivate_exisiting_user);
-    } else {
-      const activate_exisiting_user = new ActivateUser(userName, userID, token);
-      this.setState({ isenabled: true, variantType: 'info', message: 'Please wait, activating the user' });
-      APITransport(activate_exisiting_user);
-    }
+    const userObj = new ActivateDeactivateUser(userName, !currentState, token);
+    this.setState({ showLoader: true });
+    fetch(userObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(userObj.getBody()),
+      headers: userObj.getHeaders().headers
+    })
+      .then(res => {
+        if (res.ok) {
+          this.processFetchBulkUserDetailAPI(null, null, false, true, [userId], [userName], roleCodes.split(','));
+          if (currentState) {
+            setTimeout(() => {
+              this.setState({ isenabled: true, variantType: 'success', message: `${userName} is deactivated successfully` })
+            }, 2000)
+          } else {
+            setTimeout(() => {
+              this.setState({ isenabled: true, variantType: 'success', message: `${userName} is activated successfully` })
+            }, 2000)
+          }
+        }
+      })
   }
 
   processTableClickedNextOrPrevious = (page) => {
     if (this.state.currentPageIndex < page) {
-      /**
-       * user wanted to load next set of records
-       */
-      // this.makeAPICallJobsBulkSearch(this.state.offset + this.state.limit, this.state.limit, false, true)
+      this.processFetchBulkUserDetailAPI(this.state.limit + this.state.offset, this.state.limit, true, false)
       this.setState({
         currentPageIndex: page,
-        // offset: this.state.offset + this.state.limit
+        offset: this.state.offset + this.state.limit
       });
     }
   };
 
-  makeAPICallJobsBulkSearch(offset, limit, jobIds = [''], searchForNewJob = false, searchNextPage = false, updateExisting = false) {
-    const { APITransport } = this.props;
-    const apiObj = new FetchUserDetails(offset, limit, jobIds, searchForNewJob, searchNextPage, updateExisting);
-    APITransport(apiObj);
+  processSnackBar = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={this.state.isenabled}
+        autoHideDuration={3000}
+        onClose={this.handleClose}
+        variant={this.state.variantType}
+        message={this.state.message}
+      />
+    );
   }
+
+  processSwitch = (userId, userName, roleCodes, isactive) => {
+    return (<div>
+      <Tooltip title="Active/Inactive" placement="left">
+        <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
+          <Switch
+            checked={isactive}
+            onChange={() => this.toggleChecked(userId, userName, roleCodes, isactive)} />
+        </IconButton>
+      </Tooltip>
+    </div>);
+  }
+
   render() {
     const columns = [
       {
@@ -159,7 +177,7 @@ class UserDetails extends React.Component {
         }
       },
       {
-        name: "email_id",
+        name: "userName",
         label: translate("common.page.label.email"),
         options: {
           filter: false,
@@ -192,7 +210,7 @@ class UserDetails extends React.Component {
         }
       },
       {
-        name: "is_verified",
+        name: "is_active",
         label: translate('common.page.table.status'),
         options: {
           filter: true,
@@ -201,15 +219,7 @@ class UserDetails extends React.Component {
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
-                <div>
-                  <Tooltip title="Active/Inactive" placement="left">
-                    <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
-                      <Switch
-                        checked={tableMeta.rowData[6]}
-                        onChange={(e) => this.toggleChecked(e, tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[6])} />
-                    </IconButton>
-                  </Tooltip>
-                </div>
+                this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[6]) //userId, userName, roleCodes, isactive
               );
             }
           }
@@ -217,10 +227,11 @@ class UserDetails extends React.Component {
       },
     ];
 
+
     const options = {
       textLabels: {
         body: {
-          noMatch: this.props.job_details.count > 0 && this.props.job_details.count > this.props.job_details.documents.length ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
+          noMatch: this.props.count > 0 && this.props.count > this.props.userinfo.data.length ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
         },
         toolbar: {
           search: translate("graderReport.page.muiTable.search"),
@@ -231,19 +242,16 @@ class UserDetails extends React.Component {
         },
         options: { sortDirection: 'desc' }
       },
-      // onTableChange: (action, tableState) => {
-      //   switch (action) {
-      //     case 'changePage':
-      //       this.processTableClickedNextOrPrevious(tableState.page, tableState.sortOrder);
-      //       break;
-      //     default:
-      //   }
-      // },
-      onChangePage: (pageNumber) => {
-        console.log('PageNumber', pageNumber);
-        this.processTableClickedNextOrPrevious(pageNumber);
+      onTableChange: (action, tableState) => {
+        switch (action) {
+          case 'changePage':
+            this.processTableClickedNextOrPrevious(tableState.page)
+            break;
+          default:
+        }
       },
-      count: this.props.job_details.count,
+      count: this.props.count,
+      rowsPerPageOptions: [10],
       filterType: "checkbox",
       download: false,
       print: false,
@@ -251,7 +259,7 @@ class UserDetails extends React.Component {
       filter: false,
       selectableRows: "none",
       sortOrder: {
-        name: 'timestamp',
+        name: 'registered_time',
         direction: 'desc'
       },
       page: this.state.currentPageIndex
@@ -263,7 +271,7 @@ class UserDetails extends React.Component {
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <ToolBar />
           {
-            !this.state.showLoader &&
+            (!this.state.showLoader|| this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <MUIDataTable title={translate("common.page.title.userdetails")}
                 columns={columns} options={options} data={this.props.userinfo.data} />
@@ -272,14 +280,7 @@ class UserDetails extends React.Component {
         </div>
         {(this.state.showLoader || this.state.loaderDelete) && < Spinner />}
         {this.state.isenabled &&
-          <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            open={this.state.isenabled}
-            autoHideDuration={100000}
-            onClose={this.handleClose}
-            variant={this.state.variantType}
-            message={this.state.message}
-          />
+          this.processSnackBar()
         }
       </div>
 
@@ -290,9 +291,9 @@ class UserDetails extends React.Component {
 const mapStateToProps = state => ({
   user: state.login,
   userinfo: state.userinfo,
+  count: state.userinfo.count,
   job_details: state.job_details,
   activateuser: state.activateuser,
-  deactivateuser: state.deactivateuser
 });
 
 const mapDispatchToProps = dispatch =>
