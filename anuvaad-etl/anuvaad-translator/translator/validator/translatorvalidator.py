@@ -103,8 +103,8 @@ class TranslatorValidator:
                             return post_error("FILES_LOCALE_NOT_FOUND",
                                               "Locale is mandatory for all files in the input",
                                               None)
-                        #if 'context' not in file.keys():
-                        #    return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
+                        if 'context' not in file.keys():
+                            return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
                         if 'model' not in file.keys():
                             return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
                         else:

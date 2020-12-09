@@ -141,12 +141,14 @@ class WFMUtils:
                 tool_input = block_merger.get_bm_input(task_output, previous_tool)
             if current_tool == tool_translator:
                 tool_input = translator.get_translator_input(task_output, previous_tool, False)
-                job_details = self.get_job_details(task_output["jobID"])[0]
-                files = []
+                job_details, files = self.get_job_details(task_output["jobID"])[0], []
                 for file in tool_input["input"]["files"]:
                     file["model"] = job_details["input"]["files"][0]["model"]
                     file["context"] = job_details["input"]["files"][0]["context"]
+                    log_info(job_details["input"]["files"][0]["context"], task_output)
                     files.append(file)
+                log_info("FILES: ", task_output)
+                log_info(files, task_output)
                 tool_input["input"]["files"] = files
             if current_tool == tool_worddetector:
                 tool_input = word_detector.get_wd_input(task_output, previous_tool)

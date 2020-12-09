@@ -310,9 +310,9 @@ class WFMService:
             wf_details = wfmutils.get_job_details(wf_input["jobID"])
         else:
             wf_details = wfmutils.get_job_details(task_output["jobID"])
-        if wf_details is None or len(wf_details) == 0:
+        if not wf_details:
             task_details = []
-            if task_output is not None:
+            if task_output:
                 task_details = [task_output]
             client_input = {"workflowCode": wf_input["workflowCode"], "files": wf_input["files"]}
             if 'jobName' in wf_input.keys():
