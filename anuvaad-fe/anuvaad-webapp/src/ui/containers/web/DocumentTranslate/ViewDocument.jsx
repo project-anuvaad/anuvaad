@@ -24,7 +24,7 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import JobStatus from "../../../../flux/actions/apis/translation.progress";
 import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
 import ToolBar from "./ViewDocHeader"
-import DownloadFile from "../../../../flux/actions/apis/download_file"
+import DownloadFile from "../../../../flux/actions/apis/download/download_file"
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 

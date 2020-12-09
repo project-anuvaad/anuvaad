@@ -1,10 +1,9 @@
-import C from '../actions/constants';
+import C from '../../actions/constants';
 
 export default function (state = {}, action) {
     switch (action.type) {
-        case C.WORD_DICTIONARY:
+        case C.SAVE_CONTENT:
             return action.payload;
-
         default:
             return state;
     }

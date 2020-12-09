@@ -11,7 +11,7 @@ import translation from './translation';
 import userRoles from './user/userroles';
 import updatePasswordstatus from './user/updatepassword';
 import uploadTokenValue from './user/uploadtoken';
-import intractiveTrans from './intractive_translate';
+import intractiveTrans from './document_translate/intractive_translate';
 import signup from './user/signup';
 import forgotpassword from './user/forgotpassword';
 import setpassword from './user/setpassword';
@@ -27,9 +27,9 @@ import active_page_number from './v1_pageUpdates';
 
 import documentDetails from "./fetch_fileDetails";
 import fetchContent from "./fetchcontent";
-import documentconverter from "./documentconverter";
-import wordDictionary from "./word_dictionary";
-import saveContent from "./savecontent";
+import documentconverter from "./document_translate/documentconverter";
+import wordDictionary from "./document_translate/word_dictionary";
+import saveContent from "./document_translate/savecontent";
 
 import block_highlight from './blockReducer'
 import sentence_highlight from './sentences/sentenceReducer'
@@ -37,14 +37,14 @@ import sentence_action_operation from './sentences/sentenceActionReducer'
 import async_job_status from './jobs/async_job_management'
 import document_editor_mode from './editor/document_editor_mode';
 
-import show_pdf from './showPdfReducer'
+import show_pdf from './document_translate/showPdfReducer'
 import open_sidebar from './showsidebar'
 import job_status from './v1.job_progress';
 
-import userinfo from '../reducers/userdetails';
-import createusers from '../reducers/createusers';
-import activateuser from '../reducers/activate_exisiting_user';
-import deactivateuser from '../reducers/deactivate_existing_user';
+import userinfo from './user/userdetails';
+import createusers from './user/createusers';
+import activateuser from './user/activate_exisiting_user';
+import deactivateuser from './user/deactivate_existing_user';
 
 export default {
     login,

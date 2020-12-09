@@ -1,4 +1,4 @@
-import C from '../actions/constants';
+import C from '../../actions/constants';
 
 const initialUserState = {
     result: []
