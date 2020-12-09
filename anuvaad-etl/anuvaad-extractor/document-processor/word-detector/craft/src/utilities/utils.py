@@ -21,7 +21,7 @@ class FileOperation(object):
     def accessing_files(self,files):
         #print("fillllllllllllllllll",files)
         filepath = files['name']
-        file_type = files['format']
+        file_type = files['type']
         identifier = files['identifier']
         return filepath, file_type, identifier
 
