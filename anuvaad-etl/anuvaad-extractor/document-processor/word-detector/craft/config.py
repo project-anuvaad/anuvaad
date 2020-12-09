@@ -27,8 +27,8 @@ bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 TASK_STAT           = 'WORD-DETECTOR-CRAFT'
 
 CONSUMER_GROUP_default       = 'anuvaad-etl-wd-consumer-group'
-CONSUMER_GROUP_identifire    = 'KAFKA_ANUVAAD_ETL_WD_CONSUMER_GRP'
-CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_default,CONSUMER_GROUP_identifire)
+CONSUMER_GROUP_identifier    = 'KAFKA_ANUVAAD_ETL_WD_CONSUMER_GRP'
+CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 #folders and file path
 download_folder = 'upload'
 

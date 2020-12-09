@@ -127,7 +127,7 @@ class Header extends React.Component {
   render() {
     const { classes, title, forDemo, dontShowHeader, currentMenu, open_sidebar } = this.props;
 
-    var role    = ["interactive-editor"] //JSON.parse(localStorage.getItem("roles"));
+    var role    =[localStorage.getItem("roles")];
     var useRole = [];
     role.map((item, value) => {
       useRole.push(item); value !== role.length - 1 && useRole.push(", ")
@@ -203,7 +203,7 @@ class Header extends React.Component {
                     />
                   </ListItem>
 
-                  {role && Array.isArray(role) && !role.includes("analyzer") && !role.includes("admin") && !role.includes("user") && (
+                  {role && Array.isArray(role) &&  !role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -227,8 +227,32 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
+                  {role && Array.isArray(role) &&  role.includes("ADMIN") && (
+                    <div>
+                      <Divider className={classes.divider} />
 
-                  {role && Array.isArray(role) && (role.includes("dev") || role.includes("grader") || role.includes("interactive-editor")) && (
+                      <ListItem
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "userdetails" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/user-details`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: currentMenu === "dashboard" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              User details
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )}
+
+                  {role && Array.isArray(role) && (role.includes("TRANSLATOR")) && (
                     <div>
                       <Divider className={classes.divider} />
                       <ListItem
