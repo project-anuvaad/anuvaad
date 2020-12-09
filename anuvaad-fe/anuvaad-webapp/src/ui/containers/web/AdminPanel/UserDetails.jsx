@@ -36,7 +36,8 @@ class UserDetails extends React.Component {
       open: false,
       isenabled: false,
       variantType: '',
-      message: ''
+      message: '',
+      status: false
     };
 
   }
@@ -51,20 +52,19 @@ class UserDetails extends React.Component {
    * life cycle methods
    */
   componentDidMount() {
-    console.log(this.props.userinfo.data.length);
-    if(this.props.userinfo.data.length<1){
+
       TELEMETRY.pageLoadCompleted('user-details');
       this.setState({ showLoader: true })
       this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
-    }
+    
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.userinfo.data !== this.props.userinfo.data) {
-      this.setState({ showLoader: false, isenabled: false })
+      this.setState({ showLoader: false, isenabled: false , status:false})
     }
     else if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
-      this.setState({ showLoader: false, isenabled: false })
+      this.setState({ showLoader: false, isenabled: false, status:false })
     }
   }
 
@@ -94,7 +94,7 @@ class UserDetails extends React.Component {
     const { APITransport } = this.props;
     const token = localStorage.getItem("token");
     const userObj = new ActivateDeactivateUser(userName, !currentState, token);
-    this.setState({ showLoader: true });
+    this.setState({ showLoader: true, status:true });
     fetch(userObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(userObj.getBody()),
@@ -281,7 +281,7 @@ class UserDetails extends React.Component {
             </MuiThemeProvider>
           }
         </div>
-        {(this.state.showLoader || this.state.loaderDelete) && < Spinner />}
+        {((this.state.showLoader && this.props.userinfo.data.length<1)|| this.state.status) && < Spinner />}
         {this.state.isenabled &&
           this.processSnackBar()
         }
