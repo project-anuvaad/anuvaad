@@ -86,8 +86,12 @@ class UserDetails extends React.Component {
   }
 
 
+<<<<<<< HEAD
   toggleChecked = (userId, userName, roleCodes, currentState) => {
     const { APITransport } = this.props;
+=======
+  toggleChecked = async (e, userName, userID, currentState) => {
+>>>>>>> 277fa1dbe6c503c9eb9407faed16df1fcc422fb0
     const token = localStorage.getItem("token");
     const userObj = new ActivateDeactivateUser(userName, !currentState, token);
     this.setState({ showLoader: true });

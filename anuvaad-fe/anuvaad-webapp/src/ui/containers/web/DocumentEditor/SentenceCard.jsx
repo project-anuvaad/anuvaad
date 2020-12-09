@@ -297,9 +297,7 @@ class SentenceCard extends React.Component {
         }
 
         if ((event.ctrlKey || event.metaKey) && charCode === 'm') {
-            this.setState({
-                value: this.props.sentence.s0_tgt
-            })
+           this.moveText()
             event.preventDefault();
             return false
         }
@@ -313,6 +311,23 @@ class SentenceCard extends React.Component {
             this.makeAPICallInteractiveTranslation(this.props.sentence)
             event.preventDefault();
             return false
+        }
+    }
+
+    moveText () {
+        if(!this.props.sentence.s0_tgt) {
+            alert("Sorry, Machine translated text is not available...")
+        } else {
+            if(this.state.value === this.props.sentence.s0_tgt) {
+                this.setState({
+                    value: this.props.sentence.s0_tgt,
+                })
+            } else {
+                this.setState({
+                    value: this.props.sentence.s0_tgt,
+                    userEnteredText: true
+                })
+            }
         }
     }
 
