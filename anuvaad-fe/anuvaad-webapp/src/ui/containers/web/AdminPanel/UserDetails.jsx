@@ -51,9 +51,12 @@ class UserDetails extends React.Component {
    * life cycle methods
    */
   componentDidMount() {
-    TELEMETRY.pageLoadCompleted('user-details');
-    this.setState({ showLoader: true })
-    this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+    console.log(this.props.userinfo.data.length);
+    if(this.props.userinfo.data.length<1){
+      TELEMETRY.pageLoadCompleted('user-details');
+      this.setState({ showLoader: true })
+      this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+    }
   }
 
   componentDidUpdate(prevProps) {
