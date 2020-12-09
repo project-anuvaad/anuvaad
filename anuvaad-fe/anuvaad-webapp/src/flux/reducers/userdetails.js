@@ -39,7 +39,6 @@ export default function (state = initialUserState, action) {
         case C.FETCH_CURRENT_USER_DETAIL:
             const currentData = getUserData(action.payload.data);
             const exisitingData = [...state.data];
-            console.log('exisitingData',...exisitingData)
             currentData.forEach(curruser => {
                 exisitingData.forEach((existinguser, index) => {
                     if (existinguser.userID === curruser.userID) {
@@ -47,7 +46,6 @@ export default function (state = initialUserState, action) {
                     }
                 })
             })
-            console.log('currentData',currentData)
             return {
                 ...state,
                 data: exisitingData

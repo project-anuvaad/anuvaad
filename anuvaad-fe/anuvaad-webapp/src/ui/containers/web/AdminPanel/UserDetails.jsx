@@ -61,7 +61,6 @@ class UserDetails extends React.Component {
       this.setState({ showLoader: false, isenabled: false })
     }
     else if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
-      console.log('inside else if')
       this.setState({ showLoader: false, isenabled: false })
     }
   }
@@ -87,7 +86,7 @@ class UserDetails extends React.Component {
   }
 
 
-  toggleChecked = (userId, userName, currentState) => {
+  toggleChecked = (userId, userName, roleCodes, currentState) => {
     const { APITransport } = this.props;
     const token = localStorage.getItem("token");
     const userObj = new ActivateDeactivateUser(userName, !currentState, token);
@@ -99,7 +98,7 @@ class UserDetails extends React.Component {
     })
       .then(res => {
         if (res.ok) {
-          this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit, false, true);
+          this.processFetchBulkUserDetailAPI(null, null, false, true, [userId], [userName], roleCodes.split(','));
           if (currentState) {
             setTimeout(() => {
               this.setState({ isenabled: true, variantType: 'success', message: `${userName} is deactivated successfully` })
@@ -136,13 +135,13 @@ class UserDetails extends React.Component {
     );
   }
 
-  processSwitch = (userId, userName, isactive) => {
+  processSwitch = (userId, userName, roleCodes, isactive) => {
     return (<div>
       <Tooltip title="Active/Inactive" placement="left">
         <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
           <Switch
             checked={isactive}
-            onChange={() => this.toggleChecked(userId, userName, isactive)} />
+            onChange={() => this.toggleChecked(userId, userName, roleCodes, isactive)} />
         </IconButton>
       </Tooltip>
     </div>);
@@ -219,7 +218,7 @@ class UserDetails extends React.Component {
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
-                this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[6]) //userId, userName, isactive
+                this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[6]) //userId, userName, roleCodes, isactive
               );
             }
           }
