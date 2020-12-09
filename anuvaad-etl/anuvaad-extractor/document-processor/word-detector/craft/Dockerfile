@@ -34,7 +34,7 @@
 # RUN apt-get install poppler-utils
 
 #RUN pip cache purge
-FROM anuvaadio/python-opencv-slim:1
+FROM anuvaadio/python-opencv-slim:2
 COPY / /app
 WORKDIR /app
 RUN pip install -r requirements.txt

@@ -1,8 +1,8 @@
-numpy==1.19.2
-torch==1.5.0
+#numpy==1.19.2
+#torch==1.5.0
 torchvision==0.6.0
 anuvaad_auditor==0.1.6
-opencv_python==4.4.0.42
+#opencv_python==4.4.0.42
 Flask==1.1.2
 pandas==1.0.3
 pdf2image==1.12.1
