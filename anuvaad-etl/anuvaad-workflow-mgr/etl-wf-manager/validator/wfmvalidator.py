@@ -45,9 +45,16 @@ class WFMValidator:
                 return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory", None)
             if 'context' not in data.keys():
                 return post_error("CONTEXT_NOT_FOUND", "Context is mandatory.", None)
+            if 'textBlocks' not in data.keys():
+                return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory.", None)
             else:
                 if not data["textBlocks"]:
                     return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory.", None)
+            if 'modifiedSentences' not in data.keys():
+                return post_error("MODIFIED_SENT_NOT_FOUND", "Ids of modified sentences is mandatory", None)
+            else:
+                if data["modifiedSentences"]:
+                    return post_error("MODIFIED_SENT_NOT_FOUND", "Ids of modified sentences is mandatory", None)
                 tools = wfmutils.get_tools_of_wf(workflowCode)
                 if tool_translator in tools:
                     if 'model' not in data.keys():
@@ -60,6 +67,7 @@ class WFMValidator:
                             return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
                         if 'target_language_code' not in model.keys():
                             return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
+
         else:
             return post_error("WORKFLOW_TYPE_DISABLED",
                               "This workflow belongs to SYNC type, which is currently disabled.", None)

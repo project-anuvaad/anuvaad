@@ -14,8 +14,9 @@ basePath: '/anuvaad-etl/wf-manager'
 
 
 
-paths: 
-  /v1/workflow/initiate:
+paths:
+
+  /v1/workflow/async/initiate:
     post:
       summary: REST API to register and trigger the workflow.
       description: This API accepts either pdf or images and initiates the workflow, which runs through a pipeline. This is an async process.
@@ -35,6 +36,68 @@ paths:
           description: On successful initiation of the job.
           schema:
             $ref: '#/definitions/WFInitiateResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/Error'
+        500:
+          description: On system level errors causing failure in the job.
+          schema:
+            $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/Error'
+            
+            
+            
+  /v1/workflow/sync/initiate:
+    post:
+      summary: REST API to initiate a sync wflow
+      description: This API accepts a list of blocks with tokenised sentences and translates them.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/WFSyncRequest'
+            
+      tags:
+      - Initiate
+
+      responses:
+        202:
+          description: On successful initiation of the job.
+          schema:
+            $ref: '#/definitions/WFSyncResponse'
+        400:
+          description: On input errors causing a failure in the job.
+          schema:
+            $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/Error'
+        500:
+          description: On system level errors causing failure in the job.
+          schema:
+            $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/Error'
+  
+  
+  
+  /v1/workflow/jobs/mark-inactive:
+    post:
+      summary: REST API to mark jobs as inactive
+      description: This API accepts job ids and marks them inactive, meaning the user will not be able to see them.
+      parameters:
+        - name: request
+          in: body
+          required: true
+          description: Request format accepted by this API.
+          schema:
+            $ref: '#/definitions/WFMarkInactivehRequest'
+            
+      tags:
+      - Initiate
+
+      responses:
+        202:
+          description: On successful initiation of the job.
+          schema:
+            $ref: '#/definitions/WFMarkInactivehResponse'
         400:
           description: On input errors causing a failure in the job.
           schema:
@@ -91,7 +154,7 @@ definitions:
   WFInitiateRequest:
     type: object
     properties:
-      input:
+      files:
         type: array
         items:
           type: object
@@ -100,6 +163,9 @@ definitions:
       workflowCode:
         type: string
         description: Code of the workflow that has to be picked to process this input. These workflows are configured at the application level.
+      jobName:
+        type: string
+        description: A user readable string to identify the job.
         
   WFInitiateResponse:
     type: object
@@ -108,6 +174,86 @@ definitions:
         type: object
         description: Details of the request sent.
         $ref: '#/definitions/WFInitiateRequest'        
+      jobID:
+        type: string
+        description: A unique job ID generated for this workflow.
+      status:
+        type: string
+        description: Current status of the workflow
+        enum:
+          - START
+          - INPROGRESS
+          - FAILED
+          - INTERRUPTED
+          - COMPLETED
+      state:
+        type: string
+        description: Current state of the workflow
+        enum:
+          - FILE-CONVERTED
+          - BLOCKS-MERGED
+          - SENTENCE-TOKENISED
+          - SENTENCES-ALIGNED
+          - TRANSLATED
+      output:
+        type: object
+        description: Intermediate or final output of the process. If the status = COMPLETE and the state = PROCESSED, this output is considered to be the final output, intermediate otherwise. It is a JSON.
+      taskDetails:
+        type: array
+        items:
+          type: object
+          $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/TaskOutput'
+        description: List of JSONs that explains output of each task involved in the workflow
+      error:
+        type: object
+        description: Incase the job fails due to an error in of the child tasks, that error will be capture here for the benefit of the user.
+        $ref: 'https://raw.githubusercontent.com/project-anuvaad/anuvaad/wfmanager_feature/anuvaad-etl/docs/common-contract.yml#/definitions/Error'
+      startTime:
+        type: number
+        description: 13 digit epoch of the start time.
+      endTime:
+        type: number
+        description: 13 digit epoch of the end time.
+        
+        
+  WFSyncRequest:
+    type: object
+    properties:
+      workflowCode:
+        type: string
+        description: Code of the workflow that has to be picked to process this input. These workflows are configured at the application level.
+      recordID:
+        type: string
+        description: RecordID of the file to which the text blocks belong.
+      locale:
+        type: string
+        description: language code of the src sentences in blocks.
+      context:
+        type: string
+        description: Context within which the blocks/file belong.
+      model:
+        type: object
+        description: Model object as fetched from the fetch-model API
+      textBlocks:
+        type: array
+        items:
+          type: object
+        description: List of block objects as defined by BM.
+      modifiedSentences:
+        type: array
+        items:
+          type: string
+        description: List of sentence ids, that have been modified by the user.
+        
+        
+        
+  WFSyncResponse:
+    type: object
+    properties:
+      input:
+        type: object
+        description: Details of the request sent.
+        $ref: '#/definitions/WFSyncRequest'        
       jobID:
         type: string
         description: A unique job ID generated for this workflow.
@@ -196,4 +342,35 @@ definitions:
           type: object
           $ref: '#/definitions/WFInitiateResponse'
         description: List of jobs returned for the criteria.
+        
+        
+  WFMarkInactivehRequest:
+    type: object
+    properties:
+      jobIDs:
+        type: array
+        items:
+          type: string
+        description: Unique IDs of the etl-wf jobs
+        
+        
+  WFMarkInactivehResponse:
+    type: object
+    properties:
+      status:
+        type: string
+        description: SUCCESS/FAILED
+      message:
+        type: string
+        description: message if any.
+      succeeded:
+        type: array
+        items:
+          type: string
+        description: job IDs that have been marked inactive
+      failed:
+        type: array
+        items:
+          type: string
+        description: job IDs that have not been marked inactive
       

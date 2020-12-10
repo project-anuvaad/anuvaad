@@ -13,7 +13,7 @@ definitions:
   File:
     type: object
     properties:
-      name:
+      path:
         type: string
         description: Name of the file. This will be obtained in the output of the file upload API exposed by the anuvaad system. 
       type:
@@ -28,6 +28,15 @@ definitions:
         type: string
         description: The locale of the file. Meaning, in which language is the uploaded file. For instance, 'en' for English, 'hi' for Hindi etc.
         format: varchar
+      model:
+        type: object
+        description: Model object as returned from fetch-model API, defined by NMT.
+      config:
+        type: object
+        description: config object as defined by OCR.
+      context:
+        type: string
+        description: Context to which this file belongs. 
         
         
   TaskInput:
