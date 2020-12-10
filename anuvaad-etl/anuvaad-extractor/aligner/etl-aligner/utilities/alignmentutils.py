@@ -7,7 +7,6 @@ import os
 import time
 from shutil import copyfile
 
-import requests
 import numpy as np
 import csv
 from configs.alignerconfig import directory_path
@@ -94,15 +93,12 @@ class AlignmentUtils:
     # Utility to decide (min,max) cs thresholds based on length of setences.
     def get_cs_on_sen_cat(self, sentence):
         sen_len = len(sentence.split())
-        if 0 < sen_len <= 10:
+        if 0 < sen_len <= 15:
             # SMALL
-            return 0.7, 0.75
-        elif 10 < sen_len <= 20:
-            # MEDIUM
-            return 0.75, 0.8
+            return 0.65, 0.7
         else:
             # LARGE
-            return 0.75, 0.8
+            return 0.7, 0.75
 
     # Utility to generate a unique random task ID
     def generate_task_id(self):

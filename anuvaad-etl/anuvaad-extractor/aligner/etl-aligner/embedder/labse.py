@@ -3,8 +3,10 @@ import logging
 
 from anuvaad_auditor.loghandler import log_info
 from sentence_transformers import SentenceTransformer
+from configs.alignerconfig import directory_path
 
-model = SentenceTransformer('LaBSE')
+
+model = SentenceTransformer(directory_path + '/available_nmt_models/sbert.net_models_LaBSE')
 
 log = logging.getLogger('file')
 
