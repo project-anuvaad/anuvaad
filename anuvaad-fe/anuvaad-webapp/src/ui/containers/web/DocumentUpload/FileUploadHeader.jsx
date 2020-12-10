@@ -1,24 +1,23 @@
 import React from "react";
-import history from "../../../../web.history";
-
 import { withStyles } from '@material-ui/core/styles';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
-
 import Toolbar from "@material-ui/core/Toolbar";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-
 import MenuIcon from '@material-ui/icons/Menu';
 import BackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
-import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
 import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
+import history from "../../../../web.history";
+
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
+
 
 class FileUploadHeader extends React.Component {
 

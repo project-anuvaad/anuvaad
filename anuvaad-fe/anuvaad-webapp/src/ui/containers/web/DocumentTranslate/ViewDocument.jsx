@@ -4,27 +4,29 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withStyles } from "@material-ui/core/styles";
 import MUIDataTable from "mui-datatables";
-import NewCorpusStyle from "../../../styles/web/Newcorpus";
-import history from "../../../../web.history";
-import FetchDocument from "../../../../flux/actions/apis/fetch_document";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import { translate } from "../../../../assets/localisation";
-import ProgressBar from "../../../components/web/common/ProgressBar";
-import Spinner from "../../../components/web/common/Spinner";
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
-import Dialog from "../../../components/web/common/SimpleDialog";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Snackbar from "../../../components/web/common/Snackbar";
 import DeleteIcon from '@material-ui/icons/Delete';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import MarkInactive from "../../../../flux/actions/apis/markinactive";
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import JobStatus from "../../../../flux/actions/apis/translation.progress";
-import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
+
 import ToolBar from "./ViewDocHeader"
-import DownloadFile from "../../../../flux/actions/apis/download_file"
+import ProgressBar from "../../../components/web/common/ProgressBar";
+import Dialog from "../../../components/web/common/SimpleDialog";
+import Spinner from "../../../components/web/common/Spinner";
+import { translate } from "../../../../assets/localisation";
+import NewCorpusStyle from "../../../styles/web/Newcorpus";
+import history from "../../../../web.history";
+
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
+import MarkInactive from "../../../../flux/actions/apis/view_document/markinactive";
+import JobStatus from "../../../../flux/actions/apis/view_document/translation.progress";
+import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
+import DownloadFile from "../../../../flux/actions/apis/download/download_file"
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 

@@ -8,21 +8,23 @@ import Grid from "@material-ui/core/Grid";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import MenuItem from "@material-ui/core/MenuItem";
-import FetchModel from "../../../../flux/actions/apis/fetchmodel";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+
 import history from "../../../../web.history";
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
 import FileUploadStyles from "../../../styles/web/FileUpload";
+import Toolbar from "./FileUploadHeader"
+
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import FetchModel from "../../../../flux/actions/apis/fetchmodel";
 import WorkFlow from "../../../../flux/actions/apis/fileupload";
 import DocumentUpload from "../../../../flux/actions/apis/document_upload";
-import TextField from "@material-ui/core/TextField";
-import Select from "@material-ui/core/Select";
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
-import Toolbar from "./FileUploadHeader"
-import OutlinedInput from "@material-ui/core/OutlinedInput";
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const LANG_MODEL = require('../../../../utils/language.model')

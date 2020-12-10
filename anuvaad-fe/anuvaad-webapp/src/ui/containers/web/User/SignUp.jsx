@@ -1,27 +1,26 @@
 import React from "react";
-import { MuiThemeProvider } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles, Typography } from "@material-ui/core";
-import ThemeDefault from "../../../theme/web/theme-default";
-
-import LoginStyles from "../../../styles/web/LoginStyles";
 import Grid from '@material-ui/core/Grid';
-import SignupApi from "../../../../flux/actions/apis/signup";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import Link from '@material-ui/core/Link';
+
+import ThemeDefault from "../../../theme/web/theme-default";
+import LoginStyles from "../../../styles/web/LoginStyles";
 import history from "../../../../web.history";
 import TextField from '../../../components/web/common/TextField';
-import Link from '@material-ui/core/Link';
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
-import CircularProgress from '@material-ui/core/CircularProgress';
-// import SignUpStyles from "../../styles/web/SignUpStyles";
+
+import SignupApi from "../../../../flux/actions/apis/user/signup";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
 
 class SignUp extends React.Component {
   constructor(props) {

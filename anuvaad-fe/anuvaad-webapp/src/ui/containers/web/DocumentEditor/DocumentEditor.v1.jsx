@@ -2,33 +2,35 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import Grid from "@material-ui/core/Grid";
-import { translate } from "../../../../assets/localisation";
-import history from "../../../../web.history";
-import ClearContent from "../../../../flux/actions/apis/clearcontent";
-import FileContent from "../../../../flux/actions/apis/fetchcontent";
-import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_update";
-import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
+
+import { translate } from "../../../../assets/localisation";
+import history from "../../../../web.history";
+import Spinner from "../../../components/web/common/Spinner";
 import LanguageCodes from "../../../components/web/common/Languages.json"
 import PDFRenderer from './PDFRenderer';
-import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
 import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
 import InteractivePagination from './InteractivePagination';
 import SENTENCE_ACTION from './SentenceActions'
+import InteractiveDocToolBar from "./InteractiveDocHeader"
+
+import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import ClearContent from "../../../../flux/actions/apis/clearcontent";
+import FileContent from "../../../../flux/actions/apis/fetchcontent";
+import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_update";
+import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
 import JobStatus from "../../../../flux/actions/apis/v1_jobprogress";
 import FetchModel from "../../../../flux/actions/apis/fetchmodel";
+import { showPdf } from '../../../../flux/actions/apis/showpdf';
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
-
-import InteractiveDocToolBar from "./InteractiveDocHeader"
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -115,6 +117,7 @@ class DocumentEditor extends React.Component {
     let jobId = recordId ? recordId.split("|")[0] : ""
     TELEMETRY.endTranslatorFlow(jobId)
     this.props.clearFetchContent()
+    this.props.showPdf(false)
   }
 
   handleSourceScroll(id) {
@@ -574,7 +577,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     update_blocks,
     ClearContent,
     clearFetchContent,
-    editorModeNormal, editorModeMerge, editorModeClear
+    editorModeNormal, editorModeMerge, editorModeClear,
+    showPdf
   },
   dispatch
 );
