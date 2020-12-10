@@ -36,7 +36,7 @@ class Word_Detector_WF(Resource):
                 log_info("Resource Word_Detector_WF Word_Detector api response completed", app_context.application_context)
                 return jsonify(response)
         except FormatError as e:
-            log_error("Resource Word_Detector_WF Input json format is not correct or dict_key is missing", app_context.application_context, e)
+            log_error("Resource Word_Detector_WF Input json format is not correct or dict_key is missing" + str(e), app_context.application_context, e)
             return Status.ERR_request_input_format.value
 
 
@@ -50,13 +50,13 @@ class Word_Detector(Resource):
         app_context.application_context = json_data
         log_info("Resource Word_Detector service started", app_context.application_context)
 
-        try:
-            error_validator = ValidationResponse(DOWNLOAD_FOLDER)
-            if error_validator.format_error(json_data) is True:
-                response_gen = Response(json_data, DOWNLOAD_FOLDER)
-                response = response_gen.nonwf_response()
-                log_info("Resource Word_Detector api response completed", app_context.application_context)
-                return jsonify(response)
-        except FormatError as e:
-            log_error("Resource Word_Detector Input json format is not correct or dict_key is missing", app_context.application_context, e)
-            return Status.ERR_request_input_format.value
+        #try:
+        error_validator = ValidationResponse(DOWNLOAD_FOLDER)
+        if error_validator.format_error(json_data) is True:
+            response_gen = Response(json_data, DOWNLOAD_FOLDER)
+            response = response_gen.nonwf_response()
+            log_info("Resource Word_Detector api response completed", app_context.application_context)
+            return jsonify(response)
+        # except FormatError as e:
+        #     log_error("Resource Word_Detector Input json format is not correct or dict_key is missing", app_context.application_context, e)
+        #     return Status.ERR_request_input_format.value

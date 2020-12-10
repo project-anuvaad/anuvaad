@@ -10,4 +10,3 @@ kafka_python==2.0.1
 Flask_RESTful==0.3.8
 Flask_Cors==3.0.8
 imagesize==1.2.0
-

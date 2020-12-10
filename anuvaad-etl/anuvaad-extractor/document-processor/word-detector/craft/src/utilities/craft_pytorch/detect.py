@@ -96,7 +96,7 @@ def test_net(image, text_threshold, link_threshold, low_text, cuda, poly, refine
     t0 = time.time()
 
     # resize
-    img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, args.canvas_size, interpolation=cv2.INTER_LINEAR, mag_ratio=1.0)
+    img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, args.canvas_size, interpolation=cv2.INTER_LINEAR, mag_ratio=config.MAGNIFICATION_RATIO)
     ratio_h = ratio_w = 1 / target_ratio
 
     # preprocessing
