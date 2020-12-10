@@ -22,6 +22,7 @@ mongo_alignment_col = os.environ.get('MONGO_ETL_ALIGNMENT_COL', 'extractor-align
 #module-configs
 context_path = os.environ.get('SA_CONTEXT_PATH', '/anuvaad-etl/extractor/aligner')
 directory_path = os.environ.get('ALIGNER_UPLOAD_PATH', "/app/upload")
+labse_folder_path = os.environ.get('ALIGNER_LABSE_FOLDER_PATH', "/app/available_labse_models")
 laser_url = os.environ.get('LASER_PATH', 'http://127.0.0.1:8050/vectorize')
 no_of_processes = os.environ.get("ALIGNER_NO_OF_PARALLEL_PROC", 5)
 
