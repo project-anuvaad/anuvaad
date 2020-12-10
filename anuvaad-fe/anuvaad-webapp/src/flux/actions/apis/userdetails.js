@@ -6,10 +6,21 @@ import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 
 export default class FetchUserDetails extends API {
-  constructor(token,timeout = 200000) {
-    super("GET", timeout, false);
-    this.type = C.FETCH_USERINFO;
+  constructor(offset = null, limit = null, token, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = [], timeout = 2000) {
+    super("POST", timeout, false);
+    if (updateExisiting) {
+      this.type = C.FETCH_NEXT_USERDETAIL
+    } else if (updateUserDetail) {
+      this.type = C.FETCH_CURRENT_USER_DETAIL
+    } else {
+      this.type = C.FETCH_USERINFO;
+    }
     this.token = token;
+    this.userIDs = userIDs;
+    this.userNames = userNames;
+    this.roleCodes = roleCodes;
+    this.offset = offset;
+    this.limit = limit;
     this.data = null;
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.userdetails}`;
   }
@@ -20,7 +31,7 @@ export default class FetchUserDetails extends API {
 
   processResponse(res) {
     super.processResponse(res);
-    this.data = res.data;
+    this.data = res;
   }
 
   apiEndPoint() {
@@ -31,9 +42,19 @@ export default class FetchUserDetails extends API {
     return {
       headers: {
         "Content-Type": "application/json",
-         'auth-token': `${this.token}`
+        'auth-token': `${this.token}`
       }
     };
+  }
+
+  getBody() {
+    return {
+      userIDs: this.userIDs,
+      userNames: this.userNames,
+      roleCodes: this.roleCodes,
+      offset: this.offset,
+      limit: this.limit
+    }
   }
 
   getPayload() {

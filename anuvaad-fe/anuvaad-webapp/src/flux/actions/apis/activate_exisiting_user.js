@@ -7,13 +7,13 @@ import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 
 export default class ActivateExistingUser extends API{
-constructor(userName,userID,token,timeout=2000){
+constructor(userName,is_active,token,timeout=2000){
     super("POST",timeout,false);
     this.type = C.ACTIVATE_EXISTING_USER;
     this.userName = userName;
-    this.userID = userID;
+    this.is_active = is_active;
     this.token = token;
-    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.activate_user}`;
+    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.activate_deactivate_user}`;
 }
 toString() {
     return `${super.toString()} , type: ${this.type}`;
@@ -32,8 +32,8 @@ apiEndPoint() {
 
 getBody() {
     return {
-        uid: this.userName,
-        rid: this.userID,
+        userName: this.userName,
+        is_active: this.is_active,
     };
 }
 

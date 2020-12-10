@@ -7,11 +7,11 @@ import C from "../constants";
 import ENDPOINTS from "../../../configs/apiendpoints";
 
 export default class DeactivateUser extends API{
-    constructor(userName,userID,token,timeout=2000){
+    constructor(userName,token,timeout=2000){
         super("POST",timeout,false);
         this.type = C.DEACTIVATE_EXISTING_USER;
         this.userName = userName;
-        this.userID = userID;
+        // this.userID = userID;
         this.token = token;
         this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.deactivate_existing_user}`;
     }
@@ -32,8 +32,8 @@ export default class DeactivateUser extends API{
     
     getBody() {
         return {
-            uid: this.userName,
-            rid: this.userID,
+            userName: this.userName,
+            // rid: this.userID,
         };
     }
     

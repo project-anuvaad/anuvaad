@@ -27,8 +27,8 @@ bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 TASK_STAT           = 'BLOCK-MERGER'
 
 CONSUMER_GROUP_default       = 'anuvaad-etl-bm-consumer-group'
-CONSUMER_GROUP_identifire    = 'ANUVAAD_ETL_BM_CONSUMER_GROUP_V1'
-CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_default,CONSUMER_GROUP_identifire)
+CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_BM_CONSUMER_GROUP_V1'
+CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 #folders and file path
 download_folder = 'upload'
 

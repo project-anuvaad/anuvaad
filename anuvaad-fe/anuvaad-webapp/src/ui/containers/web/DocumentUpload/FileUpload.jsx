@@ -156,7 +156,7 @@ class PdfUpload extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.fetch_models.models != this.props.fetch_models.models) {
+    if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
       this.setState({
         source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
         target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models)
