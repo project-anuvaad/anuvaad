@@ -42,11 +42,6 @@ class TranslatorValidator:
                             return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
                         if 'target_language_code' not in model.keys():
                             return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
-                if 'modifiedSentences' not in api_input.keys():
-                    return post_error("MODIFIED_SENT_NOT_FOUND", "Ids of modified sentences is mandatory", None)
-                else:
-                    if not api_input["modifiedSentences"]:
-                        return post_error("MODIFIED_SENT_NOT_FOUND", "Ids of modified sentences is mandatory", None)
 
     def validate_text_translate(self, data):
         if 'input' not in data.keys():

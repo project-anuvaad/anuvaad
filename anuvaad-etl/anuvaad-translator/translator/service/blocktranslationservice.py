@@ -82,7 +82,11 @@ class BlockTranslationService:
                 for sentence in block["tokenized_sentences"]:
                     if 'save' not in sentence.keys():
                         sentence["save"] = False
-                    if not sentence["save"] and (sentence["s_id"] in modified_sentences):
+                    if modified_sentences:
+                        add_to_nmt = (sentence["save"] is False) and (sentence["s_id"] in modified_sentences)
+                    else:
+                        add_to_nmt = sentence["save"] is False
+                    if add_to_nmt:
                         tmx_phrases = self.fetch_tmx(sentence["src"], block_translate_input)
                         tmx_count += len(tmx_phrases)
                         n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["s_id"])
