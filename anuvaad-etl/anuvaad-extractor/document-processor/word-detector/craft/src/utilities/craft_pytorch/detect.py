@@ -4,7 +4,7 @@ import time
 import argparse
 import torch
 #import torch.nn as nn
-#import torch.backends.cudnn as cudnn
+import torch.backends.cudnn as cudnn
 from torch.autograd import Variable
 #from PIL import Image
 import cv2
@@ -51,7 +51,7 @@ parser.add_argument('--trained_model', default='./model/craft_mlt_25k.pth', type
 parser.add_argument('--text_threshold', default=0.5, type=float, help='text confidence threshold')
 parser.add_argument('--low_text', default=0.4, type=float, help='text low-bound score')
 parser.add_argument('--link_threshold', default=0.95, type=float, help='link confidence threshold')
-parser.add_argument('--cuda', default=False, type=str2bool, help='Use cuda for inference')
+parser.add_argument('--cuda', default=True, type=str2bool, help='Use cuda for inference')
 parser.add_argument('--canvas_size', default=2500, type=int, help='image size for inference')
 parser.add_argument('--mag_ratio', default=1.0, type=float, help='image magnification ratio')
 parser.add_argument('--poly', default=False, action='store_true', help='enable polygon type')
