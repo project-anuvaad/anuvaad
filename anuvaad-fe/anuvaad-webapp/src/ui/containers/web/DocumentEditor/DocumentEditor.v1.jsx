@@ -19,17 +19,17 @@ import InteractivePagination from './InteractivePagination';
 import SENTENCE_ACTION from './SentenceActions'
 import InteractiveDocToolBar from "./InteractiveDocHeader"
 
-import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
+import WorkFlowAPI from "../../../../flux/actions/apis/common/fileupload";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import ClearContent from "../../../../flux/actions/apis/clearcontent";
-import FileContent from "../../../../flux/actions/apis/fetchcontent";
-import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_update";
-import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
-import JobStatus from "../../../../flux/actions/apis/v1_jobprogress";
-import FetchModel from "../../../../flux/actions/apis/fetchmodel";
-import { showPdf } from '../../../../flux/actions/apis/showpdf';
+import ClearContent from "../../../../flux/actions/apis/document_translate/clearcontent";
+import FileContent from "../../../../flux/actions/apis/document_translate/fetchcontent";
+import FetchContentUpdate from "../../../../flux/actions/apis/document_translate/v1_fetch_content_update";
+import SaveSentenceAPI from '../../../../flux/actions/apis/document_translate/savecontent';
+import JobStatus from "../../../../flux/actions/apis/view_document/v1_jobprogress";
+import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
+import { showPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
-import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
+import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 
 const PAGE_OPS = require("../../../../utils/page.operations");

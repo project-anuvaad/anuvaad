@@ -25,8 +25,8 @@ import SENTENCE_ACTION from './SentenceActions'
 import Dictionary from "./Dictionary"
 
 import { highlightBlock, clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
-import InteractiveTranslateAPI from "../../../../flux/actions/apis/intractive_translate";
-import DictionaryAPI from '../../../../flux/actions/apis/word_dictionary';
+import InteractiveTranslateAPI from "../../../../flux/actions/apis/document_translate/intractive_translate";
+import DictionaryAPI from '../../../../flux/actions/apis/document_translate/word_dictionary';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 

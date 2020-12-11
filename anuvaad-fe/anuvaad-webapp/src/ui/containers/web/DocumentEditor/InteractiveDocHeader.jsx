@@ -23,10 +23,10 @@ import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 import history from "../../../../web.history";
 
-import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverter";
+import DocumentConverterAPI from "../../../../flux/actions/apis/document_translate/documentconverter";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import { showPdf } from '../../../../flux/actions/apis/showpdf';
-import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
+import { showPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
+import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
 
 const StyledMenu = withStyles({

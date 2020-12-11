@@ -18,8 +18,8 @@ import TextField from '../../../components/web/common/TextField';
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
 
-import LoginAPI from "../../../../flux/actions/apis/login";
-import profileDetails from '../../../../flux/actions/apis/profile_details';
+import LoginAPI from "../../../../flux/actions/apis/user/login";
+import profileDetails from '../../../../flux/actions/apis/user/profile_details';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
