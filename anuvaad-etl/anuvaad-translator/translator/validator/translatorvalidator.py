@@ -45,7 +45,7 @@ class TranslatorValidator:
                 if 'modifiedSentences' not in api_input.keys():
                     return post_error("MODIFIED_SENT_NOT_FOUND", "Ids of modified sentences is mandatory", None)
                 else:
-                    if api_input["modifiedSentences"]:
+                    if not api_input["modifiedSentences"]:
                         return post_error("MODIFIED_SENT_NOT_FOUND", "Ids of modified sentences is mandatory", None)
 
     def validate_text_translate(self, data):

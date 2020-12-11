@@ -53,7 +53,7 @@ class WFMValidator:
             if 'modifiedSentences' not in data.keys():
                 return post_error("MODIFIED_SENT_NOT_FOUND", "Ids of modified sentences is mandatory", None)
             else:
-                if data["modifiedSentences"]:
+                if not data["modifiedSentences"]:
                     return post_error("MODIFIED_SENT_NOT_FOUND", "Ids of modified sentences is mandatory", None)
                 tools = wfmutils.get_tools_of_wf(workflowCode)
                 if tool_translator in tools:
