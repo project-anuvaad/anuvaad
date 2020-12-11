@@ -21,9 +21,9 @@ import FileUploadStyles from "../../../styles/web/FileUpload";
 import Toolbar from "./FileUploadHeader"
 
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import FetchModel from "../../../../flux/actions/apis/fetchmodel";
-import WorkFlow from "../../../../flux/actions/apis/fileupload";
-import DocumentUpload from "../../../../flux/actions/apis/document_upload";
+import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
+import WorkFlow from "../../../../flux/actions/apis/common/fileupload";
+import DocumentUpload from "../../../../flux/actions/apis/document_upload/document_upload";
 import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')

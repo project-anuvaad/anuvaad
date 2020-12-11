@@ -16,7 +16,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
-import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
+import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";

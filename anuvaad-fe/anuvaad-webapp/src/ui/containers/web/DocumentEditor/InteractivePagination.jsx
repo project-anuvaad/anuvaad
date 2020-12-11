@@ -10,7 +10,7 @@ import Pagination from "@material-ui/lab/Pagination";
 
 import SENTENCE_ACTION from "./SentenceActions";
 
-import { currentPageUpdate } from "../../../../flux/actions/apis/pagiantion_update";
+import { currentPageUpdate } from "../../../../flux/actions/apis/document_translate/pagiantion_update";
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 
 const PAGE_OPS = require("../../../../utils/page.operations");

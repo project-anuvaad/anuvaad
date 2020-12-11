@@ -17,7 +17,7 @@ import Theme from "../../../theme/web/theme-anuvaad";
 import history from "../../../../web.history";
 
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
+import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 
 class ViewDocHeader extends React.Component {
 

@@ -13,12 +13,12 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 import { withStyles } from "@material-ui/core/styles";
 
-import FetchModel from "../../../../flux/actions/apis/fetchmodel";
-import AutoML from "../../../../flux/actions/apis/auto_ml";
+import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
+import AutoML from "../../../../flux/actions/apis/dashboard/auto_ml";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { translate } from "../../../../assets/localisation";
 import DashboardStyles from "../../../styles/web/DashboardStyles";
-import InstantTranslateAPI from "../../../../flux/actions/apis/instant_translate";
+import InstantTranslateAPI from "../../../../flux/actions/apis/translate_sentence/instant_translate";
 
 const { v4 } = require('uuid');
 const LANG_MODEL = require('../../../../utils/language.model')
