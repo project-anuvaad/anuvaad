@@ -192,7 +192,8 @@ class WFMUtils:
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 tool_input["input"]["model"] = job_details["input"]["model"]
                 tool_input["input"]["context"] = job_details["input"]["context"]
-                tool_input["input"]["modifiedSentences"] = job_details["input"]["modifiedSentences"]
+                if "modifiedSentences" in job_details["input"].keys():
+                    tool_input["input"]["modifiedSentences"] = job_details["input"]["modifiedSentences"]
         else:
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input_wf(wf_input, True)
