@@ -73,6 +73,79 @@ WorkflowConfigs:
 
 
 
+  - workflowCode: WF_A_WD
+    type: ASYNC
+    description: word detection wf.
+    useCase: A_W
+    sequence:
+    - order: 0
+      tool:
+      - name: WORD-DETECTOR
+        description: detects word blocks from a given file
+        kafka-input:
+        - topic: anuvaad-dp-tools-word-detector-craft-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-word-detector-craft-input-key-one, anuvaad-dp-tools-word-detector-craft-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-word-detector-craft-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-word-detector-craft-output-key-one, anuvaad-dp-tools-word-detector-craft-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
+
+  - workflowCode: WF_A_LD
+    type: ASYNC
+    description: layout detection wf.
+    useCase: A_L
+    sequence:
+    - order: 0
+      tool:
+      - name: LAYOUT-DETECTOR
+        description: detects layouts from a given file
+        kafka-input:
+        - topic: anuvaad-dp-tools-layout-detector-prima-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-layout-detector-prima-input-key-one, anuvaad-dp-tools-layout-detector-prima-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-layout-detector-prima-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-layout-detector-prima-output-key-one, anuvaad-dp-tools-layout-detector-prima-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
+
+  - workflowCode: WF_A_OGV
+    type: ASYNC
+    description: gv-ocr wf.
+    useCase: A_OGV
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-GOOGLE-VISION
+        description: detects word blocks from a given file
+        kafka-input:
+        - topic: anuvaad-dp-tools-ocr-google-vision-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-ocr-google-vision-input-key-one, anuvaad-dp-tools-ocr-google-vision-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-ocr-google-vision-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-ocr-google-vision-output-key-one, anuvaad-dp-tools-ocr-google-vision-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
+
+
   - workflowCode: WF_A_FCBM
     type: ASYNC
     description: converts file into pdf and then extracts multiple blocks.
@@ -110,6 +183,46 @@ WorkflowConfigs:
           assignment: round-robin
       interruptenable: true
       endState: true
+
+
+  - workflowCode: WF_A_BMTK
+    type: ASYNC
+    description: extracts multiple blocks from pdf. Text content of each block is tokenised.
+    useCase: A_BT
+    sequence:
+    - order: 0
+      tool:
+      - name: BLOCK-MERGER
+        description: extracts different blocks from a pdf file.
+        kafka-input:
+        - topic: anuvaad-dp-tools-block-merger-input-v2
+          partitions: 2
+          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-block-merger-output-v2
+          partitions: 2
+          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 1
+      tool:
+      - name: TOKENISER
+        description: Tokenises a given file with paragraphs
+        kafka-input:
+        - topic: anuvaad-dp-tools-tokeniser-input-v1
+          partitions: 2
+          keys: tokeniser-input-key-one, tokeniser-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-tokeniser-output-v1
+          partitions: 2
+          keys: tokeniser-output-key-one, tokeniser-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
 
 
   - workflowCode: WF_A_FCBMTK
@@ -166,77 +279,6 @@ WorkflowConfigs:
       interruptenable: true
       endState: true
 
-
-
-  - workflowCode: WF_A_FCBMTKTR
-    type: ASYNC
-    description: converts file into pdf and then extracts multiple blocks. Text content of each block is tokenised and translated
-    useCase: A_FBTTR
-    sequence:
-    - order: 0
-      tool:
-      - name: FILE-CONVERTER
-        description: converts a file into pdf and other formats.
-        kafka-input:
-        - topic: anuvaad-dp-tools-fc-input-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-input-key-one, anuvaad-dp-tools-fc-input-key-two
-          assignment: round-robin
-        kafka-output:
-        - topic: anuvaad-dp-tools-fc-output-v1
-          partitions: 2
-          keys: anuvaad-dp-tools-fc-output-key-one, anuvaad-dp-tools-fc-output-key-two
-          assignment: round-robin
-      interruptenable: true
-      endState: false
-    - order: 1
-      tool:
-      - name: BLOCK-MERGER
-        description: extracts different blocks from a pdf file.
-        kafka-input:
-        - topic: anuvaad-dp-tools-block-merger-input-v2
-          partitions: 2
-          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
-          assignment: round-robin
-        kafka-output:
-        - topic: anuvaad-dp-tools-block-merger-output-v2
-          partitions: 2
-          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
-          assignment: round-robin
-      interruptenable: true
-      endState: false
-    - order: 2
-      tool:
-      - name: TOKENISER
-        description: Tokenises a given file with paragraphs
-        kafka-input:
-        - topic: anuvaad-dp-tools-tokeniser-input-v1
-          partitions: 2
-          keys: tokeniser-input-key-one, tokeniser-input-key-two
-          assignment: round-robin
-        kafka-output:
-        - topic: anuvaad-dp-tools-tokeniser-output-v1
-          partitions: 2
-          keys: tokeniser-output-key-one, tokeniser-output-key-two
-          assignment: round-robin
-      interruptenable: true
-      endState: false
-    - order: 3
-      tool:
-      - name: TRANSLATOR
-        description: Translates sentences from a bm-tok processed json file.
-        kafka-input:
-        - topic: anuvaad-dp-tools-translator-input-v3
-          partitions: 2
-          keys: anuvaad-dp-tools-translator-input-key-one, anuvaad-dp-tools-translator-input-key-two
-          assignment: round-robin
-        kafka-output:
-        - topic: anuvaad-dp-tools-translator-output-v3
-          partitions: 2
-          keys: anuvaad-dp-tools-translator-output-key-one, anuvaad-dp-tools-translator-output-key-two
-          assignment: round-robin
-      interruptenable: true
-      endState: true
 
 
   - workflowCode: WF_A_BMTKTR
@@ -350,49 +392,73 @@ WorkflowConfigs:
       endState: true
 
 
-  
-  - workflowCode: WF_A_WD
+
+  - workflowCode: WF_A_FCBMTKTR
     type: ASYNC
-    description: word detecton wf.
-    useCase: A_W
+    description: converts file into pdf and then extracts multiple blocks. Text content of each block is tokenised and translated
+    useCase: A_FBTTR
     sequence:
     - order: 0
       tool:
-      - name: WORD-DETECTOR
-        description: detects word blocks from a given file
+      - name: FILE-CONVERTER
+        description: converts a file into pdf and other formats.
         kafka-input:
-        - topic: anuvaad-dp-tools-word-detector-craft-input-v1
+        - topic: anuvaad-dp-tools-fc-input-v1
           partitions: 2
-          keys: anuvaad-dp-tools-word-detector-craft-input-key-one, anuvaad-dp-tools-word-detector-craft-input-key-two
+          keys: anuvaad-dp-tools-fc-input-key-one, anuvaad-dp-tools-fc-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-word-detector-craft-output-v1
+        - topic: anuvaad-dp-tools-fc-output-v1
           partitions: 2
-          keys: anuvaad-dp-tools-word-detector-craft-output-key-one, anuvaad-dp-tools-word-detector-craft-output-key-two
+          keys: anuvaad-dp-tools-fc-output-key-one, anuvaad-dp-tools-fc-output-key-two
           assignment: round-robin
       interruptenable: true
-      endState: true
-
-
-
-  - workflowCode: WF_A_OGV
-    type: ASYNC
-    description: gv-ocr wf.
-    useCase: A_OGV
-    sequence:
-    - order: 0
+      endState: false
+    - order: 1
       tool:
-      - name: OCR-GOOGLE-VISION
-        description: detects word blocks from a given file
+      - name: BLOCK-MERGER
+        description: extracts different blocks from a pdf file.
         kafka-input:
-        - topic: anuvaad-dp-tools-ocr-google-vision-input-v1
+        - topic: anuvaad-dp-tools-block-merger-input-v2
           partitions: 2
-          keys: anuvaad-dp-tools-ocr-google-vision-input-key-one, anuvaad-dp-tools-ocr-google-vision-input-key-two
+          keys: anuvaad-dp-tools-block-merger-input-key-one, anuvaad-dp-tools-block-merger-input-key-two
           assignment: round-robin
         kafka-output:
-        - topic: anuvaad-dp-tools-ocr-google-vision-output-v1
+        - topic: anuvaad-dp-tools-block-merger-output-v2
           partitions: 2
-          keys: anuvaad-dp-tools-ocr-google-vision-output-key-one, anuvaad-dp-tools-ocr-google-vision-output-key-two
+          keys: anuvaad-dp-tools-block-merger-output-key-one, anuvaad-dp-tools-block-merger-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 2
+      tool:
+      - name: TOKENISER
+        description: Tokenises a given file with paragraphs
+        kafka-input:
+        - topic: anuvaad-dp-tools-tokeniser-input-v1
+          partitions: 2
+          keys: tokeniser-input-key-one, tokeniser-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-tokeniser-output-v1
+          partitions: 2
+          keys: tokeniser-output-key-one, tokeniser-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 3
+      tool:
+      - name: TRANSLATOR
+        description: Translates sentences from a bm-tok processed json file.
+        kafka-input:
+        - topic: anuvaad-dp-tools-translator-input-v3
+          partitions: 2
+          keys: anuvaad-dp-tools-translator-input-key-one, anuvaad-dp-tools-translator-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-translator-output-v3
+          partitions: 2
+          keys: anuvaad-dp-tools-translator-output-key-one, anuvaad-dp-tools-translator-output-key-two
           assignment: round-robin
       interruptenable: true
       endState: true
