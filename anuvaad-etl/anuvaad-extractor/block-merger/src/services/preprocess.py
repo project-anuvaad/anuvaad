@@ -129,9 +129,16 @@ def add_attrib(page_df, region_to_change, attrib, margin=3):
             #print((page_df['text_top'] >= area[0]) & (page_df['text_left'] >= area[1]) & (
             #            page_df['text_top'] + page_df['text_height'] <= area[2]) & (
             #                  page_df['text_left'] + page_df['text_width'] <= area[3]))
-            page_df['attrib'].loc[(page_df['text_top'] >= area[0]) & (page_df['text_left'] >= area[1]) & (
+
+            intersection = (page_df['text_top'] >= area[0]) & (page_df['text_left'] >= area[1]) & (
                         page_df['text_top'] + page_df['text_height'] <= area[2]) & (
-                                          page_df['text_left'] + page_df['text_width'] <= area[3])] = attrib
+                                          page_df['text_left'] + page_df['text_width'] <= area[3])
+            if intersection.sum() >0:
+                page_df['attrib'].loc[intersection]  = attrib
+            #
+            # page_df['attrib'].loc[(page_df['text_top'] >= area[0]) & (page_df['text_left'] >= area[1]) & (
+            #             page_df['text_top'] + page_df['text_height'] <= area[2]) & (
+            #                               page_df['text_left'] + page_df['text_width'] <= area[3])] = attrib
 
     return page_df
 
@@ -144,7 +151,6 @@ def prepocess_pdf_regions(pdf_data,flags, config =preprocess_config ):
     #    page_height =  pdf_data['pdf_image_height']
     #header_region = None
     #footer_region =None
-    #if len(xml_dfs) > 1 :
     try :
         start_time = time.time()
         header_region = find_header(xml_dfs,page_height,config)
@@ -161,8 +167,6 @@ def prepocess_pdf_regions(pdf_data,flags, config =preprocess_config ):
         pdf_data['header_region'], pdf_data['footer_region'] = pd.DataFrame(),pd.DataFrame()
         return pdf_data
 
-
-    return header_region , footer_region
 
 def tag_heaader_footer_attrib(header_region , footer_region ,page_df,magrin=5):
     page_df  = add_attrib(page_df, header_region ,attrib='HEADER',margin=magrin)
