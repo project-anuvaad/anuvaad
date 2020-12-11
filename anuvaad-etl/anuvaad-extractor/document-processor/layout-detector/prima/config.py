@@ -5,7 +5,7 @@ import time
 DEBUG = True
 API_URL_PREFIX = "/anuvaad-etl/document-processor/layout-detector"
 HOST = '0.0.0.0'
-PORT = 5001
+PORT = 5003
 BASE_DIR      = 'upload'
 
 ENABLE_CORS = False
