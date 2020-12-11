@@ -5,7 +5,7 @@ import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class RunExperiment extends API {
 
 
-  constructor(workflow, file, fileName, source, target, path, model, timeout = 2000) {
+  constructor(workflow, file, fileName, source, target, path, model,sentence_ids, timeout = 2000) {
 
     super("POST", timeout, false);
     this.type = C.WORKFLOW;
@@ -17,6 +17,7 @@ export default class RunExperiment extends API {
     this.path = path;
     this.model = model;
     this.workflow = workflow;
+    this.sentence_ids = sentence_ids;
 
   }
 
@@ -49,7 +50,8 @@ export default class RunExperiment extends API {
             "type": this.path,
             "locale": this.source,
             "model": this.model,
-            "context": "JUDICIARY"
+            "context": "JUDICIARY",
+            "modifiedSentences" :this.sentence_ids
           }
         ]
 
@@ -62,7 +64,8 @@ export default class RunExperiment extends API {
         "locale": this.source, // Only when tokenisation and/or translation is needed
         "model": this.model, //Only when Translation is needed
         "textBlocks": this.file,
-        "context": "JUDICIARY"
+        "context": "JUDICIARY",
+        "modifiedSentences" :this.sentence_ids
 
       }
       //List of text 
