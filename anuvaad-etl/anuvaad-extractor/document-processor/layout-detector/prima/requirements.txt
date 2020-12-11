@@ -14,4 +14,4 @@ cmake
 scikit-build
 layoutparser==0.1.2
 fvcore
-
+git+https://github.com/facebookresearch/detectron2.git#egg=detectron2
