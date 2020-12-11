@@ -6,6 +6,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 from collections import Counter
 import cv2
+import uuid
 import src.utilities.app_context as app_context
 
 
@@ -75,6 +76,29 @@ def get_text_from_table_cells(table_dfs, p_dfs):
                 cells = row['children']
                 if cells != None:
                     for cell in cells:
+                        region= {}
+
+                        table_cells.append(cell)
+
+            t_cells_df = pd.DataFrame(table_cells)
+
+            p_dfs[page_index] = pd.concat([p_dfs[page_index], t_cells_df])
+
+    return p_dfs
+
+
+
+
+
+def get_table_cells(table_dfs, p_dfs):
+    for page_index in range(len(p_dfs)):
+        table_cells = []
+        table_df = table_dfs[page_index]
+        if len(table_df) > 0:
+            for t_index, row in table_df.iterrows():
+                cells = row['children']
+                if cells != None:
+                    for cell in cells:
                         cell.pop('index')
                         if cell['text'] != None:
                             text_df = pd.DataFrame(cell['text'])
@@ -94,7 +118,9 @@ def get_text_from_table_cells(table_dfs, p_dfs):
 
             p_dfs[page_index] = pd.concat([p_dfs[page_index], t_cells_df])
 
-    return p_dfs
+    return regions
+
+
 
 
 
