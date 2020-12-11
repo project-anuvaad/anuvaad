@@ -42,6 +42,7 @@ def get_layout(app_context) :
                 regions     = primalaynet.predict_primanet(page_path, line_coords)
                 file['pages'][idx]["regions"]=regions
             output.append(file)
+            output[index]['status'] = {}
             output[index]['status']['message']="layout-detector successful"
         app_context.application_context["outputs"] =output
         log_info("successfully completed layout detection", None)

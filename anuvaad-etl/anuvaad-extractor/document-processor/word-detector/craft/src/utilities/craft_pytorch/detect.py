@@ -96,7 +96,7 @@ def test_net(image, text_threshold, link_threshold, low_text, cuda, poly, refine
     t0 = time.time()
 
     # resize
-    img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, args.canvas_size, interpolation=cv2.INTER_LINEAR, mag_ratio=1.0)
+    img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, args.canvas_size, interpolation=cv2.INTER_LINEAR, mag_ratio=config.MAGNIFICATION_RATIO)
     ratio_h = ratio_w = 1 / target_ratio
 
     # preprocessing
@@ -239,11 +239,11 @@ def detect_text(images,language) :
         for index,image_set in enumerate(images):
             lang = language[index]
             word_in_dfs = detect_text_per_file(image_set,network=False,\
-                                               text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
-                                               low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
+                                                text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
+                                                low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
             line_in_df  = detect_text_per_file(image_set,network=True,\
-                                               text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'],\
-                                               low_text_threshold= config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])
+                                                text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'],\
+                                                low_text_threshold= config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])
             word_coordinates.append(word_in_dfs)
             line_coordinates.append((line_in_df))
     except Exception as e :

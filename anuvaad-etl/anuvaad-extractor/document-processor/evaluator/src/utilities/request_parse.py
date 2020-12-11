@@ -64,7 +64,7 @@ class File:
 
     @log_error
     def get_format(self):
-        return self.file['file']['format']
+        return self.file['file']['type']
 
     @log_error
     def get_name(self):
@@ -104,7 +104,7 @@ class File:
 
 
 def get_files(application_context):
-    files = copy.deepcopy(application_context['inputs'])
+    files = copy.deepcopy(application_context['input']['inputs'])
     return files
 
 
