@@ -17,6 +17,8 @@ import FetchUserDetails from "../../../../flux/actions/apis/userdetails";
 import ActivateDeactivateUser from "../../../../flux/actions/apis/activate_exisiting_user";
 import Switch from '@material-ui/core/Switch';
 import Snackbar from "../../../components/web/common/Snackbar";
+import ResetPassword from "./ResetPasswordModal";
+import Modal from '@material-ui/core/Modal';
 
 
 
@@ -37,7 +39,9 @@ class UserDetails extends React.Component {
       isenabled: false,
       variantType: '',
       message: '',
-      status: false
+      status: false,
+      isModalOpen: false,
+      username: ''
     };
 
   }
@@ -53,18 +57,18 @@ class UserDetails extends React.Component {
    */
   componentDidMount() {
 
-      TELEMETRY.pageLoadCompleted('user-details');
-      this.setState({ showLoader: true })
-      this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
-    
+    TELEMETRY.pageLoadCompleted('user-details');
+    this.setState({ showLoader: true })
+    this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.userinfo.data !== this.props.userinfo.data) {
-      this.setState({ showLoader: false, isenabled: false , status:false})
+      this.setState({ showLoader: false, isenabled: false, status: false })
     }
     else if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
-      this.setState({ showLoader: false, isenabled: false, status:false })
+      this.setState({ showLoader: false, isenabled: false, status: false })
     }
   }
 
@@ -94,7 +98,7 @@ class UserDetails extends React.Component {
     const { APITransport } = this.props;
     const token = localStorage.getItem("token");
     const userObj = new ActivateDeactivateUser(userName, !currentState, token);
-    this.setState({ showLoader: true, status:true });
+    this.setState({ showLoader: true, status: true });
     fetch(userObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(userObj.getBody()),
@@ -149,6 +153,29 @@ class UserDetails extends React.Component {
         </IconButton>
       </Tooltip>
     </div>);
+  }
+
+  openModal = (userName) => {
+    this.setState({ isModalOpen: true, username: userName })
+  }
+
+  handleClose = () => {
+    this.setState({ isModalOpen: false })
+  }
+
+  processSubmitButton = () => {
+    const resetPwdObj = new 
+    this.setState({ isModalOpen: false })
+  }
+
+  processModal = (username) => {
+    return (
+      <div>
+        <button onClick={() => this.openModal(username)}>
+          Reset Password
+        </button>
+      </div>
+    );
   }
 
   render() {
@@ -228,6 +255,22 @@ class UserDetails extends React.Component {
           }
         }
       },
+      {
+        name: "reset-password",
+        label: translate('userProfile.page.placeholder.resetPassword'),
+        options: {
+          filter: true,
+          sort: true,
+          empty: true,
+          customBodyRender: (value, tableMeta, updateValue) => {
+            if (tableMeta.rowData) {
+              return (
+                this.processModal(tableMeta.rowData[1]) //userId, userName, roleCodes, isactive
+              );
+            }
+          }
+        }
+      },
     ];
 
 
@@ -274,19 +317,28 @@ class UserDetails extends React.Component {
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <ToolBar />
           {
-            (!this.state.showLoader|| this.props.count) &&
+            (!this.state.showLoader || this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <MUIDataTable title={translate("common.page.title.userdetails")}
                 columns={columns} options={options} data={this.props.userinfo.data} />
             </MuiThemeProvider>
           }
         </div>
-        {((this.state.showLoader && this.props.userinfo.data.length<1)|| this.state.status) && < Spinner />}
+        {((this.state.showLoader && this.props.userinfo.data.length < 1) || this.state.status) && < Spinner />}
         {this.state.isenabled &&
           this.processSnackBar()
         }
+        {
+          this.state.isModalOpen &&
+          <Modal
+            open={this.state.isModalOpen}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            <ResetPassword onClose={this.handleClose} username={this.state.username} handleSubmit={this.processSubmitButton} />
+          </Modal>
+        }
       </div>
-
     );
   }
 }
