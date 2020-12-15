@@ -19,6 +19,7 @@ import Switch from '@material-ui/core/Switch';
 import Snackbar from "../../../components/web/common/Snackbar";
 import ResetPassword from "./ResetPasswordModal";
 import Modal from '@material-ui/core/Modal';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
 import SetPasswordApi from "../../../../flux/actions/apis/setpassword";
 
 
@@ -78,9 +79,9 @@ class UserDetails extends React.Component {
       MUIDataTableBodyCell: {
         root: {
           padding: '3px 10px 3px',
-          marginLeft: '-2%'
+          marginLeft:'-4%'
         },
-      },
+      }
     }
   })
 
@@ -145,7 +146,7 @@ class UserDetails extends React.Component {
   }
 
   processSwitch = (userId, userName, roleCodes, isactive) => {
-    return (<div>
+    return (
       <Tooltip title="Active/Inactive" placement="left">
         <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
           <Switch
@@ -153,7 +154,7 @@ class UserDetails extends React.Component {
             onChange={() => this.toggleChecked(userId, userName, roleCodes, isactive)} />
         </IconButton>
       </Tooltip>
-    </div>);
+    );
   }
 
   openModal = (userName) => {
@@ -175,12 +176,14 @@ class UserDetails extends React.Component {
       body: JSON.stringify(resetObj.getBody()),
       headers: resetObj.getHeaders().headers
     })
-      .then(res => {
+      .then(async res => {
         if (res.status === 200) {
-          this.setState({ isModalOpen: false, isenabled: true, message: res.why, variantType: 'success' })
+          const successMsg = await res.json().then(obj => obj.why)
+          this.setState({ isModalOpen: false, isenabled: true, message: successMsg, variantType: 'success' })
         }
         else {
-          throw new Error(res)
+          const errMsg = await res.json().then(obj => obj.message)
+          throw new Error(errMsg)
         }
       })
       .catch(err => {
@@ -188,16 +191,16 @@ class UserDetails extends React.Component {
       });
     setTimeout(() => {
       this.setState({ isenabled: false })
-    }, 3000);
+    }, 5000);
   }
 
   processModal = (username) => {
     return (
-      <div>
-        <button onClick={() => this.openModal(username)}>
-          Reset Password
-        </button>
-      </div>
+      <Tooltip title="Reset Password" placement="right">
+        <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.openModal(username)} >
+          <LockOpenIcon />
+        </IconButton>
+      </Tooltip>
     );
   }
 
@@ -264,7 +267,7 @@ class UserDetails extends React.Component {
       },
       {
         name: "is_active",
-        label: translate('common.page.table.status'),
+        label: translate('common.page.label.action'),
         options: {
           filter: true,
           sort: true,
@@ -272,28 +275,31 @@ class UserDetails extends React.Component {
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
-                this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[6]) //userId, userName, roleCodes, isactive
+                <div>
+                  {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[6])}
+                  {this.processModal(tableMeta.rowData[1])}
+                </div>
               );
             }
           }
         }
       },
-      {
-        name: "reset-password",
-        label: translate('userProfile.page.placeholder.resetPassword'),
-        options: {
-          filter: true,
-          sort: true,
-          empty: true,
-          customBodyRender: (value, tableMeta, updateValue) => {
-            if (tableMeta.rowData) {
-              return (
-                this.processModal(tableMeta.rowData[1]) //userId, userName, roleCodes, isactive
-              );
-            }
-          }
-        }
-      },
+      // {
+      //   name: "reset-password",
+      //   label: translate('userProfile.page.placeholder.resetPassword'),
+      //   options: {
+      //     filter: true,
+      //     sort: true,
+      //     empty: true,
+      //     customBodyRender: (value, tableMeta, updateValue) => {
+      //       if (tableMeta.rowData) {
+      //         return (
+      //           this.processModal(tableMeta.rowData[1]) //userId, userName, roleCodes, isactive
+      //         );
+      //       }
+      //     }
+      //   }
+      // },
     ];
 
 
