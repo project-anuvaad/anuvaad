@@ -267,6 +267,7 @@ class PRIMA(object):
 
 	def predict_primanet(self,image,craft_coords):
 		try:
+			
 			image   = cv2.imread(image)
 			image   = image[..., ::-1] 
 			layout  = model_primalaynet.detect(image)

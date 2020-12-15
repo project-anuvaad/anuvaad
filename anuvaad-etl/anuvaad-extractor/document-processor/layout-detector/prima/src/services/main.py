@@ -5,7 +5,7 @@ import src.utilities.app_context as app_context
 #from src.services.get_underline import get_underline
 #from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
 from compose import compose
-import config
+import config,time
 import json
 from src.utilities.primalaynet.infer import PRIMA
 from src.utilities.request_parse import get_files, File,get_json
@@ -39,6 +39,7 @@ def get_layout(app_context) :
             file   = get_json(file['file']['name'])[0]
             file_properties = File(file)
             page_paths      = file_properties.get_pages()
+            start_time = time.time()
             for idx,page_path in enumerate(page_paths):
                 page_lines  = file_properties.get_lines(idx)
                 page_words  = file_properties.get_words(idx)
@@ -48,6 +49,9 @@ def get_layout(app_context) :
             output.append(file)
             output[index]['status'] = {}
             output[index]['status']['message']="layout-detector successful"
+            end_time            = time.time()
+            extraction_time     = (end_time - start_time)/len(page_paths)
+            log_info('Layout detection per page completed in {}'.format(extraction_time), app_context.application_context)
         app_context.application_context["outputs"] =output
         log_info("successfully completed layout detection", None)
     except Exception as e:
