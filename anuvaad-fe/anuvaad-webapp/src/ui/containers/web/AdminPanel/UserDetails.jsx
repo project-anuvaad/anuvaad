@@ -173,14 +173,15 @@ class UserDetails extends React.Component {
     })
       .then(res => {
         if (res.ok) {
-          this.setState({ isModalOpen: false, message: 'Password resetted successfully', isenabled: true })
+
+          this.setState({ isenabled: true, message: 'Password resetted successfully' })
         }
         else {
           throw new Error(res)
         }
       })
       .catch(err => {
-        this.setState({ isModalOpen: false, message: 'Oops! Something went wrong, please try after sometime', isenabled: true })
+        this.setState({ isModalOpen: false, isenabled: true, message: 'Oops! Something went wrong, please try after sometime' })
       })
   }
 
