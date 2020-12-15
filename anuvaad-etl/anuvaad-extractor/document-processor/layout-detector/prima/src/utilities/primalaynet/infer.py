@@ -261,6 +261,8 @@ class PRIMA(object):
 			class_name = "LINE"
 		if class_name == "OtherRegion":
 			class_name = "TEXT"
+		else:
+			class_name = "TEXT"
 		return class_name
 
 	def predict_primanet(self,image,craft_coords):

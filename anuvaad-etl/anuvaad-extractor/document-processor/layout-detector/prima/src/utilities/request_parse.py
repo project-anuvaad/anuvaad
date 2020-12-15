@@ -50,8 +50,7 @@ def get_files(application_context):
     files = copy.deepcopy(application_context['input']['inputs'])
     return files
 
-def get_json(application_context,index):
-    path = application_context['input']['inputs'][index]['pages']
+def get_json(path):
     with open (path, "r") as f:
         data = json.loads(f.read())
     json_data = data['rsp']['outputs']

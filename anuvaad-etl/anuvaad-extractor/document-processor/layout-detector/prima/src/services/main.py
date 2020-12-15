@@ -36,7 +36,7 @@ def get_layout(app_context) :
         file_images = []
         output      = []
         for index,file in enumerate(files):
-            file   = get_json(app_context.application_context,index)[index]
+            file   = get_json(file['file']['name'])[0]
             file_properties = File(file)
             page_paths      = file_properties.get_pages()
             for idx,page_path in enumerate(page_paths):
