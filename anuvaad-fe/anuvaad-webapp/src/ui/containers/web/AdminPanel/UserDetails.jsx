@@ -20,7 +20,7 @@ import Snackbar from "../../../components/web/common/Snackbar";
 import ResetPassword from "./ResetPasswordModal";
 import Modal from '@material-ui/core/Modal';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
-import SetPasswordApi from "../../../../flux/actions/apis/setpassword";
+import SetPasswordApi from "../../../../flux/actions/apis/user/setpassword";
 
 
 
@@ -79,7 +79,7 @@ class UserDetails extends React.Component {
       MUIDataTableBodyCell: {
         root: {
           padding: '3px 10px 3px',
-          marginLeft:'-4%'
+          marginLeft: '-4%'
         },
       }
     }
