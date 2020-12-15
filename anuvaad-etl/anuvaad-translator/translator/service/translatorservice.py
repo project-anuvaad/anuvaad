@@ -136,7 +136,6 @@ class TranslatorService:
             if text_blocks:
                 sentences_for_trans, batch_key = self.fetch_batches_of_blocks(record_id, page_no, text_blocks, file,
                                                                               sentences_for_trans, translate_wf_input)
-                log_info("Text Blocks batched.", translate_wf_input)
             else:
                 log_error("There are no text blocks for this page: " + str(page_no), translate_wf_input, None)
             return sentences_for_trans
@@ -168,7 +167,7 @@ class TranslatorService:
             else:
                 log_error("There are no tokenised sentences in block: " + str(block_id), translate_wf_input, None)
                 continue
-        log_info("Count of TMX phrases fetched for this doc: " + str(tmx_count), translate_wf_input)
+        log_info("PAGE NO: " + str(page_no) + " | TMX: " + str(tmx_count), translate_wf_input)
         return sentences_for_trans, batch_key
 
     # Fetches tmx phrases
