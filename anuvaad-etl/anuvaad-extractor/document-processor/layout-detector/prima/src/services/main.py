@@ -6,8 +6,9 @@ import src.utilities.app_context as app_context
 #from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
 from compose import compose
 import config
+import json
 from src.utilities.primalaynet.infer import PRIMA
-from src.utilities.request_parse import get_files, File
+from src.utilities.request_parse import get_files, File,get_json
 
 primalaynet = PRIMA()
 def extract_table_line_regions(image_path):
@@ -30,9 +31,12 @@ def get_coord(bboxs):
 def get_layout(app_context) :
     try:
         files       = get_files(app_context.application_context)
+        #files   = get_json(app_context.application_context)
+        #files       = get_files(json_data)        
         file_images = []
         output      = []
         for index,file in enumerate(files):
+            file   = get_json(app_context.application_context,index)[index]
             file_properties = File(file)
             page_paths      = file_properties.get_pages()
             for idx,page_path in enumerate(page_paths):
@@ -57,6 +61,7 @@ def LayoutDetection(app_context):
     
     log_debug('layout detection process starting {}'.format(app_context.application_context), app_context.application_context)
     try:
+        
         response   = get_layout(app_context)
         return {
                 'code': 200,
