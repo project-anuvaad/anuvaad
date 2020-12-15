@@ -18,7 +18,12 @@ import Toolbar from "../../web/AdminPanel/CreateUserHeader";
 import CreateUsers from "../../../../flux/actions/apis/user/createusers";
 import Snackbar from "../../../components/web/common/Snackbar";
 import history from "../../../../web.history";
-import CircularProgress from "@material-ui/core/CircularProgress"
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 const roles = require('./roles.json')
 
@@ -35,6 +40,7 @@ class CreateUser extends React.Component {
       variantType: '',
       message: '',
       loading: false,
+      showPassword: false,
     };
   }
 
@@ -59,7 +65,7 @@ class CreateUser extends React.Component {
             marginLeft: '4.3%',
             marginBottom: '4%'
           }}>
-            <TextField type="email" onChange={this.handleInputReceived('name')} value={this.state.name} variant="outlined">
+            <TextField type="text" onChange={this.handleInputReceived('name')} value={this.state.name} variant="outlined">
 
             </TextField>
           </FormControl>
@@ -98,6 +104,9 @@ class CreateUser extends React.Component {
     )
   }
 
+  handleClickShowPassword = () => {
+    this.setState({ showPassword: !this.state.showPassword })
+  }
   renderPasswordItems = () => {
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ marginTop: "0%" }}>
@@ -118,8 +127,19 @@ class CreateUser extends React.Component {
             marginLeft: '4.3%',
             marginBottom: '4%'
           }}>
-            <TextField type="password" onChange={this.handleInputReceived('password')} value={this.state.password} variant="outlined">
-            </TextField>
+            <OutlinedInput type={this.state.showPassword ? 'text' : 'password'} onChange={this.handleInputReceived('password')} value={this.state.password} variant="outlined"
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={this.handleClickShowPassword}
+                    edge="end"
+                  >
+                    {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
           </FormControl>
         </Grid>
       </Grid>
@@ -217,7 +237,7 @@ class CreateUser extends React.Component {
                   }, 3000)
                 } else {
                   if (res.status === 400) {
-                  await  res.json().then(obj => {
+                    await res.json().then(obj => {
                       this.setState({
                         loading: false,
                         isenabled: true,
@@ -251,7 +271,9 @@ class CreateUser extends React.Component {
     } else {
       alert(translate('common.page.alert.provideValidDetails'))
     }
-    // this.setState({ isenabled: false})
+    setTimeout(() => {
+      this.setState({ isenabled: false })
+    }, 5000)
   }
 
   handleInputReceived = prop => event => this.setState({ [prop]: event.target.value });
@@ -290,7 +312,7 @@ class CreateUser extends React.Component {
                 onClick={this.processClearButton}
                 aria-label="edit"
                 className={classes.button1}
-                style={{backgroundColor:'#1ca9c9'}}
+                style={{ backgroundColor: '#1ca9c9' }}
               >
                 {translate("common.page.button.reset")}
               </Button>
@@ -308,7 +330,7 @@ class CreateUser extends React.Component {
                   className={classes.button1}
                   disabled={this.state.loading}
                   style={{
-                    backgroundColor: this.state.loading ? 'grey':'#1ca9c9',
+                    backgroundColor: this.state.loading ? 'grey' : '#1ca9c9',
                   }}
                 >
                   {this.state.loading && <CircularProgress size={24} className={'success'} style={{
