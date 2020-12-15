@@ -28,7 +28,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 
-import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
+import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 
 const styles = {
   container: {},

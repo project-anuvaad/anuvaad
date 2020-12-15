@@ -12,7 +12,7 @@ import Theme from "../../../theme/web/theme-anuvaad";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import history from "../../../../web.history";
 
-import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
+import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 
 class App extends React.Component {
   constructor(props) {

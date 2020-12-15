@@ -19,17 +19,17 @@ import InteractivePagination from './InteractivePagination';
 import SENTENCE_ACTION from './SentenceActions'
 import InteractiveDocToolBar from "./InteractiveDocHeader"
 
-import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
+import WorkFlowAPI from "../../../../flux/actions/apis/common/fileupload";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import ClearContent from "../../../../flux/actions/apis/clearcontent";
-import FileContent from "../../../../flux/actions/apis/fetchcontent";
-import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_update";
-import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
-import JobStatus from "../../../../flux/actions/apis/v1_jobprogress";
-import FetchModel from "../../../../flux/actions/apis/fetchmodel";
-import { showPdf } from '../../../../flux/actions/apis/showpdf';
+import ClearContent from "../../../../flux/actions/apis/document_translate/clearcontent";
+import FileContent from "../../../../flux/actions/apis/document_translate/fetchcontent";
+import FetchContentUpdate from "../../../../flux/actions/apis/document_translate/v1_fetch_content_update";
+import SaveSentenceAPI from '../../../../flux/actions/apis/document_translate/savecontent';
+import JobStatus from "../../../../flux/actions/apis/view_document/v1_jobprogress";
+import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
+import { showPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
-import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
+import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 
 const PAGE_OPS = require("../../../../utils/page.operations");
@@ -166,6 +166,7 @@ class DocumentEditor extends React.Component {
   }
 
   async makeAPICallMergeSentence(sentences, pageNumber) {
+
     let sentence_ids = sentences.map(sentence => sentence.s_id)
     let updated_blocks = BLOCK_OPS.do_sentences_merging_v1(this.props.document_contents.pages, sentence_ids);
 
@@ -178,7 +179,7 @@ class DocumentEditor extends React.Component {
     let model = this.fetchModel(parseInt(this.props.match.params.modelId))
     this.informUserProgress(translate('common.page.label.SENTENCE_MERGED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', model)
+      '', '', model, sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -226,14 +227,14 @@ class DocumentEditor extends React.Component {
   }
 
   async makeAPICallSplitSentence(sentence, pageNumber, startIndex, endIndex) {
-
+    
     let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
     TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
     let model = this.fetchModel(parseInt(this.props.match.params.modelId))
 
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', model)
+      '', '', model, [sentence.s_id])
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -334,6 +335,7 @@ class DocumentEditor extends React.Component {
       }
 
       case SENTENCE_ACTION.SENTENCE_MERGED: {
+        console.log(this.forMergeSentences)
         if (this.forMergeSentences.length < 2) {
           this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_INVALID_INPUT'), false)
           this.processEndMergeMode(pageNumber)
