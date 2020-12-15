@@ -231,10 +231,9 @@ class DocumentEditor extends React.Component {
     let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
     TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
     let model = this.fetchModel(parseInt(this.props.match.params.modelId))
-
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', model, [sentence.s_id])
+      '', '', model,updated_blocks.selected_sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),

@@ -538,6 +538,7 @@ function split_sentence(sentence, start, end) {
  */
 export const do_sentence_splitting_v1 = (pages, block_identifer, sentence, start_index, end_index) => {
     let selected_block_ids          = []
+    let selected_sentence_ids       = []
     let response_block              = {}
     selected_block_ids.push(block_identifer)
     let selected_blocks             = get_blocks_with_block_identifier(pages, selected_block_ids)
@@ -553,18 +554,21 @@ export const do_sentence_splitting_v1 = (pages, block_identifer, sentence, start
                         s1.save = false;
                         s1.tgt  = '';
                         text_block['tokenized_sentences'].splice(sentence_index, 1, s1);
+                        selected_sentence_ids.push(s1.s_id)
                     } else {
                         text_block['tokenized_sentences'].splice(sentence_index+i, 0, {
                             s_id: v4(),
                             src: splitted_sentences[i],
                             tgt: ''
                         });
+                        selected_sentence_ids.push(text_block['tokenized_sentences'][sentence_index+i].s_id)
+                        
                     }
                 }
             }
         })
     })
-
-    response_block['blocks'] = selected_blocks;
+    response_block['selected_sentence_ids'] = selected_sentence_ids;
+    response_block['blocks']                = selected_blocks;
     return response_block;
 }
