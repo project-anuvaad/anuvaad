@@ -8,8 +8,22 @@ import Typography from "@material-ui/core/Typography";
 class SimpleModal extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            username: props.username,
+            password: ''
+        }
 
     }
+
+    processSubmitBtn = () => {
+        let { username, password } = this.state;
+        this.props.handleSubmit(username, password)
+    }
+
+    handleInputFieldChange = (e) => {
+        this.setState({ password: e.target.value })
+    }
+
     render() {
         return (
             <div>
@@ -26,7 +40,7 @@ class SimpleModal extends React.Component {
                     <TextField id="email" type="email-username" value={this.props.username} placeholder={translate('common.page.placeholder.emailUsername')}
                         margin="dense" varient="outlined" style={{ width: '80%', marginBottom: '4%', backgroundColor: 'white' }}
                         disabled="true" />
-                    <TextField id="passowrd" type="password" placeholder="Enter Password*"
+                    <TextField id="passowrd" type="password" placeholder="Enter Password*" onChange={this.handleInputFieldChange}
                         margin="dense" varient="outlined" style={{ width: '80%', marginBottom: '2%', backgroundColor: 'white' }}
                     />
 
@@ -43,7 +57,7 @@ class SimpleModal extends React.Component {
                             variant="contained" aria-label="edit" style={{
                                 width: '40%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
                                 backgroundColor: '#1ca9c9', color: 'white',
-                            }} onClick={this.props.handleSubmit}>
+                            }} onClick={this.processSubmitBtn}>
                             Submit
                     </Button>
                     </div>

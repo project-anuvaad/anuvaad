@@ -33,7 +33,9 @@ export default class SetPassword extends API {
   getHeaders() {
     this.headers = {
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "auth-token": `${localStorage.getItem('token')}`,
+        "x-user-id": `${localStorage.getItem('roles')}`
       }
     };
     return this.headers;

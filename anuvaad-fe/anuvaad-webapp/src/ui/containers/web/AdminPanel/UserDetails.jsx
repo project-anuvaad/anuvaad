@@ -19,6 +19,7 @@ import Switch from '@material-ui/core/Switch';
 import Snackbar from "../../../components/web/common/Snackbar";
 import ResetPassword from "./ResetPasswordModal";
 import Modal from '@material-ui/core/Modal';
+import SetPasswordApi from "../../../../flux/actions/apis/setpassword";
 
 
 
@@ -163,9 +164,24 @@ class UserDetails extends React.Component {
     this.setState({ isModalOpen: false })
   }
 
-  processSubmitButton = () => {
-    const resetPwdObj = new 
-    this.setState({ isModalOpen: false })
+  processSubmitButton = (username, password) => {
+    const resetObj = new SetPasswordApi(username, '', password);
+    fetch(resetObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(resetObj.getBody()),
+      headers: resetObj.getHeaders().headers
+    })
+      .then(res => {
+        if (res.ok) {
+          this.setState({ isModalOpen: false, message: 'Password resetted successfully', isenabled: true })
+        }
+        else {
+          throw new Error(res)
+        }
+      })
+      .catch(err => {
+        this.setState({ isModalOpen: false, message: 'Oops! Something went wrong, please try after sometime', isenabled: true })
+      })
   }
 
   processModal = (username) => {
