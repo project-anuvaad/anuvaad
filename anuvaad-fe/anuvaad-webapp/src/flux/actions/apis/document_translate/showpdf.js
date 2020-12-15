@@ -8,3 +8,12 @@ export function showPdf() {
         }
     }
 }
+
+export function clearShowPdf() {
+    return {     
+        type: C.CLEAR_SHOW_PDF,
+        payload: {
+           
+        }
+    }
+}
