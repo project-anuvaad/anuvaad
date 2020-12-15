@@ -13,7 +13,7 @@ class FileOperation(object):
     # creating directory if it is not existed before.
     def create_file_download_dir(self, downloading_folder):
         self.download_folder = downloading_folder
-        download_dir = Path(os.path.join(os.getcwd(), self.download_folder))
+        download_dir = downloading_folder#Path(os.path.join(os.getcwd(), self.download_folder))
         if download_dir.exists() is False:
             os.makedirs(download_dir)
         return str(download_dir)
