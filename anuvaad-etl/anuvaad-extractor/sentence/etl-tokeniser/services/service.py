@@ -113,6 +113,7 @@ class Tokenisation(object):
         try:
             log_info("incomplete sentence identification and merging across pages started", self.input_json_data)
             for page_idx, page_data in enumerate(input_data_file):
+                log_info("Current Page: {}".format(page_idx), self.input_json_data)
                 page_data_blocks = page_data['text_blocks']
                 if page_idx+1 < len(input_data_file):
                     last_text_block_idx = self.get_last_text_block_with_text(page_data_blocks)
@@ -123,7 +124,8 @@ class Tokenisation(object):
                         if last_text_block_idx != None and first_text_block_next_page != None:
                             if not page_data_blocks[last_text_block_idx]['text'].strip().endswith(('.',':','!','?','”',')')) \
                             and input_data_file[page_idx+1]['text_blocks'][first_text_block_next_page]['text'] != None \
-                            and input_data_file[page_idx+1]['text_blocks'][first_text_block_next_page]['children'] != None:
+                            and input_data_file[page_idx+1]['text_blocks'][first_text_block_next_page]['children'] != None\
+                            and len(page_data_blocks[last_text_block_idx]['tokenized_sentences']) >= 1:
                                 last_tokenised_sentence_idx = len(page_data_blocks[last_text_block_idx]['tokenized_sentences']) - 1
                                 last_sen = page_data_blocks[last_text_block_idx]['tokenized_sentences'][last_tokenised_sentence_idx]['src']
                                 first_sen = input_data_file[page_idx+1]['text_blocks'][first_text_block_next_page]['tokenized_sentences'][0]['src']
@@ -148,6 +150,7 @@ class Tokenisation(object):
     # getting last text block of a page other than footer, header, table  
     def get_last_text_block_with_text(self, page_data):
         try:
+            last_text_block_idx = None
             for block_idx, block in enumerate(page_data):
                 if block['attrib'] not in ["FOOTER", "", "TABLE"]:
                     last_text_block_idx = block_idx
