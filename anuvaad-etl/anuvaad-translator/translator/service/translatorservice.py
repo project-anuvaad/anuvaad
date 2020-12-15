@@ -25,6 +25,10 @@ class TranslatorService:
 
     # Service method to begin translation for document translation flow.
     def start_file_translation(self, translate_wf_input):
+        duplicate_jobs = repo.search({"jobID": translate_wf_input["jobID"]}, {'_id': False})
+        if duplicate_jobs:
+            log_info("Duplicate Job, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input)
+            return None
         translate_wf_input["taskID"] = utils.generate_task_id()
         translate_wf_input["taskStartTime"] = eval(str(time.time()).replace('.', '')[0:13])
         translate_wf_input["state"] = "TRANSLATED"
@@ -36,7 +40,7 @@ class TranslatorService:
                 dumped = self.dump_file_to_db(file["path"], translate_wf_input)
                 if not dumped:
                     error_list.append({"inputFile": str(file["path"]), "outputFile": "FAILED",
-                                       "error": "File received couldn't be downloaded!"})
+                                       "error": "File received couldn't be downloaded"})
                     error = post_error("FILE_DOWNLOAD_FAILED", "File received couldn't be downloaded!", None)
                 else:
                     pushed = self.push_sentences_to_nmt(file, translate_wf_input)
