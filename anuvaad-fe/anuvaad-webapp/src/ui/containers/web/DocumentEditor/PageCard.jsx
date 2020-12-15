@@ -11,7 +11,7 @@ import SENTENCE_ACTION from './SentenceActions'
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
-var replacedSentence = '';
+
 const styles = {
     textField: {
         width: "100%",
@@ -23,8 +23,6 @@ const styles = {
     }
 }
 
-var remainingWords = '';
-var poppedText = '';
 
 class PageCard extends React.Component {
     constructor(props) {
@@ -86,42 +84,41 @@ class PageCard extends React.Component {
     renderTextFit = (text) => {
         if (this.props.block_highlight) {
             let sentence = this.props.block_highlight.src;
-            if (this.props.block_highlight.block_identifier === text.block_identifier) {
-                /*Left and right has the same length */
-                if (sentence !== undefined) {
-                    if (sentence.replace(/\s/g, '').includes(text.text.replace(/\s/g, '')) && text.text.replace(/\s/g, '').length === sentence.replace(/\s/g, '').length) {
+            // if (this.props.block_highlight.block_identifier === text.block_identifier) {
+            /*Left and right has the same length */
+            if (sentence !== undefined) {
+                if (sentence.replace(/\s/g, '').includes(text.text.replace(/\s/g, '')) && text.text.replace(/\s/g, '').length === sentence.replace(/\s/g, '').length) {
+                    return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
+                        {this.renderTextSpan(text, true)}
+                    </Textfit>
+                }
+                /**
+                 * Left is greater than right
+                 */
+                else if (text.text.replace(/\s/g, '').length > sentence.replace(/\s/g, '').length && text.text.replace(/\s/g, '').includes(sentence.replace(/\s/g, ''))) {
+                    if (text.text.replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) === 0) {
+                        let coloredText = JSON.parse(JSON.stringify(text));
+                        let nonColoredText = JSON.parse(JSON.stringify(text));
+                        coloredText.text = sentence;
+                        nonColoredText.text = text.text.substr(sentence.length - 1);
                         return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
-                            {this.renderTextSpan(text, true)}
+                            {this.renderTextSpan(coloredText, true)}
+                            {this.renderTextSpan(nonColoredText, false)}
                         </Textfit>
-                    }
-                    /**
-                     * Left is greater than right
-                     */
-                    else if (text.text.replace(/\s/g, '').length > sentence.replace(/\s/g, '').length && text.text.replace(/\s/g, '').includes(sentence.replace(/\s/g, ''))) {
-                        if (text.text.replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) === 0) {
-                            let coloredText = JSON.parse(JSON.stringify(text));
-                            let nonColoredText = JSON.parse(JSON.stringify(text));
-                            coloredText.text = sentence;
-                            nonColoredText.text = text.text.substr(sentence.length - 1);
-                            return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
-                                {this.renderTextSpan(coloredText, true)}
-                                {this.renderTextSpan(nonColoredText, false)}
-                            </Textfit>
 
-                        } else if (text.text.replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) > 0) {
-                            let firstHalfText = JSON.parse(JSON.stringify(text));
-                            let secondHalfText = JSON.parse(JSON.stringify(text));
-                            let coloredText = JSON.parse(JSON.stringify(text));
-                            coloredText.text = sentence;
-                            firstHalfText.text = text.text.substr(0, text.text.indexOf(sentence));
-                            secondHalfText.text = text.text.substr(text.text.indexOf(sentence) + sentence.length);
-                            return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
-                                {this.renderTextSpan(firstHalfText, false)}
-                                {this.renderTextSpan(coloredText, true)}
-                                {this.renderTextSpan(secondHalfText, false)}
-                            </Textfit>
+                    } else if (text.text.replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) > 0) {
+                        let firstHalfText = JSON.parse(JSON.stringify(text));
+                        let secondHalfText = JSON.parse(JSON.stringify(text));
+                        let coloredText = JSON.parse(JSON.stringify(text));
+                        coloredText.text = sentence;
+                        firstHalfText.text = text.text.substr(0, text.text.indexOf(sentence));
+                        secondHalfText.text = text.text.substr(text.text.indexOf(sentence) + sentence.length);
+                        return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
+                            {this.renderTextSpan(firstHalfText, false)}
+                            {this.renderTextSpan(coloredText, true)}
+                            {this.renderTextSpan(secondHalfText, false)}
+                        </Textfit>
 
-                        }
                     }
                 }
                 /**
@@ -184,11 +181,17 @@ class PageCard extends React.Component {
                         }
                     }
                 }
+                // }
+                /**
+                 * Initial rendering or when block_identifier is not matching
+                 */
+                return (
+                    <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16} >
+                        { this.renderTextSpan(text)}
+                    </Textfit >
+                )
             }
         }
-        /**
-         * Initial rendering or when block_identifier is not matching
-         */
         return (
             <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16} >
                 { this.renderTextSpan(text)}

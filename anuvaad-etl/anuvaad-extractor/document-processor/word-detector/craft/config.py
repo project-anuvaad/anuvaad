@@ -47,7 +47,7 @@ CRAFT_MODEL_PATH=  './src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
 CRAFT_REFINE_MODEL_PATH =  './src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth'
 
 LANGUAGE_WORD_THRESOLDS ={
-'en':{'text_threshold':0.1 ,'low_text': 0.3,'link_threshold':0.6},
+'en':{'text_threshold':0.1 ,'low_text': 0.3,'link_threshold':0.35},
 'hi':{'text_threshold':0.2 ,'low_text': 0.3,'link_threshold':0.8},
 'ma':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5},
 'ta':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5},
@@ -55,7 +55,7 @@ LANGUAGE_WORD_THRESOLDS ={
 'ka':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5}
 }
 LANGUAGE_LINE_THRESOLDS ={
-'en':{'text_threshold':0.1 ,'low_text': 0.3,'link_threshold':0.6},
+'en':{'text_threshold':0.1 ,'low_text': 0.3,'link_threshold':0.35},
 'hi':{'text_threshold':0.1 ,'low_text': 0.3,'link_threshold':0.6},
 'ma':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5},
 'ta':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5},

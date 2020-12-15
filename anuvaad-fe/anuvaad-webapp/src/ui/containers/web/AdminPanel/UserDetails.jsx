@@ -17,6 +17,10 @@ import FetchUserDetails from "../../../../flux/actions/apis/user/userdetails";
 import ActivateDeactivateUser from "../../../../flux/actions/apis/user/activate_exisiting_user";
 import Switch from '@material-ui/core/Switch';
 import Snackbar from "../../../components/web/common/Snackbar";
+import ResetPassword from "./ResetPasswordModal";
+import Modal from '@material-ui/core/Modal';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import SetPasswordApi from "../../../../flux/actions/apis/user/setpassword";
 
 
 
@@ -37,7 +41,9 @@ class UserDetails extends React.Component {
       isenabled: false,
       variantType: '',
       message: '',
-      status: false
+      status: false,
+      isModalOpen: false,
+      username: ''
     };
 
   }
@@ -53,18 +59,18 @@ class UserDetails extends React.Component {
    */
   componentDidMount() {
 
-      TELEMETRY.pageLoadCompleted('user-details');
-      this.setState({ showLoader: true })
-      this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
-    
+    TELEMETRY.pageLoadCompleted('user-details');
+    this.setState({ showLoader: true })
+    this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.userinfo.data !== this.props.userinfo.data) {
-      this.setState({ showLoader: false, isenabled: false , status:false})
+      this.setState({ showLoader: false, isenabled: false, status: false })
     }
     else if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
-      this.setState({ showLoader: false, isenabled: false, status:false })
+      this.setState({ showLoader: false, isenabled: false, status: false })
     }
   }
 
@@ -73,9 +79,9 @@ class UserDetails extends React.Component {
       MUIDataTableBodyCell: {
         root: {
           padding: '3px 10px 3px',
-          marginLeft: '-2%'
+          marginLeft: '-4%'
         },
-      },
+      }
     }
   })
 
@@ -94,7 +100,7 @@ class UserDetails extends React.Component {
     const { APITransport } = this.props;
     const token = localStorage.getItem("token");
     const userObj = new ActivateDeactivateUser(userName, !currentState, token);
-    this.setState({ showLoader: true, status:true });
+    this.setState({ showLoader: true, status: true });
     fetch(userObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(userObj.getBody()),
@@ -140,7 +146,7 @@ class UserDetails extends React.Component {
   }
 
   processSwitch = (userId, userName, roleCodes, isactive) => {
-    return (<div>
+    return (
       <Tooltip title="Active/Inactive" placement="left">
         <IconButton style={{ color: '#233466', padding: '5px' }} component="a" >
           <Switch
@@ -148,7 +154,54 @@ class UserDetails extends React.Component {
             onChange={() => this.toggleChecked(userId, userName, roleCodes, isactive)} />
         </IconButton>
       </Tooltip>
-    </div>);
+    );
+  }
+
+  openModal = (userName) => {
+    this.setState({ isModalOpen: true, username: userName })
+  }
+
+  handleClose = () => {
+    this.setState({ isModalOpen: false })
+  }
+
+  processSuccess = () => {
+    return this.setState({ loading: true, message: "Password resetted successfully", variantType: 'success' })
+  }
+
+  processSubmitButton = (username, password) => {
+    const resetObj = new SetPasswordApi(username, '', password);
+    fetch(resetObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(resetObj.getBody()),
+      headers: resetObj.getHeaders().headers
+    })
+      .then(async res => {
+        if (res.status === 200) {
+          const successMsg = await res.json().then(obj => obj.why)
+          this.setState({ isModalOpen: false, isenabled: true, message: successMsg, variantType: 'success' })
+        }
+        else {
+          const errMsg = await res.json().then(obj => obj.message)
+          throw new Error(errMsg)
+        }
+      })
+      .catch(err => {
+        this.setState({ isModalOpen: false, isenabled: true, message: err.message, variantType: 'error' })
+      });
+    setTimeout(() => {
+      this.setState({ isenabled: false })
+    }, 5000);
+  }
+
+  processModal = (username) => {
+    return (
+      <Tooltip title="Reset Password" placement="right">
+        <IconButton style={{ color: '#233466', padding: '5px' }} component="a" onClick={() => this.openModal(username)} >
+          <LockOpenIcon />
+        </IconButton>
+      </Tooltip>
+    );
   }
 
   render() {
@@ -214,7 +267,7 @@ class UserDetails extends React.Component {
       },
       {
         name: "is_active",
-        label: translate('common.page.table.status'),
+        label: translate('common.page.label.action'),
         options: {
           filter: true,
           sort: true,
@@ -222,12 +275,31 @@ class UserDetails extends React.Component {
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
-                this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[6]) //userId, userName, roleCodes, isactive
+                <div>
+                  {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[6])}
+                  {this.processModal(tableMeta.rowData[1])}
+                </div>
               );
             }
           }
         }
       },
+      // {
+      //   name: "reset-password",
+      //   label: translate('userProfile.page.placeholder.resetPassword'),
+      //   options: {
+      //     filter: true,
+      //     sort: true,
+      //     empty: true,
+      //     customBodyRender: (value, tableMeta, updateValue) => {
+      //       if (tableMeta.rowData) {
+      //         return (
+      //           this.processModal(tableMeta.rowData[1]) //userId, userName, roleCodes, isactive
+      //         );
+      //       }
+      //     }
+      //   }
+      // },
     ];
 
 
@@ -269,24 +341,37 @@ class UserDetails extends React.Component {
     };
 
     return (
-      <div style={{ height: window.innerHeight }}>
+      <div style={{
+        height: window.innerHeight
+      }}>
 
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <ToolBar />
           {
-            (!this.state.showLoader|| this.props.count) &&
+            (!this.state.showLoader || this.props.count) &&
             <MuiThemeProvider theme={this.getMuiTheme()}>
               <MUIDataTable title={translate("common.page.title.userdetails")}
                 columns={columns} options={options} data={this.props.userinfo.data} />
             </MuiThemeProvider>
           }
         </div>
-        {((this.state.showLoader && this.props.userinfo.data.length<1)|| this.state.status) && < Spinner />}
-        {this.state.isenabled &&
+        { ((this.state.showLoader && this.props.userinfo.data.length < 1) || this.state.status) && < Spinner />}
+        {
+          this.state.isenabled &&
           this.processSnackBar()
         }
-      </div>
+        {
+          this.state.isModalOpen &&
+          <Modal
+            open={this.state.isModalOpen}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            <ResetPassword onClose={this.handleClose} username={this.state.username} handleSubmit={this.processSubmitButton} />
+          </Modal>
+        }
 
+      </div >
     );
   }
 }
