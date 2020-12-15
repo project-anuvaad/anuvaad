@@ -7,6 +7,7 @@ from anuvaad_auditor.errorhandler import post_error_wf
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
+import config
 
 class FileOperation(object):
 
@@ -33,7 +34,7 @@ class FileOperation(object):
 
     # generating input filepath for input filename
     def input_path(self, input_filename):
-        input_filepath = os.path.join('upload', input_filename)
+        input_filepath = os.path.join(config.BASE_DIR, input_filename)
         return input_filepath
 
     # extracting data from received json input
