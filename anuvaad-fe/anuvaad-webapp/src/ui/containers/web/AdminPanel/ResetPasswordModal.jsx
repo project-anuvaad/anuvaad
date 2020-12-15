@@ -3,14 +3,15 @@ import FormControl from "@material-ui/core/FormControl";
 import TextField from '../../../components/web/common/TextField';
 import { translate } from "../../../../assets/localisation";
 import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class SimpleModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             username: props.username,
-            password: ''
+            password: '',
+            loading: false
         }
 
     }
@@ -18,6 +19,7 @@ class SimpleModal extends React.Component {
     processSubmitBtn = () => {
         let { username, password } = this.state;
         this.props.handleSubmit(username, password)
+        this.setState({ loading: true })
     }
 
     handleInputFieldChange = (e) => {
@@ -25,6 +27,7 @@ class SimpleModal extends React.Component {
     }
 
     render() {
+        const classes = this.props;
         return (
             <div>
                 <FormControl style={{
@@ -44,7 +47,7 @@ class SimpleModal extends React.Component {
                         margin="dense" varient="outlined" style={{ width: '80%', marginBottom: '2%', backgroundColor: 'white' }}
                     />
 
-                    <div>
+                    <div style={{ position: 'relative', }}>
                         <Button
                             variant="contained" aria-label="edit" style={{
                                 width: '40%', marginRight: '2%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
@@ -56,15 +59,25 @@ class SimpleModal extends React.Component {
                         <Button
                             variant="contained" aria-label="edit" style={{
                                 width: '40%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
-                                backgroundColor: '#1ca9c9', color: 'white',
-                            }} onClick={this.processSubmitBtn}>
+                                backgroundColor: this.state.loading ? 'grey' : '#1ca9c9', color: 'white', color: 'white',
+                            }} onClick={this.processSubmitBtn}
+                            disabled={this.state.loading}>
+                            {this.state.loading && <CircularProgress size={24} className={'success'} style={{
+                                color: 'green[500]',
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                marginTop: -12,
+                                marginLeft: -12,
+                            }} />}
                             Submit
-                    </Button>
+                        </Button>
                     </div>
                 </FormControl>
             </div>
         );
     }
 }
+
 
 export default SimpleModal;

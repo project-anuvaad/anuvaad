@@ -164,6 +164,10 @@ class UserDetails extends React.Component {
     this.setState({ isModalOpen: false })
   }
 
+  processSuccess = () => {
+    return this.setState({ loading: true, message: "Password resetted successfully", variantType: 'success' })
+  }
+
   processSubmitButton = (username, password) => {
     const resetObj = new SetPasswordApi(username, '', password);
     fetch(resetObj.apiEndPoint(), {
@@ -172,17 +176,19 @@ class UserDetails extends React.Component {
       headers: resetObj.getHeaders().headers
     })
       .then(res => {
-        if (res.ok) {
-
-          this.setState({ isenabled: true, message: 'Password resetted successfully' })
+        if (res.status === 200) {
+          this.setState({ isModalOpen: false, isenabled: true, message: res.why, variantType: 'success' })
         }
         else {
           throw new Error(res)
         }
       })
       .catch(err => {
-        this.setState({ isModalOpen: false, isenabled: true, message: 'Oops! Something went wrong, please try after sometime' })
-      })
+        this.setState({ isModalOpen: false, isenabled: true, message: err.message, variantType: 'error' })
+      });
+    setTimeout(() => {
+      this.setState({ isenabled: false })
+    }, 3000);
   }
 
   processModal = (username) => {
@@ -329,7 +335,9 @@ class UserDetails extends React.Component {
     };
 
     return (
-      <div style={{ height: window.innerHeight }}>
+      <div style={{
+        height: window.innerHeight
+      }}>
 
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <ToolBar />
@@ -341,8 +349,9 @@ class UserDetails extends React.Component {
             </MuiThemeProvider>
           }
         </div>
-        {((this.state.showLoader && this.props.userinfo.data.length < 1) || this.state.status) && < Spinner />}
-        {this.state.isenabled &&
+        { ((this.state.showLoader && this.props.userinfo.data.length < 1) || this.state.status) && < Spinner />}
+        {
+          this.state.isenabled &&
           this.processSnackBar()
         }
         {
@@ -355,7 +364,8 @@ class UserDetails extends React.Component {
             <ResetPassword onClose={this.handleClose} username={this.state.username} handleSubmit={this.processSubmitButton} />
           </Modal>
         }
-      </div>
+
+      </div >
     );
   }
 }
