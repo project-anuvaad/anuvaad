@@ -5,7 +5,7 @@ import time
 DEBUG = True
 API_URL_PREFIX = "/anuvaad-etl/document-processor/layout-detector"
 HOST = '0.0.0.0'
-PORT = 5001
+PORT = 5007
 BASE_DIR      = 'upload'
 
 ENABLE_CORS = False
@@ -22,7 +22,7 @@ output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
 kf_local_server     = 'localhost:9092'
 
-kafka_ip_host       = 'KAFKA_IP_HOST'
+kafka_ip_host       = 'KAFKA_BOOTSTRAP_SERVER_HOST'
 bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 
 TASK_STAT           = 'PRIMA-LAYOUT-DETECTOR'

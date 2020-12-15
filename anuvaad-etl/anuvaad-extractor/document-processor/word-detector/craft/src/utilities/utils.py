@@ -4,6 +4,9 @@ import time
 import json
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
+from src.utilities.app_context import LOG_WITHOUT_CONTEXT
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
 
 class FileOperation(object):
 
@@ -19,10 +22,13 @@ class FileOperation(object):
         return str(download_dir)
 
     def accessing_files(self,files):
-        #print("fillllllllllllllllll",files)
-        filepath = files['name']
-        file_type = files['format']
-        identifier = files['identifier']
+        try:
+            filepath = files['name']
+            file_type = files['type']
+            identifier = files['identifier']
+        except Exception as e:
+            log_exception("accessing_files, keys not found ",  LOG_WITHOUT_CONTEXT, e)
+
         return filepath, file_type, identifier
 
     # generating input filepath for input filename
@@ -32,11 +38,14 @@ class FileOperation(object):
 
     # extracting data from received json input
     def json_input_format(self, json_data):
-        input_data = json_data['inputs']
-        workflow_id = json_data['workflowCode']
-        jobid = json_data['jobID']
-        tool_name = json_data['tool']
-        step_order = json_data['stepOrder']
+        try:
+            input_data = json_data['input']['inputs']
+            workflow_id = json_data['workflowCode']
+            jobid = json_data['jobID']
+            tool_name = json_data['tool']
+            step_order = json_data['stepOrder']
+        except Exception as e:
+            log_exception("json_input_format, keys not found or mismatch in json inputs ",  LOG_WITHOUT_CONTEXT, e)
         return input_data, workflow_id, jobid, tool_name, step_order
 
     # output format for individual pdf file

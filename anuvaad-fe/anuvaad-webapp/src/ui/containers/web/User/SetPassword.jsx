@@ -1,22 +1,22 @@
 import React from "react";
-import { MuiThemeProvider } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
-import Button from "@material-ui/core/Button";
-
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { withStyles, Typography } from "@material-ui/core";
-import ThemeDefault from "../../../theme/web/theme-anuvaad";
-
-import LoginStyles from "../../../styles/web/LoginStyles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 import Grid from '@material-ui/core/Grid';
-import SetPasswordApi from "../../../../flux/actions/apis/setpassword";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import { withStyles, Typography } from "@material-ui/core";
+
+import ThemeDefault from "../../../theme/web/theme-anuvaad";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import LoginStyles from "../../../styles/web/LoginStyles";
 import history from "../../../../web.history";
 import TextField from '../../../components/web/common/TextField';
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
-import CircularProgress from '@material-ui/core/CircularProgress';
+
+import SetPasswordApi from "../../../../flux/actions/apis/user/setpassword";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
 
 class SetPassword extends React.Component {
     constructor(props) {

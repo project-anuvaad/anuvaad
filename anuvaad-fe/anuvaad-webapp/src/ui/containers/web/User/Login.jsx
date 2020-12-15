@@ -7,17 +7,19 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withStyles, Typography } from "@material-ui/core";
-import ThemeDefault from "../../../theme/web/theme-default";
 import CircularProgress from '@material-ui/core/CircularProgress';
-import LoginStyles from "../../../styles/web/LoginStyles";
 import Grid from '@material-ui/core/Grid';
+import Link from '@material-ui/core/Link';
+
+import ThemeDefault from "../../../theme/web/theme-default";
+import LoginStyles from "../../../styles/web/LoginStyles";
 import history from "../../../../web.history";
 import TextField from '../../../components/web/common/TextField';
-import Link from '@material-ui/core/Link';
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
-import LoginAPI from "../../../../flux/actions/apis/login";
-import profileDetails from '../../../../flux/actions/apis/profile_details';
+
+import LoginAPI from "../../../../flux/actions/apis/user/login";
+import profileDetails from '../../../../flux/actions/apis/user/profile_details';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 

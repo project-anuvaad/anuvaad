@@ -1,20 +1,21 @@
 import React from "react";
-import { MuiThemeProvider } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
-
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { withStyles, Typography } from "@material-ui/core";
-import ThemeDefault from "../../../theme/web/theme-anuvaad";
-
-import LoginStyles from "../../../styles/web/LoginStyles";
 import Grid from '@material-ui/core/Grid';
-import SignupApi from "../../../../flux/actions/apis/signup";
-import ActivateUser from "../../../../flux/actions/apis/activate_user";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
+
+import ThemeDefault from "../../../theme/web/theme-anuvaad";
+import LoginStyles from "../../../styles/web/LoginStyles";
 import history from "../../../../web.history";
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
+
+import SignupApi from "../../../../flux/actions/apis/user/signup";
+import ActivateUser from "../../../../flux/actions/apis/user/activate_user";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+
 
 class Activate extends React.Component {
     constructor(props) {
