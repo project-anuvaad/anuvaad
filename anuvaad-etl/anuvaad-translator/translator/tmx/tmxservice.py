@@ -105,20 +105,18 @@ class TMXService:
 
     # Replaces TMX phrases in NMT tgt using TMX NMT phrases and LaBSE alignments
     def replace_nmt_tgt_with_user_tgt(self, tmx_phrases, tgt, ctx):
-        log_info("Replacing TMX phrases of NMT tgt.......", ctx)
         tmx_without_nmt_phrases, tmx_tgt = [], None
         for tmx_phrase in tmx_phrases:
             if tmx_phrase["nmt_tgt"]:
                 for nmt_tgt_phrase in tmx_phrase["nmt_tgt"]:
                     if nmt_tgt_phrase in tgt:
-                        tgt = str(tgt).replace(nmt_tgt_phrase, tmx_phrase["user_tgt"])
+                        log_info("(NMT) Replacing: " + str(nmt_tgt_phrase) + " with: " + str(tmx_phrase["user_tgt"]), ctx)
+                        tgt = tgt.replace(nmt_tgt_phrase, tmx_phrase["user_tgt"])
                         break
             else:
                 tmx_without_nmt_phrases.append(tmx_phrase)
         tmx_tgt = tgt
-        log_info("tmx_phrases: " + str(len(tmx_phrases)) + " | tmx_without_nmt_phrases: " + str(len(tmx_without_nmt_phrases)), ctx)
         if tmx_without_nmt_phrases:
-            log_info("Getting LaBSE alignments for TMX phrases.....", ctx)
             tmx_tgt = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt, ctx)
         if tmx_tgt:
             return tmx_tgt
@@ -145,6 +143,7 @@ class TMXService:
                     if nmt_aligned_phrases:
                         for aligned_phrase in nmt_aligned_phrases.keys():
                             phrase = tmx_phrase_dict[aligned_phrase]
+                            log_info("(LaBSE) Replacing: " + str(nmt_aligned_phrases[aligned_phrase]) + " with: " + str(phrase["user_tgt"]), ctx)
                             tgt = str(tgt).replace(nmt_aligned_phrases[aligned_phrase], phrase["user_tgt"])
                             modified_nmt_tgt = phrase["nmt_tgt"]
                             modified_nmt_tgt.append(nmt_aligned_phrases[aligned_phrase])
