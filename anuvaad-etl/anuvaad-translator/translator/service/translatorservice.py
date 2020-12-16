@@ -97,7 +97,7 @@ class TranslatorService:
                 repo.update({"totalSentences": 0}, {"recordID": record_id})
                 return None
             pages = data["result"]
-            total_sentences = 0
+            total_sentences, total_tmx = 0, 0
             for page in pages:
                 sentences_per_page = 0
                 batches, tmx_count = self.fetch_batches_of_sentences(file, record_id, page, translate_wf_input)
@@ -111,11 +111,11 @@ class TranslatorService:
                     producer.produce(nmt_in, anu_nmt_input_topic)
                     sentences_per_page += len(batch)
                     total_sentences += len(batch)
+                    total_tmx += tmx_count
                 log_info("PAGE NO: " + str(page["page_no"]) + " | SENTENCES: " + str(sentences_per_page) + " | TMX: " + str(tmx_count), translate_wf_input)
             if total_sentences > 0:
                 repo.update({"totalSentences": total_sentences}, {"recordID": record_id})
-                log_info("recordID: " + record_id + " | TOTAL NO. OF SENTENCES SENT TO NMT : " + str(total_sentences),
-                         translate_wf_input)
+                log_info("recordID: " + record_id + " | SENTENCES: " + str(total_sentences) + " | TMX: " + str(total_tmx), translate_wf_input)
                 return True
             else:
                 log_error("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)
@@ -255,8 +255,8 @@ class TranslatorService:
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             if nmt_res_sentence["tmx_phrases"]:
-                log_info("PAGE NO: " + str(node[2]) + " | Modification - SRC: " + nmt_res_sentence["src"] +
-                         " | TMX: " + str(nmt_res_sentence["tmx_phrases"]), translate_wf_input)
+                log_info("PAGE NO: " + str(node[2]) + " | SRC: " + nmt_res_sentence["src"] +
+                         " | TGT: " + nmt_res_sentence["tgt"] + " | TMX: " + str(nmt_res_sentence["tmx_phrases"]), translate_wf_input)
                 nmt_res_sentence["tgt"] = tmxservice.replace_nmt_tgt_with_user_tgt(nmt_res_sentence["tmx_phrases"], nmt_res_sentence["tgt"], translate_wf_input)
             page_no, block_id = node[2], node[3]
             p_index, b_index, s_index = None, None, None
