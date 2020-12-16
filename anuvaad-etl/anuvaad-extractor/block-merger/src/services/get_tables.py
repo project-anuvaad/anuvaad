@@ -132,6 +132,11 @@ def get_text_from_table_cells(table_dfs, p_dfs):
                                 for add_key in add_keys:
                                     #print(text_df)
                                     cell[add_key] = most_frequent(text_df[add_key])
+
+                                if (cell['attrib'] == None) or (cell['attrib'] == '') :
+                                    cell['attrib']  = 'TABLE'
+                                else:
+                                    cell['attrib'] = str(cell['attrib']) + ',TABLE'
                                 cell['text'] = ' '.join(pd.DataFrame(cell['text'])['text'].values)
                                 table_cells.append(cell)
 
