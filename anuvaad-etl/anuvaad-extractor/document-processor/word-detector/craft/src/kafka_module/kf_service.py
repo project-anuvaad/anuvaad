@@ -56,6 +56,7 @@ def process_word_detector_kf():
                 continue
             data            = Consumer.get_json_data(msg.value)
             jobid           = data['jobID']
+            #print("data",data)
             log_info('process_word_detector_kf - received message from kafka, dumping into internal queue', data)
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             

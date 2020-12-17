@@ -36,7 +36,7 @@ class Word_Detector_WF(Resource):
                 log_info("Resource Word_Detector_WF Word_Detector api response completed", app_context.application_context)
                 return jsonify(response)
         except FormatError as e:
-            log_error("Resource Word_Detector_WF Input json format is not correct or dict_key is missing", app_context.application_context, e)
+            log_error("Resource Word_Detector_WF Input json format is not correct or dict_key is missing" + str(e), app_context.application_context, e)
             return Status.ERR_request_input_format.value
 
 

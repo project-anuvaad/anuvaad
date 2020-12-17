@@ -5,8 +5,17 @@ import time
 DEBUG = False
 API_URL_PREFIX = "/anuvaad-etl/document-processor/word-detector"
 HOST = '0.0.0.0'
-PORT = 5001
+PORT = 5004
 BASE_DIR   = 'upload'
+#folders and file path
+download_folder = 'upload'
+
+#BASE_DIR = '/opt/share/nginx/upload'
+#download_folder = '/opt/share/nginx/upload'
+
+
+
+
 
 ENABLE_CORS = False
 
@@ -30,7 +39,9 @@ CONSUMER_GROUP_default       = 'anuvaad-etl-wd-consumer-group'
 CONSUMER_GROUP_identifier    = 'KAFKA_ANUVAAD_ETL_WD_CONSUMER_GRP'
 CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 #folders and file path
-download_folder = 'upload'
+#download_folder = 'upload'
+
+
 
 
 logging.basicConfig(
@@ -47,7 +58,7 @@ CRAFT_MODEL_PATH=  './src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
 CRAFT_REFINE_MODEL_PATH =  './src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth'
 
 LANGUAGE_WORD_THRESOLDS ={
-'en':{'text_threshold':0.1 ,'low_text': 0.3,'link_threshold':0.6},
+'en':{'text_threshold':0.1 ,'low_text': 0.3,'link_threshold':0.35},
 'hi':{'text_threshold':0.2 ,'low_text': 0.3,'link_threshold':0.8},
 'ma':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5},
 'ta':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5},
@@ -55,7 +66,7 @@ LANGUAGE_WORD_THRESOLDS ={
 'ka':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5}
 }
 LANGUAGE_LINE_THRESOLDS ={
-'en':{'text_threshold':0.1 ,'low_text': 0.3,'link_threshold':0.6},
+'en':{'text_threshold':0.1 ,'low_text': 0.3,'link_threshold':0.35},
 'hi':{'text_threshold':0.1 ,'low_text': 0.3,'link_threshold':0.6},
 'ma':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5},
 'ta':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5},
@@ -63,4 +74,4 @@ LANGUAGE_LINE_THRESOLDS ={
 'ka':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5}
 }
 
-
+MAGNIFICATION_RATIO = 0.5

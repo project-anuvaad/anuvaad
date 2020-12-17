@@ -12,20 +12,21 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CardActions from '@material-ui/core/CardActions';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import DictionaryAPI from '../../../../flux/actions/apis/word_dictionary';
-import { highlightBlock, clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
-import MenuItems from "./PopUp";
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import IconButton from "@material-ui/core/IconButton";
-import InteractiveTranslateAPI from "../../../../flux/actions/apis/intractive_translate";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import copy from 'copy-to-clipboard';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
+
+import MenuItems from "./PopUp";
 import SENTENCE_ACTION from './SentenceActions'
 import Dictionary from "./Dictionary"
 
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
+import { highlightBlock, clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
+import InteractiveTranslateAPI from "../../../../flux/actions/apis/document_translate/intractive_translate";
+import DictionaryAPI from '../../../../flux/actions/apis/document_translate/word_dictionary';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 

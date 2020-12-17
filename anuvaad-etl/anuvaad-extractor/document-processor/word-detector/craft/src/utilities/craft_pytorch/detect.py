@@ -4,7 +4,7 @@ import time
 import argparse
 import torch
 #import torch.nn as nn
-#import torch.backends.cudnn as cudnn
+import torch.backends.cudnn as cudnn
 from torch.autograd import Variable
 #from PIL import Image
 import cv2
@@ -51,7 +51,7 @@ parser.add_argument('--trained_model', default='./model/craft_mlt_25k.pth', type
 parser.add_argument('--text_threshold', default=0.5, type=float, help='text confidence threshold')
 parser.add_argument('--low_text', default=0.4, type=float, help='text low-bound score')
 parser.add_argument('--link_threshold', default=0.95, type=float, help='link confidence threshold')
-parser.add_argument('--cuda', default=False, type=str2bool, help='Use cuda for inference')
+parser.add_argument('--cuda', default=torch.cuda.is_available(), type=str2bool, help='Use cuda for inference')
 parser.add_argument('--canvas_size', default=2500, type=int, help='image size for inference')
 parser.add_argument('--mag_ratio', default=1.0, type=float, help='image magnification ratio')
 parser.add_argument('--poly', default=False, action='store_true', help='enable polygon type')
@@ -96,7 +96,7 @@ def test_net(image, text_threshold, link_threshold, low_text, cuda, poly, refine
     t0 = time.time()
 
     # resize
-    img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, args.canvas_size, interpolation=cv2.INTER_LINEAR, mag_ratio=1.0)
+    img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, args.canvas_size, interpolation=cv2.INTER_LINEAR, mag_ratio=config.MAGNIFICATION_RATIO)
     ratio_h = ratio_w = 1 / target_ratio
 
     # preprocessing
@@ -233,22 +233,22 @@ def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,l
 
 
 def detect_text(images,language) :
-    try:
-        word_coordinates = []
-        line_coordinates = []
-        for index,image_set in enumerate(images):
-            lang = language[index]
-            word_in_dfs = detect_text_per_file(image_set,network=False,\
-                                               text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
-                                               low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
-            line_in_df  = detect_text_per_file(image_set,network=True,\
-                                               text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'],\
-                                               low_text_threshold= config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])
-            word_coordinates.append(word_in_dfs)
-            line_coordinates.append((line_in_df))
-    except Exception as e :
-        log_error('error detecting text', app_context.application_context, e)
-        return None,None
+    #try:
+    word_coordinates = []
+    line_coordinates = []
+    for index,image_set in enumerate(images):
+        lang = language[index]
+        word_in_dfs = detect_text_per_file(image_set,network=False,\
+                                            text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
+                                            low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
+        line_in_df  = detect_text_per_file(image_set,network=True,\
+                                            text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'],\
+                                            low_text_threshold= config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])
+        word_coordinates.append(word_in_dfs)
+        line_coordinates.append((line_in_df))
+        #except Exception as e :
+        #log_error('error detecting text' + str(e), app_context.application_context, e)
+        #return None,None
     return word_coordinates, line_coordinates
 
 

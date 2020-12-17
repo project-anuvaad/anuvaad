@@ -2,33 +2,35 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import Grid from "@material-ui/core/Grid";
-import { translate } from "../../../../assets/localisation";
-import history from "../../../../web.history";
-import ClearContent from "../../../../flux/actions/apis/clearcontent";
-import FileContent from "../../../../flux/actions/apis/fetchcontent";
-import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_update";
-import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
+
+import { translate } from "../../../../assets/localisation";
+import history from "../../../../web.history";
+import Spinner from "../../../components/web/common/Spinner";
 import LanguageCodes from "../../../components/web/common/Languages.json"
 import PDFRenderer from './PDFRenderer';
-import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
 import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
 import InteractivePagination from './InteractivePagination';
 import SENTENCE_ACTION from './SentenceActions'
-import JobStatus from "../../../../flux/actions/apis/v1_jobprogress";
-import FetchModel from "../../../../flux/actions/apis/fetchmodel";
-import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
-import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
-import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
-
 import InteractiveDocToolBar from "./InteractiveDocHeader"
+
+import WorkFlowAPI from "../../../../flux/actions/apis/common/fileupload";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import ClearContent from "../../../../flux/actions/apis/document_translate/clearcontent";
+import FileContent from "../../../../flux/actions/apis/document_translate/fetchcontent";
+import FetchContentUpdate from "../../../../flux/actions/apis/document_translate/v1_fetch_content_update";
+import SaveSentenceAPI from '../../../../flux/actions/apis/document_translate/savecontent';
+import JobStatus from "../../../../flux/actions/apis/view_document/v1_jobprogress";
+import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
+import { showPdf, clearShowPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
+import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
+import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
+import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -115,6 +117,7 @@ class DocumentEditor extends React.Component {
     let jobId = recordId ? recordId.split("|")[0] : ""
     TELEMETRY.endTranslatorFlow(jobId)
     this.props.clearFetchContent()
+    this.props.clearShowPdf()
   }
 
   handleSourceScroll(id) {
@@ -163,6 +166,7 @@ class DocumentEditor extends React.Component {
   }
 
   async makeAPICallMergeSentence(sentences, pageNumber) {
+
     let sentence_ids = sentences.map(sentence => sentence.s_id)
     let updated_blocks = BLOCK_OPS.do_sentences_merging_v1(this.props.document_contents.pages, sentence_ids);
 
@@ -175,7 +179,7 @@ class DocumentEditor extends React.Component {
     let model = this.fetchModel(parseInt(this.props.match.params.modelId))
     this.informUserProgress(translate('common.page.label.SENTENCE_MERGED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', model)
+      '', '', model, sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -223,14 +227,13 @@ class DocumentEditor extends React.Component {
   }
 
   async makeAPICallSplitSentence(sentence, pageNumber, startIndex, endIndex) {
-
+    
     let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
     TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
     let model = this.fetchModel(parseInt(this.props.match.params.modelId))
-
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', model)
+      '', '', model,updated_blocks.selected_sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -331,6 +334,7 @@ class DocumentEditor extends React.Component {
       }
 
       case SENTENCE_ACTION.SENTENCE_MERGED: {
+        console.log(this.forMergeSentences)
         if (this.forMergeSentences.length < 2) {
           this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_INVALID_INPUT'), false)
           this.processEndMergeMode(pageNumber)
@@ -574,7 +578,9 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     update_blocks,
     ClearContent,
     clearFetchContent,
-    editorModeNormal, editorModeMerge, editorModeClear
+    editorModeNormal, editorModeMerge, editorModeClear,
+    showPdf,
+    clearShowPdf
   },
   dispatch
 );
