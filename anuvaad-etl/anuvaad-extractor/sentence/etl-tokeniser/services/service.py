@@ -147,13 +147,30 @@ class Tokenisation(object):
             log_error("Merging across pages failed.", self.input_json_data, None) 
             raise ServiceError(400, "Merging across pages failed.")
 
-    # getting last text block of a page other than footer, header, table  
+    # If for a paragraph the attribute is not in FOOTER, "", TABLE it is a valid paragraph
+    def is_valid_paragraph(self, block):
+        try:
+            if block['attrib'] is not None and type(block['attrib']) is str:
+                valid = True
+                for attrib in block['attrib'].split(','):
+                    if attrib in ["FOOTER", "", "TABLE"]:
+                        valid = False
+                return valid
+            else:
+                return False
+        except:
+            log_exception("Finding if valid paragraph failed", self.input_json_data, None)
+            raise ServiceError(400, "Finding if valid paragraph failed")
+
+    # getting last text block of a page other than footer, header, table
+
     def get_last_text_block_with_text(self, page_data):
         try:
             last_text_block_idx = None
             for block_idx, block in enumerate(page_data):
-                if block['attrib'] not in ["FOOTER", "", "TABLE"]:
+                if self.is_valid_paragraph(block):
                     last_text_block_idx = block_idx
+
             return last_text_block_idx
         except:
             log_exception("Finding last text block failed", self.input_json_data, None)
@@ -163,7 +180,7 @@ class Tokenisation(object):
     def get_first_text_block_with_text(self, page_data):
         try:
             for block_idx, block in enumerate(page_data['text_blocks']):
-                if block['attrib'] not in ["FOOTER", "", "TABLE"]:
+                if self.is_valid_paragraph(block):
                     return block_idx
         except:
             log_exception("Finding First text block failed", self.input_json_data, None)
