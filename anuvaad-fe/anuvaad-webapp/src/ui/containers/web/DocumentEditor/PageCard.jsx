@@ -84,9 +84,9 @@ class PageCard extends React.Component {
     renderTextFit = (text, merged_block_id) => {
         if (this.props.block_highlight) {
             let sentence = this.props.block_highlight.src;
-            console.log('-------',text.text,'--------',this.props.block_highlight.block_identifier,'-----------',text.block_identifier)
+            // console.log('-------',text.text,'--------',this.props.block_highlight.block_identifier,'-----------',text.block_identifier)
             if (this.props.block_highlight.block_identifier === text.block_identifier || merged_block_id === this.props.block_highlight.block_identifier) {
-                console.log('-------',text.text,'--------')
+                // console.log('-------',text.text,'--------')
                 /*Left and right has the same length */
                 if (sentence !== undefined) {
                     if (sentence.replace(/\s/g, '').includes(text.text.replace(/\s/g, '')) || text.text.replace(/\s/g, '').length === sentence.replace(/\s/g, '').length) {
