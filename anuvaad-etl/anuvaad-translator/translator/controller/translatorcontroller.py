@@ -66,7 +66,6 @@ def text_translate():
 def tmx_create_bulk():
     service = TMXService()
     data = request.get_json()
-    data["userID"] = request.headers["x-user-id"]
     return service.push_csv_to_tmx_store(data)
 
 
@@ -74,7 +73,6 @@ def tmx_create_bulk():
 def tmx_create():
     service = TMXService()
     data = request.get_json()
-    data["userID"] = request.headers["x-user-id"]
     return service.push_to_tmx_store(data)
 
 
