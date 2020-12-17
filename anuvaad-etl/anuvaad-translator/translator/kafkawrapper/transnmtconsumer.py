@@ -56,7 +56,8 @@ def consume_nmt():
                     data = msg.value
                     if data:
                         log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
-                        service.process_nmt_output(data)
+                        nmt_cons_thread = threading.Thread(target=service.process_nmt_output, args=data, name=prefix + "thread")
+                        nmt_cons_thread.start()
                 except Exception as e:
                     log_exception(prefix + " Exception in translator nmt while consuming: " + str(e), data, e)
                     post_error("TRANSLATOR_CONSUMER_ERROR", "Exception in translator while consuming: " + str(e), None)

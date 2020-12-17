@@ -144,7 +144,10 @@ class WFMUtils:
                 job_details, files = self.get_job_details(task_output["jobID"])[0], []
                 for file in tool_input["input"]["files"]:
                     file["model"] = job_details["input"]["files"][0]["model"]
-                    file["context"] = job_details["input"]["files"][0]["context"]
+                    if 'context' in job_details["input"]["files"][0].keys():
+                        file["context"] = job_details["input"]["files"][0]["context"]
+                    if 'orgID' in job_details["input"]["files"][0].keys():
+                        file["orgID"] = job_details["input"]["files"][0]["orgID"]
                     files.append(file)
                 tool_input["input"]["files"] = files
             if current_tool == tool_worddetector:
@@ -191,9 +194,12 @@ class WFMUtils:
                 tool_input = translator.get_translator_input(task_output, previous_tool, True)
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 tool_input["input"]["model"] = job_details["input"]["model"]
-                tool_input["input"]["context"] = job_details["input"]["context"]
-                if "modifiedSentences" in job_details["input"].keys():
+                if 'modifiedSentences' in job_details["input"].keys():
                     tool_input["input"]["modifiedSentences"] = job_details["input"]["modifiedSentences"]
+                if 'context' in job_details["input"].keys():
+                    tool_input["input"]["context"] = job_details["input"]["context"]
+                if 'orgID' in job_details["input"].keys():
+                    tool_input["input"]["orgID"] = job_details["input"]["orgID"]
         else:
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input_wf(wf_input, True)

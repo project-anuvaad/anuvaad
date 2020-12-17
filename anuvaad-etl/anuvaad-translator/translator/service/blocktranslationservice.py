@@ -93,16 +93,21 @@ class BlockTranslationService:
                         sent_nmt_in = {"s_id": sentence["s_id"], "src": sentence["src"], "id": model_id,
                                            "n_id": n_id, "tmx_phrases": tmx_phrases}
                         sent_for_nmt.append(sent_nmt_in)
-        log_info("Count of TMX phrases fetched for these blocks: " + str(tmx_count), block_translate_input)
-        log_info("Count of sentences to sent to NMT: " + str(len(sent_for_nmt)), block_translate_input)
+        log_info("Count of TMX: " + str(tmx_count), block_translate_input)
+        log_info("Count of sentences to NMT: " + str(len(sent_for_nmt)), block_translate_input)
         return sent_for_nmt
 
     # Fetches tmx phrases
     def fetch_tmx(self, sentence, block_translate_input):
+        if 'context' not in block_translate_input["input"].keys():
+            return []
         context = block_translate_input["input"]["context"]
         user_id = block_translate_input["metadata"]["userID"]
+        org_id = None
+        if 'orgID' in block_translate_input["input"].keys():
+            org_id = block_translate_input["input"]["orgID"]
         locale = block_translate_input["input"]["model"]["source_language_code"] + "|" + block_translate_input["input"]["model"]["target_language_code"]
-        return tmxservice.get_tmx_phrases(user_id, context, locale, sentence, block_translate_input)
+        return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence)
 
     # Parses the nmt response and builds input for ch
     def get_translations_ip_ch(self, nmt_response, block_translate_input):

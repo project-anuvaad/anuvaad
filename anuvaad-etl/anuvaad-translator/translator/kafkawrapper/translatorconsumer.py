@@ -2,6 +2,7 @@ import json
 import logging
 import random
 import string
+import threading
 
 from kafka import KafkaConsumer, TopicPartition
 from service.translatorservice import TranslatorService
@@ -64,7 +65,8 @@ def consume():
                             log_info(prefix + " | Input: " + str(data), data)
                             post_error_wf(error["code"], error["message"], data, None)
                             break
-                        service.start_file_translation(data)
+                        trans_cons_thread = threading.Thread(target=service.start_file_translation, args=data, name=prefix + "thread")
+                        trans_cons_thread.start()
                     else:
                         break
                 except Exception as e:
