@@ -61,20 +61,21 @@ class TMXService:
     def push_to_tmx_store(self, tmx_input):
         log_info("Pushing to TMX......", None)
         try:
-            tmx_data = {"context": tmx_input["context"]}
-            if 'userID' in tmx_input.keys():
-                tmx_data["userID"] = tmx_input["userID"]
-            if 'orgID' in tmx_input.keys():
-                tmx_data["orgID"] = tmx_input["orgID"]
             for sentence in tmx_input["sentences"]:
-                tmx_record_pair = tmx_data
-                tmx_record_pair["src"], tmx_record_pair["locale"] = sentence["src"], sentence["locale"]
-                tmx_record_pair["nmt_tgt"], tmx_record_pair["user_tgt"] = [], sentence["tgt"]
-                tmx_record_reverse_pair = tmx_data
+                tmx_record_pair = {"src": sentence["src"], "locale": sentence["locale"], "nmt_tgt": [],
+                                   "user_tgt": sentence["tgt"], "context": tmx_input["context"]}
+                if 'userID' in tmx_input.keys():
+                    tmx_record_pair["userID"] = tmx_input["userID"]
+                if 'orgID' in tmx_input.keys():
+                    tmx_record_pair["orgID"] = tmx_input["userID"]
                 reverse_locale_array = str(sentence["locale"]).split("|")
                 reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
-                tmx_record_reverse_pair["src"], tmx_record_reverse_pair["locale"] = sentence["tgt"], reverse_locale
-                tmx_record_reverse_pair["nmt_tgt"], tmx_record_reverse_pair["user_tgt"] = [], sentence["src"]
+                tmx_record_reverse_pair = {"src": sentence["tgt"], "locale": reverse_locale, "nmt_tgt": [],
+                                   "user_tgt": sentence["src"], "context": tmx_input["context"]}
+                if 'userID' in tmx_input.keys():
+                    tmx_record_pair["userID"] = tmx_input["userID"]
+                if 'orgID' in tmx_input.keys():
+                    tmx_record_pair["orgID"] = tmx_input["userID"]
                 tmx_records = [tmx_record_pair, tmx_record_reverse_pair]
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
