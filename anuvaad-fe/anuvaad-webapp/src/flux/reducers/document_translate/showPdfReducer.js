@@ -12,7 +12,8 @@ export default function showPdf(state = initialState, action) {
                 open: !state.open
             }
         }
-
+        case C.CLEAR_SHOW_PDF:
+            return initialState;
         default:
             return state;
     }
