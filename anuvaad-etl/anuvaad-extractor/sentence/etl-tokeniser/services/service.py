@@ -153,11 +153,11 @@ class Tokenisation(object):
             if block['attrib'] is not None and type(block['attrib']) is str:
                 valid = True
                 for attrib in block['attrib'].split(','):
-                    if attrib in ["FOOTER", "", "TABLE"]:
+                    if attrib in ["FOOTER", "HEADER", "TABLE"]:
                         valid = False
                 return valid
             else:
-                return False
+                return True
         except:
             log_exception("Finding if valid paragraph failed", self.input_json_data, None)
             raise ServiceError(400, "Finding if valid paragraph failed")
