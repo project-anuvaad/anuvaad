@@ -27,7 +27,7 @@ import FetchContentUpdate from "../../../../flux/actions/apis/document_translate
 import SaveSentenceAPI from '../../../../flux/actions/apis/document_translate/savecontent';
 import JobStatus from "../../../../flux/actions/apis/view_document/v1_jobprogress";
 import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
-import { showPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
+import { showPdf, clearShowPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
@@ -117,7 +117,7 @@ class DocumentEditor extends React.Component {
     let jobId = recordId ? recordId.split("|")[0] : ""
     TELEMETRY.endTranslatorFlow(jobId)
     this.props.clearFetchContent()
-    this.props.showPdf(false)
+    this.props.clearShowPdf()
   }
 
   handleSourceScroll(id) {
@@ -231,10 +231,9 @@ class DocumentEditor extends React.Component {
     let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
     TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
     let model = this.fetchModel(parseInt(this.props.match.params.modelId))
-
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', model, [sentence.s_id])
+      '', '', model,updated_blocks.selected_sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -580,7 +579,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     ClearContent,
     clearFetchContent,
     editorModeNormal, editorModeMerge, editorModeClear,
-    showPdf
+    showPdf,
+    clearShowPdf
   },
   dispatch
 );

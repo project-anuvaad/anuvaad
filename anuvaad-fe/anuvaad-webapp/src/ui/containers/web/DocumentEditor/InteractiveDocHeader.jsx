@@ -165,7 +165,7 @@ class InteractiveDocHeader extends React.Component {
     }
 
     openPDF = event => {
-        this.props.showPdf(true)
+        this.props.showPdf()
     };
 
     renderOptions() {
