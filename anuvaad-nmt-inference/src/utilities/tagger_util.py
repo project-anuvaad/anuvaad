@@ -76,8 +76,9 @@ def tag_number_date_url(text):
     log_exception("In handle_date_url:tag_num function parent except block:{}".format(e),MODULE_CONTEXT,e)
     return text,[],[],(num_array or [])
 
-def replace_tags_with_original(text,date_original,url_original,num_array):
+def replace_tags_with_original(text,date_original,url_original,num_array,num_map):
   try:
+    print(num_array)
     resultant_str = list()
       
     if len(text) == 0:
@@ -93,27 +94,36 @@ def replace_tags_with_original(text,date_original,url_original,num_array):
       res = str(" ".join(s))
 
     log_info("response after url and date replacemnt:{}".format(res),MODULE_CONTEXT)
+    array_ = build_post_translation_numarray(res,"count")
+    
     array = re.findall(r'NnUuMm..|NnUuMm.', res)   
     log_info("NnUuMm array after translation:{}".format(array),MODULE_CONTEXT)
-    for j in array:
-      try:
-        if j[-2:] in hindi_numbers:
-          end_hin_number = j[-2:]
-          index = hindi_numbers.index(end_hin_number)
-          res = res.replace(j,str(num_array[index]),1)
-        elif j[:-1]== "NnUuMm":
-          end_hin_number = j[-1]
-          index = hindi_numbers.index(end_hin_number)
-          res = res.replace(j,str(num_array[index]),1)
-        else:
-          end_hin_number = j[-2]
-          j = j[:-1]
-          index = hindi_numbers.index(end_hin_number)     
-          res = res.replace(j,str(num_array[index]),1)
+    for item in num_map:
+      print(item)
+      print(item['tag'])
+      res = res.replace(item['tag'],str(item['no.']),1)
       
-      except Exception as e:
-        log_info("inside str.replace error,but handling it:{}".format(e),MODULE_CONTEXT)
-        res = res.replace(j,"",1)
+    
+    # for j in array:
+    #   try:
+    #     if j[-2:] in hindi_numbers:
+    #       end_hin_number = j[-2:]
+    #       index = hindi_numbers.index(end_hin_number)
+    #       res = res.replace(j,str(num_array[index]),1)
+    #     elif j[:-1]== "NnUuMm":
+    #       end_hin_number = j[-1]
+    #       index = hindi_numbers.index(end_hin_number)
+    #       res = res.replace(j,str(num_array[index]),1)
+    #     else:
+    #       print("xxxxxxxxx")
+    #       end_hin_number = j[-2]
+    #       j = j[:-1]
+    #       index = hindi_numbers.index(end_hin_number)     
+    #       res = res.replace(j,str(num_array[index]),1)
+      
+      # except Exception as e:
+      #   log_info("inside str.replace error,but handling it:{}".format(e),MODULE_CONTEXT)
+      #   res = res.replace(j,"",1)
 
     log_info("response after tags replacement:{}".format(res),MODULE_CONTEXT)
     return res    
@@ -151,3 +161,12 @@ def update_num_arr(num_array,zero_prefix_num,i_zero,num_array_orignal):
   except Exception as e:
     log_exception("Error in handle_date_url:update_num_arr,returning incoming num_array:{}".format(e),MODULE_CONTEXT,e)
     return num_array_o
+  
+
+def build_post_translation_numarray(res,count):
+  '''
+  Create a list of number array(NnUuMm) post translation
+  Useful for number replacement
+  '''
+  array = re.findall(r'NnUuMm..|NnUuMm.', res) 
+    
