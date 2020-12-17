@@ -65,8 +65,7 @@ def consume():
                             log_info(prefix + " | Input: " + str(data), data)
                             post_error_wf(error["code"], error["message"], data, None)
                             break
-                        trans_cons_thread = threading.Thread(target=service.start_file_translation, args=data, name=prefix + "thread")
-                        trans_cons_thread.start()
+                        service.start_file_translation(data)
                     else:
                         break
                 except Exception as e:
