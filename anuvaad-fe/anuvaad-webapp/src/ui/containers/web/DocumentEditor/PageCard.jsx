@@ -82,13 +82,11 @@ class PageCard extends React.Component {
     }
 
     renderTextFit = (text, merged_block_id) => {
-        console.log("------------", merged_block_id)
         if (this.props.block_highlight) {
             let sentence = this.props.block_highlight.src;
             if (this.props.block_highlight.block_identifier === text.block_identifier || merged_block_id === this.props.block_highlight.block_identifier) {
                 /*Left and right has the same length */
                 if (sentence !== undefined) {
-                    console.log(text.text);
                     if (sentence.replace(/\s/g, '').includes(text.text.replace(/\s/g, '')) || text.text.replace(/\s/g, '').length === sentence.replace(/\s/g, '').length) {
                         return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
                             {this.renderTextSpan(text, true)}
