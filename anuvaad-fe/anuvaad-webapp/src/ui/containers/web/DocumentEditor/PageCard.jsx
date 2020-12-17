@@ -75,7 +75,7 @@ class PageCard extends React.Component {
                 {((text.block_id == (this.props.sentence_highlight && this.props.sentence_highlight.block_id)) && this.action) ?
                     this.renderTextField(text)
                     :
-                    this.renderTextFit(text,block.merged_block_id)
+                    this.renderTextFit(text, block.merged_block_id)
                 }
             </div>
         )
@@ -85,7 +85,7 @@ class PageCard extends React.Component {
         console.log("------------", merged_block_id)
         if (this.props.block_highlight) {
             let sentence = this.props.block_highlight.src;
-            if (this.props.block_highlight.block_identifier === text.block_identifier) {
+            if (this.props.block_highlight.block_identifier === text.block_identifier || merged_block_id === this.props.block_highlight.block_identifier) {
                 /*Left and right has the same length */
                 if (sentence !== undefined) {
                     console.log(text.text);
