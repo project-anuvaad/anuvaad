@@ -67,13 +67,20 @@ class TMXService:
             if 'orgID' in tmx_input.keys():
                 tmx_data["orgID"] = tmx_input["orgID"]
             for sentence in tmx_input["sentences"]:
-                tmx_record = tmx_data
-                tmx_record["src"], tmx_record["locale"] = sentence["src"], sentence["locale"]
-                tmx_record["nmt_tgt"], tmx_record["user_tgt"] = [], sentence["tgt"]
-                hash_dict = self.get_hash_key(tmx_record)
-                for hash_key in hash_dict.keys():
-                    tmx_record["hash"] = hash_dict[hash_key]
-                    repo.upsert(tmx_record["hash"], tmx_record)
+                tmx_record_pair = tmx_data
+                tmx_record_pair["src"], tmx_record_pair["locale"] = sentence["src"], sentence["locale"]
+                tmx_record_pair["nmt_tgt"], tmx_record_pair["user_tgt"] = [], sentence["tgt"]
+                tmx_record_reverse_pair = tmx_data
+                reverse_locale_array = str(sentence["locale"]).split("|")
+                reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
+                tmx_record_reverse_pair["src"], tmx_record_reverse_pair["locale"] = sentence["tgt"], reverse_locale
+                tmx_record_reverse_pair["nmt_tgt"], tmx_record_reverse_pair["user_tgt"] = [], sentence["src"]
+                tmx_records = [tmx_record_pair, tmx_record_reverse_pair]
+                for tmx_record in tmx_records:
+                    hash_dict = self.get_hash_key(tmx_record)
+                    for hash_key in hash_dict.keys():
+                        tmx_record["hash"] = hash_dict[hash_key]
+                        repo.upsert(tmx_record["hash"], tmx_record)
             log_info("Translations pushed to TMX!", None)
             return {"message": "created", "status": "SUCCESS"}
         except Exception as e:
@@ -194,8 +201,9 @@ class TMXService:
     # Creates a md5 hash values using userID, orgID, context, locale and src.
     def get_hash_key(self, tmx_record):
         hash_dict = {}
-        global_hash = tmx_record["context"] + "__" + tmx_record["locale"] + "__" + tmx_record["src"]
-        hash_dict["GLOBAL"] = hashlib.sha256(global_hash.encode('utf-16')).hexdigest()
+        if 'orgID' not in tmx_record.keys() and 'userID' not in tmx_record.keys():
+            global_hash = tmx_record["context"] + "__" + tmx_record["locale"] + "__" + tmx_record["src"]
+            hash_dict["GLOBAL"] = hashlib.sha256(global_hash.encode('utf-16')).hexdigest()
         if 'orgID' in tmx_record.keys():
             org_hash = tmx_record["orgID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + tmx_record["src"]
             hash_dict["ORG"] = hashlib.sha256(org_hash.encode('utf-16')).hexdigest()
