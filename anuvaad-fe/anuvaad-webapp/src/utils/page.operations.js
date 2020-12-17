@@ -34,6 +34,7 @@ function get_page_sorted_sentences(sentences) {
 export const get_pages_children_information = (data, active_page, active_next_page) => {
     let pages = []
     data.forEach(element => {
+        
         if(element.page_no === active_page || element.page_no === active_next_page){
         let page = {
             'images': [],
@@ -71,11 +72,10 @@ export const get_pages_children_information = (data, active_page, active_next_pa
                 page['translated_texts'].push(...text_block['tokenized_sentences'].map(v => ({...v, block_identifier: text_block.block_identifier})));
                 blockValue['text_height']   = text_block['text_height'];
                 blockValue['text_left']     = text_block.text_left;
-                
                 blockValue['text_top']      = text_block.text_top;
                 blockValue['text_width']    = text_block.text_width;
                 blockValue['block_identifier']  = text_block['block_identifier'];
-               
+                text_block.merged_block_id && (blockValue['merged_block_id'] = text_block.merged_block_id);
                 text_block.children.forEach(grandchildren => {
                     if (grandchildren['children']) {
                              grandchildren.children.forEach(child_elem => {

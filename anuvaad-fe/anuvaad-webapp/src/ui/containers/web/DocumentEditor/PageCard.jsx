@@ -75,13 +75,14 @@ class PageCard extends React.Component {
                 {((text.block_id == (this.props.sentence_highlight && this.props.sentence_highlight.block_id)) && this.action) ?
                     this.renderTextField(text)
                     :
-                    this.renderTextFit(text)
+                    this.renderTextFit(text,block.merged_block_id)
                 }
             </div>
         )
     }
 
-    renderTextFit = (text) => {
+    renderTextFit = (text, merged_block_id) => {
+        console.log("------------", merged_block_id)
         if (this.props.block_highlight) {
             let sentence = this.props.block_highlight.src;
             if (this.props.block_highlight.block_identifier === text.block_identifier) {
