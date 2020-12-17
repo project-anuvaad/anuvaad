@@ -5,7 +5,7 @@ import src.utilities.app_context as app_context
 import config, time
 from src.utilities.request_parse import get_files, File, get_ocr_config,get_json
 from src.services.ocr import text_extraction
-
+from src.services.dynamic_adjustment import coord_adjustment
 
 
 
@@ -24,6 +24,11 @@ def get_ocr(app_context) :
                 width, height = file_properties.get_pageinfo(idx)
                 page_lines  = file_properties.get_lines(idx)
                 page_words  = file_properties.get_words(idx)
+                if config.IS_DYNAMIC:
+                    if config.DYNAMIC_LEVEL == 'lines':
+                        page_lines = coord_adjustment(page_path, page_lines)
+                    if config.DYNAMIC_LEVEL == 'words':
+                        page_words = coord_adjustment(page_path, page_words)
                 if ocr_level == "line":
                     page_ocr     = text_extraction(lang, page_path, page_lines,width, height)
                     file['pages'][idx]['lines'] = page_ocr

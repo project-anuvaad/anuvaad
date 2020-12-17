@@ -5,6 +5,7 @@ from  config import LANG_MAPPING
 from pytesseract import pytesseract
 from collections import Counter
 from PIL import Image
+import uuid
 
 def ocr(temp_df,left,top):
     temp_df = temp_df[temp_df.text.notnull()]
@@ -30,20 +31,23 @@ def get_text(path,coord,lang,width, height,freq_height):
     w_ratio = image.size[0]/width
     left   = int(coord[0]*w_ratio);  top    = int(coord[1]*h_ratio)
     right  = int(coord[2]*w_ratio);  bottom = int(coord[3]*h_ratio)
-    
     #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
+    if left==right==top==bottom==0:
+        return None,None
     crop_image = image.crop((left, top, right, bottom))
-    if abs(bottom-top) > freq_height:
+    
+    #crop_image.save("/home/naresh/line_crop_adjustment/"+str(uuid.uuid4()) + '.jpg')
+    #crop_image.save("/home/naresh/line_crop/"+str(uuid.uuid4()) + '.jpg')
+    if abs(bottom-top) > 2*freq_height:
         temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
     else:
         temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
     text, coord = ocr(temp_df,left,top)
-    #crop_image.save(str(index) + '.jpg')
     return text, coord
 
 def get_coord(bbox):
     temp_box = []
-    if bbox['class']=='TEXT':
+    if 'class' in bbox.keys() and bbox['class']=='TEXT':
         temp_box.append(bbox["boundingBox"]['vertices'][0]['x'])
         temp_box.append(bbox["boundingBox"]['vertices'][0]['y'])
         temp_box.append(bbox["boundingBox"]['vertices'][2]['x'])
@@ -55,9 +59,9 @@ def frequent_height(page_info):
     text_height = []
     for idx, level in enumerate(page_info):
         coord = get_coord(level)
-        text_height.append(abs(coord[3]-coord[1]))
+        if len(coord)!=0:
+            text_height.append(abs(coord[3]-coord[1]))
     occurence_count = Counter(text_height)
-
     return occurence_count.most_common(1)[0][0]
 
 def text_extraction(lang, page_path, page_info,width, height):
