@@ -1,7 +1,8 @@
 import src.utilities.app_context as app_context
 from anuvaad_auditor.loghandler import log_exception
 import copy, json
-
+import os
+import config
 
 def log_error(method):
     def wrapper(*args, **kwargs):
@@ -50,10 +51,11 @@ def get_files(application_context):
     files = copy.deepcopy(application_context['input']['inputs'])
     return files
 
-def get_json(path):
+def get_json(name ):
+    path = os.path.join(config.BASE_DIR, name)
     with open (path, "r") as f:
         data = json.loads(f.read())
-    json_data = data['rsp']['outputs']
+    json_data = data['outputs']
     return json_data
 
 

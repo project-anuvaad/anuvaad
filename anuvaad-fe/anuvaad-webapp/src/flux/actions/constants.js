@@ -136,6 +136,7 @@ const constants = {
      */
     SHOW_PDF : 'SHOW_PDF',
     SHOW_SIDEBAR : "SHOW_SIDEBAR",
+    CLEAR_SHOW_PDF : "CLEAR_SHOW_PDF",
 
     /**
      * actions for pagination

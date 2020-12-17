@@ -428,6 +428,7 @@ export const do_sentences_merging_v1 = (sentences, sentence_ids) => {
                     block.tokenized_sentences.splice(sentence_index.index, 0, {})
                 }
             })
+            block.merged_block_id = sorted_selected_blocks[0].block_id;
         })
     })
 
