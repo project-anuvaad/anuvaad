@@ -105,6 +105,10 @@ class InteractivePagination extends React.Component {
     this.props.onAction(SENTENCE_ACTION.END_MODE_MERGE, this.state.offset);
   };
 
+  handleTextValueChange=(event)=>{
+    this.setState({gotoValue:event.target.value})
+  }
+
   footer = () => {
     return (
       <AppBar
@@ -144,7 +148,7 @@ class InteractivePagination extends React.Component {
             max: this.props.count, min: 1
         }
     }}
-    onChange ={(event)=>{this.setState({gotoValue:event.target.value})}}
+    onChange ={(event)=>{this.handleTextValueChange(event)}}
     value={this.state.gotoValue}
 />
 <Button
@@ -152,7 +156,7 @@ class InteractivePagination extends React.Component {
           style = {{marginLeft:'6px'}}
           variant="outlined"
           color="primary"
-          disabled= {this.state.offset === this.state.gotoValue &&true}
+          disabled= {this.state.offset === Number(this.state.gotoValue) &&true}
         >
           GO
         </Button>
@@ -194,6 +198,7 @@ class InteractivePagination extends React.Component {
   }
 
   render() {
+    
     return (
       this.footer()
     );
