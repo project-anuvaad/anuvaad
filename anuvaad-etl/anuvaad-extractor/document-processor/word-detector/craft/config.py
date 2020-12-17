@@ -74,4 +74,4 @@ LANGUAGE_LINE_THRESOLDS ={
 'ka':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5}
 }
 
-MAGNIFICATION_RATIO = 1.0
+MAGNIFICATION_RATIO = 0.5

@@ -87,7 +87,8 @@ class PageCard extends React.Component {
             if (this.props.block_highlight.block_identifier === text.block_identifier) {
                 /*Left and right has the same length */
                 if (sentence !== undefined) {
-                    if (sentence.replace(/\s/g, '').includes(text.text.replace(/\s/g, '')) && text.text.replace(/\s/g, '').length === sentence.replace(/\s/g, '').length) {
+                    console.log(text.text);
+                    if (sentence.replace(/\s/g, '').includes(text.text.replace(/\s/g, '')) || text.text.replace(/\s/g, '').length === sentence.replace(/\s/g, '').length) {
                         return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
                             {this.renderTextSpan(text, true)}
                         </Textfit>
@@ -95,7 +96,7 @@ class PageCard extends React.Component {
                     /**
                      * Left is greater than right
                      */
-                    else if (text.text.replace(/\s/g, '').length > sentence.replace(/\s/g, '').length && text.text.replace(/\s/g, '').includes(sentence.replace(/\s/g, ''))) {
+                    else if (text.text.replace(/\s/g, '').length > sentence.replace(/\s/g, '').length || text.text.replace(/\s/g, '').includes(sentence.replace(/\s/g, ''))) {
                         if (text.text.replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) === 0) {
                             let coloredText = JSON.parse(JSON.stringify(text));
                             let nonColoredText = JSON.parse(JSON.stringify(text));
