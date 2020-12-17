@@ -4,7 +4,6 @@ from anuvaad_auditor.loghandler import log_debug
 import src.utilities.app_context as app_context
 #from src.services.get_underline import get_underline
 #from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
-from compose import compose
 import config,time
 import json
 from src.utilities.primalaynet.infer import PRIMA
