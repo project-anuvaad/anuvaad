@@ -73,9 +73,9 @@ class TMXService:
                 tmx_record_reverse_pair = {"src": sentence["tgt"], "locale": reverse_locale, "nmt_tgt": [],
                                    "user_tgt": sentence["src"], "context": tmx_input["context"]}
                 if 'userID' in tmx_input.keys():
-                    tmx_record_pair["userID"] = tmx_input["userID"]
+                    tmx_record_reverse_pair["userID"] = tmx_input["userID"]
                 if 'orgID' in tmx_input.keys():
-                    tmx_record_pair["orgID"] = tmx_input["userID"]
+                    tmx_record_reverse_pair["orgID"] = tmx_input["userID"]
                 tmx_records = [tmx_record_pair, tmx_record_reverse_pair]
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
@@ -135,7 +135,7 @@ class TMXService:
             tmx_result = repo.search([hash_dict["ORG"]])
             if tmx_result:
                 return tmx_result
-        else:
+        if 'GLOBAL' in hash_dict.keys():
             tmx_result = repo.search([hash_dict["GLOBAL"]])
             if tmx_result:
                 return tmx_result
