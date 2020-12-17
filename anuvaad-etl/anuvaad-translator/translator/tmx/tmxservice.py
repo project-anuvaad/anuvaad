@@ -67,7 +67,7 @@ class TMXService:
                 if 'userID' in tmx_input.keys():
                     tmx_record_pair["userID"] = tmx_input["userID"]
                 if 'orgID' in tmx_input.keys():
-                    tmx_record_pair["orgID"] = tmx_input["userID"]
+                    tmx_record_pair["orgID"] = tmx_input["orgID"]
                 reverse_locale_array = str(sentence["locale"]).split("|")
                 reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
                 tmx_record_reverse_pair = {"src": sentence["tgt"], "locale": reverse_locale, "nmt_tgt": [],
@@ -75,7 +75,7 @@ class TMXService:
                 if 'userID' in tmx_input.keys():
                     tmx_record_reverse_pair["userID"] = tmx_input["userID"]
                 if 'orgID' in tmx_input.keys():
-                    tmx_record_reverse_pair["orgID"] = tmx_input["userID"]
+                    tmx_record_reverse_pair["orgID"] = tmx_input["orgID"]
                 tmx_records = [tmx_record_pair, tmx_record_reverse_pair]
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
