@@ -75,16 +75,16 @@ class PageCard extends React.Component {
                 {((text.block_id == (this.props.sentence_highlight && this.props.sentence_highlight.block_id)) && this.action) ?
                     this.renderTextField(text)
                     :
-                    this.renderTextFit(text)
+                    this.renderTextFit(text, block.merged_block_id)
                 }
             </div>
         )
     }
 
-    renderTextFit = (text) => {
+    renderTextFit = (text, merged_block_id) => {
         if (this.props.block_highlight) {
             let sentence = this.props.block_highlight.src;
-            if (this.props.block_highlight.block_identifier === text.block_identifier) {
+            if (this.props.block_highlight.block_identifier === text.block_identifier || merged_block_id === this.props.block_highlight.block_identifier) {
                 /*Left and right has the same length */
                 if (sentence !== undefined) {
                     if (sentence.replace(/\s/g, '').includes(text.text.replace(/\s/g, '')) || text.text.replace(/\s/g, '').length === sentence.replace(/\s/g, '').length) {
@@ -95,7 +95,7 @@ class PageCard extends React.Component {
                     /**
                      * Left is greater than right
                      */
-                    if (text.text.replace(/\s/g, '').length > sentence.replace(/\s/g, '').length || text.text.replace(/\s/g, '').includes(sentence.replace(/\s/g, ''))) {
+                    else if (text.text.replace(/\s/g, '').length > sentence.replace(/\s/g, '').length || text.text.replace(/\s/g, '').includes(sentence.replace(/\s/g, ''))) {
                         if (text.text.replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) === 0) {
                             let coloredText = JSON.parse(JSON.stringify(text));
                             let nonColoredText = JSON.parse(JSON.stringify(text));
@@ -106,8 +106,7 @@ class PageCard extends React.Component {
                                 {this.renderTextSpan(nonColoredText, false)}
                             </Textfit>
 
-                        }
-                        if (text.text.replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) > 0) {
+                        } else if (text.text.replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) > 0) {
                             let firstHalfText = JSON.parse(JSON.stringify(text));
                             let secondHalfText = JSON.parse(JSON.stringify(text));
                             let coloredText = JSON.parse(JSON.stringify(text));
@@ -140,7 +139,7 @@ class PageCard extends React.Component {
                                         {this.renderTextSpan(nonColoredText)}
                                     </Textfit>
                                 )
-                            } if (text.text.replace(/\s/g, '').indexOf(sentence.split(' ')[0].replace(/\s/g, '')) > 0) {
+                            } else {
                                 nonColoredText.text = text.text.substr(0, text.text.indexOf(tempText));
                                 return (
                                     <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
