@@ -116,7 +116,7 @@ class WFMService:
             for tool_order in order_of_execution.keys():
                 step_details = order_of_execution[tool_order]
                 tool_details = step_details["tool"][0]
-                log_info(tool_details["name"] + log_msg_start, ctx)
+                log_info(tool_details["name"] + log_msg_start + " jobID: " + ctx["jobID"], ctx)
                 if not tool_output:
                     tool_input = wfmutils.get_tool_input_sync(tool_details["name"], None, None, wf_input)
                 else:
@@ -129,11 +129,10 @@ class WFMService:
                 previous_tool = tool_details["name"]
                 ctx["metadata"]["module"] = module_wfm_name
                 tool_output["metadata"] = ctx["metadata"]
-                log_info(tool_details["name"] + log_msg_end, ctx)
+                log_info(tool_details["name"] + log_msg_end + " jobID: " + ctx["jobID"], ctx)
             client_output = self.get_wf_details_sync(None, tool_output, True, None)
             self.update_job_details(client_output, False)
             log_info("Job COMPLETED, jobID: " + str(wf_input["jobID"]), ctx)
-            log_info("Returning O/P...", ctx)
             return client_output
         except Exception as e:
             log_exception("Exception while processing SYNC workflow: " + str(e), wf_input, e)
@@ -230,7 +229,7 @@ class WFMService:
             self.update_job_details(client_output, False)
             wf_input["metadata"]["module"] = module_wfm_name  # FOR LOGGING ONLY.
             log_info("Workflow: " + wf_input["workflowCode"] + " initiated for the job: " + wf_input["jobID"], wf_input)
-            log_info(first_tool["name"] + log_msg_start, wf_input)
+            log_info(first_tool["name"] + log_msg_start + " jobID: " + wf_input["jobID"], wf_input)
         except Exception as e:
             log_exception("Exception while initiating ASYNC workflow: " + str(e), wf_input, e)
             post_error_wf("WFLOW_INITIATE_ERROR", "Exception while initiating workflow: " + str(e), wf_input, e)
@@ -243,7 +242,7 @@ class WFMService:
             if not job_details:
                 log_error("This job is not found in the system, jobID: " + job_id, task_output, None)
                 return None
-            log_info(task_output["tool"] + log_msg_end, task_output)
+            log_info(task_output["tool"] + log_msg_end + " jobID: " + task_output["jobID"], task_output)
             job_details = job_details[0]
             if job_details["status"] == "FAILED" or job_details["status"] == "COMPLETED" or job_details["status"] == "INTERRUPTED":
                 log_error("The job is already completed/failed/interrupted, jobID: " + job_id, task_output, None)
@@ -270,7 +269,7 @@ class WFMService:
                     step_completed = task_output["stepOrder"]
                     next_step_input["stepOrder"] = step_completed + 1
                     producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
-                    log_info(next_tool["name"] + log_msg_start, task_output)
+                    log_info(next_tool["name"] + log_msg_start + " jobID: " + task_output["jobID"], task_output)
                 else:
                     client_output = self.get_wf_details_async(None, task_output, True, None)
                     self.update_job_details(client_output, False)
