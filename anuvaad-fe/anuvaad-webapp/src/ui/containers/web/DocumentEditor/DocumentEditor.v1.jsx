@@ -45,7 +45,8 @@ class DocumentEditor extends React.Component {
       currentPageIndex: 1,
       apiInProgress: false,
       snackBarMessage: '',
-      apiFetchStatus: false
+      apiFetchStatus: false,
+      docView : false
     }
     this.forMergeSentences = []
   }
@@ -334,7 +335,6 @@ class DocumentEditor extends React.Component {
       }
 
       case SENTENCE_ACTION.SENTENCE_MERGED: {
-        console.log(this.forMergeSentences)
         if (this.forMergeSentences.length < 2) {
           this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_INVALID_INPUT'), false)
           this.processEndMergeMode(pageNumber)
@@ -456,6 +456,10 @@ class DocumentEditor extends React.Component {
 
   }
 
+  handleDocumentView = () => {
+    this.setState({docView:!this.state.docView})
+  }
+
   /**
    * util to get selected page
    */
@@ -509,7 +513,7 @@ class DocumentEditor extends React.Component {
       )
     }
     return (
-      <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
+      <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginLeft: "5px" }}>
 
         <InfiniteScroll height={window.innerHeight - 141} style={{
           maxHeight: window.innerHeight - 141,
@@ -540,10 +544,10 @@ class DocumentEditor extends React.Component {
   render() {
     return (
       <div style={{ height: window.innerHeight }}>
-        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar /></div>
+        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView= {this.state.docView} onAction={this.handleDocumentView}/></div>
 
         <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
-          {this.renderDocumentPages()}
+          {!this.state.docView && this.renderDocumentPages()}
           {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
         </div>
         <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
