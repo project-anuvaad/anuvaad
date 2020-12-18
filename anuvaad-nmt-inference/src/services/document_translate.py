@@ -17,9 +17,7 @@ from config.regex_patterns import patterns
 from onmt.translate import ServerModelError
 import config
 import datetime
-from services.model_loader import Loadmodels
-
-load_models = Loadmodels()
+from services import load_models
 
 
 class NMTTranslateService:
@@ -273,19 +271,15 @@ class NMTTranslateService:
             #         "output_subwords":output_subwords[i],"src":i_src[i],
             #         "tagged_tgt":tagged_tgt[i],"tagged_src":tagged_src[i]}
             #         for i in range(len(tgt))]
-            out['response_body'] = {"tagged_src_list":tagged_src_list,"tagged_tgt_list":tagged_tgt_list,"tgt_list":tgt_list}
-            print(out)
+            out = {"tagged_src_list":tagged_src_list,"tagged_tgt_list":tagged_tgt_list,"tgt_list":tgt_list}
+            # print(out)
             # out = CustomResponse(Status.SUCCESS.value, out['response_body'])
         except ServerModelError as e:
-            status = Status.SEVER_MODEL_ERR.value
-            status['why'] = str(e)
             log_exception("ServerModelError error in TRANSLATE_UTIL-translate_func: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
-            # out = CustomResponse(status, [])  
-        except Exception as e:
-            status = Status.SYSTEM_ERR.value
-            status['why'] = str(e)
+            raise e
+        except Exception as e:          
             log_exception("Unexpected error:%s and %s"% (e,sys.exc_info()[0]),MODULE_CONTEXT,e) 
-            # out = CustomResponse(status, [])    
+            raise e
 
         return out
 

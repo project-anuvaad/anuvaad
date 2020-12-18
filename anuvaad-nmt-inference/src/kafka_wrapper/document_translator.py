@@ -7,7 +7,7 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 from utilities import MODULE_CONTEXT
 import sys
 import datetime
-from services import translate as bt
+from services import NMTTranslateService
 
 class KafkaTranslate:
     @staticmethod
@@ -78,7 +78,7 @@ class KafkaTranslate:
                         message = inputs.get('message')
                         src_list = [i.get('src') for i in message]
                         translation_batch = {'id':inputs.get('id'),'src_list': src_list}
-                        output_batch = bt.dummy_funtion(translation_batch)
+                        output_batch = NMTTranslateService.batch_translator(translation_batch)
                         log_info("Output of translation batch service at :{}".format(datetime.datetime.now()),MODULE_CONTEXT)                        
                         output_batch_dict_list = [{'tgt': output_batch['tgt_list'][i],
                                                 'tagged_tgt':output_batch['tagged_tgt_list'][i],'tagged_src':output_batch['tagged_src_list'][i]}
