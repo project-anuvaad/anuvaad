@@ -7,7 +7,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Pagination from "@material-ui/lab/Pagination";
-
+import TextField from '@material-ui/core/TextField'
 import SENTENCE_ACTION from "./SentenceActions";
 
 import { currentPageUpdate } from "../../../../flux/actions/apis/document_translate/pagiantion_update";
@@ -18,11 +18,11 @@ const PAGE_OPS = require("../../../../utils/page.operations");
 class InteractivePagination extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { offset: 1 };
+    this.state = { offset: 1, gotoValue:1 };
   }
   handleClick = (offset, value) => {
     this.props.currentPageUpdate(value);
-    this.setState({ offset: value });
+    this.setState({ offset: value, gotoValue:value });
   };
 
   componentDidMount() {
@@ -59,6 +59,11 @@ class InteractivePagination extends React.Component {
     }
   };
 
+  handlePageClick = () =>{
+    this.handleClick("", parseInt(this.state.gotoValue))
+    this.setState({offset:parseInt(this.state.gotoValue)})
+  }
+
   renderNormaModeButtons = () => {
     return (
       <div>
@@ -72,6 +77,7 @@ class InteractivePagination extends React.Component {
       </div>
     );
   };
+
 
   renderMergeModeButtons = () => {
     return (
@@ -98,6 +104,10 @@ class InteractivePagination extends React.Component {
   processMergeCancelButtonClicked = () => {
     this.props.onAction(SENTENCE_ACTION.END_MODE_MERGE, this.state.offset);
   };
+
+  handleTextValueChange=(event)=>{
+    this.setState({gotoValue:event.target.value})
+  }
 
   footer = () => {
     return (
@@ -128,6 +138,28 @@ class InteractivePagination extends React.Component {
                   size={"large"}
                   style={{ marginLeft: "3%" }}
                 />
+                <TextField 
+    type="number"
+    style={{ width:"40px"}}
+    InputProps={{
+      
+        inputProps: { 
+          style:{textAlign:"center"},
+            max: this.props.count, min: 1
+        }
+    }}
+    onChange ={(event)=>{this.handleTextValueChange(event)}}
+    value={this.state.gotoValue}
+/>
+<Button
+          onClick={this.handlePageClick}
+          style = {{marginLeft:'6px'}}
+          variant="outlined"
+          color="primary"
+          disabled= {this.state.offset === Number(this.state.gotoValue) &&true}
+        >
+          GO
+        </Button>
                 {!this.props.show_pdf &&
                   <>
                     {this.sentenceCount() && (
@@ -166,6 +198,7 @@ class InteractivePagination extends React.Component {
   }
 
   render() {
+    
     return (
       this.footer()
     );

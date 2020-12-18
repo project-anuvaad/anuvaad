@@ -11,7 +11,7 @@ export default class BulkSearchAPI extends API {
       this.type   = C.FETCHDOCUMENT_NEWJOB;
     }
     if (isNextPage) {
-      this.type   = C.FETCHDOCUMENT_NEWJOB;
+      this.type   = C.FETCHDOCUMENT_NEXTPAGE;
     }
     if (updateExisting) {
       this.type   = C.FETCHDOCUMENT_EXISTING;
