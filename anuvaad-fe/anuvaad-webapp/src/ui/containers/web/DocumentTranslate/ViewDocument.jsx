@@ -124,6 +124,7 @@ class ViewDocument extends React.Component {
 
   makeAPICallJobsBulkSearch(offset, limit, jobIds = [''], searchForNewJob = false, searchNextPage = false, updateExisting = false) {
     const { APITransport } = this.props;
+    console.log(offset, limit, jobIds, searchForNewJob, searchNextPage, updateExisting);
     const apiObj = new FetchDocument(offset, limit, jobIds, searchForNewJob, searchNextPage, updateExisting);
     APITransport(apiObj);
   }
@@ -280,7 +281,7 @@ class ViewDocument extends React.Component {
       /**
        * user wanted to load next set of records
        */
-      this.makeAPICallJobsBulkSearch(this.state.offset + this.state.limit, this.state.limit, false, true)
+      this.makeAPICallJobsBulkSearch(this.state.offset + this.state.limit, this.state.limit, false, false,true)
       this.setState({
         currentPageIndex: page,
         offset: this.state.offset + this.state.limit

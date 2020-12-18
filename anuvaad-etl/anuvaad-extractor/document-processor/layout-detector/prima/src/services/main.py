@@ -35,8 +35,8 @@ def get_layout(app_context) :
         #files       = get_files(json_data)        
         file_images = []
         output      = []
-        for index,file in enumerate(files):
-            file   = get_json(file['file']['name'])[0]
+        for index,file_new in enumerate(files):
+            file   = get_json(file_new['file']['name'])[0]
             file_properties = File(file)
             page_paths      = file_properties.get_pages()
             start_time = time.time()
@@ -47,6 +47,8 @@ def get_layout(app_context) :
                 page_path   = '/'.join(page_path.split('/')[-4:])
                 regions     = primalaynet.predict_primanet(page_path, line_coords)
                 file['pages'][idx]["regions"]=regions
+            file['file'] = file_new['file']
+            file['config'] = file_new['config']
             output.append(file)
             output[index]['status'] = {}
             output[index]['status']['message']="layout-detector successful"
