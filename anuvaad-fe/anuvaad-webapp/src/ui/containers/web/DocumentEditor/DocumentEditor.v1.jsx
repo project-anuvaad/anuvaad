@@ -31,6 +31,8 @@ import { showPdf, clearShowPdf } from '../../../../flux/actions/apis/document_tr
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
+import { Button } from "@material-ui/core";
+import TextField from '@material-ui/core/TextField';
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -45,7 +47,8 @@ class DocumentEditor extends React.Component {
       currentPageIndex: 1,
       apiInProgress: false,
       snackBarMessage: '',
-      apiFetchStatus: false
+      apiFetchStatus: false,
+      zoomPercent: 100,
     }
     this.forMergeSentences = []
   }
@@ -227,13 +230,13 @@ class DocumentEditor extends React.Component {
   }
 
   async makeAPICallSplitSentence(sentence, pageNumber, startIndex, endIndex) {
-    
+
     let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
     TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
     let model = this.fetchModel(parseInt(this.props.match.params.modelId))
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
     let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', model,updated_blocks.selected_sentence_ids)
+      '', '', model, updated_blocks.selected_sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -371,7 +374,7 @@ class DocumentEditor extends React.Component {
         return;
       }
       default:
-            return;
+        return;
     }
   }
 
@@ -474,7 +477,7 @@ class DocumentEditor extends React.Component {
    * render Document pages
    */
   renderDocumentPages = () => {
-    let pages = this.getPages()
+    let pages = this.getPages();
 
     if (pages.length < 1) {
       return (
@@ -490,12 +493,19 @@ class DocumentEditor extends React.Component {
         }}
           dataLength={pages.length}
         >
-          {pages.map((page, index) => <PageCard key={index} page={page} onAction={this.processSentenceAction} />)}
+          <span style={{ zoom: `${this.state.zoomPercent}%` }}>{pages.map((page, index) => <PageCard key={index} page={page} onAction={this.processSentenceAction} />)}</span>
         </InfiniteScroll>
       </Grid>
     )
   }
+  processZoomIn = () => {
+    this.setState({ zoomPercent: this.state.zoomPercent + 10 })
+  }
 
+  processZoomOut = () => {
+    if (this.state.zoomPercent > 10)
+      this.setState({ zoomPercent: this.state.zoomPercent - 10 })
+  }
 
   /***
    * render sentences
@@ -536,22 +546,53 @@ class DocumentEditor extends React.Component {
   /**
    * render functions ends here
    */
+  processZoom = () => {
+    let styles = {
+      fontSize: '30px',
+      align: 'center',
+      fontWeight: 'bold',
+      height: '50%',
+      color: 'white',
+      padding: 0,
+      backgroundColor: '#1ca9c9'
+    };
 
+    let divStyle = {
+      height: '100%',
+      marginTop: '1.5%',
+      marginLeft: '2%'
+    }
+    return (
+      <div style={divStyle} >
+        <Button style={styles} onClick={this.processZoomIn}>+</Button>
+        <input
+          style={{
+            backgroundColor: 'white',
+            border: 'none',
+            borderBottom: '1px solid black',
+            margin: '2% 2%',
+            textAlign: 'center',
+            width: '20%',
+            height: '40%',
+            fontSize: '17px'
+          }} value={`${this.state.zoomPercent}%`}
+          disabled />
+        <Button style={styles} onClick={this.processZoomOut}>-</Button>
+      </div >);
+  }
   render() {
     return (
       <div style={{ height: window.innerHeight }}>
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar /></div>
-
         <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
           {this.renderDocumentPages()}
           {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
         </div>
         <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
-          <InteractivePagination count={this.props.document_contents.count} data={this.props.document_contents.pages} onAction={this.processSentenceAction} />
+          <InteractivePagination count={this.props.document_contents.count} data={this.props.document_contents.pages} zoomPercent={this.state.zoomPercent} processZoom={this.processZoom} onAction={this.processSentenceAction} />
         </div>
         {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
         {this.state.showStatus ? this.renderStatusInformation() : <div />}
-
         {this.state.apiFetchStatus && <Spinner />}
       </div>
     )
