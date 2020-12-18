@@ -96,7 +96,8 @@ class Tokenisation(object):
     def making_object_for_tokenised_text(self, text):
         object_text = {
             "src" : text,
-            "s_id" : str(uuid.uuid4())
+            "s_id" : str(uuid.uuid4()),
+            "word_count" : len(text.split())
         }
         return object_text
     
