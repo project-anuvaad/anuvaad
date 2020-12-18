@@ -187,6 +187,7 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
+        TELEMETRY.log("merge", rsp_data.message)
         this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
         return Promise.reject('');
       } else {
@@ -213,6 +214,7 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
+        TELEMETRY.log("save-translation", rsp_data.message)
         this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
         return Promise.reject('');
       } else {
@@ -241,6 +243,7 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
+        TELEMETRY.log("split", rsp_data.message)
         this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
         return Promise.reject('');
       } else {
@@ -267,6 +270,7 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
+        TELEMETRY.log("save-sentence", rsp_data.message)
         this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
         return Promise.reject('');
       } else {
