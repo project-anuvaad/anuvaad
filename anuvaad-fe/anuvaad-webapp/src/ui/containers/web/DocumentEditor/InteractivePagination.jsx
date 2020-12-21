@@ -162,11 +162,11 @@ class InteractivePagination extends React.Component {
                   GO
         </Button>
                 {!this.props.show_pdf &&
-                  <div style = {{ display: "flex",marginLeft:'15%', 
+                  <div style = {{ display: "flex",marginLeft:'5%', 
                     flexWrap: "nowrap"}}>
-                    {this.sentenceCount() && (
+                    {this.sentenceCount()>0 && (
                       <div >
-                        <Typography variant="h6" component="h3" style={{paddingRight:'15px'}}>
+                        <Typography variant="subtitle1" component="h3" style={{paddingRight:'15px'}}>
                           Page Sentences
                   </Typography>
 
@@ -177,7 +177,7 @@ class InteractivePagination extends React.Component {
                     )}
 
                     {this.props.job_status && this.props.job_status.word_status && <div>
-                      <Typography variant="h6" component="h3" style={{paddingRight:'15px'}}>
+                      <Typography variant="subtitle1" component="h3" style={{paddingRight:'15px'}}>
                         Total Word Count
                   </Typography>
 
@@ -187,7 +187,7 @@ class InteractivePagination extends React.Component {
                     </div>}
 
                     {this.props.job_status&& this.props.job_status.status && <div>
-                      <Typography variant="h6" component="h3">
+                      <Typography variant="subtitle1" component="h3">
                         Total Sentences
                   </Typography>
 
