@@ -49,6 +49,8 @@ class DocumentEditor extends React.Component {
       snackBarMessage: '',
       apiFetchStatus: false,
       zoomPercent: 100,
+      zoomInDisabled: false,
+      zoomOutDisabled: false
     }
     this.forMergeSentences = []
   }
@@ -490,8 +492,7 @@ class DocumentEditor extends React.Component {
     }
     return (
       <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
-
-        <InfiniteScroll height={window.innerHeight - 141} style={{
+        <InfiniteScroll height={window.innerHeight - 141}style={{
           maxHeight: window.innerHeight - 141,
           overflowY: "auto",
         }}
@@ -503,12 +504,19 @@ class DocumentEditor extends React.Component {
     )
   }
   processZoomIn = () => {
-    this.setState({ zoomPercent: this.state.zoomPercent + 10 })
+    if (this.state.zoomPercent < 140) {
+      this.setState({ zoomPercent: this.state.zoomPercent + 10, zoomOutDisabled: false })
+    } else {
+      this.setState({ zoomInDisabled: !this.state.zoomInDisabled })
+    }
   }
 
   processZoomOut = () => {
-    if (this.state.zoomPercent > 10)
-      this.setState({ zoomPercent: this.state.zoomPercent - 10 })
+    if (this.state.zoomPercent > 60) {
+      this.setState({ zoomPercent: this.state.zoomPercent - 10, zoomInDisabled: false })
+    } else {
+      this.setState({ zoomOutDisabled: !this.state.zoomOutDisabled })
+    }
   }
 
   /***
@@ -568,7 +576,7 @@ class DocumentEditor extends React.Component {
     }
     return (
       <div style={divStyle} >
-        <Button style={styles} onClick={this.processZoomIn}>+</Button>
+        <Button style={{ ...styles, backgroundColor: this.state.zoomInDisabled ? 'grey' : '#1ca9c9' }} onClick={this.processZoomIn} disabled={this.state.zoomInDisabled} >+</Button>
         <input
           style={{
             backgroundColor: 'white',
@@ -581,7 +589,7 @@ class DocumentEditor extends React.Component {
             fontSize: '17px'
           }} value={`${this.state.zoomPercent}%`}
           disabled />
-        <Button style={styles} onClick={this.processZoomOut}>-</Button>
+        <Button style={{ ...styles, backgroundColor: this.state.zoomOutDisabled ? 'grey' : '#1ca9c9' }} onClick={this.processZoomOut} disabled={this.state.zoomOutDisabled}>-</Button>
       </div >);
   }
   render() {
@@ -593,7 +601,13 @@ class DocumentEditor extends React.Component {
           {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
         </div>
         <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
-          <InteractivePagination count={this.props.document_contents.count} data={this.props.document_contents.pages} zoomPercent={this.state.zoomPercent} processZoom={this.processZoom} onAction={this.processSentenceAction} />
+          <InteractivePagination count={this.props.document_contents.count}
+            data={this.props.document_contents.pages}
+            zoomPercent={this.state.zoomPercent}
+            processZoom={this.processZoom}
+            zoomInDisabled={this.state.zoomInDisabled}
+            zoomOutDisabled={this.state.zoomOutDisabled}
+            onAction={this.processSentenceAction} />
         </div>
         {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
         {this.state.showStatus ? this.renderStatusInformation() : <div />}
