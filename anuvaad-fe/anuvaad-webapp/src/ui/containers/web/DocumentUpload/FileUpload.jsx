@@ -175,8 +175,7 @@ class PdfUpload extends Component {
 
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
       this.props.createJobEntry(this.props.workflowStatus)
-
-      TELEMETRY.startWorkflow(this.state.source, this.state.target, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
+      TELEMETRY.startWorkflow(this.state.source_language_code, this.state.target_language_code, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
       history.push(`${process.env.PUBLIC_URL}/view-document`);
     }
   }
