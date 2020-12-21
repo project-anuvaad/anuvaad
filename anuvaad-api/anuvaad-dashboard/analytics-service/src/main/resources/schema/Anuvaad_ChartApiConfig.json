@@ -62,7 +62,7 @@
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"UploadDocFilter\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.pageid.keyword\":\"document-upload\"}}]}},\"aggs\":{\"Total Upload Documents\":{\"cardinality\":{\"field\":\"mid.keyword\"}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.pageid.keyword\":\"document-upload\"}},{\"term\":{\"events.edata.subtype.keyword\":\"PAGE_LOAD_STARTED\"}}]}},\"aggs\":{\"Total Upload Documents\":{\"value_count\":{\"field\":\"events.context.did.keyword\"}}}}}}"
 			}
 		],
 		"chartType": "metric",
