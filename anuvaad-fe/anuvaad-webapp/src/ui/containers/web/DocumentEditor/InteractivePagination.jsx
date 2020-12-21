@@ -162,10 +162,11 @@ class InteractivePagination extends React.Component {
                   GO
         </Button>
                 {!this.props.show_pdf &&
-                  <>
+                  <div style = {{ display: "flex",marginLeft:'15%', 
+                    flexWrap: "nowrap"}}>
                     {this.sentenceCount() && (
-                      <div style={{ position: "absolute", marginLeft: "50%" }}>
-                        <Typography variant="h6" component="h2">
+                      <div >
+                        <Typography variant="h6" component="h3" style={{paddingRight:'15px'}}>
                           Page Sentences
                   </Typography>
 
@@ -175,9 +176,9 @@ class InteractivePagination extends React.Component {
                       </div>
                     )}
 
-                    {this.props.job_status && this.props.job_status.word_status && <div style={{ position: "absolute", marginLeft: "60%" }}>
-                      <Typography variant="h6" component="h2">
-                        Total word count
+                    {this.props.job_status && this.props.job_status.word_status && <div>
+                      <Typography variant="h6" component="h3" style={{paddingRight:'15px'}}>
+                        Total Word Count
                   </Typography>
 
                       <div style={{ textAlign: "center" }}>
@@ -185,8 +186,8 @@ class InteractivePagination extends React.Component {
                       </div>
                     </div>}
 
-                    {this.props.job_status&& this.props.job_status.status && <div style={{ position: "absolute", marginLeft: "70%" }}>
-                      <Typography variant="h6" component="h2">
+                    {this.props.job_status&& this.props.job_status.status && <div>
+                      <Typography variant="h6" component="h3">
                         Total Sentences
                   </Typography>
 
@@ -198,7 +199,7 @@ class InteractivePagination extends React.Component {
                     <div style={{ position: "absolute", right: "30px" }}>
                       {this.renderNormaModeButtons()}
                     </div>
-                  </>}
+                  </div>}
               </>
             )}
 

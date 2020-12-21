@@ -54,6 +54,7 @@ function get_document_details(input) {
         document['model_id']                = job['input']['files'][0]['model']['model_id'];
 
         document['created_on']              = job['startTime'];
+        document['endTime']              = job['endTime'];
         document['status']                  = job['status'];
         document['progress']                = '...'
         document['word_count']              = '...' 
