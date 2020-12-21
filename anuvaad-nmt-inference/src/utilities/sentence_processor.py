@@ -28,7 +28,7 @@ def moses_tokenizer_(text):
     tokenized_output = pipe.stdout.read()
     return tokenized_output.strip().decode('utf-8')
 
-def moses_detokenizer(text):
+def moses_detokenizer_(text):
     detokenizer_path = "src/tools/detokenize.perl"
     text = text 
     lang = "en" 
@@ -78,4 +78,9 @@ def moses_tokenizer(text):
     mt = MosesTokenizer(lang='en')
     tokenized_output = mt.tokenize(text, return_str=True)
     return tokenized_output
+
+def moses_detokenizer(text):
+    md = MosesDetokenizer(lang='en')
+    detokenized_output = md.detokenize(text.split())
+    return detokenized_output
 
