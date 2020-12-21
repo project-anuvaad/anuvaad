@@ -176,7 +176,7 @@
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"TOTAL SPLIT\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.action.keyword\":\"SPLIT\"}}]}}}}}s"
+				"aggrQuery": "{\"aggs\":{\"TOTAL SPLIT\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.action.keyword\":\"SPLIT\"}}]}}}}}"
 			}
 		],
 		"chartType": "metric",
