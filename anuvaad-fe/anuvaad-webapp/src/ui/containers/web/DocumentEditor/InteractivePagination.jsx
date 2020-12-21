@@ -18,11 +18,11 @@ const PAGE_OPS = require("../../../../utils/page.operations");
 class InteractivePagination extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { offset: 1, gotoValue:1 };
+    this.state = { offset: 1, gotoValue: 1 };
   }
   handleClick = (offset, value) => {
     this.props.currentPageUpdate(value);
-    this.setState({ offset: value, gotoValue:value });
+    this.setState({ offset: value, gotoValue: value });
   };
 
   componentDidMount() {
@@ -59,9 +59,9 @@ class InteractivePagination extends React.Component {
     }
   };
 
-  handlePageClick = () =>{
+  handlePageClick = () => {
     this.handleClick("", parseInt(this.state.gotoValue))
-    this.setState({offset:parseInt(this.state.gotoValue)})
+    this.setState({ offset: parseInt(this.state.gotoValue) })
   }
 
   renderNormaModeButtons = () => {
@@ -105,8 +105,8 @@ class InteractivePagination extends React.Component {
     this.props.onAction(SENTENCE_ACTION.END_MODE_MERGE, this.state.offset);
   };
 
-  handleTextValueChange=(event)=>{
-    this.setState({gotoValue:event.target.value})
+  handleTextValueChange = (event) => {
+    this.setState({ gotoValue: event.target.value })
   }
 
   footer = () => {
@@ -130,36 +130,36 @@ class InteractivePagination extends React.Component {
             </div>
           ) : (
               <>
-              {this.props.processZoom()}
+                {this.props.processZoom()}
                 <Pagination
                   count={this.props.count}
                   page={this.state.offset}
                   onChange={this.handleClick}
                   color="primary"
                   size={"large"}
-                  style={{ marginLeft: "3%" }}
+                  style={{ marginLeft: "-8.5%" }}
                 />
-                <TextField 
-    type="number"
-    style={{ width:"40px"}}
-    InputProps={{
-      
-        inputProps: { 
-          style:{textAlign:"center"},
-            max: this.props.count, min: 1
-        }
-    }}
-    onChange ={(event)=>{this.handleTextValueChange(event)}}
-    value={this.state.gotoValue}
-/>
-<Button
-          onClick={this.handlePageClick}
-          style = {{marginLeft:'6px'}}
-          variant="outlined"
-          color="primary"
-          disabled= {this.state.offset === Number(this.state.gotoValue) &&true}
-        >
-          GO
+                <TextField
+                  type="number"
+                  style={{ width: "40px" }}
+                  InputProps={{
+
+                    inputProps: {
+                      style: { textAlign: "center" },
+                      max: this.props.count, min: 1
+                    }
+                  }}
+                  onChange={(event) => { this.handleTextValueChange(event) }}
+                  value={this.state.gotoValue}
+                />
+                <Button
+                  onClick={this.handlePageClick}
+                  style={{ marginLeft: '6px' }}
+                  variant="outlined"
+                  color="primary"
+                  disabled={this.state.offset === Number(this.state.gotoValue) && true}
+                >
+                  GO
         </Button>
                 {!this.props.show_pdf &&
                   <>
@@ -199,7 +199,7 @@ class InteractivePagination extends React.Component {
   }
 
   render() {
-    
+
     return (
       this.footer()
     );
