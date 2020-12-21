@@ -20,7 +20,6 @@ import Spinner from "../../../components/web/common/Spinner";
 import { translate } from "../../../../assets/localisation";
 import NewCorpusStyle from "../../../styles/web/Newcorpus";
 import history from "../../../../web.history";
-import * as timeDifference from "time-difference-js";
 
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
