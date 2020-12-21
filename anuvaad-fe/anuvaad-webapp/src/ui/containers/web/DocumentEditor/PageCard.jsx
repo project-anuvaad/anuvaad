@@ -75,19 +75,21 @@ class PageCard extends React.Component {
                 {((text.block_id == (this.props.sentence_highlight && this.props.sentence_highlight.block_id)) && this.action) ?
                     this.renderTextField(text)
                     :
-                    this.renderTextFit(text)
+                    this.renderTextFit(text, block.merged_block_id)
                 }
             </div>
         )
     }
 
-    renderTextFit = (text) => {
+    renderTextFit = (text, merged_block_id) => {
         if (this.props.block_highlight) {
             let sentence = this.props.block_highlight.src;
-            if (this.props.block_highlight.block_identifier === text.block_identifier) {
+            // console.log('-------',text.text,'--------',this.props.block_highlight.block_identifier,'-----------',text.block_identifier)
+            if (this.props.block_highlight.block_identifier === text.block_identifier || merged_block_id === this.props.block_highlight.block_identifier) {
+                // console.log('-------',text.text,'--------')
                 /*Left and right has the same length */
                 if (sentence !== undefined) {
-                    if (sentence.replace(/\s/g, '').includes(text.text.replace(/\s/g, '')) && text.text.replace(/\s/g, '').length === sentence.replace(/\s/g, '').length) {
+                    if (sentence.replace(/\s/g, '').includes(text.text.replace(/\s/g, '')) || text.text.replace(/\s/g, '').length === sentence.replace(/\s/g, '').length) {
                         return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
                             {this.renderTextSpan(text, true)}
                         </Textfit>
@@ -97,22 +99,26 @@ class PageCard extends React.Component {
                      */
                     else if (text.text.replace(/\s/g, '').length > sentence.replace(/\s/g, '').length && text.text.replace(/\s/g, '').includes(sentence.replace(/\s/g, ''))) {
                         if (text.text.replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) === 0) {
+                            let removedSpaces = JSON.parse(JSON.stringify(text));
+                            removedSpaces.text = text.text.replace(/  +/g, '');
                             let coloredText = JSON.parse(JSON.stringify(text));
                             let nonColoredText = JSON.parse(JSON.stringify(text));
-                            coloredText.text = sentence;
-                            nonColoredText.text = text.text.substr(sentence.length - 1);
+                            coloredText.text = sentence
+                            nonColoredText.text = ' ' + removedSpaces.text.substr(coloredText.text.length);
                             return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
                                 {this.renderTextSpan(coloredText, true)}
                                 {this.renderTextSpan(nonColoredText, false)}
                             </Textfit>
 
                         } else if (text.text.replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) > 0) {
+                            let removedSpaces = JSON.parse(JSON.stringify(text));
+                            removedSpaces.text = text.text.replace(/  +/g, '');
                             let firstHalfText = JSON.parse(JSON.stringify(text));
                             let secondHalfText = JSON.parse(JSON.stringify(text));
                             let coloredText = JSON.parse(JSON.stringify(text));
                             coloredText.text = sentence;
-                            firstHalfText.text = text.text.substr(0, text.text.indexOf(sentence));
-                            secondHalfText.text = text.text.substr(text.text.indexOf(sentence) + sentence.length);
+                            firstHalfText.text = removedSpaces.text.substr(0, removedSpaces.text.indexOf(sentence));
+                            secondHalfText.text = removedSpaces.text.substr(removedSpaces.text.indexOf(sentence) + sentence.length);
                             return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
                                 {this.renderTextSpan(firstHalfText, false)}
                                 {this.renderTextSpan(coloredText, true)}
@@ -126,13 +132,16 @@ class PageCard extends React.Component {
                      */
 
                     if (text.text.includes(sentence.split(' ')[0])) {
-                        let tempText = text.text.substr(text.text.indexOf(sentence.trim().split(' ')[0]));
+                        let removedSpaces = JSON.parse(JSON.stringify(text));
+                        removedSpaces.text = text.text.replace(/  +/g, '');
+                        let tempText = removedSpaces.text.substr(removedSpaces.text.indexOf(sentence.trim().split(' ')[0]));
                         if (sentence.replace(/\s/g, '').includes(tempText.replace(/\s/g, ''))) {
                             let coloredText = JSON.parse(JSON.stringify(text));
                             let nonColoredText = JSON.parse(JSON.stringify(text));
                             coloredText.text = tempText;
-                            if (text.text.replace(/\s/g, '').indexOf(sentence.split(' ')[0].replace(/\s/g, '')) === 0) {
-                                nonColoredText.text = text.text.substr(tempText.length);
+                            if (removedSpaces.text.replace(/\s/g, '').indexOf(sentence.split(' ')[0].replace(/\s/g, '')) === 0) {
+                                nonColoredText.text = removedSpaces.text.substr(tempText.length);
+                                console.log(nonColoredText.text);
                                 return (
                                     <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
                                         {this.renderTextSpan(coloredText, true)}
@@ -140,7 +149,7 @@ class PageCard extends React.Component {
                                     </Textfit>
                                 )
                             } else {
-                                nonColoredText.text = text.text.substr(0, text.text.indexOf(tempText));
+                                nonColoredText.text = removedSpaces.text.substr(0, removedSpaces.text.indexOf(tempText));
                                 return (
                                     <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
                                         {this.renderTextSpan(nonColoredText)}
@@ -165,13 +174,16 @@ class PageCard extends React.Component {
                      * When a portion of text is present in sentence
                      */
                     if (sentence.replace(/\s/g, '').includes(text.text.split(' ')[0].replace(/\s/g, ''))) {
-                        let tempText = sentence.substr(sentence.indexOf(text.text.split(' ')[0]));
+                        let removedSpaces = JSON.parse(JSON.stringify(text));
+                        removedSpaces.text = text.text.replace(/  +/g, '');
+                        let tempText = sentence.substr(sentence.indexOf(removedSpaces.text.split(' ')[0]));
                         if (text.text.replace(/\s/g, '').includes(tempText.replace(/\s/g, ''))) {
+                            
                             let coloredText = JSON.parse(JSON.stringify(text));
                             let nonColoredText = JSON.parse(JSON.stringify(text));
                             coloredText.text = tempText;
-                            if (text.text.replace(/\s/g, '').indexOf(tempText.replace(/\s/g, '')) === 0) {
-                                nonColoredText.text = text.text.substr(tempText.length);
+                            if (removedSpaces.text.replace(/\s/g, '').indexOf(tempText.replace(/\s/g, '')) === 0) {
+                                nonColoredText.text = removedSpaces.text.substr(tempText.length);
                                 return (
                                     <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
                                         {this.renderTextSpan(coloredText, true)}

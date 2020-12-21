@@ -50,6 +50,8 @@ class ViewDocument extends React.Component {
    */
   componentDidMount() {
     this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
+    TELEMETRY.pageLoadStarted('view-document')
+
     if (this.props.job_details.documents.length < 1) {
       this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, false, false)
       this.setState({ showLoader: true })
@@ -63,11 +65,11 @@ class ViewDocument extends React.Component {
     }
     this.makeAPICallDocumentsTranslationProgress()
 
-    TELEMETRY.pageLoadCompleted('view-document')
   }
 
   componentWillUnmount() {
     clearInterval(this.timerId);
+    TELEMETRY.pageLoadCompleted('view-document')
   }
 
   componentDidUpdate(prevProps) {
@@ -104,13 +106,13 @@ class ViewDocument extends React.Component {
     }
   })
 
-  getSnapshotBeforeUpdate(prevProps, prevState) {
-    TELEMETRY.pageLoadStarted('view-document')
-    /**
-     * getSnapshotBeforeUpdate() must return null
-     */
-    return null;
-  }
+  // getSnapshotBeforeUpdate(prevProps, prevState) {
+  //   TELEMETRY.pageLoadStarted('view-document')
+  //   /**
+  //    * getSnapshotBeforeUpdate() must return null
+  //    */
+  //   return null;
+  // }
 
   /**
    * API calls
@@ -124,6 +126,7 @@ class ViewDocument extends React.Component {
 
   makeAPICallJobsBulkSearch(offset, limit, jobIds = [''], searchForNewJob = false, searchNextPage = false, updateExisting = false) {
     const { APITransport } = this.props;
+    console.log(offset, limit, jobIds, searchForNewJob, searchNextPage, updateExisting);
     const apiObj = new FetchDocument(offset, limit, jobIds, searchForNewJob, searchNextPage, updateExisting);
     APITransport(apiObj);
   }
@@ -139,6 +142,7 @@ class ViewDocument extends React.Component {
 
   makeAPICallDocumentsTranslationProgress(jobIds) {
     var recordIds = this.getRecordIds()
+    debugger
     if (recordIds.length > 0) {
       const { APITransport } = this.props;
       const apiObj = new JobStatus(recordIds);
@@ -165,7 +169,9 @@ class ViewDocument extends React.Component {
   }
 
   getRecordIds = () => {
-    return this.getJobsAsPerPageAndLimit(this.state.currentPageIndex, this.state.limit).map(job => job.recordId)
+    let recordids = []
+     this.getJobsAsPerPageAndLimit(this.state.currentPageIndex, this.state.limit).map(job => (job.recordId &&recordids.push (job.recordId)) )
+     return recordids;
   }
 
   getJobIdDetail = (jobId) => {
@@ -280,7 +286,7 @@ class ViewDocument extends React.Component {
       /**
        * user wanted to load next set of records
        */
-      this.makeAPICallJobsBulkSearch(this.state.offset + this.state.limit, this.state.limit, false, true)
+      this.makeAPICallJobsBulkSearch(this.state.offset + this.state.limit, this.state.limit, false, false,true)
       this.setState({
         currentPageIndex: page,
         offset: this.state.offset + this.state.limit
@@ -339,7 +345,16 @@ class ViewDocument extends React.Component {
       },
       {
         name: "progress",
-        label: "Progress",
+        label: "Sentence Progress",
+        options: {
+          filter: true,
+          sort: false,
+          empty: true,
+        }
+      },
+      {
+        name: "word_count",
+        label: "Word Count",
         options: {
           filter: true,
           sort: false,
@@ -356,7 +371,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.getDateTimeFromTimestamp(tableMeta.rowData[7])}
+                  {this.getDateTimeFromTimestamp(tableMeta.rowData[8])}
                 </div>
               )
             }

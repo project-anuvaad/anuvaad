@@ -56,6 +56,7 @@ function get_document_details(input) {
         document['created_on']              = job['startTime'];
         document['status']                  = job['status'];
         document['progress']                = '...'
+        document['word_count']              = '...' 
 
         job['taskDetails'].forEach(task => {
             let timeline = {}
@@ -97,7 +98,8 @@ function update_documents_progress(documents, progresses) {
         let found = false;
         progresses.forEach(progress => {
             if (document['recordId'] === progress['record_id']) {
-                document['progress'] =  `${progress['completed_count']} of ${progress['total_count']}`
+                document['progress'] =  `${progress['completed_sentence_count']} of ${progress['total_sentence_count']}`
+                document['word_count'] =  `${progress['completed_word_count']} of ${progress['total_word_count']}`
                 updated_documents.push(document)
                 found = true;
             }

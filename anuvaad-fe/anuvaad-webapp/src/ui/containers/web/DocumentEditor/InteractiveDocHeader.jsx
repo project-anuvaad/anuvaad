@@ -82,6 +82,10 @@ class InteractiveDocHeader extends React.Component {
         )
     }
 
+    hideDocument = () => {
+        this.props.onAction()
+    }
+
     renderStatusInformation = () => {
         return (
             <div>
@@ -174,8 +178,9 @@ class InteractiveDocHeader extends React.Component {
 
         return (
             <div style={{ display: "flex", flexDirection: "row" }}>
-                <Button variant="outlined" onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" : " Show PDF"}</Button>
-                <Button variant="outlined" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
+                {!this.props.show_pdf && <Button color="primary" variant="outlined" onClick={this.hideDocument.bind(this)}>{this.props.docView ? "Show Document" : " Hide document"}</Button>}
+                {!this.props.docView && <Button color="primary" variant="outlined" style={{ marginLeft: "10px" }}  onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" : " Show PDF"}</Button>}
+                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
                     Download
                     <DownIcon />
                 </Button>
