@@ -48,7 +48,7 @@ class DocumentEditor extends React.Component {
       apiInProgress: false,
       snackBarMessage: '',
       apiFetchStatus: false,
-      docView : false,
+      docView: false,
       zoomPercent: 100,
       zoomInDisabled: false,
       zoomOutDisabled: false
@@ -466,7 +466,7 @@ class DocumentEditor extends React.Component {
   }
 
   handleDocumentView = () => {
-    this.setState({docView:!this.state.docView})
+    this.setState({ docView: !this.state.docView })
   }
 
   /**
@@ -496,7 +496,7 @@ class DocumentEditor extends React.Component {
     }
     return (
       <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
-        <InfiniteScroll height={window.innerHeight - 141}style={{
+        <InfiniteScroll height={window.innerHeight - 141} style={{
           maxHeight: window.innerHeight - 141,
           overflowY: "auto",
         }}
@@ -573,33 +573,46 @@ class DocumentEditor extends React.Component {
       backgroundColor: '#1ca9c9'
     };
 
-    let divStyle = {
-      height: '100%',
-      marginTop: '1.5%',
-      marginLeft: '2%'
-    }
+    // let divStyle = {
+    //   height: '100%',
+    //   marginTop: '1.5%',
+    //   marginLeft: '2%'
+    // }
     return (
-      <div style={divStyle} >
-        <Button style={{ ...styles, backgroundColor: this.state.zoomInDisabled ? 'grey' : '#1ca9c9' }} onClick={this.processZoomIn} disabled={this.state.zoomInDisabled} >+</Button>
+      <div>
+        <Button
+        style={{marginLeft:'10px'}}
+          variant="outlined"
+          color="primary"
+          onClick={this.processZoomIn}
+          disabled={this.state.zoomInDisabled} >
+          ZOOM IN
+          </Button>
         <input
           style={{
             backgroundColor: 'white',
             border: 'none',
             borderBottom: '1px solid black',
-            margin: '2% 2%',
+            margin: '2%',
             textAlign: 'center',
             width: '20%',
             height: '40%',
             fontSize: '17px'
           }} value={`${this.state.zoomPercent}%`}
           disabled />
-        <Button style={{ ...styles, backgroundColor: this.state.zoomOutDisabled ? 'grey' : '#1ca9c9' }} onClick={this.processZoomOut} disabled={this.state.zoomOutDisabled}>-</Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={this.processZoomOut}
+          disabled={this.state.zoomOutDisabled} >
+          ZOOM OUT
+          </Button>
       </div >);
   }
   render() {
     return (
       <div style={{ height: window.innerHeight }}>
-        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView= {this.state.docView} onAction={this.handleDocumentView}/></div>
+        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} /></div>
 
         <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
           {!this.state.docView && this.renderDocumentPages()}
