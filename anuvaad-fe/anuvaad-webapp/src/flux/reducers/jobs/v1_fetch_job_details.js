@@ -97,7 +97,7 @@ function update_documents_progress(documents, progresses) {
         let found = false;
         progresses.forEach(progress => {
             if (document['recordId'] === progress['record_id']) {
-                document['progress'] =  `${progress['completed_count']} of ${progress['total_count']}`
+                document['progress'] =  `${progress['completed_sentence_count']} of ${progress['total_sentence_count']}`
                 updated_documents.push(document)
                 found = true;
             }
