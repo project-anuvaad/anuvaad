@@ -7,6 +7,7 @@ import codecs
 import os
 from anuvaad_auditor.loghandler import log_info, log_exception
 from utilities import MODULE_CONTEXT
+from sacremoses import MosesTokenizer, MosesDetokenizer
 
 def indic_tokenizer(s):
     log_info("indic_tokenizing",MODULE_CONTEXT)
@@ -16,7 +17,7 @@ def indic_detokenizer(s):
     log_info("detokenizing using indic",MODULE_CONTEXT)
     return indic_detok.trivial_detokenize_indic(s)
 
-def moses_tokenizer(text):
+def moses_tokenizer_(text):
     log_info("moses_tokenizing",MODULE_CONTEXT)
     tokenizer_path = "src/tools/tokenizer.perl" 
     text = text 
@@ -72,4 +73,9 @@ def decode_bpe(text):
     # pipe = subprocess.call(["echo %s|sed -r 's/(@@ )|(@@ ?$)//g'" % text],shell=True)
     decoded_text = os.popen("sed -r 's/(@@ )|(@@ ?$)//g' intermediate_data/subword.txt").read()
     return decoded_text
+
+def moses_tokenizer(text):
+    mt = MosesTokenizer(lang='en')
+    tokenized_output = mt.tokenize(text, return_str=True)
+    return tokenized_output
 
