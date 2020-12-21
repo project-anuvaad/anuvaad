@@ -553,10 +553,8 @@ class DocumentEditor extends React.Component {
    */
   processZoom = () => {
     return (
-      <div>
-        <Button
-          size="small"
-          style={{ marginLeft: '10px', boxSizing: "border-box" }}
+      <div style= {{marginLeft:'1%',marginRight:"2%"}}>
+        <Button         
           variant="outlined"
           color="primary"
           onClick={this.processZoomIn}
@@ -576,12 +574,11 @@ class DocumentEditor extends React.Component {
           }} value={`${this.state.zoomPercent}%`}
           disabled />
         <Button
-          size="small"
           variant="outlined"
           color="primary"
           onClick={this.processZoomOut}
           disabled={this.state.zoomOutDisabled}
-          style={{ boxSizing: "border-box" }} >
+         >
           -
           </Button>
       </div >);
