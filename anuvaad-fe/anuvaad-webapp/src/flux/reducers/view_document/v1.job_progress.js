@@ -10,7 +10,8 @@ export default function(state = initialState, action) {
         let data        = action.payload[0];
         return {
            
-            status: data.completed_sentence_count +" of " + data.total_sentence_count
+            status: data.completed_sentence_count +" of " + data.total_sentence_count,
+            word_status: data.completed_word_count +" of " + data.total_word_count
         }
     }
     case C.CLEAR_FETCH_CONTENT:

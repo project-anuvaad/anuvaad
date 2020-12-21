@@ -166,7 +166,7 @@ class InteractivePagination extends React.Component {
                     {this.sentenceCount() && (
                       <div style={{ position: "absolute", marginLeft: "50%" }}>
                         <Typography variant="h6" component="h2">
-                          Sentences
+                          Page Sentences
                   </Typography>
 
                         <div style={{ textAlign: "center" }}>
@@ -175,13 +175,23 @@ class InteractivePagination extends React.Component {
                       </div>
                     )}
 
-                    {this.props.job_status && <div style={{ position: "absolute", marginLeft: "60%" }}>
+                    {this.props.job_status && this.props.job_status.word_status && <div style={{ position: "absolute", marginLeft: "60%" }}>
+                      <Typography variant="h6" component="h2">
+                        Total word count
+                  </Typography>
+
+                      <div style={{ textAlign: "center" }}>
+                        {this.props.job_status.word_status && this.props.job_status.word_status}
+                      </div>
+                    </div>}
+
+                    {this.props.job_status&& this.props.job_status.status && <div style={{ position: "absolute", marginLeft: "70%" }}>
                       <Typography variant="h6" component="h2">
                         Total Sentences
                   </Typography>
 
                       <div style={{ textAlign: "center" }}>
-                        {this.props.job_status && this.props.job_status}
+                        {this.props.job_status.status && this.props.job_status.status}
                       </div>
                     </div>}
 
@@ -210,7 +220,7 @@ const mapStateToProps = (state) => ({
   document_editor_mode: state.document_editor_mode,
   job_details: state.job_details,
   show_pdf: state.show_pdf.open,
-  job_status: state.job_status.status
+  job_status: state.job_status
 });
 
 const mapDispatchToProps = (dispatch) =>

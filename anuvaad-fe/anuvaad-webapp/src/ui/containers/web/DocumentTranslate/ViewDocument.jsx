@@ -340,7 +340,16 @@ class ViewDocument extends React.Component {
       },
       {
         name: "progress",
-        label: "Progress",
+        label: "Sentence Progress",
+        options: {
+          filter: true,
+          sort: false,
+          empty: true,
+        }
+      },
+      {
+        name: "word_count",
+        label: "Word Count",
         options: {
           filter: true,
           sort: false,
@@ -357,7 +366,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.getDateTimeFromTimestamp(tableMeta.rowData[7])}
+                  {this.getDateTimeFromTimestamp(tableMeta.rowData[8])}
                 </div>
               )
             }
