@@ -106,6 +106,7 @@ class KafkaTranslate:
                     status = Status.KAFKA_INVALID_REQUEST.value
                     out = CustomResponse(status, [])
                     out = out.getresjson()
+                    if inputs.get('record_id'): out['record_id'] = inputs.get('record_id') 
                     log_info("Empty input request or key parameter missing in Batch translation request: batch_translator",MODULE_CONTEXT)       
             
                 producer.send(producer_topic, value={'out':out})
