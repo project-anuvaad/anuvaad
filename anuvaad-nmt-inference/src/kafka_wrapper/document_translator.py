@@ -72,7 +72,8 @@ class KafkaTranslate:
 
                 if inputs is not None and all(v in inputs for v in ['message','record_id','id']) and len(inputs) is not 0:
                     try:
-                        log_info("Input for Record Id:{} at {}".format(inputs.get('record_id'),datetime.datetime.now()),MODULE_CONTEXT)
+                        input_time = datetime.datetime.now()
+                        log_info("Input for Record Id:{} at {}".format(inputs.get('record_id'),input_time),MODULE_CONTEXT)
                         log_info("Running batch-translation on  {}".format(inputs),MODULE_CONTEXT) 
                         record_id = inputs.get('record_id')
                         message = inputs.get('message')
@@ -99,9 +100,12 @@ class KafkaTranslate:
                     out = out.getresjson()
                     out['record_id'] = record_id
                     log_info("Output for Record Id:{} at {}".format(record_id,datetime.datetime.now()),MODULE_CONTEXT)
+                    log_info("Total time for processing Record Id:{} is: {}".format(record_id,(datetime.datetime.now()- input_time).total_seconds()),MODULE_CONTEXT)
                      
                 else:
-                    out = {}
+                    status = Status.KAFKA_INVALID_REQUEST.value
+                    out = CustomResponse(status, [])
+                    out = out.getresjson()
                     log_info("Empty input request or key parameter missing in Batch translation request: batch_translator",MODULE_CONTEXT)       
             
                 producer.send(producer_topic, value={'out':out})

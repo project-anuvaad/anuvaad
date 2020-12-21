@@ -78,7 +78,6 @@ def tag_number_date_url(text):
 
 def replace_tags_with_original(text,date_original,url_original,num_array,num_map):
   try:
-    print(num_array)
     resultant_str = list()
       
     if len(text) == 0:
@@ -93,17 +92,21 @@ def replace_tags_with_original(text,date_original,url_original,num_array,num_map
       s = [str(i) for i in resultant_str] 
       res = str(" ".join(s))
 
-    log_info("response after url and date replacemnt:{}".format(res),MODULE_CONTEXT)
-    array_ = build_post_translation_numarray(res,"count")
-    
+    log_info("response after url and date replacemnt:{}".format(res),MODULE_CONTEXT)    
     array = re.findall(r'NnUuMm..|NnUuMm.', res)   
     log_info("NnUuMm array after translation:{}".format(array),MODULE_CONTEXT)
+    if len(num_map) == 0:
+      ''' handling the case when model outputs a tag which is not in tagged_src'''
+      res = re.sub(r'NnUuMm..|NnUuMm.',"",res)
+      return res
+    num_map.reverse()
     for item in num_map:
-      print(item)
-      print(item['tag'])
       res = res.replace(item['tag'],str(item['no.']),1)
-      
-    
+
+    if len(re.findall(r'NnUuMm..|NnUuMm.', res)) > 0:
+      ''' if model outputs extra tag than the number of count in num_map'''
+      res = re.sub(r'NnUuMm..|NnUuMm.',"",res)
+            
     # for j in array:
     #   try:
     #     if j[-2:] in hindi_numbers:
@@ -121,9 +124,9 @@ def replace_tags_with_original(text,date_original,url_original,num_array,num_map
     #       index = hindi_numbers.index(end_hin_number)     
     #       res = res.replace(j,str(num_array[index]),1)
       
-      # except Exception as e:
-      #   log_info("inside str.replace error,but handling it:{}".format(e),MODULE_CONTEXT)
-      #   res = res.replace(j,"",1)
+    #   except Exception as e:
+    #     log_info("inside str.replace error,but handling it:{}".format(e),MODULE_CONTEXT)
+    #     res = res.replace(j,"",1)
 
     log_info("response after tags replacement:{}".format(res),MODULE_CONTEXT)
     return res    
@@ -163,10 +166,5 @@ def update_num_arr(num_array,zero_prefix_num,i_zero,num_array_orignal):
     return num_array_o
   
 
-def build_post_translation_numarray(res,count):
-  '''
-  Create a list of number array(NnUuMm) post translation
-  Useful for number replacement
-  '''
-  array = re.findall(r'NnUuMm..|NnUuMm.', res) 
+
     
