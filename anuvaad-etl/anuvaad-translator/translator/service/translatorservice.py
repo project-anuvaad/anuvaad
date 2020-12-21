@@ -111,7 +111,7 @@ class TranslatorService:
                     producer.produce(nmt_in, anu_nmt_input_topic)
                     sentences_per_page += len(batch)
                     total_sentences += len(batch)
-                    total_tmx += tmx_count
+                total_tmx += tmx_count
                 log_info("PAGE NO: " + str(page["page_no"]) + " | SENTENCES: " + str(sentences_per_page) + " | TMX: " + str(tmx_count), translate_wf_input)
             if total_sentences > 0:
                 repo.update({"totalSentences": total_sentences}, {"recordID": record_id})
