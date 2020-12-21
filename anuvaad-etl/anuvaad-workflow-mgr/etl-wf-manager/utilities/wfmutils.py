@@ -17,6 +17,8 @@ from configs.wfmconfig import tool_layoutdetector
 from configs.wfmconfig import tool_ch
 from configs.wfmconfig import tool_nmt
 from configs.wfmconfig import tool_ocrgooglevision
+from configs.wfmconfig import tool_ocrtesseract
+from configs.wfmconfig import tool_blocksegmenter
 from configs.wfmconfig import jobid_random_str_length
 from repository.wfmrepository import WFMRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
@@ -31,7 +33,8 @@ from tools.nmt import NMT
 from tools.word_detector import WordDetector
 from tools.layout_detector import LayoutDetector
 from tools.ocr_gv import OCRGV
-
+from tools.ocr_tesseract import OCRTESS
+from tools.block_segmenter import BlockSegmenter
 
 aligner = Aligner()
 tokeniser = Tokeniser()
@@ -43,6 +46,9 @@ nmt = NMT()
 word_detector = WordDetector()
 layout_detector = LayoutDetector()
 ocrgv = OCRGV()
+ocrtess = OCRTESS()
+block_segmenter = BlockSegmenter()
+
 wfmrepo = WFMRepository()
 
 log = logging.getLogger('file')
@@ -130,6 +136,7 @@ class WFMUtils:
     # wf_input = Input received during initiation of wf.
     def get_tool_input_async(self, current_tool, previous_tool, task_output, wf_input):
         tool_input = None
+        ocr_tools = [tool_worddetector, tool_layoutdetector, tool_ocrgooglevision, tool_ocrtesseract, tool_blocksegmenter]
         if wf_input is None:
             if current_tool == tool_aligner:
                 tool_input = aligner.get_aligner_input(task_output, previous_tool)
@@ -152,11 +159,9 @@ class WFMUtils:
                 tool_input["input"]["files"] = files
             if current_tool == tool_worddetector:
                 tool_input = word_detector.get_wd_input(task_output, previous_tool)
-                job_details = self.get_job_details(task_output["jobID"])[0]
-                for file in tool_input["input"]["inputs"]:
-                    file["config"] = job_details["input"]["files"][0]["config"]
             if current_tool == tool_layoutdetector:
                 tool_input = layout_detector.get_ld_input(task_output, previous_tool)
+            if current_tool in ocr_tools:
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 for file in tool_input["input"]["inputs"]:
                     file["config"] = job_details["input"]["files"][0]["config"]
@@ -177,6 +182,10 @@ class WFMUtils:
                 tool_input = layout_detector.get_ld_input_wf(wf_input)
             if current_tool == tool_ocrgooglevision:
                 tool_input = ocrgv.get_ogv_input_wf(wf_input)
+            if current_tool == tool_ocrtesseract:
+                tool_input = ocrtess.get_octs_input_wf(wf_input)
+            if current_tool == tool_blocksegmenter:
+                tool_input = block_segmenter.get_bs_input_wf(wf_input)
 
         return tool_input
 

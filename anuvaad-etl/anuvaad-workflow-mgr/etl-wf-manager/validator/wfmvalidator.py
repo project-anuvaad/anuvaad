@@ -11,6 +11,8 @@ from configs.wfmconfig import tool_translator
 from configs.wfmconfig import tool_worddetector
 from configs.wfmconfig import tool_layoutdetector
 from configs.wfmconfig import tool_ocrgooglevision
+from configs.wfmconfig import tool_ocrtesseract
+from configs.wfmconfig import tool_blocksegmenter
 
 
 wfmutils = WFMUtils()
@@ -104,7 +106,8 @@ class WFMValidator:
                                     return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
                                 if 'target_language_code' not in model.keys():
                                     return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
-                        if tool_worddetector in tools or tool_layoutdetector in tools or tool_ocrgooglevision in tools:
+                        if tool_worddetector in tools or tool_layoutdetector in tools or tool_ocrgooglevision in tools \
+                                or tool_ocrtesseract in tools or tool_blocksegmenter in tools:
                             if 'config' not in file.keys():
                                 return post_error("CONFIG_NOT_FOUND", "OCR Config details are mandatory for this wf.", None)
                             else:

@@ -129,7 +129,7 @@ WorkflowConfigs:
     - order: 0
       tool:
       - name: OCR-GOOGLE-VISION
-        description: detects word blocks from a given file
+        description: ocr using google vision
         kafka-input:
         - topic: anuvaad-dp-tools-ocr-google-vision-input-v1
           partitions: 2
@@ -139,6 +139,56 @@ WorkflowConfigs:
         - topic: anuvaad-dp-tools-ocr-google-vision-output-v1
           partitions: 2
           keys: anuvaad-dp-tools-ocr-google-vision-output-key-one, anuvaad-dp-tools-ocr-google-vision-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+      
+
+
+
+  - workflowCode: WF_A_OTES
+    type: ASYNC
+    description: tess-ocr wf.
+    useCase: A_OTES
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-TESSERACT
+        description: ocr using tesseract
+        kafka-input:
+        - topic: anuvaad-dp-tools-ocr-tesseract-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-ocr-tesseract-input-key-one, anuvaad-dp-tools-ocr-tesseract-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-ocr-tesseract-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-ocr-tesseract-output-key-one, anuvaad-dp-tools-ocr-tesseract-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
+
+
+  - workflowCode: WF_A_BS
+    type: ASYNC
+    description: block segmentation process
+    useCase: A_BS
+    sequence:
+    - order: 0
+      tool:
+      - name: BLOCK-SEGMENTER
+        description: block segmentation process
+        kafka-input:
+        - topic: anuvaad-dp-tools-block-segmenter-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-block-segmenter-input-key-one, anuvaad-dp-tools-block-segmenter-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-block-segmenter-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-block-segmenter-output-key-one, anuvaad-dp-tools-block-segmenter-output-key-two
           assignment: round-robin
       interruptenable: true
       endState: true
