@@ -1,7 +1,7 @@
 import os
 import shutil
 import glob
-import pdf2image
+#import pdf2image
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 
@@ -23,17 +23,17 @@ def read_directory_files(path, pattern='*'):
 def get_subdirectories(path):
     return [f.path for f in os.scandir(path) if f.is_dir()]
 
-def extract_image_paths_from_pdf(filepath, workspace_output_dir):
-    '''
-        function extracts image per page of the given PDF file.
-        return list of path of extracted images 
-    '''
-    working_dir     = os.path.join(workspace_output_dir, 'images')
-    image_filename  = os.path.splitext(os.path.basename(filepath))[0]
-    
-    create_directory(working_dir)
-    paths           = pdf2image.convert_from_path(filepath, dpi=300, output_file=image_filename, output_folder=working_dir, fmt='jpg', paths_only=True)
-    return paths
+# def extract_image_paths_from_pdf(filepath, workspace_output_dir):
+#     '''
+#         function extracts image per page of the given PDF file.
+#         return list of path of extracted images
+#     '''
+#     working_dir     = os.path.join(workspace_output_dir, 'images')
+#     image_filename  = os.path.splitext(os.path.basename(filepath))[0]
+#
+#     create_directory(working_dir)
+#     paths           = pdf2image.convert_from_path(filepath, dpi=300, output_file=image_filename, output_folder=working_dir, fmt='jpg', paths_only=True)
+#     return paths
 
 def extract_xml_path_from_digital_pdf(filepath, workspace_output_dir):
     """

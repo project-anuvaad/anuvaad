@@ -15,7 +15,7 @@ import threading
 from src.kafka_module.producer import Producer
 import src.utilities.app_context as app_context
 ###################################
-from src.services.main import LayoutDetection as Service
+from src.services.main import BlockSegmenter as Service
 #####################################
 
 file_ops = FileOperation()

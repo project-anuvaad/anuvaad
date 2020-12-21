@@ -1,6 +1,6 @@
 #FROM anuvaadio/python3.6-opencv-4.1.0:7
-#FROM python:3.7-slim
-FROM anuvaadio/anuvaad-layout-detector-prima:4-ba5d7d74
+FROM python:3.6-slim
+#FROM anuvaadio/anuvaad-layout-detector-prima:4-ba5d7d74
 # FROM ubuntu:20.04
 # # both files are explicitly required!
 # #COPY Pipfile Pipfile.lock ./
@@ -33,6 +33,7 @@ COPY / /app
 WORKDIR /app
 
 #RUN apt-get install -y make git
+RUN apt install -y libspatialindex-dev python-rtree
 RUN pip install -r requirements.txt
 #RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 

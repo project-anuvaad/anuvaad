@@ -1,14 +1,14 @@
 from flask import Blueprint
 from flask_restful import Api
-from src.resources.module import Layout_Detector
-from src.resources.module import Layout_Detector_WF
+from src.resources.module import Bolck_Segmenter
+from src.resources.module import Block_Segmenter_WF
 
 # end-point for independent service
-Layout_Detector_BLUEPRINT = Blueprint("layout_detector", __name__)
-api = Api(Layout_Detector_BLUEPRINT)
-api.add_resource(Layout_Detector, "/v0/prima/process")
+Bolck_Segmenter_BLUEPRINT = Blueprint("block_segmenter", __name__)
+api = Api(Bolck_Segmenter_BLUEPRINT)
+api.add_resource(Bolck_Segmenter, "/v0/block-segmenter/process")
 
 # end-point for workflow service
-Layout_Detector_BLUEPRINT_WF = Blueprint("layout_detector workflow", __name__)
-api_wf = Api(Layout_Detector_BLUEPRINT_WF)
-api_wf.add_resource(Layout_Detector_WF, "/v0/prima/process_wf")
+Bolck_Segmenter_BLUEPRINT_WF = Blueprint("block_segmenter workflow", __name__)
+api_wf = Api(Bolck_Segmenter_BLUEPRINT_WF)
+api_wf.add_resource(Block_Segmenter_WF, "/v0/block-segmenter/process_wf")

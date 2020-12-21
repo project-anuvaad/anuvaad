@@ -1,6 +1,5 @@
 from shapely.geometry import Polygon
 from rtree import index
-import pandas as pd
 import copy
 import uuid
 

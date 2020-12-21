@@ -23,7 +23,7 @@ def segment_regions(lines,regions):
     return p_list
 
 
-def get_segmented_regions(app_context,base_dir= config.BASE_DIR) :
+def get_segmented_regions(app_context,base_dir) :
     try:
         files       = get_files(app_context.application_context)
         output      = []
@@ -41,7 +41,7 @@ def get_segmented_regions(app_context,base_dir= config.BASE_DIR) :
             output[index]['status']= {'message':"block-segmenter successful"}
             end_time            = time.time()
             extraction_time     = (end_time - start_time)/page_counts
-            log_info('Layout detection per page completed in {}'.format(extraction_time), app_context.application_context)
+            log_info('block segmentation per page completed in {}'.format(extraction_time), app_context.application_context)
         app_context.application_context["outputs"] =output
         log_info("successfully completed block segmentation", None)
     except Exception as e:
@@ -49,3 +49,24 @@ def get_segmented_regions(app_context,base_dir= config.BASE_DIR) :
         return None
 
     return app_context.application_context
+
+
+def BlockSegmenter(app_context,base_dir= config.BASE_DIR):
+
+    log_debug('block segmentation process starting {}'.format(app_context.application_context),
+              app_context.application_context)
+    try:
+
+        response = get_segmented_regions(app_context,base_dir)
+        return {
+            'code': 200,
+            'message': 'request completed',
+            'rsp': response
+        }
+    except Exception as e:
+        log_exception("Error occured during block segmentation ", app_context.application_context, e)
+        return {
+            'code': 400,
+            'message': 'Error occured during layout detection ',
+            'rsp': None
+        }
