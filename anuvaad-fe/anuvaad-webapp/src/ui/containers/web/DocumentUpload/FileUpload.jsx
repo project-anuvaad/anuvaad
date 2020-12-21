@@ -8,21 +8,23 @@ import Grid from "@material-ui/core/Grid";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import MenuItem from "@material-ui/core/MenuItem";
-import FetchModel from "../../../../flux/actions/apis/fetchmodel";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+
 import history from "../../../../web.history";
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
 import FileUploadStyles from "../../../styles/web/FileUpload";
-import WorkFlow from "../../../../flux/actions/apis/fileupload";
-import DocumentUpload from "../../../../flux/actions/apis/document_upload";
-import TextField from "@material-ui/core/TextField";
-import Select from "@material-ui/core/Select";
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
 import Toolbar from "./FileUploadHeader"
-import OutlinedInput from "@material-ui/core/OutlinedInput";
+
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
+import WorkFlow from "../../../../flux/actions/apis/common/fileupload";
+import DocumentUpload from "../../../../flux/actions/apis/document_upload/document_upload";
+import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const LANG_MODEL = require('../../../../utils/language.model')
@@ -98,26 +100,6 @@ class PdfUpload extends Component {
       alert("Field should not be empty!");
     }
 
-    // let model = "";
-    // let target_lang_name = ''
-    // let source_lang_name = ''
-    // if (this.props.fetch_models.models) {
-    //   this.props.fetch_models.models.map(item =>
-    //     item.target_language_code === this.state.target &&
-    //       item.source_language_code === this.state.source &&
-    //       item.is_primary
-    //       ? (model = item)
-    //       : ""
-    //   );
-    //   this.props.fetch_languages.languages.map((lang) => {
-    //     if (lang.language_code === this.state.target) {
-    //       target_lang_name = lang.language_name
-    //     } if (lang.language_code === this.state.source) {
-    //       source_lang_name = lang.language_name
-    //     }
-    //     return true
-    //   })
-
   }
   // Source language
   handleSource(modelLanguage, supportLanguage) {
@@ -159,7 +141,6 @@ class PdfUpload extends Component {
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
     TELEMETRY.pageLoadStarted('document-upload')
-
     /**
     * getSnapshotBeforeUpdate() must return null
     */
@@ -176,7 +157,7 @@ class PdfUpload extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.fetch_models.models != this.props.fetch_models.models) {
+    if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
       this.setState({
         source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
         target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models)
@@ -192,8 +173,7 @@ class PdfUpload extends Component {
 
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
       this.props.createJobEntry(this.props.workflowStatus)
-
-      TELEMETRY.startWorkflow(this.state.source, this.state.target, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
+      TELEMETRY.startWorkflow(this.state.source_language_code, this.state.target_language_code, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
       history.push(`${process.env.PUBLIC_URL}/view-document`);
     }
   }

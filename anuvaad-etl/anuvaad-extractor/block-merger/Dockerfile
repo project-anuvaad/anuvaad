@@ -1,31 +1,33 @@
 #FROM anuvaadio/python3.6-opencv-4.1.0:7
 #FROM python:3.7-slim
-FROM ubuntu:20.04
-# both files are explicitly required!
-#COPY Pipfile Pipfile.lock ./
+# FROM ubuntu:20.04
+# # both files are explicitly required!
+# #COPY Pipfile Pipfile.lock ./
 
-COPY / /app
-WORKDIR /app
+# COPY / /app
+# WORKDIR /app
 
-ENV DEBIAN_FRONTEND="noninteractive"
+# ENV DEBIAN_FRONTEND="noninteractive"
 
-RUN apt-get update && apt-get install -y software-properties-common
-RUN add-apt-repository -y ppa:deadsnakes/ppa && apt install -y python3.6 && apt install -y python3.6-venv
+# RUN apt-get update && apt-get install -y software-properties-common
+# RUN add-apt-repository -y ppa:deadsnakes/ppa && apt install -y python3.6 && apt install -y python3.6-venv
 
-ENV VIRTUAL_ENV=/opt/venv
-RUN python3.6 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+# ENV VIRTUAL_ENV=/opt/venv
+# RUN python3.6 -m venv $VIRTUAL_ENV
+# ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 #RUN python3.6 -m venv bmenv
 #SHELL ["/bin/bash", "-c", "source bmenv/bin/activate"]
-
+FROM anuvaadio/python-opencv-slim:2
+COPY / /app
+WORKDIR /app
 
 RUN pip install --upgrade pip setuptools wheel &&\
-  pip install scikit-build &&\
-  pip install cmake &&\
-  apt install -y libopencv-dev python3-opencv\
+  #pip install scikit-build &&\
+  #pip install cmake &&\
+  #apt install -y libopencv-dev python3-opencv\
   && apt-get install -y tesseract-ocr \
-  && apt-get install -y poppler-utils \
+  #&& apt-get install -y poppler-utils \
   && apt-get install -y curl
 
 RUN pip install -r requirements.txt

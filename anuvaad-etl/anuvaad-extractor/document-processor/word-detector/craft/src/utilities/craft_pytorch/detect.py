@@ -4,11 +4,12 @@ import time
 import argparse
 import torch
 #import torch.nn as nn
-#import torch.backends.cudnn as cudnn
+import torch.backends.cudnn as cudnn
 from torch.autograd import Variable
 #from PIL import Image
 import cv2
 import pandas as pd
+import uuid
 #from skimage import io
 import numpy as np
 from src.utilities.craft_pytorch import craft_utils
@@ -50,9 +51,9 @@ parser.add_argument('--trained_model', default='./model/craft_mlt_25k.pth', type
 parser.add_argument('--text_threshold', default=0.5, type=float, help='text confidence threshold')
 parser.add_argument('--low_text', default=0.4, type=float, help='text low-bound score')
 parser.add_argument('--link_threshold', default=0.95, type=float, help='link confidence threshold')
-parser.add_argument('--cuda', default=False, type=str2bool, help='Use cuda for inference')
-parser.add_argument('--canvas_size', default=1280, type=int, help='image size for inference')
-parser.add_argument('--mag_ratio', default=0.5, type=float, help='image magnification ratio')
+parser.add_argument('--cuda', default=torch.cuda.is_available(), type=str2bool, help='Use cuda for inference')
+parser.add_argument('--canvas_size', default=2500, type=int, help='image size for inference')
+parser.add_argument('--mag_ratio', default=1.0, type=float, help='image magnification ratio')
 parser.add_argument('--poly', default=False, action='store_true', help='enable polygon type')
 parser.add_argument('--show_time', default=False, action='store_true', help='show processing time')
 parser.add_argument('--test_folder', default='/data/', type=str, help='folder path to input images')
@@ -95,7 +96,7 @@ def test_net(image, text_threshold, link_threshold, low_text, cuda, poly, refine
     t0 = time.time()
 
     # resize
-    img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, args.canvas_size, interpolation=cv2.INTER_LINEAR, mag_ratio=args.mag_ratio)
+    img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, args.canvas_size, interpolation=cv2.INTER_LINEAR, mag_ratio=config.MAGNIFICATION_RATIO)
     ratio_h = ratio_w = 1 / target_ratio
 
     # preprocessing
@@ -121,10 +122,11 @@ def test_net(image, text_threshold, link_threshold, low_text, cuda, poly, refine
 
     t0 = time.time() - t0
     t1 = time.time()
-
+    
     # Post-processing
     boxes, polys = craft_utils.getDetBoxes(score_text, score_link, text_threshold, link_threshold, low_text, poly)
-
+    #print("intialllllllllllllllllllllll score_text    l", len(score_text))
+    #print("intialllllllllllllllllllllll score_link    l", len(score_link))
     # coordinate adjustment
     boxes = craft_utils.adjustResultCoordinates(boxes, ratio_w, ratio_h)
     polys = craft_utils.adjustResultCoordinates(polys, ratio_w, ratio_h)
@@ -188,6 +190,7 @@ def convert_to_in_df(craft_df):
 
 
 def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,link_threshold,img_class="single_col"):
+    
     in_dfs = []
     number_of_pages = len(image_paths)
     if img_class == "double_col":
@@ -196,11 +199,11 @@ def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,l
 
     t = time.time()
     for image_path in image_paths :
-
-        if img_class == "double_col":
-            image = image_path
-        else:
-            image = imgproc.loadImage(image_path)
+        image = cv2.imread(image_path)
+        # if img_class == "double_col":
+        #     image = image_path
+        # else:
+        #     image = imgproc.loadImage(image_path)
         if network :
             bboxes, polys, score_text = test_net(image, text_threshold, link_threshold, low_text_threshold, args.cuda, args.poly, refine_net)
         else :
@@ -208,41 +211,44 @@ def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,l
         column_names = ["x1","y1" ,"x4","y4", "x2","y2","x3","y3"]
         df = pd.DataFrame(columns = column_names)
         for index, box in enumerate(bboxes):
+        #for index, box in enumerate(polys):
             poly = np.array(box).astype(np.int32).reshape((-1))
             df.at[index,'x1']= int(poly[0]); df.at[index,'y1']= int(poly[1])
             df.at[index,'x2']= int(poly[2]); df.at[index,'y2']= int(poly[3])
             df.at[index,'x3']= int(poly[4]); df.at[index,'y3']= int(poly[5])
             df.at[index,'x4']= int(poly[6]); df.at[index,'y4']= int(poly[7])
-
+            color = (255, 0, 0)
+            thickness = 2
+            cv2.rectangle(image, (int(poly[0]),int(poly[1])), (int(poly[4]),int(poly[5])), color, thickness)
+        cv2.imwrite("/home/naresh/word_compare3/"+str(uuid.uuid4())+".jpg", image)
         #in_df = convert_to_in_df(df)
         in_dfs.append(df)
     time_taken = time.time() - t
     time_take_per_page = time_taken / number_of_pages
 
     message = 'Time taken for text detection is ' + str(time_taken) + '/' + str(number_of_pages) + 'time per page : ' + str(time_take_per_page)
-
     log_info(message, app_context.application_context)
     return in_dfs
 
 
 
 def detect_text(images,language) :
-    try:
-        word_coordinates = []
-        line_coordinates = []
-        for index,image_set in enumerate(images):
-            lang = language[index]
-            word_in_dfs = detect_text_per_file(image_set,network=False,\
-                                               text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
-                                               low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
-            line_in_df  = detect_text_per_file(image_set,network=True,\
-                                               text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
-                                               low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
-            word_coordinates.append(word_in_dfs)
-            line_coordinates.append((line_in_df))
-    except Exception as e :
-        log_error('error detecting text', app_context.application_context, e)
-        return None,None
+    #try:
+    word_coordinates = []
+    line_coordinates = []
+    for index,image_set in enumerate(images):
+        lang = language[index]
+        word_in_dfs = detect_text_per_file(image_set,network=False,\
+                                            text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
+                                            low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
+        line_in_df  = detect_text_per_file(image_set,network=True,\
+                                            text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'],\
+                                            low_text_threshold= config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])
+        word_coordinates.append(word_in_dfs)
+        line_coordinates.append((line_in_df))
+        #except Exception as e :
+        #log_error('error detecting text' + str(e), app_context.application_context, e)
+        #return None,None
     return word_coordinates, line_coordinates
 
 

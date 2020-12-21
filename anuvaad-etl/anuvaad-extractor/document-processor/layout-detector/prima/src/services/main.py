@@ -5,9 +5,10 @@ import src.utilities.app_context as app_context
 #from src.services.get_underline import get_underline
 #from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
 from compose import compose
-import config
+import config,time
+import json
 from src.utilities.primalaynet.infer import PRIMA
-from src.utilities.request_parse import get_files, File
+from src.utilities.request_parse import get_files, File,get_json
 
 primalaynet = PRIMA()
 def extract_table_line_regions(image_path):
@@ -30,19 +31,30 @@ def get_coord(bboxs):
 def get_layout(app_context) :
     try:
         files       = get_files(app_context.application_context)
+        #files   = get_json(app_context.application_context)
+        #files       = get_files(json_data)        
         file_images = []
         output      = []
-        for index,file in enumerate(files):
+        for index,file_new in enumerate(files):
+            file   = get_json(file_new['file']['name'])[0]
             file_properties = File(file)
             page_paths      = file_properties.get_pages()
+            start_time = time.time()
             for idx,page_path in enumerate(page_paths):
                 page_lines  = file_properties.get_lines(idx)
                 page_words  = file_properties.get_words(idx)
                 line_coords = get_coord(page_lines)
+                page_path   = '/'.join(page_path.split('/')[-4:])
                 regions     = primalaynet.predict_primanet(page_path, line_coords)
                 file['pages'][idx]["regions"]=regions
+            file['file'] = file_new['file']
+            file['config'] = file_new['config']
             output.append(file)
+            output[index]['status'] = {}
             output[index]['status']['message']="layout-detector successful"
+            end_time            = time.time()
+            extraction_time     = (end_time - start_time)/len(page_paths)
+            log_info('Layout detection per page completed in {}'.format(extraction_time), app_context.application_context)
         app_context.application_context["outputs"] =output
         log_info("successfully completed layout detection", None)
     except Exception as e:
@@ -56,6 +68,7 @@ def LayoutDetection(app_context):
     
     log_debug('layout detection process starting {}'.format(app_context.application_context), app_context.application_context)
     try:
+        
         response   = get_layout(app_context)
         return {
                 'code': 200,

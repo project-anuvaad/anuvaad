@@ -14,6 +14,8 @@ import sys, random, torch, glob, torchvision
 seed = 1234
 random.seed(seed)
 torch.manual_seed(seed)
+if torch.cuda.is_available():
+	torch.cuda.device(0)
 torch.cuda.manual_seed_all(seed)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
@@ -260,10 +262,13 @@ class PRIMA(object):
 			class_name = "LINE"
 		if class_name == "OtherRegion":
 			class_name = "TEXT"
+		else:
+			class_name = "TEXT"
 		return class_name
 
 	def predict_primanet(self,image,craft_coords):
 		try:
+			
 			image   = cv2.imread(image)
 			image   = image[..., ::-1] 
 			layout  = model_primalaynet.detect(image)

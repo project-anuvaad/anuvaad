@@ -1,3 +1,7 @@
+import React from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { bindActionCreators } from "redux";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -12,19 +16,18 @@ import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import React from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { bindActionCreators } from "redux";
+import { withStyles } from "@material-ui/core/styles";
+
 // import MenuItem from "@material-ui/core/MenuItem";
 // import Select from "@material-ui/core/Select";
 // import OutlinedInput from "@material-ui/core/OutlinedInput";
-import Updatepassword from "../../../../flux/actions/apis/updatepassword";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
+
 import history from "../../../../web.history";
 import MySnackbarContentWrapper from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
-import { withStyles } from "@material-ui/core/styles";
+
+import Updatepassword from "../../../../flux/actions/apis/user/updatepassword";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
 
 const styles = {
   root: {

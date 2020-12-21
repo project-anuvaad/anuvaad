@@ -2,20 +2,19 @@ import React from "react";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import FormControl from "@material-ui/core/FormControl";
-
+import Grid from '@material-ui/core/Grid';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withStyles, Typography } from "@material-ui/core";
-import ThemeDefault from "../../../theme/web/theme-anuvaad";
 
+import ThemeDefault from "../../../theme/web/theme-anuvaad";
 import LoginStyles from "../../../styles/web/LoginStyles";
-import Grid from '@material-ui/core/Grid';
-import ForgotPasswordApi from "../../../../flux/actions/apis/forgotpassword";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import TextField from '../../../components/web/common/TextField';
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
+
+import ForgotPasswordApi from "../../../../flux/actions/apis/user/forgotpassword";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
 
 class UpdatePassword extends React.Component {
     constructor(props) {

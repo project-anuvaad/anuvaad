@@ -2,31 +2,31 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-//import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import MUIDataTable from "mui-datatables";
-// import Toolbar from "@material-ui/core/Toolbar";
-import NewCorpusStyle from "../../../styles/web/Newcorpus";
-import history from "../../../../web.history";
-import FetchDocument from "../../../../flux/actions/apis/fetch_document";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import { translate } from "../../../../assets/localisation";
-import ProgressBar from "../../../components/web/common/ProgressBar";
-import Spinner from "../../../components/web/common/Spinner";
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
-import Dialog from "../../../components/web/common/SimpleDialog";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Snackbar from "../../../components/web/common/Snackbar";
 import DeleteIcon from '@material-ui/icons/Delete';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import MarkInactive from "../../../../flux/actions/apis/markinactive";
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import JobStatus from "../../../../flux/actions/apis/translation.progress";
-import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
+
 import ToolBar from "./ViewDocHeader"
-import DownloadFile from "../../../../flux/actions/apis/download_file"
+import ProgressBar from "../../../components/web/common/ProgressBar";
+import Dialog from "../../../components/web/common/SimpleDialog";
+import Spinner from "../../../components/web/common/Spinner";
+import { translate } from "../../../../assets/localisation";
+import NewCorpusStyle from "../../../styles/web/Newcorpus";
+import history from "../../../../web.history";
+
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
+import MarkInactive from "../../../../flux/actions/apis/view_document/markinactive";
+import JobStatus from "../../../../flux/actions/apis/view_document/translation.progress";
+import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
+import DownloadFile from "../../../../flux/actions/apis/download/download_file"
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
@@ -124,6 +124,7 @@ class ViewDocument extends React.Component {
 
   makeAPICallJobsBulkSearch(offset, limit, jobIds = [''], searchForNewJob = false, searchNextPage = false, updateExisting = false) {
     const { APITransport } = this.props;
+    console.log(offset, limit, jobIds, searchForNewJob, searchNextPage, updateExisting);
     const apiObj = new FetchDocument(offset, limit, jobIds, searchForNewJob, searchNextPage, updateExisting);
     APITransport(apiObj);
   }
@@ -239,7 +240,7 @@ class ViewDocument extends React.Component {
   }
 
   processDownloadInputFileClick = (jobId, recordId) => {
-    this.setState({ dialogMessage: "Downloading file...", })
+    this.setState({ dialogMessage: "Downloading file...", timeOut: null, variant: "info" })
     let job = this.getJobIdDetail(jobId);
     let user_profile = JSON.parse(localStorage.getItem('userProfile'));
 
@@ -250,7 +251,7 @@ class ViewDocument extends React.Component {
       headers: obj.getHeaders().headers
     }).then(async response => {
       if (!response.ok) {
-        this.setState({ dialogMessage: "Failed to download file...", })
+        this.setState({ dialogMessage: "Failed to download file...", timeOut: 3000, variant: "info"})
         console.log("api failed")
       } else {
         const buffer = new Uint8Array(await response.arrayBuffer());
@@ -263,12 +264,13 @@ class ViewDocument extends React.Component {
             let url = URL.createObjectURL(blob);
             a.href = url;
             a.download = job.converted_filename;
+            this.setState({dialogMessage: null})
             a.click();
           });
         
       }
     }).catch((error) => {
-      this.setState({ dialogMessage: "Failed to download file..." })
+      this.setState({ dialogMessage: "Failed to download file...", timeOut: 3000, variant: "info" })
       console.log('api failed because of server or network', error)
     });
 
@@ -279,7 +281,7 @@ class ViewDocument extends React.Component {
       /**
        * user wanted to load next set of records
        */
-      this.makeAPICallJobsBulkSearch(this.state.offset + this.state.limit, this.state.limit, false, true)
+      this.makeAPICallJobsBulkSearch(this.state.offset + this.state.limit, this.state.limit, false, false,true)
       this.setState({
         currentPageIndex: page,
         offset: this.state.offset + this.state.limit
@@ -445,7 +447,6 @@ class ViewDocument extends React.Component {
     return (
 
       <div style={{ height: window.innerHeight }}>
-        {this.state.dialogMessage && this.snackBarMessage()}
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <ToolBar />
           {
@@ -465,6 +466,7 @@ class ViewDocument extends React.Component {
         }
 
         {(this.state.showLoader || this.state.loaderDelete) && < Spinner />}
+        {this.state.dialogMessage && this.snackBarMessage()}
       </div>
 
     );

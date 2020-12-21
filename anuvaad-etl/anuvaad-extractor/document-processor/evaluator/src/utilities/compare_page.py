@@ -17,7 +17,9 @@ def get_polygon(region):
 def compare_regions(gt_regions, predicted_regions):
     output = []
     idx = index.Index()
-    if  len(predicted_regions) > len(gt_regions):
+    predicted_count =  len(predicted_regions)
+    gt_count  =  len(gt_regions)
+    if  predicted_count > gt_count:
         base_regions = predicted_regions
         compare_regions = gt_regions
         gt_base = False
@@ -53,9 +55,9 @@ def compare_regions(gt_regions, predicted_regions):
                 output.append({'ground': base_region, 'input': intersecting_region, 'iou': iou})
             else :
                 output.append({'ground': intersecting_region, 'input': base_region, 'iou': iou})
-        return output
+        return { 'iou' : output , 'count' : {'input' : predicted_count , 'ground' : gt_count} }
     else:
-        return []
+        return {}
 
 
 
