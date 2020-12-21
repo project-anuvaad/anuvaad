@@ -50,7 +50,7 @@ class File:
         self.file['pages'][page_index]["regions"]=regions
 
     @log_error
-    def get_file(self, page_index):
+    def get_file(self):
         return self.file
 
 
@@ -60,11 +60,13 @@ def get_files(application_context):
     files = copy.deepcopy(application_context['input']['inputs'])
     return files
 
-def get_json(name ):
-    path = os.path.join(config.BASE_DIR, name)
+def get_json(base_dir,name):
+    path = os.path.join(base_dir, name)
     with open (path, "r") as f:
         data = json.loads(f.read())
-    json_data = data['outputs'][0]
+    #print(data)
+    #json_data = data['outputs'][0]
+    json_data  = data['rsp']['outputs'][0]
     return json_data
 
 

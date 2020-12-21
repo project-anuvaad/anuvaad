@@ -32,6 +32,8 @@ CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_default,CONSUMER_GR
 #folders and file path
 download_folder = 'upload'
 
+BREAK_BLOCKS = False
+
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),

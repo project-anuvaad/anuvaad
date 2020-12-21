@@ -136,6 +136,7 @@ class Box:
         self.box= {}
         self.box['boundingBox'] = {}
         self.box['identifier'] = str(uuid.uuid4())
+        self.box['text'] = ''
         self.box['class']  ='TEXT'
         self.box['font'] = {'family':'Arial Unicode MS', 'size':0, 'style':'REGULAR'}
         self.get_coords()
