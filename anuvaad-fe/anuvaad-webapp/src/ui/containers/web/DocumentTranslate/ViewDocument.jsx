@@ -50,6 +50,8 @@ class ViewDocument extends React.Component {
    */
   componentDidMount() {
     this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
+    TELEMETRY.pageLoadStarted('view-document')
+
     if (this.props.job_details.documents.length < 1) {
       this.makeAPICallJobsBulkSearch(this.state.offset, this.state.limit, false, false)
       this.setState({ showLoader: true })
@@ -63,11 +65,11 @@ class ViewDocument extends React.Component {
     }
     this.makeAPICallDocumentsTranslationProgress()
 
-    TELEMETRY.pageLoadCompleted('view-document')
   }
 
   componentWillUnmount() {
     clearInterval(this.timerId);
+    TELEMETRY.pageLoadCompleted('view-document')
   }
 
   componentDidUpdate(prevProps) {
@@ -104,13 +106,13 @@ class ViewDocument extends React.Component {
     }
   })
 
-  getSnapshotBeforeUpdate(prevProps, prevState) {
-    TELEMETRY.pageLoadStarted('view-document')
-    /**
-     * getSnapshotBeforeUpdate() must return null
-     */
-    return null;
-  }
+  // getSnapshotBeforeUpdate(prevProps, prevState) {
+  //   TELEMETRY.pageLoadStarted('view-document')
+  //   /**
+  //    * getSnapshotBeforeUpdate() must return null
+  //    */
+  //   return null;
+  // }
 
   /**
    * API calls
