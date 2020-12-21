@@ -1,6 +1,5 @@
 import time
 
-import uuid
 from utilities.translatorutils import TranslatorUtils
 from kafkawrapper.translatorproducer import Producer
 from repository.translatorrepository import TranslatorRepository
@@ -11,7 +10,6 @@ from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
 from configs.translatorconfig import anu_translator_output_topic
 from configs.translatorconfig import tool_translator
-from configs.translatorconfig import tmx_default_context
 
 utils = TranslatorUtils()
 producer = Producer()

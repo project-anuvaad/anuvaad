@@ -2,7 +2,7 @@
 import json
 
 import redis
-from anuvaad_auditor.loghandler import log_exception, log_info
+from anuvaad_auditor.loghandler import log_exception
 from configs.translatorconfig import redis_server_host
 from configs.translatorconfig import redis_server_port
 

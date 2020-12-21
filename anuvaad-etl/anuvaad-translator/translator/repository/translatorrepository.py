@@ -1,5 +1,4 @@
 #!/bin/python
-import os
 import pymongo
 
 from configs.translatorconfig import mongo_server_host
