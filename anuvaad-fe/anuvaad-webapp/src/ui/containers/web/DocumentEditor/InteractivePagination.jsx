@@ -130,13 +130,14 @@ class InteractivePagination extends React.Component {
             </div>
           ) : (
               <>
+              {this.props.processZoom()}
                 <Pagination
                   count={this.props.count}
                   page={this.state.offset}
                   onChange={this.handleClick}
                   color="primary"
                   size={"large"}
-                  style={{ marginLeft: "3%" }}
+                  style={{ marginLeft: "-6%" }}
                 />
                 <TextField 
     type="number"
