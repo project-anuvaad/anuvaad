@@ -89,7 +89,7 @@ class TMXService:
             return {"message": "creation failed", "status": "FAILED"}
 
     # Method to fetch tmx phrases for a given src
-    def get_tmx_phrases(self, user_id, org_id, context, locale, sentence):
+    def get_tmx_phrases(self, user_id, org_id, context, locale, sentence, ctx):
         tmx_record = {"context": context, "locale": locale, "src": sentence}
         if user_id:
             tmx_record["userID"] = user_id
@@ -98,7 +98,7 @@ class TMXService:
         try:
             return self.tmx_phrase_search(tmx_record)
         except Exception as e:
-            log_exception("Exception while searching tmx from redis: " + str(e), None, e)
+            log_exception("Exception while searching tmx from redis: " + str(e), ctx, e)
             return []
 
     # Searches for all tmx phrases within a given sentence
@@ -166,7 +166,7 @@ class TMXService:
             else:
                 return tgt
         except Exception as e:
-            log_exception("Exception while replacing nmt_tgt with user_tgt: " + str(e), None, e)
+            log_exception("Exception while replacing nmt_tgt with user_tgt: " + str(e), ctx, e)
             return tgt
 
     # Replaces phrases in tgt with user tgts using labse alignments and updates nmt_tgt in TMX

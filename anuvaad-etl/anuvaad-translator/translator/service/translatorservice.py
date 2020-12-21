@@ -176,7 +176,7 @@ class TranslatorService:
         if 'orgID' in file.keys():
             org_id = file["orgID"]
         locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
-        return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence)
+        return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, translate_wf_input)
 
     # Method to process the output received from the NMT
     def process_nmt_output(self, nmt_output):

@@ -107,7 +107,7 @@ class BlockTranslationService:
         if 'orgID' in block_translate_input["input"].keys():
             org_id = block_translate_input["input"]["orgID"]
         locale = block_translate_input["input"]["model"]["source_language_code"] + "|" + block_translate_input["input"]["model"]["target_language_code"]
-        return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence)
+        return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, block_translate_input)
 
     # Parses the nmt response and builds input for ch
     def get_translations_ip_ch(self, nmt_response, block_translate_input):
