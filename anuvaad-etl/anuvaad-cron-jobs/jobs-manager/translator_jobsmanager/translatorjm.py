@@ -37,11 +37,11 @@ class TranslatorJobsManger(Thread):
                             failed.append(record)
                             failed_jobids.append(record["jobID"])
                             is_added = True
-                        elif total == skipped:
+                        elif skipped > 0:
                             failed.append(record)
                             failed_jobids.append(record["jobID"])
                             is_added = True
-                        elif total == translated or total == (translated + skipped):
+                        elif total == translated:
                             completed.append(record)
                             completed_jobids.append(record["jobID"])
                             is_added = True
