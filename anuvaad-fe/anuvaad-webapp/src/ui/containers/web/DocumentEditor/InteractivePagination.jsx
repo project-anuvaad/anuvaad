@@ -130,6 +130,7 @@ class InteractivePagination extends React.Component {
             </div>
           ) : (
               <>
+              {this.props.processZoom()}
                 <Pagination
                   count={this.props.count}
                   page={this.state.offset}

@@ -403,3 +403,39 @@ export const splitSentencesEvent = (sentence_initial, sentences_final) => {
 
   $t.interact(data, options)
 }
+
+/**
+ * @description call this method to log failure of actions
+ * @param {*} action_type , type of action user is performing
+ * @param {*} message , error message
+ */
+export const log = (action_type, message) => {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let user_id       = null;
+  let user_profile  = JSON.parse(localStorage.getItem('userProfile'))
+
+  if (user_profile != null) {
+    user_id     = user_profile.userID
+  } else {
+    user_id     = 'anonymous'
+  }
+
+  let data = {
+    type: 'api_call',
+    level: 'ERROR',
+    message: message,
+    action: action_type
+  }
+
+  let options = {
+    ets: Date.now(),
+    actor: {
+      uid: user_id,
+    }
+  }
+
+  $t.log(data, options)
+}
