@@ -32,7 +32,6 @@ import { contentUpdateStarted, clearFetchContent } from '../../../../flux/action
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 import { Button } from "@material-ui/core";
-import TextField from '@material-ui/core/TextField';
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
@@ -563,30 +562,16 @@ class DocumentEditor extends React.Component {
    * render functions ends here
    */
   processZoom = () => {
-    let styles = {
-      fontSize: '30px',
-      align: 'center',
-      fontWeight: 'bold',
-      height: '50%',
-      color: 'white',
-      padding: 0,
-      backgroundColor: '#1ca9c9'
-    };
-
-    // let divStyle = {
-    //   height: '100%',
-    //   marginTop: '1.5%',
-    //   marginLeft: '2%'
-    // }
     return (
       <div>
         <Button
-        style={{marginLeft:'10px'}}
+          size="small"
+          style={{ marginLeft: '10px', boxSizing: "border-box" }}
           variant="outlined"
           color="primary"
           onClick={this.processZoomIn}
           disabled={this.state.zoomInDisabled} >
-          ZOOM IN
+          +
           </Button>
         <input
           style={{
@@ -595,17 +580,19 @@ class DocumentEditor extends React.Component {
             borderBottom: '1px solid black',
             margin: '2%',
             textAlign: 'center',
-            width: '20%',
+            width: '15%',
             height: '40%',
             fontSize: '17px'
           }} value={`${this.state.zoomPercent}%`}
           disabled />
         <Button
+          size="small"
           variant="outlined"
           color="primary"
           onClick={this.processZoomOut}
-          disabled={this.state.zoomOutDisabled} >
-          ZOOM OUT
+          disabled={this.state.zoomOutDisabled}
+          style={{ boxSizing: "border-box" }} >
+          -
           </Button>
       </div >);
   }
