@@ -88,6 +88,8 @@ ENV DEBUG_FLUSH=$D_F
 
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
+RUN apt install -y tesseract-ocr
+
 #CMD ["python", "app.py"]
 
 ENTRYPOINT ["/bin/bash","/usr/bin/start.sh"]
