@@ -142,6 +142,7 @@ class ViewDocument extends React.Component {
 
   makeAPICallDocumentsTranslationProgress(jobIds) {
     var recordIds = this.getRecordIds()
+    debugger
     if (recordIds.length > 0) {
       const { APITransport } = this.props;
       const apiObj = new JobStatus(recordIds);
@@ -168,7 +169,9 @@ class ViewDocument extends React.Component {
   }
 
   getRecordIds = () => {
-    return this.getJobsAsPerPageAndLimit(this.state.currentPageIndex, this.state.limit).map(job => job.recordId)
+    let recordids = []
+     this.getJobsAsPerPageAndLimit(this.state.currentPageIndex, this.state.limit).map(job => (job.recordId &&recordids.push (job.recordId)) )
+     return recordids;
   }
 
   getJobIdDetail = (jobId) => {
