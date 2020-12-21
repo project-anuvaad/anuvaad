@@ -261,7 +261,7 @@ class TranslatorService:
             node = str(nmt_res_sentence["n_id"]).split("|")
             if nmt_res_sentence["tmx_phrases"]:
                 log_info("PAGE NO: " + str(node[2]) + " | SRC: " + nmt_res_sentence["src"] +
-                         " | TGT: " + nmt_res_sentence["tgt"] + " | TMX: " + str(len(nmt_res_sentence["tmx_phrases"])), translate_wf_input)
+                         " | TGT: " + nmt_res_sentence["tgt"] + " | TMX Count: " + str(len(nmt_res_sentence["tmx_phrases"])), translate_wf_input)
                 nmt_res_sentence["tgt"] = tmxservice.replace_nmt_tgt_with_user_tgt(nmt_res_sentence["tmx_phrases"], nmt_res_sentence["tgt"], translate_wf_input)
             page_no, block_id = node[2], node[3]
             p_index, b_index, s_index = None, None, None
