@@ -95,7 +95,11 @@ class TMXService:
             tmx_record["userID"] = user_id
         if org_id:
             tmx_record["orgID"] = org_id
-        return self.tmx_phrase_search(tmx_record)
+        try:
+            return self.tmx_phrase_search(tmx_record)
+        except Exception as e:
+            log_exception("Exception while searching tmx from redis: " + str(e), None, e)
+            return []
 
     # Searches for all tmx phrases within a given sentence
     # Uses a custom implementation of the sliding window search algorithm.
@@ -144,21 +148,25 @@ class TMXService:
     # Replaces TMX phrases in NMT tgt using TMX NMT phrases and LaBSE alignments
     def replace_nmt_tgt_with_user_tgt(self, tmx_phrases, tgt, ctx):
         tmx_without_nmt_phrases, tmx_tgt = [], None
-        for tmx_phrase in tmx_phrases:
-            if tmx_phrase["nmt_tgt"]:
-                for nmt_tgt_phrase in tmx_phrase["nmt_tgt"]:
-                    if nmt_tgt_phrase in tgt:
-                        log_info("(TMX - NMT) Replacing: " + str(nmt_tgt_phrase) + " with: " + str(tmx_phrase["user_tgt"]), ctx)
-                        tgt = tgt.replace(nmt_tgt_phrase, tmx_phrase["user_tgt"])
-                        break
+        try:
+            for tmx_phrase in tmx_phrases:
+                if tmx_phrase["nmt_tgt"]:
+                    for nmt_tgt_phrase in tmx_phrase["nmt_tgt"]:
+                        if nmt_tgt_phrase in tgt:
+                            log_info("(TMX - NMT) Replacing: " + str(nmt_tgt_phrase) + " with: " + str(tmx_phrase["user_tgt"]), ctx)
+                            tgt = tgt.replace(nmt_tgt_phrase, tmx_phrase["user_tgt"])
+                            break
+                else:
+                    tmx_without_nmt_phrases.append(tmx_phrase)
+            tmx_tgt = tgt
+            if tmx_without_nmt_phrases:
+                tmx_tgt = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt, ctx)
+            if tmx_tgt:
+                return tmx_tgt
             else:
-                tmx_without_nmt_phrases.append(tmx_phrase)
-        tmx_tgt = tgt
-        if tmx_without_nmt_phrases:
-            tmx_tgt = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt, ctx)
-        if tmx_tgt:
-            return tmx_tgt
-        else:
+                return tgt
+        except Exception as e:
+            log_exception("Exception while replacing nmt_tgt with user_tgt: " + str(e), None, e)
             return tgt
 
     # Replaces phrases in tgt with user tgts using labse alignments and updates nmt_tgt in TMX
