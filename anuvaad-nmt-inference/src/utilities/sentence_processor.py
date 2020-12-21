@@ -75,6 +75,7 @@ def decode_bpe(text):
     return decoded_text
 
 def moses_tokenizer(text):
+    log_info("sacremoses_tokenizing",MODULE_CONTEXT)
     mt = MosesTokenizer(lang='en')
     tokenized_output = mt.tokenize(text, return_str=True)
     return tokenized_output
