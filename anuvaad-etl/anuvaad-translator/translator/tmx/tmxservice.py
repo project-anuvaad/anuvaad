@@ -148,6 +148,7 @@ class TMXService:
             if tmx_phrase["nmt_tgt"]:
                 for nmt_tgt_phrase in tmx_phrase["nmt_tgt"]:
                     if nmt_tgt_phrase in tgt:
+                        log_info("(TMX - NMT) Replacing: " + str(nmt_tgt_phrase) + " with: " + str(tmx_phrase["user_tgt"]), ctx)
                         tgt = tgt.replace(nmt_tgt_phrase, tmx_phrase["user_tgt"])
                         break
             else:
