@@ -110,8 +110,8 @@
 		},
 		"_comment": " "
 	},
-	"filesTranslatedDayWise": {
-		"chartName": "Files Translated",
+	"completedTranslationDayWise": {
+		"chartName": "Completed File Translations",
 		"queries": [
 			{
 				"module": "COMMON",
@@ -119,7 +119,7 @@
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"File Translation Count\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Files Translated\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Count\":{\"cardinality\":{\"field\":\"events.context.cdata.id.keyword\"}}}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"FILE_TRANSLATE\"}},{\"term\":{\"events.edata.type.keyword\":\"END_JOB\"}},{\"term\":{\"events.object.file_status.keyword\":\"COMPLETED\"}}]}},\"aggs\":{\"Completed Documents\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Document Count\":{\"cardinality\":{\"field\":\"context.did.keyword\"}}}}}}}}"
 			}
 		],
 		"chartType": "line",
@@ -131,7 +131,37 @@
 		"documentType": "_doc",
 		"drillChart": "none",
 		"aggregationPaths": [
-			"File Translation Count"
+			"Completed Documents"
+		],
+		"isCumulative": false,
+		"interval": "day",
+		"insight": {
+			
+		},
+		"_comment": " "
+	},
+	"failedTranslationDayWise": {
+		"chartName": "Failed File Translations",
+		"queries": [
+			{
+				"module": "COMMON",
+				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"dateRefField": "ets",
+				"indexName": "anuvaad-telemetry",
+				"esInstance": "PRIMARY",
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"FILE_TRANSLATE\"}},{\"term\":{\"events.edata.type.keyword\":\"END_JOB\"}},{\"term\":{\"events.object.file_status.keyword\":\"FAILED\"}}]}},\"aggs\":{\"Failed Documents\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Document Count\":{\"cardinality\":{\"field\":\"context.did.keyword\"}}}}}}}}"
+			}
+		],
+		"chartType": "line",
+		"resultType": "doc_count",
+		"valueType": "number",
+		"isDecimal": false,
+		"action": "",
+		"filter": "",
+		"documentType": "_doc",
+		"drillChart": "none",
+		"aggregationPaths": [
+			"Failed Documents"
 		],
 		"isCumulative": false,
 		"interval": "day",
