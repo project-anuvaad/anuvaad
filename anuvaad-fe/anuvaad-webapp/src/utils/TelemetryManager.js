@@ -148,11 +148,11 @@ export const buttonClicked = (button_id, page_id) => {
 /**
  * @description  start the flow with following initial parameters
  * @param {*} source_language , document language
- * @param {*} target_langauge , translated language
+ * @param {*} target_language , translated language
  * @param {*} filename , filename including extension
  * @param {*} job_id , on successful start of job, API returns job_id
  */
-export const startWorkflow = (source_language, target_langauge, filename, job_id) => {
+export const startWorkflow = (source_language, target_language, filename, job_id) => {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -174,7 +174,7 @@ export const startWorkflow = (source_language, target_langauge, filename, job_id
     object: {
       id: filename,
       source_language: source_language,
-      target_langauge: target_langauge,
+      target_language: target_language,
       job_id: job_id
     }
   }
@@ -211,11 +211,11 @@ export const endWorkflow = (job_id) => {
 /**
  * This function should be called whenever UI is moving to DocumentEdit mode, it is start of translator's session
  * @param {*} source_language 
- * @param {*} target_langauge 
+ * @param {*} target_language 
  * @param {*} filename 
  * @param {*} job_id 
  */
-export const startTranslatorFlow = (source_language, target_langauge, filename, job_id) => {
+export const startTranslatorFlow = (source_language, target_language, filename, job_id) => {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -237,7 +237,7 @@ export const startTranslatorFlow = (source_language, target_langauge, filename, 
     object: {
       id: filename,
       source_language: source_language,
-      target_langauge: target_langauge,
+      target_language: target_language,
       job_id: job_id
     }
   }
