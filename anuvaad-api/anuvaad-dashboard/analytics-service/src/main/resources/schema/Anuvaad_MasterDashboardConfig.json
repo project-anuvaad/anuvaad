@@ -13,16 +13,13 @@
 					"key": "sl",
 					"values": [
 						"All",
-						"hi",
-						"ml",
-						"bn",
-						"en",
-						"ta",
 						"English",
 						"Bengali",
-						"hindi",
+						"Hindi",
 						"Malayalam",
-						"Hindi"
+						"Hindi",
+						"Tamil",
+						"Kannada"
 					]
 				},
 				{
@@ -31,16 +28,13 @@
 					"key": "tl",
 					"values": [
 						"All",
-						"hi",
-						"ml",
-						"bn",
-						"en",
-						"ta",
 						"English",
 						"Bengali",
-						"hindi",
+						"Hindi",
 						"Malayalam",
-						"Hindi"
+						"Hindi",
+						"Tamil",
+						"Kannada"
 					]
 				}
 			],
