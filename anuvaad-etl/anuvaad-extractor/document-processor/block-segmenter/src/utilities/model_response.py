@@ -6,15 +6,15 @@ import enum
 class Status(enum.Enum):
     SUCCESS = {
         "status": "SUCCESS",
-        "state": "BLOCK-MERGER"
+        "state": "BLOCK-SEGMENTER"
     }
     ERR_STATUS = {
         "status": "FAILED",
-        "state": "BLOCK-MERGER",
+        "state": "BLOCK-SEGMENTER",
     }
     ERR_request_input_format = {
         "status" : "FAILED",
-        "state" : "BLOCK-MERGER",
+        "state" : "BLOCK-SEGMENTER",
         "error": {
             "code" : "REQUEST_FORMAT_ERROR",
             "message" : "Json provided by user is not in proper format."
