@@ -109,27 +109,48 @@ class SentenceModel(object):
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
                                 { '$unwind': "$data" },
                                 { '$unwind': "$data.tokenized_sentences" },
-                                { "$group": {
+                                { "$addFields": { 
+                                 "data.tokenized_sentences.words": { "$split": [ "$data.tokenized_sentences.src", " " ] }}},
+                                 {"$addFields": { "sent_wrd_count": { "$size":"$data.tokenized_sentences.words" }}},
+                                 { "$group": {
                                     "_id": "$data.tokenized_sentences.save",
-                                    "count": { "$sum": 1 }
-                                }}
-                            ])
+                                    "doc_sent_count": { "$sum": 1 },
+                                     "doc_wrd_count" : { "$sum": "$sent_wrd_count" } }}
+                                ])
+            # docs        = collections.aggregate([
+            #                     { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
+            #                     { '$unwind': "$data" },
+            #                     { '$unwind': "$data.tokenized_sentences" },
+            #                     { "$group": {
+            #                         "_id": "$data.tokenized_sentences.save",
+            #                         "count": { "$sum": 1 }
+            #                     }}
+            #                 ])
 
-            empty_count     = 0
-            saved_count     = 0
-            unsaved_count   = 0
+            empty_sent_count     = 0
+            saved_sent_count     = 0
+            unsaved_sent_count   = 0
+
+            empty_wrd_count      = 0
+            saved_wrd_count      = 0
+            unsaved_wrd_count    = 0
 
             for doc in docs:
                 if doc['_id'] == None:
-                    empty_count = doc['count']
+                    empty_sent_count = doc['doc_sent_count']
+                    empty_wrd_count  = doc['doc_wrd_count']
                 if doc['_id'] == True:
-                    saved_count = doc['count']
+                    saved_sent_count = doc['doc_sent_count']
+                    saved_wrd_count  = doc['doc_wrd_count']
                 if doc['_id'] == False:
-                    unsaved_count = doc['count']
+                    unsaved_sent_count = doc['doc_sent_count']
+                    unsaved_wrd_count  = doc['doc_wrd_count']
 
             return {
-                'total': empty_count + saved_count + unsaved_count,
-                'completed': saved_count
+                'total_sentences': empty_sent_count + saved_sent_count + unsaved_sent_count,
+                'completed_sentences': saved_sent_count,
+                'total_words': empty_wrd_count + saved_wrd_count + unsaved_wrd_count,
+                'completed_words': saved_wrd_count
             }
                 
         except Exception as e:

@@ -66,6 +66,7 @@ class UpdatePassword extends React.Component {
                                 value={this.state.email}
                             />
                             <Button
+                                id="submit"
                                 disabled={!this.state.email}
                                 variant="contained" aria-label="edit" style={{
                                     width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: "20px 20px 20px 20px", height: '45px',

@@ -52,8 +52,10 @@ class SentenceRepositories:
             result          = {}
             count_result    = self.sentenceModel.get_tokenized_sentences_count_status(record_id)
             
-            result['total_count']       = count_result['total']
-            result['completed_count']   = count_result['completed']
+            result['total_sentence_count']       = count_result['total_sentences']
+            result['completed_sentence_count']   = count_result['completed_sentences']
+            result['total_word_count']       = count_result['total_words']
+            result['completed_word_count']   = count_result['completed_words']
             result['record_id']         = record_id
             response.append(result)
         return response

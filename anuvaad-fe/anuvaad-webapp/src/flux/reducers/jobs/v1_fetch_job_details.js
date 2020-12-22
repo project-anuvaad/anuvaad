@@ -49,13 +49,15 @@ function get_document_details(input) {
         document['active']                  = job['active'];
         document['jobID']                   = job['jobID'];
 
-        document['source_language_code']    = job['input']['files'][0]['model']['source_language_code'];
-        document['target_language_code']    = job['input']['files'][0]['model']['target_language_code'];
+        document['source_language_code']    = job['input']['files'][0]['model']['source_language_name'];
+        document['target_language_code']    = job['input']['files'][0]['model']['target_language_name'];
         document['model_id']                = job['input']['files'][0]['model']['model_id'];
 
         document['created_on']              = job['startTime'];
+        document['endTime']              = job['endTime'];
         document['status']                  = job['status'];
         document['progress']                = '...'
+        document['word_count']              = '...' 
 
         job['taskDetails'].forEach(task => {
             let timeline = {}
@@ -97,7 +99,8 @@ function update_documents_progress(documents, progresses) {
         let found = false;
         progresses.forEach(progress => {
             if (document['recordId'] === progress['record_id']) {
-                document['progress'] =  `${progress['completed_count']} of ${progress['total_count']}`
+                document['progress'] =  `${progress['completed_sentence_count']} of ${progress['total_sentence_count']}`
+                document['word_count'] =  `${progress['completed_word_count']} of ${progress['total_word_count']}`
                 updated_documents.push(document)
                 found = true;
             }
@@ -127,7 +130,7 @@ function update_documents_after_delete(documents, deleted_jobIds) {
 }
 
 export default function(state = initialState, action) {
-    
+
     switch (action.type) {
         case C.FETCHDOCUMENT: {
             let data        = action.payload;
@@ -171,9 +174,15 @@ export default function(state = initialState, action) {
             let data            = action.payload;
             let documents       = get_document_details(data);
             let existing_docs   = [...state.documents];
+            let changedJob = {}
             documents.forEach(document => {
                 existing_docs.forEach((existing_doc, index) => {
                     if (existing_doc.jobID === document.jobID) {
+
+                        if(document.status !== "INPROGRESS") {
+                            changedJob = document
+                            
+                        }
                         existing_docs.splice(index, 1, document)
                     }
                 })
@@ -184,7 +193,8 @@ export default function(state = initialState, action) {
                 ...state,
                 progress_updated: false,
                 document_deleted: false,
-                documents: existing_docs //[...state.documents, ...documents].filter((v,i,a)=>a.findIndex(t=>(t.recordId === v.recordId))===i)
+                documents: existing_docs, //[...state.documents, ...documents].filter((v,i,a)=>a.findIndex(t=>(t.recordId === v.recordId))===i)
+                changedJob : changedJob
             }
         }
 

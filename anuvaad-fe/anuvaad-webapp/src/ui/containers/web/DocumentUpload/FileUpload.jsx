@@ -139,22 +139,23 @@ class PdfUpload extends Component {
     history.push(`${process.env.PUBLIC_URL}/view-document`)
   }
 
-  getSnapshotBeforeUpdate(prevProps, prevState) {
-    TELEMETRY.pageLoadStarted('document-upload')
+  // getSnapshotBeforeUpdate(prevProps, prevState) {
+  //   TELEMETRY.pageLoadStarted('document-upload')
 
-    /**
-    * getSnapshotBeforeUpdate() must return null
-    */
-    return null;
-  }
+  //   /**
+  //   * getSnapshotBeforeUpdate() must return null
+  //   */
+  //   return null;
+  // }
 
   componentDidMount() {
-    TELEMETRY.pageLoadCompleted('document-upload')
-      const { APITransport } = this.props;
-      const apiModel = new FetchModel();
-      APITransport(apiModel);
-      this.setState({ showLoader: true });
-    
+    TELEMETRY.pageLoadStarted('document-upload')
+
+    const { APITransport } = this.props;
+    const apiModel = new FetchModel();
+    APITransport(apiModel);
+    this.setState({ showLoader: true });
+
   }
 
   componentDidUpdate(prevProps) {
@@ -175,9 +176,16 @@ class PdfUpload extends Component {
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
       this.props.createJobEntry(this.props.workflowStatus)
 
-      TELEMETRY.startWorkflow(this.state.source, this.state.target, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
+      var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code)
+      var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code)
+
+      TELEMETRY.startWorkflow(sourceLang, targetLang, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
       history.push(`${process.env.PUBLIC_URL}/view-document`);
     }
+  }
+
+  componentWillUnmount() {
+    TELEMETRY.pageLoadCompleted('document-upload')
   }
 
   processSourceLanguageSelected = (event) => {
@@ -383,32 +391,32 @@ class PdfUpload extends Component {
 
               </Grid>
 
-              <Grid item xs={12} sm={6} lg={6} xl={6} style={{paddingTop: "25px"}}>
+              <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
                 <Button variant="contained" color="primary"
                   size="large" onClick={this.handleBack.bind(this)}
                   style={{
                     width: "100%",
-                    backgroundColor:'#1C9AB7',
-                    borderRadius:"20px 20px 20px 20px",
-                    color:"#FFFFFF",
-                    height:'46px'
+                    backgroundColor: '#1C9AB7',
+                    borderRadius: "20px 20px 20px 20px",
+                    color: "#FFFFFF",
+                    height: '46px'
                   }}
                 >
                   {translate("common.page.button.back")}
                 </Button>
               </Grid>
-              <Grid item xs={6} sm={6} lg={6} xl={6} style={{paddingTop: "25px"}}>
+              <Grid item xs={6} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
                 <Grid item xs={12} sm={12} lg={12} xl={12}>
-                  <Button variant="contained" color="primary" 
-                  // className={classes.button1} 
-                  style={{
-                    width: "100%",
-                    backgroundColor:'#1C9AB7',
-                    borderRadius:"20px 20px 20px 20px",
-                    color:"#FFFFFF",
-                    height:'46px'
-                  }}
-                  size="large" onClick={this.handleSubmit.bind(this)}>
+                  <Button variant="contained" color="primary"
+                    // className={classes.button1} 
+                    style={{
+                      width: "100%",
+                      backgroundColor: '#1C9AB7',
+                      borderRadius: "20px 20px 20px 20px",
+                      color: "#FFFFFF",
+                      height: '46px'
+                    }}
+                    size="large" onClick={this.handleSubmit.bind(this)}>
                     {translate("common.page.button.upload")}
                   </Button>
                 </Grid>
