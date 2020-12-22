@@ -102,13 +102,13 @@ class PieChart extends React.Component {
     });
 
     pieChartTempDataSet.backgroundColor = piePalette(
-      "cb-qualitative",
+      "tol",
       pieChartTempDataSet.data.length
     ).map(function(hex) {
       return "#" + hex;
     });
     pieChartTempDataSet.borderColor = piePalette(
-      "cb-qualitative",
+      "tol",
       pieChartTempDataSet.data.length
     ).map(function(hex) {
       return "#" + hex;
