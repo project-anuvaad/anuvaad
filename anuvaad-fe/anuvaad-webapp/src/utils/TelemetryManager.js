@@ -185,7 +185,7 @@ export const startWorkflow = (source_language, target_language, filename, job_id
  * @description call this api to mark completion of job_id
  * @param {*} job_id , job_id received
  */
-export const endWorkflow = (job_id) => {
+export const endWorkflow = (source_language, target_language, filename, job_id, file_status) => {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -202,7 +202,11 @@ export const endWorkflow = (job_id) => {
       }]
     },
     object: {
-      job_id: job_id
+      id: filename,
+      source_language: source_language,
+      target_language: target_language,
+      job_id: job_id,
+      file_status: file_status
     }
   }
   $t.impression(data, options)
