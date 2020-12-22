@@ -8,7 +8,7 @@ export const init = () => {
   let config = {}
 
   if (CONFIGS.BASE_URL_AUTO === 'https://auth.anuvaad.org') {
-    config  = {
+    config = {
       pdata: {
         id: 'developers.anuvaad.org',
         ver: "1.0",
@@ -23,7 +23,7 @@ export const init = () => {
       apislug: "/anuvaad-telemetry",
     }
   } else {
-    config  = {
+    config = {
       pdata: {
         id: CONFIGS.BASE_URL_AUTO.replace(/(^\w+:|^)\/\//, ''),
         ver: "1.0",
@@ -52,17 +52,17 @@ export const pageLoadStarted = (page_id) => {
   if ($t.isInitialized() === false) {
     init()
   }
-  let user_id       = null;
-  let session_id    = null
-  let user_profile  = JSON.parse(localStorage.getItem('userProfile'))
-  let token         = localStorage.getItem('token')
+  let user_id = null;
+  let session_id = null
+  let user_profile = JSON.parse(localStorage.getItem('userProfile'))
+  let token = localStorage.getItem('token')
 
   if (user_profile != null && token != null) {
-    user_id     = user_profile.id
-    session_id  = token
+    user_id = user_profile.id
+    session_id = token
   } else {
-    user_id     = 'anonymous'
-    session_id  = 'anonymous'
+    user_id = 'anonymous'
+    session_id = 'anonymous'
   }
 
   let data = {
@@ -93,17 +93,17 @@ export const pageLoadCompleted = (page_id) => {
     init()
   }
 
-  let user_id       = null;
-  let session_id    = null
-  let user_profile  = JSON.parse(localStorage.getItem('userProfile'))
-  let token         = localStorage.getItem('token')
+  let user_id = null;
+  let session_id = null
+  let user_profile = JSON.parse(localStorage.getItem('userProfile'))
+  let token = localStorage.getItem('token')
 
   if (user_profile != null && token != null) {
-    user_id     = user_profile.id
-    session_id  = token
+    user_id = user_profile.id
+    session_id = token
   } else {
-    user_id     = 'anonymous'
-    session_id  = 'anonymous'
+    user_id = 'anonymous'
+    session_id = 'anonymous'
   }
 
   let data = {
@@ -148,11 +148,11 @@ export const buttonClicked = (button_id, page_id) => {
 /**
  * @description  start the flow with following initial parameters
  * @param {*} source_language , document language
- * @param {*} target_langauge , translated language
+ * @param {*} target_language , translated language
  * @param {*} filename , filename including extension
  * @param {*} job_id , on successful start of job, API returns job_id
  */
-export const startWorkflow = (source_language, target_langauge, filename, job_id) => {
+export const startWorkflow = (source_language, target_language, filename, job_id) => {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -166,7 +166,7 @@ export const startWorkflow = (source_language, target_langauge, filename, job_id
   let options = {
     ets: Date.now(),
     context: {
-      cdata:[{
+      cdata: [{
         id: job_id,
         type: 'FILE_TRANSLATE'
       }]
@@ -174,7 +174,7 @@ export const startWorkflow = (source_language, target_langauge, filename, job_id
     object: {
       id: filename,
       source_language: source_language,
-      target_langauge: target_langauge,
+      target_language: target_language,
       job_id: job_id
     }
   }
@@ -196,7 +196,7 @@ export const endWorkflow = (job_id) => {
 
   let options = {
     context: {
-      cdata:[{
+      cdata: [{
         id: job_id,
         type: 'FILE_TRANSLATE'
       }]
@@ -211,11 +211,11 @@ export const endWorkflow = (job_id) => {
 /**
  * This function should be called whenever UI is moving to DocumentEdit mode, it is start of translator's session
  * @param {*} source_language 
- * @param {*} target_langauge 
+ * @param {*} target_language 
  * @param {*} filename 
  * @param {*} job_id 
  */
-export const startTranslatorFlow = (source_language, target_langauge, filename, job_id) => {
+export const startTranslatorFlow = (source_language, target_language, filename, job_id) => {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -229,7 +229,7 @@ export const startTranslatorFlow = (source_language, target_langauge, filename, 
   let config = null
   let options = {
     context: {
-      cdata:[{
+      cdata: [{
         id: job_id,
         type: 'select'
       }]
@@ -237,7 +237,7 @@ export const startTranslatorFlow = (source_language, target_langauge, filename, 
     object: {
       id: filename,
       source_language: source_language,
-      target_langauge: target_langauge,
+      target_language: target_language,
       job_id: job_id
     }
   }
@@ -259,7 +259,7 @@ export const endTranslatorFlow = (job_id) => {
 
   let options = {
     context: {
-      cdata:[{
+      cdata: [{
         id: job_id,
         type: 'FILE_TRANSLATE'
       }]
@@ -327,12 +327,22 @@ export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, m
 
   let data = {
     type: 'click',
+    action: 'SAVE',
     id: sentence_id,
-    initial: sentence_initial,
-    final: sentence_final,
     mode: mode
   }
-  let options = {}
+
+  let options = {
+    context: {
+      cdata: []
+    },
+  }
+
+  let values = {}
+  values.initial = sentence_initial
+  values.final = sentence_final
+
+  options.context.cdata = values
   $t.interact(data, options)
 }
 
@@ -353,7 +363,7 @@ export const mergeSentencesEvent = (sentences_initial, sentence_final) => {
 
   let options = {
     context: {
-      cdata:[]
+      cdata: []
     },
   }
   sentences_initial.forEach(element => {
@@ -387,7 +397,7 @@ export const splitSentencesEvent = (sentence_initial, sentences_final) => {
 
   let options = {
     context: {
-      cdata:[]
+      cdata: []
     },
   }
   sentences_final.forEach(element => {
@@ -414,13 +424,13 @@ export const log = (action_type, message) => {
     init()
   }
 
-  let user_id       = null;
-  let user_profile  = JSON.parse(localStorage.getItem('userProfile'))
+  let user_id = null;
+  let user_profile = JSON.parse(localStorage.getItem('userProfile'))
 
   if (user_profile != null) {
-    user_id     = user_profile.userID
+    user_id = user_profile.userID
   } else {
-    user_id     = 'anonymous'
+    user_id = 'anonymous'
   }
 
   let data = {

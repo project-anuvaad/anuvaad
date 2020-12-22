@@ -66,17 +66,7 @@ class DocumentEditor extends React.Component {
     localStorage.setItem("recordId", recordId);
     localStorage.setItem("inputFile", this.props.match.params.inputfileid)
 
-    let langCodes = LanguageCodes
-    let sourceLang = ''
-    if (langCodes && Array.isArray(langCodes) && langCodes.length > 0) {
-      langCodes.map(lang => {
-        if (lang.language_code === this.props.match.params.locale) {
-          sourceLang = lang.language_name
-        }
-        return true
-      })
-    }
-    TELEMETRY.startTranslatorFlow(sourceLang, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
+    TELEMETRY.startTranslatorFlow(this.props.match.params.locale, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
     this.setState({ showLoader: true });
     this.makeAPICallFetchContent(1);
     this.makeAPICallDocumentsTranslationProgress();
@@ -179,7 +169,7 @@ class DocumentEditor extends React.Component {
      * telemetry information.
      */
     let initial_sentences = sentences.map(sentence => sentence.src);
-    let final_sentence = updated_blocks['blocks'][0].tokenized_sentences.src;
+    let final_sentence = updated_blocks['blocks'][0].tokenized_sentences[0].src;
     TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
     let model = this.fetchModel(parseInt(this.props.match.params.modelId))
     this.informUserProgress(translate('common.page.label.SENTENCE_MERGED'))
@@ -563,10 +553,8 @@ class DocumentEditor extends React.Component {
    */
   processZoom = () => {
     return (
-      <div>
-        <Button
-          size="small"
-          style={{ marginLeft: '10px', boxSizing: "border-box" }}
+      <div style= {{marginLeft:'1%',marginRight:"2%"}}>
+        <Button         
           variant="outlined"
           color="primary"
           onClick={this.processZoomIn}
@@ -586,12 +574,11 @@ class DocumentEditor extends React.Component {
           }} value={`${this.state.zoomPercent}%`}
           disabled />
         <Button
-          size="small"
           variant="outlined"
           color="primary"
           onClick={this.processZoomOut}
           disabled={this.state.zoomOutDisabled}
-          style={{ boxSizing: "border-box" }} >
+         >
           -
           </Button>
       </div >);

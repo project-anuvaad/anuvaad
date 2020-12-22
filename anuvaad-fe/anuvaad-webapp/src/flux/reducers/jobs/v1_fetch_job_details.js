@@ -49,8 +49,8 @@ function get_document_details(input) {
         document['active']                  = job['active'];
         document['jobID']                   = job['jobID'];
 
-        document['source_language_code']    = job['input']['files'][0]['model']['source_language_code'];
-        document['target_language_code']    = job['input']['files'][0]['model']['target_language_code'];
+        document['source_language_code']    = job['input']['files'][0]['model']['source_language_name'];
+        document['target_language_code']    = job['input']['files'][0]['model']['target_language_name'];
         document['model_id']                = job['input']['files'][0]['model']['model_id'];
 
         document['created_on']              = job['startTime'];
