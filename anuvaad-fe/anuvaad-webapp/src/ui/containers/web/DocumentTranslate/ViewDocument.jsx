@@ -81,6 +81,10 @@ class ViewDocument extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    if(this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
+      TELEMETRY.endWorkflow(this.props.job_details.changedJob.source_language_code, this.props.job_details.changedJob.target_language_code, this.props.job_details.changedJob.filename, this.props.job_details.changedJob.jobID, this.props.job_details.changedJob.status)
+    }
+
     if (
       prevProps.job_details.documents.length !==
       this.props.job_details.documents.length

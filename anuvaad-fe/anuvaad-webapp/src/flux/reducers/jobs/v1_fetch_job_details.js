@@ -130,7 +130,7 @@ function update_documents_after_delete(documents, deleted_jobIds) {
 }
 
 export default function(state = initialState, action) {
-    
+
     switch (action.type) {
         case C.FETCHDOCUMENT: {
             let data        = action.payload;
@@ -174,9 +174,15 @@ export default function(state = initialState, action) {
             let data            = action.payload;
             let documents       = get_document_details(data);
             let existing_docs   = [...state.documents];
+            let changedJob = {}
             documents.forEach(document => {
                 existing_docs.forEach((existing_doc, index) => {
                     if (existing_doc.jobID === document.jobID) {
+
+                        if(document.status !== "INPROGRESS") {
+                            changedJob = document
+                            
+                        }
                         existing_docs.splice(index, 1, document)
                     }
                 })
@@ -187,7 +193,8 @@ export default function(state = initialState, action) {
                 ...state,
                 progress_updated: false,
                 document_deleted: false,
-                documents: existing_docs //[...state.documents, ...documents].filter((v,i,a)=>a.findIndex(t=>(t.recordId === v.recordId))===i)
+                documents: existing_docs, //[...state.documents, ...documents].filter((v,i,a)=>a.findIndex(t=>(t.recordId === v.recordId))===i)
+                changedJob : changedJob
             }
         }
 
