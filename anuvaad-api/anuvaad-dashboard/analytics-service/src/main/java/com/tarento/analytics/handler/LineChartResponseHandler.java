@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,7 @@ public class LineChartResponseHandler implements IResponseHandler {
 	public AggregateDto translate(String profileName, AggregateRequestDto requestDto, ObjectNode aggregations)
 			throws IOException {
 
+
 		List<Data> dataList = new LinkedList<>();
 
 		JsonNode aggregationNode = aggregations.get(AGGREGATIONS);
@@ -57,6 +59,7 @@ public class LineChartResponseHandler implements IResponseHandler {
 
 		String symbol = chartNode.get(IResponseHandler.VALUE_TYPE).asText();
 		String action = chartNode.get(IResponseHandler.ACTION).asText();
+		String resultType = chartNode.get(IResponseHandler.RESULT_TYPE) != null ? chartNode.get(IResponseHandler.RESULT_TYPE).asText() : "";
 		ArrayNode aggrsPaths = (ArrayNode) chartNode.get(IResponseHandler.AGGS_PATH);
 		Set<String> plotKeys = new LinkedHashSet<>();
 		boolean isCumulative = chartNode.get("isCumulative").asBoolean();
@@ -88,22 +91,28 @@ public class LineChartResponseHandler implements IResponseHandler {
 						double previousVal = !isCumulative ? 0.0
 								: (totalValues.size() > 0 ? totalValues.get(totalValues.size() - 1) : 0.0);
 
-						double value;
+						double value = 0;
 						if (action.equals("Negative Count") && action != null
 								&& bucket.findValue(IResponseHandler.NEGATIVE_COUNT) != null) {
-							value = previousVal + ((bucket.findValue(IResponseHandler.VALUE) != null)
-									? bucket.findValue(IResponseHandler.VALUE).asDouble() * -1
-									: bucket.findValue(IResponseHandler.DOC_COUNT).asDouble());
+							if(StringUtils.isNotBlank(resultType) && resultType.equals("doc_count") && bucket.findValue(IResponseHandler.DOC_COUNT) != null) { 
+								value = previousVal + bucket.findValue(IResponseHandler.DOC_COUNT).asDouble() * -1;
+							} else if (bucket.findValue(IResponseHandler.VALUE) != null) { 
+								value = previousVal + bucket.findValue(IResponseHandler.VALUE).asDouble() * -1;
+							}
 						} else {
-							if (bucket.findValue(IResponseHandler.CUMULATIVE_VALUE) != null) {
-								value = previousVal + ((bucket.findValue(IResponseHandler.VALUE) != null)
-										? bucket.findValue(IResponseHandler.VALUE).asDouble()
-										: bucket.findValue(IResponseHandler.DOC_COUNT).asDouble());
+							if (StringUtils.isNotBlank(resultType) && bucket.findValue(IResponseHandler.CUMULATIVE_VALUE) != null) {
+								if(resultType.equals("doc_count") && bucket.findValue(IResponseHandler.DOC_COUNT) != null) { 
+									value = previousVal + bucket.findValue(IResponseHandler.DOC_COUNT).asDouble(); 
+								} else if (bucket.findValue(IResponseHandler.VALUE) != null) { 
+									value = previousVal + bucket.findValue(IResponseHandler.VALUE).asDouble();
+								}
 							} else {
 								previousVal = 0.0;
-								value = previousVal + ((bucket.findValue(IResponseHandler.VALUE) != null)
-										? bucket.findValue(IResponseHandler.VALUE).asDouble()
-										: bucket.findValue(IResponseHandler.DOC_COUNT).asDouble());
+								if(resultType.equals("doc_count") && bucket.findValue(IResponseHandler.DOC_COUNT) != null) { 
+									value = previousVal + bucket.findValue(IResponseHandler.DOC_COUNT).asDouble(); 
+								} else if (bucket.findValue(IResponseHandler.VALUE) != null) { 
+									value = previousVal + bucket.findValue(IResponseHandler.VALUE).asDouble();
+								}
 							}
 						}
 						plotMap.put(key, plotMap.get(key) == null ? new Double("0") + value : plotMap.get(key) + value);
@@ -135,6 +144,7 @@ public class LineChartResponseHandler implements IResponseHandler {
 			appendMissingPlot(plotKeys, data, symbol, isCumulative);
 		});
 		return getAggregatedDto(chartNode, dataList, requestDto.getVisualizationCode());
+	
 	}
 
 	private String getIntervalKey(String epocString, Constants.Interval interval) {
