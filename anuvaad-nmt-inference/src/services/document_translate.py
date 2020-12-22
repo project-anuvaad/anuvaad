@@ -50,11 +50,6 @@ class NMTTranslateService:
                 if special_case_handler.special_case_fits(input_sentence):
                     special_case_sentence_indices.append(i)
                     log_info("sentence fits in special case, capturing index to process at last",MODULE_CONTEXT)
-                    # tgt_list[i] = special_case_handler.handle_special_cases(input_sentence,model_id)
-                    # score_list[i] = 1
-                    # input_subwords_list[i],output_subwords_list[i],tagged_tgt_list[i],tagged_src_list[i] = \
-                    #     "","",tgt_list[i],input_sentence
-
                 else:                   
                     prefix_array[i], input_sentence = special_case_handler.prefix_handler(input_sentence)
                     input_sentence,date_original_array[i],url_original_array[i],num_array_array[i],num_map_array[i] = \
@@ -280,10 +275,7 @@ def encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_
         log_info("Inside encode_translate_decode function",MODULE_CONTEXT)
         input_subwords_list = [str(sp.encode_line(sp_encoder,sent)) for sent in input_sentence_array_prepd]
         input_final_array = [format_converter(input_subwords) for input_subwords in input_subwords_list]
-        input_time = datetime.datetime.now()
-        print("time before translate_batch: ",input_time)
         m_out = translator.translate_batch(input_final_array,beam_size = 5,num_hypotheses=1)
-        print("time after translate_batch",(datetime.datetime.now()-input_time).total_seconds())
         translation_array = [None] * len(output_subwords_list)
         for i, _ in enumerate(output_subwords_list):
                 output_subwords_list[i] = " ".join(m_out[i][0]['tokens'])

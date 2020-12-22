@@ -81,6 +81,7 @@ def moses_tokenizer(text):
     return tokenized_output
 
 def moses_detokenizer(text):
+    log_info("sacremoses detokenizing",MODULE_CONTEXT)
     md = MosesDetokenizer(lang='en')
     detokenized_output = md.detokenize(text.split())
     return detokenized_output
