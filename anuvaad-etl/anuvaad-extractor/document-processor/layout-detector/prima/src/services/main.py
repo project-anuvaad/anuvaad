@@ -46,7 +46,7 @@ def get_layout(app_context) :
                 page_path   = '/'.join(page_path.split('/')[-4:])
                 regions     = primalaynet.predict_primanet(page_path, line_coords)
                 #print(regions)
-                regions = region_unifier(regions)
+                #regions = region_unifier(regions)
                 file['pages'][idx]["regions"]=regions
             file['file'] = file_new['file']
             file['config'] = file_new['config']

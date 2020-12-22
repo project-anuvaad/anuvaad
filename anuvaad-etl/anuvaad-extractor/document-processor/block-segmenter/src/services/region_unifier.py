@@ -3,7 +3,7 @@ from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 from collections import namedtuple
 from src.utilities.region_operations import collate_regions, MapKeys
-keys = MapKeys()
+keys = MapKeys
 
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 
