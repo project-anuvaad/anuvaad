@@ -3,7 +3,7 @@ import os
 import time
 
 DEBUG = False
-API_URL_PREFIX = "/api/v0"
+API_URL_PREFIX = "/anuvaad-etl/document-processor"
 HOST = '0.0.0.0'
 PORT = 5001
 BASE_DIR      = 'upload'
@@ -12,27 +12,27 @@ ENABLE_CORS = False
 
 # kafka
 
-input_topic_default = 'anuvaad-dp-tools-block-merger-input-v2'
-input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT'
+input_topic_default = 'anuvaad-dp-tools-block-segmenter-input-v1'
+input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT'
 input_topic = os.environ.get(input_topic_identifier, input_topic_default)
 
-output_topic_default = 'anuvaad-dp-tools-block-merger-output-v2'
-output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT'
+output_topic_default = 'anuvaad-dp-tools-block-segmenter-output-v1'
+output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT'
 output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
 kf_local_server     = 'localhost:9092'
-kafka_ip_host       = 'KAFKA_IP_HOST'
+kafka_ip_host       = 'KAFKA_BOOTSTRAP_SERVER_HOST'
 bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 
-TASK_STAT           = 'BLOCK-MERGER'
+TASK_STAT           = 'BLOCK-SEGMENTER'
 
-CONSUMER_GROUP_default       = 'anuvaad-etl-bm-consumer-group'
-CONSUMER_GROUP_identifire    = 'ANUVAAD_ETL_BM_CONSUMER_GROUP_V1'
+CONSUMER_GROUP_default       = 'anuvaad-etl-bs-consumer-group'
+CONSUMER_GROUP_identifire    = 'ANUVAAD_ETL_BS_CONSUMER_GROUP_V1'
 CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_default,CONSUMER_GROUP_identifire)
 #folders and file path
 download_folder = 'upload'
 
-BREAK_BLOCKS = False
+BREAK_BLOCKS = True
 
 
 logging.basicConfig(
@@ -71,40 +71,3 @@ TABLE_CONFIGS = {
 
 PREPROCESS_CONFIGS = {'header_cut':0.15  , 'footer_cut' :0.85 ,'repeat_threshold' :0.95 ,'underline_threshold':0.25, 'margin':10 }
 DROP_TEXT          =  ['SUPERSCRIPT']
-
-LANG_MAPPING       =  {
-    "en" : ["Latin","eng"],
-    "kn" : ['Kannada',"kan"],
-    "gu": ["guj"],
-    "or": ["ori"],
-    "hi" : ["Devanagari","hin","eng"],
-    "bn" : ["Bengali","ben"],
-    "mr": ["Devanagari","hin","eng"],
-    "ta": ['Tamil',"tam"],
-    "te" : ["Telugu","tel"],
-    "ml" :["Malayalam"]
-}
-
-
-FONT_CONFIG   = {
-    "hi": 'Ariel Unicode MS'
-}
-FONT_SIZE_CONFIG = {
-    "hi":{ 'slab_1':{ 'min':0, 'max':15, 'ratio':-0.05},
-           'slab_2':{'min':15, 'max':25, 'ratio':0.05},
-           'slab_3':{'min':25, 'max':50, 'ratio':0.06}
-         }
-}
-
-CROP_CONFIG = {
-    'en' : {'top':1, 'bottom':1,'right':1,'left':1},
-    'hi': {'top':15, 'bottom':10,'right':5,'left':5},
-    'ml': {'top':15, 'bottom':10,'right':5,'left':5},
-    'kn':{'top':15, 'bottom':10,'right':5,'left':5 },
-    'ta':{'top':10, 'bottom':15,'right':5,'left':10 },
-    'mr':{'top':15, 'bottom':10,'right':5,'left':5}
-}
-
-CLASS_2_LANG = ['ta']
-
-CRAFT_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"

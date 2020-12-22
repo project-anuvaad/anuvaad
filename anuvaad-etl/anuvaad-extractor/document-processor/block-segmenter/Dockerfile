@@ -1,5 +1,5 @@
 #FROM anuvaadio/python3.6-opencv-4.1.0:7
-FROM python:3.6-slim
+#FROM python:3.6-slim
 #FROM anuvaadio/anuvaad-layout-detector-prima:4-ba5d7d74
 # FROM ubuntu:20.04
 # # both files are explicitly required!
@@ -29,6 +29,7 @@ FROM python:3.6-slim
 # RUN apt install -y libopencv-dev python3-opencv
 
 #FROM anuvaadio/python-opencv-slim:2
+FROM continuumio/anaconda3
 COPY / /app
 WORKDIR /app
 
