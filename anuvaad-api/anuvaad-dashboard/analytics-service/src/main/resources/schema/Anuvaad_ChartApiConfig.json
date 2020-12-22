@@ -4,7 +4,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_langauge.keyword\"}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -31,7 +31,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_langauge.keyword\"}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -58,7 +58,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -85,7 +85,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -115,7 +115,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -144,7 +144,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -173,7 +173,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -200,7 +200,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -227,7 +227,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -257,7 +257,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
