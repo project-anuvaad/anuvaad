@@ -34,7 +34,7 @@ class TranslatorCronUtils:
     # Searches the object into mongo collection
     def find_all(self):
         col = self.instantiate(mongo_translator_collection)
-        res = col.find({{"active": True}, {'_id': False}})
+        res = col.find({"active": True}, {'_id': False})
         result = []
         for record in res:
             result.append(record)
