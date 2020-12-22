@@ -11,6 +11,8 @@ from src.utilities.region_operations import collate_regions, get_ngram, are_hlin
 
 
 def segment_regions(lines,regions):
+
+
     v_list = collate_regions(regions,lines)
     p_list = []
     for v_block in v_list:
