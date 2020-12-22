@@ -1,6 +1,6 @@
 import src.utilities.app_context as app_context
 from anuvaad_auditor.loghandler import log_exception
-import copy, json
+import copy, json,os
 
 
 def log_error(method):
@@ -60,7 +60,8 @@ def get_ocr_config(file):
     lang = file['config']['OCR']['language']
     return ocr_level, lang 
 
-def get_json(path):
+def get_json(path,base_dir):
+    path = os.path.join(base_dir, path)
     with open (path, "r") as f:
         data = json.loads(f.read())
     json_data = data['rsp']['outputs']
