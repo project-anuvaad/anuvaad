@@ -70,7 +70,7 @@ class TranslatorService:
                 db_in = {
                     "jobID": translate_wf_input["jobID"], "taskID": translate_wf_input["taskID"],
                     "recordID": str(translate_wf_input["jobID"]) + "|" + str(file_id), "transInput": translate_wf_input,
-                    "totalSentences": -1, "translatedSentences": -2, "skippedSentences": -2, "data": data
+                    "totalSentences": -1, "translatedSentences": -2, "skippedSentences": -2, "data": data, "active": True
                 }
                 repo.create(db_in)
                 return True

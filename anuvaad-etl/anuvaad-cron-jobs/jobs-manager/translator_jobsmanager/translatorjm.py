@@ -107,7 +107,7 @@ class TranslatorJobsManger(Thread):
                     job["error"] = post_error("TRANSLATION_FAILED", "All files failed", None)
                 job_wise_records[job_id] = job
                 translator_utils.produce(job_wise_records[job_id], anu_translator_output_topic, prefix)
-                translator_utils.delete(job_id)
+                translator_utils.update({"active": False}, {"jobID": job_id})
         except Exception as e:
             log_exception(prefix + " -- Exception while pushing Translator data to sink: " + str(e), obj, e)
             return None

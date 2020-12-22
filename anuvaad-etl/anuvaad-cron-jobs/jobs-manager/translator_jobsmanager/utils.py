@@ -34,7 +34,7 @@ class TranslatorCronUtils:
     # Searches the object into mongo collection
     def find_all(self):
         col = self.instantiate(mongo_translator_collection)
-        res = col.find({})
+        res = col.find({{"active": True}, {'_id': False}})
         result = []
         for record in res:
             result.append(record)
@@ -44,6 +44,14 @@ class TranslatorCronUtils:
     def delete(self, job_id):
         col = self.instantiate(mongo_translator_collection)
         col.remove({"jobID": job_id})
+
+    # Updates the object in the mongo collection
+    def update(self, object_in, criteria):
+        col = self.instantiate(mongo_translator_collection)
+        col.update(
+            criteria,
+            {"$set": object_in}
+        )
 
     # Util method to make an API call and fetch the result
     def call_api(self, uri, method, api_input, params, user_id):
