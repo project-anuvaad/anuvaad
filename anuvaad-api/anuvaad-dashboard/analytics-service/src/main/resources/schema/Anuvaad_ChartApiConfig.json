@@ -119,11 +119,10 @@
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"FILE_TRANSLATE\"}},{\"term\":{\"events.edata.type.keyword\":\"END_JOB\"}},{\"term\":{\"events.object.file_status.keyword\":\"COMPLETED\"}}]}},\"aggs\":{\"Completed Documents\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Document Count\":{\"cardinality\":{\"field\":\"context.did.keyword\"}}}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"FILE_TRANSLATE\"}},{\"term\":{\"events.edata.type.keyword\":\"END_JOB\"}},{\"term\":{\"events.object.file_status.keyword\":\"COMPLETED\"}}]}},\"aggs\":{\"Completed Documents\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Document Count\":{\"cardinality\":{\"field\":\"events.object.job_id.keyword\"}}}}}}}}"
 			}
 		],
 		"chartType": "line",
-		"resultType": "doc_count",
 		"valueType": "number",
 		"isDecimal": false,
 		"action": "",
@@ -149,11 +148,10 @@
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"FILE_TRANSLATE\"}},{\"term\":{\"events.edata.type.keyword\":\"END_JOB\"}},{\"term\":{\"events.object.file_status.keyword\":\"FAILED\"}}]}},\"aggs\":{\"Failed Documents\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Document Count\":{\"cardinality\":{\"field\":\"context.did.keyword\"}}}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"FILE_TRANSLATE\"}},{\"term\":{\"events.edata.type.keyword\":\"END_JOB\"}},{\"term\":{\"events.object.file_status.keyword\":\"FAILED\"}}]}},\"aggs\":{\"Failed Documents\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Document Count\":{\"cardinality\":{\"field\":\"events.object.job_id.keyword\"}}}}}}}}"
 			}
 		],
 		"chartType": "line",
-		"resultType": "doc_count",
 		"valueType": "number",
 		"isDecimal": false,
 		"action": "",
