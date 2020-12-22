@@ -19,6 +19,11 @@ kafka_topic = [
     "consumer":os.environ.get('KAFKA_NMT_TRANSLATION_INPUT_TOPIC', nmt_input_topic_default),
     "producer":os.environ.get('KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC', nmt_output_topic_default),
     "description":"kafka topics with WFM"
+  },
+  {
+    "consumer":os.environ.get('KAFKA_NMT_TRANSLATION_INPUT_TOPIC', "nmt_input_topic_performance"),
+    "producer":os.environ.get('KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC', "nmt_output_topic_performance"),
+    "description":"kafka topics with WFM"
   }
 ]
 
