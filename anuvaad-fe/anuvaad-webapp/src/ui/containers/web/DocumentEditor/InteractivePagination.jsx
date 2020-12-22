@@ -162,11 +162,10 @@ class InteractivePagination extends React.Component {
                   GO
         </Button>
                 {!this.props.show_pdf &&
-                  <div style = {{ display: "flex",marginLeft:'5%', 
-                    flexWrap: "nowrap"}}>
-                    {this.sentenceCount()>0 && (
-                      <div >
-                        <Typography variant="subtitle1" component="h3" style={{paddingRight:'15px'}}>
+                  <>
+                    {this.sentenceCount() && (
+                      <div style={{ position: "absolute", marginLeft: "62%" }}>
+                        <Typography variant="subtitle1" component="h2">
                           Page Sentences
                   </Typography>
 
@@ -176,8 +175,8 @@ class InteractivePagination extends React.Component {
                       </div>
                     )}
 
-                    {this.props.job_status && this.props.job_status.word_status && <div>
-                      <Typography variant="subtitle1" component="h3" style={{paddingRight:'15px'}}>
+                    {this.props.job_status && this.props.job_status.word_status && <div style={{ position: "absolute", marginLeft: "70%" }}>
+                      <Typography variant="subtitle1" component="h2">
                         Total Word Count
                   </Typography>
 
@@ -186,8 +185,8 @@ class InteractivePagination extends React.Component {
                       </div>
                     </div>}
 
-                    {this.props.job_status&& this.props.job_status.status && <div>
-                      <Typography variant="subtitle1" component="h3">
+                    {this.props.job_status&& this.props.job_status.status && <div style={{ position: "absolute", marginLeft: "79%" }}>
+                      <Typography variant="subtitle1" component="h2">
                         Total Sentences
                   </Typography>
 
@@ -199,7 +198,7 @@ class InteractivePagination extends React.Component {
                     <div style={{ position: "absolute", right: "30px" }}>
                       {this.renderNormaModeButtons()}
                     </div>
-                  </div>}
+                  </>}
               </>
             )}
 
