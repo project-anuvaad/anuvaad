@@ -12,6 +12,8 @@ from src.services.region_unifier import region_unifier
 
 
 def segment_regions(lines,regions):
+
+
     v_list = collate_regions(regions,lines)
     #print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",v_list[0],"fffffffffffffffffffffffffffffffff")
     p_list = []
