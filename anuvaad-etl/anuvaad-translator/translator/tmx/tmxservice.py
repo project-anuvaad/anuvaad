@@ -35,10 +35,10 @@ class TMXService:
                 for col in range(number_of_columns):
                     values.append(sheet.cell(row, col).value)
                 if row == 0:
-                    if values[0] != "Source" or values[1] != "Target" or values[2] != "Locale":
+                    if values[0] != "Source".strip() or values[1] != "Target".strip() or values[2] != "Locale".strip():
                         return {"message": "Source | Target | Locale - either of these columns is Missing", "status": "FAILED"}
                 else:
-                    values_dict = {"src": values[0], "tgt": values[1], "locale": values[2]}
+                    values_dict = {"src": str(values[0]).strip(), "tgt": str(values[1]).strip(), "locale": str(values[2]).strip()}
                     tmx_input.append(values_dict)
             tmx_record = {"context": api_input["context"], "sentences": tmx_input}
             if 'userID' in api_input.keys():
