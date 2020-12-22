@@ -146,7 +146,7 @@
 							"name": "Completed Translation Trend",
 							"dimensions": {
 								"height": 250,
-								"width": 3
+								"width": 4
 							},
 							"vizType": "chart",
 							"noUnit": true,
@@ -167,7 +167,7 @@
 							"name": "Failed Translation Trend",
 							"dimensions": {
 								"height": 250,
-								"width": 3
+								"width": 4
 							},
 							"vizType": "chart",
 							"noUnit": true,
@@ -188,7 +188,7 @@
 							"name": "Merge Operations Trend",
 							"dimensions": {
 								"height": 250,
-								"width": 3
+								"width": 4
 							},
 							"vizType": "chart",
 							"noUnit": true,
@@ -203,13 +203,19 @@
 									"headers": []
 								}
 							]
-						},
+						}
+					]
+				},
+				{
+					"row": 3,
+					"name": "Target Language",
+					"vizArray": [
 						{
 							"id": 4,
 							"name": "Split Operations Trend",
 							"dimensions": {
 								"height": 250,
-								"width": 3
+								"width": 4
 							},
 							"vizType": "chart",
 							"noUnit": true,
