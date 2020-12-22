@@ -105,7 +105,7 @@ class TranslatorService:
                 for batch_no in batches.keys():
                     batch = batches[batch_no]
                     record_id_enhanced = record_id + "|" + str(len(batch))
-                    nmt_in = {"record_id": record_id_enhanced, "message": batch}
+                    nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
                     producer.produce(nmt_in, anu_nmt_input_topic)
                     sentences_per_page += len(batch)
                     total_sentences += len(batch)
@@ -150,8 +150,7 @@ class TranslatorService:
                     tmx_phrases = self.fetch_tmx(sentence["src"], file, translate_wf_input)
                     tmx_count += len(tmx_phrases)
                     node_id = str(record_id) + "|" + str(page_no) + "|" + str(block_id)
-                    sent_nmt_in = {"src": sentence["src"], "s_id": sentence["s_id"], "id": file["model"]["model_id"],
-                                   "n_id": node_id, "tmx_phrases": tmx_phrases}
+                    sent_nmt_in = {"src": sentence["src"], "s_id": sentence["s_id"], "n_id": node_id, "tmx_phrases": tmx_phrases}
                     if batch_key in sentences_for_trans.keys():
                         sentence_list = sentences_for_trans[batch_key]
                         sentence_list.append(sent_nmt_in)
