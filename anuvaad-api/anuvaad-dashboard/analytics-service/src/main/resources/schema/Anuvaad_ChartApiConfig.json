@@ -1,6 +1,6 @@
 {
 	"engTargetLang": {
-		"chartName": "Target Language",
+		"chartName": "Top 5 Target Language",
 		"queries": [
 			{
 				"module": "COMMON",
@@ -8,7 +8,7 @@
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"Target Language Filter\":{\"filter\":{\"bool\":{\"must_not\":[{\"term\":{\"events.object.target_langauge.keyword\":\"\"}},{\"term\":{\"events.object.target_langauge.keyword\":\"undefined\"}}]}},\"aggs\":{\"Target Language\":{\"terms\":{\"field\":\"events.object.target_langauge.keyword\",\"size\":100}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"Target Language Filter\":{\"filter\":{\"bool\":{\"must_not\":[{\"term\":{\"events.object.target_langauge.keyword\":\"\"}},{\"term\":{\"events.object.target_langauge.keyword\":\"undefined\"}}]}},\"aggs\":{\"Target Language\":{\"terms\":{\"field\":\"events.object.target_langauge.keyword\",\"size\":5}}}}}}"
 			}
 		],
 		"chartType": "pie",
@@ -27,7 +27,7 @@
 		"_comment": " "
 	},
 	"sourceLangToEng": {
-		"chartName": "Source Language",
+		"chartName": "Top 5 Source Language",
 		"queries": [
 			{
 				"module": "COMMON",
@@ -35,7 +35,7 @@
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must_not\":[{\"term\":{\"events.object.source_language.keyword\":\"\"}},{\"term\":{\"events.object.source_language.keyword\":\"undefined\"}},{\"term\":{\"events.object.source_language.keyword\":\"signup\"}}]}},\"aggs\":{\"Source Language\":{\"terms\":{\"field\":\"events.object.source_language.keyword\",\"size\":100}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must_not\":[{\"term\":{\"events.object.source_language.keyword\":\"\"}},{\"term\":{\"events.object.source_language.keyword\":\"undefined\"}},{\"term\":{\"events.object.source_language.keyword\":\"signup\"}}]}},\"aggs\":{\"Source Language\":{\"terms\":{\"field\":\"events.object.source_language.keyword\",\"size\":5}}}}}}"
 			}
 		],
 		"chartType": "pie",
