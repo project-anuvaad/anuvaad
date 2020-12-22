@@ -8,7 +8,7 @@
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"FileTranslateFilter\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Target Language\":{\"terms\":{\"field\":\"events.object.target_langauge.keyword\"}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must_not\":[{\"term\":{\"events.object.target_langauge.keyword\":\"\"}}]}},\"aggs\":{\"Target Language\":{\"terms\":{\"field\":\"events.object.target_langauge.keyword\",\"size\":100}}}}}}"
 			}
 		],
 		"chartType": "pie",
@@ -35,7 +35,7 @@
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"FileTranslateFilter\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Source Language\":{\"terms\":{\"field\":\"events.object.source_language.keyword\"}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must_not\":[{\"term\":{\"events.object.source_language.keyword\":\"\"}}]}},\"aggs\":{\"Source Language\":{\"terms\":{\"field\":\"events.object.source_language.keyword\",\"size\":100}}}}}}"
 			}
 		],
 		"chartType": "pie",
