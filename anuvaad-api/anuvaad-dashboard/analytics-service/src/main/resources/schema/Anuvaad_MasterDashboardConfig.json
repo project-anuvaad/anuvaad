@@ -76,11 +76,11 @@
 			"visualizations": [
 				{
 					"row": 1,
-					"name": "Top 5 Language",
+					"name": "Language",
 					"vizArray": [
 						{
 							"id": 1,
-							"name": "Top 5 Target Language",
+							"name": "Target Language",
 							"dimensions": {
 								"height": 250,
 								"width": 4
@@ -91,7 +91,7 @@
 							"charts": [
 								{
 									"id": "engTargetLang",
-									"name": "Top 5 Target Language",
+									"name": "Target Language",
 									"code": "",
 									"chartType": "pie",
 									"filter": "",
@@ -101,7 +101,7 @@
 						},
 						{
 							"id": 2,
-							"name": "Top 5 Source Language",
+							"name": "Source Language",
 							"dimensions": {
 								"height": 250,
 								"width": 4
@@ -112,7 +112,7 @@
 							"charts": [
 								{
 									"id": "sourceLangToEng",
-									"name": "Top 5 Source Language",
+									"name": "Source Language",
 									"code": "",
 									"chartType": "pie",
 									"filter": "",
