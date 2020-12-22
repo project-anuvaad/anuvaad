@@ -38,6 +38,7 @@ class LabseAlignerService:
                    
         except Exception as e:
             log_exception("Error in LabseAlignerService:phrase_aligner: {} and {}".format(sys.exc_info()[0],e),MODULE_CONTEXT,e)
+            log_exception("Error caught in LabseAlignerService:phrase_aligner for input: {}".format(inputs),MODULE_CONTEXT,e)
             raise
 
         return out

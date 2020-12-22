@@ -65,7 +65,7 @@ class KafkaTranslate:
                 producer_topic = [topic["producer"] for topic in config.kafka_topic if topic["consumer"] == msg.topic][0]
                 log_info("Producer for current consumer:{} is-{}".format(msg.topic,producer_topic),MODULE_CONTEXT)
                 msg_count +=1
-                log_info("*******************msg received count: {}************".format(msg_count),MODULE_CONTEXT)
+                log_info("*******************msg received count: {}; at {} ************".format(msg_count,datetime.datetime.now()),MODULE_CONTEXT)
                 inputs = msg.value
                 translation_batch = {}
                 src_list, response_body = list(), list()
@@ -112,7 +112,7 @@ class KafkaTranslate:
                 producer.send(producer_topic, value={'out':out})
                 producer.flush()
                 msg_sent += 1
-                log_info("*******************msg sent count: {}**************".format(msg_sent),MODULE_CONTEXT)
+                log_info("*******************msg sent count: {}; at {} **************".format(msg_sent,datetime.datetime.now()),MODULE_CONTEXT)
         except ValueError as e:  
             '''includes simplejson.decoder.JSONDecodeError '''
             log_exception("JSON decoding failed in KafkaTranslate-batch_translator method: {}".format(e),MODULE_CONTEXT,e)
