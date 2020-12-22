@@ -2,7 +2,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 import src.utilities.app_context as app_context
-#from src.services.get_underline import get_underline
+from src.services.region_unifier import region_unifier
 #from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
 from compose import compose
 import config,time
@@ -46,6 +46,8 @@ def get_layout(app_context) :
                 line_coords = get_coord(page_lines)
                 page_path   = '/'.join(page_path.split('/')[-4:])
                 regions     = primalaynet.predict_primanet(page_path, line_coords)
+                #print(regions)
+                regions = region_unifier(regions)
                 file['pages'][idx]["regions"]=regions
             file['file'] = file_new['file']
             file['config'] = file_new['config']
