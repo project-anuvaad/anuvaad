@@ -196,7 +196,7 @@ class TMXService:
                             phrase["nmt_tgt"] = modified_nmt_tgt
                             repo.upsert(phrase["hash"], phrase)
                     else:
-                        log_info("No LaBSE alignments available!", ctx)
+                        log_info("No LaBSE alignments found!", ctx)
                         log_info("LaBSE - " + str(nmt_req), ctx)
                     return tgt
             else:
