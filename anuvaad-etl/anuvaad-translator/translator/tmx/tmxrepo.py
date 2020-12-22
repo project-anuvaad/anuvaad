@@ -44,8 +44,13 @@ class TMXRepository:
             return mongo_client
 
     def upsert(self, key, value):
-        client = self.get_redis_instance()
-        client.set(key, json.dumps(value))
+        try:
+            client = self.get_redis_instance()
+            client.set(key, json.dumps(value))
+            return 1
+        except Exception as e:
+            log_exception("Exception in REPO: upsert | Cause: " + str(e), None, e)
+            return None
 
     def search(self, key_list):
         try:

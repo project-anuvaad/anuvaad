@@ -214,7 +214,7 @@ class TranslatorService:
                                           translate_wf_input)  # Find a way to do batch update directly on MongoDB
                     trans_count += len(sentences_of_the_batch)
                 except Exception as e:
-                    log_exception("Exception while saving translations: " + str(e), translate_wf_input, e)
+                    log_exception("Exception while saving translations to DB: " + str(e), translate_wf_input, e)
                     skip_count += len(sentences_of_the_batch)
             self.update_translation_status(record_id, trans_count, skip_count, translate_wf_input)
         except Exception as e:
