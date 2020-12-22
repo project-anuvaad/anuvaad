@@ -16,10 +16,8 @@ from config.regex_patterns import patterns
 from onmt.translate import ServerModelError
 import config
 import datetime
-# from services.model_loader import Loadmodels
 from services import load_models
 
-# load_models = Loadmodels()
 
 class TranslateService:  
     @staticmethod
