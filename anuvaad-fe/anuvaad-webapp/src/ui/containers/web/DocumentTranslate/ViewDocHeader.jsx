@@ -61,7 +61,7 @@ class ViewDocHeader extends React.Component {
                         <IconButton onClick={() => this.props.showSidebar()} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
                             <CloseIcon />
                         </IconButton> :
-                    <IconButton onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
+                    <IconButton id="open-menu" onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
                         <MenuIcon />
                     </IconButton>
                     }
