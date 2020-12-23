@@ -160,35 +160,7 @@ class SentenceCard extends React.Component {
         return found;
     }
 
-    /**
-     * api calls
-     */
-    async makeAPICallInteractiveTranslation() {
 
-        this.setState({ isCardBusy: true })
-        let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, this.state.value, this.props.modelId, true, '', this.props.sentence.s_id);
-        const apiReq = fetch(apiObj.apiEndPoint(), {
-            method: 'post',
-            body: JSON.stringify(apiObj.getBody()),
-            headers: apiObj.getHeaders().headers
-        }).then(async response => {
-            const rsp_data = await response.json();
-            if (!response.ok) {
-                this.setState({ isCardBusy: false })
-                return Promise.reject('');
-            } else {
-                this.setState({
-                    suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
-                    isCardBusy: false
-                })
-            }
-        }).catch((error) => {
-            this.setState({
-                suggestions: [],
-                isCardBusy: false
-            })
-        });
-    }
 
     /**
      * user actions handlers
@@ -286,40 +258,13 @@ class SentenceCard extends React.Component {
         });
     }
 
-    handleKeyDown = (event) => {
-        let charCode = String.fromCharCode(event.which).toLowerCase();
-        /**
-         * Ctrl+s
-         */
-        if ((event.ctrlKey || event.metaKey) && charCode === 's') {
-            this.processSaveButtonClicked()
-            event.preventDefault();
-            return false
-        }
 
-        if ((event.ctrlKey || event.metaKey) && charCode === 'm') {
-           this.moveText()
-            event.preventDefault();
-            return false
-        }
 
-        /**
-         * user requesting for suggestions
-         */
-        var TABKEY = 9;
-        if (event.keyCode === TABKEY) {
-            this.setState({ showSuggestions: true })
-            this.makeAPICallInteractiveTranslation(this.props.sentence)
-            event.preventDefault();
-            return false
-        }
-    }
-
-    moveText () {
-        if(!this.props.sentence.s0_tgt) {
+    moveText() {
+        if (!this.props.sentence.s0_tgt) {
             alert("Sorry, Machine translated text is not available...")
         } else {
-            if(this.state.value === this.props.sentence.s0_tgt) {
+            if (this.state.value === this.props.sentence.s0_tgt) {
                 this.setState({
                     value: this.props.sentence.s0_tgt,
                 })
@@ -398,16 +343,87 @@ class SentenceCard extends React.Component {
         )
     }
 
+    /**
+    * api calls
+    */
+    async makeAPICallInteractiveTranslation(caret) {
+        let val = this.state.value.slice(0, caret)
+
+        this.setState({ isCardBusy: true })
+        let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.modelId, true, '', this.props.sentence.s_id);
+        const apiReq = fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            body: JSON.stringify(apiObj.getBody()),
+            headers: apiObj.getHeaders().headers
+        }).then(async response => {
+            const rsp_data = await response.json();
+            if (!response.ok) {
+                this.setState({ isCardBusy: false })
+                return Promise.reject('');
+            } else {
+                this.setState({
+                    suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
+                    isCardBusy: false
+                })
+            }
+        }).catch((error) => {
+            this.setState({
+                suggestions: [],
+                isCardBusy: false
+            })
+        });
+    }
+
+    handleKeyDown = (event) => {
+        let charCode = String.fromCharCode(event.which).toLowerCase();
+        /**
+         * Ctrl+s
+         */
+        if ((event.ctrlKey || event.metaKey) && charCode === 's') {
+            this.processSaveButtonClicked()
+            event.preventDefault();
+            return false
+        }
+
+        if ((event.ctrlKey || event.metaKey) && charCode === 'm') {
+            this.moveText()
+            event.preventDefault();
+            return false
+        }
+
+        /**
+         * user requesting for suggestions
+         */
+        var TABKEY = 9;
+        if (event.keyCode === TABKEY) {
+            var elem = document.getElementById(this.props.sentence.s_id)
+            this.setState({ showSuggestions: true })
+            this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
+            event.preventDefault();
+            return false
+        }
+    }
+
+    renderAutoCompleteText(option, caretStr) {
+        var elem = document.getElementById(this.props.sentence.s_id)
+        var selectedText = this.state.value.slice(0, elem.selectionEnd) + " "
+        let value = option.slice(elem.selectionEnd, option.length)
+
+        return (<div><span style={{ color: "blue" }}>{selectedText}</span><span>{value}</span></div>)
+    }
+
     renderUserInputArea = () => {
+
         return (
-            <form name={this.props.sentence.s_id}>
+            <form >
                 <div>
                     <Autocomplete
                         filterOptions={filterOptions}
+                        id={this.props.sentence.s_id}
                         getOptionLabel={option => option.name}
                         getOptionSelected={(option, value) => option.name === value.name}
                         renderOption={(option, index) => {
-                            return (<Typography>{option.name}</Typography>)
+                            return this.renderAutoCompleteText(option.name, this.state.value)
                         }}
                         options={this.state.suggestions}
                         disableClearable
@@ -418,9 +434,13 @@ class SentenceCard extends React.Component {
                         freeSolo={true}
                         loadingText={'Loading ...'}
                         onChange={(event, newValue) => {
+                            let option = newValue.name ? newValue.name : newValue
+                            var elem = document.getElementById(this.props.sentence.s_id)
+                            var selectedText = option.slice(0, elem.selectionStart)
+                            let caretValue = option.slice(elem.selectionEnd, option.length)
 
                             this.setState({
-                                value: newValue.name ? newValue.name : newValue, //this.state.value + ' ' + newValue.name,
+                                value: (selectedText ? selectedText.trim() : selectedText) + " " + (caretValue ? caretValue.trim() + " " : caretValue),
                                 showSuggestions: false,
                                 userEnteredText: true
                             });
@@ -473,7 +493,7 @@ class SentenceCard extends React.Component {
 
 
     async makeAPICallDictionary() {
-        this.setState({ showStatus: true, message: "Fetching meanings"})
+        this.setState({ showStatus: true, message: "Fetching meanings" })
         let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.word_locale, this.props.tgt_locale)
         const apiReq = await fetch(apiObj.apiEndPoint(), {
             method: 'post',
@@ -490,7 +510,7 @@ class SentenceCard extends React.Component {
                 result.parallel_words.map((words) => {
                     if (this.props.tgt_locale === words.locale)
                         parallel_words.push(words.name)
-                    this.setState({showStatus: false, message: null})
+                    this.setState({ showStatus: false, message: null })
                 })
                 this.setState({
                     parallel_words: parallel_words,
@@ -502,16 +522,16 @@ class SentenceCard extends React.Component {
 
     renderProgressInformation = () => {
         return (
-          <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            open={this.state.showStatus}
-            message={this.state.message}
-           
-          >
-            <Alert elevation={6} variant="filled" severity="info">{this.state.message}</Alert>
-          </Snackbar>
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                open={this.state.showStatus}
+                message={this.state.message}
+
+            >
+                <Alert elevation={6} variant="filled" severity="info">{this.state.message}</Alert>
+            </Snackbar>
         )
-      }
+    }
 
     handleClose = () => {
         this.setState({
