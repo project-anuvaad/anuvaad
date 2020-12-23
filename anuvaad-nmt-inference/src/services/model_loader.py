@@ -29,7 +29,7 @@ class Loadmodels:
     def return_loaded_models(self,model_paths,ids):
         loaded_models = {}
         for i,path in enumerate(model_paths):             
-            translator = ctranslate2.Translator(path)
+            translator = ctranslate2.Translator(path,device="cuda")
             loaded_models[ids[i]] = translator
             log_info("Model Loaded: {}".format(ids[i]),MODULE_CONTEXT) 
         return loaded_models 
