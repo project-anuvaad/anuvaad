@@ -55,8 +55,6 @@ def process_block_segmenter_kf():
                 log_info('process_layout_detector_kf - received invalid data {}'.format(msg.value), None)
                 continue
             data            = Consumer.get_json_data(msg.value)
-            print(data)
-            print(msg,'dffffffffff')
 
             jobid           = data['jobID']
             log_info('process_layout_detector_kf - received message from kafka, dumping into internal queue', data)
