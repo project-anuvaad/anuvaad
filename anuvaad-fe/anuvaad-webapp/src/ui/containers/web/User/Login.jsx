@@ -152,6 +152,7 @@ class Login extends React.Component {
 
                 <div className={classes.wrapper}>
                   <Button
+                  id="signin-btn"
                     variant="contained" aria-label="edit" style={{
                       width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
                       backgroundColor: this.state.loading ? 'grey' : '#1ca9c9', color: 'white',
@@ -165,8 +166,8 @@ class Login extends React.Component {
               </FormControl>
 
               <Typography>
-                <Link style={{ cursor: 'pointer', color: '#0C8AA9', marginLeft: '25%', float: 'left' }} href="#" onClick={() => { history.push(`${process.env.PUBLIC_URL}/forgot-password`); }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
-                <Link style={{ cursor: 'pointer', color: '#0C8AA9', marginRight: '25%', float: 'right' }} href="#" onClick={() =>{ history.push(`${process.env.PUBLIC_URL}/signup`); }}> {translate('singUp.page.label.signUp')}</Link>
+                <Link id="forgotpassword" style={{ cursor: 'pointer', color: '#0C8AA9', marginLeft: '25%', float: 'left' }} href="#" onClick={() => { history.push(`${process.env.PUBLIC_URL}/forgot-password`); }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
+                <Link id= "signup" style={{ cursor: 'pointer', color: '#0C8AA9', marginRight: '25%', float: 'right' }} href="#" onClick={() =>{ history.push(`${process.env.PUBLIC_URL}/signup`); }}> {translate('singUp.page.label.signUp')}</Link>
               </Typography>
             </Grid>
           </Grid>
