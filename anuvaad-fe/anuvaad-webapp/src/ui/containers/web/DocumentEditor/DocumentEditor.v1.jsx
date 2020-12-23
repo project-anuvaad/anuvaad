@@ -498,7 +498,12 @@ class DocumentEditor extends React.Component {
   }
   processZoomIn = () => {
     if (this.state.zoomPercent < 140) {
-      this.setState({ zoomPercent: this.state.zoomPercent + 10, zoomOutDisabled: false })
+      if (this.state.zoomPercent + 10 === 140) {
+        this.setState({ zoomPercent: this.state.zoomPercent + 10, zoomInDisabled: !this.state.zoomInDisabled })
+      }
+      else {
+        this.setState({ zoomPercent: this.state.zoomPercent + 10, zoomOutDisabled: false })
+      }
     } else {
       this.setState({ zoomInDisabled: !this.state.zoomInDisabled })
     }
@@ -506,7 +511,12 @@ class DocumentEditor extends React.Component {
 
   processZoomOut = () => {
     if (this.state.zoomPercent > 60) {
-      this.setState({ zoomPercent: this.state.zoomPercent - 10, zoomInDisabled: false })
+      if (this.state.zoomPercent - 10 === 60) {
+        this.setState({ zoomPercent: this.state.zoomPercent - 10, zoomOutDisabled: !this.state.zoomOutDisabled })
+      }
+      else {
+        this.setState({ zoomPercent: this.state.zoomPercent - 10, zoomInDisabled: false })
+      }
     } else {
       this.setState({ zoomOutDisabled: !this.state.zoomOutDisabled })
     }
@@ -553,8 +563,8 @@ class DocumentEditor extends React.Component {
    */
   processZoom = () => {
     return (
-      <div style= {{marginLeft:'1%',marginRight:"2%"}}>
-        <Button         
+      <div style={{ marginLeft: '1%', marginRight: "2%" }}>
+        <Button
           variant="outlined"
           color="primary"
           onClick={this.processZoomIn}
@@ -578,7 +588,7 @@ class DocumentEditor extends React.Component {
           color="primary"
           onClick={this.processZoomOut}
           disabled={this.state.zoomOutDisabled}
-         >
+        >
           -
           </Button>
       </div >);

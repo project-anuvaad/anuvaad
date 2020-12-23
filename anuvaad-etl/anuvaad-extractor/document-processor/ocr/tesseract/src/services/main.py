@@ -9,14 +9,14 @@ from src.services.dynamic_adjustment import coord_adjustment
 
 
 
-def get_ocr(app_context) :
+def get_ocr(app_context,base_dir):
     try:
         files       = get_files(app_context.application_context)        
         file_images = []
         output      = []
         for index,file_new in enumerate(files):
             ocr_level, lang = get_ocr_config(file_new)
-            file   = get_json(file_new['file']['name'])[0]
+            file   = get_json(file_new['file']['name'],base_dir)[0]
             file_properties = File(file)
             page_paths      = file_properties.get_pages()
             start_time = time.time()
@@ -52,11 +52,11 @@ def get_ocr(app_context) :
 
     return app_context.application_context
 
-def TesseractOCR(app_context):
+def TesseractOCR(app_context,base_dir= config.BASE_DIR):
     
     log_debug('tesseract ocr process starting {}'.format(app_context.application_context), app_context.application_context)
     try:
-        response   = get_ocr(app_context)
+        response   = get_ocr(app_context,base_dir)
         return {
                 'code': 200,
                 'message': 'request completed',

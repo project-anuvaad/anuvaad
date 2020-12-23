@@ -18,7 +18,7 @@ export const init = () => {
       env: "DEV",
       did: "20d63257084c2dca33f31a8f14d8e94c0d939de4",
       channel: 'developers.anuvaad.org',
-      batchsize: 10,
+      batchsize: 1,
       endpoint: "/v1/telemetry",
       apislug: "/anuvaad-telemetry",
     }
@@ -33,7 +33,7 @@ export const init = () => {
       env: "PROD",
       did: "20d63257084c2dca33f31a8f14d8e94c0d939de4",
       channel: CONFIGS.BASE_URL_AUTO.replace(/(^\w+:|^)\/\//, ''),
-      batchsize: 20,
+      batchsize: 1,
       endpoint: "/v1/telemetry",
       apislug: "/anuvaad-telemetry",
     }
@@ -174,7 +174,7 @@ export const startWorkflow = (source_language, target_language, filename, job_id
     object: {
       id: filename,
       source_language: source_language,
-      target_language: target_language,
+      target_langauge: target_language,
       job_id: job_id
     }
   }
@@ -204,7 +204,7 @@ export const endWorkflow = (source_language, target_language, filename, job_id, 
     object: {
       id: filename,
       source_language: source_language,
-      target_language: target_language,
+      target_langauge: target_language,
       job_id: job_id,
       file_status: file_status
     }
@@ -241,7 +241,7 @@ export const startTranslatorFlow = (source_language, target_language, filename, 
     object: {
       id: filename,
       source_language: source_language,
-      target_language: target_language,
+      target_langauge: target_language,
       job_id: job_id
     }
   }
