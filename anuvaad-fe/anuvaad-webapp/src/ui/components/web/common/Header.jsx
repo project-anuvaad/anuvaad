@@ -127,7 +127,7 @@ class Header extends React.Component {
   render() {
     const { classes, title, forDemo, dontShowHeader, currentMenu, open_sidebar } = this.props;
 
-    var role    =[localStorage.getItem("roles")];
+    var role = [localStorage.getItem("roles")];
     var useRole = [];
     role.map((item, value) => {
       useRole.push(item); value !== role.length - 1 && useRole.push(", ")
@@ -146,9 +146,9 @@ class Header extends React.Component {
                 <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
                   <CloseIcon />
                 </IconButton> :
-                  <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
-                    <MenuIcon />
-                  </IconButton>
+                <IconButton id="menu" onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
+                  <MenuIcon />
+                </IconButton>
               }
               <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
               {forDemo &&
@@ -203,11 +203,12 @@ class Header extends React.Component {
                     />
                   </ListItem>
 
-                  {role && Array.isArray(role) &&  !role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && !role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
                       <ListItem
+                        id="instant-translate"
                         style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "dashboard" && themeAnuvaad.palette.primary.main }}
                         button
                         onClick={() => {
@@ -217,6 +218,7 @@ class Header extends React.Component {
                       >
 
                         <ListItemText
+
                           disableTypography
                           primary={
                             <Typography type="body2" style={{ color: currentMenu === "dashboard" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
@@ -227,11 +229,12 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
-                  {role && Array.isArray(role) &&  role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
                       <ListItem
+                        id="user-details"
                         style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "userdetails" && themeAnuvaad.palette.primary.main }}
                         button
                         onClick={() => {
@@ -256,6 +259,7 @@ class Header extends React.Component {
                     <div>
                       <Divider className={classes.divider} />
                       <ListItem
+                        id="view-document"
                         style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "view-document" && themeAnuvaad.palette.primary.main }}
                         button
                         onClick={() => {
@@ -280,6 +284,7 @@ class Header extends React.Component {
                     <Divider className={classes.divider} />
 
                     <ListItem
+                      id="profile"
                       style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "profile" && themeAnuvaad.palette.primary.main }}
                       button
                       onClick={() => {
@@ -303,6 +308,7 @@ class Header extends React.Component {
                     <Divider className={classes.divider} />
 
                     <ListItem
+                      id="logout"
                       style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "logout" && themeAnuvaad.palette.primary.main }}
                       button
                       onClick={() => {
