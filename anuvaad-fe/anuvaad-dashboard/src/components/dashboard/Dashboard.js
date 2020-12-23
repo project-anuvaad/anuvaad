@@ -139,7 +139,7 @@ class Dashboard extends Component {
           <div className="col-md-12 mt-5">
             {!this.state.trigger &&
               this.state.dashboardConfigData &&
-              this.state.dashboardConfigData.length &&
+              this.state.dashboardConfigData.length>0 &&
               this.renderCharts()}
             {this.state.trigger &&
               this.state.dashboardConfigData &&

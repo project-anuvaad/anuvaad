@@ -56,7 +56,7 @@ html {
   --horizontalbar-color: #ffffff;
   --dashboard-icon: url("../img/dashboard_black.png");
   /* --logo-image: url("../img/logoTarento.png"); */
-  --logo-image: url("../img/logowhite.png");
+  --logo-image: url("../img/AnuvaadLogo.svg");
   /* --logo-image: url("../img/iGOT_logo.png"); */
   --logo-footer-image: url("../img/logoTarento.png");
   --download-image: url("../img/three_dots.png");
@@ -796,7 +796,7 @@ hr.topLineHelp {
   background-size: contain;
   cursor: pointer;
   background-color: var(--main-navbar);
-  /* background-size: 100px 28px; */
+  background-size: 100px 28px;
 }
 
 .loginSection {
