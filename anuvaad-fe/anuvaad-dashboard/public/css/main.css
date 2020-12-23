@@ -55,9 +55,10 @@ html {
   --widget-text: #000000;
   --horizontalbar-color: #ffffff;
   --dashboard-icon: url("../img/dashboard_black.png");
+  /* --logo-image: url("../img/logoTarento.png"); */
   --logo-image: url("../img/AnuvaadLogo.svg");
   /* --logo-image: url("../img/iGOT_logo.png"); */
-  --logo-image: url("../img/AnuvaadLogo.svg");
+  --logo-footer-image: url("../img/logoTarento.png");
   --download-image: url("../img/three_dots.png");
   --download-dash-image: url("../img/down-arrow.png");
   --btn-border: #d8d8d8;
@@ -92,8 +93,7 @@ html[data-theme="dark"] {
   --widget-text: #ffffff;
   --horizontalbar-color: #292933;
   --dashboard-icon: url("../img/dashboard_white.png");
-  --logo-image: url("../img/AnuvaadLogo.svg");
-  --logo-footer-image: url("../img/logowhite.png");
+  --logo-footer-image: url("../img/logoTarento.png");
   /* --logo-image: url("../img/iGOT_logo_d1.png"); */
   --download-image: url("../img/three_dots_white.png");
   --download-dash-image: url("../img/down-arrow_white.png");
