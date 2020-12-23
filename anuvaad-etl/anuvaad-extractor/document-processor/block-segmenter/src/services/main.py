@@ -9,7 +9,20 @@ from src.services.segment import horzontal_merging, break_block
 from src.utilities.region_operations import collate_regions, get_ngram, are_hlines
 from src.services.region_unifier import region_unifier
 
+# save_dir = '/home/naresh/judgement_layout_pubnet/'
 
+# def draw_box(resp,filepath,save_dir,color="green", save=False):
+#     image  = Image.open("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/"+filepath)
+#     draw   = ImageDraw.Draw(image)
+#     for i in resp['rsp']['outputs'][0]['pages'][page_index]['regions']:
+#         draw.rectangle(((i['boundingBox']['vertices'][0]['x'], i['boundingBox']['vertices'][0]['y']), (i['boundingBox']['vertices'][2]['x'],i['boundingBox']['vertices'][2]['y'])), outline=color,width=3)
+        
+    
+#     save_filepath = os.path.join(save_dir, "bbox_layout_"+os.path.basename(filepath))
+#     if save:
+#         image.save(save_filepath)
+    
+#     return image
 
 def segment_regions(lines,regions):
 
@@ -21,7 +34,8 @@ def segment_regions(lines,regions):
         #print(v_block,'vvvbbbbb')
         if len(v_block['children']) > 1 :
             v_block['children'] = horzontal_merging(v_block['children'])
-            p_list +=  break_block(v_block)
+            #p_list +=  break_block(v_block)
+            p_list +=[v_block]
         else :
             p_list +=  v_block['children']
     return p_list
@@ -40,7 +54,8 @@ def get_segmented_regions(app_context,base_dir) :
             for page_index in range(page_counts):
                 page_lines   =  file_properties.get_lines(page_index)
                 page_regions =  file_properties.get_regions(page_index)
-                #page_regions =  region_unifier(page_lines,page_regions)
+                #draw_box(page_regions,filepath,save_dir,color="green", save=True)
+                page_regions =  region_unifier(page_lines,page_regions)
                 file_properties.set_regions(page_index, segment_regions(page_lines,page_regions))
             output.append(file_properties.get_file())
             output[index]['status']= {'message':"block-segmenter successful"}

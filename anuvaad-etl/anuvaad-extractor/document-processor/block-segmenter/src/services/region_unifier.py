@@ -2,10 +2,36 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 from collections import namedtuple
-from src.utilities.region_operations import collate_regions, MapKeys
-keys = MapKeys
+from src.utilities.region_operations import collate_regions
+from src.services.segment import horzontal_merging, break_block
+
 
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
+
+class MapKeys:
+    def __init__(self):
+        self.left    =  None
+        self.right   =  None
+        self.top     =  None
+        self.bottom  =  None
+
+    def get_left(self,box):
+        left = int(box['boundingBox']['vertices'][0]['x'])
+        return left
+
+    def get_right(self,box):
+        right = int(box['boundingBox']['vertices'][1]['x'])
+        return right
+
+    def get_top(self,box):
+        top = int(box['boundingBox']['vertices'][0]['y'])
+        return top
+
+    def get_bottom(self,box):
+        bottom = int(box['boundingBox']['vertices'][3]['y'])
+        return bottom
+
+keys = MapKeys()
 
 def get_coord(bboxs):
     coord =[]
@@ -32,77 +58,53 @@ def check_horizon_region(box1,box2):
         return True
     else:
         return False
-#def merge_condition()
+def merge_condition(reg1,reg2):
     
-    
-def check_distance(reg1,reg2):
     box1_top = keys.get_top(reg1); box1_bottom = keys.get_bottom(reg1)
     box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
     box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
     box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
     box1_lines = reg1["children"];  box2_lines = reg2["children"]
+    if box1_lines!= None and len(box1_lines)>0 and box2_lines!=None and len(box2_lines)>0:
+        box1_last_line = box1_lines[-1]; box2_first_line = box2_lines[0]
+    # if check_horizon_region(reg1,reg2):
+    #     if (keys.get_left(reg2)-keys.get_right(reg1))<5 or (keys.get_left(reg1)-keys.get_right(reg2))<5:
+    #         return True
+    #     else:
+    #         return False
+        if abs(keys.get_left(box1_last_line)-keys.get_left(box2_first_line))<30 and abs(keys.get_right(box1_last_line)-keys.get_right(box2_first_line))<30 and abs(box2_top-box1_bottom)<150:
+            return True
+        # if keys.get_right(box2_first_line)-keys.get_right(box1_last_line)>50 :
+        #     return False
+        if keys.get_right(box1_last_line)-keys.get_right(box2_first_line)>50 and abs(box2_top-box1_bottom)<100:
+            return True
+        # else:
+        #     return False
+
+        if abs(box2_top-box1_bottom)<100 and abs(box1_left-box2_left)<50 and abs(box1_right-box2_right)<50:
+            return True
+        # if abs(box1_bottom-box2_top)<100 and abs(box1_left-box2_left)<50:
+        #     return True
+        if abs(box1_bottom-box2_top)<50 and abs(box1_right-box2_right)<50:
+            return True
+    else:
+        if abs(box2_top-box1_bottom)<100 and abs(box1_left-box2_left)<50 and abs(box1_right-box2_right)<50:
+            return True
+        
+    
+    
+def check_distance(reg1,reg2):
+    
 
     box1_top = keys.get_top(reg1)
     box2_top = keys.get_top(reg2)
+    #return merge_condition(reg1,reg2)
     if box1_top < box2_top:
-        merge_condition()
-        box1_last_line = box1_lines[-1]; box2_first_line = box2_lines[0]
-        if check_horizon_region(box1_last_line,box2_first_line):
-            if (keys.get_left(box2_first_line)-keys.get_right(box1_last_line))<10 or (keys.get_left(box1_last_line)-keys.get_right(box2_first_line))<10:
-                return True
-            else:
-                return False
-        if abs(keys.get_left(box1_last_line)-keys.get_left(box2_first_line))<20 and abs(keys.get_right(box1_last_line)-keys.get_right(box2_first_line))<20 and abs(box2_top-box1_bottom)<150:
-            return True
-        if keys.get_right(box2_first_line)-keys.get_right(box1_last_line)>50 :
-            return False
-        if keys.get_right(box1_last_line)-keys.get_right(box2_first_line)>50 and abs(box2_top-box1_bottom)<150:
-            return True
-        
-        
-    # if box1_top < box2_top and abs(box2_top-box1_bottom)<100 and abs(box1_left-box2_left)<150 and abs(box1_right-box2_right)<150:
-    #     return True
-    # if box1_top > box2_top and abs(box2_bottom-box1_top)<100 and abs(box1_left-box2_left)<150 and abs(box1_right-box2_right)<150:
-    #     return True
-    # if (box1_top > box2_top and abs(box2_bottom-box1_top)<100 and abs(box1_left-box2_left)<20) or (box1_top < box2_top and abs(box2_top-box1_bottom)<100 and abs(box1_left-box2_left)<20):
-    #     return True
-    # if box1_top > box2_top and abs(box2_bottom-box1_top)<100 and abs(box1_right-box2_right)<20 or (box1_top < box2_top and abs(box2_top-box1_bottom)<100 and abs(box1_right-box2_right)<20):
-    #     return True
-    # if box1_right < box2_left and abs(box1_right-box2_left)<50:
-    #     return True
-    # if box2_right < box1_left and abs(box2_right-box1_left)<50:
-    #     return True
+       return  merge_condition(reg1,reg2)
+    if box1_top > box2_top:
+       return  merge_condition(reg2,reg1)
 
-# def update_coord(idx1,idx2,text_regions,reg1,reg2):
-#     #try:
-#     box1_top = reg1["boundingBox"]['vertices'][0]['y']; box1_bottom = reg1["boundingBox"]['vertices'][2]['y']
-#     box1_left = reg1["boundingBox"]['vertices'][0]['x']; box1_right = reg1["boundingBox"]['vertices'][2]['x']
-#     box2_top = reg2["boundingBox"]['vertices'][0]['y']; box2_bottom = reg2["boundingBox"]['vertices'][2]['y']
-#     box2_left = reg2["boundingBox"]['vertices'][0]['x']; box2_right = reg2["boundingBox"]['vertices'][2]['x']
 
-#     text_regions[idx1]["boundingBox"]["vertices"][0]['x']= min(box1_left,box2_left)
-#     text_regions[idx1]["boundingBox"]["vertices"][0]['y']= min(box1_top,box2_top)
-#     text_regions[idx1]["boundingBox"]["vertices"][1]['x']= max(box1_right,box2_right)
-#     text_regions[idx1]["boundingBox"]["vertices"][1]['y']= min(box1_top,box2_top)
-#     text_regions[idx1]["boundingBox"]["vertices"][2]['x']= max(box1_right,box2_right)
-#     text_regions[idx1]["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
-#     text_regions[idx1]["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
-#     text_regions[idx1]["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
-
-#     del text_regions[idx2]
-#     # except:
-#     #     pass
-#     return text_regions
-def update_region(idx,text_regions,box1_top,box1_left,box2_top,box2_left,box1_bottom,box1_right,box2_bottom,box2_right):
-    text_regions[idx]["boundingBox"]["vertices"][0]['x']= min(box1_left,box2_left)
-    text_regions[idx]["boundingBox"]["vertices"][0]['y']= min(box1_top,box2_top)
-    text_regions[idx]["boundingBox"]["vertices"][1]['x']= max(box1_right,box2_right)
-    text_regions[idx]["boundingBox"]["vertices"][1]['y']= min(box1_top,box2_top)
-    text_regions[idx]["boundingBox"]["vertices"][2]['x']= max(box1_right,box2_right)
-    text_regions[idx]["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
-    text_regions[idx]["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
-    text_regions[idx]["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
-    return text_regions
 
 
 def update_coord(reg1,reg2):
@@ -120,9 +122,7 @@ def update_coord(reg1,reg2):
     reg1["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
     reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
     reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
-    #text_regions = update_region(idx2,text_regions,box1_top,box1_left,box2_top,box2_left,box1_bottom,box1_right,box2_bottom,box2_right)
-    #text_regions = update_region(idx1,text_regions,box1_top,box1_left,box2_top,box2_left,box1_bottom,box1_right,box2_bottom,box2_right)
-    #del text_regions[idx2]
+    
     # except:
     #     pass
     return reg1
@@ -192,20 +192,34 @@ def remove_overlap(coords):
 
 def region_unifier(page_lines,page_regions):
     v_list       = collate_regions(page_regions,page_lines)
-    
+    for idx,v_block in enumerate(v_list):
+        if len(v_block['children']) > 1 :
+            v_block['children'] = horzontal_merging(v_block['children'])
+            v_list[idx] =v_block
+
     text_regions = get_text_region(v_list)
     region_updated = []
     region_temp = text_regions
 
     while len(text_regions)>0:
         check = False
+        del_index =[]
         for idx2,region2 in enumerate(region_temp):
             if check_distance(text_regions[0],region2):
                 region1 = update_coord(text_regions[0],region2)
                 text_regions[0] = region1
                 check =True 
+                #del_index.append(idx2)
                 del region_temp[idx2]
+        
+        # if len(del_index)>0:
+        #     region_temp2=[]
+        #     for idx,val in enumerate(region_temp):
+        #         if idx not in del_index:
+        #             region_temp2.append(val)
+        #     region_temp = region_temp2      
         if check == False:
+            text_regions[0]['children']= None
             region_updated.append(text_regions[0])
             del text_regions[0]
         
