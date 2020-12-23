@@ -49,10 +49,10 @@ class Login extends Component {
         }}>
           <img
             className="centerAlign"
-            src="img/logoTarento.png"
+            src="img/Anuvaad.png"
             alt="brand cover"
-            height="158"
-            width="400"
+            height="81%"
+            width="50%"
           />
         </div>
         <div className="col-md-5 d-md-flex d-lg-flex d-xl-flex loginRightBg fullHeight">
