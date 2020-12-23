@@ -21,7 +21,8 @@ def segment_regions(lines,regions):
         #print(v_block,'vvvbbbbb')
         if len(v_block['children']) > 1 :
             v_block['children'] = horzontal_merging(v_block['children'])
-            p_list +=  break_block(v_block)
+            #p_list +=  break_block(v_block)
+            p_list +=[v_block]
         else :
             p_list +=  v_block['children']
     return p_list
