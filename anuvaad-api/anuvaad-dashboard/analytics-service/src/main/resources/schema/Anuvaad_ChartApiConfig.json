@@ -8,7 +8,7 @@
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.pageid.keyword\":\"document-upload\"}},{\"term\":{\"events.edata.subtype.keyword\":\"PAGE_LOAD_COMPLETED\"}}],\"must_not\":[{\"terms\":{\"events.object.target_langauge.keyword\":[\"\",\"undefined\",\"hi\",\"ta\",\"kn\",\"en\",\"bn\",\"mr\",\"ml\",\"gu\",\"te\",\"hindi\",\"signup\"]}}]}},\"aggs\":{\"Target Language\":{\"terms\":{\"field\":\"events.object.target_langauge.keyword\"}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.pageid.keyword\":\"document-upload\"}},{\"term\":{\"events.edata.subtype.keyword\":\"PAGE_LOAD_COMPLETED\"}}],\"must_not\":[{\"terms\":{\"events.object.target_language.keyword\":[\"\",\"undefined\",\"hi\",\"ta\",\"kn\",\"en\",\"bn\",\"mr\",\"ml\",\"gu\",\"te\",\"hindi\",\"signup\"]}}]}},\"aggs\":{\"Target Language\":{\"terms\":{\"field\":\"events.object.target_language.keyword\"}}}}}}"
 			}
 		],
 		"chartType": "pie",
