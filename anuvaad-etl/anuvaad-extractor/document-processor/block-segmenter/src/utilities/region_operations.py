@@ -147,14 +147,15 @@ def are_hlines(region1,region2):
 
 
 
-def merge_children(siblings):
+def merge_children(siblings,children_none=False):
     if len(siblings) == 1 :
         siblings[0]['children']= None
         return  siblings[0]
 
     else:
         box = Box().get_box()
-        box['children'] = copy.deepcopy(siblings)
+        if not children_none:
+            box['children'] = copy.deepcopy(siblings)
         box['boundingBox']['vertices'][0]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['x'])['boundingBox']['vertices'][0]['x']
         box['boundingBox']['vertices'][0]['y']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['y'])['boundingBox']['vertices'][0]['y']
         box['boundingBox']['vertices'][1]['x']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][1]['x'])['boundingBox']['vertices'][1]['x']
