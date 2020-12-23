@@ -174,7 +174,7 @@ export const startWorkflow = (source_language, target_language, filename, job_id
     object: {
       id: filename,
       source_language: source_language,
-      target_language: target_language,
+      target_langauge: target_language,
       job_id: job_id
     }
   }
@@ -204,7 +204,7 @@ export const endWorkflow = (source_language, target_language, filename, job_id, 
     object: {
       id: filename,
       source_language: source_language,
-      target_language: target_language,
+      target_langauge: target_language,
       job_id: job_id,
       file_status: file_status
     }
@@ -241,7 +241,7 @@ export const startTranslatorFlow = (source_language, target_language, filename, 
     object: {
       id: filename,
       source_language: source_language,
-      target_language: target_language,
+      target_langauge: target_language,
       job_id: job_id
     }
   }
