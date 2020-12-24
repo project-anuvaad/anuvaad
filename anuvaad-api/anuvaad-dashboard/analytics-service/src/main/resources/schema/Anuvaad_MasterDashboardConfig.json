@@ -65,6 +65,15 @@
 					"order": 3,
 					"filter": "",
 					"headers": []
+				},
+				{
+					"id": "totalSave",
+					"name": "Total Saved Sentence",
+					"code": "",
+					"chartType": "metric",
+					"order": 4,
+					"filter": "",
+					"headers": []
 				}
 			],
 			"visualizations": [
