@@ -65,8 +65,9 @@ class DocumentEditor extends React.Component {
 
     localStorage.setItem("recordId", recordId);
     localStorage.setItem("inputFile", this.props.match.params.inputfileid)
+    let model = this.fetchModel(parseInt(this.props.match.params.modelId))
 
-    TELEMETRY.startTranslatorFlow(this.props.match.params.locale, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
+    TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
     this.setState({ showLoader: true });
     this.makeAPICallFetchContent(1);
     this.makeAPICallDocumentsTranslationProgress();
@@ -286,7 +287,7 @@ class DocumentEditor extends React.Component {
       let condition = `$[?(@.model_id == '${modelId}')]`;
       model = jp.query(docs, condition)
     }
-    
+
     return model.length > 0 ? model[0] : null
   }
 
