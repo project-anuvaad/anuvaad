@@ -31,8 +31,82 @@ class MapKeys:
     def get_bottom(self,box):
         bottom = int(box['boundingBox']['vertices'][3]['y'])
         return bottom
+    def get_height(self,box):
+        height = int(abs(self.get_top(box) - self.get_bottom(box)))
+        return height
+    def get_width(self,box):
+        width =  int(abs(self.get_left(box) - self.get_right(box)))
+        return width
 
 keys = MapKeys()
+
+class Page_Config(self):
+    def __init__(self):
+
+    
+
+    def check_horizon_region(box1,box2):
+        if keys.get_right(box1)<keys.get_left(box2):
+            return True
+        if keys.get_right(box2)<keys.get_left(box1):
+            return True
+        else:
+            return False
+
+    def avg_region_info(page):
+        total_region = 0
+        avg_ver_dist = 0
+        avg_hor_dist = 0 
+
+        for region in page:
+            total_line = total_line+len(region['children'])
+            for idx, line in enumerate(region['children']):
+                height = keys.get_height(line)
+                avg_height = avg_height + height
+                avg_width = avg_width+ keys.get_width(line)
+                current_line_bottom = keys.get_bottom(line)
+                if idx<len(region['children'])-1:
+                    next_line_top = keys.get_bottom(region['children'][idx+1])
+                    ver_dis = abs(next_line_top-current_line_bottom)
+                    avg_ver_dist = avg_ver_dist + ver_dis
+
+        avg_height   =  avg_height / total_line
+        avg_ver_dist =  avg_ver_dist / total_line
+        avg_width    =  avg_width / total_line 
+
+
+        return avg_height, avg_ver_dist
+
+
+
+
+    def avg_line_info(page):
+        avg_height = 0
+        total_line = 0
+        avg_ver_dist = 0
+        avg_width = 0 
+
+        for region in page:
+            total_line = total_line+len(region['children'])
+            for idx, line in enumerate(region['children']):
+                height = keys.get_height(line)
+                avg_height = avg_height + height
+                avg_width = avg_width+ keys.get_width(line)
+                current_line_bottom = keys.get_bottom(line)
+                if idx<len(region['children'])-1:
+                    next_line_top = keys.get_bottom(region['children'][idx+1])
+                    ver_dis = abs(next_line_top-current_line_bottom)
+                    avg_ver_dist = avg_ver_dist + ver_dis
+
+        avg_height   =  avg_height / total_line
+        avg_ver_dist =  avg_ver_dist / total_line
+        avg_width    =  avg_width / total_line 
+
+
+        return avg_height, avg_ver_dist
+
+
+
 
 
 def get_text_region(regions):
@@ -42,13 +116,7 @@ def get_text_region(regions):
             text_region.append(region)
     return text_region
 
-def check_horizon_region(box1,box2):
-    if keys.get_right(box1)<keys.get_left(box2):
-        return True
-    if keys.get_right(box2)<keys.get_left(box1):
-        return True
-    else:
-        return False
+
 
 def merge_condition(reg1,reg2):
     
@@ -58,6 +126,12 @@ def merge_condition(reg1,reg2):
     box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
     box1_lines = reg1["children"];  box2_lines = reg2["children"]
     
+    ################# Page configs for block unifier
+    
+    
+
+
+
     if box1_lines!= None and len(box1_lines)>0 and box2_lines!=None and len(box2_lines)>0:
         box1_last_line = box1_lines[-1]; box2_first_line = box2_lines[0]
         if check_horizon_region(reg1,reg2):
@@ -150,7 +224,11 @@ def region_unifier(page_lines,page_regions):
                 v_list[idx] =v_block
 
         text_regions = get_text_region(v_list)
-        
+
+        ################### page configs for region unifier
+        page_config = Page_Config()
+        avg_line_height, avg_ver_dist = page_config.avg_height_distance(text_regions)
+        ########################
         flag =True
         region_updated, flag = remove_overlap(text_regions)
         while flag==True:
