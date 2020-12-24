@@ -107,8 +107,11 @@ class SentenceCard extends React.Component {
             startIndex: null,
             endIndex: null,
             isOpenDictionaryOnly: false,
+            showProgressStatus: false,
+            message: null,
             showStatus: false,
-            message: null
+            snackBarMessage: null
+
         };
         this.textInput = React.createRef();
         this.handleUserInputText = this.handleUserInputText.bind(this);
@@ -493,14 +496,18 @@ class SentenceCard extends React.Component {
 
 
     async makeAPICallDictionary() {
-        this.setState({ showStatus: true, message: "Fetching meanings" })
+        this.setState({ showProgressStatus: true, message: "Fetching meanings" })
+        
         let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.model.source_language_code, this.props.model.target_language_code)
         const apiReq = await fetch(apiObj.apiEndPoint(), {
             method: 'post',
             body: JSON.stringify(apiObj.getBody()),
             headers: apiObj.getHeaders().headers
         }).then((response) => {
-            if (response.status >= 400 && response.status < 600) {
+            this.setState({ showProgressStatus: false, message: null })
+
+            if (!response.ok) {
+                return Promise.reject('');
             }
             response.text().then((data) => {
                 let val = JSON.parse(data)
@@ -508,23 +515,24 @@ class SentenceCard extends React.Component {
             }).then((result) => {
                 let parallel_words = []
                 result.parallel_words.map((words) => {
-                    if (this.props.tgt_locale === words.locale)
+                    if (this.props.model.target_language_code === words.locale)
                         parallel_words.push(words.name)
-                    this.setState({ showStatus: false, message: null })
                 })
                 this.setState({
                     parallel_words: parallel_words,
                     isOpenDictionary: true
                 })
             })
-        })
+        }).catch((error) => {
+            this.setState({ snackBarMessage: "Failed to fetch meaning...!", showStatus: true, snackBarVariant: "error" })
+        });
     }
 
     renderProgressInformation = () => {
         return (
             <Snackbar
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                open={this.state.showStatus}
+                open={this.state.showProgressStatus}
                 message={this.state.message}
 
             >
@@ -532,6 +540,20 @@ class SentenceCard extends React.Component {
             </Snackbar>
         )
     }
+
+    snackBarMessage = () => {
+        return (
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                open={this.state.showStatus}
+                onClose={(e, r) => {
+                    this.setState({ showStatus: false, snackBarMessage: null })
+                }}
+            >
+                <Alert elevation={6} variant="filled" severity={this.state.snackBarVariant}>{this.state.snackBarMessage}</Alert>
+            </Snackbar>
+        );
+    };
 
     handleClose = () => {
         this.setState({
@@ -723,7 +745,8 @@ class SentenceCard extends React.Component {
                 {this.renderSentenceCard()}
                 {this.state.isopenMenuItems && this.state.cardInFocus && this.renderMenuItems()}
                 {this.state.isOpenDictionary && this.renderDictionary()}
-                {this.state.showStatus && this.renderProgressInformation()}
+                {this.state.showProgressStatus && this.renderProgressInformation()}
+                {this.state.showStatus && this.snackBarMessage()}
             </div>
 
         )
