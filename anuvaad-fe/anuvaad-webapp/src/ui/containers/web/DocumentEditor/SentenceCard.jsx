@@ -350,7 +350,7 @@ class SentenceCard extends React.Component {
         let val = this.state.value.slice(0, caret)
 
         this.setState({ isCardBusy: true })
-        let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.modelId, true, '', this.props.sentence.s_id);
+        let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.model.model_id, true, '', this.props.sentence.s_id);
         const apiReq = fetch(apiObj.apiEndPoint(), {
             method: 'post',
             body: JSON.stringify(apiObj.getBody()),
@@ -494,7 +494,7 @@ class SentenceCard extends React.Component {
 
     async makeAPICallDictionary() {
         this.setState({ showStatus: true, message: "Fetching meanings" })
-        let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.word_locale, this.props.tgt_locale)
+        let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.model.source_language_code, this.props.model.target_language_code)
         const apiReq = await fetch(apiObj.apiEndPoint(), {
             method: 'post',
             body: JSON.stringify(apiObj.getBody()),
