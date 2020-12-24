@@ -173,7 +173,7 @@ class DocumentEditor extends React.Component {
     TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
     let model = this.fetchModel(parseInt(this.props.match.params.modelId))
     this.informUserProgress(translate('common.page.label.SENTENCE_MERGED'))
-    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
+    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
       '', '', model, sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
@@ -229,7 +229,7 @@ class DocumentEditor extends React.Component {
     TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
     let model = this.fetchModel(parseInt(this.props.match.params.modelId))
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
-    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
+    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
       '', '', model, updated_blocks.selected_sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
@@ -286,7 +286,7 @@ class DocumentEditor extends React.Component {
       let condition = `$[?(@.model_id == '${modelId}')]`;
       model = jp.query(docs, condition)
     }
-
+    
     return model.length > 0 ? model[0] : null
   }
 
@@ -545,9 +545,7 @@ class DocumentEditor extends React.Component {
         >
           {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={sentence.s_id} ref={sentence.s_id}><SentenceCard key={sentence.s_id}
             pageNumber={page.page_no}
-            modelId={parseInt(this.props.match.params.modelId)}
-            word_locale={this.props.match.params.locale}
-            tgt_locale={this.props.match.params.tgt_locale}
+            model={this.fetchModel(parseInt(this.props.match.params.modelId))}
             sentence={sentence}
             onAction={this.processSentenceAction} />
           </div>))}
