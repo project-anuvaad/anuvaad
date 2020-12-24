@@ -101,7 +101,7 @@
             "uri":"/anuvaad/user-mgmt/v1/users/reset-password",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
-            "whiteList":true,
+            "whiteList":false,
             "description":"API for reset password flow"
         },
         {
