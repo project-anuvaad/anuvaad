@@ -55,7 +55,6 @@ class AppRoutes extends React.Component {
     let count = 0;
     const token = localStorage.getItem("token");
     if (localStorage.getItem("roles")) {
-      console.log(localStorage.getItem("roles"), allowedRoles)
       const userRoles = [localStorage.getItem("roles")] //JSON.parse(localStorage.getItem("roles"));
       if (token) {
         if (allowedRoles && Array.isArray(allowedRoles)) {
