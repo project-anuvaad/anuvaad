@@ -256,7 +256,7 @@ class DocumentEditor extends React.Component {
     this.informUserProgress(translate('common.page.label.SOURCE_SENTENCE_SAVED'))
     let model = this.fetchModel(parseInt(this.props.match.params.modelId))
 
-    let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, this.props.match.params.locale,
+    let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, model.source_language_code,
       '', '', model)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
