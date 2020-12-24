@@ -2,10 +2,9 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 from collections import namedtuple
-from src.utilities.region_operations import collate_regions, get_polygon
-from src.services.segment import horzontal_merging, break_block
-from shapely.geometry import Polygon
-from rtree import index
+from src.utilities.region_operations import collate_regions, get_polygon,sort_regions
+from src.services.segment import horzontal_merging
+import src.utilities.app_context as app_context
 import copy
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 
@@ -92,12 +91,29 @@ def check_distance(reg1,reg2):
     if box1_top > box2_top:
        return  merge_condition(reg2,reg1)
 
+
+
+def update_children(reg1,reg2):
+    if len(reg1['children']) > 0 :
+        if len(reg2['children']) > 0 :
+            return sort_regions(reg1['children'] + reg2['children'] , [])
+        else :
+            return reg1['children']
+    else :
+        if len(reg2['children']) > 0 :
+            return reg2['children']
+        else :
+            return []
+
+
 def update_coord(reg1,reg2):
     #try:
     box1_top = keys.get_top(reg1); box1_bottom = keys.get_bottom(reg1)
     box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
     box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
     box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
+
+    reg1['children'] = update_children(reg1, reg2)
 
     reg1["boundingBox"]["vertices"][0]['x']= min(box1_left,box2_left)
     reg1["boundingBox"]["vertices"][0]['y']= min(box1_top,box2_top)
@@ -107,7 +123,9 @@ def update_coord(reg1,reg2):
     reg1["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
     reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
     reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
+
     return reg1
+
 
 def is_connected(region1, region2):
     
@@ -117,10 +135,11 @@ def is_connected(region1, region2):
     check = check_distance(region1,region2)
     return  area>0 or check
 
+
 def remove_overlap(text_regions):
     region_updated = []
-    original_len = len(text_regions)
-    false_count=0
+    #original_len = len(text_regions)
+    #false_count=0
     flag =False
     while len(text_regions)>0:
         check = False
@@ -134,10 +153,11 @@ def remove_overlap(text_regions):
                 del text_regions[idx2+1]
                 break    
         if check == False:
-            text_regions[0]['children']= None
+            # if  len(text_regions[0]['children'] ) == 0 :
+            #     text_regions[0]['children'] = [copy.deepcopy(text_regions[0])]
             region_updated.append(copy.deepcopy(text_regions[0]))
             del text_regions[0]
-            false_count=false_count+1
+            #false_count=false_count+1
     return region_updated, flag
 
 
