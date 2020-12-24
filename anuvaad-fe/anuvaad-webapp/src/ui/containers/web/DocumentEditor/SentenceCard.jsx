@@ -508,7 +508,7 @@ class SentenceCard extends React.Component {
             }).then((result) => {
                 let parallel_words = []
                 result.parallel_words.map((words) => {
-                    if (this.props.tgt_locale === words.locale)
+                    if (this.props.model.target_language_code === words.locale)
                         parallel_words.push(words.name)
                     this.setState({ showStatus: false, message: null })
                 })
