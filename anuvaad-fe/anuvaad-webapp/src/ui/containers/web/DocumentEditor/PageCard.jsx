@@ -178,7 +178,7 @@ class PageCard extends React.Component {
                         removedSpaces.text = text.text.replace(/  +/g, '');
                         let tempText = sentence.substr(sentence.indexOf(removedSpaces.text.split(' ')[0]));
                         if (text.text.replace(/\s/g, '').includes(tempText.replace(/\s/g, ''))) {
-                            
+
                             let coloredText = JSON.parse(JSON.stringify(text));
                             let nonColoredText = JSON.parse(JSON.stringify(text));
                             coloredText.text = tempText;
@@ -351,8 +351,8 @@ class PageCard extends React.Component {
 
     render() {
         return (
-            <div style={{ overflow: "auto" }}>
-                {this.renderPage(this.props.page)}
+            <div style={{ overflow: 'auto', height: '85.7vh' }}>
+                <span style={{ zoom: `${this.props.zoomPercent}%` }}>{this.renderPage(this.props.page)}</span>
             </div>
         )
     }
