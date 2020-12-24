@@ -487,11 +487,11 @@ class DocumentEditor extends React.Component {
       <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
         <InfiniteScroll height={window.innerHeight - 141} style={{
           maxHeight: window.innerHeight - 141,
-          overflowY: "auto",
+          overflowY: "hidden",
         }}
           dataLength={pages.length}
         >
-          <span style={{ zoom: `${this.state.zoomPercent}%` }}>{pages.map((page, index) => <PageCard key={index} page={page} onAction={this.processSentenceAction} />)}</span>
+            {pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
         </InfiniteScroll>
       </Grid>
     )
