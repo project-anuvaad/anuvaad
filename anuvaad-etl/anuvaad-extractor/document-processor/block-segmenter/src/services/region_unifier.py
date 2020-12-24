@@ -175,7 +175,6 @@ def region_unifier(page_lines,page_regions):
         text_regions,n_text_regions = get_text_region(v_list)
         
         flag =True
-        region_updated, flag = remove_overlap(text_regions)
         while flag==True:
             region_updated, flag = remove_overlap(region_updated)
     except Exception as e:
