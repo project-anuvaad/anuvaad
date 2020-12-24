@@ -23,22 +23,40 @@ from src.services.region_unifier import region_unifier
 #         image.save(save_filepath)
     
 #     return image
+#
+# def segment_regions(lines,regions):
+#
+#
+#     #v_list = collate_regions(regions,lines)
+#     v_list, n_text_regions = region_unifier(lines,regions)
+#     #print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",v_list[0],"fffffffffffffffffffffffffffffffff")
+#     p_list = []
+#     for v_block in v_list:
+#         #print(v_block,'vvvbbbbb')
+#         if len(v_block['children']) > 1 :
+#             #v_block['children'] = horzontal_merging(v_block['children'])
+#             #p_list +=  break_block(v_block)
+#             p_list +=[v_block]
+#         else :
+#             p_list +=  v_block['children']
+#     p_list += n_text_regions
+#     return p_list
+
+
 
 def segment_regions(lines,regions):
 
-
-    v_list = collate_regions(regions,lines)
-    #print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",v_list[0],"fffffffffffffffffffffffffffffffff")
+    v_list, n_text_regions = region_unifier(lines,regions)
     p_list = []
     for v_block in v_list:
-        #print(v_block,'vvvbbbbb')
         if len(v_block['children']) > 1 :
-            v_block['children'] = horzontal_merging(v_block['children'])
             #p_list +=  break_block(v_block)
             p_list +=[v_block]
         else :
             p_list +=  v_block['children']
+    p_list += n_text_regions
     return p_list
+
 
 
 def get_segmented_regions(app_context,base_dir) :
