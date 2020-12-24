@@ -36,10 +36,13 @@ keys = MapKeys()
 
 def get_text_region(regions):
     text_region = []
+    n_text_regions = []
     for region in regions:
         if region['class']=='TEXT':
             text_region.append(region)
-    return text_region
+        else :
+            n_text_regions.append(region)
+    return text_region,n_text_regions
 
 def check_horizon_region(box1,box2):
     if keys.get_right(box1)<keys.get_left(box2):
@@ -169,7 +172,7 @@ def region_unifier(page_lines,page_regions):
                 v_block['children'] = horzontal_merging(v_block['children'])
                 v_list[idx] =v_block
 
-        text_regions = get_text_region(v_list)
+        text_regions,n_text_regions = get_text_region(v_list)
         
         flag =True
         region_updated, flag = remove_overlap(text_regions)
@@ -177,9 +180,9 @@ def region_unifier(page_lines,page_regions):
             region_updated, flag = remove_overlap(region_updated)
     except Exception as e:
         log_exception("Error occured during block unifier ",  app_context.application_context, e)
-        return None          
+        return None, None
 
-    return region_updated
+    return region_updated, n_text_regions
 
 
 
