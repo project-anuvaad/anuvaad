@@ -118,7 +118,7 @@ def collate_regions(regions, lines):
                 else :
                     regions[region_index]['children']  = region_lines
             else:
-                regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
+                regions[region_index]['children'] =[]# [copy.deepcopy(regions[region_index])]
     orphan_lines = []
     for line_index, line in enumerate(lines):
         if line_index not in lines_intersected:
