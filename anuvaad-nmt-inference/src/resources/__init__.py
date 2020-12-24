@@ -2,3 +2,4 @@ from .translate import InteractiveTranslateResource, InteractiveMultiTranslateRe
 from .model_convert import ModelConvertResource
 from .labse_aligner import LabseAlignerResource
 from .fetch_models import FetchModelsResource
+from .performance import BatchNMTPerformanceResource
