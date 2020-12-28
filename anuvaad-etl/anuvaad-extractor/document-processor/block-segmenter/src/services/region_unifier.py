@@ -143,27 +143,49 @@ class Region_Unifier:
         box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
         box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
         box1_lines = reg1["children"];  box2_lines = reg2["children"]
-        hor_diff_thresh = 10; line_width_diff = avg_width*0.05
+        hor_diff_thresh = avg_height ; line_width_diff = avg_width*0.1
+
+        #issue in order
+        if box1_left > box2_right :
+            sepration = abs(box1_left -box2_right)
+        else :
+            sepration = abs(box2_left -box1_right)
+
+
         if box1_lines!= None and len(box1_lines)>0 and box2_lines!=None and len(box2_lines)>0:
             box1_last_line = box1_lines[-1]; box2_first_line = box2_lines[0]
-            if keys.get_height(reg1)<= avg_height+50 and keys.get_height(reg2)<= avg_height+50 and abs(box2_top-box1_bottom)<5*avg_ver_dist:
+            if (keys.get_height(reg1)<= avg_height+50 or keys.get_height(reg2)<= avg_height+50)  \
+                    and sepration <3* hor_diff_thresh\
+                    and abs(box2_top-box1_bottom)< 3 * avg_ver_dist:
                 return True
             ############ conditions based on merging two horizon regions 
             if self.check_horizon_region(reg1,reg2):
-                if (0<(keys.get_left(reg2)-keys.get_right(reg1))<hor_diff_thresh and abs(box2_top-box1_bottom)<avg_ver_dist) or (0<(keys.get_left(reg1)-keys.get_right(reg2))<hor_diff_thresh and abs(box2_top-box1_bottom)<avg_ver_dist):
+                if (0<(keys.get_left(reg2)-keys.get_right(reg1))<hor_diff_thresh \
+                    and abs(box2_top-box1_bottom)<avg_ver_dist) \
+                        or (0<(keys.get_left(reg1)-keys.get_right(reg2))<hor_diff_thresh \
+                            and abs(box2_top-box1_bottom)<avg_ver_dist):
                     return True
                 else:
                     return False
             ############
-            if abs(keys.get_width(box1_last_line)-keys.get_width(box2_first_line))<line_width_diff and abs(box2_top-box1_bottom)<avg_ver_dist:
+
+            #based on box separation :
+            if abs(keys.get_width(reg1)-keys.get_width(reg2))<line_width_diff\
+                    and abs(box2_top-box1_bottom)<avg_ver_dist *2 \
+                    and  keys.get_right(box2_first_line)-keys.get_right(box1_last_line)< line_width_diff \
+                    and  keys.get_left(box2_first_line)-keys.get_left(box1_last_line)< line_width_diff :
                 return True
+
             if keys.get_right(box2_first_line)-keys.get_right(box1_last_line)>line_width_diff:
                 return False
             if keys.get_right(box1_last_line)-keys.get_right(box2_first_line)>line_width_diff and abs(box2_top-box1_bottom)<avg_ver_dist:
                 return True
             # if abs(box2_top-box1_bottom)<avg_ver_dist and abs(box1_left-box2_left)<50 and abs(box1_right-box2_right)<50:
             #     return True
-            if (abs(box1_bottom-box2_top)<avg_ver_dist*0.5 and abs(box1_left-box2_left)<line_width_diff) or (abs(box1_bottom-box2_top)<avg_ver_dist*0.5 and abs(box1_right-box2_right)<line_width_diff):
+            if (abs(box1_bottom-box2_top)<avg_ver_dist*0.5 \
+                and abs(box1_left-box2_left)<line_width_diff) \
+                    or (abs(box1_bottom-box2_top)<avg_ver_dist*0.5\
+                        and abs(box1_right-box2_right)<line_width_diff):
                 return True
             else:
                 return False
@@ -216,6 +238,7 @@ class Region_Unifier:
         reg1["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
         reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
         reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
+        #reg1['class'] = 'TEXT'
         # except:
         #     pass
 

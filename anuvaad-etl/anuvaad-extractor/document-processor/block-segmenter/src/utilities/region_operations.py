@@ -90,7 +90,7 @@ def sort_regions(region_lines, sorted_lines=[]):
     same_line =  list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) <= spacing_threshold), region_lines))
     next_line =   list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) > spacing_threshold), region_lines))
     if len(sorted_lines) >1 :
-        same_line.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'])
+       same_line.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
     sorted_lines += same_line
     if len(next_line) > 0:
         sort_regions(next_line, sorted_lines)
@@ -147,6 +147,25 @@ def are_hlines(region1,region2):
     return ((space <= diff_threshold ) )
 
 
+def merge_text(v_blocks):
+    for block_index, v_block in enumerate(v_blocks):
+        try:
+            v_blocks[block_index]['font']    ={'family':'Arial Unicode MS', 'size':0, 'style':'REGULAR'}
+            #v_blocks['font']['size'] = max(v_block['children'], key=lambda x: x['font']['size'])['font']['size']
+            if len(v_block['children']) > 0 :
+                v_blocks[block_index]['text'] = v_block['children'][0]['text']
+                if  len(v_block['children']) > 1:
+                    for child in range(1, len(v_block['children'])):
+                        v_blocks[block_index]['text'] += ' ' + str(v_block['children'][child]['text'])
+            #print('text merged')
+        except Exception as e:
+            print('Error in merging text {}'.format(e))
+
+    return v_blocks
+
+
+
+
 
 def merge_children(siblings,children_none=False):
     if len(siblings) == 1 :
@@ -166,7 +185,7 @@ def merge_children(siblings,children_none=False):
         box['boundingBox']['vertices'][3]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][3]['x'])['boundingBox']['vertices'][3]['x']
         box['boundingBox']['vertices'][3]['y']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][3]['y'])['boundingBox']['vertices'][3]['y']
 
-        box['font']['size']    = max(siblings, key=lambda x: x['font']['size'])['font']['size']
+        #box['font']['size']    = max(siblings, key=lambda x: x['font']['size'])['font']['size']
 
         try :
             box['text'] = siblings[0]['text']

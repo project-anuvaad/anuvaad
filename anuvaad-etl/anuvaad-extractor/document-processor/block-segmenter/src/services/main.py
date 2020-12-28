@@ -6,7 +6,7 @@ import config,time
 import json
 from src.utilities.request_parse import get_files, File,get_json
 from src.services.segment import horzontal_merging, break_block
-from src.utilities.region_operations import collate_regions, get_ngram, are_hlines
+from src.utilities.region_operations import merge_text
 from src.services.region_unifier import Region_Unifier
 
 region_unifier = Region_Unifier()
@@ -54,7 +54,10 @@ def segment_regions(lines,regions):
             p_list +=[v_block]
         else :
             p_list +=  [v_block]
+    p_list = merge_text(p_list)
     p_list += n_text_regions
+
+
     return p_list
 
 
@@ -70,6 +73,7 @@ def get_segmented_regions(app_context,base_dir) :
             page_counts = len(pages)
             start_time = time.time()
             for page_index in range(page_counts):
+                print('processing for page   :  ', page_index)
                 page_lines   =  file_properties.get_lines(page_index)
                 page_regions =  file_properties.get_regions(page_index)
                 #page_regions =  region_unifier.region_unifier(page_lines,page_regions)
