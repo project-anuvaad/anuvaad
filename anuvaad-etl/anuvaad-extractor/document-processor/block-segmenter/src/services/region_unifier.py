@@ -95,6 +95,18 @@ class Region_Unifier:
         else:
             return False
 
+<<<<<<< HEAD
+=======
+def get_text_region(regions):
+    text_region = []
+    n_text_regions = []
+    for region in regions:
+        if region['class']=='TEXT':
+            text_region.append(region)
+        else :
+            n_text_regions.append(region)
+    return text_region,n_text_regions
+>>>>>>> cef25cfa0b0391a283fa2b2ef24f3432270246bb
 
     def get_text_region(self,regions):
         text_region = []
@@ -214,6 +226,7 @@ class Region_Unifier:
         return reg1
 
 
+<<<<<<< HEAD
     def is_connected(self,region1, region2,avg_height, avg_ver_dist, avg_width):
         
         region_poly = get_polygon(region2['boundingBox'])
@@ -271,6 +284,60 @@ class Region_Unifier:
             return None          
 
         return region_updated
+=======
+def is_connected(region1, region2):
+    
+    region_poly = get_polygon(region2['boundingBox'])
+    base_poly = get_polygon(region1['boundingBox'])
+    area = base_poly.intersection(region_poly).area
+    check = check_distance(region1,region2)
+    return  area>0 or check
+
+
+def remove_overlap(text_regions):
+    region_updated = []
+    #original_len = len(text_regions)
+    #false_count=0
+    flag =False
+    while len(text_regions)>0:
+        check = False
+        region_temp= text_regions[1:]
+        for idx2,region2 in enumerate(region_temp):
+            if is_connected(text_regions[0], region2):
+                region1 = update_coord(text_regions[0],region2)
+                text_regions[0] = copy.deepcopy(region1)
+                check =True 
+                flag = True
+                del text_regions[idx2+1]
+                break    
+        if check == False:
+            # if  len(text_regions[0]['children'] ) == 0 :
+            #     text_regions[0]['children'] = [copy.deepcopy(text_regions[0])]
+            region_updated.append(copy.deepcopy(text_regions[0]))
+            del text_regions[0]
+            #false_count=false_count+1
+    return region_updated, flag
+
+
+def region_unifier(page_lines,page_regions):
+    try:
+        v_list       = collate_regions(page_regions,page_lines)
+        for idx,v_block in enumerate(v_list):
+            if len(v_block['children']) > 1 :
+                v_block['children'] = horzontal_merging(v_block['children'])
+                v_list[idx] =v_block
+
+        text_regions,n_text_regions = get_text_region(v_list)
+        
+        flag =True
+        while flag==True:
+            region_updated, flag = remove_overlap(region_updated)
+    except Exception as e:
+        log_exception("Error occured during block unifier ",  app_context.application_context, e)
+        return None, None
+
+    return region_updated, n_text_regions
+>>>>>>> cef25cfa0b0391a283fa2b2ef24f3432270246bb
 
 
 

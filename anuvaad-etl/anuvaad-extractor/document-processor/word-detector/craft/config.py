@@ -6,12 +6,12 @@ DEBUG = False
 API_URL_PREFIX = "/anuvaad-etl/document-processor/word-detector"
 HOST = '0.0.0.0'
 PORT = 5004
-#BASE_DIR   = 'upload'
+BASE_DIR   = 'upload'
 #folders and file path
-#download_folder = 'upload'
+download_folder = 'upload'
 
-BASE_DIR = '/opt/share/nginx/upload'
-download_folder = '/opt/share/nginx/upload'
+# BASE_DIR = '/opt/share/nginx/upload'
+# download_folder = '/opt/share/nginx/upload'
 
 
 
@@ -74,4 +74,4 @@ LANGUAGE_LINE_THRESOLDS ={
 'ka':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5}
 }
 
-MAGNIFICATION_RATIO = 1
+MAGNIFICATION_RATIO = 1.0
