@@ -139,11 +139,12 @@ def get_ngram(indices, window_size = 2):
 def are_hlines(region1,region2):
     space = abs( region1['boundingBox']['vertices'][0]['y'] - region2['boundingBox']['vertices'][0]['y'])
     sepration = abs(region1['boundingBox']['vertices'][1]['x'] - region2['boundingBox']['vertices'][0]['x'])
-    h1 = region1['boundingBox']['vertices'][3]['y'] - region1['boundingBox']['vertices'][0]['y']
-    h2 = region2['boundingBox']['vertices'][3]['y'] - region2['boundingBox']['vertices'][0]['y']
+    h1 = abs(region1['boundingBox']['vertices'][3]['y'] - region1['boundingBox']['vertices'][0]['y'])
+    h2 = abs(region2['boundingBox']['vertices'][3]['y'] - region2['boundingBox']['vertices'][0]['y'])
     avg_height = ( h1 + h2 ) *0.5
     diff_threshold = h1 *0.50
-    return ((space <= diff_threshold ) or(sepration <= 3 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 )
+    #return ((space <= diff_threshold ) or(sepration <= 3 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 )
+    return ((space <= diff_threshold ) )
 
 
 

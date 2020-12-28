@@ -105,7 +105,6 @@ class Region_Unifier:
                 n_text_regions.append(region)
         return text_region,n_text_regions
 
-
     # def merge_condition(self,reg1,reg2):
         
     #     box1_top = keys.get_top(reg1); box1_bottom = keys.get_bottom(reg1)
@@ -147,8 +146,8 @@ class Region_Unifier:
         hor_diff_thresh = 10; line_width_diff = avg_width*0.05
         if box1_lines!= None and len(box1_lines)>0 and box2_lines!=None and len(box2_lines)>0:
             box1_last_line = box1_lines[-1]; box2_first_line = box2_lines[0]
-           # if keys.get_height(reg1)<= avg_height+50 and keys.get_height(reg2)<= avg_height+50 and abs(box2_top-box1_bottom)<avg_ver_dist+50:
-                #return True
+            if keys.get_height(reg1)<= avg_height+50 and keys.get_height(reg2)<= avg_height+50 and abs(box2_top-box1_bottom)<5*avg_ver_dist:
+                return True
             ############ conditions based on merging two horizon regions 
             if self.check_horizon_region(reg1,reg2):
                 if (0<(keys.get_left(reg2)-keys.get_right(reg1))<hor_diff_thresh and abs(box2_top-box1_bottom)<avg_ver_dist) or (0<(keys.get_left(reg1)-keys.get_right(reg2))<hor_diff_thresh and abs(box2_top-box1_bottom)<avg_ver_dist):
@@ -184,7 +183,12 @@ class Region_Unifier:
     def update_children(self,reg1,reg2):
         if len(reg1['children']) > 0 :
             if len(reg2['children']) > 0 :
-                return sort_regions(reg1['children'] + reg2['children'] , [])
+                children = sort_regions(reg1['children'] + reg2['children'] , [])
+                if len(children) > 1 :
+                    return horzontal_merging(children)
+                    #v_list[idx] =v_block
+                else:
+                    return children
             else :
                 return reg1['children']
         else :
@@ -195,26 +199,28 @@ class Region_Unifier:
 
 
     def update_coord(self,reg1,reg2):
-        try:
-            box1_top = keys.get_top(reg1); box1_bottom = keys.get_bottom(reg1)
-            box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
-            box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
-            box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
+        #try:
+        box1_top = keys.get_top(reg1); box1_bottom = keys.get_bottom(reg1)
+        box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
+        box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
+        box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
 
-            reg1['children'] = self.update_children(reg1, reg2)
+        reg1['children'] = self.update_children(reg1, reg2)
 
-            reg1["boundingBox"]["vertices"][0]['x']= min(box1_left,box2_left)
-            reg1["boundingBox"]["vertices"][0]['y']= min(box1_top,box2_top)
-            reg1["boundingBox"]["vertices"][1]['x']= max(box1_right,box2_right)
-            reg1["boundingBox"]["vertices"][1]['y']= min(box1_top,box2_top)
-            reg1["boundingBox"]["vertices"][2]['x']= max(box1_right,box2_right)
-            reg1["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
-            reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
-            reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
-        except:
-            pass
+
+        reg1["boundingBox"]["vertices"][0]['x']= min(box1_left,box2_left)
+        reg1["boundingBox"]["vertices"][0]['y']= min(box1_top,box2_top)
+        reg1["boundingBox"]["vertices"][1]['x']= max(box1_right,box2_right)
+        reg1["boundingBox"]["vertices"][1]['y']= min(box1_top,box2_top)
+        reg1["boundingBox"]["vertices"][2]['x']= max(box1_right,box2_right)
+        reg1["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
+        reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
+        reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
+        # except:
+        #     pass
 
         return reg1
+
 
     def is_connected(self,region1, region2,avg_height, avg_ver_dist, avg_width):
         
@@ -245,37 +251,30 @@ class Region_Unifier:
 
 
     def region_unifier(self,page_lines,page_regions):
-        try:
-            v_list = collate_regions(page_regions, page_lines)
-            for idx, v_block in enumerate(v_list):
-                if len(v_block['children']) > 1:
-                    v_list[idx]['children'] = horzontal_merging(v_block['children'])
+        #try:
+        v_list       = collate_regions(page_regions,page_lines)
+        for idx,v_block in enumerate(v_list):
+            if len(v_block['children']) > 1 :
+                v_block['children'] = horzontal_merging(v_block['children'])
+                v_list[idx] =v_block
 
-            text_regions,n_text_regions = self.get_text_region(v_list)
+        text_regions, n_text_regions = self.get_text_region(v_list)
 
+        ################### page configs for region unifier
+        page_config                         = Page_Config()
+        avg_height, avg_ver_dist, avg_width = page_config.avg_line_info(text_regions)
+        avg_hor_dist                        = page_config.avg_region_info(text_regions)
+        # print("av height : ",avg_height)
+        # print("avg_ver_dist : ",avg_ver_dist)
+        # print("av avg_width : ",avg_width)
+        # print("avg_hor_dist", avg_hor_dist)
+        # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        ########################
+        flag =True
+        while flag==True:
+            text_regions, flag = self.merge_remove_overlap(text_regions,avg_height, avg_ver_dist, avg_width)
+        # except Exception as e:
+        #     log_exception("Error occured during block unifier",  app_context.application_context, e)
+        #     return None  ,None        
 
-            ################### page configs for region unifier
-            page_config                         = Page_Config()
-            avg_height, avg_ver_dist, avg_width = page_config.avg_line_info(text_regions)
-            avg_hor_dist                        = page_config.avg_region_info(text_regions)
-            # print("av height : ",avg_height)
-            # print("avg_ver_dist : ",avg_ver_dist)
-            # print("av avg_width : ",avg_width)
-            # print("avg_hor_dist", avg_hor_dist)
-            # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-            ########################
-            flag =True
-
-            while flag==True:
-                region_updated, flag = self.merge_remove_overlap(region_updated,avg_height, avg_ver_dist, avg_width)
-        except Exception as e:
-            log_exception("Error occured during block unifier ",  app_context.application_context, e)
-            return None, None
-
-        return region_updated, n_text_regions
-
-
-
-
-    
-
+        return text_regions, n_text_regions
