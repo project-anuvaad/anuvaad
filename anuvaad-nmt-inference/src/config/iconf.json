@@ -2,12 +2,6 @@
     "models_root": "./src/available_nmt_models",
     "models": [
         {
-            "id": 5,
-            "path":"nmt/5",
-            "sp_encoder":"sentencepiece_models/hi_exp_h-1-2019-10-29-24k.model",
-            "sp_decoder":"sentencepiece_models/en_exp_h-1-2019-10-29-24k.model"
-        },
-        {
             "id":6,
             "path":"nmt/hi-en",
             "sp_encoder":"sentencepiece_models/hi_hi-en-exp-2-2020-05-05-24k.model",
@@ -72,12 +66,6 @@
             "path":"nmt/en-mr",
             "sp_encoder":"sentencepiece_models/enMr_exp-2-2019-11-07-24k.model",
             "sp_decoder":"sentencepiece_models/marathi_exp-2-2019-11-07-24k.model"
-        },
-        {
-            "id":44,
-            "path":"nmt/44",
-            "sp_encoder":"sentencepiece_models/enMr-en-mr-3-2020-02-06-24k.model",
-            "sp_decoder":"sentencepiece_models/marathi-en-mr-3-2020-02-06-24k.model"
         },
         {
             "id":45,
@@ -174,12 +162,6 @@
             "path":"nmt/mr-en",
             "sp_encoder":"sentencepiece_models/marathi-mr-to-en-2-2020-02-28-24k.model",
             "sp_decoder":"sentencepiece_models/enMr-mr-to-en-2-2020-02-28-24k.model"
-        },
-        {
-            "id":63,
-            "path":"nmt/63",
-            "sp_encoder":"sentencepiece_models/en_en-hi-exp-13-2020-03-09-24k.model",
-            "sp_decoder":"sentencepiece_models/hi_en-hi-exp-13-2020-03-09-24k.model"
         }   
     ]
 }

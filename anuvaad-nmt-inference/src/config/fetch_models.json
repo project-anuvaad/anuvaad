@@ -132,7 +132,7 @@
           "is_primary": false,
           "description": "old_data_original+lc_cleaned, shabdkosh(appended 29k new),BPE-24K,50knmt,shuff,pretok",
           "created_on": "2019-10-31T22:12:13.548Z",
-          "status": "ACTIVE",
+          "status": "INACTIVE",
           "source_language_name":"Hindi",
           "target_language_name":"English"
         },
@@ -192,7 +192,7 @@
           "is_primary": false,
           "description": "On newly tokenized IK corpus 10.5 lakhs",
           "created_on": "2020-02-10T06:51:39.501Z",
-          "status": "ACTIVE",
+          "status": "INACTIVE",
           "source_language_name":"English",
           "target_language_name":"Marathi"
         },
@@ -396,7 +396,7 @@
           "is_primary": false,
           "description": "ik-V3, size 2M",
           "created_on": "2020-03-12T05:35:01.005Z",
-          "status": "ACTIVE",
+          "status": "INACTIVE",
           "source_language_name":"English",
           "target_language_name":"Hindi"
         },
