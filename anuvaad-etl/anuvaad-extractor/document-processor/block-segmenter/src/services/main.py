@@ -7,14 +7,9 @@ import json
 from src.utilities.request_parse import get_files, File,get_json
 from src.services.segment import horzontal_merging, break_block
 from src.utilities.region_operations import collate_regions, get_ngram, are_hlines
-<<<<<<< HEAD
 from src.services.region_unifier import Region_Unifier
 
 region_unifier = Region_Unifier()
-def segment_regions(lines,regions):
-=======
-from src.services.region_unifier import region_unifier
-
 # save_dir = '/home/naresh/judgement_layout_pubnet/'
 
 # def draw_box(resp,filepath,save_dir,color="green", save=False):
@@ -49,26 +44,16 @@ from src.services.region_unifier import region_unifier
 #     return p_list
 
 
->>>>>>> cef25cfa0b0391a283fa2b2ef24f3432270246bb
-
 def segment_regions(lines,regions):
 
-<<<<<<< HEAD
-    v_list = collate_regions(regions,lines)
-    p_list = []
-    for v_block in v_list:
-        if len(v_block['children']) > 1 :
-            v_block['children'] = horzontal_merging(v_block['children'])
-=======
-    v_list, n_text_regions = region_unifier(lines,regions)
+    v_list, n_text_regions = region_unifier.region_unifier(lines,regions)
     p_list = []
     for v_block in v_list:
         if len(v_block['children']) > 1 :
             #p_list +=  break_block(v_block)
->>>>>>> cef25cfa0b0391a283fa2b2ef24f3432270246bb
             p_list +=[v_block]
         else :
-            p_list +=  v_block['children']
+            p_list +=  [v_block]
     p_list += n_text_regions
     return p_list
 
