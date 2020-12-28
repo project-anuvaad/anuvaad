@@ -74,7 +74,7 @@ class DocumentEditor extends React.Component {
       this.props.APITransport(apiModel);
     } else {
       let model = this.fetchModel(parseInt(this.props.match.params.modelId))
-      TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+      model.hasOwnProperty('source_language_name') && TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
     }
 
     window.addEventListener('popstate', this.handleOnClose);
