@@ -169,8 +169,8 @@ def region_unifier(page_lines,page_regions):
         v_list       = collate_regions(page_regions,page_lines)
         for idx,v_block in enumerate(v_list):
             if len(v_block['children']) > 1 :
-                v_block['children'] = horzontal_merging(v_block['children'])
-                v_list[idx] =v_block
+
+                v_list[idx]['children'] =horzontal_merging(v_block['children'])
 
         text_regions,n_text_regions = get_text_region(v_list)
         
