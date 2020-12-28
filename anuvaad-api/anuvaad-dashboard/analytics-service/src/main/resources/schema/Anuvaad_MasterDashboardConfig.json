@@ -239,6 +239,27 @@
 									"headers": []
 								}
 							]
+						},
+						{
+							"id": 5,
+							"name": "Save Records Trend",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "saveTrend",
+									"name": "Save Records Trend",
+									"code": "",
+									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
 						}
 					]
 				}

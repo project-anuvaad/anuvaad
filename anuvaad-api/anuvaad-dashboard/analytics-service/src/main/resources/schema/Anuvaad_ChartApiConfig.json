@@ -307,5 +307,35 @@
 			
 		},
 		"_comment": " "
+	},
+	"saveTrend": {
+		"chartName": "Save Records Trend",
+		"queries": [
+			{
+				"module": "COMMON",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
+				"dateRefField": "ets",
+				"indexName": "anuvaad-telemetry",
+				"esInstance": "PRIMARY",
+				"aggrQuery": "{\"aggs\":{\"Total Save\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.action.keyword\":\"SAVE\"}}]}},\"aggs\":{\"Saved Records\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"}}}}}}"
+			}
+		],
+		"chartType": "line",
+		"resultType": "doc_count",
+		"valueType": "number",
+		"isDecimal": false,
+		"action": "",
+		"filter": "",
+		"documentType": "_doc",
+		"drillChart": "none",
+		"aggregationPaths": [
+			"Saved Records"
+		],
+		"isCumulative": false,
+		"interval": "day",
+		"insight": {
+			
+		},
+		"_comment": " "
 	}
 }
