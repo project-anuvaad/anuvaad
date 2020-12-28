@@ -65,7 +65,7 @@ class CreateUser extends React.Component {
             marginLeft: '4.3%',
             marginBottom: '4%'
           }}>
-            <TextField type="text" onChange={this.handleInputReceived('name')} value={this.state.name} variant="outlined">
+            <TextField id="name" type="text" onChange={this.handleInputReceived('name')} value={this.state.name} variant="outlined">
 
             </TextField>
           </FormControl>
@@ -95,7 +95,7 @@ class CreateUser extends React.Component {
             marginLeft: '4.3%',
             marginBottom: '11.5%'
           }}>
-            <TextField type="email" onChange={this.handleInputReceived('emailid')} value={this.state.emailid} variant="outlined">
+            <TextField id="email" type="email" onChange={this.handleInputReceived('emailid')} value={this.state.emailid} variant="outlined">
 
             </TextField>
           </FormControl>
@@ -127,10 +127,11 @@ class CreateUser extends React.Component {
             marginLeft: '4.3%',
             marginBottom: '4%'
           }}>
-            <OutlinedInput type={this.state.showPassword ? 'text' : 'password'} onChange={this.handleInputReceived('password')} value={this.state.password} variant="outlined"
+            <OutlinedInput id="password" type={this.state.showPassword ? 'text' : 'password'} onChange={this.handleInputReceived('password')} value={this.state.password} variant="outlined"
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
+                    id="hide-show"
                     aria-label="toggle password visibility"
                     onClick={this.handleClickShowPassword}
                     edge="end"
@@ -168,7 +169,7 @@ class CreateUser extends React.Component {
           }}>
             <Select
               labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
+              id="roles"
               onChange={this.processOnSelect}
               value={this.state.roleCode}
               style={{
@@ -176,7 +177,7 @@ class CreateUser extends React.Component {
               }}
             >
               {
-                roles.map((role, i) => <MenuItem key={role.roleCode} value={role.roleCode}>{role.roleCode}</MenuItem>)
+                roles.map((role, i) => <MenuItem id={role.roleCode} key={role.roleCode} value={role.roleCode}>{role.roleCode}</MenuItem>)
               }
             </Select>
           </FormControl>
@@ -307,6 +308,7 @@ class CreateUser extends React.Component {
 
             <Grid item xs={6} sm={6} lg={6} xl={6}>
               <Button
+                id="reset"
                 variant="contained"
                 color="primary"
                 onClick={this.processClearButton}
@@ -323,6 +325,7 @@ class CreateUser extends React.Component {
                 position: 'relative'
               }}>
                 <Button
+                  id="save"
                   color="primary"
                   variant="contained"
                   onClick={this.processCreateUser}
