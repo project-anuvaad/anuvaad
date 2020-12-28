@@ -65,15 +65,16 @@ class DocumentEditor extends React.Component {
 
     localStorage.setItem("recordId", recordId);
     localStorage.setItem("inputFile", this.props.match.params.inputfileid)
-
-    TELEMETRY.startTranslatorFlow(this.props.match.params.locale, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
-    this.setState({ showLoader: true });
+       this.setState({ showLoader: true });
     this.makeAPICallFetchContent(1);
     this.makeAPICallDocumentsTranslationProgress();
 
     if (!this.props.fetch_models || !this.props.fetch_models.length > 0) {
       const apiModel = new FetchModel();
       this.props.APITransport(apiModel);
+    } else {
+      let model = this.fetchModel(parseInt(this.props.match.params.modelId))
+      TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
     }
 
     window.addEventListener('popstate', this.handleOnClose);
@@ -85,15 +86,13 @@ class DocumentEditor extends React.Component {
     if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
       this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
     }
+
     if (prevProps.active_page_number !== this.props.active_page_number) {
       this.makeAPICallFetchContent(this.props.active_page_number);
-
-
     }
 
     if (prevProps.document_contents !== this.props.document_contents) {
       this.setState({ apiFetchStatus: false })
-
     }
 
     if (prevProps.document_editor_mode !== this.props.document_editor_mode && this.props.document_editor_mode.mode === 'EDITOR_MODE_MERGE') {
@@ -101,7 +100,11 @@ class DocumentEditor extends React.Component {
       this.makeAPICallFetchContent(nextPage, true);
     }
 
-
+    if(prevProps.fetch_models !== this.props.fetch_models) {
+      let jobId = this.props.match.params.jobid ? this.props.match.params.jobid.split("|")[0] : ""
+      let model = this.fetchModel(parseInt(this.props.match.params.modelId))
+      TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+    }
   }
 
   componentWillUnmount() {
@@ -286,7 +289,7 @@ class DocumentEditor extends React.Component {
       let condition = `$[?(@.model_id == '${modelId}')]`;
       model = jp.query(docs, condition)
     }
-    
+
     return model.length > 0 ? model[0] : null
   }
 
