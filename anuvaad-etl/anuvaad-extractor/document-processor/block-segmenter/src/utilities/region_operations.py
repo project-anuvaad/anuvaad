@@ -99,7 +99,7 @@ def sort_regions(region_lines, sorted_lines=[]):
 def collate_regions(regions, lines):
     idx = index.Index()
     lines_intersected = []
-    if len(regions) > 0:
+    if regions !=None and len(regions) > 0:
         lines_intersected =[]
         for line_idx, line in enumerate(lines):
             poly = get_polygon(line['boundingBox'])
