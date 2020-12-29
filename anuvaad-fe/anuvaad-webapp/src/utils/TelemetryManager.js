@@ -323,8 +323,10 @@ export const endSentenceEdit = (sentence, sentence_id, mode) => {
  * @param {*} sentence_final , final sentence when user moved out of edit
  * @param {*} sentence_id , sentence_identifier or identifier that uniquely identifies.
  * @param {*} mode , validation or translation
+ * @param {*} src , extracted source sentence
+ * 
  */
-export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, mode) => {
+export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, mode, src) => {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -343,6 +345,7 @@ export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, m
   }
 
   let values = {}
+  values.src = src
   values.initial = sentence_initial
   values.final = sentence_final
 

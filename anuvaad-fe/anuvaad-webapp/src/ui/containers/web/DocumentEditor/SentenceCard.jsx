@@ -211,7 +211,7 @@ class SentenceCard extends React.Component {
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
 
-                TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt, sentence.s_id, "translation")
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.src)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
             }
         }
