@@ -6,7 +6,12 @@ DEBUG = False
 API_URL_PREFIX = "/anuvaad-etl/document-processor"
 HOST = '0.0.0.0'
 PORT = 5001
-BASE_DIR      = 'upload'
+
+BASE_DIR = '/opt/share/nginx/upload'
+download_folder = '/opt/share/nginx/upload'
+#BASE_DIR      = 'upload'
+#download_folder = 'upload'
+
 
 ENABLE_CORS = False
 
@@ -30,7 +35,6 @@ CONSUMER_GROUP_default       = 'anuvaad-etl-bs-consumer-group'
 CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_BS_CONSUMER_GROUP_V1'
 CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 #folders and file path
-download_folder = 'upload'
 
 BREAK_BLOCKS = True
 
