@@ -66,7 +66,7 @@ def get_json(base_dir,name):
         data = json.loads(f.read())
     #print(data)
     #json_data = data['outputs'][0]
-    json_data  = data['outputs'][0]
+    json_data  = data['rsp']['outputs'][0]
     return json_data
 
 
