@@ -423,7 +423,7 @@ class SentenceCard extends React.Component {
                     <Autocomplete
                         filterOptions={filterOptions}
                         id={this.props.sentence.s_id}
-                        getOptionLabel={option => option.name}
+                        // getOptionLabel={option => option.name}
                         getOptionSelected={(option, value) => option.name === value.name}
                         renderOption={(option, index) => {
                             return this.renderAutoCompleteText(option.name, this.state.value)
