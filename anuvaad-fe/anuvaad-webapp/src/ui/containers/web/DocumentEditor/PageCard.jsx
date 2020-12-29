@@ -350,10 +350,8 @@ class PageCard extends React.Component {
     }
 
     render() {
-        return (
-            <div style={{ overflow: 'auto', height: '85.7vh' }}>
+        return (     
                 <span style={{ zoom: `${this.props.zoomPercent}%` }}>{this.renderPage(this.props.page)}</span>
-            </div>
         )
     }
 

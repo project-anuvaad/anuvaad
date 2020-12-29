@@ -49,7 +49,7 @@ def segment_regions(lines,regions):
     v_list, n_text_regions = region_unifier.region_unifier(lines,regions)
     p_list = []
     for v_block in v_list:
-        if len(v_block['children']) > 1 :
+        if  v_block['children'] != None and  len(v_block['children']) > 1 :
             #p_list +=  break_block(v_block)
             p_list +=[v_block]
         else :
@@ -73,7 +73,7 @@ def get_segmented_regions(app_context,base_dir) :
             page_counts = len(pages)
             start_time = time.time()
             for page_index in range(page_counts):
-                print('processing for page   :  ', page_index)
+                #print('processing for page   :  ', page_index)
                 page_lines   =  file_properties.get_lines(page_index)
                 page_regions =  file_properties.get_regions(page_index)
                 #page_regions =  region_unifier.region_unifier(page_lines,page_regions)
