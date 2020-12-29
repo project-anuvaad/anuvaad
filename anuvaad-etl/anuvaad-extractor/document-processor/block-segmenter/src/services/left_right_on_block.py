@@ -7,8 +7,8 @@ import copy
 import src.utilities.app_context as app_context
 from src.utilities.region_operations import MapKeys
 
-
-def next_gen_children(child,):
+#need to check for line with more than 2 children
+def next_gen_children(child):
     try:
         sub_children = child['children']
         top_diff = max(sub_children, key=lambda x: x['boundingBox']['vertices'][0]['y'])['boundingBox']['vertices'][0]['y'] - \

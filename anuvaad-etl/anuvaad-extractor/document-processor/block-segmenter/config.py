@@ -62,7 +62,7 @@ BLOCK_CONFIGS = {
     "right_margin_threshold": 0.10,  "left_margin_threshold": 0.10,
     "right_break_threshold": 0.06,   "left_break_threshold": 0.05,
     "header_left_threshold": 0.70,  "header_right_threshold": 0.85,
-    "space_multiply_factor": 1.8
+    "space_multiply_factor": 2.1
 }
 
 BLOCK_BREAK_CONFIG = {'margin_support': 2, 'width_threshold': 0.65}
