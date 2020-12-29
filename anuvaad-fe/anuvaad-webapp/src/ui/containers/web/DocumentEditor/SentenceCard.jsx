@@ -399,14 +399,14 @@ class SentenceCard extends React.Component {
          * user requesting for suggestions
          */
         var TABKEY = 9;
-        if ((event.ctrlKey || event.metaKey) && charCode === 'b') {
+        if (event.keyCode === TABKEY) {
             var elem = document.getElementById(this.props.sentence.s_id)
             this.setState({ showSuggestions: true })
             this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
             event.preventDefault();
             return false
         }
-        if (event.keyCode === TABKEY) {
+        if (event.altKey && charCode === 's') {
             if (this.state.suggestions[0]) {
                 let suggestion = this.state.suggestions[0].name
                 let remainingSentenceArray = suggestion.substr(suggestion.indexOf(this.state.value) + this.state.value.length).split(' ')
@@ -470,7 +470,7 @@ class SentenceCard extends React.Component {
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
-                                helperText="Ctrl+s to save, Ctrl+m to move text, TAB key to get suggestions of your choice"
+                                helperText="Ctrl+s to save, Ctrl+m to move text, TAB key to get suggestions of your choice, Alt+s to move suggested words"
                                 type="text"
                                 name={this.props.sentence.s_id}
                                 value={this.state.value}
