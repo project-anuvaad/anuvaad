@@ -488,9 +488,10 @@ class DocumentEditor extends React.Component {
     }
     return (
       <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
+        
         <InfiniteScroll height={window.innerHeight - 141} style={{
           maxHeight: window.innerHeight - 141,
-          overflowY: "hidden",
+          overflowY: "auto",
         }}
           dataLength={pages.length}
         >
