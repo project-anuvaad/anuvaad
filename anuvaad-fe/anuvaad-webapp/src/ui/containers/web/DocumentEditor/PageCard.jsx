@@ -279,7 +279,7 @@ class PageCard extends React.Component {
      */
     handleClickAway = (blockData) => {
         if (this.state.text && (this.action === 'user_typed')) {
-            TELEMETRY.sentenceChanged(blockData.text, this.state.text, blockData.block_id, "validation")
+            TELEMETRY.sentenceChanged(blockData.text, this.state.text, blockData.block_id, "validation", '')
             let data = PAGE_OPS.get_updated_page_blocks(this.props.document_contents, blockData, this.state.text)
             this.props.onAction(SENTENCE_ACTION.SENTENCE_SOURCE_EDITED, blockData.page_no, [data], "")
         }
