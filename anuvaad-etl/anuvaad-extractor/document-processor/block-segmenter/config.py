@@ -7,8 +7,8 @@ API_URL_PREFIX = "/anuvaad-etl/document-processor"
 HOST = '0.0.0.0'
 PORT = 5001
 
-BASE_DIR = '/opt/share/nginx'
-download_folder = '/opt/share/nginx'
+BASE_DIR = '/opt/share/nginx/upload'
+download_folder = '/opt/share/nginx/upload'
 #BASE_DIR      = 'upload'
 #download_folder = 'upload'
 
