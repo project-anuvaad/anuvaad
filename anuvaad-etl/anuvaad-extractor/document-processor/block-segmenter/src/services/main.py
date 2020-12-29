@@ -49,7 +49,7 @@ def segment_regions(lines,regions):
     v_list, n_text_regions = region_unifier.region_unifier(lines,regions)
     p_list = []
     for v_block in v_list:
-        if len(v_block['children']) > 1 :
+        if  v_block['children'] != None and  len(v_block['children']) > 1 :
             #p_list +=  break_block(v_block)
             p_list +=[v_block]
         else :
