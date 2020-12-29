@@ -8,17 +8,19 @@ from config import PRIMA_SCORE_THRESH_TEST
 from collections import namedtuple
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 import sys, random, torch, glob, torchvision
+import os
 
-
+#device = torch.device("cpu")
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 seed = 1234
 random.seed(seed)
 torch.manual_seed(seed)
 #if torch.cuda.is_available():
 #	torch.cuda.device(0)
-torch.cuda.manual_seed_all(seed)
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
+# torch.cuda.manual_seed_all(seed)
+# torch.backends.cudnn.deterministic = True
+# torch.backends.cudnn.benchmark = False
 
 #model_primalaynet = lp.Detectron2LayoutModel('lp://PrimaLayout/mask_rcnn_R_50_FPN_3x/config',label_map = {1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"MathsRegion", 5:"SeparatorRegion", 6:"OtherRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])
 model_primalaynet = lp.Detectron2LayoutModel(
