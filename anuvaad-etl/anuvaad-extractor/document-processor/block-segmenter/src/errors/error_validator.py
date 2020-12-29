@@ -33,6 +33,8 @@ class ValidationResponse(object):
                 #elif file_ops.check_file_extension(in_file_type) is False:
                     #raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
                 elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
+                    print(input_filepath)
+                    print(self.DOWNLOAD_FOLDER)
                     raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory.")
                 elif identifier == "" or identifier is None:
                     raise FileErrors("LOCALE_ERROR", "No language input or unsupported language input.")
