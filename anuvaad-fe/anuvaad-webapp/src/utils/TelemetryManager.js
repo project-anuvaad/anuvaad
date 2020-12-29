@@ -386,6 +386,35 @@ export const mergeSentencesEvent = (sentences_initial, sentence_final) => {
 
 /**
  * @description call this method to sent split sentence event
+ * @param {*} name , name of the user
+ * @param {*} email , email id of the user
+ */
+export const createUserEvent = (name, email) => {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'click',
+    action: 'CREATE_USER'
+  }
+
+  let values = {}
+  values.name = name
+  values.email = email
+
+  let options = {
+    ets: Date.now(),
+    context: {
+      cdata: values
+    },
+  }
+
+  $t.interact(data, options)
+}
+
+/**
+ * @description call this method to sent split sentence event
  * @param {*} sentence_initial , initial sentence that is getting splitted
  * @param {*} sentences_final , output after spliting of sentence
  */
