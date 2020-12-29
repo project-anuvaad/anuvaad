@@ -94,7 +94,7 @@ def left_right_condition(flag, child_index, children_list, skip, para_right, par
                     left2 * (
                     header_left_threshold - .20) > left1 and left1 != left2 and right2 < right1 * header_right_threshold):
                 break
-            ### CURRENT LINE BREAK WHEN NEXT LINE IS NOT IN MARGIN WITH FIRST LINE
+            ## CURRENT LINE BREAK WHEN NEXT LINE IS NOT IN MARGIN WITH FIRST LINE
             if (left1 == left2 and right1 < right2 - right2 * right_break_threshold) or (
                     left1 - left_break_threshold * current_line > left2 and right1 <= right2 - right_break_threshold * current_line):
                 break
@@ -152,17 +152,19 @@ def left_right_margin(v_block, block_configs):
             if skip != 0:
                 skip = skip - 1
                 continue
-            if child['children'] != None :
-                if next_gen_children(child):
-                    #c_df = pd.read_json(df['children'][index])
-                    children_flag = False
-                    for i in child['children']:
-                        block_list += [children_condition(child['children'])]
-                    continue
+            # if child['children'] != None :
+            #     if next_gen_children(child):
+            #         #c_df = pd.read_json(df['children'][index])
+            #         children_flag = False
+            #         for i in child['children']:
+            #             block_list += [children_condition(child['children'])]
+            #         continue
 
             skip = 0
             flag, skip = left_right_condition(flag, child_index, children_list, skip, para.get_right(), para.get_left(),
                                              block_configs)
+
+            print('flaggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg',flag)
             if flag:
                 sub_children_list = children_list[child_index:child_index + skip]
                 # children_flag = False
