@@ -272,7 +272,6 @@ class PRIMA(object):
 
 	def predict_primanet(self,image,craft_coords):
 		try:
-			print(image, 'image         pathhhhhhhhhhhhhhhhh')
 			image   = cv2.imread(image)#("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/"+image)
 
 			image   = image[..., ::-1]
