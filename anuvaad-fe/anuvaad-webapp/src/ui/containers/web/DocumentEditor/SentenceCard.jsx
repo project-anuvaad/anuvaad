@@ -399,12 +399,25 @@ class SentenceCard extends React.Component {
          * user requesting for suggestions
          */
         var TABKEY = 9;
-        if (event.keyCode === TABKEY) {
+        if ((event.ctrlKey || event.metaKey) && charCode === 'b') {
             var elem = document.getElementById(this.props.sentence.s_id)
             this.setState({ showSuggestions: true })
             this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
             event.preventDefault();
             return false
+        }
+        if (event.keyCode === TABKEY) {
+            if (this.state.suggestions[0]) {
+                let suggestion = this.state.suggestions[0].name
+                let remainingSentenceArray = suggestion.substr(suggestion.indexOf(this.state.value) + this.state.value.length).split(' ')
+                let nextWord = remainingSentenceArray.shift()
+                if (remainingSentenceArray.length !== 0) {
+                    this.setState({ value: this.state.value + nextWord + ' ' })
+                } else {
+                    this.setState({ value: this.state.value + nextWord })
+                    nextWord = ''
+                }
+            }
         }
     }
 
@@ -498,7 +511,7 @@ class SentenceCard extends React.Component {
 
     async makeAPICallDictionary() {
         this.setState({ showProgressStatus: true, message: "Fetching meanings" })
-        
+
         let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.model.source_language_code, this.props.model.target_language_code)
         const apiReq = await fetch(apiObj.apiEndPoint(), {
             method: 'post',
