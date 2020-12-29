@@ -95,7 +95,7 @@ class FileContentRepositories:
                 pass
             
         if self.blockModel.store_bulk_blocks(blocks) == False:
-                return False
+            return False
         return True
         
     def get(self, user_id, record_id, start_page=1, end_page=5):
