@@ -277,7 +277,8 @@ class Region_Unifier:
         #try:
         v_list       = collate_regions(page_regions,page_lines)
         for idx,v_block in enumerate(v_list):
-            if len(v_block['children']) > 1 :
+
+            if   v_block['children'] != None and  len(v_block['children']) > 1 :
                 v_block['children'] = horzontal_merging(v_block['children'])
                 v_list[idx] =v_block
 

@@ -93,8 +93,9 @@ class FileContentRepositories:
             except Exception as e:
                 log_exception('text_blocks key not present, thats strange', AppContext.getContext(), e)
                 pass
-
-        self.blockModel.store_bulk_blocks(blocks)
+            
+        if self.blockModel.store_bulk_blocks(blocks) == False:
+            return False
         return True
         
     def get(self, user_id, record_id, start_page=1, end_page=5):

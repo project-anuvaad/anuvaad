@@ -28,7 +28,7 @@ def horzontal_merging(children):
 def break_block(v_block):
     try:
         block_configs = config.BLOCK_CONFIGS
-        if len(v_block['children'] ) < 2 :
+        if  v_block['children'] != None and  len(v_block['children'] ) < 2 :
             return v_block['children']
         else:
             return left_right_margin(v_block, block_configs)
