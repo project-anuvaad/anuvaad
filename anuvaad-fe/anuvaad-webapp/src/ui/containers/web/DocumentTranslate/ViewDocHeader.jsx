@@ -71,7 +71,7 @@ class ViewDocHeader extends React.Component {
                     <Typography variant="h5" color="inherit" className={classes.flex}>
                         Document Translate
                     </Typography>
-                    <div style={{ position: 'absolute', right: '30px' }}>
+                    <div style={{ position: 'absolute', right: '3%' }}>
                         {this.renderOption()}
                     </div>
                 </Toolbar>

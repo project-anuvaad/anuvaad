@@ -42,7 +42,7 @@ def get_layout(app_context) :
                 page_lines  = file_properties.get_lines(idx)
                 page_words  = file_properties.get_words(idx)
                 line_coords = get_coord(page_lines)
-                page_path   = '/'.join(page_path.split('/')[-4:])
+                #page_path   = '/'.join(page_path.split('/')[-4:])
                 regions     = primalaynet.predict_primanet(page_path, line_coords)
                 file['pages'][idx]["regions"]=regions
             file['file'] = file_new['file']

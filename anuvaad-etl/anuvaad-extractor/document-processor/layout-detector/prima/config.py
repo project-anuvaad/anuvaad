@@ -6,7 +6,12 @@ DEBUG = True
 API_URL_PREFIX = "/anuvaad-etl/document-processor/layout-detector"
 HOST = '0.0.0.0'
 PORT = 5001
-BASE_DIR      = 'upload'
+#BASE_DIR      = 'upload'
+#download_folder = 'upload'
+
+BASE_DIR = '/opt/share/nginx/upload'
+download_folder = '/opt/share/nginx/upload'
+
 
 ENABLE_CORS = False
 
@@ -31,7 +36,6 @@ CONSUMER_GROUP_default       = 'anuvaad-etl-ld-consumer-group'
 CONSUMER_GROUP_identifier    = 'KAFKA_ANUVAAD_ETL_LD_CONSUMER_GRP'
 CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 #folders and file path
-download_folder = 'upload'
 
 
 logging.basicConfig(
