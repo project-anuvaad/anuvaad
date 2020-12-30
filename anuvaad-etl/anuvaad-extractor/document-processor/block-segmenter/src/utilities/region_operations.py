@@ -61,7 +61,7 @@ class MapKeys:
         if self.height != None:
             return self.height
         else :
-            self.height = int(abs(self.get_top() - self.bottom()))
+            self.height = int(abs(self.get_top() - self.get_bottom()))
             return self.height
 
     def get_width(self):
@@ -86,8 +86,10 @@ def get_polygon(region):
 
 def sort_regions(region_lines, sorted_lines=[]):
     check_y =region_lines[0]['boundingBox']['vertices'][0]['y']
-    spacing_threshold = abs(check_y - region_lines[0]['boundingBox']['vertices'][3]['y']) * 0.5  # *2 #*0.5
+    spacing_threshold = abs(check_y - region_lines[0]['boundingBox']['vertices'][3]['y'])# * 0.5  # *2 #*0.5
     same_line =  list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) <= spacing_threshold), region_lines))
+    print(len(region_lines), 'lennnnnnnnn regions')
+    print(len(same_line) ,'lennnnnnnnn same line')
     next_line =   list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) > spacing_threshold), region_lines))
     if len(sorted_lines) >1 :
        same_line.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
@@ -124,8 +126,10 @@ def collate_regions(regions, lines):
         if line_index not in lines_intersected:
             orphan_lines.append(line)
     if len(orphan_lines) > 0 :
-        merge_orphans = merge_children(orphan_lines)
-        regions.append(merge_orphans)
+        #merge_orphans = merge_children(orphan_lines)
+        for line in orphan_lines:
+            line['children'] =[]
+            regions.append(line)
     return regions
 
 def get_ngram(indices, window_size = 2):
@@ -142,9 +146,9 @@ def are_hlines(region1,region2):
     h1 = abs(region1['boundingBox']['vertices'][3]['y'] - region1['boundingBox']['vertices'][0]['y'])
     h2 = abs(region2['boundingBox']['vertices'][3]['y'] - region2['boundingBox']['vertices'][0]['y'])
     avg_height = ( h1 + h2 ) *0.5
-    diff_threshold = h1 *0.50
+    diff_threshold = h1 #*0.50
     #return ((space <= diff_threshold ) or(sepration <= 3 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 )
-    return ((space <= diff_threshold ) )
+    return ((space <= diff_threshold ) ) and (sepration < sepration < 5 * avg_height )
 
 
 def merge_text(v_blocks):
@@ -169,13 +173,20 @@ def merge_text(v_blocks):
 
 def merge_children(siblings,children_none=False):
     if len(siblings) == 1 :
-        siblings[0]['children']= None
+        if 'children' in  siblings[0].keys() :
+            pass
+        else:
+            siblings[0]['children']= []
         return  siblings[0]
 
     else:
         box = Box().get_box()
         if not children_none:
+            #siblings.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'])
+            #children = sort_regions(siblings, [])
+            siblings.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
             box['children'] = copy.deepcopy(siblings)
+
         box['boundingBox']['vertices'][0]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['x'])['boundingBox']['vertices'][0]['x']
         box['boundingBox']['vertices'][0]['y']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['y'])['boundingBox']['vertices'][0]['y']
         box['boundingBox']['vertices'][1]['x']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][1]['x'])['boundingBox']['vertices'][1]['x']

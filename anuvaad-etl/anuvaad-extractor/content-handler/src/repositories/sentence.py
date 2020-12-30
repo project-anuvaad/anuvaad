@@ -56,6 +56,7 @@ class SentenceRepositories:
             result['completed_sentence_count']   = count_result['completed_sentences']
             result['total_word_count']       = count_result['total_words']
             result['completed_word_count']   = count_result['completed_words']
+            result['avg_bleu_score']         = count_result['avg_bleu_score']
             result['record_id']         = record_id
             response.append(result)
         return response
