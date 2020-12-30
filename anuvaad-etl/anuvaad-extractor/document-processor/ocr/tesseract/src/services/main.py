@@ -29,7 +29,7 @@ def get_ocr(app_context,base_dir):
                         page_lines = coord_adjustment(page_path, page_lines)
                     if config.DYNAMIC_LEVEL == 'words':
                         page_words = coord_adjustment(page_path, page_words)
-                if ocr_level == "line":
+                if ocr_level == "HIGH_ACCURACY":
                     page_ocr     = text_extraction(lang, page_path, page_lines,width, height)
                     file['pages'][idx]['lines'] = page_ocr
                 if ocr_level == "word":
