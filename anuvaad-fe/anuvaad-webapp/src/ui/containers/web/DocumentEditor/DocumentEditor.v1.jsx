@@ -65,7 +65,7 @@ class DocumentEditor extends React.Component {
 
     localStorage.setItem("recordId", recordId);
     localStorage.setItem("inputFile", this.props.match.params.inputfileid)
-       this.setState({ showLoader: true });
+    this.setState({ showLoader: true });
     this.makeAPICallFetchContent(1);
     this.makeAPICallDocumentsTranslationProgress();
 
@@ -74,7 +74,9 @@ class DocumentEditor extends React.Component {
       this.props.APITransport(apiModel);
     } else {
       let model = this.fetchModel(parseInt(this.props.match.params.modelId))
-      model.hasOwnProperty('source_language_name') && TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+      if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
+        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+      }
     }
 
     window.addEventListener('popstate', this.handleOnClose);
@@ -100,10 +102,12 @@ class DocumentEditor extends React.Component {
       this.makeAPICallFetchContent(nextPage, true);
     }
 
-    if(prevProps.fetch_models !== this.props.fetch_models) {
+    if (prevProps.fetch_models !== this.props.fetch_models) {
       let jobId = this.props.match.params.jobid ? this.props.match.params.jobid.split("|")[0] : ""
       let model = this.fetchModel(parseInt(this.props.match.params.modelId))
-      TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+      if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
+        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+      }
     }
   }
 
@@ -488,13 +492,14 @@ class DocumentEditor extends React.Component {
     }
     return (
       <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
+
         <InfiniteScroll height={window.innerHeight - 141} style={{
           maxHeight: window.innerHeight - 141,
-          overflowY: "hidden",
+          overflowY: "auto",
         }}
           dataLength={pages.length}
         >
-            {pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
+          {pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
         </InfiniteScroll>
       </Grid>
     )

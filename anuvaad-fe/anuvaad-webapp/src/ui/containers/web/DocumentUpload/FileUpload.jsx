@@ -265,7 +265,7 @@ class PdfUpload extends Component {
         <Grid item xs={12} sm={12} lg={12} xl={12} >
           <Select
             labelId="demo-simple-select-outlined-label"
-            id="outlined-age-simple"
+            id="source-lang"
             onChange={this.processSourceLanguageSelected}
             value={this.state.source_language_code}
             fullWidth
@@ -281,7 +281,7 @@ class PdfUpload extends Component {
           >
             {
               this.state.source_languages.map(lang =>
-                <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
             }
           </Select>
         </Grid>
@@ -303,7 +303,7 @@ class PdfUpload extends Component {
         <Grid item xs={12} sm={12} lg={12} xl={12}>
           <Select
             labelId="demo-simple-select-outlined-label"
-            id="outlined-age-simple"
+            id="target-lang"
             value={this.state.target}
             onChange={this.processTargetLanguageSelected}
             value={this.state.target_language_code}
@@ -321,7 +321,7 @@ class PdfUpload extends Component {
           >
             {
               this.state.target_languages.map(lang =>
-                <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
             }
           </Select>
         </Grid>
@@ -347,8 +347,7 @@ class PdfUpload extends Component {
 
               <Grid item xs={12} sm={6} lg={6} xl={6}>
                 <MuiThemeProvider theme={theme}>
-                  <DropzoneArea
-                    className={classes.DropZoneArea}
+                  <DropzoneArea className={classes.DropZoneArea}
                     showPreviewsInDropzone
                     dropZoneClass={classes.dropZoneArea}
                     acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
@@ -392,7 +391,9 @@ class PdfUpload extends Component {
               </Grid>
 
               <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
-                <Button variant="contained" color="primary"
+                <Button
+                  id="back"
+                  variant="contained" color="primary"
                   size="large" onClick={this.handleBack.bind(this)}
                   style={{
                     width: "100%",
@@ -407,7 +408,9 @@ class PdfUpload extends Component {
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
                 <Grid item xs={12} sm={12} lg={12} xl={12}>
-                  <Button variant="contained" color="primary"
+                  <Button
+                    id="upload"
+                    variant="contained" color="primary"
                     // className={classes.button1} 
                     style={{
                       width: "100%",

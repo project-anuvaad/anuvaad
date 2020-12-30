@@ -203,8 +203,8 @@ class Region_Unifier:
 
 
     def update_children(self,reg1,reg2):
-        if len(reg1['children']) > 0 :
-            if len(reg2['children']) > 0 :
+        if reg1['children']!=None and len(reg1['children']) > 0 :
+            if reg2['children']!=None and len(reg2['children']) > 0 :
                 children = sort_regions(reg1['children'] + reg2['children'] , [])
                 if len(children) > 1 :
                     return horzontal_merging(children)
@@ -214,7 +214,7 @@ class Region_Unifier:
             else :
                 return reg1['children']
         else :
-            if len(reg2['children']) > 0 :
+            if reg2['children']!=None and len(reg2['children']) > 0 :
                 return reg2['children']
             else :
                 return []
@@ -277,7 +277,8 @@ class Region_Unifier:
         #try:
         v_list       = collate_regions(page_regions,page_lines)
         for idx,v_block in enumerate(v_list):
-            if len(v_block['children']) > 1 :
+
+            if   v_block['children'] != None and  len(v_block['children']) > 1 :
                 v_block['children'] = horzontal_merging(v_block['children'])
                 v_list[idx] =v_block
 
