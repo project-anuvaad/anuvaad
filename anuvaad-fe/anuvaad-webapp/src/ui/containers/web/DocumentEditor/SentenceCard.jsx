@@ -254,15 +254,6 @@ class SentenceCard extends React.Component {
             this.props.onAction(SENTENCE_ACTION.REMOVE_SENTENCE_FOR_MERGE, this.props.pageNumber, [this.props.sentence])
     }
 
-    handleUserInputText(event) {
-        this.setState({
-            value: event.target.value,
-            userEnteredText: true
-        });
-    }
-
-
-
     moveText() {
         if (!this.props.sentence.s0_tgt) {
             alert("Sorry, Machine translated text is not available...")
@@ -379,6 +370,16 @@ class SentenceCard extends React.Component {
 
     handleKeyDown = (event) => {
         let charCode = String.fromCharCode(event.which).toLowerCase();
+
+        if (event.keyCode == '37' || event.keyCode == '39') {
+            // left arrow and right arrow
+            if (this.state.showSuggestions) {
+                this.setState({
+                    showSuggestions: false,
+                    suggestions: []
+                });
+            }
+        }
         /**
          * Ctrl+s
          */
@@ -413,6 +414,20 @@ class SentenceCard extends React.Component {
         let value = option.slice(elem.selectionEnd, option.length)
 
         return (<div><span style={{ color: "blue" }}>{selectedText}</span><span>{value}</span></div>)
+    }
+
+    handleUserInputText(event) {
+        if (this.state.showSuggestions) {
+            this.setState({
+                showSuggestions: false,
+                suggestions: []
+            });
+        }
+
+        this.setState({
+            value: event.target.value,
+            userEnteredText: true,
+        });
     }
 
     renderUserInputArea = () => {
@@ -497,7 +512,7 @@ class SentenceCard extends React.Component {
 
     async makeAPICallDictionary() {
         this.setState({ showProgressStatus: true, message: "Fetching meanings" })
-        
+
         let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.model.source_language_code, this.props.model.target_language_code)
         const apiReq = await fetch(apiObj.apiEndPoint(), {
             method: 'post',
