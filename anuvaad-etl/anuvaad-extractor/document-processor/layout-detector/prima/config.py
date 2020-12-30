@@ -46,5 +46,5 @@ logging.basicConfig(
     datefmt="%d/%m/%y %H:%M:%S",
 )
 
-PRIMA_SCORE_THRESH_TEST =0.05
+PRIMA_SCORE_THRESH_TEST =0.9
 
