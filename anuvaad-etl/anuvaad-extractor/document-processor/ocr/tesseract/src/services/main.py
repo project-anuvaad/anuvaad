@@ -24,6 +24,8 @@ def get_ocr(app_context,base_dir):
                 width, height = file_properties.get_pageinfo(idx)
                 page_lines  = file_properties.get_lines(idx)
                 page_words  = file_properties.get_words(idx)
+                page_path   = '/'.join(page_path.split('/')[-4:])
+
                 if config.IS_DYNAMIC:
                     if config.DYNAMIC_LEVEL == 'lines':
                         page_lines = coord_adjustment(page_path, page_lines)
