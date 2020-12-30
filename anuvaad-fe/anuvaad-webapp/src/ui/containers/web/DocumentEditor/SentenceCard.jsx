@@ -29,6 +29,7 @@ import InteractiveTranslateAPI from "../../../../flux/actions/apis/document_tran
 import DictionaryAPI from '../../../../flux/actions/apis/document_translate/word_dictionary';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
+const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
 
 const styles = {
     card_active: {
@@ -190,8 +191,8 @@ class SentenceCard extends React.Component {
                 sentence.save = true;
                 sentence.tgt = this.props.sentence.s0_tgt;
                 delete sentence.block_identifier;
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src)
-
+                sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src,sentence.bleu_score)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
                 return;
             }
@@ -210,8 +211,8 @@ class SentenceCard extends React.Component {
                 sentence.save = true;
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
-
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src)
+                sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src,sentence.bleu_score)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
             }
         }
@@ -371,6 +372,11 @@ class SentenceCard extends React.Component {
     handleKeyDown = (event) => {
         let charCode = String.fromCharCode(event.which).toLowerCase();
 
+        if (charCode === 'enter' || event.keyCode == '13') {
+            event.preventDefault();
+            return false
+        }
+
         /**
          * left arrow and right arrow
          */
@@ -462,7 +468,7 @@ class SentenceCard extends React.Component {
                     <Autocomplete
                         filterOptions={filterOptions}
                         id={this.props.sentence.s_id}
-                        getOptionLabel={option => option.name}
+                        getOptionLabel={option => option.name ? option.name : ""}
                         getOptionSelected={(option, value) => option.name === value.name}
                         renderOption={(option, index) => {
                             return this.renderAutoCompleteText(option.name, this.state.value)
@@ -482,7 +488,7 @@ class SentenceCard extends React.Component {
                             let caretValue = option.slice(elem.selectionEnd, option.length)
 
                             this.setState({
-                                value: (selectedText ? selectedText.trim() : selectedText) + " " + (caretValue ? caretValue.trim() + " " : caretValue),
+                                value: (selectedText ? selectedText.trim() : selectedText) + (caretValue ? " " + caretValue.trim() + " " : caretValue),
                                 showSuggestions: false,
                                 userEnteredText: true
                             });
