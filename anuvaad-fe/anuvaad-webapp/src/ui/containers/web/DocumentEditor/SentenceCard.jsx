@@ -391,38 +391,44 @@ class SentenceCard extends React.Component {
             return false
         }
 
-         /**
-         * Ctrl+m to copy
-         */
+        /**
+        * Ctrl+m to copy
+        */
         if ((event.ctrlKey || event.metaKey) && charCode === 'm') {
             this.moveText()
             event.preventDefault();
             return false
         }
-
         /**
          * user requesting for suggestions
          */
-        var TABKEY = 9;
-        if (event.keyCode === TABKEY) {
+        if (event.altKey && charCode === 's') {
             var elem = document.getElementById(this.props.sentence.s_id)
             this.setState({ showSuggestions: true })
             this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
             event.preventDefault();
             return false
         }
-        if (event.altKey && charCode === 's') {
+
+        /**
+         * user selecting words from suggestions
+         */
+
+        var TABKEY = 9;
+        if (event.keyCode === TABKEY) {
             if (this.state.suggestions[0]) {
                 let suggestion = this.state.suggestions[0].name
                 let remainingSentenceArray = suggestion.substr(suggestion.indexOf(this.state.value) + this.state.value.length).split(' ')
                 let nextWord = remainingSentenceArray.shift()
                 if (remainingSentenceArray.length !== 0) {
-                    this.setState({ value: this.state.value + nextWord + ' ' })
+                    this.setState({ showSuggestions: true, value: this.state.value + nextWord + " " })
                 } else {
                     this.setState({ value: this.state.value + nextWord })
                     nextWord = ''
                 }
             }
+            event.preventDefault();
+            // return false
         }
     }
 
@@ -489,7 +495,7 @@ class SentenceCard extends React.Component {
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
-                                helperText="Ctrl+s to save, Ctrl+m to move text, TAB key to get suggestions of your choice, Alt+s to move suggested words"
+                                helperText="Ctrl+m to move text, Alt+s to get suggestions of your choice, TAB key to move suggested words, Ctrl+s to save"
                                 type="text"
                                 name={this.props.sentence.s_id}
                                 value={this.state.value}
