@@ -371,6 +371,11 @@ class SentenceCard extends React.Component {
     handleKeyDown = (event) => {
         let charCode = String.fromCharCode(event.which).toLowerCase();
 
+        if (charCode === 'enter' || event.keyCode == '13') {
+            event.preventDefault();
+            return false
+        }
+
         /**
          * left arrow and right arrow
          */
@@ -443,7 +448,7 @@ class SentenceCard extends React.Component {
                     <Autocomplete
                         filterOptions={filterOptions}
                         id={this.props.sentence.s_id}
-                        getOptionLabel={option => option.name}
+                        getOptionLabel={option => option.name ? option.name : ""}
                         getOptionSelected={(option, value) => option.name === value.name}
                         renderOption={(option, index) => {
                             return this.renderAutoCompleteText(option.name, this.state.value)
@@ -463,7 +468,7 @@ class SentenceCard extends React.Component {
                             let caretValue = option.slice(elem.selectionEnd, option.length)
 
                             this.setState({
-                                value: (selectedText ? selectedText.trim() : selectedText) + " " + (caretValue ? caretValue.trim() + " " : caretValue),
+                                value: (selectedText ? selectedText.trim() : selectedText) + (caretValue ? " " + caretValue.trim() + " " : caretValue),
                                 showSuggestions: false,
                                 userEnteredText: true
                             });
