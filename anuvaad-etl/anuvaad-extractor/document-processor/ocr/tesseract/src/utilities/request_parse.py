@@ -64,7 +64,7 @@ def get_json(path,base_dir):
     path = os.path.join(base_dir, path)
     with open (path, "r") as f:
         data = json.loads(f.read())
-    json_data = data['rsp']['outputs']
+    json_data = data['outputs']
     return json_data
 
 
