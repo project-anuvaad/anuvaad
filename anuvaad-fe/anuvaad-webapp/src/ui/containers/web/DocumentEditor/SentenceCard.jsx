@@ -371,8 +371,10 @@ class SentenceCard extends React.Component {
     handleKeyDown = (event) => {
         let charCode = String.fromCharCode(event.which).toLowerCase();
 
+        /**
+         * left arrow and right arrow
+         */
         if (event.keyCode == '37' || event.keyCode == '39') {
-            // left arrow and right arrow
             if (this.state.showSuggestions) {
                 this.setState({
                     showSuggestions: false,
@@ -381,7 +383,7 @@ class SentenceCard extends React.Component {
             }
         }
         /**
-         * Ctrl+s
+         * Ctrl+s to copy and save
          */
         if ((event.ctrlKey || event.metaKey) && charCode === 's') {
             this.processSaveButtonClicked()
@@ -389,6 +391,9 @@ class SentenceCard extends React.Component {
             return false
         }
 
+         /**
+         * Ctrl+m to copy
+         */
         if ((event.ctrlKey || event.metaKey) && charCode === 'm') {
             this.moveText()
             event.preventDefault();
