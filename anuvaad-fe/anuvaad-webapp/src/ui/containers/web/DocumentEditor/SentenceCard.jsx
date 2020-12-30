@@ -29,6 +29,7 @@ import InteractiveTranslateAPI from "../../../../flux/actions/apis/document_tran
 import DictionaryAPI from '../../../../flux/actions/apis/document_translate/word_dictionary';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
+const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
 
 const styles = {
     card_active: {
@@ -190,8 +191,8 @@ class SentenceCard extends React.Component {
                 sentence.save = true;
                 sentence.tgt = this.props.sentence.s0_tgt;
                 delete sentence.block_identifier;
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, this.props.model.source_language_name, this.props.model.target_language_name)
-
+                sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, this.props.model.source_language_name, this.props.model.target_language_name,sentence.bleu_score)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
                 return;
             }
@@ -210,9 +211,8 @@ class SentenceCard extends React.Component {
                 sentence.save = true;
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
-
-                console.log(this.props.model)
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, this.props.model.source_language_name, this.props.model.target_language_name)
+                sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, this.props.model.source_language_name, this.props.model.target_language_name,sentence.bleu_score)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
             }
         }

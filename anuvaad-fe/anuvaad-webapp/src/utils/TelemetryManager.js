@@ -326,7 +326,7 @@ export const endSentenceEdit = (sentence, sentence_id, mode) => {
  * @param {*} src , extracted source sentence
  * 
  */
-export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, mode, src, source_language, target_language) => {
+export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, mode, src, source_language, target_language, bleu_score) => {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -350,6 +350,7 @@ export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, m
   values.final = sentence_final
   values.source_language = source_language
   values.target_language = target_language
+  values.bleu_score = bleu_score
 
   options.context.cdata = values
   $t.interact(data, options)
