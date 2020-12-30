@@ -192,7 +192,7 @@ class SentenceCard extends React.Component {
                 sentence.tgt = this.props.sentence.s0_tgt;
                 delete sentence.block_identifier;
                 sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, this.props.model.source_language_name, this.props.model.target_language_name,sentence.bleu_score)
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src,sentence.bleu_score)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
                 return;
             }
@@ -212,7 +212,7 @@ class SentenceCard extends React.Component {
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
                 sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, this.props.model.source_language_name, this.props.model.target_language_name,sentence.bleu_score)
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src,sentence.bleu_score)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
             }
         }
@@ -254,15 +254,6 @@ class SentenceCard extends React.Component {
         else
             this.props.onAction(SENTENCE_ACTION.REMOVE_SENTENCE_FOR_MERGE, this.props.pageNumber, [this.props.sentence])
     }
-
-    handleUserInputText(event) {
-        this.setState({
-            value: event.target.value,
-            userEnteredText: true
-        });
-    }
-
-
 
     moveText() {
         if (!this.props.sentence.s0_tgt) {
@@ -380,8 +371,25 @@ class SentenceCard extends React.Component {
 
     handleKeyDown = (event) => {
         let charCode = String.fromCharCode(event.which).toLowerCase();
+
+        if (charCode === 'enter' || event.keyCode == '13') {
+            event.preventDefault();
+            return false
+        }
+
         /**
-         * Ctrl+s
+         * left arrow and right arrow
+         */
+        if (event.keyCode == '37' || event.keyCode == '39') {
+            if (this.state.showSuggestions) {
+                this.setState({
+                    showSuggestions: false,
+                    suggestions: []
+                });
+            }
+        }
+        /**
+         * Ctrl+s to copy and save
          */
         if ((event.ctrlKey || event.metaKey) && charCode === 's') {
             this.processSaveButtonClicked()
@@ -389,6 +397,9 @@ class SentenceCard extends React.Component {
             return false
         }
 
+         /**
+         * Ctrl+m to copy
+         */
         if ((event.ctrlKey || event.metaKey) && charCode === 'm') {
             this.moveText()
             event.preventDefault();
@@ -416,6 +427,20 @@ class SentenceCard extends React.Component {
         return (<div><span style={{ color: "blue" }}>{selectedText}</span><span>{value}</span></div>)
     }
 
+    handleUserInputText(event) {
+        if (this.state.showSuggestions) {
+            this.setState({
+                showSuggestions: false,
+                suggestions: []
+            });
+        }
+
+        this.setState({
+            value: event.target.value,
+            userEnteredText: true,
+        });
+    }
+
     renderUserInputArea = () => {
 
         return (
@@ -424,7 +449,7 @@ class SentenceCard extends React.Component {
                     <Autocomplete
                         filterOptions={filterOptions}
                         id={this.props.sentence.s_id}
-                        getOptionLabel={option => option.name}
+                        getOptionLabel={option => option.name ? option.name : ""}
                         getOptionSelected={(option, value) => option.name === value.name}
                         renderOption={(option, index) => {
                             return this.renderAutoCompleteText(option.name, this.state.value)
@@ -444,7 +469,7 @@ class SentenceCard extends React.Component {
                             let caretValue = option.slice(elem.selectionEnd, option.length)
 
                             this.setState({
-                                value: (selectedText ? selectedText.trim() : selectedText) + " " + (caretValue ? caretValue.trim() + " " : caretValue),
+                                value: (selectedText ? selectedText.trim() : selectedText) + (caretValue ? " " + caretValue.trim() + " " : caretValue),
                                 showSuggestions: false,
                                 userEnteredText: true
                             });
@@ -498,7 +523,7 @@ class SentenceCard extends React.Component {
 
     async makeAPICallDictionary() {
         this.setState({ showProgressStatus: true, message: "Fetching meanings" })
-        
+
         let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.model.source_language_code, this.props.model.target_language_code)
         const apiReq = await fetch(apiObj.apiEndPoint(), {
             method: 'post',
