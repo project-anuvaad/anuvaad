@@ -8,6 +8,7 @@ from src.services.left_right_on_block import left_right_margin
 
 
 
+##Line inside line caese (eg kan_1_1)  dont use abosolute for horizontal merging
 
 def horzontal_merging(children):
     bi_gram = get_ngram(children, 2)
@@ -50,7 +51,6 @@ def break_paragraph(v_block,block_configs):
     blocks = [[bi_gram[0][0]]]
     for pair in bi_gram:
         connected = left_right_condition(MapKeys(pair[0]),MapKeys(pair[1]) ,map_v_block.get_right(),map_v_block.get_left(),block_configs)
-        print('connnnnnnnnected ',connected)
         if connected:
             blocks[-1].append(pair[1])
         else:
