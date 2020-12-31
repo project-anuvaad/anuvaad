@@ -160,6 +160,11 @@ class DocumentEditor extends React.Component {
 
   }
 
+  handleRedirect = () =>{
+    this.informUserStatus(translate('common.page.label.TOKEN_EXPIRED'), false)
+    setTimeout(() => { history.push(`${process.env.PUBLIC_URL}/`);}, 3000)
+  }
+
   makeAPICallFetchContentPerPage = (start_page) => {
 
 
@@ -190,7 +195,12 @@ class DocumentEditor extends React.Component {
       const rsp_data = await response.json();
       if (!response.ok) {
         TELEMETRY.log("merge", JSON.stringify(rsp_data))
-        this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
+        if(Number(response.status)===401){
+          this.handleRedirect()
+        }
+        else{
+          this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
+        }
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted();
@@ -217,7 +227,13 @@ class DocumentEditor extends React.Component {
       const rsp_data = await response.json();
       if (!response.ok) {
         TELEMETRY.log("save-translation", JSON.stringify(rsp_data))
-        this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
+        if(Number(response.status)===401){
+          this.handleRedirect()
+        }
+        else{
+          this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
+        }
+        
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted()
@@ -246,7 +262,13 @@ class DocumentEditor extends React.Component {
       const rsp_data = await response.json();
       if (!response.ok) {
         TELEMETRY.log("split", JSON.stringify(rsp_data))
-        this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
+        if(Number(response.status)===401){
+          this.handleRedirect()
+        }
+        else{
+          this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
+        }
+
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted();
@@ -273,7 +295,13 @@ class DocumentEditor extends React.Component {
       const rsp_data = await response.json();
       if (!response.ok) {
         TELEMETRY.log("save-sentence", JSON.stringify(rsp_data))
-        this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
+        if(Number(response.status)===401){
+          this.handleRedirect()
+        }
+        else{
+          this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
+        }
+        
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted()
