@@ -54,7 +54,6 @@ def segment_regions(words, lines,regions):
             p_list +=[v_block]
         else :
             p_list +=  [v_block]
-    p_list = merge_text(p_list)
     p_list += n_text_regions
 
 

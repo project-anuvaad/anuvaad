@@ -65,6 +65,7 @@ class Page_Config:
         try:
             avg_height   = 0;   total_line = 0
             avg_ver_dist = 0;   avg_width  = 0
+            ver_dist_mes_count = 0
             for region in page:
                 if region['children'] !=None:
                     total_line = total_line+len(region['children'])
@@ -74,13 +75,22 @@ class Page_Config:
                         avg_width = avg_width+ keys.get_width(line)
                         current_line_top = keys.get_top(line)
                         if idx<len(region['children'])-1:
-                            next_line_top = keys.get_bottom(region['children'][idx+1])
+                            next_line_top = keys.get_top(region['children'][idx+1])
+                            max_height = max( keys.get_height(region['children'][idx+1]) ,keys.get_height(region['children'][idx]))
                             ver_dis = abs(next_line_top-current_line_top)
+                            if ver_dis > max_height * 0.5 :
+                                avg_ver_dist = avg_ver_dist + ver_dis
+                                ver_dist_mes_count +=1
+
                             avg_ver_dist = avg_ver_dist + ver_dis
 
             avg_height   =  avg_height / total_line
-            avg_ver_dist =  avg_ver_dist / total_line
             avg_width    =  avg_width / total_line
+            if ver_dist_mes_count > 0 :
+                avg_ver_dist = avg_ver_dist / ver_dist_mes_count
+            else:
+                avg_ver_dist = avg_height
+
         except:
             pass
 
@@ -254,7 +264,7 @@ class Region_Unifier:
 
                 children = sort_regions(agg_children , [])
                 if len(children) > 1 :
-                    return horzontal_merging(children)
+                    return horzontal_merging(children, self.avg_ver_ratio)
                     #v_list[idx] =v_block
                 else:
                     return children
@@ -339,30 +349,38 @@ class Region_Unifier:
         #try:
         line_list    = collate_regions(page_lines,page_words)
         v_list       = collate_regions(page_regions,line_list,grand_children=True)
-        
-        for idx,v_block in enumerate(v_list):
-            if   v_block['children'] != None and  len(v_block['children']) > 1 :
-                #print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
-                v_block['children'] = horzontal_merging(v_block['children'])
-                v_list[idx] =v_block
-
+        page_config                         = Page_Config()
         text_regions, n_text_regions = self.get_text_region(v_list)
 
-        ################### page configs for region unifier
-        page_config                         = Page_Config()
         avg_height, avg_ver_dist, avg_width = page_config.avg_line_info(text_regions)
+
+        self.avg_ver_ratio =   avg_ver_dist /avg_height
+
+        print(avg_ver_dist,  'av_disssssssssssssssssssssssssssssssss')
+        print(avg_height, 'av_heisssssssssssssssssssssssssssssssss')
+
+
+        
+        # for idx,v_block in enumerate(v_list):
+        #     if   v_block['children'] != None and  len(v_block['children']) > 1 :
+        #         print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
+        #         v_block['children'] = horzontal_merging(v_block['children'],self.avg_ver_ratio)
+        #         v_list[idx] =v_block
+        #
+
+        ################### page configs for region unifier
         avg_hor_dist                        = page_config.avg_region_info(text_regions)
         avg_word_sepc                        = page_config.avg_word_sep(line_list)
 
 
-        print("av height : ",avg_height)
-        print("avg_ver_dist : ",avg_ver_dist)
-        print("av avg_width : ",avg_width)
-        print("avg_hor_dist", avg_hor_dist)
-        print('avg word spacing', avg_word_sepc)
-        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        # print("av height : ",avg_height)
+        # print("avg_ver_dist : ",avg_ver_dist)
+        # print("av avg_width : ",avg_width)
+        # print("avg_hor_dist", avg_hor_dist)
+        # print('avg word spacing', avg_word_sepc)
+        # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         ########################
-        flag =True
+        flag =False
         while flag==True:
             text_regions, flag = self.merge_remove_overlap(text_regions,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
         # except Exception as e:
