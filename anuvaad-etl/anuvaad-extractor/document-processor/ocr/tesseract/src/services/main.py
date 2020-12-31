@@ -15,7 +15,7 @@ def preprocess_file(file_properties,lang,ocr_level):
 
     for page_index, page_path in enumerate(page_paths):
         page_regions = file_properties.get_regions(page_index)
-        page_path = '/home/dhiraj/Documents/Anuwad/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/src/notebooks/sample-data/input/' +  '/'.join(page_path.split('/')[-4:])
+        page_path =  '/'.join(page_path.split('/')[-4:])
         mode_height = frequent_height(file_properties.get_lines(page_index))
 
 
