@@ -21,6 +21,7 @@ class UpdatePassword extends React.Component {
         super(props);
         this.state = {
             email: "",
+            variantType: ""
         }
     }
 
@@ -31,19 +32,32 @@ class UpdatePassword extends React.Component {
     handleSubmit(e) {
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if (this.state.email.match(mailformat)) {
-            let { APITransport } = this.props;
             let apiObj = new ForgotPasswordApi(this.state.email);
-            APITransport(apiObj);
+            fetch(apiObj.apiEndPoint(), {
+                method: 'POST',
+                headers: apiObj.getHeaders().headers,
+                body: JSON.stringify(apiObj.getBody())
+            })
+                .then(res => {
+                    if (res.ok) {
+                        this.setState({ variantType: 'success', message: translate('updatePassword.page.message.forgotPasswordLinkSent'), open: true })
+                    } else {
+                        res.json().then(obj => {
+                            this.setState({ variantType: 'error', message: obj.message, open: true })
+                        })
+                    }
+                })
         } else {
             alert(translate('common.page.alert.validEmail'))
         }
+        setTimeout(() => {
+            this.setState({ open: false, variantType: '', message: '' })
+        }, 6000)
     }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.forgotpassword !== this.props.forgotpassword) {
-            this.setState({ message: translate('updatePassword.page.message.forgotPasswordLinkSent'), open: true, firstName: '', lastName: '', email: '', password: '', confirmPassword: '', termsAndCondition: '' })
-        }
 
+    handleClose = () => {
+        this.setState({ open: false })
     }
 
     render() {
@@ -76,20 +90,18 @@ class UpdatePassword extends React.Component {
                             </Button>
                         </Grid>
                     </Grid>
-                    {this.state.open && (
-                        <Snackbar
-                            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                            open={this.state.open}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            variant="success"
-                            message={this.state.message}
-                        />
-                    )}
                 </div>
-
+                {this.state.open && (
+                    <Snackbar
+                        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                        open={this.state.open}
+                        autoHideDuration={6000}
+                        onClose={this.handleClose}
+                        variant={this.state.variantType}
+                        message={this.state.message}
+                    />
+                )}
             </MuiThemeProvider>
-
         );
     }
 }
