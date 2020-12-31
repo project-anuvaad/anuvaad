@@ -58,6 +58,7 @@ function get_document_details(input) {
         document['status']                  = job['status'];
         document['progress']                = '...'
         document['word_count']              = '...' 
+        document['bleu_score']              =   ""
 
         job['taskDetails'].forEach(task => {
             let timeline = {}
@@ -101,6 +102,7 @@ function update_documents_progress(documents, progresses) {
             if (document['recordId'] === progress['record_id']) {
                 document['progress'] =  `${progress['completed_sentence_count']} of ${progress['total_sentence_count']}`
                 document['word_count'] =  `${progress['completed_word_count']} of ${progress['total_word_count']}`
+                document['bleu_score']  = Number(progress['completed_sentence_count']) / Number(progress['total_sentence_count']) >0.8 && `${Math.round(Number(progress['avg_bleu_score']) * 100)} %`
                 updated_documents.push(document)
                 found = true;
             }
