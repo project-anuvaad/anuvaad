@@ -96,7 +96,7 @@ def sort_regions(region_lines, sorted_lines=[]):
         sort_regions(next_line, sorted_lines)
     return sorted_lines
 
-def collate_regions(regions, lines):
+def collate_regions(regions, lines,grand_children=False):
     idx = index.Index()
     lines_intersected = []
     if regions !=None and len(regions) > 0:
@@ -118,16 +118,15 @@ def collate_regions(regions, lines):
                 else :
                     regions[region_index]['children']  = region_lines
             else:
-                regions[region_index]['children'] =[]# [copy.deepcopy(regions[region_index])]
-    orphan_lines = []
+                if grand_children :
+                    regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
+                regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
+    #orphan_lines = []
     for line_index, line in enumerate(lines):
         if line_index not in lines_intersected:
-            orphan_lines.append(line)
-    if len(orphan_lines) > 0 :
-        #merge_orphans = merge_children(orphan_lines)
-        for line in orphan_lines:
-            line['children'] =[]
+            line['children'] = [ copy.deepcopy(line)]
             regions.append(line)
+
     return regions
 
 def get_ngram(indices, window_size = 2):
@@ -154,7 +153,7 @@ def merge_text(v_blocks):
     for block_index, v_block in enumerate(v_blocks):
         try:
             v_blocks[block_index]['font']    ={'family':'Arial Unicode MS', 'size':0, 'style':'REGULAR'}
-            #v_blocks['font']['size'] = max(v_block['children'], key=lambda x: x['font']['size'])['font']['size']
+            v_blocks['font']['size'] = max(v_block['children'], key=lambda x: x['font']['size'])['font']['size']
             if len(v_block['children']) > 0 :
                 v_blocks[block_index]['text'] = v_block['children'][0]['text']
                 if  len(v_block['children']) > 1:

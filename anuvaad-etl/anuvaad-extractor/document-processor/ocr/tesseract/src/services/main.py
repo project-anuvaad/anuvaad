@@ -4,27 +4,45 @@ from anuvaad_auditor.loghandler import log_debug
 import src.utilities.app_context as app_context
 import config, time
 from src.utilities.request_parse import get_files, File, get_ocr_config,get_json
-from src.services.ocr import text_extraction
+from src.services.ocr import text_extraction,merge_text,frequent_height
 from src.services.dynamic_adjustment import coord_adjustment
 
 
-def preprocess_region(file,page_regions,page_path,lang,page_index):
+def preprocess_file(file_properties,lang,ocr_level):
+    file = file_properties.get_file()
+    page_paths = file_properties.get_pages()
+    width, height = file_properties.get_pageinfo(0)
 
-    for idx, region in enumerate(page_regions):
-        region_lines  = file_properties.get_region_lines(idx)
-        region_words  = file_properties.get_region_words(idx)
+    for page_index, page_path in enumerate(page_paths):
+        page_regions = file_properties.get_regions(page_index)
+        page_path = '/home/dhiraj/Documents/Anuwad/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/src/notebooks/sample-data/input/' +  '/'.join(page_path.split('/')[-4:])
+        mode_height = frequent_height(file_properties.get_lines(page_index))
 
-        if config.IS_DYNAMIC:
-            if config.DYNAMIC_LEVEL == 'lines':
-                region_lines = coord_adjustment(page_path, region_lines)
-            if config.DYNAMIC_LEVEL == 'words':
-                region_words = coord_adjustment(page_path, region_words)
-        if ocr_level == "HIGH_ACCURACY":
-            region_ocr     = text_extraction(lang, page_path, region_lines,width, height)
-            file['pages'][page_index]['regions'] = region_ocr
-        if ocr_level == "word":
-            region_ocr     = text_extraction(lang, page_path, region_words,width, height)
-            file['pages'][page_index]['regions'] = region_ocr
+
+        if config.OCR_LEVEL[ocr_level] == 'words':
+            for idx, region in enumerate(page_regions):
+                region_lines = file_properties.get_region_lines(page_index,idx)
+                for line_index, line in enumerate(region_lines):
+                    region_words = file_properties.get_region_words(page_index,idx,line_index)
+                    if config.IS_DYNAMIC:
+                        region_words = coord_adjustment(page_path, region_words)
+                    region_ocr = text_extraction(lang, page_path, region_words, width, height,mode_height)
+                    file['pages'][page_index]['regions'][idx]['children'][line_index]['children'] = region_ocr
+                file['pages'][page_index]['regions'][idx]['children'] = merge_text(file['pages'][page_index]['regions'][idx]['children'],merge_tess_confidence=True)
+            file['pages'][page_index]['regions'] = merge_text(file['pages'][page_index]['regions'])
+
+
+        if config.OCR_LEVEL[ocr_level] == 'lines':
+                for idx, region in enumerate(page_regions):
+                    region_lines = file_properties.get_region_lines(page_index,idx)
+                    if config.IS_DYNAMIC:
+                        region_lines = coord_adjustment(page_path, region_lines)
+                    region_ocr = text_extraction(lang, page_path, region_lines, width, height,mode_height)
+                    file['pages'][page_index]['regions'][idx]['children'] = region_ocr
+                file['pages'][page_index]['regions']  = merge_text(file['pages'][page_index]['regions'])
+    return file
+
+
 
 
 
@@ -35,29 +53,17 @@ def process_info(app_context,base_dir):
         file_images = []
         output      = []
         for index,file_new in enumerate(files):
+            start_time = time.time()
             ocr_level, lang = get_ocr_config(file_new)
             file   = get_json(file_new['file']['name'],base_dir)[0]
             file_properties = File(file)
-            page_paths      = file_properties.get_pages()
-            start_time = time.time()
-            for idx,page_path in enumerate(page_paths):
-                width, height = file_properties.get_pageinfo(idx)
-                page_lines  = file_properties.get_lines(idx)
-                page_regions  = file_properties.get_regions(idx)
-                page_words  = file_properties.get_words(idx)
-                page_path   = '/'.join(page_path.split('/')[-4:])
-
-                preprocess_region(file,page_regions,page_path,lang,idx)
-
-                
-                
+            file = preprocess_file(file_properties,lang,ocr_level)
             file['file'] = file_new['file']
             file['config'] = file_new['config']
             output.append(file)
-            output[index]['status'] = {}
-            output[index]['status']['message']="tesseract ocr successful"
+            output[index]['status'] = {'code':200, 'message':"tesseract ocr successful"}
             end_time            = time.time()
-            extraction_time     = (end_time - start_time)/len(page_paths)
+            extraction_time     = (end_time - start_time)/len(file_properties.get_pages())
             log_info('tesseract ocr per page completed in {}'.format(extraction_time), app_context.application_context)
         app_context.application_context["outputs"] =output
         log_info("successfully completed tesseract ocr", None)

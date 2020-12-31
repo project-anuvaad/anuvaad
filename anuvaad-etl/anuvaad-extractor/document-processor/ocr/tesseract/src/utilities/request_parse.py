@@ -47,6 +47,8 @@ class File:
     def get_region_words(self, page_index,region_index,child_index):
         return self.file['pages'][page_index]['regions'][region_index]['children'][child_index]['children']
 
+
+
     @log_error
     def get_regions(self, page_index):
         return self.file['pages'][page_index]['regions']
@@ -57,6 +59,8 @@ class File:
         height = self.file['pages'][page_index]['vertices'][3]['y']
         return width, height
 
+    def get_file(self):
+        return self.file
 
 
 def get_files(application_context):
@@ -72,6 +76,8 @@ def get_json(path,base_dir):
     path = os.path.join(base_dir, path)
     with open (path, "r") as f:
         data = json.loads(f.read())
+    #print(data)
+    #json_data = data['rsp']['outputs']
     json_data = data['outputs']
     return json_data
 

@@ -338,7 +338,7 @@ class Region_Unifier:
     def region_unifier(self,page_words, page_lines,page_regions):
         #try:
         line_list    = collate_regions(page_lines,page_words)
-        v_list       = collate_regions(page_regions,line_list)
+        v_list       = collate_regions(page_regions,line_list,grand_children=True)
         
         for idx,v_block in enumerate(v_list):
             if   v_block['children'] != None and  len(v_block['children']) > 1 :
