@@ -8,8 +8,28 @@ from src.services.ocr import text_extraction
 from src.services.dynamic_adjustment import coord_adjustment
 
 
+def preprocess_region(file,page_regions,page_path,lang,page_index):
 
-def get_ocr(app_context,base_dir):
+    for idx, region in enumerate(page_regions):
+        region_lines  = file_properties.get_region_lines(idx)
+        region_words  = file_properties.get_region_words(idx)
+
+        if config.IS_DYNAMIC:
+            if config.DYNAMIC_LEVEL == 'lines':
+                region_lines = coord_adjustment(page_path, region_lines)
+            if config.DYNAMIC_LEVEL == 'words':
+                region_words = coord_adjustment(page_path, region_words)
+        if ocr_level == "HIGH_ACCURACY":
+            region_ocr     = text_extraction(lang, page_path, region_lines,width, height)
+            file['pages'][page_index]['regions'] = region_ocr
+        if ocr_level == "word":
+            region_ocr     = text_extraction(lang, page_path, region_words,width, height)
+            file['pages'][page_index]['regions'] = region_ocr
+
+
+
+
+def process_info(app_context,base_dir):
     try:
         files       = get_files(app_context.application_context)        
         file_images = []
@@ -23,20 +43,13 @@ def get_ocr(app_context,base_dir):
             for idx,page_path in enumerate(page_paths):
                 width, height = file_properties.get_pageinfo(idx)
                 page_lines  = file_properties.get_lines(idx)
+                page_regions  = file_properties.get_regions(idx)
                 page_words  = file_properties.get_words(idx)
                 page_path   = '/'.join(page_path.split('/')[-4:])
 
-                if config.IS_DYNAMIC:
-                    if config.DYNAMIC_LEVEL == 'lines':
-                        page_lines = coord_adjustment(page_path, page_lines)
-                    if config.DYNAMIC_LEVEL == 'words':
-                        page_words = coord_adjustment(page_path, page_words)
-                if ocr_level == "HIGH_ACCURACY":
-                    page_ocr     = text_extraction(lang, page_path, page_lines,width, height)
-                    file['pages'][idx]['lines'] = page_ocr
-                if ocr_level == "word":
-                    page_ocr     = text_extraction(lang, page_path, page_words,width, height)
-                    file['pages'][idx]['words'] = page_ocr
+                preprocess_region(file,page_regions,page_path,lang,idx)
+
+                
                 
             file['file'] = file_new['file']
             file['config'] = file_new['config']
@@ -58,7 +71,7 @@ def TesseractOCR(app_context,base_dir= config.BASE_DIR):
     
     log_debug('tesseract ocr process starting {}'.format(app_context.application_context), app_context.application_context)
     try:
-        response   = get_ocr(app_context,base_dir)
+        response   = process_info(app_context,base_dir)
         return {
                 'code': 200,
                 'message': 'request completed',
