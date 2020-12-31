@@ -10,6 +10,9 @@ from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
 from configs.translatorconfig import anu_translator_output_topic
 from configs.translatorconfig import tool_translator
+from configs.translatorconfig import nmt_map
+
+current_nmt = 0
 
 utils = TranslatorUtils()
 producer = Producer()
@@ -176,6 +179,19 @@ class TranslatorService:
             org_id = file["orgID"]
         locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
         return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, translate_wf_input)
+
+    # Distributes the NMT traffic across machines.
+    def nmt_router(self, nmt_in):
+        no_of_machines = len(nmt_map.keys())
+        global current_nmt
+        if current_nmt == 0:
+            current_nmt = 1
+        else:
+            current_nmt += 1
+            if current_nmt > no_of_machines:
+                current_nmt = 1
+        topic = nmt_map[current_nmt]["input"]
+        producer.produce(nmt_in, topic)
 
     # Method to process the output received from the NMT
     def process_nmt_output(self, nmt_output):

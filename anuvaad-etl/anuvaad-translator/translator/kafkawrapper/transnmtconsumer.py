@@ -2,7 +2,6 @@ import json
 import logging
 import random
 import string
-import threading
 
 from kafka import KafkaConsumer, TopicPartition
 from service.translatorservice import TranslatorService
@@ -14,6 +13,7 @@ from configs.translatorconfig import anu_nmt_output_topic
 from configs.translatorconfig import anu_translator_consumer_grp
 from configs.translatorconfig import kafka_bootstrap_server_host
 from configs.translatorconfig import translator_nmt_cons_no_of_partitions
+from configs.translatorconfig import nmt_map
 
 log = logging.getLogger('file')
 
@@ -43,6 +43,9 @@ def get_topic_paritions(topics):
 # Method to read and process the requests from the kafka queue
 def consume_nmt():
     try:
+        topics = []
+        for machine in nmt_map.keys():
+            topics.append(nmt_map[machine]["output"])
         topics = [anu_nmt_output_topic]
         consumer = instantiate(topics)
         service = TranslatorService()

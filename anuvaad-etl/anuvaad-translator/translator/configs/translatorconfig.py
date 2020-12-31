@@ -31,6 +31,18 @@ anu_nmt_output_topic = os.environ.get('KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC', 'anu
 jm_cron_interval_sec = 30
 download_folder = "/app/upload/"
 tmx_default_context = "JUDICIARY"
+#nmt-map
+anu_nmt_input_topic_m1 = os.environ.get('KAFKA_NMT_TRANSLATION_M1_INPUT_TOPIC', 'anuvaad-nmt-translate-m1')
+anu_nmt_output_topic_m1 = os.environ.get('KAFKA_NMT_TRANSLATION_M1_OUTPUT_TOPIC', 'anuvaad-nmt-translate-processed-m1')
+anu_nmt_input_topic_m2 = os.environ.get('KAFKA_NMT_TRANSLATION_M2_INPUT_TOPIC', 'anuvaad-nmt-translate-m2')
+anu_nmt_output_topic_m2 = os.environ.get('KAFKA_NMT_TRANSLATION_M2_OUTPUT_TOPIC', 'anuvaad-nmt-translate-processed-m2')
+anu_nmt_input_topic_m3 = os.environ.get('KAFKA_NMT_TRANSLATION_M3_INPUT_TOPIC', 'anuvaad-nmt-translate-m3')
+anu_nmt_output_topic_m3 = os.environ.get('KAFKA_NMT_TRANSLATION_M3_OUTPUT_TOPIC', 'anuvaad-nmt-translate-processed-m3')
+nmt_map = {
+    1: {"input": anu_nmt_input_topic_m1, "output": anu_nmt_output_topic_m1},
+    2: {"input": anu_nmt_input_topic_m2, "output": anu_nmt_output_topic_m2},
+    3: {"input": anu_nmt_input_topic_m3, "output": anu_nmt_output_topic_m3}
+}
 
 #kafka-configs
 anu_translator_input_topic = os.environ.get('KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_TOPIC', 'anuvaad-dp-tools-translator-input-v3')
