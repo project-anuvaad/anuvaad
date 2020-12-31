@@ -130,14 +130,14 @@
         {
             "id": 57,
             "path":"nmt/57",
-            "sp_encoder":"sentencepiece_models/enBeng-en-to-beng-2-2020-02-18-24k.model",
-            "sp_decoder":"sentencepiece_models/bengali-en-to-beng-2-2020-02-18-24k.model"
+            "sp_encoder":"nmt/57/enBeng-en-to-bn-3.2-2020-12-28-24k.model",
+            "sp_decoder":"nmt/57/bengali-en-to-bn-3.2-2020-12-28-24k.model"
         },
         {
             "id":58,
-            "path":"nmt/bn-en",
-            "sp_encoder":"sentencepiece_models/bengali-en-to-beng-2-2020-02-18-24k.model",
-            "sp_decoder":"sentencepiece_models/enBeng-en-to-beng-2-2020-02-18-24k.model"
+            "path":"nmt/58",
+            "sp_encoder":"nmt/58/bengali-bn-to-en-2.2-2020-12-28-24k.model",
+            "sp_decoder":"nmt/58/enBeng-bn-to-en-2.2-2020-12-28-24k.model"
         },
         {
             "id":59,
