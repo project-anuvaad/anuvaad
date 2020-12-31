@@ -82,14 +82,16 @@ class Page_Config:
                                 avg_ver_dist = avg_ver_dist + ver_dis
                                 ver_dist_mes_count +=1
 
-                            avg_ver_dist = avg_ver_dist + ver_dis
 
             avg_height   =  avg_height / total_line
             avg_width    =  avg_width / total_line
             if ver_dist_mes_count > 0 :
                 avg_ver_dist = avg_ver_dist / ver_dist_mes_count
+
             else:
+
                 avg_ver_dist = avg_height
+                #avg_height
 
         except:
             pass
@@ -351,7 +353,6 @@ class Region_Unifier:
         v_list       = collate_regions(page_regions,line_list,grand_children=True)
         page_config                         = Page_Config()
         text_regions, n_text_regions = self.get_text_region(v_list)
-
         avg_height, avg_ver_dist, avg_width = page_config.avg_line_info(text_regions)
 
         self.avg_ver_ratio =   avg_ver_dist /avg_height
@@ -361,12 +362,12 @@ class Region_Unifier:
 
 
         
-        # for idx,v_block in enumerate(v_list):
-        #     if   v_block['children'] != None and  len(v_block['children']) > 1 :
-        #         print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
-        #         v_block['children'] = horzontal_merging(v_block['children'],self.avg_ver_ratio)
-        #         v_list[idx] =v_block
-        #
+        for idx,v_block in enumerate(v_list):
+            if   v_block['children'] != None and  len(v_block['children']) > 1 :
+                print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
+                v_block['children'] = horzontal_merging(v_block['children'],self.avg_ver_ratio)
+                v_list[idx] =v_block
+
 
         ################### page configs for region unifier
         avg_hor_dist                        = page_config.avg_region_info(text_regions)
@@ -380,7 +381,7 @@ class Region_Unifier:
         # print('avg word spacing', avg_word_sepc)
         # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         ########################
-        flag =False
+        flag =True
         while flag==True:
             text_regions, flag = self.merge_remove_overlap(text_regions,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
         # except Exception as e:
