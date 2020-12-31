@@ -3,9 +3,9 @@ from anuvaad_auditor.loghandler import log_error
 import src.utilities.app_context as app_context
 from src.utilities.region_operations import get_ngram, are_hlines,merge_children,MapKeys
 from src.services.left_right_on_block import left_right_margin
+from src.services.region_unifier import Region_Unifier
 
-
-
+region_unifier = Region_Unifier()
 
 
 ##Line inside line caese (eg kan_1_1)  dont use abosolute for horizontal merging
@@ -16,13 +16,15 @@ def horzontal_merging(children):
     for pair in bi_gram:
         connected = are_hlines(pair[0], pair[1])
         if connected:
-            lines[-1].append(pair[1])
+            reg1 = lines[-1]
+            reg2 = pair[1]
+            lines[-1]= region_unifier.update_children(reg1,reg2)
         else:
             lines.append([pair[1]])
     merged_lines =[]
-    for siblings in lines:
-        merged_lines.append(merge_children(siblings))
-    return merged_lines
+    #for siblings in lines:
+    # merged_lines.append(merge_children(siblings))
+    return lines
 
 
 
