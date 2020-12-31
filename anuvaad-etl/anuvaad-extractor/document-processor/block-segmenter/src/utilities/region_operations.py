@@ -144,7 +144,7 @@ def are_hlines(region1,region2,avg_ver_ratio):
     h1 = abs(region1['boundingBox']['vertices'][3]['y'] - region1['boundingBox']['vertices'][0]['y'])
     h2 = abs(region2['boundingBox']['vertices'][3]['y'] - region2['boundingBox']['vertices'][0]['y'])
     max_height = max( h1 , h2 ) #*0.5
-    print('verrrrrrrrrrrrtacla ratio ',avg_ver_ratio)
+
     if avg_ver_ratio < 1.2 :
         diff_threshold = max_height * 0.5
 

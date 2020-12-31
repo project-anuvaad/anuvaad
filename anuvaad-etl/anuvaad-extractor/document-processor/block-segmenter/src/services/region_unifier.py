@@ -181,7 +181,7 @@ class Region_Unifier:
         box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
         box1_lines = reg1["children"];  box2_lines = reg2["children"]
         hor_diff_thresh = avg_word_sepc*2 ; line_width_diff = avg_width*0.1
-        print(hor_diff_thresh,'')
+        #print(hor_diff_thresh,'')
 
 
         #issue in order
@@ -357,14 +357,13 @@ class Region_Unifier:
 
         self.avg_ver_ratio =   avg_ver_dist /avg_height
 
-        print(avg_ver_dist,  'av_disssssssssssssssssssssssssssssssss')
-        print(avg_height, 'av_heisssssssssssssssssssssssssssssssss')
+
 
 
         
         for idx,v_block in enumerate(v_list):
             if   v_block['children'] != None and  len(v_block['children']) > 1 :
-                print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
+                #print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
                 v_block['children'] = horzontal_merging(v_block['children'],self.avg_ver_ratio)
                 v_list[idx] =v_block
 
