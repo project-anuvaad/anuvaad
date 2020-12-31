@@ -192,7 +192,7 @@ class SentenceCard extends React.Component {
                 sentence.tgt = this.props.sentence.s0_tgt;
                 delete sentence.block_identifier;
                 sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src,sentence.bleu_score)
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
                 return;
             }
@@ -212,7 +212,7 @@ class SentenceCard extends React.Component {
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
                 sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src,sentence.bleu_score)
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
             }
         }
@@ -440,8 +440,12 @@ class SentenceCard extends React.Component {
 
     renderAutoCompleteText(option, caretStr) {
         var elem = document.getElementById(this.props.sentence.s_id)
-        var selectedText = this.state.value.slice(0, elem.selectionEnd) + " "
-        let value = option.slice(elem.selectionEnd, option.length)
+
+        let data = this.state.value ? this.state.value.slice(0, elem.selectionStart) : ""
+        let trimedText = data.trim()
+
+        var selectedText = this.state.value.slice(0, trimedText.length) + " "
+        let value = option.slice(trimedText.length, option.length)
 
         return (<div><span style={{ color: "blue" }}>{selectedText}</span><span>{value}</span></div>)
     }
@@ -484,11 +488,15 @@ class SentenceCard extends React.Component {
                         onChange={(event, newValue) => {
                             let option = newValue.name ? newValue.name : newValue
                             var elem = document.getElementById(this.props.sentence.s_id)
-                            var selectedText = option.slice(0, elem.selectionStart)
-                            let caretValue = option.slice(elem.selectionEnd, option.length)
+
+                            let value = this.state.value ? this.state.value.slice(0, elem.selectionStart) : ""
+                            let trimedText = value.trim()
+
+                            var selectedText = option.slice(0, trimedText.length)
+                            let caretValue = option.slice(trimedText.length, option.length)
 
                             this.setState({
-                                value: (selectedText ? selectedText.trim() : selectedText) + (caretValue ? " " + caretValue.trim() + " " : caretValue),
+                                value: (selectedText ? selectedText.trim() : selectedText) + " " + (caretValue ? caretValue.trim() + " " : caretValue),
                                 showSuggestions: false,
                                 userEnteredText: true
                             });
@@ -749,6 +757,7 @@ class SentenceCard extends React.Component {
         if (this.cardCompare()) {
             this.setState({ cardInFocus: false })
             this.props.clearHighlighBlock()
+            // TELEMETRY.endstartSentenceTranslationSentenceTranslation("", "", this.props.jobId, this.props.sentence.s_id)
         } else {
             this.setState({ cardInFocus: true })
             this.props.highlightBlock(this.props.sentence, this.props.pageNumber)
@@ -756,6 +765,8 @@ class SentenceCard extends React.Component {
              * For highlighting textarea on card expand
              */
             this.textInput && this.textInput.current && this.textInput.current.focus();
+
+            // TELEMETRY.startSentenceTranslation("", "", t.starthis.props.jobId, this.props.sentence.s_id)
         }
 
     }

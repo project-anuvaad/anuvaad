@@ -1,29 +1,82 @@
 import config
 from anuvaad_auditor.loghandler import log_error
 import src.utilities.app_context as app_context
-from src.utilities.region_operations import get_ngram, are_hlines,merge_children,MapKeys
+from src.utilities.region_operations import get_ngram, are_hlines,merge_children,MapKeys,sort_regions
 from src.services.left_right_on_block import left_right_margin
+#from src.services.region_unifier import Region_Unifier
+import copy
+
+#region_unifier = Region_Unifier()
 
 
-
-
-
+##Line inside line caese (eg kan_1_1)  dont use abosolute for horizontal merging
 
 def horzontal_merging(children):
     bi_gram = get_ngram(children, 2)
-    lines = [[bi_gram[0][0]]]
+    lines = [bi_gram[0][0]]
+    print(lines,'linesssssssssssssss')
     for pair in bi_gram:
         connected = are_hlines(pair[0], pair[1])
         if connected:
-            lines[-1].append(pair[1])
+            reg1 = copy.deepcopy(lines[-1])
+            reg2 = pair[1]
+            lines[-1]= update_coord(reg1,reg2)
         else:
-            lines.append([pair[1]])
+            lines.append(pair[1])
     merged_lines =[]
-    for siblings in lines:
-        merged_lines.append(merge_children(siblings))
-    return merged_lines
+    #for siblings in lines:
+    # merged_lines.append(merge_children(siblings))
+    return lines
 
 
+
+
+
+
+
+
+def update_children(reg1,reg2):
+    if reg1['children']!=None and len(reg1['children']) > 0 :
+        if reg2['children']!=None and len(reg2['children']) > 0 :
+            agg_children =  reg1['children'] + reg2['children']
+            agg_children.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'])
+
+            children = sort_regions(agg_children , [])
+            if len(children) > 1 :
+                return children #horzontal_merging(children)
+                #v_list[idx] =v_block
+            else:
+                return children
+        else :
+            return reg1['children']
+    else :
+        if reg2['children']!=None and len(reg2['children']) > 0 :
+            return reg2['children']
+        else :
+            return []
+
+
+def update_coord(reg1,reg2):
+    #try:
+    box1 = MapKeys(reg1)
+    box2 = MapKeys(reg2)
+
+    reg1['children'] = update_children(reg1, reg2)
+
+
+    reg1["boundingBox"]["vertices"][0]['x']= min(box1.get_left(),box2.get_left())
+    reg1["boundingBox"]["vertices"][0]['y']= min(box1.get_top(),box2.get_top())
+    reg1["boundingBox"]["vertices"][1]['x']= max(box1.get_right(),box2.get_right())
+    reg1["boundingBox"]["vertices"][1]['y']= min(box1.get_top(),box2.get_top())
+    reg1["boundingBox"]["vertices"][2]['x']= max(box1.get_right(),box2.get_right())
+    reg1["boundingBox"]["vertices"][2]['y']= max(box1.get_bottom(),box2.get_bottom())
+    reg1["boundingBox"]["vertices"][3]['x']= min(box1.get_left(),box2.get_left())
+    reg1["boundingBox"]["vertices"][3]['y']= max(box1.get_bottom(),box2.get_bottom())
+    #reg1['class'] = 'TEXT'
+    # except:
+    #     pass
+
+    return reg1
 
 
 
@@ -50,7 +103,6 @@ def break_paragraph(v_block,block_configs):
     blocks = [[bi_gram[0][0]]]
     for pair in bi_gram:
         connected = left_right_condition(MapKeys(pair[0]),MapKeys(pair[1]) ,map_v_block.get_right(),map_v_block.get_left(),block_configs)
-        print('connnnnnnnnected ',connected)
         if connected:
             blocks[-1].append(pair[1])
         else:

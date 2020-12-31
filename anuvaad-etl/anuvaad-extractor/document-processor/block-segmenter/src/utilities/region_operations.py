@@ -88,17 +88,15 @@ def sort_regions(region_lines, sorted_lines=[]):
     check_y =region_lines[0]['boundingBox']['vertices'][0]['y']
     spacing_threshold = abs(check_y - region_lines[0]['boundingBox']['vertices'][3]['y'])# * 0.5  # *2 #*0.5
     same_line =  list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) <= spacing_threshold), region_lines))
-    print(len(region_lines), 'lennnnnnnnn regions')
-    print(len(same_line) ,'lennnnnnnnn same line')
     next_line =   list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) > spacing_threshold), region_lines))
-    if len(sorted_lines) >1 :
+    if len(same_line) >1 :
        same_line.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
     sorted_lines += same_line
     if len(next_line) > 0:
         sort_regions(next_line, sorted_lines)
     return sorted_lines
 
-def collate_regions(regions, lines):
+def collate_regions(regions, lines,grand_children=False):
     idx = index.Index()
     lines_intersected = []
     if regions !=None and len(regions) > 0:
@@ -120,16 +118,15 @@ def collate_regions(regions, lines):
                 else :
                     regions[region_index]['children']  = region_lines
             else:
-                regions[region_index]['children'] =[]# [copy.deepcopy(regions[region_index])]
-    orphan_lines = []
+                if grand_children :
+                    regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
+                regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
+    #orphan_lines = []
     for line_index, line in enumerate(lines):
         if line_index not in lines_intersected:
-            orphan_lines.append(line)
-    if len(orphan_lines) > 0 :
-        #merge_orphans = merge_children(orphan_lines)
-        for line in orphan_lines:
-            line['children'] =[]
+            line['children'] = [ copy.deepcopy(line)]
             regions.append(line)
+
     return regions
 
 def get_ngram(indices, window_size = 2):
@@ -141,21 +138,22 @@ def get_ngram(indices, window_size = 2):
     return ngrams
 
 def are_hlines(region1,region2):
+
     space = abs( region1['boundingBox']['vertices'][0]['y'] - region2['boundingBox']['vertices'][0]['y'])
-    sepration = abs(region1['boundingBox']['vertices'][1]['x'] - region2['boundingBox']['vertices'][0]['x'])
+    sepration = region2['boundingBox']['vertices'][0]['x'] - region1['boundingBox']['vertices'][1]['x']
     h1 = abs(region1['boundingBox']['vertices'][3]['y'] - region1['boundingBox']['vertices'][0]['y'])
     h2 = abs(region2['boundingBox']['vertices'][3]['y'] - region2['boundingBox']['vertices'][0]['y'])
     avg_height = ( h1 + h2 ) *0.5
     diff_threshold = h1 #*0.50
     #return ((space <= diff_threshold ) or(sepration <= 3 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 )
-    return ((space <= diff_threshold ) ) and (sepration < sepration < 5 * avg_height )
+    return ((space <= diff_threshold ) ) and (sepration  < 5 * avg_height )
 
 
 def merge_text(v_blocks):
     for block_index, v_block in enumerate(v_blocks):
         try:
             v_blocks[block_index]['font']    ={'family':'Arial Unicode MS', 'size':0, 'style':'REGULAR'}
-            #v_blocks['font']['size'] = max(v_block['children'], key=lambda x: x['font']['size'])['font']['size']
+            v_blocks['font']['size'] = max(v_block['children'], key=lambda x: x['font']['size'])['font']['size']
             if len(v_block['children']) > 0 :
                 v_blocks[block_index]['text'] = v_block['children'][0]['text']
                 if  len(v_block['children']) > 1:

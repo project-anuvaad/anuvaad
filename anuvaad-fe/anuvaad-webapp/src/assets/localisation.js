@@ -428,6 +428,7 @@ const localization_EN_Data = {
   "common.page.label.SENTENCE_SOURCE_EDITED": "Saving sentence...",
   "common.page.label.download": "Downloading file...",
   "common.page.label.downloadCompleted": "Download completed...",
+  "common.page.label.TOKEN_EXPIRED" :'Session Expired, Redirecting to login page'
 
   // 'newCorpus.page.array.addFileTargetAndDetails':["Add Source file", 'Add target file', 'Add file details']
 };

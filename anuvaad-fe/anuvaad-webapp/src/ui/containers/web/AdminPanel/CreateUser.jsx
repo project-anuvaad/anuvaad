@@ -24,8 +24,9 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
-
-const roles = require('./roles.json')
+import ADMINCONFIG from "../../../../configs/adminConfig";
+const roles = ADMINCONFIG.roles;
+const orgID = ADMINCONFIG.orgID;
 
 class CreateUser extends React.Component {
   constructor(props) {
@@ -178,6 +179,44 @@ class CreateUser extends React.Component {
             >
               {
                 roles.map((role, i) => <MenuItem id={role.roleCode} key={role.roleCode} value={role.roleCode}>{role.roleCode}</MenuItem>)
+              }
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+    )
+  }
+  renderOrgItems = () => {
+    return (
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
+        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
+          <Typography value="" variant="h5">
+            Organisation
+          </Typography>
+        </Grid>
+
+        <Grid item xs={6} sm={6} lg={4} xl={4} >
+          <FormControl variant="outlined" style={{
+            width: '92%',
+            fullWidth: true,
+            display: "flex",
+            wrap: "nowrap",
+            height: '40px',
+            magin: 'dense',
+            marginLeft: '4.3%',
+            marginBottom: '5%'
+          }}>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="roles"
+              onChange={this.processOnSelect}
+              value={this.state.roleCode}
+              style={{
+                fullWidth: true,
+              }}
+            >
+              {
+                orgID.map((id, i) => <MenuItem id={i} key={i} value={orgID}>{id}</MenuItem>)
               }
             </Select>
           </FormControl>
