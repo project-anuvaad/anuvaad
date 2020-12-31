@@ -189,7 +189,7 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        TELEMETRY.log("merge", rsp_data.message)
+        TELEMETRY.log("merge", JSON.stringify(rsp_data))
         this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
         return Promise.reject('');
       } else {
@@ -216,7 +216,7 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        TELEMETRY.log("save-translation", rsp_data.message)
+        TELEMETRY.log("save-translation", JSON.stringify(rsp_data))
         this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
         return Promise.reject('');
       } else {
@@ -245,7 +245,7 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        TELEMETRY.log("split", rsp_data.message)
+        TELEMETRY.log("split", JSON.stringify(rsp_data))
         this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
         return Promise.reject('');
       } else {
@@ -272,7 +272,7 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        TELEMETRY.log("save-sentence", rsp_data.message)
+        TELEMETRY.log("save-sentence", JSON.stringify(rsp_data))
         this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
         return Promise.reject('');
       } else {
@@ -541,6 +541,8 @@ class DocumentEditor extends React.Component {
         <div></div>
       )
     }
+    let recordId = this.props.match.params.jobid;
+    let jobId = recordId ? recordId.split("|")[0] : ""
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginLeft: "5px" }}>
 
@@ -554,6 +556,7 @@ class DocumentEditor extends React.Component {
           {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={sentence.s_id} ref={sentence.s_id}><SentenceCard key={sentence.s_id}
             pageNumber={page.page_no}
             model={this.fetchModel(parseInt(this.props.match.params.modelId))}
+            jobId = {jobId}
             sentence={sentence}
             onAction={this.processSentenceAction} />
           </div>))}

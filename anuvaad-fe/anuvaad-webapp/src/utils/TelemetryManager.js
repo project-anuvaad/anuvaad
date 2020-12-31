@@ -473,7 +473,7 @@ export const log = (action_type, message) => {
   let data = {
     type: 'api_call',
     level: 'ERROR',
-    message: message,
+    error_data: message,
     action: action_type
   }
 
@@ -485,4 +485,76 @@ export const log = (action_type, message) => {
   }
 
   $t.log(data, options)
+}
+
+/**
+ * @description  start the flow with following initial parameters
+ * @param {*} source_language , document language
+ * @param {*} target_language , translated language
+ * @param {*} filename , filename including extension
+ * @param {*} job_id , on successful start of job, API returns job_id
+ */
+export const startSentenceTranslation = (source_language, target_language, job_id, sentence_id) => {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'START_SENTENCE_TRANSLATION',
+    duration: 0,
+    mode: 'session'
+  }
+
+  let options = {
+    ets: Date.now(),
+    context: {
+      cdata: [{
+        id: job_id,
+        // type: 'FILE_TRANSLATE'
+      }]
+    },
+    object: {
+      job_id: job_id,
+      source_language: source_language,
+      target_language: target_language,
+      sentence_id: sentence_id
+    }
+  }
+  $t.impression(data, options)
+}
+
+/**
+ * @description  start the flow with following initial parameters
+ * @param {*} source_language , document language
+ * @param {*} target_language , translated language
+ * @param {*} filename , filename including extension
+ * @param {*} job_id , on successful start of job, API returns job_id
+ */
+export const endSentenceTranslation = (source_language, target_language, job_id, sentence_id) => {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'END_SENTENCE_TRANSLATION',
+    duration: 0,
+    mode: 'session'
+  }
+
+  let options = {
+    ets: Date.now(),
+    context: {
+      cdata: [{
+        id: job_id,
+        // type: 'FILE_TRANSLATE'
+      }]
+    },
+    object: {
+      job_id: job_id,
+      source_language: source_language,
+      target_language: target_language,
+      sentence_id: sentence_id
+    }
+  }
+  $t.impression(data, options)
 }
