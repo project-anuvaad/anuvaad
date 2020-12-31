@@ -205,7 +205,10 @@ class Region_Unifier:
     def update_children(self,reg1,reg2):
         if reg1['children']!=None and len(reg1['children']) > 0 :
             if reg2['children']!=None and len(reg2['children']) > 0 :
-                children = sort_regions(reg1['children'] + reg2['children'] , [])
+                agg_children =  reg1['children'] + reg2['children']
+                agg_children.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'])
+
+                children = sort_regions(agg_children , [])
                 if len(children) > 1 :
                     return horzontal_merging(children)
                     #v_list[idx] =v_block
@@ -276,11 +279,11 @@ class Region_Unifier:
     def region_unifier(self,page_lines,page_regions):
         #try:
         v_list       = collate_regions(page_regions,page_lines)
-        for idx,v_block in enumerate(v_list):
+        #for idx,v_block in enumerate(v_list):
 
-            if   v_block['children'] != None and  len(v_block['children']) > 1 :
-                v_block['children'] = horzontal_merging(v_block['children'])
-                v_list[idx] =v_block
+            # if   v_block['children'] != None and  len(v_block['children']) > 1 :
+            #     #v_block['children'] = horzontal_merging(v_block['children'])
+            #     v_list[idx] =v_block
 
         text_regions, n_text_regions = self.get_text_region(v_list)
 
@@ -294,7 +297,7 @@ class Region_Unifier:
         # print("avg_hor_dist", avg_hor_dist)
         # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         ########################
-        flag =True
+        flag =False
         while flag==True:
             text_regions, flag = self.merge_remove_overlap(text_regions,avg_height, avg_ver_dist, avg_width)
         # except Exception as e:

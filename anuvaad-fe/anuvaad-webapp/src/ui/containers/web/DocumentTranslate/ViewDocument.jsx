@@ -401,6 +401,7 @@ class ViewDocument extends React.Component {
   };
 
   render() {
+    console.log(this.getJobsSortedByTimestamp())
     const columns = [
       {
         name: "filename",
@@ -466,7 +467,13 @@ class ViewDocument extends React.Component {
           sort: false,
           empty: true,
         },
-      },
+      },{
+        name: "bleu_score",
+        label: "Accuracy Level",
+        options: {
+          hint:"Will be displayed once 80% file completed",
+          sort: false
+        }},
       {
         name: "endTime",
         label: "End Time",
@@ -486,8 +493,8 @@ class ViewDocument extends React.Component {
                 <div>
                   {tableMeta.rowData[5] === "COMPLETED" &&
                     this.getDateTimeDifference(
-                      tableMeta.rowData[8],
-                      tableMeta.rowData[10]
+                      tableMeta.rowData[9],
+                      tableMeta.rowData[11]
                     )}
                 </div>
               );
@@ -505,7 +512,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.getDateTimeFromTimestamp(tableMeta.rowData[10])}
+                  {this.getDateTimeFromTimestamp(tableMeta.rowData[11])}
                 </div>
               );
             }
@@ -624,7 +631,7 @@ class ViewDocument extends React.Component {
       },
       count: this.props.job_details.count,
       filterType: "checkbox",
-      download: false,
+      download: true,
       print: false,
       fixedHeader: true,
       filter: false,
