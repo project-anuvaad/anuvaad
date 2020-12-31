@@ -88,10 +88,8 @@ def sort_regions(region_lines, sorted_lines=[]):
     check_y =region_lines[0]['boundingBox']['vertices'][0]['y']
     spacing_threshold = abs(check_y - region_lines[0]['boundingBox']['vertices'][3]['y'])# * 0.5  # *2 #*0.5
     same_line =  list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) <= spacing_threshold), region_lines))
-    print(len(region_lines), 'lennnnnnnnn regions')
-    print(len(same_line) ,'lennnnnnnnn same line')
     next_line =   list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) > spacing_threshold), region_lines))
-    if len(sorted_lines) >1 :
+    if len(same_line) >1 :
        same_line.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
     sorted_lines += same_line
     if len(next_line) > 0:
@@ -141,14 +139,15 @@ def get_ngram(indices, window_size = 2):
     return ngrams
 
 def are_hlines(region1,region2):
+
     space = abs( region1['boundingBox']['vertices'][0]['y'] - region2['boundingBox']['vertices'][0]['y'])
-    sepration = abs(region1['boundingBox']['vertices'][1]['x'] - region2['boundingBox']['vertices'][0]['x'])
+    sepration = region2['boundingBox']['vertices'][0]['x'] - region1['boundingBox']['vertices'][1]['x']
     h1 = abs(region1['boundingBox']['vertices'][3]['y'] - region1['boundingBox']['vertices'][0]['y'])
     h2 = abs(region2['boundingBox']['vertices'][3]['y'] - region2['boundingBox']['vertices'][0]['y'])
     avg_height = ( h1 + h2 ) *0.5
     diff_threshold = h1 #*0.50
     #return ((space <= diff_threshold ) or(sepration <= 3 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 )
-    return ((space <= diff_threshold ) ) and (sepration < sepration < 5 * avg_height )
+    return ((space <= diff_threshold ) ) and (sepration  < 5 * avg_height )
 
 
 def merge_text(v_blocks):
