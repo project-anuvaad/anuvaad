@@ -410,7 +410,13 @@ class SentenceCard extends React.Component {
          */
         if (event.altKey && charCode === 's') {
             var elem = document.getElementById(this.props.sentence.s_id)
-            this.setState({ showSuggestions: true })
+            var initialFocus = this.state.value.split(/\s{2,}/)[0].length
+            this.setState({ showSuggestions: true, value: this.state.value.replace(/\s{2,}/, " ") }, () => {
+                if (initialFocus !== this.state.value.length) {
+                    elem.focus()
+                    elem.setSelectionRange(initialFocus, initialFocus)
+                }
+            })
             this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
             event.preventDefault();
             return false
@@ -423,32 +429,32 @@ class SentenceCard extends React.Component {
         var TABKEY = 9;
         if (event.keyCode === TABKEY) {
             if (this.state.suggestions[0]) {
-                var elem = document.getElementById(this.props.sentence.s_id)
-                let end = elem.selectionEnd
                 let suggestion = this.state.suggestions[0].name
+                let elem = document.getElementById(this.props.sentence.s_id)
+                let end = elem.selectionEnd
                 if (end < this.state.suggestions[0].name.length) {
-                    let nextSuggestedWord = suggestion.substr(end).split(" ").shift()
-                    let nextWordInTextField = this.state.value.substr(end).split(" ").shift()
-                    let len = nextSuggestedWord.length + end + 1
+                    let nextSuggestedWord = suggestion.substr(end).split(" ").shift().trim()
+                    let nextWordInTextField = this.state.value.substr(end).split(" ").shift().trim()
+                    let len = end + nextSuggestedWord.length
                     if (nextSuggestedWord === nextWordInTextField) {
-                        if (nextSuggestedWord === "" || nextWordInTextField === "") {
-                            this.setState({ showSuggestions: true, value: this.state.value + " " }, () => {
+                        if (nextSuggestedWord === "") {
+                            this.setState({ showSuggestions: true, value: this.state.value.trim() + " " }, () => {
                                 elem.focus();
-                                elem.setSelectionRange(len, len);
+                                elem.setSelectionRange(len + 1, len + 1);
                             })
                         } else {
-                            this.setState({ showSuggestions: true }, () => {
+                            this.setState({ showSuggestions: true, value: this.state.value.trim() }, () => {
                                 elem.focus();
-                                elem.setSelectionRange(len, len);
+                                elem.setSelectionRange(len, len)
                             })
                         }
                     }
                     else if (nextSuggestedWord !== "" && nextWordInTextField === "") {
-                        this.setState({ showSuggestions: true, value: `${this.state.value}${nextSuggestedWord}` })
+                        this.setState({ showSuggestions: true, value: `${this.state.value.trim()} ${nextSuggestedWord}` })
                     } else if (nextSuggestedWord !== nextWordInTextField) {
                         let firstHalf = this.state.value.slice(0, end).trim()
                         let secondHalf = this.state.value.slice(end).trim()
-                        this.setState({ showSuggestions: true, value: `${firstHalf} ${nextSuggestedWord} ${secondHalf} ` }, () => {
+                        this.setState({ showSuggestions: true, value: `${firstHalf} ${nextSuggestedWord} ${secondHalf}` }, () => {
                             elem.focus();
                             elem.setSelectionRange(len, len)
                         })
@@ -456,9 +462,9 @@ class SentenceCard extends React.Component {
                 } else {
                     this.setState({ suggestion: true })
                 }
-                event.preventDefault();
-                return false
             }
+            event.preventDefault();
+            return false
         }
     }
 
