@@ -95,44 +95,27 @@ def replace_tags_with_original(text,date_original,url_original,num_array,num_map
     log_info("response after url and date replacemnt:{}".format(res),MODULE_CONTEXT)    
     array = re.findall(r'NnUuMm..|NnUuMm.', res)   
     log_info("NnUuMm array after translation:{}".format(array),MODULE_CONTEXT)
+    
     if len(num_map) == 0:
-      ''' handling the case when model outputs a tag which is not in tagged_src'''
-      res = re.sub(r'NnUuMm..|NnUuMm.',"",res)
+      ''' handling the case when model outputs a tag which is not in tagged_src(src is without any number'''
+      for char in reversed(hindi_numbers):  
+        res = re.sub(r'NnUuMm'+char,"",res)
       return res
     num_map.reverse()
     for item in num_map:
       res = res.replace(item['tag'],str(item['no.']),1)
 
-    if len(re.findall(r'NnUuMm..|NnUuMm.', res)) > 0:
-      ''' if model outputs extra tag than the number of count in num_map'''
-      res = re.sub(r'NnUuMm..|NnUuMm.',"",res)
-            
-    # for j in array:
-    #   try:
-    #     if j[-2:] in hindi_numbers:
-    #       end_hin_number = j[-2:]
-    #       index = hindi_numbers.index(end_hin_number)
-    #       res = res.replace(j,str(num_array[index]),1)
-    #     elif j[:-1]== "NnUuMm":
-    #       end_hin_number = j[-1]
-    #       index = hindi_numbers.index(end_hin_number)
-    #       res = res.replace(j,str(num_array[index]),1)
-    #     else:
-    #       print("xxxxxxxxx")
-    #       end_hin_number = j[-2]
-    #       j = j[:-1]
-    #       index = hindi_numbers.index(end_hin_number)     
-    #       res = res.replace(j,str(num_array[index]),1)
-      
-    #   except Exception as e:
-    #     log_info("inside str.replace error,but handling it:{}".format(e),MODULE_CONTEXT)
-    #     res = res.replace(j,"",1)
+    if len(re.findall(r'NnUuMm.', res)) > 0:
+      ''' if model outputs extra tag than the number of count in num_map or 
+      some unreplaced tags, removing them from final output'''
+      for char in reversed(hindi_numbers):  
+        res = re.sub(r'NnUuMm'+char,"",res)
 
     log_info("response after tags replacement:{}".format(res),MODULE_CONTEXT)
     return res    
   except Exception as e:
     log_exception("Error in parent except block of replace_tags_with_original_1 function, returning tagged output:{}".format(e),MODULE_CONTEXT,e)
-    return text
+    return res
 
 def get_indices_of_num_with_zero_prefix(num_arr):
   '''  eg. '000','049' '''
