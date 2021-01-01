@@ -44,9 +44,9 @@ region_unifier = Region_Unifier()
 #     return p_list
 
 
-def segment_regions(lines,regions):
+def segment_regions(words, lines,regions):
 
-    v_list, n_text_regions = region_unifier.region_unifier(lines,regions)
+    v_list, n_text_regions = region_unifier.region_unifier(words,lines,regions)
     p_list = []
     for v_block in v_list:
         if  v_block['children'] != None and  len(v_block['children']) > 1 :
@@ -54,7 +54,6 @@ def segment_regions(lines,regions):
             p_list +=[v_block]
         else :
             p_list +=  [v_block]
-    p_list = merge_text(p_list)
     p_list += n_text_regions
 
 
@@ -76,8 +75,10 @@ def get_segmented_regions(app_context,base_dir) :
                 print('processing for page   :  ', page_index)
                 page_lines   =  file_properties.get_lines(page_index)
                 page_regions =  file_properties.get_regions(page_index)
+                page_words   =  file_properties.get_words(page_index)
+
                 #page_regions =  region_unifier.region_unifier(page_lines,page_regions)
-                file_properties.set_regions(page_index, segment_regions(page_lines,page_regions))
+                file_properties.set_regions(page_index, segment_regions(page_words,page_lines,page_regions))
             output.append(file_properties.get_file())
             output[index]['status']= {'message':"block-segmenter successful"}
             end_time            = time.time()

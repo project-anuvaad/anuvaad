@@ -65,3 +65,7 @@ CROP_CONFIG = {
 
 IS_DYNAMIC = False
 DYNAMIC_LEVEL = "lines"
+
+REJECT_FILTER = 2
+
+OCR_LEVEL = {'HIGH_ACCURACY' : 'lines'  }
