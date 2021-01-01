@@ -76,7 +76,11 @@ def search_all_jobs():
     service = WFMService()
     req_criteria = request.get_json()
     try:
-        req_criteria["userIDs"] = [request.headers["x-user-id"]]
+        if "userIDs" in req_criteria.keys():
+            if not req_criteria["userIDs"]:
+                req_criteria["userIDs"] = [request.headers["x-user-id"]]
+        else:
+            req_criteria["userIDs"] = [request.headers["x-user-id"]]
         response = service.get_job_details_bulk(req_criteria, False)
         if response:
             return jsonify(response), 200
