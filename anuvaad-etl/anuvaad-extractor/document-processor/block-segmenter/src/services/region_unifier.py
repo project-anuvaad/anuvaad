@@ -87,11 +87,8 @@ class Page_Config:
             avg_width    =  avg_width / total_line
             if ver_dist_mes_count > 0 :
                 avg_ver_dist = avg_ver_dist / ver_dist_mes_count
-
             else:
-
                 avg_ver_dist = avg_height
-                #avg_height
 
         except:
             pass
@@ -142,36 +139,7 @@ class Region_Unifier:
                 n_text_regions.append(region)
         return text_region,n_text_regions
 
-    # def merge_condition(self,reg1,reg2):
-        
-    #     box1_top = keys.get_top(reg1); box1_bottom = keys.get_bottom(reg1)
-    #     box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
-    #     box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
-    #     box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
-    #     box1_lines = reg1["children"];  box2_lines = reg2["children"]
 
-    #     if box1_lines!= None and len(box1_lines)>0 and box2_lines!=None and len(box2_lines)>0:
-    #         box1_last_line = box1_lines[-1]; box2_first_line = box2_lines[0]
-    #         if self.check_horizon_region(reg1,reg2):
-    #             if (0<(keys.get_left(reg2)-keys.get_right(reg1))<10 and abs(box2_top-box1_bottom)<100) or (0<(keys.get_left(reg1)-keys.get_right(reg2))<10 and abs(box2_top-box1_bottom)<100):
-    #                 return True
-    #             else:
-    #                 return False
-    #         if abs(keys.get_left(box1_last_line)-keys.get_left(box2_first_line))<50 and abs(keys.get_right(box1_last_line)-keys.get_right(box2_first_line))<50 and abs(box2_top-box1_bottom)<150:
-    #             return True
-    #         if keys.get_right(box2_first_line)-keys.get_right(box1_last_line)>50 :
-    #             return False
-    #         if keys.get_right(box1_last_line)-keys.get_right(box2_first_line)>100 and abs(box2_top-box1_bottom)<80:
-    #             return True
-    #         if abs(box2_top-box1_bottom)<100 and abs(box1_left-box2_left)<50 and abs(box1_right-box2_right)<50:
-    #             return True
-    #         if (abs(box1_bottom-box2_top)<50 and abs(box1_left-box2_left)<10) or (abs(box1_bottom-box2_top)<50 and abs(box1_right-box2_right)<10):
-    #             return True
-            
-    #     else:
-    #         if abs(box2_top-box1_bottom)<100 and abs(box1_left-box2_left)<50 and abs(box1_right-box2_right)<50:
-    #             return True
-            
         
     def merge_condition(self,reg1,reg2,avg_height, avg_ver_dist, avg_width,avg_word_sepc):
          
@@ -259,6 +227,8 @@ class Region_Unifier:
 
 
     def update_children(self,reg1,reg2):
+        page_config                         = Page_Config()
+
         if reg1['children']!=None and len(reg1['children']) > 0 :
             if reg2['children']!=None and len(reg2['children']) > 0 :
                 agg_children =  reg1['children'] + reg2['children']
@@ -266,7 +236,9 @@ class Region_Unifier:
 
                 children = sort_regions(agg_children , [])
                 if len(children) > 1 :
-                    return horzontal_merging(children, self.avg_ver_ratio)
+                    avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([{'children': children}])
+                    avrage_region_ver_ratio = avg__region_ver_dist / max(1,avg__region_height)
+                    return horzontal_merging(children, avrage_region_ver_ratio)
                     #v_list[idx] =v_block
                 else:
                     return children
@@ -347,46 +319,54 @@ class Region_Unifier:
     #20695_1_2 (merging of list with numbering)
     #20695_1_3  sorting issue
     # segmeter kan_1_1
-    # background removal
+    # background removal  (sasta fix)
+    # basckground removal integration with prima
+    #segmenter kan_1_23
+
 
     def region_unifier(self,page_words, page_lines,page_regions):
-        #try:
-        line_list    = collate_regions(page_lines,page_words)
-        v_list       = collate_regions(page_regions,line_list,grand_children=True)
-        page_config                         = Page_Config()
-        text_regions, n_text_regions = self.get_text_region(v_list)
-        avg_height, avg_ver_dist, avg_width = page_config.avg_line_info(text_regions)
+        try:
+            line_list    = collate_regions(page_lines,page_words)
+            v_list       = collate_regions(page_regions,line_list,grand_children=True)
+            page_config                         = Page_Config()
+            text_regions, n_text_regions = self.get_text_region(v_list)
+            avg_height, avg_ver_dist, avg_width = page_config.avg_line_info(text_regions)
 
-        self.avg_ver_ratio =   avg_ver_dist /avg_height
-
-
+            #self.avg_ver_ratio =   avg_ver_dist /avg_height
 
 
-        
-        for idx,v_block in enumerate(v_list):
-            if   v_block['children'] != None and  len(v_block['children']) > 1 :
-                #print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
-                v_block['children'] = horzontal_merging(v_block['children'],self.avg_ver_ratio)
-                v_list[idx] =v_block
 
 
-        ################### page configs for region unifier
-        avg_hor_dist                        = page_config.avg_region_info(text_regions)
-        avg_word_sepc                        = page_config.avg_word_sep(line_list)
+
+            for idx,v_block in enumerate(v_list):
+                if   v_block['children'] != None and  len(v_block['children']) > 1 :
+                    #print(idx, 'region index')
+                    #print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
+                    avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([v_block])
+
+                    avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
+
+                    v_block['children'] = horzontal_merging(v_block['children'],avrage_region_ver_ratio)
+                    v_list[idx] =v_block
 
 
-        # print("av height : ",avg_height)
-        # print("avg_ver_dist : ",avg_ver_dist)
-        # print("av avg_width : ",avg_width)
-        # print("avg_hor_dist", avg_hor_dist)
-        # print('avg word spacing', avg_word_sepc)
-        # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-        ########################
-        flag =True
-        while flag==True:
-            text_regions, flag = self.merge_remove_overlap(text_regions,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
-        # except Exception as e:
-        #     log_exception("Error occured during block unifier",  app_context.application_context, e)
-        #     return None  ,None        
+            ################### page configs for region unifier
+            avg_hor_dist                        = page_config.avg_region_info(text_regions)
+            avg_word_sepc                        = page_config.avg_word_sep(line_list)
+
+
+            # print("av height : ",avg_height)
+            # print("avg_ver_dist : ",avg_ver_dist)
+            # print("av avg_width : ",avg_width)
+            # print("avg_hor_dist", avg_hor_dist)
+            # print('avg word spacing', avg_word_sepc)
+            # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+            ########################
+            flag =True
+            while flag==True:
+                text_regions, flag = self.merge_remove_overlap(text_regions,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
+        except Exception as e:
+            log_exception("Error occured during block unifier",  app_context.application_context, e)
+            return None  ,None
 
         return text_regions, n_text_regions
