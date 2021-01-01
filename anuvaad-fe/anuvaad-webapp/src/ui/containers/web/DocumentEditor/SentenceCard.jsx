@@ -425,27 +425,46 @@ class SentenceCard extends React.Component {
             if (this.state.suggestions[0]) {
                 var elem = document.getElementById(this.props.sentence.s_id)
                 let end = elem.selectionEnd
+                let suggestion = this.state.suggestions[0].name
                 if (end < this.state.suggestions[0].name.length) {
-                    let suggestion = this.state.suggestions[0].name
-                    let nextSuggestedWord = suggestion.substr(end).split(" ").shift();
+                    let nextSuggestedWord = suggestion.substr(end).split(" ").shift()
                     let nextWordInTextField = this.state.value.substr(end).split(" ").shift()
                     let len = nextSuggestedWord.length + end + 1
                     if (nextSuggestedWord === nextWordInTextField) {
-                        elem.focus();
-                        elem.setSelectionRange(len, len);
-                    } else {
-                        let newValue = this.state.value
-                        newValue.splice(end, 0, nextSuggestedWord)
-                        this.setState({ value: `${newValue}` })
+                        if (nextSuggestedWord === "" || nextWordInTextField === "") {
+                            this.setState({ showSuggestions: true, value: this.state.value + " " }, () => {
+                                elem.focus();
+                                elem.setSelectionRange(len, len);
+                            })
+                        } else {
+                            this.setState({ showSuggestions: true }, () => {
+                                elem.focus();
+                                elem.setSelectionRange(len, len);
+                            })
+                        }
                     }
+                    else if (nextSuggestedWord !== "" && nextWordInTextField === "") {
+                        this.setState({ showSuggestions: true, value: `${this.state.value}${nextSuggestedWord}` })
+                    } else if (nextSuggestedWord !== nextWordInTextField) {
+                        let firstHalf = this.state.value.slice(0, end).trim()
+                        let secondHalf = this.state.value.slice(end).trim()
+                        this.setState({ showSuggestions: true, value: `${firstHalf} ${nextSuggestedWord} ${secondHalf} ` }, () => {
+                            elem.focus();
+                            elem.setSelectionRange(len, len)
+                        })
+                    }
+                } else {
+                    this.setState({ suggestion: true })
                 }
+                event.preventDefault();
+                return false
             }
-            event.preventDefault();
-            return false
         }
     }
 
-    renderAutoCompleteText(option, caretStr, elem) {
+    renderAutoCompleteText(option, caretStr) {
+        var elem = document.getElementById(this.props.sentence.s_id)
+
         let data = this.state.value ? this.state.value.slice(0, elem.selectionStart) : ""
         let trimedText = data.trim()
 
@@ -480,8 +499,7 @@ class SentenceCard extends React.Component {
                         getOptionLabel={option => option.name ? option.name : ""}
                         getOptionSelected={(option, value) => option.name === value.name}
                         renderOption={(option, index) => {
-                            var elem = document.getElementById(this.props.sentence.s_id)
-                            return this.renderAutoCompleteText(option.name, this.state.value, elem)
+                            return this.renderAutoCompleteText(option.name, this.state.value)
                         }}
                         options={this.state.suggestions}
                         disableClearable
