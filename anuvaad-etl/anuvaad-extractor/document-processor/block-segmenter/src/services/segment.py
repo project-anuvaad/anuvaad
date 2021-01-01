@@ -20,6 +20,7 @@ def horzontal_merging(children,avg_ver_ratio):
         connected = are_hlines(pair[0], pair[1],avg_ver_ratio)
         #print('connected   ', connected)
         if connected:
+            #reg1 = pair[0]
             reg1 = copy.deepcopy(lines[-1])
             reg2 = pair[1]
             lines[-1]= update_coord(reg1,reg2)
