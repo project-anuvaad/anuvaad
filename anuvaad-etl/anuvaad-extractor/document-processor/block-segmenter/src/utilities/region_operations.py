@@ -86,7 +86,7 @@ def get_polygon(region):
 
 def sort_regions(region_lines, sorted_lines=[]):
     check_y =region_lines[0]['boundingBox']['vertices'][0]['y']
-    spacing_threshold = abs(check_y - region_lines[0]['boundingBox']['vertices'][3]['y'])# * 0.5  # *2 #*0.5
+    spacing_threshold = abs(check_y - region_lines[0]['boundingBox']['vertices'][3]['y'])* 0.8  # *2 #*0.5
     same_line =  list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) <= spacing_threshold), region_lines))
     next_line =   list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) > spacing_threshold), region_lines))
     if len(same_line) >1 :
@@ -137,16 +137,22 @@ def get_ngram(indices, window_size = 2):
         count = count+1
     return ngrams
 
-def are_hlines(region1,region2):
+def are_hlines(region1,region2,avg_ver_ratio):
 
     space = abs( region1['boundingBox']['vertices'][0]['y'] - region2['boundingBox']['vertices'][0]['y'])
     sepration = region2['boundingBox']['vertices'][0]['x'] - region1['boundingBox']['vertices'][1]['x']
     h1 = abs(region1['boundingBox']['vertices'][3]['y'] - region1['boundingBox']['vertices'][0]['y'])
     h2 = abs(region2['boundingBox']['vertices'][3]['y'] - region2['boundingBox']['vertices'][0]['y'])
-    avg_height = ( h1 + h2 ) *0.5
-    diff_threshold = h1 #*0.50
+    max_height = max( h1 , h2 ) #*0.5
+
+    if avg_ver_ratio < 1.2 :
+        diff_threshold = max_height * 0.5
+
+    if avg_ver_ratio >= 1.2 :
+        diff_threshold = max_height * 1.1
+    #diff_threshold = max_height #*0.8
     #return ((space <= diff_threshold ) or(sepration <= 3 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 )
-    return ((space <= diff_threshold ) ) and (sepration  < 5 * avg_height )
+    return  sepration  < 5 * max_height  and space <= diff_threshold
 
 
 def merge_text(v_blocks):
@@ -196,11 +202,11 @@ def merge_children(siblings,children_none=False):
 
         #box['font']['size']    = max(siblings, key=lambda x: x['font']['size'])['font']['size']
 
-        try :
-            box['text'] = siblings[0]['text']
-            for sib_index in range(1,len(siblings)):
-                box['text'] +=  ' ' + str(siblings[sib_index]['text'])
-        except:
-            print('Error in merging text')
+        # try :
+        #     box['text'] = siblings[0]['text']
+        #     for sib_index in range(1,len(siblings)):
+        #         box['text'] +=  ' ' + str(siblings[sib_index]['text'])
+        # except:
+        #     print('Error in merging text')
         return box
 

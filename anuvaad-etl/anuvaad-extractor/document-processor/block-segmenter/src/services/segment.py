@@ -11,12 +11,14 @@ import copy
 
 ##Line inside line caese (eg kan_1_1)  dont use abosolute for horizontal merging
 
-def horzontal_merging(children):
+def horzontal_merging(children,avg_ver_ratio):
     bi_gram = get_ngram(children, 2)
     lines = [bi_gram[0][0]]
-    print(lines,'linesssssssssssssss')
+    #print(lines,'linesssssssssssssss')
     for pair in bi_gram:
-        connected = are_hlines(pair[0], pair[1])
+
+        connected = are_hlines(pair[0], pair[1],avg_ver_ratio)
+        #print('connected   ', connected)
         if connected:
             reg1 = copy.deepcopy(lines[-1])
             reg2 = pair[1]
