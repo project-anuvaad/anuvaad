@@ -423,24 +423,29 @@ class SentenceCard extends React.Component {
         var TABKEY = 9;
         if (event.keyCode === TABKEY) {
             if (this.state.suggestions[0]) {
-                let suggestion = this.state.suggestions[0].name
-                let remainingSentenceArray = suggestion.substr(suggestion.indexOf(this.state.value) + this.state.value.length).split(' ')
-                let nextWord = remainingSentenceArray.shift()
-                if (remainingSentenceArray.length !== 0) {
-                    this.setState({ showSuggestions: true, value: this.state.value + nextWord + " " })
-                } else {
-                    this.setState({ value: this.state.value + nextWord })
-                    nextWord = ''
+                var elem = document.getElementById(this.props.sentence.s_id)
+                let end = elem.selectionEnd
+                if (end < this.state.suggestions[0].name.length) {
+                    let suggestion = this.state.suggestions[0].name
+                    let nextSuggestedWord = suggestion.substr(end).split(" ").shift();
+                    let nextWordInTextField = this.state.value.substr(end).split(" ").shift()
+                    let len = nextSuggestedWord.length + end + 1
+                    if (nextSuggestedWord === nextWordInTextField) {
+                        elem.focus();
+                        elem.setSelectionRange(len, len);
+                    } else {
+                        let newValue = this.state.value
+                        newValue.splice(end, 0, nextSuggestedWord)
+                        this.setState({ value: `${newValue}` })
+                    }
                 }
             }
             event.preventDefault();
-            // return false
+            return false
         }
     }
 
-    renderAutoCompleteText(option, caretStr) {
-        var elem = document.getElementById(this.props.sentence.s_id)
-
+    renderAutoCompleteText(option, caretStr, elem) {
         let data = this.state.value ? this.state.value.slice(0, elem.selectionStart) : ""
         let trimedText = data.trim()
 
@@ -475,7 +480,8 @@ class SentenceCard extends React.Component {
                         getOptionLabel={option => option.name ? option.name : ""}
                         getOptionSelected={(option, value) => option.name === value.name}
                         renderOption={(option, index) => {
-                            return this.renderAutoCompleteText(option.name, this.state.value)
+                            var elem = document.getElementById(this.props.sentence.s_id)
+                            return this.renderAutoCompleteText(option.name, this.state.value, elem)
                         }}
                         options={this.state.suggestions}
                         disableClearable
