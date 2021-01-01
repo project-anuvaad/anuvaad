@@ -346,6 +346,8 @@ class Region_Unifier:
     #20695_1_0 (reportable)
     #20695_1_2 (merging of list with numbering)
     #20695_1_3  sorting issue
+    # segmeter kan_1_1
+    # background removal
 
     def region_unifier(self,page_words, page_lines,page_regions):
         #try:
