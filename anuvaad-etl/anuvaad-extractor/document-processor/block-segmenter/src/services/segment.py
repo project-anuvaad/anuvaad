@@ -14,21 +14,15 @@ import copy
 def horzontal_merging(children,avg_ver_ratio):
     bi_gram = get_ngram(children, 2)
     lines = [bi_gram[0][0]]
-    #print(lines,'linesssssssssssssss')
     for pair in bi_gram:
-
         connected = are_hlines(pair[0], pair[1],avg_ver_ratio)
-        #print('connected   ', connected)
         if connected:
             #reg1 = pair[0]
             reg1 = copy.deepcopy(lines[-1])
-            reg2 = pair[1]
+            reg2 = copy.deepcopy(pair[1])
             lines[-1]= update_coord(reg1,reg2)
         else:
             lines.append(pair[1])
-    merged_lines =[]
-    #for siblings in lines:
-    # merged_lines.append(merge_children(siblings))
     return lines
 
 
@@ -60,13 +54,9 @@ def update_children(reg1,reg2):
 
 
 def update_coord(reg1,reg2):
-    #try:
     box1 = MapKeys(reg1)
     box2 = MapKeys(reg2)
-
     reg1['children'] = update_children(reg1, reg2)
-
-
     reg1["boundingBox"]["vertices"][0]['x']= min(box1.get_left(),box2.get_left())
     reg1["boundingBox"]["vertices"][0]['y']= min(box1.get_top(),box2.get_top())
     reg1["boundingBox"]["vertices"][1]['x']= max(box1.get_right(),box2.get_right())
@@ -75,9 +65,6 @@ def update_coord(reg1,reg2):
     reg1["boundingBox"]["vertices"][2]['y']= max(box1.get_bottom(),box2.get_bottom())
     reg1["boundingBox"]["vertices"][3]['x']= min(box1.get_left(),box2.get_left())
     reg1["boundingBox"]["vertices"][3]['y']= max(box1.get_bottom(),box2.get_bottom())
-    #reg1['class'] = 'TEXT'
-    # except:
-    #     pass
 
     return reg1
 
@@ -86,15 +73,16 @@ def update_coord(reg1,reg2):
 
 
 def break_block(v_block):
-    #try:
-    block_configs = config.BLOCK_CONFIGS
-    if  v_block['children'] != None and  len(v_block['children'] ) < 2 :
-        return v_block['children']
-    else:
-        return break_paragraph(v_block, block_configs)
-    #except Exception as e :
-    #    log_error('Error in breaking blocks' + str(e), app_context.application_context, e)
-    #    return None
+    try:
+        block_configs = config.BLOCK_CONFIGS
+        if  v_block['children'] != None and  len(v_block['children'] ) < 2 :
+            print(v_block)
+            return [v_block]
+        else:
+            return break_paragraph(v_block, block_configs)
+    except Exception as e :
+       log_error('Error in breaking blocks' + str(e), app_context.application_context, e)
+       return None
 
 
 
@@ -105,39 +93,16 @@ def break_paragraph(v_block,block_configs):
     bi_gram = get_ngram(v_block['children'], 2)
     blocks = [[bi_gram[0][0]]]
     for pair in bi_gram:
-        connected = left_right_condition(MapKeys(pair[0]),MapKeys(pair[1]) ,map_v_block.get_right(),map_v_block.get_left(),block_configs)
+        connected =    left_right_condition(MapKeys(pair[0]),MapKeys(pair[1]) ,map_v_block.get_right(),map_v_block.get_left(),block_configs)
         if connected:
             blocks[-1].append(pair[1])
         else:
             blocks.append([pair[1]])
-
     p_blocks = []
     for siblings in blocks:
         p_blocks.append(merge_children(siblings))
 
     return p_blocks
-
-
-#
-#
-# def group_by_visual_break(v_block):
-#     chunk_data = [None]
-#     chunk_data = chunk_data * len(block_df)
-#     visual_index = 0
-#
-#     if v_block['children'] != None :
-#         for line in v_block['children']:
-#         if chunk_data[visual_index] == None:
-#             chunk_data[visual_index] = []
-#             chunk_data[visual_index].append(block_df['data'][index])
-#         else:
-#             chunk_data[visual_index].append(block_df['data'][index])
-#         visual_index += row['visual_break']
-#
-#     text_chunks = [text for text in text_chunks if text != '']
-#     chunk_data = [data for data in chunk_data if data != None]
-#
-    return text_chunks, chunk_data
 
 
 
@@ -150,13 +115,6 @@ def left_right_condition(current_line, next_line, para_right, para_left, block_c
     header_left_threshold = block_configs["header_left_threshold"];
     header_right_threshold = block_configs["header_right_threshold"]
     space_multiply_factor = block_configs["space_multiply_factor"]
-
-    #flag = False
-
-
-
-    #current_line = MapKeys(children_list[line_index -1])
-    #next_line     = MapKeys(children_list[line_index])
     left1 = current_line.get_left()
     right1 = current_line.get_right()
     h1 = current_line.get_bottom()
@@ -185,7 +143,7 @@ def left_right_condition(current_line, next_line, para_right, para_left, block_c
             header_left_threshold - .20) > left1 and left1 != left2 and right2 < right1 * header_right_threshold):
         return False
         # CURRENT LINE BREAK WHEN NEXT LINE IS NOT IN MARGIN WITH FIRST LINE
-    if (left1 == left2 and right1 < right2 - right2 * right_break_threshold) or (
+    if (right1 < right2 - right2 * right_break_threshold) or (
             left1 - left_break_threshold * current_line.get_left() > left2 and right1 <= right2 - right_break_threshold * current_line.get_right()):
         return False
 
@@ -218,9 +176,6 @@ def left_right_condition(current_line, next_line, para_right, para_left, block_c
             return False
         else:
           return True
-
-    #return flag
-
 
 
 def length_ratio(para_right, para_left, left2, right2, left1, right1):

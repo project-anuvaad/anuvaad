@@ -144,17 +144,12 @@ def are_hlines(region1,region2,avg_ver_ratio):
     h1 = abs(region1['boundingBox']['vertices'][3]['y'] - region1['boundingBox']['vertices'][0]['y'])
     h2 = abs(region2['boundingBox']['vertices'][3]['y'] - region2['boundingBox']['vertices'][0]['y'])
     max_height = max( h1 , h2 ) #*0.5
+    if avg_ver_ratio < 1.8 :
+        diff_threshold = max_height * 0.8
 
-    if avg_ver_ratio < 1.2 :
-        diff_threshold = max_height * 0.5
-
-    if 1.2 <= avg_ver_ratio >= 1.5 :
-        diff_threshold = max_height *0.9
-
-    if avg_ver_ratio >= 1.5 :
+    if avg_ver_ratio >= 1.8 :
         diff_threshold = max_height * 1.1
 
-    #diff_threshold = max_height #*0.8
     #return ((space <= diff_threshold ) or(sepration <= 3 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 )
     return  sepration  < 5 * max_height  and space <= diff_threshold
 
@@ -180,37 +175,19 @@ def merge_text(v_blocks):
 
 
 def merge_children(siblings,children_none=False):
-    if len(siblings) == 1 :
-        if 'children' in  siblings[0].keys() :
-            pass
-        else:
-            siblings[0]['children']= []
-        return  siblings[0]
-
-    else:
-        box = Box().get_box()
-        if not children_none:
-            #siblings.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'])
-            #children = sort_regions(siblings, [])
-            siblings.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
+    box = Box().get_box()
+    if not children_none:
             box['children'] = copy.deepcopy(siblings)
 
-        box['boundingBox']['vertices'][0]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['x'])['boundingBox']['vertices'][0]['x']
-        box['boundingBox']['vertices'][0]['y']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['y'])['boundingBox']['vertices'][0]['y']
-        box['boundingBox']['vertices'][1]['x']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][1]['x'])['boundingBox']['vertices'][1]['x']
-        box['boundingBox']['vertices'][1]['y']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][1]['y'])['boundingBox']['vertices'][1]['y']
-        box['boundingBox']['vertices'][2]['x']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][2]['x'])['boundingBox']['vertices'][2]['x']
-        box['boundingBox']['vertices'][2]['y']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][2]['y'])['boundingBox']['vertices'][2]['y']
-        box['boundingBox']['vertices'][3]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][3]['x'])['boundingBox']['vertices'][3]['x']
-        box['boundingBox']['vertices'][3]['y']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][3]['y'])['boundingBox']['vertices'][3]['y']
 
-        #box['font']['size']    = max(siblings, key=lambda x: x['font']['size'])['font']['size']
+    box['boundingBox']['vertices'][0]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['x'])['boundingBox']['vertices'][0]['x']
+    box['boundingBox']['vertices'][0]['y']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['y'])['boundingBox']['vertices'][0]['y']
+    box['boundingBox']['vertices'][1]['x']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][1]['x'])['boundingBox']['vertices'][1]['x']
+    box['boundingBox']['vertices'][1]['y']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][1]['y'])['boundingBox']['vertices'][1]['y']
+    box['boundingBox']['vertices'][2]['x']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][2]['x'])['boundingBox']['vertices'][2]['x']
+    box['boundingBox']['vertices'][2]['y']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][2]['y'])['boundingBox']['vertices'][2]['y']
+    box['boundingBox']['vertices'][3]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][3]['x'])['boundingBox']['vertices'][3]['x']
+    box['boundingBox']['vertices'][3]['y']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][3]['y'])['boundingBox']['vertices'][3]['y']
 
-        # try :
-        #     box['text'] = siblings[0]['text']
-        #     for sib_index in range(1,len(siblings)):
-        #         box['text'] +=  ' ' + str(siblings[sib_index]['text'])
-        # except:
-        #     print('Error in merging text')
-        return box
+    return box
 

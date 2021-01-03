@@ -9,6 +9,7 @@ from collections import namedtuple
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 import sys, random, torch, glob, torchvision
 import os
+from src.utilities.remove_water_mark import clean_image
 
 #device = torch.device("cpu")
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
@@ -276,6 +277,7 @@ class PRIMA(object):
 	def predict_primanet(self,image,craft_coords):
 		try:
 			image   = cv2.imread(image)#("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/"+image)
+			image   = clean_image(image)
 
 			image   = image[..., ::-1]
 			layout  = model_primalaynet.detect(image)

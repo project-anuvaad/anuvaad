@@ -22,6 +22,7 @@ import src.utilities.app_context as app_context
 from src.utilities.craft_pytorch.craft import CRAFT
 from collections import OrderedDict
 from anuvaad_auditor.loghandler import log_error
+from src.utilities.remove_water_mark import clean_image
 
 
 def copyStateDict(state_dict):
@@ -200,6 +201,7 @@ def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,l
     t = time.time()
     for image_path in image_paths :
         image = cv2.imread(image_path)
+        image = clean_image(image)
         # if img_class == "double_col":
         #     image = image_path
         # else:
