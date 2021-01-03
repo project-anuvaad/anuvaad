@@ -738,16 +738,18 @@ class SentenceCard extends React.Component {
         if (this.cardCompare()) {
             this.setState({ cardInFocus: false })
             this.props.clearHighlighBlock()
-            // TELEMETRY.endstartSentenceTranslationSentenceTranslation("", "", this.props.jobId, this.props.sentence.s_id)
+            TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         } else {
+            if(this.props.block_highlight && this.props.block_highlight.current_sid) {
+                TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.block_highlight.current_sid)
+            }
             this.setState({ cardInFocus: true })
             this.props.highlightBlock(this.props.sentence, this.props.pageNumber)
             /**
              * For highlighting textarea on card expand
              */
             this.textInput && this.textInput.current && this.textInput.current.focus();
-
-            // TELEMETRY.startSentenceTranslation("", "", t.starthis.props.jobId, this.props.sentence.s_id)
+            TELEMETRY.startSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         }
 
     }
