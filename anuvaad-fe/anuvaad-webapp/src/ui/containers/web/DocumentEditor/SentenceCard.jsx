@@ -405,15 +405,64 @@ class SentenceCard extends React.Component {
             event.preventDefault();
             return false
         }
-
         /**
          * user requesting for suggestions
          */
+        if (event.altKey && charCode === 's') {
+            var elem = document.getElementById(this.props.sentence.s_id)
+            var initialFocus = this.state.value.split(/\s{2,}/)[0].length
+            this.setState({ showSuggestions: true, value: this.state.value.replace(/\s{2,}/, " ") }, () => {
+                if (initialFocus !== this.state.value.length) {
+                    elem.focus()
+                    elem.setSelectionRange(initialFocus, initialFocus)
+                }
+            })
+            this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
+            event.preventDefault();
+            return false
+        }
+
+        /**
+         * user selecting words from suggestions
+         */
+
         var TABKEY = 9;
         if (event.keyCode === TABKEY) {
-            var elem = document.getElementById(this.props.sentence.s_id)
-            this.setState({ showSuggestions: true })
-            this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
+            if (this.state.suggestions[0]) {
+                let suggestion = this.state.suggestions[0].name
+                let elem = document.getElementById(this.props.sentence.s_id)
+                let end = elem.selectionEnd
+                if (end < this.state.suggestions[0].name.length) {
+                    let nextSuggestedWord = suggestion.substr(end).split(" ").shift().trim()
+                    let nextWordInTextField = this.state.value.substr(end).split(" ").shift().trim()
+                    let len = end + nextSuggestedWord.length
+                    if (nextSuggestedWord === nextWordInTextField) {
+                        if (nextSuggestedWord === "") {
+                            this.setState({ showSuggestions: true, value: this.state.value.trim() + " " }, () => {
+                                elem.focus();
+                                elem.setSelectionRange(len + 1, len + 1);
+                            })
+                        } else {
+                            this.setState({ showSuggestions: true, value: this.state.value.trim() }, () => {
+                                elem.focus();
+                                elem.setSelectionRange(len, len)
+                            })
+                        }
+                    }
+                    else if (nextSuggestedWord !== "" && nextWordInTextField === "") {
+                        this.setState({ showSuggestions: true, value: `${this.state.value.trim()} ${nextSuggestedWord}` })
+                    } else if (nextSuggestedWord !== nextWordInTextField) {
+                        let firstHalf = this.state.value.slice(0, end).trim()
+                        let secondHalf = this.state.value.slice(end).trim()
+                        this.setState({ showSuggestions: true, value: `${firstHalf} ${nextSuggestedWord} ${secondHalf}` }, () => {
+                            elem.focus();
+                            elem.setSelectionRange(len, len)
+                        })
+                    }
+                } else {
+                    this.setState({ suggestion: true })
+                }
+            }
             event.preventDefault();
             return false
         }
@@ -490,7 +539,7 @@ class SentenceCard extends React.Component {
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
-                                helperText="Ctrl+s to save, Ctrl+m to move text, TAB key to get suggestions of your choice"
+                                helperText="Ctrl+m to move text, Alt+s to get suggestions of your choice, TAB key to move suggested words, Ctrl+s to save"
                                 type="text"
                                 name={this.props.sentence.s_id}
                                 value={this.state.value}

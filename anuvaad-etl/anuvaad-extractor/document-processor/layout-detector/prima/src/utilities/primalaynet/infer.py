@@ -9,6 +9,7 @@ from collections import namedtuple
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 import sys, random, torch, glob, torchvision
 import os
+from src.utilities.remove_water_mark import clean_image
 
 #device = torch.device("cpu")
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
@@ -23,7 +24,7 @@ torch.manual_seed(seed)
 # torch.backends.cudnn.benchmark = False
 
 model_primalaynet = lp.Detectron2LayoutModel('lp://PrimaLayout/mask_rcnn_R_50_FPN_3x/config',label_map = {1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"MathsRegion", 5:"SeparatorRegion", 6:"OtherRegion"}, \
-	extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST,"MODEL.ROI_HEADS.NMS_THRESH_TEST", 0.2])
+	extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])#,"MODEL.ROI_HEADS.NMS_THRESH_TEST", 0.2])
 # model_primalaynet = lp.Detectron2LayoutModel(
 #             config_path ='lp://PubLayNet/mask_rcnn_X_101_32x8d_FPN_3x/config', # In model catalog
 #             label_map   ={0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"}, # In model`label_map`
@@ -276,6 +277,7 @@ class PRIMA(object):
 	def predict_primanet(self,image,craft_coords):
 		try:
 			image   = cv2.imread(image)#("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/"+image)
+			image   = clean_image(image)
 
 			image   = image[..., ::-1]
 			layout  = model_primalaynet.detect(image)
