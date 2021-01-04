@@ -116,9 +116,7 @@ class PRIMA(object):
 			ele,skip ,tag_update= self.filter_overlapping(ele,bbox,idx,tag)
 			final_box.append(ele)
 			final_tag.append(tag_update)
-			#print(tag_update,'taggggggggggggggggggggggggggggggggggggggggggggg update')
-		#print(final_tag,'ffffffffffffffffinal tag')
-		boxes, coords, layout_class = self.prima_refinement(final_box, final_tag, craft_coords)  
+		boxes, coords, layout_class = self.prima_refinement(final_box, final_tag, craft_coords)
 
 		return boxes, coords, layout_class
 
@@ -292,7 +290,7 @@ class PRIMA(object):
 			boxes,coords,layout_class = self.prima_region(layout,craft_coords)
 			final_coord = []
 			for idx,coord in enumerate(coords):
-				if layout_class[idx] == 'TABLE':
+				if layout_class[idx] == 'TableRegion':
 					print('')
 				else :
 					temp_dict = {}; vert=[]
