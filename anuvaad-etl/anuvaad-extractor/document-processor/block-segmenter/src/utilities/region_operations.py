@@ -110,6 +110,10 @@ def collate_regions(regions, lines,grand_children=False,region_flag = True):
             if len(children_lines) > 0:
                 region_lines = []
                 for intr_index in children_lines:
+                    if grand_children :
+                        if 'children' not in lines[intr_index].keys():
+                            lines[intr_index]['children'] = []
+
                     region_lines.append(lines[intr_index])
                     lines_intersected.append(intr_index)
                 region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
