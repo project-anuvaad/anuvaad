@@ -270,8 +270,7 @@ class PRIMA(object):
 			class_name = "LINE"
 		if class_name == "OtherRegion":
 			class_name = "TEXT"
-		else:
-			class_name = "TEXT"
+		
 		return class_name
 
 	def predict_primanet(self,image,craft_coords):
@@ -294,7 +293,7 @@ class PRIMA(object):
 				temp_dict['boundingBox']["vertices"] = vert
 				
 				temp_dict['class']      = self.class_mapping(layout_class[idx])
-				print("kkkkkk",layout_class[idx])
+				#print("kkkkkk",layout_class[idx])
 				#temp_dict['text_left']  = coord[0]; temp_dict['text_top'] = coord[1]
 				#temp_dict['text_width'] = abs((coord[2]-coord[0])); temp_dict['text_height'] = abs((coord[3]-coord[1]))
 				final_coord.append(temp_dict)
