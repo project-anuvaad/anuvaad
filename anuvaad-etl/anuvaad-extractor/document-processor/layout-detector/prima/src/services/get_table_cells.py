@@ -53,6 +53,8 @@ def get_regions(regions,clss):
     if clss == 'TABLE':
         for table in regions:
             for t_cell in table['rect']:
+                t_cell['x'] += table['x']
+                t_cell['y'] += table['y']
                 r_cell = Box()
                 r_cell.set_class(clss)
                 r_cell.set_coords(t_cell)
@@ -71,7 +73,7 @@ def mask_tables(page_imge,check=False):
     try:
         table_image = cv2.imread(page_imge, 0)
         page_img    = cv2.imread(page_imge)
-        
+
         table_image = clean_image(table_image)
         page_img    = clean_image(page_img)
 
