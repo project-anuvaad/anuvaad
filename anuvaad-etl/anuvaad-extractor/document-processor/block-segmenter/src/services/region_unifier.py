@@ -335,7 +335,6 @@ class Region_Unifier:
             text_region,n_text_table_regions,tabel_region = self.get_text_tabel_region(page_regions)
             line_list    = collate_regions(page_lines,page_words)
             v_list       = collate_regions(text_region,line_list,grand_children=True)
-
             t_list       = collate_regions(tabel_region,page_words,grand_children=True,region_flag = False)
             # line_list    = collate_regions(page_lines,page_words)
             # v_list       = collate_regions(page_regions,line_list,grand_children=True)
@@ -388,9 +387,9 @@ class Region_Unifier:
             n_text_table_regions.extend(t_list)
             flag =True
             while flag==True:
-                text_regions, flag = self.merge_remove_overlap(text_regions,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
+                v_list, flag = self.merge_remove_overlap(v_list,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
         except Exception as e:
             log_exception("Error occured during block unifier",  app_context.application_context, e)
             return None  ,None
 
-        return text_regions, n_text_table_regions
+        return v_list, n_text_table_regions
