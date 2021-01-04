@@ -292,8 +292,9 @@ class PRIMA(object):
 				vert.append({'x':coord[0],'y':coord[3]})
 				temp_dict['boundingBox']={}
 				temp_dict['boundingBox']["vertices"] = vert
-				print("kkkkkk",layout_class[idx])
+				
 				temp_dict['class']      = self.class_mapping(layout_class[idx])
+				print("kkkkkk",layout_class[idx])
 				#temp_dict['text_left']  = coord[0]; temp_dict['text_top'] = coord[1]
 				#temp_dict['text_width'] = abs((coord[2]-coord[0])); temp_dict['text_height'] = abs((coord[3]-coord[1]))
 				final_coord.append(temp_dict)
