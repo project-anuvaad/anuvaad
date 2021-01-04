@@ -397,6 +397,7 @@ class Region_Unifier:
             # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
             ########################
             n_text_table_regions.extend(t_list)
+            n_text_table_regions.extend(image_region)
             flag =True
             while flag==True:
                 v_list, flag = self.merge_remove_overlap(v_list,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
