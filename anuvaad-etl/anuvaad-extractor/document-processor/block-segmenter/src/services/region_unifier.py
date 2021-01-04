@@ -132,15 +132,18 @@ class Region_Unifier:
     def get_text_tabel_region(self,regions):
         text_region = []
         tabel_region = []
+        image_region  = []
         n_text_table_regions = []
         for region in regions:
             if region['class']=='TEXT':
                 text_region.append(region)
             if region['class']=='TABLE':
                 tabel_region.append(region)
+            if region['class']=='IMAGE':
+                image_region.append(region)
             else :
                 n_text_table_regions.append(region)
-        return text_region,n_text_table_regions,tabel_region
+        return text_region,n_text_table_regions,tabel_region,image_region
     
 
 
@@ -332,14 +335,19 @@ class Region_Unifier:
     def region_unifier(self,page_words, page_lines,page_regions):
         try:
             
-            text_region,n_text_table_regions,tabel_region = self.get_text_tabel_region(page_regions)
+            text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(page_regions)
 
-            filtered_words     = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
-            filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
+
+            filterd_tables  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
+            filted_text     = remvoe_regions(copy.deepcopy(filterd_tables) ,copy.deepcopy(text_region))
+
+
+            filtered_words     = remvoe_regions(copy.deepcopy(filterd_tables), copy.deepcopy(page_words))
+            filtered_lines    = remvoe_regions(copy.deepcopy(filterd_tables), copy.deepcopy(page_words))
 
             line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words))
-            v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),grand_children=True )
-            t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
+            v_list       = collate_regions( copy.deepcopy( filted_text),copy.deepcopy( filtered_lines ),grand_children=True )
+            t_list       = collate_regions(copy.deepcopy( filterd_tables),copy.deepcopy(page_words),grand_children=True,region_flag = False)
             # line_list    = collate_regions(page_lines,page_words)
             # v_list       = collate_regions(page_regions,line_list,grand_children=True)
             page_config                         = Page_Config()
