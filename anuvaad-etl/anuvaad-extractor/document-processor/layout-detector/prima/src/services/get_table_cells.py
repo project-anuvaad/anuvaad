@@ -51,7 +51,6 @@ def get_regions(regions,clss):
 
     r_box= []
     if clss == 'TABLE':
-        regions = regions['response']['tables']
         for table in regions:
             for t_cell in table['rect']:
                 r_cell = Box()
