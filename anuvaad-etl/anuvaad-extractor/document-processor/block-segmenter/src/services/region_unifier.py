@@ -334,12 +334,12 @@ class Region_Unifier:
             
             text_region,n_text_table_regions,tabel_region = self.get_text_tabel_region(page_regions)
 
-            filtered_words     = remvoe_regions(tabel_region,page_words)
-            filtered_lines    = remvoe_regions(tabel_region,page_words)
+            filtered_words     = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
+            filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
 
-            line_list    = collate_regions(filtered_lines,filtered_words)
-            v_list       = collate_regions(text_region,line_list,grand_children=True)
-            t_list       = collate_regions(tabel_region,page_words,grand_children=True,region_flag = False)
+            line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words))
+            v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),grand_children=True )
+            t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
             # line_list    = collate_regions(page_lines,page_words)
             # v_list       = collate_regions(page_regions,line_list,grand_children=True)
             page_config                         = Page_Config()
