@@ -275,8 +275,8 @@ class PRIMA(object):
 
 	def predict_primanet(self,image,craft_coords):
 		try:
-			#image   = cv2.imread(image)#("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/"+image)
-			#image   = clean_image(image)
+			image   = cv2.imread(image)#("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/"+image)
+			image   = clean_image(image)
 
 			image   = image[..., ::-1]
 			layout  = model_primalaynet.detect(image)
