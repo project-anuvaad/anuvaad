@@ -2,29 +2,19 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 import src.utilities.app_context as app_context
-#from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
+from src.services.get_table_cells import mask_tables
 import config,time
 import json
 from src.utilities.primalaynet.infer import PRIMA
 from src.utilities.request_parse import get_files, File,get_json
+from src.utilities.model_response import get_coord
 
 primalaynet = PRIMA()
-def extract_table_line_regions(image_path):
 
-    region,mask_image        = get_text_table_line_df(image_path)
+def extract_table_line_regions(image_path):
+    region,mask_image        = mask_tables(image_path)
     return region,mask_image
 
-def get_coord(bboxs):
-    coord =[]
-    if len(bboxs)>0:
-        for bbox in bboxs:
-            temp_box = []
-            temp_box.append(bbox["boundingBox"]['vertices'][0]['x'])
-            temp_box.append(bbox["boundingBox"]['vertices'][0]['y'])
-            temp_box.append(bbox["boundingBox"]['vertices'][2]['x'])
-            temp_box.append(bbox["boundingBox"]['vertices'][2]['y'])
-            coord.append(temp_box)
-    return coord
 
 def get_layout(app_context) :
     try:
@@ -43,7 +33,9 @@ def get_layout(app_context) :
                 page_words  = file_properties.get_words(idx)
                 line_coords = get_coord(page_lines)
                 #page_path   = '/'.join(page_path.split('/')[-4:])
-                regions     = primalaynet.predict_primanet(page_path, line_coords)
+                masked_image, table_and_lines = extract_table_line_regions(page_path)
+                regions     = primalaynet.predict_primanet(masked_image, line_coords)
+                regions += table_and_lines
                 file['pages'][idx]["regions"]=regions
             file['file'] = file_new['file']
             file['config'] = file_new['config']
