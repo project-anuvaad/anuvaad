@@ -57,7 +57,7 @@ class Box:
         self.box['class'] = region_class
 
     def set_coords(self,region):
-        self.box['bound']['vertices']  = [ { 'x' : region['x'] ,'y': region['y']} ,\
+        self.box['boundingBox']['vertices']  = [ { 'x' : region['x'] ,'y': region['y']} ,\
                                           { 'x' : region['x'] + region['w'] ,'y': region['y']}, \
                                            {'x': region['x'] + region['w'], 'y': region['y'] + region['h']}, \
                                            {'x': region['x'], 'y': region['y'] + region['h']}
