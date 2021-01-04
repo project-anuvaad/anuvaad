@@ -2,7 +2,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 from collections import namedtuple
-from src.utilities.region_operations import collate_regions, get_polygon,sort_regions
+from src.utilities.region_operations import collate_regions, get_polygon,sort_regions, remvoe_regions
 from src.services.segment import horzontal_merging
 import src.utilities.app_context as app_context
 import copy
@@ -333,7 +333,11 @@ class Region_Unifier:
         try:
             
             text_region,n_text_table_regions,tabel_region = self.get_text_tabel_region(page_regions)
-            line_list    = collate_regions(page_lines,page_words)
+
+            filtered_words     = remvoe_regions(tabel_region,page_words)
+            filtered_lines    = remvoe_regions(tabel_region,page_words)
+
+            line_list    = collate_regions(filtered_lines,filtered_words)
             v_list       = collate_regions(text_region,line_list,grand_children=True)
             t_list       = collate_regions(tabel_region,page_words,grand_children=True,region_flag = False)
             # line_list    = collate_regions(page_lines,page_words)
