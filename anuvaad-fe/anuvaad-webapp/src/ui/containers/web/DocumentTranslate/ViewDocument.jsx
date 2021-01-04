@@ -81,7 +81,7 @@ class ViewDocument extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
+    if (this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
       TELEMETRY.endWorkflow(this.props.job_details.changedJob.source_language_code, this.props.job_details.changedJob.target_language_code, this.props.job_details.changedJob.filename, this.props.job_details.changedJob.jobID, this.props.job_details.changedJob.status)
     }
 
@@ -268,15 +268,21 @@ class ViewDocument extends React.Component {
 
   processJobTimelinesClick(jobId, recordId) {
     let taskDetails = this.getJobIdDetail(jobId);
-    this.setState({ showInfo: true, message: taskDetails });
+    this.setState({ showInfo: true, message: taskDetails, dialogType: "info", dialogTitle: "File Process Information" });
   }
 
   handleDialogClose() {
-    this.setState({ showInfo: false });
+    this.setState({ showInfo: false, dialogType: null, dialogTitle: null, message: null });
+  }
+
+  handleDialogSubmit = (jobId) => {
+    this.setState({ showInfo: false, dialogType: null, dialogTitle: null, value: null, message: null });
+    this.makeAPICallJobDelete(jobId);
   }
 
   processDeleteJobClick = (jobId, recordId) => {
-    this.makeAPICallJobDelete(jobId);
+    this.setState({ showInfo: true, message: "Do you want to delete a job " + jobId + " ?", dialogTitle: "Delete Job !", value: jobId })
+    // this.makeAPICallJobDelete(jobId);
   };
 
   processViewDocumentClick = (jobId, recordId, status) => {
@@ -467,13 +473,14 @@ class ViewDocument extends React.Component {
           sort: false,
           empty: true,
         },
-      },{
+      }, {
         name: "bleu_score",
         label: "Accuracy Level",
         options: {
-          hint:"Will be displayed once 80% file completed",
+          hint: "Will be displayed once 80% file completed",
           sort: false
-        }},
+        }
+      },
       {
         name: "endTime",
         label: "End Time",
@@ -603,7 +610,7 @@ class ViewDocument extends React.Component {
         body: {
           noMatch:
             this.props.job_details.count > 0 &&
-            this.props.job_details.count >
+              this.props.job_details.count >
               this.props.job_details.documents.length
               ? "Loading...."
               : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound"),
@@ -661,13 +668,14 @@ class ViewDocument extends React.Component {
         {this.state.showInfo && (
           <Dialog
             message={this.state.message}
-            type="info"
+            type={this.state.dialogType}
             handleClose={this.handleDialogClose.bind(this)}
             open
-            title="File Process Information"
+            title={this.state.dialogTitle}
+            handleSubmit={this.handleDialogSubmit.bind(this)}
+            value={this.state.value}
           />
         )}
-
         {(this.state.showLoader || this.state.loaderDelete) && <Spinner />}
         {this.state.dialogMessage && this.snackBarMessage()}
       </div>
