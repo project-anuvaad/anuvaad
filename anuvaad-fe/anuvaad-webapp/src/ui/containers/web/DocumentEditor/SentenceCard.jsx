@@ -358,7 +358,8 @@ class SentenceCard extends React.Component {
                 return Promise.reject('');
             } else {
                 this.setState({
-                    suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
+                    // suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
+                    suggestions: [{ name: rsp_data.output.predictions[0].tgt[0] }],
                     isCardBusy: false
                 })
             }
@@ -518,7 +519,6 @@ class SentenceCard extends React.Component {
     }
 
     renderUserInputArea = () => {
-
         return (
             <form >
                 <div>
@@ -813,7 +813,7 @@ class SentenceCard extends React.Component {
             this.props.clearHighlighBlock()
             TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         } else {
-            if(this.props.block_highlight && this.props.block_highlight.current_sid) {
+            if (this.props.block_highlight && this.props.block_highlight.current_sid) {
                 TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.block_highlight.current_sid)
             }
             this.setState({ cardInFocus: true })
