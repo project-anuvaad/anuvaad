@@ -337,10 +337,9 @@ class Region_Unifier:
             
             text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(page_regions)
 
-            print(len(tabel_region), 'beforeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
             text_region     = remvoe_regions(copy.deepcopy(tabel_region) ,copy.deepcopy(text_region))
-            print(len(tabel_region), 'afterrrrrrrrrrrrrrrrrrrrrrrrr')
 
 
             filtered_words     = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
@@ -349,6 +348,8 @@ class Region_Unifier:
             line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words))
             v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( filtered_lines ),grand_children=True )
             t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
+            print(len(t_list)   , 't_listttttttttttttttt'  )
+
             # line_list    = collate_regions(page_lines,page_words)
             # v_list       = collate_regions(page_regions,line_list,grand_children=True)
             page_config                         = Page_Config()
