@@ -70,7 +70,11 @@ def mask_tables(page_imge,check=False):
 
     try:
         table_image = cv2.imread(page_imge, 0)
+        page_img    = cv2.imread(page_imge)
+        
         table_image = clean_image(table_image)
+        page_img    = clean_image(page_img)
+
         image_width, image_height = table_image.shape[1], table_image.shape[0]
         if check:
             cv2.imwrite('bg_org.png', table_image)
@@ -99,6 +103,6 @@ def mask_tables(page_imge,check=False):
     line_regions = get_regions(lines, 'LINE')
     tables_regions = get_regions(tables , 'TABLE' )
 
-    masked_image = mask_image(table_image, tables, image_width, image_height, app_context.application_context, margin=0,
+    masked_image = mask_image(page_img, tables, image_width, image_height, app_context.application_context, margin=0,
                               fill=255)
     return masked_image, line_regions + tables_regions
