@@ -338,16 +338,16 @@ class Region_Unifier:
             text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(page_regions)
 
 
-            filterd_tables  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
-            filted_text     = remvoe_regions(copy.deepcopy(filterd_tables) ,copy.deepcopy(text_region))
+            tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
+            text_region     = remvoe_regions(copy.deepcopy(tabel_region) ,copy.deepcopy(text_region))
 
 
-            filtered_words     = remvoe_regions(copy.deepcopy(filterd_tables), copy.deepcopy(page_words))
-            filtered_lines    = remvoe_regions(copy.deepcopy(filterd_tables), copy.deepcopy(page_words))
+            filtered_words     = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
+            filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
 
             line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words))
-            v_list       = collate_regions( copy.deepcopy( filted_text),copy.deepcopy( filtered_lines ),grand_children=True )
-            t_list       = collate_regions(copy.deepcopy( filterd_tables),copy.deepcopy(page_words),grand_children=True,region_flag = False)
+            v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( filtered_lines ),grand_children=True )
+            t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
             # line_list    = collate_regions(page_lines,page_words)
             # v_list       = collate_regions(page_regions,line_list,grand_children=True)
             page_config                         = Page_Config()
