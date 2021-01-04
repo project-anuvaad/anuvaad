@@ -112,7 +112,7 @@ def collate_regions(regions, lines,grand_children=False,region_flag = True):
                 for intr_index in children_lines:
                     if grand_children :
                         if 'children' not in lines[intr_index].keys():
-                            lines[intr_index]['children'] = []
+                            lines[intr_index]['children'] = [copy.deepcopy(lines[intr_index])]
 
                     region_lines.append(lines[intr_index])
                     lines_intersected.append(intr_index)
