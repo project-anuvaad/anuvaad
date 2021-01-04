@@ -284,7 +284,7 @@ class PRIMA(object):
 			final_coord = []
 			for idx,coord in enumerate(coords):
 				if layout_class[idx] == 'TABLE':
-					pass
+					print('')
 				else :
 					temp_dict = {}; vert=[]
 					temp_dict['identifier'] = str(uuid.uuid4())
@@ -296,6 +296,7 @@ class PRIMA(object):
 					temp_dict['boundingBox']["vertices"] = vert
 
 					temp_dict['class']      = self.class_mapping(layout_class[idx])
+					print((layout_class[idx]))
 					print(temp_dict, 'tempppppppppppppppp dict')
 
 
