@@ -22,17 +22,12 @@ def tag_number_date_url(text):
     count_number = 0
     num_map = list()
     
-    num_array = re.findall(patterns['p3']['regex'],text)
-    num_array_orignal = num_array
-    i_zero = get_indices_of_num_with_zero_prefix(num_array)
-    num_array = list(map(int, num_array))
-    zero_prefix_num = [num_array[i] for i in i_zero] 
+    num_array,text,num_dict = build_src_num_array(text)
     num_array.sort(reverse = True)
-    # num_array = update_num_arr(num_array,zero_prefix_num,i_zero,num_array_orignal)
  
     for j in num_array:
       text = text.replace(str(j),'NnUuMm'+str(hindi_numbers[count_number]),1)
-      num_map.append({"no.":j,"tag":'NnUuMm'+str(hindi_numbers[count_number])})
+      num_map.append({"no.":num_dict[j],"tag":'NnUuMm'+str(hindi_numbers[count_number])})
       count_number +=1
       if count_number >30:
         print("count exceeding 30")
@@ -93,8 +88,6 @@ def replace_tags_with_original(text,date_original,url_original,num_array,num_map
       res = str(" ".join(s))
 
     log_info("response after url and date replacemnt:{}".format(res),MODULE_CONTEXT)    
-    array = re.findall(r'NnUuMm..|NnUuMm.', res)   
-    log_info("NnUuMm array after translation:{}".format(array),MODULE_CONTEXT)
     
     if len(num_map) == 0:
       ''' handling the case when model outputs a tag which is not in tagged_src(src is without any number'''
@@ -104,13 +97,8 @@ def replace_tags_with_original(text,date_original,url_original,num_array,num_map
     num_map.reverse()
     for item in num_map:
       res = res.replace(item['tag'],str(item['no.']),1)
-
-    if len(re.findall(r'NnUuMm.', res)) > 0:
-      ''' if model outputs extra tag than the number of count in num_map or 
-      some unreplaced tags, removing them from final output'''
-      for char in reversed(hindi_numbers):  
-        res = re.sub(r'NnUuMm'+char,"",res)
-
+   
+    res = remove_extra_tags(res)     
     log_info("response after tags replacement:{}".format(res),MODULE_CONTEXT)
     return res    
   except Exception as e:
@@ -148,6 +136,41 @@ def update_num_arr(num_array,zero_prefix_num,i_zero,num_array_orignal):
     log_exception("Error in handle_date_url:update_num_arr,returning incoming num_array:{}".format(e),MODULE_CONTEXT,e)
     return num_array_o
   
-
-
+def build_src_num_array(i_text):
+  num_dict = {}
+  all_patterns = patterns['p12']['regex']
+  src_num_array = re.findall(all_patterns,i_text)
+  int_num_array = list(map(lambda y:y.replace(',',''), src_num_array))
+  int_num_array = list(map(int, int_num_array))
+  for k,v in enumerate(src_num_array):
+    i_text = i_text.replace(v,str(int_num_array[k]),1)
+  num_dict = {k:v for (k,v) in zip(int_num_array,src_num_array)}
+  return int_num_array,i_text,num_dict
+  
+def remove_extra_tags(text):
+  '''
+  This funtion is meant for removing extra num,date and url tags from the output 
+  '''
+  if len(re.findall(r'NnUuMm.', text)) > 0:
+    ''' 
+    if model outputs extra tag than the number of count in num_map or 
+    some unreplaced tags, removing them from final output
+    '''
+    for char in reversed(hindi_numbers):  
+      text = re.sub(r'NnUuMm'+char,"",text) 
+  
+  if len(re.findall(r'DdAaTtEe.', text)) > 0:
+    ''' 
+    If any' unreplaced Date tag is still left, removing it in final output'
+    Assuming in input there wont be more than 9 date patterns
+    '''
+    text = re.sub(r'DdAaTtEe.',"",text)  
+  
+  if len(re.findall(r'UuRrLl.', text)) > 0:
+    ''' 
+    If any' unreplaced url tag is still left, removing it in final output'
+    Assuming in input there wont be more than 9 url patterns
+    '''
+    text = re.sub(r'UuRrLl.',"",text)   
     
+  return text  
