@@ -46,5 +46,10 @@ logging.basicConfig(
     datefmt="%d/%m/%y %H:%M:%S",
 )
 
+
+
+WATERMARK_THRESHOLD_LOW = 175
+WATERMARK_THRESHOLD_HIGH = 250
+
 PRIMA_SCORE_THRESH_TEST =0.5
 

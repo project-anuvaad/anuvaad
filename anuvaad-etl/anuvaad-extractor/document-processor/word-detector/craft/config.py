@@ -74,4 +74,6 @@ LANGUAGE_LINE_THRESOLDS ={
 'ka':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35}
 }
 
+WATERMARK_THRESHOLD_LOW = 175
+WATERMARK_THRESHOLD_HIGH = 250
 MAGNIFICATION_RATIO = 1.0

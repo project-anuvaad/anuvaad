@@ -10,39 +10,6 @@ from src.utilities.region_operations import merge_text
 from src.services.region_unifier import Region_Unifier
 
 region_unifier = Region_Unifier()
-# save_dir = '/home/naresh/judgement_layout_pubnet/'
-
-# def draw_box(resp,filepath,save_dir,color="green", save=False):
-#     image  = Image.open("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/"+filepath)
-#     draw   = ImageDraw.Draw(image)
-#     for i in resp['rsp']['outputs'][0]['pages'][page_index]['regions']:
-#         draw.rectangle(((i['boundingBox']['vertices'][0]['x'], i['boundingBox']['vertices'][0]['y']), (i['boundingBox']['vertices'][2]['x'],i['boundingBox']['vertices'][2]['y'])), outline=color,width=3)
-        
-    
-#     save_filepath = os.path.join(save_dir, "bbox_layout_"+os.path.basename(filepath))
-#     if save:
-#         image.save(save_filepath)
-    
-#     return image
-#
-# def segment_regions(lines,regions):
-#
-#
-#     #v_list = collate_regions(regions,lines)
-#     v_list, n_text_regions = region_unifier(lines,regions)
-#     #print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",v_list[0],"fffffffffffffffffffffffffffffffff")
-#     p_list = []
-#     for v_block in v_list:
-#         #print(v_block,'vvvbbbbb')
-#         if len(v_block['children']) > 1 :
-#             #v_block['children'] = horzontal_merging(v_block['children'])
-#             #p_list +=  break_block(v_block)
-#             p_list +=[v_block]
-#         else :
-#             p_list +=  v_block['children']
-#     p_list += n_text_regions
-#     return p_list
-
 
 def segment_regions(words, lines,regions):
 
@@ -50,13 +17,11 @@ def segment_regions(words, lines,regions):
     p_list = []
     for v_block in v_list:
         if  v_block['children'] != None and  len(v_block['children']) > 1 :
-            #p_list +=  break_block(v_block)
-            p_list +=[v_block]
+            p_list+= break_block(v_block)
+            #p_list +=[v_block]
         else :
             p_list +=  [v_block]
     p_list += n_text_regions
-
-
     return p_list
 
 
