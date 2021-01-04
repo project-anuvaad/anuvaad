@@ -96,7 +96,7 @@ def sort_regions(region_lines, sorted_lines=[]):
         sort_regions(next_line, sorted_lines)
     return sorted_lines
 
-def collate_regions(regions, lines,grand_children=False):
+def collate_regions(regions, lines,grand_children=False,region_flag = True):
     idx = index.Index()
     lines_intersected = []
     if regions !=None and len(regions) > 0:
@@ -122,10 +122,11 @@ def collate_regions(regions, lines,grand_children=False):
                     regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
                 regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
     #orphan_lines = []
-    for line_index, line in enumerate(lines):
-        if line_index not in lines_intersected:
-            line['children'] = [ copy.deepcopy(line)]
-            regions.append(line)
+    if region_flag:
+        for line_index, line in enumerate(lines):
+            if line_index not in lines_intersected:
+                line['children'] = [ copy.deepcopy(line)]
+                regions.append(line)
 
     return regions
 
