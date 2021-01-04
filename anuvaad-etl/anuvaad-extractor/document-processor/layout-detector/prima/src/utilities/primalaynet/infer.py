@@ -99,6 +99,9 @@ class PRIMA(object):
 		for idx, ele in enumerate(layout):
 			bbox.append(list(ele.coordinates))
 			tag.append(ele.type)
+
+			print(tag,'prrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrima')
+
 			
 		final_box = []
 		final_tag = []
@@ -108,8 +111,8 @@ class PRIMA(object):
 			ele,skip ,tag_update= self.filter_overlapping(ele,bbox,idx,tag)
 			final_box.append(ele)
 			final_tag.append(tag_update)
-			print(tag_update,'taggggggggggggggggggggggggggggggggggggggggggggg update')
-		print(final_tag,'ffffffffffffffffinal tag')
+			#print(tag_update,'taggggggggggggggggggggggggggggggggggggggggggggg update')
+		#print(final_tag,'ffffffffffffffffinal tag')
 		boxes, coords, layout_class = self.prima_refinement(final_box, final_tag, craft_coords)  
 
 		return boxes, coords, layout_class
