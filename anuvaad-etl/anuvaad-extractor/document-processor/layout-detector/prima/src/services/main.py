@@ -33,9 +33,9 @@ def get_layout(app_context) :
                 page_words  = file_properties.get_words(idx)
                 line_coords = get_coord(page_lines)
                 #page_path   = '/'.join(page_path.split('/')[-4:])
-                #masked_image, table_and_lines = extract_table_line_regions(page_path)
+                masked_image, table_and_lines = extract_table_line_regions(page_path)
                 regions     = primalaynet.predict_primanet(page_path, line_coords)
-                #regions += table_and_lines
+                regions += table_and_lines
                 file['pages'][idx]["regions"]=regions
             file['file'] = file_new['file']
             file['config'] = file_new['config']
