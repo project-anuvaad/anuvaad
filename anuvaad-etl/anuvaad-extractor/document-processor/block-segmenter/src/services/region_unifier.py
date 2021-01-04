@@ -337,7 +337,6 @@ class Region_Unifier:
             v_list       = collate_regions(text_region,line_list,grand_children=True)
 
             t_list       = collate_regions(tabel_region,page_words,grand_children=True,region_flag = False)
-            n_text_table_regions.extend(t_list)
             # line_list    = collate_regions(page_lines,page_words)
             # v_list       = collate_regions(page_regions,line_list,grand_children=True)
             page_config                         = Page_Config()
@@ -362,12 +361,21 @@ class Region_Unifier:
                     v_list[idx] =v_block
 
 
+
+            for idx,t_block in enumerate(t_list):
+                if   t_block['children'] != None and  len(t_block['children']) > 1 :
+                    #print(idx, 'region index')
+                    #print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
+                    avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([t_block])
+                    avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
+                    t_block['children'] = horzontal_merging(t_block['children'],avrage_region_ver_ratio)
+                    t_list[idx] =t_block
+
+
+
             ################### page configs for region unifier
-            avg_hor_dist                            for line_index, line in enumerate(lines):
-            if line_index not in lines_intersected:
-                line['children'] = [ copy.deepcopy(line)]
-                regions.append(line)= page_config.avg_region_info(text_regions)
-            avg_word_sepc                        = page_config.avg_word_sep(line_list)
+            #avg_hor_dist      = page_config.avg_region_info(text_regions)
+            avg_word_sepc     = page_config.avg_word_sep(line_list)
 
 
             # print("av height : ",avg_height)
@@ -377,6 +385,7 @@ class Region_Unifier:
             # print('avg word spacing', avg_word_sepc)
             # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
             ########################
+            n_text_table_regions.extend(t_list)
             flag =True
             while flag==True:
                 text_regions, flag = self.merge_remove_overlap(text_regions,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
