@@ -108,7 +108,8 @@ class PRIMA(object):
 			ele,skip ,tag_update= self.filter_overlapping(ele,bbox,idx,tag)
 			final_box.append(ele)
 			final_tag.append(tag_update)
-				
+			print(tag_update,'taggggggggggggggggggggggggggggggggggggggggggggg update')
+		print(final_tag,'ffffffffffffffffinal tag')
 		boxes, coords, layout_class = self.prima_refinement(final_box, final_tag, craft_coords)  
 
 		return boxes, coords, layout_class
@@ -220,9 +221,9 @@ class PRIMA(object):
 				org_coord2[index][0] = int(min(coord1[0],org_coord2[index][0])); org_coord2[index][1] = int(min(coord1[1],org_coord2[index][1]))
 				org_coord2[index][2] = int(max(coord1[2],org_coord2[index][2])); org_coord2[index][3] = int(max(coord1[3],org_coord2[index][3]))
 				
-			if count == len(org_coord):
-				boxes_final.append(coord1)
-				tag_final.append("text")
+			# if count == len(org_coord):
+			# 	boxes_final.append(coord1)
+			# 	tag_final.append("text")
 
 		coords, layout_class  = self.remove_overlap(org_coord2, tag_final)
 		coords, layout_class  = self.craft_refinement(boxes_final, coords, layout_class)
