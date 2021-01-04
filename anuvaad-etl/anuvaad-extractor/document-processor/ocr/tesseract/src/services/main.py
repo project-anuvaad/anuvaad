@@ -39,8 +39,8 @@ def preprocess_file(file_properties,lang,ocr_level):
                 for idx, region in enumerate(page_regions):
                     region_lines_org = file_properties.get_region_lines(page_index,idx)
                     if config.IS_DYNAMIC:
-                        region_lines = coord_adjustment(page_path, region_lines_org)
-                        region_ocr = text_extraction(lang, page_path, region_lines,region_lines_org, width, height,mode_height)
+                        region_lines_org = coord_adjustment(page_path, region_lines_org)
+                        region_ocr = text_extraction(lang, page_path, region_lines_org,region_lines_org, width, height,mode_height)
                     else:
                         region_ocr = text_extraction(lang, page_path, region_lines_org,region_lines_org, width, height,mode_height)
 
