@@ -63,6 +63,7 @@ class PRIMA(object):
 		if index<len(layout):
 			coord_update = coord; skip=[-1]
 			tag_update = tag
+			flag = False
 			for idx,ele in enumerate(layout):
 				coord2 =ele;  coord1= coord_update
 				l1=[coord1[0],coord1[1]]; r1=[coord1[2],coord1[3]]
@@ -76,6 +77,7 @@ class PRIMA(object):
 					coord_update[1]=min(coord1[1],coord2[1])
 					coord_update[2]=max(coord1[2],coord2[2])
 					coord_update[3]=max(coord1[3],coord2[3])
+					flag=True
 					skip.append(idx)
 					tag_update="ImageRegion"
 				elif ar!=None and ar>0.01 and tag[idx]=="TextRegion" and tag[index]=="TextRegion":
@@ -83,6 +85,7 @@ class PRIMA(object):
 					coord_update[1]=min(coord1[1],coord2[1])
 					coord_update[2]=max(coord1[2],coord2[2])
 					coord_update[3]=max(coord1[3],coord2[3])
+					flag =True
 					skip.append(idx)
 					tag_update="TextRegion"
 				elif ar!=None and ((abs(coord1[0]-coord2[0])<300 and abs(coord1[2]-coord2[2])<300) and check==True) and idx!=index and (tag[idx]!="ImageRegion" and tag[index]!="ImageRegion"):# and (thresh>0.90)) or ((tag[idx]!="ImageRegion" and tag[index]=="ImageRegion") and (thresh>0.90))):
@@ -91,7 +94,11 @@ class PRIMA(object):
 					coord_update[2]=max(coord1[2],coord2[2])
 					coord_update[3]=max(coord1[3],coord2[3])
 					skip.append(idx)
+					flag =True
 					tag_update=tag[idx]
+			if not flag :
+				tag_update = tag[index]
+
 			return coord_update, skip,tag_update
 			
 	def prima_region(self, layout, craft_coords):
@@ -99,8 +106,6 @@ class PRIMA(object):
 		for idx, ele in enumerate(layout):
 			bbox.append(list(ele.coordinates))
 			tag.append(ele.type)
-
-			print(ele.type,'prrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrima')
 
 			
 		final_box = []
