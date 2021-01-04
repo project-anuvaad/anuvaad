@@ -26,7 +26,10 @@ def preprocess_file(file_properties,lang,ocr_level):
                     region_words_org = file_properties.get_region_words(page_index,idx,line_index)
                     if config.IS_DYNAMIC:
                         region_words = coord_adjustment(page_path, region_words_org)
-                    region_ocr = text_extraction(lang, page_path, region_words,region_words_org, width, height,mode_height)
+                        region_ocr = text_extraction(lang, page_path, region_words,region_words_org, width, height,mode_height)
+                    else:
+                        region_ocr = text_extraction(lang, page_path, region_words_org,region_words_org, width, height,mode_height)
+
                     file['pages'][page_index]['regions'][idx]['children'][line_index]['children'] = region_ocr
                 file['pages'][page_index]['regions'][idx]['children'] = merge_text(file['pages'][page_index]['regions'][idx]['children'],merge_tess_confidence=True)
             file['pages'][page_index]['regions'] = merge_text(file['pages'][page_index]['regions'])
@@ -37,7 +40,10 @@ def preprocess_file(file_properties,lang,ocr_level):
                     region_lines_org = file_properties.get_region_lines(page_index,idx)
                     if config.IS_DYNAMIC:
                         region_lines = coord_adjustment(page_path, region_lines_org)
-                    region_ocr = text_extraction(lang, page_path, region_lines,region_lines_org, width, height,mode_height)
+                        region_ocr = text_extraction(lang, page_path, region_lines,region_lines_org, width, height,mode_height)
+                    else:
+                        region_ocr = text_extraction(lang, page_path, region_lines_org,region_lines_org, width, height,mode_height)
+
                     file['pages'][page_index]['regions'][idx]['children'] = region_ocr
                 file['pages'][page_index]['regions']  = merge_text(file['pages'][page_index]['regions'])
     return file
