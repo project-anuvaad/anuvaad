@@ -100,7 +100,7 @@ class PRIMA(object):
 			bbox.append(list(ele.coordinates))
 			tag.append(ele.type)
 
-			print(tag,'prrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrima')
+			print(ele.type,'prrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrima')
 
 			
 		final_box = []
