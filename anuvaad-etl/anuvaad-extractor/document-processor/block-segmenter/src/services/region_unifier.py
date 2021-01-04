@@ -350,7 +350,7 @@ class Region_Unifier:
             line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words))
             v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),grand_children=True )
             t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
-           
+
             # line_list    = collate_regions(page_lines,page_words)
             # v_list       = collate_regions(page_regions,line_list,grand_children=True)
             page_config                         = Page_Config()

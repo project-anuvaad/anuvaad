@@ -285,22 +285,25 @@ class PRIMA(object):
 			for idx,coord in enumerate(coords):
 				if layout_class[idx] == 'TABLE':
 					pass
-				temp_dict = {}; vert=[]
-				temp_dict['identifier'] = str(uuid.uuid4())
-				vert.append({'x':coord[0],'y':coord[1]})
-				vert.append({'x':coord[2],'y':coord[1]})
-				vert.append({'x':coord[2],'y':coord[3]})
-				vert.append({'x':coord[0],'y':coord[3]})
-				temp_dict['boundingBox']={}
-				temp_dict['boundingBox']["vertices"] = vert
+				else :
+					temp_dict = {}; vert=[]
+					temp_dict['identifier'] = str(uuid.uuid4())
+					vert.append({'x':coord[0],'y':coord[1]})
+					vert.append({'x':coord[2],'y':coord[1]})
+					vert.append({'x':coord[2],'y':coord[3]})
+					vert.append({'x':coord[0],'y':coord[3]})
+					temp_dict['boundingBox']={}
+					temp_dict['boundingBox']["vertices"] = vert
 
-				temp_dict['class']      = self.class_mapping(layout_class[idx])
+					temp_dict['class']      = self.class_mapping(layout_class[idx])
+					print(temp_dict, 'tempppppppppppppppp dict')
 
 
-				#print("kkkkkk",layout_class[idx])
-				#temp_dict['text_left']  = coord[0]; temp_dict['text_top'] = coord[1]
-				#temp_dict['text_width'] = abs((coord[2]-coord[0])); temp_dict['text_height'] = abs((coord[3]-coord[1]))
-				final_coord.append(temp_dict)
+
+					#print("kkkkkk",layout_class[idx])
+					#temp_dict['text_left']  = coord[0]; temp_dict['text_top'] = coord[1]
+					#temp_dict['text_width'] = abs((coord[2]-coord[0])); temp_dict['text_height'] = abs((coord[3]-coord[1]))
+					final_coord.append(temp_dict)
 			return final_coord
 		except Exception as e:
 			log_exception("Error occured during prima layout detection ",  app_context.application_context, e)
