@@ -24,12 +24,15 @@ import FileUpload from './ui/containers/web/DocumentUpload/FileUpload';
 import ViewDocument from './ui/containers/web/DocumentTranslate/ViewDocument';
 import UserDetails from "./ui/containers/web/AdminPanel/UserDetails";
 import CreateUser from "./ui/containers/web/AdminPanel/CreateUser";
+import TmxUpload from "./ui/containers/web/AdminPanel/TmxUpload";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute,  component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
     {...rest}
     render={props =>
+      
       authenticate(userRoles) ? (
+
         <Layout
           dontShowLoader={dontShowLoader}
           currentMenu={currentMenu}
@@ -153,6 +156,17 @@ class AppRoutes extends React.Component {
               drawer
               dontShowHeader={true}
               currentMenu="forgot-password"
+            />
+
+<PrivateRoute
+              path={`${process.env.PUBLIC_URL}/glossary-upload`}
+              dontShowLoader
+              title={"Glossary Upload"}
+              userRoles={["ADMIN"]}
+              component={TmxUpload}
+              authenticate={this.authenticateUser}
+              currentMenu="user-details"
+              
             />
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/set-password/:uid/:rid`}

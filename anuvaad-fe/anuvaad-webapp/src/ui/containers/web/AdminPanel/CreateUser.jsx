@@ -22,6 +22,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import ADMINCONFIG from "../../../../configs/adminConfig";
@@ -42,6 +43,7 @@ class CreateUser extends React.Component {
       message: '',
       loading: false,
       showPassword: false,
+      orgName:''
     };
   }
 
@@ -209,20 +211,24 @@ class CreateUser extends React.Component {
             <Select
               labelId="demo-simple-select-outlined-label"
               id="roles"
-              onChange={this.processOnSelect}
-              value={this.state.roleCode}
+              onChange={this.handleOrg}
+              value={this.state.orgName}
               style={{
                 fullWidth: true,
               }}
             >
               {
-                orgID.map((id, i) => <MenuItem id={i} key={i} value={orgID}>{id}</MenuItem>)
+                orgID.map((id, i) => <MenuItem id={i} key={i} value={id}>{id}</MenuItem>)
               }
             </Select>
           </FormControl>
         </Grid>
       </Grid>
     )
+  }
+
+  handleOrg = (e) =>{
+    this.setState({orgName:e.target.value})
   }
 
 
@@ -251,8 +257,8 @@ class CreateUser extends React.Component {
       if (this.state.emailid.match(mailFormat)) {
         if (this.state.password.match(passwordFormat)) {
           const token = localStorage.getItem("token");
-          const { emailid, name, password, roleInfo } = this.state
-          const createUserObj = new CreateUsers(emailid, name, password, roleInfo, token);
+          const { emailid, name, password, roleInfo, orgName } = this.state
+          const createUserObj = new CreateUsers(emailid, name, password, roleInfo, token, orgName);
           try {
             this.setState({
               loading: true,
@@ -341,6 +347,7 @@ class CreateUser extends React.Component {
             {this.renderEmaiIdItems()}
             {this.renderPasswordItems()}
             {this.renderRoleItems()}
+            {this.renderOrgItems()}
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
             </Grid>
