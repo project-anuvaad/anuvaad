@@ -7,5 +7,5 @@ from resources import BatchNMTPerformanceResource
 PERFORMANCE_BLUEPRINT = Blueprint("performance", __name__)
 
 Api(PERFORMANCE_BLUEPRINT).add_resource(
-    BatchNMTPerformanceResource, config.MODULE_NAME + "/v0/performance"
+    BatchNMTPerformanceResource, config.MODULE_NAME + "/v1/performance"
 )
