@@ -57,13 +57,14 @@ def extract_images(app_context,base_dir):
                 file_images.append(image_paths)
             else:
                 if file_format in ['PNG', 'JPEG', 'BMP' ] :
+                    filename = file_properties.get_name()
                     image_paths = [os.path.join(base_dir, filename)]
                     file_images.append(image_paths)
                 else:
                     log_info("currently we do not support {} files .".format(file_format) ,app_context.application_context)
                     return None
     except Exception as e:
-        log_error('error extracting images of', app_context.application_context, e)
+        log_error('error extracting images of' + str(e), app_context.application_context, e)
         return None
 
     return file_images

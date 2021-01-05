@@ -9,6 +9,7 @@ from collections import namedtuple
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 import sys, random, torch, glob, torchvision
 import os
+from src.utilities.remove_water_mark import clean_image
 
 #device = torch.device("cpu")
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
@@ -23,7 +24,7 @@ torch.manual_seed(seed)
 # torch.backends.cudnn.benchmark = False
 
 model_primalaynet = lp.Detectron2LayoutModel('lp://PrimaLayout/mask_rcnn_R_50_FPN_3x/config',label_map = {1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"MathsRegion", 5:"SeparatorRegion", 6:"OtherRegion"}, \
-	extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST,"MODEL.ROI_HEADS.NMS_THRESH_TEST", 0.2])
+	extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])#,"MODEL.ROI_HEADS.NMS_THRESH_TEST", 0.2])
 # model_primalaynet = lp.Detectron2LayoutModel(
 #             config_path ='lp://PubLayNet/mask_rcnn_X_101_32x8d_FPN_3x/config', # In model catalog
 #             label_map   ={0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"}, # In model`label_map`
@@ -62,6 +63,7 @@ class PRIMA(object):
 		if index<len(layout):
 			coord_update = coord; skip=[-1]
 			tag_update = tag
+			flag = False
 			for idx,ele in enumerate(layout):
 				coord2 =ele;  coord1= coord_update
 				l1=[coord1[0],coord1[1]]; r1=[coord1[2],coord1[3]]
@@ -75,6 +77,7 @@ class PRIMA(object):
 					coord_update[1]=min(coord1[1],coord2[1])
 					coord_update[2]=max(coord1[2],coord2[2])
 					coord_update[3]=max(coord1[3],coord2[3])
+					flag=True
 					skip.append(idx)
 					tag_update="ImageRegion"
 				elif ar!=None and ar>0.01 and tag[idx]=="TextRegion" and tag[index]=="TextRegion":
@@ -82,6 +85,7 @@ class PRIMA(object):
 					coord_update[1]=min(coord1[1],coord2[1])
 					coord_update[2]=max(coord1[2],coord2[2])
 					coord_update[3]=max(coord1[3],coord2[3])
+					flag =True
 					skip.append(idx)
 					tag_update="TextRegion"
 				elif ar!=None and ((abs(coord1[0]-coord2[0])<300 and abs(coord1[2]-coord2[2])<300) and check==True) and idx!=index and (tag[idx]!="ImageRegion" and tag[index]!="ImageRegion"):# and (thresh>0.90)) or ((tag[idx]!="ImageRegion" and tag[index]=="ImageRegion") and (thresh>0.90))):
@@ -90,7 +94,11 @@ class PRIMA(object):
 					coord_update[2]=max(coord1[2],coord2[2])
 					coord_update[3]=max(coord1[3],coord2[3])
 					skip.append(idx)
+					flag =True
 					tag_update=tag[idx]
+			if not flag :
+				tag_update = tag[index]
+
 			return coord_update, skip,tag_update
 			
 	def prima_region(self, layout, craft_coords):
@@ -98,6 +106,7 @@ class PRIMA(object):
 		for idx, ele in enumerate(layout):
 			bbox.append(list(ele.coordinates))
 			tag.append(ele.type)
+
 			
 		final_box = []
 		final_tag = []
@@ -107,8 +116,7 @@ class PRIMA(object):
 			ele,skip ,tag_update= self.filter_overlapping(ele,bbox,idx,tag)
 			final_box.append(ele)
 			final_tag.append(tag_update)
-				
-		boxes, coords, layout_class = self.prima_refinement(final_box, final_tag, craft_coords)  
+		boxes, coords, layout_class = self.prima_refinement(final_box, final_tag, craft_coords)
 
 		return boxes, coords, layout_class
 
@@ -219,9 +227,9 @@ class PRIMA(object):
 				org_coord2[index][0] = int(min(coord1[0],org_coord2[index][0])); org_coord2[index][1] = int(min(coord1[1],org_coord2[index][1]))
 				org_coord2[index][2] = int(max(coord1[2],org_coord2[index][2])); org_coord2[index][3] = int(max(coord1[3],org_coord2[index][3]))
 				
-			if count == len(org_coord):
-				boxes_final.append(coord1)
-				#tags_final.append("text")
+			# if count == len(org_coord):
+			# 	boxes_final.append(coord1)
+			# 	tag_final.append("text")
 
 		coords, layout_class  = self.remove_overlap(org_coord2, tag_final)
 		coords, layout_class  = self.craft_refinement(boxes_final, coords, layout_class)
@@ -269,31 +277,41 @@ class PRIMA(object):
 			class_name = "LINE"
 		if class_name == "OtherRegion":
 			class_name = "TEXT"
-		else:
-			class_name = "TEXT"
+		
 		return class_name
 
 	def predict_primanet(self,image,craft_coords):
 		try:
 			image   = cv2.imread(image)#("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/"+image)
+			image   = clean_image(image)
 
 			image   = image[..., ::-1]
 			layout  = model_primalaynet.detect(image)
 			boxes,coords,layout_class = self.prima_region(layout,craft_coords)
 			final_coord = []
 			for idx,coord in enumerate(coords):
-				temp_dict = {}; vert=[]
-				temp_dict['identifier'] = str(uuid.uuid4())
-				vert.append({'x':coord[0],'y':coord[1]})
-				vert.append({'x':coord[2],'y':coord[1]})
-				vert.append({'x':coord[2],'y':coord[3]})
-				vert.append({'x':coord[0],'y':coord[3]})
-				temp_dict['boundingBox']={}
-				temp_dict['boundingBox']["vertices"] = vert
-				temp_dict['class']      = self.class_mapping(layout_class[idx])
-				#temp_dict['text_left']  = coord[0]; temp_dict['text_top'] = coord[1]
-				#temp_dict['text_width'] = abs((coord[2]-coord[0])); temp_dict['text_height'] = abs((coord[3]-coord[1]))
-				final_coord.append(temp_dict)
+				if layout_class[idx] == 'TableRegion':
+					print('')
+				else :
+					temp_dict = {}; vert=[]
+					temp_dict['identifier'] = str(uuid.uuid4())
+					vert.append({'x':coord[0],'y':coord[1]})
+					vert.append({'x':coord[2],'y':coord[1]})
+					vert.append({'x':coord[2],'y':coord[3]})
+					vert.append({'x':coord[0],'y':coord[3]})
+					temp_dict['boundingBox']={}
+					temp_dict['boundingBox']["vertices"] = vert
+
+					temp_dict['class']      = self.class_mapping(layout_class[idx])
+					print((layout_class[idx]))
+					print(temp_dict, 'tempppppppppppppppp dict')
+
+
+
+					#print("kkkkkk",layout_class[idx])
+					#temp_dict['text_left']  = coord[0]; temp_dict['text_top'] = coord[1]
+					#temp_dict['text_width'] = abs((coord[2]-coord[0])); temp_dict['text_height'] = abs((coord[3]-coord[1]))
+					final_coord.append(temp_dict)
 			return final_coord
 		except Exception as e:
 			log_exception("Error occured during prima layout detection ",  app_context.application_context, e)
