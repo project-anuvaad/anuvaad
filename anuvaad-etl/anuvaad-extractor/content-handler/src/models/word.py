@@ -9,7 +9,7 @@ class WordModel(object):
     def __init__(self):
         collections = get_db()[DB_SCHEMA_NAME]
         try:
-            collections.create_index("name")
+            collections.create_index('name', unique = True)
         except pymongo.errors.DuplicateKeyError as e:
             log_info("duplicate key, ignoring", AppContext.getContext())
         except Exception as e:
