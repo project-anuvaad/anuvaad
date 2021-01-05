@@ -33,12 +33,12 @@ class TableRepositories:
 
     def load_image(self):
 
-        IMAGE_BUFFER = 10
+
         if type (self.image_path) == str:
             image = cv2.imread (self.image_path, 0)
         else:
             image = self.image_path
-        self.input_image = image  # [self.rect['y']-IMAGE_BUFFER:self.rect['y']+self.rect['h']+IMAGE_BUFFER,self.rect['x']-IMAGE_BUFFER:self.rect['x']+self.rect['w']+IMAGE_BUFFER]
+        self.input_image = image
         self.slate = np.zeros (self.input_image.shape)
 
     def get_table_mask(self):
@@ -128,7 +128,7 @@ class TableRepositories:
             #print(area_ratio, i)
 
             # filtering out lines and noise
-            if (area_ratio < 0.8) & (h1 > 5 ):
+            if (area_ratio < 0.8) & (h1 > 10 ):
                 midpoint = [int (x1 + w1 / 2), int (y1 + h1 / 2)]  # np.mean(contours[i],axis=0)
                 midpoints.append (midpoint)
                 if len (midpoints) > 1:

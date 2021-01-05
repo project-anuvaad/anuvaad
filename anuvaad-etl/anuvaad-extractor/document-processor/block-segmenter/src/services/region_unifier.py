@@ -2,7 +2,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 from collections import namedtuple
-from src.utilities.region_operations import collate_regions, get_polygon,sort_regions
+from src.utilities.region_operations import collate_regions, get_polygon,sort_regions, remvoe_regions
 from src.services.segment import horzontal_merging
 import src.utilities.app_context as app_context
 import copy
@@ -129,15 +129,24 @@ class Region_Unifier:
         else:
             return False
 
-    def get_text_region(self,regions):
+    def get_text_tabel_region(self,regions):
         text_region = []
-        n_text_regions = []
+        tabel_region = []
+        image_region  = []
+        n_text_table_regions = []
         for region in regions:
             if region['class']=='TEXT':
                 text_region.append(region)
-            else :
-                n_text_regions.append(region)
-        return text_region,n_text_regions
+            else:
+                if region['class']=='TABLE':
+                    tabel_region.append(region)
+                else:
+                    if region['class']=='IMAGE':
+                        image_region.append(region)
+                    else :
+                        n_text_table_regions.append(region)
+        return text_region,n_text_table_regions,tabel_region,image_region
+    
 
 
         
@@ -327,13 +336,28 @@ class Region_Unifier:
 
     def region_unifier(self,page_words, page_lines,page_regions):
         try:
-            line_list    = collate_regions(page_lines,page_words)
-            v_list       = collate_regions(page_regions,line_list,grand_children=True)
-            page_config                         = Page_Config()
-            text_regions, n_text_regions = self.get_text_region(v_list)
-            avg_height, avg_ver_dist, avg_width = page_config.avg_line_info(text_regions)
+            
+            text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(page_regions)
 
-            #self.avg_ver_ratio =   avg_ver_dist /avg_height
+
+            tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
+            text_region     = remvoe_regions(copy.deepcopy(tabel_region) ,copy.deepcopy(text_region))
+
+
+            filtered_words     = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
+            filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
+
+            line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words))
+            v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),grand_children=True )
+            t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
+
+            # line_list    = collate_regions(page_lines,page_words)
+            # v_list       = collate_regions(page_regions,line_list,grand_children=True)
+            page_config                         = Page_Config()
+            # text_regions, n_text_regions = self.get_text_region(v_list)
+            avg_height, avg_ver_dist, avg_width = page_config.avg_line_info(v_list)
+
+            self.avg_ver_ratio =   avg_ver_dist /avg_height
 
 
 
@@ -351,9 +375,21 @@ class Region_Unifier:
                     v_list[idx] =v_block
 
 
+
+            for idx,t_block in enumerate(t_list):
+                if   t_block['children'] != None and  len(t_block['children']) > 1 :
+                    #print(idx, 'region index')
+                    #print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
+                    avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([t_block])
+                    avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
+                    t_block['children'] = horzontal_merging(t_block['children'],avrage_region_ver_ratio)
+                    t_list[idx] =t_block
+
+
+
             ################### page configs for region unifier
-            avg_hor_dist                        = page_config.avg_region_info(text_regions)
-            avg_word_sepc                        = page_config.avg_word_sep(line_list)
+            #avg_hor_dist      = page_config.avg_region_info(text_regions)
+            avg_word_sepc     = page_config.avg_word_sep(line_list)
 
 
             # print("av height : ",avg_height)
@@ -363,11 +399,13 @@ class Region_Unifier:
             # print('avg word spacing', avg_word_sepc)
             # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
             ########################
+            n_text_table_regions.extend(t_list)
+            n_text_table_regions.extend(image_region)
             flag =True
             while flag==True:
-                text_regions, flag = self.merge_remove_overlap(text_regions,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
+                v_list, flag = self.merge_remove_overlap(v_list,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
         except Exception as e:
             log_exception("Error occured during block unifier",  app_context.application_context, e)
             return None  ,None
 
-        return text_regions, n_text_regions
+        return v_list, n_text_table_regions

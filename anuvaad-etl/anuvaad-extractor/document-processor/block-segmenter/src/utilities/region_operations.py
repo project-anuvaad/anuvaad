@@ -96,7 +96,7 @@ def sort_regions(region_lines, sorted_lines=[]):
         sort_regions(next_line, sorted_lines)
     return sorted_lines
 
-def collate_regions(regions, lines,grand_children=False):
+def collate_regions(regions, lines,grand_children=False,region_flag = True):
     idx = index.Index()
     lines_intersected = []
     if regions !=None and len(regions) > 0:
@@ -110,6 +110,10 @@ def collate_regions(regions, lines,grand_children=False):
             if len(children_lines) > 0:
                 region_lines = []
                 for intr_index in children_lines:
+                    if grand_children :
+                        if 'children' not in lines[intr_index].keys():
+                            lines[intr_index]['children'] = [copy.deepcopy(lines[intr_index])]
+
                     region_lines.append(lines[intr_index])
                     lines_intersected.append(intr_index)
                 region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
@@ -122,12 +126,44 @@ def collate_regions(regions, lines,grand_children=False):
                     regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
                 regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
     #orphan_lines = []
-    for line_index, line in enumerate(lines):
-        if line_index not in lines_intersected:
-            line['children'] = [ copy.deepcopy(line)]
-            regions.append(line)
+    if region_flag:
+        for line_index, line in enumerate(lines):
+            if line_index not in lines_intersected:
+                line['children'] = [ copy.deepcopy(line)]
+                regions.append(line)
 
     return regions
+
+
+
+
+def remvoe_regions(regions, lines):
+    idx = index.Index()
+    lines_intersected = []
+    not_intersecting  = []
+    if regions !=None and len(regions) > 0:
+        lines_intersected =[]
+        for line_idx, line in enumerate(lines):
+            poly = get_polygon(line['boundingBox'])
+            idx.insert(line_idx, poly.bounds)
+        for region_index, region in enumerate(regions):
+            region_poly = get_polygon(region['boundingBox'])
+            children_lines = list(idx.intersection(region_poly.bounds))
+            if len(children_lines) > 0:
+                region_lines = []
+                for intr_index in children_lines:
+                    region_lines.append(lines[intr_index])
+                    lines_intersected.append(intr_index)
+
+    for line_index, line in enumerate(lines):
+        if line_index not in lines_intersected:
+            not_intersecting.append(line)
+
+    return not_intersecting
+
+
+
+
 
 def get_ngram(indices, window_size = 2):
     ngrams = []

@@ -82,21 +82,21 @@ def frequent_height(page_info):
         return occurence_count.most_common(1)[0][0]
     else :
         return  0
-def text_extraction(lang, page_path, regions,width, height,mode_height):
+def text_extraction(lang, page_path, regions,region_org,width, height,mode_height):
 
     #freq_height = frequent_height(regions)
     for idx, level in enumerate(regions):
         coord = get_coord(level)
         if len(coord)!=0 and abs(coord[3] - coord[1]) > config.REJECT_FILTER :
             text, tess_coord = get_text(page_path, coord, lang, width, height,mode_height)
-            regions[idx]['text'] = text
-            regions[idx]['tess_word_coords'] = tess_coord
+            region_org[idx]['text'] = text
+            region_org[idx]['tess_word_coords'] = tess_coord
 
         else:
-            regions[idx]['text'] = None
-            regions[idx]['tess_word_coords'] = None
+            region_org[idx]['text'] = None
+            region_org[idx]['tess_word_coords'] = None
 
-    return regions
+    return region_org
 
 
 

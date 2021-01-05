@@ -63,7 +63,7 @@ CROP_CONFIG = {
     'mr':{'top':15, 'bottom':10,'right':5,'left':5}
 }
 
-IS_DYNAMIC = False
+IS_DYNAMIC = True
 DYNAMIC_LEVEL = "lines"
 
 REJECT_FILTER = 2
