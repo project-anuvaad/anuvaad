@@ -62,12 +62,16 @@ class TMXService:
         log_info("Pushing to TMX......", None)
         try:
             for sentence in tmx_input["sentences"]:
-                tmx_record_pair = {"src": sentence["src"], "locale": sentence["locale"], "nmt_tgt": [],
-                                   "user_tgt": sentence["tgt"], "context": tmx_input["context"]}
-                if 'userID' in tmx_input.keys():
-                    tmx_record_pair["userID"] = tmx_input["userID"]
-                if 'orgID' in tmx_input.keys():
-                    tmx_record_pair["orgID"] = tmx_input["orgID"]
+                tmx_records = []
+                sentence_types = self.fetch_diff_flavors_of_sentence(sentence["src"])
+                for sent in sentence_types:
+                    tmx_record_pair = {"src": sent, "locale": sentence["locale"], "nmt_tgt": [],
+                                       "user_tgt": sentence["tgt"], "context": tmx_input["context"]}
+                    if 'userID' in tmx_input.keys():
+                        tmx_record_pair["userID"] = tmx_input["userID"]
+                    if 'orgID' in tmx_input.keys():
+                        tmx_record_pair["orgID"] = tmx_input["orgID"]
+                    tmx_records.append(tmx_record_pair)
                 reverse_locale_array = str(sentence["locale"]).split("|")
                 reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
                 tmx_record_reverse_pair = {"src": sentence["tgt"], "locale": reverse_locale, "nmt_tgt": [],
@@ -76,7 +80,7 @@ class TMXService:
                     tmx_record_reverse_pair["userID"] = tmx_input["userID"]
                 if 'orgID' in tmx_input.keys():
                     tmx_record_reverse_pair["orgID"] = tmx_input["orgID"]
-                tmx_records = [tmx_record_pair, tmx_record_reverse_pair]
+                tmx_records.append(tmx_record_reverse_pair)
                 for tmx_record in tmx_records:
                     hash_dict = self.get_hash_key(tmx_record)
                     for hash_key in hash_dict.keys():
@@ -100,6 +104,14 @@ class TMXService:
         except Exception as e:
             log_exception("Exception while searching tmx from redis: " + str(e), ctx, e)
             return []
+
+    # Generates a 3 flavors for a sentence - title case, lowercase and uppercase.
+    def fetch_diff_flavors_of_sentence(self, sentence):
+        sentence = str(sentence)
+        title = sentence.title()
+        small = sentence.lower()
+        caps = sentence.upper()
+        return sentence, title, small, caps
 
     # Searches for all tmx phrases within a given sentence
     # Uses a custom implementation of the sliding window search algorithm.

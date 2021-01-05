@@ -100,6 +100,8 @@ def mark_inactive():
         req_criteria["userIDs"] = [request.headers["x-user-id"]]
         response = service.mark_inactive(req_criteria)
         if response:
+            if response["status"] == "FAILED":
+                return jsonify(response), 400
             return jsonify(response), 200
         else:
             return jsonify({"status": "FAILED", "message": "Something went wrong"}), 400
