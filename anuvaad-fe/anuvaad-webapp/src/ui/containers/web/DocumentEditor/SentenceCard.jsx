@@ -344,31 +344,39 @@ class SentenceCard extends React.Component {
     */
     async makeAPICallInteractiveTranslation(caret) {
         let val = this.state.value.slice(0, caret)
+        if (val) {
 
-        this.setState({ isCardBusy: true })
-        let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.model.model_id, true, '', this.props.sentence.s_id);
-        const apiReq = fetch(apiObj.apiEndPoint(), {
-            method: 'post',
-            body: JSON.stringify(apiObj.getBody()),
-            headers: apiObj.getHeaders().headers
-        }).then(async response => {
-            const rsp_data = await response.json();
-            if (!response.ok) {
-                this.setState({ isCardBusy: false })
-                return Promise.reject('');
-            } else {
+            this.setState({ isCardBusy: true })
+            let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.model.model_id, true, '', this.props.sentence.s_id);
+            const apiReq = fetch(apiObj.apiEndPoint(), {
+                method: 'post',
+                body: JSON.stringify(apiObj.getBody()),
+                headers: apiObj.getHeaders().headers
+            }).then(async response => {
+                const rsp_data = await response.json();
+                if (!response.ok) {
+                    this.setState({ isCardBusy: false })
+                    return Promise.reject('');
+                } else {
+                    this.setState({
+                        // suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
+                        suggestions: [{ name: rsp_data.output.predictions[0].tgt[0] }],
+                        isCardBusy: false
+                    })
+                }
+            }).catch((error) => {
                 this.setState({
-                    // suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
-                    suggestions: [{ name: rsp_data.output.predictions[0].tgt[0] }],
+                    suggestions: [],
                     isCardBusy: false
                 })
-            }
-        }).catch((error) => {
+            });
+        } else {
             this.setState({
-                suggestions: [],
+                // suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
+                suggestions: [{ name: this.props.sentence.s0_tgt }],
                 isCardBusy: false
             })
-        });
+        }
     }
 
     handleKeyDown = (event) => {
@@ -430,19 +438,19 @@ class SentenceCard extends React.Component {
                     if (lenSuggestion !== lenTextField) {
                         if (remainingTextFieldArray.length === 0 && nextSuggestion !== undefined) {
                             if (remainingSuggestion.length >= 1) {
-                                this.setState({ highlight: true, value: this.state.value + nextSuggestion + " " }, () => {
+                                this.setState({ highlight: true, value: this.state.value + nextSuggestion + " ", userEnteredText: true }, () => {
                                     elem.focus()
                                     elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
                                 })
                             } else {
-                                this.setState({ value: this.state.value + nextSuggestion }, () => {
+                                this.setState({ value: this.state.value + nextSuggestion, userEnteredText: true }, () => {
                                     elem.focus()
                                     elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
                                 })
                             }
                         } else if (nextSuggestion !== nextTextField) {
                             if (nextSuggestion !== "") {
-                                this.setState({ highlight: true, showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd).trim() + " " + nextSuggestion + " " + this.state.value.substr(elem.selectionEnd) }, () => {
+                                this.setState({ highlight: true, showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd).trim() + " " + nextSuggestion + " " + this.state.value.substr(elem.selectionEnd), userEnteredText: true }, () => {
                                     elem.focus()
                                     elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
                                 })
@@ -450,12 +458,12 @@ class SentenceCard extends React.Component {
                         }
                         else {
                             if (nextSuggestion.length !== 0) {
-                                this.setState({ highlight: true, showSuggestions: true }, () => {
+                                this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
                                     elem.focus()
                                     elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
                                 })
                             } else {
-                                this.setState({ showSuggestions: true }, () => {
+                                this.setState({ showSuggestions: true, userEnteredText: true }, () => {
                                     elem.focus()
                                     elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
                                 })
@@ -466,12 +474,13 @@ class SentenceCard extends React.Component {
                         if (nextSuggestion !== nextTextField && remainingSuggestion.length === 0) {
                             this.setState({
                                 showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd).trim() + " " + nextSuggestion + this.state.value.substr(elem.selectionEnd).trim()
+                                , userEnteredText: true
                             }, () => {
                                 elem.focus()
                                 elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length, [...textFieldArray.join(' ')].length + [...nextSuggestion].length)
                             })
                         } else {
-                            this.setState({ highlight: true, showSuggestions: true }, () => {
+                            this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
                                 elem.focus()
                                 elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
                             })
