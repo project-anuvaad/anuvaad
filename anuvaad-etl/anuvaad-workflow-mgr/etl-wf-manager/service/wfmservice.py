@@ -73,14 +73,12 @@ class WFMService:
 
     # Method to mark the jobs as inactive
     def mark_inactive(self, req_criteria):
-        succeeded, failed, message = [], [], None
+        succeeded, failed, job_ids, message = [], [], [], None
         if 'jobIDs' in req_criteria:
             job_ids = req_criteria["jobIDs"]
         else:
             return {"status": "FAILED", "message": "No job ids found", "succeeded": [], "failed": []}
-        if not job_ids:
-            return {"status": "FAILED", "message": "Empty job IDs List", "succeeded": [], "failed": []}
-        else:
+        if job_ids:
             try:
                 log_info("Marking jobs inactive......", None)
                 job_details = self.get_job_details_bulk(req_criteria, True)
@@ -105,6 +103,8 @@ class WFMService:
             except Exception as e:
                 log_exception("Exception while marking jobs as inactive: " + str(e), None, None)
                 return {"status": "FAILED", "message": "Exception while marking inactive", "succeeded": [], "failed": job_ids}
+        else:
+            return {"status": "FAILED", "message": "Empty job IDs List", "succeeded": [], "failed": []}
 
     # Method to initiate and process the SYNC workflow.
     def process_sync(self, wf_input):
