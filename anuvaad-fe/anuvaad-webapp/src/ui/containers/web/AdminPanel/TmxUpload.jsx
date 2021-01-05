@@ -263,7 +263,13 @@ class TmxUpload extends Component {
         return Promise.reject('');
       } else {
         this.setState({orgName:'',files: [], key:this.state.key+1 })
-        this.informUserStatus("Glossary uploaded.", true)
+        if(rsp_data.status== "SUCCESS"){
+            this.informUserStatus("Glossary uploaded.", true)
+        }
+        else{
+            this.informUserStatus(rsp_data.message ? rsp_data.message : "Glossary upload failed.", false)
+        }
+        
         
 
       }
@@ -294,12 +300,12 @@ class TmxUpload extends Component {
                     showPreviewsInDropzone
                     key= {this.state.key}
                     dropZoneClass={classes.dropZoneArea}
-                    acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
+                    acceptedFiles={[".xls", "xlsx"]}
                     onChange={this.handleChange.bind(this)}
                     filesLimit={1}
                     clearOnUnmount = {this.state.cleared}
                     maxFileSize={200000000}
-                    dropzoneText={translate("common.page.label.addDropDocument")}
+                    dropzoneText={"Please Add / Drop xls / xlsx document here"}
                     onDelete={this.handleDelete.bind(this)}
                   />
                 </MuiThemeProvider>
