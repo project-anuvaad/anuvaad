@@ -109,7 +109,6 @@ class SentenceModel(object):
             collections = get_db()[DB_SCHEMA_NAME]
             docs        = collections.aggregate([
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
-                                { '$unwind': "$data" },
                                 { '$unwind': "$data.tokenized_sentences" },
                                 { "$addFields": { 
                                  "data.tokenized_sentences.words": { "$split": [ "$data.tokenized_sentences.src", " " ] }}},
