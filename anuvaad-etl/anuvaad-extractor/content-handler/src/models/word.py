@@ -9,7 +9,7 @@ class WordModel(object):
     def __init__(self):
         collections = get_db()[DB_SCHEMA_NAME]
         try:
-            collections.create_index("name")
+            collections.create_index('name', unique = True)
         except pymongo.errors.DuplicateKeyError as e:
             log_info("duplicate key, ignoring", AppContext.getContext())
         except Exception as e:
@@ -18,21 +18,13 @@ class WordModel(object):
     def save(self, words):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
-            #removng duplicate words which are already present on the dictioanry
-            removed_duplicates=[]
-            for word in words:
-                result = self.search_source_word(word["name"])
-                if result == None:
-                    removed_duplicates.append(word)
-            if len(removed_duplicates) != len(words):
-                    log_info("some of the record has duplicates ",  AppContext.getContext())
-            if removed_duplicates:
-                results     = collections.insert_many(removed_duplicates, ordered=False)
-                if len(removed_duplicates) == len(results.inserted_ids):
-                    log_info("stored {} words".format(str(len(removed_duplicates))),  AppContext.getContext())
-                    return True
-                
-            log_info("Records were duplicates ",  AppContext.getContext())
+            words_lower=[{ key: str(value).lower() for key, value in e.items() } for e in words ]
+            
+            results     = collections.insert_many(words_lower, ordered=False)
+            if len(words_lower) == len(results.inserted_ids):
+                log_info("stored {} words".format(str(len(results.inserted_ids))),  AppContext.getContext())
+                return True
+            
         except pymongo.errors.BulkWriteError as e:
             log_info("some of the record has duplicates ",  AppContext.getContext())
             return True
