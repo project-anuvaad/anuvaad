@@ -22,6 +22,9 @@ class TMXService:
         try:
             if 'context' not in api_input.keys() or 'filePath' not in api_input.keys():
                 return {"message": "context and filePath are mandatory", "status": "FAILED"}
+            extension = str(api_input["filePath"]).split(".")[1]
+            if extension not in ["xls", "xlsx"]:
+                return {"message": "Invalid file, TMX only supports - xls & xlsx", "status": "FAILED"}
             file_path = download_folder + api_input["filePath"]
             wb = xlrd.open_workbook(file_path)
             sheet = wb.sheet_by_index(0)
