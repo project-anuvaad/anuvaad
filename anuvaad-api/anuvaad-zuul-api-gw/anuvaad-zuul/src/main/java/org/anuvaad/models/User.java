@@ -22,6 +22,9 @@ public class User {
     @JsonProperty("phoneNo")
     public String phoneNo;
 
+    @JsonProperty("orgID")
+    public String orgID;
+
     @JsonProperty("roles")
     public List<UserRole> roles;
 
@@ -53,6 +56,14 @@ public class User {
         return email;
     }
 
+    public void setOrgID(String orgID) {
+        this.orgID = orgID;
+    }
+
+    public String getOrgID() {
+        return orgID;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -64,6 +75,9 @@ public class User {
     public void setPhoneNo(String phoneNo) {
         this.phoneNo = phoneNo;
     }
+
+
+
 
     public List<UserRole> getRoles() {
         return roles;

@@ -97,6 +97,7 @@ public class AuthFilter extends ZuulFilter {
                 logger.info(PROCEED_ROUTING_MESSAGE, uri);
                 ctx.addZuulRequestHeader(ZUUL_AUTH_TOKEN_HEADER_KEY, authToken);
                 ctx.addZuulRequestHeader(ZUUL_USER_ID_HEADER_KEY, user.getUserID());
+                ctx.addZuulRequestHeader(ZUUL_ORG_ID_HEADER_KEY, user.getOrgID());
                 ctx.addZuulRequestHeader(ZUUL_SESSION_ID_HEADER_KEY, authToken); // A session is User activity per token.
                 setShouldDoAuth(true);
             }
