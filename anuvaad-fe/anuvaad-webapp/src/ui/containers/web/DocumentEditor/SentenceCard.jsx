@@ -30,7 +30,7 @@ import DictionaryAPI from '../../../../flux/actions/apis/document_translate/word
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
-
+var time = 0;
 const styles = {
     card_active: {
         background: 'rgb(211,211,211)',
@@ -188,6 +188,7 @@ class SentenceCard extends React.Component {
                 value: this.props.sentence.s0_tgt
             })
             if (this.props.onAction) {
+                console.log(new Date() - time)
                 let sentence = { ...this.props.sentence };
                 sentence.save = true;
                 sentence.tgt = this.props.sentence.s0_tgt;
@@ -820,13 +821,19 @@ class SentenceCard extends React.Component {
         )
     }
 
+    timeCalc =(value)=>{
+        time = value
+    }
+
     handleCardExpandClick = () => {
         if (this.cardCompare()) {
             this.setState({ cardInFocus: false })
             this.props.clearHighlighBlock()
+            this.timeCalc(0)
             TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         } else {
             if (this.props.block_highlight && this.props.block_highlight.current_sid) {
+                this.timeCalc(0)
                 TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.block_highlight.current_sid)
             }
             this.setState({ cardInFocus: true })
@@ -835,6 +842,7 @@ class SentenceCard extends React.Component {
              * For highlighting textarea on card expand
              */
             this.textInput && this.textInput.current && this.textInput.current.focus();
+            this.timeCalc(new Date())
             TELEMETRY.startSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         }
 
