@@ -477,7 +477,7 @@ class SentenceCard extends React.Component {
                                 , userEnteredText: true
                             }, () => {
                                 elem.focus()
-                                elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length, [...textFieldArray.join(' ')].length + [...nextSuggestion].length)
+                                elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
                             })
                         } else {
                             this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
