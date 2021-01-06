@@ -23,12 +23,12 @@ def preprocess_file(file_properties,lang,ocr_level):
             for idx, region in enumerate(page_regions):
                 region_lines = file_properties.get_region_lines(page_index,idx)
                 for line_index, line in enumerate(region_lines):
-                    region_words_org = file_properties.get_region_words(page_index,idx,line_index)
+                    region_words = file_properties.get_region_words(page_index,idx,line_index)
                     if config.IS_DYNAMIC:
-                        region_words = coord_adjustment(page_path, region_words_org)
-                        region_ocr = text_extraction(lang, page_path, region_words,region_words_org, width, height,mode_height)
+                        region_words_org = coord_adjustment(page_path, region_words)
+                        region_ocr = text_extraction(lang, page_path, region_words_org,region_words, width, height,mode_height)
                     else:
-                        region_ocr = text_extraction(lang, page_path, region_words_org,region_words_org, width, height,mode_height)
+                        region_ocr = text_extraction(lang, page_path, region_words,region_words, width, height,mode_height)
 
                     file['pages'][page_index]['regions'][idx]['children'][line_index]['children'] = region_ocr
                 file['pages'][page_index]['regions'][idx]['children'] = merge_text(file['pages'][page_index]['regions'][idx]['children'],merge_tess_confidence=True)
@@ -37,12 +37,12 @@ def preprocess_file(file_properties,lang,ocr_level):
 
         if config.OCR_LEVEL[ocr_level] == 'lines':
                 for idx, region in enumerate(page_regions):
-                    region_lines_org = file_properties.get_region_lines(page_index,idx)
+                    region_lines = file_properties.get_region_lines(page_index,idx)
                     if config.IS_DYNAMIC:
-                        region_lines_org = coord_adjustment(page_path, region_lines_org)
-                        region_ocr = text_extraction(lang, page_path, region_lines_org,region_lines_org, width, height,mode_height)
+                        region_lines_org = coord_adjustment(page_path, region_lines)
+                        region_ocr = text_extraction(lang, page_path, region_lines_org,region_lines, width, height,mode_height)
                     else:
-                        region_ocr = text_extraction(lang, page_path, region_lines_org,region_lines_org, width, height,mode_height)
+                        region_ocr = text_extraction(lang, page_path, region_lines,region_lines, width, height,mode_height)
 
                     file['pages'][page_index]['regions'][idx]['children'] = region_ocr
                 file['pages'][page_index]['regions']  = merge_text(file['pages'][page_index]['regions'])
