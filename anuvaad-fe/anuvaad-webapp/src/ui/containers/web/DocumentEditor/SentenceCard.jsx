@@ -422,68 +422,81 @@ class SentenceCard extends React.Component {
         var TABKEY = 9;
         if (event.keyCode === TABKEY) {
             var elem = document.getElementById(this.props.sentence.s_id)
-            if (!this.state.showSuggestions) {
-                this.setState({ showSuggestions: true })
-                this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
+            if (!this.props.sentence.s0_tgt) {
+                alert("Sorry, Machine translated text is not available...")
             } else {
-                if (this.state.suggestions[0]) {
-                    let suggestionArray = this.state.suggestions[0].name.split(' ')
-                    let textFieldArray = this.state.value.replace(/\s{2,}/, ' ').trim().slice(0, elem.selectionEnd).split(' ')
-                    let remainingTextFieldArray = this.state.value.replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
-                    let remainingSuggestion = this.state.suggestions[0].name.replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
-                    let lenTextField = [...textFieldArray].length
-                    let lenSuggestion = [...suggestionArray].length
-                    let nextSuggestion = remainingSuggestion.shift()
-                    let nextTextField = remainingTextFieldArray.shift()
-                    if (lenSuggestion !== lenTextField) {
-                        if (remainingTextFieldArray.length === 0 && nextSuggestion !== undefined) {
-                            if (remainingSuggestion.length >= 1) {
-                                this.setState({ highlight: true, value: this.state.value + nextSuggestion + " ", userEnteredText: true }, () => {
-                                    elem.focus()
-                                    elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
-                                })
-                            } else {
-                                this.setState({ value: this.state.value + nextSuggestion, userEnteredText: true }, () => {
-                                    elem.focus()
-                                    elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
-                                })
+                if (!this.state.showSuggestions) {
+                    this.setState({ showSuggestions: true, highlight: false })
+                    this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
+                } else {
+                    if (this.state.suggestions[0]) {
+                        let suggestionArray = this.state.suggestions[0].name.split(' ')
+                        let textFieldArray = this.state.value.replace(/\s{2,}/, ' ').trim().slice(0, elem.selectionEnd).split(' ')
+                        let remainingTextFieldArray = this.state.value.replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
+                        let remainingSuggestion = this.state.suggestions[0].name.replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
+                        let lenTextField = [...textFieldArray].length
+                        let lenSuggestion = [...suggestionArray].length
+                        let nextSuggestion = remainingSuggestion.shift()
+                        let nextTextField = remainingTextFieldArray.shift()
+                        if (lenSuggestion !== lenTextField) {
+                            if (remainingTextFieldArray.length === 0 && nextSuggestion !== undefined) {
+                                if (remainingSuggestion.length >= 1) {
+                                    if (nextSuggestion !== nextTextField) {
+                                        this.setState({ highlight: true, value: this.state.value + nextSuggestion + " ", userEnteredText: true }, () => {
+                                            elem.focus()
+                                            elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
+                                        })
+                                    } else {
+                                        this.setState({ highlight: true, value: this.state.value + nextSuggestion + " ", userEnteredText: true }, () => {
+                                            elem.focus()
+                                            elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
+                                        })
+                                    }
+                                }
+                                else {
+                                    this.setState({ highlight: true, value: this.state.value + nextSuggestion, userEnteredText: true }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange([...this.state.value].length + 1, [...this.state.value].length + 1)
+                                    })
+                                }
+                            } else if (nextSuggestion !== nextTextField) {
+                                if (nextSuggestion !== "") {
+                                    this.setState({ highlight: true, showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd).trim() + " " + nextSuggestion + " " + this.state.value.substr(elem.selectionEnd), userEnteredText: true }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
+                                    })
+                                }
                             }
-                        } else if (nextSuggestion !== nextTextField) {
-                            if (nextSuggestion !== "") {
-                                this.setState({ highlight: true, showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd).trim() + " " + nextSuggestion + " " + this.state.value.substr(elem.selectionEnd), userEnteredText: true }, () => {
-                                    elem.focus()
-                                    elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
-                                })
+                            else {
+                                if (nextSuggestion.length !== 0) {
+                                    this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
+                                    })
+                                } else {
+                                    this.setState({ showSuggestions: true, userEnteredText: true }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
+                                    })
+                                }
                             }
                         }
                         else {
-                            if (nextSuggestion.length !== 0) {
+                            if (nextSuggestion !== nextTextField && remainingSuggestion.length === 0) {
+                                this.setState({
+                                    showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd) + nextSuggestion + this.state.value.substr(elem.selectionEnd).trim()
+                                    , userEnteredText: true,
+                                    highlight: true
+                                }, () => {
+                                    elem.focus()
+                                    elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
+                                })
+                            } else {
                                 this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
                                     elem.focus()
                                     elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
                                 })
-                            } else {
-                                this.setState({ showSuggestions: true, userEnteredText: true }, () => {
-                                    elem.focus()
-                                    elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
-                                })
                             }
-                        }
-                    }
-                    else {
-                        if (nextSuggestion !== nextTextField && remainingSuggestion.length === 0) {
-                            this.setState({
-                                showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd).trim() + " " + nextSuggestion + this.state.value.substr(elem.selectionEnd).trim()
-                                , userEnteredText: true
-                            }, () => {
-                                elem.focus()
-                                elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length, [...textFieldArray.join(' ')].length + [...nextSuggestion].length)
-                            })
-                        } else {
-                            this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
-                                elem.focus()
-                                elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
-                            })
                         }
                     }
                 }
@@ -506,7 +519,7 @@ class SentenceCard extends React.Component {
             return (<div><span style={{ color: "blue" }}>{selectedText}</span><span>{value}</span></div>)
         } else {
             var elem = document.getElementById(this.props.sentence.s_id)
-            let data = this.state.value ? this.state.value.slice(0, elem.selectionEnd) : ""
+            let data = this.state.value ? this.state.value.trim().slice(0, elem.selectionEnd) : ""
             let value = option.slice([...data].length, [...option].length).trim().split(' ')
             let arrayData = value.shift().trim()
             return (<div><span style={{ color: "blue" }}>{data + " " + arrayData + " "}</span><span>{value.join(' ')}</span></div>)
