@@ -103,9 +103,7 @@ class BlockTranslationService:
             return []
         context = block_translate_input["input"]["context"]
         user_id = block_translate_input["metadata"]["userID"]
-        org_id = None
-        if 'orgID' in block_translate_input["input"].keys():
-            org_id = block_translate_input["input"]["orgID"]
+        org_id = block_translate_input["metadata"]["orgID"]
         locale = block_translate_input["input"]["model"]["source_language_code"] + "|" + block_translate_input["input"]["model"]["target_language_code"]
         return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, block_translate_input)
 

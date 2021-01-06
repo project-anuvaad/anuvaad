@@ -174,9 +174,7 @@ class TranslatorService:
             return []
         context = file["context"]
         user_id = translate_wf_input["metadata"]["userID"]
-        org_id = None
-        if 'orgID' in file.keys():
-            org_id = file["orgID"]
+        org_id = translate_wf_input["metadata"]["orgID"]
         locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
         return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, translate_wf_input)
 
