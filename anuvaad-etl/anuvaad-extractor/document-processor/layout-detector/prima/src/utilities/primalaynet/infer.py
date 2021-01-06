@@ -304,9 +304,6 @@ class PRIMA(object):
 
 					temp_dict['class']      = self.class_mapping(layout_class[idx])
 					print((layout_class[idx]))
-					print(temp_dict, 'tempppppppppppppppp dict')
-
-
 
 					#print("kkkkkk",layout_class[idx])
 					#temp_dict['text_left']  = coord[0]; temp_dict['text_top'] = coord[1]

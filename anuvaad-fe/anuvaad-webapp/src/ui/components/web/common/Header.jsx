@@ -255,6 +255,32 @@ class Header extends React.Component {
                     </div>
                   )}
 
+{role && Array.isArray(role) && role.includes("ADMIN") && (
+                    <div>
+                      <Divider className={classes.divider} />
+
+                      <ListItem
+                        id="glossary-upload"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "glossaryupload" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/glossary-upload`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: "#000000", marginLeft: '6%' }}>
+                              Glossary Upload
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )}
+
                   {role && Array.isArray(role) && (role.includes("TRANSLATOR")) && (
                     <div>
                       <Divider className={classes.divider} />

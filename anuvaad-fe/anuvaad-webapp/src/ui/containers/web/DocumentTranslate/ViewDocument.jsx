@@ -475,9 +475,9 @@ class ViewDocument extends React.Component {
         },
       }, {
         name: "bleu_score",
-        label: "Accuracy Level",
+        label: "Average Bleu",
         options: {
-          hint: "Will be displayed once 80% file completed",
+          hint: "Total bleu score / Total saved sentence",
           sort: false
         }
       },

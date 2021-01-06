@@ -344,31 +344,39 @@ class SentenceCard extends React.Component {
     */
     async makeAPICallInteractiveTranslation(caret) {
         let val = this.state.value.slice(0, caret)
+        if (val) {
 
-        this.setState({ isCardBusy: true })
-        let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.model.model_id, true, '', this.props.sentence.s_id);
-        const apiReq = fetch(apiObj.apiEndPoint(), {
-            method: 'post',
-            body: JSON.stringify(apiObj.getBody()),
-            headers: apiObj.getHeaders().headers
-        }).then(async response => {
-            const rsp_data = await response.json();
-            if (!response.ok) {
-                this.setState({ isCardBusy: false })
-                return Promise.reject('');
-            } else {
+            this.setState({ isCardBusy: true })
+            let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.model.model_id, true, '', this.props.sentence.s_id);
+            const apiReq = fetch(apiObj.apiEndPoint(), {
+                method: 'post',
+                body: JSON.stringify(apiObj.getBody()),
+                headers: apiObj.getHeaders().headers
+            }).then(async response => {
+                const rsp_data = await response.json();
+                if (!response.ok) {
+                    this.setState({ isCardBusy: false })
+                    return Promise.reject('');
+                } else {
+                    this.setState({
+                        // suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
+                        suggestions: [{ name: rsp_data.output.predictions[0].tgt[0] }],
+                        isCardBusy: false
+                    })
+                }
+            }).catch((error) => {
                 this.setState({
-                    // suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
-                    suggestions: [{ name: rsp_data.output.predictions[0].tgt[0] }],
+                    suggestions: [],
                     isCardBusy: false
                 })
-            }
-        }).catch((error) => {
+            });
+        } else {
             this.setState({
-                suggestions: [],
+                // suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
+                suggestions: [{ name: this.props.sentence.s0_tgt }],
                 isCardBusy: false
             })
-        });
+        }
     }
 
     handleKeyDown = (event) => {
@@ -414,67 +422,81 @@ class SentenceCard extends React.Component {
         var TABKEY = 9;
         if (event.keyCode === TABKEY) {
             var elem = document.getElementById(this.props.sentence.s_id)
-            if (!this.state.showSuggestions) {
-                this.setState({ showSuggestions: true })
-                this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
+            if (!this.props.sentence.s0_tgt) {
+                alert("Sorry, Machine translated text is not available...")
             } else {
-                if (this.state.suggestions[0]) {
-                    let suggestionArray = this.state.suggestions[0].name.split(' ')
-                    let textFieldArray = this.state.value.replace(/\s{2,}/, ' ').trim().slice(0, elem.selectionEnd).split(' ')
-                    let remainingTextFieldArray = this.state.value.replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
-                    let remainingSuggestion = this.state.suggestions[0].name.replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
-                    let lenTextField = [...textFieldArray].length
-                    let lenSuggestion = [...suggestionArray].length
-                    let nextSuggestion = remainingSuggestion.shift()
-                    let nextTextField = remainingTextFieldArray.shift()
-                    if (lenSuggestion !== lenTextField) {
-                        if (remainingTextFieldArray.length === 0 && nextSuggestion !== undefined) {
-                            if (remainingSuggestion.length >= 1) {
-                                this.setState({ highlight: true, value: this.state.value + nextSuggestion + " " }, () => {
-                                    elem.focus()
-                                    elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
-                                })
-                            } else {
-                                this.setState({ value: this.state.value + nextSuggestion }, () => {
-                                    elem.focus()
-                                    elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
-                                })
+                if (!this.state.showSuggestions) {
+                    this.setState({ showSuggestions: true, highlight: false })
+                    this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
+                } else {
+                    if (this.state.suggestions[0]) {
+                        let suggestionArray = this.state.suggestions[0].name.split(' ')
+                        let textFieldArray = this.state.value.replace(/\s{2,}/, ' ').trim().slice(0, elem.selectionEnd).split(' ')
+                        let remainingTextFieldArray = this.state.value.replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
+                        let remainingSuggestion = this.state.suggestions[0].name.replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
+                        let lenTextField = [...textFieldArray].length
+                        let lenSuggestion = [...suggestionArray].length
+                        let nextSuggestion = remainingSuggestion.shift()
+                        let nextTextField = remainingTextFieldArray.shift()
+                        if (lenSuggestion !== lenTextField) {
+                            if (remainingTextFieldArray.length === 0 && nextSuggestion !== undefined) {
+                                if (remainingSuggestion.length >= 1) {
+                                    if (nextSuggestion !== nextTextField) {
+                                        this.setState({ highlight: true, value: this.state.value + nextSuggestion + " ", userEnteredText: true }, () => {
+                                            elem.focus()
+                                            elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
+                                        })
+                                    } else {
+                                        this.setState({ highlight: true, value: this.state.value + nextSuggestion + " ", userEnteredText: true }, () => {
+                                            elem.focus()
+                                            elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
+                                        })
+                                    }
+                                }
+                                else {
+                                    this.setState({ highlight: true, value: this.state.value + nextSuggestion, userEnteredText: true }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange([...this.state.value].length + 1, [...this.state.value].length + 1)
+                                    })
+                                }
+                            } else if (nextSuggestion !== nextTextField) {
+                                if (nextSuggestion !== "") {
+                                    this.setState({ highlight: true, showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd).trim() + " " + nextSuggestion + " " + this.state.value.substr(elem.selectionEnd), userEnteredText: true }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
+                                    })
+                                }
                             }
-                        } else if (nextSuggestion !== nextTextField) {
-                            if (nextSuggestion !== "") {
-                                this.setState({ highlight: true, showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd).trim() + " " + nextSuggestion + " " + this.state.value.substr(elem.selectionEnd) }, () => {
-                                    elem.focus()
-                                    elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
-                                })
+                            else {
+                                if (nextSuggestion.length !== 0) {
+                                    this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
+                                    })
+                                } else {
+                                    this.setState({ showSuggestions: true, userEnteredText: true }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
+                                    })
+                                }
                             }
                         }
                         else {
-                            if (nextSuggestion.length !== 0) {
-                                this.setState({ highlight: true, showSuggestions: true }, () => {
+                            if (nextSuggestion !== nextTextField && remainingSuggestion.length === 0) {
+                                this.setState({
+                                    showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd) + nextSuggestion + this.state.value.substr(elem.selectionEnd).trim()
+                                    , userEnteredText: true,
+                                    highlight: true
+                                }, () => {
                                     elem.focus()
-                                    elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
+                                    elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
                                 })
                             } else {
-                                this.setState({ showSuggestions: true }, () => {
+                                this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
                                     elem.focus()
                                     elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
                                 })
                             }
-                        }
-                    }
-                    else {
-                        if (nextSuggestion !== nextTextField && remainingSuggestion.length === 0) {
-                            this.setState({
-                                showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd).trim() + " " + nextSuggestion + this.state.value.substr(elem.selectionEnd).trim()
-                            }, () => {
-                                elem.focus()
-                                elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length, [...textFieldArray.join(' ')].length + [...nextSuggestion].length)
-                            })
-                        } else {
-                            this.setState({ highlight: true, showSuggestions: true }, () => {
-                                elem.focus()
-                                elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
-                            })
                         }
                     }
                 }
@@ -497,7 +519,7 @@ class SentenceCard extends React.Component {
             return (<div><span style={{ color: "blue" }}>{selectedText}</span><span>{value}</span></div>)
         } else {
             var elem = document.getElementById(this.props.sentence.s_id)
-            let data = this.state.value ? this.state.value.slice(0, elem.selectionEnd) : ""
+            let data = this.state.value ? this.state.value.trim().slice(0, elem.selectionEnd) : ""
             let value = option.slice([...data].length, [...option].length).trim().split(' ')
             let arrayData = value.shift().trim()
             return (<div><span style={{ color: "blue" }}>{data + " " + arrayData + " "}</span><span>{value.join(' ')}</span></div>)
@@ -593,10 +615,14 @@ class SentenceCard extends React.Component {
 
     renderNormaModeButtons = () => {
         return (
-            <div>
-                <Button style={{ marginRight: '10px' }} onClick={this.processSaveButtonClicked} variant="outlined" color="primary">
-                    SAVE
+            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                <span style={{ textAlign: 'left', width: "30%" }}>
+                    <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }} onClick={this.processSaveButtonClicked} >
+                        SAVE
                 </Button>
+
+                </span>
+                {this.props.sentence && this.props.sentence.hasOwnProperty("bleu_score") && <span style={{ width: "70%", margin: "auto", display: "flex", flexDirection: "row", justifyContent: "flex-end", color: "#233466" }}><Typography>Bleu Score:&nbsp;{parseFloat(this.props.sentence.bleu_score).toFixed(2)}</Typography></span>}
             </div>
         )
     }
