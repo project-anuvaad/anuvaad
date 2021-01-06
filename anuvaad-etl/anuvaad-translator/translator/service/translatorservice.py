@@ -11,6 +11,7 @@ from configs.translatorconfig import anu_nmt_input_topic
 from configs.translatorconfig import anu_translator_output_topic
 from configs.translatorconfig import tool_translator
 from configs.translatorconfig import nmt_map
+from configs.translatorconfig import tmx_enabled
 
 current_nmt = 0
 
@@ -170,13 +171,16 @@ class TranslatorService:
 
     # Fetches tmx phrases
     def fetch_tmx(self, sentence, file, translate_wf_input):
-        if 'context' not in file.keys():
+        if tmx_enabled:
+            if 'context' not in file.keys():
+                return []
+            context = file["context"]
+            user_id = translate_wf_input["metadata"]["userID"]
+            org_id = translate_wf_input["metadata"]["orgID"]
+            locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
+            return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, translate_wf_input)
+        else:
             return []
-        context = file["context"]
-        user_id = translate_wf_input["metadata"]["userID"]
-        org_id = translate_wf_input["metadata"]["orgID"]
-        locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
-        return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, translate_wf_input)
 
     # Distributes the NMT traffic across machines.
     def nmt_router(self, nmt_in):

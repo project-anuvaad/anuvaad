@@ -184,8 +184,6 @@ class WFMService:
                 client_input["modifiedSentences"] = wf_input["modifiedSentences"]
             if "context" in wf_input.keys():
                 client_input["context"] = wf_input["context"]
-            if "orgID" in wf_input.keys():
-                client_input["orgID"] = wf_input["orgID"]
             client_output = {"input": client_input, "jobID": wf_input["jobID"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],

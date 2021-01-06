@@ -1,12 +1,13 @@
 import time
 
-import uuid
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from anuvaad_auditor.errorhandler import post_error
 from configs.translatorconfig import nmt_translate_url
 from configs.translatorconfig import update_content_url
 from utilities.translatorutils import TranslatorUtils
 from tmx.tmxservice import TMXService
+from configs.translatorconfig import tmx_enabled
+
 
 
 utils = TranslatorUtils()
@@ -99,13 +100,17 @@ class BlockTranslationService:
 
     # Fetches tmx phrases
     def fetch_tmx(self, sentence, block_translate_input):
-        if 'context' not in block_translate_input["input"].keys():
+        if tmx_enabled:
+            if 'context' not in block_translate_input["input"].keys():
+                return []
+            context = block_translate_input["input"]["context"]
+            user_id = block_translate_input["metadata"]["userID"]
+            org_id = block_translate_input["metadata"]["orgID"]
+            locale = block_translate_input["input"]["model"]["source_language_code"] + "|" + \
+                     block_translate_input["input"]["model"]["target_language_code"]
+            return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, block_translate_input)
+        else:
             return []
-        context = block_translate_input["input"]["context"]
-        user_id = block_translate_input["metadata"]["userID"]
-        org_id = block_translate_input["metadata"]["orgID"]
-        locale = block_translate_input["input"]["model"]["source_language_code"] + "|" + block_translate_input["input"]["model"]["target_language_code"]
-        return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, block_translate_input)
 
     # Parses the nmt response and builds input for ch
     def get_translations_ip_ch(self, nmt_response, block_translate_input):
