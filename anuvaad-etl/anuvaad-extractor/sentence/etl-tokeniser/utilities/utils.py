@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
-from errors.errors_exception import FileEncodingError
+from errors.errors_exception import FileEncodingError, FileErrors
 
 
 class FileOperation(object):
@@ -99,6 +99,17 @@ class FileOperation(object):
             "outputType" : in_file_type
         }
         return file_res
+
+    def add_aditional_fields(self, input_file_obj, output_file_obj):
+        for key, val in input_file_obj.items():
+            if key not in ['locale', 'path', 'type']:
+                if val is None or val == "":
+                    raise FileErrors("INPUT_VALUE_ERROR",
+                                     "Value under files are missing. Make sure you are using the correct Value for files keys.")
+                else:
+                    output_file_obj[key] = val
+
+        return output_file_obj
 
     # error manager integration 
     def error_handler(self, object_in, code, iswf):

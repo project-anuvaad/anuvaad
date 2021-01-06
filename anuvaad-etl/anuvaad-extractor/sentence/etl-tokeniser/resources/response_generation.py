@@ -52,6 +52,8 @@ class Response(object):
                             file_write.write(json_data_write)
                             output_filename = input_filename
                         file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
+                        file_req_obj = copy.deepcopy(item)
+                        file_res = file_ops.add_aditional_fields(file_req_obj, file_res)
                         output_file_response.append(file_res)
             # input key is a list data of objects, object contain text and language code
             else:
