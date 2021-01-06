@@ -9,6 +9,7 @@ from src.utilities.primalaynet.infer import PRIMA
 from src.utilities.request_parse import get_files, File,get_json
 from src.utilities.model_response import get_coord
 
+
 primalaynet = PRIMA()
 
 def extract_table_line_regions(image_path):
