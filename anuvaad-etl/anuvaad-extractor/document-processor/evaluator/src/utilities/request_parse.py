@@ -35,10 +35,19 @@ class Evalue:
         in_path =  config.BASE_DIR + '/' + in_file_name
         with open(gt_path) as f:
             gt_json = json.load(f)
-            gt_data = gt_json['rsp']['outputs']
+
         with open(in_path) as f:
             in_json = json.load(f)
+        if 'rsp' in gt_json.keys():
+            gt_data = gt_json['rsp']['outputs']
+        else:
+            gt_data = gt_json['outputs']
+        if 'rsp' in in_json.keys():
             in_data = in_json['rsp']['outputs']
+        else:
+            in_data = in_json['outputs']
+
+
         return gt_data ,in_data
 
     def get_evaluation(self):
