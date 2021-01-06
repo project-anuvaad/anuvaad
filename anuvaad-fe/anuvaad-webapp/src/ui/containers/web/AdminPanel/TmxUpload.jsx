@@ -156,7 +156,7 @@ class TmxUpload extends Component {
           </Typography>
         </Grid>
 
-        <Grid item xs={12} sm={12} lg={12} xl={4} >
+        <Grid item xs={12} sm={12} lg={12} xl={12} >
           <FormControl variant="outlined" style={{
             width: '100%',
             fullWidth: true,

@@ -622,7 +622,7 @@ class SentenceCard extends React.Component {
                 </Button>
 
                 </span>
-                {this.props.sentence && this.props.sentence.hasOwnProperty("bleu_score") && <Typography style={{ width: "70%", margin: "auto", display: "flex", flexDirection: "row", justifyContent: "flex-end", color: "#233466" }}>Bleu Score:&nbsp;<Typography>{parseFloat(this.props.sentence.bleu_score).toFixed(2)}</Typography></Typography>}
+                {this.props.sentence && this.props.sentence.hasOwnProperty("bleu_score") && <span style={{ width: "70%", margin: "auto", display: "flex", flexDirection: "row", justifyContent: "flex-end", color: "#233466" }}><Typography>Bleu Score:&nbsp;{parseFloat(this.props.sentence.bleu_score).toFixed(2)}</Typography></span>}
             </div>
         )
     }
