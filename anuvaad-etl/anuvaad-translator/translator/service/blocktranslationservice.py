@@ -94,8 +94,7 @@ class BlockTranslationService:
                         sent_nmt_in = {"s_id": sentence["s_id"], "src": sentence["src"], "id": model_id,
                                            "n_id": n_id, "tmx_phrases": tmx_phrases}
                         sent_for_nmt.append(sent_nmt_in)
-        log_info("Count of TMX: " + str(tmx_count), block_translate_input)
-        log_info("Count of sentences to NMT: " + str(len(sent_for_nmt)), block_translate_input)
+        log_info("NMT: " + str(len(sent_for_nmt)) + " | TMX: " + str(tmx_count), block_translate_input)
         return sent_for_nmt
 
     # Fetches tmx phrases
@@ -119,6 +118,8 @@ class BlockTranslationService:
                 for translation in nmt_response["response_body"]:
                     if translation["tmx_phrases"]:
                         log_info("Modifying tgt with TMX for src: " + translation["src"], block_translate_input)
+                        log_info("SRC: " + translation["src"] + " | TGT: " + translation["tgt"] +
+                                 " | TMX Count: " + str(len(translation["tmx_phrases"])), block_translate_input)
                         translation["tgt"] = tmxservice.replace_nmt_tgt_with_user_tgt(translation["tmx_phrases"],
                                                                                       translation["tgt"], block_translate_input)
                     b_index, s_index = None, None
