@@ -6,11 +6,11 @@ DEBUG = True
 API_URL_PREFIX = "/anuvaad-etl/document-processor/layout-detector"
 HOST = '0.0.0.0'
 PORT = 5001
-#BASE_DIR      = 'upload'
-#download_folder = 'upload'
+BASE_DIR      = 'upload'
+download_folder = 'upload'
 
-BASE_DIR = '/opt/share/nginx/upload'
-download_folder = '/opt/share/nginx/upload'
+#BASE_DIR = '/opt/share/nginx/upload'
+#download_folder = '/opt/share/nginx/upload'
 
 
 ENABLE_CORS = False
