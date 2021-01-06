@@ -42,7 +42,7 @@ def start_consumer():
 
 if __name__ == '__main__':
     start_consumer()
-    wfmapp.run(host=app_host, port=eval(str(app_port)))
+    wfmapp.run(host=app_host, port=eval(str(app_port)), threaded=True)
 
 
 # Log config

@@ -35,4 +35,4 @@ def start_consumer():
 
 if __name__ == '__main__':
     start_consumer()
-    translatorapp.run(host=app_host, port=app_port)
+    translatorapp.run(host=app_host, port=app_port, threaded=True)
