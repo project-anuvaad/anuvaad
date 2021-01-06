@@ -60,8 +60,8 @@ class SentenceModel(object):
                                                         "data.tokenized_sentences.$.src"  : sentence['src'],
                                                         "data.tokenized_sentences.$.tgt"  : sentence['tgt'],
                                                         "data.tokenized_sentences.$.save" : sentence['save'],
-                                                        "data.tokenized_sentences.$.bleu_score" : sentence['bleu_score']
-
+                                                        "data.tokenized_sentences.$.bleu_score" : sentence['bleu_score'],
+                                                        "data.tokenized_sentences.$.time_spent_ms" : sentence['time_spent_ms']
                                                     }
                                                 }, upsert=False)
 
@@ -117,7 +117,8 @@ class SentenceModel(object):
                                     "_id": "$data.tokenized_sentences.save",
                                     "doc_sent_count": { "$sum": 1 },
                                      "doc_wrd_count" : { "$sum": "$sent_wrd_count" },
-                                     "total_bleu_score":{"$sum": "$data.tokenized_sentences.bleu_score"} 
+                                     "total_bleu_score":{"$sum": "$data.tokenized_sentences.bleu_score"},
+                                     "total_time_spent":{"$sum": "$data.tokenized_sentences.time_spent_ms"} 
                                      }}
                                 ])
 
@@ -136,6 +137,8 @@ class SentenceModel(object):
             total_saved_bleu_score     = 0
             avg_bleu_score             = 0
 
+            total_time_spent_ms = 0
+
             for doc in docs:
                 if doc['_id'] == None:
                     empty_sent_count = doc['doc_sent_count']
@@ -144,7 +147,8 @@ class SentenceModel(object):
                     saved_sent_count = doc['doc_sent_count']
                     saved_wrd_count  = doc['doc_wrd_count']
                     total_saved_bleu_score = doc["total_bleu_score"]
-                    avg_bleu_score   = total_saved_bleu_score/saved_sent_count
+                    avg_bleu_score      = total_saved_bleu_score/saved_sent_count
+                    total_time_spent_ms = doc["total_time_spent"]
                 if doc['_id'] == False:
                     unsaved_sent_count = doc['doc_sent_count']
                     unsaved_wrd_count  = doc['doc_wrd_count']
@@ -156,7 +160,8 @@ class SentenceModel(object):
                 'completed_sentences': saved_sent_count,
                 'total_words': empty_wrd_count + saved_wrd_count + unsaved_wrd_count,
                 'completed_words': saved_wrd_count,
-                'avg_bleu_score' : avg_bleu_score
+                'avg_bleu_score' : avg_bleu_score,
+                'total_time_spent_ms': total_time_spent_ms
             }
                 
         except Exception as e:
