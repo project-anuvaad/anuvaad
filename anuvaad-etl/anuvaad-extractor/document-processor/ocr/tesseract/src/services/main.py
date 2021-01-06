@@ -50,7 +50,6 @@ def preprocess_file(file_properties,lang,ocr_level):
                             region_ocr = text_extraction(lang, page_path, region_lines,region_lines, width, height,mode_height)
                         file['pages'][page_index]['regions'][idx]['children'] = region_ocr
                     else:
-                        
                         file['pages'][page_index]['regions'][idx] = copy.deepcopy(region)
                 file['pages'][page_index]['regions']  = merge_text(file['pages'][page_index]['regions'])
     return file
