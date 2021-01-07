@@ -25,7 +25,8 @@ class Evalue:
         return self.eval['config']['strategy']
 
     def get_boxlevel(self):
-        key_mapping = {'WORD' : 'region_words' ,'LINE':'region_lines' , 'PARAGRAPH' : 'regions' }
+        #key_mapping = {'WORD' : 'region_words' ,'LINE':'region_lines' , 'PARAGRAPH' : 'regions' }
+        key_mapping = {'WORD': 'words', 'LINE': 'lines', 'PARAGRAPH': 'regions'}
         return key_mapping[self.eval['config']['boxLevel']]
 
     def get_json(self):

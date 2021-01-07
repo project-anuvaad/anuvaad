@@ -97,9 +97,9 @@ class Page_Config:
 
     def avg_word_sep(self, page):
         try:
-            avg_height = 0;
+            avg_height = 0
             total_words = 0
-            avg_spacing = 0;
+            avg_spacing = 0
             avg_width = 0
             for line in page:
                 if line['children'] != None:
@@ -147,6 +147,27 @@ class Region_Unifier:
                         n_text_table_regions.append(region)
         return text_region,n_text_table_regions,tabel_region,image_region
     
+    def check_double_column(self,boxes,avg_height):
+        total_regions = len(boxes)
+        count =0
+        regions = copy.deepcopy(boxes)
+        while len(regions)>2:
+            flag = False
+            reg1 = regions[0]
+            for reg2 in regions[1:]:
+                if self.check_horizon_region(reg1,reg2) and keys.get_height(reg1)>4*avg_height and keys.get_height(reg2)>4*avg_height :
+                    flag = True
+                    del regions[0]
+                    break
+            if flag==True:
+                count=count+1
+            else:
+                del regions[0]
+        if count>0.3*total_regions:
+            return True
+        else:
+            return False
+
 
 
         
@@ -338,7 +359,7 @@ class Region_Unifier:
         try:
             
             text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(page_regions)
-
+            
 
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
             text_region     = remvoe_regions(copy.deepcopy(tabel_region) ,copy.deepcopy(text_region))
@@ -402,8 +423,13 @@ class Region_Unifier:
             n_text_table_regions.extend(t_list)
             n_text_table_regions.extend(image_region)
             flag =True
+            if self.check_double_column(v_list,avg_height):
+                print("this document is double columnssssssss")
+                return v_list, n_text_table_regions
+
             while flag==True:
                 v_list, flag = self.merge_remove_overlap(v_list,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
+
         except Exception as e:
             log_exception("Error occured during block unifier",  app_context.application_context, e)
             return None  ,None
