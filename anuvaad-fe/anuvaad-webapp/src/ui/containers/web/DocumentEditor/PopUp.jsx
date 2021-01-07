@@ -49,13 +49,14 @@ class MenuClass extends React.Component {
 
           {!this.props.targetDict && (
             <div>
+              {!this.props.hideSplit && 
               <Button
                 style={{ width: "100%", justifyContent: "left" }}
                 onClick={() => this.props.handleOperation(1)}
               >
                 Split sentence
               </Button>
-
+              }
               <Button
                 style={{
                   textTransform: "none",
