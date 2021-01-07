@@ -165,7 +165,7 @@ class AppRoutes extends React.Component {
               userRoles={["ADMIN"]}
               component={TmxUpload}
               authenticate={this.authenticateUser}
-              currentMenu="user-details"
+              currentMenu="glossary-upload"
               
             />
             <PrivateRoute

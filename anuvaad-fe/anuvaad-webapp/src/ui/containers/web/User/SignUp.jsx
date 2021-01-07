@@ -94,6 +94,8 @@ class SignUp extends React.Component {
                     } else {
                       if (resp.status === 400) {
                         resp.json().then((object) => {
+                          TELEMETRY.log("users-create-user", JSON.stringify(object))
+
                           this.setState({ message: object.message, loading: false, openSnackBar: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: null, variantType: 'error' })
                         })
                       }

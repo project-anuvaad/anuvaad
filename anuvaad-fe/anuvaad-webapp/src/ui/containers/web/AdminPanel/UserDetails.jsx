@@ -113,14 +113,18 @@ class UserDetails extends React.Component {
         if (res.ok) {
           this.processFetchBulkUserDetailAPI(null, null, false, true, [userId], [userName], roleCodes.split(','));
           if (currentState) {
+            TELEMETRY.userActivateOrDeactivate(userId, userName, "ACTIVATE")
             setTimeout(() => {
               this.setState({ isenabled: true, variantType: 'success', message: `${userName} is deactivated successfully` })
             }, 2000)
           } else {
+            TELEMETRY.userActivateOrDeactivate(userId, userName, "DEACTIVATE")
             setTimeout(() => {
               this.setState({ isenabled: true, variantType: 'success', message: `${userName} is activated successfully` })
             }, 2000)
           }
+        } else {
+          TELEMETRY.log("user-activate-or-deactivate",res)
         }
       })
   }

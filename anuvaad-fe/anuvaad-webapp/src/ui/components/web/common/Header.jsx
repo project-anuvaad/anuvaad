@@ -235,7 +235,7 @@ class Header extends React.Component {
 
                       <ListItem
                         id="user-details"
-                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "userdetails" && themeAnuvaad.palette.primary.main }}
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "user-details" && themeAnuvaad.palette.primary.main }}
                         button
                         onClick={() => {
                           this.handleDrawerClose(false);
@@ -246,7 +246,7 @@ class Header extends React.Component {
                         <ListItemText
                           disableTypography
                           primary={
-                            <Typography type="body2" style={{ color: currentMenu === "dashboard" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                            <Typography type="body2" style={{ color: currentMenu === "user-details" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
                               User details
                             </Typography>
                           }
@@ -261,7 +261,7 @@ class Header extends React.Component {
 
                       <ListItem
                         id="glossary-upload"
-                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "glossaryupload" && themeAnuvaad.palette.primary.main }}
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "glossary-upload" && themeAnuvaad.palette.primary.main }}
                         button
                         onClick={() => {
                           this.handleDrawerClose(false);
@@ -272,7 +272,7 @@ class Header extends React.Component {
                         <ListItemText
                           disableTypography
                           primary={
-                            <Typography type="body2" style={{ color: "#000000", marginLeft: '6%' }}>
+                            <Typography type="body2" style={{ color: currentMenu === "glossary-upload" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
                               Glossary Upload
                             </Typography>
                           }

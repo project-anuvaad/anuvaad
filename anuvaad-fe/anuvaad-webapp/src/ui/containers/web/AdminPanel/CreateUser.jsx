@@ -46,7 +46,7 @@ class CreateUser extends React.Component {
       message: '',
       loading: false,
       showPassword: false,
-      orgName:''
+      orgName: ''
     };
   }
 
@@ -230,8 +230,8 @@ class CreateUser extends React.Component {
     )
   }
 
-  handleOrg = (e) =>{
-    this.setState({orgName:e.target.value})
+  handleOrg = (e) => {
+    this.setState({ orgName: e.target.value })
   }
 
 
@@ -289,6 +289,8 @@ class CreateUser extends React.Component {
                 } else {
                   if (res.status === 400) {
                     await res.json().then(obj => {
+                      TELEMETRY.log("admin-create-user", JSON.stringify(obj))
+
                       this.setState({
                         loading: false,
                         isenabled: true,
