@@ -487,7 +487,7 @@ class ViewDocument extends React.Component {
       },
       {
         name: "Time Taken",
-        label: "Time Taken",
+        label: "Job time",
         options: {
           filter: true,
           sort: true,
