@@ -291,7 +291,7 @@ class TmxUpload extends Component {
         <Typography value="" variant="h4" className={classes.typographyHeader}>
             {translate("common.page.label.glossaryUpload")}
           </Typography>
-          <Paper elevation={3} style={{minHeight:'300px'}} className={classes.paper}>
+          <Paper elevation={3} style={{minHeight:'255px'}} className={classes.paper}>
             <Grid container spacing={8}>
 
               <Grid item xs={12} sm={6} lg={6} xl={6}>

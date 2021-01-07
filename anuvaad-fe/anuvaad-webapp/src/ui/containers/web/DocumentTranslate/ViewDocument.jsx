@@ -162,14 +162,6 @@ class ViewDocument extends React.Component {
     updateExisting = false
   ) {
     const { APITransport } = this.props;
-    console.log(
-      offset,
-      limit,
-      jobIds,
-      searchForNewJob,
-      searchNextPage,
-      updateExisting
-    );
     const apiObj = new FetchDocument(
       offset,
       limit,
@@ -280,8 +272,8 @@ class ViewDocument extends React.Component {
     this.makeAPICallJobDelete(jobId);
   }
 
-  processDeleteJobClick = (jobId, recordId) => {
-    this.setState({ showInfo: true, message: "Do you want to delete a job " + jobId + " ?", dialogTitle: "Delete Job !", value: jobId })
+  processDeleteJobClick = (fileName,jobId, recordId) => {
+    this.setState({ showInfo: true, message: "Do you want to delete a job " + fileName + " ?", dialogTitle: "Delete "+ fileName, value: jobId })
     // this.makeAPICallJobDelete(jobId);
   };
 
@@ -407,7 +399,6 @@ class ViewDocument extends React.Component {
   };
 
   render() {
-    console.log(this.getJobsSortedByTimestamp())
     const columns = [
       {
         name: "filename",
@@ -480,6 +471,12 @@ class ViewDocument extends React.Component {
           hint: "Total bleu score / Total saved sentence",
           sort: false
         }
+      }, {
+        name: "spent_time",
+        label: "Time Spent",
+        options: {
+          sort: false
+        }
       },
       {
         name: "endTime",
@@ -490,7 +487,7 @@ class ViewDocument extends React.Component {
       },
       {
         name: "Time Taken",
-        label: "Time Taken",
+        label: "Job time",
         options: {
           filter: true,
           sort: true,
@@ -500,8 +497,8 @@ class ViewDocument extends React.Component {
                 <div>
                   {tableMeta.rowData[5] === "COMPLETED" &&
                     this.getDateTimeDifference(
-                      tableMeta.rowData[9],
-                      tableMeta.rowData[11]
+                      tableMeta.rowData[10],
+                      tableMeta.rowData[12]
                     )}
                 </div>
               );
@@ -519,7 +516,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.getDateTimeFromTimestamp(tableMeta.rowData[11])}
+                  {this.getDateTimeFromTimestamp(tableMeta.rowData[12])}
                 </div>
               );
             }
@@ -574,6 +571,7 @@ class ViewDocument extends React.Component {
                       component="a"
                       onClick={() =>
                         this.processDeleteJobClick(
+                          tableMeta.rowData[0],
                           tableMeta.rowData[1],
                           tableMeta.rowData[2]
                         )

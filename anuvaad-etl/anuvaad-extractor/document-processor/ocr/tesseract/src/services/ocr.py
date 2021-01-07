@@ -106,14 +106,14 @@ def merge_text(v_blocks,merge_tess_confidence=False):
         #try:
         v_blocks[block_index]['font']    ={'family':'Arial Unicode MS', 'size':0, 'style':'REGULAR'}
         #v_blocks[block_index]['font']['size'] = max(v_block['children'], key=lambda x: x['font']['size'])['font']['size']
-        if len(v_block['children']) > 0 :
+        if "children" in v_block.keys() and len(v_block['children']) > 0 :
             v_blocks[block_index]['text'] = v_block['children'][0]['text']
             if merge_tess_confidence:
                 try:
                     v_blocks[block_index]['tess_word_coords'] =  v_block['children'][0]['tess_word_coords']
                 except:
                     print('error in adding tess confidence score_1')
-            if  len(v_block['children']) > 1:
+            if "children" in v_block.keys() and len(v_block['children']) > 1:
                 for child in range(1, len(v_block['children'])):
                     if merge_tess_confidence :
                         try:

@@ -30,7 +30,7 @@ import DictionaryAPI from '../../../../flux/actions/apis/document_translate/word
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
-
+var time = 0;
 const styles = {
     card_active: {
         background: 'rgb(211,211,211)',
@@ -112,7 +112,8 @@ class SentenceCard extends React.Component {
             message: null,
             showStatus: false,
             snackBarMessage: null,
-            highlight: false
+            highlight: false,
+            hideSplit : false
 
         };
         this.textInput = React.createRef();
@@ -192,6 +193,8 @@ class SentenceCard extends React.Component {
                 sentence.save = true;
                 sentence.tgt = this.props.sentence.s0_tgt;
                 delete sentence.block_identifier;
+                sentence.time_spent_ms = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
+                time = 0;
                 sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
                 TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
@@ -207,12 +210,13 @@ class SentenceCard extends React.Component {
             }
             if (this.props.onAction) {
                 this.setState({ userEnteredText: false })
-
                 let sentence = { ...this.props.sentence };
                 sentence.save = true;
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
                 sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
+                sentence.time_spent_ms = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
+                time = 0;
                 TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
             }
@@ -279,10 +283,10 @@ class SentenceCard extends React.Component {
         let endIndex = window.getSelection().focusOffset;
         let startIndex = window.getSelection().anchorOffset;
         let sentenceSource = event.target.innerHTML;
-        if (selectedSentence && sentenceSource.includes(selectedSentence) && selectedSentence !== sentenceSource && this.state.cardInFocus) {
+        if (selectedSentence && sentenceSource.includes(selectedSentence) && this.state.cardInFocus) {
             this.setState({
                 selectedSentence, sentenceSource, positionX: event.clientX, startIndex, endIndex, positionY: event.clientY, isopenMenuItems: true,
-                dictionaryX: event.clientX, dictionaryY: event.clientY
+                dictionaryX: event.clientX, dictionaryY: event.clientY, hideSplit : selectedSentence === sentenceSource ? true : false
             })
         }
     }
@@ -533,6 +537,7 @@ class SentenceCard extends React.Component {
                 suggestions: []
             });
         }
+        time = (time === 0 ? new Date(): time) 
 
         this.setState({
             value: event.target.value,
@@ -569,11 +574,11 @@ class SentenceCard extends React.Component {
 
                             var selectedText = option.slice(0, trimedText.length)
                             let caretValue = option.slice(trimedText.length, option.length)
-
                             this.setState({
                                 value: (selectedText ? selectedText.trim() : selectedText) + " " + (caretValue ? caretValue.trim() + " " : caretValue),
                                 showSuggestions: false,
-                                userEnteredText: true
+                                userEnteredText: true,
+                                
                             });
                         }}
                         onClose={(event, newValue) => {
@@ -612,8 +617,18 @@ class SentenceCard extends React.Component {
             </form>
         )
     }
+    handleSpentTime =()=>{
+        let sec = this.props.sentence.time_spent_ms/1000;
+        var date = new Date(0);
+        
+    date.setSeconds(sec); // specify value for SECONDS here
+    let spentTime = date.toISOString().substr(11, 8);
+        return  <span style={{ width: "70%", margin: "auto", display: "flex", flexDirection: "row", justifyContent: "flex-end", color: "#233466" }}><Typography>Spent time:&nbsp;{spentTime}</Typography></span>
+                
+    }
 
     renderNormaModeButtons = () => {
+        
         return (
             <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                 <span style={{ textAlign: 'left', width: "30%" }}>
@@ -623,7 +638,8 @@ class SentenceCard extends React.Component {
 
                 </span>
                 {this.props.sentence && this.props.sentence.hasOwnProperty("bleu_score") && <span style={{ width: "70%", margin: "auto", display: "flex", flexDirection: "row", justifyContent: "flex-end", color: "#233466" }}><Typography>Bleu Score:&nbsp;{parseFloat(this.props.sentence.bleu_score).toFixed(2)}</Typography></span>}
-            </div>
+                {this.props.sentence && this.props.sentence.hasOwnProperty("time_spent_ms") && this.handleSpentTime()}
+                 </div>
         )
     }
 
@@ -728,6 +744,7 @@ class SentenceCard extends React.Component {
                 positionX={this.state.positionX}
                 positionY={this.state.positionY}
                 handleClose={this.handleClose.bind(this)}
+                hideSplit = {this.state.hideSplit}
                 isopenMenuItems={this.state.isopenMenuItems}
                 handleOperation={this.handleOperation.bind(this)}
             />)
@@ -833,13 +850,16 @@ class SentenceCard extends React.Component {
         )
     }
 
+
     handleCardExpandClick = () => {
         if (this.cardCompare()) {
             this.setState({ cardInFocus: false })
             this.props.clearHighlighBlock()
+            time = 0
             TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         } else {
             if (this.props.block_highlight && this.props.block_highlight.current_sid) {
+                time = 0
                 TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.block_highlight.current_sid)
             }
             this.setState({ cardInFocus: true })
@@ -848,6 +868,7 @@ class SentenceCard extends React.Component {
              * For highlighting textarea on card expand
              */
             this.textInput && this.textInput.current && this.textInput.current.focus();
+            time = new Date()
             TELEMETRY.startSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         }
 
