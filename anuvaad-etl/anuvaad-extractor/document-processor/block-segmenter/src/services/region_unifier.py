@@ -154,8 +154,8 @@ class Region_Unifier:
         while len(regions)>2:
             flag = False
             reg1 = regions[0]
-            for reg2 in regions[1:]:
-                if self.check_horizon_region(reg1,reg2) and keys.get_height(reg1)>4*avg_height and keys.get_height(reg2)>4*avg_height :
+            for idx,reg2 in enumerate(regions[1:]):
+                if self.check_horizon_region(reg1,reg2) and keys.get_height(reg1)>3*avg_height and keys.get_height(reg2)>3*avg_height :
                     flag = True
                     del regions[0]
                     break
