@@ -147,6 +147,26 @@ class Region_Unifier:
                         n_text_table_regions.append(region)
         return text_region,n_text_table_regions,tabel_region,image_region
     
+    def check_double_column(self,regions):
+        total_regions = len(regions)
+        count =0
+        while len(regions)>2:
+            flag = False
+            reg1 = regions[0]
+            for reg2 in regions[1:]:
+                if self.check_horizon_region(reg1,reg2):
+                    flag = True
+                    del regions[0]
+                    break
+            if flag==True:
+                count=count+1
+            else:
+                del regions[0]
+        if count>0.3*total_regions
+            return True
+        else:
+            return False
+
 
 
         
@@ -177,15 +197,15 @@ class Region_Unifier:
             #         and abs(box2_top-box1_bottom)< 3 * avg_ver_dist:
             #     return True
             # ########### conditions based on merging two horizon regions which are lines and horizontal spaing is less than threshold
-            # if self.check_horizon_region(reg1,reg2) \
-            #         and  (keys.get_height(reg1)<= avg_height*2 and keys.get_height(reg2)<= avg_height*2)  :
-            #     if (0<(keys.get_left(reg2)-keys.get_right(reg1))<hor_diff_thresh \
-            #         and abs(box2_top-box1_bottom)<avg_ver_dist) \
-            #             or (0<(keys.get_left(reg1)-keys.get_right(reg2))<hor_diff_thresh \
-            #                 and abs(box2_top-box1_bottom)<avg_ver_dist):
-            #         return True
-            #     else:
-            #         return False
+            if self.check_horizon_region(reg1,reg2) \
+                    and  (keys.get_height(reg1)<= avg_height*2 and keys.get_height(reg2)<= avg_height*2)  :
+                if (0<(keys.get_left(reg2)-keys.get_right(reg1))<hor_diff_thresh \
+                    and abs(box2_top-box1_bottom)<avg_ver_dist) \
+                        or (0<(keys.get_left(reg1)-keys.get_right(reg2))<hor_diff_thresh \
+                            and abs(box2_top-box1_bottom)<avg_ver_dist):
+                    return True
+                else:
+                    return False
             ############
 
             #based on box separation :
@@ -402,7 +422,10 @@ class Region_Unifier:
             n_text_table_regions.extend(t_list)
             n_text_table_regions.extend(image_region)
             flag =True
-            #if not check_double_column(text_region):
+            if check_double_column(self,regions):
+                print("this document is double columnssssssss")
+                return v_list, n_text_table_regions
+                
             while flag==True:
                 v_list, flag = self.merge_remove_overlap(v_list,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
 
