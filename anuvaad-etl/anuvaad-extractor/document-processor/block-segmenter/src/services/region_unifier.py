@@ -401,7 +401,7 @@ class Region_Unifier:
             ########################
             n_text_table_regions.extend(t_list)
             n_text_table_regions.extend(image_region)
-            flag =False
+            flag =True
             #if not check_double_column(text_region):
             while flag==True:
                 v_list, flag = self.merge_remove_overlap(v_list,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
