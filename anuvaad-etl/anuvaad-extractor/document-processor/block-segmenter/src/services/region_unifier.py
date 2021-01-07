@@ -177,15 +177,15 @@ class Region_Unifier:
             #         and abs(box2_top-box1_bottom)< 3 * avg_ver_dist:
             #     return True
             # ########### conditions based on merging two horizon regions which are lines and horizontal spaing is less than threshold
-            if self.check_horizon_region(reg1,reg2) \
-                    and  (keys.get_height(reg1)<= avg_height*2 and keys.get_height(reg2)<= avg_height*2)  :
-                if (0<(keys.get_left(reg2)-keys.get_right(reg1))<hor_diff_thresh \
-                    and abs(box2_top-box1_bottom)<avg_ver_dist) \
-                        or (0<(keys.get_left(reg1)-keys.get_right(reg2))<hor_diff_thresh \
-                            and abs(box2_top-box1_bottom)<avg_ver_dist):
-                    return True
-                else:
-                    return False
+            # if self.check_horizon_region(reg1,reg2) \
+            #         and  (keys.get_height(reg1)<= avg_height*2 and keys.get_height(reg2)<= avg_height*2)  :
+            #     if (0<(keys.get_left(reg2)-keys.get_right(reg1))<hor_diff_thresh \
+            #         and abs(box2_top-box1_bottom)<avg_ver_dist) \
+            #             or (0<(keys.get_left(reg1)-keys.get_right(reg2))<hor_diff_thresh \
+            #                 and abs(box2_top-box1_bottom)<avg_ver_dist):
+            #         return True
+            #     else:
+            #         return False
             ############
 
             #based on box separation :
