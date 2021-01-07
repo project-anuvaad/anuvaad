@@ -8,6 +8,10 @@ import requests
 from .tmxrepo import TMXRepository
 from configs.translatorconfig import nmt_labse_align_url
 from configs.translatorconfig import download_folder
+from configs.translatorconfig import tmx_global_enabled
+from configs.translatorconfig import tmx_org_enabled
+from configs.translatorconfig import tmx_user_enabled
+
 
 repo = TMXRepository()
 
@@ -144,21 +148,20 @@ class TMXService:
                     sliding_pivot = len(sentence)
                     i = 1
             computed += 1
-        log_info("TMX-FETCH computed: " + str(computed) + " | tmx: " + str(tmx), ctx)
         return tmx_phrases
 
     # Fetches TMX phrases for a sentence from hierarchical cache
     def get_tmx_with_fallback(self, tmx_record):
         hash_dict = self.get_hash_key(tmx_record, True)
-        if 'USER' in hash_dict.keys():
+        if tmx_user_enabled and 'USER' in hash_dict.keys():
             tmx_result = repo.search([hash_dict["USER"]])
             if tmx_result:
                 return tmx_result
-        if 'ORG' in hash_dict.keys():
+        if tmx_org_enabled and 'ORG' in hash_dict.keys():
             tmx_result = repo.search([hash_dict["ORG"]])
             if tmx_result:
                 return tmx_result
-        if 'GLOBAL' in hash_dict.keys():
+        if tmx_global_enabled and 'GLOBAL' in hash_dict.keys():
             tmx_result = repo.search([hash_dict["GLOBAL"]])
             if tmx_result:
                 return tmx_result
