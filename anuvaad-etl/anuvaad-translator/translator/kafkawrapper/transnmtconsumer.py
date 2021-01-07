@@ -13,7 +13,7 @@ from configs.translatorconfig import anu_nmt_output_topic
 from configs.translatorconfig import anu_translator_consumer_grp
 from configs.translatorconfig import kafka_bootstrap_server_host
 from configs.translatorconfig import translator_nmt_cons_no_of_partitions
-from configs.translatorconfig import nmt_map
+from configs.translatorconfig import anu_nmt_output_topic_mx
 
 log = logging.getLogger('file')
 
@@ -43,10 +43,8 @@ def get_topic_paritions(topics):
 # Method to read and process the requests from the kafka queue
 def consume_nmt():
     try:
-        topics = []
-        for machine in nmt_map.keys():
-            topics.append(nmt_map[machine]["output"])
-        topics = [anu_nmt_output_topic]
+        topics = list(str(anu_nmt_output_topic_mx).split(","))
+        #topics = [anu_nmt_output_topic]
         consumer = instantiate(topics)
         service = TranslatorService()
         rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))

@@ -10,10 +10,11 @@ from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_nmt_input_topic
 from configs.translatorconfig import anu_translator_output_topic
 from configs.translatorconfig import tool_translator
-from configs.translatorconfig import nmt_map
+from configs.translatorconfig import anu_nmt_input_topic_mx
 from configs.translatorconfig import tmx_enabled
 
 current_nmt = 0
+topics_map = {}
 
 utils = TranslatorUtils()
 producer = Producer()
@@ -110,7 +111,8 @@ class TranslatorService:
                     batch = batches[batch_no]
                     record_id_enhanced = record_id + "|" + str(len(batch))
                     nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
-                    producer.produce(nmt_in, anu_nmt_input_topic)
+                    self.nmt_router(nmt_in)
+                    #producer.produce(nmt_in, anu_nmt_input_topic)
                     sentences_per_page += len(batch)
                     total_sentences += len(batch)
                 total_tmx += tmx_count
@@ -184,16 +186,18 @@ class TranslatorService:
 
     # Distributes the NMT traffic across machines.
     def nmt_router(self, nmt_in):
-        no_of_machines = len(nmt_map.keys())
         global current_nmt
-        if current_nmt == 0:
-            current_nmt = 1
-        else:
-            current_nmt += 1
-            if current_nmt > no_of_machines:
-                current_nmt = 1
-        topic = nmt_map[current_nmt]["input"]
+        global topics_map
+        if not topics_map:
+            input_topics = list(str(anu_nmt_input_topic_mx).split(","))
+            topics_map = {}
+            for i, topic in enumerate(input_topics):
+                topics_map[i] = topic
+        topic = topics_map[current_nmt]
         producer.produce(nmt_in, topic)
+        current_nmt += 1
+        if current_nmt > len(topics_map.keys()):
+            current_nmt = 0
 
     # Method to process the output received from the NMT
     def process_nmt_output(self, nmt_output):
