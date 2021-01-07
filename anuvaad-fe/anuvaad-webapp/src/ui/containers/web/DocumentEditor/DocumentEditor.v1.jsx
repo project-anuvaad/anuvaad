@@ -31,6 +31,7 @@ import { showPdf, clearShowPdf } from '../../../../flux/actions/apis/document_tr
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
+import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import { Button } from "@material-ui/core";
 
 const PAGE_OPS = require("../../../../utils/page.operations");
@@ -119,6 +120,7 @@ class DocumentEditor extends React.Component {
     let jobId = recordId ? recordId.split("|")[0] : ""
     TELEMETRY.endTranslatorFlow(jobId)
     this.props.clearFetchContent()
+    this.props.clearHighlighBlock()
     this.props.clearShowPdf()
   }
 
@@ -676,6 +678,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     update_blocks,
     ClearContent,
     clearFetchContent,
+    clearHighlighBlock,
     editorModeNormal, editorModeMerge, editorModeClear,
     showPdf,
     clearShowPdf
