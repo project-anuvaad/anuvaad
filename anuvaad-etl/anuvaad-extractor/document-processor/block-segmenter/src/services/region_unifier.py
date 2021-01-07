@@ -422,7 +422,7 @@ class Region_Unifier:
             n_text_table_regions.extend(t_list)
             n_text_table_regions.extend(image_region)
             flag =True
-            if self.check_double_column(self,regions):
+            if self.check_double_column(self,v_list):
                 print("this document is double columnssssssss")
                 return v_list, n_text_table_regions
 
