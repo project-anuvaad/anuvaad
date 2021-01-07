@@ -79,8 +79,12 @@ class UserDetails extends React.Component {
       MUIDataTableBodyCell: {
         root: {
           padding: '3px 10px 3px',
-          marginLeft: '-4%'
         },
+      },
+      MUIDataTableHeadCell: {
+        fixedHeader: {
+              paddingLeft: '1.2%'
+        }
       }
     }
   })
@@ -211,7 +215,7 @@ class UserDetails extends React.Component {
         options: {
           filter: false,
           sort: false,
-          display: "exclude"
+          display: "exclude",
         }
       },
       {

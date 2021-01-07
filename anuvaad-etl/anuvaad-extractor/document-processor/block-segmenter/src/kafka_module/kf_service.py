@@ -48,23 +48,23 @@ def process_block_segmenter_kf():
     # instatiation of consumer for respective topic
     try:
         consumer = consumer_validator()
-        log_info("process_layout_detector_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
+        log_info("process_document_segmenter_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
         
         for msg in consumer:
             if Consumer.get_json_data(msg.value) == None:
-                log_info('process_layout_detector_kf - received invalid data {}'.format(msg.value), None)
+                log_info('process_document_segmenter_kf - received invalid data {}'.format(msg.value), None)
                 continue
             data            = Consumer.get_json_data(msg.value)
 
             jobid           = data['jobID']
-            log_info('process_layout_detector_kf - received message from kafka, dumping into internal queue', data)
+            log_info('process_document_segmenter_kf - received message from kafka, dumping into internal queue', data)
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             
             #if input_files[0]['locale'] == 'en':
                 #############
             ####################################
             Queue.put(data)
-            log_info('process_layout_detector_kf - request in internal queue {}'.format(Queue.qsize()),
+            log_info('process_document_segmenter_kf - request in internal queue {}'.format(Queue.qsize()),
                         data)
             ########################################
             # else:
