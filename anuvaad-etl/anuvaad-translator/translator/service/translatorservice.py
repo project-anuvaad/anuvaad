@@ -196,7 +196,7 @@ class TranslatorService:
         topic = topics_map[current_nmt]
         producer.produce(nmt_in, topic)
         current_nmt += 1
-        if current_nmt > len(topics_map.keys()):
+        if current_nmt == len(topics_map.keys()):
             current_nmt = 0
 
     # Method to process the output received from the NMT

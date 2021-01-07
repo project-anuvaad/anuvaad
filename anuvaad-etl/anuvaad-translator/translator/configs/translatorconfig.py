@@ -34,8 +34,8 @@ tmx_default_context = "JUDICIARY"
 tmx_enabled = os.environ.get('TRANSLATOR_TMX_ENABLED', True)
 
 #nmt-machine-topics
-anu_nmt_input_topic_mx = os.environ.get('KAFKA_NMT_MACHINES_INPUT_TOPICS', 'anuvaad-nmt-translate-m1,anuvaad-nmt-translate-m2')
-anu_nmt_output_topic_mx = os.environ.get('KAFKA_NMT_MACHINES_OUTPUT_TOPICS', 'anuvaad-nmt-translate-processed-m1,anuvaad-nmt-translate-processed-m2')
+anu_nmt_input_topic_mx = os.environ.get('KAFKA_NMT_MACHINES_INPUT_TOPICS', 'anuvaad-nmt-translate,anuvaad-nmt-translate-m2')
+anu_nmt_output_topic_mx = os.environ.get('KAFKA_NMT_MACHINES_OUTPUT_TOPICS', 'anuvaad-nmt-translate-processed,anuvaad-nmt-translate-processed-m2')
 
 
 #kafka-configs
