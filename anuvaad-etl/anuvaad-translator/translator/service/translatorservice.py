@@ -152,7 +152,10 @@ class TranslatorService:
             block_id = block["block_id"]
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
+                    log_info("TMX-FETCH sentence: " + str(sentence), translate_wf_input)
+                    log_info("TMX-FETCH Start", translate_wf_input)
                     tmx_phrases = self.fetch_tmx(sentence["src"], file, translate_wf_input)
+                    log_info("TMX-FETCH End", translate_wf_input)
                     tmx_count += len(tmx_phrases)
                     node_id = str(record_id) + "|" + str(page_no) + "|" + str(block_id)
                     sent_nmt_in = {"src": sentence["src"], "s_id": sentence["s_id"], "n_id": node_id, "tmx_phrases": tmx_phrases}

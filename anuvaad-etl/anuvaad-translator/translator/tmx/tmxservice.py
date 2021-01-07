@@ -85,7 +85,7 @@ class TMXService:
                     tmx_record_reverse_pair["orgID"] = tmx_input["orgID"]
                 tmx_records.append(tmx_record_reverse_pair)
                 for tmx_record in tmx_records:
-                    hash_dict = self.get_hash_key(tmx_record)
+                    hash_dict = self.get_hash_key(tmx_record, False)
                     for hash_key in hash_dict.keys():
                         tmx_record["hash"] = hash_dict[hash_key]
                         repo.upsert(tmx_record["hash"], tmx_record)
@@ -103,7 +103,7 @@ class TMXService:
         if org_id:
             tmx_record["orgID"] = org_id
         try:
-            return self.tmx_phrase_search(tmx_record)
+            return self.tmx_phrase_search(tmx_record, ctx)
         except Exception as e:
             log_exception("Exception while searching tmx from redis: " + str(e), ctx, e)
             return []
@@ -118,19 +118,23 @@ class TMXService:
 
     # Searches for all tmx phrases within a given sentence
     # Uses a custom implementation of the sliding window search algorithm.
-    def tmx_phrase_search(self, tmx_record):
+    def tmx_phrase_search(self, tmx_record, ctx):
         sentence, tmx_phrases = tmx_record["src"], []
         start_pivot, sliding_pivot, i = 0, len(sentence), 1
+        computed, tmx = 0, 0
         while start_pivot < len(sentence):
             phrase = sentence[start_pivot:sliding_pivot]
             tmx_record["src"] = phrase
+            log_info("TMX-FETCH redis Start", ctx)
             tmx_result = self.get_tmx_with_fallback(tmx_record)
+            log_info("TMX-FETCH redis End", ctx)
             if tmx_result:
                 tmx_phrases.append(tmx_result[0])
                 phrase_list = phrase.split(" ")
                 start_pivot += (1 + len(' '.join(phrase_list)))
                 sliding_pivot = len(sentence)
                 i = 1
+                tmx += 1
             else:
                 sent_list = sentence.split(" ")
                 phrase_list = phrase.split(" ")
@@ -141,11 +145,13 @@ class TMXService:
                     start_pivot += (1 + len(' '.join(phrase_list)))
                     sliding_pivot = len(sentence)
                     i = 1
+            computed += 1
+        log_info("TMX-FETCH computed: " + str(computed) + " | tmx: " + str(tmx), ctx)
         return tmx_phrases
 
     # Fetches TMX phrases for a sentence from hierarchical cache
     def get_tmx_with_fallback(self, tmx_record):
-        hash_dict = self.get_hash_key(tmx_record)
+        hash_dict = self.get_hash_key(tmx_record, True)
         if 'USER' in hash_dict.keys():
             tmx_result = repo.search([hash_dict["USER"]])
             if tmx_result:
@@ -224,12 +230,16 @@ class TMXService:
         redis_records = repo.get_all_records(req["keys"])
         return redis_records
 
-    # Creates a md5 hash values using userID, orgID, context, locale and src.
-    def get_hash_key(self, tmx_record):
+    # Creates a md5 hash values using userID, orgID, context, locale and src for inserting and searching records.
+    def get_hash_key(self, tmx_record, is_search):
         hash_dict = {}
-        if 'orgID' not in tmx_record.keys() and 'userID' not in tmx_record.keys():
+        if is_search:
             global_hash = tmx_record["context"] + "__" + tmx_record["locale"] + "__" + tmx_record["src"]
             hash_dict["GLOBAL"] = hashlib.sha256(global_hash.encode('utf-16')).hexdigest()
+        else:
+            if 'orgID' not in tmx_record.keys() and 'userID' not in tmx_record.keys():
+                global_hash = tmx_record["context"] + "__" + tmx_record["locale"] + "__" + tmx_record["src"]
+                hash_dict["GLOBAL"] = hashlib.sha256(global_hash.encode('utf-16')).hexdigest()
         if 'orgID' in tmx_record.keys():
             org_hash = tmx_record["orgID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + tmx_record["src"]
             hash_dict["ORG"] = hashlib.sha256(org_hash.encode('utf-16')).hexdigest()
