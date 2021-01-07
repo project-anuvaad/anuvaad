@@ -82,7 +82,7 @@ class SignUp extends React.Component {
                 })
                   .then(resp => {
                     if (resp.ok) {
-                      TELEMETRY.createUserEvent(this.state.firstName, this.state.email)
+                      TELEMETRY.createUserEvent(this.state.firstName, this.state.email, "user")
 
                       this.setState({
                         message: translate('signUp.page.message.successfullyCreatedACcount'),

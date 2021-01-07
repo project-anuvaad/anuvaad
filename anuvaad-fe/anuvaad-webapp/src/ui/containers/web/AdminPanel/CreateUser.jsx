@@ -26,6 +26,9 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import ADMINCONFIG from "../../../../configs/adminConfig";
+
+const TELEMETRY = require("../../../../utils/TelemetryManager");
+
 const roles = ADMINCONFIG.roles;
 const orgID = ADMINCONFIG.orgID;
 
@@ -270,6 +273,8 @@ class CreateUser extends React.Component {
             })
               .then(async res => {
                 if (res.ok) {
+                  TELEMETRY.createUserEvent(name, emailid, "admin")
+
                   await res.json().then(obj => {
                     this.setState({
                       loading: false,

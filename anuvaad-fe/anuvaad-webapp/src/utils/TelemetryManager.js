@@ -393,7 +393,7 @@ export const mergeSentencesEvent = (sentences_initial, sentence_final) => {
  * @param {*} name , name of the user
  * @param {*} email , email id of the user
  */
-export const createUserEvent = (name, email) => {
+export const createUserEvent = (name, email, createdBy) => {
   if ($t.isInitialized() === false) {
     init()
   }
