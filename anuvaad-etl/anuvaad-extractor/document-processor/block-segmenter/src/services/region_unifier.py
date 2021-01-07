@@ -338,7 +338,7 @@ class Region_Unifier:
         try:
             
             text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(page_regions)
-
+            
 
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
             text_region     = remvoe_regions(copy.deepcopy(tabel_region) ,copy.deepcopy(text_region))
@@ -401,9 +401,11 @@ class Region_Unifier:
             ########################
             n_text_table_regions.extend(t_list)
             n_text_table_regions.extend(image_region)
-            flag =True
+            flag =False
+            #if not check_double_column(text_region):
             while flag==True:
                 v_list, flag = self.merge_remove_overlap(v_list,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
+
         except Exception as e:
             log_exception("Error occured during block unifier",  app_context.application_context, e)
             return None  ,None
