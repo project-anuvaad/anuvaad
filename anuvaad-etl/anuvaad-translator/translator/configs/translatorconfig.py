@@ -31,7 +31,7 @@ anu_nmt_output_topic = os.environ.get('KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC', 'anu
 jm_cron_interval_sec = 30
 download_folder = "/app/upload/"
 tmx_default_context = "JUDICIARY"
-tmx_enabled = os.environ.get('TRANSLATOR_TMX_ENABLED', True)
+tmx_enabled = os.environ.get('TRANSLATOR_TMX_ENABLED', False)
 
 #nmt-machine-topics
 anu_nmt_input_topic_mx = os.environ.get('KAFKA_NMT_MACHINES_INPUT_TOPICS', 'anuvaad-nmt-translate,anuvaad-nmt-translate-m2')

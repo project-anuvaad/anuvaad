@@ -112,7 +112,6 @@ class TranslatorService:
                     record_id_enhanced = record_id + "|" + str(len(batch))
                     nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
                     self.nmt_router(nmt_in)
-                    #producer.produce(nmt_in, anu_nmt_input_topic)
                     sentences_per_page += len(batch)
                     total_sentences += len(batch)
                 total_tmx += tmx_count

@@ -44,7 +44,6 @@ def get_topic_paritions(topics):
 def consume_nmt():
     try:
         topics = list(str(anu_nmt_output_topic_mx).split(","))
-        #topics = [anu_nmt_output_topic]
         consumer = instantiate(topics)
         service = TranslatorService()
         rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
