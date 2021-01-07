@@ -162,7 +162,7 @@ class Region_Unifier:
                 count=count+1
             else:
                 del regions[0]
-        if count>0.3*total_regions
+        if count>0.3*total_regions:
             return True
         else:
             return False
@@ -425,7 +425,7 @@ class Region_Unifier:
             if check_double_column(self,regions):
                 print("this document is double columnssssssss")
                 return v_list, n_text_table_regions
-                
+
             while flag==True:
                 v_list, flag = self.merge_remove_overlap(v_list,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
 
