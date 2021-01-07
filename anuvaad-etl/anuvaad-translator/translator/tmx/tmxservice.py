@@ -125,9 +125,7 @@ class TMXService:
         while start_pivot < len(sentence):
             phrase = sentence[start_pivot:sliding_pivot]
             tmx_record["src"] = phrase
-            log_info("TMX-FETCH redis Start", ctx)
             tmx_result = self.get_tmx_with_fallback(tmx_record)
-            log_info("TMX-FETCH redis End", ctx)
             if tmx_result:
                 tmx_phrases.append(tmx_result[0])
                 phrase_list = phrase.split(" ")
