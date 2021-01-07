@@ -63,7 +63,6 @@ def compare_regions(gt_regions, predicted_regions):
         for line_index, line in enumerate(predicted_regions):
             if line_index not in lines_intersected:
                 output.append({'ground': None, 'input': line, 'iou': 0})
-
             # else :
             #     output.append({'ground': intersecting_region, 'input': base_region, 'iou': iou})
         return { 'iou' : output , 'count' : {'input' : predicted_count , 'ground' : gt_count} }
