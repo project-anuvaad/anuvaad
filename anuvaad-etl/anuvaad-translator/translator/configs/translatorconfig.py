@@ -31,8 +31,8 @@ download_folder = "/app/upload/"
 tmx_default_context = "JUDICIARY"
 tmx_enabled = os.environ.get('TRANSLATOR_TMX_ENABLED', True)
 tmx_global_enabled = os.environ.get('TRANSLATOR_TMX_GLOBAL_ENABLED', False)
-tmx_org_enabled = os.environ.get('TRANSLATOR_TMX_ORG_ENABLED', True)
-tmx_user_enabled = os.environ.get('TRANSLATOR_TMX_USER_ENABLED', False)
+tmx_org_enabled = os.environ.get('TRANSLATOR_TMX_ORG_ENABLED', False)
+tmx_user_enabled = os.environ.get('TRANSLATOR_TMX_USER_ENABLED', True)
 
 
 #nmt-machine-topics
