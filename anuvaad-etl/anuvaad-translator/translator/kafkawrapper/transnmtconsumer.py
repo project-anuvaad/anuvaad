@@ -9,7 +9,6 @@ from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
-from configs.translatorconfig import anu_nmt_output_topic
 from configs.translatorconfig import anu_translator_consumer_grp
 from configs.translatorconfig import kafka_bootstrap_server_host
 from configs.translatorconfig import translator_nmt_cons_no_of_partitions

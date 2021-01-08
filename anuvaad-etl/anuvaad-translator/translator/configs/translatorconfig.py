@@ -26,8 +26,6 @@ nmt_labse_align_url = os.environ.get('NMT_LABSE_ALIGN_URL', 'http://172.30.0.234
 #common-variables
 tool_translator = "TRANSLATOR"
 nmt_max_batch_size = 25
-anu_nmt_input_topic = os.environ.get('KAFKA_NMT_TRANSLATION_INPUT_TOPIC', 'anuvaad_nmt_translate')
-anu_nmt_output_topic = os.environ.get('KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC', 'anuvaad_nmt_translate_processed')
 jm_cron_interval_sec = 30
 download_folder = "/app/upload/"
 tmx_default_context = "JUDICIARY"

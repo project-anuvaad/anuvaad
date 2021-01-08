@@ -7,7 +7,6 @@ from tmx.tmxservice import TMXService
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from anuvaad_auditor.errorhandler import post_error
 from configs.translatorconfig import nmt_max_batch_size
-from configs.translatorconfig import anu_nmt_input_topic
 from configs.translatorconfig import anu_translator_output_topic
 from configs.translatorconfig import tool_translator
 from configs.translatorconfig import anu_nmt_input_topic_mx
