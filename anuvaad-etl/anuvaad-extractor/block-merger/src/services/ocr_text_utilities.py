@@ -13,7 +13,28 @@ import src.utilities.app_context as app_context
 from anuvaad_auditor.loghandler import log_exception
 
 
-
+def ocr(crop_image,configs,left,top,language):
+    if configs:
+        temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
+    else:
+        temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
+    temp_df = temp_df[temp_df.text.notnull()]
+    text = ""
+    coord  = []
+    
+    for index, row in temp_df.iterrows():
+        word_coord = {}
+        temp_text  = str(row["text"])
+        temp_conf  = row["conf"]
+        text = text +" "+ str(temp_text)
+        word_coord['text']          = str(temp_text)
+        word_coord['conf']          = temp_conf
+        word_coord['text_left']     = int(row["left"]+left)
+        word_coord['text_top']      = int(row["top"]+top)
+        word_coord['text_width']    = int(row["width"])
+        word_coord['text_height']   = int(row["height"])
+        coord.append(word_coord)
+    return coord, text
 
 
 def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
@@ -34,76 +55,15 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
         crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
         #crop_image.save("/home/naresh/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg')
         if row['text_height']>2*row['font_size']:
-            temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
-
-            temp_df = temp_df[temp_df.text.notnull()]
-
-            text = ""
-            for index2, row1 in temp_df.iterrows():
-                word_coord = {}
-                temp_text  = str(row1["text"])
-                temp_conf  = row1["conf"]
-                #if temp_conf<30:
-                    #check["devnagari_text:"].append(str(temp_text))
-                   # temp_text, temp_conf  = low_conf_ocr(lang,int(row1["left"]+left),int(row1["top"]+top),int(row1["width"]),int(row1["height"]),image)
-                    #check["original"].append(str(temp_text))
-                text = text +" "+ str(temp_text)
-                word_coord['text']          = str(temp_text)
-                word_coord['conf']          = temp_conf
-                word_coord['text_left']     = int(row1["left"]+left)
-                word_coord['text_top']      = int(row1["top"]+top)
-                word_coord['text_width']    = int(row1["width"])
-                word_coord['text_height']   = int(row1["height"])
-                coord.append(word_coord)
-
+            coord,text = ocr(crop_image,False,left,top,lang)
             word_coord_lis.append(coord)
             text_list.append(text)
         else:
-            temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
-            temp_df = temp_df[temp_df.text.notnull()]
-            text = ""
-
-            for index2, row2 in temp_df.iterrows():
-                word_coord = {}
-                temp_text  = str(row2["text"])
-                temp_conf  = row2["conf"]
-                #if temp_conf<30:
-                    #check["devnagari_text:"].append(str(temp_text))
-                    #temp_text, temp_conf  = low_conf_ocr(lang,int(row2["left"]+left),int(row2["top"]+top),int(row2["width"]),int(row2["height"]),image)
-                    #check["original"].append(str(temp_text))
-                text = text +" "+ str(temp_text)
-                word_coord['text']          = str(temp_text)
-                word_coord['conf']          = temp_conf
-                word_coord['text_left']     = int(row2["left"]+left)
-                word_coord['text_top']      = int(row2["top"]+top)
-                word_coord['text_width']    = int(row2["width"])
-                word_coord['text_height']   = int(row2["height"])
-                coord.append(word_coord)
+            coord,text = ocr(crop_image,True,left,top,lang)
             if len(text)==0:
-                temp_df = pytesseract.image_to_data(crop_image, lang=LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
-                temp_df = temp_df[temp_df.text.notnull()]
-                text = ""
-
-                for index2, row2 in temp_df.iterrows():
-                    word_coord = {}
-                    temp_text  = str(row2["text"])
-                    temp_conf  = row2["conf"]
-                    #if temp_conf<30:
-                        #check["devnagari_text:"].append(str(temp_text))
-                        #temp_text, temp_conf  = low_conf_ocr(lang,int(row2["left"]+left),int(row2["top"]+top),int(row2["width"]),int(row2["height"]),image)
-                        #check["original"].append(str(temp_text))
-                    text = text +" "+ str(temp_text)
-                    word_coord['text']          = str(temp_text)
-                    word_coord['conf']          = temp_conf
-                    word_coord['text_left']     = int(row2["left"]+left)
-                    word_coord['text_top']      = int(row2["top"]+top)
-                    word_coord['text_width']    = int(row2["width"])
-                    word_coord['text_height']   = int(row2["height"])
-                    coord.append(word_coord)
+                coord,text = ocr(crop_image,False,left,top,lang)
             word_coord_lis.append(coord)
             text_list.append(text)
-
-
 
     df['word_coords'] = word_coord_lis
     df['text']        = text_list
