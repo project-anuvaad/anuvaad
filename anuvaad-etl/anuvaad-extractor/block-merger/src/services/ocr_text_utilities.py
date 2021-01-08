@@ -10,6 +10,7 @@ import json
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 import src.utilities.app_context as app_context
+from anuvaad_auditor.loghandler import log_exception
 
 
 
@@ -136,28 +137,28 @@ def tesseract_ocr(pdf_data,flags ):
 
     log_info('tesseract ocr started  ===>', app_context.application_context)
     start_time          = time.time()
-    #try:
-    if (flags['page_layout'] == 'single_column') or (flags['doc_class'] == 'class_1'):
-        ocr_dfs = []
-        for i, df in enumerate(dfs):
-            filepath   = pdf_image_paths[i]
-            df_updated  = extract_text_from_image(filepath, desired_width, desired_height, df, lang)
-            df_updated['children'] = None
-            ocr_dfs.append(df_updated)
-    else :
-        ocr_dfs = []
-        for i, sub_dfs in enumerate(dfs):
-            filepath = pdf_image_paths[i]
-            ocr_sub_dfs =[]
-            for sub_df in sub_dfs :
-                sub_df_updated = extract_text_from_image(filepath, desired_width, desired_height, sub_df, lang)
-                sub_df_updated['children'] =None
-                ocr_sub_dfs.append(sub_df_updated)
-            ocr_dfs.append(ocr_sub_dfs)
+    try:
+        if (flags['page_layout'] == 'single_column') or (flags['doc_class'] == 'class_1'):
+            ocr_dfs = []
+            for i, df in enumerate(dfs):
+                filepath   = pdf_image_paths[i]
+                df_updated  = extract_text_from_image(filepath, desired_width, desired_height, df, lang)
+                df_updated['children'] = None
+                ocr_dfs.append(df_updated)
+        else :
+            ocr_dfs = []
+            for i, sub_dfs in enumerate(dfs):
+                filepath = pdf_image_paths[i]
+                ocr_sub_dfs =[]
+                for sub_df in sub_dfs :
+                    sub_df_updated = extract_text_from_image(filepath, desired_width, desired_height, sub_df, lang)
+                    sub_df_updated['children'] =None
+                    ocr_sub_dfs.append(sub_df_updated)
+                ocr_dfs.append(ocr_sub_dfs)
 
-    #except Exception as e :
-    #    log_error("Error in tesseract ocr", app_context.application_context, e)
-    #    return None
+    except Exception as e :
+       log_exception("Error in tesseract ocr " + str(e), app_context.application_context, e)
+       return None
 
     end_time            = time.time()
     extraction_time     = end_time - start_time
