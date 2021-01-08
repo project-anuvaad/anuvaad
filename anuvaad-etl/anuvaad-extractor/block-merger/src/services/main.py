@@ -25,7 +25,7 @@ def extract_images_and_text_regions(filename, base_dir,lang,page_layout):
     pdf_data['table_dfs'], pdf_data['line_dfs'], pdf_data['bg_dfs']     = table_dfs, line_dfs,bg_dfs
     pdf_data['lang']        = lang
     #to_do : add page_layout detection module
-    #flags['page_layout']    = "double_column"
+    flags['page_layout']    = "double_column"
     #del pdf_data['img_dfs']
     return [pdf_data ,flags]
 

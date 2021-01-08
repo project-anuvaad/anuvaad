@@ -33,9 +33,10 @@ def doc_pre_processing(filename, base_dir, lang):
     image        = cv2.imread(img_filepath)
     pdf_image_height  = image.shape[0]
     pdf_image_width = image.shape[1]
-
+    #print("langgggggggggggggggggggg",lang)
     text_blocks_count = check_text(xml_dfs)
     if (text_blocks_count == 0) or (lang in config.CLASS_2_LANG):
+        #print("DocumentStructure : looks like the file is either empty or scanned")
         log_info("DocumentStructure : looks like the file is either empty or scanned", app_context.application_context)
         flags['doc_class'] = 'class_2'
     else:
