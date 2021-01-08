@@ -273,7 +273,7 @@ class ViewDocument extends React.Component {
   }
 
   processDeleteJobClick = (fileName,jobId, recordId) => {
-    this.setState({ showInfo: true, message: "Do you want to delete a job " + fileName + " ?", dialogTitle: "Delete "+ fileName, value: jobId })
+    this.setState({ showInfo: true, message: "Do you want to delete a file " + fileName + " ?", dialogTitle: "Delete "+ fileName, value: jobId })
     // this.makeAPICallJobDelete(jobId);
   };
 
