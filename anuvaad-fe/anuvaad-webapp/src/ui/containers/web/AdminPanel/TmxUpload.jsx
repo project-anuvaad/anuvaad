@@ -300,7 +300,7 @@ class TmxUpload extends Component {
                     showPreviewsInDropzone
                     key= {this.state.key}
                     dropZoneClass={classes.dropZoneArea}
-                    acceptedFiles={[".xls", "xlsx"]}
+                    acceptedFiles={[".xls", ".xlsx"]}
                     onChange={this.handleChange.bind(this)}
                     filesLimit={1}
                     clearOnUnmount = {this.state.cleared}
