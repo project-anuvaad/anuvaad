@@ -22,10 +22,15 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import ADMINCONFIG from "../../../../configs/adminConfig";
 
-const roles = require('./roles.json')
+const TELEMETRY = require("../../../../utils/TelemetryManager");
+
+const roles = ADMINCONFIG.roles;
+const orgID = ADMINCONFIG.orgID;
 
 class CreateUser extends React.Component {
   constructor(props) {
@@ -41,6 +46,7 @@ class CreateUser extends React.Component {
       message: '',
       loading: false,
       showPassword: false,
+      orgName: ''
     };
   }
 
@@ -65,7 +71,7 @@ class CreateUser extends React.Component {
             marginLeft: '4.3%',
             marginBottom: '4%'
           }}>
-            <TextField type="text" onChange={this.handleInputReceived('name')} value={this.state.name} variant="outlined">
+            <TextField id="name" type="text" onChange={this.handleInputReceived('name')} value={this.state.name} variant="outlined">
 
             </TextField>
           </FormControl>
@@ -95,7 +101,7 @@ class CreateUser extends React.Component {
             marginLeft: '4.3%',
             marginBottom: '11.5%'
           }}>
-            <TextField type="email" onChange={this.handleInputReceived('emailid')} value={this.state.emailid} variant="outlined">
+            <TextField id="email" type="email" onChange={this.handleInputReceived('emailid')} value={this.state.emailid} variant="outlined">
 
             </TextField>
           </FormControl>
@@ -127,10 +133,11 @@ class CreateUser extends React.Component {
             marginLeft: '4.3%',
             marginBottom: '4%'
           }}>
-            <OutlinedInput type={this.state.showPassword ? 'text' : 'password'} onChange={this.handleInputReceived('password')} value={this.state.password} variant="outlined"
+            <OutlinedInput id="password" type={this.state.showPassword ? 'text' : 'password'} onChange={this.handleInputReceived('password')} value={this.state.password} variant="outlined"
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
+                    id="hide-show"
                     aria-label="toggle password visibility"
                     onClick={this.handleClickShowPassword}
                     edge="end"
@@ -168,7 +175,7 @@ class CreateUser extends React.Component {
           }}>
             <Select
               labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
+              id="roles"
               onChange={this.processOnSelect}
               value={this.state.roleCode}
               style={{
@@ -176,13 +183,55 @@ class CreateUser extends React.Component {
               }}
             >
               {
-                roles.map((role, i) => <MenuItem key={role.roleCode} value={role.roleCode}>{role.roleCode}</MenuItem>)
+                roles.map((role, i) => <MenuItem id={role.roleCode} key={role.roleCode} value={role.roleCode}>{role.roleCode}</MenuItem>)
               }
             </Select>
           </FormControl>
         </Grid>
       </Grid>
     )
+  }
+  renderOrgItems = () => {
+    return (
+      <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
+        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
+          <Typography value="" variant="h5">
+            Organisation
+          </Typography>
+        </Grid>
+
+        <Grid item xs={6} sm={6} lg={4} xl={4} >
+          <FormControl variant="outlined" style={{
+            width: '92%',
+            fullWidth: true,
+            display: "flex",
+            wrap: "nowrap",
+            height: '40px',
+            magin: 'dense',
+            marginLeft: '4.3%',
+            marginBottom: '5%'
+          }}>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="roles"
+              onChange={this.handleOrg}
+              value={this.state.orgName}
+              style={{
+                fullWidth: true,
+              }}
+            >
+              {
+                orgID.map((id, i) => <MenuItem id={i} key={i} value={id}>{id}</MenuItem>)
+              }
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+    )
+  }
+
+  handleOrg = (e) => {
+    this.setState({ orgName: e.target.value })
   }
 
 
@@ -211,8 +260,8 @@ class CreateUser extends React.Component {
       if (this.state.emailid.match(mailFormat)) {
         if (this.state.password.match(passwordFormat)) {
           const token = localStorage.getItem("token");
-          const { emailid, name, password, roleInfo } = this.state
-          const createUserObj = new CreateUsers(emailid, name, password, roleInfo, token);
+          const { emailid, name, password, roleInfo, orgName } = this.state
+          const createUserObj = new CreateUsers(emailid, name, password, roleInfo, token, orgName);
           try {
             this.setState({
               loading: true,
@@ -224,6 +273,8 @@ class CreateUser extends React.Component {
             })
               .then(async res => {
                 if (res.ok) {
+                  TELEMETRY.createUserEvent(name, emailid, "admin")
+
                   await res.json().then(obj => {
                     this.setState({
                       loading: false,
@@ -238,6 +289,8 @@ class CreateUser extends React.Component {
                 } else {
                   if (res.status === 400) {
                     await res.json().then(obj => {
+                      TELEMETRY.log("admin-create-user", JSON.stringify(obj))
+
                       this.setState({
                         loading: false,
                         isenabled: true,
@@ -301,12 +354,14 @@ class CreateUser extends React.Component {
             {this.renderEmaiIdItems()}
             {this.renderPasswordItems()}
             {this.renderRoleItems()}
+            {this.renderOrgItems()}
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
             </Grid>
 
             <Grid item xs={6} sm={6} lg={6} xl={6}>
               <Button
+                id="reset"
                 variant="contained"
                 color="primary"
                 onClick={this.processClearButton}
@@ -323,6 +378,7 @@ class CreateUser extends React.Component {
                 position: 'relative'
               }}>
                 <Button
+                  id="save"
                   color="primary"
                   variant="contained"
                   onClick={this.processCreateUser}

@@ -5,7 +5,7 @@ import API from "../api";
 import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class CreateUsers extends API {
-    constructor(email, firstName, password, roles,token,timeout = 2000) {
+    constructor(email, firstName, password, roles,token,orgName, timeout = 2000) {
         super("POST", timeout, false);
         this.type = C.SAVE_USER;
         this.email = email;
@@ -14,6 +14,7 @@ export default class CreateUsers extends API {
         this.roles = roles;
         this.token = token;
         this.password = password;
+        this.orgName = orgName;
         this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.createuser}`;
         // console.log('type',this.type,'email',this.email,'name',this.name,'UserName',this.userName,'Roles',this.roles,'endpoint',this.endpoint)
     }
@@ -43,7 +44,8 @@ export default class CreateUsers extends API {
                         "password": this.password,
                         "email": this.email,
                         "phoneNo": "",
-                        "roles": this.roles
+                        "roles": this.roles,
+                        "orgID" : this.orgName
                     }]
         }
     }

@@ -60,6 +60,8 @@ class SentenceModel(object):
                                                         "data.tokenized_sentences.$.src"  : sentence['src'],
                                                         "data.tokenized_sentences.$.tgt"  : sentence['tgt'],
                                                         "data.tokenized_sentences.$.save" : sentence['save'],
+                                                        "data.tokenized_sentences.$.bleu_score" : sentence['bleu_score'],
+                                                        "data.tokenized_sentences.$.time_spent_ms" : sentence['time_spent_ms']
                                                     }
                                                 }, upsert=False)
 
@@ -107,7 +109,6 @@ class SentenceModel(object):
             collections = get_db()[DB_SCHEMA_NAME]
             docs        = collections.aggregate([
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
-                                { '$unwind': "$data" },
                                 { '$unwind': "$data.tokenized_sentences" },
                                 { "$addFields": { 
                                  "data.tokenized_sentences.words": { "$split": [ "$data.tokenized_sentences.src", " " ] }}},
@@ -115,25 +116,28 @@ class SentenceModel(object):
                                  { "$group": {
                                     "_id": "$data.tokenized_sentences.save",
                                     "doc_sent_count": { "$sum": 1 },
-                                     "doc_wrd_count" : { "$sum": "$sent_wrd_count" } }}
+                                     "doc_wrd_count" : { "$sum": "$sent_wrd_count" },
+                                     "total_bleu_score":{"$sum": "$data.tokenized_sentences.bleu_score"},
+                                     "total_time_spent":{"$sum": "$data.tokenized_sentences.time_spent_ms"} 
+                                     }}
                                 ])
-            # docs        = collections.aggregate([
-            #                     { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
-            #                     { '$unwind': "$data" },
-            #                     { '$unwind': "$data.tokenized_sentences" },
-            #                     { "$group": {
-            #                         "_id": "$data.tokenized_sentences.save",
-            #                         "count": { "$sum": 1 }
-            #                     }}
-            #                 ])
+
+
 
             empty_sent_count     = 0
             saved_sent_count     = 0
             unsaved_sent_count   = 0
 
+
             empty_wrd_count      = 0
             saved_wrd_count      = 0
             unsaved_wrd_count    = 0
+
+            
+            total_saved_bleu_score     = 0
+            avg_bleu_score             = 0
+
+            total_time_spent_ms = 0
 
             for doc in docs:
                 if doc['_id'] == None:
@@ -142,15 +146,22 @@ class SentenceModel(object):
                 if doc['_id'] == True:
                     saved_sent_count = doc['doc_sent_count']
                     saved_wrd_count  = doc['doc_wrd_count']
+                    total_saved_bleu_score = doc["total_bleu_score"]
+                    avg_bleu_score      = total_saved_bleu_score/saved_sent_count
+                    total_time_spent_ms = doc["total_time_spent"]
                 if doc['_id'] == False:
                     unsaved_sent_count = doc['doc_sent_count']
                     unsaved_wrd_count  = doc['doc_wrd_count']
+
+            
 
             return {
                 'total_sentences': empty_sent_count + saved_sent_count + unsaved_sent_count,
                 'completed_sentences': saved_sent_count,
                 'total_words': empty_wrd_count + saved_wrd_count + unsaved_wrd_count,
-                'completed_words': saved_wrd_count
+                'completed_words': saved_wrd_count,
+                'avg_bleu_score' : avg_bleu_score,
+                'total_time_spent_ms': total_time_spent_ms
             }
                 
         except Exception as e:

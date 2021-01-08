@@ -81,7 +81,7 @@ class ViewDocument extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
+    if (this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
       TELEMETRY.endWorkflow(this.props.job_details.changedJob.source_language_code, this.props.job_details.changedJob.target_language_code, this.props.job_details.changedJob.filename, this.props.job_details.changedJob.jobID, this.props.job_details.changedJob.status)
     }
 
@@ -162,14 +162,6 @@ class ViewDocument extends React.Component {
     updateExisting = false
   ) {
     const { APITransport } = this.props;
-    console.log(
-      offset,
-      limit,
-      jobIds,
-      searchForNewJob,
-      searchNextPage,
-      updateExisting
-    );
     const apiObj = new FetchDocument(
       offset,
       limit,
@@ -268,22 +260,28 @@ class ViewDocument extends React.Component {
 
   processJobTimelinesClick(jobId, recordId) {
     let taskDetails = this.getJobIdDetail(jobId);
-    this.setState({ showInfo: true, message: taskDetails });
+    this.setState({ showInfo: true, message: taskDetails, dialogType: "info", dialogTitle: "File Process Information" });
   }
 
   handleDialogClose() {
-    this.setState({ showInfo: false });
+    this.setState({ showInfo: false, dialogType: null, dialogTitle: null, message: null });
   }
 
-  processDeleteJobClick = (jobId, recordId) => {
+  handleDialogSubmit = (jobId) => {
+    this.setState({ showInfo: false, dialogType: null, dialogTitle: null, value: null, message: null });
     this.makeAPICallJobDelete(jobId);
+  }
+
+  processDeleteJobClick = (fileName,jobId, recordId) => {
+    this.setState({ showInfo: true, message: "Do you want to delete a file " + fileName + " ?", dialogTitle: "Delete "+ fileName, value: jobId })
+    // this.makeAPICallJobDelete(jobId);
   };
 
   processViewDocumentClick = (jobId, recordId, status) => {
     let job = this.getJobIdDetail(jobId);
     if (status === "COMPLETED") {
       history.push(
-        `${process.env.PUBLIC_URL}/interactive-document/${job.source_language_code}/${job.target_language_code}/${job.target_language_code}/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
+        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
         this.state
       );
     } else if (status === "INPROGRESS") {
@@ -466,6 +464,19 @@ class ViewDocument extends React.Component {
           sort: false,
           empty: true,
         },
+      }, {
+        name: "bleu_score",
+        label: "Average Bleu",
+        options: {
+          hint: "Total bleu score / Total saved sentence",
+          sort: false
+        }
+      }, {
+        name: "spent_time",
+        label: "Time Spent",
+        options: {
+          sort: false
+        }
       },
       {
         name: "endTime",
@@ -476,7 +487,7 @@ class ViewDocument extends React.Component {
       },
       {
         name: "Time Taken",
-        label: "Time Taken",
+        label: "Job time",
         options: {
           filter: true,
           sort: true,
@@ -486,8 +497,8 @@ class ViewDocument extends React.Component {
                 <div>
                   {tableMeta.rowData[5] === "COMPLETED" &&
                     this.getDateTimeDifference(
-                      tableMeta.rowData[8],
-                      tableMeta.rowData[10]
+                      tableMeta.rowData[10],
+                      tableMeta.rowData[12]
                     )}
                 </div>
               );
@@ -505,7 +516,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.getDateTimeFromTimestamp(tableMeta.rowData[10])}
+                  {this.getDateTimeFromTimestamp(tableMeta.rowData[12])}
                 </div>
               );
             }
@@ -560,6 +571,7 @@ class ViewDocument extends React.Component {
                       component="a"
                       onClick={() =>
                         this.processDeleteJobClick(
+                          tableMeta.rowData[0],
                           tableMeta.rowData[1],
                           tableMeta.rowData[2]
                         )
@@ -596,7 +608,7 @@ class ViewDocument extends React.Component {
         body: {
           noMatch:
             this.props.job_details.count > 0 &&
-            this.props.job_details.count >
+              this.props.job_details.count >
               this.props.job_details.documents.length
               ? "Loading...."
               : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound"),
@@ -624,7 +636,7 @@ class ViewDocument extends React.Component {
       },
       count: this.props.job_details.count,
       filterType: "checkbox",
-      download: false,
+      download: true,
       print: false,
       fixedHeader: true,
       filter: false,
@@ -654,13 +666,14 @@ class ViewDocument extends React.Component {
         {this.state.showInfo && (
           <Dialog
             message={this.state.message}
-            type="info"
+            type={this.state.dialogType}
             handleClose={this.handleDialogClose.bind(this)}
             open
-            title="File Process Information"
+            title={this.state.dialogTitle}
+            handleSubmit={this.handleDialogSubmit.bind(this)}
+            value={this.state.value}
           />
         )}
-
         {(this.state.showLoader || this.state.loaderDelete) && <Spinner />}
         {this.state.dialogMessage && this.snackBarMessage()}
       </div>

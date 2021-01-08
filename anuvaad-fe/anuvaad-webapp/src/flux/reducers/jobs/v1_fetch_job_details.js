@@ -54,10 +54,12 @@ function get_document_details(input) {
         document['model_id']                = job['input']['files'][0]['model']['model_id'];
 
         document['created_on']              = job['startTime'];
-        document['endTime']              = job['endTime'];
+        document['endTime']                 = job['endTime'];
         document['status']                  = job['status'];
         document['progress']                = '...'
         document['word_count']              = '...' 
+        document['bleu_score']              = '...'
+        document['spent_time']              = '...'
 
         job['taskDetails'].forEach(task => {
             let timeline = {}
@@ -88,6 +90,14 @@ function get_document_details(input) {
     return documents;
 }
 
+function timeCalculate(total_time){
+
+    let sec = total_time / 1000;
+    var date = new Date(0);
+    date.setSeconds(sec); // specify value for SECONDS here
+    return date.toISOString().substr(11, 8);
+}
+
 /**
  * @description update the progress of individual record
  * @param {*} documents , existing documents
@@ -99,8 +109,10 @@ function update_documents_progress(documents, progresses) {
         let found = false;
         progresses.forEach(progress => {
             if (document['recordId'] === progress['record_id']) {
-                document['progress'] =  `${progress['completed_sentence_count']} of ${progress['total_sentence_count']}`
-                document['word_count'] =  `${progress['completed_word_count']} of ${progress['total_word_count']}`
+                document['progress']    =  `${progress['completed_sentence_count']} of ${progress['total_sentence_count']}`
+                document['word_count']  =  `${progress['completed_word_count']} of ${progress['total_word_count']}`
+                document['bleu_score']  =  `${Number(progress['avg_bleu_score'])>0? Number(progress['avg_bleu_score']).toFixed(2):'0'} `
+                document['spent_time']  =   timeCalculate(`${progress['total_time_spent_ms']}`)
                 updated_documents.push(document)
                 found = true;
             }

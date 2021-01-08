@@ -6,54 +6,21 @@ import config,time
 import json
 from src.utilities.request_parse import get_files, File,get_json
 from src.services.segment import horzontal_merging, break_block
-from src.utilities.region_operations import collate_regions, get_ngram, are_hlines
-from src.services.region_unifier import region_unifier
+from src.utilities.region_operations import merge_text
+from src.services.region_unifier import Region_Unifier
 
-# save_dir = '/home/naresh/judgement_layout_pubnet/'
+region_unifier = Region_Unifier()
 
-# def draw_box(resp,filepath,save_dir,color="green", save=False):
-#     image  = Image.open("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/word-detector/craft/"+filepath)
-#     draw   = ImageDraw.Draw(image)
-#     for i in resp['rsp']['outputs'][0]['pages'][page_index]['regions']:
-#         draw.rectangle(((i['boundingBox']['vertices'][0]['x'], i['boundingBox']['vertices'][0]['y']), (i['boundingBox']['vertices'][2]['x'],i['boundingBox']['vertices'][2]['y'])), outline=color,width=3)
-        
-    
-#     save_filepath = os.path.join(save_dir, "bbox_layout_"+os.path.basename(filepath))
-#     if save:
-#         image.save(save_filepath)
-    
-#     return image
-#
-# def segment_regions(lines,regions):
-#
-#
-#     #v_list = collate_regions(regions,lines)
-#     v_list, n_text_regions = region_unifier(lines,regions)
-#     #print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",v_list[0],"fffffffffffffffffffffffffffffffff")
-#     p_list = []
-#     for v_block in v_list:
-#         #print(v_block,'vvvbbbbb')
-#         if len(v_block['children']) > 1 :
-#             #v_block['children'] = horzontal_merging(v_block['children'])
-#             #p_list +=  break_block(v_block)
-#             p_list +=[v_block]
-#         else :
-#             p_list +=  v_block['children']
-#     p_list += n_text_regions
-#     return p_list
+def segment_regions(words, lines,regions):
 
-
-
-def segment_regions(lines,regions):
-
-    v_list, n_text_regions = region_unifier(lines,regions)
+    v_list, n_text_regions = region_unifier.region_unifier(words,lines,regions)
     p_list = []
     for v_block in v_list:
-        if len(v_block['children']) > 1 :
-            #p_list +=  break_block(v_block)
-            p_list +=[v_block]
+        if  v_block['children'] != None and  len(v_block['children']) > 1 :
+            p_list+= break_block(v_block)
+            #p_list +=[v_block]
         else :
-            p_list +=  v_block['children']
+            p_list +=  [v_block]
     p_list += n_text_regions
     return p_list
 
@@ -70,11 +37,13 @@ def get_segmented_regions(app_context,base_dir) :
             page_counts = len(pages)
             start_time = time.time()
             for page_index in range(page_counts):
+                print('processing for page   :  ', page_index)
                 page_lines   =  file_properties.get_lines(page_index)
                 page_regions =  file_properties.get_regions(page_index)
-                #draw_box(page_regions,filepath,save_dir,color="green", save=True)
-                page_regions =  region_unifier(page_lines,page_regions)
-                file_properties.set_regions(page_index, segment_regions(page_lines,page_regions))
+                page_words   =  file_properties.get_words(page_index)
+
+                #page_regions =  region_unifier.region_unifier(page_lines,page_regions)
+                file_properties.set_regions(page_index, segment_regions(page_words,page_lines,page_regions))
             output.append(file_properties.get_file())
             output[index]['status']= {'message':"block-segmenter successful"}
             end_time            = time.time()

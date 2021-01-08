@@ -25,7 +25,8 @@ class Evalue:
         return self.eval['config']['strategy']
 
     def get_boxlevel(self):
-        key_mapping = {'WORD' : 'words' ,'LINE':'lines' , 'PARAGRAPH' : 'regions' }
+        #key_mapping = {'WORD' : 'region_words' ,'LINE':'region_lines' , 'PARAGRAPH' : 'regions' }
+        key_mapping = {'WORD': 'words', 'LINE': 'lines', 'PARAGRAPH': 'regions'}
         return key_mapping[self.eval['config']['boxLevel']]
 
     def get_json(self):
@@ -35,10 +36,19 @@ class Evalue:
         in_path =  config.BASE_DIR + '/' + in_file_name
         with open(gt_path) as f:
             gt_json = json.load(f)
-            gt_data = gt_json['rsp']['outputs']
+
         with open(in_path) as f:
             in_json = json.load(f)
+        if 'rsp' in gt_json.keys():
+            gt_data = gt_json['rsp']['outputs']
+        else:
+            gt_data = gt_json['outputs']
+        if 'rsp' in in_json.keys():
             in_data = in_json['rsp']['outputs']
+        else:
+            in_data = in_json['outputs']
+
+
         return gt_data ,in_data
 
     def get_evaluation(self):
@@ -89,7 +99,24 @@ class File:
 
     @log_error
     def get_boxes(self,box_level,page_index):
-        return self.file['pages'][page_index][box_level]
+        if box_level in ['lines','words','regions']:
+            return self.file['pages'][page_index][box_level]
+        if box_level == 'region_lines' :
+            lines = []
+            for region in self.file['pages'][page_index]['regions']:
+                lines += region['children']
+            return  lines
+        if box_level == 'region_words':
+            words = []
+            for region in self.file['pages'][page_index]['regions']:
+                for line in region['children'] :
+                    if len(line) > 0 :
+                       if 'children' in line.keys():
+                           words += line['children']
+                       else :
+                           words += [line]
+            return words
+
 
 
     @log_error

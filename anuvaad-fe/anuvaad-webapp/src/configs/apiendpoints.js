@@ -31,7 +31,8 @@ const endpoints = {
   deactivate_existing_user:"/anuvaad/user-mgmt/v1/users/deactivate-user",
   activate_deactivate_user:"/anuvaad/user-mgmt/v1/users/activate-user",
   download_file : '/anuvaad-api/file-uploader/v0/download-file',
-  download_zip_file : '/anuvaad-api/file-uploader/v0/serve-file'
+  download_zip_file : '/anuvaad-api/file-uploader/v0/serve-file',
+  tmx_upload : '/anuvaad-etl/translator/v1/tmx/bulk/create/xls-upload'
 
 };
 

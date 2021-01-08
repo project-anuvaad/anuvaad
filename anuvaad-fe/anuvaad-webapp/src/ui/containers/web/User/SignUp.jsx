@@ -22,6 +22,8 @@ import { translate } from "../../../../assets/localisation";
 import SignupApi from "../../../../flux/actions/apis/user/signup";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 
+const TELEMETRY = require('../../../../utils/TelemetryManager')
+
 class SignUp extends React.Component {
   constructor(props) {
     super(props);
@@ -80,6 +82,8 @@ class SignUp extends React.Component {
                 })
                   .then(resp => {
                     if (resp.ok) {
+                      TELEMETRY.createUserEvent(this.state.firstName, this.state.email, "user")
+
                       this.setState({
                         message: translate('signUp.page.message.successfullyCreatedACcount'),
                         loading: false,
@@ -90,6 +94,8 @@ class SignUp extends React.Component {
                     } else {
                       if (resp.status === 400) {
                         resp.json().then((object) => {
+                          TELEMETRY.log("users-create-user", JSON.stringify(object))
+
                           this.setState({ message: object.message, loading: false, openSnackBar: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: null, variantType: 'error' })
                         })
                       }

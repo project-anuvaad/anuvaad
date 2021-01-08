@@ -79,8 +79,12 @@ class UserDetails extends React.Component {
       MUIDataTableBodyCell: {
         root: {
           padding: '3px 10px 3px',
-          marginLeft: '-4%'
         },
+      },
+      MUIDataTableHeadCell: {
+        fixedHeader: {
+              paddingLeft: '1.2%'
+        }
       }
     }
   })
@@ -97,7 +101,6 @@ class UserDetails extends React.Component {
 
 
   toggleChecked = (userId, userName, roleCodes, currentState) => {
-    const { APITransport } = this.props;
     const token = localStorage.getItem("token");
     const userObj = new ActivateDeactivateUser(userName, !currentState, token);
     this.setState({ showLoader: true, status: true });
@@ -110,14 +113,18 @@ class UserDetails extends React.Component {
         if (res.ok) {
           this.processFetchBulkUserDetailAPI(null, null, false, true, [userId], [userName], roleCodes.split(','));
           if (currentState) {
+            TELEMETRY.userActivateOrDeactivate(userId, userName, "ACTIVATE")
             setTimeout(() => {
               this.setState({ isenabled: true, variantType: 'success', message: `${userName} is deactivated successfully` })
             }, 2000)
           } else {
+            TELEMETRY.userActivateOrDeactivate(userId, userName, "DEACTIVATE")
             setTimeout(() => {
               this.setState({ isenabled: true, variantType: 'success', message: `${userName} is activated successfully` })
             }, 2000)
           }
+        } else {
+          TELEMETRY.log("user-activate-or-deactivate",res)
         }
       })
   }
@@ -212,7 +219,7 @@ class UserDetails extends React.Component {
         options: {
           filter: false,
           sort: false,
-          display: "exclude"
+          display: "exclude",
         }
       },
       {

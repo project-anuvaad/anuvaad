@@ -30,7 +30,9 @@ class UserDetailsHeader extends React.Component {
     renderOption() {
         return (
             <div>
-                <Button variant="contained"
+                <Button
+                    id='create-user'
+                    variant="contained"
                     color="primary"
                     style={{
                         borderRadius: "20px",
@@ -57,12 +59,12 @@ class UserDetailsHeader extends React.Component {
 
                     {
                         open_sidebar ?
-                        <IconButton onClick={() => this.props.showSidebar()} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
-                            <CloseIcon />
-                        </IconButton> :
-                    <IconButton id="open-menu" onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
-                        <MenuIcon />
-                    </IconButton>
+                            <IconButton onClick={() => this.props.showSidebar()} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
+                                <CloseIcon />
+                            </IconButton> :
+                            <IconButton id="open-menu" onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
+                                <MenuIcon />
+                            </IconButton>
                     }
 
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>

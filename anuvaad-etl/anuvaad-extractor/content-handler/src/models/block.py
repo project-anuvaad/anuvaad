@@ -9,7 +9,8 @@ class BlockModel(object):
     def __init__(self):
         collections = get_db()[DB_SCHEMA_NAME]
         try:
-            collections.create_index([("record_id" , pymongo.TEXT),("block_identifier", pymongo.TEXT)], name="file_content_index")
+            collections.create_index('record_id')
+            collections.create_index('data_type')
         except pymongo.errors.DuplicateKeyError as e:
             log_info("duplicate key, ignoring", AppContext.getContext())
         except Exception as e:

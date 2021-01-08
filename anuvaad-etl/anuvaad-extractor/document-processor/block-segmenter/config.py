@@ -6,7 +6,12 @@ DEBUG = False
 API_URL_PREFIX = "/anuvaad-etl/document-processor"
 HOST = '0.0.0.0'
 PORT = 5001
+
+#BASE_DIR = '/opt/share/nginx/upload'
+#download_folder = '/opt/share/nginx/upload'
 BASE_DIR      = 'upload'
+download_folder = 'upload'
+
 
 ENABLE_CORS = False
 
@@ -30,7 +35,6 @@ CONSUMER_GROUP_default       = 'anuvaad-etl-bs-consumer-group'
 CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_BS_CONSUMER_GROUP_V1'
 CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 #folders and file path
-download_folder = 'upload'
 
 BREAK_BLOCKS = True
 
@@ -58,7 +62,7 @@ BLOCK_CONFIGS = {
     "right_margin_threshold": 0.10,  "left_margin_threshold": 0.10,
     "right_break_threshold": 0.06,   "left_break_threshold": 0.05,
     "header_left_threshold": 0.70,  "header_right_threshold": 0.85,
-    "space_multiply_factor": 1.8
+    "space_multiply_factor": 2.1
 }
 
 BLOCK_BREAK_CONFIG = {'margin_support': 2, 'width_threshold': 0.65}

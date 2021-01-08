@@ -31,6 +31,7 @@ import { showPdf, clearShowPdf } from '../../../../flux/actions/apis/document_tr
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
+import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import { Button } from "@material-ui/core";
 
 const PAGE_OPS = require("../../../../utils/page.operations");
@@ -65,8 +66,6 @@ class DocumentEditor extends React.Component {
 
     localStorage.setItem("recordId", recordId);
     localStorage.setItem("inputFile", this.props.match.params.inputfileid)
-
-    TELEMETRY.startTranslatorFlow(this.props.match.params.locale, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
     this.setState({ showLoader: true });
     this.makeAPICallFetchContent(1);
     this.makeAPICallDocumentsTranslationProgress();
@@ -74,6 +73,11 @@ class DocumentEditor extends React.Component {
     if (!this.props.fetch_models || !this.props.fetch_models.length > 0) {
       const apiModel = new FetchModel();
       this.props.APITransport(apiModel);
+    } else {
+      let model = this.fetchModel(parseInt(this.props.match.params.modelId))
+      if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
+        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+      }
     }
 
     window.addEventListener('popstate', this.handleOnClose);
@@ -85,15 +89,13 @@ class DocumentEditor extends React.Component {
     if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
       this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
     }
+
     if (prevProps.active_page_number !== this.props.active_page_number) {
       this.makeAPICallFetchContent(this.props.active_page_number);
-
-
     }
 
     if (prevProps.document_contents !== this.props.document_contents) {
       this.setState({ apiFetchStatus: false })
-
     }
 
     if (prevProps.document_editor_mode !== this.props.document_editor_mode && this.props.document_editor_mode.mode === 'EDITOR_MODE_MERGE') {
@@ -101,7 +103,13 @@ class DocumentEditor extends React.Component {
       this.makeAPICallFetchContent(nextPage, true);
     }
 
-
+    if (prevProps.fetch_models !== this.props.fetch_models) {
+      let jobId = this.props.match.params.jobid ? this.props.match.params.jobid.split("|")[0] : ""
+      let model = this.fetchModel(parseInt(this.props.match.params.modelId))
+      if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
+        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -112,6 +120,7 @@ class DocumentEditor extends React.Component {
     let jobId = recordId ? recordId.split("|")[0] : ""
     TELEMETRY.endTranslatorFlow(jobId)
     this.props.clearFetchContent()
+    this.props.clearHighlighBlock()
     this.props.clearShowPdf()
   }
 
@@ -153,6 +162,11 @@ class DocumentEditor extends React.Component {
 
   }
 
+  handleRedirect = () =>{
+    this.informUserStatus(translate('common.page.label.TOKEN_EXPIRED'), false)
+    setTimeout(() => { history.push(`${process.env.PUBLIC_URL}/`);}, 3000)
+  }
+
   makeAPICallFetchContentPerPage = (start_page) => {
 
 
@@ -182,8 +196,13 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        TELEMETRY.log("merge", rsp_data.message)
-        this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
+        TELEMETRY.log("merge", JSON.stringify(rsp_data))
+        if(Number(response.status)===401){
+          this.handleRedirect()
+        }
+        else{
+          this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
+        }
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted();
@@ -209,8 +228,14 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        TELEMETRY.log("save-translation", rsp_data.message)
-        this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
+        TELEMETRY.log("save-translation", JSON.stringify(rsp_data))
+        if(Number(response.status)===401){
+          this.handleRedirect()
+        }
+        else{
+          this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
+        }
+        
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted()
@@ -238,8 +263,14 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        TELEMETRY.log("split", rsp_data.message)
-        this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
+        TELEMETRY.log("split", JSON.stringify(rsp_data))
+        if(Number(response.status)===401){
+          this.handleRedirect()
+        }
+        else{
+          this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
+        }
+
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted();
@@ -265,8 +296,14 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        TELEMETRY.log("save-sentence", rsp_data.message)
-        this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
+        TELEMETRY.log("save-sentence", JSON.stringify(rsp_data))
+        if(Number(response.status)===401){
+          this.handleRedirect()
+        }
+        else{
+          this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
+        }
+        
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted()
@@ -286,7 +323,7 @@ class DocumentEditor extends React.Component {
       let condition = `$[?(@.model_id == '${modelId}')]`;
       model = jp.query(docs, condition)
     }
-    
+
     return model.length > 0 ? model[0] : null
   }
 
@@ -485,13 +522,14 @@ class DocumentEditor extends React.Component {
     }
     return (
       <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
+
         <InfiniteScroll height={window.innerHeight - 141} style={{
           maxHeight: window.innerHeight - 141,
-          overflowY: "hidden",
+          overflowY: "auto",
         }}
           dataLength={pages.length}
         >
-            {pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
+          {pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
         </InfiniteScroll>
       </Grid>
     )
@@ -533,6 +571,8 @@ class DocumentEditor extends React.Component {
         <div></div>
       )
     }
+    let recordId = this.props.match.params.jobid;
+    let jobId = recordId ? recordId.split("|")[0] : ""
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginLeft: "5px" }}>
 
@@ -546,6 +586,7 @@ class DocumentEditor extends React.Component {
           {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={sentence.s_id} ref={sentence.s_id}><SentenceCard key={sentence.s_id}
             pageNumber={page.page_no}
             model={this.fetchModel(parseInt(this.props.match.params.modelId))}
+            jobId = {jobId}
             sentence={sentence}
             onAction={this.processSentenceAction} />
           </div>))}
@@ -637,6 +678,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     update_blocks,
     ClearContent,
     clearFetchContent,
+    clearHighlighBlock,
     editorModeNormal, editorModeMerge, editorModeClear,
     showPdf,
     clearShowPdf

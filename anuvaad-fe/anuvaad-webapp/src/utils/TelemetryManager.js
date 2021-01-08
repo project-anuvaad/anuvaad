@@ -323,8 +323,10 @@ export const endSentenceEdit = (sentence, sentence_id, mode) => {
  * @param {*} sentence_final , final sentence when user moved out of edit
  * @param {*} sentence_id , sentence_identifier or identifier that uniquely identifies.
  * @param {*} mode , validation or translation
+ * @param {*} src , extracted source sentence
+ * 
  */
-export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, mode) => {
+export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, mode, src, bleu_score) => {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -343,8 +345,10 @@ export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, m
   }
 
   let values = {}
+  values.src = src
   values.initial = sentence_initial
   values.final = sentence_final
+  values.bleu_score = bleu_score
 
   options.context.cdata = values
   $t.interact(data, options)
@@ -440,7 +444,7 @@ export const log = (action_type, message) => {
   let data = {
     type: 'api_call',
     level: 'ERROR',
-    message: message,
+    error_data: message,
     action: action_type
   }
 
@@ -452,4 +456,136 @@ export const log = (action_type, message) => {
   }
 
   $t.log(data, options)
+}
+
+/**
+ * @description  start the flow with following initial parameters
+ * @param {*} source_language , document language
+ * @param {*} target_language , translated language
+ * @param {*} filename , filename including extension
+ * @param {*} job_id , on successful start of job, API returns job_id
+ */
+export const startSentenceTranslation = (source_language, target_language, job_id, sentence_id) => {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'START_SENTENCE_TRANSLATION',
+    duration: 0,
+    mode: 'session'
+  }
+
+  let options = {
+    ets: Date.now(),
+    context: {
+      cdata: [{
+        id: job_id,
+        // type: 'FILE_TRANSLATE'
+      }]
+    },
+    object: {
+      job_id: job_id,
+      source_language: source_language,
+      target_language: target_language,
+      sentence_id: sentence_id
+    }
+  }
+  $t.impression(data, options)
+}
+
+/**
+ * @description  start the flow with following initial parameters
+ * @param {*} source_language , document language
+ * @param {*} target_language , translated language
+ * @param {*} filename , filename including extension
+ * @param {*} job_id , on successful start of job, API returns job_id
+ */
+export const endSentenceTranslation = (source_language, target_language, job_id, sentence_id) => {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'END_SENTENCE_TRANSLATION',
+    duration: 0,
+    mode: 'session'
+  }
+
+  let options = {
+    ets: Date.now(),
+    context: {
+      cdata: [{
+        id: job_id,
+        // type: 'FILE_TRANSLATE'
+      }]
+    },
+    object: {
+      job_id: job_id,
+      source_language: source_language,
+      target_language: target_language,
+      sentence_id: sentence_id
+    }
+  }
+  $t.impression(data, options)
+}
+
+/**
+ * @description call this method to sent split sentence event
+ * @param {*} name , name of the user
+ * @param {*} email , email id of the user
+ */
+export const createUserEvent = (name, email, createdBy) => {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'click',
+    action: 'CREATE_USER'
+  }
+
+  let values = {}
+  values.name = name
+  values.email = email
+
+  let options = {
+    ets: Date.now(),
+    context: {
+      cdata: values
+    },
+  }
+
+  $t.interact(data, options)
+}
+
+/**
+ * @description call this method to sent split sentence event
+ * @param {*} userId , userId of the user
+ * @param {*} userName , userName id of the user
+ * @param {*} userName , type of action - ACTIVATE or DEACTIVATE
+ */
+export const userActivateOrDeactivate = (userId, userName, action) => {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'click',
+    action: action
+  }
+
+  let values = {}
+  values.name = userId
+  values.email = userName
+  values.action = action
+
+  let options = {
+    ets: Date.now(),
+    context: {
+      cdata: values
+    },
+  }
+
+  $t.interact(data, options)
 }
