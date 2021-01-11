@@ -16,6 +16,7 @@
     "binary-base64": "^1.1.0",
     "classnames": "^2.2.6",
     "copy-to-clipboard": "^3.3.1",
+    "difflib": "^0.2.4",
     "history": "^4.7.2",
     "html-to-text": "^5.1.1",
     "jquery": "^3.5.1",
