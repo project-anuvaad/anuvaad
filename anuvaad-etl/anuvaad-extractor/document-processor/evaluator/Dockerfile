@@ -6,6 +6,7 @@ FROM anuvaadio/anuvaad-visual-evaluator:12-96b7415d
 # both files are explicitly required!
 #COPY Pipfile Pipfile.lock ./
 
+
 COPY / /app
 WORKDIR /app
 
