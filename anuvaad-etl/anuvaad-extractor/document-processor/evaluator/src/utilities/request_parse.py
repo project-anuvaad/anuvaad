@@ -25,8 +25,8 @@ class Evalue:
         return self.eval['config']['strategy']
 
     def get_boxlevel(self):
-        #key_mapping = {'WORD' : 'region_words' ,'LINE':'region_lines' , 'PARAGRAPH' : 'regions' }
-        key_mapping = {'WORD': 'words', 'LINE': 'lines', 'PARAGRAPH': 'regions'}
+        key_mapping = {'WORD' : 'region_words' ,'LINE':'region_lines' , 'PARAGRAPH' : 'regions' }
+        #key_mapping = {'WORD': 'words', 'LINE': 'lines', 'PARAGRAPH': 'regions'}
         return key_mapping[self.eval['config']['boxLevel']]
 
     def get_json(self):
@@ -98,26 +98,34 @@ class File:
 
 
     @log_error
-    def get_boxes(self,box_level,page_index):
+    def get_boxes(self,box_level,page_index,typ):
         if box_level in ['lines','words','regions']:
             return self.file['pages'][page_index][box_level]
+
         if box_level == 'region_lines' :
-            lines = []
-            for region in self.file['pages'][page_index]['regions']:
-                lines += region['children']
-            return  lines
+            if typ == 'in' :
+                lines = []
+                for region in self.file['pages'][page_index]['regions']:
+                    lines += region['children']
+                return  lines
+            else:
+                return self.file['pages'][page_index]['lines']
+
+
         if box_level == 'region_words':
-            words = []
-            for region in self.file['pages'][page_index]['regions']:
-                for line in region['children'] :
-                    if len(line) > 0 :
-                       if 'children' in line.keys():
-                           words += line['children']
-                       else :
-                           words += [line]
-            return words
+            if typ == 'in' :
+                words = []
+                for region in self.file['pages'][page_index]['regions']:
+                    for line in region['children'] :
+                        if len(line) > 0 :
+                           if 'tess_word_coords' in line.keys():
+                               words += line['tess_word_coords']
+                           else :
+                               words += [line]
+                return words
 
-
+            else:
+                return self.file['pages'][page_index]['words']
 
     @log_error
     def get_language(self):
