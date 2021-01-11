@@ -45,7 +45,7 @@ def ocr(crop_image,configs,left,top,language):
         temp_dict['text'] = str(row["text"])
         temp_dict['conf'] = row["conf"]
         temp_dict['boundingBox']={}
-		temp_dict['boundingBox']["vertices"] = vert
+        temp_dict['boundingBox']["vertices"] = vert
         text = text +" "+ str(row["text"])
         coord.append(temp_dict)
     return coord, text
