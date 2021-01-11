@@ -474,13 +474,13 @@ def get_model_path(model_id):
         return final_path,s_encoder,s_decoder    
 
 def replace_num_target_prefix(i_,num_map):
-    num_tp = re.findall(patterns['p3']['regex'],i_['target_prefix'])
+    num_tp = re.findall(patterns['p12']['regex'],i_['target_prefix'])
     try:
-        for i in num_tp:
-            replacement_tag =  [pair['tag'] for pair in num_map if str(pair['no.'])== i]
-            if len(replacement_tag) > 0:
-                replacement_tag = replacement_tag[0]
-                i_['target_prefix'] = i_['target_prefix'].replace(i,replacement_tag)
+        for pair_dict in num_map:
+            if pair_dict['no.'] in num_tp:
+                replacement_tag = pair_dict['tag']   
+                i_['target_prefix'] = i_['target_prefix'].replace(pair_dict['no.'],replacement_tag,1)
+
         log_info("target_prefix after replacing numbers with tag: {}".format(i_['target_prefix']),MODULE_CONTEXT)
         return i_['target_prefix']
     except Exception as e:
