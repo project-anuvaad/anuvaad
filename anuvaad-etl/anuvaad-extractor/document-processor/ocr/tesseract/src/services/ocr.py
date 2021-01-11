@@ -8,23 +8,48 @@ from collections import Counter
 import cv2
 import uuid
 
-def ocr(temp_df,left,top):
+# def ocr(temp_df,left,top):
+#     temp_df = temp_df[temp_df.text.notnull()]
+#     text = ""
+#     coord = []
+#     for index1, row1 in temp_df.iterrows():
+#         word_coord = {}
+#         temp_text  = str(row1["text"])
+#         temp_conf  = row1["conf"]
+#         text = text +" "+ str(temp_text)
+#         word_coord['text']          = str(temp_text)
+#         word_coord['conf']          = temp_conf
+#         word_coord['text_left']     = int(row1["left"]+left)
+#         word_coord['text_top']      = int(row1["top"]+top)
+#         word_coord['text_width']    = int(row1["width"])
+#         word_coord['text_height']   = int(row1["height"])
+#         coord.append(word_coord)
+#     return text, coord
+
+def ocr(crop_image,configs,left,top,language):
+    if configs:
+        temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
+    else:
+        temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
     temp_df = temp_df[temp_df.text.notnull()]
     text = ""
-    coord = []
-    for index1, row1 in temp_df.iterrows():
-        word_coord = {}
-        temp_text  = str(row1["text"])
-        temp_conf  = row1["conf"]
-        text = text +" "+ str(temp_text)
-        word_coord['text']          = str(temp_text)
-        word_coord['conf']          = temp_conf
-        word_coord['text_left']     = int(row1["left"]+left)
-        word_coord['text_top']      = int(row1["top"]+top)
-        word_coord['text_width']    = int(row1["width"])
-        word_coord['text_height']   = int(row1["height"])
-        coord.append(word_coord)
-    return text, coord
+    coord  = []
+    
+    for index, row in temp_df.iterrows():
+        temp_dict = {}; vert=[]
+        temp_dict['identifier'] = str(uuid.uuid4())
+        vert.append({'x':int(row["left"]+left),'y':row["top"]+top})
+        vert.append({'x':int(row["left"]+left)+int(row["width"]),'y':row["top"]+top})
+        vert.append({'x':int(row["left"]+left)+int(row["width"]),'y':row["top"]+top+int(row["height"])})
+        vert.append({'x':int(row["left"]+left),'y':row["top"]+top+int(row["height"])})
+        temp_dict['text'] = str(row["text"])
+        temp_dict['conf'] = row["conf"]
+        temp_dict['boundingBox']={}
+		temp_dict['boundingBox']["vertices"] = vert
+        text = text +" "+ str(row["text"])
+        coord.append(temp_dict)
+    return coord, text
+
 
 def bound_coordinate(corrdinate,max):
     if corrdinate < 0 :
@@ -53,10 +78,14 @@ def get_text(path,coord,lang,width, height,freq_height):
     #crop_image.save("/home/naresh/line_crop_adjustment/"+str(uuid.uuid4()) + '.jpg')
     #crop_image.save("/home/naresh/line_crop/"+str(uuid.uuid4()) + '.jpg')
     if abs(bottom-top) > 2*freq_height:
-        temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
+        coord, text = ocr(crop_image,False,left,top,lang)
+        #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
     else:
-        temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
-    text, coord = ocr(temp_df,left,top)
+        coord, text = ocr(crop_image,True,left,top,lang)
+        if len(text)==0:
+            coord,text = ocr(crop_image,False,left,top,lang)
+        #temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
+    #text, coord = ocr(temp_df,left,top)
     return text, coord
 
 def get_coord(bbox):
