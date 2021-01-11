@@ -184,7 +184,7 @@ def are_hlines(region1,region2,avg_ver_ratio):
         diff_threshold = max_height * 0.8
 
     if avg_ver_ratio >= 1.8 :
-        diff_threshold = max_height * 1.1
+        diff_threshold = max_height * 0.9
 
     #return ((space <= diff_threshold ) or(sepration <= 3 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 )
     return  sepration  < 5 * max_height  and space <= diff_threshold
