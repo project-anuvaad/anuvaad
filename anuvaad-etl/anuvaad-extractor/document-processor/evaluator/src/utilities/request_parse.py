@@ -119,12 +119,12 @@ class File:
                 for region in self.file['pages'][page_index]['regions']:
                     if 'children' in region.keys():
                         for line in region['children'] :
-                            if len(line) > 0 :
-                               if 'tess_word_coords' in line.keys():
-                                   words += line['tess_word_coords']
-                               else :
-                                   words += [line]
-                    return words
+                            #if len(line) > 0 :
+                            if 'tess_word_coords' in line.keys():
+                                words += line['tess_word_coords']
+                            else :
+                                words += [line]
+                return words
 
             else:
                 return self.file['pages'][page_index]['words']
