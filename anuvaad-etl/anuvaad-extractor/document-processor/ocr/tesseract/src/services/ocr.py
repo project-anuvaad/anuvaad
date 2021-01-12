@@ -61,6 +61,8 @@ def bound_coordinate(corrdinate,max):
     return int(corrdinate)
 
 def get_text(path,coord,lang,width, height,freq_height):
+    #image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+path,0)
+
     image   = cv2.imread(path,0)
     #h_ratio = image.size[1]/height
     #w_ratio = image.size[0]/width
@@ -71,9 +73,11 @@ def get_text(path,coord,lang,width, height,freq_height):
     top = bound_coordinate(coord[1],height )
     right = bound_coordinate(coord[2] ,width)
     bottom = bound_coordinate(coord[3] , height)
+    region_width = abs(right-left)
+    region_height = abs(bottom-top)
 
     #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
-    if left==right==top==bottom==0:
+    if left==right==top==bottom==0 or region_width==0 or region_height==0:
         return None,None
     crop_image = image[ top:bottom, left:right]
     
