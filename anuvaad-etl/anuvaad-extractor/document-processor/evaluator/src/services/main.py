@@ -28,8 +28,8 @@ def get_iou(evalue_file) :
             if check_pages:
                 pages = []
                 for page_index, page in enumerate(gt_pages):
-                    gt_boxes = gt_file.get_boxes(boxlevel, page_index)
-                    in_boxes = in_file.get_boxes(boxlevel, page_index)
+                    gt_boxes = gt_file.get_boxes(boxlevel, page_index,'gt')
+                    in_boxes = in_file.get_boxes(boxlevel, page_index,'in')
                     pages.append(compare_regions(gt_boxes, in_boxes))
                 evalue_file.set_staus(True)
                 #file_comparison = evalue_file.get_evaluation()

@@ -113,7 +113,7 @@ class SentenceCard extends React.Component {
             showStatus: false,
             snackBarMessage: null,
             highlight: false,
-            hideSplit : false
+            hideSplit: false
 
         };
         this.textInput = React.createRef();
@@ -288,7 +288,7 @@ class SentenceCard extends React.Component {
         if (selectedSentence && sentenceSource.includes(selectedSentence) && this.state.cardInFocus) {
             this.setState({
                 selectedSentence, sentenceSource, positionX: event.clientX, startIndex, endIndex, positionY: event.clientY, isopenMenuItems: true,
-                dictionaryX: event.clientX, dictionaryY: event.clientY, hideSplit : selectedSentence === sentenceSource ? true : false
+                dictionaryX: event.clientX, dictionaryY: event.clientY, hideSplit: selectedSentence === sentenceSource ? true : false
             })
         }
     }
@@ -351,7 +351,6 @@ class SentenceCard extends React.Component {
     async makeAPICallInteractiveTranslation(caret) {
         let val = this.state.value.slice(0, caret)
         if (val) {
-
             this.setState({ isCardBusy: true })
             let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.model.model_id, true, '', this.props.sentence.s_id);
             const apiReq = fetch(apiObj.apiEndPoint(), {
@@ -365,7 +364,6 @@ class SentenceCard extends React.Component {
                     return Promise.reject('');
                 } else {
                     this.setState({
-                        // suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
                         suggestions: [{ name: rsp_data.output.predictions[0].tgt[0] }],
                         isCardBusy: false
                     })
@@ -378,7 +376,6 @@ class SentenceCard extends React.Component {
             });
         } else {
             this.setState({
-                // suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
                 suggestions: [{ name: this.props.sentence.s0_tgt }],
                 isCardBusy: false
             })
@@ -428,7 +425,7 @@ class SentenceCard extends React.Component {
         var TABKEY = 9;
         if (event.keyCode === TABKEY) {
             var elem = document.getElementById(this.props.sentence.s_id)
-            if (!this.props.sentence.s0_tgt) {
+            if (!this.props.sentence.s0_tgt && !this.state.value) {
                 alert("Sorry, Machine translated text is not available...")
             } else {
                 if (!this.state.showSuggestions) {
@@ -539,7 +536,7 @@ class SentenceCard extends React.Component {
                 suggestions: []
             });
         }
-        time = (time === 0 ? new Date(): time) 
+        time = (time === 0 ? new Date() : time)
 
         this.setState({
             value: event.target.value,
@@ -566,7 +563,7 @@ class SentenceCard extends React.Component {
                         open={this.state.showSuggestions}
                         loading={true}
                         freeSolo={true}
-                        loadingText={'Loading ...'}
+                        loadingText={this.state.isCardBusy ? 'Loading ...':'No suggestions found'}
                         onChange={(event, newValue) => {
                             let option = newValue.name ? newValue.name : newValue
                             var elem = document.getElementById(this.props.sentence.s_id)
@@ -580,7 +577,7 @@ class SentenceCard extends React.Component {
                                 value: (selectedText ? selectedText.trim() : selectedText) + " " + (caretValue ? caretValue.trim() + " " : caretValue),
                                 showSuggestions: false,
                                 userEnteredText: true,
-                                
+
                             });
                         }}
                         onClose={(event, newValue) => {
@@ -619,18 +616,18 @@ class SentenceCard extends React.Component {
             </form>
         )
     }
-    handleSpentTime =()=>{
-        let sec = this.props.sentence.time_spent_ms/1000;
+    handleSpentTime = () => {
+        let sec = this.props.sentence.time_spent_ms / 1000;
         var date = new Date(0);
-        
-    date.setSeconds(sec); // specify value for SECONDS here
-    let spentTime = date.toISOString().substr(11, 8);
-        return  <span style={{ width: "70%", margin: "auto", display: "flex", flexDirection: "row", justifyContent: "flex-end", color: "#233466" }}><Typography>Spent time:&nbsp;{spentTime}</Typography></span>
-                
+
+        date.setSeconds(sec); // specify value for SECONDS here
+        let spentTime = date.toISOString().substr(11, 8);
+        return <span style={{ width: "70%", margin: "auto", display: "flex", flexDirection: "row", justifyContent: "flex-end", color: "#233466" }}><Typography>Spent time:&nbsp;{spentTime}</Typography></span>
+
     }
 
     renderNormaModeButtons = () => {
-        
+
         return (
             <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                 <span style={{ textAlign: 'left', width: "30%" }}>
@@ -641,7 +638,7 @@ class SentenceCard extends React.Component {
                 </span>
                 {this.props.sentence && this.props.sentence.hasOwnProperty("bleu_score") && <span style={{ width: "70%", margin: "auto", display: "flex", flexDirection: "row", justifyContent: "flex-end", color: "#233466" }}><Typography>Bleu Score:&nbsp;{parseFloat(this.props.sentence.bleu_score).toFixed(2)}</Typography></span>}
                 {this.props.sentence && this.props.sentence.hasOwnProperty("time_spent_ms") && this.handleSpentTime()}
-                 </div>
+            </div>
         )
     }
 
@@ -746,7 +743,7 @@ class SentenceCard extends React.Component {
                 positionX={this.state.positionX}
                 positionY={this.state.positionY}
                 handleClose={this.handleClose.bind(this)}
-                hideSplit = {this.state.hideSplit}
+                hideSplit={this.state.hideSplit}
                 isopenMenuItems={this.state.isopenMenuItems}
                 handleOperation={this.handleOperation.bind(this)}
             />)

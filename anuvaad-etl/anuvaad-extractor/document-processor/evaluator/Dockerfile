@@ -1,8 +1,11 @@
 #FROM anuvaadio/python3.6-opencv-4.1.0:7
-FROM python:3.6-slim
+#FROM python:3.6-slim
+FROM anuvaadio/anuvaad-visual-evaluator:12-96b7415d
+
 #FROM ubuntu:20.04
 # both files are explicitly required!
 #COPY Pipfile Pipfile.lock ./
+
 
 COPY / /app
 WORKDIR /app
