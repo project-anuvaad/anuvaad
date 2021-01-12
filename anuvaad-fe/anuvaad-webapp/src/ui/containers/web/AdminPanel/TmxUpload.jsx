@@ -244,6 +244,7 @@ class TmxUpload extends Component {
 
 
   async tmxFileUpload(fileId) {
+    TELEMETRY.glossaryUpload(fileId, this.state.orgName)
     let apiObj = new SaveSentenceAPI(fileId, this.state.orgName)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',

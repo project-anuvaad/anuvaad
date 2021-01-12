@@ -427,7 +427,7 @@ export const splitSentencesEvent = (sentence_initial, sentences_final) => {
  * @param {*} action_type , type of action user is performing
  * @param {*} message , error message
  */
-export const log = (action_type, message) => {
+export const log = (action_type, message, api) => {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -445,7 +445,14 @@ export const log = (action_type, message) => {
     type: 'api_call',
     level: 'ERROR',
     error_data: message,
-    action: action_type
+  }
+
+  if(action_type) {
+    data.action = action_type
+  }
+
+  if(api) {
+    data.api = api
   }
 
   let options = {
@@ -588,4 +595,32 @@ export const userActivateOrDeactivate = (userId, userName, action) => {
   }
 
   $t.interact(data, options)
+}
+
+export const glossaryUpload = (file_id, organization) => {
+  debugger
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'GLOSSARY_UPLOAD',
+    duration: 0,
+    mode: 'session'
+  }
+
+  let options = {
+    ets: Date.now(),
+    context: {
+      cdata: [{
+        id: file_id,
+        type: 'GLOSSARY_UPLOAD'
+      }]
+    },
+    object: {
+      file_id: file_id,
+      organization: organization
+    }
+  }
+  $t.impression(data, options)
 }
