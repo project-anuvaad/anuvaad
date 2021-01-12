@@ -47,7 +47,6 @@ const sentenceHighlight = (block_highlight, text, merged_block_id, renderTextSpa
                     let endPosition = blocks[0][2]
                     let colorText = text.text.substr(startPosition, endPosition)
                     if (block_highlight.src.replace(/\s{2,}/g, ' ').includes(colorText.trim()) && colorText != "" && startPosition > 1 && endPosition > 2) {
-                        console.log(startPosition, endPosition, colorText)
                         let coloredText = Object.assign({}, text)
                         let firstHalf = Object.assign({}, text)
                         let secondHalf = Object.assign({}, text)
