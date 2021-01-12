@@ -15,7 +15,7 @@ def preprocess_file(file_properties,lang,ocr_level):
 
     for page_index, page_path in enumerate(page_paths):
         page_regions = file_properties.get_regions(page_index)
-        page_path =  '/'.join(page_path.split('/')[-4:])
+        #page_path =  '/'.join(page_path.split('/')[-4:])
         mode_height = frequent_height(file_properties.get_lines(page_index))
 
 
@@ -66,9 +66,9 @@ def process_info(app_context,base_dir):
         output      = []
         for index,file_new in enumerate(files):
             start_time = time.time()
-            ocr_level, lang = get_ocr_config(file_new)
             file   = get_json(file_new['file']['name'],base_dir)[0]
             file_properties = File(file)
+            ocr_level, lang = get_ocr_config(file_new, file_properties.get_pages())
             file = preprocess_file(file_properties,lang,ocr_level)
             file['file'] = file_new['file']
             file['config'] = file_new['config']

@@ -1,7 +1,8 @@
 import src.utilities.app_context as app_context
 from anuvaad_auditor.loghandler import log_exception
 import copy, json,os
-
+from  config import LANG_MAPPING
+from src.utilities.detect_language import detect
 
 def log_error(method):
     def wrapper(*args, **kwargs):
@@ -29,7 +30,7 @@ class File:
 
     @log_error
     def get_pages(self):
-        return self.file['page_info']
+        return ['/'.join(page_path.split('/')[-4:]) for page_path in self.file['page_info']]
 
     @log_error
     def get_words(self, page_index):
@@ -67,10 +68,23 @@ def get_files(application_context):
     files = copy.deepcopy(application_context['input']['inputs'])
     return files
 
-def get_ocr_config(file):
+def get_ocr_config(file,pages):
     ocr_level = file['config']['OCR']['option']
     lang = file['config']['OCR']['language']
-    return ocr_level, lang 
+
+    if lang  == 'detect':
+        lang = detect(pages)
+    else :
+        lang = LANG_MAPPING[lang][0]
+
+    weight_path = '/usr/share/tesseract-ocr/4.00/tessdata/' + lang + '.traineddata'
+
+    if not os.path.exists(weight_path):
+        download = 'curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/' + lang \
+                   + '.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/script/' + lang + '.traineddata'
+        os.system(download)
+    
+    return ocr_level, lang
 
 def get_json(path,base_dir):
     path = os.path.join(base_dir, path)
