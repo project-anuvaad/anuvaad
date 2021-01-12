@@ -29,8 +29,8 @@ def detect(pages):
             langs.append(lang)
     try:
         language = most_frequent(lang)
+        return language
     except Exception as e:
         log_exception("unable to detect language fo ", app_context.application_context, e)
         return None
-    return language
 

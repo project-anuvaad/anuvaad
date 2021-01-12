@@ -73,17 +73,16 @@ def get_ocr_config(file,pages):
     lang = file['config']['OCR']['language']
 
     if lang  == 'detect':
+        print('Detecting language ...')
         lang = detect(pages)
+        print('language detected is {}'.format(lang))
     else :
         lang = LANG_MAPPING[lang][0]
-
     weight_path = '/usr/share/tesseract-ocr/4.00/tessdata/' + lang + '.traineddata'
-
     if not os.path.exists(weight_path):
         download = 'curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/' + lang \
                    + '.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/script/' + lang + '.traineddata'
         os.system(download)
-    
     return ocr_level, lang
 
 def get_json(path,base_dir):
