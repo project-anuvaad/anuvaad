@@ -6,4 +6,3 @@ Flask==1.1.2
 Flask_Cors==3.0.8
 Flask_RESTful==0.3.8
 numpy==1.19.2
-cdifflib
