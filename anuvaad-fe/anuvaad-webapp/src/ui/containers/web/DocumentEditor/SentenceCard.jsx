@@ -178,11 +178,11 @@ class SentenceCard extends React.Component {
             //  - if s0_tgt is not available, alert user
             //  - if s0_tgt is available, then move s0_tgt to textfield
             if (this.props.sentence.s0_tgt === '') {
-                alert('Please translate the sentence and then save .. ')
+                alert('Please translate the sentence and then save. ')
                 return;
             }
             if (this.props.sentence.save) {
-                alert('Your will lose saved sentence, please translate the sentence and then save .. ')
+                alert('Your will lose saved sentence, please translate the sentence and then save. ')
                 return;
             }
             this.setState({
@@ -193,7 +193,8 @@ class SentenceCard extends React.Component {
                 sentence.save = true;
                 sentence.tgt = this.props.sentence.s0_tgt;
                 delete sentence.block_identifier;
-                sentence.time_spent_ms = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
+                let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
+                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;// max spent time is 5 min
                 time = 0;
                 sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
                 TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score)
@@ -205,7 +206,7 @@ class SentenceCard extends React.Component {
             if (!this.state.userEnteredText) {
                 // value is present, however user hasn't edit it.
                 // no point saving
-                alert('Please edit your sentence and then save .. ')
+                alert('Please edit your sentence and then save. ')
                 return;
             }
             if (this.props.onAction) {
@@ -215,7 +216,8 @@ class SentenceCard extends React.Component {
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
                 sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
-                sentence.time_spent_ms = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
+                let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
+                sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;
                 time = 0;
                 TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
