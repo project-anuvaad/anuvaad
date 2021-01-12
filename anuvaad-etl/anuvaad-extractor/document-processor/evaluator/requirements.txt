@@ -5,3 +5,4 @@ anuvaad_auditor==0.1.6
 Rtree==0.9.4
 Flask_Cors==3.0.8
 Flask_RESTful==0.3.8
+numpy
