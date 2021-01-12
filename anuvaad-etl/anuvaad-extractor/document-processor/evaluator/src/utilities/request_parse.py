@@ -106,7 +106,8 @@ class File:
             if typ == 'in' :
                 lines = []
                 for region in self.file['pages'][page_index]['regions']:
-                    lines += region['children']
+                    if 'children' in region.keys():
+                        lines += region['children']
                 return  lines
             else:
                 return self.file['pages'][page_index]['lines']
@@ -116,12 +117,13 @@ class File:
             if typ == 'in' :
                 words = []
                 for region in self.file['pages'][page_index]['regions']:
-                    for line in region['children'] :
-                        if len(line) > 0 :
-                           if 'tess_word_coords' in line.keys():
-                               words += line['tess_word_coords']
-                           else :
-                               words += [line]
+                    if 'children' in region.keys():
+                        for line in region['children'] :
+                            #if len(line) > 0 :
+                            if 'tess_word_coords' in line.keys():
+                                words += line['tess_word_coords']
+                            else :
+                                words += [line]
                 return words
 
             else:
