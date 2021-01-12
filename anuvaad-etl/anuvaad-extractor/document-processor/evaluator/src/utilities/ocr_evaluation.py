@@ -4,7 +4,7 @@ def remove_space(a):
     return a.strip()
 
 def text_evaluation(compared_regions,boxlevel):
-
+    
     for idx,region in enumerate(compared_regions):
         if region['input']!=None and region['ground']!=None and 'text' in region['input'].keys() and 'text' in region['ground'].keys():
             tgt_text = region['input']['text']

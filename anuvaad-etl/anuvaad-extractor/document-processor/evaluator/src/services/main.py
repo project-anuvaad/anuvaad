@@ -32,7 +32,9 @@ def get_iou(evalue_file) :
                     gt_boxes = gt_file.get_boxes(boxlevel, page_index,'gt')
                     in_boxes = in_file.get_boxes(boxlevel, page_index,'in')
                     compared_regions = compare_regions(gt_boxes, in_boxes)
-                    compared_regions = text_evaluation(compared_regions,boxlevel)
+                    if len(compared_regions)!=0 and 'iou' in compared_regions.keys():
+                        compared_ocr_regions = text_evaluation(compared_regions['iou'],boxlevel)
+                        compared_regions['iou'] = compared_ocr_regions
                     pages.append(compared_regions)
                 evalue_file.set_staus(True)
                 #file_comparison = evalue_file.get_evaluation()
