@@ -89,7 +89,7 @@ class PageCard extends React.Component {
                 // console.log('-------',text.text,'--------')
                 /*Left and right has the same length */
                 if (sentence !== undefined) {
-                    if (sentence.replace(/\s/g, '').includes(text.text.replace(/\s/g, '')) || text.text.replace(/\s/g, '').length === sentence.replace(/\s/g, '').length) {
+                    if (sentence.replace(/\s/g, '').includes(text.text.toString().replace(/\s/g, '')) || text.text.toString().replace(/\s/g, '').length === sentence.replace(/\s/g, '').length) {
                         return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
                             {this.renderTextSpan(text, true)}
                         </Textfit>
@@ -97,10 +97,10 @@ class PageCard extends React.Component {
                     /**
                      * Left is greater than right
                      */
-                    else if (text.text.replace(/\s/g, '').length > sentence.replace(/\s/g, '').length && text.text.replace(/\s/g, '').includes(sentence.replace(/\s/g, ''))) {
-                        if (text.text.replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) === 0) {
+                    else if (text.text.toString().replace(/\s/g, '').length > sentence.replace(/\s/g, '').length && text.text.toString().replace(/\s/g, '').includes(sentence.replace(/\s/g, ''))) {
+                        if (text.text.toString().replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) === 0) {
                             let removedSpaces = JSON.parse(JSON.stringify(text));
-                            removedSpaces.text = text.text.replace(/  +/g, '');
+                            removedSpaces.text = text.text.toString().replace(/  +/g, '');
                             let coloredText = JSON.parse(JSON.stringify(text));
                             let nonColoredText = JSON.parse(JSON.stringify(text));
                             coloredText.text = sentence
@@ -110,9 +110,9 @@ class PageCard extends React.Component {
                                 {this.renderTextSpan(nonColoredText, false)}
                             </Textfit>
 
-                        } else if (text.text.replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) > 0) {
+                        } else if (text.text.toString().replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) > 0) {
                             let removedSpaces = JSON.parse(JSON.stringify(text));
-                            removedSpaces.text = text.text.replace(/  +/g, '');
+                            removedSpaces.text = text.text.toString().replace(/  +/g, '');
                             let firstHalfText = JSON.parse(JSON.stringify(text));
                             let secondHalfText = JSON.parse(JSON.stringify(text));
                             let coloredText = JSON.parse(JSON.stringify(text));
@@ -133,7 +133,7 @@ class PageCard extends React.Component {
 
                     if (text.text.includes(sentence.split(' ')[0])) {
                         let removedSpaces = JSON.parse(JSON.stringify(text));
-                        removedSpaces.text = text.text.replace(/  +/g, '');
+                        removedSpaces.text = text.text.toString().replace(/  +/g, '');
                         let tempText = removedSpaces.text.substr(removedSpaces.text.indexOf(sentence.trim().split(' ')[0]));
                         if (sentence.replace(/\s/g, '').includes(tempText.replace(/\s/g, ''))) {
                             let coloredText = JSON.parse(JSON.stringify(text));
@@ -163,7 +163,7 @@ class PageCard extends React.Component {
                      * When right is greater than left
                      */
 
-                    if (sentence.replace(/\s/g, '').includes(text.text.replace(/\s/g, '')) && text.text.replace(/\s/g, '').length < sentence.replace(/\s/g, '').length) {
+                    if (sentence.replace(/\s/g, '').includes(text.text.toString().replace(/\s/g, '')) && text.text.toString().replace(/\s/g, '').length < sentence.replace(/\s/g, '').length) {
                         return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
                             {this.renderTextSpan(text, true)}
                         </Textfit>
@@ -175,9 +175,9 @@ class PageCard extends React.Component {
                      */
                     if (sentence.replace(/\s/g, '').includes(text.text.split(' ')[0].replace(/\s/g, ''))) {
                         let removedSpaces = JSON.parse(JSON.stringify(text));
-                        removedSpaces.text = text.text.replace(/  +/g, '');
+                        removedSpaces.text = text.text.toString().replace(/  +/g, '');
                         let tempText = sentence.substr(sentence.indexOf(removedSpaces.text.split(' ')[0]));
-                        if (text.text.replace(/\s/g, '').includes(tempText.replace(/\s/g, ''))) {
+                        if (text.text.toString().replace(/\s/g, '').includes(tempText.replace(/\s/g, ''))) {
 
                             let coloredText = JSON.parse(JSON.stringify(text));
                             let nonColoredText = JSON.parse(JSON.stringify(text));
