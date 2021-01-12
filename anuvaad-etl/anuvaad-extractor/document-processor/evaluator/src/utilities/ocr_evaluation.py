@@ -2,7 +2,7 @@ import numpy as np
 from difflib import SequenceMatcher
 
 def remove_space(a):
-    return a..strip()
+    return a.strip()
 
 def text_evaluation(compared_regions,boxlevel):
 
