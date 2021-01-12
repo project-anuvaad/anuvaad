@@ -1,7 +1,7 @@
 from difflib import SequenceMatcher
 
 def remove_space(a):
-    return a.strip()
+    return a.replace(" ", "")
 
 def text_evaluation(compared_regions,boxlevel):
     
