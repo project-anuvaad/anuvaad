@@ -35,6 +35,8 @@ def text_evaluation(compared_regions,boxlevel):
             if region['ground']==None:
                 message['ground'] = False
             compared_regions[idx]['status'] = message
+            compared_regions[idx]['ocr_score'] = 0.0
+            compared_regions[idx]['length_difference'] = 0
                 
 
         
