@@ -155,7 +155,6 @@ def merge_text(v_blocks,merge_tess_confidence=False):
                             v_blocks[block_index]['tess_word_coords'] += v_block['children'][child]['tess_word_coords']
                         except:
                             print('error in adding tess confidence score')
-                    print( str(v_block['children'][child]['text']))
                     v_blocks[block_index]['text'] += ' ' + str(v_block['children'][child]['text'])
         #print('text merged')
         #except Exception as e:
