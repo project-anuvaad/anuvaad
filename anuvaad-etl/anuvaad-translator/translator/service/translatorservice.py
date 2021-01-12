@@ -3,6 +3,7 @@ import time
 from utilities.translatorutils import TranslatorUtils
 from kafkawrapper.translatorproducer import Producer
 from repository.translatorrepository import TranslatorRepository
+from tmx.tmxrepo import TMXRepository
 from tmx.tmxservice import TMXService
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from anuvaad_auditor.errorhandler import post_error
@@ -11,6 +12,7 @@ from configs.translatorconfig import anu_translator_output_topic
 from configs.translatorconfig import tool_translator
 from configs.translatorconfig import anu_nmt_input_topic_mx
 from configs.translatorconfig import tmx_enabled
+from configs.translatorconfig import tmx_global_enabled
 
 current_nmt = 0
 topics_map = {}
@@ -18,6 +20,7 @@ topics_map = {}
 utils = TranslatorUtils()
 producer = Producer()
 repo = TranslatorRepository()
+tmx_repo = TMXRepository()
 tmxservice = TMXService()
 
 
@@ -130,7 +133,6 @@ class TranslatorService:
     # Method to fetch batches for sentences from the file for a page.
     def fetch_batches_of_sentences(self, file, record_id, page, translate_wf_input):
         try:
-            log_info("Building batches of sentences for page: " + str(page["page_no"]), translate_wf_input)
             sentences_for_trans, tmx_count = {}, 0
             page_no = page["page_no"]
             text_blocks = page["text_blocks"]
@@ -147,11 +149,14 @@ class TranslatorService:
     # Iterates through the blocks and creates batches of sentences for translation
     def fetch_batches_of_blocks(self, record_id, page_no, text_blocks, file, sentences_for_trans, translate_wf_input):
         batch_key, tmx_count = 0, 0
+        tmx_present = self.is_tmx_present(translate_wf_input)
         for block in text_blocks:
             block_id = block["block_id"]
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
-                    tmx_phrases = self.fetch_tmx(sentence["src"], file, translate_wf_input)
+                    tmx_phrases = []
+                    if tmx_present:
+                        tmx_phrases = self.fetch_tmx(sentence["src"], file, translate_wf_input)
                     tmx_count += len(tmx_phrases)
                     node_id = str(record_id) + "|" + str(page_no) + "|" + str(block_id)
                     sent_nmt_in = {"src": sentence["src"], "s_id": sentence["s_id"], "n_id": node_id, "tmx_phrases": tmx_phrases}
@@ -170,17 +175,30 @@ class TranslatorService:
         return sentences_for_trans, tmx_count
 
     # Fetches tmx phrases
-    def fetch_tmx(self, sentence, file, translate_wf_input):
+    def is_tmx_present(self, translate_wf_input):
         if tmx_enabled:
-            if 'context' not in file.keys():
-                return []
-            context = file["context"]
-            user_id = translate_wf_input["metadata"]["userID"]
-            org_id = translate_wf_input["metadata"]["orgID"]
-            locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
-            return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, translate_wf_input)
-        else:
+            if not tmx_global_enabled:
+                user_id = translate_wf_input["metadata"]["userID"]
+                org_id = translate_wf_input["metadata"]["orgID"]
+                tmx_entries = tmx_repo.mongo_search(user_id, org_id)
+                if tmx_entries:
+                    return True
+                else:
+                    log_info("No TMX entries available for this user!", translate_wf_input)
+                    return False
+            else:
+                return True
+        return False
+
+    # Fetches tmx phrases
+    def fetch_tmx(self, sentence, file, translate_wf_input):
+        if 'context' not in file.keys():
             return []
+        context = file["context"]
+        user_id = translate_wf_input["metadata"]["userID"]
+        org_id = translate_wf_input["metadata"]["orgID"]
+        locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
+        return tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, translate_wf_input)
 
     # Distributes the NMT traffic across machines.
     def nmt_router(self, nmt_in):
@@ -267,7 +285,7 @@ class TranslatorService:
         query = {"recordID": record_id}
         object_in = {"skippedSentences": total_skip, "translatedSentences": total_trans}
         repo.update(object_in, query)
-        log_info("Batch processed -- TRANSLATED: " + str(trans_count) + " | SKIPPED: " + str(skip_count) +
+        log_info("Translation status -- TRANSLATED: " + str(total_trans) + " | SKIPPED: " + str(total_skip) +
                  " | recordID: " + translate_wf_input["recordID"], translate_wf_input)
 
     # Back up method to update sentences from DB.

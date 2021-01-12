@@ -85,3 +85,11 @@ class TMXRepository:
         col = self.get_mongo_instance()
         col.insert_one(object_in)
 
+    # Searches tmx entries from mongo collection
+    def mongo_search(self, user_id, org_id):
+        col = self.get_mongo_instance()
+        res = col.find({'$or': [{"userID": user_id}, {"orgID": org_id}]}, {'_id': False})
+        result = []
+        for record in res:
+            result.append(record)
+        return result
