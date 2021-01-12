@@ -1,5 +1,6 @@
 from src.utilities.request_parse import get_files ,File ,Evalue
 from src.utilities.compare_page import compare_regions
+from src.utilities.ocr_evaluation import text_evaluation
 import src.utilities.app_context as app_context
 import config
 from anuvaad_auditor.loghandler import log_info
@@ -30,7 +31,9 @@ def get_iou(evalue_file) :
                 for page_index, page in enumerate(gt_pages):
                     gt_boxes = gt_file.get_boxes(boxlevel, page_index,'gt')
                     in_boxes = in_file.get_boxes(boxlevel, page_index,'in')
-                    pages.append(compare_regions(gt_boxes, in_boxes))
+                    compared_regions = compare_regions(gt_boxes, in_boxes)
+                    compared_regions = text_evaluation(compared_regions,boxlevel)
+                    pages.append(compared_regions)
                 evalue_file.set_staus(True)
                 #file_comparison = evalue_file.get_evaluation()
                 comparison.append({'pages': pages})
