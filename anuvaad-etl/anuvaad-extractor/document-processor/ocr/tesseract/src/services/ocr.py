@@ -128,8 +128,8 @@ def text_extraction(lang, page_path, regions,region_org,width, height,mode_heigh
             region_org[idx]['tess_word_coords'] = tess_coord
 
         else:
-            region_org[idx]['text'] = None
-            region_org[idx]['tess_word_coords'] = None
+            region_org[idx]['text'] = ""
+            region_org[idx]['tess_word_coords'] = []
 
     return region_org
 
