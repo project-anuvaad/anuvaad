@@ -194,7 +194,7 @@ class SentenceCard extends React.Component {
                 sentence.tgt = this.props.sentence.s0_tgt;
                 delete sentence.block_identifier;
                 let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
-                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;// max spent time is 5 min
+                sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;// max spent time is 5 min
                 time = 0;
                 sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
                 TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score)
@@ -563,7 +563,7 @@ class SentenceCard extends React.Component {
                         open={this.state.showSuggestions}
                         loading={true}
                         freeSolo={true}
-                        loadingText={this.state.isCardBusy ? 'Loading ...':'No suggestions found'}
+                        loadingText={this.state.isCardBusy ? 'Loading ...' : 'No suggestions found'}
                         onChange={(event, newValue) => {
                             let option = newValue.name ? newValue.name : newValue
                             var elem = document.getElementById(this.props.sentence.s_id)
