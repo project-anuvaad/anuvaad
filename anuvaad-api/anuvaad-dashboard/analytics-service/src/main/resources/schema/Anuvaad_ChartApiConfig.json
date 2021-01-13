@@ -343,7 +343,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "",
+				"requestQueryMap": "{\"ts\":\"ets\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
