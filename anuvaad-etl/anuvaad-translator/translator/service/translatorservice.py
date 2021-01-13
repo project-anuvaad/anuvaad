@@ -77,7 +77,7 @@ class TranslatorService:
                 db_in = {
                     "jobID": translate_wf_input["jobID"], "taskID": translate_wf_input["taskID"],
                     "recordID": str(translate_wf_input["jobID"]) + "|" + str(file_id), "transInput": translate_wf_input,
-                    "totalSentences": -1, "translatedSentences": -2, "skippedSentences": -2, "data": data, "active": True
+                    "totalSentences": -1, "translatedSentences": -2, "skippedSentences": -2, "batches": 0, "data": data, "active": True
                 }
                 repo.create(db_in)
                 return True
@@ -284,10 +284,11 @@ class TranslatorService:
             total_skip = skip_count
         else:
             total_skip = content_from_db["skippedSentences"] + skip_count
+        batches = content_from_db["batches"] + 1
         query = {"recordID": record_id}
-        object_in = {"skippedSentences": total_skip, "translatedSentences": total_trans}
+        object_in = {"skippedSentences": total_skip, "translatedSentences": total_trans, "batches": batches}
         repo.update(object_in, query)
-        log_info("Translation status -- TRANSLATED: " + str(total_trans) + " | SKIPPED: " + str(total_skip) +
+        log_info("Translation status -- BATCHES: " + str(batches) + " | TRANSLATED: " + str(total_trans) + " | SKIPPED: " + str(total_skip) +
                  " | recordID: " + translate_wf_input["recordID"], translate_wf_input)
 
     # Back up method to update sentences from DB.
