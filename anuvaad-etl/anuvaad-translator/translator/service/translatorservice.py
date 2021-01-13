@@ -102,13 +102,14 @@ class TranslatorService:
                 repo.update({"totalSentences": 0}, {"recordID": record_id})
                 return None
             pages = data["result"]
-            total_sentences, total_tmx = 0, 0
+            total_sentences, total_tmx, total_batches = 0, 0, 0
             for page in pages:
                 sentences_per_page = 0
                 batches, tmx_count = self.fetch_batches_of_sentences(file, record_id, page, translate_wf_input)
                 if not batches:
                     log_error("No batches obtained for page: " + str(page["page_no"]), translate_wf_input, None)
                     continue
+                total_batches += len(batches)
                 for batch_no in batches.keys():
                     batch = batches[batch_no]
                     record_id_enhanced = record_id + "|" + str(len(batch))
@@ -120,7 +121,8 @@ class TranslatorService:
                 log_info("PAGE NO: " + str(page["page_no"]) + " | SENTENCES: " + str(sentences_per_page) + " | TMX: " + str(tmx_count), translate_wf_input)
             if total_sentences > 0:
                 repo.update({"totalSentences": total_sentences}, {"recordID": record_id})
-                log_info("recordID: " + record_id + " | SENTENCES: " + str(total_sentences) + " | TMX: " + str(total_tmx), translate_wf_input)
+                log_info("recordID: " + record_id + " | BATCHES: " + str(total_batches)
+                         + " | SENTENCES: " + str(total_sentences) + " | TMX: " + str(total_tmx), translate_wf_input)
                 return True
             else:
                 log_error("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)
