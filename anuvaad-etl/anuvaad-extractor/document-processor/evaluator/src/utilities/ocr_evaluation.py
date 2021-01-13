@@ -31,16 +31,16 @@ def text_evaluation(compared_regions,boxlevel):
         else:
             message = {"ground":True,"input":True}
             leng_diff = 0
-            if region['input']==None and region['ground']!=None:
+            if region['input']==None:# and region['ground']!=None:
                 message['input'] = False
-                leng_diff = len(region['ground']['text'])
-            if region['ground']==None and region['input']!=None:
+                #leng_diff = len(region['ground']['text'])
+            if region['ground']==None :#and region['input']!=None:
                 message['ground'] = False
-                leng_diff = len(region['input']['text'])
-            if region['ground']==None and region['input']==None:
-                message['ground'] = False
-                message['input'] = False
-                leng_diff =0
+                #leng_diff = len(region['input']['text'])
+            # if region['ground']==None and region['input']==None:
+            #     message['ground'] = False
+            #     message['input'] = False
+            #     leng_diff =0
             compared_regions[idx]['status'] = message
             compared_regions[idx]['ocr_score'] = 0.0
             compared_regions[idx]['length_difference'] = leng_diff
