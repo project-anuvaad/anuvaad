@@ -347,10 +347,10 @@
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{ \"aggs\": {\r\n    \"Newly created users\": {\r\n      \"filter\": {\"term\": {\r\n        \"events.edata.action.keyword\": \"CREATE_USER\"\r\n      }}\r\n    } }}"
+				"aggrQuery": "{ \"aggs\": {\"Newly created users\": {\"filter\": {\"term\": {\"events.edata.action.keyword\": \"CREATE_USER\"}}} }}"
 			}
 		],
-		"chartType": "bar",
+		"chartType": "line",
 		"resultType": "doc_count",
 		"valueType": "number",
 		"isDecimal": false,

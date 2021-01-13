@@ -282,7 +282,7 @@
 									"id": "createUserTrend",
 									"name": "New User Trend",
 									"code": "",
-									"chartType": "bar",
+									"chartType": "line",
 									"filter": "",
 									"headers": []
 								}
