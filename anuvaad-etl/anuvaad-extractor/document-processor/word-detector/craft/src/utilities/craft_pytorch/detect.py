@@ -239,7 +239,7 @@ def detect_text(images,language) :
     word_coordinates = []
     line_coordinates = []
     for index,image_set in enumerate(images):
-        lang = language[index]
+        lang = 'en'#language[index]
         word_in_dfs = detect_text_per_file(image_set,network=False,\
                                         text_threshold=config.LANGUAGE_WORD_THRESOLDS[lang]['text_threshold'],\
                                             low_text_threshold= config.LANGUAGE_WORD_THRESOLDS[lang]['low_text'],link_threshold =config.LANGUAGE_WORD_THRESOLDS[lang]['link_threshold'])
