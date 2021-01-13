@@ -1,7 +1,7 @@
 from difflib import SequenceMatcher
 
 def remove_space(a):
-    return a.strip()
+    return a.replace(" ", "")
 
 def text_evaluation(compared_regions,boxlevel):
     
@@ -30,13 +30,20 @@ def text_evaluation(compared_regions,boxlevel):
             compared_regions[idx]['length_difference'] = abs(len(gt_text)-len(tgt_text))
         else:
             message = {"ground":True,"input":True}
-            if region['input']==None:
+            leng_diff = 0
+            if region['input']==None:# and region['ground']!=None:
                 message['input'] = False
-            if region['ground']==None:
+                #leng_diff = len(region['ground']['text'])
+            if region['ground']==None :#and region['input']!=None:
                 message['ground'] = False
+                #leng_diff = len(region['input']['text'])
+            # if region['ground']==None and region['input']==None:
+            #     message['ground'] = False
+            #     message['input'] = False
+            #     leng_diff =0
             compared_regions[idx]['status'] = message
             compared_regions[idx]['ocr_score'] = 0.0
-            compared_regions[idx]['length_difference'] = 0
+            compared_regions[idx]['length_difference'] = leng_diff
                 
 
         
