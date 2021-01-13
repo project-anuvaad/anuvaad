@@ -337,5 +337,35 @@
 			
 		},
 		"_comment": " "
+	},
+	"createUserTrend": {
+		"chartName": "New User Trend",
+		"queries": [
+			{
+				"module": "COMMON",
+				"requestQueryMap": "",
+				"dateRefField": "ets",
+				"indexName": "anuvaad-telemetry",
+				"esInstance": "PRIMARY",
+				"aggrQuery": "{ \"aggs\": {\r\n    \"Newly created users\": {\r\n      \"filter\": {\"term\": {\r\n        \"events.edata.action.keyword\": \"CREATE_USER\"\r\n      }}\r\n    } }}"
+			}
+		],
+		"chartType": "bar",
+		"resultType": "doc_count",
+		"valueType": "number",
+		"isDecimal": false,
+		"action": "",
+		"filter": "",
+		"documentType": "_doc",
+		"drillChart": "none",
+		"aggregationPaths": [
+			"Newly created users"
+		],
+		"isCumulative": false,
+		"interval": "day",
+		"insight": {
+			
+		},
+		"_comment": " "
 	}
 }

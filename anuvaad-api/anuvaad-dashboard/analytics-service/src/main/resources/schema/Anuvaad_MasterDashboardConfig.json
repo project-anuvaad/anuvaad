@@ -17,9 +17,12 @@
 						"Bengali",
 						"Hindi",
 						"Malayalam",
-						"Hindi",
+						"Telugu",
 						"Tamil",
-						"Kannada"
+						"Kannada",
+						"Marathi",
+						"Punjabi",
+						"Gujarati"
 					]
 				},
 				{
@@ -32,9 +35,12 @@
 						"Bengali",
 						"Hindi",
 						"Malayalam",
-						"Hindi",
+						"Telugu",
 						"Tamil",
-						"Kannada"
+						"Kannada",
+						"Marathi",
+						"Punjabi",
+						"Gujarati"
 					]
 				}
 			],
@@ -256,6 +262,27 @@
 									"name": "Save Records Trend",
 									"code": "",
 									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
+						},
+						{
+							"id": 6,
+							"name": "New User Trend",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "createUserTrend",
+									"name": "New User Trend",
+									"code": "",
+									"chartType": "bar",
 									"filter": "",
 									"headers": []
 								}
