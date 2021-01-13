@@ -78,7 +78,7 @@ def get_text(path,coord,lang,width, height,freq_height):
 
     #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
     if left==right==top==bottom==0 or region_width==0 or region_height==0:
-        return None,None
+        return [],[]
     crop_image = image[ top:bottom, left:right]
     
     #crop_image.save("/home/naresh/line_crop_adjustment/"+str(uuid.uuid4()) + '.jpg')
