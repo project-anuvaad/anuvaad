@@ -54,6 +54,7 @@ def get_layout_proposals(pdf_data,flags) :
 
 
     if (flags['page_layout'] =='single_column')or(flags['doc_class'] == 'class_1') :
+
         h_dfs = get_xml.get_hdfs(pdf_data['in_dfs'],  pdf_data['header_region'], pdf_data['footer_region'])
 
         return h_dfs
@@ -80,7 +81,6 @@ def get_layout_proposals(pdf_data,flags) :
         #integrate pubnet
     #    pass
     #if flags['page_layout'] == 'dict' :
-
 
 def vertical_merging(pdf_data,flags):
 

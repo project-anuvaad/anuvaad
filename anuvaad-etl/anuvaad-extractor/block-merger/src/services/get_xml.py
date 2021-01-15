@@ -125,7 +125,7 @@ def get_vdfs(h_dfs):
     return v_dfs
 
 
-def get_hdfs(in_dfs, header_region, footer_region):
+def get_hdfs(in_dfs, header_region, footer_region,table=False):
 
     start_time          = time.time()
     try:
@@ -140,7 +140,7 @@ def get_hdfs(in_dfs, header_region, footer_region):
             if multiple_pages :
                 page_df   = tag_heaader_footer_attrib(header_region , footer_region,page_df)
 
-            h_df    = merge_horizontal_blocks(page_df, document_configs, debug=False)
+            h_df    = merge_horizontal_blocks(page_df, document_configs,table=table, debug=False)
             h_dfs.append(h_df)
     except Exception as e :
         log_error('Error in creating h_dfs' +str(e), app_context.application_context, e)

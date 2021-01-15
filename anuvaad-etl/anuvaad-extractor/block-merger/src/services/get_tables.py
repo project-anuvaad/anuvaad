@@ -9,6 +9,8 @@ from collections import Counter
 #from pathlib import Path
 import cv2
 import base64
+from src.services.ocr_text_utilities import tesseract_ocr
+from src.services import get_xml
 import src.utilities.app_context as app_context
 
 
@@ -75,7 +77,7 @@ def get_table_df(tables):
     return table_df
 
 
-def edit(dic, df, extract_by='Intersection'):
+def edit(dic, df, extract_by='mid_point'):
     left_key = 'text_left'
     top_key = 'text_top'
     width_key = 'text_width'
@@ -90,6 +92,15 @@ def edit(dic, df, extract_by='Intersection'):
         region = (df[left_key] >= dic[left_key]) & (df[top_key] >= dic[top_key]) & (
                 (df[top_key]) <= (dic[top_key] + dic[height_key])) & (
                          (df[left_key]) <= (dic[left_key] + dic[width_key]))
+
+
+    if extract_by == 'mid_point':
+        region = (  (df[left_key]+ df[width_key] *0.5 )    >= dic[left_key]) \
+                 & ((df[top_key] + df[height_key] *0.5     )  >= dic[top_key]) \
+                 & ((df[top_key]  + df[height_key] *0.5   ) <= (dic[top_key] + dic[height_key])) \
+                 & ((df[left_key]+ df[width_key] *0.5) <= (dic[left_key] + dic[width_key]))
+
+
 
     text_df = df[region].to_dict('records')
     df = df[~region]
@@ -110,8 +121,49 @@ def extract_and_delete_region(page_df, table_df):
 
     return page_df, table_df
 
+#
+# def get_text_from_table_cells(table_dfs, p_dfs):
+#     for page_index in range(len(p_dfs)):
+#         table_cells = []
+#         table_df = table_dfs[page_index]
+#         if len(table_df) > 0:
+#             for t_index, row in table_df.iterrows():
+#                 cells = row['children']
+#                 if cells != None:
+#                     for cell in cells:
+#                         cell.pop('index')
+#                         if cell['text'] != None:
+#                             text_df = pd.DataFrame(cell['text'])
+#                             text_df['children'] = None
+#
+#                             cell['children'] = text_df.to_json()
+#                             if len(text_df) > 0:
+#                                 add_keys = ['font_size', 'font_family', 'font_color', 'attrib', 'font_family_updated',
+#                                             'font_size_updated']
+#                                 for add_key in add_keys:
+#                                     #print(text_df)
+#                                     cell[add_key] = most_frequent(text_df[add_key])
+#
+#                                 if (cell['attrib'] == None) or (cell['attrib'] == '') :
+#                                     cell['attrib']  = 'TABLE'
+#                                 else:
+#                                     cell['attrib'] = str(cell['attrib']) + ',TABLE'
+#                                 cell['text'] = ' '.join(pd.DataFrame(cell['text'])['text'].values)
+#
+#
+#                                 table_cells.append(cell)
+#
+#             t_cells_df = pd.DataFrame(table_cells)
+#
+#             p_dfs[page_index] = pd.concat([p_dfs[page_index], t_cells_df])
+#
+#     return p_dfs
 
-def get_text_from_table_cells(table_dfs, p_dfs):
+
+def get_text_from_table_cells(pdf_data, p_dfs,flags):
+
+    table_dfs = pdf_data['table_dfs']
+
     for page_index in range(len(p_dfs)):
         table_cells = []
         table_df = table_dfs[page_index]
@@ -123,6 +175,23 @@ def get_text_from_table_cells(table_dfs, p_dfs):
                         cell.pop('index')
                         if cell['text'] != None:
                             text_df = pd.DataFrame(cell['text'])
+                            if len(text_df) >1 :
+                                h_dfs =  get_xml.get_hdfs([text_df], pd.DataFrame() , pd.DataFrame(),table=True)
+                            else:
+                                 h_dfs = [text_df]
+                            p_df_data ={}
+                            p_df_data['pdf_image_paths'] = [pdf_data['pdf_image_paths'][page_index]]
+                            p_df_data['page_width']  = pdf_data['page_width']
+                            p_df_data['page_height'] = pdf_data['page_height']
+                            p_df_data['h_dfs'] = h_dfs
+                            p_df_data['lang'] = pdf_data['lang']
+
+                            if (pdf_data['lang'] != 'en') or (flags['doc_class'] != 'class_1'):
+                                text_df = tesseract_ocr( p_df_data, {'page_layout':'single_column'})[0]
+                            else:
+                                text_df = h_dfs[0]
+
+
                             text_df['children'] = None
 
                             cell['children'] = text_df.to_json()
@@ -130,14 +199,15 @@ def get_text_from_table_cells(table_dfs, p_dfs):
                                 add_keys = ['font_size', 'font_family', 'font_color', 'attrib', 'font_family_updated',
                                             'font_size_updated']
                                 for add_key in add_keys:
-                                    #print(text_df)
+                                    # print(text_df)
                                     cell[add_key] = most_frequent(text_df[add_key])
 
-                                if (cell['attrib'] == None) or (cell['attrib'] == '') :
-                                    cell['attrib']  = 'TABLE'
+                                if (cell['attrib'] == None) or (cell['attrib'] == ''):
+                                    cell['attrib'] = 'TABLE'
                                 else:
                                     cell['attrib'] = str(cell['attrib']) + ',TABLE'
                                 cell['text'] = ' '.join(pd.DataFrame(cell['text'])['text'].values)
+
                                 table_cells.append(cell)
 
             t_cells_df = pd.DataFrame(table_cells)
@@ -173,6 +243,7 @@ def get_text_table_line_df(pdf_data,flags, check=False):
             image_width, image_height = table_image.shape[1], table_image.shape[0]
             if check:
                 cv2.imwrite('bg_org.png', table_image)
+
         except Exception as e:
             log_error("Service TableExtractor Error in loading background html image", app_context.application_context,
                       e)
@@ -183,7 +254,10 @@ def get_text_table_line_df(pdf_data,flags, check=False):
         if check:
             cv2.imwrite('bg_org_masked.png', table_image)
         try:
-            tables = TableRepositories(table_image).response['response']['tables']
+            tables = TableRepositories(table_image)
+
+            if check:
+                cv2.imwrite('tables_org.png', tables.slate)
         except  Exception as e:
             log_error("Service TableExtractor Error in finding tables", app_context.application_context, e)
             return None, None, None, None
@@ -197,7 +271,7 @@ def get_text_table_line_df(pdf_data,flags, check=False):
             return None, None, None, None
 
         line_df = get_line_df(lines)
-        tables_df = get_table_df(tables)
+        tables_df = get_table_df(tables.response['response']['tables'])
         filtered_in_df, table_df = extract_and_delete_region(in_df, tables_df)
 
         if flags['doc_class'] == 'class_1':

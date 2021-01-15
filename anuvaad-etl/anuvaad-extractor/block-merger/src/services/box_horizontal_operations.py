@@ -4,7 +4,7 @@ from src.services.box_horizontal_evalutions import (are_hlines,are_hlines_supers
 from src.services.box_grouping import arrange_grouped_line_indices
 from src.utilities.xml_utils import get_ngram
 
-def merge_horizontal_blocks(in_df, configs, debug=False):
+def merge_horizontal_blocks(in_df, configs,table=False,debug=False):
     df = in_df.copy(deep=True)
     df = in_df.reset_index(drop=True)
 
@@ -13,7 +13,7 @@ def merge_horizontal_blocks(in_df, configs, debug=False):
     #This fails whten in_df contains only one node
     
     for index_gram in index_grams:
-        if are_hlines(df, configs, index_gram[0], index_gram[1], debug=debug):
+        if are_hlines(df, configs, index_gram[0], index_gram[1],table=table ,debug=debug):
             connections.append((index_gram[1], index_gram[0], 'CONNECTED'))
         else:
             connections.append((index_gram[1], index_gram[0], 'NOT_CONNECTED'))

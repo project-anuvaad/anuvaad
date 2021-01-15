@@ -74,7 +74,13 @@ def break_blocks(input):
         pdf_data, flags = input
 
         p_dfs = children_functions.breaK_into_paragraphs(pdf_data,flags)
-        p_dfs = get_text_from_table_cells(pdf_data['table_dfs'], p_dfs)
+
+
+
+        #p_dfs = get_text_from_table_cells(pdf_data['table_dfs'], p_dfs)
+        p_dfs = get_text_from_table_cells(pdf_data,p_dfs,flags)
+
+
         #p_dfs, line_dfs = get_underline(p_dfs, pdf_data['line_dfs'], app_context.application_context)
 
         text_merger = ChildTextUnify()
