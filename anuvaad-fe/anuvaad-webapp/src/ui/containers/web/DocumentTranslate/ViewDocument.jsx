@@ -649,7 +649,7 @@ class ViewDocument extends React.Component {
     };
 
     return (
-      <div style={{ height: window.innerHeight }}>
+      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
         <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
           <ToolBar />
           {!this.state.showLoader && (
