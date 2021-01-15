@@ -112,7 +112,11 @@ def get_vdfs(h_dfs):
         pages = len(h_dfs)
         for page_index in range(pages):
             h_df    = h_dfs[page_index]
-            v_df    = merge_vertical_blocks(h_df, document_configs, debug=False)
+            if len(h_df) > 1:
+                v_df    = merge_vertical_blocks(h_df, document_configs, debug=False)
+            else:
+                v_df = h_df
+                v_df['children'] = None
             v_dfs.append(v_df)
     except Exception as e :
         log_error('Error in creating v_dfs', app_context.application_context, e)
@@ -139,8 +143,11 @@ def get_hdfs(in_dfs, header_region, footer_region,table=False):
             page_df   = in_dfs[page_index]
             if multiple_pages :
                 page_df   = tag_heaader_footer_attrib(header_region , footer_region,page_df)
+            if len(page_df) > 1:
+                h_df    = merge_horizontal_blocks(page_df, document_configs,table=table, debug=False)
+            else :
+                h_df = page_df
 
-            h_df    = merge_horizontal_blocks(page_df, document_configs,table=table, debug=False)
             h_dfs.append(h_df)
     except Exception as e :
         log_error('Error in creating h_dfs' +str(e), app_context.application_context, e)
@@ -156,27 +163,27 @@ def get_hdfs(in_dfs, header_region, footer_region,table=False):
 
 def get_pdfs(page_dfs,lang):
     start_time          = time.time()
-    try:
-        p_dfs    = []
-        pages    = len(page_dfs)
-        block_configs = config.BLOCK_CONFIGS
-        for page_index in range(pages):
-            page_df     = page_dfs[page_index]
-            cols        = page_df.columns.values.tolist()
-            df          = pd.DataFrame(columns=cols)
-            for index, row in page_df.iterrows():
-                if row['children'] == None:
-                    d_tmp = page_df.iloc[index]
-                    d_tmp['avg_line_height'] = int(d_tmp['text_height'])
-                    df = df.append(d_tmp)
-                else:
-                    dfs = process_block(page_df.iloc[index], block_configs,lang)
-                    df  = df.append(dfs)
-            p_dfs.append(df)
+    #try:
+    p_dfs    = []
+    pages    = len(page_dfs)
+    block_configs = config.BLOCK_CONFIGS
+    for page_index in range(pages):
+        page_df     = page_dfs[page_index]
+        cols        = page_df.columns.values.tolist()
+        df          = pd.DataFrame(columns=cols)
+        for index, row in page_df.iterrows():
+            if row['children'] == None:
+                d_tmp = page_df.iloc[index]
+                d_tmp['avg_line_height'] = int(d_tmp['text_height'])
+                df = df.append(d_tmp)
+            else:
+                dfs = process_block(page_df.iloc[index], block_configs,lang)
+                df  = df.append(dfs)
+        p_dfs.append(df)
 
-    except Exception as e :
-        log_error('Error in creating p_dfs', app_context.application_context, e)
-        return None
+    #except Exception as e :
+    #   log_error('Error in creating p_dfs', app_context.application_context, e)
+    #    return None
 
     end_time         = time.time()
     elapsed_time     = end_time - start_time
