@@ -44,9 +44,13 @@ class NMTTranslateService:
 
         input_sentence_array_prepd = [None] * num_sentence
         special_case_sentence_indices = []
+
+        src_language, tgt_language = misc.get_src_tgt_langauge(model_id)
+
         try:
             for i,sent in enumerate(src_list):
                 input_sentence = sent.strip()
+
                 if special_case_handler.special_case_fits(input_sentence):
                     special_case_sentence_indices.append(i)
                     log_info("sentence fits in special case, capturing index to process at last",MODULE_CONTEXT)
@@ -57,7 +61,10 @@ class NMTTranslateService:
                     tagged_src_list[i] = (prefix_array[i] + " " + input_sentence).lstrip() 
                 
                 input_sentence_array_prepd[i] = input_sentence
-            
+
+            input_sentence_array_prepd, sent_indices_wo_stop = \
+                special_case_handler.handle_sentences_wo_stop(src_language,input_sentence_array_prepd)
+
             log_info("translating using NMT-model:{}".format(model_id),MODULE_CONTEXT)    
             if model_id == 5:
                 "hi-en exp-1"
@@ -231,8 +238,11 @@ class NMTTranslateService:
             else:
                 log_info("Unsupported model id: {} for given input".format(model_id),MODULE_CONTEXT)
                 raise Exception("Unsupported Model ID - id: {} for given input".format(model_id))      
+            
+            translation_array = oc.postprocess_sentences_wo_stop(tgt_language, translation_array, sent_indices_wo_stop)
 
             for i in range(num_sentence):
+
                 if i in special_case_sentence_indices:
                     log_info("sentence fits in special case, returning output accordingly and not from model",MODULE_CONTEXT)
                     tgt_list[i] = special_case_handler.handle_special_cases(src_list[i].strip(),model_id)

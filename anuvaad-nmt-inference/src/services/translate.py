@@ -217,6 +217,10 @@ class OpenNMTTranslateService:
                     prefix, i['src'] = special_case_handler.prefix_handler(i['src'])
                     i['src'],date_original,url_original,num_array,num_map = tagger_util.tag_number_date_url(i['src'])
                     tag_src = (prefix +" "+ i['src']).lstrip() 
+
+                    src_language, tgt_language = misc.get_src_tgt_langauge(i['id'])
+                    i['src'], is_missing_stop_punc = special_case_handler.handle_a_sentence_wo_stop(src_language,i['src'])
+
                     if i['id'] == 5:
                         "hi-en exp-1"
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
@@ -361,7 +365,7 @@ class OpenNMTTranslateService:
                         log_info("Unsupported model id: {} for given input".format(i['id']),MODULE_CONTEXT)
                         raise Exception("Unsupported Model ID - id: {} for given input".format(i['id']))      
 
-                    # translation = (prefix+" "+translation+" "+suffix).strip()
+                    translation = oc.postprocess_a_sentence_wo_stop(tgt_language, translation, is_missing_stop_punc)
                     translation = (prefix+" "+translation).lstrip()
                     translation = translation.replace("▁"," ")
                     translation = misc.regex_pass(translation,[patterns['p8'],patterns['p9'],patterns['p4'],patterns['p5'],
