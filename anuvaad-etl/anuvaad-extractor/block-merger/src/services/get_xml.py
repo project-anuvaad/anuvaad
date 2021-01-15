@@ -163,27 +163,27 @@ def get_hdfs(in_dfs, header_region, footer_region,table=False):
 
 def get_pdfs(page_dfs,lang):
     start_time          = time.time()
-    #try:
-    p_dfs    = []
-    pages    = len(page_dfs)
-    block_configs = config.BLOCK_CONFIGS
-    for page_index in range(pages):
-        page_df     = page_dfs[page_index]
-        cols        = page_df.columns.values.tolist()
-        df          = pd.DataFrame(columns=cols)
-        for index, row in page_df.iterrows():
-            if row['children'] == None:
-                d_tmp = page_df.iloc[index]
-                d_tmp['avg_line_height'] = int(d_tmp['text_height'])
-                df = df.append(d_tmp)
-            else:
-                dfs = process_block(page_df.iloc[index], block_configs,lang)
-                df  = df.append(dfs)
-        p_dfs.append(df)
+    try:
+        p_dfs    = []
+        pages    = len(page_dfs)
+        block_configs = config.BLOCK_CONFIGS
+        for page_index in range(pages):
+            page_df     = page_dfs[page_index]
+            cols        = page_df.columns.values.tolist()
+            df          = pd.DataFrame(columns=cols)
+            for index, row in page_df.iterrows():
+                if row['children'] == None:
+                    d_tmp = page_df.iloc[index]
+                    d_tmp['avg_line_height'] = int(d_tmp['text_height'])
+                    df = df.append(d_tmp)
+                else:
+                    dfs = process_block(page_df.iloc[index], block_configs,lang)
+                    df  = df.append(dfs)
+            p_dfs.append(df)
 
-    #except Exception as e :
-    #   log_error('Error in creating p_dfs', app_context.application_context, e)
-    #    return None
+    except Exception as e :
+        log_error('Error in creating p_dfs', app_context.application_context, e)
+        return None
 
     end_time         = time.time()
     elapsed_time     = end_time - start_time
