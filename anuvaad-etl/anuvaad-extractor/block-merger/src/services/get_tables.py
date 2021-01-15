@@ -168,6 +168,7 @@ def get_text_from_table_cells(pdf_data, p_dfs,flags):
         table_cells = []
         table_df = table_dfs[page_index]
         if len(table_df) > 0:
+            table_df = table_df.sort_values(by=['text_top'])
             for t_index, row in table_df.iterrows():
                 cells = row['children']
                 if cells != None:
