@@ -21,6 +21,9 @@ import ResetPassword from "./ResetPasswordModal";
 import Modal from '@material-ui/core/Modal';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import SetPasswordApi from "../../../../flux/actions/apis/user/setpassword";
+import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
+import history from "../../../../web.history";
+
 
 
 
@@ -51,18 +54,16 @@ class UserDetails extends React.Component {
 
   processFetchBulkUserDetailAPI = (offset, limit, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = []) => {
     const token = localStorage.getItem("token");
-    const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes);
-    this.props.APITransport(userObj);
+    const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes)
+    this.props.APITransport(userObj)
   }
   /**
    * life cycle methods
    */
   componentDidMount() {
-
     TELEMETRY.pageLoadCompleted('user-details');
     this.setState({ showLoader: true })
     this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
-
   }
 
   componentDidUpdate(prevProps) {
@@ -83,7 +84,7 @@ class UserDetails extends React.Component {
       },
       MUIDataTableHeadCell: {
         fixedHeader: {
-              paddingLeft: '1.2%'
+          paddingLeft: '1.2%'
         }
       }
     }
@@ -124,7 +125,7 @@ class UserDetails extends React.Component {
             }, 2000)
           }
         } else {
-          TELEMETRY.log("user-activate-or-deactivate",res)
+          TELEMETRY.log("user-activate-or-deactivate", res)
         }
       })
   }
@@ -162,6 +163,22 @@ class UserDetails extends React.Component {
         </IconButton>
       </Tooltip>
     );
+  }
+
+  processUserView = (id, name) => {
+    return (
+      <Tooltip title="View User Details" placement="right">
+        <IconButton style={{ color: '#233466', padding: '5px' }}
+          component="a"
+          onClick={() => this.handleUserViewClick(id, name)} >
+          <AssessmentOutlinedIcon />
+        </IconButton>
+      </Tooltip>
+    );
+  }
+
+  handleUserViewClick = (id, name) => {
+    history.push(`${process.env.PUBLIC_URL}/user-report/${id}/${name}`)
   }
 
   openModal = (userName) => {
@@ -285,6 +302,7 @@ class UserDetails extends React.Component {
                 <div>
                   {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[6])}
                   {this.processModal(tableMeta.rowData[1])}
+                  {this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
                 </div>
               );
             }
