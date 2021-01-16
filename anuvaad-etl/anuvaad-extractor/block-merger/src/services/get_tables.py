@@ -173,7 +173,12 @@ def get_text_from_table_cells(pdf_data, p_dfs,flags):
                 cells = row['children']
                 if cells != None:
                     for cell in cells:
+
+                        cell['cell_index'] = cell['index']
+                        cell['table_index'] = t_index
                         cell.pop('index')
+
+
                         if cell['text'] != None:
                             text_df = pd.DataFrame(cell['text'])
                             if len(text_df) >1 :
