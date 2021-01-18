@@ -4,6 +4,7 @@ from utilities import MODULE_CONTEXT
 from dateutil.parser import parse
 import json
 import config
+from config.regex_patterns import patterns
 
 '''
 miscellaneous funtions common across application
@@ -37,8 +38,20 @@ def token_is_date(token):
 
 def token_is_url(token):
   try:
-    url = re.findall(r'http[s]?\s*:\s*/\s*/\s*(?:\s*[a-zA-Z]|[0-9]\s*|[$-_@.&+]|\s*[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]\s*))+',token)
+    url_pattern = patterns['p13']['regex']
+    url = re.findall(url_pattern,token)
     if len(url)>0:
+      return True
+    else:
+      return False  
+  except Exception as e:
+    return False
+
+def token_is_email(token):
+  try:
+    email_pattern = patterns['p14']['regex']
+    email = re.findall(email_pattern,token)
+    if len(email)>0:
       return True
     else:
       return False  
@@ -54,7 +67,7 @@ def isfloat(str):
 
 def get_src_tgt_langauge(model_id):
   '''
-  Checks if the source language for the model is English
+  Returns source and target language 
   '''
   try:
     log_info("Inside get_src_tgt_langauge",MODULE_CONTEXT)
@@ -76,8 +89,7 @@ def get_src_tgt_langauge(model_id):
 
 def get_language_stop_puncs(language):
   '''
-  Gets the sentence ending punctuation list accroding
-  to the language provided
+  Gets the sentence ending punctuation list given the language
   '''
   try:
     log_info("Inside get_language_stop_puncs",MODULE_CONTEXT)
@@ -108,7 +120,7 @@ def is_sentence_wo_stop(sentence,stop_puncs):
 
 def add_stop_punc(sentence,stop_punc):
   '''
-  Adds the punctuation at the end of the senetnce
+  Adds punctuation at the end of the sentence
   '''
   try:
     log_info("Inside add_stop_punc",MODULE_CONTEXT)

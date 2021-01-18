@@ -10,6 +10,10 @@ Below funtions are meant to handle date, numbers and URls as part of pre and pos
 '''
 
 def tag_number_date_url(text):
+  '''
+  Tags numbers, dates and url in the input text and returns
+  tagged text and the arrays of numbers,dates and urls
+  '''
   try: 
     if len(text) == 0:
       return "","","","",""
@@ -18,7 +22,7 @@ def tag_number_date_url(text):
     count_date = 0
     date_original = list()
     count_url = 0
-    url_original = list()
+    url_dict = {}
     count_number = 0
     num_map = list()
     
@@ -53,9 +57,10 @@ def tag_number_date_url(text):
               date_original.append(word)  
               word = 'DdAaTtEe'+str(count_date)
               count_date +=1
-          elif misc.token_is_url(word):
-            url_original.append(word)
+          elif misc.token_is_url(word) or misc.token_is_email(word):
+            url_or_email = word
             word = 'UuRrLl'+str(count_url)
+            url_dict[word] = url_or_email
             count_url +=1
         except Exception as e:
           log_exception("In handle_date_url:tag_num function:{}".format(e),MODULE_CONTEXT,e)
@@ -65,13 +70,19 @@ def tag_number_date_url(text):
         resultant_str.append(word)   
         s = [str(i) for i in resultant_str] 
         res = str(" ".join(s))   
-    log_info("tagged response:{} and date:{} and url:{}".format(res,date_original,url_original),MODULE_CONTEXT) 
-    return res,date_original,url_original,num_array,num_map 
+    log_info("tagged response:{} and date:{} and url:{}".format(res,date_original,url_dict),MODULE_CONTEXT) 
+
+    return res,date_original,url_dict,num_array,num_map 
+
   except Exception as e:
     log_exception("In handle_date_url:tag_num function parent except block:{}".format(e),MODULE_CONTEXT,e)
     return text,[],[],(num_array or [])
 
-def replace_tags_with_original(text,date_original,url_original,num_array,num_map):
+def replace_tags_with_original(text,date_original,url_dict,num_array,num_map):
+  '''
+  Replaces dates,urls and numbers in the text with the original values
+  in place of the tags
+  '''
   try:
     resultant_str = list()
       
@@ -80,8 +91,8 @@ def replace_tags_with_original(text,date_original,url_original,num_array,num_map
     for word in text.split():
       if word[:-1] == 'DdAaTtEe' and len(date_original) > 0:
         word = date_original[int(word[-1])]
-      elif word[:-1] == 'UuRrLl' and len(url_original)> 0 :
-        word = url_original[int(word[-1])]          
+      elif 'UuRrLl' in word:
+        word = url_dict[word]         
 
       resultant_str.append(word)
       s = [str(i) for i in resultant_str] 
@@ -93,7 +104,7 @@ def replace_tags_with_original(text,date_original,url_original,num_array,num_map
       ''' handling the case when model outputs a tag which is not in tagged_src(src is without any number'''
       for char in reversed(hindi_numbers):  
         res = re.sub(r'NnUuMm'+char,"",res)
-      return res
+      # return res
     num_map.reverse()
     for item in num_map:
       res = res.replace(item['tag'],str(item['no.']),1)
@@ -151,6 +162,7 @@ def remove_extra_tags(text):
   '''
   This funtion is meant for removing extra num,date and url tags from the output 
   '''
+  print("#####################")
   if len(re.findall(r'NnUuMm.', text)) > 0:
     ''' 
     if model outputs extra tag than the number of count in num_map or 
