@@ -109,7 +109,7 @@ def is_sentence_wo_stop(sentence,stop_puncs):
   '''
   try:
     log_info("Inside is_sentence_wo_stop",MODULE_CONTEXT)
-    if sentence[-1] in stop_puncs:
+    if sentence and (sentence[-1]) and (sentence[-1] in stop_puncs):
       return False
     else:
       return True
@@ -136,7 +136,7 @@ def remove_stop_punc(sentence,stop_puncs):
   '''
   try:
     log_info("Inside remove_stop_punc",MODULE_CONTEXT)
-    if sentence[-1] in stop_puncs:
+    if sentence and (sentence[-1]) and (sentence[-1] in stop_puncs):
       return sentence[:-1]
     else:
       return sentence
