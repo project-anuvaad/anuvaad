@@ -162,7 +162,6 @@ class TMXService:
                     tmx_local_cache[hash_dict["USER"]] = tmx_result
                     return tmx_result
             else:
-                log_info("From Local USER Cache: " + str(tmx_local_cache[hash_dict["USER"]]), ctx)
                 return tmx_local_cache[hash_dict["USER"]]
         if tmx_org_enabled and 'ORG' in hash_dict.keys():
             if hash_dict["ORG"] not in tmx_local_cache.keys():
@@ -171,7 +170,6 @@ class TMXService:
                     tmx_local_cache[hash_dict["ORG"]] = tmx_result
                     return tmx_result
             else:
-                log_info("From Local ORG Cache: " + str(tmx_local_cache[hash_dict["ORG"]]), ctx)
                 return tmx_local_cache[hash_dict["ORG"]]
         if tmx_global_enabled and 'GLOBAL' in hash_dict.keys():
             if hash_dict["GLOBAL"] not in tmx_local_cache.keys():
@@ -180,7 +178,6 @@ class TMXService:
                     tmx_local_cache[hash_dict["GLOBAL"]] = tmx_result
                     return tmx_result
             else:
-                log_info("From Local GLOBAL Cache: " + str(tmx_local_cache[hash_dict["GLOBAL"]]), ctx)
                 return tmx_local_cache[hash_dict["GLOBAL"]]
         return None
 
