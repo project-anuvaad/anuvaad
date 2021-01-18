@@ -26,7 +26,7 @@ import UserDetails from "./ui/containers/web/AdminPanel/UserDetails";
 import CreateUser from "./ui/containers/web/AdminPanel/CreateUser";
 import TmxUpload from "./ui/containers/web/AdminPanel/TmxUpload";
 import UserReport from './ui/containers/web/AdminPanel/UserReport';
-import DocumentView from './ui/containers/web/AdminPanel/DocumentView';
+import DocumentStats from './ui/containers/web/AdminPanel/DocumentStats';
 
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
@@ -232,13 +232,13 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL} /user-report/:fid/:fname`}
+              path={`${process.env.PUBLIC_URL}/document-stats/:recordId/:fname`}
               dontShowLoader
-              title={"Document View"}
+              title={"Document Stats"}
               userRoles={["ADMIN"]}
-              component={DocumentView}
+              component={DocumentStats}
               authenticate={this.authenticateUser}
-              currentMenu="user-report"
+              currentMenu="document-stats"
               dontShowHeader={true}
             />
 

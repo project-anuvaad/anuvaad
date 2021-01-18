@@ -265,20 +265,21 @@ class UserReport extends React.Component {
      * handlers to process user clicks
      */
 
-    processDocumentView = (id, filename) => {
+    processDocumentView = (fid,fname) => {
         return (
             <Tooltip title="View User Details" placement="right">
                 <IconButton style={{ color: '#233466', padding: '5px' }}
                     component="a"
-                    onClick={() => this.handleDocumentView(id, filename)} >
+                    onClick={() => this.handleDocumentView(fid,fname)} >
                     <AssessmentOutlinedIcon />
                 </IconButton>
             </Tooltip>
         );
     }
 
-    handleDocumentView = (id, filename) => {
-        history.push(`${process.env.PUBLIC_URL}/user-report/${id}/${filename}`)
+    handleDocumentView = (fid,fname) => {
+        const recordID =this.props.job_details.documents.filter(doc=>doc.jobID === fid)[0].recordId
+        history.push(`${process.env.PUBLIC_URL}/document-stats/${recordID}/${fname}`)
     }
 
     processViewDocumentClick = (jobId, recordId, status) => {
@@ -542,7 +543,7 @@ class UserReport extends React.Component {
                         if (tableMeta.rowData) {
                             return (
                                 <div>
-                                    {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0])}
+                                    {this.processDocumentView(tableMeta.rowData[1],tableMeta.rowData[0])}
                                 </div>
                             );
                         }
