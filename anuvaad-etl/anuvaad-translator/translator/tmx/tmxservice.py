@@ -108,10 +108,11 @@ class TMXService:
         if org_id:
             tmx_record["orgID"] = org_id
         try:
-            return self.tmx_phrase_search(tmx_record, ctx)
+            tmx_phrases, r_count, c_count = self.tmx_phrase_search(tmx_record, ctx)
+            return tmx_phrases, r_count, c_count
         except Exception as e:
             log_exception("Exception while searching tmx from redis: " + str(e), ctx, e)
-            return []
+            return [], 0, 0
 
     # Generates a 3 flavors for a sentence - title case, lowercase and uppercase.
     def fetch_diff_flavors_of_sentence(self, sentence):
@@ -138,10 +139,11 @@ class TMXService:
                 sliding_pivot = len(sentence)
                 i = 1
                 tmx += 1
-                if fetch == 0:
-                    r_count += 1
-                else:
-                    c_count += 1
+                if fetch:
+                    if fetch == 0:
+                        r_count += 1
+                    else:
+                        c_count += 1
             else:
                 sent_list = sentence.split(" ")
                 phrase_list = phrase.split(" ")
@@ -183,7 +185,7 @@ class TMXService:
                     return tmx_result, 0
             else:
                 return tmx_local_cache[hash_dict["GLOBAL"]], 1
-        return None
+        return None, None
 
     # Replaces TMX phrases in NMT tgt using TMX NMT phrases and LaBSE alignments
     def replace_nmt_tgt_with_user_tgt(self, tmx_phrases, tgt, ctx):
