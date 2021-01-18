@@ -122,6 +122,7 @@ class ViewDocument extends React.Component {
         MUIDataTableBodyCell: {
           root: {
             padding: "3px 10px 3px",
+            overflow:"auto"
           },
         },
       },
@@ -625,6 +626,17 @@ class ViewDocument extends React.Component {
         },
         options: { sortDirection: "desc" },
       },
+      onChangeRowsPerPage: (limit) =>{
+        let diffValue = limit - this.state.limit;
+        if(diffValue>0)
+        {
+          this.makeAPICallJobsBulkSearch(this.state.offset + diffValue , limit - this.state.limit, false, false, true)
+        }
+        
+        this.setState({limit})
+        
+      },
+      rowsPerPageOptions:[10,20,50],
 
       onTableChange: (action, tableState) => {
         switch (action) {
