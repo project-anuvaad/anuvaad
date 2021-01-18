@@ -104,7 +104,6 @@ class TranslatorService:
                 return None
             pages = data["result"]
             total_sentences, total_tmx, total_batches = 0, 0, 0
-            log_info("TMX Local Cache Size : " + str(len(tmx_local_cache.keys())), translate_wf_input)
             for page in pages:
                 sentences_per_page = 0
                 batches, tmx_count = self.fetch_batches_of_sentences(file, record_id, page, translate_wf_input)
@@ -125,6 +124,7 @@ class TranslatorService:
                 repo.update({"totalSentences": total_sentences}, {"recordID": record_id})
                 log_info("recordID: " + record_id + " | BATCHES: " + str(total_batches)
                          + " | SENTENCES: " + str(total_sentences) + " | TMX: " + str(total_tmx), translate_wf_input)
+                log_info("TMX Local Cache Size : " + str(len(tmx_local_cache.keys())), translate_wf_input)
                 return True
             else:
                 log_error("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)

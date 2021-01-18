@@ -130,7 +130,7 @@ class TMXService:
         while hopping_pivot < len(sentence):
             phrase = sentence[hopping_pivot:sliding_pivot]
             tmx_record["src"] = phrase
-            tmx_result = self.get_tmx_with_fallback(tmx_record)
+            tmx_result = self.get_tmx_with_fallback(tmx_record, ctx)
             if tmx_result:
                 tmx_phrases.append(tmx_result[0])
                 phrase_list = phrase.split(" ")
@@ -152,7 +152,7 @@ class TMXService:
         return tmx_phrases
 
     # Fetches TMX phrases for a sentence from hierarchical cache
-    def get_tmx_with_fallback(self, tmx_record):
+    def get_tmx_with_fallback(self, tmx_record, ctx):
         global tmx_local_cache
         hash_dict = self.get_hash_key(tmx_record, True)
         if tmx_user_enabled and 'USER' in hash_dict.keys():
@@ -162,6 +162,7 @@ class TMXService:
                     tmx_local_cache[hash_dict["USER"]] = tmx_result
                     return tmx_result
             else:
+                log_info("From Local USER Cache: " + str(tmx_local_cache[hash_dict["USER"]]), ctx)
                 return tmx_local_cache[hash_dict["USER"]]
         if tmx_org_enabled and 'ORG' in hash_dict.keys():
             if hash_dict["ORG"] not in tmx_local_cache.keys():
@@ -170,6 +171,7 @@ class TMXService:
                     tmx_local_cache[hash_dict["ORG"]] = tmx_result
                     return tmx_result
             else:
+                log_info("From Local ORG Cache: " + str(tmx_local_cache[hash_dict["ORG"]]), ctx)
                 return tmx_local_cache[hash_dict["ORG"]]
         if tmx_global_enabled and 'GLOBAL' in hash_dict.keys():
             if hash_dict["GLOBAL"] not in tmx_local_cache.keys():
@@ -178,6 +180,7 @@ class TMXService:
                     tmx_local_cache[hash_dict["GLOBAL"]] = tmx_result
                     return tmx_result
             else:
+                log_info("From Local GLOBAL Cache: " + str(tmx_local_cache[hash_dict["GLOBAL"]]), ctx)
                 return tmx_local_cache[hash_dict["GLOBAL"]]
         return None
 
