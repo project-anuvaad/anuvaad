@@ -164,6 +164,26 @@
             "role":"ADMIN",
             "actionID": "b533843f-5259-4723-b670-b9f483d9db43",
             "active":true
+        },
+        {
+            "role":"M-TRANSLATOR",
+            "actionID": "36122d56-6077-48eb-a2d8-303b1460d4ac",
+            "active":true
+        },
+        {
+            "role":"M-TRANSLATOR",
+            "actionID": "e5d0b999-a2bb-41af-a267-2494b15fb6a5",
+            "active":true
+        },
+        {
+            "role":"M-TRANSLATOR",
+            "actionID": "f08cb87c-9e10-4b23-9de5-52c6ff70d405",
+            "active":true
+        },
+        {
+            "role":"M-TRANSLATOR",
+            "actionID": "75a424ae-ae00-44da-86f8-3809dd9a6458",
+            "active":true
         }
     ]
 }
