@@ -104,7 +104,6 @@ def replace_tags_with_original(text,date_original,url_dict,num_array,num_map):
       ''' handling the case when model outputs a tag which is not in tagged_src(src is without any number'''
       for char in reversed(hindi_numbers):  
         res = re.sub(r'NnUuMm'+char,"",res)
-      # return res
     num_map.reverse()
     for item in num_map:
       res = res.replace(item['tag'],str(item['no.']),1)
@@ -162,7 +161,6 @@ def remove_extra_tags(text):
   '''
   This funtion is meant for removing extra num,date and url tags from the output 
   '''
-  print("#####################")
   if len(re.findall(r'NnUuMm.', text)) > 0:
     ''' 
     if model outputs extra tag than the number of count in num_map or 
