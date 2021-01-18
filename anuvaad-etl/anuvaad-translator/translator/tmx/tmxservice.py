@@ -136,6 +136,7 @@ class TMXService:
             if len(phrase_size) <= tmx_word_length:
                 tmx_record["src"] = phrase
                 tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, ctx)
+                computed += 1
                 if tmx_result:
                     tmx_phrases.append(tmx_result[0])
                     phrase_list = phrase.split(" ")
@@ -146,7 +147,6 @@ class TMXService:
                         r_count += 1
                     else:
                         c_count += 1
-                    computed += 1
                     continue
             sent_list = sentence.split(" ")
             phrase_list = phrase.split(" ")
@@ -157,7 +157,6 @@ class TMXService:
                 hopping_pivot += (1 + len(' '.join(phrase_list)))
                 sliding_pivot = len(sentence)
                 i = 1
-            computed += 1
         res_dict = {"computed": computed, "redis": r_count, "cache": c_count}
         return tmx_phrases, res_dict
 
