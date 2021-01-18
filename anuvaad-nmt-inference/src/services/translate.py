@@ -31,7 +31,6 @@ class TranslateService:
 
         try:
             for i in inputs:  
-                # log_info(log_with_request_info(i.get("s_id"),LOG_TAGS["input"],i))
                 sentence_id.append(i.get("s_id") or "NA")
                 if  any(v not in i for v in ['src','id']):
                     log_info("either id or src missing in some input",MODULE_CONTEXT)
@@ -54,17 +53,13 @@ class TranslateService:
 
                     if i['id'] == 56:
                         "english-hindi"
-                        log_info("2: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
                         if i['src'].isupper():
                             log_info("src all Upper case hence Tital casing it",MODULE_CONTEXT)
                             i['src'] = i['src'].title()
                         tp_tokenizer = sentence_processor.indic_tokenizer
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
-                        log_info("3: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
-                        log_info("9: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
                         translation = [sentence_processor.indic_detokenizer(i) for i in translation]
-                        log_info("10: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
                     elif i['id'] == 7:
                         "english-tamil"
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
@@ -107,8 +102,14 @@ class TranslateService:
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
                         translation = [sentence_processor.moses_detokenizer(i) for i in translation]
+                    elif i['id'] == 57:
+                        "english-bengali 3rd"
+                        tp_tokenizer = sentence_processor.indic_tokenizer
+                        i['src'] = sentence_processor.moses_tokenizer(i['src'])
+                        translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
+                        translation = [sentence_processor.indic_detokenizer(i) for i in translation]
                     elif i['id'] == 58:
-                        "bengali-english"
+                        "bengali-english 2nd"
                         tp_tokenizer = sentence_processor.moses_tokenizer 
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
@@ -152,8 +153,7 @@ class TranslateService:
                                                 patterns['p6'],patterns['p7']]) for i in translation]
                     tag_tgt = translation
                     translation = [tagger_util.replace_tags_with_original(i,date_original,url_original,num_array,num_map) for i in translation]
-                log_info("interactive translation-experiment-{} output: {}".format(i['id'],translation),MODULE_CONTEXT)    
-                # log_info(log_with_request_info(i.get("s_id"),LOG_TAGS["output"],translation))
+                log_info("interactive translation-experiment-{} output: {}".format(i['id'],translation),MODULE_CONTEXT)  
                 tgt.append(translation)
                 tagged_tgt.append(tag_tgt)
                 tagged_src.append(tag_src)
@@ -404,16 +404,10 @@ class OpenNMTTranslateService:
 def encode_itranslate_decode(i,num_map,tp_tokenizer,num_hypotheses=3):
     try:
         log_info("Inside encode_itranslate_decode function",MODULE_CONTEXT)
-        log_info("3.1: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
         model_path,sp_encoder,sp_decoder = get_model_path(i['id'])
-        log_info("3.2: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
         translator = load_models.loaded_models[i['id']]
-        print(translator)
-        log_info("4: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
         i['src'] = str(sp.encode_line(sp_encoder,i['src']))
-        log_info("5: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
         i_final = format_converter(i['src'])
-        log_info("6: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
 
         if 'target_prefix' in i and len(i['target_prefix']) > 0 and i['target_prefix'].isspace() == False:
             log_info("target prefix: {}".format(i['target_prefix']),MODULE_CONTEXT) 
@@ -425,12 +419,11 @@ def encode_itranslate_decode(i,num_map,tp_tokenizer,num_hypotheses=3):
             tp_final = format_converter(i['target_prefix'])
             tp_final[-1] = tp_final[-1].replace(']',",")
             m_out = translator.translate_batch([i_final],beam_size = 5, target_prefix = [tp_final],num_hypotheses=num_hypotheses)
+            print(m_out)
         else:
             m_out = translator.translate_batch([i_final],beam_size = 5,num_hypotheses=num_hypotheses)
-            log_info("7: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)
 
-        translation = multiple_hypothesis_decoding(m_out[0],sp_decoder)   
-        log_info("8: {}".format(datetime.datetime.now() ),MODULE_CONTEXT)     
+        translation = multiple_hypothesis_decoding(m_out[0],sp_decoder)    
         return translation
         
     except Exception as e:

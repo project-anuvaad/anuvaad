@@ -318,20 +318,6 @@ def get_model_path(model_id):
         s_decoder = os.path.join(model_root, path[0][2])
         return final_path,s_encoder,s_decoder    
 
-def replace_num_target_prefix(i_,num_map):
-    num_tp = re.findall(patterns['p3']['regex'],i_['target_prefix'])
-    try:
-        for i in num_tp:
-            replacement_tag =  [pair['tag'] for pair in num_map if str(pair['no.'])== i]
-            if len(replacement_tag) > 0:
-                replacement_tag = replacement_tag[0]
-                i_['target_prefix'] = i_['target_prefix'].replace(i,replacement_tag)
-        log_info("target_prefix after replacing numbers with tag: {}".format(i_['target_prefix']),MODULE_CONTEXT)
-        return i_['target_prefix']
-    except Exception as e:
-        log_exception("Error in interavtive translation-replace_num_target_prefix:{}".format(e),MODULE_CONTEXT,e)
-        return i_['target_prefix']
-
 def multiple_hypothesis_decoding(hypotheses,sp_decoder):
     try:
         translations = list()
