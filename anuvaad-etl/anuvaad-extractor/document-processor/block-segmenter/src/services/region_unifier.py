@@ -378,11 +378,9 @@ class Region_Unifier:
             # text_regions, n_text_regions = self.get_text_region(v_list)
             avg_height, avg_ver_dist, avg_width = page_config.avg_line_info(v_list)
 
+            if avg_height == 0:
+                avg_height = 1
             self.avg_ver_ratio =   avg_ver_dist /avg_height
-
-
-
-
 
             for idx,v_block in enumerate(v_list):
                 if   v_block['children'] != None and  len(v_block['children']) > 1 :

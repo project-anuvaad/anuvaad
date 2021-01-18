@@ -83,7 +83,7 @@ class UserDetails extends React.Component {
       },
       MUIDataTableHeadCell: {
         fixedHeader: {
-              paddingLeft: '1.2%'
+          paddingLeft: '1.2%'
         }
       }
     }
@@ -124,7 +124,7 @@ class UserDetails extends React.Component {
             }, 2000)
           }
         } else {
-          TELEMETRY.log("user-activate-or-deactivate",res)
+          TELEMETRY.log("user-activate-or-deactivate", res)
         }
       })
   }
@@ -348,9 +348,7 @@ class UserDetails extends React.Component {
     };
 
     return (
-      <div style={{
-        height: window.innerHeight
-      }}>
+      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
 
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <ToolBar />
@@ -362,7 +360,7 @@ class UserDetails extends React.Component {
             </MuiThemeProvider>
           }
         </div>
-        { ((this.state.showLoader && this.props.userinfo.data.length < 1) || this.state.status) && < Spinner />}
+        {((this.state.showLoader && this.props.userinfo.data.length < 1) || this.state.status) && < Spinner />}
         {
           this.state.isenabled &&
           this.processSnackBar()
