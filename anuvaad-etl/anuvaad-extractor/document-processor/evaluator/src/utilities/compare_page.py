@@ -30,6 +30,7 @@ def compare_regions(gt_regions, predicted_regions):
     # else :
     base_regions = gt_regions
     compare_regions = predicted_regions
+    
     gt_base    = True
 
     base_exists = len(base_regions) > 0

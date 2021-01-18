@@ -33,12 +33,12 @@ class TableRepositories:
 
     def load_image(self):
 
-
+        IMAGE_BUFFER = 10
         if type (self.image_path) == str:
             image = cv2.imread (self.image_path, 0)
         else:
             image = self.image_path
-        self.input_image = image
+        self.input_image = image  # [self.rect['y']-IMAGE_BUFFER:self.rect['y']+self.rect['h']+IMAGE_BUFFER,self.rect['x']-IMAGE_BUFFER:self.rect['x']+self.rect['w']+IMAGE_BUFFER]
         self.slate = np.zeros (self.input_image.shape)
 
     def get_table_mask(self):
@@ -55,6 +55,12 @@ class TableRepositories:
         horizontal = cv2.erode (horizontal, horizontal_structure)
         horizontal = cv2.dilate (horizontal, horizontal_structure)
 
+        horizontal_size = 5 # int(horizontal.shape[1] / (self.SCALE * 2))
+        horizontal_structure = cv2.getStructuringElement(cv2.MORPH_RECT, (horizontal_size, 1))
+        horizontal = cv2.dilate(horizontal, horizontal_structure)
+        # horizontal = cv2.dilate(horizontal, horizontal_structure)
+        #horizontal = cv2.dilate(horizontal, horizontal_structure)
+
         #height_to_width_ratio = self.input_image.shape[0] / float(self.input_image.shape[1])
         #print(height_to_width_ratio)
         #vertical_size = int (vertical.shape [0] / (self.SCALE * height_to_width_ratio))
@@ -63,6 +69,7 @@ class TableRepositories:
         vertical_structure = cv2.getStructuringElement (cv2.MORPH_RECT, (1, vertical_size))
         vertical = cv2.erode (vertical, vertical_structure)
         vertical = cv2.dilate (vertical, vertical_structure)
+        #vertical = cv2.dilate(vertical, vertical_structure)
 
 
         # generating table borders
@@ -128,7 +135,7 @@ class TableRepositories:
             #print(area_ratio, i)
 
             # filtering out lines and noise
-            if (area_ratio < 0.8) & (h1 > 10 ):
+            if (area_ratio < 0.8) & (h1 > 5 ):
                 midpoint = [int (x1 + w1 / 2), int (y1 + h1 / 2)]  # np.mean(contours[i],axis=0)
                 midpoints.append (midpoint)
                 if len (midpoints) > 1:

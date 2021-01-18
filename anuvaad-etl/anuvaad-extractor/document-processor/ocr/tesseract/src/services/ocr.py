@@ -1,7 +1,6 @@
 import config
 from config import CROP_CONFIG
 from pytesseract import Output
-from  config import LANG_MAPPING
 from pytesseract import pytesseract
 from collections import Counter
 #from PIL import Image
@@ -28,9 +27,12 @@ import uuid
 
 def ocr(crop_image,configs,left,top,language):
     if configs:
-        temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
+        #temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
+        temp_df = pytesseract.image_to_data(crop_image, config='--psm 7', lang=language,
+                                            output_type=Output.DATAFRAME)
     else:
-        temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
+        #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
+        temp_df = pytesseract.image_to_data(crop_image, lang= language,output_type=Output.DATAFRAME)
     temp_df = temp_df[temp_df.text.notnull()]
     text = ""
     coord  = []
@@ -59,6 +61,8 @@ def bound_coordinate(corrdinate,max):
     return int(corrdinate)
 
 def get_text(path,coord,lang,width, height,freq_height):
+    #image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+path,0)
+
     image   = cv2.imread(path,0)
     #h_ratio = image.size[1]/height
     #w_ratio = image.size[0]/width
@@ -69,10 +73,12 @@ def get_text(path,coord,lang,width, height,freq_height):
     top = bound_coordinate(coord[1],height )
     right = bound_coordinate(coord[2] ,width)
     bottom = bound_coordinate(coord[3] , height)
+    region_width = abs(right-left)
+    region_height = abs(bottom-top)
 
     #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
-    if left==right==top==bottom==0:
-        return None,None
+    if left==right==top==bottom==0 or region_width==0 or region_height==0:
+        return [],[]
     crop_image = image[ top:bottom, left:right]
     
     #crop_image.save("/home/naresh/line_crop_adjustment/"+str(uuid.uuid4()) + '.jpg')
@@ -122,8 +128,8 @@ def text_extraction(lang, page_path, regions,region_org,width, height,mode_heigh
             region_org[idx]['tess_word_coords'] = tess_coord
 
         else:
-            region_org[idx]['text'] = None
-            region_org[idx]['tess_word_coords'] = None
+            region_org[idx]['text'] = ""
+            region_org[idx]['tess_word_coords'] = []
 
     return region_org
 
