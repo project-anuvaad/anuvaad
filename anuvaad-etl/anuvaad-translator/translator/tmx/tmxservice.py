@@ -11,6 +11,8 @@ from configs.translatorconfig import download_folder
 from configs.translatorconfig import tmx_global_enabled
 from configs.translatorconfig import tmx_org_enabled
 from configs.translatorconfig import tmx_user_enabled
+from configs.translatorconfig import tmx_word_length
+
 
 
 repo = TMXRepository()
@@ -130,6 +132,11 @@ class TMXService:
         computed, r_count, c_count = 0, 0, 0,
         while hopping_pivot < len(sentence):
             phrase = sentence[hopping_pivot:sliding_pivot]
+            phrase_size = phrase.split(" ")
+            if len(phrase_size) > tmx_word_length:
+                altered_phrase = ' '.join(phrase_size[0: len(phrase_size) - 1])
+                sliding_pivot = len(altered_phrase)
+                continue
             tmx_record["src"] = phrase
             tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, ctx)
             if tmx_result:
