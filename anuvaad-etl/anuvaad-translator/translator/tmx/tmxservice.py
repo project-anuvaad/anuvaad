@@ -108,11 +108,11 @@ class TMXService:
         if org_id:
             tmx_record["orgID"] = org_id
         try:
-            tmx_phrases, r_count, c_count = self.tmx_phrase_search(tmx_record, ctx)
-            return tmx_phrases, r_count, c_count
+            tmx_phrases, res_dict = self.tmx_phrase_search(tmx_record, ctx)
+            return tmx_phrases, res_dict
         except Exception as e:
             log_exception("Exception while searching tmx from redis: " + str(e), ctx, e)
-            return [], 0, 0
+            return [], {"computed": 0, "redis": 0, "cache": 0}
 
     # Generates a 3 flavors for a sentence - title case, lowercase and uppercase.
     def fetch_diff_flavors_of_sentence(self, sentence):
@@ -127,7 +127,7 @@ class TMXService:
     def tmx_phrase_search(self, tmx_record, ctx):
         sentence, tmx_phrases = tmx_record["src"], []
         hopping_pivot, sliding_pivot, i = 0, len(sentence), 1
-        computed, tmx, r_count, c_count = 0, 0, 0, 0
+        computed, r_count, c_count = 0, 0, 0,
         while hopping_pivot < len(sentence):
             phrase = sentence[hopping_pivot:sliding_pivot]
             tmx_record["src"] = phrase
@@ -138,7 +138,6 @@ class TMXService:
                 hopping_pivot += (1 + len(' '.join(phrase_list)))
                 sliding_pivot = len(sentence)
                 i = 1
-                tmx += 1
                 if fetch is True:
                     r_count += 1
                 else:
@@ -154,7 +153,8 @@ class TMXService:
                     sliding_pivot = len(sentence)
                     i = 1
             computed += 1
-        return tmx_phrases, r_count, c_count
+        res_dict = {"computed": computed, "redis": r_count, "cache": c_count}
+        return tmx_phrases, res_dict
 
     # Fetches TMX phrases for a sentence from hierarchical cache
     def get_tmx_with_fallback(self, tmx_record, ctx):
