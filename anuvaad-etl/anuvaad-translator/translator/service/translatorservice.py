@@ -5,6 +5,7 @@ from kafkawrapper.translatorproducer import Producer
 from repository.translatorrepository import TranslatorRepository
 from tmx.tmxrepo import TMXRepository
 from tmx.tmxservice import TMXService
+from tmx.tmxservice import tmx_local_cache
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from anuvaad_auditor.errorhandler import post_error
 from configs.translatorconfig import nmt_max_batch_size
@@ -103,6 +104,7 @@ class TranslatorService:
                 return None
             pages = data["result"]
             total_sentences, total_tmx, total_batches = 0, 0, 0
+            log_info("TMX Local Cache Size : " + str(len(tmx_local_cache.keys())), translate_wf_input)
             for page in pages:
                 sentences_per_page = 0
                 batches, tmx_count = self.fetch_batches_of_sentences(file, record_id, page, translate_wf_input)
