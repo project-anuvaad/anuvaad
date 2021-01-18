@@ -124,7 +124,7 @@ class TMXService:
         caps = sentence.upper()
         return sentence, title, small, caps
 
-    # Searches for all tmx phrases within a given sentence
+    # Searches for all tmx phrases of a fixed length within a given sentence
     # Uses a custom implementation of the sliding window search algorithm.
     def tmx_phrase_search(self, tmx_record, ctx):
         sentence, tmx_phrases = tmx_record["src"], []
@@ -133,32 +133,30 @@ class TMXService:
         while hopping_pivot < len(sentence):
             phrase = sentence[hopping_pivot:sliding_pivot]
             phrase_size = phrase.split(" ")
-            if len(phrase_size) > tmx_word_length:
-                altered_phrase = ' '.join(phrase_size[0: len(phrase_size) - 1])
-                sliding_pivot = len(altered_phrase)
-                continue
-            tmx_record["src"] = phrase
-            tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, ctx)
-            if tmx_result:
-                tmx_phrases.append(tmx_result[0])
-                phrase_list = phrase.split(" ")
-                hopping_pivot += (1 + len(' '.join(phrase_list)))
-                sliding_pivot = len(sentence)
-                i = 1
-                if fetch is True:
-                    r_count += 1
-                else:
-                    c_count += 1
-            else:
-                sent_list = sentence.split(" ")
-                phrase_list = phrase.split(" ")
-                reduced_phrase = ' '.join(sent_list[0: len(sent_list) - i])
-                sliding_pivot = len(reduced_phrase)
-                i += 1
-                if hopping_pivot == sliding_pivot or (hopping_pivot - 1) == sliding_pivot:
+            if len(phrase_size) <= tmx_word_length:
+                tmx_record["src"] = phrase
+                tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, ctx)
+                if tmx_result:
+                    tmx_phrases.append(tmx_result[0])
+                    phrase_list = phrase.split(" ")
                     hopping_pivot += (1 + len(' '.join(phrase_list)))
                     sliding_pivot = len(sentence)
                     i = 1
+                    if fetch is True:
+                        r_count += 1
+                    else:
+                        c_count += 1
+                    computed += 1
+                    continue
+            sent_list = sentence.split(" ")
+            phrase_list = phrase.split(" ")
+            reduced_phrase = ' '.join(sent_list[0: len(sent_list) - i])
+            sliding_pivot = len(reduced_phrase)
+            i += 1
+            if hopping_pivot == sliding_pivot or (hopping_pivot - 1) == sliding_pivot:
+                hopping_pivot += (1 + len(' '.join(phrase_list)))
+                sliding_pivot = len(sentence)
+                i = 1
             computed += 1
         res_dict = {"computed": computed, "redis": r_count, "cache": c_count}
         return tmx_phrases, res_dict
