@@ -139,11 +139,10 @@ class TMXService:
                 sliding_pivot = len(sentence)
                 i = 1
                 tmx += 1
-                if fetch:
-                    if fetch == 0:
-                        r_count += 1
-                    else:
-                        c_count += 1
+                if fetch is True:
+                    r_count += 1
+                else:
+                    c_count += 1
             else:
                 sent_list = sentence.split(" ")
                 phrase_list = phrase.split(" ")
@@ -166,25 +165,25 @@ class TMXService:
                 tmx_result = repo.search([hash_dict["USER"]])
                 if tmx_result:
                     tmx_local_cache[hash_dict["USER"]] = tmx_result
-                    return tmx_result, 0
+                    return tmx_result, True
             else:
-                return tmx_local_cache[hash_dict["USER"]], 1
+                return tmx_local_cache[hash_dict["USER"]], False
         if tmx_org_enabled and 'ORG' in hash_dict.keys():
             if hash_dict["ORG"] not in tmx_local_cache.keys():
                 tmx_result = repo.search([hash_dict["ORG"]])
                 if tmx_result:
                     tmx_local_cache[hash_dict["ORG"]] = tmx_result
-                    return tmx_result, 0
+                    return tmx_result, True
             else:
-                return tmx_local_cache[hash_dict["ORG"]], 1
+                return tmx_local_cache[hash_dict["ORG"]], False
         if tmx_global_enabled and 'GLOBAL' in hash_dict.keys():
             if hash_dict["GLOBAL"] not in tmx_local_cache.keys():
                 tmx_result = repo.search([hash_dict["GLOBAL"]])
                 if tmx_result:
                     tmx_local_cache[hash_dict["GLOBAL"]] = tmx_result
-                    return tmx_result, 0
+                    return tmx_result, True
             else:
-                return tmx_local_cache[hash_dict["GLOBAL"]], 1
+                return tmx_local_cache[hash_dict["GLOBAL"]], False
         return None, None
 
     # Replaces TMX phrases in NMT tgt using TMX NMT phrases and LaBSE alignments
