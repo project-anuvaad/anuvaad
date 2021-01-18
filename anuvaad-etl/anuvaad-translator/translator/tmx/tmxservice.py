@@ -14,6 +14,7 @@ from configs.translatorconfig import tmx_user_enabled
 
 
 repo = TMXRepository()
+tmx_local_cache = {}
 
 class TMXService:
 
@@ -124,16 +125,16 @@ class TMXService:
     # Uses a custom implementation of the sliding window search algorithm.
     def tmx_phrase_search(self, tmx_record, ctx):
         sentence, tmx_phrases = tmx_record["src"], []
-        start_pivot, sliding_pivot, i = 0, len(sentence), 1
+        hopping_pivot, sliding_pivot, i = 0, len(sentence), 1
         computed, tmx = 0, 0
-        while start_pivot < len(sentence):
-            phrase = sentence[start_pivot:sliding_pivot]
+        while hopping_pivot < len(sentence):
+            phrase = sentence[hopping_pivot:sliding_pivot]
             tmx_record["src"] = phrase
             tmx_result = self.get_tmx_with_fallback(tmx_record)
             if tmx_result:
                 tmx_phrases.append(tmx_result[0])
                 phrase_list = phrase.split(" ")
-                start_pivot += (1 + len(' '.join(phrase_list)))
+                hopping_pivot += (1 + len(' '.join(phrase_list)))
                 sliding_pivot = len(sentence)
                 i = 1
                 tmx += 1
@@ -143,8 +144,8 @@ class TMXService:
                 reduced_phrase = ' '.join(sent_list[0: len(sent_list) - i])
                 sliding_pivot = len(reduced_phrase)
                 i += 1
-                if start_pivot == sliding_pivot or (start_pivot - 1) == sliding_pivot:
-                    start_pivot += (1 + len(' '.join(phrase_list)))
+                if hopping_pivot == sliding_pivot or (hopping_pivot - 1) == sliding_pivot:
+                    hopping_pivot += (1 + len(' '.join(phrase_list)))
                     sliding_pivot = len(sentence)
                     i = 1
             computed += 1
@@ -152,19 +153,32 @@ class TMXService:
 
     # Fetches TMX phrases for a sentence from hierarchical cache
     def get_tmx_with_fallback(self, tmx_record):
+        global tmx_local_cache
         hash_dict = self.get_hash_key(tmx_record, True)
         if tmx_user_enabled and 'USER' in hash_dict.keys():
-            tmx_result = repo.search([hash_dict["USER"]])
-            if tmx_result:
-                return tmx_result
+            if hash_dict["USER"] not in tmx_local_cache.keys():
+                tmx_result = repo.search([hash_dict["USER"]])
+                if tmx_result:
+                    tmx_local_cache[hash_dict["USER"]] = tmx_result
+                    return tmx_result
+            else:
+                return tmx_local_cache[hash_dict["USER"]]
         if tmx_org_enabled and 'ORG' in hash_dict.keys():
-            tmx_result = repo.search([hash_dict["ORG"]])
-            if tmx_result:
-                return tmx_result
+            if hash_dict["ORG"] not in tmx_local_cache.keys():
+                tmx_result = repo.search([hash_dict["ORG"]])
+                if tmx_result:
+                    tmx_local_cache[hash_dict["ORG"]] = tmx_result
+                    return tmx_result
+            else:
+                return tmx_local_cache[hash_dict["ORG"]]
         if tmx_global_enabled and 'GLOBAL' in hash_dict.keys():
-            tmx_result = repo.search([hash_dict["GLOBAL"]])
-            if tmx_result:
-                return tmx_result
+            if hash_dict["GLOBAL"] not in tmx_local_cache.keys():
+                tmx_result = repo.search([hash_dict["GLOBAL"]])
+                if tmx_result:
+                    tmx_local_cache[hash_dict["GLOBAL"]] = tmx_result
+                    return tmx_result
+            else:
+                return tmx_local_cache[hash_dict["GLOBAL"]]
         return None
 
     # Replaces TMX phrases in NMT tgt using TMX NMT phrases and LaBSE alignments
