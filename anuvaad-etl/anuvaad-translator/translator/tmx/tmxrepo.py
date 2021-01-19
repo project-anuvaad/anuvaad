@@ -82,7 +82,7 @@ class TMXRepository:
             return None
 
     # Inserts the object into mongo collection
-    def mongo_create(self, object_in):
+    def tmx_create(self, object_in):
         col = self.get_mongo_instance()
         col.insert_one(object_in)
 

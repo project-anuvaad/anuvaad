@@ -2,6 +2,7 @@ import hashlib
 import json
 import time
 
+import uuid
 import xlrd
 from anuvaad_auditor.loghandler import log_exception, log_info
 import requests
@@ -64,17 +65,15 @@ class TMXService:
             if res["status"] == "FAILED":
                 return {"message": "bulk creation failed", "status": "FAILED"}
             db_record = tmx_record
-            db_record["sentences"], db_record["file"], db_record["timeStamp"] = len(tmx_input), file_path, eval(
-                str(time.time()).replace('.', '')[0:13])
-            db_record["locale"] = locale
+            db_record["sentences"], db_record["file"], db_record["timeStamp"] = len(tmx_input), file_path, eval(str(time.time()).replace('.', '')[0:13])
+            db_record["locale"], db_record["id"] = locale, str(uuid.uuid4())
+            repo.tmx_create(db_record)
             db_record_reverse = tmx_record
             reverse_locale_array = str(locale).split("|")
             reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
             db_record_reverse["sentences"], db_record_reverse["file"], = len(tmx_input), file_path
-            db_record_reverse["timeStamp"], db_record_reverse["locale"] = eval(
-                str(time.time()).replace('.', '')[0:13]), reverse_locale
-            for rec in [db_record, db_record_reverse]:
-                repo.mongo_create(rec)
+            db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
+            repo.tmx_create(db_record_reverse)
             log_info("Bulk Create DONE!", None)
             return {"message": "bulk creation successful", "status": "SUCCESS"}
         except Exception as e:
