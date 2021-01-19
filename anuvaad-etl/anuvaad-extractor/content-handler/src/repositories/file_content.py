@@ -98,8 +98,8 @@ class FileContentRepositories:
             return False
         return True
         
-    def get(self, user_id, record_id, start_page=1, end_page=5):
-        total_page_count    = self.blockModel.get_document_total_page_count(user_id, record_id)
+    def get(self, record_id, start_page=1, end_page=5):
+        total_page_count    = self.blockModel.get_document_total_page_count(record_id)
 
         if start_page == 0 and end_page == 0:
             start_page  = 1
@@ -115,7 +115,7 @@ class FileContentRepositories:
         data            = {}
         data['pages']   = []
         for i in range(start_page, end_page+1):
-            page_blocks = self.blockModel.get_blocks_by_page(user_id, record_id, i)
+            page_blocks = self.blockModel.get_blocks_by_page(record_id, i)
 
             page    = {}
             for block in page_blocks:

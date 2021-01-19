@@ -53,11 +53,11 @@ class BlockModel(object):
             return False
         
 
-    def get_blocks_by_page(self, user_id, record_id, page_number):
+    def get_blocks_by_page(self, record_id, page_number):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
             results        = collections.aggregate([
-                                { '$match' : { 'page_no': page_number, 'record_id': record_id, 'created_by': user_id } },
+                                { '$match' : { 'page_no': page_number, 'record_id': record_id } },
                                 { '$group': { '_id': '$data_type', 'data': { '$push': "$data" } } }
                                 ])
             return results
@@ -77,11 +77,11 @@ class BlockModel(object):
             log_exception('db connection exception ', AppContext.getContext(), e)
             return None
 
-    def get_document_total_page_count(self, user_id, record_id):
+    def get_document_total_page_count(self, record_id):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
             results     = collections.aggregate([
-                { '$match' : { 'record_id': record_id, 'created_by': user_id } },
+                { '$match' : { 'record_id': record_id } },
                 {
                     '$group':
                         {
