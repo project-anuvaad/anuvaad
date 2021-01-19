@@ -85,6 +85,7 @@ class TMXRepository:
     def tmx_create(self, object_in):
         col = self.get_mongo_instance()
         col.insert_one(object_in)
+        del object_in["_id"]
 
     # Searches tmx entries from mongo collection
     def search_tmx_db(self, user_id, org_id, locale):
