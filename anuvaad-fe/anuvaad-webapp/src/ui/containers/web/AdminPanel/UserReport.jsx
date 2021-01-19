@@ -68,8 +68,8 @@ class UserReport extends React.Component {
                 false,
                 this.state.userID,
             )
-            this.setState({ showLoader: true })
             this.makeAPICallDocumentsTranslationProgress();
+            this.setState({ showLoader: true })
         }
     }
 
@@ -80,6 +80,7 @@ class UserReport extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
+            this.setState({showLoader:false})
             TELEMETRY.endWorkflow(this.props.job_details.changedJob.source_language_code, this.props.job_details.changedJob.target_language_code, this.props.job_details.changedJob.filename, this.props.job_details.changedJob.jobID, this.props.job_details.changedJob.status)
         }
 
@@ -234,7 +235,6 @@ class UserReport extends React.Component {
     }
 
     handleDocumentView = (fid, fname, status, sentenceCount) => {
-        console.log(this.state.currentPageIndex)
         if (status === 'COMPLETED' && sentenceCount[0] !== '.' && sentenceCount[0] !== '0') {
             const recordID = this.props.job_details.documents.filter(doc => doc.jobID === fid)[0].recordId
             history.push(`${process.env.PUBLIC_URL}/document-stats/${recordID}/${fname}`)
