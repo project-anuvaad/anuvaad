@@ -105,9 +105,10 @@ class TranslatorService:
             pages = data["result"]
             total_sentences, total_tmx, total_batches = 0, 0, 0
             log_info("TMX Local Cache Size (Start) : " + str(len(tmx_local_cache.keys())), translate_wf_input)
+            tmx_present = self.is_tmx_present(file, translate_wf_input)
             for page in pages:
                 sentences_per_page = 0
-                batches, res_dict = self.fetch_batches_of_sentences(file, record_id, page, translate_wf_input)
+                batches, res_dict = self.fetch_batches_of_sentences(file, record_id, page, tmx_present, translate_wf_input)
                 if not batches:
                     log_error("No batches obtained for page: " + str(page["page_no"]), translate_wf_input, None)
                     continue
@@ -138,14 +139,14 @@ class TranslatorService:
             return None
 
     # Method to fetch batches for sentences from the file for a page.
-    def fetch_batches_of_sentences(self, file, record_id, page, translate_wf_input):
+    def fetch_batches_of_sentences(self, file, record_id, page, tmx_present, translate_wf_input):
         try:
             sentences_for_trans, res_dict = {}, {"tmx_count": 0, "computed": 0, "redis": 0, "cache": 0}
             page_no = page["page_no"]
             text_blocks = page["text_blocks"]
             if text_blocks:
                 sentences_for_trans, res_dict = self.fetch_batches_of_blocks(record_id, page_no, text_blocks, file,
-                                                                              sentences_for_trans, translate_wf_input)
+                                                                              sentences_for_trans, tmx_present,  translate_wf_input)
             else:
                 log_error("There are no text blocks for this page: " + str(page_no), translate_wf_input, None)
             return sentences_for_trans, res_dict
@@ -154,9 +155,8 @@ class TranslatorService:
             return None
 
     # Iterates through the blocks and creates batches of sentences for translation
-    def fetch_batches_of_blocks(self, record_id, page_no, text_blocks, file, sentences_for_trans, translate_wf_input):
+    def fetch_batches_of_blocks(self, record_id, page_no, text_blocks, file, sentences_for_trans, tmx_present, translate_wf_input):
         batch_key, tmx_count, computed, r_count, c_count = 0, 0, 0, 0, 0
-        tmx_present = self.is_tmx_present(file, translate_wf_input)
         for block in text_blocks:
             block_id = block["block_id"]
             if 'tokenized_sentences' in block.keys():
