@@ -13,10 +13,9 @@ from configs.translatorconfig import tmx_org_enabled
 from configs.translatorconfig import tmx_user_enabled
 from configs.translatorconfig import tmx_word_length
 
-
-
 repo = TMXRepository()
 tmx_local_cache = {}
+
 
 class TMXService:
 
@@ -35,9 +34,8 @@ class TMXService:
             file_path = download_folder + api_input["filePath"]
             wb = xlrd.open_workbook(file_path)
             sheet = wb.sheet_by_index(0)
-            number_of_rows = sheet.nrows
-            number_of_columns = sheet.ncols
-            tmx_input = []
+            number_of_rows, number_of_columns = sheet.nrows, sheet.ncols
+            tmx_input, locale = [], None
             for row in range(2, number_of_rows):
                 if row == 1:
                     continue
@@ -46,9 +44,16 @@ class TMXService:
                     values.append(sheet.cell(row, col).value)
                 if row == 0:
                     if values[0] != "Source".strip() or values[1] != "Target".strip() or values[2] != "Locale".strip():
-                        return {"message": "Source | Target | Locale - either of these columns is Missing", "status": "FAILED"}
+                        return {"message": "Source | Target | Locale - either of these columns is Missing",
+                                "status": "FAILED"}
                 else:
-                    values_dict = {"src": str(values[0]).strip(), "tgt": str(values[1]).strip(), "locale": str(values[2]).strip()}
+                    if locale:
+                        if str(values[2]).strip() != locale:
+                            return {"message": "All the entries must have the same locale", "status": "FAILED"}
+                    else:
+                        locale = str(values[2]).strip()
+                    values_dict = {"src": str(values[0]).strip(), "tgt": str(values[1]).strip(),
+                                   "locale": str(values[2]).strip()}
                     tmx_input.append(values_dict)
             tmx_record = {"context": api_input["context"], "sentences": tmx_input}
             if 'userID' in api_input.keys():
@@ -59,8 +64,17 @@ class TMXService:
             if res["status"] == "FAILED":
                 return {"message": "bulk creation failed", "status": "FAILED"}
             db_record = tmx_record
-            db_record["sentences"], db_record["file"], db_record["timeStamp"] = len(tmx_input), file_path, eval(str(time.time()).replace('.', '')[0:13])
-            repo.mongo_create(db_record)
+            db_record["sentences"], db_record["file"], db_record["timeStamp"] = len(tmx_input), file_path, eval(
+                str(time.time()).replace('.', '')[0:13])
+            db_record["locale"] = locale
+            db_record_reverse = tmx_record
+            reverse_locale_array = str(locale).split("|")
+            reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
+            db_record_reverse["sentences"], db_record_reverse["file"], = len(tmx_input), file_path
+            db_record_reverse["timeStamp"], db_record_reverse["locale"] = eval(
+                str(time.time()).replace('.', '')[0:13]), reverse_locale
+            for rec in [db_record, db_record_reverse]:
+                repo.mongo_create(rec)
             log_info("Bulk Create DONE!", None)
             return {"message": "bulk creation successful", "status": "SUCCESS"}
         except Exception as e:
@@ -85,7 +99,7 @@ class TMXService:
                 reverse_locale_array = str(sentence["locale"]).split("|")
                 reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
                 tmx_record_reverse_pair = {"src": sentence["tgt"], "locale": reverse_locale, "nmt_tgt": [],
-                                   "user_tgt": sentence["src"], "context": tmx_input["context"]}
+                                           "user_tgt": sentence["src"], "context": tmx_input["context"]}
                 if 'userID' in tmx_input.keys():
                     tmx_record_reverse_pair["userID"] = tmx_input["userID"]
                 if 'orgID' in tmx_input.keys():
@@ -103,14 +117,14 @@ class TMXService:
             return {"message": "creation failed", "status": "FAILED"}
 
     # Method to fetch tmx phrases for a given src
-    def get_tmx_phrases(self, user_id, org_id, context, locale, sentence, ctx):
+    def get_tmx_phrases(self, user_id, org_id, context, locale, sentence, tmx_level, ctx):
         tmx_record = {"context": context, "locale": locale, "src": sentence}
         if user_id:
             tmx_record["userID"] = user_id
         if org_id:
             tmx_record["orgID"] = org_id
         try:
-            tmx_phrases, res_dict = self.tmx_phrase_search(tmx_record, ctx)
+            tmx_phrases, res_dict = self.tmx_phrase_search(tmx_record, tmx_level, ctx)
             return tmx_phrases, res_dict
         except Exception as e:
             log_exception("Exception while searching tmx from redis: " + str(e), ctx, e)
@@ -126,7 +140,7 @@ class TMXService:
 
     # Searches for all tmx phrases of a fixed length within a given sentence
     # Uses a custom implementation of the sliding window search algorithm.
-    def tmx_phrase_search(self, tmx_record, ctx):
+    def tmx_phrase_search(self, tmx_record, tmx_level, ctx):
         sentence, tmx_phrases = tmx_record["src"], []
         hopping_pivot, sliding_pivot, i = 0, len(sentence), 1
         computed, r_count, c_count = 0, 0, 0,
@@ -135,7 +149,7 @@ class TMXService:
             phrase_size = phrase.split(" ")
             if len(phrase_size) <= tmx_word_length:
                 tmx_record["src"] = phrase
-                tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, ctx)
+                tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, ctx)
                 computed += 1
                 if tmx_result:
                     tmx_phrases.append(tmx_result[0])
@@ -161,10 +175,10 @@ class TMXService:
         return tmx_phrases, res_dict
 
     # Fetches TMX phrases for a sentence from hierarchical cache
-    def get_tmx_with_fallback(self, tmx_record, ctx):
+    def get_tmx_with_fallback(self, tmx_record, tmx_level, ctx):
         global tmx_local_cache
-        hash_dict = self.get_hash_key(tmx_record, True)
-        if tmx_user_enabled and 'USER' in hash_dict.keys():
+        hash_dict = self.get_hash_key_search(tmx_record, tmx_level)
+        if 'USER' in hash_dict.keys():
             if hash_dict["USER"] not in tmx_local_cache.keys():
                 tmx_result = repo.search([hash_dict["USER"]])
                 if tmx_result:
@@ -172,7 +186,7 @@ class TMXService:
                     return tmx_result, True
             else:
                 return tmx_local_cache[hash_dict["USER"]], False
-        if tmx_org_enabled and 'ORG' in hash_dict.keys():
+        if 'ORG' in hash_dict.keys():
             if hash_dict["ORG"] not in tmx_local_cache.keys():
                 tmx_result = repo.search([hash_dict["ORG"]])
                 if tmx_result:
@@ -180,7 +194,7 @@ class TMXService:
                     return tmx_result, True
             else:
                 return tmx_local_cache[hash_dict["ORG"]], False
-        if tmx_global_enabled and 'GLOBAL' in hash_dict.keys():
+        if 'GLOBAL' in hash_dict.keys():
             if hash_dict["GLOBAL"] not in tmx_local_cache.keys():
                 tmx_result = repo.search([hash_dict["GLOBAL"]])
                 if tmx_result:
@@ -198,7 +212,8 @@ class TMXService:
                 if tmx_phrase["nmt_tgt"]:
                     for nmt_tgt_phrase in tmx_phrase["nmt_tgt"]:
                         if nmt_tgt_phrase in tgt:
-                            log_info("(TMX - NMT) Replacing: " + str(nmt_tgt_phrase) + " with: " + str(tmx_phrase["user_tgt"]), ctx)
+                            log_info("(TMX - NMT) Replacing: " + str(nmt_tgt_phrase) + " with: " + str(
+                                tmx_phrase["user_tgt"]), ctx)
                             tgt = tgt.replace(nmt_tgt_phrase, tmx_phrase["user_tgt"])
                             break
                 else:
@@ -234,7 +249,8 @@ class TMXService:
                     if nmt_aligned_phrases:
                         for aligned_phrase in nmt_aligned_phrases.keys():
                             phrase = tmx_phrase_dict[aligned_phrase]
-                            log_info("(TMX - LaBSE) Replacing: " + str(nmt_aligned_phrases[aligned_phrase]) + " with: " + str(phrase["user_tgt"]), ctx)
+                            log_info("(TMX - LaBSE) Replacing: " + str(
+                                nmt_aligned_phrases[aligned_phrase]) + " with: " + str(phrase["user_tgt"]), ctx)
                             tgt = tgt.replace(nmt_aligned_phrases[aligned_phrase], phrase["user_tgt"])
                             modified_nmt_tgt = phrase["nmt_tgt"]
                             modified_nmt_tgt.append(nmt_aligned_phrases[aligned_phrase])
@@ -254,20 +270,45 @@ class TMXService:
         redis_records = repo.get_all_records(req["keys"])
         return redis_records
 
-    # Creates a md5 hash values using userID, orgID, context, locale and src for inserting and searching records.
-    def get_hash_key(self, tmx_record, is_search):
+    # Creates a md5 hash values using userID, orgID, context, locale and src for inserting records.
+    def get_hash_key(self, tmx_record):
         hash_dict = {}
-        if is_search:
+        if 'orgID' not in tmx_record.keys() and 'userID' not in tmx_record.keys():
             global_hash = tmx_record["context"] + "__" + tmx_record["locale"] + "__" + tmx_record["src"]
             hash_dict["GLOBAL"] = hashlib.sha256(global_hash.encode('utf-16')).hexdigest()
-        else:
-            if 'orgID' not in tmx_record.keys() and 'userID' not in tmx_record.keys():
-                global_hash = tmx_record["context"] + "__" + tmx_record["locale"] + "__" + tmx_record["src"]
-                hash_dict["GLOBAL"] = hashlib.sha256(global_hash.encode('utf-16')).hexdigest()
         if 'orgID' in tmx_record.keys():
-            org_hash = tmx_record["orgID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + tmx_record["src"]
+            org_hash = tmx_record["orgID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + \
+                       tmx_record["src"]
             hash_dict["ORG"] = hashlib.sha256(org_hash.encode('utf-16')).hexdigest()
         if 'userID' in tmx_record.keys():
-            user_hash = tmx_record["userID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + tmx_record["src"]
+            user_hash = tmx_record["userID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + \
+                        tmx_record["src"]
             hash_dict["USER"] = hashlib.sha256(user_hash.encode('utf-16')).hexdigest()
+        return hash_dict
+
+    # Creates a md5 hash values using userID, orgID, context, locale and src for searching records.
+    def get_hash_key_search(self, tmx_record, tmx_level):
+        hash_dict = {}
+        if tmx_global_enabled:
+            global_hash = tmx_record["context"] + "__" + tmx_record["locale"] + "__" + tmx_record["src"]
+            hash_dict["GLOBAL"] = hashlib.sha256(global_hash.encode('utf-16')).hexdigest()
+        if tmx_level is None:
+            return hash_dict
+        if tmx_level == "BOTH":
+            if tmx_org_enabled:
+                org_hash = tmx_record["orgID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + \
+                       tmx_record["src"]
+                hash_dict["ORG"] = hashlib.sha256(org_hash.encode('utf-16')).hexdigest()
+            if tmx_user_enabled:
+                user_hash = tmx_record["userID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + \
+                        tmx_record["src"]
+                hash_dict["USER"] = hashlib.sha256(user_hash.encode('utf-16')).hexdigest()
+        elif tmx_level == "USER" and tmx_user_enabled:
+            user_hash = tmx_record["userID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + \
+                        tmx_record["src"]
+            hash_dict["USER"] = hashlib.sha256(user_hash.encode('utf-16')).hexdigest()
+        elif tmx_level == "ORG" and tmx_org_enabled:
+            org_hash = tmx_record["orgID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + \
+                       tmx_record["src"]
+            hash_dict["ORG"] = hashlib.sha256(org_hash.encode('utf-16')).hexdigest()
         return hash_dict

@@ -14,6 +14,7 @@ from configs.translatorconfig import mongo_tmx_collection
 redis_client = None
 mongo_client = None
 
+
 class TMXRepository:
 
     def __init__(self):
@@ -86,10 +87,14 @@ class TMXRepository:
         col.insert_one(object_in)
 
     # Searches tmx entries from mongo collection
-    def mongo_search(self, user_id, org_id):
+    def search_tmx_db(self, user_id, org_id, locale):
         col = self.get_mongo_instance()
-        res = col.find({'$or': [{"userID": user_id}, {"orgID": org_id}]}, {'_id': False})
-        result = []
-        for record in res:
-            result.append(record)
-        return result
+        res_user = col.find({"locale": locale, "userID": user_id}, {'_id': False})
+        res_org = col.find({"locale": locale, "orgID": org_id}, {'_id': False})
+        if len(res_user) > 0 and len(res_org) > 0:
+            return "BOTH"
+        else:
+            if res_user:
+                return "USER"
+            else:
+                return "ORG"

@@ -156,14 +156,14 @@ class TranslatorService:
     # Iterates through the blocks and creates batches of sentences for translation
     def fetch_batches_of_blocks(self, record_id, page_no, text_blocks, file, sentences_for_trans, translate_wf_input):
         batch_key, tmx_count, computed, r_count, c_count = 0, 0, 0, 0, 0
-        tmx_present = self.is_tmx_present(translate_wf_input)
+        tmx_present = self.is_tmx_present(file, translate_wf_input)
         for block in text_blocks:
             block_id = block["block_id"]
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
                     tmx_phrases = []
                     if tmx_present:
-                        tmx_phrases, res_dict = self.fetch_tmx(sentence["src"], file, translate_wf_input)
+                        tmx_phrases, res_dict = self.fetch_tmx(sentence["src"], file, translate_wf_input, tmx_present)
                         tmx_count += len(tmx_phrases)
                         computed += res_dict["computed"]
                         r_count += res_dict["redis"]
@@ -184,31 +184,37 @@ class TranslatorService:
                 continue
         return sentences_for_trans, {"tmx_count": tmx_count, "computed": computed, "redis": r_count, "cache": c_count}
 
-    # Fetches tmx phrases
-    def is_tmx_present(self, translate_wf_input):
+    # Checks if org level or user level TMX is applicable to the file under translation.
+    def is_tmx_present(self, file, translate_wf_input):
         if tmx_enabled:
-            if not tmx_global_enabled:
-                user_id = translate_wf_input["metadata"]["userID"]
-                org_id = translate_wf_input["metadata"]["orgID"]
-                tmx_entries = tmx_repo.mongo_search(user_id, org_id)
-                if tmx_entries:
-                    return True
+            if 'context' not in file.keys():
+                return False
+            user_id = translate_wf_input["metadata"]["userID"]
+            org_id = translate_wf_input["metadata"]["orgID"]
+            locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
+            tmx_entries = tmx_repo.search_tmx_db(user_id, org_id, locale)
+            if tmx_entries:
+                if tmx_entries == "USER":
+                    log_info("Only USER level TMX available for this user!", translate_wf_input)
+                elif tmx_entries == "ORG":
+                    log_info("Only ORG level TMX available for this user!", translate_wf_input)
                 else:
-                    log_info("No TMX entries available for this user!", translate_wf_input)
-                    return False
+                    log_info("USER and ORG level TMX available for this user!", translate_wf_input)
+                return tmx_entries
             else:
-                return True
+                log_info("No USER or ORG TMX entries available for this user!", translate_wf_input)
+                return tmx_global_enabled
         return False
 
     # Fetches tmx phrases
-    def fetch_tmx(self, sentence, file, translate_wf_input):
-        if 'context' not in file.keys():
-            return []
+    def fetch_tmx(self, sentence, file, translate_wf_input, tmx_level):
         context = file["context"]
         user_id = translate_wf_input["metadata"]["userID"]
         org_id = translate_wf_input["metadata"]["orgID"]
         locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
-        tmx_phrases, res_dict = tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, translate_wf_input)
+        if tmx_level not in ["USER", "ORG", "BOTH"]:
+            tmx_level = None
+        tmx_phrases, res_dict = tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, tmx_level, translate_wf_input)
         return tmx_phrases, res_dict
 
     # Distributes the NMT traffic across machines.
