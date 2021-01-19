@@ -259,7 +259,10 @@ class NMTTranslateService:
                         date_original_array[i],url_original_array[i],num_array_array[i],num_map_array[i])
                     translation_array[i] = oc.cleaner(tagged_src_list[i],translation_array[i],model_id)
                     tgt_list[i] = translation_array[i]
-                    log_info("translate_function-experiment-{} output: {}".format(model_id,translation_array[i]),MODULE_CONTEXT)      
+                    log_info("translate_function-experiment-{} output: {}".format(model_id,translation_array[i]),MODULE_CONTEXT)
+
+                if (not tgt_list[i]) or (tgt_list[i].isspace()):
+                    tgt_list[i] = src_list[i]     
             
             out = {"tagged_src_list":tagged_src_list,"tagged_tgt_list":tagged_tgt_list,"tgt_list":tgt_list}
         except ServerModelError as e:
