@@ -106,7 +106,7 @@ class TMXService:
                     tmx_record_reverse_pair["orgID"] = tmx_input["orgID"]
                 tmx_records.append(tmx_record_reverse_pair)
                 for tmx_record in tmx_records:
-                    hash_dict = self.get_hash_key(tmx_record, False)
+                    hash_dict = self.get_hash_key(tmx_record)
                     for hash_key in hash_dict.keys():
                         tmx_record["hash"] = hash_dict[hash_key]
                         repo.upsert(tmx_record["hash"], tmx_record)
