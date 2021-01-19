@@ -91,10 +91,16 @@ class TMXRepository:
         col = self.get_mongo_instance()
         res_user = col.find({"locale": locale, "userID": user_id}, {'_id': False})
         res_org = col.find({"locale": locale, "orgID": org_id}, {'_id': False})
-        if len(res_user) > 0 and len(res_org) > 0:
+        user, org = 0, 0
+        for record in res_user:
+            user += 1
+        for record in res_org:
+            org += 1
+        if user > 0 and org > 0:
             return "BOTH"
         else:
-            if res_user:
+            if user > 0:
                 return "USER"
-            else:
+            elif org > 0:
                 return "ORG"
+        return None
