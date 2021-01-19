@@ -277,7 +277,7 @@ class UserDetails extends React.Component {
         label: translate("common.page.label.timeStamp"),
         options: {
           filter: true,
-          sort: true,
+          sort: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -294,7 +294,7 @@ class UserDetails extends React.Component {
         label: translate('common.page.label.action'),
         options: {
           filter: true,
-          sort: true,
+          sort: false,
           empty: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
@@ -358,10 +358,6 @@ class UserDetails extends React.Component {
       fixedHeader: true,
       filter: false,
       selectableRows: "none",
-      sortOrder: {
-        name: 'registered_time',
-        direction: 'desc'
-      },
       page: this.state.currentPageIndex
     };
 
