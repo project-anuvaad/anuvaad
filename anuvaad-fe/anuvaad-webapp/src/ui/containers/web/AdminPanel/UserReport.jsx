@@ -6,22 +6,18 @@ import { withStyles } from "@material-ui/core/styles";
 import MUIDataTable from "mui-datatables";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Snackbar from "../../../components/web/common/Snackbar";
-import ToolBar from "./AdminPanelHeader";
-import ProgressBar from "../../../components/web/common/ProgressBar";
-import Dialog from "../../../components/web/common/SimpleDialog";
+import UserReportHeader from "./UserReportHeader"
 import Spinner from "../../../components/web/common/Spinner";
 import { translate } from "../../../../assets/localisation";
 import NewCorpusStyle from "../../../styles/web/Newcorpus";
 import history from "../../../../web.history";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
-import MarkInactive from "../../../../flux/actions/apis/view_document/markinactive";
 import JobStatus from "../../../../flux/actions/apis/view_document/translation.progress";
 import { clearJobEntry } from "../../../../flux/actions/users/async_job_management";
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
-import InfoIcon from "@material-ui/icons/Info";
 import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
 
 
@@ -48,33 +44,9 @@ class UserReport extends React.Component {
      * life cycle methods
      */
     componentDidMount() {
-        this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
         TELEMETRY.pageLoadStarted("user-report");
         if (this.props.job_details.documents.length < 1) {
-            this.makeAPICallJobsBulkSearch(
-                this.state.offset,
-                this.state.limit,
-                [""],
-                false,
-                false,
-                false,
-                this.state.userID
-            );
             this.setState({ showLoader: true });
-        } else if (this.props.async_job_status.job) {
-            /**
-             * a job got started, fetch it status
-             */
-            this.makeAPICallJobsBulkSearch(
-                this.state.offset,
-                this.state.limit,
-                [this.props.async_job_status.job.jobID],
-                true,
-                false,
-                false,
-                this.state.userID)
-            this.makeAPICallDocumentsTranslationProgress();
-        } else {
             this.makeAPICallJobsBulkSearch(
                 this.state.offset,
                 this.state.limit,
@@ -82,9 +54,22 @@ class UserReport extends React.Component {
                 false,
                 false,
                 false,
-                this.state.userID)
-            this.setState({ showLoader: true })
+                this.state.userID,
 
+            );
+        }
+        else {
+            this.makeAPICallJobsBulkSearch(
+                this.state.offset,
+                this.state.limit,
+                [""],
+                false,
+                false,
+                false,
+                this.state.userID,
+            )
+            this.setState({ showLoader: true })
+            this.makeAPICallDocumentsTranslationProgress();
         }
     }
 
@@ -126,6 +111,13 @@ class UserReport extends React.Component {
         ) {
             this.setState({ showLoader: false });
         }
+        else if (this.props.fetch_document.result.count !== prevProps.fetch_document.result.count) {
+            this.setState({ showLoader: false });
+        }
+        else if (this.props.fetch_document.result.jobIDs !== undefined &&
+            this.props.fetch_document.result.jobIDs.length !== prevProps.fetch_document.result.jobIDs.length) {
+            this.setState({ showLoader: false });
+        }
     }
 
     getMuiTheme = () =>
@@ -142,21 +134,6 @@ class UserReport extends React.Component {
     /**
      * API calls
      */
-    checkInprogressJobStatus = () => {
-        let inprogressJobIds = this.props.job_details.documents
-            .filter((job) => job.status === "INPROGRESS")
-            .map((job) => job.jobID);
-        if (inprogressJobIds.length > 0) {
-            this.makeAPICallJobsBulkSearch(
-                this.state.offset,
-                this.state.limit,
-                inprogressJobIds,
-                false,
-                false,
-                true,
-                this.state.userID)
-        }
-    };
 
     makeAPICallJobsBulkSearch(
         offset,
@@ -165,7 +142,7 @@ class UserReport extends React.Component {
         searchForNewJob = false,
         searchNextPage = false,
         updateExisting = false,
-        userIDs = this.state.userID
+        userIDs = this.state.userID,
     ) {
         const { APITransport } = this.props;
         const apiObj = new FetchDocument(
@@ -175,22 +152,9 @@ class UserReport extends React.Component {
             searchForNewJob,
             searchNextPage,
             updateExisting,
-            userIDs
+            userIDs,
         );
         APITransport(apiObj);
-    }
-
-    makeAPICallJobDelete(jobId) {
-        const { APITransport } = this.props;
-        const apiObj = new MarkInactive(jobId);
-
-        APITransport(apiObj);
-        this.setState({
-            showProgress: true,
-            searchToken: false,
-            dialogMessage: " Selected document is deleting, please wait...!",
-            timeOut: null,
-        });
     }
 
     makeAPICallDocumentsTranslationProgress(jobIds) {
@@ -253,33 +217,41 @@ class UserReport extends React.Component {
         );
     };
 
-    showProgressIndicator = () => {
-        return (
-            <div>
-                <ProgressBar token={true} val={1000} eta={2000 * 1000}></ProgressBar>
-            </div>
-        );
-    };
-
     /**
      * handlers to process user clicks
      */
 
-    processDocumentView = (fid,fname) => {
+    processDocumentView = (fid, fname, status, sentenceCount) => {
         return (
             <Tooltip title="View User Details" placement="right">
                 <IconButton style={{ color: '#233466', padding: '5px' }}
                     component="a"
-                    onClick={() => this.handleDocumentView(fid,fname)} >
+                    onClick={() => this.handleDocumentView(fid, fname, status, sentenceCount)}>
                     <AssessmentOutlinedIcon />
                 </IconButton>
             </Tooltip>
         );
     }
 
-    handleDocumentView = (fid,fname) => {
-        const recordID =this.props.job_details.documents.filter(doc=>doc.jobID === fid)[0].recordId
-        history.push(`${process.env.PUBLIC_URL}/document-stats/${recordID}/${fname}`)
+    handleDocumentView = (fid, fname, status, sentenceCount) => {
+        console.log(this.state.currentPageIndex)
+        if (status === 'COMPLETED' && sentenceCount[0] !== '.' && sentenceCount[0] !== '0') {
+            const recordID = this.props.job_details.documents.filter(doc => doc.jobID === fid)[0].recordId
+            history.push(`${process.env.PUBLIC_URL}/document-stats/${recordID}/${fname}`)
+        } else {
+            if (status === 'FAILED') {
+                this.setState({ dialogMessage: 'Document translation is failed' })
+            }
+            else if (status === 'INPROGRESS') {
+                this.setState({ dialogMessage: 'Document still in progress' })
+
+            } else {
+                this.setState({ dialogMessage: 'No sentences are saved' })
+            }
+        }
+        setTimeout(() => {
+            this.setState({ dialogMessage: "" })
+        }, 3000)
     }
 
     processViewDocumentClick = (jobId, recordId, status) => {
@@ -394,12 +366,17 @@ class UserReport extends React.Component {
                 this.state.limit,
                 false,
                 false,
-                true
+                this.state.userID,
             );
             this.setState({
                 currentPageIndex: page,
                 offset: this.state.offset + this.state.limit,
             });
+        } else {
+            this.setState({
+                currentPageIndex: page,
+            });
+
         }
     };
 
@@ -543,7 +520,7 @@ class UserReport extends React.Component {
                         if (tableMeta.rowData) {
                             return (
                                 <div>
-                                    {this.processDocumentView(tableMeta.rowData[1],tableMeta.rowData[0])}
+                                    {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
                                 </div>
                             );
                         }
@@ -585,7 +562,7 @@ class UserReport extends React.Component {
             },
             count: this.props.job_details.count,
             filterType: "checkbox",
-            download: true,
+            download: false,
             print: false,
             fixedHeader: true,
             filter: false,
@@ -596,11 +573,10 @@ class UserReport extends React.Component {
             },
             page: this.state.currentPageIndex,
         };
-        // console.log(this.props.location.search)
         return (
             <div style={{ height: window.innerHeight }}>
                 <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
-                    <ToolBar />
+                    <UserReportHeader />
                     {!this.state.showLoader && (
                         <MuiThemeProvider theme={this.getMuiTheme()}>
                             <MUIDataTable
@@ -610,20 +586,11 @@ class UserReport extends React.Component {
                                 options={options}
                             />
                         </MuiThemeProvider>
-                    )}
+                    )}{
+                        this.state.showLoader &&
+                        <Spinner />
+                    }
                 </div>
-                {this.state.showInfo && (
-                    <Dialog
-                        message={this.state.message}
-                        type={this.state.dialogType}
-                        handleClose={this.handleDialogClose.bind(this)}
-                        open
-                        title={this.state.dialogTitle}
-                        handleSubmit={this.handleDialogSubmit.bind(this)}
-                        value={this.state.value}
-                    />
-                )}
-                {(this.state.showLoader || this.state.loaderDelete) && <Spinner />}
                 {this.state.dialogMessage && this.snackBarMessage()}
             </div>
         );
@@ -635,6 +602,7 @@ const mapStateToProps = (state) => ({
     apistatus: state.apistatus,
     job_details: state.job_details,
     async_job_status: state.async_job_status,
+    fetch_document: state.fetchDocument
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -643,6 +611,7 @@ const mapDispatchToProps = (dispatch) =>
             clearJobEntry,
             APITransport,
             CreateCorpus: APITransport,
+            FetchDocument
         },
         dispatch
     );
