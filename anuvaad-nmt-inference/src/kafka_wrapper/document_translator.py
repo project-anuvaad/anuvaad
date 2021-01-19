@@ -5,6 +5,7 @@ from services import OpenNMTTranslateService
 import config
 from anuvaad_auditor.loghandler import log_info, log_exception
 from utilities import MODULE_CONTEXT
+import utilities.logs_book as book
 import sys
 import datetime
 from services import NMTTranslateService
@@ -76,6 +77,7 @@ class KafkaTranslate:
                         log_info("Input for Record Id:{} at {}".format(inputs.get('record_id'),input_time),MODULE_CONTEXT)
                         log_info("Running batch-translation on  {}".format(inputs),MODULE_CONTEXT) 
                         record_id = inputs.get('record_id')
+                        book.logs_book("RecordId",record_id,"Request received")
                         message = inputs.get('message')
                         src_list = [i.get('src') for i in message]
                         translation_batch = {'id':inputs.get('id'),'src_list': src_list}
@@ -95,19 +97,21 @@ class KafkaTranslate:
                         status = Status.SYSTEM_ERR.value
                         status['why'] = str(e)
                         log_exception("Exception caught in batch_translator child block: {}".format(e),MODULE_CONTEXT,e) 
+                        book.logs_book("RecordId",record_id,"Exception")
                         out = CustomResponse(status, [])
                     
                     out = out.getresjson()
                     out['record_id'] = record_id
                     log_info("Output for Record Id:{} at {}".format(record_id,datetime.datetime.now()),MODULE_CONTEXT)
                     log_info("Total time for processing Record Id:{} is: {}".format(record_id,(datetime.datetime.now()- input_time).total_seconds()),MODULE_CONTEXT)
-                     
+                    book.logs_book("RecordId",record_id,"Response pushed") 
                 else:
                     status = Status.KAFKA_INVALID_REQUEST.value
                     out = CustomResponse(status, [])
                     out = out.getresjson()
                     if inputs.get('record_id'): out['record_id'] = inputs.get('record_id') 
-                    log_info("Empty input request or key parameter missing in Batch translation request: batch_translator",MODULE_CONTEXT)       
+                    log_info("Empty input request or key parameter missing in Batch translation request: batch_translator",MODULE_CONTEXT)
+                    book.logs_book("RecordId",record_id,"Invalid Request")       
             
                 producer.send(producer_topic, value={'out':out})
                 producer.flush()
