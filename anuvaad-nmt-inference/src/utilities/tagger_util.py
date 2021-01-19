@@ -76,7 +76,7 @@ def tag_number_date_url(text):
 
   except Exception as e:
     log_exception("In handle_date_url:tag_num function parent except block:{}".format(e),MODULE_CONTEXT,e)
-    return text,[],[],(num_array or [])
+    return text,[],[],(num_array or []),(num_map or [])
 
 def replace_tags_with_original(text,date_original,url_dict,num_array,num_map):
   '''

@@ -149,6 +149,7 @@ class TranslateService:
                         log_info("unsupported model id: {} for given input".format(i['id']),MODULE_CONTEXT)
                         raise Exception("Unsupported Model ID - id: {} for given input".format(i['id']))      
 
+                    translation = [i.replace("▁"," ") for i in translation]
                     translation = [misc.regex_pass(i,[patterns['p8'],patterns['p9'],patterns['p4'],patterns['p5'],
                                                 patterns['p6'],patterns['p7']]) for i in translation]
                     tag_tgt = translation
@@ -418,10 +419,9 @@ def encode_itranslate_decode(i,num_map,tp_tokenizer,num_hypotheses=3):
             i['target_prefix'] = str(sp.encode_line(sp_decoder,i['target_prefix']))
             tp_final = format_converter(i['target_prefix'])
             tp_final[-1] = tp_final[-1].replace(']',",")
-            m_out = translator.translate_batch([i_final],beam_size = 5, target_prefix = [tp_final],num_hypotheses=num_hypotheses)
-            print(m_out)
+            m_out = translator.translate_batch([i_final],beam_size = 5, target_prefix = [tp_final],num_hypotheses=num_hypotheses,replace_unknowns=True)
         else:
-            m_out = translator.translate_batch([i_final],beam_size = 5,num_hypotheses=num_hypotheses)
+            m_out = translator.translate_batch([i_final],beam_size = 5,num_hypotheses=num_hypotheses,replace_unknowns=True)
 
         translation = multiple_hypothesis_decoding(m_out[0],sp_decoder)    
         return translation
@@ -439,7 +439,7 @@ def encode_translate_decode(i):
         log_info("SP encoded sent: %s"%i['src'],MODULE_CONTEXT)
         input_sw = i['src']
         i_final = format_converter(i['src'])
-        m_out = translator.translate_batch([i_final],beam_size = 5,num_hypotheses=1)
+        m_out = translator.translate_batch([i_final],beam_size = 5,num_hypotheses=1,replace_unknowns=True)
         output_sw = " ".join(m_out[0][0]['tokens'])
         log_info("output from model: {}".format(output_sw),MODULE_CONTEXT)
         scores = m_out[0][0]['score']
