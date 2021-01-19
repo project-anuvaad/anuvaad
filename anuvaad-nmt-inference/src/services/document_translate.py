@@ -288,7 +288,7 @@ def encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_
         log_info("Inside encode_translate_decode function",MODULE_CONTEXT)
         input_subwords_list = [str(sp.encode_line(sp_encoder,sent)) for sent in input_sentence_array_prepd]
         input_final_array = [format_converter(input_subwords) for input_subwords in input_subwords_list]
-        m_out = translator.translate_batch(input_final_array,beam_size = 5,num_hypotheses=1)
+        m_out = translator.translate_batch(input_final_array,beam_size = 5,num_hypotheses=1,replace_unknowns=True)
         translation_array = [None] * len(output_subwords_list)
         for i, _ in enumerate(output_subwords_list):
                 output_subwords_list[i] = " ".join(m_out[i][0]['tokens'])
