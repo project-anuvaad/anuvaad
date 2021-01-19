@@ -137,10 +137,10 @@ class Login extends React.Component {
         <div style={{ height: window.innerHeight, overflow: 'hidden' }}>
           <Grid container spacing={8}>
             <Grid item xs={12} sm={4} lg={5} xl={5} style={{ paddingRight: "0px" }}>
-              <img src="Anuvaad.png" width="100%" height="81%" alt="" style={{ backgroundRepeat: 'repeat-y' }} />
+              <img src="logo.png" width="85%" height="80%" style={{paddingLeft:'10%'}} alt="" style={{ backgroundRepeat: 'repeat-y',marginLeft:'7%', marginTop:'7%' }} />
             </Grid>
             <Grid item xs={12} sm={8} lg={7} xl={7} className={classes.signUpPaper} >
-              <Typography align='center' variant='h4' className={classes.typographyHeader} style={{ marginTop: '240px' }}>Sign In</Typography>
+              <Typography align='center' variant='h4' className={classes.typographyHeader} style={{ marginTop: '240px' }}>Welcome to SUVAS</Typography>
 
               <FormControl align='center' fullWidth >
                 <TextField value={this.state.email} id="email" type="email-username" placeholder={translate('common.page.placeholder.emailUsername')}
@@ -165,10 +165,10 @@ class Login extends React.Component {
 
               </FormControl>
 
-              <Typography>
+              {/* <Typography>
                 <Link id="forgotpassword" style={{ cursor: 'pointer', color: '#0C8AA9', marginLeft: '25%', float: 'left' }} href="#" onClick={() => { history.push(`${process.env.PUBLIC_URL}/forgot-password`); }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
                 <Link id= "signup" style={{ cursor: 'pointer', color: '#0C8AA9', marginRight: '25%', float: 'right' }} href="#" onClick={() =>{ history.push(`${process.env.PUBLIC_URL}/signup`); }}> {translate('singUp.page.label.signUp')}</Link>
-              </Typography>
+              </Typography> */}
             </Grid>
           </Grid>
           <div className={classes.buttonsDiv} />

@@ -19,7 +19,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
-import logo from '../../../../assets/logo.png';
+import logo from '../../../../assets/suvas-logo.png';
 import anuvaadLogo from '../../../../assets/AnuvaadLogo.svg';
 import { translate } from '../../../../../src/assets/localisation';
 import themeAnuvaad from "../../../theme/web/theme-anuvaad";
@@ -196,7 +196,7 @@ class Header extends React.Component {
                       disableTypography
                       style={{ textAlign: "left", marginLeft: "6%" }}
                       primary={
-                        <img src={anuvaadLogo}
+                        <img src={logo}
                           width={100}
                           alt="" />
                       }
