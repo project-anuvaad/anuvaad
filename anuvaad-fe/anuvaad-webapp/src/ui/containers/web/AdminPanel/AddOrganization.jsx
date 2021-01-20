@@ -6,8 +6,6 @@ import { bindActionCreators } from "redux";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { translate } from "../../../../assets/localisation";
 import { withStyles } from "@material-ui/core/styles";
@@ -17,11 +15,12 @@ import TextField from "@material-ui/core/TextField";
 import Toolbar from "../../web/AdminPanel/AddOrganizationHeader";
 import AddOrg from "../../../../flux/actions/apis/organization/addOrganization";
 import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 import history from "../../../../web.history";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ADMINCONFIG from "../../../../configs/adminConfig";
 import TextareaAutosize from "react-autosize-textarea";
-import Alert from '@material-ui/lab/Alert';
+
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 const roles = ADMINCONFIG.roles;

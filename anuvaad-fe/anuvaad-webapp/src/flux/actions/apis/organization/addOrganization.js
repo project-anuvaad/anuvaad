@@ -10,7 +10,6 @@ export default class saveConetent extends API {
     this.action = status;
     this.description = description;
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.add_org}`;
-    debugger
   }
 
 

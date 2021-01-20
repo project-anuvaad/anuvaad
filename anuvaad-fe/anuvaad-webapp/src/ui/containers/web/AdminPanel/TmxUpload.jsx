@@ -256,10 +256,8 @@ class TmxUpload extends Component {
 
 
   async tmxFileUpload(fileId) {
-    debugger
     TELEMETRY.glossaryUpload(fileId, this.state.orgName)
     let apiObj = new SaveSentenceAPI(fileId, this.state.orgName)
-    debugger
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),

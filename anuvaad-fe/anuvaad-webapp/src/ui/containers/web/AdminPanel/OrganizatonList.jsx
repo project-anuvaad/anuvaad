@@ -14,16 +14,8 @@ import Spinner from "../../../components/web/common/Spinner";
 import { clearJobEntry } from '../../../../flux/actions/users/async_job_management';
 import ToolBar from "../AdminPanel/OrganizationHeader"
 import FetchOrganizationList from "../../../../flux/actions/apis/organization/organization-list";
-import ActivateDeactivateUser from "../../../../flux/actions/apis/user/activate_exisiting_user";
-import Switch from '@material-ui/core/Switch';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-import ResetPassword from "./ResetPasswordModal";
-import Modal from '@material-ui/core/Modal';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
-import SetPasswordApi from "../../../../flux/actions/apis/user/setpassword";
-import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
-import history from "../../../../web.history";
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import AddOrg from "../../../../flux/actions/apis/organization/addOrganization";
 
@@ -159,7 +151,6 @@ renderStatusInformation = () => {
   componentDidUpdate(prevProps) {
     
     if (prevProps.organizationList !== this.props.organizationList) {
-      debugger
       this.setState({ showLoader: false, status: false })
     }
   }
