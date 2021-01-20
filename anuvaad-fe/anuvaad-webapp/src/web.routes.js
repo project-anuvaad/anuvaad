@@ -27,6 +27,8 @@ import CreateUser from "./ui/containers/web/AdminPanel/CreateUser";
 import TmxUpload from "./ui/containers/web/AdminPanel/TmxUpload";
 import UserReport from './ui/containers/web/AdminPanel/UserReport';
 import DocumentStats from './ui/containers/web/AdminPanel/DocumentStats';
+import OrganizationList from './ui/containers/web/AdminPanel/OrganizatonList';
+import AddOrganization from "./ui/containers/web/AdminPanel/AddOrganization";
 
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
@@ -160,6 +162,7 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
               currentMenu="forgot-password"
             />
+            
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/glossary-upload`}
@@ -171,6 +174,7 @@ class AppRoutes extends React.Component {
               currentMenu="glossary-upload"
 
             />
+            
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/set-password/:uid/:rid`}
               title="Set Password"
@@ -219,6 +223,28 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="user-details"
               dontShowHeader={true}
+            />
+
+
+<PrivateRoute
+              path={`${process.env.PUBLIC_URL}/add-organization`}
+              title={translate('Add Organization')}
+              component={AddOrganization}
+              userRoles={["ADMIN"]}
+              authenticate={this.authenticateUser}
+              currentMenu="add-organization"
+            />
+
+<PrivateRoute
+              path={`${process.env.PUBLIC_URL}/organization-list`}
+              dontShowLoader
+              title={"Organization List"}
+              userRoles={["ADMIN"]}
+              component={OrganizationList}
+              authenticate={this.authenticateUser}
+              currentMenu="organization-list"
+              dontShowHeader={true}
+
             />
 
             <PrivateRoute

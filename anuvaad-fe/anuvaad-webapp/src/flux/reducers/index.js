@@ -45,6 +45,8 @@ import createusers from './user/createusers';
 import activateuser from './user/activate_exisiting_user';
 import deactivateuser from './user/deactivate_existing_user';
 
+import organizationList from './organization/fetch_organization'
+
 export default {
     login,
     automl,
@@ -92,4 +94,5 @@ export default {
     createusers,
     activateuser,
     deactivateuser,
+    organizationList
 };
