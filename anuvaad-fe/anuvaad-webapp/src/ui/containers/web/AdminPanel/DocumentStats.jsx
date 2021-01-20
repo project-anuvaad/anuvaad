@@ -118,7 +118,7 @@ class DocumentStats extends React.Component {
     const columns = [
       {
         name: "s0_src",
-        label: 'Source Sentence',
+        label: 'Source',
         options: {
           filter: false,
           sort: true,
@@ -126,7 +126,7 @@ class DocumentStats extends React.Component {
       },
       {
         name: "s0_tgt",
-        label: "Target Sentence",
+        label: "MT.",
         options: {
           filter: false,
           sort: false,
@@ -134,7 +134,7 @@ class DocumentStats extends React.Component {
       },
       {
         name: "tgt",
-        label: 'Target',
+        label: 'Proof read',
         options: {
           filter: false,
           sort: true,
