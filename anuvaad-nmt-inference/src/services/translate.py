@@ -39,7 +39,11 @@ class TranslateService:
 
                 log_info("input sentence:{}".format(i['src']),MODULE_CONTEXT) 
                 i_src.append(i['src'])   
-                i['src'] = i['src'].strip()    
+                i['src'] = i['src'].strip() 
+
+                i['src_lang'], i['tgt_lang'] = misc.get_src_tgt_langauge(i['id'])
+                i['src'] = misc.convert_digits_preprocess(i['src_lang'],i['src'])
+  
                 if special_case_handler.special_case_fits(i['src']):
                     log_info("sentence fits in special case, returning accordingly and not going to model",MODULE_CONTEXT)
                     translation = special_case_handler.handle_special_cases(i['src'],i['id'])
@@ -154,6 +158,7 @@ class TranslateService:
                                                 patterns['p6'],patterns['p7']]) for i in translation]
                     tag_tgt = translation
                     translation = [tagger_util.replace_tags_with_original(i,date_original,url_original,num_array,num_map) for i in translation]
+                    translation = [misc.convert_digits_postprocess(i['tgt_lang'],item) for item in translation]
                 log_info("interactive translation-experiment-{} output: {}".format(i['id'],translation),MODULE_CONTEXT)  
                 tgt.append(translation)
                 tagged_tgt.append(tag_tgt)
@@ -206,6 +211,10 @@ class OpenNMTTranslateService:
                 log_info("input sentences:{}".format(i['src']),MODULE_CONTEXT) 
                 i_src.append(i['src'])   
                 i['src'] = i['src'].strip()
+
+                src_language, tgt_language = misc.get_src_tgt_langauge(i['id'])
+                i['src'] = misc.convert_digits_preprocess(src_language,i['src'])
+
                 if special_case_handler.special_case_fits(i['src']):
                     log_info("sentence fits in special case, returning accordingly and not going to model",MODULE_CONTEXT)
                     translation = special_case_handler.handle_special_cases(i['src'],i['id'])
@@ -219,7 +228,6 @@ class OpenNMTTranslateService:
                     i['src'],date_original,url_original,num_array,num_map = tagger_util.tag_number_date_url(i['src'])
                     tag_src = (prefix +" "+ i['src']).lstrip() 
 
-                    src_language, tgt_language = misc.get_src_tgt_langauge(i['id'])
                     i['src'], is_missing_stop_punc = special_case_handler.handle_a_sentence_wo_stop(src_language,i['src'])
 
                     if i['id'] == 5:
@@ -374,6 +382,7 @@ class OpenNMTTranslateService:
                     tag_tgt = translation                            
                     translation = tagger_util.replace_tags_with_original(translation,date_original,url_original,num_array,num_map)
                     translation = oc.cleaner(tag_src,translation,i['id'])
+                    translation = misc.convert_digits_postprocess(tgt_language,translation)
                 log_info("translate_function-experiment-{} output: {}".format(i['id'],translation),MODULE_CONTEXT) 
                 tgt.append(translation)
                 pred_score.append(scores)
@@ -412,7 +421,7 @@ def encode_itranslate_decode(i,num_map,tp_tokenizer,num_hypotheses=3):
 
         if 'target_prefix' in i and len(i['target_prefix']) > 0 and i['target_prefix'].isspace() == False:
             log_info("target prefix: {}".format(i['target_prefix']),MODULE_CONTEXT) 
-            i['target_prefix'] = i['target_prefix']
+            i['target_prefix'] = misc.convert_digits_preprocess(i['tgt_lang'],i['target_prefix'])
             i['target_prefix'] = replace_num_target_prefix(i,num_map)
             if tp_tokenizer is not None:
                 i['target_prefix'] = tp_tokenizer(i['target_prefix'])

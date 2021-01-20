@@ -50,6 +50,8 @@ class NMTTranslateService:
         try:
             for i,sent in enumerate(src_list):
                 input_sentence = sent.strip()
+                
+                input_sentence = misc.convert_digits_preprocess(src_language,input_sentence)
 
                 if special_case_handler.special_case_fits(input_sentence):
                     special_case_sentence_indices.append(i)
@@ -260,6 +262,8 @@ class NMTTranslateService:
                     translation_array[i] = oc.cleaner(tagged_src_list[i],translation_array[i],model_id)
                     tgt_list[i] = translation_array[i]
                     log_info("translate_function-experiment-{} output: {}".format(model_id,translation_array[i]),MODULE_CONTEXT)
+
+                tgt_list[i] = misc.convert_digits_postprocess(tgt_language,tgt_list[i])
 
                 if (not tgt_list[i]) or (tgt_list[i].isspace()):
                     tgt_list[i] = src_list[i]     

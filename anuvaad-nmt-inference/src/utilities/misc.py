@@ -4,7 +4,7 @@ from utilities import MODULE_CONTEXT
 from dateutil.parser import parse
 import json
 import config
-from config.regex_patterns import patterns
+from config.regex_patterns import patterns, digit_dict
 
 '''
 miscellaneous funtions common across application
@@ -144,3 +144,80 @@ def remove_stop_punc(sentence,stop_puncs):
   except Exception as e:
     log_exception("Error in remove_stop_punc: {}".format(e),MODULE_CONTEXT,e)
     return sentence
+
+def convert_digits_preprocess(language, sentence):
+  '''
+  converts digits in the sentence from given language to roman.
+  used in the preprocessing pipeline
+  '''
+  try:
+    indic_dict = list(digit_dict.keys())
+    if language == "English":
+      return sentence
+    elif language in indic_dict:
+      return sub_indic_digits_w_roman(language, sentence)
+    else:
+      return sentence
+  
+  except Exception as e:
+    log_exception("Error in convert_digits_preprocess: {}".format(e),MODULE_CONTEXT,e)
+    return sentence
+
+def convert_digits_postprocess(language, sentence):
+  '''
+  converts digits in the sentence from roman given language.
+  used in the postprocessing pipeline
+  '''
+  try:
+    indic_dict = list(digit_dict.keys())
+    if language == "English":
+      return sentence
+    elif language in indic_dict:
+      return sub_roman_digits_w_indic(language, sentence)
+    else:
+      return sentence
+
+  except Exception as e:
+    log_exception("Error in convert_digits_postprocess: {}".format(e),MODULE_CONTEXT,e)
+    return sentence
+
+
+def sub_roman_digits_w_indic(language,sentence):
+  '''
+  Substitutes roman digits with indic digits in the sentence
+  given the indic language
+  '''
+  try:
+    log_info("Inside sub_roman_digits_w_indic",MODULE_CONTEXT)
+    roman_to_indic_digits_map = digit_dict[language]
+    roman_digits_in_sentence = re.findall(r'[0-9]', sentence)
+    for roman_digit in roman_digits_in_sentence:
+      indic_digit = roman_to_indic_digits_map[roman_digit]
+      sentence = re.sub(roman_digit, indic_digit, sentence)
+
+    return sentence
+
+  except Exception as e:
+    log_exception("Error in sub_roman_digits_w_indic: {}".format(e),MODULE_CONTEXT,e)
+    return sentence
+
+def sub_indic_digits_w_roman(language,sentence):
+  '''
+  Substitutes indic digits with roman digits in the sentence
+  given the indic language
+  '''
+  try:
+    log_info("Inside sub_indic_digits_w_roman",MODULE_CONTEXT)
+    roman_to_indic_digits_map = digit_dict[language]
+    indic_to_roman_digits_map = {v: k for k, v in roman_to_indic_digits_map.items()}
+    indic_digits = list(indic_to_roman_digits_map.keys())
+    indic_digits_in_sentence = [item for item in sentence if item in indic_digits]
+    for indic_digit in indic_digits_in_sentence:
+      roman_digit = indic_to_roman_digits_map[indic_digit]
+      sentence = re.sub(indic_digit, roman_digit, sentence)
+
+    return sentence
+
+  except Exception as e:
+    log_exception("Error in sub_indic_digits_w_roman: {}".format(e),MODULE_CONTEXT,e)
+    return sentence 
