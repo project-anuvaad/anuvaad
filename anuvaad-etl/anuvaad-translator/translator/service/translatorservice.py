@@ -5,7 +5,6 @@ from kafkawrapper.translatorproducer import Producer
 from repository.translatorrepository import TranslatorRepository
 from tmx.tmxrepo import TMXRepository
 from tmx.tmxservice import TMXService
-from tmx.tmxservice import tmx_local_cache
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from anuvaad_auditor.errorhandler import post_error
 from configs.translatorconfig import nmt_max_batch_size
