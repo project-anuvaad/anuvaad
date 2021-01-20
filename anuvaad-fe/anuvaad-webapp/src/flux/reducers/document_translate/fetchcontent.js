@@ -16,15 +16,14 @@ export default function (state = initialUserState, action) {
               if (text_blocks.text !== undefined || text_blocks.children !== undefined) {
                 text_blocks.text = text_blocks.text.replace(/\s{2,}/g, " ").trim()
                 text_blocks.children.forEach(children => {
-                  if (children.text !== undefined)
-                    children.text = children.text.replace(/\s{2,}/g, " ").trim()
+                  children.text = children.text.replace(/\s{2,}/g, " ").trim()
                 })
               }
             })
         })
       }
       if (result !== null && result.data) {
-        action.payload.data.map(payloadData => {
+        actionPayload.data.map(payloadData => {
           result.data.map((pageDetails, index) => {
             if (pageDetails.page_no === payloadData.page_no) {
               pageDetails = payloadData;
