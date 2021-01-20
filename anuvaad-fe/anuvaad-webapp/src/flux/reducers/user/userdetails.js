@@ -14,7 +14,7 @@ function getUserData(input) {
             var myDate = new Date(dateStr);
             var createdAt = (myDate.toLocaleString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false }))
         } return {
-            userID: user.userID, userName: user.userName, name: user.name, email_id: user.email, roles: user.roles.map(role => {
+            userID: user.userID,orgId:user.orgID, userName: user.userName, name: user.name, email_id: user.email, roles: user.roles.map(role => {
                 return role.roleCode
             }).join(', '), registered_time: createdAt, is_active: user.is_active
         }

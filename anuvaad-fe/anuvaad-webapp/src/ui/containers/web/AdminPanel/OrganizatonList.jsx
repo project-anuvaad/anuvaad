@@ -84,12 +84,11 @@ class OrganisationList extends React.Component {
           this.handleRedirect()
         }
         else{
-          this.informUserStatus(rsp_data.message ? "rsp_data.message": rsp_data.why ? rsp_data.why : "failed", false)
+          this.informUserStatus(rsp_data.message ? rsp_data.message: rsp_data.why ? rsp_data.why : "failed", false)
         }
         
         return Promise.reject('');
       } else {
-        this.setState({name:'', description:'' })
         if(rsp_data.http.status== 200){
             this.informUserStatus( rsp_data.why ? rsp_data.why : orgId + "Deactivated", true)
             this.processFetchBulkOrganizationAPI()
@@ -102,9 +101,7 @@ class OrganisationList extends React.Component {
         
 
       }
-    }).catch((error) => {
-      this.informUserStatus("Organization add failed", false)
-    });
+    })
 };
 
 renderProgressInformation = () => {
@@ -231,7 +228,7 @@ renderStatusInformation = () => {
         pagination: {
           rowsPerPage: translate("graderReport.page.muiTable.rowsPerPages")
         },
-        options: { sortDirection: 'desc' }
+        // options: { sortDirection: 'asc' }
       },
       
       count: this.props.count,
