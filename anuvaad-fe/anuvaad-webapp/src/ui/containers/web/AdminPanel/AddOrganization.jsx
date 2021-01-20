@@ -193,7 +193,7 @@ class CreateUser extends React.Component {
         } else {
           this.setState({name:'', description:'' })
           if(rsp_data.http.status== 200){
-              this.informUserStatus("New organization added.", true)
+              this.informUserStatus(rsp_data.message ? "rsp_data.message": rsp_data.why ? rsp_data.why :"New organization added.", true)
               setTimeout(async () => {
                 history.push(`${process.env.PUBLIC_URL}/organization-list`);
               }, 2000)

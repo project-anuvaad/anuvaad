@@ -272,6 +272,15 @@ class UserDetails extends React.Component {
           sort: false,
         }
       },
+
+      {
+        name: "orgId",
+        label: "Organization",
+        options: {
+          filter: false,
+          sort: false,
+        }
+      },
       {
         name: "registered_time",
         label: translate("common.page.label.timeStamp"),
@@ -282,7 +291,7 @@ class UserDetails extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {tableMeta.rowData[5]}
+                  {tableMeta.rowData[6]}
                 </div>
               )
             }
@@ -300,7 +309,7 @@ class UserDetails extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[6])}
+                  {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[7])}
                   {this.processModal(tableMeta.rowData[1])}
                   {this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
                 </div>
