@@ -89,7 +89,6 @@ class TranslatorService:
     # Method to push sentences of the file to nmt for translation
     def push_sentences_to_nmt(self, file, translate_wf_input):
         try:
-            global tmx_local_cache
             log_info("File translation started... " + str(translate_wf_input["jobID"]), translate_wf_input)
             record_id = str(translate_wf_input["jobID"]) + "|" + str(file["path"])
             content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
@@ -105,11 +104,12 @@ class TranslatorService:
                 return None
             pages = data["result"]
             total_sentences, total_tmx, total_batches = 0, 0, 0
-            log_info("TMX Local Cache Size (Start) : " + str(len(tmx_local_cache.keys())), translate_wf_input)
+            tmx_file_cache = {}
+            log_info("TMX File Cache Size (Start) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
             tmx_present = self.is_tmx_present(file, translate_wf_input)
             for page in pages:
                 sentences_per_page = 0
-                batches, res_dict = self.fetch_batches_of_sentences(file, record_id, page, tmx_present, translate_wf_input)
+                batches, res_dict = self.fetch_batches_of_sentences(file, record_id, page, tmx_present, tmx_file_cache, translate_wf_input)
                 if not batches:
                     log_error("No batches obtained for page: " + str(page["page_no"]), translate_wf_input, None)
                     continue
@@ -129,8 +129,7 @@ class TranslatorService:
                 repo.update({"totalSentences": total_sentences}, {"recordID": record_id})
                 log_info("recordID: " + record_id + " | BATCHES: " + str(total_batches)
                          + " | SENTENCES: " + str(total_sentences) + " | TMX: " + str(total_tmx), translate_wf_input)
-                log_info("TMX Local Cache Size (End) : " + str(len(tmx_local_cache.keys())), translate_wf_input)
-                tmx_local_cache = {} #Cache reset for every file
+                log_info("TMX File Cache Size (End) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
                 return True
             else:
                 log_error("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)
@@ -141,14 +140,14 @@ class TranslatorService:
             return None
 
     # Method to fetch batches for sentences from the file for a page.
-    def fetch_batches_of_sentences(self, file, record_id, page, tmx_present, translate_wf_input):
+    def fetch_batches_of_sentences(self, file, record_id, page, tmx_present, tmx_file_cache, translate_wf_input):
         try:
             sentences_for_trans, res_dict = {}, {"tmx_count": 0, "computed": 0, "redis": 0, "cache": 0}
             page_no = page["page_no"]
             text_blocks = page["text_blocks"]
             if text_blocks:
                 sentences_for_trans, res_dict = self.fetch_batches_of_blocks(record_id, page_no, text_blocks, file,
-                                                                              sentences_for_trans, tmx_present,  translate_wf_input)
+                                                                              sentences_for_trans, tmx_present,  tmx_file_cache, translate_wf_input)
             else:
                 log_error("There are no text blocks for this page: " + str(page_no), translate_wf_input, None)
             return sentences_for_trans, res_dict
@@ -157,7 +156,8 @@ class TranslatorService:
             return None
 
     # Iterates through the blocks and creates batches of sentences for translation
-    def fetch_batches_of_blocks(self, record_id, page_no, text_blocks, file, sentences_for_trans, tmx_present, translate_wf_input):
+    def fetch_batches_of_blocks(self, record_id, page_no, text_blocks, file, sentences_for_trans, tmx_present,
+                                tmx_file_cache, translate_wf_input):
         batch_key, tmx_count, computed, r_count, c_count = 0, 0, 0, 0, 0
         for block in text_blocks:
             block_id = block["block_id"]
@@ -165,7 +165,7 @@ class TranslatorService:
                 for sentence in block["tokenized_sentences"]:
                     tmx_phrases = []
                     if tmx_present:
-                        tmx_phrases, res_dict = self.fetch_tmx(sentence["src"], file, translate_wf_input, tmx_present)
+                        tmx_phrases, res_dict = self.fetch_tmx(sentence["src"], file, tmx_present, tmx_file_cache, translate_wf_input)
                         tmx_count += len(tmx_phrases)
                         computed += res_dict["computed"]
                         r_count += res_dict["redis"]
@@ -209,14 +209,15 @@ class TranslatorService:
         return False
 
     # Fetches tmx phrases
-    def fetch_tmx(self, sentence, file, translate_wf_input, tmx_level):
+    def fetch_tmx(self, sentence, file, tmx_level, tmx_file_cache, translate_wf_input):
         context = file["context"]
         user_id = translate_wf_input["metadata"]["userID"]
         org_id = translate_wf_input["metadata"]["orgID"]
         locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
         if tmx_level not in ["USER", "ORG", "BOTH"]:
             tmx_level = None
-        tmx_phrases, res_dict = tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, tmx_level, translate_wf_input)
+        tmx_phrases, res_dict = tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, tmx_level,
+                                                           tmx_file_cache, translate_wf_input)
         return tmx_phrases, res_dict
 
     # Distributes the NMT traffic across machines.

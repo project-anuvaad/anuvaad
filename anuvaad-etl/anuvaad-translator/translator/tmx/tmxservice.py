@@ -15,8 +15,6 @@ from configs.translatorconfig import tmx_user_enabled
 from configs.translatorconfig import tmx_word_length
 
 repo = TMXRepository()
-tmx_local_cache = {}
-
 
 class TMXService:
 
@@ -116,14 +114,14 @@ class TMXService:
             return {"message": "creation failed", "status": "FAILED"}
 
     # Method to fetch tmx phrases for a given src
-    def get_tmx_phrases(self, user_id, org_id, context, locale, sentence, tmx_level, ctx):
+    def get_tmx_phrases(self, user_id, org_id, context, locale, sentence, tmx_level, tmx_file_cache, ctx):
         tmx_record = {"context": context, "locale": locale, "src": sentence}
         if user_id:
             tmx_record["userID"] = user_id
         if org_id:
             tmx_record["orgID"] = org_id
         try:
-            tmx_phrases, res_dict = self.tmx_phrase_search(tmx_record, tmx_level, ctx)
+            tmx_phrases, res_dict = self.tmx_phrase_search(tmx_record, tmx_level, tmx_file_cache, ctx)
             return tmx_phrases, res_dict
         except Exception as e:
             log_exception("Exception while searching tmx from redis: " + str(e), ctx, e)
@@ -139,7 +137,7 @@ class TMXService:
 
     # Searches for all tmx phrases of a fixed length within a given sentence
     # Uses a custom implementation of the sliding window search algorithm.
-    def tmx_phrase_search(self, tmx_record, tmx_level, ctx):
+    def tmx_phrase_search(self, tmx_record, tmx_level, tmx_file_cache, ctx):
         sentence, tmx_phrases = tmx_record["src"], []
         hopping_pivot, sliding_pivot, i = 0, len(sentence), 1
         computed, r_count, c_count = 0, 0, 0,
@@ -148,7 +146,7 @@ class TMXService:
             phrase_size = phrase.split(" ")
             if len(phrase_size) <= tmx_word_length:
                 tmx_record["src"] = phrase
-                tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, ctx)
+                tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
                 computed += 1
                 if tmx_result:
                     tmx_phrases.append(tmx_result[0])
@@ -174,33 +172,32 @@ class TMXService:
         return tmx_phrases, res_dict
 
     # Fetches TMX phrases for a sentence from hierarchical cache
-    def get_tmx_with_fallback(self, tmx_record, tmx_level, ctx):
-        global tmx_local_cache
+    def get_tmx_with_fallback(self, tmx_record, tmx_level, tmx_file_cache, ctx):
         hash_dict = self.get_hash_key_search(tmx_record, tmx_level)
         if 'USER' in hash_dict.keys():
-            if hash_dict["USER"] not in tmx_local_cache.keys():
+            if hash_dict["USER"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["USER"]])
                 if tmx_result:
-                    tmx_local_cache[hash_dict["USER"]] = tmx_result
+                    tmx_file_cache[hash_dict["USER"]] = tmx_result
                     return tmx_result, True
             else:
-                return tmx_local_cache[hash_dict["USER"]], False
+                return tmx_file_cache[hash_dict["USER"]], False
         if 'ORG' in hash_dict.keys():
-            if hash_dict["ORG"] not in tmx_local_cache.keys():
+            if hash_dict["ORG"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["ORG"]])
                 if tmx_result:
-                    tmx_local_cache[hash_dict["ORG"]] = tmx_result
+                    tmx_file_cache[hash_dict["ORG"]] = tmx_result
                     return tmx_result, True
             else:
-                return tmx_local_cache[hash_dict["ORG"]], False
+                return tmx_file_cache[hash_dict["ORG"]], False
         if 'GLOBAL' in hash_dict.keys():
-            if hash_dict["GLOBAL"] not in tmx_local_cache.keys():
+            if hash_dict["GLOBAL"] not in tmx_file_cache.keys():
                 tmx_result = repo.search([hash_dict["GLOBAL"]])
                 if tmx_result:
-                    tmx_local_cache[hash_dict["GLOBAL"]] = tmx_result
+                    tmx_file_cache[hash_dict["GLOBAL"]] = tmx_result
                     return tmx_result, True
             else:
-                return tmx_local_cache[hash_dict["GLOBAL"]], False
+                return tmx_file_cache[hash_dict["GLOBAL"]], False
         return None, None
 
     # Replaces TMX phrases in NMT tgt using TMX NMT phrases and LaBSE alignments
