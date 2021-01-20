@@ -26,6 +26,7 @@
     "mic-recorder-to-mp3": "^2.2.2",
     "mui-datatables": "^3.4.1",
     "react": "^16.13.1",
+    "react-autosize-textarea": "^7.1.0",
     "react-avatar": "^3.9.7",
     "react-bootstrap": "1.3.0",
     "react-ckeditor-component": "^1.1.0",

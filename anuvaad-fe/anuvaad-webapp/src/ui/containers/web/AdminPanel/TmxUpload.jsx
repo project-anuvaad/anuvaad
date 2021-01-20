@@ -25,10 +25,9 @@ import WorkFlow from "../../../../flux/actions/apis/common/fileupload";
 import DocumentUpload from "../../../../flux/actions/apis/document_upload/document_upload";
 import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
 import ADMINCONFIG from "../../../../configs/adminConfig";
-
+import FetchOrganizationList from "../../../../flux/actions/apis/organization/organization-list";
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const LANG_MODEL = require('../../../../utils/language.model')
-const orgID = ADMINCONFIG.orgID;
 
 const theme = createMuiTheme({
   overrides: {
@@ -99,6 +98,19 @@ class TmxUpload extends Component {
       alert("Field should not be empty!");
     }
 
+  }
+
+  processFetchBulkOrganizationAPI = () => {
+    const userObj = new FetchOrganizationList()
+    this.props.APITransport(userObj)
+  }
+  /**
+   * life cycle methods
+   */
+  componentDidMount() {
+    // TELEMETRY.pageLoadCompleted('');
+    this.setState({ showLoader: true })
+    this.props.organizationList.length<1 && this.processFetchBulkOrganizationAPI()
   }
 
   handleSelectChange = event => {
@@ -178,7 +190,7 @@ class TmxUpload extends Component {
               }}
             >
               {
-                orgID.map((id, i) => <MenuItem id={i} key={i} value={id}>{id}</MenuItem>)
+                this.props.organizationList.map((id, i) => <MenuItem id={i} key={i} value={id}>{id}</MenuItem>)
               }
             </Select>
           </FormControl>
@@ -378,7 +390,8 @@ const mapStateToProps = state => ({
   configUplaod: state.configUplaod,
   workflowStatus: state.workflowStatus,
   documentUplaod: state.documentUplaod,
-  fetch_models: state.fetch_models
+  fetch_models: state.fetch_models,
+  organizationList: state.organizationList.orgList,
 });
 
 const mapDispatchToProps = dispatch =>

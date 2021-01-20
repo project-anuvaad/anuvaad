@@ -144,5 +144,11 @@ const constants = {
      */
     JOBPROGRESSSTATUS            : 'JOBPROGRESSSTATUS',
     UPDATE_PAGENUMBER           :   "UPDATE_PAGENUMBER",
+
+    /**
+     * action for organization LIst
+     */
+
+     FETCHORGANIZATION : 'FETCHORGANIZATION'
 }
 export default constants;

@@ -611,7 +611,6 @@ export const userActivateOrDeactivate = (userId, userName, action) => {
 }
 
 export const glossaryUpload = (file_id, organization) => {
-  debugger
   if ($t.isInitialized() === false) {
     init()
   }
