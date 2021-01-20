@@ -6,7 +6,7 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class FetchUserDetails extends API {
-  constructor(offset = null, limit = null, token, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = [], orgCodes = null, timeout = 2000) {
+  constructor(offset = null, limit = null, token, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = [], orgCodes = [], timeout = 2000) {
     super("POST", timeout, false);
     if (updateExisiting) {
       this.type = C.FETCH_NEXT_USERDETAIL

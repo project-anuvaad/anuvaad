@@ -46,7 +46,7 @@ class UserDetails extends React.Component {
       message: '',
       status: false,
       isModalOpen: false,
-      username: ''
+      username: '',
     };
 
   }
@@ -73,7 +73,11 @@ class UserDetails extends React.Component {
     else if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
       this.setState({ showLoader: false, isenabled: false, status: false })
     }
+    else if (this.state.showLoader && prevProps.apistatus.message !== undefined && this.props.apistatus.message === prevProps.apistatus.message) {
+      this.setState({ showLoader: false, status: false })
+    }
   }
+
 
   getMuiTheme = () => createMuiTheme({
     overrides: {
@@ -410,6 +414,8 @@ const mapStateToProps = state => ({
   count: state.userinfo.count,
   job_details: state.job_details,
   activateuser: state.activateuser,
+  apistatus: state.apistatus,
+
 });
 
 const mapDispatchToProps = dispatch =>
