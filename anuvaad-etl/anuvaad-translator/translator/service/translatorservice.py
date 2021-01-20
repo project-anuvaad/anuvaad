@@ -89,6 +89,7 @@ class TranslatorService:
     # Method to push sentences of the file to nmt for translation
     def push_sentences_to_nmt(self, file, translate_wf_input):
         try:
+            global tmx_local_cache
             log_info("File translation started... " + str(translate_wf_input["jobID"]), translate_wf_input)
             record_id = str(translate_wf_input["jobID"]) + "|" + str(file["path"])
             content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
@@ -129,6 +130,7 @@ class TranslatorService:
                 log_info("recordID: " + record_id + " | BATCHES: " + str(total_batches)
                          + " | SENTENCES: " + str(total_sentences) + " | TMX: " + str(total_tmx), translate_wf_input)
                 log_info("TMX Local Cache Size (End) : " + str(len(tmx_local_cache.keys())), translate_wf_input)
+                tmx_local_cache = {} #Cache reset for every file
                 return True
             else:
                 log_error("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)
