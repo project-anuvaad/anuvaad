@@ -26,11 +26,11 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import ADMINCONFIG from "../../../../configs/adminConfig";
-
+import FetchOrganizationList from "../../../../flux/actions/apis/organization/organization-list";
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
 const roles = ADMINCONFIG.roles;
-const orgID = ADMINCONFIG.orgID;
+
 
 class CreateUser extends React.Component {
   constructor(props) {
@@ -79,6 +79,19 @@ class CreateUser extends React.Component {
       </Grid>
     )
 
+  }
+
+  processFetchBulkOrganizationAPI = () => {
+    const userObj = new FetchOrganizationList()
+    this.props.APITransport(userObj)
+  }
+  /**
+   * life cycle methods
+   */
+  componentDidMount() {
+    // TELEMETRY.pageLoadCompleted('');
+    this.setState({ showLoader: true })
+    this.props.organizationList.length<1 && this.processFetchBulkOrganizationAPI()
   }
 
   renderEmaiIdItems = () => {
@@ -221,7 +234,7 @@ class CreateUser extends React.Component {
               }}
             >
               {
-                orgID.map((id, i) => <MenuItem id={i} key={i} value={id}>{id}</MenuItem>)
+                this.props.organizationList.map((id, i) => <MenuItem id={i} key={i} value={id}>{id}</MenuItem>)
               }
             </Select>
           </FormControl>
@@ -420,6 +433,7 @@ class CreateUser extends React.Component {
 
 const mapStateToProps = state => ({
   user: state.createusers,
+  organizationList: state.organizationList.orgList,
 });
 
 const mapDispatchToProps = dispatch =>

@@ -3,25 +3,13 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class BulkSearchAPI extends API {
-  constructor(offset, limit, jobIds = [''], searchForNewJob = false, isNextPage = false, updateExisting = false, userId = [], timeout = 2000) {
-    super("POST", timeout, false);
-    this.type = C.FETCHDOCUMENT;
-
-    if (searchForNewJob) {
-      this.type = C.FETCHDOCUMENT_NEWJOB;
-    }
-    if (isNextPage) {
-      this.type = C.FETCHDOCUMENT_NEXTPAGE;
-    }
-    if (updateExisting) {
-      this.type = C.FETCHDOCUMENT_EXISTING;
-    }
+  constructor(offset, limit, timeout = 2000) {
+    super("GET", timeout, false);
+    this.type = C.FETCHORGANIZATION;
 
     this.offset = offset;
     this.limit = limit;
-    this.jobIds = jobIds;
-    this.userId = userId
-    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.fetchducuments}`
+    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.fetch_organization}`
   }
 
   toString() {
@@ -42,11 +30,7 @@ export default class BulkSearchAPI extends API {
   getBody() {
     return {
       "offset": this.offset,
-      "limit": this.limit,
-      "jobIDs": this.jobIds,
-      "taskDetails": true,
-      "workflowCodes": ["DP_WFLOW_FBT", "WF_A_FCBMTKTR", "DP_WFLOW_FBTTR"],
-      "userIDs": this.userId
+      "limit": this.limit
     }
   }
 

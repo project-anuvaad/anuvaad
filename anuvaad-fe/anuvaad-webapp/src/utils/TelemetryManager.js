@@ -58,7 +58,7 @@ export const pageLoadStarted = (page_id) => {
   let token = localStorage.getItem('token')
 
   if (user_profile != null && token != null) {
-    user_id = user_profile.id
+    user_id = user_profile.userID
     session_id = token
   } else {
     user_id = 'anonymous'
@@ -99,7 +99,7 @@ export const pageLoadCompleted = (page_id) => {
   let token = localStorage.getItem('token')
 
   if (user_profile != null && token != null) {
-    user_id = user_profile.id
+    user_id = user_profile.userID
     session_id = token
   } else {
     user_id = 'anonymous'
@@ -157,6 +157,16 @@ export const startWorkflow = (source_language, target_language, filename, job_id
     init()
   }
 
+  let user_id = null;
+  let user_profile = JSON.parse(localStorage.getItem('userProfile'))
+  let token = localStorage.getItem('token')
+  
+  if (user_profile != null && token != null) {
+    user_id = user_profile.userID
+  } else {
+    user_id = 'anonymous'
+  }
+
   let data = {
     type: 'START_JOB',
     duration: 0,
@@ -165,6 +175,9 @@ export const startWorkflow = (source_language, target_language, filename, job_id
 
   let options = {
     ets: Date.now(),
+    actor: {
+      uid: user_id,
+    },
     context: {
       cdata: [{
         id: job_id,
@@ -598,7 +611,6 @@ export const userActivateOrDeactivate = (userId, userName, action) => {
 }
 
 export const glossaryUpload = (file_id, organization) => {
-  debugger
   if ($t.isInitialized() === false) {
     init()
   }

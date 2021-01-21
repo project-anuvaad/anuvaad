@@ -10,6 +10,7 @@ export default class Pagination extends API {
         this.end_page = end_page
         this.type = C.FETCH_CONTENT;
         this.endpoint = ENDPOINTS.fecthcontent;
+        console.log(this.start_page, this.end_page)
     }
 
     toString() {
@@ -24,14 +25,14 @@ export default class Pagination extends API {
     }
 
     apiEndPoint() {
-        let url = `${super.apiEndPointAuto()}${this.endpoint}?record_id=${this.job_id}` 
-        if(this.start_page && this.end_page) {
+        let url = `${super.apiEndPointAuto()}${this.endpoint}?record_id=${this.job_id}`
+        if (this.start_page && this.end_page) {
             url += `&start_page=${this.start_page}&end_page=${this.end_page}`;
         }
-        else{
-            url+= `&all=true`;
+        else {
+            url += `&all=true`;
         }
-        return url    
+        return url
     }
 
     getBody() {
@@ -41,7 +42,7 @@ export default class Pagination extends API {
     getHeaders() {
         this.headers = {
             headers: {
-                 'auth-token': `${decodeURI(localStorage.getItem("token"))}`
+                'auth-token': `${decodeURI(localStorage.getItem("token"))}`
             }
         };
         return this.headers;

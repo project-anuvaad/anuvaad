@@ -429,7 +429,8 @@ const localization_EN_Data = {
   "common.page.label.download": "Downloading file...",
   "common.page.label.downloadCompleted": "Download completed...",
   "common.page.label.TOKEN_EXPIRED" :'Session Expired, Redirecting to login page',
-  "common.page.label.glossaryUpload" : "Glossary Upload"
+  "common.page.label.glossaryUpload" : "Glossary Upload",
+  "common.page.title.orgList": "Organization List"
   // 'newCorpus.page.array.addFileTargetAndDetails':["Add Source file", 'Add target file', 'Add file details']
 };
 

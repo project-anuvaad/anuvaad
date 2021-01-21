@@ -21,6 +21,9 @@ import ResetPassword from "./ResetPasswordModal";
 import Modal from '@material-ui/core/Modal';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import SetPasswordApi from "../../../../flux/actions/apis/user/setpassword";
+import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
+import history from "../../../../web.history";
+
 
 
 
@@ -43,7 +46,7 @@ class UserDetails extends React.Component {
       message: '',
       status: false,
       isModalOpen: false,
-      username: ''
+      username: '',
     };
 
   }
@@ -51,18 +54,16 @@ class UserDetails extends React.Component {
 
   processFetchBulkUserDetailAPI = (offset, limit, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = []) => {
     const token = localStorage.getItem("token");
-    const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes);
-    this.props.APITransport(userObj);
+    const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes)
+    this.props.APITransport(userObj)
   }
   /**
    * life cycle methods
    */
   componentDidMount() {
-
     TELEMETRY.pageLoadCompleted('user-details');
     this.setState({ showLoader: true })
     this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
-
   }
 
   componentDidUpdate(prevProps) {
@@ -72,7 +73,11 @@ class UserDetails extends React.Component {
     else if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
       this.setState({ showLoader: false, isenabled: false, status: false })
     }
+    else if (this.state.showLoader && prevProps.apistatus.message !== undefined && this.props.apistatus.message === prevProps.apistatus.message) {
+      this.setState({ showLoader: false, status: false })
+    }
   }
+
 
   getMuiTheme = () => createMuiTheme({
     overrides: {
@@ -162,6 +167,22 @@ class UserDetails extends React.Component {
         </IconButton>
       </Tooltip>
     );
+  }
+
+  processUserView = (id, name) => {
+    return (
+      <Tooltip title="View User Details" placement="right">
+        <IconButton style={{ color: '#233466', padding: '5px' }}
+          component="a"
+          onClick={() => this.handleUserViewClick(id, name)} >
+          <AssessmentOutlinedIcon />
+        </IconButton>
+      </Tooltip>
+    );
+  }
+
+  handleUserViewClick = (id, name) => {
+    history.push(`${process.env.PUBLIC_URL}/user-report/${id}/${name}`)
   }
 
   openModal = (userName) => {
@@ -255,17 +276,26 @@ class UserDetails extends React.Component {
           sort: false,
         }
       },
+
+      {
+        name: "orgId",
+        label: "Organization",
+        options: {
+          filter: false,
+          sort: false,
+        }
+      },
       {
         name: "registered_time",
         label: translate("common.page.label.timeStamp"),
         options: {
           filter: true,
-          sort: true,
+          sort: false,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {tableMeta.rowData[5]}
+                  {tableMeta.rowData[6]}
                 </div>
               )
             }
@@ -277,14 +307,15 @@ class UserDetails extends React.Component {
         label: translate('common.page.label.action'),
         options: {
           filter: true,
-          sort: true,
+          sort: false,
           empty: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[6])}
+                  {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[7])}
                   {this.processModal(tableMeta.rowData[1])}
+                  {this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
                 </div>
               );
             }
@@ -340,10 +371,6 @@ class UserDetails extends React.Component {
       fixedHeader: true,
       filter: false,
       selectableRows: "none",
-      sortOrder: {
-        name: 'registered_time',
-        direction: 'desc'
-      },
       page: this.state.currentPageIndex
     };
 
@@ -387,6 +414,8 @@ const mapStateToProps = state => ({
   count: state.userinfo.count,
   job_details: state.job_details,
   activateuser: state.activateuser,
+  apistatus: state.apistatus,
+
 });
 
 const mapDispatchToProps = dispatch =>
