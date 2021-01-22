@@ -58,7 +58,7 @@ export const pageLoadStarted = (page_id) => {
   let token = localStorage.getItem('token')
 
   if (user_profile != null && token != null) {
-    user_id = user_profile.id
+    user_id = user_profile.userID
     session_id = token
   } else {
     user_id = 'anonymous'
@@ -99,7 +99,7 @@ export const pageLoadCompleted = (page_id) => {
   let token = localStorage.getItem('token')
 
   if (user_profile != null && token != null) {
-    user_id = user_profile.id
+    user_id = user_profile.userID
     session_id = token
   } else {
     user_id = 'anonymous'
@@ -157,6 +157,16 @@ export const startWorkflow = (source_language, target_language, filename, job_id
     init()
   }
 
+  let user_id = null;
+  let user_profile = JSON.parse(localStorage.getItem('userProfile'))
+  let token = localStorage.getItem('token')
+  
+  if (user_profile != null && token != null) {
+    user_id = user_profile.userID
+  } else {
+    user_id = 'anonymous'
+  }
+
   let data = {
     type: 'START_JOB',
     duration: 0,
@@ -165,6 +175,9 @@ export const startWorkflow = (source_language, target_language, filename, job_id
 
   let options = {
     ets: Date.now(),
+    actor: {
+      uid: user_id,
+    },
     context: {
       cdata: [{
         id: job_id,
@@ -326,7 +339,7 @@ export const endSentenceEdit = (sentence, sentence_id, mode) => {
  * @param {*} src , extracted source sentence
  * 
  */
-export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, mode, src, bleu_score) => {
+export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, mode, src, bleu_score, time_spent) => {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -349,6 +362,7 @@ export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, m
   values.initial = sentence_initial
   values.final = sentence_final
   values.bleu_score = bleu_score
+  values.time_spent = time_spent
 
   options.context.cdata = values
   $t.interact(data, options)
@@ -427,7 +441,7 @@ export const splitSentencesEvent = (sentence_initial, sentences_final) => {
  * @param {*} action_type , type of action user is performing
  * @param {*} message , error message
  */
-export const log = (action_type, message) => {
+export const log = (action_type, message, api) => {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -445,7 +459,14 @@ export const log = (action_type, message) => {
     type: 'api_call',
     level: 'ERROR',
     error_data: message,
-    action: action_type
+  }
+
+  if(action_type) {
+    data.action = action_type
+  }
+
+  if(api) {
+    data.api = api
   }
 
   let options = {
@@ -588,4 +609,31 @@ export const userActivateOrDeactivate = (userId, userName, action) => {
   }
 
   $t.interact(data, options)
+}
+
+export const glossaryUpload = (file_id, organization) => {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'GLOSSARY_UPLOAD',
+    duration: 0,
+    mode: 'session'
+  }
+
+  let options = {
+    ets: Date.now(),
+    context: {
+      cdata: [{
+        id: file_id,
+        type: 'GLOSSARY_UPLOAD'
+      }]
+    },
+    object: {
+      file_id: file_id,
+      organization: organization
+    }
+  }
+  $t.impression(data, options)
 }

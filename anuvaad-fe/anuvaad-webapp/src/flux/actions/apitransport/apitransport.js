@@ -2,6 +2,8 @@ import axios from "axios";
 import C from "../constants";
 import Strings from "../strings";
 
+const TELEMETRY = require('../../../utils/TelemetryManager')
+
 function dispatchAPIAsync(api) {
   return {
     type: api.type,
@@ -46,6 +48,7 @@ function success(res, api, dispatch) {
 
 function error(err, api, dispatch) {
   let errorMsg = err.response && err.response.data && err.response.data.why ? err.response.data.why : Strings.error.message.http.default;
+  TELEMETRY.log('', JSON.stringify(err.response.data), api.endpoint)
   if (api.errorMsg || api.errorMsg === null) {
     errorMsg = api.errorMsg === null ? "" : api.errorMsg;
   }

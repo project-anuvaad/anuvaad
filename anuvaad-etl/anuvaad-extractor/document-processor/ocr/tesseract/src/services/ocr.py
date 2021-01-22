@@ -1,30 +1,57 @@
 import config
 from config import CROP_CONFIG
 from pytesseract import Output
-from  config import LANG_MAPPING
 from pytesseract import pytesseract
 from collections import Counter
 #from PIL import Image
 import cv2
 import uuid
 
-def ocr(temp_df,left,top):
+# def ocr(temp_df,left,top):
+#     temp_df = temp_df[temp_df.text.notnull()]
+#     text = ""
+#     coord = []
+#     for index1, row1 in temp_df.iterrows():
+#         word_coord = {}
+#         temp_text  = str(row1["text"])
+#         temp_conf  = row1["conf"]
+#         text = text +" "+ str(temp_text)
+#         word_coord['text']          = str(temp_text)
+#         word_coord['conf']          = temp_conf
+#         word_coord['text_left']     = int(row1["left"]+left)
+#         word_coord['text_top']      = int(row1["top"]+top)
+#         word_coord['text_width']    = int(row1["width"])
+#         word_coord['text_height']   = int(row1["height"])
+#         coord.append(word_coord)
+#     return text, coord
+
+def ocr(crop_image,configs,left,top,language):
+    if configs:
+        #temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
+        temp_df = pytesseract.image_to_data(crop_image, config='--psm 7', lang=language,
+                                            output_type=Output.DATAFRAME)
+    else:
+        #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
+        temp_df = pytesseract.image_to_data(crop_image, lang= language,output_type=Output.DATAFRAME)
     temp_df = temp_df[temp_df.text.notnull()]
     text = ""
-    coord = []
-    for index1, row1 in temp_df.iterrows():
-        word_coord = {}
-        temp_text  = str(row1["text"])
-        temp_conf  = row1["conf"]
-        text = text +" "+ str(temp_text)
-        word_coord['text']          = str(temp_text)
-        word_coord['conf']          = temp_conf
-        word_coord['text_left']     = int(row1["left"]+left)
-        word_coord['text_top']      = int(row1["top"]+top)
-        word_coord['text_width']    = int(row1["width"])
-        word_coord['text_height']   = int(row1["height"])
-        coord.append(word_coord)
-    return text, coord
+    coord  = []
+    
+    for index, row in temp_df.iterrows():
+        temp_dict = {}; vert=[]
+        temp_dict['identifier'] = str(uuid.uuid4())
+        vert.append({'x':int(row["left"]+left),'y':row["top"]+top})
+        vert.append({'x':int(row["left"]+left)+int(row["width"]),'y':row["top"]+top})
+        vert.append({'x':int(row["left"]+left)+int(row["width"]),'y':row["top"]+top+int(row["height"])})
+        vert.append({'x':int(row["left"]+left),'y':row["top"]+top+int(row["height"])})
+        temp_dict['text'] = str(row["text"])
+        temp_dict['conf'] = row["conf"]
+        temp_dict['boundingBox']={}
+        temp_dict['boundingBox']["vertices"] = vert
+        text = text +" "+ str(row["text"])
+        coord.append(temp_dict)
+    return coord, text
+
 
 def bound_coordinate(corrdinate,max):
     if corrdinate < 0 :
@@ -34,6 +61,8 @@ def bound_coordinate(corrdinate,max):
     return int(corrdinate)
 
 def get_text(path,coord,lang,width, height,freq_height):
+    #image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+path,0)
+
     image   = cv2.imread(path,0)
     #h_ratio = image.size[1]/height
     #w_ratio = image.size[0]/width
@@ -44,19 +73,25 @@ def get_text(path,coord,lang,width, height,freq_height):
     top = bound_coordinate(coord[1],height )
     right = bound_coordinate(coord[2] ,width)
     bottom = bound_coordinate(coord[3] , height)
+    region_width = abs(right-left)
+    region_height = abs(bottom-top)
 
     #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
-    if left==right==top==bottom==0:
-        return None,None
+    if left==right==top==bottom==0 or region_width==0 or region_height==0:
+        return [],[]
     crop_image = image[ top:bottom, left:right]
     
     #crop_image.save("/home/naresh/line_crop_adjustment/"+str(uuid.uuid4()) + '.jpg')
     #crop_image.save("/home/naresh/line_crop/"+str(uuid.uuid4()) + '.jpg')
     if abs(bottom-top) > 2*freq_height:
-        temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
+        coord, text = ocr(crop_image,False,left,top,lang)
+        #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
     else:
-        temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
-    text, coord = ocr(temp_df,left,top)
+        coord, text = ocr(crop_image,True,left,top,lang)
+        if len(text)==0:
+            coord,text = ocr(crop_image,False,left,top,lang)
+        #temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
+    #text, coord = ocr(temp_df,left,top)
     return text, coord
 
 def get_coord(bbox):
@@ -93,8 +128,8 @@ def text_extraction(lang, page_path, regions,region_org,width, height,mode_heigh
             region_org[idx]['tess_word_coords'] = tess_coord
 
         else:
-            region_org[idx]['text'] = None
-            region_org[idx]['tess_word_coords'] = None
+            region_org[idx]['text'] = ""
+            region_org[idx]['tess_word_coords'] = []
 
     return region_org
 

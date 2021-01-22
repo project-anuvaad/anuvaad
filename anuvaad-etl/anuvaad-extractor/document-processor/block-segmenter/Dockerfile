@@ -29,7 +29,9 @@
 # RUN apt install -y libopencv-dev python3-opencv
 
 #FROM anuvaadio/python-opencv-slim:2
-FROM continuumio/anaconda3
+
+FROM anuvaadio/anuvaad-block-segmenter:20-3a396ff9
+#FROM continuumio/anaconda3
 COPY / /app
 WORKDIR /app
 

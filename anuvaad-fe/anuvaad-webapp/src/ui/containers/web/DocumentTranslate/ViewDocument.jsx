@@ -39,6 +39,7 @@ class ViewDocument extends React.Component {
       offset: 0,
       limit: 10,
       currentPageIndex: 0,
+      maxPageNum:0,
       dialogMessage: null,
       timeOut: 3000,
       variant: "info",
@@ -121,6 +122,7 @@ class ViewDocument extends React.Component {
         MUIDataTableBodyCell: {
           root: {
             padding: "3px 10px 3px",
+            overflow:"auto"
           },
         },
       },
@@ -380,7 +382,7 @@ class ViewDocument extends React.Component {
   }
 
   processTableClickedNextOrPrevious = (page, sortOrder) => {
-    if (this.state.currentPageIndex < page) {
+    if (this.state.maxPageNum < page) {
       /**
        * user wanted to load next set of records
        */
@@ -392,10 +394,12 @@ class ViewDocument extends React.Component {
         true
       );
       this.setState({
-        currentPageIndex: page,
+        maxPageNum:page,
         offset: this.state.offset + this.state.limit,
       });
     }
+    this.setState({
+      currentPageIndex: page})
   };
 
   render() {
@@ -622,6 +626,17 @@ class ViewDocument extends React.Component {
         },
         options: { sortDirection: "desc" },
       },
+      onChangeRowsPerPage: (limit) =>{
+        let diffValue = limit - this.state.limit;
+        if(diffValue>0)
+        {
+          this.makeAPICallJobsBulkSearch(this.state.offset + diffValue , limit - this.state.limit, false, false, true)
+        }
+        
+        this.setState({limit})
+        
+      },
+      rowsPerPageOptions:[10,20,50],
 
       onTableChange: (action, tableState) => {
         switch (action) {

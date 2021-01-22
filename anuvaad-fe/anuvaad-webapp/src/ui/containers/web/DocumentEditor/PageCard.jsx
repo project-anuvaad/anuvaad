@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import { Textfit } from "react-textfit";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import sentenceHighlight from '../../../../utils/SentenceHighlight'
 
 import { highlightSentence, clearHighlighBlock, cancelMergeSentence } from '../../../../flux/actions/users/translator_actions';
 
@@ -82,133 +83,12 @@ class PageCard extends React.Component {
     }
 
     renderTextFit = (text, merged_block_id) => {
-        if (this.props.block_highlight) {
-            let sentence = this.props.block_highlight.src;
-            // console.log('-------',text.text,'--------',this.props.block_highlight.block_identifier,'-----------',text.block_identifier)
-            if (this.props.block_highlight.block_identifier === text.block_identifier || merged_block_id === this.props.block_highlight.block_identifier) {
-                // console.log('-------',text.text,'--------')
-                /*Left and right has the same length */
-                if (sentence !== undefined) {
-                    if (sentence.replace(/\s/g, '').includes(text.text.toString().replace(/\s/g, '')) || text.text.toString().replace(/\s/g, '').length === sentence.replace(/\s/g, '').length) {
-                        return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
-                            {this.renderTextSpan(text, true)}
-                        </Textfit>
-                    }
-                    /**
-                     * Left is greater than right
-                     */
-                    else if (text.text.toString().replace(/\s/g, '').length > sentence.replace(/\s/g, '').length && text.text.toString().replace(/\s/g, '').includes(sentence.replace(/\s/g, ''))) {
-                        if (text.text.toString().replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) === 0) {
-                            let removedSpaces = JSON.parse(JSON.stringify(text));
-                            removedSpaces.text = text.text.toString().replace(/  +/g, '');
-                            let coloredText = JSON.parse(JSON.stringify(text));
-                            let nonColoredText = JSON.parse(JSON.stringify(text));
-                            coloredText.text = sentence
-                            nonColoredText.text = ' ' + removedSpaces.text.substr(coloredText.text.length);
-                            return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
-                                {this.renderTextSpan(coloredText, true)}
-                                {this.renderTextSpan(nonColoredText, false)}
-                            </Textfit>
-
-                        } else if (text.text.toString().replace(/\s/g, '').indexOf(sentence.replace(/\s/g, '')) > 0) {
-                            let removedSpaces = JSON.parse(JSON.stringify(text));
-                            removedSpaces.text = text.text.toString().replace(/  +/g, '');
-                            let firstHalfText = JSON.parse(JSON.stringify(text));
-                            let secondHalfText = JSON.parse(JSON.stringify(text));
-                            let coloredText = JSON.parse(JSON.stringify(text));
-                            coloredText.text = sentence;
-                            firstHalfText.text = removedSpaces.text.substr(0, removedSpaces.text.indexOf(sentence));
-                            secondHalfText.text = removedSpaces.text.substr(removedSpaces.text.indexOf(sentence) + sentence.length);
-                            return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
-                                {this.renderTextSpan(firstHalfText, false)}
-                                {this.renderTextSpan(coloredText, true)}
-                                {this.renderTextSpan(secondHalfText, false)}
-                            </Textfit>
-
-                        }
-                    }
-                    /**
-                     * When a portion of sentence is present in the text
-                     */
-
-                    if (text.text.includes(sentence.split(' ')[0])) {
-                        let removedSpaces = JSON.parse(JSON.stringify(text));
-                        removedSpaces.text = text.text.toString().replace(/  +/g, '');
-                        let tempText = removedSpaces.text.substr(removedSpaces.text.indexOf(sentence.trim().split(' ')[0]));
-                        if (sentence.replace(/\s/g, '').includes(tempText.replace(/\s/g, ''))) {
-                            let coloredText = JSON.parse(JSON.stringify(text));
-                            let nonColoredText = JSON.parse(JSON.stringify(text));
-                            coloredText.text = tempText;
-                            if (removedSpaces.text.replace(/\s/g, '').indexOf(sentence.split(' ')[0].replace(/\s/g, '')) === 0) {
-                                nonColoredText.text = removedSpaces.text.substr(tempText.length);
-                                console.log(nonColoredText.text);
-                                return (
-                                    <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
-                                        {this.renderTextSpan(coloredText, true)}
-                                        {this.renderTextSpan(nonColoredText)}
-                                    </Textfit>
-                                )
-                            } else {
-                                nonColoredText.text = removedSpaces.text.substr(0, removedSpaces.text.indexOf(tempText));
-                                return (
-                                    <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
-                                        {this.renderTextSpan(nonColoredText)}
-                                        {this.renderTextSpan(coloredText, true)}
-                                    </Textfit>
-                                )
-                            }
-                        }
-                    }
-                    /**
-                     * When right is greater than left
-                     */
-
-                    if (sentence.replace(/\s/g, '').includes(text.text.toString().replace(/\s/g, '')) && text.text.toString().replace(/\s/g, '').length < sentence.replace(/\s/g, '').length) {
-                        return <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
-                            {this.renderTextSpan(text, true)}
-                        </Textfit>
-
-                    }
-
-                    /**
-                     * When a portion of text is present in sentence
-                     */
-                    if (sentence.replace(/\s/g, '').includes(text.text.split(' ')[0].replace(/\s/g, ''))) {
-                        let removedSpaces = JSON.parse(JSON.stringify(text));
-                        removedSpaces.text = text.text.toString().replace(/  +/g, '');
-                        let tempText = sentence.substr(sentence.indexOf(removedSpaces.text.split(' ')[0]));
-                        if (text.text.toString().replace(/\s/g, '').includes(tempText.replace(/\s/g, ''))) {
-
-                            let coloredText = JSON.parse(JSON.stringify(text));
-                            let nonColoredText = JSON.parse(JSON.stringify(text));
-                            coloredText.text = tempText;
-                            if (removedSpaces.text.replace(/\s/g, '').indexOf(tempText.replace(/\s/g, '')) === 0) {
-                                nonColoredText.text = removedSpaces.text.substr(tempText.length);
-                                return (
-                                    <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16}>
-                                        {this.renderTextSpan(coloredText, true)}
-                                        {this.renderTextSpan(nonColoredText)}
-                                    </Textfit>
-                                )
-                            }
-                        }
-                    }
-                    // }
-                    /**
-                     * Initial rendering or when block_identifier is not matching
-                     */
-                    return (
-                        <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16} >
-                            { this.renderTextSpan(text)}
-                        </Textfit >
-                    )
-                }
-            }
-        }
         return (
-            <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16} >
-                { this.renderTextSpan(text)}
-            </Textfit >
+            sentenceHighlight(
+                this.props.block_highlight,
+                text,
+                merged_block_id,
+                this.renderTextSpan)
         )
     }
     /**
@@ -226,7 +106,7 @@ class PageCard extends React.Component {
                 id={text.block_id}
                 onDoubleClick={() => { this.handleSelectedSentenceId(text) }}
             >
-                {text.text}
+                {text.text.replace(/\s{2,}/g, " ")}
             </span>
         )
     }
@@ -350,8 +230,8 @@ class PageCard extends React.Component {
     }
 
     render() {
-        return (     
-                <span style={{ zoom: `${this.props.zoomPercent}%` }}>{this.renderPage(this.props.page)}</span>
+        return (
+            <span style={{ zoom: `${this.props.zoomPercent}%` }}>{this.renderPage(this.props.page)}</span>
         )
     }
 

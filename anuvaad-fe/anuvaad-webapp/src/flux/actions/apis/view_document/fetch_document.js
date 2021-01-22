@@ -3,23 +3,24 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class BulkSearchAPI extends API {
-  constructor(offset, limit, jobIds=[''], searchForNewJob=false, isNextPage=false, updateExisting=false, timeout = 2000) {
+  constructor(offset, limit, jobIds = [''], searchForNewJob = false, isNextPage = false, updateExisting = false, userId = [], timeout = 2000) {
     super("POST", timeout, false);
-    this.type     = C.FETCHDOCUMENT;
+    this.type = C.FETCHDOCUMENT;
 
     if (searchForNewJob) {
-      this.type   = C.FETCHDOCUMENT_NEWJOB;
+      this.type = C.FETCHDOCUMENT_NEWJOB;
     }
     if (isNextPage) {
-      this.type   = C.FETCHDOCUMENT_NEXTPAGE;
+      this.type = C.FETCHDOCUMENT_NEXTPAGE;
     }
     if (updateExisting) {
-      this.type   = C.FETCHDOCUMENT_EXISTING;
+      this.type = C.FETCHDOCUMENT_EXISTING;
     }
 
-    this.offset   = offset;
-    this.limit    = limit;
-    this.jobIds   = jobIds;
+    this.offset = offset;
+    this.limit = limit;
+    this.jobIds = jobIds;
+    this.userId = userId
     this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.fetchducuments}`
   }
 
@@ -44,7 +45,8 @@ export default class BulkSearchAPI extends API {
       "limit": this.limit,
       "jobIDs": this.jobIds,
       "taskDetails": true,
-      "workflowCodes": ["DP_WFLOW_FBT","WF_A_FCBMTKTR","DP_WFLOW_FBTTR"],
+      "workflowCodes": ["DP_WFLOW_FBT", "WF_A_FCBMTKTR", "DP_WFLOW_FBTTR"],
+      "userIDs": this.userId
     }
   }
 

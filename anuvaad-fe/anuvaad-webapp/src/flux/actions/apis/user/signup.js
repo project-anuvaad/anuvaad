@@ -38,7 +38,8 @@ export default class Signup extends API {
         "password":this.password,
         "email":this.email,
         "phoneNo":"",
-        "roles":[{"roleCode":"TRANSLATOR","roleDesc":"Has access to translation related resources"}]
+        "roles":[{"roleCode":"TRANSLATOR","roleDesc":"Has access to translation related resources"}],
+        "orgID" : "ANUVAAD"
     }]}
     }
 
