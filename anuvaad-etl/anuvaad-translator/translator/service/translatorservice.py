@@ -119,12 +119,12 @@ class TranslatorService:
                     nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
                     self.nmt_router(nmt_in)
                     total_sentences += len(batch)
-                    log_info("BATCH ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
+                    log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
                              " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(bw_data[batch_id]["tmx_count"]), translate_wf_input)
                 total_tmx += pw_dict["tmx_count"]
             if total_sentences > 0:
                 repo.update({"totalSentences": total_sentences, "batches": total_batches}, {"recordID": record_id})
-                log_info("recordID: " + record_id + "PAGES: " + str(len(pages)) + " | BATCHES: " + str(total_batches)
+                log_info("recordID: " + record_id + " | PAGES: " + str(len(pages)) + " | BATCHES: " + str(total_batches)
                          + " | SENTENCES: " + str(total_sentences) + " | TMX: " + str(total_tmx), translate_wf_input)
                 log_info("TMX File Cache Size (End) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
                 return True
@@ -305,8 +305,8 @@ class TranslatorService:
         query = {"recordID": record_id}
         object_in = {"skippedSentences": total_skip, "translatedSentences": total_trans}
         repo.update(object_in, query)
-        log_info("Status -- BATCH ID: " + str(batch_id) + " | TRANSLATED: " + str(total_trans) + " | SKIPPED: " + str(total_skip) +
-                 " | recordID: " + translate_wf_input["recordID"], translate_wf_input)
+        log_info("Status -- B_ID: " + str(batch_id) + " (T: " + str(trans_count) + ", S: " + str(skip_count) + ")" +
+                 " | TT: " + str(total_trans) + " | TS: " + str(total_skip) + " | recordID: " + translate_wf_input["recordID"], translate_wf_input)
 
     # Back up method to update sentences from DB.
     def update_sentences(self, record_id, nmt_res_batch, translate_wf_input):
