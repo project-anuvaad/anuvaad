@@ -91,7 +91,11 @@ def block_merger_request_worker():
         data            = blockMergerQueue.get(block=True)
         task_id         = str("BM-" + str(time.time()).replace('.', ''))
         task_starttime  = str(time.time()).replace('.', '')
+        if not data:
+            continue
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+        if not input_files:
+            continue
         
         log_info("block_merger_request_worker processing -- received message "+str(jobid), data)
 
@@ -122,7 +126,11 @@ def block_merger_request_worker_ocr():
         data            = blockMergerOCRQueue.get(block=True)
         task_id         = str("BM-" + str(time.time()).replace('.', ''))
         task_starttime  = str(time.time()).replace('.', '')
+        if not data:
+            continue
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+        if not input_files:
+            continue
         
         log_info("block_merger_request_worker_ocr processing -- received message "+str(jobid), data)
 

@@ -31,12 +31,16 @@ class FileOperation(object):
 
     # extracting data from received json input
     def json_input_format(self, json_data):
-        input_data = json_data["input"]['files']
-        workflow_id = json_data['workflowCode']
-        jobid = json_data['jobID']
-        tool_name = json_data['tool']
-        step_order = json_data['stepOrder']
-        return input_data, workflow_id, jobid, tool_name, step_order
+        try:
+            input_data = json_data["input"]['files']
+            workflow_id = json_data['workflowCode']
+            jobid = json_data['jobID']
+            tool_name = json_data['tool']
+            step_order = json_data['stepOrder']
+            return input_data, workflow_id, jobid, tool_name, step_order
+        except Exception as e:
+            return None,None,None,None,None
+
 
     # output format for individual pdf file
     def one_filename_response(self, input_filename, output_json_file, in_locale, in_file_type):
