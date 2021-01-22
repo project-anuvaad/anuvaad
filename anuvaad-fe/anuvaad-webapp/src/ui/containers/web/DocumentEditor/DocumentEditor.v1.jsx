@@ -162,9 +162,9 @@ class DocumentEditor extends React.Component {
 
   }
 
-  handleRedirect = () =>{
+  handleRedirect = () => {
     this.informUserStatus(translate('common.page.label.TOKEN_EXPIRED'), false)
-    setTimeout(() => { history.push(`${process.env.PUBLIC_URL}/`);}, 3000)
+    setTimeout(() => { history.push(`${process.env.PUBLIC_URL}/`); }, 3000)
   }
 
   makeAPICallFetchContentPerPage = (start_page) => {
@@ -197,10 +197,10 @@ class DocumentEditor extends React.Component {
       const rsp_data = await response.json();
       if (!response.ok) {
         TELEMETRY.log("merge", JSON.stringify(rsp_data))
-        if(Number(response.status)===401){
+        if (Number(response.status) === 401) {
           this.handleRedirect()
         }
-        else{
+        else {
           this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
         }
         return Promise.reject('');
@@ -229,13 +229,13 @@ class DocumentEditor extends React.Component {
       const rsp_data = await response.json();
       if (!response.ok) {
         TELEMETRY.log("save-translation", JSON.stringify(rsp_data))
-        if(Number(response.status)===401){
+        if (Number(response.status) === 401) {
           this.handleRedirect()
         }
-        else{
+        else {
           this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
         }
-        
+
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted()
@@ -264,10 +264,10 @@ class DocumentEditor extends React.Component {
       const rsp_data = await response.json();
       if (!response.ok) {
         TELEMETRY.log("split", JSON.stringify(rsp_data))
-        if(Number(response.status)===401){
+        if (Number(response.status) === 401) {
           this.handleRedirect()
         }
-        else{
+        else {
           this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
         }
 
@@ -297,13 +297,13 @@ class DocumentEditor extends React.Component {
       const rsp_data = await response.json();
       if (!response.ok) {
         TELEMETRY.log("save-sentence", JSON.stringify(rsp_data))
-        if(Number(response.status)===401){
+        if (Number(response.status) === 401) {
           this.handleRedirect()
         }
-        else{
+        else {
           this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
         }
-        
+
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted()
@@ -583,15 +583,21 @@ class DocumentEditor extends React.Component {
           hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
           dataLength={pages.length}
         >
-          {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={sentence.s_id} ref={sentence.s_id}><SentenceCard key={sentence.s_id}
-            pageNumber={page.page_no}
-            model={this.fetchModel(parseInt(this.props.match.params.modelId))}
-            jobId = {jobId}
-            sentence={sentence}
-            onAction={this.processSentenceAction} />
-          </div>))}
+          {
+            pages.map(page => page['translated_texts'].map((sentence, index) => {
+              sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
+              return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
+                pageNumber={page.page_no}
+                model={this.fetchModel(parseInt(this.props.match.params.modelId))}
+                jobId={jobId}
+                sentence={sentence}
+                onAction={this.processSentenceAction} />
+              </div>
+            })
+            )
+          }
         </InfiniteScroll>
-      </Grid>
+      </Grid >
 
     )
   }

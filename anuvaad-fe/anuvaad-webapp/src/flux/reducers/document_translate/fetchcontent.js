@@ -3,7 +3,21 @@ import C from "../../actions/constants";
 const initialUserState = {
   result: []
 };
-export default function(state = initialUserState, action) {
+
+function removeSpaces(actionPayload) {
+  actionPayload.data.forEach(data => {
+    if (data.text_blocks) {
+      data.text_blocks.forEach(text_blocks => {
+        text_blocks.text = text_blocks.text.replace(/\s{2,}/g, " ").trim()
+        text_blocks.children.forEach(children => {
+          children.text = children.text.replace(/\s{2,}/g, " ").trim()
+        })
+      })
+    }
+  })
+  return actionPayload
+}
+export default function (state = initialUserState, action) {
   switch (action.type) {
     case C.FETCH_CONTENT:
       let result = state.result;
@@ -14,25 +28,27 @@ export default function(state = initialUserState, action) {
             if (pageDetails.page_no === payloadData.page_no) {
               pageDetails = payloadData;
               status = true;
-              i=  index;
+              i = index;
               pageD = payloadData;
             }
-          return null;});
+            return null;
+          });
           if (status) {
             result.data[i] = pageD
             status = false;
           } else {
             result.data = result.data.concat(payloadData);
           }
-        return null;});
+          return null;
+        });
       } else {
-        
         result = action.payload;
       }
       return {
         ...state,
-        result: result
+        result: removeSpaces(result)
       };
+
     case C.CLEAR_CONTENT:
       return initialUserState;
     default:
