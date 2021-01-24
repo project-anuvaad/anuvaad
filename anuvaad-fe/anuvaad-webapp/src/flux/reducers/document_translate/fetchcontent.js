@@ -11,6 +11,11 @@ function removeSpaces(actionPayload) {
         text_blocks.text = text_blocks.text.replace(/\s{2,}/g, " ").trim()
         text_blocks.children.forEach(children => {
           children.text = children.text.replace(/\s{2,}/g, " ").trim()
+          if (children.children) {
+            children.children.forEach(nestedChild => {
+              nestedChild.text = nestedChild.text.replace(/\s{2,}/g, " ").trim()
+            })
+          }
         })
       })
     }
