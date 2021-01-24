@@ -18,18 +18,28 @@ class WordModel(object):
     def save(self, words):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
-            words_lower=[{ key: str(value).lower() for key, value in e.items() } for e in words ]
-            
-            results     = collections.insert_many(words_lower, ordered=False)
-            if len(words_lower) == len(results.inserted_ids):
-                log_info("stored {} words".format(str(len(results.inserted_ids))),  AppContext.getContext())
-                return True
+            # results     = collections.insert_many(words, ordered=False)
+            # if len(words) == len(results.inserted_ids):
+            #     log_info("stored {} words".format(str(len(results.inserted_ids))),  AppContext.getContext())
+            #     return True
+
+            for word in words:
+                results=collections.update({'name': word['name']}, 
+                                            {
+                                                '$set': word
+                                            },
+                                            upsert=True
+            )
+            if 'writeError' in list(results.keys()):
+                return False
+            return True 
+
             
         except pymongo.errors.BulkWriteError as e:
             log_info("some of the record has duplicates ",  AppContext.getContext())
             return True
         except Exception as e:
-            log_exception("db connection exception ",  AppContext.getContext(), e)
+            log_exception("db connection exception :{}".format(str(e)),  AppContext.getContext(), e)
             return False
 
     def update_word(self, word):
@@ -85,7 +95,7 @@ class WordModel(object):
                 return normalize_bson_to_json(doc)
             return None
         except Exception as e:
-            log_exception("db connection exception ",  AppContext.getContext(), e)
+            log_exception("db connection exception :{}".format(str(e)),  AppContext.getContext(), e)
             return None
 
     def search_word(self, src_word, src_locale, tgt_locale):
