@@ -38,6 +38,29 @@ function sliceSentence(block_sentence, data, text) {
             }
         }
     }
+    else {
+        let endSentenceArray = text.split(' ').reverse().slice(0, 2)
+        let endSentence = endSentenceArray.reverse()
+        let val = {
+            data: {
+                matched: ''
+            },
+            highlight: false
+        }
+        endSentence.forEach(word => {
+            if (newSentence.src.trim().split(' ')[0] === word) {
+                newSentence.src = newSentence.src.replace(word, '')
+                let space = val.data.matched === "" ? "" : ' '
+                val = {
+                    data: {
+                        matched: val.data.matched + space + word
+                    },
+                    highlight: true
+                }
+            }
+        })
+        return val
+    }
     return {
         data: '',
         highlight: false
@@ -60,24 +83,24 @@ function recursiveAdjustSentence(block_sentence, text) {
 const sentenceHighlight = (block_highlight, text, merged_block_id, renderTextSpan) => {
     if (block_highlight && block_highlight.src && (block_highlight.block_identifier === text.block_identifier || block_highlight.block_identifier === merged_block_id)) {
         let result = recursiveAdjustSentence(block_highlight.src, text.text)
-            if (result.highlight) {
-                let firstHalf = Object.assign({}, text)
-                let secondHalf = Object.assign({}, text)
-                let thirdHalf = Object.assign({}, text)
-                firstHalf.text = text.text.substr(0, text.text.indexOf(result.data.matched))
-                secondHalf.text = text.text.substr(text.text.indexOf(result.data.matched), result.data.matched.length)
-                thirdHalf.text = text.text.substr(firstHalf.text.length + secondHalf.text.length)
-                return (
-                    <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16} >
-                        {renderTextSpan(firstHalf)}
-                        {renderTextSpan(secondHalf, true)}
-                        {renderTextSpan(thirdHalf)}
-                    </Textfit>
-                )
-            }
-        } else {
-            newSentence.src = ''
-            newSentence.visited = false
+        if (result.highlight) {
+            let firstHalf = Object.assign({}, text)
+            let secondHalf = Object.assign({}, text)
+            let thirdHalf = Object.assign({}, text)
+            firstHalf.text = text.text.substr(0, text.text.lastIndexOf(result.data.matched))
+            secondHalf.text = text.text.substr(text.text.lastIndexOf(result.data.matched), result.data.matched.length)
+            thirdHalf.text = text.text.substr(firstHalf.text.length + secondHalf.text.length)
+            return (
+                <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16} >
+                    {renderTextSpan(firstHalf)}
+                    {renderTextSpan(secondHalf, true)}
+                    {renderTextSpan(thirdHalf)}
+                </Textfit>
+            )
+        }
+    } else {
+        newSentence.src = ''
+        newSentence.visited = false
     }
     return (
         <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16} >
