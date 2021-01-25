@@ -34,30 +34,14 @@ def tag_number_date_url(text):
       num_map.append({"no.":num_dict[j],"tag":'NnUuMm'+str(hindi_numbers[count_number])})
       count_number +=1
       if count_number >30:
-        print("count exceeding 30")
+        log_info("count exceeding 30,triggering break",MODULE_CONTEXT)
         count_number = 30
+        break
 
     log_info("number-tag mappings-{}".format(num_map),MODULE_CONTEXT)
-    log_info("Number tagging done",MODULE_CONTEXT)
     for word in text.split():
-        # if len(word)>4 and len(word)<12 and token_is_date(word):
         try:
-          ext = [".",",","?","!"]
-          if word.isalpha()== False and word[:-1].isalpha() == False and len(word)>4 and misc.token_is_date(word):
-            if word.endswith(tuple(ext)):
-              end_token = word[-1]
-              word = word[:-1]
-              if len(word)<7 and int(word):
-                word = word+end_token
-              else:
-                date_original.append(word)
-                word = 'DdAaTtEe'+str(count_date)+end_token
-                count_date +=1
-            else:
-              date_original.append(word)  
-              word = 'DdAaTtEe'+str(count_date)
-              count_date +=1
-          elif misc.token_is_url(word) or misc.token_is_email(word):
+          if misc.token_is_url(word) or misc.token_is_email(word):
             url_or_email = word
             word = 'UuRrLl'+str(count_url)
             url_dict[word] = url_or_email
@@ -66,7 +50,6 @@ def tag_number_date_url(text):
           log_exception("In handle_date_url:tag_num function:{}".format(e),MODULE_CONTEXT,e)
           word = word
         
-
         resultant_str.append(word)   
         s = [str(i) for i in resultant_str] 
         res = str(" ".join(s))   
@@ -89,9 +72,9 @@ def replace_tags_with_original(text,date_original,url_dict,num_array,num_map):
     if len(text) == 0:
       return ""
     for word in text.split():
-      if word[:-1] == 'DdAaTtEe' and len(date_original) > 0:
-        word = date_original[int(word[-1])]
-      elif 'UuRrLl' in word:
+      # if word[:-1] == 'DdAaTtEe' and len(date_original) > 0:
+      #   word = date_original[int(word[-1])]
+      if 'UuRrLl' in word:
         word = url_dict[word]         
 
       resultant_str.append(word)
