@@ -162,6 +162,18 @@
             "path":"nmt/mr-en",
             "sp_encoder":"sentencepiece_models/marathi-mr-to-en-2-2020-02-28-24k.model",
             "sp_decoder":"sentencepiece_models/enMr-mr-to-en-2-2020-02-28-24k.model"
+        },
+        {
+            "id": 65,
+            "path":"nmt/65",
+            "sp_encoder":"nmt/65/enBeng-en-to-bn-4-2021-01-19-24k.model",
+            "sp_decoder":"nmt/65/bengali-en-to-bn-4-2021-01-19-24k.model"
+        },
+        {
+            "id":66,
+            "path":"nmt/66",
+            "sp_encoder":"nmt/66/bengali-bn-to-en-3-2021-01-19-24k.model",
+            "sp_decoder":"nmt/66/enBeng-bn-to-en-3-2021-01-19-24k.model"
         }   
     ]
 }

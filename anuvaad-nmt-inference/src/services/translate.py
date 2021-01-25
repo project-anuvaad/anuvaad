@@ -147,6 +147,18 @@ class TranslateService:
                         tp_tokenizer = sentence_processor.moses_tokenizer 
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
+                        translation = [sentence_processor.moses_detokenizer(i) for i in translation]    
+                    elif i['id'] == 65:
+                        "english-bengali 4th"
+                        tp_tokenizer = sentence_processor.indic_tokenizer
+                        i['src'] = sentence_processor.moses_tokenizer(i['src'])
+                        translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
+                        translation = [sentence_processor.indic_detokenizer(i) for i in translation]
+                    elif i['id'] == 66:
+                        "bengali-english 3rd"
+                        tp_tokenizer = sentence_processor.moses_tokenizer 
+                        i['src'] = sentence_processor.indic_tokenizer(i['src'])
+                        translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
                         translation = [sentence_processor.moses_detokenizer(i) for i in translation]                   
 
                     else:
@@ -369,7 +381,17 @@ class OpenNMTTranslateService:
                         "en-hi exp-13 09-03-20"  
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)                      
-                        translation = sentence_processor.indic_detokenizer(translation)                                                     
+                        translation = sentence_processor.indic_detokenizer(translation)    
+                    elif i['id'] == 65:
+                        "en-bengali 4th"
+                        i['src'] = sentence_processor.moses_tokenizer(i['src'])
+                        translation,scores,input_sw,output_sw = encode_translate_decode(i)
+                        translation = sentence_processor.indic_detokenizer(translation) 
+                    elif i['id'] == 66:
+                        "bengali-en 3rd"
+                        i['src'] = sentence_processor.indic_tokenizer(i['src'])
+                        translation,scores,input_sw,output_sw = encode_translate_decode(i)
+                        translation = sentence_processor.moses_detokenizer(translation)                                                     
                     else:
                         log_info("Unsupported model id: {} for given input".format(i['id']),MODULE_CONTEXT)
                         raise Exception("Unsupported Model ID - id: {} for given input".format(i['id']))      

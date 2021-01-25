@@ -321,7 +321,7 @@
           "target_language_code": "bn",
           "model_id": 57,
           "model_name": "English-Bengali Model-3",
-          "is_primary": true,
+          "is_primary": false,
           "description": "Trained on 8.7 lakh corpus dated 28-12-2020",
           "created_on": "2020-12-28",
           "status": "ACTIVE",
@@ -333,7 +333,7 @@
           "target_language_code": "en",
           "model_id": 58,
           "model_name": "Bengali-English Model-2",
-          "is_primary": true,
+          "is_primary": false,
           "description": "Trained on 8.7 lakh corpus dated 28-12-2020",
           "created_on": "2020-12-28",
           "status": "ACTIVE",
@@ -410,6 +410,30 @@
           "created_on": "2020-05-07T06:30:53.952Z",
           "status": "ACTIVE",
           "source_language_name":"Hindi",
+          "target_language_name":"English"
+        },
+        {
+          "source_language_code": "en",
+          "target_language_code": "bn",
+          "model_id": 65,
+          "model_name": "English-Bengali Model-4",
+          "is_primary": true,
+          "description": "Trained on +1M corpus dated 19-01-2021",
+          "created_on": "2021-01-19",
+          "status": "ACTIVE",
+          "source_language_name":"English",
+          "target_language_name":"Bengali"
+        },
+        {
+          "source_language_code": "bn",
+          "target_language_code": "en",
+          "model_id": 66,
+          "model_name": "Bengali-English Model-3",
+          "is_primary": true,
+          "description": "Trained on +1M corpus dated 19-01-2021",
+          "created_on": "2021-01-19",
+          "status": "ACTIVE",
+          "source_language_name":"Bengali",
           "target_language_name":"English"
         }
       ]
