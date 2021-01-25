@@ -67,7 +67,8 @@ class UserDetails extends React.Component {
       this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
     else {
       let pageNo = parseInt(this.props.match.params.pageno)
-      this.setState({ currentPageIndex: (this.state.currentPageIndex < pageNo) && pageNo, offset: pageNo * 10 })
+      this.processFetchBulkUserDetailAPI(this.state.offset, (pageNo + 1) * 10)
+      this.setState({ currentPageIndex: pageNo, offset: (pageNo + 1) * 10 })
     }
   }
 
@@ -142,10 +143,10 @@ class UserDetails extends React.Component {
   processTableClickedNextOrPrevious = (page) => {
     if (this.state.currentPageIndex < page) {
       history.push(`${process.env.PUBLIC_URL}/user-details/${page}`)
-      this.processFetchBulkUserDetailAPI(this.state.limit + this.state.offset, this.state.limit, true, false)
+      this.processFetchBulkUserDetailAPI((this.state.currentPageIndex + 1) * 10, this.state.limit, true, false)
       this.setState({
         currentPageIndex: page,
-        offset: this.state.offset + this.state.limit
+        offset: (this.state.currentPageIndex + 1) * 10
       });
     }
     else {
