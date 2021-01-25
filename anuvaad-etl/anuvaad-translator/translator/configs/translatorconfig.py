@@ -25,11 +25,11 @@ nmt_labse_align_url = os.environ.get('NMT_LABSE_ALIGN_URL', 'http://172.30.0.234
 #MODULE-SPECIFIC-CONFIGS
 #common-variables
 tool_translator = "TRANSLATOR"
-nmt_max_batch_size = 32
+nmt_max_batch_size = 25
 download_folder = "/app/upload/"
 tmx_default_context = "JUDICIARY"
 tmx_enabled = os.environ.get('TRANSLATOR_TMX_ENABLED', True)
-tmx_word_length = os.environ.get('TRANSLATOR_TMX_WORD_LENGTH', 10)
+tmx_word_length = os.environ.get('TRANSLATOR_TMX_WORD_LENGTH', 8)
 tmx_global_enabled = os.environ.get('TRANSLATOR_TMX_GLOBAL_ENABLED', False)
 tmx_org_enabled = os.environ.get('TRANSLATOR_TMX_ORG_ENABLED', True)
 tmx_user_enabled = os.environ.get('TRANSLATOR_TMX_USER_ENABLED', True)

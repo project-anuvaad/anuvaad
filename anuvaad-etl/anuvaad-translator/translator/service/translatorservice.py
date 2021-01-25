@@ -340,8 +340,9 @@ class TranslatorService:
                 if str(sentence["s_id"]) == str(sentence_id):
                     s_index = k
                     break
-            job_details["data"]["result"][p_index]["text_blocks"][b_index]["tokenized_sentences"][
-                s_index] = nmt_res_sentence
+            if p_index is not None and b_index is not None and s_index is not None:
+                job_details["data"]["result"][p_index]["text_blocks"][b_index]["tokenized_sentences"][
+                    s_index] = nmt_res_sentence
         query = {"recordID": record_id}
         object_in = {"data.result": job_details["data"]["result"]}
         repo.update(object_in, query)

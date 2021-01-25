@@ -163,6 +163,7 @@ class BlockTranslationService:
                         if str(sentence["s_id"]) == str(sentence_id):
                             s_index = k
                             break
-                    block_translate_input["input"]["textBlocks"][b_index]["tokenized_sentences"][s_index] = translation
+                    if b_index is not None and s_index is not None:
+                        block_translate_input["input"]["textBlocks"][b_index]["tokenized_sentences"][s_index] = translation
         log_info("Input for CH update generated!", block_translate_input)
         return {"blocks": block_translate_input["input"]["textBlocks"], "workflowCode": block_translate_input["workflowCode"]}
