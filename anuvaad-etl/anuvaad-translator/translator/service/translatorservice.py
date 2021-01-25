@@ -1,3 +1,4 @@
+import threading
 import time
 
 import uuid
@@ -49,11 +50,8 @@ class TranslatorService:
                                        "error": "File received couldn't be downloaded"})
                     error = post_error("FILE_DOWNLOAD_FAILED", "File received couldn't be downloaded!", None)
                 else:
-                    pushed = self.push_sentences_to_nmt(file, translate_wf_input)
-                    if not pushed:
-                        error_list.append({"inputFile": str(file["path"]), "outputFile": "FAILED",
-                                           "error": "Error while pushing sentences to NMT"})
-                        error = post_error("NMT_PUSH_FAILED", "Error while pushing sentences to NMT", None)
+                    worker_thread = threading.Thread(target=self.push_sentences_to_nmt, args=(file, translate_wf_input), name="thread")
+                    worker_thread.start()
             except Exception as e:
                 log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
                 continue
@@ -93,20 +91,19 @@ class TranslatorService:
             record_id = str(translate_wf_input["jobID"]) + "|" + str(file["path"])
             content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
             if not content_from_db:
-                log_error("File content from DB couldn't be fetched, jobID: " + str(translate_wf_input["jobID"]),
+                log_exception("File content from DB couldn't be fetched, jobID: " + str(translate_wf_input["jobID"]),
                           translate_wf_input, None)
-                return None
             content_from_db = content_from_db[0]
             data = content_from_db["data"]
             if not data:
-                log_error("No data for file, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
+                log_exception("No data for file, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
                 repo.update({"totalSentences": 0}, {"recordID": record_id})
-                return None
             pages = data["result"]
             total_sentences, total_tmx, total_batches = 0, 0, 0
             tmx_file_cache = {}
             log_info("TMX File Cache Size (Start) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
             tmx_present = self.is_tmx_present(file, translate_wf_input)
+            topic = self.nmt_router()
             for page in pages:
                 batches, pw_dict, bw_data = self.fetch_batches_of_sentences(file, record_id, page, tmx_present, tmx_file_cache, translate_wf_input)
                 if not batches:
@@ -117,7 +114,7 @@ class TranslatorService:
                     batch = batches[batch_id]
                     record_id_enhanced = record_id + "|" + str(len(batch))
                     nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
-                    self.nmt_router(nmt_in)
+                    producer.produce(nmt_in, topic)
                     total_sentences += len(batch)
                     log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
                              " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(bw_data[batch_id]["tmx_count"]), translate_wf_input)
@@ -127,14 +124,11 @@ class TranslatorService:
                 log_info("recordID: " + record_id + " | PAGES: " + str(len(pages)) + " | BATCHES: " + str(total_batches)
                          + " | SENTENCES: " + str(total_sentences) + " | TMX: " + str(total_tmx), translate_wf_input)
                 log_info("TMX File Cache Size (End) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
-                return True
             else:
-                log_error("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)
                 repo.update({"totalSentences": 0}, {"recordID": record_id})
-                return None
+                log_exception("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)
         except Exception as e:
             log_exception("Exception while pushing sentences to NMT: " + str(e), translate_wf_input, e)
-            return None
 
     # Method to fetch batches for sentences from the file for a page.
     def fetch_batches_of_sentences(self, file, record_id, page, tmx_present, tmx_file_cache, translate_wf_input):
@@ -220,7 +214,7 @@ class TranslatorService:
         return tmx_phrases, res_dict
 
     # Distributes the NMT traffic across machines.
-    def nmt_router(self, nmt_in):
+    def nmt_router(self):
         global current_nmt
         global topics_map
         if not topics_map:
@@ -229,10 +223,10 @@ class TranslatorService:
             for i, topic in enumerate(input_topics):
                 topics_map[i] = topic
         topic = topics_map[current_nmt]
-        producer.produce(nmt_in, topic)
         current_nmt += 1
         if current_nmt == len(topics_map.keys()):
             current_nmt = 0
+        return topic
 
     # Method to process the output received from the NMT
     def process_nmt_output(self, nmt_output):
