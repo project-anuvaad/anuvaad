@@ -31,6 +31,12 @@ function sliceSentence(block_sentence, data, text) {
                 highlight: true
             }
         }
+        else if (data.matched.length === block_sentence.length && block_sentence.includes(data.matched)) {
+            return {
+                data: data,
+                highlight: true
+            }
+        }
     }
     return {
         data: '',
@@ -44,7 +50,6 @@ function recursiveAdjustSentence(block_sentence, text) {
         newSentence.src = block_sentence
         newSentence.visited = true
         data = get_overlap_v1(newSentence.src, text)
-        console.log(newSentence, data)
         return sliceSentence(newSentence.src, data, text)
     } else {
         data = get_overlap_v1(newSentence.src, text)
@@ -55,24 +60,24 @@ function recursiveAdjustSentence(block_sentence, text) {
 const sentenceHighlight = (block_highlight, text, merged_block_id, renderTextSpan) => {
     if (block_highlight && block_highlight.src && (block_highlight.block_identifier === text.block_identifier || block_highlight.block_identifier === merged_block_id)) {
         let result = recursiveAdjustSentence(block_highlight.src, text.text)
-        if (result.highlight) {
-            let firstHalf = Object.assign({}, text)
-            let secondHalf = Object.assign({}, text)
-            let thirdHalf = Object.assign({}, text)
-            firstHalf.text = text.text.substr(0, text.text.indexOf(result.data.matched))
-            secondHalf.text = text.text.substr(text.text.indexOf(result.data.matched), result.data.matched.length)
-            thirdHalf.text = text.text.substr(firstHalf.text.length + secondHalf.text.length)
-            return (
-                <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16} >
-                    {renderTextSpan(firstHalf)}
-                    {renderTextSpan(secondHalf, true)}
-                    {renderTextSpan(thirdHalf)}
-                </Textfit>
-            )
-        }
-    } else {
-        newSentence.src = ''
-        newSentence.visited = false
+            if (result.highlight) {
+                let firstHalf = Object.assign({}, text)
+                let secondHalf = Object.assign({}, text)
+                let thirdHalf = Object.assign({}, text)
+                firstHalf.text = text.text.substr(0, text.text.indexOf(result.data.matched))
+                secondHalf.text = text.text.substr(text.text.indexOf(result.data.matched), result.data.matched.length)
+                thirdHalf.text = text.text.substr(firstHalf.text.length + secondHalf.text.length)
+                return (
+                    <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16} >
+                        {renderTextSpan(firstHalf)}
+                        {renderTextSpan(secondHalf, true)}
+                        {renderTextSpan(thirdHalf)}
+                    </Textfit>
+                )
+            }
+        } else {
+            newSentence.src = ''
+            newSentence.visited = false
     }
     return (
         <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} min={1} max={text.font_size ? parseInt(text.font_size) : 16} >
