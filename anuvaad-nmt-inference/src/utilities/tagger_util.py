@@ -23,21 +23,8 @@ def tag_number_date_url(text):
     date_original = list()
     count_url = 0
     url_dict = {}
-    count_number = 0
-    num_map = list()
     
-    num_array,text,num_dict = build_src_num_array(text)
-    num_array.sort(reverse = True)
- 
-    for j in num_array:
-      text = text.replace(str(j),'NnUuMm'+str(hindi_numbers[count_number]),1)
-      num_map.append({"no.":num_dict[j],"tag":'NnUuMm'+str(hindi_numbers[count_number])})
-      count_number +=1
-      if count_number >30:
-        log_info("count exceeding 30,triggering break",MODULE_CONTEXT)
-        count_number = 30
-        break
-
+    num_array,text,num_map = build_src_num_array(text)
     log_info("number-tag mappings-{}".format(num_map),MODULE_CONTEXT)
     for word in text.split():
         try:
@@ -72,8 +59,6 @@ def replace_tags_with_original(text,date_original,url_dict,num_array,num_map):
     if len(text) == 0:
       return ""
     for word in text.split():
-      # if word[:-1] == 'DdAaTtEe' and len(date_original) > 0:
-      #   word = date_original[int(word[-1])]
       if 'UuRrLl' in word:
         word = url_dict[word]         
 
@@ -130,15 +115,24 @@ def update_num_arr(num_array,zero_prefix_num,i_zero,num_array_orignal):
     return num_array_o
   
 def build_src_num_array(i_text):
-  num_dict = {}
+  num_map,num_dict = list(),{}
+  count_number = 0
   all_patterns = patterns['p12']['regex']
   src_num_array = re.findall(all_patterns,i_text)
   int_num_array = list(map(lambda y:y.replace(',',''), src_num_array))
   int_num_array = list(map(int, int_num_array))
-  for k,v in enumerate(src_num_array):
-    i_text = i_text.replace(v,str(int_num_array[k]),1)
   num_dict = {k:v for (k,v) in zip(int_num_array,src_num_array)}
-  return int_num_array,i_text,num_dict
+  int_num_array.sort(reverse=True)
+  for k,v in enumerate(int_num_array):
+    i_text = i_text.replace(num_dict[v],'NnUuMm'+str(hindi_numbers[count_number]),1)
+    num_map.append({"no.":num_dict[v],"tag":'NnUuMm'+str(hindi_numbers[count_number])})
+    count_number +=1
+    if count_number >30:
+      log_info("count exceeding 30,triggering break",MODULE_CONTEXT)
+      count_number = 30
+      break
+
+  return int_num_array,i_text,num_map
   
 def remove_extra_tags(text):
   '''
