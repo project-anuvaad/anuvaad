@@ -126,7 +126,7 @@ class DocumentStats extends React.Component {
       },
       {
         name: "s0_tgt",
-        label: "MT.",
+        label: "Machine Translation",
         options: {
           filter: false,
           sort: false,
