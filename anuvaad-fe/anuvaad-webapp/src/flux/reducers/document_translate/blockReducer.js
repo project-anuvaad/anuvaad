@@ -1,8 +1,8 @@
 import C from '../../actions/constants';
 
 function removeSpaces(data) {
-  data.s0_src = data.s0_src.replace(/\s{2,}/g, ' ').trim()
-  data.src = data.src.replace(/\s{2,}/g, ' ').trim()
+  data.s0_src = data.s0_src.toString().replace(/\s{2,}/g, ' ').trim()
+  data.src = data.src.toString().replace(/\s{2,}/g, ' ').trim()
   return data
 }
 
