@@ -376,12 +376,7 @@ class OpenNMTTranslateService:
                         "mr-to-en 2nd"
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)
-                        translation = sentence_processor.moses_detokenizer(translation)
-                    elif i['id'] == 63:
-                        "en-hi exp-13 09-03-20"  
-                        i['src'] = sentence_processor.moses_tokenizer(i['src'])
-                        translation,scores,input_sw,output_sw = encode_translate_decode(i)                      
-                        translation = sentence_processor.indic_detokenizer(translation)    
+                        translation = sentence_processor.moses_detokenizer(translation)  
                     elif i['id'] == 65:
                         "en-bengali 4th"
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
