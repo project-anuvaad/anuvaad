@@ -62,8 +62,14 @@ class UserDetails extends React.Component {
    */
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('user-details');
-    this.setState({ showLoader: true })
-    this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+    this.setState({ showLoader: true, })
+    if (parseInt(this.props.match.params.pageno) === 0)
+      this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+    else {
+      let pageNo = parseInt(this.props.match.params.pageno)
+      this.processFetchBulkUserDetailAPI(this.state.offset, (pageNo + 1) * 10)
+      this.setState({ currentPageIndex: pageNo, offset: (pageNo + 1) * 10 })
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -136,14 +142,17 @@ class UserDetails extends React.Component {
 
   processTableClickedNextOrPrevious = (page) => {
     if (this.state.currentPageIndex < page) {
-      this.processFetchBulkUserDetailAPI(this.state.limit + this.state.offset, this.state.limit, true, false)
+      history.push(`${process.env.PUBLIC_URL}/user-details/${page}`)
+      this.processFetchBulkUserDetailAPI((this.state.currentPageIndex + 1) * 10, this.state.limit, true, false)
       this.setState({
         currentPageIndex: page,
-        offset: this.state.offset + this.state.limit
+        offset: (this.state.currentPageIndex + 1) * 10
       });
     }
-  };
-
+    else {
+      history.push(`${process.env.PUBLIC_URL}/user-details/${page}`)
+    }
+  }
   processSnackBar = () => {
     return (
       <Snackbar
@@ -371,7 +380,7 @@ class UserDetails extends React.Component {
       fixedHeader: true,
       filter: false,
       selectableRows: "none",
-      page: this.state.currentPageIndex
+      page: parseInt(this.props.match.params.pageno)
     };
 
     return (

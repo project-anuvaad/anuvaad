@@ -209,7 +209,7 @@ class CreateUser extends React.Component {
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
           <Typography value="" variant="h5">
-            Organisation
+            Organization
           </Typography>
         </Grid>
 
