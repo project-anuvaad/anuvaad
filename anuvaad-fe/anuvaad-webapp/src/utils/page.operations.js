@@ -109,6 +109,73 @@ export const get_pages_children_information = (data, active_page, active_next_pa
     return pages
 }
 
+export const get_pages_tokenisation_information = (data) => {
+    let pages = []
+    data.forEach(element => {
+        // console.log(element)
+        let page = {
+            'images': [],
+            'blocks': [],
+            'lines': [],
+            'translated_texts': [],
+            "page_height": element['page_height'],
+            "page_no": element['page_no'],
+            "page_width": element['page_width'],
+            
+        }
+
+        if (element['images']) {
+            element['images'].forEach(image => {
+                page['images'].push(image);
+            })
+        }
+
+        if (element['lines']) {
+            element['lines'].forEach(line => {
+                page['lines'].push(line);
+            })
+        }
+
+        if (element['text_blocks']) {
+            let sorted_text_blocks  = BLOCK_OPS.get_sorted_blocks(element['text_blocks'])
+            sorted_text_blocks.forEach(text_block => {
+                
+                let blockValue={
+                    'texts': [],
+                    
+                }
+
+                blockValue['text_height']   = text_block['text_height'];
+                blockValue['text_left']     = text_block.text_left;
+                blockValue['text_top']      = text_block.text_top;
+                blockValue['text_width']    = text_block.text_width;
+                blockValue['line_height']   = text_block.avg_line_height;
+                blockValue['font_family']   = text_block.font_family;
+                blockValue['font_color']   = text_block.font_color;
+                blockValue['font_size']   = text_block.font_size;
+                blockValue['attrib']   =    text_block.attrib;
+
+                blockValue['block_identifier']  = text_block['block_identifier'];
+                text_block.merged_block_id && (blockValue['merged_block_id'] = text_block.merged_block_id);
+
+                text_block.tokenized_sentences.forEach(token_obj => {
+                    token_obj['block_identifier']  = text_block['block_identifier']
+                    token_obj["parent_block_id"]   = text_block.block_id
+                    token_obj["page_no"] = text_block && text_block.page_info && text_block.page_info.page_no
+                    blockValue["texts"].push(token_obj);
+                })
+
+                page['blocks'].push(blockValue)
+                
+            })
+        }
+
+        pages.push(page)
+    });
+
+    return pages
+}
+
 /**
  * @description updates the tokenized sentence array based upon s_id found
  * @param {*} data , pages of the document
