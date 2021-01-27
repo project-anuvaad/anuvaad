@@ -7,6 +7,7 @@ from flask import Flask
 
 from wfm_jobsmanager.wfmjm import WFMJobsManager
 from translator_jobsmanager.translatorjm import TranslatorJobsManger
+from translator_jobsmanager.translatorjc import TranslatorJobsCleaner
 from anuvaad_auditor.loghandler import log_exception
 
 
@@ -25,6 +26,8 @@ def start_consumer():
             wfm_jm_thread.start()
             tr_jm_thread = TranslatorJobsManger(threading.Event())
             tr_jm_thread.start()
+            tr_jc_thread = TranslatorJobsCleaner(threading.Event())
+            tr_jc_thread.start()
         except Exception as e:
             log_exception("Exception while starting the Translator kafka consumers: " + str(e), None, e)
 

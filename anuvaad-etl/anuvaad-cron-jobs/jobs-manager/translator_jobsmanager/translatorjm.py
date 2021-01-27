@@ -21,14 +21,14 @@ class TranslatorJobsManger(Thread):
         obj = {"metadata": {"module": module_name}}
         rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
         prefix = "TranslatorJobsManager(" + rand_str + ")"
-        log_info(prefix + " -- AJS Deployed, TranslatorJobsManager running......", obj)
+        log_info(prefix + " -- AJM Deployed, TranslatorJobsManager running......", obj)
         translator_utils = TranslatorCronUtils()
         run = 0
         while not self.stopped.wait(eval(str(jm_cron_interval_sec))):
             completed, failed, inprogress = [], [], []
             completed_jobids, failed_jobids = [], []
             try:
-                records = translator_utils.find_all()
+                records = translator_utils.find_all(True)
                 for record in records:
                     is_added = False
                     try:

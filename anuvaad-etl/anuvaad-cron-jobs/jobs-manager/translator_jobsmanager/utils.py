@@ -32,9 +32,9 @@ class TranslatorCronUtils:
         return producer
 
     # Searches the object into mongo collection
-    def find_all(self):
+    def find_all(self, active):
         col = self.instantiate(mongo_translator_collection)
-        res = col.find({"active": True}, {'_id': False})
+        res = col.find({"active": active}, {'_id': False})
         result = []
         for record in res:
             result.append(record)

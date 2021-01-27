@@ -9,6 +9,7 @@ anu_translator_output_topic = os.environ.get('KAFKA_ANUVAAD_DP_TRANSLATOR_OUTPUT
 save_content_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
                    + str(os.environ.get('SAVE_CONTENT_ENDPOINT', '/anuvaad/content-handler/v0/save-content'))
 
-
 jm_cron_interval_sec = os.environ.get('TRANSLATOR_JM_INTERVAL_SEC', 5)
+jc_job_delete_interval_sec = os.environ.get('TRANSLATOR_JC_CRON_DEL_INTERVAL_SEC', 864000) # 10 days
+jc_cron_interval_sec = os.environ.get('TRANSLATOR_JC_INTERVAL_SEC', 86400) # 1 day
 module_name = "JOBS-MANAGER"

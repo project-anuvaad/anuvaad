@@ -20,7 +20,7 @@ class WFMJobsManager(Thread):
         obj = {"metadata": {"module": module_name}}
         rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))
         prefix = "WFMJobsManager(" + rand_str + ")"
-        log_info(prefix + " -- AJS Deployed, WFMJobsManager running......", obj)
+        log_info(prefix + " -- AJM Deployed, WFMJobsManager running......", obj)
         wfm_utils = WFMJMCronUtils()
         run = 0
         while not self.stopped.wait(eval(str(js_cron_interval_sec))):
