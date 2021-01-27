@@ -18,11 +18,7 @@
           "model_name": "model no-1:",
           "is_primary": false,
           "created_on": "2019-09-16T12:08:47.726Z",
-<<<<<<< HEAD
-          "status": "ACTIVE",
-=======
           "status": "INACTIVE",
->>>>>>> dev-nmt-inference
           "source_language_name":"English",
           "target_language_name":"Marathi"
         },
@@ -184,11 +180,7 @@
           "is_primary": false,
           "description": "On newly tokenized IK corpus 10.5 lakhs",
           "created_on": "2020-01-29T11:25:48.822Z",
-<<<<<<< HEAD
-          "status": "ACTIVE",
-=======
           "status": "INACTIVE",
->>>>>>> dev-nmt-inference
           "source_language_name":"Marathi",
           "target_language_name":"English"
         },
@@ -224,11 +216,7 @@
           "is_primary": false,
           "description": "On newly tokenized IK corpus 1.1 Million",
           "created_on": "2020-02-13T06:10:43.377Z",
-<<<<<<< HEAD
-          "status": "ACTIVE",
-=======
           "status": "INACTIVE",
->>>>>>> dev-nmt-inference
           "source_language_name":"Tamil",
           "target_language_name":"English"
         },
