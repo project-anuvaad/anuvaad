@@ -8,14 +8,14 @@ function removeSpaces(actionPayload) {
   actionPayload.data.forEach(data => {
     if (data.text_blocks) {
       data.text_blocks.forEach(text_blocks => {
-        text_blocks.text = text_blocks.text.replace(/\s{2,}/g, " ").trim()
+        text_blocks.text = text_blocks.text.toString().replace(/\s{2,}/g, " ").trim()
         if (text_blocks.children) {
           text_blocks.children.forEach(children => {
             if (children.text) {
-              children.text = children.text.replace(/\s{2,}/g, " ").trim()
+              children.text = children.text.toString().replace(/\s{2,}/g, " ").trim()
               if (children.children) {
                 children.children.forEach(nestedChild => {
-                  nestedChild.text = nestedChild.text.replace(/\s{2,}/g, " ").trim()
+                  nestedChild.text = nestedChild.text.toString().replace(/\s{2,}/g, " ").trim()
                 })
               }
             }

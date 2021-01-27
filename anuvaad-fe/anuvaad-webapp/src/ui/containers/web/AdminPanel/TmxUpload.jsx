@@ -164,7 +164,7 @@ class TmxUpload extends Component {
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
         <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.label}>
           <Typography value="" variant="h5">
-            Organisation
+            Organization
           </Typography>
         </Grid>
 

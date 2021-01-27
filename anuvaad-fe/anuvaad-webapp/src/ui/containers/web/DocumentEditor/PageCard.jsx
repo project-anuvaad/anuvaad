@@ -106,7 +106,7 @@ class PageCard extends React.Component {
                 id={text.block_id}
                 onDoubleClick={() => { this.handleSelectedSentenceId(text) }}
             >
-                {text.text.replace(/\s{2,}/g, " ")}
+                {text.text.toString().replace(/\s{2,}/g, " ")}
             </span>
         )
     }

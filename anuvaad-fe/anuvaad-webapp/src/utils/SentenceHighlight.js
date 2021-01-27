@@ -25,7 +25,7 @@ function get_diff(s1, s2) {
 function sliceSentence(block_sentence, data, text) {
     if (block_sentence.trim().indexOf(data.matched) === 0) {
         if (text.substr(0, text.indexOf(data.matched)).length + data.matched.length === text.length || text.indexOf(data.matched) === 0) {
-            newSentence.src = block_sentence.replace(data.matched, '')
+            newSentence.src = block_sentence.toString().replace(data.matched, '')
             return {
                 data: data,
                 highlight: true
@@ -49,7 +49,7 @@ function sliceSentence(block_sentence, data, text) {
         }
         endSentence.forEach(word => {
             if (newSentence.src.trim().split(' ')[0] === word) {
-                newSentence.src = newSentence.src.replace(word, '')
+                newSentence.src = newSentence.src.toString().replace(word, '')
                 let space = val.data.matched === "" ? "" : ' '
                 val = {
                     data: {

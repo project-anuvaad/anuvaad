@@ -22,7 +22,7 @@ import AddOrg from "../../../../flux/actions/apis/organization/addOrganization";
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
-class OrganisationList extends React.Component {
+class OrganizationList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -281,4 +281,4 @@ const mapDispatchToProps = dispatch =>
     dispatch
   );
 
-export default withRouter(withStyles(NewCorpusStyle)(connect(mapStateToProps, mapDispatchToProps)(OrganisationList)));
+export default withRouter(withStyles(NewCorpusStyle)(connect(mapStateToProps, mapDispatchToProps)(OrganizationList)));
