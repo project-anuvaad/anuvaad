@@ -5,8 +5,9 @@ import tools.indic_tokenize as indic_tok
 from sentence_transformers import SentenceTransformer
 import numpy as np
 from scipy.spatial import distance
+import config
 
-model = SentenceTransformer('LaBSE')
+model = SentenceTransformer(config.LABSE_PATH,device='cpu')
 
 class LabseAlignerService:
     @staticmethod  
@@ -37,6 +38,7 @@ class LabseAlignerService:
                    
         except Exception as e:
             log_exception("Error in LabseAlignerService:phrase_aligner: {} and {}".format(sys.exc_info()[0],e),MODULE_CONTEXT,e)
+            log_exception("Error caught in LabseAlignerService:phrase_aligner for input: {}".format(inputs),MODULE_CONTEXT,e)
             raise
 
         return out

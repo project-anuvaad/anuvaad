@@ -4,6 +4,7 @@ Falls under non-nlp processing
 '''
 from anuvaad_auditor.loghandler import log_info, log_exception
 from utilities import MODULE_CONTEXT
+import utilities.misc as misc
 
 def cleaner(src,tgt,id):
     if id == 56:
@@ -38,22 +39,45 @@ def purnaviram_applier(src,tgt):
         log_exception("Error in purnaviram applier, returning original tgt: {}".format(e),MODULE_CONTEXT,e)
         return tgt
 
-def fullstop_applier(src,tgt):
+def postprocess_sentences_wo_stop(language, sentence_array, sent_indices_wo_stop):
     '''
-    For non-hindi translation pair
+    Removes stop puncuation from sentences in the array according to the language and the 
+    indices provided. This is the post processing step for input sentences
+    that did not have stop puncuation. Used in batch translation.
     '''
     try:
-        if len(src.split()) < 5:
-            return tgt
-        if src.endswith('.') and tgt.endswith('.'):
-            return tgt
-        elif src.endswith('.') and tgt[-1] != '.':
-            log_info("Adding the missing fullstop",MODULE_CONTEXT)
-            tgt = tgt + str(".")
-            return tgt
+        if language is None:
+            return sentence_array
         else:
-            return tgt    
+            log_info("Inside postprocess_sentences_wo_stop",MODULE_CONTEXT)
+            stop_puncs = misc.get_language_stop_puncs(language)
+            for i in sent_indices_wo_stop:
+                sentence_array[i] = misc.remove_stop_punc(sentence_array[i],stop_puncs)
 
+            return sentence_array
+    
     except Exception as e:
-        log_exception("Error in fullstop_applier, returning original tgt: {}".format(e),MODULE_CONTEXT,e)
-        return tgt
+        log_exception("Error in process_sentences_wo_stop: {}".format(e),MODULE_CONTEXT,e)
+        return sentence_array
+
+def postprocess_a_sentence_wo_stop(language, sentence, is_missing_stop_punc):
+    '''
+    Removes stop puncuation from sentences according to the language. 
+    This is the post processing step for input sentence
+    that did not have stop puncuation. Used in single sentence translation.
+    '''
+    try:
+        if language is None:
+            return sentence
+        else:
+            log_info("Inside postprocess_a_sentence_wo_stop",MODULE_CONTEXT)
+            stop_puncs = misc.get_language_stop_puncs(language)
+            if is_missing_stop_punc:
+                sentence = misc.remove_stop_punc(sentence,stop_puncs)
+
+            return sentence
+    
+    except Exception as e:
+        log_exception("Error in process_sentences_wo_stop: {}".format(e),MODULE_CONTEXT,e)
+        return sentence
+

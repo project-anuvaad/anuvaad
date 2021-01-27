@@ -2,12 +2,6 @@
     "models_root": "./src/available_nmt_models",
     "models": [
         {
-            "id": 5,
-            "path":"nmt/5",
-            "sp_encoder":"sentencepiece_models/hi_exp_h-1-2019-10-29-24k.model",
-            "sp_decoder":"sentencepiece_models/en_exp_h-1-2019-10-29-24k.model"
-        },
-        {
             "id":6,
             "path":"nmt/hi-en",
             "sp_encoder":"sentencepiece_models/hi_hi-en-exp-2-2020-05-05-24k.model",
@@ -38,15 +32,6 @@
             "sp_decoder":"sentencepiece_models/beng-2019-09-12-10k.model"
         },
         {
-<<<<<<< HEAD
-            "id":12,
-            "path":"nmt/12",
-            "sp_encoder":"sentencepiece_models/enMr-2019-09-14-10k.model",
-            "sp_decoder":"sentencepiece_models/marathi-2019-09-14-10k.model"
-        },
-        {
-=======
->>>>>>> dev-nmt-inference
             "id": 15,
             "path":"nmt/en-kn",
             "sp_encoder":"sentencepiece_models/enKn-2019-09-20-10k.model",
@@ -84,6 +69,7 @@
         },
         {
 <<<<<<< HEAD
+<<<<<<< HEAD
             "id":43,
             "path":"nmt/43",
             "sp_encoder":"sentencepiece_models/marathi-mr-en-1.2-2020-01-27-24k.model",
@@ -98,6 +84,8 @@
             "sp_decoder":"sentencepiece_models/marathi-en-mr-3-2020-02-06-24k.model"
         },
         {
+=======
+>>>>>>> dev-nmt-inference
             "id":45,
             "path":"nmt/45",
             "sp_encoder":"sentencepiece_models/enTa-eng-tam-2020-02-08-24k.model",
@@ -169,14 +157,14 @@
         {
             "id": 57,
             "path":"nmt/57",
-            "sp_encoder":"sentencepiece_models/enBeng-en-to-beng-2-2020-02-18-24k.model",
-            "sp_decoder":"sentencepiece_models/bengali-en-to-beng-2-2020-02-18-24k.model"
+            "sp_encoder":"nmt/57/enBeng-en-to-bn-3.2-2020-12-28-24k.model",
+            "sp_decoder":"nmt/57/bengali-en-to-bn-3.2-2020-12-28-24k.model"
         },
         {
             "id":58,
-            "path":"nmt/bn-en",
-            "sp_encoder":"sentencepiece_models/bengali-en-to-beng-2-2020-02-18-24k.model",
-            "sp_decoder":"sentencepiece_models/enBeng-en-to-beng-2-2020-02-18-24k.model"
+            "path":"nmt/58",
+            "sp_encoder":"nmt/58/bengali-bn-to-en-2.2-2020-12-28-24k.model",
+            "sp_decoder":"nmt/58/enBeng-bn-to-en-2.2-2020-12-28-24k.model"
         },
         {
             "id":59,
@@ -203,10 +191,16 @@
             "sp_decoder":"sentencepiece_models/enMr-mr-to-en-2-2020-02-28-24k.model"
         },
         {
-            "id":63,
-            "path":"nmt/63",
-            "sp_encoder":"sentencepiece_models/en_en-hi-exp-13-2020-03-09-24k.model",
-            "sp_decoder":"sentencepiece_models/hi_en-hi-exp-13-2020-03-09-24k.model"
+            "id": 65,
+            "path":"nmt/65",
+            "sp_encoder":"nmt/65/enBeng-en-to-bn-4-2021-01-19-24k.model",
+            "sp_decoder":"nmt/65/bengali-en-to-bn-4-2021-01-19-24k.model"
+        },
+        {
+            "id":66,
+            "path":"nmt/66",
+            "sp_encoder":"nmt/66/bengali-bn-to-en-3-2021-01-19-24k.model",
+            "sp_decoder":"nmt/66/enBeng-bn-to-en-3-2021-01-19-24k.model"
         }   
     ]
 }

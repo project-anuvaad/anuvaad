@@ -26,7 +26,7 @@ class LabseAlignerResource(Resource):
             except Exception as e:
                 status = Status.SYSTEM_ERR.value
                 status['why'] = str(e)
-                out = CustomResponse(status, None)  
+                out = CustomResponse(status, [])  
               
             return out.getres()
         else:

@@ -12,9 +12,10 @@ schemes:
 produces:
   - application/json  
 
+basePath: /nmt-inference
 
 paths: 
-  /nmt-inference/v1/fetch-models:
+  /v1/fetch-models:
     get:
       summary: REST API to generate nmt models information.
       description: GET api to outputs the nmt model information like their model id, source and target language information etc

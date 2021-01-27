@@ -25,16 +25,13 @@ definitions:
     description: NMT input request format for performing translation. The request is listened on the input_topic
     properties:
       message:
-        description: A list of sentence and model id dictionary for translation. Supporting 25 input sentences per message.
+        description: A list of sentence and node id dictionary for translation. Supporting 25 input sentences per message.
         type: array
         items:
           properties:
             src:
               type: string
               description: Sentence to be translated.
-            id:
-              type: integer
-              description: model id for performing the current translation, specific to source and target pair.
             s_id: 
               type: integer
               description: Sentence id returned as it is
@@ -42,9 +39,9 @@ definitions:
               type: integer
               description: node id of the sentence returned as it is  
         
-      url_end_point:   
-        type: string
-        description: A unique url end point to decide nmt translation models.  
+      id:
+        type: integer
+        description: model id for performing the current translation, specific to source and target pair.  
         
   translation_response:
     type: object
