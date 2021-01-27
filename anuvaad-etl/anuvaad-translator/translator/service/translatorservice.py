@@ -108,7 +108,7 @@ class TranslatorService:
             tmx_present = self.is_tmx_present(file, translate_wf_input)
             topic = self.nmt_router()
             pool = multiprocessing.Pool(50)
-            func = partial(self.page_processor, file=file, record_id=record_id, tmx_present=tmx_present,
+            func = partial(self.page_processor, record_id=record_id, file=file, tmx_present=tmx_present,
                            tmx_file_cache=tmx_file_cache, topic=topic, translate_wf_input=translate_wf_input)
             page_processors = pool.map_async(func, pages).get()
             for page_result in page_processors:
@@ -128,7 +128,7 @@ class TranslatorService:
             post_error_wf("TRANSLATION_FAILED", "Exception while pushing sentences to NMT: " + str(e), translate_wf_input, e)
 
     # Computes batches for every page and pushes to NMT for translation.
-    def page_processor(self, file, record_id, page, tmx_present, tmx_file_cache, topic, translate_wf_input):
+    def page_processor(self, page, record_id, file, tmx_present, tmx_file_cache, topic, translate_wf_input):
         batches, pw_dict, bw_data = self.fetch_batches_of_sentences(file, record_id, page, tmx_present, tmx_file_cache,
                                                                     translate_wf_input)
         batches_count, sentences_count, tmx_count = 0, 0, 0
