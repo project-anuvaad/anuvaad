@@ -21,7 +21,7 @@ FROM anuvaadio/anuvaad-layout-detector-prima:4-ba5d7d74
 # ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev
-RUN apt install -y curl
+RUN apt-get install -y curl
 # RUN pip install --upgrade pip setuptools wheel
 # #&&\
 # #   pip install scikit-build &&\
