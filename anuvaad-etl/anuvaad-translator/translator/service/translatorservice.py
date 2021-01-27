@@ -105,13 +105,13 @@ class TranslatorService:
             log_info("TMX File Cache Size (Start) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
             tmx_present = self.is_tmx_present(file, translate_wf_input)
             topic = self.nmt_router()
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                page_processors = [executor.submit(self.page_processor, file, record_id, page, tmx_present, tmx_file_cache, topic, translate_wf_input)
-                                   for page in pages]
-                for page_result in page_processors:
-                    total_batches += page_result.result()[0]
-                    total_sentences += page_result.result()[1]
-                    total_tmx += page_result.result()[2]
+            page_processors = [threading.Thread(target=self.page_processor,
+                                                args=(file, record_id, page, tmx_present, tmx_file_cache, topic, translate_wf_input)).start() for page in pages]
+            for page_result in page_processors:
+                page_result.join()
+                total_batches += page_result.result()[0]
+                total_sentences += page_result.result()[1]
+                total_tmx += page_result.result()[2]
             if total_sentences > 0:
                 repo.update({"totalSentences": total_sentences, "batches": total_batches}, {"recordID": record_id})
                 log_info("recordID: " + record_id + " | PAGES: " + str(len(pages)) + " | BATCHES: " + str(total_batches)
