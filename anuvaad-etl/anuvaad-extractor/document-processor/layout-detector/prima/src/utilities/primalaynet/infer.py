@@ -4,7 +4,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import src.utilities.app_context as app_context
 import uuid
-from config import PRIMA_SCORE_THRESH_TEST
+from config import PRIMA_SCORE_THRESH_TEST, LAYOUT_CONFIG_PATH,LAYOUT_MODEL_PATH
 from collections import namedtuple
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 import sys, random, torch, glob, torchvision
@@ -22,10 +22,17 @@ torch.manual_seed(seed)
 # torch.cuda.manual_seed_all(seed)
 # torch.backends.cudnn.deterministic = True
 # torch.backends.cudnn.benchmark = False
-
-model_primalaynet = lp.Detectron2LayoutModel('lp://PrimaLayout/mask_rcnn_R_50_FPN_3x/config',label_map = {1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"MathsRegion", 5:"SeparatorRegion", 6:"OtherRegion"}, \
-	extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])#,"MODEL.ROI_HEADS.NMS_THRESH_TEST", 0.2])
+#
+# model_primalaynet = lp.Detectron2LayoutModel('lp://PrimaLayout/mask_rcnn_R_50_FPN_3x/config',label_map = {1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"MathsRegion", 5:"SeparatorRegion", 6:"OtherRegion"}, \
+# 	extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])#,"MODEL.ROI_HEADS.NMS_THRESH_TEST", 0.2])
 # model_primalaynet = lp.Detectron2LayoutModel(
+
+model_primalaynet = lp.Detectron2LayoutModel(LAYOUT_CONFIG_PATH,model_path = LAYOUT_MODEL_PATH,label_map = {0:"FooterRegion", 1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"HeaderRegion", 5:"OtherRegion"})
+
+
+
+
+
 #             config_path ='lp://PubLayNet/mask_rcnn_X_101_32x8d_FPN_3x/config', # In model catalog
 #             label_map   ={0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"}, # In model`label_map`
 #             extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", 0.5] # Optional
@@ -232,7 +239,8 @@ class PRIMA(object):
 			# 	tag_final.append("text")
 
 		coords, layout_class  = self.remove_overlap(org_coord2, tag_final)
-		coords, layout_class  = self.craft_refinement(boxes_final, coords, layout_class)
+
+		#coords, layout_class  = self.craft_refinement(boxes_final, coords, layout_class)
 		
 		
 		return boxes, coords, layout_class
@@ -264,7 +272,25 @@ class PRIMA(object):
 		boxes, coords, layout_class = self.prima_craft_refinement(final_coord,craft_coords,final_tags)
 
 		return boxes, coords, layout_class
-	def class_mapping(self,class_name):
+	# def class_mapping(self,class_name):
+	# 	if class_name == "TextRegion" or class_name == "text":
+	# 		class_name = "TEXT"
+	# 	if class_name == "TableRegion":
+	# 		class_name = "TABLE"
+	# 	if class_name == "ImageRegion":
+	# 		class_name = "IMAGE"
+	# 	if class_name == "MathsRegion":
+	# 		class_name = "TEXT"
+	# 	if class_name == "SeparatorRegion":
+	# 		class_name = "LINE"
+	# 	if class_name == "OtherRegion":
+	# 		class_name = "TEXT"
+	#
+	# 	return class_name
+
+	def class_mapping(self, class_name):
+		# if class_name == "HeaderRegion":
+		#         class_name = "Header"
 		if class_name == "TextRegion" or class_name == "text":
 			class_name = "TEXT"
 		if class_name == "TableRegion":
@@ -273,11 +299,17 @@ class PRIMA(object):
 			class_name = "IMAGE"
 		if class_name == "MathsRegion":
 			class_name = "TEXT"
-		if class_name == "SeparatorRegion":
-			class_name = "LINE"
+		if class_name == "HeaderRegion":
+			class_name = "Header"
 		if class_name == "OtherRegion":
-			class_name = "TEXT"
-		
+			class_name = "Other"
+		if class_name == "FooterRegion":
+			class_name = "Footer"
+		#               if class_name=="HeaderRegion":
+		#                        class_name = "Header"
+
+		#               if class_name == "HeaderRegion":
+		#                        class_name = "Header"
 		return class_name
 
 	def predict_primanet(self,image,craft_coords):
