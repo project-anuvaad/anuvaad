@@ -1,7 +1,10 @@
+import multiprocessing
 import threading
 import time
 
 import uuid
+from functools import partial
+
 from utilities.translatorutils import TranslatorUtils
 from kafkawrapper.translatorproducer import Producer
 from repository.translatorrepository import TranslatorRepository
@@ -15,7 +18,6 @@ from configs.translatorconfig import tool_translator
 from configs.translatorconfig import anu_nmt_input_topic_mx
 from configs.translatorconfig import tmx_enabled
 from configs.translatorconfig import tmx_global_enabled
-import concurrent.futures
 
 current_nmt = 0
 topics_map = {}
@@ -105,13 +107,14 @@ class TranslatorService:
             log_info("TMX File Cache Size (Start) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
             tmx_present = self.is_tmx_present(file, translate_wf_input)
             topic = self.nmt_router()
-            page_processors = [threading.Thread(target=self.page_processor,
-                                                args=(file, record_id, page, tmx_present, tmx_file_cache, topic, translate_wf_input)).start() for page in pages]
+            pool = multiprocessing.Pool(50)
+            func = partial(self.page_processor, file=file, record_id=record_id, tmx_present=tmx_present,
+                           tmx_file_cache=tmx_file_cache, topic=topic, translate_wf_input=translate_wf_input)
+            page_processors = pool.map_async(func, pages).get()
             for page_result in page_processors:
-                page_result.join()
-                total_batches += page_result.result()[0]
-                total_sentences += page_result.result()[1]
-                total_tmx += page_result.result()[2]
+                total_batches += page_result[0]
+                total_sentences += page_result[1]
+                total_tmx += page_result[2]
             if total_sentences > 0:
                 repo.update({"totalSentences": total_sentences, "batches": total_batches}, {"recordID": record_id})
                 log_info("recordID: " + record_id + " | PAGES: " + str(len(pages)) + " | BATCHES: " + str(total_batches)
