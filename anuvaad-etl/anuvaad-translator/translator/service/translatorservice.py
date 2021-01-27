@@ -15,6 +15,7 @@ from configs.translatorconfig import tool_translator
 from configs.translatorconfig import anu_nmt_input_topic_mx
 from configs.translatorconfig import tmx_enabled
 from configs.translatorconfig import tmx_global_enabled
+import concurrent.futures
 
 current_nmt = 0
 topics_map = {}
@@ -104,21 +105,13 @@ class TranslatorService:
             log_info("TMX File Cache Size (Start) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
             tmx_present = self.is_tmx_present(file, translate_wf_input)
             topic = self.nmt_router()
-            for page in pages:
-                batches, pw_dict, bw_data = self.fetch_batches_of_sentences(file, record_id, page, tmx_present, tmx_file_cache, translate_wf_input)
-                if not batches:
-                    log_error("No batches obtained for page: " + str(page["page_no"]), translate_wf_input, None)
-                    continue
-                total_batches += len(batches)
-                for batch_id in batches.keys():
-                    batch = batches[batch_id]
-                    record_id_enhanced = record_id + "|" + str(len(batch))
-                    nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
-                    producer.produce(nmt_in, topic)
-                    total_sentences += len(batch)
-                    log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
-                             " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(bw_data[batch_id]["tmx_count"]), translate_wf_input)
-                total_tmx += pw_dict["tmx_count"]
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                page_processors = [executor.submit(self.page_processor, (file, record_id, page, tmx_present, tmx_file_cache, topic, translate_wf_input))
+                                   for page in pages]
+                for page_result in page_processors:
+                    total_batches += page_result.result()[0]
+                    total_sentences += page_result.result()[1]
+                    total_tmx += page_result.result()[2]
             if total_sentences > 0:
                 repo.update({"totalSentences": total_sentences, "batches": total_batches}, {"recordID": record_id})
                 log_info("recordID: " + record_id + " | PAGES: " + str(len(pages)) + " | BATCHES: " + str(total_batches)
@@ -129,6 +122,26 @@ class TranslatorService:
                 log_exception("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)
         except Exception as e:
             log_exception("Exception while pushing sentences to NMT: " + str(e), translate_wf_input, e)
+
+    # Computes batches for every page and pushes to NMT for translation.
+    def page_processor(self, file, record_id, page, tmx_present, tmx_file_cache, topic, translate_wf_input):
+        batches, pw_dict, bw_data = self.fetch_batches_of_sentences(file, record_id, page, tmx_present, tmx_file_cache,
+                                                                    translate_wf_input)
+        batches_count, sentences_count, tmx_count = 0, 0, 0
+        if not batches:
+            log_error("No batches obtained for page: " + str(page["page_no"]), translate_wf_input, None)
+            return batches_count, sentences_count
+        batches_count, tmx_count = len(batches), pw_dict["tmx_count"]
+        for batch_id in batches.keys():
+            batch = batches[batch_id]
+            record_id_enhanced = record_id + "|" + str(len(batch))
+            nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
+            producer.produce(nmt_in, topic)
+            log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
+                     " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
+                bw_data[batch_id]["tmx_count"]), translate_wf_input)
+            sentences_count += len(batch)
+        return batches_count, sentences_count, tmx_count
 
     # Method to fetch batches for sentences from the file for a page.
     def fetch_batches_of_sentences(self, file, record_id, page, tmx_present, tmx_file_cache, translate_wf_input):
