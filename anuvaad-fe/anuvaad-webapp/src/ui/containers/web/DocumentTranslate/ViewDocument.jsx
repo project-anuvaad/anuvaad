@@ -468,14 +468,16 @@ class ViewDocument extends React.Component {
           sort: false,
           empty: true,
         },
-      }, {
-        name: "bleu_score",
-        label: "Average Bleu",
-        options: {
-          hint: "Total bleu score / Total saved sentence",
-          sort: false
-        }
-      }, {
+      },
+      //  {
+      //   name: "bleu_score",
+      //   label: "Average Bleu",
+      //   options: {
+      //     hint: "Total bleu score / Total saved sentence",
+      //     sort: false
+      //   }
+      // }, 
+      {
         name: "spent_time",
         label: "Time Spent",
         options: {
@@ -491,7 +493,7 @@ class ViewDocument extends React.Component {
       },
       {
         name: "Time Taken",
-        label: "Job time",
+        label: "Job Time",
         options: {
           filter: true,
           sort: true,
@@ -501,8 +503,8 @@ class ViewDocument extends React.Component {
                 <div>
                   {tableMeta.rowData[5] === "COMPLETED" &&
                     this.getDateTimeDifference(
-                      tableMeta.rowData[10],
-                      tableMeta.rowData[12]
+                      tableMeta.rowData[9],
+                      tableMeta.rowData[11]
                     )}
                 </div>
               );
@@ -520,7 +522,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.getDateTimeFromTimestamp(tableMeta.rowData[12])}
+                  {this.getDateTimeFromTimestamp(tableMeta.rowData[11])}
                 </div>
               );
             }
@@ -636,7 +638,7 @@ class ViewDocument extends React.Component {
         this.setState({limit})
         
       },
-      rowsPerPageOptions:[10,20,50],
+      rowsPerPageOptions:[10],
 
       onTableChange: (action, tableState) => {
         switch (action) {

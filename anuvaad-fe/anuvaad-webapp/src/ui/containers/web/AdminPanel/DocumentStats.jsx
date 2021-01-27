@@ -134,7 +134,7 @@ class DocumentStats extends React.Component {
       },
       {
         name: "tgt",
-        label: 'Proof read',
+        label: 'Proof Read',
         options: {
           filter: false,
           sort: true,
