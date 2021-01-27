@@ -40,7 +40,7 @@ class TranslatorService:
         translate_wf_input["taskStartTime"] = eval(str(time.time()).replace('.', '')[0:13])
         translate_wf_input["state"] = "TRANSLATED"
         log_info("Translator process initiated... jobID: " + str(translate_wf_input["jobID"]), translate_wf_input)
-        error, error_list, thread_count = None, [], 0
+        error, error_list = None, []
         for file in translate_wf_input["input"]["files"]:
             try:
                 dumped = self.dump_file_to_db(file["path"], translate_wf_input)
@@ -49,11 +49,9 @@ class TranslatorService:
                                        "error": "File received couldn't be downloaded"})
                     error = post_error("FILE_DOWNLOAD_FAILED", "File received couldn't be downloaded!", None)
                 else:
-                    thread_name = "worker-thread-" + str(thread_count)
-                    worker_thread = threading.Thread(target=self.push_sentences_to_nmt, args=(file, translate_wf_input), name=thread_name)
+                    worker_thread = threading.Thread(target=self.push_sentences_to_nmt, args=(file, translate_wf_input), name="worker-thread")
                     worker_thread.start()
-                    log_info("Worker: " + str(thread_name) + " forked.", translate_wf_input)
-                    thread_count += 1
+                    log_info("Worker Thread forked..", translate_wf_input)
             except Exception as e:
                 log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
                 continue

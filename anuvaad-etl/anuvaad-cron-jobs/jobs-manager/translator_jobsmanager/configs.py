@@ -10,5 +10,5 @@ save_content_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_an
                    + str(os.environ.get('SAVE_CONTENT_ENDPOINT', '/anuvaad/content-handler/v0/save-content'))
 
 
-jm_cron_interval_sec = os.environ.get('TRANSLATOR_JM_INTERVAL_SEC', 10)
+jm_cron_interval_sec = os.environ.get('TRANSLATOR_JM_INTERVAL_SEC', 5)
 module_name = "JOBS-MANAGER"
