@@ -52,9 +52,10 @@ class TranslatorService:
                                        "error": "File received couldn't be downloaded"})
                     error = post_error("FILE_DOWNLOAD_FAILED", "File received couldn't be downloaded!", None)
                 else:
-                    worker_thread = threading.Thread(target=self.push_sentences_to_nmt, args=(file, translate_wf_input), name="worker-thread")
+                    self.push_sentences_to_nmt(file, translate_wf_input)
+                    '''worker_thread = threading.Thread(target=self.push_sentences_to_nmt, args=(file, translate_wf_input), name="worker-thread")
                     worker_thread.start()
-                    log_info("Worker Thread forked..", translate_wf_input)
+                    log_info("Worker Thread forked..", translate_wf_input)'''
             except Exception as e:
                 log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
                 continue
@@ -107,7 +108,7 @@ class TranslatorService:
             log_info("TMX File Cache Size (Start) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
             tmx_present = self.is_tmx_present(file, translate_wf_input)
             topic = self.nmt_router()
-            pool = multiprocessing.Pool(50)
+            pool = multiprocessing.Pool(10)
             func = partial(self.page_processor, record_id=record_id, file=file, tmx_present=tmx_present,
                            tmx_file_cache=tmx_file_cache, topic=topic, translate_wf_input=translate_wf_input)
             page_processors = pool.map_async(func, pages).get()
