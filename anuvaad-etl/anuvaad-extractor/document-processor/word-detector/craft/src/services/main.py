@@ -27,7 +27,14 @@ def get_response(app_context, words, lines, images):
         file_prperties = FileOutput(file)
         try :
             for page_index, page in enumerate(images[file_index]):
-                page_words, page_lines = words[file_index][page_index], lines[file_index][page_index]
+                if len(words)!=0:
+                    page_words  = words[file_index][page_index]
+                else:
+                    page_words = []
+                if len(lines)!=0:
+                    page_lines = lines[file_index][page_index]
+                else:
+                    page_lines = []
                 page_properties = Page(page_words, page_lines, page)
                 file_prperties.set_page(page_properties.get_page())
                 file_prperties.set_page_info(page)
@@ -35,7 +42,7 @@ def get_response(app_context, words, lines, images):
         except Exception as e:
             file_prperties.set_staus(False)
             log_exception("Error occured during response generation" + str(e), app_context.application_context, e)
-
+        
         output.append(file_prperties.get_file())
 
     app_context.application_context['outputs'] = output

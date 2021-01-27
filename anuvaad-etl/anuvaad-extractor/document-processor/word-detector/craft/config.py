@@ -5,8 +5,17 @@ import time
 DEBUG = False
 API_URL_PREFIX = "/anuvaad-etl/document-processor/word-detector"
 HOST = '0.0.0.0'
-PORT = 5001
-BASE_DIR   = 'upload'
+PORT = 5004
+#BASE_DIR   = 'upload'
+#folders and file path
+#download_folder = 'upload'
+
+BASE_DIR = '/opt/share/nginx/upload'
+download_folder = '/opt/share/nginx/upload'
+
+
+
+
 
 ENABLE_CORS = False
 
@@ -27,10 +36,12 @@ bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 TASK_STAT           = 'WORD-DETECTOR-CRAFT'
 
 CONSUMER_GROUP_default       = 'anuvaad-etl-wd-consumer-group'
-CONSUMER_GROUP_identifire    = 'KAFKA_ANUVAAD_ETL_WD_CONSUMER_GRP'
-CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_default,CONSUMER_GROUP_identifire)
+CONSUMER_GROUP_identifier    = 'KAFKA_ANUVAAD_ETL_WD_CONSUMER_GRP'
+CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 #folders and file path
-download_folder = 'upload'
+#download_folder = 'upload'
+
+
 
 
 logging.basicConfig(
@@ -47,17 +58,27 @@ CRAFT_MODEL_PATH=  './src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
 CRAFT_REFINE_MODEL_PATH =  './src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth'
 
 LANGUAGE_WORD_THRESOLDS ={
-<<<<<<< HEAD
-'en':{'text_threshold':0.2 ,'low_text': 0.4,'link_threshold':0.4},
-'hi':{'text_threshold':0.2 ,'low_text': 0.3,'link_threshold':0.8},
-=======
-'en':{'text_threshold':0.2 ,'low_text': 0.3,'link_threshold':0.4},
-'hi':{'text_threshold':0.2 ,'low_text': 0.4,'link_threshold':0.8},
->>>>>>> 80e8a0cb69ca6d8224344074e1aaae3b63dd1260
-'ma':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5} ,
-'ta':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5} ,
-'ml':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5} ,
-'ka':{'text_threshold':0.5 ,'low_text': 0.4,'link_threshold':0.5}
+'en':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'detect':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'hi':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'ma':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'ta':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'ml':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'ka':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35}
+}
+LANGUAGE_LINE_THRESOLDS ={
+'en':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'detect':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'hi':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'ma':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'ta':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'ml':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'ka':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35}
 }
 
 
+
+
+WATERMARK_THRESHOLD_LOW = 175
+WATERMARK_THRESHOLD_HIGH = 250
+MAGNIFICATION_RATIO = 1.0

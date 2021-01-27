@@ -1,5 +1,6 @@
 from src.utilities.request_parse import get_files ,File ,Evalue
 from src.utilities.compare_page import compare_regions
+from src.utilities.ocr_evaluation import text_evaluation
 import src.utilities.app_context as app_context
 import config
 from anuvaad_auditor.loghandler import log_info
@@ -21,20 +22,20 @@ def get_iou(evalue_file) :
     if check_files :
         boxlevel = evalue_file.get_boxlevel()
         for gt_index , gt in enumerate(gt_json):
-
             gt_file, in_file = File(gt), File(in_json[gt_index])
-
             gt_pages = gt_file.get_pages()
             in_pages = in_file.get_pages()
             check_pages = len(gt_pages) == len(in_pages)
-
             if check_pages:
-
                 pages = []
                 for page_index, page in enumerate(gt_pages):
-                    gt_boxex = gt_file.get_boxes(boxlevel, page_index)
-                    in_boxex = in_file.get_boxes(boxlevel, page_index)
-                    pages.append(compare_regions(gt_boxex, in_boxex))
+                    gt_boxes = gt_file.get_boxes(boxlevel, page_index,'gt')
+                    in_boxes = in_file.get_boxes(boxlevel, page_index,'in')
+                    compared_regions = compare_regions(gt_boxes, in_boxes)
+                    if len(compared_regions)!=0 and 'iou' in compared_regions.keys():
+                        compared_ocr_regions = text_evaluation(compared_regions['iou'],boxlevel)
+                        compared_regions['iou'] = compared_ocr_regions
+                    pages.append(compared_regions)
                 evalue_file.set_staus(True)
                 #file_comparison = evalue_file.get_evaluation()
                 comparison.append({'pages': pages})

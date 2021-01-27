@@ -2,26 +2,26 @@ import React from "react";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import FormControl from "@material-ui/core/FormControl";
-
+import Grid from '@material-ui/core/Grid';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withStyles, Typography } from "@material-ui/core";
-import ThemeDefault from "../../../theme/web/theme-anuvaad";
 
+import ThemeDefault from "../../../theme/web/theme-anuvaad";
 import LoginStyles from "../../../styles/web/LoginStyles";
-import Grid from '@material-ui/core/Grid';
-import ForgotPasswordApi from "../../../../flux/actions/apis/forgotpassword";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import TextField from '../../../components/web/common/TextField';
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
+
+import ForgotPasswordApi from "../../../../flux/actions/apis/user/forgotpassword";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
 
 class UpdatePassword extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             email: "",
+            variantType: ""
         }
     }
 
@@ -32,19 +32,32 @@ class UpdatePassword extends React.Component {
     handleSubmit(e) {
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if (this.state.email.match(mailformat)) {
-            let { APITransport } = this.props;
             let apiObj = new ForgotPasswordApi(this.state.email);
-            APITransport(apiObj);
+            fetch(apiObj.apiEndPoint(), {
+                method: 'POST',
+                headers: apiObj.getHeaders().headers,
+                body: JSON.stringify(apiObj.getBody())
+            })
+                .then(res => {
+                    if (res.ok) {
+                        this.setState({ variantType: 'success', message: translate('updatePassword.page.message.forgotPasswordLinkSent'), open: true })
+                    } else {
+                        res.json().then(obj => {
+                            this.setState({ variantType: 'error', message: obj.message, open: true })
+                        })
+                    }
+                })
         } else {
             alert(translate('common.page.alert.validEmail'))
         }
+        setTimeout(() => {
+            this.setState({ open: false, variantType: '', message: '' })
+        }, 6000)
     }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.forgotpassword !== this.props.forgotpassword) {
-            this.setState({ message: translate('updatePassword.page.message.forgotPasswordLinkSent'), open: true, firstName: '', lastName: '', email: '', password: '', confirmPassword: '', termsAndCondition: '' })
-        }
 
+    handleClose = () => {
+        this.setState({ open: false })
     }
 
     render() {
@@ -67,6 +80,7 @@ class UpdatePassword extends React.Component {
                                 value={this.state.email}
                             />
                             <Button
+                                id="submit"
                                 disabled={!this.state.email}
                                 variant="contained" aria-label="edit" style={{
                                     width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: "20px 20px 20px 20px", height: '45px',
@@ -76,20 +90,18 @@ class UpdatePassword extends React.Component {
                             </Button>
                         </Grid>
                     </Grid>
-                    {this.state.open && (
-                        <Snackbar
-                            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                            open={this.state.open}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            variant="success"
-                            message={this.state.message}
-                        />
-                    )}
                 </div>
-
+                {this.state.open && (
+                    <Snackbar
+                        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                        open={this.state.open}
+                        autoHideDuration={6000}
+                        onClose={this.handleClose}
+                        variant={this.state.variantType}
+                        message={this.state.message}
+                    />
+                )}
             </MuiThemeProvider>
-
         );
     }
 }

@@ -16,15 +16,23 @@ def get_polygon(region):
 
 def compare_regions(gt_regions, predicted_regions):
     output = []
+    lines_intersected = []
+    not_intersecting  = []
+
     idx = index.Index()
-    if  len(predicted_regions) > len(gt_regions):
-        base_regions = predicted_regions
-        compare_regions = gt_regions
-        gt_base = False
-    else :
-        base_regions = gt_regions
-        compare_regions = predicted_regions
-        gt_base    = True
+    predicted_count =  len(predicted_regions)
+    gt_count  =  len(gt_regions)
+
+    # if  predicted_count > gt_count:
+    #     base_regions = predicted_regions
+    #     compare_regions = gt_regions
+    #     gt_base = False
+    # else :
+    base_regions = gt_regions
+    compare_regions = predicted_regions
+    
+    gt_base    = True
+
     base_exists = len(base_regions) > 0
     if base_exists:
         compare_polys = []
@@ -40,6 +48,7 @@ def compare_regions(gt_regions, predicted_regions):
             intersecting_region = None
             for intr_index in region_index:
                 compare_poly = compare_polys[intr_index]
+                lines_intersected.append(intr_index)
                 check_union = base_poly.union(compare_poly).area != 0
                 if check_union :
                     region_iou = base_poly.intersection(compare_poly).area / base_poly.union(compare_poly).area
@@ -49,13 +58,17 @@ def compare_regions(gt_regions, predicted_regions):
                 if (region_iou > iou): #and (region_iou > 0.33):
                     iou = region_iou
                     intersecting_region = compare_regions[intr_index]
-            if gt_base :
-                output.append({'ground': base_region, 'input': intersecting_region, 'iou': iou})
-            else :
-                output.append({'ground': intersecting_region, 'input': base_region, 'iou': iou})
-        return output
+            #if gt_base :
+            output.append({'ground': base_region, 'input': intersecting_region, 'iou': iou})
+
+        for line_index, line in enumerate(predicted_regions):
+            if line_index not in lines_intersected:
+                output.append({'ground': None, 'input': line, 'iou': 0})
+            # else :
+            #     output.append({'ground': intersecting_region, 'input': base_region, 'iou': iou})
+        return { 'iou' : output , 'count' : {'input' : predicted_count , 'ground' : gt_count} }
     else:
-        return []
+        return {}
 
 
 

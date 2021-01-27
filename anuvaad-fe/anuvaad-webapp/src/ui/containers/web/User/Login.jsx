@@ -7,20 +7,19 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withStyles, Typography } from "@material-ui/core";
-import ThemeDefault from "../../../theme/web/theme-default";
-
 import CircularProgress from '@material-ui/core/CircularProgress';
-
-
-import LoginStyles from "../../../styles/web/LoginStyles";
 import Grid from '@material-ui/core/Grid';
+import Link from '@material-ui/core/Link';
+
+import ThemeDefault from "../../../theme/web/theme-default";
+import LoginStyles from "../../../styles/web/LoginStyles";
 import history from "../../../../web.history";
 import TextField from '../../../components/web/common/TextField';
-import Link from '@material-ui/core/Link';
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
-import LoginAPI from "../../../../flux/actions/apis/login";
-import profileDetails from '../../../../flux/actions/apis/profile_details';
+
+import LoginAPI from "../../../../flux/actions/apis/user/login";
+import profileDetails from '../../../../flux/actions/apis/user/profile_details';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
@@ -115,9 +114,14 @@ class Login extends React.Component {
         var roles = this.handleRoles(resData);
         localStorage.setItem("roles", roles)
         localStorage.setItem("lang", "en")
-        localStorage.setItem("userProfile", JSON.stringify(resData))
-        history.push(`${process.env.PUBLIC_URL}/view-document`);
-
+        localStorage.setItem("userProfile", JSON.stringify(resData));
+        if (roles.includes('ADMIN')){
+          history.push(`${process.env.PUBLIC_URL}/user-details/0`);
+          // history.push(`${process.env.PUBLIC_URL}/create-user`)
+        }else{
+          history.push(`${process.env.PUBLIC_URL}/view-document`);
+        }
+        // history.push(`${process.env.PUBLIC_URL}/create-user`)
       }
     }).catch((error) => {
       console.log('api failed because of server or network')
@@ -148,6 +152,7 @@ class Login extends React.Component {
 
                 <div className={classes.wrapper}>
                   <Button
+                  id="signin-btn"
                     variant="contained" aria-label="edit" style={{
                       width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
                       backgroundColor: this.state.loading ? 'grey' : '#1ca9c9', color: 'white',
@@ -161,8 +166,8 @@ class Login extends React.Component {
               </FormControl>
 
               <Typography>
-                <Link style={{ cursor: 'pointer', color: '#0C8AA9', marginLeft: '25%', float: 'left' }} href="#" onClick={() => { history.push(`${process.env.PUBLIC_URL}/forgot-password`); }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
-                <Link style={{ cursor: 'pointer', color: '#0C8AA9', marginRight: '25%', float: 'right' }} href="#" onClick={() =>{ history.push(`${process.env.PUBLIC_URL}/signup`); }}> {translate('singUp.page.label.signUp')}</Link>
+                <Link id="forgotpassword" style={{ cursor: 'pointer', color: '#0C8AA9', marginLeft: '25%', float: 'left' }} href="#" onClick={() => { history.push(`${process.env.PUBLIC_URL}/forgot-password`); }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
+                <Link id= "signup" style={{ cursor: 'pointer', color: '#0C8AA9', marginRight: '25%', float: 'right' }} href="#" onClick={() =>{ history.push(`${process.env.PUBLIC_URL}/signup`); }}> {translate('singUp.page.label.signUp')}</Link>
               </Typography>
             </Grid>
           </Grid>

@@ -12,23 +12,25 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CardActions from '@material-ui/core/CardActions';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import DictionaryAPI from '../../../../flux/actions/apis/word_dictionary';
-import { highlightBlock, clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
-import MenuItems from "./PopUp";
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import IconButton from "@material-ui/core/IconButton";
-import InteractiveTranslateAPI from "../../../../flux/actions/apis/intractive_translate";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import copy from 'copy-to-clipboard';
-import SENTENCE_ACTION from './SentenceActions'
-import Dictionary from "./Dictionary"
-
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 
-const TELEMETRY = require('../../../../utils/TelemetryManager')
+import MenuItems from "./PopUp";
+import SENTENCE_ACTION from './SentenceActions'
+import Dictionary from "./Dictionary"
 
+import { highlightBlock, clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
+import InteractiveTranslateAPI from "../../../../flux/actions/apis/document_translate/intractive_translate";
+import DictionaryAPI from '../../../../flux/actions/apis/document_translate/word_dictionary';
+
+const TELEMETRY = require('../../../../utils/TelemetryManager')
+const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
+var time = 0;
 const styles = {
     card_active: {
         background: 'rgb(211,211,211)',
@@ -106,8 +108,13 @@ class SentenceCard extends React.Component {
             startIndex: null,
             endIndex: null,
             isOpenDictionaryOnly: false,
+            showProgressStatus: false,
+            message: null,
             showStatus: false,
-            message: null
+            snackBarMessage: null,
+            highlight: false,
+            hideSplit: false
+
         };
         this.textInput = React.createRef();
         this.handleUserInputText = this.handleUserInputText.bind(this);
@@ -159,44 +166,7 @@ class SentenceCard extends React.Component {
         return found;
     }
 
-    /**
-     * api calls
-     */
-    async makeAPICallInteractiveTranslation() {
-        /**
-         * left dead code to test
-         */
-        // const response  = await fetch('https://country.register.gov.uk/records.json?page-size=5000');
-        // await sleep(1e3);
-        // const countries = await response.json();
-        // this.setState({
-        //     suggestions: Object.keys(countries).map((key) => countries[key].item[0])
-        // })
 
-        this.setState({ isCardBusy: true })
-        let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, this.state.value, this.props.modelId, true, '', this.props.sentence.s_id);
-        const apiReq = fetch(apiObj.apiEndPoint(), {
-            method: 'post',
-            body: JSON.stringify(apiObj.getBody()),
-            headers: apiObj.getHeaders().headers
-        }).then(async response => {
-            const rsp_data = await response.json();
-            if (!response.ok) {
-                this.setState({ isCardBusy: false })
-                return Promise.reject('');
-            } else {
-                this.setState({
-                    suggestions: rsp_data.output.predictions[0].tgt.map(s => { return { name: s } }),
-                    isCardBusy: false
-                })
-            }
-        }).catch((error) => {
-            this.setState({
-                suggestions: [],
-                isCardBusy: false
-            })
-        });
-    }
 
     /**
      * user actions handlers
@@ -208,11 +178,11 @@ class SentenceCard extends React.Component {
             //  - if s0_tgt is not available, alert user
             //  - if s0_tgt is available, then move s0_tgt to textfield
             if (this.props.sentence.s0_tgt === '') {
-                alert('Please translate the sentence and then save .. ')
+                alert('Please translate the sentence and then save. ')
                 return;
             }
             if (this.props.sentence.save) {
-                alert('Your will lose saved sentence, please translate the sentence and then save .. ')
+                alert('Your will lose saved sentence, please translate the sentence and then save. ')
                 return;
             }
             this.setState({
@@ -223,8 +193,11 @@ class SentenceCard extends React.Component {
                 sentence.save = true;
                 sentence.tgt = this.props.sentence.s0_tgt;
                 delete sentence.block_identifier;
-
-                TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt, sentence.s_id, "translation")
+                let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
+                sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;// max spent time is 5 min
+                time = 0;
+                sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
                 return;
             }
@@ -233,18 +206,20 @@ class SentenceCard extends React.Component {
             if (!this.state.userEnteredText) {
                 // value is present, however user hasn't edit it.
                 // no point saving
-                alert('Please edit your sentence and then save .. ')
+                alert('Please edit your sentence and then save. ')
                 return;
             }
             if (this.props.onAction) {
                 this.setState({ userEnteredText: false })
-
                 let sentence = { ...this.props.sentence };
                 sentence.save = true;
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
-
-                TELEMETRY.sentenceChanged(this.props.sentence.tgt, sentence.tgt, sentence.s_id, "translation")
+                sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
+                let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
+                sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;
+                time = 0;
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
             }
         }
@@ -287,34 +262,20 @@ class SentenceCard extends React.Component {
             this.props.onAction(SENTENCE_ACTION.REMOVE_SENTENCE_FOR_MERGE, this.props.pageNumber, [this.props.sentence])
     }
 
-    handleUserInputText(event) {
-        this.setState({
-            value: event.target.value,
-            userEnteredText: true
-        });
-    }
-
-    handleKeyDown = (event) => {
-        let charCode = String.fromCharCode(event.which).toLowerCase();
-        /**
-         * Ctrl+s
-         */
-        if ((event.ctrlKey || event.metaKey) && charCode === 's') {
-
-            this.processSaveButtonClicked()
-            event.preventDefault();
-            return false
-        }
-
-        /**
-         * user requesting for suggestions
-         */
-        var TABKEY = 9;
-        if (event.keyCode === TABKEY) {
-            this.setState({ showSuggestions: true })
-            this.makeAPICallInteractiveTranslation(this.props.sentence)
-            event.preventDefault();
-            return false
+    moveText() {
+        if (!this.props.sentence.s0_tgt) {
+            alert("Sorry, Machine translated text is not available...")
+        } else {
+            if (this.state.value === this.props.sentence.s0_tgt) {
+                this.setState({
+                    value: this.props.sentence.s0_tgt,
+                })
+            } else {
+                this.setState({
+                    value: this.props.sentence.s0_tgt,
+                    userEnteredText: true
+                })
+            }
         }
     }
 
@@ -324,10 +285,10 @@ class SentenceCard extends React.Component {
         let endIndex = window.getSelection().focusOffset;
         let startIndex = window.getSelection().anchorOffset;
         let sentenceSource = event.target.innerHTML;
-        if (selectedSentence && sentenceSource.includes(selectedSentence) && selectedSentence !== sentenceSource && this.state.cardInFocus) {
+        if (selectedSentence && sentenceSource.includes(selectedSentence) && this.state.cardInFocus) {
             this.setState({
                 selectedSentence, sentenceSource, positionX: event.clientX, startIndex, endIndex, positionY: event.clientY, isopenMenuItems: true,
-                dictionaryX: event.clientX, dictionaryY: event.clientY
+                dictionaryX: event.clientX, dictionaryY: event.clientY, hideSplit: selectedSentence === sentenceSource ? true : false
             })
         }
     }
@@ -335,11 +296,6 @@ class SentenceCard extends React.Component {
     renderSourceSentence = () => {
         return (
             <div >
-                {/* <Typography color="textSecondary" gutterBottom>
-                    Source sentence
-                    <br />
-                </Typography> */}
-
                 <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
                     {this.props.sentence.src}
                 </Typography>
@@ -351,11 +307,6 @@ class SentenceCard extends React.Component {
         return (
             <div>
                 <Divider />
-                {/* <Typography color = "textSecondary" gutterBottom>
-                    Matchine translated
-                    <br />
-                </Typography> */}
-
                 <Typography variant="subtitle1" gutterBottom>
                     {this.props.sentence.s0_tgt}
                     <br />
@@ -369,11 +320,6 @@ class SentenceCard extends React.Component {
         return (
             <div>
                 <Divider />
-                {/* <Typography color = "textSecondary" gutterBottom>
-                    Matchine translated
-                    <br />
-                </Typography> */}
-
                 <Typography variant="subtitle1" gutterBottom>
                     {this.props.sentence.tgt}
                     <br />
@@ -399,16 +345,216 @@ class SentenceCard extends React.Component {
         )
     }
 
+    /**
+    * api calls
+    */
+    async makeAPICallInteractiveTranslation(caret) {
+        let val = this.state.value.slice(0, caret)
+        if (val) {
+            this.setState({ isCardBusy: true })
+            let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.model.model_id, true, '', this.props.sentence.s_id);
+            const apiReq = fetch(apiObj.apiEndPoint(), {
+                method: 'post',
+                body: JSON.stringify(apiObj.getBody()),
+                headers: apiObj.getHeaders().headers
+            }).then(async response => {
+                const rsp_data = await response.json();
+                if (!response.ok) {
+                    this.setState({ isCardBusy: false })
+                    return Promise.reject('');
+                } else {
+                    this.setState({
+                        suggestions: [{ name: rsp_data.output.predictions[0].tgt[0] }],
+                        isCardBusy: false
+                    })
+                }
+            }).catch((error) => {
+                this.setState({
+                    suggestions: [],
+                    isCardBusy: false
+                })
+            });
+        } else {
+            this.setState({
+                suggestions: [{ name: this.props.sentence.s0_tgt }],
+                isCardBusy: false
+            })
+        }
+    }
+
+    handleKeyDown = (event) => {
+        let charCode = String.fromCharCode(event.which).toLowerCase();
+
+        if (charCode === 'enter' || event.keyCode == '13') {
+            event.preventDefault();
+            return false
+        }
+
+        /**
+         * left arrow and right arrow
+         */
+        if (event.keyCode == '37' || event.keyCode == '39') {
+            if (this.state.showSuggestions) {
+                this.setState({
+                    showSuggestions: false,
+                    highlight: false,
+                    suggestions: []
+                });
+            }
+        }
+        /**
+         * Ctrl+s to copy and save
+         */
+        if ((event.ctrlKey || event.metaKey) && charCode === 's') {
+            this.processSaveButtonClicked()
+            event.preventDefault();
+            return false
+        }
+
+        /**
+        * Ctrl+m to copy
+        */
+        if ((event.ctrlKey || event.metaKey) && charCode === 'm') {
+            this.moveText()
+            event.preventDefault();
+            return false
+        }
+        /**
+         * user requesting for suggestions
+         */
+        var TABKEY = 9;
+        if (event.keyCode === TABKEY) {
+            var elem = document.getElementById(this.props.sentence.s_id)
+            if (!this.props.sentence.s0_tgt && !this.state.value) {
+                alert("Sorry, Machine translated text is not available...")
+            } else {
+                if (!this.state.showSuggestions) {
+                    this.setState({ showSuggestions: true, highlight: false })
+                    this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
+                } else {
+                    if (this.state.suggestions[0]) {
+                        let suggestionArray = this.state.suggestions[0].name.split(' ')
+                        let textFieldArray = this.state.value.toString().replace(/\s{2,}/, ' ').trim().slice(0, elem.selectionEnd).split(' ')
+                        let remainingTextFieldArray = this.state.value.toString().replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
+                        let remainingSuggestion = this.state.suggestions[0].name.toString().replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
+                        let lenTextField = [...textFieldArray].length
+                        let lenSuggestion = [...suggestionArray].length
+                        let nextSuggestion = remainingSuggestion.shift()
+                        let nextTextField = remainingTextFieldArray.shift()
+                        if (lenSuggestion !== lenTextField) {
+                            if (remainingTextFieldArray.length === 0 && nextSuggestion !== undefined) {
+                                if (remainingSuggestion.length >= 1) {
+                                    if (nextSuggestion !== nextTextField) {
+                                        this.setState({ highlight: true, value: this.state.value + nextSuggestion + " ", userEnteredText: true }, () => {
+                                            elem.focus()
+                                            elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
+                                        })
+                                    } else {
+                                        this.setState({ highlight: true, value: this.state.value + nextSuggestion + " ", userEnteredText: true }, () => {
+                                            elem.focus()
+                                            elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
+                                        })
+                                    }
+                                }
+                                else {
+                                    this.setState({ highlight: true, value: this.state.value + nextSuggestion, userEnteredText: true }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange([...this.state.value].length + 1, [...this.state.value].length + 1)
+                                    })
+                                }
+                            } else if (nextSuggestion !== nextTextField) {
+                                if (nextSuggestion !== "") {
+                                    this.setState({ highlight: true, showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd).trim() + " " + nextSuggestion + " " + this.state.value.substr(elem.selectionEnd), userEnteredText: true }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
+                                    })
+                                }
+                            }
+                            else {
+                                if (nextSuggestion.length !== 0) {
+                                    this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
+                                    })
+                                } else {
+                                    this.setState({ showSuggestions: true, userEnteredText: true }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
+                                    })
+                                }
+                            }
+                        }
+                        else {
+                            if (nextSuggestion !== nextTextField && remainingSuggestion.length === 0) {
+                                this.setState({
+                                    showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd) + nextSuggestion + this.state.value.substr(elem.selectionEnd).trim()
+                                    , userEnteredText: true,
+                                    highlight: true
+                                }, () => {
+                                    elem.focus()
+                                    elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
+                                })
+                            } else {
+                                this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
+                                    elem.focus()
+                                    elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
+                                })
+                            }
+                        }
+                    }
+                }
+            }
+            event.preventDefault();
+            return false
+        }
+    }
+
+    handleClick = () => {
+        this.setState({ showSuggestions: false, highlight: false })
+    }
+    renderAutoCompleteText(option, caretStr) {
+        if (!this.state.highlight) {
+            var elem = document.getElementById(this.props.sentence.s_id)
+            let data = this.state.value ? this.state.value.slice(0, elem.selectionStart) : ""
+            let trimedText = data.trim()
+            var selectedText = this.state.value.slice(0, trimedText.length) + " "
+            let value = option.slice(trimedText.length, option.length)
+            return (<div><span style={{ color: "blue" }}>{selectedText}</span><span>{value}</span></div>)
+        } else {
+            var elem = document.getElementById(this.props.sentence.s_id)
+            let data = this.state.value ? this.state.value.trim().slice(0, elem.selectionEnd) : ""
+            let value = option.slice([...data].length, [...option].length).trim().split(' ')
+            let arrayData = value.shift().trim()
+            return (<div><span style={{ color: "blue" }}>{data + " " + arrayData + " "}</span><span>{value.join(' ')}</span></div>)
+        }
+    }
+
+    handleUserInputText(event) {
+        if (this.state.showSuggestions) {
+            this.setState({
+                showSuggestions: false,
+                suggestions: []
+            });
+        }
+        time = (time === 0 ? new Date() : time)
+
+        this.setState({
+            value: event.target.value,
+            userEnteredText: true,
+        });
+    }
+
     renderUserInputArea = () => {
         return (
-            <form name={this.props.sentence.s_id}>
+            <form >
                 <div>
                     <Autocomplete
                         filterOptions={filterOptions}
-                        getOptionLabel={option => option.name}
+                        id={this.props.sentence.s_id}
+                        getOptionLabel={option => option.name ? option.name : ""}
                         getOptionSelected={(option, value) => option.name === value.name}
                         renderOption={(option, index) => {
-                            return (<Typography>{option.name}</Typography>)
+                            return this.renderAutoCompleteText(option.name, this.state.value)
                         }}
                         options={this.state.suggestions}
                         disableClearable
@@ -417,13 +563,21 @@ class SentenceCard extends React.Component {
                         open={this.state.showSuggestions}
                         loading={true}
                         freeSolo={true}
-                        loadingText={'Loading ...'}
+                        loadingText={this.state.isCardBusy ? 'Loading ...' : 'No suggestions found'}
                         onChange={(event, newValue) => {
+                            let option = newValue.name ? newValue.name : newValue
+                            var elem = document.getElementById(this.props.sentence.s_id)
 
+                            let value = this.state.value ? this.state.value.slice(0, elem.selectionStart) : ""
+                            let trimedText = value.trim()
+
+                            var selectedText = option.slice(0, trimedText.length)
+                            let caretValue = option.slice(trimedText.length, option.length)
                             this.setState({
-                                value: newValue.name ? newValue.name : newValue, //this.state.value + ' ' + newValue.name,
+                                value: (selectedText ? selectedText.trim() : selectedText) + " " + (caretValue ? caretValue.trim() + " " : caretValue),
                                 showSuggestions: false,
-                                userEnteredText: true
+                                userEnteredText: true,
+
                             });
                         }}
                         onClose={(event, newValue) => {
@@ -434,7 +588,7 @@ class SentenceCard extends React.Component {
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
-                                helperText="Ctrl+s to save, TAB key to get suggestions of your choice"
+                                helperText="Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save"
                                 type="text"
                                 name={this.props.sentence.s_id}
                                 value={this.state.value}
@@ -444,10 +598,8 @@ class SentenceCard extends React.Component {
                                 disabled={this.state.isCardBusy}
                                 variant="outlined"
                                 onKeyDown={this.handleKeyDown}
+                                onClick={this.handleClick}
                                 inputRef={this.textInput}
-                                // onFocus={event => {
-                                //     this.props.highlightBlock(this.props.sentence)
-                                // }}
                                 InputProps={{
                                     ...params.InputProps,
                                     endAdornment: (
@@ -464,27 +616,46 @@ class SentenceCard extends React.Component {
             </form>
         )
     }
+    handleSpentTime = () => {
+        let sec = this.props.sentence.time_spent_ms / 1000;
+        var date = new Date(0);
+
+        date.setSeconds(sec); // specify value for SECONDS here
+        let spentTime = date.toISOString().substr(11, 8);
+        return <span style={{ width: "70%", margin: "auto", display: "flex", flexDirection: "row", justifyContent: "flex-end", color: "#233466" }}><Typography>Spent time:&nbsp;{spentTime}</Typography></span>
+
+    }
 
     renderNormaModeButtons = () => {
+
         return (
-            <div>
-                <Button style={{ marginRight: '10px' }} onClick={this.processSaveButtonClicked} variant="outlined" color="primary">
-                    SAVE
+            <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                <span style={{ textAlign: 'left', width: "30%" }}>
+                    <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }} onClick={this.processSaveButtonClicked} >
+                        SAVE
                 </Button>
+
+                </span>
+                {this.props.sentence && this.props.sentence.hasOwnProperty("bleu_score") && <span style={{ width: "70%", margin: "auto", display: "flex", flexDirection: "row", justifyContent: "flex-end", color: "#233466" }}><Typography>Bleu Score:&nbsp;{parseFloat(this.props.sentence.bleu_score).toFixed(2)}</Typography></span>}
+                {this.props.sentence && this.props.sentence.hasOwnProperty("time_spent_ms") && this.handleSpentTime()}
             </div>
         )
     }
 
 
     async makeAPICallDictionary() {
-        this.setState({ showStatus: true, message: "Fetching meanings"})
-        let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.word_locale, this.props.tgt_locale)
+        this.setState({ showProgressStatus: true, message: "Fetching meanings" })
+
+        let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.model.source_language_code, this.props.model.target_language_code)
         const apiReq = await fetch(apiObj.apiEndPoint(), {
             method: 'post',
             body: JSON.stringify(apiObj.getBody()),
             headers: apiObj.getHeaders().headers
         }).then((response) => {
-            if (response.status >= 400 && response.status < 600) {
+            this.setState({ showProgressStatus: false, message: null })
+
+            if (!response.ok) {
+                return Promise.reject('');
             }
             response.text().then((data) => {
                 let val = JSON.parse(data)
@@ -492,30 +663,45 @@ class SentenceCard extends React.Component {
             }).then((result) => {
                 let parallel_words = []
                 result.parallel_words.map((words) => {
-                    if (this.props.tgt_locale === words.locale)
+                    if (this.props.model.target_language_code === words.locale)
                         parallel_words.push(words.name)
-                    this.setState({showStatus: false, message: null})
                 })
                 this.setState({
                     parallel_words: parallel_words,
                     isOpenDictionary: true
                 })
             })
-        })
+        }).catch((error) => {
+            this.setState({ snackBarMessage: "Failed to fetch meaning...!", showStatus: true, snackBarVariant: "error" })
+        });
     }
 
     renderProgressInformation = () => {
         return (
-          <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            open={this.state.showStatus}
-            message={this.state.message}
-           
-          >
-            <Alert elevation={6} variant="filled" severity="info">{this.state.message}</Alert>
-          </Snackbar>
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                open={this.state.showProgressStatus}
+                message={this.state.message}
+
+            >
+                <Alert elevation={6} variant="filled" severity="info">{this.state.message}</Alert>
+            </Snackbar>
         )
-      }
+    }
+
+    snackBarMessage = () => {
+        return (
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                open={this.state.showStatus}
+                onClose={(e, r) => {
+                    this.setState({ showStatus: false, snackBarMessage: null })
+                }}
+            >
+                <Alert elevation={6} variant="filled" severity={this.state.snackBarVariant}>{this.state.snackBarMessage}</Alert>
+            </Snackbar>
+        );
+    };
 
     handleClose = () => {
         this.setState({
@@ -557,6 +743,7 @@ class SentenceCard extends React.Component {
                 positionX={this.state.positionX}
                 positionY={this.state.positionY}
                 handleClose={this.handleClose.bind(this)}
+                hideSplit={this.state.hideSplit}
                 isopenMenuItems={this.state.isopenMenuItems}
                 handleOperation={this.handleOperation.bind(this)}
             />)
@@ -662,17 +849,26 @@ class SentenceCard extends React.Component {
         )
     }
 
+
     handleCardExpandClick = () => {
         if (this.cardCompare()) {
             this.setState({ cardInFocus: false })
             this.props.clearHighlighBlock()
+            time = 0
+            TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         } else {
+            if (this.props.block_highlight && this.props.block_highlight.current_sid) {
+                time = 0
+                TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.block_highlight.current_sid)
+            }
             this.setState({ cardInFocus: true })
             this.props.highlightBlock(this.props.sentence, this.props.pageNumber)
             /**
              * For highlighting textarea on card expand
              */
             this.textInput && this.textInput.current && this.textInput.current.focus();
+            time = new Date()
+            TELEMETRY.startSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         }
 
     }
@@ -707,7 +903,8 @@ class SentenceCard extends React.Component {
                 {this.renderSentenceCard()}
                 {this.state.isopenMenuItems && this.state.cardInFocus && this.renderMenuItems()}
                 {this.state.isOpenDictionary && this.renderDictionary()}
-                {this.state.showStatus && this.renderProgressInformation()}
+                {this.state.showProgressStatus && this.renderProgressInformation()}
+                {this.state.showStatus && this.snackBarMessage()}
             </div>
 
         )

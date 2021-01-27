@@ -210,7 +210,7 @@ class HeaderNavBar extends Component {
               }
             />
           </NavLink>
-          <NavLink
+          {/* <NavLink
             activeClassName="active"
             className="anchor paddingTop10 ml-0 pl-4 pr-4 pt-3 pb-2 d-none d-md-inline d-lg-inline mainBarPosition"
             to="/forms"
@@ -262,7 +262,7 @@ class HeaderNavBar extends Component {
                   : "btmLineNone"
               }
             />
-          </NavLink>
+          </NavLink> */}
         </div>
         <div className="moveRight paddingTop10 textColorPopup">
           <div className="row pt-2">
@@ -270,7 +270,7 @@ class HeaderNavBar extends Component {
               {this.state.currentDate}
             </p>
             {/*Dropdown one*/}
-            <div className="dropdown mr-5 mt-1 d-none d-md-flex d-lg-flex langDropdown cursorStyleOne">
+            {/* <div className="dropdown mr-5 mt-1 d-none d-md-flex d-lg-flex langDropdown cursorStyleOne">
               <p
                 className="dropdown-toggle mr-5"
                 href="#"
@@ -339,7 +339,7 @@ class HeaderNavBar extends Component {
                   TA
                 </p>
               </div>
-            </div>
+            </div> */}
             {/*Dropdown two for small screens*/}
             <div className="dropdown">
               <p

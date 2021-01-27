@@ -22,18 +22,28 @@ import DocumentEditorV1 from './ui/containers/web/DocumentEditor/DocumentEditor.
 
 import FileUpload from './ui/containers/web/DocumentUpload/FileUpload';
 import ViewDocument from './ui/containers/web/DocumentTranslate/ViewDocument';
+import UserDetails from "./ui/containers/web/AdminPanel/UserDetails";
+import CreateUser from "./ui/containers/web/AdminPanel/CreateUser";
+import TmxUpload from "./ui/containers/web/AdminPanel/TmxUpload";
+import UserReport from './ui/containers/web/AdminPanel/UserReport';
+import DocumentStats from './ui/containers/web/AdminPanel/DocumentStats';
+import OrganizationList from './ui/containers/web/AdminPanel/OrganizatonList';
+import AddOrganization from "./ui/containers/web/AdminPanel/AddOrganization";
 
-const PrivateRoute = ({ headerAttribute: headerAttribute,  component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
+
+const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
     {...rest}
     render={props =>
+
       authenticate(userRoles) ? (
+
         <Layout
           dontShowLoader={dontShowLoader}
           currentMenu={currentMenu}
           showLogo={showLogo}
           component={Component}
-          headerAttribute= {headerAttribute}
+          headerAttribute={headerAttribute}
           title={title}
           forDemo={forDemo}
           drawer={drawer}
@@ -53,7 +63,7 @@ class AppRoutes extends React.Component {
     let count = 0;
     const token = localStorage.getItem("token");
     if (localStorage.getItem("roles")) {
-      const userRoles = ["interactive-editor"] //JSON.parse(localStorage.getItem("roles"));
+      const userRoles = [localStorage.getItem("roles")] //JSON.parse(localStorage.getItem("roles"));
       if (token) {
         if (allowedRoles && Array.isArray(allowedRoles)) {
           allowedRoles.map(allowedRole => {
@@ -87,7 +97,7 @@ class AppRoutes extends React.Component {
             {/* <Route exact path={`${process.env.PUBLIC_URL}/callback`} component={Callback} /> */}
             <Route exact path={`${process.env.PUBLIC_URL}/logout`} component={Logout} />
             <Route
-            exact
+              exact
               path={`${process.env.PUBLIC_URL}/signup`}
               title="Sign up"
               component={Signup}
@@ -122,8 +132,8 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/interactive-document/:locale/:tgt_locale/:targetlang/:jobid/:inputfileid/:modelId/:filename`}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename`}
+              userRoles={["TRANSLATOR"]}
               component={DocumentEditorV1}
               title="Translate file"
               authenticate={this.authenticateUser}
@@ -134,7 +144,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-upload`}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              userRoles={["TRANSLATOR"]}
               component={FileUpload}
               title="Start Translate"
               authenticate={this.authenticateUser}
@@ -142,7 +152,7 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
 
-          
+
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/forgot-password`}
               title="Forgot Password"
@@ -152,6 +162,19 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
               currentMenu="forgot-password"
             />
+            
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/glossary-upload`}
+              dontShowLoader
+              title={"Glossary Upload"}
+              userRoles={["ADMIN"]}
+              component={TmxUpload}
+              authenticate={this.authenticateUser}
+              currentMenu="glossary-upload"
+
+            />
+            
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/set-password/:uid/:rid`}
               title="Set Password"
@@ -161,11 +184,11 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
               currentMenu="set-password"
             />
-            
+
             {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-translate`}
               title={translate('webroutes.page.title.anuvaadEditor')}
-              userRoles={["editor", "dev", "interactive-editor", "grader"]}
+              userRoles={["TRANSLATOR"]}
               component={IntractiveTranslate}
               authenticate={this.authenticateUser}
               currentMenu="interactive-translate"
@@ -175,13 +198,79 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/view-document`}
               dontShowLoader
               title={"Document Translate"}
-              userRoles={["editor", "dev", "grader", "interactive-editor"]}
+              userRoles={["TRANSLATOR"]}
               component={ViewDocument}
               authenticate={this.authenticateUser}
               currentMenu="view-document"
               dontShowHeader={true}
             />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/create-user`}
+              title={translate('create.user.page.heading.title')}
+              component={CreateUser}
+              userRoles={["ADMIN"]}
+              authenticate={this.authenticateUser}
+              currentMenu="create-user"
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/user-details/:pageno`}
+              dontShowLoader
+              title={"User Details"}
+              userRoles={["ADMIN"]}
+              component={UserDetails}
+              authenticate={this.authenticateUser}
+              currentMenu="user-details"
+              dontShowHeader={true}
+            />
+
+
+<PrivateRoute
+              path={`${process.env.PUBLIC_URL}/add-organization`}
+              title={translate('Add Organization')}
+              component={AddOrganization}
+              userRoles={["ADMIN"]}
+              authenticate={this.authenticateUser}
+              currentMenu="add-organization"
+            />
+
+<PrivateRoute
+              path={`${process.env.PUBLIC_URL}/organization-list`}
+              dontShowLoader
+              title={"Organization List"}
+              userRoles={["ADMIN"]}
+              component={OrganizationList}
+              authenticate={this.authenticateUser}
+              currentMenu="organization-list"
+              dontShowHeader={true}
+
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/user-report/:id/:name`}
+              dontShowLoader
+              title={"User Report"}
+              userRoles={["ADMIN"]}
+              component={UserReport}
+              authenticate={this.authenticateUser}
+              currentMenu="user-report"
+              dontShowHeader={true}
+            />
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/document-stats/:recordId/:fname`}
+              dontShowLoader
+              title={"Document Stats"}
+              userRoles={["ADMIN"]}
+              component={DocumentStats}
+              authenticate={this.authenticateUser}
+              currentMenu="document-stats"
+              dontShowHeader={true}
+            />
+
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
+
+
           </Switch>
         </div>
       </Router>

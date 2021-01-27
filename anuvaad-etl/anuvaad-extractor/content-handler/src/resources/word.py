@@ -21,11 +21,14 @@ class WordSaveResource(Resource):
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
 
+        # words_in=[]
         for word in body['words']:
             if word['locale'] != 'en':
                 res = CustomResponse(Status.ERR_ENGLISH_MANDATORY_WHILE_SAVING.value, None)
                 return res.getresjson(), 400
-
+            else:
+                word['name']=str(word['name']).lower()
+        
         result = wordRepo.store(body['words'])
 
         if result == False:

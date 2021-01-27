@@ -20,15 +20,15 @@ output_topic_default = 'anuvaad-dp-tools-visual-evaluator-output-v1'
 output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_EVALUATOR_OUTPUT'
 output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
-kf_local_server     = 'localhost:9093'
-kafka_ip_host       = 'KAFKA_IP_HOST'
+kf_local_server     = 'localhost:9092'
+kafka_ip_host       = 'KAFKA_BOOTSTRAP_SERVER_HOST'
 bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 
 TASK_STAT           = 'BLOCK-MERGER'
 
 CONSUMER_GROUP_default       = 'anuvaad-etl-bm-consumer-group'
-CONSUMER_GROUP_identifire    = 'ANUVAAD_ETL_BM_CONSUMER_GROUP_V1'
-CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_default,CONSUMER_GROUP_identifire)
+CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_BM_CONSUMER_GROUP_V1'
+CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 #folders and file path
 download_folder = 'upload'
 
@@ -105,4 +105,4 @@ CROP_CONFIG = {
 
 CLASS_2_LANG = ['ta']
 
-CRAFT_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"
+#CRAFT_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"

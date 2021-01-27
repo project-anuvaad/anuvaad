@@ -28,7 +28,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 
-import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
+import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 
 const styles = {
   container: {},
@@ -127,7 +127,7 @@ class Header extends React.Component {
   render() {
     const { classes, title, forDemo, dontShowHeader, currentMenu, open_sidebar } = this.props;
 
-    var role    = ["interactive-editor"] //JSON.parse(localStorage.getItem("roles"));
+    var role = [localStorage.getItem("roles")];
     var useRole = [];
     role.map((item, value) => {
       useRole.push(item); value !== role.length - 1 && useRole.push(", ")
@@ -146,9 +146,9 @@ class Header extends React.Component {
                 <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
                   <CloseIcon />
                 </IconButton> :
-                  <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
-                    <MenuIcon />
-                  </IconButton>
+                <IconButton id="menu" onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
+                  <MenuIcon />
+                </IconButton>
               }
               <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
               {forDemo &&
@@ -203,11 +203,12 @@ class Header extends React.Component {
                     />
                   </ListItem>
 
-                  {role && Array.isArray(role) && !role.includes("analyzer") && !role.includes("admin") && !role.includes("user") && (
+                  {role && Array.isArray(role) && !role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
                       <ListItem
+                        id="instant-translate"
                         style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "dashboard" && themeAnuvaad.palette.primary.main }}
                         button
                         onClick={() => {
@@ -217,6 +218,7 @@ class Header extends React.Component {
                       >
 
                         <ListItemText
+
                           disableTypography
                           primary={
                             <Typography type="body2" style={{ color: currentMenu === "dashboard" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
@@ -227,11 +229,89 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
+                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+                    <div>
+                      <Divider className={classes.divider} />
 
-                  {role && Array.isArray(role) && (role.includes("dev") || role.includes("grader") || role.includes("interactive-editor")) && (
+                      <ListItem
+                        id="user-details"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "user-details" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/user-details/0`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: currentMenu === "user-details" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              User details
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )}
+
+{role && Array.isArray(role) && role.includes("ADMIN") && (
+                    <div>
+                      <Divider className={classes.divider} />
+
+                      <ListItem
+                        id="glossary-upload"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "glossary-upload" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/glossary-upload`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: currentMenu === "glossary-upload" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              Glossary Upload
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )}
+
+{role && Array.isArray(role) && role.includes("ADMIN") && (
+                    <div>
+                      <Divider className={classes.divider} />
+
+                      <ListItem
+                        id="organization-list"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "organization-list" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/organization-list`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: currentMenu === "organization-list" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              Organization List
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )}
+
+                  {role && Array.isArray(role) && (role.includes("TRANSLATOR")) && (
                     <div>
                       <Divider className={classes.divider} />
                       <ListItem
+                        id="view-document"
                         style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "view-document" && themeAnuvaad.palette.primary.main }}
                         button
                         onClick={() => {
@@ -256,6 +336,7 @@ class Header extends React.Component {
                     <Divider className={classes.divider} />
 
                     <ListItem
+                      id="profile"
                       style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "profile" && themeAnuvaad.palette.primary.main }}
                       button
                       onClick={() => {
@@ -279,6 +360,7 @@ class Header extends React.Component {
                     <Divider className={classes.divider} />
 
                     <ListItem
+                      id="logout"
                       style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "logout" && themeAnuvaad.palette.primary.main }}
                       button
                       onClick={() => {

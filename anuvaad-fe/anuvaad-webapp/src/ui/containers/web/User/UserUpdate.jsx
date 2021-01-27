@@ -5,14 +5,13 @@ import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 
 import SelectModel from "@material-ui/core/Select";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { bindActionCreators } from "redux";
 import MenuItem from "@material-ui/core/MenuItem";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { bindActionCreators } from "redux";
 import Chip from "@material-ui/core/Chip";
 import InputLabel from "@material-ui/core/InputLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -20,14 +19,16 @@ import IconButton from "@material-ui/core/IconButton";
 import Input from "@material-ui/core/Input";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
+
+import Snackbar from "../../../components/web/common/Snackbar";
+import { translate } from "../../../../assets/localisation";
+
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import AddUser from "../../../flux/actions/apis/adduser";
 import FetchCourtList from "../../../flux/actions/apis/fetchcourtlist";
 import UserRolesList from "../../../../flux/actions/apis/userroles";
-import Updatepassword from "../../../../flux/actions/apis/updateadminpassword";
-import Snackbar from "../../../components/web/common/Snackbar";
+import Updatepassword from "../../../../flux/actions/apis/user/updateadminpassword";
 import UserDirectoryList from "../../../../flux/actions/apis/userdirectory";
-import { translate } from "../../../../assets/localisation";
 
 class UserUpdate extends React.Component {
   constructor(props) {

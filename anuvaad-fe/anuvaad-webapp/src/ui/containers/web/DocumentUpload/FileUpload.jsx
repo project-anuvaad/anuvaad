@@ -8,21 +8,23 @@ import Grid from "@material-ui/core/Grid";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import MenuItem from "@material-ui/core/MenuItem";
-import FetchModel from "../../../../flux/actions/apis/fetchmodel";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+
 import history from "../../../../web.history";
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
 import FileUploadStyles from "../../../styles/web/FileUpload";
-import WorkFlow from "../../../../flux/actions/apis/fileupload";
-import DocumentUpload from "../../../../flux/actions/apis/document_upload";
-import TextField from "@material-ui/core/TextField";
-import Select from "@material-ui/core/Select";
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
 import Toolbar from "./FileUploadHeader"
-import OutlinedInput from "@material-ui/core/OutlinedInput";
+
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
+import WorkFlow from "../../../../flux/actions/apis/common/fileupload";
+import DocumentUpload from "../../../../flux/actions/apis/document_upload/document_upload";
+import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const LANG_MODEL = require('../../../../utils/language.model')
@@ -98,26 +100,6 @@ class PdfUpload extends Component {
       alert("Field should not be empty!");
     }
 
-    // let model = "";
-    // let target_lang_name = ''
-    // let source_lang_name = ''
-    // if (this.props.fetch_models.models) {
-    //   this.props.fetch_models.models.map(item =>
-    //     item.target_language_code === this.state.target &&
-    //       item.source_language_code === this.state.source &&
-    //       item.is_primary
-    //       ? (model = item)
-    //       : ""
-    //   );
-    //   this.props.fetch_languages.languages.map((lang) => {
-    //     if (lang.language_code === this.state.target) {
-    //       target_lang_name = lang.language_name
-    //     } if (lang.language_code === this.state.source) {
-    //       source_lang_name = lang.language_name
-    //     }
-    //     return true
-    //   })
-
   }
   // Source language
   handleSource(modelLanguage, supportLanguage) {
@@ -157,26 +139,27 @@ class PdfUpload extends Component {
     history.push(`${process.env.PUBLIC_URL}/view-document`)
   }
 
-  getSnapshotBeforeUpdate(prevProps, prevState) {
-    TELEMETRY.pageLoadStarted('document-upload')
+  // getSnapshotBeforeUpdate(prevProps, prevState) {
+  //   TELEMETRY.pageLoadStarted('document-upload')
 
-    /**
-    * getSnapshotBeforeUpdate() must return null
-    */
-    return null;
-  }
+  //   /**
+  //   * getSnapshotBeforeUpdate() must return null
+  //   */
+  //   return null;
+  // }
 
   componentDidMount() {
-    TELEMETRY.pageLoadCompleted('document-upload')
-      const { APITransport } = this.props;
-      const apiModel = new FetchModel();
-      APITransport(apiModel);
-      this.setState({ showLoader: true });
-    
+    TELEMETRY.pageLoadStarted('document-upload')
+
+    const { APITransport } = this.props;
+    const apiModel = new FetchModel();
+    APITransport(apiModel);
+    this.setState({ showLoader: true });
+
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.fetch_models.models != this.props.fetch_models.models) {
+    if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
       this.setState({
         source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
         target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models)
@@ -193,9 +176,16 @@ class PdfUpload extends Component {
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
       this.props.createJobEntry(this.props.workflowStatus)
 
-      TELEMETRY.startWorkflow(this.state.source, this.state.target, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
+      var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code)
+      var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code)
+
+      TELEMETRY.startWorkflow(sourceLang, targetLang, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
       history.push(`${process.env.PUBLIC_URL}/view-document`);
     }
+  }
+
+  componentWillUnmount() {
+    TELEMETRY.pageLoadCompleted('document-upload')
   }
 
   processSourceLanguageSelected = (event) => {
@@ -275,7 +265,7 @@ class PdfUpload extends Component {
         <Grid item xs={12} sm={12} lg={12} xl={12} >
           <Select
             labelId="demo-simple-select-outlined-label"
-            id="outlined-age-simple"
+            id="source-lang"
             onChange={this.processSourceLanguageSelected}
             value={this.state.source_language_code}
             fullWidth
@@ -291,7 +281,7 @@ class PdfUpload extends Component {
           >
             {
               this.state.source_languages.map(lang =>
-                <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
             }
           </Select>
         </Grid>
@@ -313,7 +303,7 @@ class PdfUpload extends Component {
         <Grid item xs={12} sm={12} lg={12} xl={12}>
           <Select
             labelId="demo-simple-select-outlined-label"
-            id="outlined-age-simple"
+            id="target-lang"
             value={this.state.target}
             onChange={this.processTargetLanguageSelected}
             value={this.state.target_language_code}
@@ -331,7 +321,7 @@ class PdfUpload extends Component {
           >
             {
               this.state.target_languages.map(lang =>
-                <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
             }
           </Select>
         </Grid>
@@ -357,8 +347,7 @@ class PdfUpload extends Component {
 
               <Grid item xs={12} sm={6} lg={6} xl={6}>
                 <MuiThemeProvider theme={theme}>
-                  <DropzoneArea
-                    className={classes.DropZoneArea}
+                  <DropzoneArea className={classes.DropZoneArea}
                     showPreviewsInDropzone
                     dropZoneClass={classes.dropZoneArea}
                     acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
@@ -401,32 +390,36 @@ class PdfUpload extends Component {
 
               </Grid>
 
-              <Grid item xs={12} sm={6} lg={6} xl={6} style={{paddingTop: "25px"}}>
-                <Button variant="contained" color="primary"
+              <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
+                <Button
+                  id="back"
+                  variant="contained" color="primary"
                   size="large" onClick={this.handleBack.bind(this)}
                   style={{
                     width: "100%",
-                    backgroundColor:'#1C9AB7',
-                    borderRadius:"20px 20px 20px 20px",
-                    color:"#FFFFFF",
-                    height:'46px'
+                    backgroundColor: '#1C9AB7',
+                    borderRadius: "20px 20px 20px 20px",
+                    color: "#FFFFFF",
+                    height: '46px'
                   }}
                 >
                   {translate("common.page.button.back")}
                 </Button>
               </Grid>
-              <Grid item xs={6} sm={6} lg={6} xl={6} style={{paddingTop: "25px"}}>
+              <Grid item xs={6} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
                 <Grid item xs={12} sm={12} lg={12} xl={12}>
-                  <Button variant="contained" color="primary" 
-                  // className={classes.button1} 
-                  style={{
-                    width: "100%",
-                    backgroundColor:'#1C9AB7',
-                    borderRadius:"20px 20px 20px 20px",
-                    color:"#FFFFFF",
-                    height:'46px'
-                  }}
-                  size="large" onClick={this.handleSubmit.bind(this)}>
+                  <Button
+                    id="upload"
+                    variant="contained" color="primary"
+                    // className={classes.button1} 
+                    style={{
+                      width: "100%",
+                      backgroundColor: '#1C9AB7',
+                      borderRadius: "20px 20px 20px 20px",
+                      color: "#FFFFFF",
+                      height: '46px'
+                    }}
+                    size="large" onClick={this.handleSubmit.bind(this)}>
                     {translate("common.page.button.upload")}
                   </Button>
                 </Grid>

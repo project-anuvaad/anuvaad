@@ -13,16 +13,16 @@
 					"key": "sl",
 					"values": [
 						"All",
-						"hi",
-						"ml",
-						"bn",
-						"en",
-						"ta",
 						"English",
 						"Bengali",
-						"hindi",
+						"Hindi",
 						"Malayalam",
-						"Hindi"
+						"Telugu",
+						"Tamil",
+						"Kannada",
+						"Marathi",
+						"Punjabi",
+						"Gujarati"
 					]
 				},
 				{
@@ -31,16 +31,16 @@
 					"key": "tl",
 					"values": [
 						"All",
-						"hi",
-						"ml",
-						"bn",
-						"en",
-						"ta",
 						"English",
 						"Bengali",
-						"hindi",
+						"Hindi",
 						"Malayalam",
-						"Hindi"
+						"Telugu",
+						"Tamil",
+						"Kannada",
+						"Marathi",
+						"Punjabi",
+						"Gujarati"
 					]
 				}
 			],
@@ -71,12 +71,21 @@
 					"order": 3,
 					"filter": "",
 					"headers": []
+				},
+				{
+					"id": "totalSave",
+					"name": "Total Saved Sentence",
+					"code": "",
+					"chartType": "metric",
+					"order": 4,
+					"filter": "",
+					"headers": []
 				}
 			],
 			"visualizations": [
 				{
 					"row": 1,
-					"name": "Target Language",
+					"name": "Language",
 					"vizArray": [
 						{
 							"id": 1,
@@ -149,7 +158,7 @@
 					"vizArray": [
 						{
 							"id": 1,
-							"name": "File Translation Count",
+							"name": "Completed Translation Trend",
 							"dimensions": {
 								"height": 250,
 								"width": 4
@@ -159,8 +168,8 @@
 							"isCollapsible": false,
 							"charts": [
 								{
-									"id": "filesTranslatedDayWise",
-									"name": "File Translation Count",
+									"id": "completedTranslationDayWise",
+									"name": "Completed Translation Trend",
 									"code": "",
 									"chartType": "line",
 									"filter": "",
@@ -169,7 +178,28 @@
 							]
 						},
 						{
-							"id": 1,
+							"id": 2,
+							"name": "Failed Translation Trend",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "failedTranslationDayWise",
+									"name": "Failed Translation Trend",
+									"code": "",
+									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
+						},
+						{
+							"id": 3,
 							"name": "Merge Operations Trend",
 							"dimensions": {
 								"height": 250,
@@ -188,9 +218,15 @@
 									"headers": []
 								}
 							]
-						},
+						}
+					]
+				},
+				{
+					"row": 3,
+					"name": "Target Language",
+					"vizArray": [
 						{
-							"id": 1,
+							"id": 4,
 							"name": "Split Operations Trend",
 							"dimensions": {
 								"height": 250,
@@ -203,6 +239,48 @@
 								{
 									"id": "splitTrend",
 									"name": "Split Operations Trend",
+									"code": "",
+									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
+						},
+						{
+							"id": 5,
+							"name": "Save Records Trend",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "saveTrend",
+									"name": "Save Records Trend",
+									"code": "",
+									"chartType": "line",
+									"filter": "",
+									"headers": []
+								}
+							]
+						},
+						{
+							"id": 6,
+							"name": "New User Trend",
+							"dimensions": {
+								"height": 250,
+								"width": 4
+							},
+							"vizType": "chart",
+							"noUnit": true,
+							"isCollapsible": false,
+							"charts": [
+								{
+									"id": "createUserTrend",
+									"name": "New User Trend",
 									"code": "",
 									"chartType": "line",
 									"filter": "",

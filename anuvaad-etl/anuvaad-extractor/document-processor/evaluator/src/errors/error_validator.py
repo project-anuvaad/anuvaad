@@ -28,8 +28,8 @@ class ValidationResponse(object):
                 input_filepath_target = file_ops.input_path(input_filename_target)
                 if input_filename == "" or input_filename is None or input_filename_target == "" or input_filename_target is None:
                     raise FileErrors("FILENAME_ERROR", "Filename not found or its empty")
-                #elif not input_filename.endswith('.pdf'):
-                    #raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
+                #elif not input_filename.endswith('.json'):
+                #    raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only json file.")
                 if in_file_type == "" or in_file_type is None or in_file_type_target == "" or in_file_type_target is None:
                     raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
                 #elif file_ops.check_file_extension(in_file_type) is False:
@@ -42,8 +42,8 @@ class ValidationResponse(object):
                     raise FileErrors("LOCALE_ERROR", "No language input or unsupported language input.")
 
     def format_error(self, json_data):
-        keys_checked = {'workflowCode','jobID','inputs','tool','stepOrder'}
-        if json_data.keys() == {'files'}:
+        keys_checked = {'workflowCode','jobID','input','tool','stepOrder'}
+        if json_data.keys() == {'input'}:
             return True
         elif json_data.keys() >= keys_checked:
             return True 

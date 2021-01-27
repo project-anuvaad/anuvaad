@@ -1,7 +1,8 @@
 import src.utilities.app_context as app_context
 from anuvaad_auditor.loghandler import log_exception
-import copy
-
+import copy, json
+import os
+import config
 
 def log_error(method):
     def wrapper(*args, **kwargs):
@@ -21,7 +22,7 @@ class File:
 
     @log_error
     def get_format(self):
-        return self.file['file']['format']
+        return self.file['file']['type']
 
     @log_error
     def get_name(self):
@@ -47,6 +48,15 @@ class File:
 
 
 def get_files(application_context):
-    files = copy.deepcopy(application_context['outputs'])
+    files = copy.deepcopy(application_context['input']['inputs'])
     return files
+
+def get_json(name ):
+    path = os.path.join(config.BASE_DIR, name)
+    with open (path, "r") as f:
+        data = json.loads(f.read())
+    json_data = data['outputs']
+    return json_data
+
+
 

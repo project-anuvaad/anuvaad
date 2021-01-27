@@ -1,8 +1,13 @@
 const localization_EN_Data = {
+  "common.page.label.active":"Active",
+  "common.page.button.reset":'Reset',
   "dashboard.page.heading.title": "Translate sentence",
+  "create.user.page.heading.title": "Create User",
   "common.page.label.sourceLang": "Select Source Language",
   "common.page.label.targetLang": "Select Target Language",
   "common.page.button.submit": "submit",
+  "common.page.court.name": "Court Location",
+  "common.page.roles": "Role",
   "common.page.button.clear": "clear",
   "dashboard.page.checkbox.mt": "Machine Translated",
   "dashboard.page.checkbox.splitted": "Show , splitted",
@@ -88,6 +93,7 @@ const localization_EN_Data = {
   "common.page.label.timeStamp": "Timestamp",
   "commonCorpus.page.button.corpus": "Corpus",
   "common.page.title.document": "Documents",
+  "common.page.title.userdetails":"User Details",
   "viewCorpus.title.viewSentence": "View Sentence",
   "common.page.title.gradeSentence": "Grade Sentence",
   "viewCorpus.title.editSentence": "Edit Sentence",
@@ -148,6 +154,7 @@ const localization_EN_Data = {
   "common.page.label.text": "text",
   "common.page.label.password": "Password",
   "common.page.label.email": "Email ID",
+  "common.page.label.name":"Name",
   "common.page.button.update": "Update",
   "common.page.button.add": "Add",
   "userTranslate.page.message.newUserAdded": "New user added successfully",
@@ -421,7 +428,9 @@ const localization_EN_Data = {
   "common.page.label.SENTENCE_SOURCE_EDITED": "Saving sentence...",
   "common.page.label.download": "Downloading file...",
   "common.page.label.downloadCompleted": "Download completed...",
-
+  "common.page.label.TOKEN_EXPIRED" :'Session Expired, Redirecting to login page',
+  "common.page.label.glossaryUpload" : "Glossary Upload",
+  "common.page.title.orgList": "Organization List"
   // 'newCorpus.page.array.addFileTargetAndDetails':["Add Source file", 'Add target file', 'Add file details']
 };
 

@@ -1,14 +1,16 @@
 import React from "react";
 import "../../../styles/web/InteractivePreview.css";
 import { Document, Page } from "react-pdf/dist/entry.webpack";
-import DownloadFile from "../../../../flux/actions/apis/download_file"
+
+import DownloadFile from "../../../../flux/actions/apis/download/download_file"
 
 class PDFRenderer extends React.Component {
   constructor(props) {
     super(props);
     this.textInput = React.createRef();
     this.state = {
-      scale: 1.0
+      scale: 1.0,
+      msg: "Loading..."
     };
   }
 
@@ -26,19 +28,20 @@ class PDFRenderer extends React.Component {
   }
 
   componentDidMount() {
-
+    this.setState({ msg: "Loading..." })
     let user_profile = JSON.parse(localStorage.getItem('userProfile'));
     let obj = new DownloadFile(this.props.filename, user_profile.userID)
 
-    console.log("---Fetching Document---")
     const apiReq1 = fetch(obj.apiEndPoint(), {
       method: 'get',
       headers: obj.getHeaders().headers
     }).then(async response => {
       if (!response.ok) {
-        this.setState({ dialogMessage: "Failed to download file...", })
+        this.setState({ msg: "Failed to load file..." })
         console.log("api failed")
       } else {
+        this.setState({ msg: null })
+
         const buffer = new Uint8Array(await response.arrayBuffer());
         let res = Buffer.from(buffer).toString('base64')
 
@@ -50,6 +53,7 @@ class PDFRenderer extends React.Component {
           });
       }
     }).catch((error) => {
+      this.setState({ msg: "Failed to load file..." })
       console.log('api failed because of server or network', error)
     });
 
@@ -58,7 +62,7 @@ class PDFRenderer extends React.Component {
   renderPDF = (url, pageNo) => {
     return (
       <div style={{ maxHeight: "88vh", overflowY: "auto", display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
-        <Document file={this.state.url} onLoadSuccess={this.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
+        <Document loading={""} noData = {this.state.msg} file={this.state.url} onLoadSuccess={this.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
           {/* {
                 Array.from(
                   new Array(this.state.numPages),

@@ -36,6 +36,13 @@ class SentenceRepositories:
             if 'save' not in sentence:
                 sentence['save'] = False
 
+            if 'bleu_score' not in sentence:
+                sentence['bleu_score'] = 0
+
+            if 'time_spent_ms' not in sentence:
+                sentence['time_spent_ms'] = 0
+
+
             if self.sentenceModel.update_sentence_by_s_id(user_id, sentence) == False:
                 return False
         return True
@@ -52,8 +59,12 @@ class SentenceRepositories:
             result          = {}
             count_result    = self.sentenceModel.get_tokenized_sentences_count_status(record_id)
             
-            result['total_count']       = count_result['total']
-            result['completed_count']   = count_result['completed']
+            result['total_sentence_count']       = count_result['total_sentences']
+            result['completed_sentence_count']   = count_result['completed_sentences']
+            result['total_word_count']       = count_result['total_words']
+            result['completed_word_count']   = count_result['completed_words']
+            result['avg_bleu_score']         = count_result['avg_bleu_score']
+            result['total_time_spent_ms']    = count_result['total_time_spent_ms']
             result['record_id']         = record_id
             response.append(result)
         return response

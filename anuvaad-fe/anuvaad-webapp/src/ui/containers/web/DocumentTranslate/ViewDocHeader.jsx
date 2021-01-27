@@ -1,25 +1,23 @@
 import React from "react";
-import history from "../../../../web.history";
 import Button from "@material-ui/core/Button";
-
 import { withStyles } from '@material-ui/core/styles';
 import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
-
 import Toolbar from "@material-ui/core/Toolbar";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
-import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
+import classNames from "classnames";
 import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
-import classNames from "classnames";
+import history from "../../../../web.history";
+
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 
 class ViewDocHeader extends React.Component {
 
@@ -30,7 +28,9 @@ class ViewDocHeader extends React.Component {
     renderOption() {
         return (
             <div>
-                <Button variant="contained"
+                <Button
+                    id="start-translate"
+                    variant="contained"
                     color="primary"
                     style={{
                         borderRadius: "20px",
@@ -60,12 +60,12 @@ class ViewDocHeader extends React.Component {
 
                     {
                         open_sidebar ?
-                        <IconButton onClick={() => this.props.showSidebar()} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
-                            <CloseIcon />
-                        </IconButton> :
-                    <IconButton onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
-                        <MenuIcon />
-                    </IconButton>
+                            <IconButton onClick={() => this.props.showSidebar()} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
+                                <CloseIcon />
+                            </IconButton> :
+                            <IconButton id="open-menu" onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
+                                <MenuIcon />
+                            </IconButton>
                     }
 
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
@@ -73,7 +73,7 @@ class ViewDocHeader extends React.Component {
                     <Typography variant="h5" color="inherit" className={classes.flex}>
                         Document Translate
                     </Typography>
-                    <div style={{ position: 'absolute', right: '30px' }}>
+                    <div style={{ position: 'absolute', right: '3%' }}>
                         {this.renderOption()}
                     </div>
                 </Toolbar>

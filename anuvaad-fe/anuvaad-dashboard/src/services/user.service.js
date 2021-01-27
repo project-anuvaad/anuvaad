@@ -14,7 +14,7 @@ function login(username, password) {
   };
 
   return fetch(
-    process.env.REACT_APP_LOGIN_API_URL + APIS.LOGIN.USERLOGIN,
+    "http://54.188.215.158:8080/" + APIS.LOGIN.USERLOGIN,
     requestOptions
   ).then(handleResponse);
 }

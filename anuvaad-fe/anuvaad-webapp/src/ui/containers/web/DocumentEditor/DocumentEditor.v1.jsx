@@ -2,42 +2,42 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import Grid from "@material-ui/core/Grid";
-import { translate } from "../../../../assets/localisation";
-import history from "../../../../web.history";
-import ClearContent from "../../../../flux/actions/apis/clearcontent";
-import FileContent from "../../../../flux/actions/apis/fetchcontent";
-import FetchContentUpdate from "../../../../flux/actions/apis/v1_fetch_content_update";
-
-import Spinner from "../../../components/web/common/Spinner";
 import Paper from "@material-ui/core/Paper";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-import WorkFlowAPI from "../../../../flux/actions/apis/fileupload";
+
+import { translate } from "../../../../assets/localisation";
+import history from "../../../../web.history";
+import Spinner from "../../../components/web/common/Spinner";
 import LanguageCodes from "../../../components/web/common/Languages.json"
 import PDFRenderer from './PDFRenderer';
-import SaveSentenceAPI from '../../../../flux/actions/apis/savecontent';
 import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
 import InteractivePagination from './InteractivePagination';
 import SENTENCE_ACTION from './SentenceActions'
-import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverter";
-import JobStatus from "../../../../flux/actions/apis/v1_jobprogress";
-// import PAGE_OPS from "../../../../utils/page.operations";
-// import BLOCK_OPS from "../../../../utils/block.operations";
-// import TELEMETRY from '../../../../utils/TelemetryManager';
-
-import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
-import { update_sentences, update_blocks } from '../../../../flux/actions/apis/update_page_content';
-import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
-
 import InteractiveDocToolBar from "./InteractiveDocHeader"
+
+import WorkFlowAPI from "../../../../flux/actions/apis/common/fileupload";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import ClearContent from "../../../../flux/actions/apis/document_translate/clearcontent";
+import FileContent from "../../../../flux/actions/apis/document_translate/fetchcontent";
+import FetchContentUpdate from "../../../../flux/actions/apis/document_translate/v1_fetch_content_update";
+import SaveSentenceAPI from '../../../../flux/actions/apis/document_translate/savecontent';
+import JobStatus from "../../../../flux/actions/apis/view_document/v1_jobprogress";
+import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
+import { showPdf, clearShowPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
+import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
+import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
+import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
+import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
+import { Button } from "@material-ui/core";
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
+var jp = require('jsonpath')
 
 class DocumentEditor extends React.Component {
   constructor(props) {
@@ -47,7 +47,11 @@ class DocumentEditor extends React.Component {
       currentPageIndex: 1,
       apiInProgress: false,
       snackBarMessage: '',
-      apiFetchStatus: false
+      apiFetchStatus: false,
+      docView: false,
+      zoomPercent: 100,
+      zoomInDisabled: false,
+      zoomOutDisabled: false
     }
     this.forMergeSentences = []
   }
@@ -62,38 +66,36 @@ class DocumentEditor extends React.Component {
 
     localStorage.setItem("recordId", recordId);
     localStorage.setItem("inputFile", this.props.match.params.inputfileid)
-
-    let langCodes = LanguageCodes
-    let sourceLang = ''
-    if (langCodes && Array.isArray(langCodes) && langCodes.length > 0) {
-      langCodes.map(lang => {
-        if (lang.language_code === this.props.match.params.locale) {
-          sourceLang = lang.language_name
-        }
-        return true
-      })
-    }
-    TELEMETRY.startTranslatorFlow(sourceLang, this.props.match.params.targetlang, this.props.match.params.inputfileid, jobId)
     this.setState({ showLoader: true });
     this.makeAPICallFetchContent(1);
     this.makeAPICallDocumentsTranslationProgress();
+
+    if (!this.props.fetch_models || !this.props.fetch_models.length > 0) {
+      const apiModel = new FetchModel();
+      this.props.APITransport(apiModel);
+    } else {
+      let model = this.fetchModel(parseInt(this.props.match.params.modelId))
+      if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
+        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+      }
+    }
+
     window.addEventListener('popstate', this.handleOnClose);
     // window.addEventListener('beforeunload',this.handleOnClose);
+
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
       this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
     }
+
     if (prevProps.active_page_number !== this.props.active_page_number) {
       this.makeAPICallFetchContent(this.props.active_page_number);
-
-
     }
 
     if (prevProps.document_contents !== this.props.document_contents) {
       this.setState({ apiFetchStatus: false })
-
     }
 
     if (prevProps.document_editor_mode !== this.props.document_editor_mode && this.props.document_editor_mode.mode === 'EDITOR_MODE_MERGE') {
@@ -101,7 +103,13 @@ class DocumentEditor extends React.Component {
       this.makeAPICallFetchContent(nextPage, true);
     }
 
-
+    if (prevProps.fetch_models !== this.props.fetch_models) {
+      let jobId = this.props.match.params.jobid ? this.props.match.params.jobid.split("|")[0] : ""
+      let model = this.fetchModel(parseInt(this.props.match.params.modelId))
+      if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
+        TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -112,6 +120,8 @@ class DocumentEditor extends React.Component {
     let jobId = recordId ? recordId.split("|")[0] : ""
     TELEMETRY.endTranslatorFlow(jobId)
     this.props.clearFetchContent()
+    this.props.clearHighlighBlock()
+    this.props.clearShowPdf()
   }
 
   handleSourceScroll(id) {
@@ -152,6 +162,11 @@ class DocumentEditor extends React.Component {
 
   }
 
+  handleRedirect = () => {
+    this.informUserStatus(translate('common.page.label.TOKEN_EXPIRED'), false)
+    setTimeout(() => { history.push(`${process.env.PUBLIC_URL}/`); }, 3000)
+  }
+
   makeAPICallFetchContentPerPage = (start_page) => {
 
 
@@ -160,6 +175,7 @@ class DocumentEditor extends React.Component {
   }
 
   async makeAPICallMergeSentence(sentences, pageNumber) {
+
     let sentence_ids = sentences.map(sentence => sentence.s_id)
     let updated_blocks = BLOCK_OPS.do_sentences_merging_v1(this.props.document_contents.pages, sentence_ids);
 
@@ -167,12 +183,12 @@ class DocumentEditor extends React.Component {
      * telemetry information.
      */
     let initial_sentences = sentences.map(sentence => sentence.src);
-    let final_sentence = updated_blocks['blocks'][0].tokenized_sentences.src;
+    let final_sentence = updated_blocks['blocks'][0].tokenized_sentences[0].src;
     TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
-
+    let model = this.fetchModel(parseInt(this.props.match.params.modelId))
     this.informUserProgress(translate('common.page.label.SENTENCE_MERGED'))
-    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', parseInt(this.props.match.params.modelId))
+    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
+      '', '', model, sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -180,7 +196,13 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
+        TELEMETRY.log("merge", JSON.stringify(rsp_data))
+        if (Number(response.status) === 401) {
+          this.handleRedirect()
+        }
+        else {
+          this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_FAILED'), false)
+        }
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted();
@@ -206,7 +228,14 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
+        TELEMETRY.log("save-translation", JSON.stringify(rsp_data))
+        if (Number(response.status) === 401) {
+          this.handleRedirect()
+        }
+        else {
+          this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
+        }
+
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted()
@@ -220,12 +249,13 @@ class DocumentEditor extends React.Component {
   }
 
   async makeAPICallSplitSentence(sentence, pageNumber, startIndex, endIndex) {
+
     let updated_blocks = BLOCK_OPS.do_sentence_splitting_v1(this.props.document_contents.pages, sentence.block_identifier, sentence, startIndex, endIndex);
     TELEMETRY.splitSentencesEvent(sentence.src, updated_blocks.splitted_sentences)
-
+    let model = this.fetchModel(parseInt(this.props.match.params.modelId))
     this.informUserProgress(translate('common.page.label.SENTENCE_SPLITTED'))
-    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', parseInt(this.props.match.params.modelId))
+    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks.blocks, this.props.match.params.jobid, model.source_language_code,
+      '', '', model, updated_blocks.selected_sentence_ids)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -233,7 +263,14 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
+        TELEMETRY.log("split", JSON.stringify(rsp_data))
+        if (Number(response.status) === 401) {
+          this.handleRedirect()
+        }
+        else {
+          this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_FAILED'), false)
+        }
+
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted();
@@ -248,8 +285,10 @@ class DocumentEditor extends React.Component {
 
   async makeAPICallSourceSaveSentence(sentence, pageNumber) {
     this.informUserProgress(translate('common.page.label.SOURCE_SENTENCE_SAVED'))
-    let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, this.props.match.params.locale,
-      '', '', parseInt(this.props.match.params.modelId))
+    let model = this.fetchModel(parseInt(this.props.match.params.modelId))
+
+    let apiObj = new WorkFlowAPI("WF_S_TKTR", sentence, this.props.match.params.jobid, model.source_language_code,
+      '', '', model)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -257,7 +296,14 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
+        TELEMETRY.log("save-sentence", JSON.stringify(rsp_data))
+        if (Number(response.status) === 401) {
+          this.handleRedirect()
+        }
+        else {
+          this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
+        }
+
         return Promise.reject('');
       } else {
         this.props.contentUpdateStarted()
@@ -267,6 +313,18 @@ class DocumentEditor extends React.Component {
     }).catch((error) => {
       this.informUserStatus(translate('common.page.label.SOURCE_SENTENCE_SAVED_FAILED'), false)
     });
+  }
+
+  fetchModel(modelId) {
+    let model = ""
+
+    let docs = this.props.fetch_models
+    if (docs && docs.length > 0) {
+      let condition = `$[?(@.model_id == '${modelId}')]`;
+      model = jp.query(docs, condition)
+    }
+
+    return model.length > 0 ? model[0] : null
   }
 
   /**
@@ -347,6 +405,8 @@ class DocumentEditor extends React.Component {
         this.forMergeSentences = this.forMergeSentences.filter(sent => sent.s_id !== sentences[0].s_id)
         return;
       }
+      default:
+        return;
     }
   }
 
@@ -421,7 +481,7 @@ class DocumentEditor extends React.Component {
   renderPDFDocument = () => {
     if (!this.state.apiFetchStatus) {
       return (
-        <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px"}}>
+        <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
           <Paper>
             <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} />
           </Paper>
@@ -429,6 +489,10 @@ class DocumentEditor extends React.Component {
       )
     }
 
+  }
+
+  handleDocumentView = () => {
+    this.setState({ docView: !this.state.docView })
   }
 
   /**
@@ -449,7 +513,7 @@ class DocumentEditor extends React.Component {
    * render Document pages
    */
   renderDocumentPages = () => {
-    let pages = this.getPages()
+    let pages = this.getPages();
 
     if (pages.length < 1) {
       return (
@@ -457,20 +521,44 @@ class DocumentEditor extends React.Component {
       )
     }
     return (
-      <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px"}}>
+      <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
 
-        <InfiniteScroll height={window.innerHeight -141} style={{
-          maxHeight: window.innerHeight -141,
+        <InfiniteScroll height={window.innerHeight - 141} style={{
+          maxHeight: window.innerHeight - 141,
           overflowY: "auto",
         }}
           dataLength={pages.length}
         >
-          {pages.map((page, index) => <PageCard key={index} page={page} onAction={this.processSentenceAction} />)}
+          {pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
         </InfiniteScroll>
       </Grid>
     )
   }
+  processZoomIn = () => {
+    if (this.state.zoomPercent < 140) {
+      if (this.state.zoomPercent + 10 === 140) {
+        this.setState({ zoomPercent: this.state.zoomPercent + 10, zoomInDisabled: !this.state.zoomInDisabled })
+      }
+      else {
+        this.setState({ zoomPercent: this.state.zoomPercent + 10, zoomOutDisabled: false })
+      }
+    } else {
+      this.setState({ zoomInDisabled: !this.state.zoomInDisabled })
+    }
+  }
 
+  processZoomOut = () => {
+    if (this.state.zoomPercent > 60) {
+      if (this.state.zoomPercent - 10 === 60) {
+        this.setState({ zoomPercent: this.state.zoomPercent - 10, zoomOutDisabled: !this.state.zoomOutDisabled })
+      }
+      else {
+        this.setState({ zoomPercent: this.state.zoomPercent - 10, zoomInDisabled: false })
+      }
+    } else {
+      this.setState({ zoomOutDisabled: !this.state.zoomOutDisabled })
+    }
+  }
 
   /***
    * render sentences
@@ -483,26 +571,33 @@ class DocumentEditor extends React.Component {
         <div></div>
       )
     }
+    let recordId = this.props.match.params.jobid;
+    let jobId = recordId ? recordId.split("|")[0] : ""
     return (
-      <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px"}}>
+      <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginLeft: "5px" }}>
 
-        <InfiniteScroll height={window.innerHeight -141} style={{
-          maxHeight:window.innerHeight -141,
+        <InfiniteScroll height={window.innerHeight - 141} style={{
+          maxHeight: window.innerHeight - 141,
           overflowY: "auto",
         }}
           hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
           dataLength={pages.length}
         >
-          {pages.map(page => page['translated_texts'].map((sentence, index) => <div key={sentence.s_id} ref={sentence.s_id}><SentenceCard key={sentence.s_id}
-            pageNumber={page.page_no}
-            modelId={parseInt(this.props.match.params.modelId)}
-            word_locale={this.props.match.params.locale}
-            tgt_locale={this.props.match.params.tgt_locale}
-            sentence={sentence}
-            onAction={this.processSentenceAction} />
-          </div>))}
+          {
+            pages.map(page => page['translated_texts'].map((sentence, index) => {
+              sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
+              return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
+                pageNumber={page.page_no}
+                model={this.fetchModel(parseInt(this.props.match.params.modelId))}
+                jobId={jobId}
+                sentence={sentence}
+                onAction={this.processSentenceAction} />
+              </div>
+            })
+            )
+          }
         </InfiniteScroll>
-      </Grid>
+      </Grid >
 
     )
   }
@@ -511,22 +606,58 @@ class DocumentEditor extends React.Component {
   /**
    * render functions ends here
    */
-
+  processZoom = () => {
+    return (
+      <div style={{ marginLeft: '1%', marginRight: "2%" }}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={this.processZoomIn}
+          disabled={this.state.zoomInDisabled} >
+          +
+          </Button>
+        <input
+          style={{
+            backgroundColor: 'white',
+            border: 'none',
+            borderBottom: '1px solid black',
+            margin: '2%',
+            textAlign: 'center',
+            width: '15%',
+            height: '40%',
+            fontSize: '17px'
+          }} value={`${this.state.zoomPercent}%`}
+          disabled />
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={this.processZoomOut}
+          disabled={this.state.zoomOutDisabled}
+        >
+          -
+          </Button>
+      </div >);
+  }
   render() {
     return (
       <div style={{ height: window.innerHeight }}>
-        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar /></div>
+        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} /></div>
 
-        <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden" ,padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
-                {this.renderDocumentPages()}
-                {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
+        <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
+          {!this.state.docView && this.renderDocumentPages()}
+          {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
         </div>
-        <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute",width: "100%" }}>
-          <InteractivePagination count={this.props.document_contents.count} data={this.props.document_contents.pages} onAction={this.processSentenceAction} />
+        <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
+          <InteractivePagination count={this.props.document_contents.count}
+            data={this.props.document_contents.pages}
+            zoomPercent={this.state.zoomPercent}
+            processZoom={this.processZoom}
+            zoomInDisabled={this.state.zoomInDisabled}
+            zoomOutDisabled={this.state.zoomOutDisabled}
+            onAction={this.processSentenceAction} />
         </div>
         {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
         {this.state.showStatus ? this.renderStatusInformation() : <div />}
-
         {this.state.apiFetchStatus && <Spinner />}
       </div>
     )
@@ -541,7 +672,8 @@ const mapStateToProps = state => ({
   sentence_highlight: state.sentence_highlight.sentence,
   active_page_number: state.active_page_number.page_number,
   document_editor_mode: state.document_editor_mode,
-
+  fetchDocument: state.fetchDocument,
+  fetch_models: state.fetch_models.models
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -552,7 +684,10 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     update_blocks,
     ClearContent,
     clearFetchContent,
-    editorModeNormal, editorModeMerge, editorModeClear
+    clearHighlighBlock,
+    editorModeNormal, editorModeMerge, editorModeClear,
+    showPdf,
+    clearShowPdf
   },
   dispatch
 );

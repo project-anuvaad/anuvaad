@@ -78,6 +78,7 @@ public interface IResponseHandler {
 	public final String ORDER = "order";
 	public final String ACTION = "action";
 	public final String TYPE_MAPPING = "pathDataTypeMapping";
+	public final String RESULT_TYPE = "resultType";
 
 	public static String BUCKETS = "buckets";
 	public static String KEY = "key";

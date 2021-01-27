@@ -4,11 +4,11 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_langauge.keyword\"}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"FileTranslateFilter\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Target Language\":{\"terms\":{\"field\":\"events.object.target_langauge.keyword\"}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.pageid.keyword\":\"document-upload\"}},{\"term\":{\"events.edata.subtype.keyword\":\"PAGE_LOAD_COMPLETED\"}}],\"must_not\":[{\"terms\":{\"events.object.target_language.keyword\":[\"\",\"undefined\",\"hi\",\"ta\",\"kn\",\"en\",\"bn\",\"mr\",\"ml\",\"gu\",\"te\",\"hindi\",\"signup\"]}}]}},\"aggs\":{\"Target Language\":{\"terms\":{\"field\":\"events.object.target_language.keyword\"}}}}}}"
 			}
 		],
 		"chartType": "pie",
@@ -31,11 +31,11 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_langauge.keyword\"}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"FileTranslateFilter\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Source Language\":{\"terms\":{\"field\":\"events.object.source_language.keyword\"}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.pageid.keyword\":\"document-upload\"}},{\"term\":{\"events.edata.subtype.keyword\":\"PAGE_LOAD_COMPLETED\"}}],\"must_not\":[{\"terms\":{\"events.object.source_language.keyword\":[\"\",\"undefined\",\"hi\",\"ta\",\"kn\",\"en\",\"bn\",\"mr\",\"ml\",\"gu\",\"te\",\"hindi\"]}}]}},\"aggs\":{\"Source Language\":{\"terms\":{\"field\":\"events.object.source_language.keyword\"}}}}}}"
 			}
 		],
 		"chartType": "pie",
@@ -58,11 +58,11 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\r\n  \"size\": 0, \r\n  \"aggs\": {\r\n    \"UoloadDocFilter\": {\r\n      \"filter\": {\r\n        \"bool\": {\r\n          \"must\": [\r\n            {\r\n              \"term\": {\r\n                \"events.edata.pageid.keyword\": \"document-upload\"\r\n              }\r\n            },\r\n            {\r\n              \"term\": {\r\n                \"events.edata.subtype.keyword\": \"pageLoadStarted\"\r\n              }\r\n            }\r\n          ]\r\n        }\r\n      },\r\n      \"aggs\": {\r\n        \"Total Upload Documents\": {\r\n          \"terms\": {\r\n            \"field\": \"events.edata.pageid.keyword\"\r\n          }\r\n        }\r\n      }\r\n    }\r\n  }\r\n}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.pageid.keyword\":\"document-upload\"}},{\"term\":{\"events.edata.subtype.keyword\":\"PAGE_LOAD_COMPLETED\"}}]}},\"aggs\":{\"Total Upload Documents\":{\"value_count\":{\"field\":\"events.object.id.keyword\"}}}}}}"
 			}
 		],
 		"chartType": "metric",
@@ -85,15 +85,14 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\r\n   \"size\": 0, \r\n  \"aggs\": {\r\n    \"Total Upload Documents\": {\r\n      \"filter\": {\r\n        \"bool\": {\r\n          \"must\": [\r\n            {\r\n              \"term\": {\r\n                \"events.edata.pageid.keyword\": \"document-upload\"\r\n              }\r\n            },\r\n            {\r\n              \"term\": {\r\n                \"events.edata.subtype.keyword\": \"pageLoadStarted\"\r\n              }\r\n            }\r\n          ]\r\n        }\r\n      },\r\n      \"aggs\": {\r\n        \"Total Upload Documents\": {\r\n          \"date_histogram\": {\r\n            \"field\": \"events.ets\",\r\n            \"interval\": \"day\"\r\n          },\r\n      \"aggs\": {\r\n        \"Total Upload Documents\": {\r\n          \"terms\": {\r\n            \"field\": \"events.edata.pageid.keyword\"\r\n          }\r\n        }\r\n      }\r\n        }\r\n      }\r\n    }\r\n  }\r\n}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.pageid.keyword\":\"document-upload\"}},{\"term\":{\"events.edata.subtype.keyword\":\"PAGE_LOAD_COMPLETED\"}}]}},\"aggs\":{\"Total Upload Documents\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Total Upload Documents\":{\"value_count\":{\"field\":\"events.object.id.keyword\"}}}}}}}}"
 			}
 		],
 		"chartType": "line",
-		"resultType": "doc_count",
 		"valueType": "number",
 		"isDecimal": false,
 		"action": "",
@@ -110,20 +109,19 @@
 		},
 		"_comment": " "
 	},
-	"filesTranslatedDayWise": {
-		"chartName": "Files Translated",
+	"completedTranslationDayWise": {
+		"chartName": "Completed File Translations",
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"File Translation Count\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"fileTranslate\"}}]}},\"aggs\":{\"Files Translated\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Count\":{\"cardinality\":{\"field\":\"events.context.cdata.id.keyword\"}}}}}}}}"
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"FILE_TRANSLATE\"}},{\"term\":{\"events.edata.type.keyword\":\"END_JOB\"}},{\"term\":{\"events.object.file_status.keyword\":\"COMPLETED\"}}]}},\"aggs\":{\"Completed Documents\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Document Count\":{\"cardinality\":{\"field\":\"events.object.job_id.keyword\"}}}}}}}}"
 			}
 		],
 		"chartType": "line",
-		"resultType": "doc_count",
 		"valueType": "number",
 		"isDecimal": false,
 		"action": "",
@@ -131,10 +129,66 @@
 		"documentType": "_doc",
 		"drillChart": "none",
 		"aggregationPaths": [
-			"File Translation Count"
+			"Completed Documents"
 		],
 		"isCumulative": false,
 		"interval": "day",
+		"insight": {
+			
+		},
+		"_comment": " "
+	},
+	"failedTranslationDayWise": {
+		"chartName": "Failed File Translations",
+		"queries": [
+			{
+				"module": "COMMON",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
+				"dateRefField": "ets",
+				"indexName": "anuvaad-telemetry",
+				"esInstance": "PRIMARY",
+				"aggrQuery": "{\"aggs\":{\"Total Upload Documents\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.context.cdata.type.keyword\":\"FILE_TRANSLATE\"}},{\"term\":{\"events.edata.type.keyword\":\"END_JOB\"}},{\"term\":{\"events.object.file_status.keyword\":\"FAILED\"}}]}},\"aggs\":{\"Failed Documents\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"},\"aggs\":{\"Document Count\":{\"cardinality\":{\"field\":\"events.object.job_id.keyword\"}}}}}}}}"
+			}
+		],
+		"chartType": "line",
+		"valueType": "number",
+		"isDecimal": false,
+		"action": "",
+		"filter": "",
+		"documentType": "_doc",
+		"drillChart": "none",
+		"aggregationPaths": [
+			"Failed Documents"
+		],
+		"isCumulative": false,
+		"interval": "day",
+		"insight": {
+			
+		},
+		"_comment": " "
+	},
+	"totalSave": {
+		"chartName": "Total Saved Sentence",
+		"queries": [
+			{
+				"module": "COMMON",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
+				"dateRefField": "ets",
+				"indexName": "anuvaad-telemetry",
+				"esInstance": "PRIMARY",
+				"aggrQuery": "{\"aggs\":{\"TOTAL SAVE\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.action.keyword\":\"SAVE\"}}]}}}}}"
+			}
+		],
+		"chartType": "metric",
+		"valueType": "number",
+		"isDecimal": false,
+		"action": "",
+		"filter": "",
+		"documentType": "_doc",
+		"drillChart": "none",
+		"aggregationPaths": [
+			"TOTAL SAVE"
+		],
 		"insight": {
 			
 		},
@@ -145,7 +199,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -172,11 +226,11 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
-				"aggrQuery": "{\"aggs\":{\"TOTAL SPLIT\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.action.keyword\":\"SPLIT\"}}]}}}}}s"
+				"aggrQuery": "{\"aggs\":{\"TOTAL SPLIT\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.action.keyword\":\"SPLIT\"}}]}}}}}"
 			}
 		],
 		"chartType": "metric",
@@ -199,7 +253,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -229,7 +283,7 @@
 		"queries": [
 			{
 				"module": "COMMON",
-				"requestQueryMap": "{\r\n  \"ts\":\"ets\"\r\n}",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
 				"dateRefField": "ets",
 				"indexName": "anuvaad-telemetry",
 				"esInstance": "PRIMARY",
@@ -246,6 +300,66 @@
 		"drillChart": "none",
 		"aggregationPaths": [
 			"Split Operation Trend"
+		],
+		"isCumulative": false,
+		"interval": "day",
+		"insight": {
+			
+		},
+		"_comment": " "
+	},
+	"saveTrend": {
+		"chartName": "Save Records Trend",
+		"queries": [
+			{
+				"module": "COMMON",
+				"requestQueryMap": "{\"ts\":\"ets\",\"sl\":\"events.object.source_language.keyword\",\"tl\":\"events.object.target_language.keyword\"}",
+				"dateRefField": "ets",
+				"indexName": "anuvaad-telemetry",
+				"esInstance": "PRIMARY",
+				"aggrQuery": "{\"aggs\":{\"Total Save\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"events.edata.action.keyword\":\"SAVE\"}}]}},\"aggs\":{\"Saved Records\":{\"date_histogram\":{\"field\":\"ets\",\"interval\":\"day\"}}}}}}"
+			}
+		],
+		"chartType": "line",
+		"resultType": "doc_count",
+		"valueType": "number",
+		"isDecimal": false,
+		"action": "",
+		"filter": "",
+		"documentType": "_doc",
+		"drillChart": "none",
+		"aggregationPaths": [
+			"Saved Records"
+		],
+		"isCumulative": false,
+		"interval": "day",
+		"insight": {
+			
+		},
+		"_comment": " "
+	},
+	"createUserTrend": {
+		"chartName": "New User Trend",
+		"queries": [
+			{
+				"module": "COMMON",
+				"requestQueryMap": "{\"ts\":\"ets\"}",
+				"dateRefField": "ets",
+				"indexName": "anuvaad-telemetry",
+				"esInstance": "PRIMARY",
+				"aggrQuery": "{ \"aggs\": {\"Newly created users\": {\"filter\": {\"term\": {\"events.edata.action.keyword\": \"CREATE_USER\"}}} }}"
+			}
+		],
+		"chartType": "line",
+		"resultType": "doc_count",
+		"valueType": "number",
+		"isDecimal": false,
+		"action": "",
+		"filter": "",
+		"documentType": "_doc",
+		"drillChart": "none",
+		"aggregationPaths": [
+			"Newly created users"
 		],
 		"isCumulative": false,
 		"interval": "day",

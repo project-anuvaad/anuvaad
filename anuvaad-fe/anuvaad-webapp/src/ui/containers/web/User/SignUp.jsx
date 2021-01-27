@@ -1,27 +1,28 @@
 import React from "react";
-import { MuiThemeProvider } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles, Typography } from "@material-ui/core";
-import ThemeDefault from "../../../theme/web/theme-default";
-
-import LoginStyles from "../../../styles/web/LoginStyles";
 import Grid from '@material-ui/core/Grid';
-import SignupApi from "../../../../flux/actions/apis/signup";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import Link from '@material-ui/core/Link';
+
+import ThemeDefault from "../../../theme/web/theme-default";
+import LoginStyles from "../../../styles/web/LoginStyles";
 import history from "../../../../web.history";
 import TextField from '../../../components/web/common/TextField';
-import Link from '@material-ui/core/Link';
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
-import CircularProgress from '@material-ui/core/CircularProgress';
-// import SignUpStyles from "../../styles/web/SignUpStyles";
+
+import SignupApi from "../../../../flux/actions/apis/user/signup";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+
+const TELEMETRY = require('../../../../utils/TelemetryManager')
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -36,7 +37,7 @@ class SignUp extends React.Component {
       variantType: '',
       openSnackBar: '',
       message: '',
-      loading:false
+      loading: false
 
     }
     // this.handleSubmit = this.handleSubmit.bind(this);
@@ -45,19 +46,19 @@ class SignUp extends React.Component {
   handleInputReceived = prop => event => {
     this.setState({ [prop]: event.target.value });
   };
-  
-  handleCheckboxChange = () => {
-    this.setState({termsAndCondition:!this.state.termsAndCondition})
-}
 
-componentDidMount(){
-  window.addEventListener('keypress',(key)=>{
-    if(key.code === 'Enter' ){
+  handleCheckboxChange = () => {
+    this.setState({ termsAndCondition: !this.state.termsAndCondition })
+  }
+
+  componentDidMount() {
+    window.addEventListener('keypress', (key) => {
+      if (key.code === 'Enter') {
         this.handleSubmit();
-    }
-  })
-} 
-handleSubmit = () => {
+      }
+    })
+  }
+  handleSubmit = () => {
     if (this.handleValidation('firstName') && this.handleValidation('email') && this.handleValidation('password') && this.handleValidation('confirmPassword') && this.handleValidation('termsAndCondition')) {
       if (this.state.password !== this.state.confirmPassword) {
         alert(translate('common.page.alert.passwordDidNotMatch'))
@@ -71,9 +72,9 @@ handleSubmit = () => {
             if (this.state.password.match(passwordFormat)) {
               // let { APITransport } = this.props;
               let apiObj = new SignupApi(this.state.email, this.state.firstName, this.state.lastName, this.state.password);
-              this.SignUpBtn.style.backgroundColor='gray';
+              this.SignUpBtn.style.backgroundColor = 'gray';
               try {
-                this.setState({loading:true})
+                this.setState({ loading: true })
                 fetch(apiObj.apiEndPoint(), {
                   method: 'post',
                   body: JSON.stringify(apiObj.getBody()),
@@ -81,9 +82,11 @@ handleSubmit = () => {
                 })
                   .then(resp => {
                     if (resp.ok) {
+                      TELEMETRY.createUserEvent(this.state.firstName, this.state.email, "user")
+
                       this.setState({
                         message: translate('signUp.page.message.successfullyCreatedACcount'),
-                        loading:false,
+                        loading: false,
                         openSnackBar: true, firstName: '', email: '', password: '',
                         confirmPassword: '', termsAndCondition: null,
                         variantType: 'success'
@@ -91,13 +94,15 @@ handleSubmit = () => {
                     } else {
                       if (resp.status === 400) {
                         resp.json().then((object) => {
-                          this.setState({ message: object.message, loading:false, openSnackBar: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: null, variantType: 'error' })
+                          TELEMETRY.log("users-create-user", JSON.stringify(object))
+
+                          this.setState({ message: object.message, loading: false, openSnackBar: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: null, variantType: 'error' })
                         })
                       }
                     }
                   })
               } catch (error) {
-                this.setState({ message: 'Opps! Something went wrong, please try after sometime', loading:false, openSnackBar: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: null, variantType: 'error' })
+                this.setState({ message: 'Opps! Something went wrong, please try after sometime', loading: false, openSnackBar: true, firstName: '', email: '', password: '', confirmPassword: '', termsAndCondition: null, variantType: 'error' })
               }
 
             } else {
@@ -113,7 +118,7 @@ handleSubmit = () => {
     } else {
       alert(translate('common.page.alert.provideValidDetails'))
     }
-    this.setState({openSnackBar:false}); 
+    this.setState({ openSnackBar: false });
   }
 
   handleValidation(key) {
@@ -164,13 +169,14 @@ handleSubmit = () => {
                 <FormControlLabel className={classes.formControl}
                   control={
                     <Checkbox
-                    color={"primary"}
-                    className={classes.checkRemember.className}
-                    value={this.state.termsAndCondition ? true : false}
-                    checked={(this.state.termsAndCondition || this.state.loading)? true : false}
-                    onChange={() => this.handleCheckboxChange()}
+                      id="privacy-policy-checkbox"
+                      color={"primary"}
+                      className={classes.checkRemember.className}
+                      value={this.state.termsAndCondition ? true : false}
+                      checked={(this.state.termsAndCondition || this.state.loading) ? true : false}
+                      onChange={() => this.handleCheckboxChange()}
 
-                  />
+                    />
                   }
                   label={<div><span>{translate('signUp.page.label.iAgree')}</span>
                     <Link href="#" onClick={() => {
@@ -182,22 +188,23 @@ handleSubmit = () => {
 
                 <div className={classes.wrapper}>
                   <Button
+                    id="signup-btn"
                     disabled={!this.state.termsAndCondition}
                     variant="contained" aria-label="edit" style={{
                       width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
                       color: 'white',
-                      backgroundColor: this.state.termsAndCondition ? '#1ca9c9':'gray'
-                    }}onClick={this.handleSubmit}
-                    ref={e=>this.SignUpBtn=e}>
+                      backgroundColor: this.state.termsAndCondition ? '#1ca9c9' : 'gray'
+                    }} onClick={this.handleSubmit}
+                    ref={e => this.SignUpBtn = e}>
                     {translate('singUp.page.label.signUp')}
-                    {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress}/>}
+                    {this.state.loading && <CircularProgress size={24} className={'success'} className={classes.buttonProgress} />}
                   </Button>
                 </div>
 
               </FormControl>
 
               <Typography className={classes.typography1}>{translate('signUp.page.label.allReadyHaveAccount')}
-                <Link style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/") }}> {translate('signUp.page.label.logIn')}</Link></Typography>
+                <Link id="login" style={{ cursor: 'pointer', color: '#0C8AA9' }} href="#" onClick={() => { history.push("/") }}> {translate('signUp.page.label.logIn')}</Link></Typography>
 
 
               <hr className={classes.hrTag} />

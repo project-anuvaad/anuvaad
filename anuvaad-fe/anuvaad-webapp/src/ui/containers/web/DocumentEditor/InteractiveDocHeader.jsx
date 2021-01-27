@@ -1,35 +1,33 @@
 import React from "react";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-import { translate } from '../../../../../src/assets/localisation';
+import Alert from '@material-ui/lab/Alert';
 import DownIcon from '@material-ui/icons/ArrowDropDown';
-import DocumentConverterAPI from "../../../../flux/actions/apis/documentconverter";
 import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
-import { showPdf } from '../../../../flux/actions/apis/showpdf';
 import { withStyles } from '@material-ui/core/styles';
-
 import Toolbar from "@material-ui/core/Toolbar";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-
 import MenuIcon from '@material-ui/icons/Menu';
 import BackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
-import { showSidebar } from '../../../../flux/actions/apis/showSidebar';
-import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
-
+import { translate } from '../../../../../src/assets/localisation';
 import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 import history from "../../../../web.history";
-import Alert from '@material-ui/lab/Alert';
+
+import DocumentConverterAPI from "../../../../flux/actions/apis/document_translate/documentconverter";
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+import { showPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
+import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
+import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
 
 const StyledMenu = withStyles({
     paper: {
@@ -84,11 +82,15 @@ class InteractiveDocHeader extends React.Component {
         )
     }
 
+    hideDocument = () => {
+        this.props.onAction()
+    }
+
     renderStatusInformation = () => {
         return (
             <div>
                 <Snackbar
-                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                     open={true}
                     autoHideDuration={3000}
                     variant={this.state.variant}
@@ -102,10 +104,10 @@ class InteractiveDocHeader extends React.Component {
         )
     }
 
-    fetchFile() {
+    fetchFile(fileType) {
         this.setState({ anchorEl: null, showStatus: true, message: translate("common.page.label.download") });
 
-        let apiObj = new DocumentConverterAPI(this.props.match.params.jobid, JSON.parse(localStorage.getItem('userProfile')) ? JSON.parse(localStorage.getItem('userProfile')).userID : '')
+        let apiObj = new DocumentConverterAPI(fileType, this.props.match.params.jobid, JSON.parse(localStorage.getItem('userProfile')) ? JSON.parse(localStorage.getItem('userProfile')).userID : '')
 
         const apiReq = fetch(apiObj.apiEndPoint(), {
             method: 'post',
@@ -117,7 +119,7 @@ class InteractiveDocHeader extends React.Component {
                 this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
                 return Promise.reject('');
             } else {
-                let fileName = rsp_data && rsp_data[this.state.fileType] ? rsp_data[this.state.fileType] : ""
+                let fileName = rsp_data && rsp_data.translated_document ? rsp_data.translated_document : ""
 
                 if (fileName) {
                     let obj = new DownloadFile(fileName)
@@ -167,7 +169,7 @@ class InteractiveDocHeader extends React.Component {
     }
 
     openPDF = event => {
-        this.props.showPdf(true)
+        this.props.showPdf()
     };
 
     renderOptions() {
@@ -176,8 +178,9 @@ class InteractiveDocHeader extends React.Component {
 
         return (
             <div style={{ display: "flex", flexDirection: "row" }}>
-                <Button variant="outlined" onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" : " Show PDF"}</Button>
-                <Button variant="outlined" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
+                {!this.props.show_pdf && <Button color="primary" variant="outlined" onClick={this.hideDocument.bind(this)}>{this.props.docView ? "Show Document" : " Hide document"}</Button>}
+                {!this.props.docView && <Button color="primary" variant="outlined" style={{ marginLeft: "10px" }}  onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" : " Show PDF"}</Button>}
+                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
                     Download
                     <DownIcon />
                 </Button>
@@ -191,7 +194,7 @@ class InteractiveDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.fetchFile(); this.setState({ fileType: "translated_document" })
+                            this.fetchFile("docx")
                         }}
                     >
                         As DOCX
@@ -199,7 +202,7 @@ class InteractiveDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.fetchFile(); this.setState({ fileType: "translated_txt_file" })
+                            this.fetchFile("txt")
                         }}
                     >
                         As TXT
@@ -207,7 +210,7 @@ class InteractiveDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.fetchFile(); this.setState({ fileType: "xlsx_file" })
+                            this.fetchFile("xlsx")
                         }}
                     >
                         As XLSX
