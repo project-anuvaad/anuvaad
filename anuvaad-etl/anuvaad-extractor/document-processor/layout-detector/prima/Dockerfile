@@ -38,7 +38,7 @@ RUN pip install -r requirements.txt
 
 #RUN pip cache purge
 
-
+#Run curl https://anuvaad-pubnet-weights.s3.amazonaws.com/model_final.pth?AWSAccessKeyId=AKIAUAXLRTC3KS46AZTB&Signature=6js6H28bUyOEmYek2FTbWf3AlS8%3D&Expires=1611584082
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
 #CMD ["python", "app.py"]
