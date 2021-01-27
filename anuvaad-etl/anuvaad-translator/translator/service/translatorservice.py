@@ -8,7 +8,7 @@ from repository.translatorrepository import TranslatorRepository
 from tmx.tmxrepo import TMXRepository
 from tmx.tmxservice import TMXService
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
-from anuvaad_auditor.errorhandler import post_error
+from anuvaad_auditor.errorhandler import post_error, post_error_wf
 from configs.translatorconfig import nmt_max_batch_size
 from configs.translatorconfig import anu_translator_output_topic
 from configs.translatorconfig import tool_translator
@@ -106,7 +106,7 @@ class TranslatorService:
             tmx_present = self.is_tmx_present(file, translate_wf_input)
             topic = self.nmt_router()
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                page_processors = [executor.submit(self.page_processor, (file, record_id, page, tmx_present, tmx_file_cache, topic, translate_wf_input))
+                page_processors = [executor.submit(self.page_processor, file, record_id, page, tmx_present, tmx_file_cache, topic, translate_wf_input)
                                    for page in pages]
                 for page_result in page_processors:
                     total_batches += page_result.result()[0]
@@ -122,6 +122,7 @@ class TranslatorService:
                 log_exception("No sentences sent to NMT, recordID: " + record_id, translate_wf_input, None)
         except Exception as e:
             log_exception("Exception while pushing sentences to NMT: " + str(e), translate_wf_input, e)
+            post_error_wf("TRANSLATION_FAILED", "Exception while pushing sentences to NMT: " + str(e), translate_wf_input, e)
 
     # Computes batches for every page and pushes to NMT for translation.
     def page_processor(self, file, record_id, page, tmx_present, tmx_file_cache, topic, translate_wf_input):
