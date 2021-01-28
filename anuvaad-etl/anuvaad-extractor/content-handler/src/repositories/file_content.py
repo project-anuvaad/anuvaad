@@ -90,8 +90,10 @@ class FileContentRepositories:
                 if 'text_blocks' in page and page['text_blocks'] != None:
                     for text in page['text_blocks']:
                         blocks.append(self.create_block_info(text, record_id, page_info, 'text_blocks', user_id, src_lang, tgt_lang))
+                
             except Exception as e:
-                log_exception('text_blocks key not present, thats strange', AppContext.getContext(), e)
+                log_info('Exception in storing page data :{}'.format(str(page)), AppContext.getContext())
+                log_exception('text_blocks key not present, thats strange:{}'.format(str(e)), AppContext.getContext(), e)
                 pass
             
         if self.blockModel.store_bulk_blocks(blocks) == False:

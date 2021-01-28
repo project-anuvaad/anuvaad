@@ -132,7 +132,7 @@ class SentenceModel(object):
                     log_info("\n**Machine translated sentences:{}\n **User translated sentences:{}".format(preds, refs), AppContext.getContext())
                     log_info("\nSACRE_BLEU value** :{}".format(sacre_bleu), AppContext.getContext())
                     log_info("\n*****************************", AppContext.getContext())
-                    avg_bleu_score      = round((sacre_bleu/100),3)
+                    avg_bleu_score      = round((sacre_bleu/100),2)
                
             
              
