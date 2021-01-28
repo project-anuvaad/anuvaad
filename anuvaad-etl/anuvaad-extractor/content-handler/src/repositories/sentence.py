@@ -53,11 +53,11 @@ class SentenceRepositories:
         del result['created_on']
         return result
 
-    def get_sentences_counts(self, record_ids):
+    def get_sentences_counts(self, record_ids,bleu_return):
         response = []
         for record_id in record_ids:
             result          = {}
-            count_result    = self.sentenceModel.get_tokenized_sentences_count_status(record_id)
+            count_result    = self.sentenceModel.get_tokenized_sentences_count_status(record_id,bleu_return)
             
             result['total_sentence_count']       = count_result['total_sentences']
             result['completed_sentence_count']   = count_result['completed_sentences']

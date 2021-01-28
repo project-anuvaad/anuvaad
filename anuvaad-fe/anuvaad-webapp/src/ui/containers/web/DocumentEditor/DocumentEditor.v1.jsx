@@ -553,15 +553,15 @@ class DocumentEditor extends React.Component {
   htmlToPDF(width, height) {
 
     let totalPages = this.state.totalPageCount
-    const pdf = new jsPDF()
+    // const pdf = new jsPDF()
     // const pdf = new jsPDF("p", "pt", [width, height])
-
+    var pdf = new jsPDF({compress: true});
     for (let i = 1; i <= totalPages; i++) {
       let pageIndex = i - 1
       const input = document.getElementById('divToPrint' + pageIndex);
       html2canvas(input)
         .then((canvas) => {
-          const imgData = canvas.toDataURL('image/png');
+          const imgData = canvas.toDataURL('image/png', 0.1);
 
           pdf.addImage(imgData, 'JPEG', 0, 0);
           pdf.addPage()
