@@ -256,7 +256,6 @@ class TranslatorService:
     # Method to process the output received from the NMT
     def process_translation(self, nmt_output):
         try:
-            nmt_output = nmt_output[0]
             record_id = nmt_output["record_id"]
             recordid_split = str(record_id).split("|")
             job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
