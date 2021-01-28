@@ -28,7 +28,7 @@ tool_translator = "TRANSLATOR"
 download_folder = "/app/upload/"
 tmx_default_context = "JUDICIARY"
 nmt_max_batch_size = os.environ.get('NMT_MAX_BATCH_SIZE', 25)
-tmx_word_length = os.environ.get('TRANSLATOR_TMX_WORD_LENGTH', 10)
+tmx_word_length = os.environ.get('TRANSLATOR_TMX_WORD_LENGTH', 20)
 no_of_process = os.environ.get('TRANSLATOR_NO_OF_PROC', 5)
 tmx_enabled = os.environ.get('TRANSLATOR_TMX_ENABLED', True)
 tmx_global_enabled = os.environ.get('TRANSLATOR_TMX_GLOBAL_ENABLED', False)
@@ -55,6 +55,7 @@ translator_nmt_cons_no_of_partitions = 1
 #datastore-configs
 mongo_translator_db = os.environ.get('MONGO_TRANSLATOR_DB', 'anuvaad-etl-translator-db')
 mongo_translator_collection = os.environ.get('MONGO_TRANSLATOR_CONTENT_COL', 'anuvaad-etl-translator-content-collection')
+mongo_trans_batch_collection = os.environ.get('MONGO_TMX_COL', 'anuvaad-etl-translator-batch-collection')
 mongo_tmx_collection = os.environ.get('MONGO_TMX_COL', 'anuvaad-tmx-collection')
 
 #module-configs

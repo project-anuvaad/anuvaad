@@ -32,6 +32,7 @@ class TranslatorJobsCleaner(Thread):
                         diff = eval(str(time.time()).replace('.', '')[0:13]) - job_start_time
                         if (diff / 1000) > eval(str(jc_job_delete_interval_sec)):
                             translator_utils.delete(record["jobID"])
+                            translator_utils.delete_batches(record["jobID"])
                             deleted += 1
                     except Exception as e:
                         log_exception(prefix + " -- Exception in JobsCleaner for record: " + record["recordID"], record["transInput"], e)

@@ -32,16 +32,13 @@ class TranslatorJobsManger(Thread):
                 for record in records:
                     is_added = False
                     try:
-                        total, translated, skipped = record["totalSentences"], record["translatedSentences"], record["skippedSentences"]
+                        total, batches = record["totalSentences"], record["batches"]
+                        trans_batches = translator_utils.fetch_batch_count(record["jobID"])
                         if total == 0:
                             failed.append(record)
                             failed_jobids.append(record["jobID"])
                             is_added = True
-                        elif skipped > 0:
-                            failed.append(record)
-                            failed_jobids.append(record["jobID"])
-                            is_added = True
-                        elif total == translated:
+                        elif trans_batches >= batches:
                             completed.append(record)
                             completed_jobids.append(record["jobID"])
                             is_added = True
@@ -60,8 +57,7 @@ class TranslatorJobsManger(Thread):
                 if len(inprogress) > 0:
                     log_info(prefix + " -- Run: " + str(run) + " | InProgress Report --------------------------- ", obj)
                     for record in inprogress:
-                        log_info(prefix + " -- " + str(record["jobID"]) + " | " + str(record["totalSentences"]) +
-                                 " | " + str(record["translatedSentences"]) + " | " + str(record["skippedSentences"]), obj)
+                        log_info(prefix + " -- " + str(record["jobID"]) + " | " + str(batches) + " | " + str(trans_batches), obj)
                 self.data_sink(completed, failed, obj, prefix)
                 run += 1
             except Exception as e:

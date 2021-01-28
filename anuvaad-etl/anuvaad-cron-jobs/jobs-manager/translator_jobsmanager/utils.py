@@ -8,8 +8,11 @@ from kafka import KafkaProducer
 from .configs import mongo_server_host
 from .configs import mongo_translator_db
 from .configs import mongo_translator_collection
+from .configs import mongo_trans_batch_collection
 from .configs import kafka_bootstrap_server_host
 
+mongo_content_col_instance = None
+mongo_batch_col_instance = None
 
 class TranslatorCronUtils:
 
@@ -20,8 +23,24 @@ class TranslatorCronUtils:
     def instantiate(self, collection):
         client = pymongo.MongoClient(mongo_server_host)
         db = client[mongo_translator_db]
-        col = db[collection]
-        return col
+        if collection == mongo_translator_collection:
+            mongo_content_col_instance = db[collection]
+            return mongo_content_col_instance
+        if collection == mongo_trans_batch_collection:
+            mongo_batch_col_instance = db[collection]
+            return mongo_batch_col_instance
+
+    def get_mongo_instance(self, collection):
+        if collection == mongo_translator_collection:
+            if not mongo_content_col_instance:
+                return self.instantiate(collection)
+            else:
+                return mongo_content_col_instance
+        if collection == mongo_trans_batch_collection:
+            if not mongo_batch_col_instance:
+                return self.instantiate(collection)
+            else:
+                return mongo_batch_col_instance
 
     # Method to instantiate producer
     # Any other method that needs a producer will get it from her
@@ -33,7 +52,7 @@ class TranslatorCronUtils:
 
     # Searches the object into mongo collection
     def find_all(self, active):
-        col = self.instantiate(mongo_translator_collection)
+        col = self.get_mongo_instance(mongo_translator_collection)
         res = col.find({"active": active}, {'_id': False})
         result = []
         for record in res:
@@ -42,7 +61,16 @@ class TranslatorCronUtils:
 
     # Deletes the object in the mongo collection by job id
     def delete(self, job_id):
-        col = self.instantiate(mongo_translator_collection)
+        col = self.get_mongo_instance(mongo_translator_collection)
+        col.remove({"jobID": job_id})
+
+    def fetch_batch_count(self, job_id):
+        col = self.get_mongo_instance(mongo_trans_batch_collection)
+        query = {"jobID": job_id}
+        return col.find(query).count()
+
+    def delete_batches(self, job_id):
+        col = self.get_mongo_instance(mongo_trans_batch_collection)
         col.remove({"jobID": job_id})
 
     # Updates the object in the mongo collection
