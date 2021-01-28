@@ -38,7 +38,7 @@ class TranslatorJobsManger(Thread):
                             failed.append(record)
                             failed_jobids.append(record["jobID"])
                             is_added = True
-                        elif batches != 0 and trans_batches >= batches:
+                        elif 0 < batches <= trans_batches:
                             completed.append(record)
                             completed_jobids.append(record["jobID"])
                             is_added = True
