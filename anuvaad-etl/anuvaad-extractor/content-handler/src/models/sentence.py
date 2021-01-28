@@ -114,38 +114,38 @@ class SentenceModel(object):
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
                                 { '$unwind': "$data.tokenized_sentences" },
                                 {'$match':{"data.tokenized_sentences.save":True}},
-                                { "$project": {"tgt_nmt":"$data.tokenized_sentences.s0_tgt","tgt_user":"$data.tokenized_sentences.tgt","_id":0}}
-                                ])
-
+                                { "$project": {"tgt_nmt":"$data.tokenized_sentences.s0_tgt","tgt_user":"$data.tokenized_sentences.tgt","_id":0}}])
+            
             
             tgt_nmt=[]
             tgt_user=[]
+            # if len(list(target_docs)) > 0:
             for doc in target_docs:
                 tgt_nmt.append(doc["tgt_nmt"])
                 tgt_user.append(doc["tgt_user"])
-
-            preds=tgt_nmt
-            refs=[tgt_user]
-            # print("********************\n",preds,'\n\n',refs)
-            sacre_bleu = sacrebleu.corpus_bleu(preds,refs).score
-
-        
-            refs_nltk=[item.split(' ') for item in tgt_user]
-            list_of_refs=[[item] for item in refs_nltk]
-            # print(list_of_refs ,"###")
-            preds_nltk=[item.split(' ') for item in tgt_nmt]
-            # print(preds_nltk,'###')
-            nltk_bleu = corpus_bleu(list_of_refs, preds_nltk, weights=(0.25, 0.25, 0.25, 0.25))
             
-            # print("\n\nSACRE_BLEU value :{}".format(str(sacre_bleu)))
-            # print("\n\nNLTK_BLEU value :{}".format(str(nltk_bleu)))
-            # print("********************")
-
-            log_info("\n**Machine translated sentences:{}\n **User translated sentences:{}".format(preds, refs), AppContext.getContext())
-            log_info("\nSACRE_BLEU value** :{}\n NLTK_BLEU value** :{}".format(sacre_bleu, nltk_bleu), AppContext.getContext())
-
-
-            docs        = collections.aggregate([
+            if tgt_nmt and tgt_user:
+                preds=tgt_nmt
+                refs=[tgt_user]
+                # print("********************\n",preds,'\n\n',refs)
+                sacre_bleu = sacrebleu.corpus_bleu(preds,refs).score
+                refs_nltk=[item.split(' ') for item in tgt_user]
+                list_of_refs=[[item] for item in refs_nltk]
+                    # print(list_of_refs ,"###")
+                preds_nltk=[item.split(' ') for item in tgt_nmt]
+                    # print(preds_nltk,'###')
+                nltk_bleu = corpus_bleu(list_of_refs, preds_nltk)
+                    
+                    # print("\n\nSACRE_BLEU value :{}".format(str(sacre_bleu)))
+                    # print("\n\nNLTK_BLEU value :{}".format(str(nltk_bleu)))
+                # print("********************")
+                log_info("\n*************************\nBleu score calculation", AppContext.getContext())
+                log_info("\n**Machine translated sentences:{}\n **User translated sentences:{}".format(preds, refs), AppContext.getContext())
+                log_info("\nSACRE_BLEU value** :{}\n NLTK_BLEU value** :{}".format(sacre_bleu, nltk_bleu), AppContext.getContext())
+                log_info("\n*****************************", AppContext.getContext())
+            else:
+                pass
+            docs   = collections.aggregate([
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
                                 { '$unwind': "$data.tokenized_sentences" },
                                 { "$addFields": { 
@@ -206,6 +206,10 @@ class SentenceModel(object):
             log_exception("db connection exception ",  AppContext.getContext(), e)
 
             return {
-            'total': 0,
-            'completed': 0
+                'total_sentences': 0,
+                'completed_sentences': 0,
+                'total_words': 0,
+                'completed_words': 0,
+                'avg_bleu_score' : 0,
+                'total_time_spent_ms': 0
             }
