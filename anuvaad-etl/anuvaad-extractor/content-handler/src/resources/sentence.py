@@ -93,11 +93,15 @@ class SentenceStatisticsCount(Resource):
 
         record_ids       = body['record_ids']
 
+        bleu_return=False
+        if 'bleu_score' in body:
+            bleu_return=body['bleu_score']
+
         AppContext.addRecordID(None)
         log_info("SentenceStatisticsCount for user {}, sentence count for record_ids {}".format(user_id, record_ids), AppContext.getContext())
 
         try:
-            result = sentenceRepo.get_sentences_counts(record_ids)
+            result = sentenceRepo.get_sentences_counts(record_ids,bleu_return)
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
