@@ -2,6 +2,7 @@ import json
 import logging
 import random
 import string
+from multiprocessing import Process
 
 from kafka import KafkaConsumer, TopicPartition
 from service.translatorservice import TranslatorService
@@ -55,7 +56,10 @@ def consume_nmt():
                     data = msg.value
                     if data:
                         log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
-                        service.process_nmt_output(data)
+                        nmt_consume_process = Process(target=service.process_nmt_output, args=data)
+                        nmt_consume_process.start()
+                        log_info(prefix + "NMT Consume Process forked...", data)
+                        #service.process_nmt_output(data)
                     else:
                         break
                 except Exception as e:

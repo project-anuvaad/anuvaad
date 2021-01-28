@@ -1,10 +1,9 @@
 import multiprocessing
-import threading
 import time
 
 import uuid
 from functools import partial
-
+from multiprocessing import Process
 from utilities.translatorutils import TranslatorUtils
 from kafkawrapper.translatorproducer import Producer
 from repository.translatorrepository import TranslatorRepository
@@ -53,10 +52,10 @@ class TranslatorService:
                                        "error": "File received couldn't be downloaded"})
                     error = post_error("FILE_DOWNLOAD_FAILED", "File received couldn't be downloaded!", None)
                 else:
-                    self.push_sentences_to_nmt(file, translate_wf_input)
-                    '''worker_thread = threading.Thread(target=self.push_sentences_to_nmt, args=(file, translate_wf_input), name="worker-thread")
-                    worker_thread.start()
-                    log_info("Worker Thread forked..", translate_wf_input)'''
+                    translation_process = Process(target=self.push_sentences_to_nmt, args=(file, translate_wf_input))
+                    translation_process.start()
+                    log_info("Worker process forked..", translate_wf_input)
+                    #self.push_sentences_to_nmt(file, translate_wf_input)
             except Exception as e:
                 log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
                 continue
