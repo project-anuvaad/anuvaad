@@ -56,10 +56,7 @@ def consume_nmt():
                     data = msg.value
                     if data:
                         log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
-                        nmt_consume_process = Process(target=service.process_nmt_output, args=data)
-                        nmt_consume_process.start()
-                        log_info(prefix + "NMT Consume Process forked...", data)
-                        #service.process_nmt_output(data)
+                        service.process_nmt_output(data)
                     else:
                         break
                 except Exception as e:

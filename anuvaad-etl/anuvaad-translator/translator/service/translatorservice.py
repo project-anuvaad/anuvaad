@@ -246,8 +246,17 @@ class TranslatorService:
             current_nmt = 0
         return topic
 
-    # Method to process the output received from the NMT
+    # Consumer record handler
     def process_nmt_output(self, nmt_output):
+        job_id = str(nmt_output["out"]["record_id"]).split("|")[0]
+        translate_wf_input = {"jobID": job_id, "metadata": {"module": tool_translator}}
+        nmt_consume_process = Process(target=self.process_translation, args=nmt_output)
+        nmt_consume_process.start()
+        log_info("NMT Translation Process forked...", translate_wf_input)
+        return
+
+    # Method to process the output received from the NMT
+    def process_translation(self, nmt_output):
         try:
             nmt_output = nmt_output["out"]
             record_id = nmt_output["record_id"]
