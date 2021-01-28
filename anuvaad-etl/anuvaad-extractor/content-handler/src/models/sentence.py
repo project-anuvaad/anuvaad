@@ -106,45 +106,36 @@ class SentenceModel(object):
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
 
-    def get_tokenized_sentences_count_status(self, record_id):
+    def get_tokenized_sentences_count_status(self, record_id,bleu_return):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
-
-            target_docs=  collections.aggregate([
+            
+            avg_bleu_score = 0
+            if bleu_return:
+                target_docs=  collections.aggregate([
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
                                 { '$unwind': "$data.tokenized_sentences" },
                                 {'$match':{"data.tokenized_sentences.save":True}},
                                 { "$project": {"tgt_nmt":"$data.tokenized_sentences.s0_tgt","tgt_user":"$data.tokenized_sentences.tgt","_id":0}}])
             
+                tgt_nmt=[]
+                tgt_user=[]
+                for doc in target_docs:
+                    tgt_nmt.append(doc["tgt_nmt"])
+                    tgt_user.append(doc["tgt_user"])
+                
+                if tgt_nmt and tgt_user:
+                    preds=tgt_nmt
+                    refs=[tgt_user]
+                    sacre_bleu = sacrebleu.corpus_bleu(preds,refs).score
+                    log_info("\n*************************\nBleu score calculation", AppContext.getContext())
+                    log_info("\n**Machine translated sentences:{}\n **User translated sentences:{}".format(preds, refs), AppContext.getContext())
+                    log_info("\nSACRE_BLEU value** :{}".format(sacre_bleu), AppContext.getContext())
+                    log_info("\n*****************************", AppContext.getContext())
+                    avg_bleu_score      = round((sacre_bleu/100),3)
+               
             
-            tgt_nmt=[]
-            tgt_user=[]
-            # if len(list(target_docs)) > 0:
-            for doc in target_docs:
-                tgt_nmt.append(doc["tgt_nmt"])
-                tgt_user.append(doc["tgt_user"])
-            
-            if tgt_nmt and tgt_user:
-                preds=tgt_nmt
-                refs=[tgt_user]
-                # print("********************\n",preds,'\n\n',refs)
-                sacre_bleu = sacrebleu.corpus_bleu(preds,refs).score
-                refs_nltk=[item.split(' ') for item in tgt_user]
-                list_of_refs=[[item] for item in refs_nltk]
-                    # print(list_of_refs ,"###")
-                preds_nltk=[item.split(' ') for item in tgt_nmt]
-                    # print(preds_nltk,'###')
-                nltk_bleu = corpus_bleu(list_of_refs, preds_nltk)
-                    
-                    # print("\n\nSACRE_BLEU value :{}".format(str(sacre_bleu)))
-                    # print("\n\nNLTK_BLEU value :{}".format(str(nltk_bleu)))
-                # print("********************")
-                log_info("\n*************************\nBleu score calculation", AppContext.getContext())
-                log_info("\n**Machine translated sentences:{}\n **User translated sentences:{}".format(preds, refs), AppContext.getContext())
-                log_info("\nSACRE_BLEU value** :{}\n NLTK_BLEU value** :{}".format(sacre_bleu, nltk_bleu), AppContext.getContext())
-                log_info("\n*****************************", AppContext.getContext())
-            else:
-                pass
+             
             docs   = collections.aggregate([
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
                                 { '$unwind': "$data.tokenized_sentences" },
@@ -155,12 +146,12 @@ class SentenceModel(object):
                                     "_id": "$data.tokenized_sentences.save",
                                     "doc_sent_count": { "$sum": 1 },
                                      "doc_wrd_count" : { "$sum": "$sent_wrd_count" },
-                                     "total_bleu_score":{"$sum": "$data.tokenized_sentences.bleu_score"},
                                      "total_time_spent":{"$sum": "$data.tokenized_sentences.time_spent_ms"} 
                                      }}
                                 ])
 
-            
+  
+                                    #  "total_bleu_score":{"$sum": "$data.tokenized_sentences.bleu_score"},          
 
             empty_sent_count     = 0
             saved_sent_count     = 0
@@ -173,7 +164,6 @@ class SentenceModel(object):
 
             
             total_saved_bleu_score     = 0
-            avg_bleu_score             = 0
 
             total_time_spent_ms = 0
 
@@ -184,8 +174,6 @@ class SentenceModel(object):
                 if doc['_id'] == True:
                     saved_sent_count = doc['doc_sent_count']
                     saved_wrd_count  = doc['doc_wrd_count']
-                    total_saved_bleu_score = doc["total_bleu_score"]
-                    avg_bleu_score      = total_saved_bleu_score/saved_sent_count
                     total_time_spent_ms = doc["total_time_spent"]
                 if doc['_id'] == False:
                     unsaved_sent_count = doc['doc_sent_count']
