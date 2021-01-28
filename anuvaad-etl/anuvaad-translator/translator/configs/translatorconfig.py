@@ -6,7 +6,7 @@ kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'loc
 mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
 redis_server_prefix = os.environ.get('REDIS_PREFIX', 'redis')
 redis_server_host = os.environ.get('REDIS_URL', 'localhost')
-redis_server_port = os.environ.get('REDIS_PORT', '6379')
+redis_server_port = os.environ.get('REDIS_PORT', 6379)
 file_download_url = str(os.environ.get('USER_FILE_UPLOADER_HOST', 'http://gateway_anuvaad-user-fileuploader:5001')) \
                     + str(os.environ.get('USER_FILE_DOWNLOAD_ENDPOINT', '/anuvaad-api/file-uploader/v0/download-file'))
 save_content_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
@@ -29,7 +29,7 @@ download_folder = "/app/upload/"
 tmx_default_context = "JUDICIARY"
 nmt_max_batch_size = os.environ.get('NMT_MAX_BATCH_SIZE', 25)
 tmx_word_length = os.environ.get('TRANSLATOR_TMX_WORD_LENGTH', 10)
-no_of_process = os.environ.get('TRANSLATOR_NO_OF_PROC', 50)
+no_of_process = os.environ.get('TRANSLATOR_NO_OF_PROC', 20)
 tmx_enabled = os.environ.get('TRANSLATOR_TMX_ENABLED', True)
 tmx_global_enabled = os.environ.get('TRANSLATOR_TMX_GLOBAL_ENABLED', False)
 tmx_org_enabled = os.environ.get('TRANSLATOR_TMX_ORG_ENABLED', True)

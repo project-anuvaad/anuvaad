@@ -248,17 +248,14 @@ class TranslatorService:
 
     # Consumer record handler
     def process_nmt_output(self, nmt_output):
-        job_id = str(nmt_output["out"]["record_id"]).split("|")[0]
-        translate_wf_input = {"jobID": job_id, "metadata": {"module": tool_translator}}
-        nmt_consume_process = Process(target=self.process_translation, args=nmt_output)
-        nmt_consume_process.start()
-        log_info("NMT Translation Process forked...", translate_wf_input)
+        nmt_output = nmt_output["out"]
+        nmt_trans_process = Process(target=self.process_translation, args=nmt_output)
+        nmt_trans_process.start()
         return
 
     # Method to process the output received from the NMT
     def process_translation(self, nmt_output):
         try:
-            nmt_output = nmt_output["out"]
             record_id = nmt_output["record_id"]
             recordid_split = str(record_id).split("|")
             job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
@@ -268,7 +265,6 @@ class TranslatorService:
             if not file:
                 log_error("There is no data for this recordID: " + str(record_id), translate_wf_input,
                           nmt_output["status"])
-                return None
             file, skip_count, trans_count, batch_id = file[0], 0, 0, None
             translate_wf_input = file["transInput"]
             translate_wf_input["recordID"] = record_id
