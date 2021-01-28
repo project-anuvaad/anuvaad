@@ -154,6 +154,7 @@ class UserReport extends React.Component {
             searchNextPage,
             updateExisting,
             userIDs,
+            true
         );
         APITransport(apiObj);
     }
@@ -162,7 +163,7 @@ class UserReport extends React.Component {
         var recordIds = this.getRecordIds();
         if (recordIds.length > 0) {
             const { APITransport } = this.props;
-            const apiObj = new JobStatus(recordIds);
+            const apiObj = new JobStatus(recordIds, true);
             APITransport(apiObj);
             this.setState({ showProgress: true, searchToken: false });
         }

@@ -383,7 +383,7 @@ torch.manual_seed(seed)
 #model_primalaynet = lp.Detectron2LayoutModel('lp://PrimaLayout/mask_rcnn_R_50_FPN_3x/config',label_map = {1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"MathsRegion", 5:"SeparatorRegion", 6:"OtherRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])#,"MODEL.ROI_HEADS.NMS_THRESH_TEST", 0.2])
 # model_primalaynet = lp.Detectron2LayoutModel(
 
-model_primalaynet = lp.Detectron2LayoutModel(LAYOUT_CONFIG_PATH,model_path = LAYOUT_MODEL_PATH,label_map = {0:"FooterRegion", 1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"HeaderRegion", 5:"OtherRegion"})
+model_primalaynet = lp.Detectron2LayoutModel(LAYOUT_CONFIG_PATH,model_path = LAYOUT_MODEL_PATH,label_map = {0:"FooterRegion", 1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"HeaderRegion", 5:"OtherRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])
 
 
 
@@ -576,20 +576,42 @@ class PRIMA(object):
 		tag1 = region1['class']
 		tag2 = region2['class']
 		y1 = keys.get_top(region1); y2 = keys.get_top(region2)
-		if (area>0 and tag1=='Other' and tag2=='TEXT') or (area>0 and tag2=='Other' and tag1=='TEXT'):
-			return 'TEXT', True
-		elif (area>0 and tag1=='Footer' and tag2=='TEXT' and y1<height*0.60) or (area>0 and tag2=='Footer' and tag1=='TEXT' and y2<height*0.60):
-			return 'TEXT', True	
-		elif (area>0 and tag1=='Footer' and tag2=='TEXT' and y1>=height*0.60 and area1/area2>0.8) or (area>0 and tag2=='Footer' and tag1=='TEXT' and y2>height*0.60 and area2/area1>0.8):
-			return 'Footer', True	
-		elif (area>0 and tag1=='Header' and tag2=='TEXT' and y1>height*0.30) or (area>0 and tag2=='Header' and tag1=='TEXT' and y2>height*0.30):
-			return 'TEXT', True
-		elif (area>0 and tag1=='Header' and tag2=='TEXT' and y1<height*0.30 and area1/area2>0.8) or (area>0 and tag2=='Header' and tag1=='TEXT' and y2<height*0.30 and area2/area1>0.8):
-			return 'Header', True
+		if (area>0 and tag1=='Other') or (area>0 and tag2=='Other'):
+			if tag1!='Other':
+				return tag1, True
+			else:
+				return tag2, True
+		elif (area>0 and tag1=='Footer' and y1<height*0.75) or (area>0 and tag2=='Footer' and y2<height*0.75):
+			if tag1!='Footer':
+				return tag1, True
+			else:
+				return tag2, True	
+		elif (area>0 and tag1=='Footer' and y1>=height*0.75) or (area>0 and tag2=='Footer' and y2>height*0.75):
+			if (tag1=='Footer' and area1/area2>0.8 ) or (area2/area1>0.8 and tag2=='Footer'):
+				return 'Footer', True
+			elif tag1!='Footer':
+				return tag1, True
+			else:
+				return tag2, True
+		elif (area>0 and tag1=='Header'  and y1>height*0.30) or (area>0 and tag2=='Header' and y2>height*0.30):
+			if tag1!='Header':
+				return tag1, True
+			else:
+				return tag2, True
+		elif (area>0 and tag1=='Header' and y1<height*0.30) or (area>0 and tag2=='Header'  and y2<height*0.30):
+			if (tag1=='Header'and area1/area2>0.8) or (tag2=='Header' and area2/area1>0.8):
+				return 'Header', True
+			elif tag1!='Header':
+				return tag1, True
+			else:
+				return tag2, True
 		elif (area>0 and tag1==tag2):
 			return tag1, True
 		else:
-			return None, False
+			if (area>0 and area1<area2 and area1/area2>0.8) or (area>0 and area1>area2 and area2/area1>0.8):
+				return tag1, True
+			else:
+				return None, False
         #check = self.check_region_unification(region1,region2,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
         #return  area>0 and 
 
