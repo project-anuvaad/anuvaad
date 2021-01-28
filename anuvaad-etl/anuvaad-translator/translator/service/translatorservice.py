@@ -108,7 +108,7 @@ class TranslatorService:
             log_info("TMX File Cache Size (Start) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
             tmx_present = self.is_tmx_present(file, translate_wf_input)
             topic = self.nmt_router()
-            pool = multiprocessing.Pool(10)
+            pool = multiprocessing.Pool(20)
             func = partial(self.page_processor, record_id=record_id, file=file, tmx_present=tmx_present,
                            tmx_file_cache=tmx_file_cache, topic=topic, translate_wf_input=translate_wf_input)
             page_processors = pool.map_async(func, pages).get()
