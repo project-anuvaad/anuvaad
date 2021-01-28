@@ -249,13 +249,14 @@ class TranslatorService:
     # Consumer record handler
     def process_nmt_output(self, nmt_output):
         nmt_output = nmt_output["out"]
-        nmt_trans_process = Process(target=self.process_translation, args=nmt_output)
+        nmt_trans_process = Process(target=self.process_translation, args=(nmt_output,))
         nmt_trans_process.start()
         return
 
     # Method to process the output received from the NMT
     def process_translation(self, nmt_output):
         try:
+            nmt_output = nmt_output[0]
             record_id = nmt_output["record_id"]
             recordid_split = str(record_id).split("|")
             job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
@@ -292,8 +293,10 @@ class TranslatorService:
                     log_exception("Exception while saving translations to DB: " + str(e), translate_wf_input, e)
                     skip_count += len(sentences_of_the_batch)
             self.update_translation_status(record_id, batch_id, trans_count, skip_count, translate_wf_input)
+            return
         except Exception as e:
             log_exception("Exception while processing NMT output: " + str(e), None, e)
+            return
 
     # Method to search data from db
     def get_content_from_db(self, record_id, page_no, translate_wf_input):
