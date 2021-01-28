@@ -1,6 +1,8 @@
 from utilities import AppContext
 from db import get_db
 from anuvaad_auditor.loghandler import log_info, log_exception
+import sacrebleu
+from nltk.translate.bleu_score import corpus_bleu
 
 DB_SCHEMA_NAME  = 'file_content'
 
@@ -107,6 +109,42 @@ class SentenceModel(object):
     def get_tokenized_sentences_count_status(self, record_id):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
+
+            target_docs=  collections.aggregate([
+                                { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
+                                { '$unwind': "$data.tokenized_sentences" },
+                                {'$match':{"data.tokenized_sentences.save":True}},
+                                { "$project": {"tgt_nmt":"$data.tokenized_sentences.s0_tgt","tgt_user":"$data.tokenized_sentences.tgt","_id":0}}
+                                ])
+
+            
+            tgt_nmt=[]
+            tgt_user=[]
+            for doc in target_docs:
+                tgt_nmt.append(doc["tgt_nmt"])
+                tgt_user.append(doc["tgt_user"])
+
+            preds=tgt_nmt
+            refs=[tgt_user]
+            # print("********************\n",preds,'\n\n',refs)
+            sacre_bleu = sacrebleu.corpus_bleu(preds,refs).score
+
+        
+            refs_nltk=[item.split(' ') for item in tgt_user]
+            list_of_refs=[[item] for item in refs_nltk]
+            # print(list_of_refs ,"###")
+            preds_nltk=[item.split(' ') for item in tgt_nmt]
+            # print(preds_nltk,'###')
+            nltk_bleu = corpus_bleu(list_of_refs, preds_nltk, weights=(0.25, 0.25, 0.25, 0.25))
+            
+            # print("\n\nSACRE_BLEU value :{}".format(str(sacre_bleu)))
+            # print("\n\nNLTK_BLEU value :{}".format(str(nltk_bleu)))
+            # print("********************")
+
+            log_info("\n**Machine translated sentences:{}\n **User translated sentences:{}".format(preds, refs), AppContext.getContext())
+            log_info("\nSACRE_BLEU value** :{}\n NLTK_BLEU value** :{}".format(sacre_bleu, nltk_bleu), AppContext.getContext())
+
+
             docs        = collections.aggregate([
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
                                 { '$unwind': "$data.tokenized_sentences" },
@@ -122,7 +160,7 @@ class SentenceModel(object):
                                      }}
                                 ])
 
-
+            
 
             empty_sent_count     = 0
             saved_sent_count     = 0
