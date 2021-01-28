@@ -34,11 +34,11 @@ class TranslatorJobsManger(Thread):
                     try:
                         total, batches = record["totalSentences"], record["batches"]
                         trans_batches = translator_utils.fetch_batch_count(record["jobID"])
-                        if total == 0:
+                        if total == 0 and batches == 0:
                             failed.append(record)
                             failed_jobids.append(record["jobID"])
                             is_added = True
-                        elif trans_batches >= batches:
+                        elif batches != 0 and trans_batches >= batches:
                             completed.append(record)
                             completed_jobids.append(record["jobID"])
                             is_added = True

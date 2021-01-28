@@ -80,7 +80,7 @@ class TranslatorService:
                 db_in = {
                     "jobID": translate_wf_input["jobID"], "taskID": translate_wf_input["taskID"],
                     "recordID": str(translate_wf_input["jobID"]) + "|" + str(file_id), "transInput": translate_wf_input,
-                    "totalSentences": -1, "batches": 0, "data": data, "active": True
+                    "totalSentences": -1, "batches": -1, "data": data, "active": True
                 }
                 repo.create(db_in)
                 return True
@@ -104,7 +104,7 @@ class TranslatorService:
             data = content_from_db["data"]
             if not data:
                 log_exception("No data for file, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
-                repo.update({"totalSentences": 0}, {"recordID": record_id})
+                repo.update({"totalSentences": 0, "batches": 0}, {"recordID": record_id})
             pages = data["result"]
             total_sentences, total_tmx, total_batches = 0, 0, 0
             tmx_file_cache = {}
