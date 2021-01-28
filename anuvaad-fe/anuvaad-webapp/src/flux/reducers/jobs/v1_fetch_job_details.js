@@ -58,7 +58,7 @@ function get_document_details(input) {
         document['status'] = job['status'];
         document['progress'] = '...'
         document['word_count'] = '...'
-        // document['bleu_score'] = '...'
+        document['bleu_score'] = '...'
         document['spent_time'] = '...'
 
         job['taskDetails'].forEach(task => {
@@ -113,7 +113,7 @@ function update_documents_progress(documents, progresses) {
             if (document['recordId'] === progress['record_id']) {
                 document['progress'] = `${progress['completed_sentence_count']} of ${progress['total_sentence_count']}`
                 document['word_count'] = `${progress['completed_word_count']} of ${progress['total_word_count']}`
-                // document['bleu_score'] = `${Number(progress['avg_bleu_score']) > 0 ? Number(progress['avg_bleu_score']).toFixed(2) : '0'} `
+                document['bleu_score'] = `${Number(progress['avg_bleu_score']) > 0 ? Number(progress['avg_bleu_score']).toFixed(2) : '0'} `
                 document['spent_time'] = timeCalculate(`${progress['total_time_spent_ms']}`)
                 updated_documents.push(document)
                 found = true;
