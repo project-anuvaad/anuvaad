@@ -4,7 +4,6 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { translate } from "../../../../assets/localisation";
-import ClearContent from "../../../../flux/actions/apis/document_translate/clearcontent";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { withStyles } from "@material-ui/core/styles";
 import MUIDataTable from "mui-datatables";
@@ -167,7 +166,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators(
   {
     APITransport,
-    ClearContent,
     FileContent,
   },
   dispatch
