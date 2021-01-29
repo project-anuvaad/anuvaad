@@ -1,4 +1,5 @@
 import multiprocessing
+import random
 import time
 
 import uuid
@@ -19,8 +20,6 @@ from configs.translatorconfig import tmx_enabled
 from configs.translatorconfig import tmx_global_enabled
 from configs.translatorconfig import no_of_process
 
-current_nmt = 0
-topics_map = {}
 
 utils = TranslatorUtils()
 producer = Producer()
@@ -112,10 +111,9 @@ class TranslatorService:
             tmx_file_cache = {}
             log_info("TMX File Cache Size (Start) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
             tmx_present = self.is_tmx_present(file, translate_wf_input)
-            topic = self.nmt_router()
             pool = multiprocessing.Pool(no_of_process)
             func = partial(self.page_processor, record_id=record_id, file=file, tmx_present=tmx_present,
-                           tmx_file_cache=tmx_file_cache, topic=topic, translate_wf_input=translate_wf_input)
+                           tmx_file_cache=tmx_file_cache, translate_wf_input=translate_wf_input)
             page_processors = pool.map_async(func, pages).get()
             for page_result in page_processors:
                 total_batches += page_result[0]
@@ -134,7 +132,7 @@ class TranslatorService:
             post_error_wf("TRANSLATION_FAILED", "Exception while pushing sentences to NMT: " + str(e), translate_wf_input, e)
 
     # Computes batches for every page and pushes to NMT for translation.
-    def page_processor(self, page, record_id, file, tmx_present, tmx_file_cache, topic, translate_wf_input):
+    def page_processor(self, page, record_id, file, tmx_present, tmx_file_cache, translate_wf_input):
         batches, pw_dict, bw_data = self.fetch_batches_of_sentences(file, record_id, page, tmx_present, tmx_file_cache,
                                                                     translate_wf_input)
         batches_count, sentences_count, tmx_count = 0, 0, 0
@@ -146,6 +144,7 @@ class TranslatorService:
             batch = batches[batch_id]
             record_id_enhanced = record_id + "|" + str(len(batch))
             nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
+            topic = self.nmt_router()
             producer.produce(nmt_in, topic)
             log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
                      " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
@@ -236,20 +235,10 @@ class TranslatorService:
                                                            tmx_file_cache, translate_wf_input)
         return tmx_phrases, res_dict
 
-    # Distributes the NMT traffic across machines.
+    # Distributes the NMT traffic across machines randomly.
     def nmt_router(self):
-        global current_nmt
-        global topics_map
-        if not topics_map:
-            input_topics = list(str(anu_nmt_input_topic_mx).split(","))
-            topics_map = {}
-            for i, topic in enumerate(input_topics):
-                topics_map[i] = topic
-        topic = topics_map[current_nmt]
-        current_nmt += 1
-        if current_nmt == len(topics_map.keys()):
-            current_nmt = 0
-        return topic
+        input_topics = list(str(anu_nmt_input_topic_mx).split(","))
+        return random.choice(input_topics)
 
     # Consumer record handler
     def process_nmt_output(self, nmt_output):
