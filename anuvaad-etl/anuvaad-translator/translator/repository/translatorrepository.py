@@ -5,9 +5,9 @@ from configs.translatorconfig import mongo_server_host
 from configs.translatorconfig import mongo_translator_db
 from configs.translatorconfig import mongo_translator_collection
 from configs.translatorconfig import mongo_trans_batch_collection
+from configs.translatorconfig import mongo_trans_pages_collection
 
-mongo_content_col_instance = None
-mongo_batch_col_instance = None
+db = None
 
 class TranslatorRepository:
 
@@ -15,27 +15,18 @@ class TranslatorRepository:
         pass
 
     # Initialises and fetches mongo client
-    def instantiate(self, collection):
+    def instantiate(self):
+        global db
         client = pymongo.MongoClient(mongo_server_host)
         db = client[mongo_translator_db]
-        if collection == mongo_translator_collection:
-            mongo_content_col_instance = db[collection]
-            return mongo_content_col_instance
-        if collection == mongo_trans_batch_collection:
-            mongo_batch_col_instance = db[collection]
-            return mongo_batch_col_instance
+        return db
 
     def get_mongo_instance(self, collection):
-        if collection == mongo_translator_collection:
-            if not mongo_content_col_instance:
-                return self.instantiate(collection)
-            else:
-                return mongo_content_col_instance
-        if collection == mongo_trans_batch_collection:
-            if not mongo_batch_col_instance:
-                return self.instantiate(collection)
-            else:
-                return mongo_batch_col_instance
+        if not db:
+            db_instance = self.instantiate()
+        else:
+            db_instance = db
+        return db_instance[collection]
 
     # Inserts the object into mongo collection
     def create(self, object_in):
@@ -82,4 +73,21 @@ class TranslatorRepository:
         col = self.get_mongo_instance(mongo_trans_batch_collection)
         col.insert_one(batch)
         del batch["_id"]
+
+    def write_pages(self, pages):
+        col = self.get_mongo_instance(mongo_trans_pages_collection)
+        col.insert_many(pages)
+
+    def update_pages(self, criteria, page):
+        col = self.get_mongo_instance(mongo_trans_pages_collection)
+        col.replace_one(criteria, page)
+
+    def fetch_pages(self, query):
+        col = self.get_mongo_instance(mongo_trans_pages_collection)
+        exclude = {"_id": False}
+        res = col.find(query, exclude)
+        result = []
+        for record in res:
+            result.append(record)
+        return result
 

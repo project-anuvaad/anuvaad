@@ -33,6 +33,7 @@ class TranslatorJobsCleaner(Thread):
                         if (diff / 1000) > eval(str(jc_job_delete_interval_sec)):
                             translator_utils.delete(record["jobID"])
                             translator_utils.delete_batches(record["jobID"])
+                            translator_utils.delete_pages(record["recordID"])
                             deleted += 1
                     except Exception as e:
                         log_exception(prefix + " -- Exception in JobsCleaner for record: " + record["recordID"], record["transInput"], e)

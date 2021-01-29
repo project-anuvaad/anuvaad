@@ -77,7 +77,7 @@ class TranslatorJobsManger(Thread):
                     "file_locale": complete["transInput"]["input"]["files"][0]["model"]["source_language_code"],
                     "src_lang": complete["transInput"]["input"]["files"][0]["model"]["source_language_code"],
                     "tgt_lang": complete["transInput"]["input"]["files"][0]["model"]["target_language_code"],
-                    "record_id": complete["recordID"], "pages": complete["data"]["result"]
+                    "record_id": complete["recordID"], "pages": translator_utils.fetch_pages({"record_id": complete["recordID"]})
                 }
                 user_id = complete["transInput"]["metadata"]["userID"]
                 res = translator_utils.call_api(save_content_url, "POST", ch_input, None, user_id)

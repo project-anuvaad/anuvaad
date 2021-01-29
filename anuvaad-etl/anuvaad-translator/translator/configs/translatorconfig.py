@@ -46,15 +46,14 @@ anu_translator_input_topic = os.environ.get('KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_T
 anu_translator_output_topic = os.environ.get('KAFKA_ANUVAAD_DP_TRANSLATOR_OUTPUT_TOPIC', 'anuvaad-dp-tools-translator-output-v3')
 anu_translator_tmx_in_topic = os.environ.get('KAFKA_ANUVAAD_TRANSLATOR_TMX_INPUT_TOPIC', 'anuvaad-translator-tmx-input-v1')
 anu_translator_consumer_grp = os.environ.get('KAFKA_ANUVAAD_ETL_TRANSLATOR_CONSUMER_GRP', 'anuvaad-etl-translator-consumer-group')
-translator_cons_no_of_instances = 1
 translator_cons_no_of_partitions = 1
-translator_nmt_cons_no_of_instances = 1
 translator_nmt_cons_no_of_partitions = 1
 
 
 #datastore-configs
 mongo_translator_db = os.environ.get('MONGO_TRANSLATOR_DB', 'anuvaad-etl-translator-db')
 mongo_translator_collection = os.environ.get('MONGO_TRANSLATOR_CONTENT_COL', 'anuvaad-etl-translator-content-collection')
+mongo_trans_pages_collection = os.environ.get('MONGO_TMX_COL', 'anuvaad-etl-translator-pages-collection')
 mongo_trans_batch_collection = os.environ.get('MONGO_TMX_COL', 'anuvaad-etl-translator-batch-collection')
 mongo_tmx_collection = os.environ.get('MONGO_TMX_COL', 'anuvaad-tmx-collection')
 

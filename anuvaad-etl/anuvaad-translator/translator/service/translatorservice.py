@@ -49,8 +49,8 @@ class TranslatorService:
                 dumped = self.dump_file_to_db(file["path"], translate_wf_input)
                 if not dumped:
                     error_list.append({"inputFile": str(file["path"]), "outputFile": "FAILED",
-                                       "error": "File received couldn't be downloaded"})
-                    error = post_error("FILE_DOWNLOAD_FAILED", "File received couldn't be downloaded!", None)
+                                       "error": "File is either empty or  couldn't be downloaded!"})
+                    error = post_error("FILE_DUMP_FAILED", "File is either empty or  couldn't be downloaded!", None)
                 else:
                     translation_process = Process(target=self.push_sentences_to_nmt, args=(file, translate_wf_input))
                     translation_process.start()
@@ -77,12 +77,19 @@ class TranslatorService:
                 return False
             else:
                 log_info("Dumping content to translator DB......", translate_wf_input)
+                modified_pages = []
+                pages = data["result"]["pages"]
+                for page in pages:
+                    page["record_id"] = str(translate_wf_input["jobID"]) + "|" + str(file_id)
+                    modified_pages.append(page)
+                repo.write_pages(modified_pages)
+                log_info("Pages dumped to Translator DB!", translate_wf_input)
                 db_in = {
                     "jobID": translate_wf_input["jobID"], "taskID": translate_wf_input["taskID"],
                     "recordID": str(translate_wf_input["jobID"]) + "|" + str(file_id), "transInput": translate_wf_input,
-                    "totalSentences": -1, "batches": -1, "data": data, "active": True
-                }
+                    "totalSentences": -1, "batches": -1, "active": True}
                 repo.create(db_in)
+                log_info("Translation status dumped to Translator DB!", translate_wf_input)
                 return True
         except Exception as e:
             log_exception("Exception while dumping content to DB: " + str(e), translate_wf_input, e)
@@ -100,12 +107,7 @@ class TranslatorService:
                 post_error_wf("TRANSLATION_FAILED",
                               "File content from DB couldn't be fetched, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
                 return
-            content_from_db = content_from_db[0]
-            data = content_from_db["data"]
-            if not data:
-                log_exception("No data for file, jobID: " + str(translate_wf_input["jobID"]), translate_wf_input, None)
-                repo.update({"totalSentences": 0, "batches": 0}, {"recordID": record_id})
-            pages = data["result"]
+            pages = repo.fetch_pages({"record_id": record_id})
             total_sentences, total_tmx, total_batches = 0, 0, 0
             tmx_file_cache = {}
             log_info("TMX File Cache Size (Start) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
@@ -252,9 +254,9 @@ class TranslatorService:
     # Consumer record handler
     def process_nmt_output(self, nmt_output):
         nmt_output = nmt_output["out"]
-        self.process_translation(nmt_output)
-        '''nmt_trans_process = Process(target=self.process_translation, args=(nmt_output,))
-        nmt_trans_process.start()'''
+        nmt_trans_process = Process(target=self.process_translation, args=(nmt_output,))
+        nmt_trans_process.start()
+        #self.process_translation(nmt_output)
         return
 
     # Method to process the output received from the NMT
@@ -325,27 +327,17 @@ class TranslatorService:
 
     # Back up method to update sentences from DB.
     def update_sentences(self, record_id, nmt_res_batch, translate_wf_input):
-        job_details = self.get_content_from_db(record_id, None, translate_wf_input)[0]
-        sentence_ids = []
+        page_no = str(nmt_res_batch[0]["n_id"]).split("|")[2]
+        page = repo.fetch_pages({"record_id": record_id, "page_no": page_no})[0]
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             if nmt_res_sentence["tmx_phrases"]:
-                log_info("PAGE NO: " + str(node[2]) + " BATCH ID: " + nmt_res_sentence["batch_id"] + " | SRC: " + nmt_res_sentence["src"] +
+                log_info("PAGE NO: " + str(page_no) + " BATCH ID: " + nmt_res_sentence["batch_id"] + " | SRC: " + nmt_res_sentence["src"] +
                          " | TGT: " + nmt_res_sentence["tgt"] + " | TMX Count: " + str(len(nmt_res_sentence["tmx_phrases"])), translate_wf_input)
                 nmt_res_sentence["tgt"] = tmxservice.replace_nmt_tgt_with_user_tgt(nmt_res_sentence["tmx_phrases"], nmt_res_sentence["tgt"], translate_wf_input)
-            page_no, block_id = node[2], node[3]
-            p_index, b_index, s_index = None, None, None
+            block_id = node[3]
+            b_index, s_index = None, None
             sentence_id = nmt_res_sentence["s_id"]
-            if sentence_id in sentence_ids:
-                log_info("Repeated Sentence: " + str(sentence_id), translate_wf_input)
-            else:
-                sentence_ids.append(sentence_id)
-            pages = job_details["data"]["result"]
-            for i, page in enumerate(pages):
-                if str(page["page_no"]) == str(page_no):
-                    p_index = i
-                    break
-            page = pages[p_index]
             for j, block in enumerate(page["text_blocks"]):
                 if str(block["block_id"]) == str(block_id):
                     b_index = j
@@ -355,9 +347,9 @@ class TranslatorService:
                 if str(sentence["s_id"]) == str(sentence_id):
                     s_index = k
                     break
-            if p_index is not None and b_index is not None and s_index is not None:
-                job_details["data"]["result"][p_index]["text_blocks"][b_index]["tokenized_sentences"][
-                    s_index] = nmt_res_sentence
-        query = {"recordID": record_id}
-        object_in = {"data.result": job_details["data"]["result"]}
-        repo.update(object_in, query)
+            if b_index is not None and s_index is not None:
+                page["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
+            else:
+                log_info("Replace failed, NodeID: {}".format(str(nmt_res_sentence["n_id"])), translate_wf_input)
+        query = {"record_id": record_id, "page_no": page_no}
+        repo.update(query, page)
