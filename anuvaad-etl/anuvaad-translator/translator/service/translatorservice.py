@@ -265,7 +265,7 @@ class TranslatorService:
             record_id = nmt_output["record_id"]
             recordid_split = str(record_id).split("|")
             job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
-            record_id = str(recordid_split[0]) + "|" + str(recordid_split[1])
+            record_id = str(job_id) + "|" + str(file_id)
             translate_wf_input = {"jobID": job_id, "metadata": {"module": tool_translator}}
             file = self.get_content_from_db(record_id, None, translate_wf_input)
             if not file:
@@ -294,8 +294,7 @@ class TranslatorService:
                     batch_id = response["batch_id"]
                     sentences_of_the_batch.append(response)
                 try:
-                    self.update_sentences(record_id, sentences_of_the_batch,
-                                          translate_wf_input)  # Find a way to do batch update directly on MongoDB
+                    self.update_sentences(record_id, sentences_of_the_batch, translate_wf_input)
                     trans_count += len(sentences_of_the_batch)
                 except Exception as e:
                     log_exception("Exception while saving translations to DB: " + str(e), translate_wf_input, e)
@@ -328,6 +327,10 @@ class TranslatorService:
     # Back up method to update sentences from DB.
     def update_sentences(self, record_id, nmt_res_batch, translate_wf_input):
         page_no = str(nmt_res_batch[0]["n_id"]).split("|")[2]
+        log_info("record_id: " + str(record_id), translate_wf_input)
+        log_info("page_no: " + str(page_no), translate_wf_input)
+        pages = repo.fetch_pages({"record_id": record_id})
+        log_info(pages, translate_wf_input)
         page = repo.fetch_pages({"record_id": record_id, "page_no": page_no})[0]
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
