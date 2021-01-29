@@ -78,7 +78,7 @@ class TranslatorService:
             else:
                 log_info("Dumping content to translator DB......", translate_wf_input)
                 modified_pages = []
-                pages = data["result"]["pages"]
+                pages = data["result"]
                 for page in pages:
                     page["record_id"] = str(translate_wf_input["jobID"]) + "|" + str(file_id)
                     modified_pages.append(page)
