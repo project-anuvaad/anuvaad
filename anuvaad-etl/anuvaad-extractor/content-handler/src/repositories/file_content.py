@@ -68,7 +68,7 @@ class FileContentRepositories:
     def store(self, user_id, file_locale, record_id, pages, src_lang, tgt_lang):
         blocks = []
         for page in pages:
-            log_info(page,AppContext.getContext)
+            log_info(page,AppContext.getContext())
             page_info                   = {}
             page_info['page_no']        = page['page_no']
             page_info['page_width']     = page['page_width']
