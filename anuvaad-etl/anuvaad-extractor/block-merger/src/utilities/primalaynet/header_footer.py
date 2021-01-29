@@ -596,11 +596,11 @@ class PRIMA(object):
         if class_name == "MathsRegion":
             class_name = "TEXT"
         if class_name == "HeaderRegion":
-            class_name = "Header"
+            class_name = "HEADER"
         if class_name == "OtherRegion":
             class_name = "Other"
         if class_name == "FooterRegion":
-            class_name = "Footer"
+            class_name = "FOOTER"
 
         return class_name
 
