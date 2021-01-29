@@ -21,7 +21,6 @@ class TranslatorCronUtils:
 
     # Initialises and fetches mongo client
     def instantiate(self):
-        global db
         client = pymongo.MongoClient(mongo_server_host)
         db = client[mongo_translator_db]
         return db
