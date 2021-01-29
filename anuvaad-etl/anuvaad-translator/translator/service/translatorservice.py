@@ -328,6 +328,7 @@ class TranslatorService:
     def update_sentences(self, record_id, nmt_res_batch, translate_wf_input):
         page_no = str(nmt_res_batch[0]["n_id"]).split("|")[2]
         page = repo.fetch_pages({"record_id": record_id, "page_no": eval(page_no)})[0]
+        page_enriched = page
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             if nmt_res_sentence["tmx_phrases"]:
@@ -347,8 +348,8 @@ class TranslatorService:
                     s_index = k
                     break
             if b_index is not None and s_index is not None:
-                page["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
+                page_enriched["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
             else:
                 log_info("Replace failed, NodeID: {}".format(str(nmt_res_sentence["n_id"])), translate_wf_input)
         query = {"record_id": record_id, "page_no": eval(page_no)}
-        repo.update(query, page)
+        repo.update_pages(query, page_enriched)
