@@ -327,8 +327,7 @@ class TranslatorService:
     # Back up method to update sentences from DB.
     def update_sentences(self, record_id, nmt_res_batch, translate_wf_input):
         page_no = str(nmt_res_batch[0]["n_id"]).split("|")[2]
-        page = repo.fetch_pages({"record_id": record_id, "page_no": page_no})
-        log_info(page, translate_wf_input)
+        page = repo.fetch_pages({"record_id": record_id, "page_no": eval(page_no)})
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             if nmt_res_sentence["tmx_phrases"]:
@@ -351,5 +350,5 @@ class TranslatorService:
                 page["text_blocks"][b_index]["tokenized_sentences"][s_index] = nmt_res_sentence
             else:
                 log_info("Replace failed, NodeID: {}".format(str(nmt_res_sentence["n_id"])), translate_wf_input)
-        query = {"record_id": record_id, "page_no": page_no}
+        query = {"record_id": record_id, "page_no": eval(page_no)}
         repo.update(query, page)
