@@ -406,7 +406,6 @@ class UserReport extends React.Component {
 
                     customBodyRender: (value, tableMeta, updateValue) => {
                         if (tableMeta.rowData) {
-                            console.log(tableMeta.rowData[5])
                             return (
                                 <div>
                                     {tableMeta.rowData[5] === "COMPLETED" &&
