@@ -130,7 +130,7 @@ def add_attrib(df, region_to_change, width_ratio,height_ratio,attrib, margin=3):
     height_key = 'text_height'
     if len(region_to_change) > 0:
         for index, row in region_to_change.iterrows():
-            print(row)
+            #print(row)
             area = [row['text_top'] - margin, row['text_left'] - margin, row['text_top'] + row['text_height'] + margin,
                     row['text_left'] + row['text_width'] + margin]
             #print(area)
