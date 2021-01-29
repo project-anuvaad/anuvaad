@@ -16,6 +16,10 @@ from src.services.box_vertical_operations import (merge_vertical_blocks)
 from src.services.preprocess import  tag_heaader_footer_attrib
 from src.services.left_right_on_block import left_right_margin
 import src.utilities.app_context as app_context
+from src.utilities.primalaynet.header_footer import PRIMA
+
+
+primalaynet = PRIMA()
 
 
 def create_pdf_processing_paths(filepath, base_dir):
@@ -129,7 +133,7 @@ def get_vdfs(h_dfs):
     return v_dfs
 
 
-def get_hdfs(in_dfs, header_region, footer_region,table=False):
+def get_hdfs(in_dfs, header_region, footer_region,width_ratio,height_ratio,images=None,table=False):
 
     start_time          = time.time()
     try:
@@ -141,8 +145,16 @@ def get_hdfs(in_dfs, header_region, footer_region,table=False):
         document_configs = config.DOCUMENT_CONFIGS
         for page_index in range(pages):
             page_df   = in_dfs[page_index]
-            if multiple_pages :
-                page_df   = tag_heaader_footer_attrib(header_region , footer_region,page_df)
+            if config.HEADER_FOOTER_BY_PRIMA:
+                if images != None :
+                    region_df  = primalaynet.predict_primanet(images[page_index], [])
+                    page_df = tag_heaader_footer_attrib(region_df, pd.DataFrame(), page_df,width_ratio,height_ratio)
+                else:
+                    page_df = tag_heaader_footer_attrib(header_region, footer_region, page_df,width_ratio,height_ratio)
+
+            else :
+                if multiple_pages :
+                    page_df   = tag_heaader_footer_attrib(header_region , footer_region,page_df,width_ratio,height_ratio)
             if len(page_df) > 1:
                 h_df    = merge_horizontal_blocks(page_df, document_configs,table=table, debug=False)
             else :

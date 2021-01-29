@@ -11,6 +11,10 @@ from src.utilities.class_2.break_block_condition_single_column import process_pa
 from src.utilities.class_2.page_layout.double_column import get_column
 from src.utilities.class_2.page_layout.utils import collate_regions
 from src.utilities.primalaynet.infer import predict_primanet
+from src.utilities.primalaynet.header_footer import PRIMA
+
+primalaynet = PRIMA()
+
 
 def doc_pre_processing(filename, base_dir, lang):
     '''
@@ -52,25 +56,32 @@ def doc_pre_processing(filename, base_dir, lang):
 
 def get_layout_proposals(pdf_data,flags) :
 
+    width_ratio = pdf_data['page_width'] / pdf_data['pdf_image_width']
+    height_ratio = pdf_data['page_height'] / pdf_data['pdf_image_height']
 
     if (flags['page_layout'] =='single_column')or(flags['doc_class'] == 'class_1') :
 
-        h_dfs = get_xml.get_hdfs(pdf_data['in_dfs'],  pdf_data['header_region'], pdf_data['footer_region'])
+
+        h_dfs = get_xml.get_hdfs(pdf_data['in_dfs'],  pdf_data['header_region'], pdf_data['footer_region'],width_ratio,height_ratio ,images=pdf_data['pdf_image_paths'])
 
         return h_dfs
     else :
         h_dfs = []
         pdf_data['sub_in_dfs'] = []
         if flags['page_layout'] == 'double_column' :
-            width_ratio = pdf_data['page_width'] / pdf_data['pdf_image_width']
-            height_ratio = pdf_data['page_height'] / pdf_data['pdf_image_height']
+
             for page_index, pdf_image in enumerate(pdf_data['pdf_image_paths']):
                 
                 #regions = get_column(pdf_image, width_ratio)
                 regions = predict_primanet(pdf_image, pdf_data['in_dfs'][page_index],width_ratio,height_ratio)
                 sub_in_dfs = collate_regions(regions,pdf_data['in_dfs'][page_index])
                 pdf_data['sub_in_dfs'].append(sub_in_dfs)
-                sub_h_dfs  = get_xml.get_hdfs(sub_in_dfs,  pdf_data['header_region'], pdf_data['footer_region'])
+
+                if config.HEADER_FOOTER_BY_PRIMA:
+                    region_df = primalaynet.predict_primanet(pdf_image, [])
+                    sub_h_dfs = get_xml.get_hdfs(sub_in_dfs,region_df, pd.DataFrame())
+                else:
+                    sub_h_dfs  = get_xml.get_hdfs(sub_in_dfs,  pdf_data['header_region'], pdf_data['footer_region'],width_ratio,height_ratio)
                 for df in sub_in_dfs:
                     if len(df)<=1:
                         df['children']=None

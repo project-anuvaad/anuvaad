@@ -182,7 +182,7 @@ def get_text_from_table_cells(pdf_data, p_dfs,flags):
                         if cell['text'] != None:
                             text_df = pd.DataFrame(cell['text'])
                             if len(text_df) >1 :
-                                h_dfs =  get_xml.get_hdfs([text_df], pd.DataFrame() , pd.DataFrame(),table=True)
+                                h_dfs =  get_xml.get_hdfs([text_df], pd.DataFrame() , pd.DataFrame(),1,1,table=True)
                             else:
                                  h_dfs = [text_df]
                             p_df_data ={}

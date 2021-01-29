@@ -19,13 +19,16 @@ def are_hlines(df, configs, idx1, idx2,table=False, debug=False):
 def are_hlines_superscript(df, configs, idx1, idx2, debug=False):
 
     top_differenc = df.iloc[idx1]['text_top'] - df.iloc[idx2]['text_top']
+    block_height  = df.iloc[idx2]['text_height']
+    block_width = df.iloc[idx2]['text_width']
+
 
     if (df.iloc[idx1]['text_top'] > df.iloc[idx2]['text_top']):
-        if  (top_differenc <= configs['SUPERSCRIPT_HEIGHT_DIFFERENCE']) &  ( top_differenc >  configs['SUPERSCRIPT_HEIGHT_DIFFERENCE'] /2) :
+        if  (top_differenc <= configs['SUPERSCRIPT_HEIGHT_DIFFERENCE']) &  ( top_differenc >  configs['SUPERSCRIPT_HEIGHT_DIFFERENCE'] /2) &  (block_width <= block_height *2) :
             return True, idx1, idx2
 
-    if (df.iloc[idx2]['text_top'] > df.iloc[idx1]['text_top']):
-        if (top_differenc <= configs['SUPERSCRIPT_HEIGHT_DIFFERENCE']) &  ( top_differenc >  configs['SUPERSCRIPT_HEIGHT_DIFFERENCE'] /2):
-            return True, idx2, idx1
+    # if (df.iloc[idx2]['text_top'] > df.iloc[idx1]['text_top']):
+    #     if (top_differenc <= configs['SUPERSCRIPT_HEIGHT_DIFFERENCE']) &  ( top_differenc >  configs['SUPERSCRIPT_HEIGHT_DIFFERENCE'] /2):
+    #         return True, idx2, idx1
 
     return False, idx1, idx2

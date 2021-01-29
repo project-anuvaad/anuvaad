@@ -111,3 +111,19 @@ CLASS_2_LANG = ['ta']
 
 CRAFT_MODEL_PATH =  "./src/utilities/craft_pytorch/model/craft_mlt_25k.pth"
 CRAFT_REFINE_MODEL_PATH = "./src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth"
+
+
+WATERMARK_THRESHOLD_LOW = 175
+WATERMARK_THRESHOLD_HIGH = 250
+
+
+PRIMA_SCORE_THRESH_TEST =0.5
+LAYOUT_MODEL_PATH =  "./src/utilities/primalaynet/model_final.pth"
+LAYOUT_CONFIG_PATH = "./src/utilities/primalaynet/config.yaml"
+
+# LAYOUT_MODEL_PATH = '/home/dhiraj/Downloads/model_final.pth'
+# LAYOUT_CONFIG_PATH = '/home/dhiraj/Documents/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/src/utilities/primalaynet/config.yaml'
+
+HEADER_FOOTER_BY_PRIMA = True
+
+LAYOUT_CLASSES = ['Header','Footer']
