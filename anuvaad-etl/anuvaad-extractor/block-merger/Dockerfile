@@ -61,7 +61,7 @@ ENV DEBUG_FLUSH=$D_F
 #         linux-headers
 #RUN apk update
 #RUN apk add libc6-compat
-#RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
 #RUN pip install torch===1.4.0 torchvision===0.5.0 -f https://download.pytorch.org/whl/torch_stable.html
 #RUN apk update && apk add poppler-utils
 # RUN apk update && apk add git
