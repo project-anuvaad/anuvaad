@@ -327,7 +327,7 @@ class TranslatorService:
     # Back up method to update sentences from DB.
     def update_sentences(self, record_id, nmt_res_batch, translate_wf_input):
         page_no = str(nmt_res_batch[0]["n_id"]).split("|")[2]
-        page = repo.fetch_pages({"record_id": record_id, "page_no": eval(page_no)})
+        page = repo.fetch_pages({"record_id": record_id, "page_no": eval(page_no)})[0]
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             if nmt_res_sentence["tmx_phrases"]:
