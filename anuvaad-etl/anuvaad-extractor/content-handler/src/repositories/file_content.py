@@ -77,6 +77,7 @@ class FileContentRepositories:
                     for image in page['images']:
                         blocks.append(self.create_block_info(image, record_id, page_info, 'images', user_id, src_lang, tgt_lang))
             except Exception as e:
+                AppContext.addRecordID(record_id)
                 log_exception('images key not present, thats strange:{}'.format(str(e)), AppContext.getContext(), e)
             
             try:
@@ -84,6 +85,7 @@ class FileContentRepositories:
                     for line in page['lines']:
                         blocks.append(self.create_block_info(line, record_id, page_info, 'lines', user_id, src_lang, tgt_lang))
             except Exception as e:
+                AppContext.addRecordID(record_id)
                 log_info('lines key is not present, ignorning further:{}'.format(str(e)), AppContext.getContext())
                 pass
             
@@ -93,7 +95,7 @@ class FileContentRepositories:
                         blocks.append(self.create_block_info(text, record_id, page_info, 'text_blocks', user_id, src_lang, tgt_lang))
                 
             except Exception as e:
-                # log_info('Exception in storing page data :{}'.format(str(page)), AppContext.getContext())
+                AppContext.addRecordID(record_id)
                 log_exception('text_blocks key not present, thats strange:{}'.format(str(e)), AppContext.getContext(), e)
                 pass
             

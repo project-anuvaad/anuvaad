@@ -37,6 +37,7 @@ class FileContentSaveResource(Resource):
             tgt_lang    = body['tgt_lang']
 
         if 'pages' not in body or user_id is None or record_id == None or src_lang == None or tgt_lang == None:
+            AppContext.addRecordID(record_id)
             log_info('Missing params in FileContentSaveResource {}, user_id:{}'.format(body, user_id), AppContext.getContext())
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
             return res.getresjson(), 400
@@ -48,11 +49,12 @@ class FileContentSaveResource(Resource):
             if fileContentRepo.store(user_id, file_locale, record_id, pages, src_lang, tgt_lang) == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
-
+            AppContext.addRecordID(record_id)
             log_info("FileContentSaveResource record_id ({}) for user ({}) saved".format(record_id, user_id), AppContext.getContext())
             res = CustomResponse(Status.SUCCESS.value, None)
             return res.getres()
         except Exception as e:
+            AppContext.addRecordID(record_id)
             log_exception("FileContentSaveResource ",  AppContext.getContext(), e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
