@@ -129,7 +129,7 @@ class SentenceModel(object):
                     refs=[tgt_user]
                     sacre_bleu = sacrebleu.corpus_bleu(preds,refs).score
                     log_info("\n*************************\nBleu score calculation", AppContext.getContext())
-                    log_info("\n**Machine translated sentences:{}\n **User translated sentences:{}".format(preds, refs), AppContext.getContext())
+                    # log_info("\n**Machine translated sentences:{}\n **User translated sentences:{}".format(preds, refs), AppContext.getContext())
                     log_info("\nSACRE_BLEU value** :{}".format(sacre_bleu), AppContext.getContext())
                     log_info("\n*****************************", AppContext.getContext())
                     avg_bleu_score      = round((sacre_bleu/100),2)
