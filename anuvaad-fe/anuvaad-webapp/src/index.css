@@ -1,0 +1,14 @@
+@media print {
+    /* @page {
+        size: 200pt;
+        margin: 200pt
+    }, */
+    html, body {
+        /* height: auto; */
+        font-family: 'Lohit Devanagari' /* changing to 10pt has no impact */
+    }
+
+}
+/* @media print {
+    @page { size: 912px 1512px }
+  } */

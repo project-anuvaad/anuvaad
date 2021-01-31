@@ -124,7 +124,6 @@ class TranslatedDocument extends React.Component {
             color: sentence.font_color,
             width: sentence.text_width + 5 + "px",
             height: sentence.text_height + 4 + "px",
-            fontFamily: sentence.font_family,
             fontWeight: sentence.font_family && sentence.font_family.includes("Bold") && "bold",
             fontFamily: sentence.font_family,
             textAlign: "justify",
@@ -333,12 +332,12 @@ class TranslatedDocument extends React.Component {
         if (page['blocks'] || (page['blocks'] && page['images'])) {
             return (
                 <div >
-                    <Paper id={pId} elevation={2} style={{ position: 'relative', width: page.page_width + 'px', height: page.page_height + "px" }}>
-                        {page['blocks'].map(block => this.renderBlock(block))}
-                        {page['images'].map((images) => this.renderImage(images))}
-                    </Paper>
-                    <Divider />
-                </div>
+                <Paper id={pId} elevation={2} style={{ position: 'relative', width: page.page_width + 'px', height: page.page_height + "px" }}>
+                    {page['blocks'].map(block => this.renderBlock(block))}
+                    {page['images'].map((images) => this.renderImage(images))}
+                </Paper>
+                 <Divider />
+                 </div>
             )
         }
         return (
@@ -355,9 +354,27 @@ class TranslatedDocument extends React.Component {
     }
 
     render() {
-        return (
-            <span style={{ zoom: `${this.props.zoomPercent}%` }}>{this.renderPage(this.props.page)}</span>
-        )
+        let pId = "divToPrint" + this.props.index
+        let page = this.props.page
+        if (page['blocks'] || (page['blocks'] && page['images'])) {
+            return (
+                <div >
+                <div id={pId} elevation={2} style={{ position: 'relative', width: page.page_width + 'px', height: page.page_height + "px" }}>
+                    {page['blocks'].map(block => this.renderBlock(block))}
+                    {page['images'].map((images) => this.renderImage(images))}
+                </div>
+                 <Divider />
+                </div>
+            )
+        } else {
+            return (
+                <div></div>
+            )
+        }
+
+        // return (
+        //     <span>{this.renderPage(this.props.page)}</span>
+        // )
     }
 
 }
