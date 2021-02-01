@@ -1,6 +1,5 @@
 #!/bin/python
 import logging
-import os
 import threading
 
 from logging.config import dictConfig
