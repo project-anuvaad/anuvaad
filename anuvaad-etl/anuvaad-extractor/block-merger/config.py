@@ -127,3 +127,6 @@ LAYOUT_CONFIG_PATH = "./src/utilities/primalaynet/config.yaml"
 HEADER_FOOTER_BY_PRIMA = False
 
 LAYOUT_CLASSES = ['Header','Footer']
+
+BM_PROCESSES = 3
+BM_OCR_PROCESSES = 3

@@ -12,12 +12,18 @@ from anuvaad_auditor.loghandler import log_exception
 import time
 import os
 
-import threading, queue
+#import threading, queue
+
+from multiprocessing import Queue
+
 import config
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
+#
+# blockMergerQueue    = queue.Queue()
+# blockMergerOCRQueue = queue.Queue()
 
-blockMergerQueue    = queue.Queue()
-blockMergerOCRQueue = queue.Queue()
+blockMergerQueue    = Queue()
+blockMergerOCRQueue = Queue()
 
 def consumer_validator():
     try:
