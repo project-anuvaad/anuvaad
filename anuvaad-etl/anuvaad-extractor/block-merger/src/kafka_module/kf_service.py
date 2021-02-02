@@ -118,7 +118,7 @@ def block_merger_request_worker():
 
             log_info('block_merger_request_worker - request in internal queue {}'.format(blockMergerQueue.qsize()), data)
 
-            blockMergerQueue.task_done()
+            #blockMergerQueue.task_done()
         except Exception as e:
             log_exception("block_merger_request_worker ",  LOG_WITHOUT_CONTEXT, e)
 
@@ -153,6 +153,6 @@ def block_merger_request_worker_ocr():
 
             log_info('block_merger_request_worker_ocr - request in internal queue {}'.format(blockMergerQueue.qsize()), data)
 
-            blockMergerOCRQueue.task_done()
+            #blockMergerOCRQueue.task_done()
         except Exception as e:
             log_exception("block_merger_request_worker_ocr ",  LOG_WITHOUT_CONTEXT, e)
