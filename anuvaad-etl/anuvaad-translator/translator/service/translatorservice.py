@@ -53,8 +53,6 @@ class TranslatorService:
                 else:
                     translation_process = Process(target=self.push_sentences_to_nmt, args=(file, translate_wf_input))
                     translation_process.start()
-                    log_info("Worker process forked..", translate_wf_input)
-                    #self.push_sentences_to_nmt(file, translate_wf_input)
             except Exception as e:
                 log_exception("Exception while posting sentences to NMT: " + str(e), translate_wf_input, e)
                 continue
@@ -245,7 +243,6 @@ class TranslatorService:
         nmt_output = nmt_output["out"]
         nmt_trans_process = Process(target=self.process_translation, args=(nmt_output,))
         nmt_trans_process.start()
-        #self.process_translation(nmt_output)
         return
 
     # Method to process the output received from the NMT
