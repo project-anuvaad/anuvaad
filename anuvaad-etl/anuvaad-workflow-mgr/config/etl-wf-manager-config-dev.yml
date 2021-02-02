@@ -515,6 +515,97 @@ WorkflowConfigs:
 
 
 
+
+
+  - workflowCode: WF_A_FCWDLDBSOTES
+    type: ASYNC
+    description: Document digitizarion wf.
+    useCase: A_FWLBOT
+    sequence:
+    - order: 0
+      tool:
+      - name: FILE-CONVERTER
+        description: converts a file into pdf and other formats.
+        kafka-input:
+        - topic: anuvaad-dp-tools-fc-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-fc-input-key-one, anuvaad-dp-tools-fc-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-fc-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-fc-output-key-one, anuvaad-dp-tools-fc-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 1
+      tool:
+      - name: WORD-DETECTOR
+        description: detects word blocks from a given file
+        kafka-input:
+        - topic: anuvaad-dp-tools-word-detector-craft-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-word-detector-craft-input-key-one, anuvaad-dp-tools-word-detector-craft-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-word-detector-craft-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-word-detector-craft-output-key-one, anuvaad-dp-tools-word-detector-craft-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 2
+      tool:
+      - name: LAYOUT-DETECTOR
+        description: detects layouts from a given file
+        kafka-input:
+        - topic: anuvaad-dp-tools-layout-detector-prima-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-layout-detector-prima-input-key-one, anuvaad-dp-tools-layout-detector-prima-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-layout-detector-prima-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-layout-detector-prima-output-key-one, anuvaad-dp-tools-layout-detector-prima-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 3
+      tool:
+      - name: BLOCK-SEGMENTER
+        description: block segmentation process
+        kafka-input:
+        - topic: anuvaad-dp-tools-block-segmenter-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-block-segmenter-input-key-one, anuvaad-dp-tools-block-segmenter-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-block-segmenter-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-block-segmenter-output-key-one, anuvaad-dp-tools-block-segmenter-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: false
+    - order: 4
+      tool:
+      - name: OCR-TESSERACT
+        description: ocr using tesseract
+        kafka-input:
+        - topic: anuvaad-dp-tools-ocr-tesseract-input-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-ocr-tesseract-input-key-one, anuvaad-dp-tools-ocr-tesseract-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-ocr-tesseract-output-v1
+          partitions: 2
+          keys: anuvaad-dp-tools-ocr-tesseract-output-key-one, anuvaad-dp-tools-ocr-tesseract-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
+
+
   - workflowCode: WF_S_TR
     type: SYNC
     description: Translates the sentences.

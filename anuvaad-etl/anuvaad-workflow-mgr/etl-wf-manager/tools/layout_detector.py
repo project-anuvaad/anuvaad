@@ -36,7 +36,7 @@ class LayoutDetector:
         ld_input["metadata"]["module"] = tool_layoutdetector
         return ld_input
 
-    # Returns a json of the format accepted by Block merger based on a predecessor.
+    # Returns a json of the format accepted by Layout Detector based on a predecessor.
     def get_ld_input(self, task_output, predecessor):
         files = []
         if predecessor == tool_worddetector:

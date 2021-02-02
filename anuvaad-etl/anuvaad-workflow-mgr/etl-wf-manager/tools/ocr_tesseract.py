@@ -1,6 +1,8 @@
 
 
 from configs.wfmconfig import tool_ocrtesseract
+from configs.wfmconfig import tool_blocksegmenter
+
 
 class OCRTESS:
 
@@ -35,6 +37,32 @@ class OCRTESS:
         octs_input["metadata"]["module"] = tool_ocrtesseract
         return octs_input
 
-    # Returns a json of the format accepted by Block merger based on a predecessor.
+    # Returns a json of the format accepted by OCR Tesseract based on a predecessor.
     def get_octs_input(self, task_output, predecessor):
-        return None
+        files = []
+        if predecessor == tool_blocksegmenter:
+            output = task_output["output"]
+            for op_file in output:
+                obj = {
+                    "file": {
+                        "identifier": op_file["outputFile"],
+                        "name": op_file["outputFile"],
+                        "type": op_file["outputType"]
+                    }
+                }
+                files.append(obj)
+        else:
+            return None
+        tool_input = {
+            "inputs": files
+        }
+        octs_input = {
+            "jobID": task_output["jobID"],
+            "workflowCode": task_output["workflowCode"],
+            "stepOrder": task_output["stepOrder"],
+            "tool": tool_ocrtesseract,
+            "input": tool_input,
+            "metadata": task_output["metadata"]
+        }
+        octs_input["metadata"]["module"] = tool_ocrtesseract
+        return octs_input

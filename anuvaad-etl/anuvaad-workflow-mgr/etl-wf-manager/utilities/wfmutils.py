@@ -159,6 +159,10 @@ class WFMUtils:
                 tool_input = word_detector.get_wd_input(task_output, previous_tool)
             if current_tool == tool_layoutdetector:
                 tool_input = layout_detector.get_ld_input(task_output, previous_tool)
+            if current_tool == tool_blocksegmenter:
+                tool_input = block_segmenter.get_bs_input(task_output, previous_tool)
+            if current_tool == tool_ocrtesseract:
+                tool_input = ocrtess.get_octs_input(task_output, previous_tool)
             if current_tool in ocr_tools:
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 for file in tool_input["input"]["inputs"]:
