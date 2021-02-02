@@ -813,7 +813,9 @@ class DocumentEditor extends React.Component {
                         processZoom={this.processZoom}
                         zoomInDisabled={this.state.zoomInDisabled}
                         zoomOutDisabled={this.state.zoomOutDisabled}
-                        onAction={this.processSentenceAction} />
+                        onAction={this.processSentenceAction}
+                        hideMergeBtn={true}
+                        hideSentenceDtl={true} />
                 </div>
                 {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
                 {this.state.showStatus ? this.renderStatusInformation() : <div />}

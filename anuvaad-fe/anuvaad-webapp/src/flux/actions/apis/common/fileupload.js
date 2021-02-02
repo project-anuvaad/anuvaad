@@ -5,13 +5,13 @@ import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class RunExperiment extends API {
 
 
-  constructor(workflow, file, fileName, source, target, path, model,sentence_ids, timeout = 2000) {
+  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, timeout = 2000) {
 
     super("POST", timeout, false);
     this.type = C.WORKFLOW;
     this.file = file;
     this.fileName = fileName;
-    this.endpoint = workflow === "WF_A_FCBMTKTR" ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}` : `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`
+    this.endpoint = workflow === "WF_A_FCBMTKTR" || "WF_A_FCWDLDBSOTES" ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}` : `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`
     this.source = source;
     this.target = target;
     this.path = path;
@@ -51,7 +51,7 @@ export default class RunExperiment extends API {
             "locale": this.source,
             "model": this.model,
             "context": "JUDICIARY",
-            "modifiedSentences" :this.sentence_ids
+            "modifiedSentences": this.sentence_ids
           }
         ]
 
@@ -65,10 +65,28 @@ export default class RunExperiment extends API {
         "model": this.model, //Only when Translation is needed
         "textBlocks": this.file,
         "context": "JUDICIARY",
-        "modifiedSentences" :this.sentence_ids
+        "modifiedSentences": this.sentence_ids
 
       }
       //List of text 
+    } else if (this.workflow === "WF_A_FCWDLDBSOTES") {
+      return {
+        "workflowCode": this.workflow,
+        "jobName": this.fileName,
+        "files": [
+          {
+            "path": this.file,
+            "type": this.path,
+            "locale": this.source,
+            "config": {
+              "OCR": {
+                "option": "HIGH_ACCURACY",
+                "language": this.source
+              }
+            }
+          }
+        ]
+      }
     }
 
   }
