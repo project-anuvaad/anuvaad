@@ -108,7 +108,17 @@ class TranslatedDocument extends React.Component {
                 key={block.block_identifier}
             >
                 {block['texts'].map((text, i) =>
-                    <span key={i} style={{ lineHeight: block.line_height + 'px' }}>{i !== 0 && " "}<span key={text.s_id}>{text.tgt}</span></span>
+                    <span key={i} style={{ lineHeight: block.line_height + 'px' }}>{i !== 0 && " "}
+                    <p
+                        style={{
+                            textAlign: "justify",
+                            lineHeight: block.line_height + 'px',
+                            fontFamily: block.font_family,
+                            fontSize: block.font_size + "px",
+                            fontColor: block.font_color,
+                            fontWeight: (block.font_family && block.font_family.includes("Bold") || block.attrib && block.attrib.toLowerCase().includes("bold")) && 'bold',
+                        }}
+                        key={text.s_id}>{text.tgt}</p></span>
                     // this.renderText(text, block)
                 )}
             </div>
@@ -332,12 +342,12 @@ class TranslatedDocument extends React.Component {
         if (page['blocks'] || (page['blocks'] && page['images'])) {
             return (
                 <div >
-                <Paper id={pId} elevation={2} style={{ position: 'relative', width: page.page_width + 'px', height: page.page_height + "px" }}>
-                    {page['blocks'].map(block => this.renderBlock(block))}
-                    {page['images'].map((images) => this.renderImage(images))}
-                </Paper>
-                 <Divider />
-                 </div>
+                    <Paper id={pId} elevation={2} style={{ position: 'relative', width: page.page_width + 'px', height: page.page_height + "px" }}>
+                        {page['blocks'].map(block => this.renderBlock(block))}
+                        {page['images'].map((images) => this.renderImage(images))}
+                    </Paper>
+                    <Divider />
+                </div>
             )
         }
         return (
@@ -348,7 +358,7 @@ class TranslatedDocument extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.download !== this.props.download && this.props.download) {
             if (this.props.index === (this.props.totalPageCount - 1)) {
-                this.props.htmlToPDF()
+                // this.props.htmlToPDF()
             }
         }
     }
@@ -359,11 +369,11 @@ class TranslatedDocument extends React.Component {
         if (page['blocks'] || (page['blocks'] && page['images'])) {
             return (
                 <div >
-                <div id={pId} elevation={2} style={{ position: 'relative', width: page.page_width + 'px', height: page.page_height + "px" }}>
-                    {page['blocks'].map(block => this.renderBlock(block))}
-                    {page['images'].map((images) => this.renderImage(images))}
-                </div>
-                 <Divider />
+                    <div id={pId} elevation={2} style={{ position: 'relative', width: page.page_width + 'px', height: page.page_height + "px" }}>
+                        {page['blocks'].map(block => this.renderBlock(block))}
+                        {page['images'].map((images) => this.renderImage(images))}
+                    </div>
+                    <Divider />
                 </div>
             )
         } else {
