@@ -1,6 +1,6 @@
 #!/bin/python
 import logging
-import os
+from multiprocessing import Process
 
 import numpy as np
 import time
@@ -60,8 +60,9 @@ class AlignmentService:
             object_in["status"] = "STARTED"
             log_info("Registering the alignment job initiated through WF...", object_in)
             self.update_job_details(object_in, True)
-            self.process(object_in, True)
-            return {}
+            align_process = Process(target=self.process, args=(object_in, True))
+            align_process.start()
+            return
         except Exception as e:
             log_exception("Exception while registering the alignment job initiated through WF: " + str(e), object_in, e)
             return None

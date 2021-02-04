@@ -1,6 +1,6 @@
 #!/bin/python
 import logging
-import threading
+from multiprocessing import Process
 
 from logging.config import dictConfig
 from controller.wfmcontroller import wfmapp
@@ -8,9 +8,6 @@ from kafkawrapper.wfmconsumer import consume
 from kafkawrapper.wfmcoreconsumer import core_consume
 from kafkawrapper.wfmerrorconsumer import error_consume
 from anuvaad_auditor.loghandler import log_exception
-from configs.wfmconfig import wfm_cons_no_of_instances
-from configs.wfmconfig import wfm_core_cons_no_of_instances
-from configs.wfmconfig import wfm_error_cons_no_of_instances
 from configs.wfmconfig import app_host
 from configs.wfmconfig import app_port
 
@@ -23,18 +20,12 @@ log = logging.getLogger('file')
 def start_consumer():
     with wfmapp.test_request_context():
         try:
-            for instance in range(0, wfm_cons_no_of_instances):
-                thread = "WFMConsumer-Instance-" + str(instance)
-                wfm_consumer_thread = threading.Thread(target=consume, name=thread)
-                wfm_consumer_thread.start()
-            for instance in range(0, wfm_core_cons_no_of_instances):
-                thread = "WFMCoreConsumer-Instance-" + str(instance)
-                wfm_core_consumer_thread = threading.Thread(target=core_consume, name=thread)
-                wfm_core_consumer_thread.start()
-            for instance in range(0, wfm_error_cons_no_of_instances):
-                thread = "WFMErrorConsumer-Instance-" + str(instance)
-                wfm_error_consumer_thread = threading.Thread(target=error_consume, name=thread)
-                wfm_error_consumer_thread.start()
+            wfm_consumer_process = Process(target=consume)
+            wfm_consumer_process.start()
+            wfm_core_consumer_process = Process(target=core_consume)
+            wfm_core_consumer_process.start()
+            wfm_error_consumer_process = Process(target=error_consume)
+            wfm_error_consumer_process.start()
         except Exception as e:
             log_exception("Exception while starting the WFM kafka consumers: " + str(e), None, e)
 
