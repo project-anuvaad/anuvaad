@@ -146,6 +146,8 @@ def get_hdfs(in_dfs, header_region, footer_region,width_ratio,height_ratio,image
         for page_index in range(pages):
             page_df   = in_dfs[page_index]
             if config.HEADER_FOOTER_BY_PRIMA:
+                log_info('Starting header footer detetion with PRIMA',
+                         app_context.application_context)
                 if images != None :
                     region_df  = primalaynet.predict_primanet(images[page_index], [])
                     page_df = tag_heaader_footer_attrib(region_df, pd.DataFrame(), page_df,width_ratio,height_ratio)
