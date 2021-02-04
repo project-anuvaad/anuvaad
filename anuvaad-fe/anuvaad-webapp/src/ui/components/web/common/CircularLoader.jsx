@@ -18,8 +18,8 @@ export default function CircularProgressWithLabel(props) {
                 position: 'relative',
                 top: '40%',
                 left: '50%',
-                // color: '#1C9AB7'
-                color: "blue"
+                color: '#1C9AB7'
+                // color: "blue"
             }} />
             <div
                 style={{
@@ -28,7 +28,7 @@ export default function CircularProgressWithLabel(props) {
                     left: '50%',
                                     }}
             >
-                <Typography variant="caption" style={{color: 'blue'}} component="div" color="textSecondary">{`${Math.round(
+                <Typography variant="caption" style={{color: '#1C9AB7'}} component="div" color="textSecondary">{`${Math.round(
                     props.value,
                 )}%`}</Typography>
             </div>
