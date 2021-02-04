@@ -13,13 +13,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import { clearJobEntry } from "../../../../flux/actions/users/async_job_management";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
+import FetchDigitizedDocument from "../../../../flux/actions/apis/view_digitized_document/fetch_digitized_document";
 import JobStatus from "../../../../flux/actions/apis/view_document/translation.progress";
 import Spinner from "../../../components/web/common/Spinner";
 import Snackbar from "../../../components/web/common/Snackbar";
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import history from "../../../../web.history";
 import Dialog from "../../../components/web/common/SimpleDialog";
+import MarkInactive from "../../../../flux/actions/apis/view_document/markinactive";
 
 
 
@@ -37,6 +38,7 @@ class ViewDocumentDigitization extends React.Component {
             dialogMessage: null,
             timeOut: 3000,
             variant: "info",
+            showLoader: false
         }
     }
 
@@ -46,16 +48,18 @@ class ViewDocumentDigitization extends React.Component {
         jobIds = [""],
         searchForNewJob = false,
         searchNextPage = false,
-        updateExisting = false
+        updateExisting = false,
+        userID = [],
     ) {
         const { APITransport } = this.props;
-        const apiObj = new FetchDocument(
+        const apiObj = new FetchDigitizedDocument(
             offset,
             limit,
             jobIds,
             searchForNewJob,
             searchNextPage,
-            updateExisting
+            updateExisting,
+            userID
         );
         APITransport(apiObj);
     }
@@ -67,7 +71,7 @@ class ViewDocumentDigitization extends React.Component {
     };
 
     getJobsSortedByTimestamp = () => {
-        let jobs = this.props.job_details.documents.sort((a, b) => {
+        let jobs = this.props.digitizeddocument.documents.sort((a, b) => {
             if (a.created_on < b.created_on) {
                 return 1;
             }
@@ -92,19 +96,19 @@ class ViewDocumentDigitization extends React.Component {
         return recordids;
     };
 
-    makeAPICallDocumentsTranslationProgress(jobIds) {
-        var recordIds = this.getRecordIds();
-        if (recordIds.length > 0) {
-            const { APITransport } = this.props;
-            const apiObj = new JobStatus(recordIds);
-            APITransport(apiObj);
-            this.setState({ showProgress: true, searchToken: false });
-        }
-    }
+    // makeAPICallDocumentsTranslationProgress(jobIds) {
+    //     var recordIds = this.getRecordIds();
+    //     if (recordIds.length > 0) {
+    //         const { APITransport } = this.props;
+    //         const apiObj = new JobStatus(recordIds);
+    //         APITransport(apiObj);
+    //         this.setState({ showProgress: true, searchToken: false });
+    //     }
+    // }
 
 
     checkInprogressJobStatus = () => {
-        let inprogressJobIds = this.props.job_details.documents
+        let inprogressJobIds = this.props.digitizeddocument.documents
             .filter((job) => job.status === "INPROGRESS")
             .map((job) => job.jobID);
         if (inprogressJobIds.length > 0) {
@@ -123,7 +127,7 @@ class ViewDocumentDigitization extends React.Component {
         this.timerId = setInterval(this.checkInprogressJobStatus.bind(this), 10000);
         TELEMETRY.pageLoadStarted("document-digitization");
 
-        if (this.props.job_details.documents.length < 1) {
+        if (this.props.digitizeddocument.documents.length < 1) {
             this.makeAPICallJobsBulkSearch(
                 this.state.offset,
                 this.state.limit,
@@ -143,32 +147,32 @@ class ViewDocumentDigitization extends React.Component {
                 false
             );
         }
-        this.makeAPICallDocumentsTranslationProgress();
+        // this.makeAPICallDocumentsTranslationProgress();
     }
 
     componentWillUnmount() {
         clearInterval(this.timerId);
-        TELEMETRY.pageLoadCompleted("view-document");
+        TELEMETRY.pageLoadCompleted("document-digitization");
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
-            TELEMETRY.endWorkflow(this.props.job_details.changedJob.source_language_code, this.props.job_details.changedJob.target_language_code, this.props.job_details.changedJob.filename, this.props.job_details.changedJob.jobID, this.props.job_details.changedJob.status)
+        if (this.props.digitizeddocument.changedJob && this.props.digitizeddocument.changedJob.hasOwnProperty("jobID") && prevProps.digitizeddocument.changedJob !== this.props.digitizeddocument.changedJob) {
+            TELEMETRY.endWorkflow(this.props.digitizeddocument.changedJob.source_language_code, "", this.props.digitizeddocument.changedJob.filename, this.props.digitizeddocument.changedJob.jobID, this.props.digitizeddocument.changedJob.status)
         }
 
         if (
-            prevProps.job_details.documents.length !==
-            this.props.job_details.documents.length
+            prevProps.digitizeddocument.documents.length !==
+            this.props.digitizeddocument.documents.length
         ) {
             /**
              * update job progress status only progress_updated is false
              */
-            if (!this.props.job_details.progress_updated) {
-                this.makeAPICallDocumentsTranslationProgress();
-                this.setState({ showLoader: false });
-            }
+            // if (!this.props.digitizeddocument.progress_updated) {
+            //     this.makeAPICallDocumentsTranslationProgress();
+            //     this.setState({ showLoader: false });
+            // }
 
-            if (this.props.job_details.document_deleted) {
+            if (this.props.digitizeddocument.document_deleted) {
                 this.setState({
                     dialogMessage: "Deleted successfully ",
                     variant: "success",
@@ -177,8 +181,8 @@ class ViewDocumentDigitization extends React.Component {
             }
             this.props.clearJobEntry();
         } else if (
-            prevProps.job_details.documents.length === 0 &&
-            this.props.job_details.documents.length === 0 &&
+            prevProps.digitizeddocument.documents.length === 0 &&
+            this.props.digitizeddocument.documents.length === 0 &&
             !this.props.apistatus.progress &&
             this.state.showLoader
         ) {
@@ -201,6 +205,19 @@ class ViewDocumentDigitization extends React.Component {
     /**
      * handlers to process user clicks
      */
+
+    makeAPICallJobDelete(jobId) {
+        const { APITransport } = this.props;
+        const apiObj = new MarkInactive(jobId);
+
+        APITransport(apiObj);
+        this.setState({
+            showProgress: true,
+            searchToken: false,
+            dialogMessage: " Selected document is deleting, please wait...!",
+            timeOut: null,
+        });
+    }
 
     processJobTimelinesClick(jobId, recordId) {
         let taskDetails = this.getJobIdDetail(jobId);
@@ -249,6 +266,28 @@ class ViewDocumentDigitization extends React.Component {
         setTimeout(() => {
             this.setState({ dialogMessage: "" });
         }, 3000);
+    };
+
+    processTableClickedNextOrPrevious = (page, sortOrder) => {
+        if (this.state.maxPageNum < page) {
+            /**
+             * user wanted to load next set of records
+             */
+            this.makeAPICallJobsBulkSearch(
+                this.state.offset + this.state.limit,
+                this.state.limit,
+                false,
+                false,
+                true
+            );
+            this.setState({
+                maxPageNum: page,
+                offset: this.state.offset + this.state.limit,
+            });
+        }
+        this.setState({
+            currentPageIndex: page
+        })
     };
 
     snackBarMessage = () => {
@@ -471,6 +510,7 @@ class ViewDocumentDigitization extends React.Component {
                     empty: true,
                     customBodyRender: (value, tableMeta, updateValue) => {
                         if (tableMeta.rowData) {
+                            // console.log(tableMeta.rowData[1], tableMeta.rowData[2], tableMeta.rowData[3])
                             return (
                                 <div>
                                     <Tooltip title="Info" placement="left">
@@ -607,16 +647,16 @@ class ViewDocumentDigitization extends React.Component {
                     )}
                 </div>
                 {this.state.showInfo && (
-          <Dialog
-            message={this.state.message}
-            type={this.state.dialogType}
-            handleClose={this.handleDialogClose.bind(this)}
-            open
-            title={this.state.dialogTitle}
-            handleSubmit={this.handleDialogSubmit.bind(this)}
-            value={this.state.value}
-          />
-        )}
+                    <Dialog
+                        message={this.state.message}
+                        type={this.state.dialogType}
+                        handleClose={this.handleDialogClose.bind(this)}
+                        open
+                        title={this.state.dialogTitle}
+                        handleSubmit={this.handleDialogSubmit.bind(this)}
+                        value={this.state.value}
+                    />
+                )}
                 {(this.state.showLoader || this.state.loaderDelete) && <Spinner />}
                 {this.state.dialogMessage && this.snackBarMessage()}
             </div>
@@ -636,8 +676,9 @@ const mapDispatchToProps = (dispatch) =>
 const mapStateToProps = (state) => ({
     user: state.login,
     apistatus: state.apistatus,
-    job_details: state.job_details,
+    digitizeddocument: state.digitizeddocument,
     async_job_status: state.async_job_status,
+    open_sidebar: state.open_sidebar
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewDocumentDigitization);
