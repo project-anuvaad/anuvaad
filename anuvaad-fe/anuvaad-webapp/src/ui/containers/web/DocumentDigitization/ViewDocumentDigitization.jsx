@@ -238,7 +238,7 @@ class ViewDocumentDigitization extends React.Component {
         // this.makeAPICallJobDelete(jobId);
     };
 
-    processViewDocumentClick = (jobId, recordId, status) => {
+    processViewDocumentClick = (jobId, status) => {
         let job = this.getJobIdDetail(jobId);
         if (status === "COMPLETED") {
             history.push(
