@@ -120,7 +120,7 @@ class UserDetails extends React.Component {
       body: JSON.stringify(userObj.getBody()),
       headers: userObj.getHeaders().headers
     })
-      .then(res => {
+      .then(async res => {
         if (res.ok) {
           this.processFetchBulkUserDetailAPI(null, null, false, true, [userId], [userName], roleCodes.split(','));
           if (currentState) {
@@ -135,7 +135,13 @@ class UserDetails extends React.Component {
             }, 2000)
           }
         } else {
+          const message = await res.json()
           TELEMETRY.log("user-activate-or-deactivate", res)
+          this.setState({ isenabled: true, variantType: 'error', message: `${message.message}`, status: false }, () => {
+            setTimeout(() => {
+              this.setState({ isenabled: false })
+            }, 2000)
+          })
         }
       })
   }
