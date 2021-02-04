@@ -139,10 +139,12 @@ class UserDetails extends React.Component {
             }, 2000)
           }
         } else {
-          TELEMETRY.log("user-activate-or-deactivate", res)
           const message = await res.json()
-          this.setState({ isenabled: true, variantType: 'error', message: `${message.message}` }, () => {
-            this.setState({ status: false, isenabled: false })
+          TELEMETRY.log("user-activate-or-deactivate", res)
+          this.setState({ isenabled: true, variantType: 'error', message: `${message.message}`, status: false }, () => {
+            setTimeout(() => {
+              this.setState({ isenabled: false })
+            }, 2000)
           })
         }
       })
