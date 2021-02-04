@@ -97,9 +97,10 @@ class StartDigitizationUpload extends React.Component {
         }
 
         if (prevProps.documentUplaod !== this.props.documentUplaod) {
+            var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code)
             const { APITransport } = this.props;
             const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
-                this.state.target_language_code, this.state.path, this.state.model);
+                this.state.target_language_code, this.state.path, this.state.model, sourceLang);
             APITransport(apiObj);
         }
 
@@ -252,116 +253,116 @@ class StartDigitizationUpload extends React.Component {
         const { classes } = this.props
         return (
             <div style={{ height: window.innerHeight }}>
-              <Header />
-      
-              <div className={classes.div}>
-                <Typography value="" variant="h4" className={classes.typographyHeader}>
-                  {translate("common.page.label.uploadFile")}
-                </Typography>
-                <br />
-                <Typography className={classes.typographySubHeader}>{translate("pdf_upload.page.label.uploadMessage")}</Typography>
-                <br />
-                <Paper elevation={3} className={classes.paper}>
-                  <Grid container spacing={8}>
-      
-                    <Grid item xs={12} sm={6} lg={6} xl={6}>
-                      <MuiThemeProvider theme={theme}>
-                        <DropzoneArea className={classes.DropZoneArea}
-                          showPreviewsInDropzone
-                          dropZoneClass={classes.dropZoneArea}
-                          acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
-                          onChange={this.handleChange.bind(this)}
-                          filesLimit={1}
-                          maxFileSize={200000000000}
-                          dropzoneText={translate("common.page.label.addDropDocument")}
-                          onDelete={this.handleDelete.bind(this)}
-                        />
-                      </MuiThemeProvider>
-                    </Grid>
-      
-                    <Grid item xs={12} sm={6} lg={6} xl={6}>
-      
-                      {this.renderSourceLanguagesItems()}
-      
-                      {/* {this.renderTargetLanguagesItems()} */}
-      
-                      <Grid item xs={12} sm={12} lg={12} xl={12}>
-                        <Grid item xs={12} sm={12} lg={12} xl={12}>
-                          <Typography variant="h5">
-                            {translate("common.page.label.filename")}
-                          </Typography>
+                <Header />
+
+                <div className={classes.div}>
+                    <Typography value="" variant="h4" className={classes.typographyHeader}>
+                        {translate("common.page.label.uploadFile")}
+                    </Typography>
+                    <br />
+                    <Typography className={classes.typographySubHeader}>{translate("pdf_upload.page.label.uploadMessage")}</Typography>
+                    <br />
+                    <Paper elevation={3} className={classes.paper}>
+                        <Grid container spacing={8}>
+
+                            <Grid item xs={12} sm={6} lg={6} xl={6}>
+                                <MuiThemeProvider theme={theme}>
+                                    <DropzoneArea className={classes.DropZoneArea}
+                                        showPreviewsInDropzone
+                                        dropZoneClass={classes.dropZoneArea}
+                                        acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
+                                        onChange={this.handleChange.bind(this)}
+                                        filesLimit={1}
+                                        maxFileSize={200000000000}
+                                        dropzoneText={translate("common.page.label.addDropDocument")}
+                                        onDelete={this.handleDelete.bind(this)}
+                                    />
+                                </MuiThemeProvider>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6} lg={6} xl={6}>
+
+                                {this.renderSourceLanguagesItems()}
+
+                                {/* {this.renderTargetLanguagesItems()} */}
+
+                                <Grid item xs={12} sm={12} lg={12} xl={12}>
+                                    <Grid item xs={12} sm={12} lg={12} xl={12}>
+                                        <Typography variant="h5">
+                                            {translate("common.page.label.filename")}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={12} lg={12} xl={12}>
+                                        <TextField
+                                            // className={classes.textfield}
+                                            value={this.state.workspaceName}
+                                            id="outlined-name"
+                                            margin="normal"
+                                            onChange={event => {
+                                                this.handleTextChange("workspaceName", event);
+                                            }}
+                                            variant="outlined"
+                                            style={{ width: "100%", margin: "0px" }}
+                                        />
+                                    </Grid>
+
+                                </Grid>
+
+                            </Grid>
+
+                            <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
+                                <Button
+                                    id="back"
+                                    variant="contained" color="primary"
+                                    size="large" onClick={this.processBackButton.bind(this)}
+                                    style={{
+                                        width: "100%",
+                                        backgroundColor: '#1C9AB7',
+                                        borderRadius: "20px 20px 20px 20px",
+                                        color: "#FFFFFF",
+                                        height: '46px'
+                                    }}
+                                >
+                                    {translate("common.page.button.back")}
+                                </Button>
+                            </Grid>
+                            <Grid item xs={6} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
+                                <Grid item xs={12} sm={12} lg={12} xl={12}>
+                                    <Button
+                                        id="upload"
+                                        variant="contained" color="primary"
+                                        // className={classes.button1} 
+                                        style={{
+                                            width: "100%",
+                                            backgroundColor: '#1C9AB7',
+                                            borderRadius: "20px 20px 20px 20px",
+                                            color: "#FFFFFF",
+                                            height: '46px'
+                                        }}
+                                        size="large" onClick={this.handleSubmit.bind(this)}>
+                                        {translate("common.page.button.upload")}
+                                    </Button>
+                                </Grid>
+
+                            </Grid>
+
                         </Grid>
-                        <Grid item xs={12} sm={12} lg={12} xl={12}>
-                          <TextField
-                            // className={classes.textfield}
-                            value={this.state.workspaceName}
-                            id="outlined-name"
-                            margin="normal"
-                            onChange={event => {
-                              this.handleTextChange("workspaceName", event);
-                            }}
-                            variant="outlined"
-                            style={{ width: "100%", margin: "0px" }}
-                          />
-                        </Grid>
-      
-                      </Grid>
-      
-                    </Grid>
-      
-                    <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
-                      <Button
-                        id="back"
-                        variant="contained" color="primary"
-                        size="large" onClick={this.processBackButton.bind(this)}
-                        style={{
-                          width: "100%",
-                          backgroundColor: '#1C9AB7',
-                          borderRadius: "20px 20px 20px 20px",
-                          color: "#FFFFFF",
-                          height: '46px'
-                        }}
-                      >
-                        {translate("common.page.button.back")}
-                      </Button>
-                    </Grid>
-                    <Grid item xs={6} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
-                      <Grid item xs={12} sm={12} lg={12} xl={12}>
-                        <Button
-                          id="upload"
-                          variant="contained" color="primary"
-                          // className={classes.button1} 
-                          style={{
-                            width: "100%",
-                            backgroundColor: '#1C9AB7',
-                            borderRadius: "20px 20px 20px 20px",
-                            color: "#FFFFFF",
-                            height: '46px'
-                          }}
-                          size="large" onClick={this.handleSubmit.bind(this)}>
-                          {translate("common.page.button.upload")}
-                        </Button>
-                      </Grid>
-      
-                    </Grid>
-      
-                  </Grid>
-      
-      
-                  {this.state.open && (
-                    <Snackbar
-                      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                      open={this.state.open}
-                      autoHideDuration={6000}
-                      onClose={this.handleClose}
-                      variant="success"
-                      message={this.state.message}
-                    />
-                  )}
-                </Paper>
-              </div>
+
+
+                        {this.state.open && (
+                            <Snackbar
+                                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                                open={this.state.open}
+                                autoHideDuration={6000}
+                                onClose={this.handleClose}
+                                variant="success"
+                                message={this.state.message}
+                            />
+                        )}
+                    </Paper>
+                </div>
             </div>
-          );
+        );
     }
 }
 

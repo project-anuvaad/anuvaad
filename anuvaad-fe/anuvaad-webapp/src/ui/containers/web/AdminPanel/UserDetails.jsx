@@ -81,6 +81,10 @@ class UserDetails extends React.Component {
     }
     else if (this.state.showLoader && prevProps.apistatus.message !== undefined && this.props.apistatus.message === prevProps.apistatus.message) {
       this.setState({ showLoader: false, status: false })
+    } else if (this.state.message === "Organization is currently inactive" && !this.state.isenabled) {
+      setTimeout(() => {
+        this.setState({ isenabled: true })
+      }, 1000)
     }
   }
 
@@ -120,7 +124,7 @@ class UserDetails extends React.Component {
       body: JSON.stringify(userObj.getBody()),
       headers: userObj.getHeaders().headers
     })
-      .then(res => {
+      .then(async res => {
         if (res.ok) {
           this.processFetchBulkUserDetailAPI(null, null, false, true, [userId], [userName], roleCodes.split(','));
           if (currentState) {
@@ -136,6 +140,10 @@ class UserDetails extends React.Component {
           }
         } else {
           TELEMETRY.log("user-activate-or-deactivate", res)
+          const message = await res.json()
+          this.setState({ isenabled: true, variantType: 'error', message: `${message.message}` }, () => {
+            this.setState({ status: false, isenabled: false })
+          })
         }
       })
   }

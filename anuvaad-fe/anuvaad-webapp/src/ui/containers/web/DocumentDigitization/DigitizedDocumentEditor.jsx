@@ -11,7 +11,7 @@ import Alert from '@material-ui/lab/Alert';
 import { translate } from "../../../../assets/localisation";
 import history from "../../../../web.history";
 import Spinner from "../../../components/web/common/Spinner";
-// import LanguageCodes from "../../../components/web/common/Languages.json"
+import DownloadFile from "../../../../flux/actions/apis/download/download_file"
 import PDFRenderer from '../DocumentEditor/PDFRenderer';
 import SentenceCard from '../DocumentEditor/SentenceCard';
 import PageCard from "../DocumentEditor/PageCard";
@@ -67,6 +67,7 @@ class DocumentEditor extends React.Component {
             download: false,
 
             fetchNext: true.valueOf,
+            OCRdata: []
         }
         this.forMergeSentences = []
     }
@@ -75,12 +76,28 @@ class DocumentEditor extends React.Component {
      * life cycle methods
      */
     componentDidMount() {
-        TELEMETRY.pageLoadCompleted('document-editor')
+        TELEMETRY.pageLoadCompleted('digitized-document-editor')
+
+        let user_profile = JSON.parse(localStorage.getItem('userProfile'));
+        let obj = new DownloadFile(this.props.match.params.filename, user_profile.userID)
+
+        const apiReq1 = fetch(obj.apiEndPoint(), {
+            method: 'get',
+            headers: obj.getHeaders().headers
+        }).then(async response => {
+            if (!response.ok) {
+                this.setState({ msg: "Failed to load file..." })
+                console.log("api failed")
+            } else {
+                this.setState({ OCRdata: response })
+            }
+        })
         let recordId = this.props.match.params.jobid;
         let jobId = recordId ? recordId.split("|")[0] : ""
 
         localStorage.setItem("recordId", recordId);
         localStorage.setItem("inputFile", this.props.match.params.inputfileid)
+
         this.setState({ showLoader: true });
         this.makeAPICallFetchContent(1);
         this.makeAPICallDocumentsTranslationProgress();
@@ -96,8 +113,6 @@ class DocumentEditor extends React.Component {
         }
 
         window.addEventListener('popstate', this.handleOnClose);
-        // window.addEventListener('beforeunload',this.handleOnClose);
-
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -541,7 +556,7 @@ class DocumentEditor extends React.Component {
             return (
                 <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
                     <Paper>
-                        <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} />
+                        <PDFRenderer parent='digitized-document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} />
                     </Paper>
                 </Grid>
             )

@@ -14,7 +14,6 @@ import { bindActionCreators } from "redux";
 import { clearJobEntry } from "../../../../flux/actions/users/async_job_management";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import FetchDigitizedDocument from "../../../../flux/actions/apis/view_digitized_document/fetch_digitized_document";
-import JobStatus from "../../../../flux/actions/apis/view_document/translation.progress";
 import Spinner from "../../../components/web/common/Spinner";
 import Snackbar from "../../../components/web/common/Snackbar";
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
@@ -235,14 +234,13 @@ class ViewDocumentDigitization extends React.Component {
 
     processDeleteJobClick = (fileName, jobId, recordId) => {
         this.setState({ showInfo: true, message: "Do you want to delete a file " + fileName + " ?", dialogTitle: "Delete " + fileName, value: jobId })
-        // this.makeAPICallJobDelete(jobId);
     };
 
-    processViewDocumentClick = (jobId, status) => {
+    processViewDocumentClick = (jobId, filename, status) => {
         let job = this.getJobIdDetail(jobId);
         if (status === "COMPLETED") {
             history.push(
-                `${process.env.PUBLIC_URL}/interactive-digitization/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
+                `${process.env.PUBLIC_URL}/interactive-digitization/${jobId}/${filename}/${job.converted_filename}`,
                 this.state
             );
         } else if (status === "INPROGRESS") {
@@ -464,6 +462,13 @@ class ViewDocumentDigitization extends React.Component {
                 },
             },
             {
+                name: "output_file",
+                label: "Output File",
+                options: {
+                    display: "excluded",
+                },
+            },
+            {
                 name: "Time Taken",
                 label: "Job Time",
                 options: {
@@ -476,7 +481,7 @@ class ViewDocumentDigitization extends React.Component {
                                     {tableMeta.rowData[5] === "COMPLETED" &&
                                         this.getDateTimeDifference(
                                             tableMeta.rowData[9],
-                                            tableMeta.rowData[11]
+                                            tableMeta.rowData[12]
                                         )}
                                 </div>
                             );
@@ -494,7 +499,7 @@ class ViewDocumentDigitization extends React.Component {
                         if (tableMeta.rowData) {
                             return (
                                 <div>
-                                    {this.getDateTimeFromTimestamp(tableMeta.rowData[11])}
+                                    {this.getDateTimeFromTimestamp(tableMeta.rowData[12])}
                                 </div>
                             );
                         }
@@ -510,6 +515,7 @@ class ViewDocumentDigitization extends React.Component {
                     empty: true,
                     customBodyRender: (value, tableMeta, updateValue) => {
                         if (tableMeta.rowData) {
+                            console.log(tableMeta.rowData)
                             // console.log(tableMeta.rowData[1], tableMeta.rowData[2], tableMeta.rowData[3])
                             return (
                                 <div>
@@ -535,7 +541,7 @@ class ViewDocumentDigitization extends React.Component {
                                             onClick={() =>
                                                 this.processViewDocumentClick(
                                                     tableMeta.rowData[1],
-                                                    tableMeta.rowData[2],
+                                                    tableMeta.rowData[10],
                                                     tableMeta.rowData[5]
                                                 )
                                             }

@@ -5,7 +5,7 @@ import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class RunExperiment extends API {
 
 
-  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, timeout = 2000) {
+  constructor(workflow, file, fileName, source, target, path, model, source_language, sentence_ids, timeout = 2000) {
 
     super("POST", timeout, false);
     this.type = C.WORKFLOW;
@@ -18,6 +18,7 @@ export default class RunExperiment extends API {
     this.model = model;
     this.workflow = workflow;
     this.sentence_ids = sentence_ids;
+    this.source_language = source_language;
 
   }
 
@@ -81,7 +82,8 @@ export default class RunExperiment extends API {
             "config": {
               "OCR": {
                 "option": "HIGH_ACCURACY",
-                "language": this.source
+                "language": this.source,
+                "source_language_name": this.source_language
               }
             }
           }
