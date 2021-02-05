@@ -14,57 +14,7 @@ class TranslatedDocument extends React.Component {
         this.action = null
     }
 
-    /**
-     * render Sentences
-     */
-    renderText = (text, block) => {
-        let style = {
-            position: "absolute",
-            top: ((text.block_id === (this.props.sentence_highlight && this.props.sentence_highlight.block_id) && this.action) ? text.text_top - block.text_top - 20 : text.text_top - block.text_top) + 'px',
-            left: text.text_left - block.text_left + 'px',
-            width: text.text_width + 'px',
-            height: text.text_height + 'px',
-            lineHeight: text.avg_line_height + 'px',
-            // textAlignLast   : "justify",
-            zIndex: (text.block_id === (this.props.sentence_highlight && this.props.sentence_highlight.block_id) && this.action) ? 100000 : 2
-        };
-        return (
-
-            <div style={style} key={text.block_id} ref={text.block_identifier}>
-                {this.renderTextFit(text, block.merged_block_id)}
-            </div>
-        )
-    }
-
-    renderTextFit = (text) => {
-        // min={1}
-        return (
-            <Textfit mode="single" style={{ width: parseInt(text.text_width), color: text.font_color }} max={text.font_size ? parseInt(text.font_size) : 16}>
-                {this.renderTextSpan(text)}
-            </Textfit>
-        )
-    }
-
-    /**
-     * render Sentences span
-     */
-    renderTextSpan = (text, flag = false) => {
-        return (
-            <span
-                style={{
-                    zIndex: 1,
-                    fontFamily: text.font_family,
-                    fontWeight: (text.font_family && text.font_family.includes("Bold") || text.attrib && text.attrib.toLowerCase().includes("bold")) && 'bold',
-                    backgroundColor: flag ? 'orange' : ''
-                }}
-                id={text.block_id}
-            >
-                {text.tgt}
-            </span>
-        )
-    }
-
-    renderBlock = (block) => {
+       renderBlock = (block) => {
         return (
             <div style={{
                 position: "absolute",
@@ -95,7 +45,6 @@ class TranslatedDocument extends React.Component {
                             fontWeight: (block.font_family && block.font_family.includes("Bold") || block.attrib && block.attrib.toLowerCase().includes("bold")) && 'bold',
                         }}
                         key={text.s_id}>{text.tgt}</p></span>
-                    // this.renderText(text, block)
                 )}
             </div>
         )
