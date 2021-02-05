@@ -32,7 +32,8 @@ class FileContentRepositories:
 
         if 'tokenized_sentences' in block:
             for elem in block['tokenized_sentences']:
-                elem['s0_tgt']    = elem['tgt']
+                if 'tgt' in elem:
+                    elem['s0_tgt']    = elem['tgt'] 
                 elem['s0_src']    = elem['src']
                 if 'input_subwords' in elem:
                     del elem['input_subwords']
@@ -50,7 +51,8 @@ class FileContentRepositories:
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
                 if update_s0:
-                    elem['s0_tgt']    = elem['tgt']
+                    if 'tgt' in elem:
+                        elem['s0_tgt']    = elem['tgt']
                     elem['s0_src']    = elem['src']
 
                 if 'input_subwords' in elem:
@@ -66,6 +68,7 @@ class FileContentRepositories:
     def store(self, user_id, file_locale, record_id, pages, src_lang, tgt_lang):
         blocks = []
         for page in pages:
+            log_info(page,AppContext.getContext())
             page_info                   = {}
             page_info['page_no']        = page['page_no']
             page_info['page_width']     = page['page_width']
@@ -76,22 +79,26 @@ class FileContentRepositories:
                     for image in page['images']:
                         blocks.append(self.create_block_info(image, record_id, page_info, 'images', user_id, src_lang, tgt_lang))
             except Exception as e:
-                log_exception('images key not present, thats strange', AppContext.getContext(), e)
+                AppContext.addRecordID(record_id)
+                log_exception('images key not present, thats strange:{}'.format(str(e)), AppContext.getContext(), e)
             
             try:
                 if  'lines' in page and page['lines'] != None:
                     for line in page['lines']:
                         blocks.append(self.create_block_info(line, record_id, page_info, 'lines', user_id, src_lang, tgt_lang))
             except Exception as e:
-                log_info('lines key is not present, ignorning further', AppContext.getContext())
+                AppContext.addRecordID(record_id)
+                log_info('lines key is not present, ignorning further:{}'.format(str(e)), AppContext.getContext())
                 pass
             
             try:
                 if 'text_blocks' in page and page['text_blocks'] != None:
                     for text in page['text_blocks']:
                         blocks.append(self.create_block_info(text, record_id, page_info, 'text_blocks', user_id, src_lang, tgt_lang))
+                
             except Exception as e:
-                log_exception('text_blocks key not present, thats strange', AppContext.getContext(), e)
+                AppContext.addRecordID(record_id)
+                log_exception('text_blocks key not present, thats strange:{}'.format(str(e)), AppContext.getContext(), e)
                 pass
             
         if self.blockModel.store_bulk_blocks(blocks) == False:

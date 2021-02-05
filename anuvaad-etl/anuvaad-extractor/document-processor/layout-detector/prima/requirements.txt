@@ -13,5 +13,6 @@ anuvaad-auditor==0.1.6
 cmake
 scikit-build
 layoutparser==0.1.2
+Shapely==1.7.1
 fvcore
 git+https://github.com/facebookresearch/detectron2.git#egg=detectron2

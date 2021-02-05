@@ -21,7 +21,11 @@ FROM anuvaadio/anuvaad-layout-detector-prima:4-ba5d7d74
 # ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev
+#RUN apt-get install -y curl
 
+
+RUN apt-get update && apt-get install -y libcurl4-gnutls-dev
+RUN apt install -y curl
 # RUN pip install --upgrade pip setuptools wheel
 # #&&\
 # #   pip install scikit-build &&\
@@ -38,7 +42,7 @@ RUN pip install -r requirements.txt
 
 #RUN pip cache purge
 
-
+#Run curl https://anuvaad-pubnet-weights.s3.amazonaws.com/model_final.pth?AWSAccessKeyId=AKIAUAXLRTC3KS46AZTB&Signature=6js6H28bUyOEmYek2FTbWf3AlS8%3D&Expires=1611584082
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
 #CMD ["python", "app.py"]

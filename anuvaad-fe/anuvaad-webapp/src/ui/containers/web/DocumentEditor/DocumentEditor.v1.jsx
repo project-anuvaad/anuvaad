@@ -11,13 +11,14 @@ import Alert from '@material-ui/lab/Alert';
 import { translate } from "../../../../assets/localisation";
 import history from "../../../../web.history";
 import Spinner from "../../../components/web/common/Spinner";
-import LanguageCodes from "../../../components/web/common/Languages.json"
+// import LanguageCodes from "../../../components/web/common/Languages.json"
 import PDFRenderer from './PDFRenderer';
 import SentenceCard from './SentenceCard';
 import PageCard from "./PageCard";
 import InteractivePagination from './InteractivePagination';
 import SENTENCE_ACTION from './SentenceActions'
 import InteractiveDocToolBar from "./InteractiveDocHeader"
+import TranslatedDocument from "./TranslatedDocument";
 
 import WorkFlowAPI from "../../../../flux/actions/apis/common/fileupload";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
@@ -33,7 +34,11 @@ import { update_sentences, update_blocks } from '../../../../flux/actions/apis/d
 import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../flux/actions/editor/document_editor_mode';
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import { Button } from "@material-ui/core";
+// import html2canvas from "html2canvas"
+// import { jsPDF } from "jspdf";
+import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
 
+import Loader from "../../../components/web/common/CircularLoader";
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -51,7 +56,19 @@ class DocumentEditor extends React.Component {
       docView: false,
       zoomPercent: 100,
       zoomInDisabled: false,
-      zoomOutDisabled: false
+      zoomOutDisabled: false,
+
+      preview: false,
+      totalPageCount: 0,
+      paginationIndex: 3,
+      getNextPages: false,
+
+      loaderValue: 0,
+      totalLoaderValue: 0,
+      currentIndex: 0,
+      download: false,
+
+      fetchNext: true.valueOf,
     }
     this.forMergeSentences = []
   }
@@ -85,7 +102,7 @@ class DocumentEditor extends React.Component {
 
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
       this.handleSourceScroll(this.props.sentence_highlight.sentence_id)
     }
@@ -96,6 +113,36 @@ class DocumentEditor extends React.Component {
 
     if (prevProps.document_contents !== this.props.document_contents) {
       this.setState({ apiFetchStatus: false })
+      if (this.state.totalPageCount == 0) {
+        this.setState({ totalPageCount: this.props.document_contents.count })
+      }
+
+      if (this.state.preview) {
+        let val = this.state.currentIndex / this.state.totalLoaderValue * 100
+        this.setState({ loaderValue: val, currentIndex: this.state.currentIndex + 1 })
+        if (this.state.totalPageCount > this.state.paginationIndex && this.state.getNextPages) {
+          this.fetchPages(this.state.paginationIndex, this.state.currentIndex + 1)
+        } else {
+          this.setState({ download: true, loaderValue: 0, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0 })
+          // this.setState({ download: true, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0 })
+          // setTimeout(() => {
+          //   this.htmlToPDF()
+          // }, 2)
+        }
+      }
+    }
+
+    if (prevState.preview !== this.state.preview && this.state.preview === true) {
+      if (this.state.totalPageCount > 2) {
+        this.fetchPages(this.state.paginationIndex, 1)
+      } else {
+        this.setState({ download: true })
+
+        // this.setState({ download: true, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0 })
+        // setTimeout(() => {
+        //   this.htmlToPDF()
+        // }, 2)
+      }
     }
 
     if (prevProps.document_editor_mode !== this.props.document_editor_mode && this.props.document_editor_mode.mode === 'EDITOR_MODE_MERGE') {
@@ -110,6 +157,19 @@ class DocumentEditor extends React.Component {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
       }
     }
+
+  }
+
+  fetchPages(page_no, index) {
+    let endIndex = page_no + (this.state.pagesPerCall - 1)
+    let remainingPages = (this.state.totalPageCount - 1) - endIndex
+    if (remainingPages > 0) {
+      this.setState({ getNextPages: true })
+    }
+    this.setState({ paginationIndex: this.state.paginationIndex + this.state.pagesPerCall, currentIndex: index })
+
+    const apiObj = new FileContent(this.props.match.params.jobid, page_no, endIndex);
+    this.props.APITransport(apiObj);
   }
 
   componentWillUnmount() {
@@ -491,10 +551,80 @@ class DocumentEditor extends React.Component {
 
   }
 
+  closePreview = () => {
+    this.setState({ 
+      preview: false, loaderValue: 0, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0, download: false, pagesPerCall: 0
+    })
+  }
+
+  renderTranslatedDocument = () => {
+    let pages = PAGE_OPS.get_pages_tokenisation_information(this.props.document_contents.pages);
+
+    if (pages.length < 1) {
+      return (
+        <div></div>
+      )
+    }
+
+    let style = "@page { size: " + pages[0].page_width + "px " + pages[0].page_height + "px; margin:0pt; width: 100%; height:100%;font-family: 'Mangal'; } "
+    return (
+      // <div>
+      <Grid item xs={12} sm={12} lg={12} xl={12}
+      // style={{ display: "flex", flexDirection: "column" }}
+      >
+        <div style={{textAlign: "end"}}>
+          <ReactToPrint
+            trigger={() => <Button color="primary" variant="contained"
+            disabled={!this.state.download}
+            >Print PDF</Button>}
+            content={() => this.componentRef}
+            // pageStyle="@page { size: 702px 702px  } "
+            pageStyle={style}
+            fonts={[
+              {
+                family: "Mangal",
+                source:
+                  "url(https://s166.convertio.me/p/ZnLj6w7hk5UMWX-0FIuwBg/9d87d9f4c362f9626dd4e1ce212104a7/Gilroy-Black-_1_.ttf)"
+              }
+            ]}
+          />
+          <Button color="primary" variant="contained" style={{ marginLeft: "20px" }} onClick={() => this.closePreview()}>Close</Button>
+        </div>
+        <div style={{
+          maxHeight: window.innerHeight - 141,
+          overflowY: "auto",
+          display: "flex", flexDirection: "row-reverse", justifyContent: "center"
+        }}
+
+        >
+            {/* <ReactToPrint
+              trigger={() => <Button color="primary" variant="contained"
+              // disabled={!this.state.download}
+              >Print PDF</Button>}
+              content={() => this.componentRef}
+              // pageStyle="@page { size: 702px 702px  } "
+              pageStyle={style}
+
+            /> */}
+          <div ref={el => (this.componentRef = el)} id="test">
+            {pages.map((page, index) => <TranslatedDocument totalPageCount={this.state.totalPageCount} download={this.state.download} index={index} zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
+          </div>
+        </div>
+      </Grid >
+    )
+  }
+
   handleDocumentView = () => {
     this.setState({ docView: !this.state.docView })
   }
 
+  showPreview = () => {
+    let pagesPerCall = this.state.totalPageCount < 30 ? 5 : (this.state.totalPageCount / 10)
+
+    let totalLoaderValue = (this.state.totalPageCount < pagesPerCall) ? 1 : (this.state.totalPageCount / pagesPerCall)
+    this.setState({ preview: !this.state.preview, pagesPerCall, totalLoaderValue })
+    // this.htmlToPDF()
+  }
   /**
    * util to get selected page
    */
@@ -560,7 +690,7 @@ class DocumentEditor extends React.Component {
     }
   }
 
-  /***
+   /***
    * render sentences
    */
   renderSentences = () => {
@@ -602,7 +732,6 @@ class DocumentEditor extends React.Component {
     )
   }
 
-
   /**
    * render functions ends here
    */
@@ -641,12 +770,19 @@ class DocumentEditor extends React.Component {
   render() {
     return (
       <div style={{ height: window.innerHeight }}>
-        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} /></div>
+        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview}/></div>
 
-        <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
-          {!this.state.docView && this.renderDocumentPages()}
-          {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
-        </div>
+        { !this.state.preview ?
+          <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
+            {!this.state.docView && this.renderDocumentPages()}
+            {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
+            {this.state.preview && this.renderTranslatedDocument()}
+          </div>
+          :
+          <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
+            {this.renderTranslatedDocument()}
+          </div>
+        }
         <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
           <InteractivePagination count={this.props.document_contents.count}
             data={this.props.document_contents.pages}
@@ -659,6 +795,7 @@ class DocumentEditor extends React.Component {
         {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
         {this.state.showStatus ? this.renderStatusInformation() : <div />}
         {this.state.apiFetchStatus && <Spinner />}
+        { !this.state.download && this.state.preview && <Loader value={this.state.loaderValue}></Loader>}
       </div>
     )
   }

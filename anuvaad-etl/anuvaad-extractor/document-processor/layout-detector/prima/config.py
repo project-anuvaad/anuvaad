@@ -53,3 +53,8 @@ WATERMARK_THRESHOLD_HIGH = 250
 
 PRIMA_SCORE_THRESH_TEST =0.5
 
+
+
+LAYOUT_MODEL_PATH =  "./src/utilities/primalaynet/model_final.pth"
+LAYOUT_CONFIG_PATH = "./src/utilities/primalaynet/config.yaml"
+

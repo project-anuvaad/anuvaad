@@ -75,6 +75,7 @@
     "react-textarea-autocomplete": "0.0.4",
     "react-textarea-autosize": "^8.2.0",
     "react-textfit": "^1.1.0",
+    "react-to-print": "^2.12.2",
     "reactjs-popup": "^1.4.2",
     "read-more-react": "^1.0.9",
     "recharts": "^1.0.0-beta.10",
