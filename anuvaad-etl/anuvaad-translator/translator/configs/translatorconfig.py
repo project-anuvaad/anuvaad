@@ -53,8 +53,8 @@ translator_nmt_cons_no_of_partitions = 1
 #datastore-configs
 mongo_translator_db = os.environ.get('MONGO_TRANSLATOR_DB', 'anuvaad-etl-translator-db')
 mongo_translator_collection = os.environ.get('MONGO_TRANSLATOR_CONTENT_COL', 'anuvaad-etl-translator-content-collection')
-mongo_trans_pages_collection = os.environ.get('MONGO_TMX_COL', 'anuvaad-etl-translator-pages-collection')
-mongo_trans_batch_collection = os.environ.get('MONGO_TMX_COL', 'anuvaad-etl-translator-batch-collection')
+mongo_trans_pages_collection = os.environ.get('MONGO_TRANSLATOR_PAGES_COL', 'anuvaad-etl-translator-pages-collection')
+mongo_trans_batch_collection = os.environ.get('MONGO_TRANSLATOR_BATCH_COL', 'anuvaad-etl-translator-batch-collection')
 mongo_tmx_collection = os.environ.get('MONGO_TMX_COL', 'anuvaad-tmx-collection')
 
 #module-configs
