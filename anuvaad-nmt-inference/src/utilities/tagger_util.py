@@ -10,6 +10,10 @@ Below funtions are meant to handle date, numbers and URls as part of pre and pos
 '''
 
 def tag_number_date_url(text):
+  '''
+  Tags numbers, dates and url in the input text and returns
+  tagged text and the arrays of numbers,dates and urls
+  '''
   try: 
     if len(text) == 0:
       return "","","","",""
@@ -18,108 +22,66 @@ def tag_number_date_url(text):
     count_date = 0
     date_original = list()
     count_url = 0
-    url_original = list()
-    count_number = 0
-    num_map = list()
+    url_dict = {}
     
-    num_array = re.findall(patterns['p3']['regex'],text)
-    num_array_orignal = num_array
-    i_zero = get_indices_of_num_with_zero_prefix(num_array)
-    num_array = list(map(int, num_array))
-    zero_prefix_num = [num_array[i] for i in i_zero] 
-    num_array.sort(reverse = True)
-    # num_array = update_num_arr(num_array,zero_prefix_num,i_zero,num_array_orignal)
- 
-    for j in num_array:
-      text = text.replace(str(j),'NnUuMm'+str(hindi_numbers[count_number]),1)
-      num_map.append({"no.":j,"tag":'NnUuMm'+str(hindi_numbers[count_number])})
-      count_number +=1
-      if count_number >30:
-        print("count exceeding 30")
-        count_number = 30
-
+    num_array,text,num_map = build_src_num_array(text)
     log_info("number-tag mappings-{}".format(num_map),MODULE_CONTEXT)
-    log_info("Number tagging done",MODULE_CONTEXT)
     for word in text.split():
-        # if len(word)>4 and len(word)<12 and token_is_date(word):
         try:
-          ext = [".",",","?","!"]
-          if word.isalpha()== False and word[:-1].isalpha() == False and len(word)>4 and misc.token_is_date(word):
-            if word.endswith(tuple(ext)):
-              end_token = word[-1]
-              word = word[:-1]
-              if len(word)<7 and int(word):
-                word = word+end_token
-              else:
-                date_original.append(word)
-                word = 'DdAaTtEe'+str(count_date)+end_token
-                count_date +=1
-            else:
-              date_original.append(word)  
-              word = 'DdAaTtEe'+str(count_date)
-              count_date +=1
-          elif misc.token_is_url(word):
-            url_original.append(word)
+          if misc.token_is_url(word) or misc.token_is_email(word):
+            url_or_email = word
             word = 'UuRrLl'+str(count_url)
+            url_dict[word] = url_or_email
             count_url +=1
         except Exception as e:
           log_exception("In handle_date_url:tag_num function:{}".format(e),MODULE_CONTEXT,e)
           word = word
         
-
         resultant_str.append(word)   
         s = [str(i) for i in resultant_str] 
         res = str(" ".join(s))   
-    log_info("tagged response:{} and date:{} and url:{}".format(res,date_original,url_original),MODULE_CONTEXT) 
-    return res,date_original,url_original,num_array,num_map 
+    log_info("tagged response:{} and date:{} and url:{}".format(res,date_original,url_dict),MODULE_CONTEXT) 
+
+    return res,date_original,url_dict,num_array,num_map 
+
   except Exception as e:
     log_exception("In handle_date_url:tag_num function parent except block:{}".format(e),MODULE_CONTEXT,e)
-    return text,[],[],(num_array or [])
+    return text,[],[],(num_array or []),(num_map or [])
 
-def replace_tags_with_original(text,date_original,url_original,num_array):
+def replace_tags_with_original(text,date_original,url_dict,num_array,num_map):
+  '''
+  Replaces dates,urls and numbers in the text with the original values
+  in place of the tags
+  '''
   try:
     resultant_str = list()
       
     if len(text) == 0:
       return ""
     for word in text.split():
-      if word[:-1] == 'DdAaTtEe' and len(date_original) > 0:
-        word = date_original[int(word[-1])]
-      elif word[:-1] == 'UuRrLl' and len(url_original)> 0 :
-        word = url_original[int(word[-1])]          
+      if 'UuRrLl' in word:
+        word = url_dict[word]         
 
       resultant_str.append(word)
       s = [str(i) for i in resultant_str] 
       res = str(" ".join(s))
 
-    log_info("response after url and date replacemnt:{}".format(res),MODULE_CONTEXT)
-    array = re.findall(r'NnUuMm..|NnUuMm.', res)   
-    log_info("NnUuMm array after translation:{}".format(array),MODULE_CONTEXT)
-    for j in array:
-      try:
-        if j[-2:] in hindi_numbers:
-          end_hin_number = j[-2:]
-          index = hindi_numbers.index(end_hin_number)
-          res = res.replace(j,str(num_array[index]),1)
-        elif j[:-1]== "NnUuMm":
-          end_hin_number = j[-1]
-          index = hindi_numbers.index(end_hin_number)
-          res = res.replace(j,str(num_array[index]),1)
-        else:
-          end_hin_number = j[-2]
-          j = j[:-1]
-          index = hindi_numbers.index(end_hin_number)     
-          res = res.replace(j,str(num_array[index]),1)
-      
-      except Exception as e:
-        log_info("inside str.replace error,but handling it:{}".format(e),MODULE_CONTEXT)
-        res = res.replace(j,"",1)
-
+    log_info("response after url and date replacemnt:{}".format(res),MODULE_CONTEXT)    
+    
+    if len(num_map) == 0:
+      ''' handling the case when model outputs a tag which is not in tagged_src(src is without any number'''
+      for char in reversed(hindi_numbers):  
+        res = re.sub(r'NnUuMm'+char,"",res)
+    num_map.reverse()
+    for item in num_map:
+      res = res.replace(item['tag'],str(item['no.']),1)
+   
+    res = remove_extra_tags(res)     
     log_info("response after tags replacement:{}".format(res),MODULE_CONTEXT)
     return res    
   except Exception as e:
     log_exception("Error in parent except block of replace_tags_with_original_1 function, returning tagged output:{}".format(e),MODULE_CONTEXT,e)
-    return text
+    return res
 
 def get_indices_of_num_with_zero_prefix(num_arr):
   '''  eg. '000','049' '''
@@ -151,3 +113,51 @@ def update_num_arr(num_array,zero_prefix_num,i_zero,num_array_orignal):
   except Exception as e:
     log_exception("Error in handle_date_url:update_num_arr,returning incoming num_array:{}".format(e),MODULE_CONTEXT,e)
     return num_array_o
+  
+def build_src_num_array(i_text):
+  num_map,num_dict = list(),{}
+  count_number = 0
+  all_patterns = patterns['p12']['regex']
+  src_num_array = re.findall(all_patterns,i_text)
+  int_num_array = list(map(lambda y:y.replace(',',''), src_num_array))
+  int_num_array = list(map(int, int_num_array))
+  num_dict = {k:v for (k,v) in zip(int_num_array,src_num_array)}
+  int_num_array.sort(reverse=True)
+  for k,v in enumerate(int_num_array):
+    i_text = i_text.replace(num_dict[v],'NnUuMm'+str(hindi_numbers[count_number]),1)
+    num_map.append({"no.":num_dict[v],"tag":'NnUuMm'+str(hindi_numbers[count_number])})
+    count_number +=1
+    if count_number >30:
+      log_info("count exceeding 30,triggering break",MODULE_CONTEXT)
+      count_number = 30
+      break
+
+  return int_num_array,i_text,num_map
+  
+def remove_extra_tags(text):
+  '''
+  This funtion is meant for removing extra num,date and url tags from the output 
+  '''
+  if len(re.findall(r'NnUuMm.', text)) > 0:
+    ''' 
+    if model outputs extra tag than the number of count in num_map or 
+    some unreplaced tags, removing them from final output
+    '''
+    for char in reversed(hindi_numbers):  
+      text = re.sub(r'NnUuMm'+char,"",text) 
+  
+  if len(re.findall(r'DdAaTtEe.', text)) > 0:
+    ''' 
+    If any' unreplaced Date tag is still left, removing it in final output'
+    Assuming in input there wont be more than 9 date patterns
+    '''
+    text = re.sub(r'DdAaTtEe.',"",text)  
+  
+  if len(re.findall(r'UuRrLl.', text)) > 0:
+    ''' 
+    If any' unreplaced url tag is still left, removing it in final output'
+    Assuming in input there wont be more than 9 url patterns
+    '''
+    text = re.sub(r'UuRrLl.',"",text)   
+    
+  return text  

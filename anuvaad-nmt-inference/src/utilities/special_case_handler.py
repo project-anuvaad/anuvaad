@@ -139,3 +139,54 @@ def suffix_handler(text):
     except Exception as e:
         print(e)
 
+def handle_sentences_wo_stop(language,sentence_array):
+    '''
+    Handles sentences in the array which do not have a sentence
+    ending puncuation by adding it. Used in batch translation.
+    '''
+    try:
+        if language is None:
+            return sentence_array, []
+        else:
+            log_info("Inside handle_sentences_wo_stop",MODULE_CONTEXT)
+            stop_puncs = misc.get_language_stop_puncs(language)
+            full_stop_or_purnviram = stop_puncs[0]
+            sent_indices_wo_stop = []
+            for i,sentence in enumerate(sentence_array):
+                if misc.is_sentence_wo_stop(sentence,stop_puncs):
+                    sent_indices_wo_stop.append(i)
+                    sentence_array[i] = misc.add_stop_punc(sentence_array[i],full_stop_or_purnviram)
+
+            return sentence_array, sent_indices_wo_stop
+    
+    except Exception as e:
+        log_exception("Error in handle_sentences_wo_stop: {}".format(e),MODULE_CONTEXT,e)
+        return sentence_array, []
+
+def handle_a_sentence_wo_stop(language,sentence):
+    '''
+    Handles a sentence  which do not have a sentence
+    ending puncuation by adding it. Used in single sentence translation API.
+    '''
+    try:
+        if language is None:
+            return sentence, False
+        else:
+            log_info("Inside handle_a_sentence_wo_stop",MODULE_CONTEXT)
+            stop_puncs = misc.get_language_stop_puncs(language)
+            full_stop_or_purnviram = stop_puncs[0]
+            is_missing_stop_punc = misc.is_sentence_wo_stop(sentence,stop_puncs)
+            if is_missing_stop_punc:
+                sentence = misc.add_stop_punc(sentence,full_stop_or_purnviram)
+
+            return sentence, is_missing_stop_punc
+    
+    except Exception as e:
+        log_exception("Error in handle_a_sentence_wo_stop: {}".format(e),MODULE_CONTEXT,e)
+        return sentence, False
+
+
+
+
+    
+

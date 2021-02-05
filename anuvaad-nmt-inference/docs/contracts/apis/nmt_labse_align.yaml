@@ -12,9 +12,10 @@ schemes:
 produces:
   - application/json  
 
+basePath: /nmt-inference
 
 paths: 
-  /nmt-inference/v1/labse-aligner:
+  /v1/labse-aligner:
     post:
       summary: REST API to generate phrase alignment.
       description: This api takes a list of source phrases(src_phrases) and target translation(tgt) dictionary as input and outputs aligned phrases for each requests.

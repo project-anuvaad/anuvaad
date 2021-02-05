@@ -7,8 +7,9 @@ Flask-RESTful==0.3.8
 six==1.15.0
 kafka-python==2.0.2
 Flask==1.1.2
-ctranslate2==1.13.2
+ctranslate2==1.17.0
 python-dateutil==2.7.3
 sentencepiece==0.1.81
 OpenNMT-py==1.0.0
 sentence-transformers==0.3.8
+sacremoses==0.0.43
