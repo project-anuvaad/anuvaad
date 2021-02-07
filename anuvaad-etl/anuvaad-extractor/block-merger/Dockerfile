@@ -22,7 +22,7 @@
 
 
 #FROM anuvaadio/anuvaad-block-merger:180-2c6f5668
-FROM anuvaadio/anuvaad-block-merger:186-6ba9e6bf
+FROM anuvaadio/anuvaad-block-merger:210-315fc22f
 #FROM anuvaadio/python-opencv-slim:2
 
 
