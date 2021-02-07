@@ -424,7 +424,7 @@ from shapely.geometry import Polygon
 from src.utilities.remove_water_mark import clean_image
 
 # device = torch.device("cpu")
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
+#os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 seed = 1234
 random.seed(seed)
