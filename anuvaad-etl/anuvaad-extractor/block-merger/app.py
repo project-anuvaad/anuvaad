@@ -10,8 +10,6 @@ import config
 import time
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 import multiprocessing
-from multiprocessing import set_start_method
-set_start_method("spawn")
 
 merge_app = Flask(__name__)
 
@@ -65,6 +63,8 @@ for blueprint in vars(routes).values():
 
 
 if __name__ == "__main__":
+    multiprocessing.set_start_method("spawn")
+
     start_kafka()
     print(merge_app.url_map)
     merge_app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
