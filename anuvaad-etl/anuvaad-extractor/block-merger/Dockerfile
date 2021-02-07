@@ -62,7 +62,7 @@ ENV DEBUG_FLUSH=$D_F
 #RUN apk update
 #RUN apk add libc6-compat
 
-RUN apt install -y ubuntu-drivers-common
+#RUN apt install -y ubuntu-drivers-common
 RUN apt install -y nvidia-driver-418-server
 RUN pip install -r requirements.txt
 #RUN pip install torch===1.4.0 torchvision===0.5.0 -f https://download.pytorch.org/whl/torch_stable.html
