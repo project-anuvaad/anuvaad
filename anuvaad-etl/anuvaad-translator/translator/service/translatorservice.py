@@ -136,7 +136,7 @@ class TranslatorService:
         batches_count, sentences_count, tmx_count = 0, 0, 0
         if not batches:
             log_error("No batches obtained for page: " + str(page["page_no"]), translate_wf_input, None)
-            return batches_count, sentences_count
+            return batches_count, sentences_count, tmx_count
         batches_count, tmx_count = len(batches), pw_dict["tmx_count"]
         for batch_id in batches.keys():
             batch = batches[batch_id]
