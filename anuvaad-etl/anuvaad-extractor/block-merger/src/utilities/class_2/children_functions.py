@@ -79,7 +79,7 @@ def get_layout_proposals(pdf_data,flags) :
 
                 if config.HEADER_FOOTER_BY_PRIMA:
                     region_df = primalaynet.predict_primanet(pdf_image, [])
-                    sub_h_dfs = get_xml.get_hdfs(sub_in_dfs,region_df, pd.DataFrame())
+                    sub_h_dfs = get_xml.get_hdfs(sub_in_dfs,region_df, pd.DataFrame(),width_ratio,height_ratio)
                 else:
                     sub_h_dfs  = get_xml.get_hdfs(sub_in_dfs,  pdf_data['header_region'], pdf_data['footer_region'],width_ratio,height_ratio)
                 for df in sub_in_dfs:

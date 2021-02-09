@@ -9,6 +9,8 @@ from src.errors.errors_exception import KafkaConsumerError
 from src.errors.errors_exception import KafkaProducerError
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
+from kafka.structs import OffsetAndMetadata, TopicPartition
+
 import time
 import os
 
@@ -68,6 +70,11 @@ def process_block_merger_kf():
                     log_info('process_block_merger_kf - received invalid data {}'.format(msg.value), None)
                     continue
                 data            = Consumer.get_json_data(msg.value)
+
+                tp = TopicPartition(msg.topic, msg.partition)
+                offsets = {tp: OffsetAndMetadata(msg.offset, None)}
+                consumer.commit(offsets=offsets)
+
                 jobid           = data['jobID']
                 log_info('process_block_merger_kf - received message from kafka, dumping into internal queue', data)
                 input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
