@@ -37,7 +37,7 @@ class Dictionay extends React.Component {
                     <hr style={{ color: "#00000014", marginTop: "0px" }} />
                     <div style={{ maxHeight: "250px", maxWidth: "300px", overflow: "auto" }} onMouseLeave={() => this.setState({ displayCopy: null })}>
                         {
-                            this.props.parallel_words && this.props.parallel_words.map((word, i) => {
+                            this.props.parallel_words.length>0 ? this.props.parallel_words.map((word, i) => {
                                 return <Button key={i} style={{
                                     textTransform: "none",
                                     width: "100%",
@@ -51,6 +51,7 @@ class Dictionay extends React.Component {
 
                                 </Button>
                             })
+                            : "Not found in dictionary"
                         }
                     </div>
 
