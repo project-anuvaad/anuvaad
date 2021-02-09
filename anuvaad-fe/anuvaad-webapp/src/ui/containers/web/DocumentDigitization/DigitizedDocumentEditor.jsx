@@ -11,10 +11,9 @@ import Alert from '@material-ui/lab/Alert';
 import { translate } from "../../../../assets/localisation";
 import history from "../../../../web.history";
 import Spinner from "../../../components/web/common/Spinner";
-import DownloadFile from "../../../../flux/actions/apis/download/download_file"
 import PDFRenderer from '../DocumentEditor/PDFRenderer';
 import SentenceCard from '../DocumentEditor/SentenceCard';
-import PageCard from "../DocumentEditor/PageCard";
+import OcrPageCard from "./OcrPageCard";
 import InteractivePagination from '../DocumentEditor/InteractivePagination';
 import SENTENCE_ACTION from '../DocumentEditor/SentenceActions'
 import InteractiveDocToolBar from "./DigitizedDocHeader"
@@ -35,11 +34,12 @@ import { editorModeClear, editorModeNormal, editorModeMerge } from '../../../../
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import { Button } from "@material-ui/core";
 import ReactToPrint from 'react-to-print';
-
+import DownloadJSON from '../../../../flux/actions/apis/download/download_json';
 import Loader from "../../../components/web/common/CircularLoader";
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
-const TELEMETRY = require('../../../../utils/TelemetryManager')
+const TELEMETRY = require('../../../../utils/TelemetryManager');
+const OCR_PAGES = require('../../../../utils/OcrPages.operations');
 var jp = require('jsonpath')
 
 class DocumentEditor extends React.Component {
@@ -77,42 +77,9 @@ class DocumentEditor extends React.Component {
      */
     componentDidMount() {
         TELEMETRY.pageLoadCompleted('digitized-document-editor')
-
-        let user_profile = JSON.parse(localStorage.getItem('userProfile'));
-        let obj = new DownloadFile(this.props.match.params.filename, user_profile.userID)
-
-        const apiReq1 = fetch(obj.apiEndPoint(), {
-            method: 'get',
-            headers: obj.getHeaders().headers
-        }).then(async response => {
-            if (!response.ok) {
-                this.setState({ msg: "Failed to load file..." })
-                console.log("api failed")
-            } else {
-                this.setState({ OCRdata: response })
-            }
-        })
-        let recordId = this.props.match.params.jobid;
-        let jobId = recordId ? recordId.split("|")[0] : ""
-
-        localStorage.setItem("recordId", recordId);
-        localStorage.setItem("inputFile", this.props.match.params.inputfileid)
-
-        this.setState({ showLoader: true });
-        this.makeAPICallFetchContent(1);
-        this.makeAPICallDocumentsTranslationProgress();
-
-        if (!this.props.fetch_models || !this.props.fetch_models.length > 0) {
-            const apiModel = new FetchModel();
-            this.props.APITransport(apiModel);
-        } else {
-            let model = this.fetchModel(parseInt(this.props.match.params.modelId))
-            if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
-                TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
-            }
-        }
-
-        window.addEventListener('popstate', this.handleOnClose);
+        const { APITransport } = this.props
+        let obj = new DownloadJSON(this.props.match.params.filename)
+        APITransport(obj)
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -676,26 +643,33 @@ class DocumentEditor extends React.Component {
      * render Document pages
      */
     renderDocumentPages = () => {
-        let pages = this.getPages();
-
+        let pages = OCR_PAGES.get_ocr_pages(this.props.download_json);
         if (pages.length < 1) {
             return (
                 <div></div>
             )
+        } else {
+            return (
+                <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
+                    <InfiniteScroll height={window.innerHeight - 141} style={{
+                        maxHeight: window.innerHeight - 141,
+                        overflowY: "auto",
+                    }}
+                        dataLength={4}
+                    >
+                        {
+                            pages.map((page,index) => {
+                                    return <OcrPageCard
+                                        zoomPercent={this.state.zoomPercent}
+                                        key={index}
+                                        page={page}
+                                        onAction={this.processSentenceAction} />
+                                })
+                        }
+                    </InfiniteScroll>
+                </Grid>
+            )
         }
-        return (
-            <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
-
-                <InfiniteScroll height={window.innerHeight - 141} style={{
-                    maxHeight: window.innerHeight - 141,
-                    overflowY: "auto",
-                }}
-                    dataLength={pages.length}
-                >
-                    {pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
-                </InfiniteScroll>
-            </Grid>
-        )
     }
     processZoomIn = () => {
         if (this.state.zoomPercent < 140) {
@@ -812,9 +786,9 @@ class DocumentEditor extends React.Component {
 
                 { !this.state.preview ?
                     <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
-                        {!this.state.docView && this.renderDocumentPages()}
+                        {this.renderDocumentPages()}
                         {this.renderPDFDocument()}
-                        {this.state.preview && this.renderTranslatedDocument()}
+                        {this.renderTranslatedDocument()}
                     </div>
                     :
                     <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
@@ -850,7 +824,8 @@ const mapStateToProps = state => ({
     active_page_number: state.active_page_number.page_number,
     document_editor_mode: state.document_editor_mode,
     fetchDocument: state.fetchDocument,
-    fetch_models: state.fetch_models.models
+    fetch_models: state.fetch_models.models,
+    download_json: state.download_json
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

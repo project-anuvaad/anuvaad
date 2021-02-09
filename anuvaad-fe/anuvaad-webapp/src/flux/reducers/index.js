@@ -47,6 +47,7 @@ import deactivateuser from './user/deactivate_existing_user';
 
 import organizationList from './organization/fetch_organization';
 import digitizeddocument from './view_digitized_document/fetch_digitzed_document';
+import download_json from './view_digitized_document/download_json';
 
 export default {
     login,
@@ -96,5 +97,6 @@ export default {
     activateuser,
     deactivateuser,
     organizationList,
-    digitizeddocument
+    digitizeddocument,
+    download_json
 };
