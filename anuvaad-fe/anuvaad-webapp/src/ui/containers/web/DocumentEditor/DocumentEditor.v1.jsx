@@ -764,7 +764,6 @@ class DocumentEditor extends React.Component {
           <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
             {!this.state.docView && this.renderDocumentPages()}
             {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
-            {this.state.preview && this.renderTranslatedDocument()}
           </div>
           :
           <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
