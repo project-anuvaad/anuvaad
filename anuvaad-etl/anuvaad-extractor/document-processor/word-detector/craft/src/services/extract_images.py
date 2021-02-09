@@ -51,12 +51,12 @@ def extract_images(app_context,base_dir):
             file_properties = File(file)
             file_format     = file_properties.get_format()
 
-            if file_format == 'PDF' :
+            if file_format in ['PDF' ,'pdf']:
                 filename = file_properties.get_name()
                 image_paths = extract_pdf_images(filename,base_dir)
                 file_images.append(image_paths)
             else:
-                if file_format in ['PNG', 'JPEG', 'BMP' ] :
+                if file_format in ['PNG', 'JPEG', 'BMP','jpg','png','bmp','jpeg' ] :
                     filename = file_properties.get_name()
                     image_paths = [os.path.join(base_dir, filename)]
                     file_images.append(image_paths)

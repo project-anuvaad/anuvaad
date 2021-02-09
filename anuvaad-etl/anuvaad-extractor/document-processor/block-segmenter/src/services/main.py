@@ -17,8 +17,8 @@ def segment_regions(words, lines,regions):
     p_list = []
     for v_block in v_list:
         if  v_block['children'] != None and  len(v_block['children']) > 1 :
-            p_list+= break_block(v_block)
-            #p_list +=[v_block]
+            #p_list+= break_block(v_block)
+            p_list +=[v_block]
         else :
             p_list +=  [v_block]
     p_list += n_text_regions

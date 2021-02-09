@@ -551,37 +551,8 @@ class DocumentEditor extends React.Component {
 
   }
 
-  htmlToPDF(width, height) {
-
-    let totalPages = this.state.totalPageCount
-    // const pdf = new jsPDF()
-    // // const pdf = new jsPDF("p", "pt", [width, height])
-
-    // for (let i = 1; i <= totalPages; i++) {
-    //   let pageIndex = i - 1
-    //   const input = document.getElementById('divToPrint' + pageIndex);
-    //   html2canvas(input)
-    //     .then((canvas) => {
-    //       const imgData = canvas.toDataURL('image/png');
-
-    //       pdf.addImage(imgData, 'JPEG', 0, 0);
-    //       pdf.addPage()
-
-    //       if (totalPages === i) {
-    //         pdf.deletePage(totalPages + 1)
-    //         var filename = this.props.match.params.filename;
-    //         filename = filename.substr(0, filename.lastIndexOf("."));
-    //         pdf.save(filename + ".pdf")
-    //         this.setState({ preview: false, loaderValue: 0, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0, download: false })
-    //       }
-
-    //     })
-
-    // }
-  }
-
   closePreview = () => {
-    this.setState({ 
+    this.setState({
       preview: false, loaderValue: 0, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0, download: false, pagesPerCall: 0
     })
   }
@@ -595,21 +566,24 @@ class DocumentEditor extends React.Component {
       )
     }
 
-    let style = "@page { size: " + pages[0].page_width + "px " + pages[0].page_height + "px; margin:0pt; width: 100%; height:100%; } "
+    let style = "@page { size: " + pages[0].page_width + "px " + pages[0].page_height + "px; margin:0pt; width: 100%; height:100%;font-family: 'Mangal'; } "
     return (
-      // <div>
       <Grid item xs={12} sm={12} lg={12} xl={12}
-      // style={{ display: "flex", flexDirection: "column" }}
       >
-        <div style={{textAlign: "end"}}>
+        <div style={{ textAlign: "end" }}>
           <ReactToPrint
             trigger={() => <Button color="primary" variant="contained"
-            disabled={!this.state.download}
+              disabled={!this.state.download}
             >Print PDF</Button>}
             content={() => this.componentRef}
-            // pageStyle="@page { size: 702px 702px  } "
             pageStyle={style}
-
+            fonts={[
+              {
+                family: "Mangal",
+                source:
+                  "url(https://s166.convertio.me/p/ZnLj6w7hk5UMWX-0FIuwBg/9d87d9f4c362f9626dd4e1ce212104a7/Gilroy-Black-_1_.ttf)"
+              }
+            ]}
           />
           <Button color="primary" variant="contained" style={{ marginLeft: "20px" }} onClick={() => this.closePreview()}>Close</Button>
         </div>
@@ -620,17 +594,8 @@ class DocumentEditor extends React.Component {
         }}
 
         >
-            {/* <ReactToPrint
-              trigger={() => <Button color="primary" variant="contained"
-              // disabled={!this.state.download}
-              >Print PDF</Button>}
-              content={() => this.componentRef}
-              // pageStyle="@page { size: 702px 702px  } "
-              pageStyle={style}
-
-            /> */}
           <div ref={el => (this.componentRef = el)} id="test">
-            {pages.map((page, index) => <TranslatedDocument totalPageCount={this.state.totalPageCount} download={this.state.download} htmlToPDF={this.htmlToPDF.bind(this)} index={index} zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
+            {pages.map((page, index) => <TranslatedDocument totalPageCount={this.state.totalPageCount} download={this.state.download} index={index} zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
           </div>
         </div>
       </Grid >
@@ -713,9 +678,9 @@ class DocumentEditor extends React.Component {
     }
   }
 
-   /***
-   * render sentences
-   */
+  /***
+  * render sentences
+  */
   renderSentences = () => {
 
     let pages = this.getPages()
@@ -793,7 +758,7 @@ class DocumentEditor extends React.Component {
   render() {
     return (
       <div style={{ height: window.innerHeight }}>
-        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} /></div>
+        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         { !this.state.preview ?
           <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
