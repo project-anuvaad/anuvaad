@@ -32,7 +32,7 @@ class App extends React.Component {
 
   handlDrawerTocken = () => {
     // this.setState({ tocken: true })
-    if(this.props.open_sidebar === true) {
+    if (this.props.open_sidebar === true) {
       this.props.showSidebar(false)
     }
   }
@@ -68,27 +68,10 @@ class App extends React.Component {
           {!dontShowLoader &&
             this.renderSpinner()
           }
-          {/* {!dontShowHeader && */}
-            <Header toolBarComp={ headerAttribute } dontShowHeader={dontShowHeader} currentMenu={currentMenu} forDemo={forDemo || showLogo} classes={classes} theme={theme} title={title} drawer={drawer} tocken={this.state.tocken} handleTockenChange={this.handleTockenChange.bind(this)} />
-          
+          <Header toolBarComp={headerAttribute} dontShowHeader={dontShowHeader} currentMenu={currentMenu} forDemo={forDemo || showLogo} classes={classes} theme={theme} title={title} drawer={drawer} tocken={this.state.tocken} handleTockenChange={this.handleTockenChange.bind(this)} />
+
           <div style={dontShowHeader ? { width: '100%' } : {}} className={dontShowHeader ? '' : (forDemo ? classes.containerDemo : classes.container)} onClick={this.handlDrawerTocken.bind(this)}>
-            {/* {forDemo &&
-              <div style={{
-                position: 'absolute',
-                height: '100%',
-                width: '44%',
-                marginLeft: this.state.matches ? '23%' : '25%'
-              }}>
-                <img src={logo} style={{
-                  width: '70%',
-                  height: '80%',
-                  opacity: '0.1',
-                  display: 'block',
-                  marginLeft: 'auto',
-                  marginRight: 'auto'
-                }} />
-              </div>
-            } */}
+
             <Component />
           </div>
           {this.renderMessage()}
@@ -109,7 +92,7 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       APITransport,
-    showSidebar
+      showSidebar
     },
     dispatch
   );
