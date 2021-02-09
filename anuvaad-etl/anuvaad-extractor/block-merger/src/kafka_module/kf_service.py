@@ -73,6 +73,7 @@ def process_block_merger_kf():
 
                 tp = TopicPartition(msg.topic, msg.partition)
                 offsets = {tp: OffsetAndMetadata(msg.offset, None)}
+                #consumer.default_offset_commit_callback
                 consumer.commit(offsets=offsets)
 
                 jobid           = data['jobID']
