@@ -10,6 +10,7 @@ from src.errors.errors_exception import KafkaProducerError
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from kafka.structs import OffsetAndMetadata, TopicPartition
+from kafka import TopicPartition
 
 import time
 import os
@@ -71,10 +72,20 @@ def process_block_merger_kf():
                     continue
                 data            = Consumer.get_json_data(msg.value)
 
-                tp = TopicPartition(msg.topic, msg.partition)
-                offsets = {tp: OffsetAndMetadata(msg.offset +1, None)}
-                #consumer.default_offset_commit_callback
-                consumer.commit(offsets=offsets)
+                # meta = consumer.partitions_for_topic(topic)
+                # options = {}
+                # options[partition] = OffsetAndMetadata(message.offset + 1, meta)
+                # consumer.commit(options)
+
+                # tp = TopicPartition(msg.topic, msg.partition)
+                # offsets = {tp: OffsetAndMetadata(msg.offset +1, None)}
+                # #consumer.default_offset_commit_callback
+                # consumer.commit(offsets=offsets)
+
+                consumer.commit()  # <--- This is what we need
+                # Optionally, To check if everything went good
+                print('New Kafka offset: %s' % consumer.committed(TopicPartition(config.input_topic, msg.partition)))
+
 
                 jobid           = data['jobID']
                 log_info('process_block_merger_kf - received message from kafka, dumping into internal queue', data)
