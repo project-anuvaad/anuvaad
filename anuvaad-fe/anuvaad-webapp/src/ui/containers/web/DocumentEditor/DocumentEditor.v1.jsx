@@ -60,7 +60,7 @@ class DocumentEditor extends React.Component {
 
       preview: false,
       totalPageCount: 0,
-      paginationIndex: 3,
+      paginationIndex: 1,
       getNextPages: false,
 
       loaderValue: 0,
@@ -123,11 +123,8 @@ class DocumentEditor extends React.Component {
         if (this.state.totalPageCount > this.state.paginationIndex && this.state.getNextPages) {
           this.fetchPages(this.state.paginationIndex, this.state.currentIndex + 1)
         } else {
-          this.setState({ download: true, loaderValue: 0, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0 })
-          // this.setState({ download: true, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0 })
-          // setTimeout(() => {
-          //   this.htmlToPDF()
-          // }, 2)
+          this.setState({ download: true, loaderValue: 0, paginationIndex: 1, currentIndex: 0, totalLoaderValue: 0 })
+         
         }
       }
     }
@@ -137,11 +134,6 @@ class DocumentEditor extends React.Component {
         this.fetchPages(this.state.paginationIndex, 1)
       } else {
         this.setState({ download: true })
-
-        // this.setState({ download: true, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0 })
-        // setTimeout(() => {
-        //   this.htmlToPDF()
-        // }, 2)
       }
     }
 
@@ -552,8 +544,8 @@ class DocumentEditor extends React.Component {
   }
 
   closePreview = () => {
-    this.setState({ 
-      preview: false, loaderValue: 0, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0, download: false, pagesPerCall: 0
+    this.setState({
+      preview: false, loaderValue: 0, paginationIndex: 1, currentIndex: 0, totalLoaderValue: 0, download: false, pagesPerCall: 0
     })
   }
 
@@ -568,17 +560,14 @@ class DocumentEditor extends React.Component {
 
     let style = "@page { size: " + pages[0].page_width + "px " + pages[0].page_height + "px; margin:0pt; width: 100%; height:100%;font-family: 'Mangal'; } "
     return (
-      // <div>
       <Grid item xs={12} sm={12} lg={12} xl={12}
-      // style={{ display: "flex", flexDirection: "column" }}
       >
-        <div style={{textAlign: "end"}}>
+        <div style={{ textAlign: "end" }}>
           <ReactToPrint
             trigger={() => <Button color="primary" variant="contained"
-            disabled={!this.state.download}
+              disabled={!this.state.download}
             >Print PDF</Button>}
             content={() => this.componentRef}
-            // pageStyle="@page { size: 702px 702px  } "
             pageStyle={style}
             fonts={[
               {
@@ -597,17 +586,8 @@ class DocumentEditor extends React.Component {
         }}
 
         >
-            {/* <ReactToPrint
-              trigger={() => <Button color="primary" variant="contained"
-              // disabled={!this.state.download}
-              >Print PDF</Button>}
-              content={() => this.componentRef}
-              // pageStyle="@page { size: 702px 702px  } "
-              pageStyle={style}
-
-            /> */}
           <div ref={el => (this.componentRef = el)} id="test">
-            {pages.map((page, index) => <TranslatedDocument totalPageCount={this.state.totalPageCount} download={this.state.download} index={index} zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
+            {pages.map((page, index) => <TranslatedDocument totalPageCount={this.state.totalPageCount} download={this.state.download} index={index} key={index} page={page} onAction={this.processSentenceAction} />)}
           </div>
         </div>
       </Grid >
@@ -620,9 +600,9 @@ class DocumentEditor extends React.Component {
 
   showPreview = () => {
     let pagesPerCall = this.state.totalPageCount < 30 ? 5 : (this.state.totalPageCount / 10)
-
+    let count = Math.ceil(pagesPerCall)
     let totalLoaderValue = (this.state.totalPageCount < pagesPerCall) ? 1 : (this.state.totalPageCount / pagesPerCall)
-    this.setState({ preview: !this.state.preview, pagesPerCall, totalLoaderValue })
+    this.setState({ preview: !this.state.preview, pagesPerCall: count, totalLoaderValue })
     // this.htmlToPDF()
   }
   /**
@@ -690,9 +670,9 @@ class DocumentEditor extends React.Component {
     }
   }
 
-   /***
-   * render sentences
-   */
+  /***
+  * render sentences
+  */
   renderSentences = () => {
 
     let pages = this.getPages()
@@ -770,7 +750,7 @@ class DocumentEditor extends React.Component {
   render() {
     return (
       <div style={{ height: window.innerHeight }}>
-        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview}/></div>
+        <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         { !this.state.preview ?
         <>
