@@ -72,7 +72,7 @@ def process_block_merger_kf():
                 data            = Consumer.get_json_data(msg.value)
 
                 tp = TopicPartition(msg.topic, msg.partition)
-                offsets = {tp: OffsetAndMetadata(msg.offset, None)}
+                offsets = {tp: OffsetAndMetadata(msg.offset +1, None)}
                 #consumer.default_offset_commit_callback
                 consumer.commit(offsets=offsets)
 
