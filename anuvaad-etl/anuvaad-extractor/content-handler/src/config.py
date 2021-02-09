@@ -14,3 +14,4 @@ download_folder = 'upload'
 MONGO_DB_SCHEMA         = os.environ.get('MONGO_CH_DB', 'preprocessing')
 MONGO_CONNECTION_URL    = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017')
 
+DICTIONARY_FALLBACK     = os.environ.get('DICTIONARY_FALLBACK_CH', True)
