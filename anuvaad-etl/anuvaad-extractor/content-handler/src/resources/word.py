@@ -4,7 +4,7 @@ from models import CustomResponse, Status, GoogleTranslate
 from utilities import AppContext
 from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import request
-
+from config import DICTIONARY_FALLBACK
 wordRepo    = WordRepo()
 
 
@@ -60,7 +60,7 @@ class WordSearch(Resource):
                 result = wordRepo.search_english(body['word'], body['target_locale'])
             else:
                 result = wordRepo.search_vernacular(body['word'], body['word_locale'])
-            if result == None and dict_fallback!=0:
+            if result == None and DICTIONARY_FALLBACK==True:
                 translate   = GoogleTranslate()
                 '''
                     - call google apis to get the translation
