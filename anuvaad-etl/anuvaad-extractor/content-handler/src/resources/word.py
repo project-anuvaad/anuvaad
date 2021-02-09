@@ -6,7 +6,7 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import request
 
 wordRepo    = WordRepo()
-translate   = GoogleTranslate()
+
 
 class WordSaveResource(Resource):
     def post(self):
@@ -43,6 +43,11 @@ class WordSearch(Resource):
     def post(self):
         body        = request.json
 
+        parser = reqparse.RequestParser()
+        parser.add_argument('dict_fallback', type=int, location='args', help='set 1 to invoke google transalte and 0 to not', required=False,default=1)
+        args    = parser.parse_args()
+        dict_fallback=args["dict_fallback"]
+        
         log_info('received request for WordSearch', AppContext.getContext())
         if 'word' not in body or 'word_locale' not in body or 'target_locale' not in body:
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
@@ -55,8 +60,8 @@ class WordSearch(Resource):
                 result = wordRepo.search_english(body['word'], body['target_locale'])
             else:
                 result = wordRepo.search_vernacular(body['word'], body['word_locale'])
-
-            if result == None:
+            if result == None and dict_fallback!=0:
+                translate   = GoogleTranslate()
                 '''
                     - call google apis to get the translation
                     - save the translation
