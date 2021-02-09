@@ -60,7 +60,7 @@ class DocumentEditor extends React.Component {
 
       preview: false,
       totalPageCount: 0,
-      paginationIndex: 3,
+      paginationIndex: 1,
       getNextPages: false,
 
       loaderValue: 0,
@@ -123,11 +123,8 @@ class DocumentEditor extends React.Component {
         if (this.state.totalPageCount > this.state.paginationIndex && this.state.getNextPages) {
           this.fetchPages(this.state.paginationIndex, this.state.currentIndex + 1)
         } else {
-          this.setState({ download: true, loaderValue: 0, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0 })
-          // this.setState({ download: true, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0 })
-          // setTimeout(() => {
-          //   this.htmlToPDF()
-          // }, 2)
+          this.setState({ download: true, loaderValue: 0, paginationIndex: 1, currentIndex: 0, totalLoaderValue: 0 })
+         
         }
       }
     }
@@ -137,11 +134,6 @@ class DocumentEditor extends React.Component {
         this.fetchPages(this.state.paginationIndex, 1)
       } else {
         this.setState({ download: true })
-
-        // this.setState({ download: true, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0 })
-        // setTimeout(() => {
-        //   this.htmlToPDF()
-        // }, 2)
       }
     }
 
@@ -553,7 +545,7 @@ class DocumentEditor extends React.Component {
 
   closePreview = () => {
     this.setState({
-      preview: false, loaderValue: 0, paginationIndex: 3, currentIndex: 0, totalLoaderValue: 0, download: false, pagesPerCall: 0
+      preview: false, loaderValue: 0, paginationIndex: 1, currentIndex: 0, totalLoaderValue: 0, download: false, pagesPerCall: 0
     })
   }
 
@@ -588,14 +580,14 @@ class DocumentEditor extends React.Component {
           <Button color="primary" variant="contained" style={{ marginLeft: "20px" }} onClick={() => this.closePreview()}>Close</Button>
         </div>
         <div style={{
-          maxHeight: window.innerHeight - 141,
+          maxHeight: window.innerHeight - 110,
           overflowY: "auto",
           display: "flex", flexDirection: "row-reverse", justifyContent: "center"
         }}
 
         >
           <div ref={el => (this.componentRef = el)} id="test">
-            {pages.map((page, index) => <TranslatedDocument totalPageCount={this.state.totalPageCount} download={this.state.download} index={index} zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
+            {pages.map((page, index) => <TranslatedDocument totalPageCount={this.state.totalPageCount} download={this.state.download} index={index} key={index} page={page} onAction={this.processSentenceAction} />)}
           </div>
         </div>
       </Grid >
@@ -608,9 +600,9 @@ class DocumentEditor extends React.Component {
 
   showPreview = () => {
     let pagesPerCall = this.state.totalPageCount < 30 ? 5 : (this.state.totalPageCount / 10)
-
+    let count = Math.ceil(pagesPerCall)
     let totalLoaderValue = (this.state.totalPageCount < pagesPerCall) ? 1 : (this.state.totalPageCount / pagesPerCall)
-    this.setState({ preview: !this.state.preview, pagesPerCall, totalLoaderValue })
+    this.setState({ preview: !this.state.preview, pagesPerCall: count, totalLoaderValue })
     // this.htmlToPDF()
   }
   /**
@@ -761,24 +753,26 @@ class DocumentEditor extends React.Component {
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         { !this.state.preview ?
+        <>
           <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
             {!this.state.docView && this.renderDocumentPages()}
             {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
           </div>
+          <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
+          <InteractivePagination count={this.props.document_contents.count}
+             data={this.props.document_contents.pages}
+             zoomPercent={this.state.zoomPercent}
+             processZoom={this.processZoom}
+             zoomInDisabled={this.state.zoomInDisabled}
+             zoomOutDisabled={this.state.zoomOutDisabled}
+             onAction={this.processSentenceAction} />
+         </div>
+         </>
           :
-          <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
+          <div style={{ height: window.innerHeight - 80, maxHeight: window.innerHeight - 80, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
             {this.renderTranslatedDocument()}
           </div>
         }
-        <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
-          <InteractivePagination count={this.props.document_contents.count}
-            data={this.props.document_contents.pages}
-            zoomPercent={this.state.zoomPercent}
-            processZoom={this.processZoom}
-            zoomInDisabled={this.state.zoomInDisabled}
-            zoomOutDisabled={this.state.zoomOutDisabled}
-            onAction={this.processSentenceAction} />
-        </div>
         {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
         {this.state.showStatus ? this.renderStatusInformation() : <div />}
         {this.state.apiFetchStatus && <Spinner />}

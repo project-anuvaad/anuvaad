@@ -14,39 +14,42 @@ class TranslatedDocument extends React.Component {
         this.action = null
     }
 
-       renderBlock = (block) => {
+    renderBlock = (block) => {
         return (
-            <div style={{
-                position: "absolute",
-                top: block.text_top + 'px',
-                left: block.text_left + 'px',
-                width: block.text_width + 'px',
-                height: block.text_height + 'px',
-                zIndex: 2,
-                textAlign: "justify",
-                // lineHeight: block.line_height + 'px',
-                fontFamily: block.font_family,
-                fontSize: block.font_size + "px",
-                fontColor: block.font_color,
-                fontWeight: (block.font_family && block.font_family.includes("Bold") || block.attrib && block.attrib.toLowerCase().includes("bold")) && 'bold',
-            }}
+            <Textfit mode="multi"
+                min={8} max={block.font_size ? parseInt(block.font_size) : 16}
+                style={{
+                    position: "absolute",
+                    top: block.text_top + 'px',
+                    left: block.text_left + 'px',
+                    width: block.text_width + 'px',
+                    height: block.text_height + 'px',
+                    zIndex: 2,
+                    textAlign: "justify",
+                    // lineHeight: block.line_height + 'px',
+                    fontFamily: block.font_family,
+                    fontSize: block.font_size + "px",
+                    fontColor: block.font_color,
+                    fontWeight: (block.font_family && block.font_family.includes("Bold") || block.attrib && block.attrib.toLowerCase().includes("bold")) && 'bold',
+                }}
                 id={block.block_identifier}
                 key={block.block_identifier}
             >
                 {block['texts'].map((text, i) =>
                     <span key={i} style={{ lineHeight: block.line_height + 'px' }}>{i !== 0 && " "}
-                    <p
-                        style={{
-                            textAlign: "justify",
-                            lineHeight: block.line_height + 'px',
-                            fontFamily: block.font_family,
-                            fontSize: block.font_size + "px",
-                            fontColor: block.font_color,
-                            fontWeight: (block.font_family && block.font_family.includes("Bold") || block.attrib && block.attrib.toLowerCase().includes("bold")) && 'bold',
-                        }}
-                        key={text.s_id}>{text.tgt}</p></span>
+                        <p
+                            style={{
+                                margin: '0px',
+                                textAlign: "justify",
+                                lineHeight: block.line_height + 'px',
+                                fontFamily: block.font_family,
+                                // fontSize: block.font_size + "px",
+                                fontColor: block.font_color,
+                                fontWeight: (block.font_family && block.font_family.includes("Bold") || block.attrib && block.attrib.toLowerCase().includes("bold")) && 'bold',
+                            }}
+                            key={text.s_id}>{text.tgt}</p></span>
                 )}
-            </div>
+            </Textfit>
         )
     }
 
