@@ -12,18 +12,21 @@ from anuvaad_auditor.loghandler import log_exception
 import time
 import os
 
-#import threading, queue
+import threading, queue
 
-from multiprocessing import Queue
+#from multiprocessing import Queue
 
 import config
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 
-# blockMergerQueue    = queue.Queue()
-# blockMergerOCRQueue = queue.Queue()
+blockMergerQueue    = queue.Queue()
+#blockMergerOCRQueue = queue.Queue()
+controlQueue  = queue.Queue()
+controlQueue.put(1)
 
-blockMergerQueue    = Queue()
-blockMergerOCRQueue = Queue()
+
+# blockMergerQueue    = Queue()
+# blockMergerOCRQueue = Queue()
 
 def consumer_validator():
     try:
@@ -50,32 +53,41 @@ def process_block_merger_kf():
     file_ops            = FileOperation()
     DOWNLOAD_FOLDER     = file_ops.create_file_download_dir(config.download_folder)
     producer_tok        = Producer(config.bootstrap_server)
-    
+
     # instatiation of consumer for respective topic
     try:
         consumer = consumer_validator()
         log_info("process_block_merger_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
-        
-        for msg in consumer:
-            if Consumer.get_json_data(msg.value) == None:
-                log_info('process_block_merger_kf - received invalid data {}'.format(msg.value), None)
-                continue
-            data            = Consumer.get_json_data(msg.value)
-            jobid           = data['jobID']
-            log_info('process_block_merger_kf - received message from kafka, dumping into internal queue', data)
-            input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
-            
-            if input_files[0]['locale'] == 'en':
+
+        while True:
+            wait_for_control = controlQueue.get(block=True)
+
+            for msg in consumer:
+
+                if Consumer.get_json_data(msg.value) == None:
+                    log_info('process_block_merger_kf - received invalid data {}'.format(msg.value), None)
+                    continue
+                data            = Consumer.get_json_data(msg.value)
+                jobid           = data['jobID']
+                log_info('process_block_merger_kf - received message from kafka, dumping into internal queue', data)
+                input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+
                 blockMergerQueue.put(data)
-                log_info('process_block_merger_kf - request in internal queue {}'.format(blockMergerQueue.qsize()),
-                         data)
-            else:
-                blockMergerOCRQueue.put(data)
-                log_info('process_block_merger_kf - request in internal OCR queue {}'.format(blockMergerOCRQueue.qsize()), data)
+                break
+
+
+            #
+            # if input_files[0]['locale'] == 'en':
+            #     blockMergerQueue.put(data)
+            #     log_info('process_block_merger_kf - request in internal queue {}'.format(blockMergerQueue.qsize()),
+            #              data)
+            # else:
+            #     blockMergerOCRQueue.put(data)
+            #     log_info('process_block_merger_kf - request in internal OCR queue {}'.format(blockMergerOCRQueue.qsize()), data)
 
             # We should reject kafka request if internal queue size become too-much.
             #
-    
+
     except KafkaConsumerError as e:
         response_custom = {}
         response_custom['message'] = str(e)
@@ -83,7 +95,7 @@ def process_block_merger_kf():
         log_exception("process_block_merger_kf : Consumer didn't instantiate", None, e)
     except KafkaProducerError as e:
         response_custom = {}
-        response_custom['message'] = e.message      
+        response_custom['message'] = e.message
         file_ops.error_handler(response_custom, "KAFKA_PRODUCER_ERROR", True)
         log_exception("process_block_merger_kf : response send to topic %s"%(config.output_topic), None, e)
 
@@ -118,41 +130,43 @@ def block_merger_request_worker():
 
             log_info('block_merger_request_worker - request in internal queue {}'.format(blockMergerQueue.qsize()), data)
 
-            #blockMergerQueue.task_done()
+            blockMergerQueue.task_done()
         except Exception as e:
             log_exception("block_merger_request_worker ",  LOG_WITHOUT_CONTEXT, e)
 
-def block_merger_request_worker_ocr():
-    file_ops            = FileOperation()
-    DOWNLOAD_FOLDER     = file_ops.create_file_download_dir(config.download_folder)
-    producer_tok        = Producer(config.bootstrap_server)
-    log_info("block_merger_request_worker_ocr : starting thread ", LOG_WITHOUT_CONTEXT)
-
-    while True:
-        data            = blockMergerOCRQueue.get(block=True)
-        task_id         = str("BM-" + str(time.time()).replace('.', ''))
-        task_starttime  = str(time.time()).replace('.', '')
-        if not data:
-            continue
-        input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
-        if not input_files:
-            continue
-        
-        log_info("block_merger_request_worker_ocr processing -- received message "+str(jobid), data)
-
-        try:
-            response_gen    = Response(data, DOWNLOAD_FOLDER)
-
-            file_value_response = response_gen.workflow_response(task_id, task_starttime, False)
-            if file_value_response != None:
-                if "errorID" not in file_value_response.keys():
-                    push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
-                    log_info("block_merger_request_worker_ocr : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
-                else:
-                    log_info("block_merger_request_worker_ocr : error send to error handler", data)
-
-            log_info('block_merger_request_worker_ocr - request in internal queue {}'.format(blockMergerQueue.qsize()), data)
-
-            #blockMergerOCRQueue.task_done()
-        except Exception as e:
-            log_exception("block_merger_request_worker_ocr ",  LOG_WITHOUT_CONTEXT, e)
+        controlQueue.put(1)
+#
+# def block_merger_request_worker_ocr():
+#     file_ops            = FileOperation()
+#     DOWNLOAD_FOLDER     = file_ops.create_file_download_dir(config.download_folder)
+#     producer_tok        = Producer(config.bootstrap_server)
+#     log_info("block_merger_request_worker_ocr : starting thread ", LOG_WITHOUT_CONTEXT)
+#
+#     while True:
+#         data            = blockMergerOCRQueue.get(block=True)
+#         task_id         = str("BM-" + str(time.time()).replace('.', ''))
+#         task_starttime  = str(time.time()).replace('.', '')
+#         if not data:
+#             continue
+#         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+#         if not input_files:
+#             continue
+#
+#         log_info("block_merger_request_worker_ocr processing -- received message "+str(jobid), data)
+#
+#         try:
+#             response_gen    = Response(data, DOWNLOAD_FOLDER)
+#
+#             file_value_response = response_gen.workflow_response(task_id, task_starttime, False)
+#             if file_value_response != None:
+#                 if "errorID" not in file_value_response.keys():
+#                     push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
+#                     log_info("block_merger_request_worker_ocr : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
+#                 else:
+#                     log_info("block_merger_request_worker_ocr : error send to error handler", data)
+#
+#             log_info('block_merger_request_worker_ocr - request in internal queue {}'.format(blockMergerQueue.qsize()), data)
+#
+#             blockMergerOCRQueue.task_done()
+#         except Exception as e:
+#             log_exception("block_merger_request_worker_ocr ",  LOG_WITHOUT_CONTEXT, e)
