@@ -1,6 +1,6 @@
 #!/bin/python
 import logging
-from multiprocessing import Process
+from threading import Thread
 
 from logging.config import dictConfig
 from controller.wfmcontroller import wfmapp
@@ -20,12 +20,12 @@ log = logging.getLogger('file')
 def start_consumer():
     with wfmapp.test_request_context():
         try:
-            wfm_consumer_process = Process(target=consume)
-            wfm_consumer_process.start()
-            wfm_core_consumer_process = Process(target=core_consume)
-            wfm_core_consumer_process.start()
-            wfm_error_consumer_process = Process(target=error_consume)
-            wfm_error_consumer_process.start()
+            wfm_consumer_th = Thread(target=consume, name="wfm-cons-th")
+            wfm_consumer_th.start()
+            wfm_core_consumer_th = Thread(target=core_consume, name="wfm-core-cons-th")
+            wfm_core_consumer_th.start()
+            wfm_error_consumer_th = Thread(target=error_consume, name="wfm-error-cons-th")
+            wfm_error_consumer_th.start()
         except Exception as e:
             log_exception("Exception while starting the WFM kafka consumers: " + str(e), None, e)
 
