@@ -29,7 +29,7 @@ class Producer:
     # Method to push records to a topic in the kafka queue
     def push_to_queue(self, object_in, topic):
         producer = self.instantiate()
-        partition = random.choice(list(range(1, total_no_of_partitions)))
+        partition = random.choice(list(range(0, total_no_of_partitions)))
         try:
             if object_in:
                 producer.send(topic, partition=partition, value=object_in)
