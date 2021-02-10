@@ -1,7 +1,7 @@
 export function get_ocr_pages(data) {
     let pages = []
     if (data['result'] !== undefined) {
-        pages = data.result.pages
+        pages = data.result
         return pages
     }
     return pages;

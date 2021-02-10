@@ -644,6 +644,7 @@ class DocumentEditor extends React.Component {
      */
     renderDocumentPages = () => {
         let pages = OCR_PAGES.get_ocr_pages(this.props.download_json);
+        console.log(pages)
         if (pages.length < 1) {
             return (
                 <div></div>
@@ -658,13 +659,14 @@ class DocumentEditor extends React.Component {
                         dataLength={4}
                     >
                         {
-                            pages.map((page,index) => {
-                                    return <OcrPageCard
-                                        zoomPercent={this.state.zoomPercent}
-                                        key={index}
-                                        page={page}
-                                        onAction={this.processSentenceAction} />
-                                })
+                            pages.pages.map((page, index) => {
+                                return <OcrPageCard
+                                    zoomPercent={this.state.zoomPercent}
+                                    key={index}
+                                    page={page}
+                                    image={pages.page_info[index]}
+                                    onAction={this.processSentenceAction} />
+                            })
                         }
                     </InfiniteScroll>
                 </Grid>

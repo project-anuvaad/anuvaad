@@ -30,28 +30,30 @@ function get_document_details(input) {
         document['created_on'] = job['startTime'];
         document['endTime'] = job['endTime'];
         document['status'] = job['status'];
-        document['output_file'] = job['output'][0]['outputFile']
-        job['taskDetails'].forEach(task => {
-            let timeline = {}
-            timeline['module'] = task['tool'];
-            timeline['startime'] = task['taskStarttime'];
-            if ('taskEndTime' in task) {
-                timeline['endtime'] = task['taskEndTime'];
-            } else {
-                timeline['endtime'] = task['taskendTime'];
-            }
-            timeline['stepOrder'] = task['stepOrder'];
-            timeline['status'] = task['status'];
+        if (job['output']) {
+            document['output_file'] = job['output'][0]['outputFile']
+            job['taskDetails'].forEach(task => {
+                let timeline = {}
+                timeline['module'] = task['tool'];
+                timeline['startime'] = task['taskStarttime'];
+                if ('taskEndTime' in task) {
+                    timeline['endtime'] = task['taskEndTime'];
+                } else {
+                    timeline['endtime'] = task['taskendTime'];
+                }
+                timeline['stepOrder'] = task['stepOrder'];
+                timeline['status'] = task['status'];
 
-            if (task['stepOrder'] === 0) {
-                document['converted_filename'] = task['output'][0]['outputFile'];
-            }
+                if (task['stepOrder'] === 0) {
+                    document['converted_filename'] = task['output'][0]['outputFile'];
+                }
 
-            if (task['stepOrder'] === 3) {
-                document['recordId'] = task['output'][0]['outputFile'];
-            }
-            timelines.push(timeline)
-        })
+                if (task['stepOrder'] === 3) {
+                    document['recordId'] = task['output'][0]['outputFile'];
+                }
+                timelines.push(timeline)
+            })
+        }
 
         document['timelines'] = timelines
         documents.push(document);

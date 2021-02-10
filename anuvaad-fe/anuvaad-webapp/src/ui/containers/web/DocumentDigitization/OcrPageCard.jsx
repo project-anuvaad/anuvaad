@@ -95,7 +95,6 @@ class OcrPageCard extends React.Component {
                 style={{
                     zIndex: 1,
                     fontFamily: text.font !== undefined && text.font.family,
-                    // fontWeight: (text.font_family && text.font_family.includes("Bold") || text.attrib && text.attrib.toLowerCase().includes("bold")) && 'bold',
                     backgroundColor: flag ? 'orange' : '',
                     color: 'black',
                     fontSize: text.font !== undefined && text.font.size + 'px'
@@ -205,24 +204,25 @@ class OcrPageCard extends React.Component {
     renderImage = (image) => {
         let style = {
             position: "relative",
-            top: image.text_top + 'px',
-            left: image.text_left + 'px',
-            width: image.text_width + 'px',
-            height: image.text_height + 'px',
+            // top: image.text_top + 'px',
+            // left: image.text_left + 'px',
+            // width: image.text_width + 'px',
+            // height: image.text_height + 'px',
             overflow: "hidden",
             zIndex: 1
         }
 
         return (
-            <div style={style} key={image.block_identifier}>
+            <div style={style}>
 
-                <img width={image.text_width + "px"} height={image.text_height + "px"} src={`data:image/png;base64,${image.base64}`} alt=""></img>
+                <img src={image} alt=""></img>
 
             </div>
         )
     }
 
-    renderPage = (page) => {
+    renderPage = (page, image) => {
+        console.log(image)
         if (page) {
             let width = page['vertices'] && page.vertices[1].x - page.vertices[0].x + 'px'
             let height = page['vertices'] && page.vertices[2].y - page.vertices[0].y + 'px'
@@ -230,6 +230,7 @@ class OcrPageCard extends React.Component {
                 <div>
                     <Paper elevation={2} style={{ textAlign: 'center', position: 'relative', width: width, height: height }}>
                         {page['regions'].map(data => this.renderChild(data, page))}
+                        {this.renderImage(image)}
                     </Paper>
                     <Divider />
                 </div>
@@ -242,7 +243,7 @@ class OcrPageCard extends React.Component {
 
     render() {
         return (
-            <span style={{ zoom: `${40}%` }}>{this.renderPage(this.props.page)}</span>
+            <span style={{ zoom: `${40}%` }}>{this.renderPage(this.props.page, this.props.image)}</span>
         )
     }
 

@@ -515,7 +515,7 @@ class ViewDocumentDigitization extends React.Component {
                     empty: true,
                     customBodyRender: (value, tableMeta, updateValue) => {
                         if (tableMeta.rowData) {
-                            console.log(tableMeta.rowData)
+                            // console.log(tableMeta.rowData)
                             // console.log(tableMeta.rowData[1], tableMeta.rowData[2], tableMeta.rowData[3])
                             return (
                                 <div>
