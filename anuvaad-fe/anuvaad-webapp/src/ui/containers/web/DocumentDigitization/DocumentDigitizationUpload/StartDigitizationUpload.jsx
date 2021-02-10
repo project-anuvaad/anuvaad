@@ -22,7 +22,7 @@ import DocumentUpload from "../../../../../flux/actions/apis/document_upload/doc
 import WorkFlow from "../../../../../flux/actions/apis/common/fileupload";
 import { createJobEntry } from '../../../../../flux/actions/users/async_job_management';
 import Snackbar from "../../../../components/web/common/Snackbar";
-
+import Spinner from "../../../../components/web/common/Spinner"
 
 const theme = createMuiTheme({
     overrides: {
@@ -92,7 +92,8 @@ class StartDigitizationUpload extends React.Component {
         if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
             this.setState({
                 source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
-                target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models)
+                target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
+                showLoader: false
             })
         }
 
@@ -235,7 +236,7 @@ class StartDigitizationUpload extends React.Component {
     handleSubmit(e) {
         let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, "hi")
         e.preventDefault();
-        this.setState({ model: modelId })
+        this.setState({ model: modelId, showLoader: true })
         if (this.state.files.length > 0 && this.state.source_language_code) {
             const { APITransport } = this.props;
             const apiObj = new DocumentUpload(
@@ -359,6 +360,9 @@ class StartDigitizationUpload extends React.Component {
                                 message={this.state.message}
                             />
                         )}
+                        {this.state.showLoader &&
+                            <Spinner />
+                        }
                     </Paper>
                 </div>
             </div>
