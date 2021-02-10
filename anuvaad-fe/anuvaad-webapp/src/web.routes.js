@@ -145,7 +145,7 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/interactive-digitization/:jobId/:filename/:inputfileid/`}
+              path={`${process.env.PUBLIC_URL}/interactive-digitization/:jobId/:filename/:inputfileid/:og_fname`}
               userRoles={["TRANSLATOR"]}
               component={DigitizedDocumentEditor}
               title="Digitized File"

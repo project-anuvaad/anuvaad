@@ -236,11 +236,11 @@ class ViewDocumentDigitization extends React.Component {
         this.setState({ showInfo: true, message: "Do you want to delete a file " + fileName + " ?", dialogTitle: "Delete " + fileName, value: jobId })
     };
 
-    processViewDocumentClick = (jobId, filename, status) => {
+    processViewDocumentClick = (Og_file_name, jobId, filename, status) => {
         let job = this.getJobIdDetail(jobId);
         if (status === "COMPLETED") {
             history.push(
-                `${process.env.PUBLIC_URL}/interactive-digitization/${jobId}/${filename}/${job.converted_filename}`,
+                `${process.env.PUBLIC_URL}/interactive-digitization/${jobId}/${filename}/${job.converted_filename}/${Og_file_name}`,
                 this.state
             );
         } else if (status === "INPROGRESS") {
@@ -515,8 +515,6 @@ class ViewDocumentDigitization extends React.Component {
                     empty: true,
                     customBodyRender: (value, tableMeta, updateValue) => {
                         if (tableMeta.rowData) {
-                            // console.log(tableMeta.rowData)
-                            // console.log(tableMeta.rowData[1], tableMeta.rowData[2], tableMeta.rowData[3])
                             return (
                                 <div>
                                     <Tooltip title="Info" placement="left">
@@ -540,6 +538,7 @@ class ViewDocumentDigitization extends React.Component {
                                             component="a"
                                             onClick={() =>
                                                 this.processViewDocumentClick(
+                                                    tableMeta.rowData[0],
                                                     tableMeta.rowData[1],
                                                     tableMeta.rowData[10],
                                                     tableMeta.rowData[5]
