@@ -12,11 +12,11 @@ import uuid,copy
 def ocr(crop_image,configs,left,top,language):
     if configs:
         #temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
-        temp_df = pytesseract.image_to_data(crop_image, config='--psm 7', lang=LANG_MAPPING[language][0],
+        temp_df = pytesseract.image_to_data(crop_image, config='--psm 7', lang=language,
                                             output_type=Output.DATAFRAME)
     else:
         #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
-        temp_df = pytesseract.image_to_data(crop_image, lang=LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
+        temp_df = pytesseract.image_to_data(crop_image, lang=language,output_type=Output.DATAFRAME)
     temp_df = temp_df[temp_df.text.notnull()]
     text = ""
     coord  = []
