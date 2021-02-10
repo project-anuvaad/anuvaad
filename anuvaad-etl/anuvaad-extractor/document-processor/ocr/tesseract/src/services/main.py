@@ -4,7 +4,7 @@ from anuvaad_auditor.loghandler import log_debug
 import src.utilities.app_context as app_context
 import config, time
 from src.utilities.request_parse import get_files, File, get_ocr_config,get_json
-from src.services.ocr import text_extraction,merge_text,frequent_height
+from src.services.ocr import text_extraction,merge_text,frequent_height,mask_image
 from src.services.dynamic_adjustment import coord_adjustment
 import copy
 
@@ -51,7 +51,12 @@ def preprocess_file(file_properties,lang,ocr_level):
                         file['pages'][page_index]['regions'][idx]['children'] = region_ocr
                     else:
                         file['pages'][page_index]['regions'][idx] = copy.deepcopy(region)
+            
                 file['pages'][page_index]['regions']  = merge_text(file['pages'][page_index]['regions'])
+        '''
+            masking out images based on word coordinates
+        '''
+        mask_image(page_path,page_regions,page_index,file_properties,width, height)
     return file
 
 

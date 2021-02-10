@@ -3,27 +3,11 @@ from config import CROP_CONFIG, LANG_MAPPING
 from pytesseract import Output
 from pytesseract import pytesseract
 from collections import Counter
-#from PIL import Image
+from src.services.dynamic_adjustment import coord_adjustment
 import cv2
-import uuid
-
-# def ocr(temp_df,left,top):
-#     temp_df = temp_df[temp_df.text.notnull()]
-#     text = ""
-#     coord = []
-#     for index1, row1 in temp_df.iterrows():
-#         word_coord = {}
-#         temp_text  = str(row1["text"])
-#         temp_conf  = row1["conf"]
-#         text = text +" "+ str(temp_text)
-#         word_coord['text']          = str(temp_text)
-#         word_coord['conf']          = temp_conf
-#         word_coord['text_left']     = int(row1["left"]+left)
-#         word_coord['text_top']      = int(row1["top"]+top)
-#         word_coord['text_width']    = int(row1["width"])
-#         word_coord['text_height']   = int(row1["height"])
-#         coord.append(word_coord)
-#     return text, coord
+from src.utilities.remove_water_mark import clean_image
+import uuid,copy
+from PIL import Image
 
 def ocr(crop_image,configs,left,top,language):
     if configs:
@@ -130,10 +114,77 @@ def text_extraction(lang, page_path, regions,region_org,width, height,mode_heigh
         else:
             region_org[idx]['text'] = ""
             region_org[idx]['tess_word_coords'] = []
-
+    
+    
     return region_org
 
+def end_point_correction(region, margin, ymax,xmax):
+    # check if after adding margin the endopints are still inside the image
+    x = region["boundingBox"]['vertices'][0]['x']; y = region["boundingBox"]['vertices'][0]['y']
+    w = abs(region["boundingBox"]['vertices'][0]['x']-region["boundingBox"]['vertices'][1]['x'])
+    h = abs(region["boundingBox"]['vertices'][0]['y']-region["boundingBox"]['vertices'][2]['y'])
+    if (y - margin) < 0:
+        ystart = 0
+    else:
+        ystart = y - margin
+    if (y + h + margin) > ymax:
+        yend = ymax
+    else:
+        yend = y + h + margin
+    if (x - margin) < 0:
+        xstart = 0
+    else:
+        xstart = x - margin
+    if (x + w + margin) > xmax:
+        xend = xmax
+    else:
+        xend = x + w + margin
+    return int(ystart), int(yend), int(xstart), int(xend)
 
+
+def mask_image(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
+    try:
+        image   = cv2.imread(path)
+        #image2   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+path)
+        #image    = copy.deepcopy(image2)
+        #bg_image   = clean_image(image2)
+        for region_idx, page_region in enumerate(page_regions):
+            region_class = page_region['class']
+            if region_class not in ["IMAGE","LINE"]:
+                region_lines = file_properties.get_region_lines(page_index,region_idx)
+                if region_lines!=None:
+                    for line_index, line in enumerate(region_lines):
+                        region_words = file_properties.get_region_words(page_index,region_idx,line_index)
+                        if region_words!=None:
+                            if config.IS_DYNAMIC:
+                                region_words = coord_adjustment(path, region_words)
+                            for region in region_words:
+                                row_top, row_bottom,row_left,row_right = end_point_correction(region, 2,image_height,image_width)
+                                
+                                if len(image.shape) == 2 :
+                                    image[row_top - margin : row_bottom + margin , row_left - margin: row_right + margin] = fill
+                                if len(image.shape) == 3 :
+                                    image[row_top - margin: row_bottom + margin, row_left - margin: row_right + margin,:] = fill
+                                
+    cv2.imwrite(path,image)
+    
+    # bg_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
+    # mask_path = path.split('.jpg')[0]+"_maskimages_"+'.jpg'
+    # overlay_path = path.split('.jpg')[0]+"_overlay_"
+    # base_path ="/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"
+    # cv2.imwrite("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+bg_path,bg_image)
+    # cv2.imwrite("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+mask_path,image)
+    # background = Image.open(base_path+bg_path)
+    # overlay = Image.open(base_path+mask_path)
+
+    # background = background.convert("RGBA")
+    # overlay = overlay.convert("RGBA")
+
+    # new_img = Image.blend(overlay,background, 0.5)
+    # new_img.save("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+overlay_path,'PNG')
+    except Exception as e :
+        print('Service Tesseract Error in masking out image {}'.format(e))
+        
 
 
 def merge_text(v_blocks,merge_tess_confidence=False):
