@@ -11,7 +11,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
 log = logging.getLogger('file')
-
+p0_partition = None
 
 class Producer:
 
@@ -28,8 +28,13 @@ class Producer:
 
     # Method to push records to a topic in the kafka queue
     def push_to_queue(self, object_in, topic):
+        global p0_partition
         producer = self.instantiate()
         partition = random.choice(list(range(0, total_no_of_partitions)))
+        if p0_partition:
+            while partition == p0_partition:
+                partition = random.choice(list(range(0, total_no_of_partitions)))
+        p0_partition = partition
         try:
             if object_in:
                 producer.send(topic, partition=partition, value=object_in)
