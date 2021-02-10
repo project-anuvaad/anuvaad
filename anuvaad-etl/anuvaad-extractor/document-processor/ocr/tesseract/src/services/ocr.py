@@ -7,7 +7,7 @@ from src.services.dynamic_adjustment import coord_adjustment
 import cv2
 from src.utilities.remove_water_mark import clean_image
 import uuid,copy
-from PIL import Image
+#from PIL import Image
 
 def ocr(crop_image,configs,left,top,language):
     if configs:
