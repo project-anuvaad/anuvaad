@@ -166,7 +166,15 @@ def mask_image(path, page_regions,page_index,file_properties,image_width,image_h
                                 if len(image.shape) == 3 :
                                     image[row_top - margin: row_bottom + margin, row_left - margin: row_right + margin,:] = fill
                                 
-    cv2.imwrite(path,image)
+        if '.jpg' in path
+            save_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
+        elif '.png' in path
+            save_path = path.split('.png')[0]+"_bgimages_"+'.png'
+        else:
+            save_path = path.split('.')[0]+"_bgimages_"+'.jpg'
+
+        cv2.imwrite(save_path,image)
+        return save_path
     
     # bg_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
     # mask_path = path.split('.jpg')[0]+"_maskimages_"+'.jpg'
@@ -184,6 +192,7 @@ def mask_image(path, page_regions,page_index,file_properties,image_width,image_h
     # new_img.save("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+overlay_path,'PNG')
     except Exception as e :
         print('Service Tesseract Error in masking out image {}'.format(e))
+        return None
         
 
 

@@ -12,7 +12,7 @@ def preprocess_file(file_properties,lang,ocr_level):
     file = file_properties.get_file()
     page_paths = file_properties.get_pages()
     width, height = file_properties.get_pageinfo(0)
-
+    mask_page_path = []
     for page_index, page_path in enumerate(page_paths):
         page_regions = file_properties.get_regions(page_index)
         #page_path =  '/'.join(page_path.split('/')[-4:])
@@ -56,7 +56,10 @@ def preprocess_file(file_properties,lang,ocr_level):
         '''
             masking out images based on word coordinates
         '''
-        mask_image(page_path,page_regions,page_index,file_properties,width, height)
+        save_path  = mask_image(page_path,page_regions,page_index,file_properties,width, height)
+        mask_page_path.append(save_path)
+    file['bg_image_paths']  = mask_page_path
+
     return file
 
 
