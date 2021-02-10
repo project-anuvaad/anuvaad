@@ -13,7 +13,7 @@ from anuvaad_auditor.loghandler import log_exception
 from configs.wfmconfig import anu_etl_wfm_core_topic
 from configs.wfmconfig import anu_etl_wfm_consumer_grp
 from configs.wfmconfig import kafka_bootstrap_server_host
-from configs.wfmconfig import wfm_core_cons_no_of_partitions
+from configs.wfmconfig import total_no_of_partitions
 
 log = logging.getLogger('file')
 
@@ -34,7 +34,7 @@ def instantiate(topics):
 def get_topic_paritions(topics):
     topic_paritions = []
     for topic in topics:
-        for partition in range(0, wfm_core_cons_no_of_partitions):
+        for partition in range(0, total_no_of_partitions):
             tp = TopicPartition(topic, partition)
             topic_paritions.append(tp)
     return topic_paritions

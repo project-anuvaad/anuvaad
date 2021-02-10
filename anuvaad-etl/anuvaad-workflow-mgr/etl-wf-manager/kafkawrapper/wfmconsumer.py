@@ -9,7 +9,7 @@ from utilities.wfmutils import WFMUtils
 from service.wfmservice import WFMService
 from configs.wfmconfig import anu_etl_wfm_consumer_grp
 from configs.wfmconfig import kafka_bootstrap_server_host
-from configs.wfmconfig import wfm_cons_no_of_partitions
+from configs.wfmconfig import total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
@@ -33,7 +33,7 @@ def instantiate(topics):
 def get_topic_paritions(topics):
     topic_paritions = []
     for topic in topics:
-        for partition in range(0, wfm_cons_no_of_partitions):
+        for partition in range(0, total_no_of_partitions):
             tp = TopicPartition(topic, partition)
             topic_paritions.append(tp)
     return topic_paritions

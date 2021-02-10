@@ -988,3 +988,15 @@ Traceback (most recent call last):
 FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
 [2021-01-06 16:05:15,354] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFM--(fBuj) | Running..........
 [2021-01-06 16:05:15,354] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFM--(fBuj) | Topics: []
+[2021-02-10 14:40:42,390] {loghandler.py:21} MainThread INFO in loghandler: WFM-Core-(MdDX) | Running..........
+[2021-02-10 14:40:42,390] {loghandler.py:21} MainThread INFO in loghandler: WFM-Error-(eGca) | Running..........
+[2021-02-10 14:40:42,390] {loghandler.py:21} MainThread INFO in loghandler: WFM-Core-(MdDX) | Topics: ['anuvaad-etl-wf-initiate-v3']
+[2021-02-10 14:40:42,390] {loghandler.py:21} MainThread INFO in loghandler: WFM-Error-(eGca) | Topics: ['anuvaad-etl-wf-errors-v1']
+[2021-02-10 14:40:43,174] {loghandler.py:78} MainThread ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "/Users/mahulivishal/Desktop/anuvaad/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py", line 72, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2021-02-10 14:40:43,179] {loghandler.py:21} MainThread INFO in loghandler: WFM--(aiTa) | Running..........
+[2021-02-10 14:40:43,180] {loghandler.py:21} MainThread INFO in loghandler: WFM--(aiTa) | Topics: []
+[2021-02-10 14:40:46,968] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5001/ (Press CTRL+C to quit)

@@ -35,12 +35,7 @@ jobid_random_str_length = os.environ.get('WFM_JOBID_RANDOM_STR_LEN', 5)
 anu_etl_wfm_core_topic = os.environ.get('KAFKA_ANUVAAD_ETL_WFM_CORE_TOPIC', 'anuvaad-etl-wf-initiate-v3')
 anu_etl_wfm_consumer_grp = os.environ.get('KAFKA_ANUVAAD_ETL_WF_CONSUMER_GRP', 'anuvaad-etl-wfm-consumer-group')
 anu_etl_wf_error_topic = os.environ.get('KAFKA_ANUVAAD_ETL_WF_ERROR_TOPIC', 'anuvaad-etl-wf-errors-v1')
-wfm_cons_no_of_instances = 1
-wfm_cons_no_of_partitions = 1
-wfm_core_cons_no_of_instances = 1
-wfm_core_cons_no_of_partitions = 1
-wfm_error_cons_no_of_instances = 1
-wfm_error_cons_no_of_partitions = 1
+total_no_of_partitions = os.environ.get('KAFKA_PARTITIONS_PER_TOPIC', 6)
 
 
 #datastore-configs

@@ -1,9 +1,11 @@
 import json
 import logging
+import random
 
 from kafka import KafkaProducer
 from configs.wfmconfig import kafka_bootstrap_server_host
 from configs.wfmconfig import module_wfm_name
+from configs.wfmconfig import total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
@@ -27,11 +29,12 @@ class Producer:
     # Method to push records to a topic in the kafka queue
     def push_to_queue(self, object_in, topic):
         producer = self.instantiate()
+        partition = random.choice(list(range(1, total_no_of_partitions)))
         try:
             if object_in:
-                producer.send(topic, value=object_in)
+                producer.send(topic, partition=partition, value=object_in)
                 object_in["metadata"]["module"] = module_wfm_name # FOR LOGGING ONLY.
-                log_info("Pushing to topic: " + topic, object_in)
+                log_info("Pushing to TOPIC: " + topic + " | PARTITION: " + str(partition), object_in)
                 return None
             producer.flush()
         except Exception as e:
