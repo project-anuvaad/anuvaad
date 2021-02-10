@@ -12,6 +12,7 @@ from src.utilities.class_2.page_layout.double_column import get_column
 from src.utilities.class_2.page_layout.utils import collate_regions
 from src.utilities.primalaynet.infer import predict_primanet
 from src.utilities.primalaynet.header_footer import PRIMA
+from anuvaad_auditor.loghandler import log_error
 
 primalaynet = PRIMA()
 
@@ -161,36 +162,39 @@ def doc_structure_response(pdf_data,flags):
                     - text_df
                     - tabel_df
     '''
-    bg_dfs          = pdf_data['bg_dfs']
-    text_block_dfs  = pdf_data['p_dfs']
-    table_dfs       = pdf_data['table_dfs']
-    line_dfs        = pdf_data['line_dfs']
-    #if flags['doc_class'] == 'class_1':
-    page_width      = pdf_data['page_width']
-    page_height     = pdf_data['page_height']
-    # else :
-    #     page_width = pdf_data['pdf_image_width']
-    #     page_height = pdf_data['pdf_image_height']
+    try :
+        bg_dfs          = pdf_data['bg_dfs']
+        text_block_dfs  = pdf_data['p_dfs']
+        table_dfs       = pdf_data['table_dfs']
+        line_dfs        = pdf_data['line_dfs']
+        #if flags['doc_class'] == 'class_1':
+        page_width      = pdf_data['page_width']
+        page_height     = pdf_data['page_height']
+        # else :
+        #     page_width = pdf_data['pdf_image_width']
+        #     page_height = pdf_data['pdf_image_height']
 
-    log_info("document structure response started  ===>", app_context.application_context)
-    start_time = time.time()
-    response = {'result': []}
-    pages = len(text_block_dfs)
+        log_info("document structure response started  ===>", app_context.application_context)
+        start_time = time.time()
+        response = {'result': []}
+        pages = len(text_block_dfs)
 
-    for page_index in range(pages):
-        img_df = bg_dfs[page_index]
-        text_df = text_block_dfs[page_index]
-        text_df = get_xml.drop_update_col(text_df)
-        table_df = table_dfs[page_index]
-        line_df = line_dfs[page_index]
-        # text_df    = adopt_child(text_df)
+        for page_index in range(pages):
+            img_df = bg_dfs[page_index]
+            text_df = text_block_dfs[page_index]
+            text_df = get_xml.drop_update_col(text_df)
+            table_df = table_dfs[page_index]
+            line_df = line_dfs[page_index]
+            # text_df    = adopt_child(text_df)
 
-        page_json = response_per_page(text_df, img_df, table_df, line_df, page_index, page_width, page_height)
-        response['result'].append(page_json)
-    end_time = time.time() - start_time
-    log_info("document structure response successfully completed {}".format(end_time), app_context.application_context)
+            page_json = response_per_page(text_df, img_df, table_df, line_df, page_index, page_width, page_height)
+            response['result'].append(page_json)
+        end_time = time.time() - start_time
+        log_info("document structure response successfully completed {}".format(end_time), app_context.application_context)
 
-    return response
+        return response
+    except Exception as e:
+        log_error('Error in response generation' + str(e), app_context.application_context, e)
 
 
 def response_per_page(p_df, img_df, table_df, line_df, page_no, page_width, page_height):

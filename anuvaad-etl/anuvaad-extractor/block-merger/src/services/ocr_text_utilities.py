@@ -45,33 +45,37 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
     text_list = []
 
     check ={"devnagari_text:":[],"original":[]}
-
-    for index, row in df.iterrows():
-        left   = row['text_left']*w_ratio
-        top    = row['text_top']*h_ratio
-        right  = (row['text_left'] + row['text_width'])*w_ratio
-        bottom = (row['text_top'] + row['text_height'])*h_ratio
-        coord  = []
-        crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
-        #crop_image.save("/home/naresh/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg')
-        if row['text_height']>2*row['font_size']:
-            coord,text = ocr(crop_image,False,left,top,lang)
-            word_coord_lis.append(coord)
-            text_list.append(text)
-        else:
-            coord,text = ocr(crop_image,True,left,top,lang)
-            if len(text)==0:
+    try :
+        for index, row in df.iterrows():
+            left   = row['text_left']*w_ratio
+            top    = row['text_top']*h_ratio
+            right  = (row['text_left'] + row['text_width'])*w_ratio
+            bottom = (row['text_top'] + row['text_height'])*h_ratio
+            coord  = []
+            crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
+            #crop_image.save("/home/naresh/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg')
+            if row['text_height']>2*row['font_size']:
                 coord,text = ocr(crop_image,False,left,top,lang)
-            word_coord_lis.append(coord)
-            text_list.append(text)
+                word_coord_lis.append(coord)
+                text_list.append(text)
+            else:
+                coord,text = ocr(crop_image,True,left,top,lang)
+                if len(text)==0:
+                    coord,text = ocr(crop_image,False,left,top,lang)
+                word_coord_lis.append(coord)
+                text_list.append(text)
 
-    df['word_coords'] = word_coord_lis
-    df['text']        = text_list
-    return df
+        df['word_coords'] = word_coord_lis
+        df['text']        = text_list
+        return df
+    except Exception as e:
+        log_exception("Error in tesseract ocr extraction " + str(e), app_context.application_context, e)
+        return None
+
 
 def low_conf_ocr(lang,left,top,width,height,image):
     crop_image = image.crop((left-5, top-7, left+width+5, top+height+7))
-    crop_image.save("/home/naresh/check/"+str(uuid.uuid4())+'.jpg')
+    #crop_image.save("/home/naresh/check/"+str(uuid.uuid4())+'.jpg')
     temp_df_eng = pytesseract.image_to_data(crop_image,config='--psm 6', lang= LANG_MAPPING[lang][2],output_type=Output.DATAFRAME)
     temp_df_hin = pytesseract.image_to_data(crop_image, config='--psm 6',lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
     eng_index = temp_df_eng['conf'].argmax()

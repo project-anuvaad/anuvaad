@@ -75,12 +75,8 @@ def break_blocks(input):
 
         p_dfs = children_functions.breaK_into_paragraphs(pdf_data,flags)
 
-
-
         #p_dfs = get_text_from_table_cells(pdf_data['table_dfs'], p_dfs)
         p_dfs = get_text_from_table_cells(pdf_data,p_dfs,flags)
-
-
         #p_dfs, line_dfs = get_underline(p_dfs, pdf_data['line_dfs'], app_context.application_context)
 
         text_merger = ChildTextUnify()
@@ -109,11 +105,20 @@ def DocumentStructure(app_context, file_name, lang='en',base_dir=config.BASE_DIR
     try:
         doc_structure_compose = compose(generate_response,break_blocks,merge_vertically,merge_horizontally,extract_images_and_text_regions)
         response              = doc_structure_compose(file_name, base_dir,lang,page_layout)
-        return {
-                'code': 200,
-                'message': 'request completed',
-                'rsp': response
-                }
+        if response != None :
+            return {
+                    'code': 200,
+                    'message': 'request completed',
+                    'rsp': response
+                    }
+        else :
+            return {
+                'code': 400,
+                'message': 'Error occured during pdf to blocks conversion',
+                'rsp': None
+            }
+
+
     except Exception as e:
         log_exception("Error occured during pdf to blocks conversion",  app_context.application_context, e)
         return {
