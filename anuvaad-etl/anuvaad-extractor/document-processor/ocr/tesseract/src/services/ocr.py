@@ -166,9 +166,9 @@ def mask_image(path, page_regions,page_index,file_properties,image_width,image_h
                                 if len(image.shape) == 3 :
                                     image[row_top - margin: row_bottom + margin, row_left - margin: row_right + margin,:] = fill
                                 
-        if '.jpg' in path
+        if '.jpg' in path:
             save_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
-        elif '.png' in path
+        elif '.png' in path:
             save_path = path.split('.png')[0]+"_bgimages_"+'.png'
         else:
             save_path = path.split('.')[0]+"_bgimages_"+'.jpg'
