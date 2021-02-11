@@ -26,6 +26,8 @@ FROM anuvaadio/anuvaad-block-merger:210-315fc22f
 #FROM anuvaadio/python-opencv-slim:2
 
 
+RUN apt-get install -y nvidia-container-runtime
+
 COPY / /app
 WORKDIR /app
 
