@@ -236,7 +236,7 @@ class DigitizedDocHeader extends React.Component {
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
 
                     <Typography variant="h5" color="inherit" className={classes.flex}>
-                        {this.props.match.params.filename}
+                        {this.props.match.params.og_fname}
                     </Typography>
                     <div style={{ position: 'absolute', right: '30px' }}>
                         {this.renderOptions()}

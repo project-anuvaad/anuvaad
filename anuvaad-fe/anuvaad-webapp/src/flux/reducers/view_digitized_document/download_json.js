@@ -5,7 +5,7 @@ const initial_state = {
     pages: []
 }
 
-const download_json = (state, action) => {
+const download_json = (state = initial_state, action) => {
     switch (action.type) {
         case C.DOWNLOAD_JSON:
             let data = {
@@ -14,6 +14,11 @@ const download_json = (state, action) => {
             }
             return {
                 result: data
+            }
+
+        case C.CLEAR_JSON:
+            return {
+                result: []
             }
         default:
             return {

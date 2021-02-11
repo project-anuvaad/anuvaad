@@ -194,6 +194,12 @@ export default function (state = initialState, action) {
             }
 
         }
+        case C.CLEAR_JSON: {
+            return {
+                ...state,
+                job: null
+            }
+        }
 
         default:
             return state;

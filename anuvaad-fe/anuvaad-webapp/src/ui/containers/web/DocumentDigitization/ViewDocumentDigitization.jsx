@@ -11,7 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/Info";
 import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
-import { clearJobEntry } from "../../../../flux/actions/users/async_job_management";
+import { clearJob } from "../../../../flux/actions/apis/view_digitized_document/clear_digitized_doc";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import FetchDigitizedDocument from "../../../../flux/actions/apis/view_digitized_document/fetch_digitized_document";
 import Spinner from "../../../components/web/common/Spinner";
@@ -178,7 +178,6 @@ class ViewDocumentDigitization extends React.Component {
                     timeOut: 3000,
                 });
             }
-            this.props.clearJobEntry();
         } else if (
             prevProps.digitizeddocument.documents.length === 0 &&
             this.props.digitizeddocument.documents.length === 0 &&
@@ -186,6 +185,9 @@ class ViewDocumentDigitization extends React.Component {
             this.state.showLoader
         ) {
             this.setState({ showLoader: false });
+        }
+        if (prevProps.download_json.result === this.props.download_json.result) {
+            this.props.clearJob();
         }
     }
 
@@ -671,7 +673,7 @@ class ViewDocumentDigitization extends React.Component {
 const mapDispatchToProps = (dispatch) =>
     bindActionCreators(
         {
-            clearJobEntry,
+            clearJob,
             APITransport,
             CreateCorpus: APITransport,
         },
@@ -683,7 +685,8 @@ const mapStateToProps = (state) => ({
     apistatus: state.apistatus,
     digitizeddocument: state.digitizeddocument,
     async_job_status: state.async_job_status,
-    open_sidebar: state.open_sidebar
+    open_sidebar: state.open_sidebar,
+    download_json: state.download_json
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewDocumentDigitization);
