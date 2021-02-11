@@ -1,7 +1,7 @@
 #!/bin/python
 import logging
 import os
-from multiprocessing import Process
+import threading
 
 from logging.config import dictConfig
 from controller.alignmentcontroller import alignapp
@@ -21,10 +21,10 @@ def start_consumer():
         consumer = Consumer()
         wflowconsumer = WflowConsumer()
         try:
-            consumer_process = Process(target=consumer.consume)
-            consumer_process.start()
-            wfm_consumer_process = Process(target=wflowconsumer.consume)
-            wfm_consumer_process.start()
+            align_consumer_thread = threading.Thread(target=consumer.consume, name='AlignerConsumer-Thread')
+            align_wflow_consumer_thread = threading.Thread(target=wflowconsumer.consume, name='AlignerWflowConsumer-Thread')
+            align_consumer_thread.start()
+            align_wflow_consumer_thread.start()
         except Exception as e:
             log.exception("Exception while starting the kafka consumer: " + str(e))
 
