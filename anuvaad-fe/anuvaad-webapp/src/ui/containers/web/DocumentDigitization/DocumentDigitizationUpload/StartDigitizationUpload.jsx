@@ -261,7 +261,7 @@ class StartDigitizationUpload extends React.Component {
                         {translate("common.page.label.uploadFile")}
                     </Typography>
                     <br />
-                    <Typography className={classes.typographySubHeader}>{translate("pdf_upload.page.label.uploadMessage")}</Typography>
+                    <Typography className={classes.typographySubHeader}>{translate("doc_upload.page.label.uploadMessage")}</Typography>
                     <br />
                     <Paper elevation={3} className={classes.paper}>
                         <Grid container spacing={8}>
