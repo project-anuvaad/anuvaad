@@ -1,0 +1,82 @@
+node('server_build_slave') {
+
+try {
+	stage('Checkout') {
+    
+	  checkout scm
+	
+		}
+	stage('Build') 
+	    withCredentials([string(credentialsId: 'vault-password', variable: 'vaultpass')]) {
+    
+     sh  '''
+            pwd
+             echo $vaultpass > vault_pass.txt
+                
+	      ansible-playbook -i /home/jenkins/jenkins_files/ansible/anuvaad-dashboard/inventory/local /home/jenkins/jenkins_files/ansible/anuvaad-dashboard/backend_cred_encryption.yml -e "var_file=$var_file_name" --vault-id vault_pass.txt	
+	
+	    rm -rf vault_pass.txt
+		
+		cd anuvaad-api/anuvaad-dashboard/user-master-service/
+	    
+	    mvn clean install
+	    
+        '''
+	
+          
+            }
+     /*	stage('SonarQube analysis') {
+   			 // requires SonarQube Scanner 2.8+
+   				 def scannerHome = tool 'sonar_scanner';
+   				 withSonarQubeEnv('sonarqube') {
+    					   sh 'mvn clean package sonar:sonar'
+    			 }
+  	}
+  	stage("Quality Gate") {
+  					timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
+  				   def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+   				   if (qg.status != 'OK') {
+    					  error "Pipeline aborted due to quality gate failure: ${qg.status}"
+   					}
+ 		   }
+		} */
+
+	stage('docker-build') {
+	      
+		   sh '''
+		   commit_id=$(git rev-parse --short HEAD)
+		   echo $commit_id> commit_id.txt
+     cd /home/jenkins/workspace/anuvaad/Dashboard_FE-BE/anuvaad-be-user-master-service/backend-user-master-build/anuvaad-api/anuvaad-dashboard/user-master-service
+		   pwd
+		   docker build -t docker.idc.tarento.com/$docker_repo:$commit_id .
+		   '''
+		  archiveArtifacts 'commit_id.txt'
+
+		   	
+      } 
+      stage('Docker push') 
+	  withCredentials([string(credentialsId: 'docker_registry', variable: 'registry_pass')]){
+	   
+	      sh '''
+	       
+	       
+		     pwd
+		     	commit_id=$(git rev-parse --short HEAD)
+		    	echo $registry_pass > registry_pass.txt
+			docker login -u dockeradmin -p "$(cat registry_pass.txt)" docker.idc.tarento.com
+			docker push docker.idc.tarento.com/$docker_repo:$commit_id
+			rm -rf registry_pass.txt
+                
+		     '''
+		   }
+     
+         
+    
+	}
+
+    catch (err) {
+    currentBuild.result = "FAILURE"
+    throw err
+    }
+
+}
