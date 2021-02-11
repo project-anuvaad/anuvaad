@@ -36,6 +36,7 @@
 
 
 FROM nvidia/cuda:11.2.0-base-ubuntu20.04
+
 CMD nvidia-smi
 #
 # LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
