@@ -35,7 +35,7 @@
 
 
 
-FROM nvidia/cuda:10.2-base
+FROM nvidia/cuda:11.2.0-base-ubuntu20.04
 RUN lsb_release -a
 RUN nvidia-smi
 #
