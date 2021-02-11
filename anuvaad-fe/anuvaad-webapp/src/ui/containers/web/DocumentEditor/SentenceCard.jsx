@@ -434,9 +434,9 @@ class SentenceCard extends React.Component {
                 } else {
                     if (this.state.suggestions[0]) {
                         let suggestionArray = this.state.suggestions[0].name.split(' ')
-                        let textFieldArray = this.state.value.replace(/\s{2,}/, ' ').trim().slice(0, elem.selectionEnd).split(' ')
-                        let remainingTextFieldArray = this.state.value.replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
-                        let remainingSuggestion = this.state.suggestions[0].name.replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
+                        let textFieldArray = this.state.value.toString().replace(/\s{2,}/, ' ').trim().slice(0, elem.selectionEnd).split(' ')
+                        let remainingTextFieldArray = this.state.value.toString().replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
+                        let remainingSuggestion = this.state.suggestions[0].name.toString().replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
                         let lenTextField = [...textFieldArray].length
                         let lenSuggestion = [...suggestionArray].length
                         let nextSuggestion = remainingSuggestion.shift()

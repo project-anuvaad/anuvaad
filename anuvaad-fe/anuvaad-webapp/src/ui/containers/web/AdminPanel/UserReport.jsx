@@ -15,7 +15,6 @@ import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import FetchDocument from "../../../../flux/actions/apis/view_document/fetch_document";
 import JobStatus from "../../../../flux/actions/apis/view_document/translation.progress";
 import { clearJobEntry } from "../../../../flux/actions/users/async_job_management";
-import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
@@ -80,7 +79,7 @@ class UserReport extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.job_details.changedJob && this.props.job_details.changedJob.hasOwnProperty("jobID") && prevProps.job_details.changedJob !== this.props.job_details.changedJob) {
-            this.setState({showLoader:false})
+            this.setState({ showLoader: false })
             TELEMETRY.endWorkflow(this.props.job_details.changedJob.source_language_code, this.props.job_details.changedJob.target_language_code, this.props.job_details.changedJob.filename, this.props.job_details.changedJob.jobID, this.props.job_details.changedJob.status)
         }
 
@@ -154,6 +153,7 @@ class UserReport extends React.Component {
             searchNextPage,
             updateExisting,
             userIDs,
+            true
         );
         APITransport(apiObj);
     }
@@ -162,7 +162,7 @@ class UserReport extends React.Component {
         var recordIds = this.getRecordIds();
         if (recordIds.length > 0) {
             const { APITransport } = this.props;
-            const apiObj = new JobStatus(recordIds);
+            const apiObj = new JobStatus(recordIds, true);
             APITransport(apiObj);
             this.setState({ showProgress: true, searchToken: false });
         }
@@ -254,29 +254,6 @@ class UserReport extends React.Component {
         }, 3000)
     }
 
-    processViewDocumentClick = (jobId, recordId, status) => {
-        let job = this.getJobIdDetail(jobId);
-        if (status === "COMPLETED") {
-            history.push(
-                `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
-                this.state
-            );
-        } else if (status === "INPROGRESS") {
-            this.setState({
-                dialogMessage: "Please wait process is Inprogress!",
-                timeOut: 3000,
-                variant: "info",
-            });
-            this.handleMessageClear();
-        } else {
-            this.setState({
-                dialogMessage: "Document conversion failed!",
-                timeOut: 3000,
-                variant: "info",
-            });
-            this.handleMessageClear();
-        }
-    };
 
     handleMessageClear = () => {
         setTimeout(() => {
@@ -296,55 +273,6 @@ class UserReport extends React.Component {
                 />
             </div>
         );
-    };
-
-    processDownloadInputFileClick = (jobId, recordId) => {
-        this.setState({
-            dialogMessage: "Downloading file...",
-            timeOut: null,
-            variant: "info",
-        });
-        let job = this.getJobIdDetail(jobId);
-        let user_profile = JSON.parse(localStorage.getItem("userProfile"));
-
-        let obj = new DownloadFile(job.converted_filename, user_profile.userID);
-
-        const apiReq1 = fetch(obj.apiEndPoint(), {
-            method: "get",
-            headers: obj.getHeaders().headers,
-        })
-            .then(async (response) => {
-                if (!response.ok) {
-                    this.setState({
-                        dialogMessage: "Failed to download file...",
-                        timeOut: 3000,
-                        variant: "info",
-                    });
-                    console.log("api failed");
-                } else {
-                    const buffer = new Uint8Array(await response.arrayBuffer());
-                    let res = Buffer.from(buffer).toString("base64");
-
-                    fetch("data:image/jpeg;base64," + res)
-                        .then((res) => res.blob())
-                        .then((blob) => {
-                            let a = document.createElement("a");
-                            let url = URL.createObjectURL(blob);
-                            a.href = url;
-                            a.download = job.converted_filename;
-                            this.setState({ dialogMessage: null });
-                            a.click();
-                        });
-                }
-            })
-            .catch((error) => {
-                this.setState({
-                    dialogMessage: "Failed to download file...",
-                    timeOut: 3000,
-                    variant: "info",
-                });
-                console.log("api failed because of server or network", error);
-            });
     };
 
     getDateTimeDifference(endTime, startTime) {
@@ -598,10 +526,8 @@ class UserReport extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    user: state.login,
     apistatus: state.apistatus,
     job_details: state.job_details,
-    async_job_status: state.async_job_status,
     fetch_document: state.fetchDocument
 });
 

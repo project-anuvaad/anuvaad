@@ -420,11 +420,12 @@ class Region_Unifier:
             ########################
             n_text_table_regions.extend(t_list)
             n_text_table_regions.extend(image_region)
-            flag =True
+
             if self.check_double_column(v_list,avg_height):
                 print("this document is double columnssssssss")
                 return v_list, n_text_table_regions
-
+            # flag =True
+            flag = False
             while flag==True:
                 v_list, flag = self.merge_remove_overlap(v_list,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
 

@@ -214,7 +214,7 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/user-details`}
+              path={`${process.env.PUBLIC_URL}/user-details/:pageno`}
               dontShowLoader
               title={"User Details"}
               userRoles={["ADMIN"]}

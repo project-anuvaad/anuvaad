@@ -239,7 +239,7 @@ class Header extends React.Component {
                         button
                         onClick={() => {
                           this.handleDrawerClose(false);
-                          history.push(`${process.env.PUBLIC_URL}/user-details`);
+                          history.push(`${process.env.PUBLIC_URL}/user-details/0`);
                         }}
                       >
 

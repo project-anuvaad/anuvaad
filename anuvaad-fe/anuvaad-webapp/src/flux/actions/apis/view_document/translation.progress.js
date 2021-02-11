@@ -6,11 +6,12 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class DocumentTranslationProgress extends API {
-    constructor(jobId, timeout = 2000) {
+    constructor(jobId,bleuStatus, timeout = 2000) {
         
         super("POST", timeout, false);
         this.type = C.JOBSTATUS;
         this.jobId = jobId;
+        this.bleu_score = bleuStatus;
         
         this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.jobids}`
       }
@@ -32,7 +33,9 @@ export default class DocumentTranslationProgress extends API {
     
       getBody() {
        return {
-            record_ids: this.jobId
+            record_ids: this.jobId,
+            bleu_score: this.bleu_score
+
         };
       }
     

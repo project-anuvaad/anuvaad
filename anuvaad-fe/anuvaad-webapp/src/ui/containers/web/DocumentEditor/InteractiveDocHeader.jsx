@@ -178,8 +178,8 @@ class InteractiveDocHeader extends React.Component {
 
         return (
             <div style={{ display: "flex", flexDirection: "row" }}>
-                {!this.props.show_pdf && <Button color="primary" variant="outlined" onClick={this.hideDocument.bind(this)}>{this.props.docView ? "Show Document" : " Hide document"}</Button>}
-                {!this.props.docView && <Button color="primary" variant="outlined" style={{ marginLeft: "10px" }}  onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" : " Show PDF"}</Button>}
+                {!this.props.show_pdf && !this.props.preview && <Button color="primary" variant="outlined" onClick={this.hideDocument.bind(this)}>{this.props.docView ? "Show Document" : " Hide document"}</Button>}
+                {!this.props.docView && !this.props.preview && <Button color="primary" variant="outlined" style={{ marginLeft: "10px" }} onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" : " Show PDF"}</Button>}
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
                     Download
                     <DownIcon />
@@ -191,14 +191,6 @@ class InteractiveDocHeader extends React.Component {
                     open={openEl}
                     onClose={this.handleClose.bind(this)}
                 >
-                    <MenuItem
-                        style={{ borderTop: "1px solid #D6D6D6" }}
-                        onClick={() => {
-                            this.fetchFile("docx")
-                        }}
-                    >
-                        As DOCX
-                        </MenuItem>
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
@@ -215,6 +207,15 @@ class InteractiveDocHeader extends React.Component {
                     >
                         As XLSX
                     </MenuItem>
+                   { !this.props.preview && <MenuItem
+                        style={{ borderTop: "1px solid #D6D6D6" }}
+                        onClick={() => {
+                            this.setState({anchorEl: null})
+                            this.props.onShowPreview()
+                        }}
+                    >
+                        As PDF
+                    </MenuItem>}
                 </StyledMenu>
             </div>
         );
