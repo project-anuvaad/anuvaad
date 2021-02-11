@@ -35,8 +35,7 @@
 
 
 
-ARG IMAGE_NAME
-FROM ${IMAGE_NAME}:11.2.0-base-ubuntu20.04
+FROM 11.2.0-base-ubuntu20.04
 
 LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
 
