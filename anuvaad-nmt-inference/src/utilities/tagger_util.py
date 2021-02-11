@@ -53,18 +53,12 @@ def replace_tags_with_original(text,date_original,url_dict,num_array,num_map):
   Replaces dates,urls and numbers in the text with the original values
   in place of the tags
   '''
-  try:
-    resultant_str = list()
-      
+  try:     
     if len(text) == 0:
       return ""
-    for word in text.split():
-      if 'UuRrLl' in word:
-        word = url_dict[word]         
 
-      resultant_str.append(word)
-      s = [str(i) for i in resultant_str] 
-      res = str(" ".join(s))
+    for url_tag,url in url_dict.items():
+      res = text.replace(url_tag,url)
 
     log_info("response after url and date replacemnt:{}".format(res),MODULE_CONTEXT)    
     
