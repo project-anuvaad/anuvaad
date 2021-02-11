@@ -22,7 +22,9 @@
 
 
 #FROM anuvaadio/anuvaad-block-merger:180-2c6f5668
-FROM anuvaadio/anuvaad-block-merger:210-315fc22f
+#FROM anuvaadio/anuvaad-block-merger:210-315fc22f
+
+FROM 11.2.0-base-ubuntu20.04
 #FROM anuvaadio/python-opencv-slim:2
 
 
@@ -31,19 +33,19 @@ RUN apt-get install -y nvidia-container-runtime
 COPY / /app
 WORKDIR /app
 
-#RUN pip install --upgrade pip setuptools wheel
-  #pip install scikit-build &&\
-  #pip install cmake &&\
-  #apt install -y libopencv-dev python3-opencv\
-  #&& apt-get install -y tesseract-ocr \
-  #&& apt-get install -y poppler-utils \
-  #&& apt-get install -y curl
+RUN pip install --upgrade pip setuptools wheel
+  pip install scikit-build &&\
+  pip install cmake &&\
+  apt install -y libopencv-dev python3-opencv\
+  && apt-get install -y tesseract-ocr \
+  && apt-get install -y poppler-utils \
+  && apt-get install -y curl
 
-# RUN apt-get install -y make git curl
-# RUN pip install -r requirements.txt
-# RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
-# RUN pip cache purge
-# RUN pdftohtml -v
+RUN apt-get install -y make git curl
+RUN pip install -r requirements.txt
+RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
+RUN pip cache purge
+RUN pdftohtml -v
 
 ARG D_F
 ENV DEBUG_FLUSH=$D_F
