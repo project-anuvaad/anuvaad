@@ -43,10 +43,10 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 # RUN python3.6 -m venv bmenv
 # SHELL ["/bin/bash", "-c", "source bmenv/bin/activate"]
 
-RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev python3.6-dev	
+RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev python3.6-dev
 
 
-RUN pip install --upgrade pip setuptools wheel
+RUN pip install --upgrade pip setuptools wheel &&\
   pip install scikit-build &&\
   pip install cmake &&\
   apt install -y libopencv-dev python3-opencv\
