@@ -53,7 +53,9 @@ def replace_tags_with_original(text,date_original,url_dict,num_array,num_map):
   Replaces dates,urls and numbers in the text with the original values
   in place of the tags
   '''
-  try:     
+  try: 
+    res = text
+        
     if len(text) == 0:
       return ""
 
