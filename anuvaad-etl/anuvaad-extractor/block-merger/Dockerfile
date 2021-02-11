@@ -33,6 +33,19 @@ FROM 11.2.0-base-ubuntu20.04
 COPY / /app
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y software-properties-common
+RUN add-apt-repository -y ppa:deadsnakes/ppa && apt install -y python3.6 && apt install -y python3.6-venv
+
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3.6 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+#
+# RUN python3.6 -m venv bmenv
+# SHELL ["/bin/bash", "-c", "source bmenv/bin/activate"]
+
+RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev python3.6-dev	
+
+
 RUN pip install --upgrade pip setuptools wheel
   pip install scikit-build &&\
   pip install cmake &&\
