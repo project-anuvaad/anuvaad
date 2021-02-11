@@ -379,7 +379,6 @@ class UserReport extends React.Component {
                 name: "bleu_score",
                 label: "Average Bleu",
                 options: {
-                    hint: "Total bleu score / Total saved sentence",
                     sort: false
                 }
             }, {
