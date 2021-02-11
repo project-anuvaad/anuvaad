@@ -36,7 +36,8 @@
 
 
 FROM nvidia/cuda:10.2-base
-CMD nvidia-smi
+RUN lsb_release -a
+RUN nvidia-smi
 #
 # LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
 #
