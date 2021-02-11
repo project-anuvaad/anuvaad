@@ -74,6 +74,7 @@ export const get_pages_children_information = (data, active_page, active_next_pa
                 blockValue['text_left']     = text_block.text_left;
                 blockValue['text_top']      = text_block.text_top;
                 blockValue['text_width']    = text_block.text_width;
+                blockValue['childrenLength']= text_block.children.length;
                 blockValue['block_identifier']  = text_block['block_identifier'];
                 text_block.merged_block_id && (blockValue['merged_block_id'] = text_block.merged_block_id);
                 text_block.children.forEach(grandchildren => {
@@ -154,6 +155,7 @@ export const get_pages_tokenisation_information = (data) => {
                 blockValue['font_color']   = text_block.font_color;
                 blockValue['font_size']   = text_block.font_size;
                 blockValue['attrib']   =    text_block.attrib;
+                blockValue['childrenLength']= text_block.children.length;
 
                 blockValue['block_identifier']  = text_block['block_identifier'];
                 text_block.merged_block_id && (blockValue['merged_block_id'] = text_block.merged_block_id);
