@@ -36,8 +36,7 @@
 
 
 FROM nvidia/cuda:11.2.0-base-ubuntu20.04
-RUN lsb_release -a
-RUN nvidia-smi
+CMD nvidia-smi
 #
 # LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
 #
