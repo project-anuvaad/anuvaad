@@ -35,8 +35,8 @@
 
 
 
-FROM nvidia/cuda:11.2.0-base-ubuntu20.04
-
+#FROM nvidia/cuda:11.2.0-base-ubuntu20.04
+FROM anibali/pytorch:cuda-10.0
 CMD nvidia-smi
 #
 # LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
