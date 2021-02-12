@@ -4,6 +4,7 @@ from anuvaad_auditor.loghandler import log_debug
 import src.utilities.app_context as app_context
 import config, time
 from src.utilities.request_parse import get_files, File, get_ocr_config,get_json
+from src.utilities.model_response import set_bg_image
 from src.services.ocr import text_extraction,merge_text,frequent_height,mask_image
 from src.services.dynamic_adjustment import coord_adjustment
 import copy
@@ -57,8 +58,9 @@ def preprocess_file(file_properties,lang,ocr_level):
             masking out images based on word coordinates
         '''
         save_path  = mask_image(page_path,page_regions,page_index,file_properties,width, height)
-        mask_page_path.append(save_path)
-    file['bg_image_paths']  = mask_page_path
+        file = set_bg_image(file,save_path,page_index)
+        #mask_page_path.append(save_path)
+    #file['bg_image_paths']  = mask_page_path
 
     return file
 
