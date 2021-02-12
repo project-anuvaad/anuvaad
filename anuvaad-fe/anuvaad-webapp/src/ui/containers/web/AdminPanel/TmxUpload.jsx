@@ -9,10 +9,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import MenuItem from "@material-ui/core/MenuItem";
-import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import OutlinedInput from "@material-ui/core/OutlinedInput";
 import FormControl from '@material-ui/core/FormControl';
 import history from "../../../../web.history";
 import Snackbar from '@material-ui/core/Snackbar';
@@ -21,13 +19,10 @@ import FileUploadStyles from "../../../styles/web/FileUpload";
 import Alert from '@material-ui/lab/Alert';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import SaveSentenceAPI from "../../../../flux/actions/apis/tmx/tmxUpload";
-import WorkFlow from "../../../../flux/actions/apis/common/fileupload";
 import DocumentUpload from "../../../../flux/actions/apis/document_upload/document_upload";
 import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
-import ADMINCONFIG from "../../../../configs/adminConfig";
 import FetchOrganizationList from "../../../../flux/actions/apis/organization/organization-list";
 const TELEMETRY = require('../../../../utils/TelemetryManager')
-const LANG_MODEL = require('../../../../utils/language.model')
 
 const theme = createMuiTheme({
   overrides: {
@@ -118,7 +113,7 @@ class TmxUpload extends Component {
   };
 
   handleBack = () => {
-    history.push(`${process.env.PUBLIC_URL}/user-details`)
+    history.push(`${process.env.PUBLIC_URL}/user-details/0`)
   }
 
   // getSnapshotBeforeUpdate(prevProps, prevState) {
@@ -202,7 +197,6 @@ class TmxUpload extends Component {
   componentDidUpdate(prevProps) {
 
     if (prevProps.documentUplaod !== this.props.documentUplaod) {
-      const { APITransport } = this.props;
 
       this.tmxFileUpload(this.props.documentUplaod.data)
     }
