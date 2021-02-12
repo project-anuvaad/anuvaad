@@ -580,7 +580,7 @@ class DocumentEditor extends React.Component {
           <Button color="primary" variant="contained" style={{ marginLeft: "20px" }} onClick={() => this.closePreview()}>Close</Button>
         </div>
         <div style={{
-          maxHeight: window.innerHeight - 141,
+          maxHeight: window.innerHeight - 110,
           overflowY: "auto",
           display: "flex", flexDirection: "row-reverse", justifyContent: "center"
         }}
@@ -753,24 +753,26 @@ class DocumentEditor extends React.Component {
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         { !this.state.preview ?
+        <>
           <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
             {!this.state.docView && this.renderDocumentPages()}
             {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
           </div>
+          <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
+          <InteractivePagination count={this.props.document_contents.count}
+             data={this.props.document_contents.pages}
+             zoomPercent={this.state.zoomPercent}
+             processZoom={this.processZoom}
+             zoomInDisabled={this.state.zoomInDisabled}
+             zoomOutDisabled={this.state.zoomOutDisabled}
+             onAction={this.processSentenceAction} />
+         </div>
+         </>
           :
-          <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
+          <div style={{ height: window.innerHeight - 80, maxHeight: window.innerHeight - 80, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
             {this.renderTranslatedDocument()}
           </div>
         }
-        <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
-          <InteractivePagination count={this.props.document_contents.count}
-            data={this.props.document_contents.pages}
-            zoomPercent={this.state.zoomPercent}
-            processZoom={this.processZoom}
-            zoomInDisabled={this.state.zoomInDisabled}
-            zoomOutDisabled={this.state.zoomOutDisabled}
-            onAction={this.processSentenceAction} />
-        </div>
         {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
         {this.state.showStatus ? this.renderStatusInformation() : <div />}
         {this.state.apiFetchStatus && <Spinner />}
