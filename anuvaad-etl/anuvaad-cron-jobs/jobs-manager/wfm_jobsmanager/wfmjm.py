@@ -31,6 +31,8 @@ class WFMJobsManager(Thread):
                 if jobs:
                     log_info(prefix + " -- Run: " + str(run) + " | Jobs Fetched: " + str(len(jobs)), obj)
                     for job in jobs:
+                        if "AL" in job["workflowCode"]:
+                            continue #Ignore Aligner jobs
                         job_start_time = job["startTime"]
                         diff = eval(str(time.time()).replace('.', '')[0:13]) - job_start_time
                         if (diff / 1000) > eval(str(js_job_failure_interval_sec)):
