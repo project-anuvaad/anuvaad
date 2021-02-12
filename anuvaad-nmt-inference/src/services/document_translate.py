@@ -50,6 +50,8 @@ class NMTTranslateService:
         try:
             for i,sent in enumerate(src_list):
                 input_sentence = sent.strip()
+                if src_language == 'English' and input_sentence.isupper():
+                    input_sentence = input_sentence.title()
                 
                 input_sentence = misc.convert_digits_preprocess(src_language,input_sentence)
 
@@ -68,13 +70,7 @@ class NMTTranslateService:
                 special_case_handler.handle_sentences_wo_stop(src_language,input_sentence_array_prepd)
 
             log_info("translating using NMT-model:{}".format(model_id),MODULE_CONTEXT)    
-            if model_id == 5:
-                "hi-en exp-1"
-                input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]
-            elif model_id == 6:
+            if model_id == 6:
                 "hi-en_exp-2 05-05-20"
                 input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
@@ -89,17 +85,10 @@ class NMTTranslateService:
                 "english-gujrati"
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                # translation = translation.replace("ન્યાય માટે Accessક્સેસને","ન્યાયની પહોંચને")
-            elif model_id == 11:  
-                "english-bengali"
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)                   
-
             elif model_id == 15:  
                 "english-kannada"
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                # translation = translation.replace("uc","")
             elif model_id == 16:  
                 "english-telgu"
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
@@ -124,7 +113,6 @@ class NMTTranslateService:
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)         
             elif model_id == 56:
                 "09/12/19-Exp-5.6:" 
-                input_sentence_array_prepd = [sentence.title() if sentence.isupper() else sentence for sentence in input_sentence_array_prepd]
                 input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)                           

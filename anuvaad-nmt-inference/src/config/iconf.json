@@ -26,12 +26,6 @@
             "sp_decoder":"sentencepiece_models/guj-2019-09-10-10k.model"
         },
         {
-            "id":11,
-            "path":"nmt/en-bn",
-            "sp_encoder":"sentencepiece_models/en-2019-09-12-10k.model",
-            "sp_decoder":"sentencepiece_models/beng-2019-09-12-10k.model"
-        },
-        {
             "id": 15,
             "path":"nmt/en-kn",
             "sp_encoder":"sentencepiece_models/enKn-2019-09-20-10k.model",
@@ -126,18 +120,6 @@
             "path":"nmt/56",
             "sp_encoder":"sentencepiece_models/en_exp-5.6-2019-12-09-24k.model",
             "sp_decoder":"sentencepiece_models/hi_exp-5.6-2019-12-09-24k.model"
-        },
-        {
-            "id": 57,
-            "path":"nmt/57",
-            "sp_encoder":"nmt/57/enBeng-en-to-bn-3.2-2020-12-28-24k.model",
-            "sp_decoder":"nmt/57/bengali-en-to-bn-3.2-2020-12-28-24k.model"
-        },
-        {
-            "id":58,
-            "path":"nmt/58",
-            "sp_encoder":"nmt/58/bengali-bn-to-en-2.2-2020-12-28-24k.model",
-            "sp_decoder":"nmt/58/enBeng-bn-to-en-2.2-2020-12-28-24k.model"
         },
         {
             "id":59,

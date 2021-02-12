@@ -7,7 +7,7 @@
           "model_name": "model no-1:",
           "is_primary": false,
           "created_on": "2019-09-16T12:07:52.645Z",
-          "status": "ACTIVE",
+          "status": "INACTIVE",
           "source_language_name":"English",
           "target_language_name":"Bengali"
         },
@@ -324,7 +324,7 @@
           "is_primary": false,
           "description": "Trained on 8.7 lakh corpus dated 28-12-2020",
           "created_on": "2020-12-28",
-          "status": "ACTIVE",
+          "status": "INACTIVE",
           "source_language_name":"English",
           "target_language_name":"Bengali"
         },
@@ -336,7 +336,7 @@
           "is_primary": false,
           "description": "Trained on 8.7 lakh corpus dated 28-12-2020",
           "created_on": "2020-12-28",
-          "status": "ACTIVE",
+          "status": "INACTIVE",
           "source_language_name":"Bengali",
           "target_language_name":"English"
         },

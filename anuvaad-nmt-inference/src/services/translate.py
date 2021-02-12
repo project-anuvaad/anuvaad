@@ -70,9 +70,6 @@ class TranslateService:
                     elif i['id'] == 10:  
                         "english-gujarati"
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
-                    elif i['id'] == 11:  
-                        "english-bengali"
-                        translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
                     elif i['id'] == 15:  
                         "english-kannada"
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
@@ -225,6 +222,8 @@ class OpenNMTTranslateService:
                 i['src'] = i['src'].strip()
 
                 src_language, tgt_language = misc.get_src_tgt_langauge(i['id'])
+                if src_language == 'English' and i['src'].isupper():
+                    i['src'] = i['src'].title()
                 i['src'] = misc.convert_digits_preprocess(src_language,i['src'])
 
                 if special_case_handler.special_case_fits(i['src']):
@@ -235,19 +234,13 @@ class OpenNMTTranslateService:
 
                 else:
                     log_info("translating using NMT-model:{}".format(i['id']),MODULE_CONTEXT)
-                    # prefix,suffix, i['src'] = special_case_handler.separate_alphanumeric_and_symbol(i['src'])
                     prefix, i['src'] = special_case_handler.prefix_handler(i['src'])
                     i['src'],date_original,url_original,num_array,num_map = tagger_util.tag_number_date_url(i['src'])
                     tag_src = (prefix +" "+ i['src']).lstrip() 
 
                     i['src'], is_missing_stop_punc = special_case_handler.handle_a_sentence_wo_stop(src_language,i['src'])
 
-                    if i['id'] == 5:
-                        "hi-en exp-1"
-                        i['src'] = sentence_processor.indic_tokenizer(i['src'])
-                        translation,scores,input_sw,output_sw = encode_translate_decode(i)
-                        translation = sentence_processor.moses_detokenizer(translation)
-                    elif i['id'] == 6:
+                    if i['id'] == 6:
                         "hi-en_exp-2 05-05-20"
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)
@@ -258,16 +251,10 @@ class OpenNMTTranslateService:
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)
                     elif i['id'] == 10:  
                         "english-gujrati"
-                        translation,scores,input_sw,output_sw = encode_translate_decode(i)
-                        translation = translation.replace("ન્યાય માટે Accessક્સેસને","ન્યાયની પહોંચને")
-                    elif i['id'] == 11:  
-                        "english-bengali"
-                        translation,scores,input_sw,output_sw = encode_translate_decode(i)              
-
+                        translation,scores,input_sw,output_sw = encode_translate_decode(i)      
                     elif i['id'] == 15:  
                         "english-kannada"
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)
-                        translation = translation.replace("uc","")
                     elif i['id'] == 16:  
                         "english-telgu"
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)
@@ -278,7 +265,7 @@ class OpenNMTTranslateService:
                         "english-punjabi"
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)
                     elif i['id'] == 32:
-                        "29/10/2019 Exp-12: old_data_original+lc_cleaned+ ik names translated from google(100k)+shabdkosh(appended 29k new),BPE-24K,50knmt,shuff,pretok"
+                        "29/10/2019 Exp-12: En-hi"
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)                      
                         translation = sentence_processor.indic_detokenizer(translation)
@@ -287,8 +274,6 @@ class OpenNMTTranslateService:
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)    
                     elif i['id'] == 56:
                         "09/12/19-Exp-5.6:" 
-                        if i['src'].isupper():
-                            i['src'] = i['src'].title()
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)                      
                         translation = sentence_processor.indic_detokenizer(translation)
