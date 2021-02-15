@@ -1,10 +1,11 @@
 import React from "react";
 import { Paper, Divider } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
-import { Textfit } from "react-textfit";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import sentenceHighlight from '../../../../utils/SentenceHighlight'
+import DownloadJSON from '../../../../flux/actions/apis/download/download_json';
+import DownloadFile from '../../../../flux/actions/apis/download/download_zip_file';
 
 import { highlightSentence, clearHighlighBlock, cancelMergeSentence } from '../../../../flux/actions/users/translator_actions';
 
@@ -30,25 +31,12 @@ class OcrPageCard extends React.Component {
         super(props);
         this.state = {
             value: '',
-            text: ''
+            text: '',
+            url: '',
         };
         this.handleTextChange = this.handleTextChange.bind(this);
         this.action = null
     }
-
-
-    // shouldComponentUpdate(prevProps, nextState) {
-    //     if (prevProps.page) {
-    //         if (prevProps.sentence_highlight && (prevProps.page.page_no === prevProps.sentence_highlight.page_no)) {
-    //             return true
-    //         }
-    //         if( prevProps.page.page_no === prevProps.block_page){
-    //             return true
-    //         }
-    //         return false
-    //     }
-    //     return true;
-    // }
 
     componentDidUpdate(prevProps) {
         if (prevProps.block_highlight !== this.props.block_highlight && this.props.block_highlight.block_identifier) {
@@ -64,40 +52,32 @@ class OcrPageCard extends React.Component {
             <div style={{
                 position: "absolute",
                 zIndex: 2,
-                width: text.boundingBox.vertices[1].x - text.boundingBox.vertices[0].x + 'px',
+                textAlign: 'left',
+                width: text.boundingBox.vertices[2].x - text.boundingBox.vertices[0].x + 'px',
                 height: text.boundingBox.vertices[2].y - text.boundingBox.vertices[0].y + 'px',
                 top: text.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                 left: text.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
             }}
             >
                 {
-                    this.renderTextSpan(text)
+                    text.children.map(child => this.renderTextSpan(child, region))
                 }
             </div>
-        )
-    }
-
-    renderTextFit = (text, merged_block_id) => {
-        return (
-            sentenceHighlight(
-                this.props.block_highlight,
-                text,
-                merged_block_id,
-                this.renderTextSpan)
         )
     }
     /**
      * render Sentences span
      */
-    renderTextSpan = (text, flag = false) => {
+    renderTextSpan = (text, region, flag = false) => {
+        // console.log
         return (
             <span
                 style={{
                     zIndex: 1,
-                    fontFamily: text.font !== undefined && text.font.family,
+                    fontFamily: region.font !== undefined && region.font.family,
                     backgroundColor: flag ? 'orange' : '',
                     color: 'black',
-                    fontSize: text.font !== undefined && text.font.size + 'px'
+                    fontSize: region.font !== undefined && region.avg_size + 'px'
                 }}
                 id={text.block_id}
                 onDoubleClick={() => { this.handleSelectedSentenceId(text) }}
@@ -143,7 +123,6 @@ class OcrPageCard extends React.Component {
      * render sentence edit
      */
     handleSelectedSentenceId = (text) => {
-
         this.setState({ text: text.text })
         this.props.clearHighlighBlock()
         this.props.cancelMergeSentence()
@@ -184,10 +163,6 @@ class OcrPageCard extends React.Component {
                 top: top,
                 left: left,
                 zIndex: 2,
-                // backgroundColor:'grey',
-                // fontFamily: line.font.family,
-                // fontSize: line.font.size + 'px',
-                // fontStyle: line.font.style
             }}
                 id={line.identifier}
                 key={line.identifier}
@@ -195,30 +170,70 @@ class OcrPageCard extends React.Component {
 
                 {line['children'] &&
                     line['children'].map(child => this.renderText(child, line))
-
                 }
             </div>
         );
     }
 
-    renderImage = (image) => {
-        let style = {
-            position: "relative",
-            // top: image.text_top + 'px',
-            // left: image.text_left + 'px',
-            // width: image.text_width + 'px',
-            // height: image.text_height + 'px',
-            overflow: "hidden",
-            zIndex: 1
+    getBGImage = (image) => {
+        console.log('inside getBGImage', image)
+        let obj = new DownloadFile(image);
+        const apiReq1 = fetch(obj.apiEndPoint(), {
+            method: "get",
+            headers: obj.getHeaders().headers,
+        })
+            .then(async (response) => {
+                if (!response.ok) {
+                    this.setState({
+                        dialogMessage: "Failed to download file...",
+                        timeOut: 3000,
+                        variant: "info",
+                    });
+                    console.log("api failed");
+                } else {
+                    const buffer = new Uint8Array(await response.arrayBuffer());
+                    let res = Buffer.from(buffer).toString("base64");
+                    fetch("data:image/jpeg;base64," + res)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            let url = URL.createObjectURL(blob);
+                            this.setState({ url })
+                        });
+                }
+            })
+            .catch((error) => {
+                this.setState({
+                    dialogMessage: "Failed to download file...",
+                    timeOut: 3000,
+                    variant: "info",
+                });
+                console.log("api failed because of server or network", error);
+            });
+    }
+
+    renderImage = (image, region) => {
+        if (this.props.showImage) {
+            let width = region.boundingBox.vertices[1].x - region.boundingBox.vertices[0].x + 'px'
+            let height = region.boundingBox.vertices[2].y - region.boundingBox.vertices[0].y + 'px'
+            let img = image.replace('upload/', '')
+
+            let style = {
+                position: "relative",
+                width: width,
+                height: height + 'px',
+                overflow: "hidden",
+                zIndex: 1
+            }
+            this.getBGImage(img)
+            return (
+                <div style={style} key={region.identifier}>
+                    <img width={width} height={height} src={this.state.url} alt=""></img>
+                </div>
+            )
         }
-
-        return (
-            <div style={style}>
-
-                <img src={image} alt=""></img>
-
-            </div>
-        )
+        else {
+            return <div></div>
+        }
     }
 
     renderPage = (page, image) => {
@@ -228,8 +243,13 @@ class OcrPageCard extends React.Component {
             return (
                 <div>
                     <Paper elevation={2} style={{ textAlign: 'center', position: 'relative', width: width, height: height }}>
-                        {page['regions'].map(data => this.renderChild(data, page))}
-                        {this.renderImage(image)}
+                        {page['regions'].map(region => this.renderChild(region, page))}
+                        {page['regions'].map(region => {
+                            if (region.class === 'BGIMAGE') {
+                                return this.renderImage(region.data, region)
+                            }
+                        })
+                        }
                     </Paper>
                     <Divider />
                 </div>
@@ -242,6 +262,7 @@ class OcrPageCard extends React.Component {
 
     render() {
         return (
+            // <span style={{ zoom: `${this.props.zoomPercent}%` }}>{this.renderPage(this.props.page, this.props.image)}</span>
             <span style={{ zoom: `${40}%` }}>{this.renderPage(this.props.page, this.props.image)}</span>
         )
     }

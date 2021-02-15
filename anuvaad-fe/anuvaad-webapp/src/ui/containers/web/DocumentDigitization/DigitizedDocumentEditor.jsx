@@ -67,7 +67,8 @@ class DocumentEditor extends React.Component {
             download: false,
 
             fetchNext: true.valueOf,
-            OCRdata: []
+            OCRdata: [],
+            showImage: false
         }
         this.forMergeSentences = []
     }
@@ -660,8 +661,8 @@ class DocumentEditor extends React.Component {
                                     zoomPercent={this.state.zoomPercent}
                                     key={index}
                                     page={page}
-                                    image={pages.page_info[index]}
-                                    onAction={this.processSentenceAction} />
+                                    onAction={this.processSentenceAction}
+                                    showImage={this.state.showImage} />
                             })
                         }
                     </InfiniteScroll>
@@ -772,6 +773,9 @@ class DocumentEditor extends React.Component {
           </Button>
             </div >);
     }
+    handleBgImage = () => {
+        this.setState({ showImage: !this.state.showImage })
+    }
     render() {
         return (
             <div style={{ height: window.innerHeight }}>
@@ -779,7 +783,9 @@ class DocumentEditor extends React.Component {
                     <InteractiveDocToolBar
                         docView={this.state.docView}
                         onAction={this.handleDocumentView}
-                        onShowPreview={this.showPreview} />
+                        onShowPreview={this.showPreview}
+                        showImage={this.state.showImage}
+                        handleBgImage={this.handleBgImage} />
                 </div>
 
                 { !this.state.preview ?
@@ -797,7 +803,8 @@ class DocumentEditor extends React.Component {
                                 zoomOutDisabled={this.state.zoomOutDisabled}
                                 onAction={this.processSentenceAction}
                                 hideMergeBtn={true}
-                                hideSentenceDtl={true} />
+                                hideSentenceDtl={true}
+                                 />
                         </div>
                     </>
                     :
