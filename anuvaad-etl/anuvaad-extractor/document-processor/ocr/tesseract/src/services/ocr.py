@@ -109,11 +109,13 @@ def text_extraction(lang, page_path, regions,region_org,width, height,mode_heigh
         if len(coord)!=0 and abs(coord[3] - coord[1]) > config.REJECT_FILTER :
             text, tess_coord = get_text(page_path, coord, lang, width, height,mode_height)
             region_org[idx]['text'] = text
-            region_org[idx]['tess_word_coords'] = tess_coord
+            region_org[idx]['children'] = tess_coord
+            #region_org[idx]['tess_word_coords'] = tess_coord
 
         else:
             region_org[idx]['text'] = ""
-            region_org[idx]['tess_word_coords'] = []
+            region_org[idx]['children'] =[]
+            #region_org[idx]['tess_word_coords'] = []
     
     
     return region_org
