@@ -19,6 +19,8 @@ from configs.translatorconfig import anu_nmt_input_topic_mx
 from configs.translatorconfig import tmx_enabled
 from configs.translatorconfig import tmx_global_enabled
 from configs.translatorconfig import no_of_process
+from configs.translatorconfig import user_translation_enabled
+from configs.translatorconfig import fetch_user_translation_url
 
 
 utils = TranslatorUtils()
@@ -317,6 +319,14 @@ class TranslatorService:
         page_enriched = page
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
+            if user_translation_enabled:
+                api_input = {"keys": [{"userID": translate_wf_input["metadata"]["userID"], "src": nmt_res_sentence["src"]}]}
+                response = utils.call_api(fetch_user_translation_url, "POST", api_input, None, translate_wf_input["metadata"]["userID"])
+                if response:
+                    if 'data' in response.keys():
+                        if response["data"]:
+                            log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) + " | NEW TGT: " + response["data"][0]["tgt"], translate_wf_input)
+                            nmt_res_sentence["tgt"] = response["data"][0]["tgt"]
             if nmt_res_sentence["tmx_phrases"]:
                 log_info("PAGE NO: " + str(page_no) + " BATCH ID: " + nmt_res_sentence["batch_id"] + " | SRC: " + nmt_res_sentence["src"] +
                          " | TGT: " + nmt_res_sentence["tgt"] + " | TMX Count: " + str(len(nmt_res_sentence["tmx_phrases"])), translate_wf_input)
