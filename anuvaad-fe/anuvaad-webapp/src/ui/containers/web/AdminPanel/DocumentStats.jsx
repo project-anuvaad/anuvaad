@@ -11,9 +11,6 @@ import NewCorpusStyle from "../../../styles/web/Newcorpus";
 import FileContent from "../../../../flux/actions/apis/document_translate/fetchcontent";
 import UserReportHeader from "./UserReportHeader"
 
-
-const TELEMETRY = require('../../../../utils/TelemetryManager')
-
 class DocumentStats extends React.Component {
   constructor(props) {
     super(props);

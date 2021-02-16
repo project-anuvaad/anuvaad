@@ -1,7 +1,7 @@
 from flask import jsonify
 import enum
-
-
+import uuid
+import copy
 # standard error formats
 class Status(enum.Enum):
     SUCCESS = {
@@ -37,3 +37,15 @@ class CustomResponse():
         self.status_code['tool'] = tool_name
         self.status_code['stepOrder'] = step_order
         return self.status_code
+
+
+def set_bg_image(file,bg_image_path,page_index):
+    bg_dic ={}
+    bg_dic['identifier'] = str(uuid.uuid4())
+    bg_dic['boundingBox'] = {'vertices' : copy.deepcopy(file['pages'][page_index]['vertices'])}
+    bg_dic['class']  = 'BGIMAGE'
+    bg_dic['base64'] = None
+    bg_dic['data']  = bg_image_path
+    file['pages'][page_index]['regions'].insert(0,bg_dic)
+    return file
+
