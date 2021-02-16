@@ -74,8 +74,8 @@ class SentenceRepositories:
         # Creates a md5 hash values using userID and src
         try:
             for sent in sentences:
-                
-                sentence_hash= user_id + "___" + sent["src"]
+                locale=sent["src_lang"]+"|"+sent["tgt_lang"]
+                sentence_hash= user_id + "___" + sent["src"]+"___"+locale
                 sent_key=hashlib.sha256(sentence_hash.encode('utf_16')).hexdigest()
                 save_result= self.sentenceModel.save_sentences_on_hashkey(sent_key,sent)
                 log_info("Sentences pushed to redis store", AppContext.getContext())
@@ -86,10 +86,11 @@ class SentenceRepositories:
     def get_sentences_from_store(self,keys):
         data_keys=[]
         for key in keys:
-            if "userID" not in key or not key["userID"] or "src" not in key or not key["src"]:
+            if "userID" not in key or not key["userID"] or "src" not in key or not key["src"] or "locale" not in key or not key["locale"]:
                 return None
+            
             log_info("Fetching sentences from redis store for userID:{} | src:{}".format(key["userID"],key["src"]), AppContext.getContext())
-            sentence_hash= key["userID"] + "___" + key["src"]
+            sentence_hash= key["userID"] + "___" + key["src"]+ "___"+key["locale"]
             sent_key =hashlib.sha256(sentence_hash.encode('utf_16')).hexdigest()
             data_keys.append(sent_key)
         try:
