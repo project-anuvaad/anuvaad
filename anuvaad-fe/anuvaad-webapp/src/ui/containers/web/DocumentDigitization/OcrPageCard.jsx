@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 import sentenceHighlight from '../../../../utils/SentenceHighlight'
 import DownloadJSON from '../../../../flux/actions/apis/download/download_json';
 import DownloadFile from '../../../../flux/actions/apis/download/download_zip_file';
-
+import { Textfit } from "react-textfit";
 import { highlightSentence, clearHighlighBlock, cancelMergeSentence } from '../../../../flux/actions/users/translator_actions';
 
 import SENTENCE_ACTION from '../DocumentEditor/SentenceActions'
@@ -33,6 +33,7 @@ class OcrPageCard extends React.Component {
             value: '',
             text: '',
             url: '',
+            showImage: !this.props.showImage
         };
         this.handleTextChange = this.handleTextChange.bind(this);
         this.action = null
@@ -47,20 +48,22 @@ class OcrPageCard extends React.Component {
     /**
      * render Sentences
      */
-    renderText = (text, region) => {
+    renderText = (line, region) => {
         return (
             <div style={{
                 position: "absolute",
                 zIndex: 2,
-                textAlign: 'left',
-                width: text.boundingBox.vertices[2].x - text.boundingBox.vertices[0].x + 'px',
-                height: text.boundingBox.vertices[2].y - text.boundingBox.vertices[0].y + 'px',
-                top: text.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
-                left: text.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
+                height: line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
+                top: line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                left: line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                // display: 'inline-flex'
             }}
             >
                 {
-                    text.children.map(child => this.renderTextSpan(child, region))
+                    this.renderTextSpan(line, region)
+                    // line.children.map(word =>
+                    // )
                 }
             </div>
         )
@@ -68,22 +71,31 @@ class OcrPageCard extends React.Component {
     /**
      * render Sentences span
      */
-    renderTextSpan = (text, region, flag = false) => {
-        // console.log
+    renderTextSpan = (word, region, flag = false) => {
         return (
-            <span
+            <div
                 style={{
-                    zIndex: 1,
-                    fontFamily: region.font !== undefined && region.font.family,
-                    backgroundColor: flag ? 'orange' : '',
+                    zIndex: 2,
+                    // backgroundColor: flag ? 'orange' : '',
                     color: 'black',
-                    fontSize: region.font !== undefined && region.avg_size + 'px'
+                    // borderBottom: word.conf > 90 ? "none" : "2px solid red",
+                    padding: '0%',
+                    // fontSize: parseInt(Math.ceil(region.avg_size * 1)) + 'px',
+                    // width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
+                    // backgroundColor: 'grey',
+                    // overflow: 'hidden',
+                    // height: word.boundingBox.vertices[2].y - word.boundingBox.vertices[0].y + 'px',
+                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].y + 'px',
                 }}
-                id={text.block_id}
-                onDoubleClick={() => { this.handleSelectedSentenceId(text) }}
+                id={word.block_id}
+                onDoubleClick={() => { this.handleSelectedSentenceId(word) }}
             >
-                {text.text}
-            </span>
+                <Textfit mode="single" style={{ width: '100%' }} min={1} max={region.avg_size ? parseInt(region.avg_size) : 16} >
+                    {word.text}
+                </Textfit>
+                {/* {word.text} */}
+            </div>
         )
     }
 
@@ -150,11 +162,11 @@ class OcrPageCard extends React.Component {
     }
 
 
-    renderChild = (line) => {
-        let width = (line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x) + 'px'
-        let height = (line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y) + 'px'
-        let top = (line.boundingBox.vertices[0].y) + 'px'
-        let left = (line.boundingBox.vertices[0].x) + 'px'
+    renderChild = (region) => {
+        let width = (region.boundingBox.vertices[1].x - region.boundingBox.vertices[0].x) + 'px'
+        let height = (region.boundingBox.vertices[2].y - region.boundingBox.vertices[0].y) + 'px'
+        let top = (region.boundingBox.vertices[0].y) + 'px'
+        let left = (region.boundingBox.vertices[0].x) + 'px'
         return (
             <div style={{
                 position: "absolute",
@@ -164,19 +176,18 @@ class OcrPageCard extends React.Component {
                 left: left,
                 zIndex: 2,
             }}
-                id={line.identifier}
-                key={line.identifier}
+                id={region.identifier}
+                key={region.identifier}
             >
 
-                {line['children'] &&
-                    line['children'].map(child => this.renderText(child, line))
+                {region['children'] &&
+                    region['children'].map(line => this.renderText(line, region))
                 }
             </div>
         );
     }
 
     getBGImage = (image) => {
-        console.log('inside getBGImage', image)
         let obj = new DownloadFile(image);
         const apiReq1 = fetch(obj.apiEndPoint(), {
             method: "get",
@@ -193,12 +204,13 @@ class OcrPageCard extends React.Component {
                 } else {
                     const buffer = new Uint8Array(await response.arrayBuffer());
                     let res = Buffer.from(buffer).toString("base64");
-                    fetch("data:image/jpeg;base64," + res)
-                        .then(res => res.blob())
-                        .then(blob => {
-                            let url = URL.createObjectURL(blob);
-                            this.setState({ url })
-                        });
+                    if (!this.state.url)
+                        fetch("data:image/jpeg;base64," + res)
+                            .then(res => res.blob())
+                            .then(blob => {
+                                let url = URL.createObjectURL(blob);
+                                this.setState({ url })
+                            });
                 }
             })
             .catch((error) => {
@@ -220,10 +232,11 @@ class OcrPageCard extends React.Component {
             let style = {
                 position: "relative",
                 width: width,
-                height: height + 'px',
+                height: height,
                 overflow: "hidden",
                 zIndex: 1
             }
+
             this.getBGImage(img)
             return (
                 <div style={style} key={region.identifier}>
@@ -236,14 +249,14 @@ class OcrPageCard extends React.Component {
         }
     }
 
-    renderPage = (page, image) => {
+    renderPage = (page) => {
         if (page) {
             let width = page['vertices'] && page.vertices[1].x - page.vertices[0].x + 'px'
             let height = page['vertices'] && page.vertices[2].y - page.vertices[0].y + 'px'
             return (
                 <div>
-                    <Paper elevation={2} style={{ textAlign: 'center', position: 'relative', width: width, height: height }}>
-                        {page['regions'].map(region => this.renderChild(region, page))}
+                    <Paper elevation={2} style={{ position: 'relative', width: width, height: height }}>
+                        {page['regions'].map(region => this.renderChild(region))}
                         {page['regions'].map(region => {
                             if (region.class === 'BGIMAGE') {
                                 return this.renderImage(region.data, region)
@@ -262,8 +275,7 @@ class OcrPageCard extends React.Component {
 
     render() {
         return (
-            // <span style={{ zoom: `${this.props.zoomPercent}%` }}>{this.renderPage(this.props.page, this.props.image)}</span>
-            <span style={{ zoom: `${40}%` }}>{this.renderPage(this.props.page, this.props.image)}</span>
+            <span style={{ zoom: `${this.props.zoomPercent}%` }}>{this.renderPage(this.props.page, this.props.image)}</span>
         )
     }
 

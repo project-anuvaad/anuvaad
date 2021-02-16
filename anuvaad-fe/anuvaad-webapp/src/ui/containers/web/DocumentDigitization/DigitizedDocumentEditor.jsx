@@ -52,7 +52,7 @@ class DocumentEditor extends React.Component {
             snackBarMessage: '',
             apiFetchStatus: false,
             docView: false,
-            zoomPercent: 100,
+            zoomPercent: 40,
             zoomInDisabled: false,
             zoomOutDisabled: false,
 
@@ -85,8 +85,8 @@ class DocumentEditor extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if ((prevProps.download_json.result === undefined || prevProps.download_json.result !== undefined) &&
-            prevProps.download_json.result !== this.props.download_json.result) {
+        if ((prevProps.download_json.pages === undefined || prevProps.download_json.pages !== undefined) &&
+            prevProps.download_json.pages !== this.props.download_json.pages) {
             this.setState({ apiFetchStatus: false })
         }
         if (prevProps.sentence_highlight !== this.props.sentence_highlight) {
@@ -628,12 +628,7 @@ class DocumentEditor extends React.Component {
      */
     getPages = () => {
         let pages;
-        if (this.props.document_editor_mode.mode === 'EDITOR_MODE_MERGE') {
-            pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages, this.props.active_page_number, this.props.document_editor_mode.page_nos.slice(-1)[0]);
-        }
-        else {
-            pages = PAGE_OPS.get_pages_children_information(this.props.document_contents.pages, this.props.active_page_number);
-        }
+        pages = OCR_PAGES.get_ocr_pages(this.props.download_json, this.props.active_page_number)
         return pages;
     }
 
@@ -641,8 +636,9 @@ class DocumentEditor extends React.Component {
      * render Document pages
      */
     renderDocumentPages = () => {
-        let pages = OCR_PAGES.get_ocr_pages(this.props.download_json);
-        if (pages.length < 1) {
+        let page = this.getPages();
+        console.log(page)
+        if (!page) {
             return (
                 <div></div>
             )
@@ -656,14 +652,15 @@ class DocumentEditor extends React.Component {
                         dataLength={4}
                     >
                         {
-                            pages.pages.map((page, index) => {
-                                return <OcrPageCard
-                                    zoomPercent={this.state.zoomPercent}
-                                    key={index}
-                                    page={page}
-                                    onAction={this.processSentenceAction}
-                                    showImage={this.state.showImage} />
-                            })
+                            // pages.map((page, index) => {
+                            // return 
+                            <OcrPageCard
+                                zoomPercent={this.state.zoomPercent}
+                                // key={index}
+                                page={page}
+                                onAction={this.processSentenceAction}
+                                showImage={this.state.showImage} />
+                            // })
                         }
                     </InfiniteScroll>
                 </Grid>
@@ -684,8 +681,8 @@ class DocumentEditor extends React.Component {
     }
 
     processZoomOut = () => {
-        if (this.state.zoomPercent > 60) {
-            if (this.state.zoomPercent - 10 === 60) {
+        if (this.state.zoomPercent > 20) {
+            if (this.state.zoomPercent - 10 === 20) {
                 this.setState({ zoomPercent: this.state.zoomPercent - 10, zoomOutDisabled: !this.state.zoomOutDisabled })
             }
             else {
@@ -777,6 +774,7 @@ class DocumentEditor extends React.Component {
         this.setState({ showImage: !this.state.showImage })
     }
     render() {
+        console.log(this.props.download_json)
         return (
             <div style={{ height: window.innerHeight }}>
                 <div style={{ height: "50px", marginBottom: "13px" }}>
@@ -795,8 +793,9 @@ class DocumentEditor extends React.Component {
                             {this.renderPDFDocument()}
                         </div>
                         <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
-                            <InteractivePagination count={this.props.document_contents.count}
-                                data={this.props.document_contents.pages}
+                            <InteractivePagination
+                                count={this.props.download_json.count}
+                                data={this.props.download_json.pages}
                                 zoomPercent={this.state.zoomPercent}
                                 processZoom={this.processZoom}
                                 zoomInDisabled={this.state.zoomInDisabled}
@@ -804,7 +803,7 @@ class DocumentEditor extends React.Component {
                                 onAction={this.processSentenceAction}
                                 hideMergeBtn={true}
                                 hideSentenceDtl={true}
-                                 />
+                            />
                         </div>
                     </>
                     :

@@ -186,7 +186,7 @@ class ViewDocumentDigitization extends React.Component {
         ) {
             this.setState({ showLoader: false });
         }
-        if (prevProps.download_json.result === this.props.download_json.result) {
+        if (prevProps.download_json.pages === this.props.download_json.pages) {
             this.props.clearJob();
         }
     }
