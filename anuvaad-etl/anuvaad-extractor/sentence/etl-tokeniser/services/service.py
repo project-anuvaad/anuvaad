@@ -115,6 +115,12 @@ class Tokenisation(object):
             log_info("incomplete sentence identification and merging across pages started", self.input_json_data)
             for page_idx, page_data in enumerate(input_data_file):
                 log_info("Current Page: {}".format(page_idx), self.input_json_data)
+                page_width = page_data.get("page_width")
+                page_height = page_data.get("page_height")
+                if (page_height is not None) and (page_width is not None):
+                    if page_height < page_width: #If this condition is true means this is a PPT file where width will be more than the height
+                        log_info("Skipping logic for the merging incomplete sentence of last block to next text block", self.input_json_data)
+                        continue
                 page_data_blocks = page_data['text_blocks']
                 if page_idx+1 < len(input_data_file):
                     last_text_block_idx = self.get_last_text_block_with_text(page_data_blocks)
