@@ -270,8 +270,11 @@ class DocumentEditor extends React.Component {
   }
 
   async makeAPICallSaveSentence(sentence, pageNumber) {
-    this.informUserProgress(translate('common.page.label.SENTENCE_SAVED'))
 
+    this.informUserProgress(translate('common.page.label.SENTENCE_SAVED'))
+    let model = this.fetchModel(parseInt(this.props.match.params.modelId))
+    sentence["src_lang"] = model.source_language_code
+    sentence['tgt_lang']  = model.target_language_code
     let apiObj = new SaveSentenceAPI(sentence)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
