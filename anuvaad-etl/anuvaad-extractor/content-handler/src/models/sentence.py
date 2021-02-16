@@ -1,11 +1,12 @@
 from utilities import AppContext
-from db import get_db
+from db import get_db,get_redis
 from anuvaad_auditor.loghandler import log_info, log_exception
 import sacrebleu
 from nltk.translate.bleu_score import corpus_bleu
+import json
 
 DB_SCHEMA_NAME  = 'file_content'
-
+redis_client = None
 class SentenceModel(object):
 
     def get_block_by_s_id(self, user_id, s_id):
@@ -201,3 +202,26 @@ class SentenceModel(object):
                 'avg_bleu_score' : 0,
                 'total_time_spent_ms': 0
             }
+    
+    # Initialises and fetches redis client
+    def save_sentences_on_hashkey(self,key,sent):
+        try:
+            client = get_redis()
+            client.set(key, json.dumps(sent))
+            return 1
+        except Exception as e:
+            log_exception("Exception in storing sentence data on redis store | Cause: " + str(e), AppContext.getContext(), e)
+            return None
+
+    def get_sentence_by_keys(self,keys):
+        try:
+            client = get_redis()
+            result = []
+            for key in keys:
+                val = client.get(key)
+                if val:
+                    result.append(json.loads(val))
+            return result
+        except Exception as e:
+            log_exception("Exception in fetching sentences from redis store  | Cause: " + str(e), None, e)
+            return None
