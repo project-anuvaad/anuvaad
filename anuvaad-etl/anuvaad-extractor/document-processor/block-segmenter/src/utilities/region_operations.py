@@ -119,8 +119,10 @@ def collate_regions(regions, lines,grand_children=False,region_flag = True):
                 region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 if len(region_lines) > 1:
                     regions[region_index]['children'] = sort_regions(region_lines,[])
+                    regions[region_index]['avg_size'] = get_avrage_size(region_lines)
                 else :
                     regions[region_index]['children']  = region_lines
+                    regions[region_index]['avg_size'] = get_avrage_size(region_lines)
             else:
                 if grand_children :
                     regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
@@ -207,6 +209,20 @@ def merge_text(v_blocks):
     return v_blocks
 
 
+
+
+def get_avrage_size(regions):
+    size = 0
+    if regions != None:
+        len_regions = len(regions)
+        if len_regions> 0 :
+            for region in regions :
+                size += region['font']['size']
+            return int(size/ len_regions)
+        else:
+            return size
+    else:
+        return size
 
 
 

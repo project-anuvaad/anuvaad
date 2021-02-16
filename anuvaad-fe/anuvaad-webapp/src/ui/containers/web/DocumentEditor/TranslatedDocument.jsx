@@ -36,12 +36,12 @@ class TranslatedDocument extends React.Component {
                 key={block.block_identifier}
             >
                 {block['texts'].map((text, i) =>
-                    <span key={i} style={{ lineHeight: block.line_height + 'px' }}>{i !== 0 && " "}
+                    <span key={i}>{i !== 0 && " "}
                         <p
                             style={{
                                 margin: '0px',
                                 textAlign: "justify",
-                                lineHeight: block.line_height + 'px',
+                                lineHeight: Number(block.text_height / block.childrenLength) + 'px',
                                 fontFamily: block.font_family,
                                 // fontSize: block.font_size + "px",
                                 fontColor: block.font_color,
