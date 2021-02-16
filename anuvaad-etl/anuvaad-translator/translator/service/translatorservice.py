@@ -320,8 +320,11 @@ class TranslatorService:
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             if user_translation_enabled:
-                api_input = {"keys": [{"userID": translate_wf_input["metadata"]["userID"], "src": nmt_res_sentence["src"]}]}
-                response = utils.call_api(fetch_user_translation_url, "POST", api_input, None, translate_wf_input["metadata"]["userID"])
+                user_id = translate_wf_input["metadata"]["userID"]
+                file = translate_wf_input["input"]["files"][0]
+                locale = file["model"]["source_language_code"] + "|" + file["model"]["target_language_code"]
+                api_input = {"keys": [{"userID": user_id, "src": nmt_res_sentence["src"], "locale": locale}]}
+                response = utils.call_api(fetch_user_translation_url, "POST", api_input, None, user_id)
                 if response:
                     if 'data' in response.keys():
                         if response["data"]:
