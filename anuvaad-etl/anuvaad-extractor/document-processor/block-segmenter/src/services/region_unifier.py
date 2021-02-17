@@ -135,7 +135,7 @@ class Region_Unifier:
         image_region  = []
         n_text_table_regions = []
         for region in regions:
-            if region['class']=='TEXT':
+            if region['class'] in ['TEXT', "HEADER",'FOOTER']:
                 text_region.append(region)
             else:
                 if region['class']=='TABLE':
@@ -387,7 +387,7 @@ class Region_Unifier:
                     #print(idx, 'region index')
                     #print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
                     avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([v_block])
-
+                    v_block['avg_ver_dist'] = avg__region_ver_dist
                     avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
 
                     v_block['children'] = horzontal_merging(v_block['children'],avrage_region_ver_ratio)
@@ -400,6 +400,8 @@ class Region_Unifier:
                     #print(idx, 'region index')
                     #print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
                     avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([t_block])
+                    t_block['avg_ver_dist'] = avg__region_ver_dist
+
                     avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
                     t_block['children'] = horzontal_merging(t_block['children'],avrage_region_ver_ratio)
                     t_list[idx] =t_block
