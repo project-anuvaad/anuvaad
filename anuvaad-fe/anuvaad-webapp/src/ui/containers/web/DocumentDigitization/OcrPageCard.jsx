@@ -57,12 +57,14 @@ class OcrPageCard extends React.Component {
                 height: line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
                 top: line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                 left: line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
-                // display: 'inline-flex'
+                // backgroundColor: 'grey',
+                display: 'flex'
             }}
             >
                 {
-                    this.renderTextSpan(line, region)
+
                     // line.children.map(word =>
+                    this.renderTextSpan(line, region)
                     // )
                 }
             </div>
@@ -80,18 +82,18 @@ class OcrPageCard extends React.Component {
                     color: 'black',
                     // borderBottom: word.conf > 90 ? "none" : "2px solid red",
                     padding: '0%',
-                    // fontSize: parseInt(Math.ceil(region.avg_size * 1)) + 'px',
-                    // width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
+                    fontSize: region.avg_size + 'px',
+                    width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                     // backgroundColor: 'grey',
                     // overflow: 'hidden',
                     // height: word.boundingBox.vertices[2].y - word.boundingBox.vertices[0].y + 'px',
-                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
-                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].y + 'px',
+                    top: word.boundingBox.vertices[0].y + 'px',
+                    left: word.boundingBox.vertices[0].x + 'px',
                 }}
                 id={word.block_id}
                 onDoubleClick={() => { this.handleSelectedSentenceId(word) }}
             >
-                <Textfit mode="single" style={{ width: '100%' }} min={1} max={region.avg_size ? parseInt(region.avg_size) : 16} >
+                <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size * 3))} >
                     {word.text}
                 </Textfit>
                 {/* {word.text} */}
