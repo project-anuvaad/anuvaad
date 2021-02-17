@@ -118,5 +118,5 @@ def mask_tables(page_imge,check=False):
     masked_image = mask_image(page_img, tables, image_width, image_height, app_context.application_context, margin=0,
                               fill=255)
     ### add line regions
-    return masked_image, line_regions + tables_regions
-    #return masked_image, tables_regions
+    #return masked_image, line_regions + tables_regions
+    return masked_image, tables_regions
