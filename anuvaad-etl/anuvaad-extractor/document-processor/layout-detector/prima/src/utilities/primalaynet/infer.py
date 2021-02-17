@@ -156,13 +156,15 @@ class PRIMA(object):
 		if class_name == "ImageRegion":
 			class_name = "IMAGE"
 		if class_name == "MathsRegion":
-			class_name = "TEXT"
+			class_name = "MATH"
 		if class_name == "HeaderRegion":
 			class_name = "HEADER"
 		if class_name == "OtherRegion":
 			class_name = "OTHER"
 		if class_name == "FooterRegion":
 			class_name = "FOOTER"
+		if class_name == "SeparatorRegion":
+			class_name = "SEPARATOR"
 
 		return class_name
 

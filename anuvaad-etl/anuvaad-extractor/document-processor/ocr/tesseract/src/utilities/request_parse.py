@@ -42,7 +42,10 @@ class File:
 
     @log_error
     def get_region_lines(self, page_index,region_index):
-        return self.file['pages'][page_index]['regions'][region_index]['children']
+        if 'children' in self.file['pages'][page_index]['regions'][region_index].keys():
+            return self.file['pages'][page_index]['regions'][region_index]['children']
+        else:
+            return None
     
     @log_error
     def get_region_words(self, page_index,region_index,child_index):

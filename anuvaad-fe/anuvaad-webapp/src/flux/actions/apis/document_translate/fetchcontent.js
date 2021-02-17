@@ -10,7 +10,6 @@ export default class Pagination extends API {
         this.end_page = end_page
         this.type = isAdmin ? C.FETCH_USER_CONTENT : C.FETCH_CONTENT;
         this.endpoint = ENDPOINTS.fecthcontent;
-        console.log(this.start_page, this.end_page)
     }
 
     toString() {

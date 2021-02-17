@@ -14,4 +14,11 @@ download_folder = 'upload'
 MONGO_DB_SCHEMA         = os.environ.get('MONGO_CH_DB', 'preprocessing')
 MONGO_CONNECTION_URL    = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017')
 
-DICTIONARY_FALLBACK     = os.environ.get('DICTIONARY_FALLBACK_CH', True)
+#redis config
+REDIS_SERVER_PREFIX = os.environ.get('REDIS_PREFIX', 'redis')
+REDIS_SERVER_HOST = os.environ.get('REDIS_URL', 'localhost')
+REDIS_SERVER_PORT = os.environ.get('REDIS_PORT', 6379)
+
+#module level variables
+DICTIONARY_FALLBACK       = os.environ.get('DICTIONARY_FALLBACK_CH', True)
+USER_TRANSLATION_ENABLED  = os.environ.get('USER_TRANSLATION_ENABLED',True)
