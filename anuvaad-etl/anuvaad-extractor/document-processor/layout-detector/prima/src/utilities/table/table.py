@@ -9,7 +9,7 @@ import pandas as pd
 
 class TableRepositories:
     def __init__(self, filepath, rect=None, SORT_METHOD='top-to-bottom', MAX_THRESHOLD_VALUE=255, BLOCK_SIZE=15,
-                 THRESHOLD_CONSTANT=0, SCALE=15):
+                 THRESHOLD_CONSTANT=0, SCALE=10):
         '''
         :param filepath: absolute path of input image file , or a grayscale image as a numpy array
         :param SORT_METHOD: order of indexing of cells in a table
@@ -200,6 +200,7 @@ class TableRepositories:
 
                 # Filtering for noise
                 if (area_ratio < 0.9) & (area_ratio > 0.005):
+                #if (area_ratio < 1.0) & (area_ratio > 0.01):
                     margin  = 2
                     #check if after adding margin the endopints are still inside the image
                     ystart,yend, xstart,xend= self.end_point_correction(x,y,w,h,margin)
