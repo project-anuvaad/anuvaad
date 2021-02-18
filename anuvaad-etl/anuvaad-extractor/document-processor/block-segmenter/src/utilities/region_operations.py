@@ -96,7 +96,7 @@ def sort_regions(region_lines, sorted_lines=[]):
         sort_regions(next_line, sorted_lines)
     return sorted_lines
 
-def collate_regions(regions, lines,grand_children=False,region_flag = True):
+def collate_regions(regions, lines,grand_children=False,region_flag = True,skip_enpty_children=False):
     idx = index.Index()
     lines_intersected = []
     if regions !=None and len(regions) > 0:
@@ -124,9 +124,10 @@ def collate_regions(regions, lines,grand_children=False,region_flag = True):
                     regions[region_index]['children']  = region_lines
                     regions[region_index]['avg_size'] = get_avrage_size(region_lines)
             else:
-                if grand_children :
+                if not skip_enpty_children :
+                    if grand_children :
+                        regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
                     regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
-                regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
     #orphan_lines = []
     if region_flag:
         for line_index, line in enumerate(lines):

@@ -366,11 +366,17 @@ class Region_Unifier:
 
 
             filtered_words     = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
-            filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
+            filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_lines))
+
+            filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(filtered_words))
+            filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(filtered_lines))
 
             line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words))
             v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),grand_children=True )
             t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
+            i_list       =  collate_regions(copy.deepcopy( image_region),copy.deepcopy(page_words),grand_children=True,region_flag = False,skip_enpty_children=True)
+
+            v_list += i_list
 
             # line_list    = collate_regions(page_lines,page_words)
             # v_list       = collate_regions(page_regions,line_list,grand_children=True)
