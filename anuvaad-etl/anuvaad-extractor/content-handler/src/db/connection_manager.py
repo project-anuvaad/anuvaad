@@ -17,3 +17,10 @@ def get_redis():
         g.redisdb = redis.Redis(host=REDIS_SERVER_HOST, port=REDIS_SERVER_PORT, db=4)
     return g.redisdb
 
+def get_mongo():
+    if 'mongodb' not in g:
+        log_info("Establishing connection with mongo", AppContext.getContext())
+        client = MongoClient(MONGO_CONNECTION_URL)
+        g.mongodb = client[MONGO_DB_SCHEMA]
+
+    return g.mongodb

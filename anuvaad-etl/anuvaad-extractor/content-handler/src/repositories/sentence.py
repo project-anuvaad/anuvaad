@@ -42,6 +42,10 @@ class SentenceRepositories:
             if 'time_spent_ms' not in sentence:
                 sentence['time_spent_ms'] = 0
 
+            if 'n_id' not in sentence:
+                sentence['n_id']=None
+
+
 
             if self.sentenceModel.update_sentence_by_s_id(user_id, sentence) == False:
                 return False
