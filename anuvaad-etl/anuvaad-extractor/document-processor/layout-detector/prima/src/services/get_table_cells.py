@@ -69,12 +69,12 @@ def get_regions(regions,clss):
                 r_box.append(r_cell.get_box())
             
 
-    if clss == 'LINE':
-        for line in regions:
-                l_reg = Box()
-                l_reg.set_class(clss)
-                l_reg.set_coords(line)
-                r_box.append(l_reg.get_box())
+    # if clss == 'LINE':
+    #     for line in regions:
+    #             l_reg = Box()
+    #             l_reg.set_class(clss)
+    #             l_reg.set_coords(line)
+    #             r_box.append(l_reg.get_box())
     return r_box
 
 

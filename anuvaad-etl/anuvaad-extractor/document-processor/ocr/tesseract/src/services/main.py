@@ -22,7 +22,7 @@ def preprocess_file(file_properties,lang,ocr_level):
 
         if config.OCR_LEVEL[ocr_level] == 'words':
             for idx, region in enumerate(page_regions):
-                if region['class'] in ["TEXT","TABLE"]:
+                if region['class'] in config.ocr_class:
                     region_lines = file_properties.get_region_lines(page_index,idx)
                     for line_index, line in enumerate(region_lines):
                         region_words = file_properties.get_region_words(page_index,idx,line_index)
@@ -42,7 +42,7 @@ def preprocess_file(file_properties,lang,ocr_level):
 
         if config.OCR_LEVEL[ocr_level] == 'lines':
                 for idx, region in enumerate(page_regions):
-                    if region['class'] in ["TEXT","TABLE"]:
+                    if region['class'] in config.ocr_class:
                         region_lines = file_properties.get_region_lines(page_index,idx)
                         if config.IS_DYNAMIC:
                             region_lines_org = coord_adjustment(page_path, copy.deepcopy(region_lines))
