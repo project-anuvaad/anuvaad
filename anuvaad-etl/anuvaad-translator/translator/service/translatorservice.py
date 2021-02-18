@@ -281,12 +281,16 @@ class TranslatorService:
                         continue
                     batch_id = response["batch_id"]
                     sentences_of_the_batch.append(response)
-                try:
-                    self.update_sentences(record_id, sentences_of_the_batch, translate_wf_input)
-                    trans_count += len(sentences_of_the_batch)
-                except Exception as e:
-                    log_exception("Exception while saving translations to DB: " + str(e), translate_wf_input, e)
-                    skip_count += len(sentences_of_the_batch)
+                if len(sentences_of_the_batch) == 0:
+                    skip_count += batch_size
+                    log_error("NMT returned empty response_body!!!", translate_wf_input, None)
+                else:
+                    try:
+                        self.update_sentences(record_id, sentences_of_the_batch, translate_wf_input)
+                        trans_count += len(sentences_of_the_batch)
+                    except Exception as e:
+                        log_exception("Exception while saving translations to DB: " + str(e), translate_wf_input, e)
+                        skip_count += len(sentences_of_the_batch)
             self.update_translation_status(batch_id, trans_count, skip_count, translate_wf_input)
             return
         except Exception as e:
