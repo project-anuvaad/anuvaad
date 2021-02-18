@@ -32,6 +32,9 @@ class TranslatorJobsManger(Thread):
                 for record in records:
                     is_added = False
                     try:
+                        if 'batches' not in record.keys():
+                            translator_utils.update({"active": False}, {"jobID": record["jobID"]})
+                            continue
                         total, batches = record["totalSentences"], record["batches"]
                         trans_batches = translator_utils.fetch_batch_count(record["jobID"])
                         if total == 0 and batches == 0:

@@ -146,7 +146,6 @@ class BlockTranslationService:
             if nmt_response['response_body']:
                 for translation in nmt_response["response_body"]:
                     if translation["tmx_phrases"]:
-                        log_info("Modifying tgt with TMX for src: " + translation["src"], block_translate_input)
                         log_info("SRC: " + translation["src"] + " | TGT: " + translation["tgt"] +
                                  " | TMX Count: " + str(len(translation["tmx_phrases"])), block_translate_input)
                         translation["tgt"] = tmxservice.replace_nmt_tgt_with_user_tgt(translation["tmx_phrases"],
