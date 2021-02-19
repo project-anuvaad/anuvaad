@@ -60,6 +60,7 @@ def preprocess_file(file_properties,lang,ocr_level):
         '''
         save_path  = mask_image(page_path,page_regions,page_index,file_properties,width, height)
         file = set_bg_image(file,save_path,page_index)
+        log_info("successfully completed ocr for  page {}".format(page_index), app_context.application_context)
         #mask_page_path.append(save_path)
     #file['bg_image_paths']  = mask_page_path
 
