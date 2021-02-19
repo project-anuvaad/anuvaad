@@ -429,7 +429,7 @@ class Region_Unifier:
             # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
             ########################
             n_text_table_regions.extend(t_list)
-            n_text_table_regions.extend(image_region)
+            #n_text_table_regions.extend(image_region)
 
             if self.check_double_column(v_list,avg_height):
                 print("this document is double columnssssssss")
