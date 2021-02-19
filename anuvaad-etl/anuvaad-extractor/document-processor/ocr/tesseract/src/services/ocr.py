@@ -63,6 +63,7 @@ def get_text(path,coord,lang,width, height,freq_height):
     #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
     if left==right==top==bottom==0 or region_width==0 or region_height==0:
         return [],[]
+    print(top,bottom,left,right ,'cooooooords')
     crop_image = image[ top:bottom, left:right]
     
     #crop_image.save("/home/naresh/line_crop_adjustment/"+str(uuid.uuid4()) + '.jpg')
@@ -158,8 +159,8 @@ def mask_image(path, page_regions,page_index,file_properties,image_width,image_h
                     for line_index, line in enumerate(region_lines):
                         region_words = file_properties.get_region_words(page_index,region_idx,line_index)
                         if region_words!=None:
-                            if config.IS_DYNAMIC:
-                                region_words = coord_adjustment(path, region_words)
+                            #if config.IS_DYNAMIC:
+                            #    region_words = coord_adjustment(path, region_words)
                             for region in region_words:
                                 row_top, row_bottom,row_left,row_right = end_point_correction(region, 2,image_height,image_width)
                                 
