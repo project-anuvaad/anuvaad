@@ -77,7 +77,7 @@ class DownloadDigitziedDoc extends React.Component {
                 id={word.block_id}
                 onDoubleClick={() => { this.handleSelectedSentenceId(word) }}
             >
-                <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size))} >
+                <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size * 3))} >
                     {word.text}
                 </Textfit>
             </div>
