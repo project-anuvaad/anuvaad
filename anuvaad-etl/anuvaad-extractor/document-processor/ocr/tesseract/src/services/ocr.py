@@ -67,7 +67,7 @@ def get_text(path,coord,lang,width, height,freq_height):
     #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
     if left==right==top==bottom==0 or region_width==0 or region_height==0:
         return [],[]
-    print(top,bottom,left,right ,'cooooooords')
+    #print(top,bottom,left,right ,'cooooooords')
     try :
 
         crop_image = image[ top:bottom, left:right]
