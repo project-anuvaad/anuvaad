@@ -10,6 +10,7 @@ import { Textfit } from "react-textfit";
 import { highlightSentence, clearHighlighBlock, cancelMergeSentence } from '../../../../flux/actions/users/translator_actions';
 
 import SENTENCE_ACTION from '../DocumentEditor/SentenceActions'
+import { confscore } from '../../../../utils/OcrConfScore'
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -72,30 +73,23 @@ class OcrPageCard extends React.Component {
     /**
      * render Sentences span
      */
-    renderTextSpan = (word, region, flag = false) => {
+    renderTextSpan = (line, region, flag = false) => {
         return (
             <div
                 style={{
                     zIndex: 2,
-                    // backgroundColor: flag ? 'orange' : '',
                     color: 'black',
-                    // borderBottom: word.conf > 90 ? "none" : "2px solid red",
                     padding: '0%',
                     fontSize: region.avg_size + 'px',
-                    width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
-                    // backgroundColor: 'grey',
-                    // overflow: 'hidden',
-                    // height: word.boundingBox.vertices[2].y - word.boundingBox.vertices[0].y + 'px',
-                    top: word.boundingBox.vertices[0].y + 'px',
-                    left: word.boundingBox.vertices[0].x + 'px',
+                    width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
+                    top: line.boundingBox.vertices[0].y + 'px',
+                    left: line.boundingBox.vertices[0].x + 'px',
                 }}
-                id={word.block_id}
-                onDoubleClick={() => { this.handleSelectedSentenceId(word) }}
+                id={line.block_id}
+                key={line.identifier}
+                onDoubleClick={() => { this.handleSelectedSentenceId(line) }}
             >
-                <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size * 3))} >
-                    {word.text}
-                </Textfit>
-                {/* {word.text} */}
+                {confscore(line, region)}
             </div>
         )
     }
