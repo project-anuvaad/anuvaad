@@ -635,7 +635,6 @@ class DocumentEditor extends React.Component {
      */
     renderDocumentPages = () => {
         let page = this.getPages();
-        console.log(page)
         if (!page) {
             return (
                 <div></div>
@@ -772,7 +771,6 @@ class DocumentEditor extends React.Component {
         this.setState({ showImage: !this.state.showImage })
     }
     render() {
-        console.log(this.props.download_json)
         return (
             <div style={{ height: window.innerHeight }}>
                 <div style={{ height: "50px", marginBottom: "13px" }}>
