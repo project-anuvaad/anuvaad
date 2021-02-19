@@ -366,11 +366,18 @@ class Region_Unifier:
 
 
             filtered_words     = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
-            filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
+            filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_lines))
+
+            filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(filtered_words))
+            filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(filtered_lines))
 
             line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words))
             v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),grand_children=True )
             t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
+            i_list       =  collate_regions(copy.deepcopy( image_region),copy.deepcopy(page_words),grand_children=True,region_flag = False,skip_enpty_children=True)
+            for i in i_list :
+                if 'chiildren' in i.keys():
+                    v_list.append(i)
 
             # line_list    = collate_regions(page_lines,page_words)
             # v_list       = collate_regions(page_regions,line_list,grand_children=True)
@@ -383,6 +390,7 @@ class Region_Unifier:
             self.avg_ver_ratio =   avg_ver_dist /avg_height
 
             for idx,v_block in enumerate(v_list):
+                #if 'children' in v_block.keys()
                 if   v_block['children'] != None and  len(v_block['children']) > 1 :
                     #print(idx, 'region index')
                     #print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
@@ -421,7 +429,7 @@ class Region_Unifier:
             # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
             ########################
             n_text_table_regions.extend(t_list)
-            n_text_table_regions.extend(image_region)
+            #n_text_table_regions.extend(image_region)
 
             if self.check_double_column(v_list,avg_height):
                 print("this document is double columnssssssss")

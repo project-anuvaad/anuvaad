@@ -161,13 +161,13 @@ class InteractivePagination extends React.Component {
                 >
                   GO
         </Button>
-                {!this.props.show_pdf &&
+                {(!this.props.show_pdf && !this.props.hideMergeBtn) &&
                   <>
                     {this.sentenceCount() && (
                       <div style={{ position: "absolute", marginLeft: "62%" }}>
                         <Typography variant="subtitle1" component="h2">
                           Page Sentences
-                  </Typography>
+                        </Typography>
 
                         <div style={{ textAlign: "center" }}>
                           {this.sentenceCount()}
@@ -178,22 +178,23 @@ class InteractivePagination extends React.Component {
                     {this.props.job_status && this.props.job_status.word_status && <div style={{ position: "absolute", marginLeft: "70%" }}>
                       <Typography variant="subtitle1" component="h2">
                         Total Word Count
-                  </Typography>
+                      </Typography>
 
                       <div style={{ textAlign: "center" }}>
                         {this.props.job_status.word_status && this.props.job_status.word_status}
                       </div>
                     </div>}
 
-                    {this.props.job_status&& this.props.job_status.status && <div style={{ position: "absolute", marginLeft: "79%" }}>
-                      <Typography variant="subtitle1" component="h2">
-                        Total Sentences
-                  </Typography>
+                    {this.props.job_status && this.props.job_status.status &&
+                      <div style={{ position: "absolute", marginLeft: "79%" }}>
+                        <Typography variant="subtitle1" component="h2">
+                          Total Sentences
+                      </Typography>
 
-                      <div style={{ textAlign: "center" }}>
-                        {this.props.job_status.status && this.props.job_status.status}
-                      </div>
-                    </div>}
+                        <div style={{ textAlign: "center" }}>
+                          {this.props.job_status.status && this.props.job_status.status}
+                        </div>
+                      </div>}
 
                     <div style={{ position: "absolute", right: "30px" }}>
                       {this.renderNormaModeButtons()}
