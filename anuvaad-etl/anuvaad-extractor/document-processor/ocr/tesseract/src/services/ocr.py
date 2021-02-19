@@ -2,6 +2,9 @@ import config
 from config import CROP_CONFIG, LANG_MAPPING
 from pytesseract import Output
 from pytesseract import pytesseract
+from anuvaad_auditor.loghandler import log_error
+import src.utilities.app_context as app_context
+
 from collections import Counter
 from src.services.dynamic_adjustment import coord_adjustment
 import cv2
@@ -47,6 +50,7 @@ def bound_coordinate(corrdinate,max):
 def get_text(path,coord,lang,width, height,freq_height):
     #image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+path,0)
 
+
     image   = cv2.imread(path,0)
     #h_ratio = image.size[1]/height
     #w_ratio = image.size[0]/width
@@ -64,20 +68,26 @@ def get_text(path,coord,lang,width, height,freq_height):
     if left==right==top==bottom==0 or region_width==0 or region_height==0:
         return [],[]
     print(top,bottom,left,right ,'cooooooords')
-    crop_image = image[ top:bottom, left:right]
-    
-    #crop_image.save("/home/naresh/line_crop_adjustment/"+str(uuid.uuid4()) + '.jpg')
-    #crop_image.save("/home/naresh/line_crop/"+str(uuid.uuid4()) + '.jpg')
-    if abs(bottom-top) > 2*freq_height:
-        coord, text = ocr(crop_image,False,left,top,lang)
-        #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
-    else:
-        coord, text = ocr(crop_image,True,left,top,lang)
-        if len(text)==0:
-            coord,text = ocr(crop_image,False,left,top,lang)
-        #temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
-    #text, coord = ocr(temp_df,left,top)
-    return text, coord
+    try :
+
+        crop_image = image[ top:bottom, left:right]
+
+        #crop_image.save("/home/naresh/line_crop_adjustment/"+str(uuid.uuid4()) + '.jpg')
+        #crop_image.save("/home/naresh/line_crop/"+str(uuid.uuid4()) + '.jpg')
+        if abs(bottom-top) > 2*freq_height:
+            coord, text = ocr(crop_image,False,left,top,lang)
+            #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
+        else:
+            coord, text = ocr(crop_image,True,left,top,lang)
+            if len(text)==0:
+                coord,text = ocr(crop_image,False,left,top,lang)
+            #temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
+        #text, coord = ocr(temp_df,left,top)
+        return text, coord
+
+    except Exception as e :
+        log_error('Error in ocr' + str(e), app_context.application_context, e)
+
 
 def get_coord(bbox):
     temp_box = []
