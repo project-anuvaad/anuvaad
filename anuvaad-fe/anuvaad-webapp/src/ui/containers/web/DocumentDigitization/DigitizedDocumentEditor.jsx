@@ -568,13 +568,14 @@ class DocumentEditor extends React.Component {
 
     renderTranslatedDocument = () => {
         let pages = OCR_PAGES.download_ocr_doc(this.props.download_json)
+        console.log(pages)
         if (pages.length < 1) {
             return (
                 <div></div>
             )
         }
 
-        let style = "@page { size: " + pages[0].page_width + "px " + pages[0].page_height + "px; margin:0pt; width: 100%; height:100%;font-family: 'Mangal'; } "
+        let style = "@page { size: " + pages[0].vertices[1].x + "px " + pages[0].vertices[2].y + "px; margin:0pt; width: 100%; height:100%;font-family: 'Mangal'; } "
         return (
             <Grid item xs={12} sm={12} lg={12} xl={12}
             >
@@ -585,13 +586,6 @@ class DocumentEditor extends React.Component {
                         >Print PDF</Button>}
                         content={() => this.componentRef}
                         pageStyle={style}
-                        fonts={[
-                            {
-                                family: "Mangal",
-                                source:
-                                    "url(https://s166.convertio.me/p/ZnLj6w7hk5UMWX-0FIuwBg/9d87d9f4c362f9626dd4e1ce212104a7/Gilroy-Black-_1_.ttf)"
-                            }
-                        ]}
                     />
                     <Button color="primary" variant="contained" style={{ marginLeft: "20px" }} onClick={() => this.closePreview()}>Close</Button>
                 </div>
