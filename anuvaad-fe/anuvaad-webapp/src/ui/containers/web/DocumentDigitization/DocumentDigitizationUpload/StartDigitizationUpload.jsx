@@ -31,7 +31,7 @@ const theme = createMuiTheme({
                 paddingTop: '15%',
                 top: "auto",
                 width: '98%',
-                minHeight: '320px',
+                minHeight: '330px',
                 height: "85%",
                 borderColor: '#1C9AB7',
                 backgroundColor: '#F5F9FA',
@@ -167,7 +167,7 @@ class StartDigitizationUpload extends React.Component {
 
     renderSourceLanguagesItems = () => {
         const { classes } = this.props
-        return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "3%" }}>
+        return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "1.5%" }}>
             <Grid item xs={12} sm={12} lg={12} xl={12}>
                 <Typography value="" variant="h5">
                     {translate("common.page.label.sourceLang")}{" "}
@@ -185,7 +185,7 @@ class StartDigitizationUpload extends React.Component {
                     style={{
                         fullWidth: true,
                         float: 'right',
-                        marginBottom: "27px"
+                        marginBottom: "15px"
                     }}
                     input={
                         <OutlinedInput name="source" id="source" />
@@ -217,7 +217,7 @@ class StartDigitizationUpload extends React.Component {
                         this.handleTextChange("workspaceName", event);
                     }}
                     variant="outlined"
-                    style={{ width: "100%", margin: "0px" }}
+                    style={{ width: "100%", margin: '0%', marginBottom: "25px" }}
                 />
             </Grid>
         </Grid>
@@ -253,7 +253,7 @@ class StartDigitizationUpload extends React.Component {
     render() {
         const { classes } = this.props
         return (
-            <div style={{ height: window.innerHeight }}>
+            <div style={{ height: window.innerHeight - 150 }}>
                 <Header />
 
                 <div className={classes.div}>
@@ -265,7 +265,6 @@ class StartDigitizationUpload extends React.Component {
                     <br />
                     <Paper elevation={3} className={classes.paper}>
                         <Grid container spacing={8}>
-
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
                                 <MuiThemeProvider theme={theme}>
                                     <DropzoneArea className={classes.DropZoneArea}
@@ -282,36 +281,24 @@ class StartDigitizationUpload extends React.Component {
                             </Grid>
 
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
-
                                 {this.renderSourceLanguagesItems()}
+                                {this.renderTextField()}
+                                <Button
+                                    id="upload"
+                                    variant="contained" color="primary"
+                                    // className={classes.button1} 
+                                    style={{
+                                        width: "100%",
+                                        backgroundColor: '#1C9AB7',
+                                        borderRadius: "20px 20px 20px 20px",
+                                        color: "#FFFFFF",
+                                        height: '46px',
+                                        marginBottom: '25px'
 
-                                {/* {this.renderTargetLanguagesItems()} */}
-
-                                <Grid item xs={12} sm={12} lg={12} xl={12}>
-                                    <Grid item xs={12} sm={12} lg={12} xl={12}>
-                                        <Typography variant="h5">
-                                            {translate("common.page.label.filename")}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} lg={12} xl={12}>
-                                        <TextField
-                                            // className={classes.textfield}
-                                            value={this.state.workspaceName}
-                                            id="outlined-name"
-                                            margin="normal"
-                                            onChange={event => {
-                                                this.handleTextChange("workspaceName", event);
-                                            }}
-                                            variant="outlined"
-                                            style={{ width: "100%", margin: "0px" }}
-                                        />
-                                    </Grid>
-
-                                </Grid>
-
-                            </Grid>
-
-                            <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
+                                    }}
+                                    size="large" onClick={this.handleSubmit.bind(this)}>
+                                    {translate("common.page.button.upload")}
+                                </Button>
                                 <Button
                                     id="back"
                                     variant="contained" color="primary"
@@ -321,35 +308,13 @@ class StartDigitizationUpload extends React.Component {
                                         backgroundColor: '#1C9AB7',
                                         borderRadius: "20px 20px 20px 20px",
                                         color: "#FFFFFF",
-                                        height: '46px'
+                                        height: '46px',
                                     }}
                                 >
                                     {translate("common.page.button.back")}
                                 </Button>
                             </Grid>
-                            <Grid item xs={6} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
-                                <Grid item xs={12} sm={12} lg={12} xl={12}>
-                                    <Button
-                                        id="upload"
-                                        variant="contained" color="primary"
-                                        // className={classes.button1} 
-                                        style={{
-                                            width: "100%",
-                                            backgroundColor: '#1C9AB7',
-                                            borderRadius: "20px 20px 20px 20px",
-                                            color: "#FFFFFF",
-                                            height: '46px'
-                                        }}
-                                        size="large" onClick={this.handleSubmit.bind(this)}>
-                                        {translate("common.page.button.upload")}
-                                    </Button>
-                                </Grid>
-
-                            </Grid>
-
                         </Grid>
-
-
                         {this.state.open && (
                             <Snackbar
                                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -365,7 +330,7 @@ class StartDigitizationUpload extends React.Component {
                         }
                     </Paper>
                 </div>
-            </div>
+            </div >
         );
     }
 }
