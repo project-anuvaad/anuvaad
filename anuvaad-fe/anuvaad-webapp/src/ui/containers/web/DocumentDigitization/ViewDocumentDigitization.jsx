@@ -134,7 +134,8 @@ class ViewDocumentDigitization extends React.Component {
                 false
             );
             this.setState({ showLoader: true });
-        } else if (this.props.async_job_status.job) {
+        } 
+        else if (this.props.async_job_status.job) {
             /**
              * a job got started, fetch it status
              */
@@ -599,15 +600,15 @@ class ViewDocumentDigitization extends React.Component {
                 },
                 options: { sortDirection: "desc" },
             },
-            onChangeRowsPerPage: (limit) => {
-                let diffValue = limit - this.state.limit;
-                if (diffValue > 0) {
-                    this.makeAPICallJobsBulkSearch(this.state.offset + diffValue, limit - this.state.limit, false, false, true)
-                }
+            // onChangeRowsPerPage: (limit) => {
+            //     let diffValue = limit - this.state.limit;
+            //     if (diffValue > 0) {
+            //         this.makeAPICallJobsBulkSearch(this.state.offset + diffValue, limit - this.state.limit, false, false, true)
+            //     }
 
-                this.setState({ limit })
+            //     this.setState({ limit })
 
-            },
+            // },
             rowsPerPageOptions: [10],
 
             onTableChange: (action, tableState) => {
