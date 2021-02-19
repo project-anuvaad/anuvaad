@@ -17,7 +17,6 @@ const TELEMETRY = require('../../../../utils/TelemetryManager')
 const styles = {
     textField: {
         width: "100%",
-        // background: "white",
         background: 'rgb(211,211,211)',
         borderRadius: 10,
         border: 0,

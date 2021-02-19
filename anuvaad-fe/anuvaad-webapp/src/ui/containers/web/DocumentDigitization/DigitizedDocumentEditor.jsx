@@ -17,8 +17,6 @@ import OcrPageCard from "./OcrPageCard";
 import InteractivePagination from '../DocumentEditor/InteractivePagination';
 import SENTENCE_ACTION from '../DocumentEditor/SentenceActions'
 import InteractiveDocToolBar from "./DigitizedDocHeader"
-import TranslatedDocument from "../DocumentEditor/TranslatedDocument";
-
 import WorkFlowAPI from "../../../../flux/actions/apis/common/fileupload";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import ClearContent from "../../../../flux/actions/apis/document_translate/clearcontent";
@@ -26,7 +24,6 @@ import FileContent from "../../../../flux/actions/apis/document_translate/fetchc
 import FetchContentUpdate from "../../../../flux/actions/apis/document_translate/v1_fetch_content_update";
 import SaveSentenceAPI from '../../../../flux/actions/apis/document_translate/savecontent';
 import JobStatus from "../../../../flux/actions/apis/view_document/v1_jobprogress";
-import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import { showPdf, clearShowPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
 import { contentUpdateStarted, clearFetchContent } from '../../../../flux/actions/users/translator_actions';
 import { update_sentences, update_blocks } from '../../../../flux/actions/apis/document_translate/update_page_content';
@@ -36,6 +33,7 @@ import { Button } from "@material-ui/core";
 import ReactToPrint from 'react-to-print';
 import DownloadJSON from '../../../../flux/actions/apis/download/download_json';
 import Loader from "../../../components/web/common/CircularLoader";
+import DownloadDigitizedDoc from "./DownloadDigitizedDoc";
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager');
@@ -569,7 +567,7 @@ class DocumentEditor extends React.Component {
     }
 
     renderTranslatedDocument = () => {
-        let pages = PAGE_OPS.get_pages_tokenisation_information(this.props.document_contents.pages);
+        let pages = OCR_PAGES.download_ocr_doc(this.props.download_json)
         if (pages.length < 1) {
             return (
                 <div></div>
@@ -605,7 +603,7 @@ class DocumentEditor extends React.Component {
 
                 >
                     <div ref={el => (this.componentRef = el)} id="test">
-                        {pages.map((page, index) => <TranslatedDocument totalPageCount={this.state.totalPageCount} download={this.state.download} index={index} key={index} page={page} onAction={this.processSentenceAction} />)}
+                        {pages.map((page, index) => <DownloadDigitizedDoc totalPageCount={pages.length} download={this.state.download} index={index} key={index} page={page} onAction={this.processSentenceAction} />)}
                     </div>
                 </div>
             </Grid >
