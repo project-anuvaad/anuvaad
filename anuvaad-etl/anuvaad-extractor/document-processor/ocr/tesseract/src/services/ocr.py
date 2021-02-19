@@ -87,6 +87,7 @@ def get_text(path,coord,lang,width, height,freq_height):
 
     except Exception as e :
         log_error('Error in ocr' + str(e), app_context.application_context, e)
+        return None,None
 
 
 def get_coord(bbox):
