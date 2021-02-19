@@ -163,19 +163,15 @@ class ViewDocumentDigitization extends React.Component {
             prevProps.digitizeddocument.documents.length !==
             this.props.digitizeddocument.documents.length
         ) {
-            /**
-             * update job progress status only progress_updated is false
-             */
-            // if (!this.props.digitizeddocument.progress_updated) {
-            //     this.makeAPICallDocumentsTranslationProgress();
-            //     this.setState({ showLoader: false });
-            // }
-
             if (this.props.digitizeddocument.document_deleted) {
                 this.setState({
                     dialogMessage: "Deleted successfully ",
                     variant: "success",
-                    timeOut: 3000,
+                    timeOut: 2000,
+                }, () => {
+                    setTimeout(() => {
+                        this.setState({ variant: 'info' })
+                    }, 3000)
                 });
             }
         } else if (
