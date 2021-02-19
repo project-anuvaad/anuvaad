@@ -78,10 +78,12 @@ class FileContentGetResource(Resource):
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400
+            AppContext.addRecordID(args['record_id'])
             log_info("FileContentGetResource record_id {} has {} pages".format(args['record_id'], result['total']), AppContext.getContext())
             res = CustomResponse(Status.SUCCESS.value, result['pages'], result['total'])
             return res.getres()
         except Exception as e:
+            AppContext.addRecordID(args['record_id'])
             log_exception("FileContentGetResource ",  AppContext.getContext(), e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400

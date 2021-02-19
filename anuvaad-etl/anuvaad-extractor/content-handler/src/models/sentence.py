@@ -1,5 +1,5 @@
 from utilities import AppContext
-from db import get_db,get_redis
+from db import get_db,get_redis,get_mongo
 from anuvaad_auditor.loghandler import log_info, log_exception
 import sacrebleu
 from nltk.translate.bleu_score import corpus_bleu

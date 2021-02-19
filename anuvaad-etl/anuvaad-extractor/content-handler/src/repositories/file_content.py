@@ -32,8 +32,7 @@ class FileContentRepositories:
 
         if 'tokenized_sentences' in block:
             for elem in block['tokenized_sentences']:
-                if 'tgt' in elem:
-                    elem['s0_tgt']    = elem['tgt'] 
+                elem['s0_tgt']    = elem['tgt'] 
                 elem['s0_src']    = elem['src']
                 if 'input_subwords' in elem:
                     del elem['input_subwords']
@@ -51,8 +50,7 @@ class FileContentRepositories:
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
                 if update_s0:
-                    if 'tgt' in elem:
-                        elem['s0_tgt']    = elem['tgt']
+                    elem['s0_tgt']    = elem['tgt']
                     elem['s0_src']    = elem['src']
 
                 if 'input_subwords' in elem:

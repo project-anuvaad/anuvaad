@@ -62,6 +62,7 @@ class BlockModel(object):
                                 ])
             return results
         except Exception as e:
+            AppContext.addRecordID(record_id)
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
 

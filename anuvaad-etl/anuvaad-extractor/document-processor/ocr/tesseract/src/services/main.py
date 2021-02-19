@@ -22,12 +22,12 @@ def preprocess_file(file_properties,lang,ocr_level):
 
         if config.OCR_LEVEL[ocr_level] == 'words':
             for idx, region in enumerate(page_regions):
-                if region['class'] in ["TEXT","TABLE"]:
+                if region['class'] in config.ocr_class:
                     region_lines = file_properties.get_region_lines(page_index,idx)
                     for line_index, line in enumerate(region_lines):
                         region_words = file_properties.get_region_words(page_index,idx,line_index)
                         if config.IS_DYNAMIC:
-                            region_words_org = coord_adjustment(page_path, region_words)
+                            region_words_org = coord_adjustment(page_path, copy.deepcopy(region_words))
                             region_ocr = text_extraction(lang, page_path, region_words_org,region_words, width, height,mode_height)
                         else:
                             region_ocr = text_extraction(lang, page_path, region_words,region_words, width, height,mode_height)
@@ -42,10 +42,10 @@ def preprocess_file(file_properties,lang,ocr_level):
 
         if config.OCR_LEVEL[ocr_level] == 'lines':
                 for idx, region in enumerate(page_regions):
-                    if region['class'] in ["TEXT","TABLE"]:
+                    if region['class'] in config.ocr_class:
                         region_lines = file_properties.get_region_lines(page_index,idx)
                         if config.IS_DYNAMIC:
-                            region_lines_org = coord_adjustment(page_path, region_lines)
+                            region_lines_org = coord_adjustment(page_path, copy.deepcopy(region_lines))
                             region_ocr = text_extraction(lang, page_path, region_lines_org,region_lines, width, height,mode_height)
                         else:
                             region_ocr = text_extraction(lang, page_path, region_lines,region_lines, width, height,mode_height)

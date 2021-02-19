@@ -41,6 +41,9 @@ logging.basicConfig(
     datefmt="%d/%m/%y %H:%M:%S",
 )
 
+
+ocr_class = ["TEXT","TABLE","HEADER","FOOTER","IMAGE"]
+
 LANG_MAPPING       =  {
     "en" : ["Latin","eng"],
     "kn" : ['Kannada',"kan"],
