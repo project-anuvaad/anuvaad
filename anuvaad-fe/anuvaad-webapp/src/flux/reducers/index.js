@@ -45,7 +45,9 @@ import createusers from './user/createusers';
 import activateuser from './user/activate_exisiting_user';
 import deactivateuser from './user/deactivate_existing_user';
 
-import organizationList from './organization/fetch_organization'
+import organizationList from './organization/fetch_organization';
+import digitizeddocument from './view_digitized_document/fetch_digitzed_document';
+import download_json from './view_digitized_document/download_json';
 
 export default {
     login,
@@ -87,12 +89,14 @@ export default {
 
     show_pdf,
     open_sidebar,
-    
+
     active_page_number,
     job_status,
     userinfo,
     createusers,
     activateuser,
     deactivateuser,
-    organizationList
+    organizationList,
+    digitizeddocument,
+    download_json
 };

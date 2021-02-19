@@ -255,7 +255,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-{role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -281,7 +281,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-{role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -308,29 +308,52 @@ class Header extends React.Component {
                   )}
 
                   {role && Array.isArray(role) && (role.includes("TRANSLATOR")) && (
-                    <div>
-                      <Divider className={classes.divider} />
-                      <ListItem
-                        id="view-document"
-                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "view-document" && themeAnuvaad.palette.primary.main }}
-                        button
-                        onClick={() => {
-                          this.handleDrawerClose(false);
-                          history.push(`${process.env.PUBLIC_URL}/view-document`);
-                        }}
-                      >
+                    <>
+                      <div>
+                        <Divider className={classes.divider} />
+                        <ListItem
+                          id="view-document"
+                          style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "view-document" && themeAnuvaad.palette.primary.main }}
+                          button
+                          onClick={() => {
+                            this.handleDrawerClose(false);
+                            history.push(`${process.env.PUBLIC_URL}/view-document`);
+                          }}
+                        >
 
-                        <ListItemText
-                          disableTypography
-                          primary={
-                            <Typography type="body2" style={{ color: currentMenu === "view-document" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              Translate document
+                          <ListItemText
+                            disableTypography
+                            primary={
+                              <Typography type="body2" style={{ color: currentMenu === "view-document" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                                Translate document
                             </Typography>
-                          }
-                        />
-                      </ListItem>
-                    </div>
-                  )}
+                            }
+                          />
+                        </ListItem>
+                      </div>
+                      <div>
+                        <Divider className={classes.divider} />
+                        <ListItem
+                          id="document-digitization"
+                          style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "document-digitization" && themeAnuvaad.palette.primary.main }}
+                          button
+                          onClick={() => {
+                            this.handleDrawerClose(false);
+                            history.push(`${process.env.PUBLIC_URL}/document-digitization`);
+                          }}
+                        >
+
+                          <ListItemText
+                            disableTypography
+                            primary={
+                              <Typography type="body2" style={{ color: currentMenu === "document-digitization" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                                Digitize Document
+                          </Typography>
+                            }
+                          />
+                        </ListItem>
+                      </div>
+                    </>)}
 
                   <div>
                     <Divider className={classes.divider} />
