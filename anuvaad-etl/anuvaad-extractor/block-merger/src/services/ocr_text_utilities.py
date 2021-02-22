@@ -25,9 +25,12 @@ def ocr(crop_image,configs,left,top,language):
     
     for index, row in temp_df.iterrows():
         word_coord = {}
-        temp_text  = str(row["text"])
+        temp_text  = process_text(row["text"])
         temp_conf  = row["conf"]
-        text = text +" "+ str(temp_text)
+        if text == '':
+            text = temp_text
+        else:
+            text = text +" "+ str(temp_text)
         word_coord['text']          = str(temp_text)
         word_coord['conf']          = temp_conf
         word_coord['text_left']     = int(row["left"]+left)
@@ -36,6 +39,21 @@ def ocr(crop_image,configs,left,top,language):
         word_coord['text_height']   = int(row["height"])
         coord.append(word_coord)
     return coord, text
+
+
+
+
+def process_text(text):
+    try:
+        f_text = float(text)
+        if f_text == int(f_text) :
+            return str(int(f_text))
+        else:
+            return str(text)
+    except Exception as e:
+        #print(e)
+        return str(text)
+
 
 
 def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
@@ -60,18 +78,21 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
             #print(left,top,right,bottom, 'ddddddddddddddddddddddddddd',image.shape)
             updated_top, updated_bottom, updated_left, update_right = corrds_correction(top,left,right,bottom,image.shape,lang)
-            print(updated_top, updated_bottom, updated_left, update_right, 'ddddddddddddddddddddddddddd', image.shape)
-            crop_image = image[updated_top:updated_bottom, updated_left:update_right]
-
-            #cv2.imwrite("/home/dhiraj/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg',crop_image)
-            if row['text_height']>2*row['font_size']:
-                coord,text = ocr(crop_image,False,left,top,lang)
-                word_coord_lis.append(coord)
-                text_list.append(text)
-            else:
-                coord,text = ocr(crop_image,True,left,top,lang)
-                if len(text)==0:
+            #print(updated_top, updated_bottom, updated_left, update_right, 'ddddddddddddddddddddddddddd', image.shape)
+            if  (updated_bottom -updated_top >0 ) and (update_right -updated_left > 0) :
+                crop_image = image[updated_top:updated_bottom, updated_left:update_right]
+                #cv2.imwrite("/home/dhiraj/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg',crop_image)
+                if row['text_height']>2*row['font_size']:
                     coord,text = ocr(crop_image,False,left,top,lang)
+                    word_coord_lis.append(coord)
+                    text_list.append(text)
+                else:
+                    coord,text = ocr(crop_image,True,left,top,lang)
+                    if len(text)==0:
+                        coord,text = ocr(crop_image,False,left,top,lang)
+
+            else :
+                text = ''
                 word_coord_lis.append(coord)
                 text_list.append(text)
 
