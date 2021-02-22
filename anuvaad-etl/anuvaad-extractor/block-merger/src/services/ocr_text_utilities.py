@@ -58,12 +58,10 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             bottom = (row['text_top'] + row['text_height'])*h_ratio
             coord  = []
             #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
-            print(left,top,right,bottom, 'ddddddddddddddddddddddddddd',image.shape)
-            crop_image = image[max(int(top - CROP_CONFIG[lang]['top']), 2): \
-                               min(int(bottom + CROP_CONFIG[lang]['bottom']),\
-                            image.shape[0] -2 ),max(int(left - CROP_CONFIG[lang]['left']), 2):\
-                                            min(int(right + CROP_CONFIG[lang]['right']),
-                                                                   image.shape[1] -2)]
+            #print(left,top,right,bottom, 'ddddddddddddddddddddddddddd',image.shape)
+            updated_top, updated_bottom, updated_left, update_right = corrds_correction(top,left,right,bottom,image.shape,lang)
+            crop_image = image[updated_top:updated_bottom, updated_left:update_right]
+
             #cv2.imwrite("/home/dhiraj/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg',crop_image)
             if row['text_height']>2*row['font_size']:
                 coord,text = ocr(crop_image,False,left,top,lang)
@@ -82,6 +80,30 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
     except Exception as e:
         log_exception("Error in tesseract ocr extraction " + str(e), app_context.application_context, e)
         return None
+
+
+def corrds_correction(top,left, right,bottom,shape,lang):
+
+    def correction_helper(point,max,):
+        if point < 0 :
+            return 1
+        else:
+            if  point > max :
+                return int(max -1)
+            else:
+                return int(point)
+
+        updated_top = corrds_correction(top - CROP_CONFIG[lang]['top'] ,shape[0])
+        updated_bottom = corrds_correction(bottom + CROP_CONFIG[lang]['bottom'] ,shape[0] )
+        updated_left  = corrds_correction(left - CROP_CONFIG[lang]['left'],shape[1])
+        update_right   = corrds_correction(right + CROP_CONFIG[lang]['right'] ,shape[1])
+
+        return updated_top,updated_bottom,updated_left,update_right
+
+
+
+
+
 
 
 def low_conf_ocr(lang,left,top,width,height,image):
