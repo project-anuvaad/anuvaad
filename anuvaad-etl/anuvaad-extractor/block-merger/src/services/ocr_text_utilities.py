@@ -93,8 +93,8 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
 
             else :
                 text = ''
-                word_coord_lis.append(coord)
-                text_list.append(text)
+            word_coord_lis.append(coord)
+            text_list.append(text)
 
         df['word_coords'] = word_coord_lis
         df['text']        = text_list
