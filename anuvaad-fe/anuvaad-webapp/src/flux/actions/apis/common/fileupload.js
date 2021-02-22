@@ -5,7 +5,7 @@ import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class RunExperiment extends API {
 
 
-  constructor(workflow, file, fileName, source, target, path, model, source_language, sentence_ids, timeout = 2000) {
+  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, source_language, timeout = 2000) {
 
     super("POST", timeout, false);
     this.type = C.WORKFLOW;
