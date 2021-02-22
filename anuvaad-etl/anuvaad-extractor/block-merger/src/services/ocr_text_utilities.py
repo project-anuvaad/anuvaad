@@ -44,8 +44,8 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
     #w_ratio = image.size[0] / desired_width
 
     image = cv2.imread(filepath)
-    h_ratio = image.shape[1]/desired_height
-    w_ratio = image.shape[0]/desired_width
+    h_ratio = image.shape[0]/desired_height
+    w_ratio = image.shape[1]/desired_width
     word_coord_lis = []
     text_list = []
 
@@ -58,8 +58,13 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             bottom = (row['text_top'] + row['text_height'])*h_ratio
             coord  = []
             #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
-            crop_image = image[int(top-CROP_CONFIG[lang]['top']) : int( bottom+CROP_CONFIG[lang]['bottom']), int(left-CROP_CONFIG[lang]['left']) : int( right+CROP_CONFIG[lang]['right'])]
-            #crop_image.save("/home/naresh/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg')
+
+            crop_image = image[max(int(top - CROP_CONFIG[lang]['top']), 0): \
+                               min(int(bottom + CROP_CONFIG[lang]['bottom']),\
+                            image.shape[0]),max(int(left - CROP_CONFIG[lang]['left']), 0):\
+                                            min(int(right + CROP_CONFIG[lang]['right']),
+                                                                   image.shape[1])]
+            #cv2.imwrite("/home/dhiraj/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg',crop_image)
             if row['text_height']>2*row['font_size']:
                 coord,text = ocr(crop_image,False,left,top,lang)
                 word_coord_lis.append(coord)
