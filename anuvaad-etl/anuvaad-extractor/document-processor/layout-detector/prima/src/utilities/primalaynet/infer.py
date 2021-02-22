@@ -9,6 +9,7 @@ from collections import namedtuple
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 import sys, random, torch, glob, torchvision
 import os
+import numpy as np
 import copy
 from shapely.geometry import Polygon
 from src.utilities.remove_water_mark import clean_image
