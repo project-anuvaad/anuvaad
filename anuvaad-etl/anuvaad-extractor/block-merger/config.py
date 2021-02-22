@@ -125,7 +125,7 @@ LAYOUT_CONFIG_PATH = "./src/utilities/primalaynet/config.yaml"
 # LAYOUT_MODEL_PATH = '/home/dhiraj/Downloads/model_final.pth'
 # LAYOUT_CONFIG_PATH = '/home/dhiraj/Documents/anuvaad/anuvaad-etl/anuvaad-extractor/block-merger/src/utilities/primalaynet/config.yaml'
 
-HEADER_FOOTER_BY_PRIMA = False
+HEADER_FOOTER_BY_PRIMA = True
 
 LAYOUT_CLASSES = ['HEADER','FOOTER']
 
