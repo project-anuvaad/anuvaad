@@ -36,8 +36,8 @@
 
 
 #FROM nvidia/cuda:11.2.0-base-ubuntu20.04
-FROM anibali/pytorch:cuda-10.0
-CMD nvidia-smi
+# FROM anibali/pytorch:cuda-10.0
+# CMD nvidia-smi
 #
 # LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
 #
@@ -61,7 +61,7 @@ CMD nvidia-smi
 
 
 
-
+FROM anuvaadio/anuvaad-block-merger:227-9aa425d3
 
 
 #FROM anuvaadio/python-opencv-slim:2
@@ -71,33 +71,33 @@ CMD nvidia-smi
 
 COPY / /app
 WORKDIR /app
-
-RUN apt-get update && apt-get install -y software-properties-common
-RUN add-apt-repository -y ppa:deadsnakes/ppa && apt install -y python3.6 && apt install -y python3.6-venv
-
-ENV VIRTUAL_ENV=/opt/venv
-RUN python3.6 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 #
-# RUN python3.6 -m venv bmenv
-# SHELL ["/bin/bash", "-c", "source bmenv/bin/activate"]
-
-RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev python3.6-dev
-
-
-RUN pip install --upgrade pip setuptools wheel &&\
-  pip install scikit-build &&\
-  pip install cmake &&\
-  apt install -y libopencv-dev python3-opencv\
-  && apt-get install -y tesseract-ocr \
-  && apt-get install -y poppler-utils \
-  && apt-get install -y curl
-
-RUN apt-get install -y make git curl
-RUN pip install -r requirements.txt
-RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
-RUN pip cache purge
-RUN pdftohtml -v
+# RUN apt-get update && apt-get install -y software-properties-common
+# RUN add-apt-repository -y ppa:deadsnakes/ppa && apt install -y python3.6 && apt install -y python3.6-venv
+#
+# ENV VIRTUAL_ENV=/opt/venv
+# RUN python3.6 -m venv $VIRTUAL_ENV
+# ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+# #
+# # RUN python3.6 -m venv bmenv
+# # SHELL ["/bin/bash", "-c", "source bmenv/bin/activate"]
+#
+# RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev python3.6-dev
+#
+#
+# RUN pip install --upgrade pip setuptools wheel &&\
+#   pip install scikit-build &&\
+#   pip install cmake &&\
+#   apt install -y libopencv-dev python3-opencv\
+#   && apt-get install -y tesseract-ocr \
+#   && apt-get install -y poppler-utils \
+#   && apt-get install -y curl
+#
+# RUN apt-get install -y make git curl
+# RUN pip install -r requirements.txt
+# RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
+# RUN pip cache purge
+# RUN pdftohtml -v
 
 ARG D_F
 ENV DEBUG_FLUSH=$D_F
@@ -120,7 +120,7 @@ ENV DEBUG_FLUSH=$D_F
 
 #RUN apt install -y ubuntu-drivers-common
 #RUN apt install -y nvidia-driver-418-server
-RUN pip install -r requirements.txt
+#RUN pip install -r requirements.txt
 #RUN pip install torch===1.4.0 torchvision===0.5.0 -f https://download.pytorch.org/whl/torch_stable.html
 #RUN apk update && apk add poppler-utils
 # RUN apk update && apk add git

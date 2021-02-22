@@ -102,7 +102,7 @@ def process_input_pdf(filename, base_dir, lang):
     log_info('process_input_pdf: created dataframes successfully', app_context.application_context)
     end_time         = time.time()
     elapsed_time     = end_time - start_time
-    log_info('Processing of process_input_pdf completed in {}/{}, average per page {}'.format(elapsed_time, len(xml_dfs), (elapsed_time/len(xml_dfs))), app_context.application_context)
+    log_info('Processing of process_input_pdf completed in {}/{}, average per page {}'.format(elapsed_time, len(xml_dfs), (elapsed_time/max(1,len(xml_dfs)))), app_context.application_context)
 
     return img_dfs, xml_dfs, page_width, page_height, working_dir, pdf_bg_img_filepaths, pdf_image_paths
 
