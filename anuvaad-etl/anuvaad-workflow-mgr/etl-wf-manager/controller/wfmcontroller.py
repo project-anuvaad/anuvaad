@@ -49,6 +49,8 @@ def initiate_sync_workflow():
             return error, 400
         data = add_headers(data, request)
         response = service.register_sync_job(data)
+        if 'error' in response.keys():
+            return jsonify(response['error']), 400
         return jsonify(response), 200
     except Exception as e:
         log_exception("Something went wrong: " + str(e), None, e)
