@@ -60,6 +60,7 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
             #print(left,top,right,bottom, 'ddddddddddddddddddddddddddd',image.shape)
             updated_top, updated_bottom, updated_left, update_right = corrds_correction(top,left,right,bottom,image.shape,lang)
+            print(updated_top, updated_bottom, updated_left, update_right, 'ddddddddddddddddddddddddddd', image.shape)
             crop_image = image[updated_top:updated_bottom, updated_left:update_right]
 
             #cv2.imwrite("/home/dhiraj/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg',crop_image)
