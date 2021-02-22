@@ -58,7 +58,7 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             bottom = (row['text_top'] + row['text_height'])*h_ratio
             coord  = []
             #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
-            crop_image = image[ top-CROP_CONFIG[lang]['top'] : bottom+CROP_CONFIG[lang]['bottom'], left-CROP_CONFIG[lang]['left'] : right+CROP_CONFIG[lang]['right']]
+            crop_image = image[int(top-CROP_CONFIG[lang]['top']) : int( bottom+CROP_CONFIG[lang]['bottom']), int(left-CROP_CONFIG[lang]['left']) : int( right+CROP_CONFIG[lang]['right'])]
             #crop_image.save("/home/naresh/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg')
             if row['text_height']>2*row['font_size']:
                 coord,text = ocr(crop_image,False,left,top,lang)
