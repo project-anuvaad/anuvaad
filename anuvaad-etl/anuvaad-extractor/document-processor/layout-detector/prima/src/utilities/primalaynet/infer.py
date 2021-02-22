@@ -312,12 +312,13 @@ def cell_layout(table_regions,page_path):
 		height, width, channels = image.shape
 		final_layouts=[]
 		for region in table_regions:
-			bbox = [[region['x'],region['y'],region['x']+region['w'],region['y']+region['h']]]
+			region = region['boundingBox']['vertices']
+			bbox = [[region[0]['x'],region[0]['y'],region[2]['x'],region[2]['y']]]
 			tab_layouts  = prima.update_box_format(bbox,['TableRegion'])[0]
 			blank_image = np.zeros(image.shape, dtype=np.uint8)
 			blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
 			blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)
-			ymin = region['y'] ; ymax = ymin+region['h'] ; xmin = region['x']; xmax = xmin+region['w']
+			ymin = region[0]['y'] ; ymax = region[2]['y'] ; xmin = region[0]['x']; xmax = region[2]['x']
 			crop_img = image[ymin:ymax,xmin:xmax,:]
 			blank_image[ymin:ymax,xmin:xmax] = crop_img
 			layout   = model_primatablenet.detect(blank_image)
