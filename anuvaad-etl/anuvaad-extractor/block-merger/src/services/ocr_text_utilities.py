@@ -7,6 +7,7 @@ from  config import LANG_MAPPING
 from pytesseract import pytesseract
 import uuid
 import json
+import cv2
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
 import src.utilities.app_context as app_context
@@ -38,9 +39,13 @@ def ocr(crop_image,configs,left,top,language):
 
 
 def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
-    image   = Image.open(filepath)
-    h_ratio = image.size[1]/desired_height
-    w_ratio = image.size[0]/desired_width
+    #image   = Image.open(filepath)
+    #h_ratio = image.size[1] / desired_height
+    #w_ratio = image.size[0] / desired_width
+
+    image = cv2.imread(filepath)
+    h_ratio = image.shape[1]/desired_height
+    w_ratio = image.shape[0]/desired_width
     word_coord_lis = []
     text_list = []
 
@@ -52,7 +57,8 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
             right  = (row['text_left'] + row['text_width'])*w_ratio
             bottom = (row['text_top'] + row['text_height'])*h_ratio
             coord  = []
-            crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
+            #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
+            crop_image = image[ top-CROP_CONFIG[lang]['top'] : bottom+CROP_CONFIG[lang]['bottom'], left-CROP_CONFIG[lang]['left'] : right+CROP_CONFIG[lang]['right']]
             #crop_image.save("/home/naresh/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg')
             if row['text_height']>2*row['font_size']:
                 coord,text = ocr(crop_image,False,left,top,lang)

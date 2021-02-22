@@ -104,6 +104,7 @@ CROP_CONFIG = {
     'ml': {'top':15, 'bottom':10,'right':5,'left':5},
     'kn':{'top':15, 'bottom':10,'right':5,'left':5 },
     'ta':{'top':10, 'bottom':15,'right':5,'left':10 },
+    'te':{'top':10, 'bottom':15,'right':5,'left':10 },
     'mr':{'top':15, 'bottom':10,'right':5,'left':5}
 }
 
