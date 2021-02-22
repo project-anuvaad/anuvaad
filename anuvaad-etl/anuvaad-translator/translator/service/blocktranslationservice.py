@@ -165,4 +165,5 @@ class BlockTranslationService:
                     if b_index is not None and s_index is not None:
                         block_translate_input["input"]["textBlocks"][b_index]["tokenized_sentences"][s_index] = translation
         log_info("Input for CH update generated!", block_translate_input)
-        return {"blocks": block_translate_input["input"]["textBlocks"], "workflowCode": block_translate_input["workflowCode"]}
+        return {"blocks": block_translate_input["input"]["textBlocks"],
+                "workflowCode": block_translate_input["workflowCode"], "record_id": block_translate_input["recordID"]}
