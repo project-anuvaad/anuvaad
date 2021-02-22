@@ -27,6 +27,7 @@ torch.manual_seed(seed)
 #
 #model_primalaynet = lp.Detectron2LayoutModel('lp://PrimaLayout/mask_rcnn_R_50_FPN_3x/config',label_map = {1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"MathsRegion", 5:"SeparatorRegion", 6:"OtherRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])#,"MODEL.ROI_HEADS.NMS_THRESH_TEST", 0.2])
 # model_primalaynet = lp.Detectron2LayoutModel(
+model_primatablenet = lp.Detectron2LayoutModel(LAYOUT_CELL_CONFIG_PATH,model_path = LAYOUT_CELL_MODEL_PATH,label_map = {0:"CellRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_CELL_SCORE_THRESH_TEST])
 
 model_primalaynet = lp.Detectron2LayoutModel(LAYOUT_CONFIG_PATH,model_path = LAYOUT_MODEL_PATH,label_map = {0:"FooterRegion", 1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"HeaderRegion", 5:"OtherRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])
 
@@ -70,8 +71,9 @@ class PRIMA(object):
 	def prima_region(self, layout):
 		bbox = []; tag =[]
 		for idx, ele in enumerate(layout):
-			bbox.append(list(ele.coordinates))
-			tag.append(ele.type)
+			if ele.type is not 'TableRegion':
+				bbox.append(list(ele.coordinates))
+				tag.append(ele.type)
 		return bbox,tag
 
 	def craft_refinement(self, boxes_final, coords, layout_class):
@@ -165,6 +167,8 @@ class PRIMA(object):
 			class_name = "FOOTER"
 		if class_name == "SeparatorRegion":
 			class_name = "SEPARATOR"
+		if class_name == "CellRegion":
+			class_name = "CELL"
 
 		return class_name
 
@@ -297,3 +301,32 @@ class PRIMA(object):
 		except Exception as e:
 			log_exception("Error occured during prima layout detection ",  app_context.application_context, e)
 			return None
+
+
+prima = PRIMA()
+def cell_layout(table_regions,page_path):
+	try:
+		#print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
+		#image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
+		image   = cv2.imread(page_path)
+		height, width, channels = image.shape
+		final_layouts=[]
+		for region in table_regions:
+			bbox = [[region['x'],region['y'],region['x']+region['w'],region['y']+region['h']]]
+			tab_layouts  = prima.update_box_format(bbox,['TableRegion'])[0]
+			blank_image = np.zeros(image.shape, dtype=np.uint8)
+			blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
+			blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)
+			ymin = region['y'] ; ymax = ymin+region['h'] ; xmin = region['x']; xmax = xmin+region['w']
+			crop_img = image[ymin:ymax,xmin:xmax,:]
+			blank_image[ymin:ymax,xmin:xmax] = crop_img
+			layout   = model_primatablenet.detect(blank_image)
+			bbox,tag = prima.prima_region(layout)
+			layouts  = prima.update_box_format(bbox,tag)
+			tab_layouts['children']=layouts
+			final_layouts.append(tab_layouts)
+
+		return final_layouts
+	except Exception as e:
+		log_exception("Error occured during cell layout detection",  app_context.application_context, e)
+		return None

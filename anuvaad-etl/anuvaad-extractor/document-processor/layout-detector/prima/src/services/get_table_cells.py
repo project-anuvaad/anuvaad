@@ -54,19 +54,19 @@ def get_regions(regions,clss):
 
         for table in regions:
             ####
-            # tab = Box()
-            # tab.set_coords(table)
-            # tab_coord =  tab.get_box()
-            # r_box.append(tab_coord)
+            tab = Box()
+            tab.set_coords(table)
+            tab_coord =  tab.get_box()
+            r_box.append(tab_coord)
             #####
 
-            for t_cell in table['rect']:
-                t_cell['x'] += table['x']
-                t_cell['y'] += table['y']
-                r_cell = Box()
-                r_cell.set_class(clss)
-                r_cell.set_coords(t_cell)
-                r_box.append(r_cell.get_box())
+            # for t_cell in table['rect']:
+            #     t_cell['x'] += table['x']
+            #     t_cell['y'] += table['y']
+            #     r_cell = Box()
+            #     r_cell.set_class(clss)
+            #     r_cell.set_coords(t_cell)
+            #     r_box.append(r_cell.get_box())
             
 
     # if clss == 'LINE':
