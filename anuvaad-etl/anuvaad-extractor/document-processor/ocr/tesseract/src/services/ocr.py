@@ -31,13 +31,28 @@ def ocr(crop_image,configs,left,top,language):
         vert.append({'x':int(row["left"]+left)+int(row["width"]),'y':row["top"]+top})
         vert.append({'x':int(row["left"]+left)+int(row["width"]),'y':row["top"]+top+int(row["height"])})
         vert.append({'x':int(row["left"]+left),'y':row["top"]+top+int(row["height"])})
-        temp_dict['text'] = str(row["text"])
+        #temp_dict['text'] = str(row["text"])
+        temp_dict['text']   = process_text(row['text'])
         temp_dict['conf'] = row["conf"]
         temp_dict['boundingBox']={}
         temp_dict['boundingBox']["vertices"] = vert
         text = text +" "+ str(row["text"])
         coord.append(temp_dict)
     return coord, text
+
+
+def process_text(text):
+    try:
+        if type(text) in [int, float]:
+            if int(text)== text :
+                return str(int(text))
+            else:
+                return str(text)
+        else :
+            return str(text)
+    except Exception as e:
+        print(e)
+        return str(text)
 
 
 def bound_coordinate(corrdinate,max):

@@ -101,7 +101,7 @@ class StartDigitizationUpload extends React.Component {
             var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code)
             const { APITransport } = this.props;
             const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
-                this.state.target_language_code, this.state.path, this.state.model, sourceLang);
+                this.state.target_language_code, this.state.path, this.state.model,"", sourceLang);
             APITransport(apiObj);
         }
 

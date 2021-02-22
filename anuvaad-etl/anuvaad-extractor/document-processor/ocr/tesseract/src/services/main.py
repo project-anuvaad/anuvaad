@@ -18,6 +18,10 @@ def preprocess_file(file_properties,lang,ocr_level):
         print('processing for page : '.format(([page_index])))
         page_regions = file_properties.get_regions(page_index)
         #page_path =  '/'.join(page_path.split('/')[-4:])
+
+        save_path = mask_image(page_path, page_regions, page_index, file_properties, width, height)
+        file = set_bg_image(file, save_path, page_index)
+
         mode_height = frequent_height(file_properties.get_lines(page_index))
 
 
@@ -58,8 +62,7 @@ def preprocess_file(file_properties,lang,ocr_level):
         '''
             masking out images based on word coordinates
         '''
-        save_path  = mask_image(page_path,page_regions,page_index,file_properties,width, height)
-        file = set_bg_image(file,save_path,page_index)
+
         log_info("successfully completed ocr for  page {}".format(page_index), app_context.application_context)
         #mask_page_path.append(save_path)
     #file['bg_image_paths']  = mask_page_path
