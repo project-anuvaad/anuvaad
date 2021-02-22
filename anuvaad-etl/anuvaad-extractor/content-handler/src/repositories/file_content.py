@@ -137,7 +137,7 @@ class FileContentRepositories:
         data['total']       = total_page_count
         return data
 
-    def update(self, user_id, blocks, workflowCode):
+    def update(self, record_id,user_id, blocks, workflowCode):
         updated_blocks  = []
         saved_blocks    = []
         update_s0       = False
@@ -155,13 +155,13 @@ class FileContentRepositories:
         
         if len(updated_blocks) > 0:
             for updated_block in updated_blocks:
-                AppContext.addRecordID(updated_block['data']['record_id'])
+                AppContext.addRecordID(record_id)
                 log_info("FileContentUpdateRepo -updating blocks", AppContext.getContext())
-                if self.blockModel.update_block(updated_block['data']['record_id'],user_id, updated_block['data']['block_identifier'], updated_block) == False:
+                if self.blockModel.update_block(record_id,user_id, updated_block['data']['block_identifier'], updated_block) == False:
                     return False, saved_blocks
-                AppContext.addRecordID(updated_block['data']['record_id'])
+                AppContext.addRecordID(record_id)
                 log_info("FileContentUpdateRepo -fetching back updated blocks", AppContext.getContext())
-                saved_block_results = self.blockModel.get_block_by_block_identifier(updated_block['data']['record_id'],user_id, updated_block['data']['block_identifier'])
+                saved_block_results = self.blockModel.get_block_by_block_identifier(record_id,user_id, updated_block['data']['block_identifier'])
                 for saved_block in saved_block_results:
                     saved_blocks.append(saved_block['data'][0])
                 
