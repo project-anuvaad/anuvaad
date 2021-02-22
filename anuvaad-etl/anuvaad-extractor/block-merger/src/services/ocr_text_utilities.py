@@ -61,9 +61,9 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
 
             crop_image = image[max(int(top - CROP_CONFIG[lang]['top']), 0): \
                                min(int(bottom + CROP_CONFIG[lang]['bottom']),\
-                            image.shape[0]),max(int(left - CROP_CONFIG[lang]['left']), 0):\
+                            image.shape[1]),max(int(left - CROP_CONFIG[lang]['left']), 0):\
                                             min(int(right + CROP_CONFIG[lang]['right']),
-                                                                   image.shape[1])]
+                                                                   image.shape[0])]
             #cv2.imwrite("/home/dhiraj/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg',crop_image)
             if row['text_height']>2*row['font_size']:
                 coord,text = ocr(crop_image,False,left,top,lang)
