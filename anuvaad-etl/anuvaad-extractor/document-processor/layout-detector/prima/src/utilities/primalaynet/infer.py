@@ -4,7 +4,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import src.utilities.app_context as app_context
 import uuid
-from config import PRIMA_SCORE_THRESH_TEST, LAYOUT_CONFIG_PATH,LAYOUT_MODEL_PATH
+from config import PRIMA_SCORE_THRESH_TEST, LAYOUT_CONFIG_PATH,LAYOUT_MODEL_PATH,LAYOUT_CELL_CONFIG_PATH,LAYOUT_CELL_MODEL_PATH,PRIMA_CELL_SCORE_THRESH_TEST
 from collections import namedtuple
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 import sys, random, torch, glob, torchvision
