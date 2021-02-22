@@ -1,1 +1,1 @@
-from .connection_manager import get_db, get_redis,get_mongo
+from .connection_manager import get_db, get_redis

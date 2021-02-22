@@ -42,12 +42,14 @@ class SentenceRepositories:
             if 'time_spent_ms' not in sentence:
                 sentence['time_spent_ms'] = 0
 
-            if 'n_id' not in sentence:
-                sentence['n_id']=None
+            n_id_splits = sentence['n_id'].split('|')
+            record_id   = n_id_splits[0]+'|'+ n_id_splits[1]
+            # sentence['record_id'] = record_id
 
+            AppContext.addRecordID(record_id)
+            log_info("SaveSentenceRepo -saving sentence blocks", AppContext.getContext())
 
-
-            if self.sentenceModel.update_sentence_by_s_id(user_id, sentence) == False:
+            if self.sentenceModel.update_sentence_by_s_id(record_id,user_id, sentence) == False:
                 return False
         return True
 

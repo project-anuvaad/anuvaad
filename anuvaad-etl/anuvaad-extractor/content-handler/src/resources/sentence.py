@@ -79,7 +79,7 @@ class SaveSentenceResource(Resource):
             #     res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             #     return res.getresjson(), 400
             # else:
-            res = CustomResponse(Status.SUCCESS.value, result)
+            res = CustomResponse(Status.SUCCESS.value, sentences)
             return res.getres()
 
         except Exception as e:
