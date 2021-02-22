@@ -5,7 +5,8 @@ import src.utilities.app_context as app_context
 from src.services.get_table_cells import mask_tables
 import config,time
 import json
-from src.utilities.primalaynet.infer import PRIMA
+from src.utilities.primalaynet.infer import PRIMA,cell_layout
+
 from src.utilities.request_parse import get_files, File,get_json
 from src.utilities.model_response import get_coord
 
@@ -34,9 +35,10 @@ def get_layout(app_context) :
                 page_words  = file_properties.get_words(idx)
                 line_coords = get_coord(page_lines)
                 page_path   = '/'.join(page_path.split('/')[-4:])
-                #masked_image, table_and_lines = extract_table_line_regions(page_path)
+                masked_image, table_and_lines = extract_table_line_regions(page_path)
+                cell_regions = cell_layout(table_and_lines,page_path)
                 regions     = primalaynet.predict_primanet(page_path, line_coords)
-                #regions += table_and_lines
+                regions += cell_regions
                 file['pages'][idx]["regions"]=regions
             file['file'] = file_new['file']
             file['config'] = file_new['config']
