@@ -93,12 +93,12 @@ def corrds_correction(top,left, right,bottom,shape,lang):
             else:
                 return int(point)
 
-        updated_top = corrds_correction(top - CROP_CONFIG[lang]['top'] ,shape[0])
-        updated_bottom = corrds_correction(bottom + CROP_CONFIG[lang]['bottom'] ,shape[0] )
-        updated_left  = corrds_correction(left - CROP_CONFIG[lang]['left'],shape[1])
-        update_right   = corrds_correction(right + CROP_CONFIG[lang]['right'] ,shape[1])
+    updated_top = corrds_correction(top - CROP_CONFIG[lang]['top'] ,shape[0])
+    updated_bottom = corrds_correction(bottom + CROP_CONFIG[lang]['bottom'] ,shape[0] )
+    updated_left  = corrds_correction(left - CROP_CONFIG[lang]['left'],shape[1])
+    update_right   = corrds_correction(right + CROP_CONFIG[lang]['right'] ,shape[1])
 
-        return updated_top,updated_bottom,updated_left,update_right
+    return updated_top,updated_bottom,updated_left,update_right
 
 
 
