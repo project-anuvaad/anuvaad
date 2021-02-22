@@ -169,7 +169,7 @@ def get_hdfs(in_dfs, header_region, footer_region,width_ratio,height_ratio,image
 
     end_time         = time.time()
     elapsed_time     = end_time - start_time
-    log_info('Processing of get_hdfs completed in {}/{}, average per page {}'.format(elapsed_time, len(in_dfs), (elapsed_time/len(in_dfs))), app_context.application_context)
+    log_info('Processing of get_hdfs completed in {}/{}, average per page {}'.format(elapsed_time, len(in_dfs), (elapsed_time/max(len(in_dfs) ,1))), app_context.application_context)
 
     return h_dfs
 
