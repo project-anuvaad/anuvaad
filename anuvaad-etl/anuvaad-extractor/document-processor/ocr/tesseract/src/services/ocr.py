@@ -44,19 +44,32 @@ def ocr(crop_image,configs,left,top,language):
     return coord, text
 
 
+# def process_text(text):
+#     try:
+#         if type(text) in [int, float]:
+#             if int(text)== text :
+#                 return str(int(text))
+#             else:
+#                 return str(text)
+#         else :
+#             return str(text)
+#     except Exception as e:
+#         print(e)
+#         return str(text)
+    
+    
+    
+ 
 def process_text(text):
     try:
-        if type(text) in [int, float]:
-            if int(text)== text :
-                return str(int(text))
-            else:
-                return str(text)
-        else :
+        f_text = float(text)
+        if f_text == int(f_text) :
+            return str(int(f_text))
+        else:
             return str(text)
     except Exception as e:
-        print(e)
+        #print(e)
         return str(text)
-
 
 def bound_coordinate(corrdinate,max):
     if corrdinate < 0 :
