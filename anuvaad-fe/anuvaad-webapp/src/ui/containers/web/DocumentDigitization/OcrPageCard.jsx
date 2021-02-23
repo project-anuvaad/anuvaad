@@ -55,17 +55,13 @@ class OcrPageCard extends React.Component {
                 zIndex: 2,
                 width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
                 height: line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
-                top: line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                top: (line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y) + 'px',
                 left: line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
-                // backgroundColor: 'grey',
-                display: 'flex'
+                // border: '1px blue solid'
             }}
             >
                 {
-
-                    // line.children.map(word =>
                     this.renderTextSpan(line, region)
-                    // )
                 }
             </div>
         )
@@ -73,15 +69,17 @@ class OcrPageCard extends React.Component {
     /**
      * render Sentences span
      */
-    renderTextSpan = (line, region, flag = false) => {
+    renderTextSpan = (line, region) => {
         return (
             <div
                 style={{
                     zIndex: 2,
                     color: 'black',
                     padding: '0%',
-                    fontSize: region.avg_size + 'px',
+                    // fontSize: parseInt(Math.ceil(region.avg_size * 1.02)) + 'px',
+                    fontSize: '48px',
                     width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
+                    // height: line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
                     top: line.boundingBox.vertices[0].y + 'px',
                     left: line.boundingBox.vertices[0].x + 'px',
                 }}
@@ -89,7 +87,7 @@ class OcrPageCard extends React.Component {
                 key={line.identifier}
                 onDoubleClick={() => { this.handleSelectedSentenceId(line) }}
             >
-                {confscore(line, region)}
+                {confscore(line, this.props.percent)}
             </div>
         )
     }
@@ -160,16 +158,19 @@ class OcrPageCard extends React.Component {
     renderChild = (region) => {
         let width = (region.boundingBox.vertices[1].x - region.boundingBox.vertices[0].x) + 'px'
         let height = (region.boundingBox.vertices[2].y - region.boundingBox.vertices[0].y) + 'px'
-        let top = (region.boundingBox.vertices[0].y) + 'px'
+        let top = region.boundingBox.vertices[0].y + 'px'
         let left = (region.boundingBox.vertices[0].x) + 'px'
         return (
-            <div style={{
+            <p style={{
                 position: "absolute",
                 height: height,
                 width: width,
                 top: top,
                 left: left,
                 zIndex: 2,
+                // textAlign:'left',
+                textAlignLast: 'justify',
+                // border: '1px red solid'
             }}
                 id={region.identifier}
                 key={region.identifier}
@@ -178,7 +179,7 @@ class OcrPageCard extends React.Component {
                 {region['children'] &&
                     region['children'].map(line => this.renderText(line, region))
                 }
-            </div>
+            </p>
         );
     }
 
@@ -280,7 +281,8 @@ const mapStateToProps = state => ({
     document_contents: state.document_contents,
     block_highlight: state.block_highlight.block,
     block_page: state.block_highlight.page_no,
-    sentence_highlight: state.sentence_highlight.sentence
+    sentence_highlight: state.sentence_highlight.sentence,
+    percent: state.fetchpercent.percent
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

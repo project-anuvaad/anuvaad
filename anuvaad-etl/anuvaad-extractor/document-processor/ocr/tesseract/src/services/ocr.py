@@ -36,24 +36,40 @@ def ocr(crop_image,configs,left,top,language):
         temp_dict['conf'] = row["conf"]
         temp_dict['boundingBox']={}
         temp_dict['boundingBox']["vertices"] = vert
-        text = text +" "+ str(row["text"])
+        if text == '':
+            text = temp_dict['text']
+        else :
+            text = text +" "+ temp_dict['text']
         coord.append(temp_dict)
     return coord, text
 
 
+# def process_text(text):
+#     try:
+#         if type(text) in [int, float]:
+#             if int(text)== text :
+#                 return str(int(text))
+#             else:
+#                 return str(text)
+#         else :
+#             return str(text)
+#     except Exception as e:
+#         print(e)
+#         return str(text)
+    
+    
+    
+ 
 def process_text(text):
     try:
-        if type(text) in [int, float]:
-            if int(text)== text :
-                return str(int(text))
-            else:
-                return str(text)
-        else :
+        f_text = float(text)
+        if f_text == int(f_text) :
+            return str(int(f_text))
+        else:
             return str(text)
     except Exception as e:
-        print(e)
+        #print(e)
         return str(text)
-
 
 def bound_coordinate(corrdinate,max):
     if corrdinate < 0 :
