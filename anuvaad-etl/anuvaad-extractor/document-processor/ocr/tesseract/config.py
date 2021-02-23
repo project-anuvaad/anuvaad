@@ -42,7 +42,7 @@ logging.basicConfig(
 )
 
 
-ocr_class = ["TEXT","TABLE","HEADER","FOOTER"]#,"IMAGE"]
+ocr_class = ["TEXT","TABLE","HEADER","FOOTER","CELL"]#,"IMAGE"]
 
 LANG_MAPPING       =  {
     "en" : ["Latin","eng"],
