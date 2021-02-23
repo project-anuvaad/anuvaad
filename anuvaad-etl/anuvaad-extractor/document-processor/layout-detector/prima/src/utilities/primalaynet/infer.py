@@ -324,10 +324,10 @@ def cell_layout(table_regions,page_path):
 		image   = cv2.imread(page_path)
 		height, width, channels = image.shape
 		final_layouts=[]
-		for region in table_regions:
+		for idx,region in enumerate(table_regions):
 			region = region['boundingBox']['vertices']
 			bbox = [[region[0]['x'],region[0]['y'],region[2]['x'],region[2]['y']]]
-			tab_layouts  = prima.update_box_format(bbox,['TableRegion'])[0]
+			tab_layouts  = prima.update_box_format(bbox,['TableRegion'],[table_regions[idx]['score']])[0]
 			blank_image = np.zeros(image.shape, dtype=np.uint8)
 			blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
 			blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)
@@ -335,8 +335,8 @@ def cell_layout(table_regions,page_path):
 			crop_img = image[ymin:ymax,xmin:xmax,:]
 			blank_image[ymin:ymax,xmin:xmax] = crop_img
 			layout   = model_primatablenet.detect(blank_image)
-			bbox,tag = prima.prima_region(layout)
-			layouts  = prima.update_box_format(bbox,tag)
+			bbox,tag,score = prima.prima_region(layout)
+			layouts  = prima.update_box_format(bbox,tag,score)
 			tab_layouts['children']=layouts
 			final_layouts.append(tab_layouts)
 
