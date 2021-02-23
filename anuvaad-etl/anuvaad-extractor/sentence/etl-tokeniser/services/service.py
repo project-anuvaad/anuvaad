@@ -132,10 +132,13 @@ class Tokenisation(object):
                             if not page_data_blocks[last_text_block_idx]['text'].strip().endswith(('.',':','!','?','”',')')) \
                             and input_data_file[page_idx+1]['text_blocks'][first_text_block_next_page]['text'] != None \
                             and input_data_file[page_idx+1]['text_blocks'][first_text_block_next_page]['children'] != None\
-                            and len(page_data_blocks[last_text_block_idx]['tokenized_sentences']) >= 1:
+                            and len(page_data_blocks[last_text_block_idx]['tokenized_sentences']) >= 1\
+                            and len(input_data_file[page_idx+1]['text_blocks'][first_text_block_next_page]['tokenized_sentences']) != 0:
+
                                 last_tokenised_sentence_idx = len(page_data_blocks[last_text_block_idx]['tokenized_sentences']) - 1
                                 last_sen = page_data_blocks[last_text_block_idx]['tokenized_sentences'][last_tokenised_sentence_idx]['src']
                                 first_sen = input_data_file[page_idx+1]['text_blocks'][first_text_block_next_page]['tokenized_sentences'][0]['src']
+
                                 if len(last_sen) < len(first_sen):
                                     input_data_file[page_idx+1]['text_blocks'][first_text_block_next_page]['tokenized_sentences'][0]['src'] = \
                                         page_data_blocks[last_text_block_idx]['tokenized_sentences'][last_tokenised_sentence_idx]['src'] + ' ' + \
