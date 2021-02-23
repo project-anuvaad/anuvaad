@@ -36,7 +36,6 @@ class OcrPageCard extends React.Component {
             value: '',
             text: '',
             url: '',
-            showImage: !this.props.showImage,
             event: false
         };
         this.handleTextChange = this.handleTextChange.bind(this);
@@ -46,6 +45,9 @@ class OcrPageCard extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.block_highlight !== this.props.block_highlight && this.props.block_highlight.block_identifier) {
             this.handleSourceScroll(this.props.block_highlight.block_identifier)
+        }
+        if (prevProps.status !== this.props.status) {
+            this.setState({ url: '' })
         }
     }
 
@@ -90,8 +92,8 @@ class OcrPageCard extends React.Component {
                     width: 'auto'
                 }}
                 key={word.identifier}
-                // onDoubleClick={(e) => this.handleSelectedSentenceId(e, word)}
-                // onBlur={this.clearEvent}
+            // onDoubleClick={(e) => this.handleSelectedSentenceId(e, word)}
+            // onBlur={this.clearEvent}
             >
 
                 <Textfit mode="single" min={1} max={region.avg_size} >
@@ -233,11 +235,11 @@ class OcrPageCard extends React.Component {
             });
     }
 
-    renderImage = (image, region) => {
-        if (this.props.showImage) {
-            let width = region.boundingBox.vertices[1].x - region.boundingBox.vertices[0].x + 'px'
-            let height = region.boundingBox.vertices[2].y - region.boundingBox.vertices[0].y + 'px'
-            let img = image.replace('upload/', '')
+    renderImage = (image) => {
+        if (this.props.status) {
+            let width = image.boundingBox.vertices[1].x - image.boundingBox.vertices[0].x + 'px'
+            let height = image.boundingBox.vertices[2].y - image.boundingBox.vertices[0].y + 'px'
+            let img = image.data.replace('upload/', '')
 
             let style = {
                 position: "relative",
@@ -249,17 +251,17 @@ class OcrPageCard extends React.Component {
 
             this.getBGImage(img)
             return (
-                <div style={style} key={region.identifier}>
+                <div style={style} key={image.identifier}>
                     <img width={width} height={height} src={this.state.url} alt=""></img>
                 </div>
             )
         }
         else {
-            return <div key={region.identifier}></div>
+            return <div key={image.identifier}></div>
         }
     }
 
-    renderPage = (page) => {
+    renderPage = (page, image) => {
         if (page) {
             let width = page['vertices'] && page.vertices[1].x - page.vertices[0].x + 'px'
             let height = page['vertices'] && page.vertices[2].y - page.vertices[0].y + 'px'
@@ -267,11 +269,13 @@ class OcrPageCard extends React.Component {
                 <div>
                     <Paper elevation={2} style={{ position: 'relative', width: width, height: height }}>
                         {page['regions'].map(region => this.renderChild(region))}
-                        {page['regions'].map(region => {
-                            if (region.class === 'BGIMAGE') {
-                                return this.renderImage(region.data, region)
-                            }
-                        })
+                        {
+                            // page['regions'].map(region => {
+                            //     if (region.class === 'BGIMAGE') {
+                            // return 
+                            this.renderImage(image)
+                            //     }
+                            // })
                         }
                     </Paper>
                     <Divider />
@@ -296,7 +300,8 @@ const mapStateToProps = state => ({
     block_highlight: state.block_highlight.block,
     block_page: state.block_highlight.page_no,
     sentence_highlight: state.sentence_highlight.sentence,
-    percent: state.fetchpercent.percent
+    percent: state.fetchpercent.percent,
+    status: state.showimagestatus.status
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
