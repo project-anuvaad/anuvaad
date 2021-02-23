@@ -28,6 +28,7 @@ import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { showPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
 import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
+import togglebtnstatus from '../../../../flux/actions/apis/view_digitized_document/show_bg_image';
 
 const StyledMenu = withStyles({
     paper: {
@@ -58,8 +59,15 @@ class DigitizedDocHeader extends React.Component {
             message: null,
             timeOut: 3000,
             variant: "info",
-            dialogMessage: null
+            dialogMessage: null,
+            showImage: false
         };
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.active_page_number !== prevProps.active_page_number && this.props.status) {
+            this.props.togglebtnstatus()
+        }
     }
 
     handleMenu = event => {
@@ -199,8 +207,8 @@ class DigitizedDocHeader extends React.Component {
                         As PDF
                     </MenuItem>
                 </StyledMenu>
-                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.handleBgImage}>
-                    {this.props.showImage ? "Hide Image" : "Show Image"}
+                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.togglebtnstatus}>
+                    {this.props.status ? "Hide Image" : "Show Image"}
                 </Button>
             </div>
         );
@@ -255,14 +263,17 @@ class DigitizedDocHeader extends React.Component {
 
 const mapStateToProps = state => ({
     show_pdf: state.show_pdf.open,
-    open_sidebar: state.open_sidebar.open
+    open_sidebar: state.open_sidebar.open,
+    status: state.showimagestatus.status,
+    active_page_number: state.active_page_number.page_number,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         APITransport,
         showPdf,
-        showSidebar
+        showSidebar,
+        togglebtnstatus
     },
     dispatch
 );
