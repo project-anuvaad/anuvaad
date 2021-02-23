@@ -73,7 +73,7 @@ class PRIMA(object):
 	def prima_region(self, layout):
 		bbox = []; tag =[]; score =[]
 		for idx, ele in enumerate(layout):
-			if ele.type not in ['TableRegion','CellRegion']:
+			if ele.type not in ['TableRegion']:
 				bbox.append(list(ele.coordinates))
 				tag.append(ele.type)
 				score.append(format(ele.score,'.2f'))
