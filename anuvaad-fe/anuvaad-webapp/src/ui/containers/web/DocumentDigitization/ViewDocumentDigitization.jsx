@@ -20,6 +20,7 @@ import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import history from "../../../../web.history";
 import Dialog from "../../../components/web/common/SimpleDialog";
 import MarkInactive from "../../../../flux/actions/apis/view_document/markinactive";
+import togglebtnstatus from '../../../../flux/actions/apis/view_digitized_document/show_bg_image';
 
 
 
@@ -134,7 +135,7 @@ class ViewDocumentDigitization extends React.Component {
                 false
             );
             this.setState({ showLoader: true });
-        } 
+        }
         else if (this.props.async_job_status.job) {
             /**
              * a job got started, fetch it status
@@ -185,6 +186,9 @@ class ViewDocumentDigitization extends React.Component {
         }
         if (prevProps.download_json.pages === this.props.download_json.pages) {
             this.props.clearJob();
+            if (this.props.status) {
+                this.props.togglebtnstatus();
+            }
         }
     }
 
@@ -673,6 +677,7 @@ const mapDispatchToProps = (dispatch) =>
             clearJob,
             APITransport,
             CreateCorpus: APITransport,
+            togglebtnstatus
         },
         dispatch
     );
@@ -683,7 +688,8 @@ const mapStateToProps = (state) => ({
     digitizeddocument: state.digitizeddocument,
     async_job_status: state.async_job_status,
     open_sidebar: state.open_sidebar,
-    download_json: state.download_json
+    download_json: state.download_json,
+    status: state.showimagestatus.status
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewDocumentDigitization);

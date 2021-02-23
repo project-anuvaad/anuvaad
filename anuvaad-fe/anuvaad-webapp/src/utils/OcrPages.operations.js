@@ -14,7 +14,7 @@ export function download_ocr_doc(data) {
 
 export function get_bg_image(data, status, pageno) {
     if (status) {
-        if (data.pages !== undefined) {
+        if (data.pages.length > 0) {
             return data.pages[pageno - 1].regions[0]
         }
     }
