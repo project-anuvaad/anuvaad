@@ -69,13 +69,14 @@ class PRIMA(object):
 		dy = min(a.ymax, b.ymax) - max(a.ymin, b.ymin)
 		if (dx>=0) and (dy>=0):
 			return dx*dy
+	
 	def prima_region(self, layout):
-		bbox = []; tag =[]
+		bbox = []; tag =[]; score =[]
 		for idx, ele in enumerate(layout):
-			if ele.type is not 'TableRegion':
-				bbox.append(list(ele.coordinates))
-				tag.append(ele.type)
-		return bbox,tag
+			bbox.append(list(ele.coordinates))
+			tag.append(ele.type)
+			score.append(format(ele.score,'.2f'))
+		return bbox,tag,score
 
 	def craft_refinement(self, boxes_final, coords, layout_class):
 		if len(boxes_final) != 0:
@@ -173,7 +174,7 @@ class PRIMA(object):
 
 		return class_name
 
-	def update_box_format(self,coords,tags):
+	def update_box_format(self,coords,tags,score):
 		final_coord =[]
 		for idx,coord in enumerate(coords):
 			temp_dict = {}; vert=[]
@@ -184,6 +185,7 @@ class PRIMA(object):
 			vert.append({'x':coord[0],'y':coord[3]})
 			temp_dict['boundingBox']={}
 			temp_dict['boundingBox']["vertices"] = vert
+			temp_dict['score'] = score[idx]
 
 			temp_dict['class']      = self.class_mapping(tags[idx])
 			final_coord.append(temp_dict)
@@ -299,10 +301,10 @@ class PRIMA(object):
 
 			#image   = image[..., ::-1]
 			layout   = model_primalaynet.detect(image)
-			bbox,tag = self.prima_region(layout)
+			bbox,tag,score = self.prima_region(layout)
 			############### craft refinement logic 
 			#bbox, tag = self.prima_craft_refinement(bbox,craft_coords,tag)
-			layouts  = self.update_box_format(bbox,tag)
+			layouts  = self.update_box_format(bbox,tag,score)
 			flag=True
 			while flag==True:
 				layouts, flag = self.merge_remove_overlap(layouts,height,width)
