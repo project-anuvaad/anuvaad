@@ -73,9 +73,10 @@ class PRIMA(object):
 	def prima_region(self, layout):
 		bbox = []; tag =[]; score =[]
 		for idx, ele in enumerate(layout):
-			bbox.append(list(ele.coordinates))
-			tag.append(ele.type)
-			score.append(format(ele.score,'.2f'))
+			if ele.type not in ['TableRegion','CellRegion']:
+				bbox.append(list(ele.coordinates))
+				tag.append(ele.type)
+				score.append(format(ele.score,'.2f'))
 		return bbox,tag,score
 
 	def craft_refinement(self, boxes_final, coords, layout_class):
