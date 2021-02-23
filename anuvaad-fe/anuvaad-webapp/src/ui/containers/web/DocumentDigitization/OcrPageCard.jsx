@@ -90,15 +90,15 @@ class OcrPageCard extends React.Component {
                     width: 'auto'
                 }}
                 key={word.identifier}
-                onDoubleClick={(e) => this.handleSelectedSentenceId(e, word)}
-                onBlur={this.clearEvent}
+                // onDoubleClick={(e) => this.handleSelectedSentenceId(e, word)}
+                // onBlur={this.clearEvent}
             >
 
                 <Textfit mode="single" min={1} max={region.avg_size} >
                     {word.text}
                 </Textfit>
-                {this.state.event &&
-                    this.showPopper(word)}
+                {/* {this.state.event &&
+                    this.showPopper(word)} */}
 
             </div>
         )
