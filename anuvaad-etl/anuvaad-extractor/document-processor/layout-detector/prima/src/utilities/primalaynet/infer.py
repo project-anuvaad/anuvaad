@@ -219,43 +219,53 @@ class PRIMA(object):
 		area2 = region_poly.area
 		tag1 = region1['class']
 		tag2 = region2['class']
+		score1 = region1['score']
+		score2 = region2['score']
 		y1 = keys.get_top(region1); y2 = keys.get_top(region2)
-		if (area>0 and tag1=='OTHER') or (area>0 and tag2=='OTHER'):
-			if tag1!='OTHER':
+		if tag1=="CELL" or tag2=="CELL" or tag1=="TABLE" or tag2=="TABLE":
+			return None, False
+		if (area>0 and area1<area2 and area1/area2>0.2 and score1>score2) or (area>0 and area1>area2 and area2/area1>0.2 and  score1>score2):
 				return tag1, True
-			else:
+		elif (area>0 and area1<area2 and area1/area2>0.2 and score1<score2) or (area>0 and area1>area2 and area2/area1>0.2 and  score1<score2):
 				return tag2, True
-		elif (area>0 and tag1=='FOOTER' and y1<height*0.75) or (area>0 and tag2=='FOOTER' and y2<height*0.75):
-			if tag1!='FOOTER':
-				return tag1, True
-			else:
-				return tag2, True	
-		elif (area>0 and tag1=='FOOTER' and y1>=height*0.75) or (area>0 and tag2=='FOOTER' and y2>height*0.75):
-			if (tag1=='FOOTER' and area1/area2>0.8 ) or (area2/area1>0.8 and tag2=='FOOTER'):
-				return 'FOOTER', True
-			elif tag1!='FOOTER':
-				return tag1, True
-			else:
-				return tag2, True
-		elif (area>0 and tag1=='HEADER'  and y1>height*0.30) or (area>0 and tag2=='HEADER' and y2>height*0.30):
-			if tag1!='HEADER':
-				return tag1, True
-			else:
-				return tag2, True
-		elif (area>0 and tag1=='HEADER' and y1<height*0.30) or (area>0 and tag2=='HEADER'  and y2<height*0.30):
-			if (tag1=='HEADER'and area1/area2>0.8) or (tag2=='HEADER' and area2/area1>0.8):
-				return 'HEADER', True
-			elif tag1!='HEADER':
-				return tag1, True
-			else:
-				return tag2, True
-		elif (area>0 and tag1==tag2):
-			return tag1, True
 		else:
-			if (area>0 and area1<area2 and area1/area2>0.8) or (area>0 and area1>area2 and area2/area1>0.8):
-				return tag1, True
-			else:
-				return None, False
+			return None, False
+		# if (area>0 and tag1=='OTHER') or (area>0 and tag2=='OTHER'):
+		# 	if tag1!='OTHER':
+		# 		return tag1, True
+		# 	else:
+		# 		return tag2, True
+		# elif (area>0 and tag1=='FOOTER' and y1<height*0.75) or (area>0 and tag2=='FOOTER' and y2<height*0.75):
+		# 	if tag1!='FOOTER':
+		# 		return tag1, True
+		# 	else:
+		# 		return tag2, True	
+		# elif (area>0 and tag1=='FOOTER' and y1>=height*0.75) or (area>0 and tag2=='FOOTER' and y2>height*0.75):
+		# 	if (tag1=='FOOTER' and area1/area2>0.8 ) or (area2/area1>0.8 and tag2=='FOOTER'):
+		# 		return 'FOOTER', True
+		# 	elif tag1!='FOOTER':
+		# 		return tag1, True
+		# 	else:
+		# 		return tag2, True
+		# elif (area>0 and tag1=='HEADER'  and y1>height*0.30) or (area>0 and tag2=='HEADER' and y2>height*0.30):
+		# 	if tag1!='HEADER':
+		# 		return tag1, True
+		# 	else:
+		# 		return tag2, True
+		# elif (area>0 and tag1=='HEADER' and y1<height*0.30) or (area>0 and tag2=='HEADER'  and y2<height*0.30):
+		# 	if (tag1=='HEADER'and area1/area2>0.8) or (tag2=='HEADER' and area2/area1>0.8):
+		# 		return 'HEADER', True
+		# 	elif tag1!='HEADER':
+		# 		return tag1, True
+		# 	else:
+		# 		return tag2, True
+		# elif (area>0 and tag1==tag2):
+		# 	return tag1, True
+		# else:
+		# 	if (area>0 and area1<area2 and area1/area2>0.8) or (area>0 and area1>area2 and area2/area1>0.8):
+		# 		return tag1, True
+		# 	else:
+		# 		return None, False
         #check = self.check_region_unification(region1,region2,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
         #return  area>0 and 
 
@@ -291,7 +301,7 @@ class PRIMA(object):
 			layout   = model_primalaynet.detect(image)
 			bbox,tag = self.prima_region(layout)
 			############### craft refinement logic 
-			bbox, tag = self.prima_craft_refinement(bbox,craft_coords,tag)
+			#bbox, tag = self.prima_craft_refinement(bbox,craft_coords,tag)
 			layouts  = self.update_box_format(bbox,tag)
 			flag=True
 			while flag==True:
