@@ -793,6 +793,7 @@ class DocumentEditor extends React.Component {
                                 onAction={this.processSentenceAction}
                                 hideMergeBtn={true}
                                 hideSentenceDtl={true}
+                                showConfSlider={true}
                             />
                         </div>
                     </>

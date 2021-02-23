@@ -48,7 +48,7 @@ import deactivateuser from './user/deactivate_existing_user';
 import organizationList from './organization/fetch_organization';
 import digitizeddocument from './view_digitized_document/fetch_digitzed_document';
 import download_json from './view_digitized_document/download_json';
-
+import fetchpercent from './view_digitized_document/fetch_slider_percent';
 export default {
     login,
     automl,
@@ -98,5 +98,6 @@ export default {
     deactivateuser,
     organizationList,
     digitizeddocument,
-    download_json
+    download_json,
+    fetchpercent
 };
