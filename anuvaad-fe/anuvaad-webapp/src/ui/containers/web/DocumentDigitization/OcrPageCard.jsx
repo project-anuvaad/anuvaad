@@ -57,7 +57,7 @@ class OcrPageCard extends React.Component {
                 height: line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
                 top: (line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y) + 'px',
                 left: line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
-                border: '1px blue solid'
+                // border: '1px blue solid'
             }}
             >
                 {
@@ -170,7 +170,7 @@ class OcrPageCard extends React.Component {
                 zIndex: 2,
                 // textAlign:'left',
                 textAlignLast: 'justify',
-                border: '1px red solid'
+                // border: '1px red solid'
             }}
                 id={region.identifier}
                 key={region.identifier}
