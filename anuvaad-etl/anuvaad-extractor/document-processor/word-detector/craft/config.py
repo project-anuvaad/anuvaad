@@ -64,7 +64,12 @@ LANGUAGE_WORD_THRESOLDS ={
 'ma':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
 'ta':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
 'ml':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
-'ka':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35}
+'ka':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'te':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'bn':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'or':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'gu':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'kn':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35}
 }
 LANGUAGE_LINE_THRESOLDS ={
 'en':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
@@ -73,7 +78,12 @@ LANGUAGE_LINE_THRESOLDS ={
 'ma':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
 'ta':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
 'ml':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
-'ka':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35}
+'ka':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'te':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'bn':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'or':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'gu':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'kn':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35}
 }
 
 

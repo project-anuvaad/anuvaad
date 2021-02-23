@@ -54,7 +54,8 @@ LANG_MAPPING       =  {
     "mr": ["Devanagari","hin","eng"],
     "ta": ['Tamil',"tam"],
     "te" : ["Telugu","tel"],
-    "ml" :["Malayalam"]
+    "ml" :["Malayalam"],
+    "ma" :["Marathi"]
 }
 
 CROP_CONFIG = {
@@ -63,7 +64,9 @@ CROP_CONFIG = {
     'ml': {'top':15, 'bottom':10,'right':5,'left':5},
     'kn':{'top':15, 'bottom':10,'right':5,'left':5 },
     'ta':{'top':10, 'bottom':15,'right':5,'left':10},
-    'mr':{'top':15, 'bottom':10,'right':5,'left':5}
+    'bn':{'top':15, 'bottom':10,'right':5,'left':5},
+    'te':{'top':15, 'bottom':10,'right':5,'left':5},
+    'ma':{'top':15, 'bottom':10,'right':5,'left':5}
 }
 
 IS_DYNAMIC = True
