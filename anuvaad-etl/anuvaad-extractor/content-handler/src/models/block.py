@@ -10,7 +10,7 @@ class BlockModel(object):
         collections = get_db()[DB_SCHEMA_NAME]
         try:
             collections.create_index('record_id')
-            collections.create_index('data_type')
+            collections.create_index('block_identifier')
         except pymongo.errors.DuplicateKeyError as e:
             log_info("duplicate key, ignoring", AppContext.getContext())
         except Exception as e:
@@ -57,7 +57,7 @@ class BlockModel(object):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
             results        = collections.aggregate([
-                                { '$match' : {'record_id': record_id,'page_no': page_number} },
+                                { '$match' : {'page_no': page_number,'record_id': record_id} },
                                 { '$group': { '_id': '$data_type', 'data': { '$push': "$data" } } }
                                 ])
             return results
