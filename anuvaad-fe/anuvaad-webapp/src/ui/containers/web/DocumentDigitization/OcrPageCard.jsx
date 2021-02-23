@@ -8,7 +8,7 @@ import DownloadJSON from '../../../../flux/actions/apis/download/download_json';
 import DownloadFile from '../../../../flux/actions/apis/download/download_zip_file';
 import { Textfit } from "react-textfit";
 import { highlightSentence, clearHighlighBlock, cancelMergeSentence } from '../../../../flux/actions/users/translator_actions';
-
+import Popper from '@material-ui/core/Popper';
 import SENTENCE_ACTION from '../DocumentEditor/SentenceActions'
 import { confscore } from '../../../../utils/OcrConfScore'
 
@@ -23,8 +23,8 @@ const styles = {
         border: 0,
         color: 'green',
     },
-    resize:{
-        fontSize:'600'
+    resize: {
+        fontSize: '600'
     }
 }
 
@@ -36,7 +36,8 @@ class OcrPageCard extends React.Component {
             value: '',
             text: '',
             url: '',
-            showImage: !this.props.showImage
+            showImage: !this.props.showImage,
+            event: false
         };
         this.handleTextChange = this.handleTextChange.bind(this);
         this.action = null
@@ -68,34 +69,51 @@ class OcrPageCard extends React.Component {
     /**
      * render Sentences span
      */
+
+    clearEvent = () => {
+        this.setState({ event: false })
+    }
     renderTextSpan = (word, line, region) => {
         return (
             <div
+                // contentEditable={this.action === word.identifier}
                 style={{
                     position: "absolute",
-                    zIndex: this.action ? 100000 : 2,
+                    zIndex: this.action === word.identifier ? 100000 : 2,
                     color: word.conf < this.props.percent ? 'red' : 'black',
                     padding: '0%',
                     fontSize: parseInt(Math.ceil(region.avg_size + 1)) + 'px',
                     fontStyle: region.font.family,
                     top: line.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
-                    width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
+                    maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
+                    width: 'auto'
                 }}
                 key={word.identifier}
-                onDoubleClick={() => this.handleSelectedSentenceId(word)}
+                onDoubleClick={(e) => this.handleSelectedSentenceId(e, word)}
+                onBlur={this.clearEvent}
             >
-                {
-                    word.identifier === this.action ?
-                        this.renderTextField(word.text)
-                        :
-                        word.text
-                }
+
+                <Textfit mode="single" min={1} max={region.avg_size} >
+                    {word.text}
+                </Textfit>
+                {this.state.event &&
+                    this.showPopper(word)}
 
             </div>
         )
     }
 
+    showPopper = (word) => {
+        return (
+            <Popper style={{ zIndex: 3 }} id={word.identifier} open={true} anchorEl={this.state.event}>
+                <div style={{ border: '1px solid black' }}>The content of the Popper.</div>
+                {/* <TextField variant="outlined" value={word.text}>
+                    {word.text}
+                </TextField> */}
+            </Popper>
+        );
+    }
 
     /**
      * sentence change
@@ -113,10 +131,10 @@ class OcrPageCard extends React.Component {
             <TextField
                 style={styles.textField}
                 type="text"
-                className="form-control"
+                // className="form-control"
                 value={this.state.text}
                 variant="outlined"
-                id="mui-theme-provider-outlined-input"
+                // id="mui-theme-provider-outlined-input"
                 onChange={this.handleTextChange}
                 onBlur={() => { this.handleClickAway(text) }}
                 autoFocus={true}
@@ -130,9 +148,9 @@ class OcrPageCard extends React.Component {
     /**
      * render sentence edit
      */
-    handleSelectedSentenceId = (text) => {
-        this.setState({ text: text.text })
-        this.action = text.identifier
+    handleSelectedSentenceId = (event, text) => {
+        this.setState({ text: text.text, event: event.currentTarget })
+        this.action = text.identifier;
     }
     /**
      * click away listner
