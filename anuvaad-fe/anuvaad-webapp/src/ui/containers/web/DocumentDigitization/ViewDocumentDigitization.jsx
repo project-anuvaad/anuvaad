@@ -157,7 +157,6 @@ class ViewDocumentDigitization extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        console.log(this.state.currentPageIndex)
         if (this.props.digitizeddocument.changedJob && this.props.digitizeddocument.changedJob.hasOwnProperty("jobID") && prevProps.digitizeddocument.changedJob !== this.props.digitizeddocument.changedJob) {
             TELEMETRY.endWorkflow(this.props.digitizeddocument.changedJob.source_language_code, "", this.props.digitizeddocument.changedJob.filename, this.props.digitizeddocument.changedJob.jobID, this.props.digitizeddocument.changedJob.status)
         }

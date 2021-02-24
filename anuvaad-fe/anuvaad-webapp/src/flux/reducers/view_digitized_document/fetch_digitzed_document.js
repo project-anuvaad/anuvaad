@@ -5,8 +5,7 @@ const initialState = {
     count: 0,
     progress_updated: false,
     document_deleted: false,
-    documents:
-        []
+    documents: []
 }
 
 /**
@@ -147,6 +146,25 @@ export default function (state = initialState, action) {
         case C.FETCH_DIGITIZED_DOC_NEW_JOB: {
             let data = action.payload;
             let documents = get_document_details(data)
+            let deleted = false
+            let existing_docs = [...state.documents];
+            documents.forEach(document => {
+                existing_docs.forEach((existing_doc, index) => {
+                    if (existing_doc.jobID === document.jobID) {
+                        existing_docs.splice(index, 1, document)
+                        deleted = true
+                    }
+                })
+            })
+            if (deleted) {
+                return {
+                    ...state,
+                    count: state.count,
+                    progress_updated: false,
+                    document_deleted: false,
+                    documents: existing_docs,
+                }
+            }
             return {
                 ...state,
                 count: state.count + 1,
