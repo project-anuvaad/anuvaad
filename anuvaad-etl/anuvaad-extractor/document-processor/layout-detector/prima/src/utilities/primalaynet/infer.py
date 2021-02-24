@@ -328,7 +328,7 @@ def cell_layout(table_regions,page_path):
 		for idx,region in enumerate(table_regions):
 			region = region['boundingBox']['vertices']
 			bbox = [[region[0]['x'],region[0]['y'],region[2]['x'],region[2]['y']]]
-			tab_layouts  = prima.update_box_format(bbox,['TableRegion'],[99])[0]
+			tab_layouts  = prima.update_box_format(bbox,['TableRegion'],["99"])[0]
 			blank_image = np.zeros(image.shape, dtype=np.uint8)
 			blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
 			blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)

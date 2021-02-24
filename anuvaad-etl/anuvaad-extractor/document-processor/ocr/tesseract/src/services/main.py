@@ -49,7 +49,7 @@ def preprocess_file(file_properties,lang,ocr_level):
                 for idx, region in enumerate(page_regions):
                     if region['class'] in config.ocr_class:
                         region_lines = file_properties.get_region_lines(page_index,idx)
-                        if config.IS_DYNAMIC:
+                        if config.IS_DYNAMIC and region['class'] in config.DYNAMIC_CLASS:
                             region_lines_org = coord_adjustment(page_path, copy.deepcopy(region_lines))
                             region_ocr = text_extraction(lang, page_path, region_lines_org,region_lines, width, height,mode_height)
                         else:
