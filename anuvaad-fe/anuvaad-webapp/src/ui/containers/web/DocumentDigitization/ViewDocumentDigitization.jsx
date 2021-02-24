@@ -20,6 +20,7 @@ import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import history from "../../../../web.history";
 import Dialog from "../../../components/web/common/SimpleDialog";
 import MarkInactive from "../../../../flux/actions/apis/view_document/markinactive";
+import togglebtnstatus from '../../../../flux/actions/apis/view_digitized_document/show_bg_image';
 
 
 
@@ -134,7 +135,7 @@ class ViewDocumentDigitization extends React.Component {
                 false
             );
             this.setState({ showLoader: true });
-        } 
+        }
         else if (this.props.async_job_status.job) {
             /**
              * a job got started, fetch it status
@@ -185,6 +186,9 @@ class ViewDocumentDigitization extends React.Component {
         }
         if (prevProps.download_json.pages === this.props.download_json.pages) {
             this.props.clearJob();
+            if (this.props.status) {
+                this.props.togglebtnstatus();
+            }
         }
     }
 
@@ -266,7 +270,7 @@ class ViewDocumentDigitization extends React.Component {
     };
 
     processTableClickedNextOrPrevious = (page, sortOrder) => {
-        if (this.state.maxPageNum < page) {
+        if (this.state.currentPageIndex < page) {
             /**
              * user wanted to load next set of records
              */
@@ -278,13 +282,10 @@ class ViewDocumentDigitization extends React.Component {
                 true
             );
             this.setState({
-                maxPageNum: page,
+                currentPageIndex: page,
                 offset: this.state.offset + this.state.limit,
             });
         }
-        this.setState({
-            currentPageIndex: page
-        })
     };
 
     snackBarMessage = () => {
@@ -589,7 +590,7 @@ class ViewDocumentDigitization extends React.Component {
         const options = {
             textLabels: {
                 body: {
-                    noMatch: translate("gradeReport.page.muiNoTitle.sorryRecordNotFound"),
+                    noMatch: this.props.digitizeddocument.count > 0 ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound"),
                 },
                 toolbar: {
                     search: translate("graderReport.page.muiTable.search"),
@@ -600,15 +601,6 @@ class ViewDocumentDigitization extends React.Component {
                 },
                 options: { sortDirection: "desc" },
             },
-            // onChangeRowsPerPage: (limit) => {
-            //     let diffValue = limit - this.state.limit;
-            //     if (diffValue > 0) {
-            //         this.makeAPICallJobsBulkSearch(this.state.offset + diffValue, limit - this.state.limit, false, false, true)
-            //     }
-
-            //     this.setState({ limit })
-
-            // },
             rowsPerPageOptions: [10],
 
             onTableChange: (action, tableState) => {
@@ -622,7 +614,7 @@ class ViewDocumentDigitization extends React.Component {
                     default:
                 }
             },
-            count: 0,
+            count: this.props.digitizeddocument.count,
             filterType: "checkbox",
             download: true,
             print: false,
@@ -673,6 +665,7 @@ const mapDispatchToProps = (dispatch) =>
             clearJob,
             APITransport,
             CreateCorpus: APITransport,
+            togglebtnstatus
         },
         dispatch
     );
@@ -683,7 +676,8 @@ const mapStateToProps = (state) => ({
     digitizeddocument: state.digitizeddocument,
     async_job_status: state.async_job_status,
     open_sidebar: state.open_sidebar,
-    download_json: state.download_json
+    download_json: state.download_json,
+    status: state.showimagestatus.status
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewDocumentDigitization);

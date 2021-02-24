@@ -66,7 +66,6 @@ class DocumentEditor extends React.Component {
 
             fetchNext: true.valueOf,
             OCRdata: [],
-            showImage: false
         }
         this.forMergeSentences = []
     }
@@ -568,7 +567,6 @@ class DocumentEditor extends React.Component {
 
     renderTranslatedDocument = () => {
         let pages = OCR_PAGES.download_ocr_doc(this.props.download_json)
-        console.log(pages)
         if (pages.length < 1) {
             return (
                 <div></div>
@@ -624,11 +622,17 @@ class DocumentEditor extends React.Component {
         return pages;
     }
 
+    getImage = () => {
+        let image;
+        image = OCR_PAGES.get_bg_image(this.props.download_json, this.props.status,this.props.active_page_number)
+        return image
+    }
     /**
      * render Document pages
      */
     renderDocumentPages = () => {
         let page = this.getPages();
+        let image = this.getImage();
         if (!page) {
             return (
                 <div></div>
@@ -643,15 +647,12 @@ class DocumentEditor extends React.Component {
                         dataLength={4}
                     >
                         {
-                            // pages.map((page, index) => {
-                            // return 
                             <OcrPageCard
                                 zoomPercent={this.state.zoomPercent}
-                                // key={index}
                                 page={page}
                                 onAction={this.processSentenceAction}
-                                showImage={this.state.showImage} />
-                            // })
+                                image={image}
+                            />
                         }
                     </InfiniteScroll>
                 </Grid>
@@ -762,7 +763,6 @@ class DocumentEditor extends React.Component {
             </div >);
     }
     handleBgImage = () => {
-        this.setState({ showImage: !this.state.showImage })
     }
     render() {
         return (
@@ -772,7 +772,6 @@ class DocumentEditor extends React.Component {
                         docView={this.state.docView}
                         onAction={this.handleDocumentView}
                         onShowPreview={this.showPreview}
-                        showImage={this.state.showImage}
                         handleBgImage={this.handleBgImage} />
                 </div>
 
@@ -821,7 +820,8 @@ const mapStateToProps = state => ({
     document_editor_mode: state.document_editor_mode,
     fetchDocument: state.fetchDocument,
     fetch_models: state.fetch_models.models,
-    download_json: state.download_json
+    download_json: state.download_json,
+    status: state.showimagestatus.status
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

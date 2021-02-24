@@ -78,7 +78,7 @@ def bound_coordinate(corrdinate,max):
         corrdinate = max - 2
     return int(corrdinate)
 
-def get_text(path,coord,lang,width, height,freq_height):
+def get_text(path,coord,lang,width, height,freq_height,level):
     #image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+path,0)
 
 
@@ -102,11 +102,12 @@ def get_text(path,coord,lang,width, height,freq_height):
     try :
 
         crop_image = image[ top:bottom, left:right]
-
-        #crop_image.save("/home/naresh/line_crop_adjustment/"+str(uuid.uuid4()) + '.jpg')
+        # if level['class']=="CELL":
+        #     cv2.imwrite("/home/naresh/line_crop2/"+str(uuid.uuid4()) + '.jpg',crop_image)
         #crop_image.save("/home/naresh/line_crop/"+str(uuid.uuid4()) + '.jpg')
         if abs(bottom-top) > 2*freq_height:
             coord, text = ocr(crop_image,False,left,top,lang)
+            #print("xxxxxxxxxxxxxxxxxxxxxxxx",text)
             #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
         else:
             coord, text = ocr(crop_image,True,left,top,lang)
@@ -124,7 +125,7 @@ def get_text(path,coord,lang,width, height,freq_height):
 
 def get_coord(bbox):
     temp_box = []
-    if 'class' in bbox.keys() and bbox['class'] in ['TEXT','TABLE']:
+    if 'class' in bbox.keys() and bbox['class'] in ['TEXT','TABLE','CELL']:
         temp_box.append(bbox["boundingBox"]['vertices'][0]['x'])
         temp_box.append(bbox["boundingBox"]['vertices'][0]['y'])
         temp_box.append(bbox["boundingBox"]['vertices'][2]['x'])
@@ -151,12 +152,13 @@ def text_extraction(lang, page_path, regions,region_org,width, height,mode_heigh
     for idx, level in enumerate(regions):
         coord = get_coord(level)
         if len(coord)!=0 and abs(coord[3] - coord[1]) > config.REJECT_FILTER :
-            text, tess_coord = get_text(page_path, coord, lang, width, height,mode_height)
+            text, tess_coord = get_text(page_path, coord, lang, width, height,mode_height,level)
             region_org[idx]['text'] = text
             region_org[idx]['children'] = tess_coord
             #region_org[idx]['tess_word_coords'] = tess_coord
 
         else:
+            #print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
             region_org[idx]['text'] = ""
             region_org[idx]['children'] =[]
             #region_org[idx]['tess_word_coords'] = []

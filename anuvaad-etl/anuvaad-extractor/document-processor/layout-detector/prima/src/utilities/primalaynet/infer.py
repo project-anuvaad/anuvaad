@@ -69,13 +69,15 @@ class PRIMA(object):
 		dy = min(a.ymax, b.ymax) - max(a.ymin, b.ymin)
 		if (dx>=0) and (dy>=0):
 			return dx*dy
+	
 	def prima_region(self, layout):
-		bbox = []; tag =[]
+		bbox = []; tag =[]; score =[]
 		for idx, ele in enumerate(layout):
-			if ele.type is not 'TableRegion':
+			if ele.type not in ['TableRegion']:
 				bbox.append(list(ele.coordinates))
 				tag.append(ele.type)
-		return bbox,tag
+				score.append(format(ele.score,'.2f'))
+		return bbox,tag,score
 
 	def craft_refinement(self, boxes_final, coords, layout_class):
 		if len(boxes_final) != 0:
@@ -173,7 +175,7 @@ class PRIMA(object):
 
 		return class_name
 
-	def update_box_format(self,coords,tags):
+	def update_box_format(self,coords,tags,score):
 		final_coord =[]
 		for idx,coord in enumerate(coords):
 			temp_dict = {}; vert=[]
@@ -184,6 +186,7 @@ class PRIMA(object):
 			vert.append({'x':coord[0],'y':coord[3]})
 			temp_dict['boundingBox']={}
 			temp_dict['boundingBox']["vertices"] = vert
+			temp_dict['score'] = score[idx]
 
 			temp_dict['class']      = self.class_mapping(tags[idx])
 			final_coord.append(temp_dict)
@@ -219,43 +222,53 @@ class PRIMA(object):
 		area2 = region_poly.area
 		tag1 = region1['class']
 		tag2 = region2['class']
+		score1 = region1['score']
+		score2 = region2['score']
 		y1 = keys.get_top(region1); y2 = keys.get_top(region2)
-		if (area>0 and tag1=='OTHER') or (area>0 and tag2=='OTHER'):
-			if tag1!='OTHER':
+		if tag1=="CELL" or tag2=="CELL" or tag1=="TABLE" or tag2=="TABLE":
+			return None, False
+		if (area>0 and area1<area2 and area1/area2>0.2 and score1>score2) or (area>0 and area1>area2 and area2/area1>0.2 and  score1>score2):
 				return tag1, True
-			else:
+		elif (area>0 and area1<area2 and area1/area2>0.2 and score1<score2) or (area>0 and area1>area2 and area2/area1>0.2 and  score1<score2):
 				return tag2, True
-		elif (area>0 and tag1=='FOOTER' and y1<height*0.75) or (area>0 and tag2=='FOOTER' and y2<height*0.75):
-			if tag1!='FOOTER':
-				return tag1, True
-			else:
-				return tag2, True	
-		elif (area>0 and tag1=='FOOTER' and y1>=height*0.75) or (area>0 and tag2=='FOOTER' and y2>height*0.75):
-			if (tag1=='FOOTER' and area1/area2>0.8 ) or (area2/area1>0.8 and tag2=='FOOTER'):
-				return 'FOOTER', True
-			elif tag1!='FOOTER':
-				return tag1, True
-			else:
-				return tag2, True
-		elif (area>0 and tag1=='HEADER'  and y1>height*0.30) or (area>0 and tag2=='HEADER' and y2>height*0.30):
-			if tag1!='HEADER':
-				return tag1, True
-			else:
-				return tag2, True
-		elif (area>0 and tag1=='HEADER' and y1<height*0.30) or (area>0 and tag2=='HEADER'  and y2<height*0.30):
-			if (tag1=='HEADER'and area1/area2>0.8) or (tag2=='HEADER' and area2/area1>0.8):
-				return 'HEADER', True
-			elif tag1!='HEADER':
-				return tag1, True
-			else:
-				return tag2, True
-		elif (area>0 and tag1==tag2):
-			return tag1, True
 		else:
-			if (area>0 and area1<area2 and area1/area2>0.8) or (area>0 and area1>area2 and area2/area1>0.8):
-				return tag1, True
-			else:
-				return None, False
+			return None, False
+		# if (area>0 and tag1=='OTHER') or (area>0 and tag2=='OTHER'):
+		# 	if tag1!='OTHER':
+		# 		return tag1, True
+		# 	else:
+		# 		return tag2, True
+		# elif (area>0 and tag1=='FOOTER' and y1<height*0.75) or (area>0 and tag2=='FOOTER' and y2<height*0.75):
+		# 	if tag1!='FOOTER':
+		# 		return tag1, True
+		# 	else:
+		# 		return tag2, True	
+		# elif (area>0 and tag1=='FOOTER' and y1>=height*0.75) or (area>0 and tag2=='FOOTER' and y2>height*0.75):
+		# 	if (tag1=='FOOTER' and area1/area2>0.8 ) or (area2/area1>0.8 and tag2=='FOOTER'):
+		# 		return 'FOOTER', True
+		# 	elif tag1!='FOOTER':
+		# 		return tag1, True
+		# 	else:
+		# 		return tag2, True
+		# elif (area>0 and tag1=='HEADER'  and y1>height*0.30) or (area>0 and tag2=='HEADER' and y2>height*0.30):
+		# 	if tag1!='HEADER':
+		# 		return tag1, True
+		# 	else:
+		# 		return tag2, True
+		# elif (area>0 and tag1=='HEADER' and y1<height*0.30) or (area>0 and tag2=='HEADER'  and y2<height*0.30):
+		# 	if (tag1=='HEADER'and area1/area2>0.8) or (tag2=='HEADER' and area2/area1>0.8):
+		# 		return 'HEADER', True
+		# 	elif tag1!='HEADER':
+		# 		return tag1, True
+		# 	else:
+		# 		return tag2, True
+		# elif (area>0 and tag1==tag2):
+		# 	return tag1, True
+		# else:
+		# 	if (area>0 and area1<area2 and area1/area2>0.8) or (area>0 and area1>area2 and area2/area1>0.8):
+		# 		return tag1, True
+		# 	else:
+		# 		return None, False
         #check = self.check_region_unification(region1,region2,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
         #return  area>0 and 
 
@@ -289,10 +302,10 @@ class PRIMA(object):
 
 			#image   = image[..., ::-1]
 			layout   = model_primalaynet.detect(image)
-			bbox,tag = self.prima_region(layout)
+			bbox,tag,score = self.prima_region(layout)
 			############### craft refinement logic 
-			bbox, tag = self.prima_craft_refinement(bbox,craft_coords,tag)
-			layouts  = self.update_box_format(bbox,tag)
+			#bbox, tag = self.prima_craft_refinement(bbox,craft_coords,tag)
+			layouts  = self.update_box_format(bbox,tag,score)
 			flag=True
 			while flag==True:
 				layouts, flag = self.merge_remove_overlap(layouts,height,width)
@@ -312,10 +325,10 @@ def cell_layout(table_regions,page_path):
 		image   = cv2.imread(page_path)
 		height, width, channels = image.shape
 		final_layouts=[]
-		for region in table_regions:
+		for idx,region in enumerate(table_regions):
 			region = region['boundingBox']['vertices']
 			bbox = [[region[0]['x'],region[0]['y'],region[2]['x'],region[2]['y']]]
-			tab_layouts  = prima.update_box_format(bbox,['TableRegion'])[0]
+			tab_layouts  = prima.update_box_format(bbox,['TableRegion'],["99"])[0]
 			blank_image = np.zeros(image.shape, dtype=np.uint8)
 			blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
 			blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)
@@ -323,8 +336,8 @@ def cell_layout(table_regions,page_path):
 			crop_img = image[ymin:ymax,xmin:xmax,:]
 			blank_image[ymin:ymax,xmin:xmax] = crop_img
 			layout   = model_primatablenet.detect(blank_image)
-			bbox,tag = prima.prima_region(layout)
-			layouts  = prima.update_box_format(bbox,tag)
+			bbox,tag,score = prima.prima_region(layout)
+			layouts  = prima.update_box_format(bbox,tag,score)
 			tab_layouts['children']=layouts
 			final_layouts.append(tab_layouts)
 

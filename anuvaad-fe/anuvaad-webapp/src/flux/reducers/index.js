@@ -49,6 +49,8 @@ import organizationList from './organization/fetch_organization';
 import digitizeddocument from './view_digitized_document/fetch_digitzed_document';
 import download_json from './view_digitized_document/download_json';
 import fetchpercent from './view_digitized_document/fetch_slider_percent';
+import showimagestatus from './view_digitized_document/show_bg_image';
+
 export default {
     login,
     automl,
@@ -99,5 +101,6 @@ export default {
     organizationList,
     digitizeddocument,
     download_json,
-    fetchpercent
+    fetchpercent,
+    showimagestatus,
 };
