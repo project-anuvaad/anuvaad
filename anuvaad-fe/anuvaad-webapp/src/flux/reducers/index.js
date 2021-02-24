@@ -50,6 +50,8 @@ import digitizeddocument from './view_digitized_document/fetch_digitzed_document
 import download_json from './view_digitized_document/download_json';
 import fetchpercent from './view_digitized_document/fetch_slider_percent';
 import showimagestatus from './view_digitized_document/show_bg_image';
+import ditigitization_pageno from './view_digitized_document/fetch_page_number';
+import document_pageno from './view_document/fetch_page_number';
 
 export default {
     login,
@@ -103,4 +105,6 @@ export default {
     download_json,
     fetchpercent,
     showimagestatus,
+    ditigitization_pageno,
+    document_pageno
 };
