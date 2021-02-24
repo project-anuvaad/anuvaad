@@ -196,7 +196,7 @@ class SentenceCard extends React.Component {
                 let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;// max spent time is 5 min
                 time = 0;
-                sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
+                sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt): 0;
                 TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
                 return;
@@ -215,7 +215,7 @@ class SentenceCard extends React.Component {
                 sentence.save = true;
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
-                sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
+                sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt): 0;
                 let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;
                 time = 0;
