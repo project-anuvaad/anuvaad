@@ -21,6 +21,9 @@ from configs.translatorconfig import tmx_global_enabled
 from configs.translatorconfig import no_of_process
 from configs.translatorconfig import user_translation_enabled
 from configs.translatorconfig import fetch_user_translation_url
+from configs.translatorconfig import orgs_nmt_disable
+from configs.translatorconfig import anu_translator_nonmt_topic
+
 
 
 utils = TranslatorUtils()
@@ -111,6 +114,9 @@ class TranslatorService:
             tmx_file_cache = {}
             log_info("TMX File Cache Size (Start) : " + str(len(tmx_file_cache.keys())), translate_wf_input)
             tmx_present = self.is_tmx_present(file, translate_wf_input)
+            if translate_wf_input["metadata"]["orgID"] in list(str(orgs_nmt_disable).split(",")):
+                log_info("Job belongs to NONMT type!", translate_wf_input)
+                tmx_present = False
             pool = multiprocessing.Pool(no_of_process)
             func = partial(self.page_processor, record_id=record_id, file=file, tmx_present=tmx_present,
                            tmx_file_cache=tmx_file_cache, translate_wf_input=translate_wf_input)
@@ -135,6 +141,7 @@ class TranslatorService:
     def page_processor(self, page, record_id, file, tmx_present, tmx_file_cache, translate_wf_input):
         batches, pw_dict, bw_data = self.fetch_batches_of_sentences(file, record_id, page, tmx_present, tmx_file_cache,
                                                                     translate_wf_input)
+        nmt_disabled_orgs = list(str(orgs_nmt_disable).split(","))
         batches_count, sentences_count, tmx_count = 0, 0, 0
         if not batches:
             log_error("No batches obtained for page: " + str(page["page_no"]), translate_wf_input, None)
@@ -144,8 +151,11 @@ class TranslatorService:
             batch = batches[batch_id]
             record_id_enhanced = record_id + "|" + str(len(batch))
             nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
-            topic = self.nmt_router()
-            producer.produce(nmt_in, topic)
+            if translate_wf_input["metadata"]["orgID"] in nmt_disabled_orgs:
+                producer.produce(nmt_in, anu_translator_nonmt_topic)
+            else:
+                topic = self.nmt_router()
+                producer.produce(nmt_in, topic)
             log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
                      " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
                 bw_data[batch_id]["tmx_count"]), translate_wf_input)
@@ -356,3 +366,49 @@ class TranslatorService:
                 log_info("Replace failed, NodeID: {}".format(str(nmt_res_sentence["n_id"])), translate_wf_input)
         query = {"record_id": record_id, "page_no": eval(page_no)}
         repo.update_pages(query, page_enriched)
+
+    # Saves sentences sent internally through Translator
+    def process_no_nmt_jobs(self, no_nmt_input):
+        try:
+            record_id = no_nmt_input["record_id"]
+            recordid_split = str(record_id).split("|")
+            job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
+            record_id = str(job_id) + "|" + str(file_id)
+            translate_wf_input = {"jobID": job_id, "metadata": {"module": tool_translator}}
+            file = self.get_content_from_db(record_id, None, translate_wf_input)[0]
+            skip_count, trans_count, batch_id = 0, 0, None
+            translate_wf_input = file["transInput"]
+            translate_wf_input["recordID"] = record_id
+            if 'message' in no_nmt_input.keys():
+                sentences_of_the_batch = []
+                for response in no_nmt_input["message"]:
+                    batch_id = response["batch_id"]
+                    page_no = str(response["n_id"]).split("|")[2]
+                    page = repo.fetch_pages({"record_id": record_id, "page_no": eval(page_no)})[0]
+                    page_enriched = page
+                    node = str(response["n_id"]).split("|")
+                    block_id = node[3]
+                    b_index, s_index = None, None
+                    sentence_id = response["s_id"]
+                    for j, block in enumerate(page["text_blocks"]):
+                        if str(block["block_id"]) == str(block_id):
+                            b_index = j
+                            break
+                    block = page["text_blocks"][b_index]
+                    for k, sentence in enumerate(block["tokenized_sentences"]):
+                        if str(sentence["s_id"]) == str(sentence_id):
+                            s_index = k
+                            break
+                    if b_index is not None and s_index is not None:
+                        page_enriched["text_blocks"][b_index]["tokenized_sentences"][s_index] = response
+                    query = {"record_id": record_id, "page_no": eval(page_no)}
+                    repo.update_pages(query, page_enriched)
+                trans_count += len(sentences_of_the_batch)
+            else:
+                skip_count += batch_size
+            self.update_translation_status(batch_id, trans_count, skip_count, translate_wf_input)
+            return
+        except Exception as e:
+            log_exception("Exception while processing NMT output: " + str(e), None, e)
+            return
+

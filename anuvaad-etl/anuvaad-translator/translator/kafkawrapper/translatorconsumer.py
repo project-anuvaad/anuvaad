@@ -12,7 +12,7 @@ from anuvaad_auditor.errorhandler import post_error_wf
 from anuvaad_auditor.loghandler import log_info, log_error
 from anuvaad_auditor.loghandler import log_exception
 
-from configs.translatorconfig import anu_translator_input_topic
+from configs.translatorconfig import anu_translator_input_topic, anu_translator_nonmt_topic
 from configs.translatorconfig import anu_translator_consumer_grp
 from configs.translatorconfig import kafka_bootstrap_server_host
 from configs.translatorconfig import translator_cons_no_of_partitions
@@ -45,7 +45,7 @@ def get_topic_paritions(topics):
 # Method to read and process the requests from the kafka queue
 def consume():
     try:
-        topics = [anu_translator_input_topic]
+        topics = [anu_translator_input_topic, anu_translator_nonmt_topic]
         consumer = instantiate(topics)
         service = TranslatorService()
         validator = TranslatorValidator()
@@ -58,14 +58,17 @@ def consume():
                 try:
                     data = msg.value
                     if data:
-                        log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
-                        error = validator.validate_wf(data, False)
-                        if error is not None:
-                            log_error(prefix + " | Error: " + str(error), data, error)
-                            log_info(prefix + " | Input: " + str(data), data)
-                            post_error_wf(error["code"], error["message"], data, None)
-                            break
-                        service.start_file_translation(data)
+                        if msg.topic == anu_translator_nonmt_topic:
+                            service.process_no_nmt_jobs(data)
+                        else:
+                            log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
+                            error = validator.validate_wf(data, False)
+                            if error is not None:
+                                log_error(prefix + " | Error: " + str(error), data, error)
+                                log_info(prefix + " | Input: " + str(data), data)
+                                post_error_wf(error["code"], error["message"], data, None)
+                                break
+                            service.start_file_translation(data)
                     else:
                         break
                 except Exception as e:

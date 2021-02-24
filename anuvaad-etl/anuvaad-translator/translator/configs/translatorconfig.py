@@ -37,6 +37,8 @@ tmx_global_enabled = os.environ.get('TRANSLATOR_TMX_GLOBAL_ENABLED', False)
 tmx_org_enabled = os.environ.get('TRANSLATOR_TMX_ORG_ENABLED', True)
 tmx_user_enabled = os.environ.get('TRANSLATOR_TMX_USER_ENABLED', True)
 user_translation_enabled = os.environ.get('USER_TRANSLATION_ENABLED', True)
+orgs_nmt_disable = os.environ.get('ORGS_NMT_DISABLE', 'NONMT')
+
 
 #nmt-machine-topics
 anu_nmt_input_topic_mx = os.environ.get('KAFKA_NMT_MACHINES_INPUT_TOPICS', 'anuvaad-nmt-translate,anuvaad-nmt-translate-m2')
@@ -46,7 +48,7 @@ anu_nmt_output_topic_mx = os.environ.get('KAFKA_NMT_MACHINES_OUTPUT_TOPICS', 'an
 #kafka-configs
 anu_translator_input_topic = os.environ.get('KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_TOPIC', 'anuvaad-dp-tools-translator-input-v3')
 anu_translator_output_topic = os.environ.get('KAFKA_ANUVAAD_DP_TRANSLATOR_OUTPUT_TOPIC', 'anuvaad-dp-tools-translator-output-v3')
-anu_translator_tmx_in_topic = os.environ.get('KAFKA_ANUVAAD_TRANSLATOR_TMX_INPUT_TOPIC', 'anuvaad-translator-tmx-input-v1')
+anu_translator_nonmt_topic = os.environ.get('KAFKA_ANUVAAD_TRANSLATOR_NONMT_TOPIC', 'anuvaad-translator-no-nmt-v1')
 anu_translator_consumer_grp = os.environ.get('KAFKA_ANUVAAD_ETL_TRANSLATOR_CONSUMER_GRP', 'anuvaad-etl-translator-consumer-group')
 translator_cons_no_of_partitions = 1
 translator_nmt_cons_no_of_partitions = 1
