@@ -171,23 +171,8 @@
             "active":true
         },
         {
-            "role":"M-TRANSLATOR",
-            "actionID": "36122d56-6077-48eb-a2d8-303b1460d4ac",
-            "active":true
-        },
-        {
-            "role":"M-TRANSLATOR",
-            "actionID": "e5d0b999-a2bb-41af-a267-2494b15fb6a5",
-            "active":true
-        },
-        {
-            "role":"M-TRANSLATOR",
-            "actionID": "f08cb87c-9e10-4b23-9de5-52c6ff70d405",
-            "active":true
-        },
-        {
-            "role":"M-TRANSLATOR",
-            "actionID": "75a424ae-ae00-44da-86f8-3809dd9a6458",
+            "role":"ADMIN",
+            "actionID": "7f3c15a0-bdc4-4dc5-8ebb-5c7ba80ee016",
             "active":true
         }
     ]
