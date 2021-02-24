@@ -157,6 +157,7 @@ class ViewDocumentDigitization extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
+        console.log(this.state.currentPageIndex)
         if (this.props.digitizeddocument.changedJob && this.props.digitizeddocument.changedJob.hasOwnProperty("jobID") && prevProps.digitizeddocument.changedJob !== this.props.digitizeddocument.changedJob) {
             TELEMETRY.endWorkflow(this.props.digitizeddocument.changedJob.source_language_code, "", this.props.digitizeddocument.changedJob.filename, this.props.digitizeddocument.changedJob.jobID, this.props.digitizeddocument.changedJob.status)
         }
@@ -270,7 +271,7 @@ class ViewDocumentDigitization extends React.Component {
     };
 
     processTableClickedNextOrPrevious = (page, sortOrder) => {
-        if (this.state.maxPageNum < page) {
+        if (this.state.currentPageIndex < page) {
             /**
              * user wanted to load next set of records
              */
@@ -282,13 +283,10 @@ class ViewDocumentDigitization extends React.Component {
                 true
             );
             this.setState({
-                maxPageNum: page,
+                currentPageIndex: page,
                 offset: this.state.offset + this.state.limit,
             });
         }
-        this.setState({
-            currentPageIndex: page
-        })
     };
 
     snackBarMessage = () => {
@@ -593,7 +591,7 @@ class ViewDocumentDigitization extends React.Component {
         const options = {
             textLabels: {
                 body: {
-                    noMatch: translate("gradeReport.page.muiNoTitle.sorryRecordNotFound"),
+                    noMatch: this.props.digitizeddocument.count > 0 ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound"),
                 },
                 toolbar: {
                     search: translate("graderReport.page.muiTable.search"),
@@ -604,15 +602,6 @@ class ViewDocumentDigitization extends React.Component {
                 },
                 options: { sortDirection: "desc" },
             },
-            // onChangeRowsPerPage: (limit) => {
-            //     let diffValue = limit - this.state.limit;
-            //     if (diffValue > 0) {
-            //         this.makeAPICallJobsBulkSearch(this.state.offset + diffValue, limit - this.state.limit, false, false, true)
-            //     }
-
-            //     this.setState({ limit })
-
-            // },
             rowsPerPageOptions: [10],
 
             onTableChange: (action, tableState) => {
@@ -626,7 +615,7 @@ class ViewDocumentDigitization extends React.Component {
                     default:
                 }
             },
-            count: 0,
+            count: this.props.digitizeddocument.count,
             filterType: "checkbox",
             download: true,
             print: false,
