@@ -21,7 +21,7 @@ import history from "../../../../web.history";
 import Dialog from "../../../components/web/common/SimpleDialog";
 import MarkInactive from "../../../../flux/actions/apis/view_document/markinactive";
 import togglebtnstatus from '../../../../flux/actions/apis/view_digitized_document/show_bg_image';
-
+import fetchnextpage from '../../../../flux/actions/apis/view_digitized_document/fetch_page_number';
 
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -270,10 +270,11 @@ class ViewDocumentDigitization extends React.Component {
     };
 
     processTableClickedNextOrPrevious = (page, sortOrder) => {
-        if (this.state.currentPageIndex < page) {
+        if (this.props.page_no < page) {
             /**
              * user wanted to load next set of records
              */
+            this.props.fetchnextpage()
             this.makeAPICallJobsBulkSearch(
                 this.state.offset + this.state.limit,
                 this.state.limit,
@@ -665,7 +666,8 @@ const mapDispatchToProps = (dispatch) =>
             clearJob,
             APITransport,
             CreateCorpus: APITransport,
-            togglebtnstatus
+            togglebtnstatus,
+            fetchnextpage
         },
         dispatch
     );
@@ -677,7 +679,8 @@ const mapStateToProps = (state) => ({
     async_job_status: state.async_job_status,
     open_sidebar: state.open_sidebar,
     download_json: state.download_json,
-    status: state.showimagestatus.status
+    status: state.showimagestatus.status,
+    page_no: state.ditigitization_pageno.pageno
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewDocumentDigitization);
