@@ -34,7 +34,7 @@ class TranslateService:
                 sentence_id.append(i.get("s_id") or "NA")
                 if  any(v not in i for v in ['src','id']):
                     log_info("either id or src missing in some input",MODULE_CONTEXT)
-                    out = CustomResponse(Status.ID_OR_SRC_MISSING.value, [])
+                    out = CustomResponse(Status.ID_OR_SRC_MISSING.value, inputs)
                     return out
 
                 log_info("input sentence:{}".format(i['src']),MODULE_CONTEXT) 
@@ -181,7 +181,7 @@ class TranslateService:
             status = Status.SYSTEM_ERR.value
             status['why'] = str(e)
             log_exception("Unexpected error:%s and %s"% (e,sys.exc_info()[0]),MODULE_CONTEXT,e) 
-            out = CustomResponse(status, [])  
+            out = CustomResponse(status, inputs)  
 
         return out
 
@@ -209,7 +209,7 @@ class OpenNMTTranslateService:
                     
                 if  any(v not in i for v in ['src','id']):
                     log_info("either id or src missing in some input",MODULE_CONTEXT)
-                    out = CustomResponse(Status.ID_OR_SRC_MISSING.value, [])
+                    out = CustomResponse(Status.ID_OR_SRC_MISSING.value, inputs)
                     return out
                
                 if any(v in i for v in ['s0_src','s0_tgt','save']):
@@ -404,12 +404,12 @@ class OpenNMTTranslateService:
             status = Status.SEVER_MODEL_ERR.value
             status['why'] = str(e)
             log_exception("ServerModelError error in TRANSLATE_UTIL-translate_func: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
-            out = CustomResponse(status, [])  
+            out = CustomResponse(status, inputs)  
         except Exception as e:
             status = Status.SYSTEM_ERR.value
             status['why'] = str(e)
             log_exception("Unexpected error:%s and %s"% (e,sys.exc_info()[0]),MODULE_CONTEXT,e) 
-            out = CustomResponse(status, [])    
+            out = CustomResponse(status, inputs)    
 
         return out
      
