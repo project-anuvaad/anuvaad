@@ -7,9 +7,10 @@ from utilities import AppContext
 from flask import g
 import redis
 client = MongoClient(MONGO_CONNECTION_URL)
-# def get_db():
-#     log_info("Establishing connection with mongo", AppContext.getContext())
-#     return client[MONGO_DB_SCHEMA]
+
+def get_db():
+    log_info("Establishing connection with mongo", AppContext.getContext())
+    return client[MONGO_DB_SCHEMA]
 
 
 def get_redis():
@@ -18,11 +19,11 @@ def get_redis():
         g.redisdb = redis.Redis(host=REDIS_SERVER_HOST, port=REDIS_SERVER_PORT, db=4)
     return g.redisdb
 
-def get_db():
-    with server.app_context():
-        if 'mongodb' not in g:
-            log_info("Establishing connection with mongo", AppContext.getContext())
-            client = MongoClient(MONGO_CONNECTION_URL)
-            g.mongodb = client[MONGO_DB_SCHEMA]
+# def get_db():
+#     with server.app_context():
+#         if 'mongodb' not in g:
+#             log_info("Establishing connection with mongo", AppContext.getContext())
+#             client = MongoClient(MONGO_CONNECTION_URL)
+#             g.mongodb = client[MONGO_DB_SCHEMA]
 
-        return g.mongodb
+#         return g.mongodb
