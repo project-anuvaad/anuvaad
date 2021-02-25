@@ -53,7 +53,6 @@ class FileContentRepositories:
                 if update_s0:
                     if 'tgt' in elem:
                         elem['s0_tgt']    = elem['tgt']
-                    elem['s0_tgt']    = elem['tgt']
                     elem['s0_src']    = elem['src']
 
                 if 'input_subwords' in elem:

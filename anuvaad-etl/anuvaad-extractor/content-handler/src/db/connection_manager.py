@@ -1,5 +1,6 @@
 from config import MONGO_CONNECTION_URL,MONGO_DB_SCHEMA
 from config import REDIS_SERVER_HOST,REDIS_SERVER_PORT
+from app import server
 from pymongo import MongoClient
 from anuvaad_auditor.loghandler import log_info, log_exception
 from utilities import AppContext
@@ -19,9 +20,10 @@ def get_redis():
     return g.redisdb
 
 # def get_db():
-#     if 'mongodb' not in g:
-#         log_info("Establishing connection with mongo", AppContext.getContext())
-#         client = MongoClient(MONGO_CONNECTION_URL)
-#         g.mongodb = client[MONGO_DB_SCHEMA]
+#     with server.app_context():
+#         if 'mongodb' not in g:
+#             log_info("Establishing connection with mongo", AppContext.getContext())
+#             client = MongoClient(MONGO_CONNECTION_URL)
+#             g.mongodb = client[MONGO_DB_SCHEMA]
 
-#     return g.mongodb
+#         return g.mongodb
