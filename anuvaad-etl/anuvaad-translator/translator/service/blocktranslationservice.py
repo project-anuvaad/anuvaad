@@ -9,6 +9,8 @@ from tmx.tmxservice import TMXService
 from tmx.tmxrepo import TMXRepository
 from configs.translatorconfig import tmx_enabled
 from configs.translatorconfig import tmx_global_enabled
+from configs.translatorconfig import orgs_nmt_disable
+
 
 
 
@@ -36,8 +38,13 @@ class BlockTranslationService:
                 fail_msg = "ERROR: there are no modified sentences for re-translation"
                 log_error(fail_msg, block_translate_input, None)
             else:
-                log_info("API call to NMT...", block_translate_input)
-                nmt_response = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None, block_translate_input["metadata"]["userID"])
+                nmt_disabled_orgs = list(str(orgs_nmt_disable).split(","))
+                if block_translate_input["metadata"]["orgID"] not in nmt_disabled_orgs:
+                    log_info("API call to NMT...", block_translate_input)
+                    nmt_response = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None, block_translate_input["metadata"]["userID"])
+                else:
+                    log_info("Job belongs to NONMT type!", block_translate_input)
+                    nmt_response = {"response_body": nmt_in_txt}
                 log_info("Response received from NMT!", block_translate_input)
                 if nmt_response:
                     ch_input = self.get_translations_ip_ch(nmt_response, block_translate_input)
@@ -77,7 +84,11 @@ class BlockTranslationService:
     # Method to fetch blocks from input and add it to list for translation
     def get_sentences_for_translation(self, block_translate_input):
         sent_for_nmt, tmx_count = [], 0
-        tmx_present = self.is_tmx_present(block_translate_input)
+        nmt_disabled_orgs = list(str(orgs_nmt_disable).split(","))
+        if block_translate_input["metadata"]["orgID"] not in nmt_disabled_orgs:
+            tmx_present = self.is_tmx_present(block_translate_input)
+        else:
+            tmx_present = False
         record_id, model_id = block_translate_input["input"]["recordID"], block_translate_input["input"]["model"]["model_id"]
         modified_sentences, tmx_blocks_cache = [], {}
         if 'modifiedSentences' in block_translate_input["input"].keys():
