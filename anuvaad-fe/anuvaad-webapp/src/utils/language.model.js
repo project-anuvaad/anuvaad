@@ -1,10 +1,10 @@
 var jp                = require('jsonpath')
 
 export const get_language_name = (languages, language_code)  => {
-    let condition   = `$..[?(@.source_language_code == '${language_code}' && @.is_primary==true)]`
+    let condition   = `$..[?(@.target_language_code == '${language_code}' && @.is_primary==true)]`
     let language    = jp.query(languages, condition)
     if (language.length > 0) {
-        return language[0].source_language_name
+        return language[0].target_language_name
     }
     return 'UNKNOWN'
 }
@@ -39,3 +39,14 @@ export const get_model_details = (languages, source_language_code, target_langua
         return language[0]
     }
 }
+
+export const fetchModel = (modelId, docs) => {
+    let model = ""
+
+    if (docs && docs.length > 0) {
+      let condition = `$[?(@.model_id == '${modelId}')]`;
+      model = jp.query(docs, condition)
+    }
+
+    return model.length > 0 ? model[0] : null
+  }
