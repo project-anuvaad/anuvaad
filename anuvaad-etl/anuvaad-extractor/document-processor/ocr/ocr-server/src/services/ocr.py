@@ -127,7 +127,8 @@ def get_document_bounds(response,page_dict,page_regions):
                     if len(word.symbols[0].property.detected_languages)!=0:
                         word_region["language"] = word.symbols[0].property.detected_languages[0].language_code
                     else:
-                        word_region["language"] = page.property.detected_languages[0].language_code
+                        if len(page.property.detected_languages)!=0:
+                            word_region["language"] = page.property.detected_languages[0].language_code
 
     page_lines   =  page_dict["lines"]
     page_words   =  page_dict["words"]
