@@ -71,50 +71,25 @@ class OcrPageCard extends React.Component {
     /**
      * render Sentences span
      */
-
-    clearEvent = () => {
-        this.setState({ event: false })
-    }
     renderTextSpan = (word, line, region) => {
         return (
             <div
-                // contentEditable={this.action === word.identifier}
                 style={{
                     position: "absolute",
                     zIndex: this.action === word.identifier ? 100000 : 2,
                     color: word.conf < this.props.percent ? 'red' : 'black',
-                    padding: '0%',
                     fontSize: parseInt(Math.ceil(region.avg_size + 1)) + 'px',
-                    fontStyle: region.font.family,
                     top: line.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
-                    maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
-                    width: 'auto'
+                    width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                 }}
                 key={word.identifier}
-            // onDoubleClick={(e) => this.handleSelectedSentenceId(e, word)}
-            // onBlur={this.clearEvent}
             >
-
-                <Textfit mode="single" min={1} max={region.avg_size} >
+                <Textfit mode="single" min={1} max={parseInt(Math.ceil(region.avg_size + 1))} >
                     {word.text}
                 </Textfit>
-                {/* {this.state.event &&
-                    this.showPopper(word)} */}
-
             </div>
         )
-    }
-
-    showPopper = (word) => {
-        return (
-            <Popper style={{ zIndex: 3 }} id={word.identifier} open={true} anchorEl={this.state.event}>
-                <div style={{ border: '1px solid black' }}>The content of the Popper.</div>
-                {/* <TextField variant="outlined" value={word.text}>
-                    {word.text}
-                </TextField> */}
-            </Popper>
-        );
     }
 
     /**
