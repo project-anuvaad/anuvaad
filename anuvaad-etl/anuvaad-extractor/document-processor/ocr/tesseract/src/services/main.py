@@ -31,7 +31,7 @@ def preprocess_file(file_properties,lang,ocr_level):
                     region_lines = file_properties.get_region_lines(page_index,idx)
                     for line_index, line in enumerate(region_lines):
                         region_words = file_properties.get_region_words(page_index,idx,line_index)
-                        if config.IS_DYNAMIC:
+                        if config.IS_DYNAMIC and region['class'] in config.DYNAMIC_CLASS: 
                             region_words_org = coord_adjustment(page_path, copy.deepcopy(region_words))
                             region_ocr = text_extraction(lang, page_path, region_words_org,region_words, width, height,mode_height)
                         else:

@@ -359,16 +359,18 @@ class Region_Unifier:
         try:
             
             text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(page_regions)
+            
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
             filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
             filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_lines))
+            
             for idx,table in enumerate(tabel_region):
                 filtered_words     = remvoe_regions(copy.deepcopy(table['children']), copy.deepcopy(filtered_words))
                 filtered_lines    = remvoe_regions(copy.deepcopy(table['children']), copy.deepcopy(filtered_lines))
                 tabel_region[idx]['children'] =  collate_regions(copy.deepcopy( table['children']),copy.deepcopy(page_words),grand_children=False,region_flag = False)
                 page_words = filtered_words
                 page_lines = filtered_lines
-
+            
 
 
             
@@ -403,6 +405,8 @@ class Region_Unifier:
 
             for idx,v_block in enumerate(v_list):
                 #if 'children' in v_block.keys()
+                if 'class' not in v_block.keys():
+                    v_list[idx]['class']= "TEXT"
                 if   v_block['children'] != None and  len(v_block['children']) > 1 :
                     #print(idx, 'region index')
                     #print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
@@ -411,6 +415,8 @@ class Region_Unifier:
                     avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
 
                     #v_block['children'] = horzontal_merging(v_block['children'],avrage_region_ver_ratio)
+                    #print("kkkkkkkkkkkkkkkkkkk")
+                    
                     v_list[idx] =copy.deepcopy(v_block)
 
 

@@ -4,10 +4,12 @@ from anuvaad_auditor.loghandler import log_debug
 import src.utilities.app_context as app_context
 #from src.services.get_underline import get_underline
 #from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
-import config
+import config,copy
 from src.utilities.request_parse import get_files, File,get_json
 from src.utilities.pdf_to_image import doc_pre_processing
 from src.services.ocr import text_extraction
+
+
 
 def process_input(app_context,base_dir) :
     try:
@@ -22,11 +24,8 @@ def process_input(app_context,base_dir) :
                 page_paths = file_properties.get_pages()
             else:
                 page_paths = doc_pre_processing(file['file']['name'],config.BASE_DIR)
-            page_res = text_extraction(file_properties,page_paths)
-            # file_output["page_info"] = page_paths
-            # file_output["file"]      = file
-            # file_output["pages"]     = page_res
-            # file_output['status']['message']="google-vision ocr run successfully"
+            
+            page_res = text_extraction(file_properties,page_paths,file)
             output_files.append(page_res)
         app_context.application_context["outputs"] =output_files
         log_info("successfully completed google vision ocr", None)

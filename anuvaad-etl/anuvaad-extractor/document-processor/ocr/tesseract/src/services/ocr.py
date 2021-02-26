@@ -15,15 +15,15 @@ import uuid,copy
 def ocr(crop_image,configs,left,top,language):
     if configs:
         #temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
-        temp_df = pytesseract.image_to_data(crop_image, config='--psm 7', lang=language,
-                                            output_type=Output.DATAFRAME)
+        temp_df = pytesseract.image_to_data(crop_image,  lang=language,config='--psm 7',
+                                            output_type=Output.DATAFRAME) #config='--psm 7',
     else:
         #temp_df = pytesseract.image_to_data(crop_image, lang= LANG_MAPPING[language][0],output_type=Output.DATAFRAME)
         temp_df = pytesseract.image_to_data(crop_image, lang=language,output_type=Output.DATAFRAME)
     temp_df = temp_df[temp_df.text.notnull()]
     text = ""
     coord  = []
-    
+    #print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkk",temp_df)
     for index, row in temp_df.iterrows():
         temp_dict = {}; vert=[]
         temp_dict['identifier'] = str(uuid.uuid4())
@@ -32,6 +32,7 @@ def ocr(crop_image,configs,left,top,language):
         vert.append({'x':int(row["left"]+left)+int(row["width"]),'y':row["top"]+top+int(row["height"])})
         vert.append({'x':int(row["left"]+left),'y':row["top"]+top+int(row["height"])})
         #temp_dict['text'] = str(row["text"])
+        
         temp_dict['text']   = process_text(row['text'])
         temp_dict['conf'] = row["conf"]
         temp_dict['boundingBox']={}
@@ -102,8 +103,8 @@ def get_text(path,coord,lang,width, height,freq_height,level):
     try :
 
         crop_image = image[ top:bottom, left:right]
-        # if level['class']=="CELL":
-        #     cv2.imwrite("/home/naresh/line_crop2/"+str(uuid.uuid4()) + '.jpg',crop_image)
+        #if level['class']=="CELL":
+        #cv2.imwrite("/home/naresh/line_crop2/"+str(uuid.uuid4()) + '.jpg',crop_image)
         #crop_image.save("/home/naresh/line_crop/"+str(uuid.uuid4()) + '.jpg')
         if abs(bottom-top) > 2*freq_height:
             coord, text = ocr(crop_image,False,left,top,lang)
@@ -115,6 +116,7 @@ def get_text(path,coord,lang,width, height,freq_height,level):
                 coord,text = ocr(crop_image,False,left,top,lang)
             #temp_df = pytesseract.image_to_data(crop_image,config='--psm 7', lang=LANG_MAPPING[lang][0],output_type=Output.DATAFRAME)
         #text, coord = ocr(temp_df,left,top)
+        #print("kkkkkkkkkkkkkkkkkk",text)
         return text, coord
 
     except Exception as e :
@@ -155,10 +157,11 @@ def text_extraction(lang, page_path, regions,region_org,width, height,mode_heigh
             text, tess_coord = get_text(page_path, coord, lang, width, height,mode_height,level)
             region_org[idx]['text'] = text
             region_org[idx]['children'] = tess_coord
+            #print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
             #region_org[idx]['tess_word_coords'] = tess_coord
 
         else:
-            #print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+            
             region_org[idx]['text'] = ""
             region_org[idx]['children'] =[]
             #region_org[idx]['tess_word_coords'] = []
@@ -193,7 +196,7 @@ def end_point_correction(region, margin, ymax,xmax):
 def mask_image(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
     try:
         image   = cv2.imread(path)
-        #image2   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+path)
+        #image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+path)
         #image    = copy.deepcopy(image2)
         #bg_image   = clean_image(image2)
         for region_idx, page_region in enumerate(page_regions):

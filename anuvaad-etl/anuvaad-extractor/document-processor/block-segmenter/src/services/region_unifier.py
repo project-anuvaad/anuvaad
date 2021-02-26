@@ -360,12 +360,14 @@ class Region_Unifier:
             
             text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(page_regions)
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
-            # for idx,table in enumerate(tabel_region):
-            #     filtered_words     = remvoe_regions(copy.deepcopy(table['children']), copy.deepcopy(page_words))
-            #     filtered_lines    = remvoe_regions(copy.deepcopy(table['children']), copy.deepcopy(page_lines))
-            #     tabel_region[idx]['children'] =  collate_regions(copy.deepcopy( table['children']),copy.deepcopy(page_words),grand_children=True,region_flag = False)
-            #     page_words = filtered_words
-            #     page_lines = filtered_lines
+            filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
+            filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_lines))
+            for idx,table in enumerate(tabel_region):
+                filtered_words     = remvoe_regions(copy.deepcopy(table['children']), copy.deepcopy(filtered_words))
+                filtered_lines    = remvoe_regions(copy.deepcopy(table['children']), copy.deepcopy(filtered_lines))
+                tabel_region[idx]['children'] =  collate_regions(copy.deepcopy( table['children']),copy.deepcopy(page_words),grand_children=False,region_flag = False)
+                page_words = filtered_words
+                page_lines = filtered_lines
 
 
 
@@ -373,16 +375,15 @@ class Region_Unifier:
             text_region     = remvoe_regions(copy.deepcopy(tabel_region) ,copy.deepcopy(text_region))
 
 
-            filtered_words     = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
-            filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_lines))
+            # filtered_words     = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
+            # filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_lines))
 
-            filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(filtered_words))
-            filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(filtered_lines))
+            
 
             line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words))
             v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),grand_children=True )
-            t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
-            #t_list = tabel_region
+            #t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
+            t_list = tabel_region
             i_list       =  collate_regions(copy.deepcopy( image_region),copy.deepcopy(page_words),grand_children=True,region_flag = False,skip_enpty_children=True)
             for i in i_list :
                 if 'chiildren' in i.keys():
