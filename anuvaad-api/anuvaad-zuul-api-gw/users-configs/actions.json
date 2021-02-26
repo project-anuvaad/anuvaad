@@ -335,6 +335,22 @@
             "active":true,
             "whiteList":true,
             "description":"API for OCR"
+        },
+        {
+            "id":"e53e6edd-5eab-402e-9156-d0ec621e0138",
+            "uri":"/anuvaad-etl/tokeniser/v0/tokenisation-wf",
+            "module":"TOKENISER",
+            "active":true,
+            "whiteList":false,
+            "description":"API tokenise paragraphs from a text file"
+        },
+        {
+            "id":"5eeecf48-65e7-4c3e-a455-0bd29b0e0838",
+            "uri":"/anuvaad-etl/tokeniser/v0/tokenisation",
+            "module":"TOKENISER",
+            "active":true,
+            "whiteList":false,
+            "description":"API tokenise paragraphs from a text file"
         }
     ]
 }
