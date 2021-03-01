@@ -367,7 +367,7 @@ class Region_Unifier:
                     v_block['avg_ver_dist'] = avg__region_ver_dist
                     avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
 
-                    #v_block['children'] = horzontal_merging(v_block['children'],avrage_region_ver_ratio)
+                    v_block['children'] = horzontal_merging(v_block['children'],avrage_region_ver_ratio)
                     
                     
                     v_list[idx] =copy.deepcopy(v_block)

@@ -231,6 +231,8 @@ class PRIMA(object):
 				return tag1, True
 		elif (area>0 and area1<area2 and area1/area2>0.2 and score1<score2) or (area>0 and area1>area2 and area2/area1>0.2 and  score1<score2):
 				return tag2, True
+		elif area>0 and tag1=='TEXT' and tag2=='TEXT':
+			return 'TEXT',True
 		else:
 			return None, False
 		# if (area>0 and tag1=='OTHER') or (area>0 and tag2=='OTHER'):
@@ -304,7 +306,7 @@ class PRIMA(object):
 			layout   = model_primalaynet.detect(image)
 			bbox,tag,score = self.prima_region(layout)
 			############### craft refinement logic 
-			#bbox, tag = self.prima_craft_refinement(bbox,craft_coords,tag)
+			bbox, tag = self.prima_craft_refinement(bbox,craft_coords,tag)
 			layouts  = self.update_box_format(bbox,tag,score)
 			flag=True
 			while flag==True:
