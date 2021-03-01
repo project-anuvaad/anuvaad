@@ -10,6 +10,8 @@ from src.errors.errors_exception import KafkaProducerError
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import time
+from kafka import TopicPartition
+
 import os
 
 import threading, queue
@@ -17,6 +19,9 @@ import config
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 ####################
 Queue    = queue.Queue()
+controlQueue  = queue.Queue()
+controlQueue.put(1)
+
 ######################
 
 def consumer_validator():
@@ -49,24 +54,33 @@ def process_vision_ocr_kf():
     try:
         consumer = consumer_validator()
         log_info("process_vision_ocr_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
+
+        while True:
+            wait_for_control = controlQueue.get(block=True)
         
-        for msg in consumer:
-            if Consumer.get_json_data(msg.value) == None:
-                log_info('process_vision_ocr_kf - received invalid data {}'.format(msg.value), None)
-                continue
-            
-            data            = Consumer.get_json_data(msg.value)
-            
-            jobid           = data['jobID']
-            log_info('process_vision_ocr_kf - received message from kafka, dumping into internal queue', data)
-            input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
-            
-            #if input_files[0]['locale'] == 'en':
-                #############
-            ####################################
-            Queue.put(data)
-            log_info('process_vision_ocr_kf - request in internal queue {}'.format(Queue.qsize()),
-                        data)
+            for msg in consumer:
+                if Consumer.get_json_data(msg.value) == None:
+                    log_info('process_vision_ocr_kf - received invalid data {}'.format(msg.value), None)
+                    continue
+
+                data            = Consumer.get_json_data(msg.value)
+
+                consumer.commit()  # <--- This is what we need
+                # Optionally, To check if everything went good
+                print('New Kafka offset: %s' % consumer.committed(TopicPartition(config.input_topic, msg.partition)))
+
+                jobid           = data['jobID']
+                log_info('process_vision_ocr_kf - received message from kafka, dumping into internal queue', data)
+                input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+
+                #if input_files[0]['locale'] == 'en':
+                    #############
+                ####################################
+                Queue.put(data)
+                log_info('process_vision_ocr_kf - request in internal queue {}'.format(Queue.qsize()),
+                            data)
+                break
+
             ########################################
             # else:
             #     blockMergerOCRQueue.put(data)
@@ -118,4 +132,6 @@ def vision_ocr_request_worker():
             Queue.task_done()
         except Exception as e:
             log_exception("vision_ocr_request_worker ",  LOG_WITHOUT_CONTEXT, e)
+
+        controlQueue.put(1)
 
