@@ -229,9 +229,9 @@ class PRIMA(object):
 		y1 = keys.get_top(region1); y2 = keys.get_top(region2)
 		if tag1=="CELL" or tag2=="CELL" or tag1=="TABLE" or tag2=="TABLE":
 			return None, False
-		if (area>0 and area1<area2 and area1/area2>0.2 and score1>score2) or (area>0 and area1>area2 and area2/area1>0.2 and  score1>score2):
+		if (area>0 and area1<area2 and area1/area2>0.2 and float(score1)>float(score2)) or (area>0 and area1>area2 and area2/area1>0.2 and  float(score1)>float(score2)):
 				return tag1, True
-		elif (area>0 and area1<area2 and area1/area2>0.2 and score1<score2) or (area>0 and area1>area2 and area2/area1>0.2 and  score1<score2):
+		elif (area>0 and area1<area2 and area1/area2>0.2 and float(score1)<float(score2)) or (area>0 and area1>area2 and area2/area1>0.2 and  float(score1)<float(score2)):
 				return tag2, True
 		elif area>0 and tag1=='TEXT' and tag2=='TEXT':
 			return 'TEXT',True
