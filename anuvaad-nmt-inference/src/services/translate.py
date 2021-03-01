@@ -304,12 +304,7 @@ class OpenNMTTranslateService:
                         "eng-mr-3rd"
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)
-                        translation = sentence_processor.indic_detokenizer(translation)         
-                    elif i['id'] == 45:
-                        "en-ta 4th"
-                        i['src'] = sentence_processor.moses_tokenizer(i['src'])
-                        translation,scores,input_sw,output_sw = encode_translate_decode(i)
-                        translation = sentence_processor.indic_detokenizer(translation)   
+                        translation = sentence_processor.indic_detokenizer(translation)           
                     elif i['id'] == 47:
                         "en-kn 2nd"
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
@@ -370,11 +365,6 @@ class OpenNMTTranslateService:
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)
                         translation = sentence_processor.moses_detokenizer(translation)
-                    elif i['id'] == 61:
-                        "ta-to-en 3rd"
-                        i['src'] = sentence_processor.indic_tokenizer(i['src'])
-                        translation,scores,input_sw,output_sw = encode_translate_decode(i)
-                        translation = sentence_processor.moses_detokenizer(translation) 
                     elif i['id'] == 62:
                         "mr-to-en 2nd"
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
