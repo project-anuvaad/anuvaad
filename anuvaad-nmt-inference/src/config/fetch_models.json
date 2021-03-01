@@ -197,30 +197,6 @@
           "target_language_name":"Marathi"
         },
         {
-          "source_language_code": "en",
-          "target_language_code": "ta",
-          "model_id": 45,
-          "model_name": "Eng-Tamil Model-4",
-          "is_primary": false,
-          "description": "On newly tokenized IK corpus 1.1 Million",
-          "created_on": "2020-02-10T06:53:00.784Z",
-          "status": "ACTIVE",
-          "source_language_name":"English",
-          "target_language_name":"Tamil"
-        },
-        {
-          "source_language_code": "ta",
-          "target_language_code": "en",
-          "model_id": 46,
-          "model_name": "Tamil-Eng Model-2",
-          "is_primary": false,
-          "description": "On newly tokenized IK corpus 1.1 Million",
-          "created_on": "2020-02-13T06:10:43.377Z",
-          "status": "INACTIVE",
-          "source_language_name":"Tamil",
-          "target_language_name":"English"
-        },
-        {
           "source_language_code": "kn",
           "target_language_code": "en",
           "model_id": 48,
@@ -374,18 +350,6 @@
           "created_on": "2020-03-01T11:52:56.912Z",
           "status": "ACTIVE",
           "source_language_name":"Marathi",
-          "target_language_name":"English"
-        },
-        {
-          "source_language_code": "ta",
-          "target_language_code": "en",
-          "model_id": 61,
-          "model_name": "Tamil-English Model-3",
-          "is_primary": false,
-          "description": "On newly tokenized IK corpus 1 Million- cleaned over ik-V3",
-          "created_on": "2020-03-01T11:53:54.068Z",
-          "status": "ACTIVE",
-          "source_language_name":"Tamil",
           "target_language_name":"English"
         },
         {
