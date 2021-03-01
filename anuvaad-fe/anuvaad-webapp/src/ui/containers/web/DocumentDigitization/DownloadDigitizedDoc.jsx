@@ -44,39 +44,51 @@ class DownloadDigitziedDoc extends React.Component {
 
     renderText = (line, region) => {
         return (
-            <div style={{
-                position: "absolute",
-                zIndex: 2,
-                width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
-                height: line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
-                top: line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
-                left: line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
-            }}
-                key={region.identifier}
+            <div
+                key={line.identifier}
             >
                 {
+                    line['children'].map(word => {
+                        return this.renderTextSpan(word, line, region)
+                    })
 
-                    this.renderTextSpan(line, region)
                 }
             </div>
         )
     }
 
-    renderTextSpan = (word, region) => {
+    renderTextSpan = (word, line, region) => {
+        if (line.class === "CELL") {
+            return (<div
+                style={{
+                    position: "absolute",
+                    zIndex: this.action === word.identifier ? 100000 : 2,
+                    color: word.conf < this.props.percent ? 'red' : 'black',
+                    fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
+                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                    width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
+                }} key={word.identifier}
+            >
+                <Textfit mode="single" min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
+                    {word.text}
+                </Textfit>
+            </div>
+            )
+        }
         return (
             <div
                 style={{
+                    position: "absolute",
                     zIndex: 2,
-                    color: 'black',
-                    padding: '0%',
-                    fontSize: region.avg_size + 'px',
+                    fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
+                    top: line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
-                    top: word.boundingBox.vertices[0].y + 'px',
-                    left: word.boundingBox.vertices[0].x + 'px',
                 }}
-                id={word.block_id}
+                id={word.identifier}
             >
-                <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size * 3))} >
+                <Textfit mode="single" style={{ width: '100%' }} min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
                     {word.text}
                 </Textfit>
             </div>

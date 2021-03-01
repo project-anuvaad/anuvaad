@@ -54,6 +54,30 @@ class OcrPageCard extends React.Component {
     /**
      * render Sentences
      */
+
+    renderChild = (region) => {
+        let width = (region.boundingBox.vertices[1].x - region.boundingBox.vertices[0].x) + 'px'
+        let height = (region.boundingBox.vertices[2].y - region.boundingBox.vertices[0].y) + 'px'
+        let top = region.boundingBox.vertices[0].y + 'px'
+        let left = (region.boundingBox.vertices[0].x) + 'px'
+        return (
+            <div style={{
+                position: "absolute",
+                height: height,
+                width: width,
+                left: left,
+                zIndex: 2,
+            }}
+                id={region.identifier}
+                key={region.identifier}
+            >
+
+                {region['children'] &&
+                    region['children'].map(line => this.renderText(line, region))
+                }
+            </div>
+        );
+    }
     renderText = (line, region) => {
         return (
             <div
@@ -78,13 +102,13 @@ class OcrPageCard extends React.Component {
                     position: "absolute",
                     zIndex: this.action === word.identifier ? 100000 : 2,
                     color: word.conf < this.props.percent ? 'red' : 'black',
-                    fontSize: word.font && parseInt(Math.ceil(word.font.size + 1)) + 'px',
+                    fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
                     top: word.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                 }} key={word.identifier}
             >
-                <Textfit mode="single" min={1} max={parseInt(Math.ceil(region.avg_size + 1))} >
+                <Textfit mode="single" min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
                     {word.text}
                 </Textfit>
             </div>
@@ -96,14 +120,14 @@ class OcrPageCard extends React.Component {
                     position: "absolute",
                     zIndex: this.action === word.identifier ? 100000 : 2,
                     color: word.conf < this.props.percent ? 'red' : 'black',
-                    fontSize: parseInt(Math.ceil(region.avg_size + 1)) + 'px',
+                    fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
                     top: line.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                 }}
                 key={word.identifier}
             >
-                <Textfit mode="single" min={1} max={parseInt(Math.ceil(region.avg_size + 1))} >
+                <Textfit mode="single" min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
                     {word.text}
                 </Textfit>
             </div>
@@ -165,31 +189,6 @@ class OcrPageCard extends React.Component {
             behavior: "smooth",
             block: "center"
         });
-    }
-
-
-    renderChild = (region) => {
-        let width = (region.boundingBox.vertices[1].x - region.boundingBox.vertices[0].x) + 'px'
-        let height = (region.boundingBox.vertices[2].y - region.boundingBox.vertices[0].y) + 'px'
-        let top = region.boundingBox.vertices[0].y + 'px'
-        let left = (region.boundingBox.vertices[0].x) + 'px'
-        return (
-            <div style={{
-                position: "absolute",
-                height: height,
-                width: width,
-                left: left,
-                zIndex: 2,
-            }}
-                id={region.identifier}
-                key={region.identifier}
-            >
-
-                {region['children'] &&
-                    region['children'].map(line => this.renderText(line, region))
-                }
-            </div>
-        );
     }
 
     getBGImage = (image) => {
@@ -263,12 +262,7 @@ class OcrPageCard extends React.Component {
                     <Paper elevation={2} style={{ position: 'relative', width: width, height: height }}>
                         {page['regions'].map(region => this.renderChild(region))}
                         {
-                            // page['regions'].map(region => {
-                            //     if (region.class === 'BGIMAGE') {
-                            // return 
                             this.renderImage(image)
-                            //     }
-                            // })
                         }
                     </Paper>
                     <Divider />
