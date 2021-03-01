@@ -179,10 +179,7 @@ class Region_Unifier:
         box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
         box1_lines = reg1["children"];  box2_lines = reg2["children"]
         hor_diff_thresh = avg_word_sepc*2 ; line_width_diff = avg_width*0.1
-        #print(hor_diff_thresh,'')
-
-
-        #issue in order
+        
         if box1_left > box2_left :
             sepration = abs(box1_left -box2_right)
         else :
@@ -192,12 +189,6 @@ class Region_Unifier:
         if box1_lines!= None and len(box1_lines)>0 and box2_lines!=None and len(box2_lines)>0:
             box1_last_line = box1_lines[-1]; box2_first_line = box2_lines[0]
 
-            #Mergin lines which are detected as regions
-            # if (keys.get_height(reg1)<= avg_height*2 and keys.get_height(reg2)<= avg_height+2)  \
-            #         and sepration < hor_diff_thresh\
-            #         and abs(box2_top-box1_bottom)< 3 * avg_ver_dist:
-            #     return True
-            # ########### conditions based on merging two horizon regions which are lines and horizontal spaing is less than threshold
             if self.check_horizon_region(reg1,reg2) \
                     and  (keys.get_height(reg1)<= avg_height*2 and keys.get_height(reg2)<= avg_height*2)  :
                 if (0<(keys.get_left(reg2)-keys.get_right(reg1))<hor_diff_thresh \
@@ -207,14 +198,7 @@ class Region_Unifier:
                     return True
                 else:
                     return False
-            ############
-
-            #based on box separation :
-            # if abs(keys.get_width(reg1)-keys.get_width(reg2))<line_width_diff\
-            #         and abs(box2_top-box1_bottom)<avg_ver_dist *2 \
-            #         and  keys.get_right(box2_first_line)-keys.get_right(box1_last_line)< line_width_diff \
-            #         and  keys.get_left(box2_first_line)-keys.get_left(box1_last_line)< line_width_diff :
-            #     return True
+            
 
             #IF a running paragraph is broken (1) :
             if len(box1_lines) > 1 :
@@ -234,15 +218,7 @@ class Region_Unifier:
                     and  keys.get_left(box2_first_line)-keys.get_left(box1_last_line)< hor_diff_thresh :
                 return True
 
-            # if abs(box2_top-box1_bottom)<avg_ver_dist and abs(box1_left-box2_left)<50 and abs(box1_right-box2_right)<50:
-            #     return True
-            # if (abs(box1_bottom-box2_top)<avg_ver_dist*0.5 \
-            #     and abs(box1_left-box2_left)<line_width_diff) \
-            #         or (abs(box1_bottom-box2_top)<avg_ver_dist*0.5\
-            #             and abs(box1_right-box2_right)<line_width_diff):
-            #     return True
-            # else:
-            #     return False
+
         else:
             return False
 
@@ -333,26 +309,6 @@ class Region_Unifier:
                 del text_regions[0]
         return region_updated, flag
 
-    #middle box merging kan_1_0
-    # secnod ponint (2.) mergingkam_1_1
-    # horizontal block merging kan_1_7
-    # b1_last_line b2_fisrst line right comparish kan_1_9
-    #kan_1_12
-    #kan_1_16  line merrgin issue    , merging above 7.1
-    #kan_1_20  (check after h_mergng is fixed)
-    #kna_1_21
-    #kan_1_22  (check whti lef/ right diff ) horizontal_diff threahold
-    #kan_1_29 horzontal region mersing if regions are very colse (a seprate condition)
-    #kan_1_30
-    #yolo_1_1
-    #20695_1_0 (reportable)
-    #20695_1_2 (merging of list with numbering)
-    #20695_1_3  sorting issue
-    # segmeter kan_1_1
-    # background removal  (sasta fix)
-    # basckground removal integration with prima
-    #segmenter kan_1_23
-    #36066_2008_3_1502_15489_Judgement_01-Aug-2019_ORI     page [1,6]  last line of paragraph
 
 
     def region_unifier(self,page_words, page_lines,page_regions):
@@ -381,8 +337,8 @@ class Region_Unifier:
             # filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_lines))
 
             
-            #print(filtered_lines)
             line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words))
+            
             
             v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),grand_children=True )
             
@@ -404,27 +360,22 @@ class Region_Unifier:
             self.avg_ver_ratio =   avg_ver_dist /avg_height
 
             for idx,v_block in enumerate(v_list):
-                #if 'children' in v_block.keys()
                 if 'class' not in v_block.keys():
                     v_list[idx]['class']= "TEXT"
                 if   v_block['children'] != None and  len(v_block['children']) > 1 :
-                    #print(idx, 'region index')
-                    #print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
                     avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([v_block])
                     v_block['avg_ver_dist'] = avg__region_ver_dist
                     avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
 
-                    v_block['children'] = horzontal_merging(v_block['children'],avrage_region_ver_ratio)
-                    #print("kkkkkkkkkkkkkkkkkkk")
+                    #v_block['children'] = horzontal_merging(v_block['children'],avrage_region_ver_ratio)
+                    
                     
                     v_list[idx] =copy.deepcopy(v_block)
 
 
-
+            
             for idx,t_block in enumerate(t_list):
                 if   t_block['children'] != None and  len(t_block['children']) > 1 :
-                    #print(idx, 'region index')
-                    #print('merging horrrrrrrrrrrrrrrrrrrr' , len(v_block['children']))
                     avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([t_block])
                     t_block['avg_ver_dist'] = avg__region_ver_dist
 
@@ -438,14 +389,6 @@ class Region_Unifier:
             #avg_hor_dist      = page_config.avg_region_info(text_regions)
             avg_word_sepc     = page_config.avg_word_sep(line_list)
 
-
-            # print("av height : ",avg_height)
-            # print("avg_ver_dist : ",avg_ver_dist)
-            # print("av avg_width : ",avg_width)
-            # print("avg_hor_dist", avg_hor_dist)
-            # print('avg word spacing', avg_word_sepc)
-            # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-            ########################
             v_list.extend(t_list)
             #n_text_table_regions.extend(t_list)
             #n_text_table_regions.extend(image_region)
@@ -453,7 +396,6 @@ class Region_Unifier:
             if self.check_double_column(v_list,avg_height):
                 print("this document is double columnssssssss")
                 return v_list, n_text_table_regions
-            # flag =True
             flag = False
             while flag==True:
                 v_list, flag = self.merge_remove_overlap(v_list,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
