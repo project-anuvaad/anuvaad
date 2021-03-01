@@ -38,8 +38,8 @@ def text_extraction(file_properties,image_paths,file):
         page_dict = {"identifier": str(uuid.uuid4()),"resolution": config.EXRACTION_RESOLUTION }
         page_regions =  file_properties.get_regions(idx)
         page_output,page_words = get_text(image_path,page_dict,page_regions)
-        #save_path = mask_image_craft(image_path, page_regions, idx, file_properties, width, height)
-        save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
+        save_path = mask_image_craft(image_path, page_regions, idx, file_properties, width, height)
+        #save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
         page_output = set_bg_image(page_output, save_path, idx,file)
         file_properties.set_regions(idx,page_output)
 
@@ -183,24 +183,24 @@ def mask_image_craft(path, page_regions,page_index,file_properties,image_width,i
         #image    = copy.deepcopy(image2)
         #bg_image   = clean_image(image2)
         for region_idx, page_region in enumerate(page_regions):
-            
-            region_class = page_region['class']
-            if region_class not in ["IMAGE","LINE","SEPARATOR"]:
-                region_lines = file_properties.get_region_lines(page_index,region_idx)
-                if region_lines!=None:
-                    for line_index, line in enumerate(region_lines):
-                        region_words = file_properties.get_region_words(page_index,region_idx,line_index)
-                        if region_words!=None:
-                            #if config.IS_DYNAMIC:
-                            #    region_words = coord_adjustment(path, region_words)
-                            for region in region_words:
-                                row_top, row_bottom,row_left,row_right = end_point_correction(region, 2,image_height,image_width)
-                                
-                                if len(image.shape) == 2 :
-                                    image[row_top - margin : row_bottom + margin , row_left - margin: row_right + margin] = fill
-                                if len(image.shape) == 3 :
-                                    image[row_top - margin: row_bottom + margin, row_left - margin: row_right + margin,:] = fill
-                                
+            if 'class' in page_region.keys():
+                region_class = page_region['class']
+                if region_class not in ["IMAGE","LINE","SEPARATOR"]:
+                    region_lines = file_properties.get_region_lines(page_index,region_idx)
+                    if region_lines!=None:
+                        for line_index, line in enumerate(region_lines):
+                            region_words = file_properties.get_region_words(page_index,region_idx,line_index)
+                            if region_words!=None:
+                                #if config.IS_DYNAMIC:
+                                #    region_words = coord_adjustment(path, region_words)
+                                for region in region_words:
+                                    row_top, row_bottom,row_left,row_right = end_point_correction(region, 2,image_height,image_width)
+                                    
+                                    if len(image.shape) == 2 :
+                                        image[row_top - margin : row_bottom + margin , row_left - margin: row_right + margin] = fill
+                                    if len(image.shape) == 3 :
+                                        image[row_top - margin: row_bottom + margin, row_left - margin: row_right + margin,:] = fill
+                                    
         if '.jpg' in path:
             save_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
         elif '.png' in path:
