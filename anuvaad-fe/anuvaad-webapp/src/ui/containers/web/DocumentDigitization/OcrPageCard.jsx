@@ -72,6 +72,24 @@ class OcrPageCard extends React.Component {
      * render Sentences span
      */
     renderTextSpan = (word, line, region) => {
+        if (line.class === "CELL") {
+            return (<div
+                style={{
+                    position: "absolute",
+                    zIndex: this.action === word.identifier ? 100000 : 2,
+                    color: word.conf < this.props.percent ? 'red' : 'black',
+                    fontSize: word.font && parseInt(Math.ceil(word.font.size + 1)) + 'px',
+                    top: word.boundingBox.vertices[0].y + 'px',
+                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                    width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
+                }} key={word.identifier}
+            >
+                <Textfit mode="single" min={1} max={parseInt(Math.ceil(region.avg_size + 1))} >
+                    {word.text}
+                </Textfit>
+            </div>
+            )
+        }
         return (
             <div
                 style={{
