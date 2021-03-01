@@ -81,6 +81,10 @@ class UserDetails extends React.Component {
     }
     else if (this.state.showLoader && prevProps.apistatus.message !== undefined && this.props.apistatus.message === prevProps.apistatus.message) {
       this.setState({ showLoader: false, status: false })
+    } else if (this.state.message === "Organization is currently inactive" && !this.state.isenabled) {
+      setTimeout(() => {
+        this.setState({ isenabled: true })
+      }, 1000)
     }
   }
 

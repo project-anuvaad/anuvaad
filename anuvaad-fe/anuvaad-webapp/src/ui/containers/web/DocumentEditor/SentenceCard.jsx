@@ -177,7 +177,7 @@ class SentenceCard extends React.Component {
             // - check availability of s0_tgt
             //  - if s0_tgt is not available, alert user
             //  - if s0_tgt is available, then move s0_tgt to textfield
-            if (this.props.sentence.s0_tgt === '') {
+            if (this.props.sentence.s0_tgt === '' || !this.props.sentence.s0_tgt) {
                 alert('Please translate the sentence and then save. ')
                 return;
             }
@@ -185,6 +185,7 @@ class SentenceCard extends React.Component {
                 alert('Your will lose saved sentence, please translate the sentence and then save. ')
                 return;
             }
+
             this.setState({
                 value: this.props.sentence.s0_tgt
             })
@@ -196,7 +197,7 @@ class SentenceCard extends React.Component {
                 let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;// max spent time is 5 min
                 time = 0;
-                sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
+                sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()): 0;
                 TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
                 return;
@@ -215,7 +216,7 @@ class SentenceCard extends React.Component {
                 sentence.save = true;
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
-                sentence.bleu_score = BLEUCALCULATOR.scoreSystem(sentence.s0_tgt, sentence.tgt);
+                sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()): 0;
                 let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;
                 time = 0;
@@ -414,7 +415,7 @@ class SentenceCard extends React.Component {
         /**
         * Ctrl+m to copy
         */
-        if ((event.ctrlKey || event.metaKey) && charCode === 'm') {
+        if ((event.ctrlKey || event.metaKey) && charCode === 'm'&& this.props.model.status === "ACTIVE") {
             this.moveText()
             event.preventDefault();
             return false
@@ -423,7 +424,7 @@ class SentenceCard extends React.Component {
          * user requesting for suggestions
          */
         var TABKEY = 9;
-        if (event.keyCode === TABKEY) {
+        if (event.keyCode === TABKEY && this.props.model.status === "ACTIVE") {
             var elem = document.getElementById(this.props.sentence.s_id)
             if (!this.props.sentence.s0_tgt && !this.state.value) {
                 alert("Sorry, Machine translated text is not available...")
@@ -545,6 +546,7 @@ class SentenceCard extends React.Component {
     }
 
     renderUserInputArea = () => {
+        
         return (
             <form >
                 <div>
@@ -588,7 +590,7 @@ class SentenceCard extends React.Component {
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
-                                helperText="Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save"
+                                helperText={this.props.model.status === "ACTIVE" ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save":"Ctrl+s to save" }
                                 type="text"
                                 name={this.props.sentence.s_id}
                                 value={this.state.value}
@@ -662,7 +664,7 @@ class SentenceCard extends React.Component {
                 return val.data;
             }).then((result) => {
                 let parallel_words = []
-                result.parallel_words.map((words) => {
+                result && result.parallel_words.map((words) => {
                     if (this.props.model.target_language_code === words.locale)
                         parallel_words.push(words.name)
                 })

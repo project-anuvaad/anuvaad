@@ -18,6 +18,8 @@ import { clearJobEntry } from "../../../../flux/actions/users/async_job_manageme
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
+import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
@@ -308,6 +310,68 @@ class UserReport extends React.Component {
         }
     };
 
+    processDocumentDownload = (jobId) => {
+        return <Tooltip title="Download input file" placement="left">
+            <IconButton
+                style={{ color: "#233466", padding: "5px" }}
+                component="a"
+                onClick={() =>
+                    this.processDownloadInputFileClick(jobId)
+                }
+            >
+                <CloudDownloadIcon />
+            </IconButton>
+        </Tooltip>
+    }
+
+    processDownloadInputFileClick = (jobId) => {
+        this.setState({
+            dialogMessage: "Downloading file...",
+            timeOut: null,
+            variant: "info",
+        });
+        let job = this.getJobIdDetail(jobId);
+        let user_profile = JSON.parse(localStorage.getItem("userProfile"));
+        let obj = new DownloadFile(job.converted_filename, this.props.match.params.id);
+
+        const apiReq1 = fetch(obj.apiEndPoint(), {
+            method: "get",
+            headers: obj.getHeaders().headers,
+        })
+            .then(async (response) => {
+                if (!response.ok) {
+                    this.setState({
+                        dialogMessage: "Failed to download file...",
+                        timeOut: 3000,
+                        variant: "info",
+                    });
+                    console.log("api failed");
+                } else {
+                    const buffer = new Uint8Array(await response.arrayBuffer());
+                    let res = Buffer.from(buffer).toString("base64");
+
+                    fetch("data:image/jpeg;base64," + res)
+                        .then((res) => res.blob())
+                        .then((blob) => {
+                            let a = document.createElement("a");
+                            let url = URL.createObjectURL(blob);
+                            a.href = url;
+                            a.download = job.converted_filename;
+                            this.setState({ dialogMessage: null });
+                            a.click();
+                        });
+                }
+            })
+            .catch((error) => {
+                this.setState({
+                    dialogMessage: "Failed to download file...",
+                    timeOut: 3000,
+                    variant: "info",
+                });
+                console.log("api failed because of server or network", error);
+            });
+    };
+
     render() {
         const columns = [
             {
@@ -448,6 +512,7 @@ class UserReport extends React.Component {
                             return (
                                 <div>
                                     {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
+                                    {this.processDocumentDownload(tableMeta.rowData[1])}
                                 </div>
                             );
                         }

@@ -160,10 +160,12 @@ class PdfUpload extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
+      debugger
       this.setState({
         source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
         target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models)
       })
+      
     }
 
     if (prevProps.documentUplaod !== this.props.documentUplaod) {
@@ -253,7 +255,6 @@ class PdfUpload extends Component {
    */
   renderSourceLanguagesItems = () => {
     const { classes } = this.props;
-
     return (
       <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "3%" }}>
         <Grid item xs={12} sm={12} lg={12} xl={12}>

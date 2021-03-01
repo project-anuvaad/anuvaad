@@ -96,7 +96,7 @@ def sort_regions(region_lines, sorted_lines=[]):
         sort_regions(next_line, sorted_lines)
     return sorted_lines
 
-def collate_regions(regions, lines,grand_children=False,region_flag = True):
+def collate_regions(regions, lines,grand_children=False,region_flag = True,skip_enpty_children=False):
     idx = index.Index()
     lines_intersected = []
     if regions !=None and len(regions) > 0:
@@ -110,12 +110,18 @@ def collate_regions(regions, lines,grand_children=False,region_flag = True):
             if len(children_lines) > 0:
                 region_lines = []
                 for intr_index in children_lines:
-                    if grand_children :
-                        if 'children' not in lines[intr_index].keys():
-                            lines[intr_index]['children'] = [copy.deepcopy(lines[intr_index])]
-
-                    region_lines.append(lines[intr_index])
-                    lines_intersected.append(intr_index)
+                    if intr_index not in lines_intersected:
+                        if grand_children :
+                            if 'children' not in lines[intr_index].keys():
+                                lines[intr_index]['children'] = [copy.deepcopy(lines[intr_index])]
+                    
+                        line_poly = get_polygon(lines[intr_index]['boundingBox'])
+                        area = region_poly.intersection(line_poly).area
+                        reg_area = region_poly.area
+                        line_area = line_poly.area
+                        if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                            region_lines.append(lines[intr_index])
+                            lines_intersected.append(intr_index)
                 region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 if len(region_lines) > 1:
                     regions[region_index]['children'] = sort_regions(region_lines,[])
@@ -124,9 +130,10 @@ def collate_regions(regions, lines,grand_children=False,region_flag = True):
                     regions[region_index]['children']  = region_lines
                     regions[region_index]['avg_size'] = get_avrage_size(region_lines)
             else:
-                if grand_children :
+                if not skip_enpty_children :
+                    if grand_children :
+                        regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
                     regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
-                regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
     #orphan_lines = []
     if region_flag:
         for line_index, line in enumerate(lines):

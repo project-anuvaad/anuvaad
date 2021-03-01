@@ -27,6 +27,7 @@ import MarkInactive from "../../../../flux/actions/apis/view_document/markinacti
 import JobStatus from "../../../../flux/actions/apis/view_document/translation.progress";
 import { clearJobEntry } from "../../../../flux/actions/users/async_job_management";
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
+import fetchpageno from '../../../../flux/actions/apis/view_document/fetch_page_no';
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -39,7 +40,7 @@ class ViewDocument extends React.Component {
       offset: 0,
       limit: 10,
       currentPageIndex: 0,
-      maxPageNum:0,
+      maxPageNum: 0,
       dialogMessage: null,
       timeOut: 3000,
       variant: "info",
@@ -122,7 +123,7 @@ class ViewDocument extends React.Component {
         MUIDataTableBodyCell: {
           root: {
             padding: "3px 10px 3px",
-            overflow:"auto"
+            overflow: "auto"
           },
         },
       },
@@ -274,8 +275,8 @@ class ViewDocument extends React.Component {
     this.makeAPICallJobDelete(jobId);
   }
 
-  processDeleteJobClick = (fileName,jobId, recordId) => {
-    this.setState({ showInfo: true, message: "Do you want to delete a file " + fileName + " ?", dialogTitle: "Delete "+ fileName, value: jobId })
+  processDeleteJobClick = (fileName, jobId, recordId) => {
+    this.setState({ showInfo: true, message: "Do you want to delete a file " + fileName + " ?", dialogTitle: "Delete " + fileName, value: jobId })
     // this.makeAPICallJobDelete(jobId);
   };
 
@@ -382,10 +383,11 @@ class ViewDocument extends React.Component {
   }
 
   processTableClickedNextOrPrevious = (page, sortOrder) => {
-    if (this.state.maxPageNum < page) {
+    if (this.props.page_no < page) {
       /**
        * user wanted to load next set of records
        */
+      this.props.fetchpageno()
       this.makeAPICallJobsBulkSearch(
         this.state.offset + this.state.limit,
         this.state.limit,
@@ -394,12 +396,10 @@ class ViewDocument extends React.Component {
         true
       );
       this.setState({
-        maxPageNum:page,
+        currentPageIndex: page,
         offset: this.state.offset + this.state.limit,
       });
     }
-    this.setState({
-      currentPageIndex: page})
   };
 
   render() {
@@ -628,17 +628,16 @@ class ViewDocument extends React.Component {
         },
         options: { sortDirection: "desc" },
       },
-      onChangeRowsPerPage: (limit) =>{
+      onChangeRowsPerPage: (limit) => {
         let diffValue = limit - this.state.limit;
-        if(diffValue>0)
-        {
-          this.makeAPICallJobsBulkSearch(this.state.offset + diffValue , limit - this.state.limit, false, false, true)
+        if (diffValue > 0) {
+          this.makeAPICallJobsBulkSearch(this.state.offset + diffValue, limit - this.state.limit, false, false, true)
         }
-        
-        this.setState({limit})
-        
+
+        this.setState({ limit })
+
       },
-      rowsPerPageOptions:[10],
+      rowsPerPageOptions: [10],
 
       onTableChange: (action, tableState) => {
         switch (action) {
@@ -703,6 +702,7 @@ const mapStateToProps = (state) => ({
   apistatus: state.apistatus,
   job_details: state.job_details,
   async_job_status: state.async_job_status,
+  page_no: state.document_pageno.pageno
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -711,6 +711,7 @@ const mapDispatchToProps = (dispatch) =>
       clearJobEntry,
       APITransport,
       CreateCorpus: APITransport,
+      fetchpageno
     },
     dispatch
   );

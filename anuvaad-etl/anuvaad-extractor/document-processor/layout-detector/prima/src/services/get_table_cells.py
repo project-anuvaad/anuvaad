@@ -54,27 +54,27 @@ def get_regions(regions,clss):
 
         for table in regions:
             ####
-            # tab = Box()
-            # tab.set_coords(table)
-            # tab_coord =  tab.get_box()
-            # r_box.append(tab_coord)
+            tab = Box()
+            tab.set_coords(table)
+            tab_coord =  tab.get_box()
+            r_box.append(tab_coord)
             #####
 
-            for t_cell in table['rect']:
-                t_cell['x'] += table['x']
-                t_cell['y'] += table['y']
-                r_cell = Box()
-                r_cell.set_class(clss)
-                r_cell.set_coords(t_cell)
-                r_box.append(r_cell.get_box())
+            # for t_cell in table['rect']:
+            #     t_cell['x'] += table['x']
+            #     t_cell['y'] += table['y']
+            #     r_cell = Box()
+            #     r_cell.set_class(clss)
+            #     r_cell.set_coords(t_cell)
+            #     r_box.append(r_cell.get_box())
             
 
-    if clss == 'LINE':
-        for line in regions:
-                l_reg = Box()
-                l_reg.set_class(clss)
-                l_reg.set_coords(line)
-                r_box.append(l_reg.get_box())
+    # if clss == 'LINE':
+    #     for line in regions:
+    #             l_reg = Box()
+    #             l_reg.set_class(clss)
+    #             l_reg.set_coords(line)
+    #             r_box.append(l_reg.get_box())
     return r_box
 
 
@@ -118,5 +118,5 @@ def mask_tables(page_imge,check=False):
     masked_image = mask_image(page_img, tables, image_width, image_height, app_context.application_context, margin=0,
                               fill=255)
     ### add line regions
-    return masked_image, line_regions + tables_regions
-    #return masked_image, tables_regions
+    #return masked_image, line_regions + tables_regions
+    return masked_image, tables_regions
