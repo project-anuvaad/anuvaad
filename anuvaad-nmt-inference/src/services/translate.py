@@ -452,7 +452,7 @@ def encode_itranslate_decode(i,num_map,tp_tokenizer,num_hypotheses=3):
         log_exception("Unexpexcted error in encode_itranslate_decode: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
         raise 
 
-def encode_itranslate_decode_v2(i,num_map,tp_tokenizer,num_hypotheses=1):
+def encode_itranslate_decode_v2(i,num_map,tp_tokenizer,num_hypotheses=3):
     try:
         log_info("Inside encode_itranslate_decode_v2 function",MODULE_CONTEXT)
         model_path,sp_encoder,sp_decoder = get_model_path(i['id'])
@@ -509,14 +509,14 @@ def encode_translate_decode_v2(i):
         model_path,sp_encoder,sp_decoder = get_model_path(i['id'])
         translator = load_models.loaded_models[i['id']]
         i['src'] = sp.encode_line_v2(sp_encoder,i['src'])
-        log_info("SP encoded sent: %s"%i['src'],MODULE_CONTEXT)
-        input_sw = i['src']
+        log_info("SP encoded sent: %s"%str(i['src']),MODULE_CONTEXT)
+        input_sw = str(i['src'])
         m_out = translator.translate_batch([i['src']],beam_size = 5,num_hypotheses=1)
         output_sw = " ".join(m_out[0][0]['tokens'])
         log_info("output from model: {}".format(output_sw),MODULE_CONTEXT)
         scores = m_out[0][0]['score']
         translation = multiple_hypothesis_decoding_v2(m_out[0],sp_decoder)[0]
-        log_info("SP decoded sent: %s"%translation,MODULE_CONTEXT)
+        log_info("SP decoded sent: %s"%str(translation),MODULE_CONTEXT)
         return translation,scores,input_sw,output_sw
     except ServerModelError as e:
         log_exception("ServerModelError error in encode_translate_decode_v2: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
