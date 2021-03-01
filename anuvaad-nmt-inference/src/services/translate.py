@@ -441,6 +441,33 @@ def encode_itranslate_decode(i,num_map,tp_tokenizer,num_hypotheses=3):
         log_exception("Unexpexcted error in encode_itranslate_decode: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
         raise 
 
+def encode_itranslate_decode_v2(i,num_map,tp_tokenizer,num_hypotheses=1):
+    try:
+        log_info("Inside encode_itranslate_decode_v2 function",MODULE_CONTEXT)
+        model_path,sp_encoder,sp_decoder = get_model_path(i['id'])
+        translator = load_models.loaded_models[i['id']]
+        i['src'] = sp.encode_line_v2(sp_encoder,i['src'])
+
+        if 'target_prefix' in i and len(i['target_prefix']) > 0 and i['target_prefix'].isspace() == False:
+            log_info("target prefix: {}".format(i['target_prefix']),MODULE_CONTEXT) 
+            i['target_prefix'] = misc.convert_digits_preprocess(i['tgt_lang'],i['target_prefix'])
+            i['target_prefix'] = replace_num_target_prefix(i,num_map)
+            if tp_tokenizer is not None:
+                i['target_prefix'] = tp_tokenizer(i['target_prefix'])
+            i['target_prefix'] = sp.encode_line_v2(sp_decoder,i['target_prefix'])
+            tp_final = i['target_prefix']
+            tp_final[-1] = tp_final[-1].replace(']',",")
+            m_out = translator.translate_batch([i['src']],beam_size = 5, target_prefix = [tp_final],num_hypotheses=num_hypotheses,replace_unknowns=True)
+        else:
+            m_out = translator.translate_batch([i['src']],beam_size = 5,num_hypotheses=num_hypotheses,replace_unknowns=True)
+
+        translation = multiple_hypothesis_decoding_v2(m_out[0],sp_decoder)    
+        return translation
+        
+    except Exception as e:
+        log_exception("Unexpexcted error in encode_itranslate_decode: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
+        raise     
+
 def encode_translate_decode(i):
     try:
         log_info("Inside encode_translate_decode function",MODULE_CONTEXT)
@@ -464,6 +491,29 @@ def encode_translate_decode(i):
     except Exception as e:
         log_exception("Unexpexcted error in encode_translate_decode: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
         raise
+
+def encode_translate_decode_v2(i):
+    try:
+        log_info("Inside encode_translate_decode_v2 function",MODULE_CONTEXT)
+        model_path,sp_encoder,sp_decoder = get_model_path(i['id'])
+        translator = load_models.loaded_models[i['id']]
+        i['src'] = sp.encode_line_v2(sp_encoder,i['src'])
+        log_info("SP encoded sent: %s"%i['src'],MODULE_CONTEXT)
+        input_sw = i['src']
+        m_out = translator.translate_batch([i['src']],beam_size = 5,num_hypotheses=1)
+        output_sw = " ".join(m_out[0][0]['tokens'])
+        log_info("output from model: {}".format(output_sw),MODULE_CONTEXT)
+        scores = m_out[0][0]['score']
+        translation = multiple_hypothesis_decoding_v2(m_out[0],sp_decoder)[0]
+        log_info("SP decoded sent: %s"%translation,MODULE_CONTEXT)
+        return translation,scores,input_sw,output_sw
+    except ServerModelError as e:
+        log_exception("ServerModelError error in encode_translate_decode_v2: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
+        raise     
+    except Exception as e:
+        log_exception("Unexpexcted error in encode_translate_decode_v2: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
+        raise
+        
         
 def format_converter(input):
     inp_1 = input.split(', ')
@@ -506,6 +556,18 @@ def multiple_hypothesis_decoding(hypotheses,sp_decoder):
     except Exception as e:
         log_exception("Error in interactive translation-multiple_hypothesis_decoding:{}".format(e),MODULE_CONTEXT,e)
         raise
+    
+def multiple_hypothesis_decoding_v2(hypotheses,sp_decoder):
+    try:
+        translations = list()
+        for i in hypotheses:
+            translation = " ".join(i['tokens'])
+            translation = sp.decode_line_v2(sp_decoder,translation)
+            translations.append(translation)
+        return translations
+    except Exception as e:
+        log_exception("Error in interactive translation-multiple_hypothesis_decoding_v2:{}".format(e),MODULE_CONTEXT,e)
+        raise    
        
        
 def handle_custome_input(i,s0_src,s0_tgt,save):

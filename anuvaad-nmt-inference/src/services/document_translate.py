@@ -300,6 +300,24 @@ def encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_
     except Exception as e:
         log_exception("Unexpexcted error in encode_translate_decode: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
         raise
+    
+def encode_translate_decode_v2(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list):
+    try:
+        log_info("Inside encode_translate_decode function",MODULE_CONTEXT)
+        input_subwords_list = [(sp.encode_line_v2(sp_encoder,sent)) for sent in input_sentence_array_prepd]
+        m_out = translator.translate_batch(input_subwords_list,beam_size = 5,num_hypotheses=1,replace_unknowns=True)
+        translation_array = [None] * len(output_subwords_list)
+        for i, _ in enumerate(output_subwords_list):
+                output_subwords_list[i] = " ".join(m_out[i][0]['tokens'])
+                score_list[i] = m_out[i][0]['score']
+                translation_array[i] = multiple_hypothesis_decoding_v2(m_out[i],sp_decoder)[0]
+        return translation_array, input_subwords_list, output_subwords_list, score_list
+    except ServerModelError as e:
+        log_exception("ServerModelError error in encode_translate_decode_v2: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
+        raise      
+    except Exception as e:
+        log_exception("Unexpexcted error in encode_translate_decode_v2: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
+        raise         
         
 def format_converter(input):
     inp_1 = input.split(', ')
@@ -331,3 +349,14 @@ def multiple_hypothesis_decoding(hypotheses,sp_decoder):
         log_exception("Error in interactive translation-multiple_hypothesis_decoding:{}".format(e),MODULE_CONTEXT,e)
         raise
           
+def multiple_hypothesis_decoding_v2(hypotheses,sp_decoder):
+    try:
+        translations = list()
+        for i in hypotheses:
+            translation = " ".join(i['tokens'])
+            translation = sp.decode_line_v2(sp_decoder,translation)
+            translations.append(translation)
+        return translations
+    except Exception as e:
+        log_exception("Error in interactive translation-multiple_hypothesis_decoding_v2:{}".format(e),MODULE_CONTEXT,e)
+        raise          

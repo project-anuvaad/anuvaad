@@ -51,6 +51,18 @@ def encode_line(load_model,line):
         log_exception("something went wrong!",MODULE_CONTEXT,e)
         log_exception("Unexpected error: %s"% sys.exc_info()[0],MODULE_CONTEXT,e)
         return ""
+
+def encode_line_v2(load_model,line):
+    # makes segmenter instance and loads the model file (m.model)
+    try:
+        sp = spm.SentencePieceProcessor()
+        sp.load(load_model)
+        log_info("encoding using sp model {}".format(load_model),MODULE_CONTEXT)
+        return (sp.encode_as_pieces(line))
+    except Exception as e:
+        log_exception("Exception occured in encode_line_v2",MODULE_CONTEXT,e)
+        log_exception("Unexpected error: %s"% sys.exc_info()[0],MODULE_CONTEXT,e)
+        return ""     
     
 
 def decode_as_pieces(load_model,src_file,tgt_file):
@@ -104,6 +116,18 @@ def decode_line(load_model,line):
         log_exception("something went wrong! {}".format(e),MODULE_CONTEXT,e)
         log_exception("Unexpected error: %s"% sys.exc_info()[0],MODULE_CONTEXT,e)
         return ""
+    
+def decode_line_v2(load_model,line):
+    # makes segmenter instance and loads the model file (m.model)
+    try:
+        sp = spm.SentencePieceProcessor()
+        sp.load(load_model) 
+        log_info("decoding using sp model {}".format(load_model),MODULE_CONTEXT)
+        return sp.DecodePieces(line.split(" "))
+    except Exception as e:
+        log_exception("Exception occured in decode_line_v2 funtion {}".format(e),MODULE_CONTEXT,e)
+        log_exception("Unexpected error: %s"% sys.exc_info()[0],MODULE_CONTEXT,e)
+        return ""     
 
   
 if __name__ == '__main__':
