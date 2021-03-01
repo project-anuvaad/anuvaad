@@ -52,9 +52,13 @@ WATERMARK_THRESHOLD_LOW = 175
 WATERMARK_THRESHOLD_HIGH = 250
 
 PRIMA_SCORE_THRESH_TEST =0.5
+PRIMA_CELL_SCORE_THRESH_TEST=0.5
 
 
 
 LAYOUT_MODEL_PATH =  "./src/utilities/primalaynet/model_final.pth"
 LAYOUT_CONFIG_PATH = "./src/utilities/primalaynet/config.yaml"
 
+
+LAYOUT_CELL_MODEL_PATH =  "./src/utilities/primalaynet/model_tablenet.pth"
+LAYOUT_CELL_CONFIG_PATH = "./src/utilities/primalaynet/tablenet_config.yaml"

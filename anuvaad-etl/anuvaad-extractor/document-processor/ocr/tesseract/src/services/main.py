@@ -15,19 +15,24 @@ def preprocess_file(file_properties,lang,ocr_level):
     width, height = file_properties.get_pageinfo(0)
     mask_page_path = []
     for page_index, page_path in enumerate(page_paths):
+        print('processing for page : '.format(([page_index])))
         page_regions = file_properties.get_regions(page_index)
         #page_path =  '/'.join(page_path.split('/')[-4:])
+
+        save_path = mask_image(page_path, page_regions, page_index, file_properties, width, height)
+        file = set_bg_image(file, save_path, page_index)
+
         mode_height = frequent_height(file_properties.get_lines(page_index))
 
 
         if config.OCR_LEVEL[ocr_level] == 'words':
             for idx, region in enumerate(page_regions):
-                if region['class'] in ["TEXT","TABLE"]:
+                if region['class'] in config.ocr_class:
                     region_lines = file_properties.get_region_lines(page_index,idx)
                     for line_index, line in enumerate(region_lines):
                         region_words = file_properties.get_region_words(page_index,idx,line_index)
-                        if config.IS_DYNAMIC:
-                            region_words_org = coord_adjustment(page_path, region_words)
+                        if config.IS_DYNAMIC and region['class'] in config.DYNAMIC_CLASS: 
+                            region_words_org = coord_adjustment(page_path, copy.deepcopy(region_words))
                             region_ocr = text_extraction(lang, page_path, region_words_org,region_words, width, height,mode_height)
                         else:
                             region_ocr = text_extraction(lang, page_path, region_words,region_words, width, height,mode_height)
@@ -42,10 +47,10 @@ def preprocess_file(file_properties,lang,ocr_level):
 
         if config.OCR_LEVEL[ocr_level] == 'lines':
                 for idx, region in enumerate(page_regions):
-                    if region['class'] in ["TEXT","TABLE"]:
+                    if region['class'] in config.ocr_class:
                         region_lines = file_properties.get_region_lines(page_index,idx)
-                        if config.IS_DYNAMIC:
-                            region_lines_org = coord_adjustment(page_path, region_lines)
+                        if config.IS_DYNAMIC and region['class'] in config.DYNAMIC_CLASS:
+                            region_lines_org = coord_adjustment(page_path, copy.deepcopy(region_lines))
                             region_ocr = text_extraction(lang, page_path, region_lines_org,region_lines, width, height,mode_height)
                         else:
                             region_ocr = text_extraction(lang, page_path, region_lines,region_lines, width, height,mode_height)
@@ -57,8 +62,8 @@ def preprocess_file(file_properties,lang,ocr_level):
         '''
             masking out images based on word coordinates
         '''
-        save_path  = mask_image(page_path,page_regions,page_index,file_properties,width, height)
-        file = set_bg_image(file,save_path,page_index)
+
+        log_info("successfully completed ocr for  page {}".format(page_index), app_context.application_context)
         #mask_page_path.append(save_path)
     #file['bg_image_paths']  = mask_page_path
 

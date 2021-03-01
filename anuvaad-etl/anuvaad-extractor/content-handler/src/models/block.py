@@ -10,16 +10,15 @@ class BlockModel(object):
         collections = get_db()[DB_SCHEMA_NAME]
         try:
             collections.create_index('record_id')
-            collections.create_index('data_type')
         except pymongo.errors.DuplicateKeyError as e:
             log_info("duplicate key, ignoring", AppContext.getContext())
         except Exception as e:
             log_exception("db connection exception ",  AppContext.getContext(), e)
     
-    def update_block(self, user_id, block_identifier, block):
+    def update_block(self, record_id, user_id, block_identifier, block):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
-            results     = collections.update({'$and': [{'created_by': user_id}, { 'block_identifier': block_identifier }]},
+            results     = collections.update({'$and': [{'record_id': record_id}, {'created_by': user_id}, { 'block_identifier': block_identifier }]},
             { '$set': block }, upsert=True)
 
             if 'writeError' in list(results.keys()):
@@ -57,19 +56,20 @@ class BlockModel(object):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
             results        = collections.aggregate([
-                                { '$match' : { 'page_no': page_number, 'record_id': record_id } },
+                                { '$match' : {'page_no': page_number,'record_id': record_id} },
                                 { '$group': { '_id': '$data_type', 'data': { '$push': "$data" } } }
                                 ])
             return results
         except Exception as e:
+            AppContext.addRecordID(record_id)
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return False
 
-    def get_block_by_block_identifier(self, user_id, block_identifier):
+    def get_block_by_block_identifier(self, record_id, user_id, block_identifier):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
             results     = collections.aggregate([
-                { '$match' : { 'block_identifier': block_identifier, 'created_by': user_id } },
+                { '$match' : {'record_id': record_id, 'block_identifier': block_identifier, 'created_by': user_id } },
                 { '$group': { '_id': '$data_type', 'data': { '$push': "$data" } } }
             ])
             return results

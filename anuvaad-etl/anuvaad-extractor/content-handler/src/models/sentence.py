@@ -50,12 +50,12 @@ class SentenceModel(object):
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return None
 
-    def update_sentence_by_s_id(self, user_id, sentence):
+    def update_sentence_by_s_id(self, record_id, user_id, sentence):
         SENTENCE_KEYS   = ['n_id', 'pred_score', 's_id', 'src', 'tgt']
         try:
             collections     = get_db()[DB_SCHEMA_NAME]
 
-            results         = collections.update({'$and': [{'created_by': user_id}, { 'data.tokenized_sentences': {'$elemMatch': {'s_id': {'$eq': sentence['s_id']}}}}]},
+            results         = collections.update({'$and': [{'record_id': record_id}, {'created_by': user_id}, { 'data.tokenized_sentences': {'$elemMatch': {'s_id': {'$eq': sentence['s_id']}}}}]},
                                                 {
                                                     '$set':
                                                     {

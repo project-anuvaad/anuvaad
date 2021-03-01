@@ -9,11 +9,30 @@ import Typography from "@material-ui/core/Typography";
 import Pagination from "@material-ui/lab/Pagination";
 import TextField from '@material-ui/core/TextField'
 import SENTENCE_ACTION from "./SentenceActions";
-
+import Slider from '@material-ui/core/Slider';
+import Tooltip from '@material-ui/core/Tooltip';
+import PropTypes from 'prop-types';
 import { currentPageUpdate } from "../../../../flux/actions/apis/document_translate/pagiantion_update";
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
-
+import fetchpercent from '../../../../flux/actions/apis/view_digitized_document/fetch_slider_percent';
 const PAGE_OPS = require("../../../../utils/page.operations");
+
+
+function ValueLabelComponent(props) {
+  const { children, open, value } = props;
+
+  return (
+    <Tooltip open={open} enterTouchDelay={0} placement="top" title={value}>
+      {children}
+    </Tooltip>
+  );
+}
+
+ValueLabelComponent.propTypes = {
+  children: PropTypes.element.isRequired,
+  open: PropTypes.bool.isRequired,
+  value: PropTypes.number.isRequired,
+};
 
 class InteractivePagination extends React.Component {
   constructor(props) {
@@ -109,6 +128,14 @@ class InteractivePagination extends React.Component {
     this.setState({ gotoValue: event.target.value })
   }
 
+  setConfPercentage = (event) => {
+    console.log(event.target.value)
+  }
+
+  handleSliderChange = (event, percent) => {
+    this.props.fetchpercent(percent)
+  }
+
   footer = () => {
     return (
       <AppBar
@@ -161,13 +188,13 @@ class InteractivePagination extends React.Component {
                 >
                   GO
         </Button>
-                {!this.props.show_pdf &&
+                {(!this.props.show_pdf && !this.props.hideMergeBtn) &&
                   <>
                     {this.sentenceCount() && (
                       <div style={{ position: "absolute", marginLeft: "62%" }}>
                         <Typography variant="subtitle1" component="h2">
                           Page Sentences
-                  </Typography>
+                        </Typography>
 
                         <div style={{ textAlign: "center" }}>
                           {this.sentenceCount()}
@@ -178,31 +205,46 @@ class InteractivePagination extends React.Component {
                     {this.props.job_status && this.props.job_status.word_status && <div style={{ position: "absolute", marginLeft: "70%" }}>
                       <Typography variant="subtitle1" component="h2">
                         Total Word Count
-                  </Typography>
+                      </Typography>
 
                       <div style={{ textAlign: "center" }}>
                         {this.props.job_status.word_status && this.props.job_status.word_status}
                       </div>
                     </div>}
 
-                    {this.props.job_status&& this.props.job_status.status && <div style={{ position: "absolute", marginLeft: "79%" }}>
-                      <Typography variant="subtitle1" component="h2">
-                        Total Sentences
-                  </Typography>
+                    {this.props.job_status && this.props.job_status.status &&
+                      <div style={{ position: "absolute", marginLeft: "79%" }}>
+                        <Typography variant="subtitle1" component="h2">
+                          Total Sentences
+                      </Typography>
 
-                      <div style={{ textAlign: "center" }}>
-                        {this.props.job_status.status && this.props.job_status.status}
-                      </div>
-                    </div>}
+                        <div style={{ textAlign: "center" }}>
+                          {this.props.job_status.status && this.props.job_status.status}
+                        </div>
+                      </div>}
 
                     <div style={{ position: "absolute", right: "30px" }}>
                       {this.renderNormaModeButtons()}
                     </div>
-                  </>}
+                  </>
+                }
+                {
+                  this.props.showConfSlider &&
+                  <div style={{ display: 'grid', marginTop: '1%', width: '20%', gridTemplateColumns: 'repeat(1,40% 80%)' }}>
+                    <Typography style={{ marginLeft: '15%', color: 'black' }} id="discrete-slider-always" gutterBottom>
+                      Confidence Score
+                    </Typography>
+                    <Slider
+                      ValueLabelComponent={ValueLabelComponent}
+                      aria-label="custom thumb label"
+                      defaultValue={80}
+                      onChange={this.handleSliderChange}
+                    />
+                  </div>
+                }
+
               </>
             )}
-
-          {/* {this.wordCount()} */}
         </Toolbar>
       </AppBar>
     )
@@ -227,7 +269,8 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       currentPageUpdate,
-      clearHighlighBlock
+      clearHighlighBlock,
+      fetchpercent
     },
     dispatch
   );

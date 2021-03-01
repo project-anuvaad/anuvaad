@@ -29,7 +29,9 @@ import UserReport from './ui/containers/web/AdminPanel/UserReport';
 import DocumentStats from './ui/containers/web/AdminPanel/DocumentStats';
 import OrganizationList from './ui/containers/web/AdminPanel/OrganizatonList';
 import AddOrganization from "./ui/containers/web/AdminPanel/AddOrganization";
-
+import ViewDocumentDigitization from './ui/containers/web/DocumentDigitization/ViewDocumentDigitization';
+import DigitzeDocumentUpload from './ui/containers/web/DocumentDigitization/DocumentDigitizationUpload/StartDigitizationUpload';
+import DigitizedDocumentEditor from './ui/containers/web/DocumentDigitization/DigitizedDocumentEditor';
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -143,6 +145,17 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/interactive-digitization/:jobId/:filename/:inputfileid/:og_fname`}
+              userRoles={["TRANSLATOR"]}
+              component={DigitizedDocumentEditor}
+              title="Digitized File"
+              authenticate={this.authenticateUser}
+              dontShowLoader
+              currentMenu="texttranslate"
+              dontShowHeader={true}
+            />
+
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-upload`}
               userRoles={["TRANSLATOR"]}
               component={FileUpload}
@@ -173,7 +186,7 @@ class AppRoutes extends React.Component {
               currentMenu="glossary-upload"
 
             />
-            
+
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/set-password/:uid/:rid`}
               title="Set Password"
@@ -205,6 +218,28 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/document-digitization`}
+              dontShowLoader
+              title={"Document Digitization"}
+              userRoles={["TRANSLATOR"]}
+              component={ViewDocumentDigitization}
+              authenticate={this.authenticateUser}
+              currentMenu="document-digitization"
+              dontShowHeader={true}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/digitize-document-upload`}
+              dontShowLoader
+              title={"Start Digitization"}
+              userRoles={["TRANSLATOR"]}
+              component={DigitzeDocumentUpload}
+              authenticate={this.authenticateUser}
+              currentMenu="digitize-document-upload"
+
+            />
+
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/create-user`}
               title={translate('create.user.page.heading.title')}
               component={CreateUser}
@@ -225,7 +260,7 @@ class AppRoutes extends React.Component {
             />
 
 
-<PrivateRoute
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/add-organization`}
               title={translate('Add Organization')}
               component={AddOrganization}
@@ -234,7 +269,7 @@ class AppRoutes extends React.Component {
               currentMenu="add-organization"
             />
 
-<PrivateRoute
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/organization-list`}
               dontShowLoader
               title={"Organization List"}
