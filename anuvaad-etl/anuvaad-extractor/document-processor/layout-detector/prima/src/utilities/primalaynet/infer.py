@@ -306,7 +306,7 @@ class PRIMA(object):
 			layout   = model_primalaynet.detect(image)
 			bbox,tag,score = self.prima_region(layout)
 			############### craft refinement logic 
-			bbox, tag = self.prima_craft_refinement(bbox,craft_coords,tag)
+			#bbox, tag = self.prima_craft_refinement(bbox,craft_coords,tag)
 			layouts  = self.update_box_format(bbox,tag,score)
 			flag=True
 			while flag==True:
