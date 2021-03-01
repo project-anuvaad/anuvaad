@@ -122,7 +122,7 @@ class OcrPageCard extends React.Component {
                     color: word.conf < this.props.percent ? 'red' : 'black',
                     fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
                     top: line.boundingBox.vertices[0].y + 'px',
-                    left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
+                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                 }}
                 key={word.identifier}
