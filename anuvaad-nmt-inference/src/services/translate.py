@@ -156,7 +156,13 @@ class TranslateService:
                         tp_tokenizer = sentence_processor.moses_tokenizer 
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
-                        translation = [sentence_processor.moses_detokenizer(i) for i in translation]                   
+                        translation = [sentence_processor.moses_detokenizer(i) for i in translation]
+                    elif i['id'] == 67:
+                        "ta-en 3rd"
+                        tp_tokenizer = sentence_processor.moses_tokenizer 
+                        i['src'] = sentence_processor.indic_tokenizer(i['src'])
+                        translation = encode_itranslate_decode_v2(i,num_map,tp_tokenizer)
+                        translation = [sentence_processor.moses_detokenizer(i) for i in translation]                         
 
                     else:
                         log_info("unsupported model id: {} for given input".format(i['id']),MODULE_CONTEXT)
@@ -371,7 +377,12 @@ class OpenNMTTranslateService:
                         "bengali-en 3rd"
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)
-                        translation = sentence_processor.moses_detokenizer(translation)                                                     
+                        translation = sentence_processor.moses_detokenizer(translation)
+                    elif i['id'] == 67:
+                        "ta-en 3rd"
+                        i['src'] = sentence_processor.indic_tokenizer(i['src'])
+                        translation,scores,input_sw,output_sw = encode_translate_decode_v2(i)
+                        translation = sentence_processor.moses_detokenizer(translation)                                                          
                     else:
                         log_info("Unsupported model id: {} for given input".format(i['id']),MODULE_CONTEXT)
                         raise Exception("Unsupported Model ID - id: {} for given input".format(i['id']))      

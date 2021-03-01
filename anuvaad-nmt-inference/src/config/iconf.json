@@ -156,6 +156,12 @@
             "path":"nmt/66",
             "sp_encoder":"nmt/66/bengali-bn-to-en-3-2021-01-19-24k.model",
             "sp_decoder":"nmt/66/enBeng-bn-to-en-3-2021-01-19-24k.model"
+        },
+        {
+            "id":67,
+            "path":"nmt/67",
+            "sp_encoder":"nmt/67/ta_ta-to-en-anuvaad-3-v1-2021-02-26-24000.model",
+            "sp_decoder":"nmt/67/en_ta-to-en-anuvaad-3-v1-2021-02-26-24000.model"
         }   
     ]
 }
