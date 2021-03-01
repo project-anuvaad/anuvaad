@@ -38,8 +38,8 @@ def text_extraction(file_properties,image_paths,file):
         page_dict = {"identifier": str(uuid.uuid4()),"resolution": config.EXRACTION_RESOLUTION }
         page_regions =  file_properties.get_regions(idx)
         page_output,page_words = get_text(image_path,page_dict,page_regions)
-        save_path = mask_image_craft(image_path, page_regions, idx, file_properties, width, height)
-        #save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
+        #save_path = mask_image_craft(image_path, page_regions, idx, file_properties, width, height)
+        save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
         page_output = set_bg_image(page_output, save_path, idx,file)
         file_properties.set_regions(idx,page_output)
 
