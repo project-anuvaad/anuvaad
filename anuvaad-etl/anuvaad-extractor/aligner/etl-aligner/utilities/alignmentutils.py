@@ -50,11 +50,38 @@ class AlignmentUtils:
                         target_corp.append(row[1])
         return source, target_corp
 
+
+    def parse_json(self, path_eng, path_indic):
+        source = []
+        target_corp = []
+        f = open(path_indic) 
+        response = json.load(f) 
+
+        for page in response['result']:
+            for block in page['text_blocks']:
+                for sentence in block['tokenized_sentences'] :
+                    source.append(sentence['src'])
+
+        f = open(path_eng) 
+        response = json.load(f) 
+        for page in response['result']:
+            for block in page['text_blocks']:
+                for sentence in block['tokenized_sentences'] :
+                    target_corp.append(sentence['src'])
+        return source, target_corp
+
+
     # Utility to write the output to a file
     def write_output(self, list, path):
         with codecs.open(path, 'w', file_encoding) as txt_file:
             for row in list:
                 txt_file.write(row + "\r\n")
+
+    # Utility to write the JSON output to a file
+    def write_json_output(self, df, path):
+        with open(path, 'w', encoding = file_encoding) as json_file:
+            df.to_json(json_file, force_ascii=False,orient='records')
+
 
     # Utility to calculate cosine distances between 2 vectors
     def cscalc(self, vector_one, vector_two):

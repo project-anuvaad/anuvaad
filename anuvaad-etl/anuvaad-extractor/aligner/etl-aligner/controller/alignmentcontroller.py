@@ -5,30 +5,57 @@ from flask import Flask, jsonify, request
 from configs.alignerconfig import context_path
 from service.alignmentservice import AlignmentService
 from validator.alignmentvalidator import AlignmentValidator
+from service.jsonalignmentservice import JsonAlignmentService
 
 from logging.config import dictConfig
 
 alignapp = Flask(__name__)
 
+
+
 # REST endpoint to align files
 @alignapp.route(context_path + '/v1/sentences/align', methods=["POST"])
 def createalignmentjob():
     service = AlignmentService()
+    jsonservice = JsonAlignmentService()
     validator = AlignmentValidator()
     data = request.get_json()
+    try:
+        srctype = str(data['source']['type'])
+        tgttype = str(data['target']['type'])
+    except:
+        pass
     error = validator.validate_input(data)
     if error is not None:
         return error
+
+    if(srctype == "json"):
+        return jsonservice.register_job(data)
+
     return service.register_job(data)
+
 
 
 # REST endpoint to align files through wflow
 @alignapp.route(context_path + '/v1/sentences/wflow/align', methods=["POST"])
 def createalignmentwflowjob():
     service = AlignmentService()
+    jsonservice = JsonAlignmentService()
+    validator = AlignmentValidator()
     data = request.get_json()
-    return service.wf_process(data)
+    try:
+        srctype = str(data['source']['type'])
+        tgttype = str(data['target']['type'])
+    except:
+        pass
+    error = validator.validate_input(data)
+    if error is not None:
+        return error
 
+    if(srctype == "json"):
+         return jsonservice.wf_process(data)
+
+    return service.wf_process(data)
 
 # REST endpoint to fetch job status
 @alignapp.route(context_path + '/v1/alignment/jobs/get/<job_id>', methods=["GET"])

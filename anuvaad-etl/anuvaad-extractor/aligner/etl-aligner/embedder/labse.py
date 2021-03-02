@@ -7,6 +7,7 @@ from configs.alignerconfig import labse_folder_path
 
 
 model = SentenceTransformer(labse_folder_path)
+# model = SentenceTransformer("/home/aswin/Downloads/LaBSE")
 
 log = logging.getLogger('file')
 

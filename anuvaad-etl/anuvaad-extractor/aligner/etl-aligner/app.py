@@ -8,6 +8,8 @@ from controller.alignmentcontroller import alignapp
 from kafkawrapper.alignmentconsumer import Consumer
 from kafkawrapper.alignmentwflowconsumer import WflowConsumer
 
+from kafkawrapper.jsonalignmentconsumer import JsonConsumer
+from kafkawrapper.jsonalignmentwflowconsumer import JsonWflowConsumer
 
 
 log = logging.getLogger('file')
@@ -20,11 +22,22 @@ def start_consumer():
     with alignapp.app_context():
         consumer = Consumer()
         wflowconsumer = WflowConsumer()
+
+        jsonconsumer  = JsonConsumer()
+        jsonwflowconsumer = JsonWflowConsumer()
+        
         try:
             align_consumer_thread = threading.Thread(target=consumer.consume, name='AlignerConsumer-Thread')
             align_wflow_consumer_thread = threading.Thread(target=wflowconsumer.consume, name='AlignerWflowConsumer-Thread')
             align_consumer_thread.start()
             align_wflow_consumer_thread.start()
+
+            #json implementation
+            json_align_consumer_thread = threading.Thread(target=jsonconsumer.consume, name='Json-AlignerConsumer-Thread')
+            json_align_wflow_consumer_thread = threading.Thread(target=jsonwflowconsumer.consume, name='Json-AlignerWflowConsumer-Thread')
+            json_align_consumer_thread.start()
+            json_align_wflow_consumer_thread.start()
+
         except Exception as e:
             log.exception("Exception while starting the kafka consumer: " + str(e))
 
