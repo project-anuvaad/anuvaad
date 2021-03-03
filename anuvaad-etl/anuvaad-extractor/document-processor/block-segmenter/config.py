@@ -38,6 +38,8 @@ CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER
 
 BREAK_BLOCKS = True
 
+DEVICE='cpu'
+
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),
