@@ -40,8 +40,7 @@ def GoogleVisionOCR(app_context,base_dir = config.BASE_DIR):
     
     log_debug('google vision ocr process starting {}'.format(app_context.application_context), app_context.application_context)
     try:
-        #response   = process_input(app_context,base_dir)
-        response = None
+        response   = process_input(app_context,base_dir)
         if response!=None:
             return {
                     'code': 200,
