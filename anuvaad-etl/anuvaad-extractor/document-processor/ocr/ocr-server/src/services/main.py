@@ -41,10 +41,17 @@ def GoogleVisionOCR(app_context,base_dir = config.BASE_DIR):
     log_debug('google vision ocr process starting {}'.format(app_context.application_context), app_context.application_context)
     try:
         response   = process_input(app_context,base_dir)
-        return {
-                'code': 200,
-                'message': 'request completed',
-                'rsp': response
+        if response!=None:
+            return {
+                    'code': 200,
+                    'message': 'request completed',
+                    'rsp': response
+                    }
+        else:
+            return {
+                'code': 400,
+                'message': 'Error occured during google vision ocr',
+                'rsp': None
                 }
     except Exception as e:
         log_exception("Error occured during google vision ocr  ",  app_context.application_context, e)

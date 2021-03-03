@@ -58,13 +58,14 @@ class OcrPageCard extends React.Component {
     renderChild = (region) => {
         let width = (region.boundingBox.vertices[1].x - region.boundingBox.vertices[0].x) + 'px'
         let height = (region.boundingBox.vertices[2].y - region.boundingBox.vertices[0].y) + 'px'
-        let top = region.boundingBox.vertices[0].y + 'px'
+        let top = (region.boundingBox.vertices[0].y) + 'px'
         let left = (region.boundingBox.vertices[0].x) + 'px'
         return (
             <div style={{
                 position: "absolute",
                 height: height,
                 width: width,
+                top: top,
                 left: left,
                 zIndex: 2,
             }}
@@ -78,42 +79,28 @@ class OcrPageCard extends React.Component {
             </div>
         );
     }
+
     renderText = (line, region) => {
         return (
-            <div
-                key={line.identifier}
+            <div style={{
+                position: "absolute",
+                zIndex: 2,
+                width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
+                height: line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
+                top: line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                left: line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+            }}
+                key={region.identifier}
             >
                 {
-                    line['children'].map(word => {
-                        return this.renderTextSpan(word, line, region)
-                    })
 
+                    this.renderTextSpan(line, region)
                 }
             </div>
         )
     }
-    /**
-     * render Sentences span
-     */
-    renderTextSpan = (word, line, region) => {
-        if (line.class === "CELL") {
-            return (<div
-                style={{
-                    position: "absolute",
-                    zIndex: this.action === word.identifier ? 100000 : 2,
-                    color: word.conf < this.props.percent ? 'red' : 'black',
-                    fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
-                    top: word.boundingBox.vertices[0].y + 'px',
-                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
-                    width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
-                }} key={word.identifier}
-            >
-                <Textfit mode="single" min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
-                    {word.text}
-                </Textfit>
-            </div>
-            )
-        }
+
+    renderTable = (word, line) => {
         return (
             <div
                 style={{
@@ -121,14 +108,40 @@ class OcrPageCard extends React.Component {
                     zIndex: this.action === word.identifier ? 100000 : 2,
                     color: word.conf < this.props.percent ? 'red' : 'black',
                     fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
-                    top: line.boundingBox.vertices[0].y + 'px',
-                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                    top: word.boundingBox.vertices[0].y - line.boundingBox.vertices[0].y + 'px',
+                    left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
-                }}
+                }
+                }
                 key={word.identifier}
             >
-                <Textfit mode="single" min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
+                <Textfit mode="single" style={{ width: '100%' }} min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
                     {word.text}
+                </Textfit>
+            </div >
+        )
+    }
+
+    renderTextSpan = (line, region) => {
+        if (line.class === "CELL") {
+            return line.children.map(word => this.renderTable(word, line))
+        }
+        return (
+            <div
+                style={{
+                    zIndex: 2,
+                    color: 'black',
+                    padding: '0%',
+                    fontSize: region.avg_size + 'px',
+                    width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
+                    top: line.boundingBox.vertices[0].y + 'px',
+                    left: line.boundingBox.vertices[0].x + 'px',
+                    textAlignLast: 'justify'
+                }}
+                key={line.identifier}
+            >
+                <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size))} >
+                    {line.text}
                 </Textfit>
             </div>
         )

@@ -11,8 +11,9 @@ ENABLE_CORS = False
 #folders and file path
 download_folder = 'upload'
 # new mongo config
-MONGO_DB_SCHEMA         = os.environ.get('MONGO_CH_DB', 'preprocessing')
-MONGO_CONNECTION_URL    = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017')
+
+MONGO_DB_SCHEMA         = os.environ.get('MONGO_CH_DBT', 'preprocessing')
+MONGO_CONNECTION_URL    = os.environ.get('MONGO_CLUSTER_URLT', 'mongodb://localhost:27017')
 
 #redis config
 REDIS_SERVER_PREFIX = os.environ.get('REDIS_PREFIX', 'redis')

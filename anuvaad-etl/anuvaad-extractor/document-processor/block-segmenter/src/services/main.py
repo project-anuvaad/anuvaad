@@ -65,11 +65,18 @@ def BlockSegmenter(app_context,base_dir= config.BASE_DIR):
     try:
 
         response = get_segmented_regions(app_context,base_dir)
-        return {
-            'code': 200,
-            'message': 'request completed',
-            'rsp': response
-        }
+        if response!=None:
+            return {
+                    'code': 200,
+                    'message': 'request completed',
+                    'rsp': response
+                    }
+        else:
+            return {
+                'code': 400,
+                'message': 'Error occured during block segmentation',
+                'rsp': None
+                }
     except Exception as e:
         log_exception("Error occured during block segmentation ", app_context.application_context, e)
         return {
