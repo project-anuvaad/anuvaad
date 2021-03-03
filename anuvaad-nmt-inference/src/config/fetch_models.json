@@ -38,7 +38,7 @@
           "target_language_code": "ta",
           "model_id": 7,
           "model_name": "model no-2:",
-          "is_primary": true,
+          "is_primary": false,
           "created_on": "2019-09-16T12:14:26.974Z",
           "status": "ACTIVE",
           "source_language_name":"English",
@@ -406,11 +406,23 @@
           "model_id": 67,
           "model_name": "Tamil-English Model-3",
           "is_primary": true,
-          "description": "Trained on +1M corpus dated 26-02-2021",
+          "description": "Trained on 2021-v1",
           "created_on": "2021-02-26",
           "status": "ACTIVE",
           "source_language_name":"Tamil",
           "target_language_name":"English"
+        },
+        {
+          "source_language_code": "en",
+          "target_language_code": "ta",
+          "model_id": 68,
+          "model_name": "English-Tamil Model-5",
+          "is_primary": true,
+          "description": "Trained on 2021-v1",
+          "created_on": "2021-03-01",
+          "status": "ACTIVE",
+          "source_language_name":"English",
+          "target_language_name":"Tamil"
         },
         {
           "source_language_code": "hi",
