@@ -64,7 +64,8 @@ def BlockSegmenter(app_context,base_dir= config.BASE_DIR):
               app_context.application_context)
     try:
 
-        response = get_segmented_regions(app_context,base_dir)
+        #response = get_segmented_regions(app_context,base_dir)
+        response = None
         if response!=None:
             return {
                     'code': 200,
