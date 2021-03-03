@@ -86,6 +86,7 @@ class AlignmentService:
     # Service layer to fetch vectors for all the source and target sentences.
     def build_index(self, source, target_corp, src_loc, trgt_loc, object_in):
         source_embeddings, target_embeddings = labse.vecotrize_sentences_labse(source, target_corp, src_loc, trgt_loc, object_in)
+        #source_embeddings, target_embeddings = laser.vecotrize_sentences(source, target_corp, src_loc, trgt_loc, object_in)
         return source_embeddings, target_embeddings
 
     # Service layer to fetch target sentence for a given source sentence.
