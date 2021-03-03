@@ -152,6 +152,12 @@
             "sp_decoder":"nmt/67/en_ta-to-en-anuvaad-3-v1-2021-02-26-24000.model"
         },
         {
+            "id":68,
+            "path":"nmt/68",
+            "sp_encoder":"nmt/68/en_en-to-ta-anuvaad-5-v1-2021-03-01-24000.model",
+            "sp_decoder":"nmt/68/ta_en-to-ta-anuvaad-5-v1-2021-03-01-24000.model"
+        },
+        {
             "id": 69,
             "path":"nmt/69",
             "sp_encoder":"nmt/69/hi_hi-to-en-anuvaad-3-v1-2021-02-24-24000.model",
