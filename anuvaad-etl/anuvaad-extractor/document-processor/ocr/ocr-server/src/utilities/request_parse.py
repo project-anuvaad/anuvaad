@@ -42,9 +42,11 @@ class File:
     @log_error
     def get_regions(self, page_index):
         return self.file['pages'][page_index]['regions']
+
     @log_error
-    def set_regions(self, page_index,regions):
-        self.file['pages'][page_index]["regions"]=regions 
+    def get_fontinfo(self, page_index):
+        return self.file['pages'][page_index]['font_properties']
+
     @log_error
     def get_file(self):
         return self.file
@@ -63,7 +65,9 @@ class File:
     def get_region_words(self, page_index,region_index,child_index):
         return self.file['pages'][page_index]['regions'][region_index]['children'][child_index]['children']
 
-
+    @log_error
+    def set_regions(self, page_index, regions):
+        self.file['pages'][page_index]["regions"] = regions
 
 
 def get_files(application_context):

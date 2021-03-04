@@ -9,7 +9,7 @@ import numpy as np
 from src.utilities.yolov5.experimental import attempt_load
 from src.utilities.yolov5.datasets import LoadStreams, LoadImages
 from src.utilities.yolov5.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
-    scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
+    scale_coords, xyxy2xywh, strip_optimizer
 from src.utilities.yolov5.plots import plot_one_box
 from src.utilities.yolov5.torch_utils import select_device, load_classifier, time_synchronized
 
