@@ -36,7 +36,7 @@ WORKDIR /app
 
 #RUN apt-get install -y make git
 RUN apt-get update && apt-get install -y software-properties-common build-essential python3-pip
-RUN apt install -y libspatialindex-dev python-rtree
+RUN apt install -y libspatialindex-dev python3-rtree
 RUN apt install -y libopencv-dev python3-opencv
 
 RUN pip install -r requirements.txt
