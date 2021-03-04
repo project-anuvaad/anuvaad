@@ -5,15 +5,9 @@ from utilities.wfmutils import WFMUtils
 from kafkawrapper.wfmproducer import Producer
 from repository.wfmrepository import WFMRepository
 from validator.wfmvalidator import WFMValidator
-from configs.wfmconfig import anu_etl_wfm_core_topic
-from configs.wfmconfig import log_msg_start
-from configs.wfmconfig import log_msg_end
-from configs.wfmconfig import module_wfm_name
-from configs.wfmconfig import page_default_limit
-from anuvaad_auditor.errorhandler import post_error_wf, post_error
-from anuvaad_auditor.loghandler import log_info
-from anuvaad_auditor.loghandler import log_error
-from anuvaad_auditor.loghandler import log_exception
+from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, anu_etl_notifier_input_topic
+from anuvaad_auditor.errorhandler import post_error_wf, post_error, log_exception
+from anuvaad_auditor.loghandler import log_info, log_error
 
 log = logging.getLogger('file')
 producer = Producer()
@@ -276,6 +270,9 @@ class WFMService:
                 log_error("Job FAILED: " + task_output["jobID"], task_output, None)
                 client_output = self.get_wf_details_async(None, task_output, False, task_output["error"])
                 self.update_job_details(client_output, False)
+            job_details = self.get_job_details_bulk({"jobIDs": [job_id]}, True)
+            producer.push_to_queue(anu_etl_notifier_input_topic, job_details)
+            log_info("Job details pushed to notifier...", task_output)
         except Exception as e:
             log_exception("Exception while managing the ASYNC workflow: " + str(e), task_output, e)
             post_error_wf("WFLOW_MANAGE_ERROR", "Exception while managing workflow: " + str(e), task_output, e)
