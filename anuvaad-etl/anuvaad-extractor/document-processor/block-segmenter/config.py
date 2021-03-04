@@ -39,7 +39,10 @@ CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER
 BREAK_BLOCKS = True
 
 DEVICE='cpu'
-
+IMAGE_SIZE=1984
+WEIGHT_PATH ="./src/utilities/yolov5/weights/exp14.pt"
+CONF_THRESHOLD = 0.1
+IOU_THRESHOLD = 0.45
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),

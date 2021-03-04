@@ -26,7 +26,6 @@
 # #&&\
 # #   pip install scikit-build &&\
 # #   pip install cmake &&\
-# RUN apt install -y libopencv-dev python3-opencv
 
 #FROM anuvaadio/python-opencv-slim:2
 
@@ -37,6 +36,8 @@ WORKDIR /app
 
 #RUN apt-get install -y make git
 RUN apt install -y libspatialindex-dev python-rtree
+RUN apt install -y libopencv-dev python3-opencv
+
 RUN pip install -r requirements.txt
 #RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 

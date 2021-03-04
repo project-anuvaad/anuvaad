@@ -1,3 +1,7 @@
+import sys
+sys.path.insert(0,"./src/utilities/yolov5/utils")
+
+
 from src.kafka_module.kf_service import  block_segmenter_request_worker, process_block_segmenter_kf
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_error
