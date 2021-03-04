@@ -55,8 +55,6 @@ def detect( image_path ,model=model, image_size = config.IMAGE_SIZE,s_device=con
         pred = non_max_suppression(pred, config.CONF_THRESHOLD, config.IOU_THRESHOLD)
         t2 = time_synchronized()
 
-        # Apply Classifier
-
         output = []
         # Process detections
         for i, det in enumerate(pred):  # detections per image
@@ -77,12 +75,15 @@ def detect( image_path ,model=model, image_size = config.IMAGE_SIZE,s_device=con
                 for *xyxy, conf, cls in reversed(det):
                     #label = f'{names[int(cls)]} {conf:.2f}'
                     bbox = {'vertices':[]}
-                    bbox['vertices'].append({'x':np.int16(xyxy[0].numpy())  , 'y' :np.int16(xyxy[1].numpy())})
-                    bbox['vertices'].append({'x': np.int16(xyxy[2].numpy()), 'y': np.int16(xyxy[1].numpy())})
-                    bbox['vertices'].append({'x': np.int16(xyxy[2].numpy()), 'y': np.int16(xyxy[3].numpy())})
-                    bbox['vertices'].append({'x': np.int16(xyxy[0].numpy()), 'y': np.int16(xyxy[3].numpy())})
 
-                    output.append({'class':names[int(cls)], 'boundingBox':bbox  ,'conf' :conf})
+                    bbox['vertices'].append({'x': int(xyxy[0]), 'y': int(xyxy[1])})
+                    bbox['vertices'].append({'x': int(xyxy[2]), 'y': int(xyxy[1])})
+                    bbox['vertices'].append({'x': int(xyxy[2]), 'y': int(xyxy[3])})
+                    bbox['vertices'].append({'x': int(xyxy[0]), 'y': int(xyxy[3])})
+
+
+
+                    output.append({'class':names[int(cls)], 'boundingBox':bbox  ,'conf' :round(float(conf),2) })
                     #plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=3)
 
             print(f'{s}Done. ({t2 - t1:.3f}s)')
