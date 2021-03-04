@@ -1,14 +1,14 @@
 #FROM anuvaadio/python3.6-opencv-4.1.0:7
 #FROM python:3.6-slim
 #FROM anuvaadio/anuvaad-layout-detector-prima:4-ba5d7d74
-FROM ubuntu:20.04
+#FROM ubuntu:20.04
 # # both files are explicitly required!
 # #COPY Pipfile Pipfile.lock ./
 
 # COPY / /app
 # WORKDIR /app
 
-ENV DEBIAN_FRONTEND="noninteractive"
+#ENV DEBIAN_FRONTEND="noninteractive"
 
 
 
@@ -31,15 +31,17 @@ ENV DEBIAN_FRONTEND="noninteractive"
 
 #FROM anuvaadio/anuvaad-block-segmenter:20-3a396ff9
 #FROM continuumio/anaconda3
+FROM anuvaadio/anuvaad-block-segmenter:39-c2d7b62b
+
 COPY / /app
 WORKDIR /app
 
 #RUN apt-get install -y make git
-RUN apt-get update && apt-get install -y software-properties-common build-essential python3-pip
-RUN apt install -y libspatialindex-dev python3-rtree
-RUN apt install -y libopencv-dev python3-opencv
-
-RUN pip3 install -r requirements.txt
+# RUN apt-get update && apt-get install -y software-properties-common build-essential python3-pip
+# RUN apt install -y libspatialindex-dev python3-rtree
+# RUN apt install -y libopencv-dev python3-opencv
+#
+# RUN pip3 install -r requirements.txt
 #RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 
 #RUN pip cache purge

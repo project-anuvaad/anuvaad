@@ -5,7 +5,7 @@ import cv2
 import torch
 import torch.backends.cudnn as cudnn
 from numpy import random
-
+import numpy as np
 from src.utilities.yolov5.experimental import attempt_load
 from src.utilities.yolov5.datasets import LoadStreams, LoadImages
 from src.utilities.yolov5.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
@@ -77,10 +77,10 @@ def detect( image_path ,model=model, image_size = config.IMAGE_SIZE,s_device=con
                 for *xyxy, conf, cls in reversed(det):
                     #label = f'{names[int(cls)]} {conf:.2f}'
                     bbox = {'vertices':[]}
-                    bbox['vertices'].append({'x':int(xyxy[0].numpy())  , 'y' :int(xyxy[1].numpy())})
-                    bbox['vertices'].append({'x': int(xyxy[2].numpy()), 'y': int(xyxy[1].numpy())})
-                    bbox['vertices'].append({'x': int(xyxy[2].numpy()), 'y': int(xyxy[3].numpy())})
-                    bbox['vertices'].append({'x': int(xyxy[0].numpy()), 'y': int(xyxy[3].numpy())})
+                    bbox['vertices'].append({'x':np.int16(xyxy[0].numpy())  , 'y' :np.int16(xyxy[1].numpy())})
+                    bbox['vertices'].append({'x': np.int16(xyxy[2].numpy()), 'y': np.int16(xyxy[1].numpy())})
+                    bbox['vertices'].append({'x': np.int16(xyxy[2].numpy()), 'y': np.int16(xyxy[3].numpy())})
+                    bbox['vertices'].append({'x': np.int16(xyxy[0].numpy()), 'y': np.int16(xyxy[3].numpy())})
 
                     output.append({'class':names[int(cls)], 'boundingBox':bbox  ,'conf' :conf})
                     #plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=3)
