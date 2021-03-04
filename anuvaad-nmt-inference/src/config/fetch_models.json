@@ -458,7 +458,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Assamese --Not Supported"
+          "target_language_name":"Assamese"
         },
         {
           "source_language_code": "en",
@@ -470,7 +470,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Bodo --Not Supported"
+          "target_language_name":"Bodo"
         },
         {
           "source_language_code": "en",
@@ -482,7 +482,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Dogri --Not Supported"
+          "target_language_name":"Dogri"
         },
         {
           "source_language_code": "en",
@@ -494,7 +494,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Kashmiri --Not Supported"
+          "target_language_name":"Kashmiri"
         },
         {
           "source_language_code": "en",
@@ -506,7 +506,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Konkani --Not Supported"
+          "target_language_name":"Konkani"
         },
         {
           "source_language_code": "en",
@@ -518,7 +518,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Maithilii --Not Supported"
+          "target_language_name":"Maithilii"
         },
         {
           "source_language_code": "en",
@@ -530,7 +530,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Manipuri --Not Supported"
+          "target_language_name":"Manipuri"
         },
         {
           "source_language_code": "en",
@@ -542,7 +542,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Nepali --Not Supported"
+          "target_language_name":"Nepali"
         },
         {
           "source_language_code": "en",
@@ -554,7 +554,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Oriya --Not Supported"
+          "target_language_name":"Oriya"
         },
         {
           "source_language_code": "en",
@@ -566,7 +566,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Sanskrit --Not Supported"
+          "target_language_name":"Sanskrit"
         },
         {
           "source_language_code": "en",
@@ -578,7 +578,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Sindhi --Not Supported"
+          "target_language_name":"Sindhi"
         },
         {
           "source_language_code": "en",
@@ -590,7 +590,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Urdu --Not Supported"
+          "target_language_name":"Urdu"
         },
         {
           "source_language_code": "en",
@@ -602,7 +602,7 @@
           "created_on": "2021-02-25",
           "status": "INACTIVE",
           "source_language_name":"English",
-          "target_language_name":"Santhali --Not Supported"
+          "target_language_name":"Santhali"
         }
       ]
 }
