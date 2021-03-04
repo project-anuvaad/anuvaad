@@ -63,6 +63,7 @@ def LayoutDetection(app_context):
     try:
         
         response   = get_layout(app_context)
+        
         if response!=None:
             return {
                     'code': 200,
