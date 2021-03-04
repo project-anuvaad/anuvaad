@@ -180,6 +180,18 @@ class TranslateService:
                         tp_tokenizer = sentence_processor.moses_tokenizer 
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
                         translation = encode_itranslate_decode_v2(i,num_map,tp_tokenizer)
+                        translation = [sentence_processor.indic_detokenizer(i) for i in translation] 
+                    elif i['id'] == 71:
+                        "te-en 2nd"
+                        tp_tokenizer = sentence_processor.moses_tokenizer 
+                        i['src'] = sentence_processor.indic_tokenizer(i['src'])
+                        translation = encode_itranslate_decode_v2(i,num_map,tp_tokenizer)
+                        translation = [sentence_processor.moses_detokenizer(i) for i in translation]
+                    elif i['id'] == 72:
+                        "en-te 3rd"
+                        tp_tokenizer = sentence_processor.moses_tokenizer 
+                        i['src'] = sentence_processor.moses_tokenizer(i['src'])
+                        translation = encode_itranslate_decode_v2(i,num_map,tp_tokenizer)
                         translation = [sentence_processor.indic_detokenizer(i) for i in translation]                           
 
                     else:
@@ -403,6 +415,16 @@ class OpenNMTTranslateService:
                         translation = sentence_processor.moses_detokenizer(translation)  
                     elif i['id'] == 70:
                         "en-hi 15th"
+                        i['src'] = sentence_processor.moses_tokenizer(i['src'])
+                        translation,scores,input_sw,output_sw = encode_translate_decode_v2(i)
+                        translation = sentence_processor.indic_detokenizer(translation)
+                    elif i['id'] == 71:
+                        "te-en 2nd"
+                        i['src'] = sentence_processor.indic_tokenizer(i['src'])
+                        translation,scores,input_sw,output_sw = encode_translate_decode_v2(i)
+                        translation = sentence_processor.moses_detokenizer(translation)  
+                    elif i['id'] == 72:
+                        "en-te 3rd"
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
                         translation,scores,input_sw,output_sw = encode_translate_decode_v2(i)
                         translation = sentence_processor.indic_detokenizer(translation)                                                         

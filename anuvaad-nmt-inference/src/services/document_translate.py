@@ -242,6 +242,18 @@ class NMTTranslateService:
                 input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
                 encode_translate_decode_v2(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
+                translation_array = [sentence_processor.indic_detokenizer(translation) for translation in translation_array]
+            elif model_id == 71:
+                "te-en 2nd"
+                input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
+                translation_array, input_subwords_list, output_subwords_list, score_list = \
+                encode_translate_decode_v2(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
+                translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]
+            elif model_id == 72:
+                "en-te 3rd"
+                input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
+                translation_array, input_subwords_list, output_subwords_list, score_list = \
+                encode_translate_decode_v2(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
                 translation_array = [sentence_processor.indic_detokenizer(translation) for translation in translation_array]                                                     
             else:
                 log_info("Unsupported model id: {} for given input".format(model_id),MODULE_CONTEXT)
