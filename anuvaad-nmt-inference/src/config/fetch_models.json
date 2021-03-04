@@ -153,7 +153,7 @@
           "target_language_code": "hi",
           "model_id": 56,
           "model_name": "Model_experiment_5.6",
-          "is_primary": true,
+          "is_primary": false,
           "description": "Built over 5.4 and 5.5 model with manually curated data. BPE-24K, IITB data + india kanoon data +74k shabkosh",
           "created_on": "2019-12-12T06:04:35.221Z",
           "status": "ACTIVE",
@@ -369,7 +369,7 @@
           "target_language_code": "en",
           "model_id": 6,
           "model_name": "Hi-En_Model_Exp-2",
-          "is_primary": true,
+          "is_primary": false,
           "description": "Replicating Exp-5.6",
           "created_on": "2020-05-07T06:30:53.952Z",
           "status": "ACTIVE",
@@ -423,6 +423,30 @@
           "status": "ACTIVE",
           "source_language_name":"English",
           "target_language_name":"Tamil"
+        },
+        {
+          "source_language_code": "hi",
+          "target_language_code": "en",
+          "model_id": 69,
+          "model_name": "Hindi-English Model-3",
+          "is_primary": true,
+          "description": "Trained on 2.8M corpus dated 24-02-2021",
+          "created_on": "2021-02-24",
+          "status": "ACTIVE",
+          "source_language_name":"Hindi",
+          "target_language_name":"English"
+        },
+        {
+          "source_language_code": "en",
+          "target_language_code": "hi",
+          "model_id": 70,
+          "model_name": "English-Hindi Model-15",
+          "is_primary": true,
+          "description": "Trained on 2.8M corpus dated 24-02-2021",
+          "created_on": "2021-02-24",
+          "status": "ACTIVE",
+          "source_language_name":"English",
+          "target_language_name":"Hindi"
         },
         {
           "source_language_code": "en",
