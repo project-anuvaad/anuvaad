@@ -23,11 +23,6 @@ def compare_regions(gt_regions, predicted_regions):
     predicted_count =  len(predicted_regions)
     gt_count  =  len(gt_regions)
 
-    # if  predicted_count > gt_count:
-    #     base_regions = predicted_regions
-    #     compare_regions = gt_regions
-    #     gt_base = False
-    # else :
     base_regions = gt_regions
     compare_regions = predicted_regions
     

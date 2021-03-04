@@ -340,8 +340,8 @@ class Region_Unifier:
             line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words))
             
             
-            v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),grand_children=True )
-            
+            v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),grand_children=True,add_font=True )
+            #print(v_list)
             #t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
             t_list = tabel_region
             i_list       =  collate_regions(copy.deepcopy( image_region),copy.deepcopy(page_words),grand_children=True,region_flag = False,skip_enpty_children=True)
@@ -367,7 +367,7 @@ class Region_Unifier:
                     v_block['avg_ver_dist'] = avg__region_ver_dist
                     avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
 
-                    #v_block['children'] = horzontal_merging(v_block['children'],avrage_region_ver_ratio)
+                    v_block['children'] = horzontal_merging(v_block['children'],avrage_region_ver_ratio)
                     
                     
                     v_list[idx] =copy.deepcopy(v_block)

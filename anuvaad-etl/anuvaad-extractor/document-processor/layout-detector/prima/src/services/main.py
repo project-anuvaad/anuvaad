@@ -63,10 +63,18 @@ def LayoutDetection(app_context):
     try:
         
         response   = get_layout(app_context)
-        return {
-                'code': 200,
-                'message': 'request completed',
-                'rsp': response
+        
+        if response!=None:
+            return {
+                    'code': 200,
+                    'message': 'request completed',
+                    'rsp': response
+                    }
+        else:
+            return {
+                'code': 400,
+                'message': 'Error occured during layout detection',
+                'rsp': None
                 }
     except Exception as e:
         log_exception("Error occured during layout detection ",  app_context.application_context, e)

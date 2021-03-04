@@ -42,6 +42,7 @@ def get_response(app_context, words, lines, images):
         except Exception as e:
             file_prperties.set_staus(False)
             log_exception("Error occured during response generation" + str(e), app_context.application_context, e)
+            return None
         
         output.append(file_prperties.get_file())
 
@@ -59,15 +60,21 @@ def TextDetection(app_context,base_dir=config.BASE_DIR):
         words,lines,images = get_text(app_context,base_dir)
         response           = get_response(app_context,words,lines,images)
 
-        return {
-                'code': 200,
-                'message': 'request completed',
-                'rsp': response
+        if response!=None:
+            return {
+                    'code': 200,
+                    'message': 'request completed',
+                    'rsp': response
+                    }
+        else:
+            return {
+                'code': 400,
+                'message': 'Error occured during pdf to blocks conversion',
+                'rsp': None
                 }
 
     except Exception as e:
         log_exception("Error occured during word detection conversion" + str(e),  app_context.application_context, e)
-
         return {
             'code': 400,
             'message': 'Error occured during pdf to blocks conversion',
