@@ -79,7 +79,7 @@ class PRIMA(object):
 				score.append(format(ele.score,'.2f'))
 		return bbox,tag,score
 
-	def craft_refinement(self, boxes_final, coords, layout_class):
+	def craft_refinement(self, boxes_final, coords, layout_class,score):
 		if len(boxes_final) != 0:
 			for box in boxes_final:
 				vertical_min_dis = sys.maxsize; horizon_min_dis  = sys.maxsize
@@ -110,11 +110,12 @@ class PRIMA(object):
 					#coords[hor_index][2] = int(max(hor_coord_update[2],box[2])); coords[hor_index][3] = int(max(hor_coord_update[3],box[3]))
 				else:
 					layout_class.append('TextRegion')
+					score.append(float(92))
 					coords.append(box)
 
-		return coords, layout_class
+		return coords, layout_class,score
 
-	def prima_craft_refinement(self, coords, boxes, tag_final):
+	def prima_craft_refinement(self, coords, boxes, tag_final,score):
 		org_coord     = coords
 		org_coord2    = coords
 		boxes_final   = []
@@ -138,12 +139,13 @@ class PRIMA(object):
 			if count == len(org_coord):
 				boxes_final.append(coord1)
 				tag_final.append("TextRegion")
+				score.append(float(92))
 
 
-		coords, layout_class  = self.craft_refinement(boxes_final, coords, tag_final)
+		coords, layout_class,score  = self.craft_refinement(boxes_final, coords, tag_final,score)
 		
 		
-		return coords, layout_class
+		return coords, layout_class,score
 	
 	def get_polygon(self, region):
 		points = []
@@ -227,9 +229,9 @@ class PRIMA(object):
 		y1 = keys.get_top(region1); y2 = keys.get_top(region2)
 		if tag1=="CELL" or tag2=="CELL" or tag1=="TABLE" or tag2=="TABLE":
 			return None, False
-		if (area>0 and area1<area2 and area1/area2>0.2 and score1>score2) or (area>0 and area1>area2 and area2/area1>0.2 and  score1>score2):
+		if (area>0 and area1<area2 and area1/area2>0.2 and float(score1)>float(score2)) or (area>0 and area1>area2 and area2/area1>0.2 and  float(score1)>float(score2)):
 				return tag1, True
-		elif (area>0 and area1<area2 and area1/area2>0.2 and score1<score2) or (area>0 and area1>area2 and area2/area1>0.2 and  score1<score2):
+		elif (area>0 and area1<area2 and area1/area2>0.2 and float(score1)<float(score2)) or (area>0 and area1>area2 and area2/area1>0.2 and  float(score1)<float(score2)):
 				return tag2, True
 		elif area>0 and tag1=='TEXT' and tag2=='TEXT':
 			return 'TEXT',True
@@ -306,7 +308,7 @@ class PRIMA(object):
 			layout   = model_primalaynet.detect(image)
 			bbox,tag,score = self.prima_region(layout)
 			############### craft refinement logic 
-			bbox, tag = self.prima_craft_refinement(bbox,craft_coords,tag)
+			bbox, tag,score = self.prima_craft_refinement(bbox,craft_coords,tag,score)
 			layouts  = self.update_box_format(bbox,tag,score)
 			flag=True
 			while flag==True:

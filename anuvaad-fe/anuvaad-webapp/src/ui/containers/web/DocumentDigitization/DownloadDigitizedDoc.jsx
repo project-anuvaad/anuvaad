@@ -44,52 +44,66 @@ class DownloadDigitziedDoc extends React.Component {
 
     renderText = (line, region) => {
         return (
-            <div
-                key={line.identifier}
+            <div style={{
+                position: "absolute",
+                zIndex: 2,
+                width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
+                height: line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
+                top: line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                left: line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+            }}
+                key={region.identifier}
             >
                 {
-                    line['children'].map(word => {
-                        return this.renderTextSpan(word, line, region)
-                    })
 
+                    this.renderTextSpan(line, region)
                 }
             </div>
         )
     }
 
-    renderTextSpan = (word, line, region) => {
-        if (line.class === "CELL") {
-            return (<div
+    renderTable = (word, line) => {
+        return (
+            <div
                 style={{
                     position: "absolute",
                     zIndex: this.action === word.identifier ? 100000 : 2,
                     color: word.conf < this.props.percent ? 'red' : 'black',
                     fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
-                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
-                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                    top: word.boundingBox.vertices[0].y - line.boundingBox.vertices[0].y + 'px',
+                    left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
-                }} key={word.identifier}
+                }
+                }
+                key={word.identifier}
             >
-                <Textfit mode="single" min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
+                <Textfit mode="single" style={{ width: '100%' }} min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
                     {word.text}
                 </Textfit>
-            </div>
-            )
+            </div >
+        )
+    }
+
+    renderTextSpan = (line, region) => {
+        if (line.class === "CELL") {
+            return line.children.map(word => this.renderTable(word, line))
         }
         return (
             <div
                 style={{
-                    position: "absolute",
                     zIndex: 2,
-                    fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
-                    top: line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
-                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
-                    width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
+                    color: 'black',
+                    padding: '0%',
+                    fontSize: region.avg_size + 'px',
+                    width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
+                    top: line.boundingBox.vertices[0].y + 'px',
+                    left: line.boundingBox.vertices[0].x + 'px',
+                    textAlignLast: 'justify'
                 }}
-                id={word.identifier}
+                key={line.identifier}
             >
-                <Textfit mode="single" style={{ width: '100%' }} min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
-                    {word.text}
+                <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size))} >
+                    {line.text}
                 </Textfit>
             </div>
         )

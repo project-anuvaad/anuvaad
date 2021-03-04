@@ -57,6 +57,10 @@ def update_coord(reg1,reg2):
     box1 = MapKeys(reg1)
     box2 = MapKeys(reg2)
     reg1['children'] = update_children(reg1, reg2)
+    text = ""
+    for word in reg1['children']:
+        text = text+ " " + word['text']
+    reg1['text'] = text[1:]
     reg1["boundingBox"]["vertices"][0]['x']= min(box1.get_left(),box2.get_left())
     reg1["boundingBox"]["vertices"][0]['y']= min(box1.get_top(),box2.get_top())
     reg1["boundingBox"]["vertices"][1]['x']= max(box1.get_right(),box2.get_right())
@@ -65,6 +69,7 @@ def update_coord(reg1,reg2):
     reg1["boundingBox"]["vertices"][2]['y']= max(box1.get_bottom(),box2.get_bottom())
     reg1["boundingBox"]["vertices"][3]['x']= min(box1.get_left(),box2.get_left())
     reg1["boundingBox"]["vertices"][3]['y']= max(box1.get_bottom(),box2.get_bottom())
+
 
     return reg1
 
