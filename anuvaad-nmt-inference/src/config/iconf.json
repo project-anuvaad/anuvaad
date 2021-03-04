@@ -156,18 +156,6 @@
             "path":"nmt/68",
             "sp_encoder":"nmt/68/en_en-to-ta-anuvaad-5-v1-2021-03-01-24000.model",
             "sp_decoder":"nmt/68/ta_en-to-ta-anuvaad-5-v1-2021-03-01-24000.model"
-        },
-        {
-            "id": 69,
-            "path":"nmt/69",
-            "sp_encoder":"nmt/69/hi_hi-to-en-anuvaad-3-v1-2021-02-24-24000.model",
-            "sp_decoder":"nmt/69/en_hi-to-en-anuvaad-3-v1-2021-02-24-24000.model"
-        },
-        {
-            "id": 70,
-            "path":"nmt/70",
-            "sp_encoder":"nmt/70/en_en-to-hi-anuvaad-15-v1-2021-02-24-24000.model",
-            "sp_decoder":"nmt/70/hi_en-to-hi-anuvaad-15-v1-2021-02-24-24000.model"
-        }   
+        }  
     ]
 }
