@@ -39,7 +39,7 @@ RUN apt-get update && apt-get install -y software-properties-common build-essent
 RUN apt install -y libspatialindex-dev python3-rtree
 RUN apt install -y libopencv-dev python3-opencv
 
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 #RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 
 #RUN pip cache purge
