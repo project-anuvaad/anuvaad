@@ -156,7 +156,7 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/document-upload`}
+              path={`${process.env.PUBLIC_URL}/document-upload/:type`}
               userRoles={["TRANSLATOR"]}
               component={FileUpload}
               title="Start Translate"
