@@ -35,10 +35,10 @@ def get_layout(app_context) :
                 page_words  = file_properties.get_words(idx)
                 line_coords = get_coord(page_lines)
                 page_path   = '/'.join(page_path.split('/')[-4:])
-                masked_image, table_and_lines = extract_table_line_regions(page_path)
-                cell_regions = cell_layout(table_and_lines,page_path)
+                #masked_image, table_and_lines = extract_table_line_regions(page_path)
+                #cell_regions = cell_layout(table_and_lines,page_path)
                 regions     = primalaynet.predict_primanet(page_path, line_coords)
-                regions += cell_regions
+                #regions += cell_regions
                 file['pages'][idx]["regions"]=regions
             file['file'] = file_new['file']
             file['config'] = file_new['config']
@@ -57,7 +57,7 @@ def get_layout(app_context) :
     return app_context.application_context
 
 
-def LayoutDetection(app_context):
+def LayoutDetection(app_context,base_dir = config.BASE_DIR):
     
     log_debug('layout detection process starting {}'.format(app_context.application_context), app_context.application_context)
     try:

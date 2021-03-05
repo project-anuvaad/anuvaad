@@ -52,6 +52,7 @@ def get_files(application_context):
     return files
 
 def get_json(name ):
+    #path = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/'+os.path.join(config.BASE_DIR, name)
     path = os.path.join(config.BASE_DIR, name)
     with open (path, "r") as f:
         data = json.loads(f.read())
