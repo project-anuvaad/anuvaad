@@ -145,7 +145,7 @@ class DocumentEditor extends React.Component {
 
     if (prevProps.fetch_models !== this.props.fetch_models) {
       let jobId = this.props.match.params.jobid ? this.props.match.params.jobid.split("|")[0] : ""
-      let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models  )
+      let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
       if (model && model.hasOwnProperty('source_language_name') && model.hasOwnProperty('target_language_name')) {
         TELEMETRY.startTranslatorFlow(model.source_language_name, model.target_language_name, this.props.match.params.inputfileid, jobId)
       }
