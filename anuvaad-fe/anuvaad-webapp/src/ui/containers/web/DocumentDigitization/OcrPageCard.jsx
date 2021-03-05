@@ -108,6 +108,7 @@ class OcrPageCard extends React.Component {
                     zIndex: this.action === word.identifier ? 100000 : 2,
                     color: word.conf < this.props.percent ? 'red' : 'black',
                     fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
+                    fontWeight: word.font && word.font.style === 'BOLD' ? 'bold' : 'normal',
                     top: word.boundingBox.vertices[0].y - line.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
@@ -141,7 +142,8 @@ class OcrPageCard extends React.Component {
                 key={line.identifier}
             >
                 <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size))} >
-                    {line.text}
+                    {confscore(line,region)}
+                    {/* {line.text} */}
                 </Textfit>
             </div>
         )
