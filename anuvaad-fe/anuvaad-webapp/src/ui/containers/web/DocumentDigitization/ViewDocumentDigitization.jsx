@@ -22,7 +22,7 @@ import Dialog from "../../../components/web/common/SimpleDialog";
 import MarkInactive from "../../../../flux/actions/apis/view_document/markinactive";
 import togglebtnstatus from '../../../../flux/actions/apis/view_digitized_document/show_bg_image';
 import fetchnextpage from '../../../../flux/actions/apis/view_digitized_document/fetch_page_number';
-
+import switch_styles from '../../../../flux/actions/apis/view_digitized_document/switch_styles';
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -188,6 +188,9 @@ class ViewDocumentDigitization extends React.Component {
             this.props.clearJob();
             if (this.props.status) {
                 this.props.togglebtnstatus();
+            }
+            if (!this.props.switch_style) {
+                this.props.switch_styles();
             }
         }
     }
@@ -667,7 +670,8 @@ const mapDispatchToProps = (dispatch) =>
             APITransport,
             CreateCorpus: APITransport,
             togglebtnstatus,
-            fetchnextpage
+            fetchnextpage,
+            switch_styles
         },
         dispatch
     );
@@ -680,7 +684,8 @@ const mapStateToProps = (state) => ({
     open_sidebar: state.open_sidebar,
     download_json: state.download_json,
     status: state.showimagestatus.status,
-    page_no: state.ditigitization_pageno.pageno
+    page_no: state.ditigitization_pageno.pageno,
+    switch_style: state.switch_style.status
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewDocumentDigitization);

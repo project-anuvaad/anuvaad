@@ -624,7 +624,7 @@ class DocumentEditor extends React.Component {
 
     getImage = () => {
         let image;
-        image = OCR_PAGES.get_bg_image(this.props.download_json, this.props.status,this.props.active_page_number)
+        image = OCR_PAGES.get_bg_image(this.props.download_json, this.props.status, this.props.active_page_number)
         return image
     }
     /**
@@ -793,6 +793,7 @@ class DocumentEditor extends React.Component {
                                 hideMergeBtn={true}
                                 hideSentenceDtl={true}
                                 showConfSlider={true}
+                                showFontAdjuster={this.props.switch_style}
                             />
                         </div>
                     </>
@@ -821,7 +822,8 @@ const mapStateToProps = state => ({
     fetchDocument: state.fetchDocument,
     fetch_models: state.fetch_models.models,
     download_json: state.download_json,
-    status: state.showimagestatus.status
+    status: state.showimagestatus.status,
+    switch_style: state.switch_style.status
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

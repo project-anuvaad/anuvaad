@@ -172,7 +172,6 @@ class SentenceCard extends React.Component {
      * user actions handlers
      */
     processSaveButtonClicked() {
-        debugger
         if (this.state.value.length < 1 || this.state.value === '') {
             // textfield has no value present.
             // - check availability of s0_tgt
@@ -665,7 +664,7 @@ class SentenceCard extends React.Component {
                 return val.data;
             }).then((result) => {
                 let parallel_words = []
-                result.parallel_words.map((words) => {
+                result && result.parallel_words.map((words) => {
                     if (this.props.model.target_language_code === words.locale)
                         parallel_words.push(words.name)
                 })

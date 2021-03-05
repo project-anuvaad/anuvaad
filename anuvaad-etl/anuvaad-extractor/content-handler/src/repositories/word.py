@@ -34,14 +34,14 @@ class WordRepo:
             'name': source_word,
             'locale': src_locale,
             'pos': [],
-            'examples': [],
             'parallel_words': [{
                 'name': target_word,
                 'locale': target_locale,
-                'pos': [],
-                'examples': [],
+                'pos': []
             }]
         }
+
+    
         result = self.wordModel.search_source_word(source_word)
         if result == None:
             update_result = self.wordModel.update_word(word)
@@ -50,8 +50,7 @@ class WordRepo:
             result['parallel_words'].append({
                 'name': target_word,
                 'locale': target_locale,
-                'pos': [],
-                'examples': [],
+                'pos': []
             })
             word['parallel_words'] = result['parallel_words']
             update_result = self.wordModel.update_word(word)

@@ -154,7 +154,7 @@ class PdfUpload extends Component {
     const { APITransport } = this.props;
     const apiModel = new FetchModel();
     APITransport(apiModel);
-    this.setState({ showLoader: true });
+    this.setState({ showLoader: true, uploadType: this.props.match.params.type ==="translate" ? true : false });
 
   }
 
@@ -162,8 +162,8 @@ class PdfUpload extends Component {
     if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
       debugger
       this.setState({
-        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
-        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models)
+        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, this.state.uploadType),
+        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, this.state.uploadType)
       })
       
     }
@@ -178,8 +178,8 @@ class PdfUpload extends Component {
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
       this.props.createJobEntry(this.props.workflowStatus)
 
-      var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code)
-      var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code)
+      var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, this.state.uploadType )
+      var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code, this.state.uploadType)
 
       TELEMETRY.startWorkflow(sourceLang, targetLang, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
       history.push(`${process.env.PUBLIC_URL}/view-document`);
@@ -192,7 +192,7 @@ class PdfUpload extends Component {
 
   processSourceLanguageSelected = (event) => {
     this.setState({ source_language_code: event.target.value })
-    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value)
+    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value, this.state.uploadType)
     this.setState({
       target_languages: languages
     })
@@ -338,10 +338,10 @@ class PdfUpload extends Component {
 
         <div className={classes.div}>
           <Typography value="" variant="h4" className={classes.typographyHeader}>
-            {translate("common.page.label.uploadFile")}
+            {this.state.uploadType ? "Document Translate" : "Data Collection"}
           </Typography>
           <br />
-          <Typography className={classes.typographySubHeader}>{translate("pdf_upload.page.label.uploadMessage")}</Typography>
+          <Typography className={classes.typographySubHeader}>{this.state.uploadType ?translate("pdf_upload.page.label.uploadMessage") : "Upload file that you want to collect data."}</Typography>
           <br />
           <Paper elevation={3} className={classes.paper}>
             <Grid container spacing={8}>

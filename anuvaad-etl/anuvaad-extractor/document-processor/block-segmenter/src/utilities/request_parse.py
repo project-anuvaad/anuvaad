@@ -33,6 +33,11 @@ class File:
         return self.file['page_info']
 
     @log_error
+    def get_page(self,page_index):
+        return '/'.join(self.file['page_info'][page_index].split('/')[-4:])
+
+
+    @log_error
     def get_words(self, page_index):
         return self.file['pages'][page_index]['words'][:]
 
@@ -48,6 +53,12 @@ class File:
     @log_error
     def set_regions(self, page_index,regions):
         self.file['pages'][page_index]["regions"]=regions
+
+    @log_error
+    def set_font_properties(self, page_index,font_properties):
+        self.file['pages'][page_index]["font_properties"]=font_properties
+
+
 
     @log_error
     def get_file(self):

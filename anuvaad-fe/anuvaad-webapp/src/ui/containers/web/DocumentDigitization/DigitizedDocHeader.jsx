@@ -29,6 +29,7 @@ import { showPdf } from '../../../../flux/actions/apis/document_translate/showpd
 import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
 import togglebtnstatus from '../../../../flux/actions/apis/view_digitized_document/show_bg_image';
+import switchstyles from '../../../../flux/actions/apis/view_digitized_document/switch_styles';
 
 const StyledMenu = withStyles({
     paper: {
@@ -65,8 +66,9 @@ class DigitizedDocHeader extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.active_page_number !== prevProps.active_page_number && this.props.status) {
-            this.props.togglebtnstatus()
+        if (this.props.active_page_number !== prevProps.active_page_number) {
+            this.props.status && this.props.togglebtnstatus()
+            !this.props.switch_style && this.props.switchstyles()
         }
     }
 
@@ -186,6 +188,11 @@ class DigitizedDocHeader extends React.Component {
 
         return (
             <div style={{ display: "flex", flexDirection: "row" }}>
+                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.switchstyles}>
+                    {
+                        this.props.switch_style ? 'Hide Style' : 'Show Style'
+                    }
+                </Button>
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
                     Download
                     <DownIcon />
@@ -266,6 +273,7 @@ const mapStateToProps = state => ({
     open_sidebar: state.open_sidebar.open,
     status: state.showimagestatus.status,
     active_page_number: state.active_page_number.page_number,
+    switch_style: state.switch_style.status
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -273,7 +281,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
         APITransport,
         showPdf,
         showSidebar,
-        togglebtnstatus
+        togglebtnstatus,
+        switchstyles
     },
     dispatch
 );
