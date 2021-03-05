@@ -9,7 +9,7 @@ import numpy as np
 from src.utilities.yolov5.experimental import attempt_load
 from src.utilities.yolov5.datasets import LoadStreams, LoadImages
 from src.utilities.yolov5.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
-    scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
+    scale_coords, xyxy2xywh, strip_optimizer
 from src.utilities.yolov5.plots import plot_one_box
 from src.utilities.yolov5.torch_utils import select_device, load_classifier, time_synchronized
 
@@ -55,8 +55,6 @@ def detect( image_path ,model=model, image_size = config.IMAGE_SIZE,s_device=con
         pred = non_max_suppression(pred, config.CONF_THRESHOLD, config.IOU_THRESHOLD)
         t2 = time_synchronized()
 
-        # Apply Classifier
-
         output = []
         # Process detections
         for i, det in enumerate(pred):  # detections per image
@@ -77,12 +75,15 @@ def detect( image_path ,model=model, image_size = config.IMAGE_SIZE,s_device=con
                 for *xyxy, conf, cls in reversed(det):
                     #label = f'{names[int(cls)]} {conf:.2f}'
                     bbox = {'vertices':[]}
-                    bbox['vertices'].append({'x':np.int16(xyxy[0].numpy())  , 'y' :np.int16(xyxy[1].numpy())})
-                    bbox['vertices'].append({'x': np.int16(xyxy[2].numpy()), 'y': np.int16(xyxy[1].numpy())})
-                    bbox['vertices'].append({'x': np.int16(xyxy[2].numpy()), 'y': np.int16(xyxy[3].numpy())})
-                    bbox['vertices'].append({'x': np.int16(xyxy[0].numpy()), 'y': np.int16(xyxy[3].numpy())})
 
-                    output.append({'class':names[int(cls)], 'boundingBox':bbox  ,'conf' :conf})
+                    bbox['vertices'].append({'x': int(xyxy[0]), 'y': int(xyxy[1])})
+                    bbox['vertices'].append({'x': int(xyxy[2]), 'y': int(xyxy[1])})
+                    bbox['vertices'].append({'x': int(xyxy[2]), 'y': int(xyxy[3])})
+                    bbox['vertices'].append({'x': int(xyxy[0]), 'y': int(xyxy[3])})
+
+
+
+                    output.append({'class':names[int(cls)], 'boundingBox':bbox  ,'conf' :round(float(conf),2) })
                     #plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=3)
 
             print(f'{s}Done. ({t2 - t1:.3f}s)')

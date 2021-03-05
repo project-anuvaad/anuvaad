@@ -21,8 +21,8 @@ import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 
 class ViewDocHeader extends React.Component {
 
-    handleOnClick() {
-        history.push(`${process.env.PUBLIC_URL}/document-upload`);
+    handleOnClick(value) {
+        history.push(`${process.env.PUBLIC_URL}/document-upload/${value}`);
     }
 
     renderOption() {
@@ -38,13 +38,32 @@ class ViewDocHeader extends React.Component {
                         backgroundColor: "#1C9AB7",
                         height: "35px",
                         fontSize: "16px",
+                        marginRight:'5px'
                     }}
                     size="large"
                     onClick={event => {
-                        this.handleOnClick();
+                        this.handleOnClick("translate");
                     }}
                 >
                     Start Translate
+                </Button>
+                <Button
+                    id="start-translate"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                        borderRadius: "20px",
+                        color: "#FFFFFF",
+                        backgroundColor: "#1C9AB7",
+                        height: "35px",
+                        fontSize: "16px",
+                    }}
+                    size="large"
+                    onClick={event => {
+                        this.handleOnClick("data_collection");
+                    }}
+                >
+                    Data collection
                 </Button>
             </div >
         );
