@@ -101,14 +101,15 @@ class OcrPageCard extends React.Component {
     }
 
     renderTable = (word, line) => {
+        console.log(this.props.switch_style)
         return (
             <div
                 style={{
                     position: "absolute",
                     zIndex: this.action === word.identifier ? 100000 : 2,
-                    color: word.conf < this.props.percent ? 'red' : 'black',
-                    fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
-                    fontWeight: word.font && word.font.style === 'BOLD' ? 'bold' : 'normal',
+                    // color: word.conf < this.props.percent ? 'red' : 'black',
+                    fontSize: !this.props.switch_style ? this.props.fontSize + 'px' : word.font && word.font.size + 'px',
+                    fontWeight: !this.props.switch_style ? 'normal' : (word.font && word.font.style === 'BOLD' ? 'bold' : 'normal'),
                     top: word.boundingBox.vertices[0].y - line.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
@@ -116,9 +117,15 @@ class OcrPageCard extends React.Component {
                 }
                 key={word.identifier}
             >
-                <Textfit mode="single" style={{ width: '100%' }} min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
-                    {word.text}
-                </Textfit>
+                {
+                    !this.props.switch_style ?
+                        word.text :
+                        <Textfit mode="single" style={{ width: '100%' }} min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
+                            {
+                                word.text
+                            }
+                        </Textfit>
+                }
             </div >
         )
     }
@@ -133,18 +140,25 @@ class OcrPageCard extends React.Component {
                     zIndex: 2,
                     color: 'black',
                     padding: '0%',
-                    fontSize: region.avg_size + 'px',
+                    fontSize: !this.props.switch_style ? this.props.fontSize + 'px' : region.avg_size + 'px',
                     width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
                     top: line.boundingBox.vertices[0].y + 'px',
                     left: line.boundingBox.vertices[0].x + 'px',
-                    textAlignLast: 'justify'
                 }}
                 key={line.identifier}
             >
-                <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size))} >
-                    {confscore(line,region)}
-                    {/* {line.text} */}
-                </Textfit>
+
+                {
+                    this.props.switch_style ?
+                        <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size))}>
+                            {
+                                confscore(line, region)
+                            }
+                        </Textfit>
+                        :
+                        line.text
+                }
+
             </div>
         )
     }
@@ -303,7 +317,9 @@ const mapStateToProps = state => ({
     block_page: state.block_highlight.page_no,
     sentence_highlight: state.sentence_highlight.sentence,
     percent: state.fetchpercent.percent,
-    status: state.showimagestatus.status
+    status: state.showimagestatus.status,
+    switch_style: state.switch_style.status,
+    fontSize: state.fetch_slider_pixel.percent
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
