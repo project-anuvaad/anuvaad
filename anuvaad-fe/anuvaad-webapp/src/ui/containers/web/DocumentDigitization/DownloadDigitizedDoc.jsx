@@ -4,6 +4,7 @@ import { Textfit } from "react-textfit";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import DownloadFile from '../../../../flux/actions/apis/download/download_zip_file';
+import { confscore } from '../../../../utils/OcrConfScore';
 
 
 class DownloadDigitziedDoc extends React.Component {
@@ -103,7 +104,8 @@ class DownloadDigitziedDoc extends React.Component {
                 key={line.identifier}
             >
                 <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size))} >
-                    {line.text}
+                    {confscore(line,region)}
+                    {/* {line.text} */}
                 </Textfit>
             </div>
         )

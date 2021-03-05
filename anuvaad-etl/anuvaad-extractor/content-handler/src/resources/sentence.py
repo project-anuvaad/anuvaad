@@ -101,10 +101,11 @@ class SentenceStatisticsCount(Resource):
 
         record_ids       = body['record_ids']
 
-        bleu_return=False
+        bleu_return=None
         if 'bleu_score' in body:
             bleu_return=body['bleu_score']
-
+        else:
+            bleu_return=False
         AppContext.addRecordID(None)
         log_info("SentenceStatisticsCount for user {}, sentence count for record_ids {}".format(user_id, record_ids), AppContext.getContext())
 

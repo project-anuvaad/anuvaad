@@ -109,6 +109,7 @@ class SentenceModel(object):
 
     def get_tokenized_sentences_count_status(self, record_id,bleu_return):
         try:
+            
             collections = get_db()[DB_SCHEMA_NAME]
             
             avg_bleu_score = 0
@@ -134,9 +135,9 @@ class SentenceModel(object):
                     log_info("\nSACRE_BLEU value** :{}".format(sacre_bleu), AppContext.getContext())
                     log_info("\n*****************************", AppContext.getContext())
                     avg_bleu_score      = round((sacre_bleu/100),2)
-               
+            else:
+                pass
             
-             
             docs   = collections.aggregate([
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
                                 { '$unwind': "$data.tokenized_sentences" },
