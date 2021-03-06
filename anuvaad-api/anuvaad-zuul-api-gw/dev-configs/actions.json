@@ -169,6 +169,14 @@
             "description":"API to create TMX records"
         },
         {
+            "id":"753e2245-75d8-4d88-bb87-26874c184907",
+            "uri":"/anuvaad-etl/translator/v1/tmx/delete",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to delete TMX records"
+        },
+        {
             "id":"8ae246ee-8b27-4dcf-93df-faad13b3c64b",
             "uri":"/anuvaad-etl/translator/v1/tmx/bulk/create/xls-upload",
             "module":"ANUVAAD-TRANSLATOR",

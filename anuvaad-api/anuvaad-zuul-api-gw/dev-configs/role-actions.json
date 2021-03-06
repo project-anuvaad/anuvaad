@@ -126,6 +126,11 @@
             "active":true
         },
         {
+            "role":"TRANSLATOR",
+            "actionID": "753e2245-75d8-4d88-bb87-26874c184907",
+            "active":true
+        },
+        {
             "role":"ADMIN",
             "actionID": "8ef47a2a-0a85-4efe-865e-8c52b567bf74",
             "active":true
@@ -183,6 +188,16 @@
         {
             "role":"ADMIN",
             "actionID": "7f3c15a0-bdc4-4dc5-8ebb-5c7ba80ee016",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "753e2245-75d8-4d88-bb87-26874c184907",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "3a670c68-737f-4546-9cf6-54de188a0298",
             "active":true
         }
     ]
