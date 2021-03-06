@@ -53,6 +53,15 @@ class TMXRepository:
             log_exception("Exception in REPO: upsert | Cause: " + str(e), None, e)
             return None
 
+    def delete(self, key):
+        try:
+            client = self.get_redis_instance()
+            client.delete(key)
+            return 1
+        except Exception as e:
+            log_exception("Exception in REPO: delete | Cause: " + str(e), None, e)
+            return None
+
     def search(self, key_list):
         try:
             client = self.get_redis_instance()

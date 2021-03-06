@@ -66,15 +66,32 @@ def text_translate():
 def tmx_create_bulk():
     service = TMXService()
     data = request.get_json()
-    return service.push_csv_to_tmx_store(data)
+    response = service.push_csv_to_tmx_store(data)
+    if response["status"] == "FAILED":
+        return jsonify(response), 400
+    else:
+        return jsonify(response), 200
 
 
 @translatorapp.route(context_path + '/v1/tmx/create', methods=["POST"])
 def tmx_create():
     service = TMXService()
     data = request.get_json()
-    return service.push_to_tmx_store(data)
+    response = service.push_to_tmx_store(data)
+    if response["status"] == "FAILED":
+        return jsonify(response), 400
+    else:
+        return jsonify(response), 200
 
+@translatorapp.route(context_path + '/v1/tmx/delete', methods=["POST"])
+def tmx_delete():
+    service = TMXService()
+    data = request.get_json()
+    response = service.delete_from_tmx_store(data)
+    if response["status"] == "FAILED":
+        return jsonify(response), 400
+    else:
+        return jsonify(response), 200
 
 @translatorapp.route(context_path + '/v1/tmx/get-all-keys', methods=["POST"])
 def tmx_get_all_keys():

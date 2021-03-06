@@ -113,6 +113,30 @@ class TMXService:
             log_exception("Exception while pushing to TMX: " + str(e), None, e)
             return {"message": "creation failed", "status": "FAILED"}
 
+    def delete_from_tmx_store(self, tmx_input):
+        log_info("Deleting to TMX......", None)
+        try:
+            for sentence in tmx_input["sentences"]:
+                tmx_records = []
+                sentence_types = self.fetch_diff_flavors_of_sentence(sentence["src"])
+                for sent in sentence_types:
+                    tmx_record_pair = {"src": sent, "locale": sentence["locale"], "nmt_tgt": [],
+                                       "user_tgt": sentence["tgt"], "context": tmx_input["context"]}
+                    if 'userID' in tmx_input.keys():
+                        tmx_record_pair["userID"] = tmx_input["userID"]
+                    if 'orgID' in tmx_input.keys():
+                        tmx_record_pair["orgID"] = tmx_input["orgID"]
+                    tmx_records.append(tmx_record_pair)
+                for tmx_record in tmx_records:
+                    hash_dict = self.get_hash_key(tmx_record)
+                    for hash_key in hash_dict.keys():
+                        repo.delete(hash_dict[hash_key])
+            log_info("TMX deleted!", None)
+            return {"message": "DELETED", "status": "SUCCESS"}
+        except Exception as e:
+            log_exception("Exception while deleting TMX: " + str(e), None, e)
+            return {"message": "deletion failed", "status": "FAILED"}
+
     # Method to fetch tmx phrases for a given src
     def get_tmx_phrases(self, user_id, org_id, context, locale, sentence, tmx_level, tmx_file_cache, ctx):
         tmx_record = {"context": context, "locale": locale, "src": sentence}
