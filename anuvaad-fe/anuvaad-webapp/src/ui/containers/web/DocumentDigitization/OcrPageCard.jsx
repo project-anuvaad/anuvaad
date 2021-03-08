@@ -163,7 +163,7 @@ class OcrPageCard extends React.Component {
     }
 
     handleClose = () => {
-        this.setState({ text: '', isOpen: false })
+        this.setState({ isOpen: false })
     }
     /**
      * sentence change
