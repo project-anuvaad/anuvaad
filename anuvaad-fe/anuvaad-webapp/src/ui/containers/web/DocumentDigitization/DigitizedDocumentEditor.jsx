@@ -793,7 +793,7 @@ class DocumentEditor extends React.Component {
                                 hideMergeBtn={true}
                                 hideSentenceDtl={true}
                                 showConfSlider={true}
-                                showFontAdjuster={this.props.switch_style}
+                                showFontAdjuster={true}
                             />
                         </div>
                     </>

@@ -245,7 +245,7 @@ class InteractivePagination extends React.Component {
                   </div>
                 } */}
               {
-                !this.props.showFontAdjuster &&
+                this.props.showFontAdjuster &&
                 <div style={{ display: 'grid', marginTop: '1%', width: '20%', gridTemplateColumns: 'repeat(1,40% 80%)' }}>
                   <Typography style={{ marginLeft: '15%', color: 'black' }} id="discrete-slider-always" gutterBottom>
                     Adjust Font
