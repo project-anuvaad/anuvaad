@@ -99,7 +99,6 @@ class DownloadDigitziedDoc extends React.Component {
                     width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
                     top: line.boundingBox.vertices[0].y + 'px',
                     left: line.boundingBox.vertices[0].x + 'px',
-                    textAlignLast: 'justify'
                 }}
                 key={line.identifier}
             >
