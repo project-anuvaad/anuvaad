@@ -68,7 +68,6 @@ class DigitizedDocHeader extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.active_page_number !== prevProps.active_page_number) {
             this.props.status && this.props.togglebtnstatus()
-            // !this.props.switch_style && this.props.switchstyles()
         }
     }
 
@@ -188,11 +187,6 @@ class DigitizedDocHeader extends React.Component {
 
         return (
             <div style={{ display: "flex", flexDirection: "row" }}>
-                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.switchstyles}>
-                    {
-                        this.props.switch_style ? 'Hide Style' : 'Show Style'
-                    }
-                </Button>
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
                     Download
                     <DownIcon />
@@ -211,12 +205,21 @@ class DigitizedDocHeader extends React.Component {
                             this.props.onShowPreview()
                         }}
                     >
-                        As PDF
+                        As TXT
+                    </MenuItem>
+                    <MenuItem
+                        style={{ borderTop: "1px solid #D6D6D6" }}
+                        onClick={() => {
+                            this.setState({ anchorEl: null })
+                            this.props.onShowPreview()
+                        }}
+                    >
+                        As DOCX
                     </MenuItem>
                 </StyledMenu>
-                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.togglebtnstatus}>
+                {/* <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.togglebtnstatus}>
                     {this.props.status ? "Hide Image" : "Show Image"}
-                </Button>
+                </Button> */}
             </div>
         );
     }

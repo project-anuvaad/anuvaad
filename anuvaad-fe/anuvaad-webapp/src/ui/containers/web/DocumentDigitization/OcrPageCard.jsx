@@ -82,81 +82,62 @@ class OcrPageCard extends React.Component {
 
     renderText = (line, region) => {
         return (
-            <div style={{
-                position: "absolute",
-                zIndex: 2,
-                width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
-                height: line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
-                top: line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
-                left: line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
-            }}
-                key={region.identifier}
-            >
+            <div key={region.identifier}>
                 {
 
-                    this.renderTextSpan(line, region)
+                    line.children.map(word => this.renderTextSpan(word, line, region))
                 }
             </div>
         )
     }
 
-    renderTable = (word, line) => {
-        console.log(this.props.switch_style)
+    renderTable = (word, region) => {
         return (
             <div
                 style={{
                     position: "absolute",
-                    zIndex: this.action === word.identifier ? 100000 : 2,
-                    // color: word.conf < this.props.percent ? 'red' : 'black',
-                    fontSize: !this.props.switch_style ? this.props.fontSize + 'px' : word.font && word.font.size + 'px',
-                    fontWeight: !this.props.switch_style ? 'normal' : (word.font && word.font.style === 'BOLD' ? 'bold' : 'normal'),
-                    top: word.boundingBox.vertices[0].y - line.boundingBox.vertices[0].y + 'px',
-                    left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
+                    zIndex: 2,
+                    fontSize: this.props.fontSize + 'px',
+                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
-                }
-                }
+                }}
                 key={word.identifier}
             >
                 {
-                    !this.props.switch_style ?
-                        word.text :
-                        <Textfit mode="single" style={{ width: '100%' }} min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
-                            {
-                                word.text
-                            }
-                        </Textfit>
+                    <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(this.props.fontSize))} >
+                        {
+                            word.text
+                        }
+                    </Textfit>
                 }
             </div >
         )
     }
 
-    renderTextSpan = (line, region) => {
+    renderTextSpan = (word, line, region) => {
         if (line.class === "CELL") {
-            return line.children.map(word => this.renderTable(word, line))
+            line.children.map(word => this.renderTable(word, region))
         }
         return (
             <div
                 style={{
-                    zIndex: 2,
-                    color: 'black',
-                    padding: '0%',
-                    fontSize: !this.props.switch_style ? this.props.fontSize + 'px' : region.avg_size + 'px',
-                    width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
-                    top: line.boundingBox.vertices[0].y + 'px',
-                    left: line.boundingBox.vertices[0].x + 'px',
+                    position: "absolute",
+                    zIndex: this.action === word.identifier ? 100000 : 2,
+                    fontSize: this.props.fontSize + 'px',
+                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                    width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                 }}
                 key={line.identifier}
             >
 
                 {
-                    this.props.switch_style ?
-                        <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size))}>
-                            {
-                                confscore(line, region)
-                            }
-                        </Textfit>
-                        :
-                        line.text
+                    <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(this.props.fontSize))}>
+                        {
+                            word.text
+                        }
+                    </Textfit>
                 }
 
             </div>
@@ -290,9 +271,9 @@ class OcrPageCard extends React.Component {
                 <div>
                     <Paper elevation={2} style={{ position: 'relative', width: width, height: height }}>
                         {page['regions'].map(region => this.renderChild(region))}
-                        {
+                        {/* {
                             this.renderImage(image)
-                        }
+                        } */}
                     </Paper>
                     <Divider />
                 </div>
