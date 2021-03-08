@@ -124,8 +124,10 @@ class SentenceModel(object):
                 tgt_nmt=[]
                 tgt_user=[]
                 for doc in target_docs:
-                    tgt_nmt.append(doc["tgt_nmt"])
-                    tgt_user.append(doc["tgt_user"])
+                    if 'tgt_nmt' in doc:
+                        tgt_nmt.append(doc["tgt_nmt"])
+                    if 'tgt_user' in doc:
+                        tgt_user.append(doc["tgt_user"])
 
                 if tgt_nmt and tgt_user:
                     log_info('tgt_nmt : {} \ntgt_uer : {} \n for record_id:{}'.format(tgt_nmt,tgt_user,record_id), AppContext.getContext())
