@@ -74,18 +74,6 @@
             "sp_decoder":"sentencepiece_models/enKann-en-to-kn-2-2020-02-10-24k.model"
         },
         {
-            "id":49,
-            "path":"nmt/49",
-            "sp_encoder":"sentencepiece_models/enTelg-en-to-tel-2-2020-02-12-24k.model",
-            "sp_decoder":"sentencepiece_models/telugu-en-to-tel-2-2020-02-12-24k.model"
-        },
-        {
-            "id":50,
-            "path":"nmt/te-en",
-            "sp_encoder":"sentencepiece_models/telugu-en-to-tel-2-2020-02-12-24k.model",
-            "sp_decoder":"sentencepiece_models/enTelg-en-to-tel-2-2020-02-12-24k.model"
-        },
-        {
             "id":51,
             "path":"nmt/51",
             "sp_encoder":"sentencepiece_models/enGuj-en-to-guj-2-2020-02-14-24k.model",
@@ -114,18 +102,6 @@
             "path":"nmt/56",
             "sp_encoder":"sentencepiece_models/en_exp-5.6-2019-12-09-24k.model",
             "sp_decoder":"sentencepiece_models/hi_exp-5.6-2019-12-09-24k.model"
-        },
-        {
-            "id":59,
-            "path":"nmt/59",
-            "sp_encoder":"sentencepiece_models/enMalay-en-to-maly-2-2020-02-21-24k.model",
-            "sp_decoder":"sentencepiece_models/malayalam-en-to-maly-2-2020-02-21-24k.model"
-        },
-        {
-            "id":60,
-            "path":"nmt/ml-en",
-            "sp_encoder":"sentencepiece_models/malayalam-en-to-maly-2-2020-02-21-24k.model",
-            "sp_decoder":"sentencepiece_models/enMalay-en-to-maly-2-2020-02-21-24k.model"
         },
         {
             "id":62,
