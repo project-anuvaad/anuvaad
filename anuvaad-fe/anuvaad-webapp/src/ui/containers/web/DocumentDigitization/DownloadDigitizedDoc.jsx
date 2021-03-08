@@ -95,7 +95,7 @@ class DownloadDigitziedDoc extends React.Component {
                     zIndex: 2,
                     color: 'black',
                     padding: '0%',
-                    fontSize: region.avg_size + 'px',
+                    fontSize: !this.props.switch_style ? this.props.fontSize + 'px' : region.avg_size + 'px',
                     width: line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
                     top: line.boundingBox.vertices[0].y + 'px',
                     left: line.boundingBox.vertices[0].x + 'px',
@@ -103,10 +103,16 @@ class DownloadDigitziedDoc extends React.Component {
                 }}
                 key={line.identifier}
             >
-                <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size))} >
-                    {confscore(line,region)}
-                    {/* {line.text} */}
-                </Textfit>
+                {
+                    this.props.switch_style ?
+                        <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(region.avg_size))}>
+                            {
+                                confscore(line, region)
+                            }
+                        </Textfit>
+                        :
+                        line.text
+                }
             </div>
         )
     }
@@ -199,6 +205,8 @@ class DownloadDigitziedDoc extends React.Component {
 const mapStateToProps = state => ({
     document_contents: state.document_contents,
     block_page: state.block_highlight.page_no,
+    switch_style: state.switch_style.status,
+    fontSize: state.fetch_slider_pixel.percent
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

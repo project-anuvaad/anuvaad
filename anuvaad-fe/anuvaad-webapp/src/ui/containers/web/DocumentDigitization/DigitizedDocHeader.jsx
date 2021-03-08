@@ -68,7 +68,7 @@ class DigitizedDocHeader extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.active_page_number !== prevProps.active_page_number) {
             this.props.status && this.props.togglebtnstatus()
-            !this.props.switch_style && this.props.switchstyles()
+            // !this.props.switch_style && this.props.switchstyles()
         }
     }
 
