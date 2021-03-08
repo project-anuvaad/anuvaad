@@ -11,6 +11,9 @@ import { highlightSentence, clearHighlighBlock, cancelMergeSentence } from '../.
 import Popper from '@material-ui/core/Popper';
 import SENTENCE_ACTION from '../DocumentEditor/SentenceActions'
 import { confscore } from '../../../../utils/OcrConfScore'
+import SaveEditedWord from './SaveEditedWord';
+import Modal from '@material-ui/core/Modal';
+
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -22,9 +25,6 @@ const styles = {
         borderRadius: 10,
         border: 0,
         color: 'green',
-    },
-    resize: {
-        fontSize: '600'
     }
 }
 
@@ -36,7 +36,8 @@ class OcrPageCard extends React.Component {
             value: '',
             text: '',
             url: '',
-            event: false
+            event: false,
+            isOpen: false
         };
         this.handleTextChange = this.handleTextChange.bind(this);
         this.action = null
@@ -82,9 +83,8 @@ class OcrPageCard extends React.Component {
 
     renderText = (line, region) => {
         return (
-            <div key={region.identifier}>
+            <div key={line.identifier}>
                 {
-
                     line.children.map(word => this.renderTextSpan(word, line, region))
                 }
             </div>
@@ -103,6 +103,7 @@ class OcrPageCard extends React.Component {
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                 }}
                 key={word.identifier}
+                onDoubleClick={() => this.setModalState(word)}
             >
                 {
                     <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(this.props.fontSize))} >
@@ -123,19 +124,19 @@ class OcrPageCard extends React.Component {
             <div
                 style={{
                     position: "absolute",
-                    zIndex: this.action === word.identifier ? 100000 : 2,
                     fontSize: this.props.fontSize + 'px',
                     top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                 }}
-                key={line.identifier}
+                key={word.identifier}
+                onDoubleClick={() => this.setModalState(word)}
             >
 
                 {
                     <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(this.props.fontSize))}>
                         {
-                            word.text
+                            this.state.id === word.identifier ? this.state.text : word.text
                         }
                     </Textfit>
                 }
@@ -143,7 +144,27 @@ class OcrPageCard extends React.Component {
             </div>
         )
     }
+    setModalState = (word) => {
+        this.setState({ isOpen: true, text: word.text, id: word.identifier })
+    }
 
+    saveWord = (word) => {
+        this.setState({ isOpen: false, text: word })
+    }
+    renderModal = () => {
+        return (
+            <Modal
+                open={this.state.isOpen}
+                onClose={this.handleClose}
+            >
+                <SaveEditedWord handleClose={this.handleClose} text={this.state.text} id={this.state.id} saveWord={this.saveWord} />
+            </Modal>
+        )
+    }
+
+    handleClose = () => {
+        this.setState({ text: '', isOpen: false })
+    }
     /**
      * sentence change
      */
@@ -286,7 +307,10 @@ class OcrPageCard extends React.Component {
 
     render() {
         return (
-            <span style={{ zoom: `${this.props.zoomPercent}%` }}>{this.renderPage(this.props.page, this.props.image)}</span>
+            <>
+                <span style={{ zoom: `${this.props.zoomPercent}%` }}>{this.renderPage(this.props.page, this.props.image)}</span>
+                {this.renderModal()}
+            </>
         )
     }
 
