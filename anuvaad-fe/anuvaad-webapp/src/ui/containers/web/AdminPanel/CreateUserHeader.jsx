@@ -36,7 +36,7 @@ class CreateUserHeader extends React.Component {
                             <div style={{display: "flex", flexDirection: "row"}}>
                                 <IconButton
                                     onClick={() => {
-                                        history.push(`${process.env.PUBLIC_URL}/user-details/0`);
+                                        history.push(`${process.env.PUBLIC_URL}/user-details`);
                                     }}
                                     className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
                                 >
