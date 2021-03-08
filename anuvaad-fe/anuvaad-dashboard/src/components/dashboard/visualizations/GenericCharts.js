@@ -325,9 +325,12 @@ class GenericCharts extends React.Component {
                     className="dropdown-item cursorStyleOne metricTextColor"
                     onClick={() =>
                       domtoimage
-                        .toBlob(document.getElementById(d.name), {
-                          filter: this.filterImage,
-                        })
+                        .toBlob(
+                          document.getElementById(d.name.replace(/\s/g, "")),
+                          {
+                            filter: this.filterImage,
+                          }
+                        )
                         .then((blob) => window.saveAs(blob, d.name))
                     }
                   >
@@ -389,9 +392,12 @@ class GenericCharts extends React.Component {
                     className="dropdown-item cursorStyleOne metricTextColor"
                     onClick={() =>
                       domtoimage
-                        .toBlob(document.getElementById(d.name), {
-                          filter: this.filterImage,
-                        })
+                        .toBlob(
+                          document.getElementById(d.name.replace(/\s/g, "")),
+                          {
+                            filter: this.filterImage,
+                          }
+                        )
                         .then((blob) => window.saveAs(blob, d.name))
                     }
                   >
