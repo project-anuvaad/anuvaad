@@ -57,7 +57,7 @@ PRIMA_CELL_SCORE_THRESH_TEST=0.5
 
 
 LAYOUT_MODEL_PATH =  "./src/utilities/primalaynet/model_final.pth"
-LAYOUT_CONFIG_PATH = "./src/utilities/primalaynet/config.yaml"
+LAYOUT_CONFIG_PATH = "./src/utilities/primalaynet/layout_v2_trained_config.yaml"
 
 
 LAYOUT_CELL_MODEL_PATH =  "./src/utilities/primalaynet/model_tablenet.pth"

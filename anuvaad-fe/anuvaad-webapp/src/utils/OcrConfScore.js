@@ -13,7 +13,5 @@ export const confscore = (line, region) => {
             }
         })
     }
-    return (
-        <span>{result}</span>
-    )
+    return result
 }
