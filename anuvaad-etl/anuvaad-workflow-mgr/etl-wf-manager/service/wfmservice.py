@@ -271,11 +271,10 @@ class WFMService:
                 log_error("Job FAILED: " + task_output["jobID"], task_output, None)
                 client_output = self.get_wf_details_async(None, task_output, False, task_output["error"])
                 self.update_job_details(client_output, False)
+            threading.Thread(target=self.push_to_notifier, args=task_output).start()
         except Exception as e:
             log_exception("Exception while managing the ASYNC workflow: " + str(e), task_output, e)
             post_error_wf("WFLOW_MANAGE_ERROR", "Exception while managing workflow: " + str(e), task_output, e)
-        finally:
-            threading.Thread(target=self.push_to_notifier, args=task_output).start()
 
     # Method to push details to noifier module.
     def push_to_notifier(self, task_output):
