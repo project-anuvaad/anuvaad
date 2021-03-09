@@ -29,8 +29,11 @@ torch.manual_seed(seed)
 #model_primalaynet = lp.Detectron2LayoutModel('lp://PrimaLayout/mask_rcnn_R_50_FPN_3x/config',label_map = {1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"MathsRegion", 5:"SeparatorRegion", 6:"OtherRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])#,"MODEL.ROI_HEADS.NMS_THRESH_TEST", 0.2])
 # model_primalaynet = lp.Detectron2LayoutModel(
 model_primatablenet = lp.Detectron2LayoutModel(LAYOUT_CELL_CONFIG_PATH,model_path = LAYOUT_CELL_MODEL_PATH,label_map = {0:"CellRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_CELL_SCORE_THRESH_TEST])
+#model_primalaynet = lp.Detectron2LayoutModel('/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/src/utilities/primalaynet/layout_v2_trained_config.yaml',model_path = "/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/src/utilities/primalaynet/model_0059999_new.pth" ,label_map = {0:"FooterRegion",1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"HeaderRegion",5:"OtherRegion", 6:"MathsRegion", 7:"SeparatorRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", 0.5] )
+#model_primatablenet = lp.Detectron2LayoutModel('/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/src/utilities/primalaynet/tablenet_config.yaml',model_path = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/src/utilities/primalaynet/model_0059999_tablenet.pth',label_map = {0:"CellRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_CELL_SCORE_THRESH_TEST])
+model_primalaynet = lp.Detectron2LayoutModel(LAYOUT_CONFIG_PATH,model_path = LAYOUT_MODEL_PATH ,label_map = {0:"FooterRegion",1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"HeaderRegion",5:"OtherRegion", 6:"MathsRegion", 7:"SeparatorRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", 0.5] )
 
-model_primalaynet = lp.Detectron2LayoutModel(LAYOUT_CONFIG_PATH,model_path = LAYOUT_MODEL_PATH,label_map = {0:"FooterRegion", 1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"HeaderRegion", 5:"OtherRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])
+#model_primalaynet = lp.Detectron2LayoutModel(LAYOUT_CONFIG_PATH,model_path = LAYOUT_MODEL_PATH,label_map = {0:"FooterRegion", 1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"HeaderRegion", 5:"OtherRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])
 
 class MapKeys:
     def __init__(self):
@@ -73,13 +76,13 @@ class PRIMA(object):
 	def prima_region(self, layout):
 		bbox = []; tag =[]; score =[]
 		for idx, ele in enumerate(layout):
-			if ele.type not in ['TableRegion']:
-				bbox.append(list(ele.coordinates))
-				tag.append(ele.type)
-				score.append(format(ele.score,'.2f'))
+			#if ele.type not in ['TableRegion']:
+			bbox.append(list(ele.coordinates))
+			tag.append(ele.type)
+			score.append(format(ele.score,'.2f'))
 		return bbox,tag,score
 
-	def craft_refinement(self, boxes_final, coords, layout_class):
+	def craft_refinement(self, boxes_final, coords, layout_class,score):
 		if len(boxes_final) != 0:
 			for box in boxes_final:
 				vertical_min_dis = sys.maxsize; horizon_min_dis  = sys.maxsize
@@ -110,11 +113,12 @@ class PRIMA(object):
 					#coords[hor_index][2] = int(max(hor_coord_update[2],box[2])); coords[hor_index][3] = int(max(hor_coord_update[3],box[3]))
 				else:
 					layout_class.append('TextRegion')
+					score.append(float(92))
 					coords.append(box)
 
-		return coords, layout_class
+		return coords, layout_class,score
 
-	def prima_craft_refinement(self, coords, boxes, tag_final):
+	def prima_craft_refinement(self, coords, boxes, tag_final,score):
 		org_coord     = coords
 		org_coord2    = coords
 		boxes_final   = []
@@ -138,12 +142,13 @@ class PRIMA(object):
 			if count == len(org_coord):
 				boxes_final.append(coord1)
 				tag_final.append("TextRegion")
+				score.append(float(92))
 
 
-		coords, layout_class  = self.craft_refinement(boxes_final, coords, tag_final)
+		coords, layout_class,score  = self.craft_refinement(boxes_final, coords, tag_final,score)
 		
 		
-		return coords, layout_class
+		return coords, layout_class,score
 	
 	def get_polygon(self, region):
 		points = []
@@ -225,52 +230,29 @@ class PRIMA(object):
 		score1 = region1['score']
 		score2 = region2['score']
 		y1 = keys.get_top(region1); y2 = keys.get_top(region2)
-		if tag1=="CELL" or tag2=="CELL" or tag1=="TABLE" or tag2=="TABLE":
-			return None, False
-		if (area>0 and area1<area2 and area1/area2>0.2 and score1>score2) or (area>0 and area1>area2 and area2/area1>0.2 and  score1>score2):
+		# if tag1=="CELL" or tag2=="CELL" or tag1=="TABLE" or tag2=="TABLE":
+		# 	return None, False
+		if (area>0 and tag1 =='TABLE') or (area>0 and tag2=='TABLE'):
+				return "TABLE", True
+		# if (area>0 and area1<area2 and area1/area2>0.2 and float(score1)>float(score2)) or (area>0 and area1>area2 and area2/area1>0.2 and  float(score1)>float(score2)):
+		# 		return tag1, True
+		# elif (area>0 and area1<area2 and area1/area2>0.2 and float(score1)<float(score2)) or (area>0 and area1>area2 and area2/area1>0.2 and  float(score1)<float(score2)):
+		# 		return tag2, True
+		elif (area>0 and float(score1)>float(score2)): # or (area>0 and area1>area2 and area2/area1>0.2 and  float(score1)>float(score2)):
+			if tag2!="TABLE":
 				return tag1, True
-		elif (area>0 and area1<area2 and area1/area2>0.2 and score1<score2) or (area>0 and area1>area2 and area2/area1>0.2 and  score1<score2):
+			else:
+				return "TABLE",True
+		elif (area>0 and  float(score1)<float(score2)): # or (area>0 and area1>area2 and area2/area1>0.2 and  float(score1)<float(score2)):
+			if tag1!="TABLE":
 				return tag2, True
+			else:
+				return "TABLE",True
+		elif area>0 and tag1=='TEXT' and tag2=='TEXT':
+			return 'TEXT',True
 		else:
 			return None, False
-		# if (area>0 and tag1=='OTHER') or (area>0 and tag2=='OTHER'):
-		# 	if tag1!='OTHER':
-		# 		return tag1, True
-		# 	else:
-		# 		return tag2, True
-		# elif (area>0 and tag1=='FOOTER' and y1<height*0.75) or (area>0 and tag2=='FOOTER' and y2<height*0.75):
-		# 	if tag1!='FOOTER':
-		# 		return tag1, True
-		# 	else:
-		# 		return tag2, True	
-		# elif (area>0 and tag1=='FOOTER' and y1>=height*0.75) or (area>0 and tag2=='FOOTER' and y2>height*0.75):
-		# 	if (tag1=='FOOTER' and area1/area2>0.8 ) or (area2/area1>0.8 and tag2=='FOOTER'):
-		# 		return 'FOOTER', True
-		# 	elif tag1!='FOOTER':
-		# 		return tag1, True
-		# 	else:
-		# 		return tag2, True
-		# elif (area>0 and tag1=='HEADER'  and y1>height*0.30) or (area>0 and tag2=='HEADER' and y2>height*0.30):
-		# 	if tag1!='HEADER':
-		# 		return tag1, True
-		# 	else:
-		# 		return tag2, True
-		# elif (area>0 and tag1=='HEADER' and y1<height*0.30) or (area>0 and tag2=='HEADER'  and y2<height*0.30):
-		# 	if (tag1=='HEADER'and area1/area2>0.8) or (tag2=='HEADER' and area2/area1>0.8):
-		# 		return 'HEADER', True
-		# 	elif tag1!='HEADER':
-		# 		return tag1, True
-		# 	else:
-		# 		return tag2, True
-		# elif (area>0 and tag1==tag2):
-		# 	return tag1, True
-		# else:
-		# 	if (area>0 and area1<area2 and area1/area2>0.8) or (area>0 and area1>area2 and area2/area1>0.8):
-		# 		return tag1, True
-		# 	else:
-		# 		return None, False
-        #check = self.check_region_unification(region1,region2,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
-        #return  area>0 and 
+		
 
 	def merge_remove_overlap(self,text_regions,height,width):
 		region_updated = []
@@ -304,12 +286,12 @@ class PRIMA(object):
 			layout   = model_primalaynet.detect(image)
 			bbox,tag,score = self.prima_region(layout)
 			############### craft refinement logic 
-			#bbox, tag = self.prima_craft_refinement(bbox,craft_coords,tag)
+			bbox, tag,score = self.prima_craft_refinement(bbox,craft_coords,tag,score)
 			layouts  = self.update_box_format(bbox,tag,score)
 			flag=True
 			while flag==True:
 				layouts, flag = self.merge_remove_overlap(layouts,height,width)
-			
+			layouts = cell_layout(layouts,image)
 
 			return layouts
 		except Exception as e:
@@ -318,30 +300,40 @@ class PRIMA(object):
 
 
 prima = PRIMA()
-def cell_layout(table_regions,page_path):
+def cell_layout(regions,image):
 	try:
 		#print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
 		#image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
-		image   = cv2.imread(page_path)
+		#image   = cv2.imread(page_path)
 		height, width, channels = image.shape
-		final_layouts=[]
-		for idx,region in enumerate(table_regions):
-			region = region['boundingBox']['vertices']
-			bbox = [[region[0]['x'],region[0]['y'],region[2]['x'],region[2]['y']]]
-			tab_layouts  = prima.update_box_format(bbox,['TableRegion'],["99"])[0]
-			blank_image = np.zeros(image.shape, dtype=np.uint8)
-			blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
-			blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)
-			ymin = region[0]['y'] ; ymax = region[2]['y'] ; xmin = region[0]['x']; xmax = region[2]['x']
-			crop_img = image[ymin:ymax,xmin:xmax,:]
-			blank_image[ymin:ymax,xmin:xmax] = crop_img
-			layout   = model_primatablenet.detect(blank_image)
-			bbox,tag,score = prima.prima_region(layout)
-			layouts  = prima.update_box_format(bbox,tag,score)
-			tab_layouts['children']=layouts
-			final_layouts.append(tab_layouts)
+		table_regions = []
+		other_regions = []
+		for region in regions:
+			if region['class']=='TABLE':
+				table_regions.append(region)
+			else:
+				other_regions.append(region)
+		if len(table_regions)>0:
+			for idx,region in enumerate(table_regions):
+				region = region['boundingBox']['vertices']
+				bbox = [[region[0]['x'],region[0]['y'],region[2]['x'],region[2]['y']]]
+				tab_layouts  = prima.update_box_format(bbox,['TableRegion'],["99"])[0]
+				blank_image = np.zeros(image.shape, dtype=np.uint8)
+				blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
+				blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)
+				ymin = region[0]['y'] ; ymax = region[2]['y'] ; xmin = region[0]['x']; xmax = region[2]['x']
+				crop_img = image[ymin:ymax,xmin:xmax,:]
+				blank_image[ymin:ymax,xmin:xmax] = crop_img
+				layout   = model_primatablenet.detect(blank_image)
+				bbox,tag,score = prima.prima_region(layout)
+				layouts  = prima.update_box_format(bbox,tag,score)
+				tab_layouts['children']=layouts
+				other_regions.append(tab_layouts)
+			return other_regions
+		else:
+			return regions
 
-		return final_layouts
+		
 	except Exception as e:
 		log_exception("Error occured during cell layout detection",  app_context.application_context, e)
 		return None

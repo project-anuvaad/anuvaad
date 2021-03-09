@@ -106,11 +106,13 @@ def word_detector_request_worker():
 
             file_value_response = response_gen.workflow_response(task_id, task_starttime, False)
             if file_value_response != None:
-                if "errorID" not in file_value_response.keys():
-                    push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
-                    log_info("word_detector_request_worker : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
-                else:
-                    log_info("word_detector_request_worker : error send to error handler", data)
+                push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
+                log_info("word_detector_request_worker : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
+            else:
+                erro_obj = {'code': 400, 'jobID': jobid, 'message': "Word detector failed"}
+                producer_tok.push_data_to_queue(config.KAFKA_ANUVAAD_ETL_WF_ERROR_TOPIC, erro_obj)
+
+                log_info("word_detector_request_worker : error send to error handler", data)
 
             log_info('word_detector_request_worker - request in internal queue {}'.format(Queue.qsize()), data)
 

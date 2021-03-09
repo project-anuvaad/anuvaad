@@ -55,7 +55,9 @@ export default class FetchUserDetails extends API {
       roleCodes: this.roleCodes,
       offset: this.offset,
       limit: this.limit,
-      orgCodes: this.orgCodes
+      orgCodes: this.orgCodes,
+      skip_pagination: true
+
     }
   }
 

@@ -11,7 +11,6 @@ export const get_language_name = (languages, language_code, translate)  => {
 }
 
 export const get_supported_languages = (languages, translate) => {
-    debugger
     let condition   = translate ? `$..[?( @.status == 'ACTIVE' && @.is_primary == true)]` : `$..[?(@.status == 'INACTIVE' && @.is_primary == true)]`
     let result      = jp.query(languages, condition)
     if (result.length > 0) {

@@ -15,6 +15,8 @@ import PropTypes from 'prop-types';
 import { currentPageUpdate } from "../../../../flux/actions/apis/document_translate/pagiantion_update";
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import fetchpercent from '../../../../flux/actions/apis/view_digitized_document/fetch_slider_percent';
+import fetchfontpixel from '../../../../flux/actions/apis/view_digitized_document/fetch_slider_pixel';
+
 const PAGE_OPS = require("../../../../utils/page.operations");
 
 
@@ -132,8 +134,8 @@ class InteractivePagination extends React.Component {
     console.log(event.target.value)
   }
 
-  handleSliderChange = (event, percent) => {
-    this.props.fetchpercent(percent)
+  adjustFontPixel = (event, pixel) => {
+    this.props.fetchfontpixel(pixel)
   }
 
   footer = () => {
@@ -156,79 +158,79 @@ class InteractivePagination extends React.Component {
               {this.renderMergeModeButtons()}
             </div>
           ) : (
-              <>
-                {this.props.processZoom()}
-                <Pagination
-                  count={this.props.count}
-                  page={this.state.offset}
-                  onChange={this.handleClick}
-                  color="primary"
-                  size={"large"}
-                  style={{ marginLeft: "-8.5%" }}
-                />
-                <TextField
-                  type="number"
-                  style={{ width: "40px" }}
-                  InputProps={{
+            <>
+              {this.props.processZoom()}
+              <Pagination
+                count={this.props.count}
+                page={this.state.offset}
+                onChange={this.handleClick}
+                color="primary"
+                size={"large"}
+                style={{ marginLeft: "-8.5%" }}
+              />
+              <TextField
+                type="number"
+                style={{ width: "40px" }}
+                InputProps={{
 
-                    inputProps: {
-                      style: { textAlign: "center" },
-                      max: this.props.count, min: 1
-                    }
-                  }}
-                  onChange={(event) => { this.handleTextValueChange(event) }}
-                  value={this.state.gotoValue}
-                />
-                <Button
-                  onClick={this.handlePageClick}
-                  style={{ marginLeft: '6px' }}
-                  variant="outlined"
-                  color="primary"
-                  disabled={this.state.offset === Number(this.state.gotoValue) && true}
-                >
-                  GO
+                  inputProps: {
+                    style: { textAlign: "center" },
+                    max: this.props.count, min: 1
+                  }
+                }}
+                onChange={(event) => { this.handleTextValueChange(event) }}
+                value={this.state.gotoValue}
+              />
+              <Button
+                onClick={this.handlePageClick}
+                style={{ marginLeft: '6px' }}
+                variant="outlined"
+                color="primary"
+                disabled={this.state.offset === Number(this.state.gotoValue) && true}
+              >
+                GO
         </Button>
-                {(!this.props.show_pdf && !this.props.hideMergeBtn) &&
-                  <>
-                    {this.sentenceCount() && (
-                      <div style={{ position: "absolute", marginLeft: "62%" }}>
-                        <Typography variant="subtitle1" component="h2">
-                          Page Sentences
+              {(!this.props.show_pdf && !this.props.hideMergeBtn) &&
+                <>
+                  {this.sentenceCount() && (
+                    <div style={{ position: "absolute", marginLeft: "62%" }}>
+                      <Typography variant="subtitle1" component="h2">
+                        Page Sentences
                         </Typography>
 
-                        <div style={{ textAlign: "center" }}>
-                          {this.sentenceCount()}
-                        </div>
+                      <div style={{ textAlign: "center" }}>
+                        {this.sentenceCount()}
                       </div>
-                    )}
+                    </div>
+                  )}
 
-                    {this.props.job_status && this.props.job_status.word_status && <div style={{ position: "absolute", marginLeft: "70%" }}>
+                  {this.props.job_status && this.props.job_status.word_status && <div style={{ position: "absolute", marginLeft: "70%" }}>
+                    <Typography variant="subtitle1" component="h2">
+                      Total Word Count
+                      </Typography>
+
+                    <div style={{ textAlign: "center" }}>
+                      {this.props.job_status.word_status && this.props.job_status.word_status}
+                    </div>
+                  </div>}
+
+                  {this.props.job_status && this.props.job_status.status &&
+                    <div style={{ position: "absolute", marginLeft: "79%" }}>
                       <Typography variant="subtitle1" component="h2">
-                        Total Word Count
+                        Total Sentences
                       </Typography>
 
                       <div style={{ textAlign: "center" }}>
-                        {this.props.job_status.word_status && this.props.job_status.word_status}
+                        {this.props.job_status.status && this.props.job_status.status}
                       </div>
                     </div>}
 
-                    {this.props.job_status && this.props.job_status.status &&
-                      <div style={{ position: "absolute", marginLeft: "79%" }}>
-                        <Typography variant="subtitle1" component="h2">
-                          Total Sentences
-                      </Typography>
-
-                        <div style={{ textAlign: "center" }}>
-                          {this.props.job_status.status && this.props.job_status.status}
-                        </div>
-                      </div>}
-
-                    <div style={{ position: "absolute", right: "30px" }}>
-                      {this.renderNormaModeButtons()}
-                    </div>
-                  </>
-                }
-                {
+                  <div style={{ position: "absolute", right: "30px" }}>
+                    {this.renderNormaModeButtons()}
+                  </div>
+                </>
+              }
+              {/* {
                   this.props.showConfSlider &&
                   <div style={{ display: 'grid', marginTop: '1%', width: '20%', gridTemplateColumns: 'repeat(1,40% 80%)' }}>
                     <Typography style={{ marginLeft: '15%', color: 'black' }} id="discrete-slider-always" gutterBottom>
@@ -241,10 +243,24 @@ class InteractivePagination extends React.Component {
                       onChange={this.handleSliderChange}
                     />
                   </div>
-                }
+                } */}
+              {
+                this.props.showFontAdjuster &&
+                <div style={{ display: 'grid', marginTop: '1%', width: '20%', gridTemplateColumns: 'repeat(1,40% 80%)' }}>
+                  <Typography style={{ marginLeft: '15%', color: 'black' }} id="discrete-slider-always" gutterBottom>
+                    Adjust Font
+                    </Typography>
+                  <Slider
+                    ValueLabelComponent={ValueLabelComponent}
+                    aria-label="custom thumb label"
+                    defaultValue={this.props.fontSize}
+                    onChange={this.adjustFontPixel}
+                  />
+                </div>
+              }
 
-              </>
-            )}
+            </>
+          )}
         </Toolbar>
       </AppBar>
     )
@@ -262,7 +278,8 @@ const mapStateToProps = (state) => ({
   document_editor_mode: state.document_editor_mode,
   job_details: state.job_details,
   show_pdf: state.show_pdf.open,
-  job_status: state.job_status
+  job_status: state.job_status,
+  fontSize: state.fetch_slider_pixel.percent
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -270,7 +287,8 @@ const mapDispatchToProps = (dispatch) =>
     {
       currentPageUpdate,
       clearHighlighBlock,
-      fetchpercent
+      fetchpercent,
+      fetchfontpixel,
     },
     dispatch
   );

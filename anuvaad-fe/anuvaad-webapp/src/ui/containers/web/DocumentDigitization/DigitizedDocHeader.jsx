@@ -29,6 +29,7 @@ import { showPdf } from '../../../../flux/actions/apis/document_translate/showpd
 import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
 import togglebtnstatus from '../../../../flux/actions/apis/view_digitized_document/show_bg_image';
+import switchstyles from '../../../../flux/actions/apis/view_digitized_document/switch_styles';
 
 const StyledMenu = withStyles({
     paper: {
@@ -65,8 +66,8 @@ class DigitizedDocHeader extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.active_page_number !== prevProps.active_page_number && this.props.status) {
-            this.props.togglebtnstatus()
+        if (this.props.active_page_number !== prevProps.active_page_number) {
+            this.props.status && this.props.togglebtnstatus()
         }
     }
 
@@ -204,12 +205,21 @@ class DigitizedDocHeader extends React.Component {
                             this.props.onShowPreview()
                         }}
                     >
-                        As PDF
+                        As TXT
+                    </MenuItem>
+                    <MenuItem
+                        style={{ borderTop: "1px solid #D6D6D6" }}
+                        onClick={() => {
+                            this.setState({ anchorEl: null })
+                            this.props.onShowPreview()
+                        }}
+                    >
+                        As DOCX
                     </MenuItem>
                 </StyledMenu>
-                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.togglebtnstatus}>
+                {/* <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.togglebtnstatus}>
                     {this.props.status ? "Hide Image" : "Show Image"}
-                </Button>
+                </Button> */}
             </div>
         );
     }
@@ -266,6 +276,7 @@ const mapStateToProps = state => ({
     open_sidebar: state.open_sidebar.open,
     status: state.showimagestatus.status,
     active_page_number: state.active_page_number.page_number,
+    switch_style: state.switch_style.status
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -273,7 +284,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
         APITransport,
         showPdf,
         showSidebar,
-        togglebtnstatus
+        togglebtnstatus,
+        switchstyles
     },
     dispatch
 );

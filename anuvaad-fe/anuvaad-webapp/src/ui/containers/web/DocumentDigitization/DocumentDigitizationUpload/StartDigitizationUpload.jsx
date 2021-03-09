@@ -91,14 +91,14 @@ class StartDigitizationUpload extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
             this.setState({
-                source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
-                target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
+                source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
+                target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
                 showLoader: false
             })
         }
 
         if (prevProps.documentUplaod !== this.props.documentUplaod) {
-            var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code)
+            var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, true)
             const { APITransport } = this.props;
             const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
                 this.state.target_language_code, this.state.path, this.state.model,"", sourceLang);
@@ -108,8 +108,8 @@ class StartDigitizationUpload extends React.Component {
         if (prevProps.workflowStatus !== this.props.workflowStatus) {
             this.props.createJobEntry(this.props.workflowStatus)
 
-            var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code)
-            var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code)
+            var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, true)
+            var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code, true)
 
             TELEMETRY.startWorkflow(sourceLang, targetLang, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
             history.push(`${process.env.PUBLIC_URL}/document-digitization`);

@@ -109,10 +109,12 @@ class SentenceModel(object):
 
     def get_tokenized_sentences_count_status(self, record_id,bleu_return):
         try:
+            
             collections = get_db()[DB_SCHEMA_NAME]
             
             avg_bleu_score = 0
             if bleu_return:
+                log_info('calculating bleu score for record_id:{}'.format(record_id), AppContext.getContext())
                 target_docs=  collections.aggregate([
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
                                 { '$unwind': "$data.tokenized_sentences" },
@@ -122,10 +124,13 @@ class SentenceModel(object):
                 tgt_nmt=[]
                 tgt_user=[]
                 for doc in target_docs:
-                    tgt_nmt.append(doc["tgt_nmt"])
-                    tgt_user.append(doc["tgt_user"])
-                
+                    if 'tgt_nmt' in doc:
+                        tgt_nmt.append(doc["tgt_nmt"])
+                    if 'tgt_user' in doc:
+                        tgt_user.append(doc["tgt_user"])
+
                 if tgt_nmt and tgt_user:
+                    log_info('tgt_nmt : {} \ntgt_uer : {} \n for record_id:{}'.format(tgt_nmt,tgt_user,record_id), AppContext.getContext())
                     preds=tgt_nmt
                     refs=[tgt_user]
                     sacre_bleu = sacrebleu.corpus_bleu(preds,refs).score
@@ -134,9 +139,11 @@ class SentenceModel(object):
                     log_info("\nSACRE_BLEU value** :{}".format(sacre_bleu), AppContext.getContext())
                     log_info("\n*****************************", AppContext.getContext())
                     avg_bleu_score      = round((sacre_bleu/100),2)
-               
+                else:
+                    log_info('tgt_nmt or tgt_user sentences are missing for record_id:{},hence skipping bleu score calculation'.format(record_id), AppContext.getContext())
+            else:
+                pass
             
-             
             docs   = collections.aggregate([
                                 { '$match': {'$and': [{"record_id": record_id}, {'data_type':'text_blocks'}]} },
                                 { '$unwind': "$data.tokenized_sentences" },
@@ -150,8 +157,8 @@ class SentenceModel(object):
                                      "total_time_spent":{"$sum": "$data.tokenized_sentences.time_spent_ms"} 
                                      }}
                                 ])
-
-  
+            
+            log_info('word,sentence count and time calculated for record_id {}'.format(record_id), AppContext.getContext())
                                     #  "total_bleu_score":{"$sum": "$data.tokenized_sentences.bleu_score"},          
 
             empty_sent_count     = 0
@@ -192,7 +199,7 @@ class SentenceModel(object):
             }
                 
         except Exception as e:
-            log_exception("db connection exception ",  AppContext.getContext(), e)
+            log_exception("Exception on sentence statistics calculation ",  AppContext.getContext(), e)
 
             return {
                 'total_sentences': 0,

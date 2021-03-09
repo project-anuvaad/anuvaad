@@ -96,14 +96,15 @@ def sort_regions(region_lines, sorted_lines=[]):
         sort_regions(next_line, sorted_lines)
     return sorted_lines
 
-def collate_regions(regions, lines,grand_children=False,region_flag = True,skip_enpty_children=False):
+def collate_regions(regions, lines,grand_children=False,region_flag = True,skip_enpty_children=False,add_font=False ):
     idx = index.Index()
     lines_intersected = []
     if regions !=None and len(regions) > 0:
         lines_intersected =[]
         for line_idx, line in enumerate(lines):
-            height = abs(line['boundingBox']['vertices'][0]['y']-line['boundingBox']['vertices'][2]['y'])
-            lines[line_idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
+            if add_font:
+                height = abs(line['boundingBox']['vertices'][0]['y'] - line['boundingBox']['vertices'][2]['y'])
+                lines[line_idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
             poly = get_polygon(line['boundingBox'])
             idx.insert(line_idx, poly.bounds)
         for region_index, region in enumerate(regions):
@@ -240,6 +241,46 @@ def get_avrage_size(regions):
             return size
     else:
         return size
+
+
+def set_font_info(page_words,font_info):
+    idx = index.Index()
+    if font_info != None and len(font_info) > 0:
+        for word_idx, word in enumerate(page_words):
+            height = abs(word['boundingBox']['vertices'][0]['y'] - word['boundingBox']['vertices'][2]['y'])
+            page_words[word_idx]['font'] = {'family': 'Arial Unicode MS', 'size': height, 'style': 'REGULAR'}
+            poly = get_polygon(word['boundingBox'])
+            idx.insert(word_idx, poly.bounds)
+        for region_index, region in enumerate(font_info):
+            region_poly = get_polygon(region['boundingBox'])
+            children_lines = list(idx.intersection(region_poly.bounds))
+            if len(children_lines) > 0:
+                for intr_index in children_lines:
+                    #if intr_index not in words_intersected:
+                    line_poly = get_polygon(page_words[intr_index]['boundingBox'])
+                    area = region_poly.intersection(line_poly).area
+                    reg_area = region_poly.area
+                    line_area = line_poly.area
+                    if reg_area > 0 and line_area > 0 :
+                        if (region['class'] == 'BOLD') and (area / min(line_area, reg_area) > 0.2):
+                                page_words[intr_index]['font']['style']= update_style(page_words[intr_index]['font']['style'], 'BOLD')
+                        if (region['class'] == 'SUPERSCRIPT') and (region_poly.union(line_poly).area != 0):
+                                iou = area / region_poly.union(line_poly).area
+                                if iou > 0.33:
+                                    page_words[intr_index]['font']['style']= update_style(page_words[intr_index]['font']['style'], 'SUPERSCRIPT')
+
+    return  page_words
+
+
+
+def update_style(prior_cls, cls):
+    if prior_cls == 'REGULAR':
+        return cls
+    else :
+        if prior_cls == cls:
+            return cls
+        else :
+            return '{},{}'.format(prior_cls,cls)
 
 
 
