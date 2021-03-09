@@ -21,7 +21,7 @@ from configs.translatorconfig import tmx_global_enabled
 from configs.translatorconfig import no_of_process
 from configs.translatorconfig import user_translation_enabled
 from configs.translatorconfig import fetch_user_translation_url
-from configs.translatorconfig import orgs_nmt_disable
+from configs.translatorconfig import orgs_nmt_disable, total_no_of_partitions
 from configs.translatorconfig import anu_translator_nonmt_topic
 
 
@@ -65,7 +65,7 @@ class TranslatorService:
             translate_wf_input["output"], translate_wf_input["status"] = error_list, "FAILED"
             translate_wf_input["error"] = error
             translate_wf_input["taskEndTime"] = eval(str(time.time()).replace('.', '')[0:13])
-            producer.produce(translate_wf_input, anu_translator_output_topic)
+            producer.produce(translate_wf_input, anu_translator_output_topic, None)
             return {"status": "failed", "message": "Some/All files failed"}
         return {"status": "success", "message": "Sentences sent to NMT"}
 
@@ -147,15 +147,16 @@ class TranslatorService:
             log_error("No batches obtained for page: " + str(page["page_no"]), translate_wf_input, None)
             return batches_count, sentences_count, tmx_count
         batches_count, tmx_count = len(batches), pw_dict["tmx_count"]
+        partition = random.choice(list(range(0, total_no_of_partitions))) # So that all batches of a page go to the same consumer
         for batch_id in batches.keys():
             batch = batches[batch_id]
             record_id_enhanced = record_id + "|" + str(len(batch))
             nmt_in = {"record_id": record_id_enhanced, "id": file["model"]["model_id"], "message": batch}
             if translate_wf_input["metadata"]["orgID"] in nmt_disabled_orgs:
-                producer.produce(nmt_in, anu_translator_nonmt_topic)
+                producer.produce(nmt_in, anu_translator_nonmt_topic, partition)
             else:
                 topic = self.nmt_router()
-                producer.produce(nmt_in, topic)
+                producer.produce(nmt_in, topic, partition)
             log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
                      " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
                 bw_data[batch_id]["tmx_count"]), translate_wf_input)

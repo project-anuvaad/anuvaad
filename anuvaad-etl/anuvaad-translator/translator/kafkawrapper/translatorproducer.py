@@ -1,11 +1,13 @@
 import json
 import logging
+import random
 
 from kafka import KafkaProducer
-from configs.translatorconfig import kafka_bootstrap_server_host
+from configs.translatorconfig import kafka_bootstrap_server_host, total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
+
 
 log = logging.getLogger('file')
 
@@ -24,11 +26,13 @@ class Producer:
         return producer
 
     # Method to push records to a topic in the kafka queue
-    def produce(self, object_in, topic):
+    def produce(self, object_in, topic, partition):
         producer = self.instantiate()
         try:
             if object_in:
-                producer.send(topic, value=object_in, partition=0)
+                if partition is None:
+                    partition = random.choice(list(range(0, total_no_of_partitions)))
+                producer.send(topic, value=object_in, partition=partition)
                 log_info("Pushing to topic: " + topic, object_in)
             producer.flush()
         except Exception as e:
