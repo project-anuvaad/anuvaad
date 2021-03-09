@@ -5,6 +5,8 @@ class Listner(KafkaManager):
     print("_LISTENER CHILD  KFMANGER")
 
     def __init__(self, url, channel, write_only):
+        print("URL AT LISTENER:: ", url)
+        print("CHANNEL AT LISTENER:: ", channel)
         super(Listner, self).__init__(url=url, channel=channel, write_only=write_only)
 
     def _listen(self):
