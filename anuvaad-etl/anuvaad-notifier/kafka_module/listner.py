@@ -31,7 +31,6 @@ class Listner(PubSubManager):
 
 
         self.kafka_url = url
-        print("INSIDE KafkaManager", self.kafka_url)
         self.producer = kafka.KafkaProducer(bootstrap_servers=self.kafka_url)
         self.consumer = kafka.KafkaConsumer(self.channel,
                                             bootstrap_servers=self.kafka_url)
