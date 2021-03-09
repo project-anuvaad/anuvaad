@@ -137,11 +137,11 @@ definitions:
         description: coordinates and attributes extracted lines
         items:
           $ref: '#/definitions/Line'
-      layout :
+      Regions :
         type: array
         description: class and coordinates of layout units
         items:
-          $ref: '#/definitions/Layout'
+          $ref: '#/definitions/Region'
 
 
 
@@ -199,7 +199,7 @@ definitions:
           $ref: '#/definitions/Line'
 
 
-  Layout:
+  Region:
     type: object
     properties:
       coordinates:
