@@ -181,9 +181,9 @@ definitions:
           description: category of detected layout unit
           type: string
           enum : ['TEXT', 'IMAGE', 'TABLE', 'SEPARATOR', 'MATHEMATICAL_FORMULA', 'OTHER']
-      text:
+      data:
         type: string
-        description:  collated text at block level
+        description:  collated text at block level or class specific metadata
       font_size:
         type: integer
         description: font size
@@ -196,11 +196,6 @@ definitions:
         items:
           $ref: '#/definitions/Line'
 
-      words :
-        type : array
-        description: coordinates of extracted words
-        items:
-          $ref: '#/definitions/Word'
 
   Layout:
     type: object
@@ -242,6 +237,13 @@ definitions:
       attribute:
         type: string
         enum: ['HEADER', 'FOOTER', 'NONE']
+        
+      words :
+        type : array
+        description: coordinates of extracted words
+        items:
+          $ref: '#/definitions/Word'
+
 
   Word:
     type: object
