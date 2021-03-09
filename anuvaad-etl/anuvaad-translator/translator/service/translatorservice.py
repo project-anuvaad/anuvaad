@@ -380,7 +380,6 @@ class TranslatorService:
             translate_wf_input = file["transInput"]
             translate_wf_input["recordID"] = record_id
             skip_count, trans_count, batch_id = 0, 0, None
-            log_info(no_nmt_input, translate_wf_input)
             if 'message' in no_nmt_input.keys():
                 for response in no_nmt_input["message"]:
                     batch_id = response["batch_id"]
