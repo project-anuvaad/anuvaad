@@ -28,7 +28,7 @@ class Producer:
         producer = self.instantiate()
         try:
             if object_in:
-                producer.send(topic, value=object_in)
+                producer.send(topic, value=object_in, partition=0)
                 log_info("Pushing to topic: " + topic, object_in)
             producer.flush()
         except Exception as e:
