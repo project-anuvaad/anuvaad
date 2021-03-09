@@ -47,11 +47,11 @@ class Listner(PubSubManager):
 
 
     def _listen(self):
-        print("INSIDE _LISTEN KFMANGER")
+        log_info("INSIDE _LISTEN KFMANGER", None)
         for message in self._kafka_listen():
             if message.topic == self.channel:
                 log_info("INSIDE _LISTEN KFMANGER OVERIDDEN", None)
-                print("DATA FROM KAFKA TOPIC: %s"%(message.value), None)
+                log_info("DATA FROM KAFKA TOPIC: %s"%(message.value), None)
                 room = message.value['jobs'][0]['metadata']['userID']
                 PubSubManager.emit(self, event='task_updated', data=message.value, namespace='/', room=room,
                                   ignore_queue=True)

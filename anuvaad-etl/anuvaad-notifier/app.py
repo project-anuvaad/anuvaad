@@ -19,8 +19,11 @@ app.config['SECRET_KEY'] = NOTIFIER_SECRET_KEY
 socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins='*')
 # socketio.init_app(app, message_queue='kafka://localhost:9092', channel = input_topic, write_only = True)
 
-KAFKA_URL = list(str(KAFKA_URL).split(","))[0]
+KAFKA_URL = list(str(KAFKA_URL).split(","))
 log_info("KAFKA URL: %s"%(KAFKA_URL), None)
+log_info("APP HOST: %s"%(APP_HOST), None)
+log_info("APP_PORT: %s"%(APP_PORT), None)
+
 
 KAFKA_MESSAGE_QUEUE_LISTNER = Listner(url=KAFKA_URL, channel=KAFKA_INPUT_TOPIC, write_only=False)
 
