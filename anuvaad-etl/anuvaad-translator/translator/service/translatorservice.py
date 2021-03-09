@@ -369,18 +369,18 @@ class TranslatorService:
 
     # Saves sentences sent internally through Translator
     def process_no_nmt_jobs(self, no_nmt_input):
+        record_id = no_nmt_input["record_id"]
+        recordid_split = str(record_id).split("|")
+        job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
+        record_id = str(job_id) + "|" + str(file_id)
+        translate_wf_input = {"jobID": job_id, "metadata": {"module": tool_translator}}
         try:
-            record_id = no_nmt_input["record_id"]
-            recordid_split = str(record_id).split("|")
-            job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
-            record_id = str(job_id) + "|" + str(file_id)
-            translate_wf_input = {"jobID": job_id, "metadata": {"module": tool_translator}}
             file = self.get_content_from_db(record_id, None, translate_wf_input)[0]
-            skip_count, trans_count, batch_id = 0, 0, None
             translate_wf_input = file["transInput"]
             translate_wf_input["recordID"] = record_id
+            skip_count, trans_count, batch_id = 0, 0, None
+            log_info(no_nmt_input, translate_wf_input)
             if 'message' in no_nmt_input.keys():
-                sentences_of_the_batch = []
                 for response in no_nmt_input["message"]:
                     batch_id = response["batch_id"]
                     page_no = str(response["n_id"]).split("|")[2]
@@ -401,14 +401,16 @@ class TranslatorService:
                             break
                     if b_index is not None and s_index is not None:
                         page_enriched["text_blocks"][b_index]["tokenized_sentences"][s_index] = response
+                    else:
+                        log_info("No b_index and s_index for n_id: {}".format(response["n_id"]), translate_wf_input)
                     query = {"record_id": record_id, "page_no": eval(page_no)}
                     repo.update_pages(query, page_enriched)
-                trans_count += len(sentences_of_the_batch)
+                    trans_count += 1
             else:
                 skip_count += batch_size
             self.update_translation_status(batch_id, trans_count, skip_count, translate_wf_input)
             return
         except Exception as e:
-            log_exception("Exception while processing NMT output: " + str(e), None, e)
+            log_exception("Exception while processing batch of nonmt job: " + str(e), translate_wf_input, e)
             return
 
