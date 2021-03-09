@@ -186,7 +186,9 @@ definitions:
         description:  collated text at block level or class specific metadata
       font_size:
         type: integer
-        description: font size
+        description: avg height of lines 
+        
+      
       font_family:
         type: string
         description: font family of extracted text
@@ -226,7 +228,7 @@ definitions:
 
       font_size:
         type: integer
-        description: font size
+        description: avg height of words
       font_family:
         type: string
         description: font family of extracted text
