@@ -270,9 +270,9 @@ class WFMService:
                 log_error("Job FAILED: " + task_output["jobID"], task_output, None)
                 client_output = self.get_wf_details_async(None, task_output, False, task_output["error"])
                 self.update_job_details(client_output, False)
-            job_details = self.get_job_details_bulk({"jobIDs": [job_id]}, True)
+            '''job_details = self.get_job_details_bulk({"jobIDs": [job_id]}, True)
             producer.push_to_queue(anu_etl_notifier_input_topic, job_details)
-            log_info("Job details pushed to notifier...", task_output)
+            log_info("Job details pushed to notifier...", task_output)'''
         except Exception as e:
             log_exception("Exception while managing the ASYNC workflow: " + str(e), task_output, e)
             post_error_wf("WFLOW_MANAGE_ERROR", "Exception while managing workflow: " + str(e), task_output, e)
