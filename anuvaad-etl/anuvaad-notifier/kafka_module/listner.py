@@ -1,3 +1,4 @@
+from anuvaad_auditor import log_info
 from socketio import PubSubManager
 import logging
 import pickle
@@ -19,8 +20,8 @@ class Listner(PubSubManager):
     # def __init__(self, url, channel, write_only):
     def __init__(self, url='kafka://localhost:9092', channel='socketio',
                  write_only=False):
-        print("URL AT LISTENER:: ", url)
-        print("URL AT CHANNEL:: ", channel)
+        log_info("URL AT LISTENER: %s"%(url), None)
+        log_info("URL AT CHANNEL:: %s"%(channel), None)
         if kafka is None:
             raise RuntimeError('kafka-python package is not installed '
                                '(Run "pip install kafka-python" in your '
@@ -49,8 +50,8 @@ class Listner(PubSubManager):
         print("INSIDE _LISTEN KFMANGER")
         for message in self._kafka_listen():
             if message.topic == self.channel:
-                print("INSIDE _LISTEN KFMANGER OVERIDDEN")
-                print("DATA FROM KAFKA TOPIC: ", message.value)
+                log_info("INSIDE _LISTEN KFMANGER OVERIDDEN", None)
+                print("DATA FROM KAFKA TOPIC: %s"%(message.value), None)
                 room = message.value['jobs'][0]['metadata']['userID']
                 PubSubManager.emit(self, event='task_updated', data=message.value, namespace='/', room=room,
                                   ignore_queue=True)

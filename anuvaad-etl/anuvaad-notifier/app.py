@@ -9,6 +9,8 @@ from config import KAFKA_INPUT_TOPIC, NOTIFIER_SECRET_KEY, KAFKA_URL, APP_HOST, 
     ANUVAAD_BULK_SEARCH_ENDPOINT
 import json
 import requests
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_error
 from kafka_module.listner import Listner
 
 app = Flask(__name__)
@@ -18,7 +20,7 @@ socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins='*')
 # socketio.init_app(app, message_queue='kafka://localhost:9092', channel = input_topic, write_only = True)
 
 KAFKA_URL = list(str(KAFKA_URL).split(","))[0]
-print("KAFKA URL: ", KAFKA_URL)
+log_info("KAFKA URL: %s"%(KAFKA_URL), None)
 
 KAFKA_MESSAGE_QUEUE_LISTNER = Listner(url=KAFKA_URL, channel=KAFKA_INPUT_TOPIC, write_only=False)
 
@@ -82,12 +84,12 @@ def bulk_search(request_body, room):
 
 @socketio.on('kf_test')
 def handle_kafka_Message(msg, room):
-    print("\n\n MESSAGE EVENT \n\n")
+    log_info("\n\n MESSAGE EVENT \n\n", None)
 
-    print('Message from kf_test: ' + msg)
+    log_info("Message from kf_test: %s"%(msg), None)
 
     join_room(room)
-    print("\n\n\n Joined Room ", room)
+    log_info("\n\n\n Joined Room %s"%(room), None)
 
 
 if __name__ == '__main__':
