@@ -108,9 +108,9 @@ class Orientation:
         # self.dump_out(lines,rotations)
         # Orientation correction
         if config.ALIGN_MODE == 'FAST':
-         tolerance = 0.5
+         tolerance = 0.01
         if config.ALIGN_MODE == 'ACCURATE':
-            tolerance = 0.5
+            tolerance = 0.01
 
         while abs(angle) > tolerance:
             self.image = imutils.rotate_bound(self.image, -angle)
