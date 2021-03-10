@@ -22,4 +22,4 @@ REDIS_SERVER_PORT = os.environ.get('REDIS_PORT', 6379)
 
 #module level variables
 DICTIONARY_FALLBACK       = os.environ.get('DICTIONARY_FALLBACK_CH', True)
-USER_TRANSLATION_ENABLED  = os.environ.get('USER_TRANSLATION_ENABLED',True)
+USER_TRANSLATION_ENABLED  = os.environ.get('USER_TRANSLATION_ENABLED',False)
