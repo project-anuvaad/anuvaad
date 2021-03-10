@@ -137,11 +137,11 @@ definitions:
         description: coordinates and attributes extracted lines
         items:
           $ref: '#/definitions/Line'
-      layout :
+      Regions :
         type: array
         description: class and coordinates of layout units
         items:
-          $ref: '#/definitions/Layout'
+          $ref: '#/definitions/Region'
 
 
 
@@ -181,12 +181,14 @@ definitions:
           description: category of detected layout unit
           type: string
           enum : ['TEXT', 'IMAGE', 'TABLE', 'SEPARATOR', 'MATHEMATICAL_FORMULA', 'OTHER']
-      text:
+      data:
         type: string
-        description:  collated text at block level
+        description:  collated text at block level or class specific metadata
       font_size:
         type: integer
-        description: font size
+        description: avg height of lines 
+        
+      
       font_family:
         type: string
         description: font family of extracted text
@@ -196,13 +198,8 @@ definitions:
         items:
           $ref: '#/definitions/Line'
 
-      words :
-        type : array
-        description: coordinates of extracted words
-        items:
-          $ref: '#/definitions/Word'
 
-  Layout:
+  Region:
     type: object
     properties:
       coordinates:
@@ -231,7 +228,7 @@ definitions:
 
       font_size:
         type: integer
-        description: font size
+        description: avg height of words
       font_family:
         type: string
         description: font family of extracted text
@@ -242,6 +239,13 @@ definitions:
       attribute:
         type: string
         enum: ['HEADER', 'FOOTER', 'NONE']
+        
+      words :
+        type : array
+        description: coordinates of extracted words
+        items:
+          $ref: '#/definitions/Word'
+
 
   Word:
     type: object

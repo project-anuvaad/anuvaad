@@ -4,6 +4,7 @@ from models import SentenceModel
 from utilities import AppContext
 from anuvaad_auditor.loghandler import log_info, log_exception
 from utilities import AppContext
+import time
 class SentenceRepositories:
     def __init__(self):
         self.sentenceModel  = SentenceModel()
@@ -79,7 +80,9 @@ class SentenceRepositories:
     def save_sentences(self,user_id, sentences):
         # Creates a md5 hash values using userID and src
         try:
+            
             for sent in sentences:
+                sent["timestamp"]= eval(str(time.time()).replace('.', '')[0:13])
                 locale=sent["src_lang"]+"|"+sent["tgt_lang"]
                 sentence_hash= user_id + "___" + sent["src"]+"___"+locale
                 sent_key=hashlib.sha256(sentence_hash.encode('utf_16')).hexdigest()
