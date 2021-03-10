@@ -225,7 +225,7 @@ def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,l
             df.at[index,'x4']= int(poly[6]); df.at[index,'y4']= int(poly[7])
             color = (255, 0, 0)
             thickness = 2
-            cv2.rectangle(image, (int(poly[0]),int(poly[1])), (int(poly[4]),int(poly[5])), color, thickness)
+            #cv2.rectangle(image, (int(poly[0]),int(poly[1])), (int(poly[4]),int(poly[5])), color, thickness)
         #cv2.imwrite("/home/naresh/word_compare3/"+str(uuid.uuid4())+".jpg", image)
         #in_df = convert_to_in_df(df)
         in_dfs.append(df)
