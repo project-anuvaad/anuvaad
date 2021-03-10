@@ -103,18 +103,6 @@ class TranslateService:
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
                         translation = [sentence_processor.moses_detokenizer(i) for i in translation]
-                    elif i['id'] == 57:
-                        "english-bengali 3rd"
-                        tp_tokenizer = sentence_processor.indic_tokenizer
-                        i['src'] = sentence_processor.moses_tokenizer(i['src'])
-                        translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
-                        translation = [sentence_processor.indic_detokenizer(i) for i in translation]
-                    elif i['id'] == 58:
-                        "bengali-english 2nd"
-                        tp_tokenizer = sentence_processor.moses_tokenizer 
-                        i['src'] = sentence_processor.indic_tokenizer(i['src'])
-                        translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
-                        translation = [sentence_processor.moses_detokenizer(i) for i in translation]
                     elif i['id'] == 8:
                         "tamil-english"
                         tp_tokenizer = sentence_processor.moses_tokenizer 
@@ -165,7 +153,7 @@ class TranslateService:
                         translation = [sentence_processor.moses_detokenizer(i) for i in translation]
                     elif i['id'] == 68:
                         "en-ta 5th"
-                        tp_tokenizer = sentence_processor.moses_tokenizer 
+                        tp_tokenizer = sentence_processor.indic_tokenizer 
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
                         translation = encode_itranslate_decode_v2(i,num_map,tp_tokenizer)
                         translation = [sentence_processor.indic_detokenizer(i) for i in translation]    
@@ -177,7 +165,7 @@ class TranslateService:
                         translation = [sentence_processor.moses_detokenizer(i) for i in translation]
                     elif i['id'] == 70:
                         "en-hi 15th"
-                        tp_tokenizer = sentence_processor.moses_tokenizer 
+                        tp_tokenizer = sentence_processor.indic_tokenizer 
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
                         translation = encode_itranslate_decode_v2(i,num_map,tp_tokenizer)
                         translation = [sentence_processor.indic_detokenizer(i) for i in translation] 
@@ -189,7 +177,7 @@ class TranslateService:
                         translation = [sentence_processor.moses_detokenizer(i) for i in translation]
                     elif i['id'] == 72:
                         "en-te 3rd"
-                        tp_tokenizer = sentence_processor.moses_tokenizer 
+                        tp_tokenizer = sentence_processor.indic_tokenizer 
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
                         translation = encode_itranslate_decode_v2(i,num_map,tp_tokenizer)
                         translation = [sentence_processor.indic_detokenizer(i) for i in translation]  
@@ -201,7 +189,7 @@ class TranslateService:
                         translation = [sentence_processor.moses_detokenizer(i) for i in translation]
                     elif i['id'] == 74:
                         "en-ml 3rd"
-                        tp_tokenizer = sentence_processor.moses_tokenizer 
+                        tp_tokenizer = sentence_processor.indic_tokenizer 
                         i['src'] = sentence_processor.moses_tokenizer(i['src'])
                         translation = encode_itranslate_decode_v2(i,num_map,tp_tokenizer)
                         translation = [sentence_processor.indic_detokenizer(i) for i in translation]                           
