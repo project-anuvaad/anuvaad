@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/anuvaad-notifier.iml" filepath="$PROJECT_DIR$/.idea/anuvaad-notifier.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../../../anuvaad/anuvaad-etl/anuvaad-extractor/sentence/etl-tokeniser/.idea/etl-tokeniser.iml" filepath="$PROJECT_DIR$/../../../../anuvaad/anuvaad-etl/anuvaad-extractor/sentence/etl-tokeniser/.idea/etl-tokeniser.iml" />
-    </modules>
-  </component>
-</project>
