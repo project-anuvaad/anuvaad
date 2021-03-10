@@ -27,6 +27,8 @@ import Dictionary from "./Dictionary"
 import { highlightBlock, clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import InteractiveTranslateAPI from "../../../../flux/actions/apis/document_translate/intractive_translate";
 import DictionaryAPI from '../../../../flux/actions/apis/document_translate/word_dictionary';
+import AddToGlossaryModal from './AddToGlossaryModal';
+import Modal from '@material-ui/core/Modal';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
@@ -113,7 +115,8 @@ class SentenceCard extends React.Component {
             showStatus: false,
             snackBarMessage: null,
             highlight: false,
-            hideSplit: false
+            hideSplit: false,
+            openModal: false
 
         };
         this.textInput = React.createRef();
@@ -197,7 +200,7 @@ class SentenceCard extends React.Component {
                 let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;// max spent time is 5 min
                 time = 0;
-                sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()): 0;
+                sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()) : 0;
                 TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
                 return;
@@ -216,7 +219,7 @@ class SentenceCard extends React.Component {
                 sentence.save = true;
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
-                sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()): 0;
+                sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()) : 0;
                 let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;
                 time = 0;
@@ -415,7 +418,7 @@ class SentenceCard extends React.Component {
         /**
         * Ctrl+m to copy
         */
-        if ((event.ctrlKey || event.metaKey) && charCode === 'm'&& this.props.model.status === "ACTIVE") {
+        if ((event.ctrlKey || event.metaKey) && charCode === 'm' && this.props.model.status === "ACTIVE") {
             this.moveText()
             event.preventDefault();
             return false
@@ -546,7 +549,7 @@ class SentenceCard extends React.Component {
     }
 
     renderUserInputArea = () => {
-        
+
         return (
             <form >
                 <div>
@@ -590,7 +593,7 @@ class SentenceCard extends React.Component {
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
-                                helperText={this.props.model.status === "ACTIVE" ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save":"Ctrl+s to save" }
+                                helperText={this.props.model.status === "ACTIVE" ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+s to save"}
                                 type="text"
                                 name={this.props.sentence.s_id}
                                 value={this.state.value}
@@ -717,6 +720,10 @@ class SentenceCard extends React.Component {
         this.handleClose()
     }
 
+    handleAddToGlossary = () => {
+        this.setState({ openModal: true })
+    }
+
     handleOperation = (action) => {
         switch (action) {
             case 0: {
@@ -733,6 +740,11 @@ class SentenceCard extends React.Component {
             case 2: {
 
                 this.handleCopy()
+                return;
+            }
+            case 3: {
+                this.handleAddToGlossary(this.state.startIndex, this.state.endIndex)
+                this.handleClose();
                 return;
             }
         }
@@ -898,7 +910,20 @@ class SentenceCard extends React.Component {
         }
         return false;
     }
+    renderGlossaryModal = () => {
+        return (
+            <Modal
+                open={this.state.openModal}
+                onClose={this.handleGlossaryModalClose}
+            >
+                <AddToGlossaryModal handleClose={this.handleGlossaryModalClose} selectedWords={this.state.selectedSentence} />
+            </Modal>
+        )
+    }
 
+    handleGlossaryModalClose = () => {
+        this.setState({ openModal: false })
+    }
     render() {
         return (
             <div >
@@ -907,6 +932,7 @@ class SentenceCard extends React.Component {
                 {this.state.isOpenDictionary && this.renderDictionary()}
                 {this.state.showProgressStatus && this.renderProgressInformation()}
                 {this.state.showStatus && this.snackBarMessage()}
+                {this.renderGlossaryModal()}
             </div>
 
         )
