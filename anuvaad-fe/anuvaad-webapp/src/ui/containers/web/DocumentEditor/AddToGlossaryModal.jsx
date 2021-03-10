@@ -36,7 +36,7 @@ class AddToGlossaryModal extends React.Component {
                 }} align='center' fullWidth
                 >
                     <Typography variant="h5">{this.props.selectedWords}</Typography>
-                    <TextField id="email" type="text" value={this.state.word} placeholder="Word"
+                    <TextField id="email" type="text" value={this.state.word} placeholder="Add to glossary"
                         margin="dense" varient="outlined" style={{ width: '80%', marginBottom: '4%', backgroundColor: 'white' }}
                         disabled="true"
                         onChange={this.handleInputFieldChange}
