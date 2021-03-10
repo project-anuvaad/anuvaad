@@ -112,7 +112,7 @@ class Orientation:
         if config.ALIGN_MODE == 'ACCURATE':
             tolerance = 0.01
 
-        while abs(angle) > tolerance:
+        while (abs(angle) > tolerance) and rotations < 4:
             self.image = imutils.rotate_bound(self.image, -angle)
 
             if rotations > 1:
