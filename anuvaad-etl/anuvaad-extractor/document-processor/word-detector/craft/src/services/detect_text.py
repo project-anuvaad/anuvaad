@@ -5,6 +5,7 @@ import config
 
 
 def get_coords(images,languages='hi'):
+    print(images)
     if config.ALIGN:
         words, lines = [] , []
         for file_imgs in images:
