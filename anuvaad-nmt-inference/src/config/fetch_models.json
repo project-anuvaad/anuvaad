@@ -2,28 +2,6 @@
     "data": [
         {
           "source_language_code": "en",
-          "target_language_code": "bn",
-          "model_id": 11,
-          "model_name": "model no-1:",
-          "is_primary": false,
-          "created_on": "2019-09-16T12:07:52.645Z",
-          "status": "INACTIVE",
-          "source_language_name":"English",
-          "target_language_name":"Bengali"
-        },
-        {
-          "source_language_code": "en",
-          "target_language_code": "mr",
-          "model_id": 12,
-          "model_name": "model no-1:",
-          "is_primary": false,
-          "created_on": "2019-09-16T12:08:47.726Z",
-          "status": "INACTIVE",
-          "source_language_name":"English",
-          "target_language_name":"Marathi"
-        },
-        {
-          "source_language_code": "en",
           "target_language_code": "gu",
           "model_id": 10,
           "model_name": "model no-1:",
@@ -40,7 +18,7 @@
           "model_name": "model no-2:",
           "is_primary": false,
           "created_on": "2019-09-16T12:14:26.974Z",
-          "status": "ACTIVE",
+          "status": "INACTIVE",
           "source_language_name":"English",
           "target_language_name":"Tamil"
         },
@@ -90,54 +68,6 @@
         },
         {
           "source_language_code": "en",
-          "target_language_code": "hi",
-          "model_id": 21,
-          "model_name": "Model_experiment_1",
-          "is_primary": false,
-          "description": "BPE model with varying vocab size 15k for both hindi and english,Orders data augmented,pre_tokenization",
-          "created_on": "2019-10-07T10:58:10.331Z",
-          "status": "INACTIVE",
-          "source_language_name":"English",
-          "target_language_name":"Hindi"
-        },
-        {
-          "source_language_code": "en",
-          "target_language_code": "hi",
-          "model_id": 54,
-          "model_name": "Model_experiment_5.4(BPE-24K)",
-          "is_primary": false,
-          "description": "BPE-24K, Old data+ india kanoon 800k(including 1.5 lakhs names,no learned_counsel)+74k shabkosh,50knmt",
-          "created_on": "2019-10-31T15:55:43.084Z",
-          "status": "INACTIVE",
-          "source_language_name":"English",
-          "target_language_name":"Hindi"
-        },
-        {
-          "source_language_code": "en",
-          "target_language_code": "hi",
-          "model_id": 32,
-          "model_name": "Model_experiment_12(formal++)",
-          "is_primary": false,
-          "description": "old_data_original+lc_cleaned+ ik names translated from google(100k)+shabdkosh(appended 29k new),BPE-24K,50knmt,shuff,pretok",
-          "created_on": "2019-10-31T15:57:17.667Z",
-          "status": "ACTIVE",
-          "source_language_name":"English",
-          "target_language_name":"Hindi"
-        },
-        {
-          "source_language_code": "hi",
-          "target_language_code": "en",
-          "model_id": 5,
-          "model_name": "Model_experiment_1(BPE-24K)",
-          "is_primary": false,
-          "description": "old_data_original+lc_cleaned, shabdkosh(appended 29k new),BPE-24K,50knmt,shuff,pretok",
-          "created_on": "2019-10-31T22:12:13.548Z",
-          "status": "INACTIVE",
-          "source_language_name":"Hindi",
-          "target_language_name":"English"
-        },
-        {
-          "source_language_code": "en",
           "target_language_code": "mr",
           "model_id": 42,
           "model_name": "Model_experiment_2(BPE-24K)",
@@ -168,33 +98,9 @@
           "is_primary": false,
           "description": "",
           "created_on": "2020-01-12T06:30:46.982Z",
-          "status": "ACTIVE",
+          "status": "INACTIVE",
           "source_language_name":"Tamil",
           "target_language_name":"English"
-        },
-        {
-          "source_language_code": "mr",
-          "target_language_code": "en",
-          "model_id": 43,
-          "model_name": "Marathi-Eng Model-1",
-          "is_primary": false,
-          "description": "On newly tokenized IK corpus 10.5 lakhs",
-          "created_on": "2020-01-29T11:25:48.822Z",
-          "status": "INACTIVE",
-          "source_language_name":"Marathi",
-          "target_language_name":"English"
-        },
-        {
-          "source_language_code": "en",
-          "target_language_code": "mr",
-          "model_id": 44,
-          "model_name": "Eng-Mr Model-3",
-          "is_primary": false,
-          "description": "On newly tokenized IK corpus 10.5 lakhs",
-          "created_on": "2020-02-10T06:51:39.501Z",
-          "status": "INACTIVE",
-          "source_language_name":"English",
-          "target_language_name":"Marathi"
         },
         {
           "source_language_code": "kn",
@@ -294,30 +200,6 @@
         },
         {
           "source_language_code": "en",
-          "target_language_code": "bn",
-          "model_id": 57,
-          "model_name": "English-Bengali Model-3",
-          "is_primary": false,
-          "description": "Trained on 8.7 lakh corpus dated 28-12-2020",
-          "created_on": "2020-12-28",
-          "status": "INACTIVE",
-          "source_language_name":"English",
-          "target_language_name":"Bengali"
-        },
-        {
-          "source_language_code": "bn",
-          "target_language_code": "en",
-          "model_id": 58,
-          "model_name": "Bengali-English Model-2",
-          "is_primary": false,
-          "description": "Trained on 8.7 lakh corpus dated 28-12-2020",
-          "created_on": "2020-12-28",
-          "status": "INACTIVE",
-          "source_language_name":"Bengali",
-          "target_language_name":"English"
-        },
-        {
-          "source_language_code": "en",
           "target_language_code": "ml",
           "model_id": 59,
           "model_name": "Eng-Malayalam Model-2",
@@ -351,18 +233,6 @@
           "status": "ACTIVE",
           "source_language_name":"Marathi",
           "target_language_name":"English"
-        },
-        {
-          "source_language_code": "en",
-          "target_language_code": "hi",
-          "model_id": 63,
-          "model_name": "Eng-hin Exp-13",
-          "is_primary": false,
-          "description": "ik-V3, size 2M",
-          "created_on": "2020-03-12T05:35:01.005Z",
-          "status": "INACTIVE",
-          "source_language_name":"English",
-          "target_language_name":"Hindi"
         },
         {
           "source_language_code": "hi",
@@ -651,6 +521,66 @@
           "status": "INACTIVE",
           "source_language_name":"English",
           "target_language_name":"Santhali"
+        },
+        {
+          "source_language_code": "en",
+          "target_language_code": "grt",
+          "model_id": 10014,
+          "model_name": "Not Supported",
+          "is_primary": true,
+          "description": "Currently this model is not supported",
+          "created_on": "2021-02-25",
+          "status": "INACTIVE",
+          "source_language_name":"English",
+          "target_language_name":"Garo"
+        },
+        {
+          "source_language_code": "en",
+          "target_language_code": "kha",
+          "model_id": 10015,
+          "model_name": "Not Supported",
+          "is_primary": true,
+          "description": "Currently this model is not supported",
+          "created_on": "2021-02-25",
+          "status": "INACTIVE",
+          "source_language_name":"English",
+          "target_language_name":"Khasi"
+        },
+        {
+          "source_language_code": "en",
+          "target_language_code": "pnr",
+          "model_id": 10016,
+          "model_name": "Not Supported",
+          "is_primary": true,
+          "description": "Currently this model is not supported",
+          "created_on": "2021-02-25",
+          "status": "INACTIVE",
+          "source_language_name":"English",
+          "target_language_name":"Panar"
+        },
+        {
+          "source_language_code": "en",
+          "target_language_code": "njz",
+          "model_id": 10017,
+          "model_name": "Not Supported",
+          "is_primary": true,
+          "description": "Currently this model is not supported",
+          "created_on": "2021-02-25",
+          "status": "INACTIVE",
+          "source_language_name":"English",
+          "target_language_name":"Nishi"
+        },
+        {
+          "source_language_code": "en",
+          "target_language_code": "lus",
+          "model_id": 10018,
+          "model_name": "Not Supported",
+          "is_primary": true,
+          "description": "Currently this model is not supported",
+          "created_on": "2021-02-25",
+          "status": "INACTIVE",
+          "source_language_name":"English",
+          "target_language_name":"Mizo"
         }
       ]
 }

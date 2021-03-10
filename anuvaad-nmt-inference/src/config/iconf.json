@@ -50,12 +50,6 @@
             "sp_decoder":"sentencepiece_models/punjabi-2019-09-20-10k.model"
         },
         {
-            "id":32,
-            "path":"nmt/32",
-            "sp_encoder":"sentencepiece_models/en_exp-12-2019-10-29-24k.model",
-            "sp_decoder":"sentencepiece_models/hi_exp-12-2019-10-29-24k.model"
-        },
-        {
             "id":42,
             "path":"nmt/en-mr",
             "sp_encoder":"sentencepiece_models/enMr_exp-2-2019-11-07-24k.model",
