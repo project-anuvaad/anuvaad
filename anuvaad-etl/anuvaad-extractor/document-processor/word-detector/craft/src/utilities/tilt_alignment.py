@@ -10,7 +10,7 @@ class Orientation:
     def __init__(self, image_path ,conf_threshold=50, lang='eng'):
 
         self.image_path     = image_path
-        self.image          = cv2.imread(image_path)[:, :, ::-1]
+        self.image          = cv2.imread(image_path)
         # self.lines          = lines
         self.conf_threshold = int(conf_threshold)
 
