@@ -57,7 +57,7 @@ def encode_line_v2(load_model,line):
     try:
         sp = spm.SentencePieceProcessor()
         sp.load(load_model)
-        log_info("encoding using sp model {}".format(load_model),MODULE_CONTEXT)
+        log_info("encode_line_v2 using sp model {}".format(load_model),MODULE_CONTEXT)
         return (sp.encode_as_pieces(line))
     except Exception as e:
         log_exception("Exception occured in encode_line_v2",MODULE_CONTEXT,e)
