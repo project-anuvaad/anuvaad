@@ -165,29 +165,29 @@ def sort_regions(contours_df, sorted_contours=[]):
         sort_regions(next_lines, sorted_contours)
 
     return sorted_contours
-
-def convert_to_in_df(craft_df):
-
-    in_df_columns = ['xml_index', 'text_top', 'text_left', 'text_width', 'text_height',
-                     'text', 'font_size', 'font_family', 'font_color', 'attrib']
-    in_df = pd.DataFrame(columns=in_df_columns)
-    in_df['text_top'] = craft_df['y1']
-    in_df['text_left'] = craft_df['x1']
-    in_df['text_height'] =(craft_df['y4'] - craft_df['y1'])
-    in_df['text_width'] = (craft_df['x2'] - craft_df['x1'])
-    in_df['text'] = ''
-    in_df['attrib'] = None
-    in_df['font_family'] = 'Arial Unicode MS'
-    in_df['font_family_updated'] = 'Arial Unicode MS'
-    in_df['font_size'] = in_df['text_height']
-    in_df['font_size_updated'] = in_df['text_height']
-    #in_df['detection_confidence'] = craft_df['confidence']
-
-    if len(in_df) > 0 :
-        in_df = in_df.sort_values(by=['text_top'])
-        in_df = pd.DataFrame(sort_regions(in_df, []))
-
-    return  in_df
+#
+# def convert_to_in_df(craft_df):
+#
+#     in_df_columns = ['xml_index', 'text_top', 'text_left', 'text_width', 'text_height',
+#                      'text', 'font_size', 'font_family', 'font_color', 'attrib']
+#     in_df = pd.DataFrame(columns=in_df_columns)
+#     in_df['text_top'] = craft_df['y1']
+#     in_df['text_left'] = craft_df['x1']
+#     in_df['text_height'] =(craft_df['y4'] - craft_df['y1'])
+#     in_df['text_width'] = (craft_df['x2'] - craft_df['x1'])
+#     in_df['text'] = ''
+#     in_df['attrib'] = None
+#     in_df['font_family'] = 'Arial Unicode MS'
+#     in_df['font_family_updated'] = 'Arial Unicode MS'
+#     in_df['font_size'] = in_df['text_height']
+#     in_df['font_size_updated'] = in_df['text_height']
+#     #in_df['detection_confidence'] = craft_df['confidence']
+#
+#     if len(in_df) > 0 :
+#         in_df = in_df.sort_values(by=['text_top'])
+#         in_df = pd.DataFrame(sort_regions(in_df, []))
+#
+#     return  in_df
 
 
 def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,link_threshold,img_class="single_col"):
@@ -200,7 +200,11 @@ def detect_text_per_file(image_paths,network,text_threshold,low_text_threshold,l
 
     t = time.time()
     for image_path in image_paths :
-        image = cv2.imread(image_path)
+        if type(image_path) == str:
+            image = cv2.imread(image_path)
+        else:
+            image = image_path
+
         image = clean_image(image)
         # if img_class == "double_col":
         #     image = image_path
