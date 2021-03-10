@@ -5,7 +5,6 @@ import pickle
 from json import loads
 
 from config import CONSUMER_GROUP
-from errors.errors_exception import KafkaConsumerError, KafkaProducerError
 
 try:
     import kafka
@@ -62,14 +61,5 @@ class Listner(PubSubManager):
                 except Exception as e:
                     log_exception("process_notifier_kf : EXCEPTIOM:\n %s" % (e), None, e)
 
-        except KafkaConsumerError as e:
-            # response_custom = CustomResponse(Status.ERR_STATUS.value, None, None)
-            # response_custom.status_code['message'] = str(e)
-            log_exception("process_notifier_kf : Consumer didn't instantiate", None, e)
-        except KafkaProducerError as e:
-            # response_custom = e.code
-            # response_custom['message'] = e.message
-            # file_ops.error_handler(response_custom, "KAFKA_PRODUCER_ERROR", True)
-            log_exception("process_notifier_kf : response send to topic %s" % (), None, e)
         except Exception as e:
             log_exception("process_notifier_kf : EXCEPTIOM:\n %s"%(e), None, e)
