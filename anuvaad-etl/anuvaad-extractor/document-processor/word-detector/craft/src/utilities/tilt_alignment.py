@@ -23,11 +23,11 @@ class Orientation:
 
 
 
-    def convert_to_df(self):
+    def augment_df(self,df):
         # dic = []
         # for i,box in enumerate(self.bbox):
         # dic.append({'x1': box[0] ,'y1': box[1] ,'x2': box[2] ,'y2': box[3] ,'x3': box[4] ,'y3': box[5] ,'x4': box[6] ,'y4': box[7]})
-        df = pd.DataFrame(self.bbox, columns=['x1', 'y1', 'x2', 'y2', 'x3', 'y3', 'x4', 'y4'])
+        #df = pd.DataFrame(self.bbox, columns=['x1', 'y1', 'x2', 'y2', 'x3', 'y3', 'x4', 'y4'])
         df['height'] = df['y4'] - df['y1']
         df['width'] = df['x2'] - df['x1']
         df['ymid'] = (df['y4'] + df['y3']) * 0.5
@@ -35,7 +35,7 @@ class Orientation:
         df = df.sort_values(by=['ymid'])
         df['group'] = None
         df['line_change'] = 0
-        self.df = df
+        return df
 
     def dump_out(self, bbc, rot):
         im = self.image.copy()
@@ -48,6 +48,7 @@ class Orientation:
     def get_rotaion_angle(self, text_cor_df):
 
         bbox_df = text_cor_df.copy()
+        bbox_df = self.augment_df(bbox_df)
 
         bbox_df['delta_x'] = bbox_df['x2'] - bbox_df['x1']
         bbox_df['delta_y'] = bbox_df['y2'] - bbox_df['y1']
