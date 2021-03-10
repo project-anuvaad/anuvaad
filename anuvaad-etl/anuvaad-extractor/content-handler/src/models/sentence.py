@@ -211,7 +211,7 @@ class SentenceModel(object):
             }
     
     # Initialises and fetches redis client
-    def save_sentences_on_hashkey(self,key,sent,add_new):
+    def save_sentences_on_hashkey(self,key,sent):
         try:
             client = get_redis()
             client.lpush(key, json.dumps(sent))
