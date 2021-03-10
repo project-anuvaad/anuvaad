@@ -4,7 +4,7 @@ import config
 
 
 
-def get_corrds(images,languages='hi'):
+def get_coords(images,languages='hi'):
     if config.ALIGN:
         words, lines = [] , []
         for file_imgs in images:
