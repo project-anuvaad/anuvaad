@@ -103,11 +103,12 @@ class Orientation:
                                      link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
 
         angle = self.get_rotaion_angle(lines)
+        print("Angle of tilt detected {} ".format(angle) )
         rotations = 1
         # self.dump_out(lines,rotations)
         # Orientation correction
         if config.ALIGN_MODE == 'FAST':
-         tolerance = 2.5
+         tolerance = 0.5
         if config.ALIGN_MODE == 'ACCURATE':
             tolerance = 0.5
 
@@ -130,6 +131,7 @@ class Orientation:
                                          low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
                                          link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
             angle = self.get_rotaion_angle(lines)
+            print("Angle of tilt after correction {} ".format(angle))
             rotations += 1
             # self.dump_out(east_cor,rotations)
         cv2.imwrite(self.image_path,self.image)
