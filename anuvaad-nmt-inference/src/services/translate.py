@@ -312,11 +312,6 @@ class OpenNMTTranslateService:
                     elif i['id'] == 18:  
                         "english-punjabi"
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)
-                    elif i['id'] == 32:
-                        "29/10/2019 Exp-12: En-hi"
-                        i['src'] = sentence_processor.moses_tokenizer(i['src'])
-                        translation,scores,input_sw,output_sw = encode_translate_decode(i)                      
-                        translation = sentence_processor.indic_detokenizer(translation)
                     elif i['id'] == 42:  
                         "english-marathi exp-2"
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)    

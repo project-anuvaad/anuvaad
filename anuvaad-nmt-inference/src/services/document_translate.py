@@ -101,12 +101,6 @@ class NMTTranslateService:
                 "english-punjabi"
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-            elif model_id == 32:
-                "29/10/2019 Exp-12: old_data_original+lc_cleaned+ ik names translated from google(100k)+shabdkosh(appended 29k new),BPE-24K,50knmt,shuff,pretok"
-                input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)                           
-                translation_array = [sentence_processor.indic_detokenizer(translation) for translation  in translation_array]
             elif model_id == 42:  
                 "english-marathi exp-2"
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
