@@ -348,7 +348,7 @@ class TranslatorService:
                                 tgt = response["data"][0]["value"][0]
                                 for translation in response["data"][0]["value"]:
                                     translation = json.loads(translation)
-                                    if eval(translation["timestamp"]) > eval(tgt["timestamp"]):
+                                    if translation["timestamp"] > tgt["timestamp"]:
                                         tgt = translation
                                 log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) + " | NEW TGT: " + response["data"][0]["tgt"], translate_wf_input)
                                 nmt_res_sentence["tgt"] = tgt
