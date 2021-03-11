@@ -372,9 +372,9 @@ class TMXService:
             if delete_req["deleteAll"] is True:
                 repo.glossary_delete(query)
                 return {"message": "Glossary DB cleared successfully", "status": "SUCCESS"}
-        if 'uuids' in delete_req:
-            if delete_req["uuids"]:
-                query = {"uuid": {"$in": delete_req["uuids"]}}
+        if 'ids' in delete_req:
+            if delete_req["ids"]:
+                query = {"id": {"$in": delete_req["ids"]}}
         if 'userIDs' in delete_req:
             if delete_req["userIDs"]:
                 query = {"uploaded_by": {"$in": delete_req["userIDs"]}}
@@ -392,6 +392,9 @@ class TMXService:
         if 'fetchAll' in searc_req:
             if searc_req["fetchAll"] is True:
                 return repo.glossary_search(query, exclude)
+        if 'ids' in searc_req:
+            if searc_req["ids"]:
+                query = {"id": {"$in": searc_req["ids"]}}
         if 'src' in searc_req:
             if searc_req["src"]:
                 query["src"] = {"$in": searc_req["src"]}
