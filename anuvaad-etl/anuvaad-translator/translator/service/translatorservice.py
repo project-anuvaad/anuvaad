@@ -1,3 +1,4 @@
+import json
 import multiprocessing
 import random
 import time
@@ -346,7 +347,7 @@ class TranslatorService:
                             if response["data"][0]["value"]:
                                 tgt = response["data"][0]["value"][0]
                                 for translation in response["data"][0]["value"]:
-                                    translation = dict(translation)
+                                    translation = json.loads(translation)
                                     if eval(translation["timestamp"]) > eval(tgt["timestamp"]):
                                         tgt = translation
                                 log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) + " | NEW TGT: " + response["data"][0]["tgt"], translate_wf_input)
