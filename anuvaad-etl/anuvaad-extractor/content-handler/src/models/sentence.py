@@ -214,7 +214,7 @@ class SentenceModel(object):
     def save_sentences_on_hashkey(self,key,sent):
         try:
             client = get_redis()
-            client.set(key, json.dumps(sent))
+            client.lpush(key, json.dumps(sent))
             return 1
         except Exception as e:
             log_exception("Exception in storing sentence data on redis store | Cause: " + str(e), AppContext.getContext(), e)
@@ -225,10 +225,22 @@ class SentenceModel(object):
             client = get_redis()
             result = []
             for key in keys:
-                val = client.get(key)
-                if val:
-                    result.append(json.loads(val))
+                sent_obj={}
+                val=client.lrange(key, 0, -1)
+                sent_obj["key"]=key
+                sent_obj["value"]=val
+                result.append(sent_obj)
             return result
         except Exception as e:
             log_exception("Exception in fetching sentences from redis store  | Cause: " + str(e), None, e)
             return None
+
+    # def search_key(self,sent_key):
+    #     try:
+    #         client = get_redis()
+    #         val = client.exists(sent_key)
+    #         return val
+    #     except Exception as e:
+    #         log_exception("Exception in searching for key on redis store  | Cause: " + str(e), None, e)
+    #         return None
+

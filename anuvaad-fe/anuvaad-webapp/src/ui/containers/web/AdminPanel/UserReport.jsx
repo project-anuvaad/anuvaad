@@ -114,10 +114,14 @@ class UserReport extends React.Component {
             this.setState({ showLoader: false });
         }
         else if (this.props.fetch_document.result.count !== prevProps.fetch_document.result.count) {
+            this.makeAPICallDocumentsTranslationProgress();
             this.setState({ showLoader: false });
         }
         else if (this.props.fetch_document.result.jobIDs !== undefined &&
             this.props.fetch_document.result.jobIDs.length !== prevProps.fetch_document.result.jobIDs.length) {
+            this.setState({ showLoader: false });
+        }
+        else if (this.props.job_details.progress_updated !== prevProps.job_details.progress_updated && this.props.job_details.count === prevProps.job_details.count) {
             this.setState({ showLoader: false });
         }
     }

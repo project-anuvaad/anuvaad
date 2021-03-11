@@ -54,6 +54,15 @@ logging.basicConfig(
 
 EXRACTION_RESOLUTION = 300
 
+
+##########################################################################
+#Alignment
+ALIGN = True
+ALIGN_MODE= 'FAST'
+
+
+###########################################################################
+
 CRAFT_MODEL_PATH=  './src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
 CRAFT_REFINE_MODEL_PATH =  './src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth'
 
