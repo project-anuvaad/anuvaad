@@ -379,9 +379,9 @@ class TMXService:
             if delete_req["userIDs"]:
                 query = {"uploaded_by": {"$in": delete_req["userIDs"]}}
         if 'startDate' in delete_req:
-            query["created_on"] = {"$ge": delete_req["startDate"]}
+            query["created_on"] = {"$gte": delete_req["startDate"]}
         if 'endDate' in delete_req:
-            query["created_on"] = {"$le": delete_req["endDate"]}
+            query["created_on"] = {"$lte": delete_req["endDate"]}
         repo.glossary_delete(query)
         return {"message": "Glossary deleted successfully", "status": "SUCCESS"}
 
@@ -411,7 +411,7 @@ class TMXService:
             if searc_req["userIDs"]:
                 query["uploaded_by"] = {"$in": searc_req["userIDs"]}
         if 'startDate' in searc_req:
-            query["created_on"] = {"$ge": searc_req["startDate"]}
+            query["created_on"] = {"$gte": searc_req["startDate"]}
         if 'endDate' in searc_req:
-            query["created_on"] = {"$le": searc_req["endDate"]}
+            query["created_on"] = {"$lte": searc_req["endDate"]}
         return repo.glossary_search(query, exclude)
