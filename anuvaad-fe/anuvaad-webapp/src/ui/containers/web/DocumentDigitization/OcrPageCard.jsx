@@ -83,22 +83,34 @@ class OcrPageCard extends React.Component {
 
     renderText = (line, region) => {
         return (
-            <div key={line.identifier}>
+            <div
+                style={{
+                    border: line.class === 'CELL' && '1px solid black',
+                    top: line.class === 'CELL' && line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    left: line.class === 'CELL' && line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                    height: line.class === 'CELL' && line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
+                    width: line.class === 'CELL' && line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
+                    position: line.class === 'CELL' && 'absolute',
+                }}
+                key={line.identifier}>
                 {
-                    line.children.map(word => this.renderTextSpan(word, line, region))
+                    line.children.map(word => line.class !== 'CELL' ?
+                        this.renderTextSpan(word, region) :
+                        this.renderTable(word, line)
+                    )
                 }
             </div>
         )
     }
 
-    renderTable = (word, region) => {
+    renderTable = (word, line) => {
         return (
             <div
                 style={{
                     position: "absolute",
                     fontSize: word.font && `min(max(${word.font.size}px),${this.props.fontSize}px)`,
-                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
-                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                    top: word.boundingBox.vertices[0].y - line.boundingBox.vertices[0].y + 'px',
+                    left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
                     maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                     maxHeight: word.boundingBox.vertices[2].y - word.boundingBox.vertices[0].y + 'px',
                     width: 'fit-content',
@@ -115,10 +127,7 @@ class OcrPageCard extends React.Component {
         )
     }
 
-    renderTextSpan = (word, line, region) => {
-        if (line.class === "CELL") {
-            return this.renderTable(word, region)
-        }
+    renderTextSpan = (word, region) => {
         return (
             <div
                 style={{
