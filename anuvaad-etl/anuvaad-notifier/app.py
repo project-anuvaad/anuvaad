@@ -1,12 +1,16 @@
 #!/bin/python
+import urllib
+
 import eventlet
-
 eventlet.monkey_patch()
+import time
 
-from flask import Flask
+from flask_cors import CORS
+import routes
+from flask import Flask, Blueprint
 from flask_socketio import SocketIO, join_room, send, leave_room, emit
 from config import KAFKA_INPUT_TOPIC, NOTIFIER_SECRET_KEY, KAFKA_URL, APP_HOST, APP_PORT, ANUVAAD_URL_HOST, \
-    ANUVAAD_BULK_SEARCH_ENDPOINT
+    ANUVAAD_BULK_SEARCH_ENDPOINT, ENABLE_CORS, context_path
 import json
 import requests
 from anuvaad_auditor.loghandler import log_info
@@ -24,11 +28,10 @@ log_info("KAFKA URL: %s"%(KAFKA_URL), None)
 log_info("APP HOST: %s"%(APP_HOST), None)
 log_info("APP_PORT: %s"%(APP_PORT), None)
 
-
+# <UNCOMMENT WHEN WORKING WITH KAFKA>
 KAFKA_MESSAGE_QUEUE_LISTNER = Listner(url=KAFKA_URL, channel=KAFKA_INPUT_TOPIC, write_only=False)
-
 socketio.init_app(app, client_manager=KAFKA_MESSAGE_QUEUE_LISTNER)
-
+# </UNCOMMENT WHEN WORKING WITH KAFKA>
 
 @socketio.on('join')
 def on_join(request_body):
@@ -40,7 +43,7 @@ def on_join(request_body):
     join_room(ROOM)
 
     # Broadcast that new user has joined
-    send({"User has joined the " + ROOM + " room."}, room=ROOM)
+    send({"User has joined the " + ROOM + " room."}, room=ROOM, namespace='/')
 
 
 @socketio.on('leave')
@@ -65,11 +68,11 @@ def handleMessage(msg):
 
 # DONE
 @socketio.on('bulk_search_server')
-def bulk_search(request_body, room):
+def bulk_search(request_body):
     print("\n\n BULK SEARCH EVENT \n\n")
     print("INITIATE BULK SEARCH")
 
-    BULK_SEARCH_URL = ANUVAAD_URL_HOST + ANUVAAD_BULK_SEARCH_ENDPOINT
+    BULK_SEARCH_URL = ANUVAAD_URL_HOST+ ANUVAAD_BULK_SEARCH_ENDPOINT
 
     ROOM = request_body['room']
 
@@ -82,7 +85,7 @@ def bulk_search(request_body, room):
 
     bulk_search_response = requests.request("POST", BULK_SEARCH_URL, headers=HEADERS, data=REQUEST_PAYLOAD).json()
 
-    emit('bulk_search_client', bulk_search_response, room=ROOM)
+    emit('bulk_search_client', bulk_search_response, room=ROOM, namespace='/')
 
 
 @socketio.on('kf_test')
@@ -94,6 +97,17 @@ def handle_kafka_Message(msg, room):
     join_room(room)
     log_info("\n\n\n Joined Room %s"%(room), None)
 
+# <CHANGES FOR MANUAL BULK SEARCH>
+if ENABLE_CORS:
+    print("INSIDE ENABLE_CORS")
+
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+for blueprint in vars(routes).values():
+    print("INSIDE BLUEPRINT")
+    if isinstance(blueprint, Blueprint):
+        app.register_blueprint(blueprint, url_prefix=context_path)
+# </CHANGES FOR MANUAL BULK SEARCH>
 
 if __name__ == '__main__':
     socketio.run(app, host=APP_HOST, port=APP_PORT, debug=True)
