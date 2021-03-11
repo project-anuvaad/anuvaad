@@ -125,10 +125,7 @@ def glossary_get():
     service = TMXService()
     data = request.get_json()
     response = service.glossary_get(data)
-    if "errorID" in response.keys():
-        return jsonify(response), 400
-    else:
-        return jsonify(response), 200
+    return jsonify(response), 200
 
 
 
