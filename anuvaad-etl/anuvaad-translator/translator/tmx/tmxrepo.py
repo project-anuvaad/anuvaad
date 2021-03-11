@@ -10,6 +10,7 @@ import pymongo
 from configs.translatorconfig import mongo_server_host
 from configs.translatorconfig import mongo_translator_db
 from configs.translatorconfig import mongo_tmx_collection
+from configs.translatorconfig import mongo_glossary_collection
 
 redis_client = None
 mongo_client = None
@@ -38,9 +39,9 @@ class TMXRepository:
         mongo_client = db[collection]
         return mongo_client
 
-    def get_mongo_instance(self):
+    def get_mongo_instance(self, collection):
         if not mongo_client:
-            return self.instantiate(mongo_tmx_collection)
+            return self.instantiate(collection)
         else:
             return mongo_client
 
@@ -92,13 +93,13 @@ class TMXRepository:
 
     # Inserts the object into mongo collection
     def tmx_create(self, object_in):
-        col = self.get_mongo_instance()
+        col = self.get_mongo_instance(mongo_tmx_collection)
         col.insert_one(object_in)
         del object_in["_id"]
 
     # Searches tmx entries from mongo collection
     def search_tmx_db(self, user_id, org_id, locale):
-        col = self.get_mongo_instance()
+        col = self.get_mongo_instance(mongo_tmx_collection)
         res_user = col.find({"locale": locale, "userID": user_id}, {'_id': False})
         res_org = col.find({"locale": locale, "orgID": org_id}, {'_id': False})
         user, org = 0, 0
@@ -114,3 +115,20 @@ class TMXRepository:
             elif org > 0:
                 return "ORG"
         return None
+
+    def glossary_create(self, object_in):
+        col = self.get_mongo_instance(mongo_glossary_collection)
+        col.insert_one(object_in)
+        del object_in["_id"]
+
+    def glossary_delete(self, query):
+        col = self.get_mongo_instance(mongo_glossary_collection)
+        col.remove(query)
+
+    def glossary_search(self, query, exclude):
+        col = self.get_mongo_instance(mongo_glossary_collection)
+        res = col.find(query, exclude)
+        result = []
+        for record in res:
+            result.append(record)
+        return result

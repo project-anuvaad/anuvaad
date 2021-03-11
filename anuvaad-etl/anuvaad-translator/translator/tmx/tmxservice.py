@@ -13,6 +13,7 @@ from configs.translatorconfig import tmx_global_enabled
 from configs.translatorconfig import tmx_org_enabled
 from configs.translatorconfig import tmx_user_enabled
 from configs.translatorconfig import tmx_word_length
+from anuvaad_auditor.errorhandler import post_error
 
 repo = TMXRepository()
 
@@ -332,3 +333,82 @@ class TMXService:
                        tmx_record["src"]
             hash_dict["ORG"] = hashlib.sha256(org_hash.encode('utf-16')).hexdigest()
         return hash_dict
+
+    # API to create glossary in the system.
+    def glossary_create(self, object_in):
+        try:
+            if 'org' not in object_in.keys():
+                return post_error("ORG_NOT_FOUND", "org is mandatory", None)
+            if 'context' not in object_in.keys():
+                return post_error("CONTEXT_NOT_FOUND", "context is mandatory", None)
+            else:
+                if 'translations' not in object_in.keys():
+                    return post_error("TRANSLATIONS_NOT_FOUND", "Translations are mandatory", None)
+                else:
+                    if not object_in["translations"]:
+                        return post_error("TRANSLATIONS_EMPTY", "Translations cannot be empty", None)
+                    else:
+                        for translation in object_in["translations"]:
+                            if 'src' not in translation.keys():
+                                return post_error("SRC_NOT_FOUND", "src is mandatory for every translation", None)
+                            if 'tgt' not in translation.keys():
+                                return post_error("TGT_NOT_FOUND", "tgt is mandatory for every translation", None)
+                            if 'locale' not in translation.keys():
+                                return post_error("LOCALE_NOT_FOUND", "locale is mandatory for every translation", None)
+            for translation in object_in["translations"]:
+                translation["id"] = uuid.uuid4()
+                translation["org"] = object_in["org"]
+                translation["uploaded_by"] = object_in["userID"]
+                translation["created_on"] = eval(str(time.time()).replace('.', '')[0:13])
+                repo.glossary_create(translation)
+            return {"message": "Glossary created successfully", "status": "SUCCESS"}
+        except Exception as e:
+            return post_error("GLOSSARY_CREATION_FAILED", "Glossary creation failed due to exception: {}".format(str(e)), None)
+
+    # Method to delete glossary from the db
+    def glossary_delete(self, delete_req):
+        query = {}
+        if 'deleteAll' in delete_req:
+            if delete_req["deleteAll"] is True:
+                repo.glossary_delete(query)
+                return {"message": "Glossary DB cleared successfully", "status": "SUCCESS"}
+        if 'uuids' in delete_req:
+            if delete_req["uuids"]:
+                query = {"uuid": {"$in": delete_req["uuids"]}}
+        if 'userIDs' in delete_req:
+            if delete_req["userIDs"]:
+                query = {"uploaded_by": {"$in": delete_req["userIDs"]}}
+        if 'startDate' in delete_req:
+            query["created_on"] = {"$ge": delete_req["startDate"]}
+        if 'endDate' in delete_req:
+            query["created_on"] = {"$le": delete_req["endDate"]}
+        repo.glossary_delete(query)
+        return {"message": "Glossary deleted successfully", "status": "SUCCESS"}
+
+
+    # Method to search glossary from the glossay db.
+    def glossary_get(self, searc_req):
+        query, exclude = {}, {'_id': False}
+        if 'fetchAll' in searc_req:
+            if searc_req["fetchAll"] is True:
+                return repo.glossary_search(query, exclude)
+        if 'src' in searc_req:
+            if searc_req["src"]:
+                query["src"] = {"$in": searc_req["src"]}
+        if 'tgt' in searc_req:
+            if searc_req["tgt"]:
+                query["tgt"] = {"$in": searc_req["tgt"]}
+        if 'locale' in searc_req:
+            if searc_req["locale"]:
+                query["locale"] = {"$in": searc_req["locale"]}
+        if 'org' in searc_req:
+            if searc_req["org"]:
+                query["org"] = {"$in": searc_req["org"]}
+        if 'userID' in searc_req:
+            if searc_req["userIDs"]:
+                query["uploaded_by"] = {"$in": searc_req["userIDs"]}
+        if 'startDate' in searc_req:
+            query["created_on"] = {"$ge": searc_req["startDate"]}
+        if 'endDate' in searc_req:
+            query["created_on"] = {"$le": searc_req["endDate"]}
+        return repo.glossary_search(query, exclude)

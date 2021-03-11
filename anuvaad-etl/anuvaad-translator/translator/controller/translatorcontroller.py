@@ -99,6 +99,37 @@ def tmx_get_all_keys():
     data = request.get_json()
     return jsonify(service.get_tmx_data(data)), 200
 
+@translatorapp.route(context_path + '/v1/glossary/create', methods=["POST"])
+def glossary_create():
+    service = TMXService()
+    data = request.get_json()
+    data["userID"] = request.headers["x-user-id"]
+    response = service.glossary_create(data)
+    if response["status"] == "FAILED":
+        return jsonify(response), 400
+    else:
+        return jsonify(response), 200
+
+@translatorapp.route(context_path + '/v1/glossary/delete', methods=["POST"])
+def glossary_delete():
+    service = TMXService()
+    data = request.get_json()
+    response = service.glossary_delete(data)
+    if response["status"] == "FAILED":
+        return jsonify(response), 400
+    else:
+        return jsonify(response), 200
+
+@translatorapp.route(context_path + '/v1/glossary/get', methods=["POST"])
+def glossary_get():
+    service = TMXService()
+    data = request.get_json()
+    response = service.glossary_get(data)
+    if response["status"] == "FAILED":
+        return jsonify(response), 400
+    else:
+        return jsonify(response), 200
+
 
 
 # Fetches required headers from the request and adds it to the body.
