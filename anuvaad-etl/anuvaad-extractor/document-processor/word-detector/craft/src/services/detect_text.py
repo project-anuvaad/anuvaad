@@ -5,13 +5,11 @@ import config
 
 
 def get_coords(images,languages='hi'):
-    print(images)
     if config.ALIGN:
         words, lines = [] , []
         for file_imgs in images:
             file_words, file_lines = [],[]
             for img in file_imgs:
-                print('imgggggggggg',img)
                 page_words,page_lines = Orientation(img).re_orient()
                 file_words.append(page_words)
                 file_lines.append(page_lines)

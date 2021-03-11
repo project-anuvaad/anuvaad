@@ -10,7 +10,7 @@ class Orientation:
     def __init__(self, image_path ,conf_threshold=50, lang='eng'):
 
         self.image_path     = image_path
-        self.image          = cv2.imread(image_path)[:, :, ::-1]
+        self.image          = cv2.imread(image_path)
         # self.lines          = lines
         self.conf_threshold = int(conf_threshold)
 
@@ -94,36 +94,50 @@ class Orientation:
     #
     #
 
+    def rotate_bound(self, image, angle):
+        # grab the dimensions of the image and then determine the
+        # center
+        (h, w) = image.shape[:2]
+        (cX, cY) = (w / 2, h / 2)
+
+        # grab the rotation matrix (applying the negative of the
+        # angle to rotate clockwise), then grab the sine and cosine
+        # (i.e., the rotation components of the matrix)
+        M = cv2.getRotationMatrix2D((cX, cY), -angle, 1.0)
+        cos = np.abs(M[0, 0])
+        sin = np.abs(M[0, 1])
+
+        # compute the new bounding dimensions of the image
+        nW = int((h * sin) + (w * cos))
+        nH = int((h * cos) + (w * sin))
+
+        # adjust the rotation matrix to take into account translation
+        M[0, 2] += (nW / 2) - cX
+        M[1, 2] += (nH / 2) - cY
+
+        # perform the actual rotation and return the image
+        return cv2.warpAffine(image, M, (nW, nH))
+
     def re_orient(self):
         lang = 'hi'
-        lines = detect_text_per_page([self.image],\
+        lines = detect_text_per_page([self.image], \
                                      network=True, \
                                      text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
                                      low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
                                      link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
 
         angle = self.get_rotaion_angle(lines)
-        print("Angle of tilt detected {} ".format(angle) )
+        print("Angle of tilt detected {} ".format(angle))
         rotations = 1
         # self.dump_out(lines,rotations)
         # Orientation correction
         if config.ALIGN_MODE == 'FAST':
-         tolerance = 0.5
+            tolerance = 0.1
         if config.ALIGN_MODE == 'ACCURATE':
-            tolerance = 0.5
+            tolerance = 0.05
 
-        while abs(angle) > tolerance:
-            self.image = imutils.rotate_bound(self.image, -angle)
-
-            if rotations > 1:
-                # Remove rotaion artifacts
-                contours = cv2.findContours(cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY), cv2.RETR_EXTERNAL,
-                                            cv2.CHAIN_APPROX_SIMPLE)
-                contours = contours[0] if len(contours) == 2 else contours[1]
-                if len(contours) > 0:
-                    x, y, w, h = cv2.boundingRect(contours[0])
-                    # print('cropped area reduced ')
-                    self.image = self.image[y:y + h, x:x + w, :]
+        if (abs(angle) > tolerance) :
+            self.image = self.rotate_bound(self.image, -angle)
 
             lines = detect_text_per_page([self.image], \
                                          network=True, \
@@ -134,18 +148,74 @@ class Orientation:
             print("Angle of tilt after correction {} ".format(angle))
             rotations += 1
             # self.dump_out(east_cor,rotations)
-        cv2.imwrite(self.image_path,self.image)
+        cv2.imwrite(self.image_path, self.image)
         words = detect_text_per_page([self.image], \
-                                         network=False, \
-                                         text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
-                                         low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
-                                         link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
+                                     network=False, \
+                                     text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
+                                     low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
+                                     link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
         # if config.ALIGN_MODE not "FAST":
         #     upside_down = self.check_orientation(bbox1.gr_cordinates)
 
-
         return words, lines
 
+
+
+
+
+    #
+    # def re_orient(self):
+    #     lang = 'hi'
+    #     lines = detect_text_per_page([self.image],\
+    #                                  network=True, \
+    #                                  text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
+    #                                  low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
+    #                                  link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
+    #
+    #     angle = self.get_rotaion_angle(lines)
+    #     print("Angle of tilt detected {} ".format(angle) )
+    #     rotations = 1
+    #     # self.dump_out(lines,rotations)
+    #     # Orientation correction
+    #     if config.ALIGN_MODE == 'FAST':
+    #      tolerance = 0.1
+    #     if config.ALIGN_MODE == 'ACCURATE':
+    #         tolerance = 0.1
+    #
+    #     while (abs(angle) > tolerance) and rotations < 3:
+    #         self.image = self.rotate_bound(self.image, -angle)
+    #
+    #         if rotations > 1:
+    #             # Remove rotaion artifacts
+    #             contours = cv2.findContours(cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY), cv2.RETR_EXTERNAL,
+    #                                         cv2.CHAIN_APPROX_SIMPLE)
+    #             contours = contours[0] if len(contours) == 2 else contours[1]
+    #             if len(contours) > 0:
+    #                 x, y, w, h = cv2.boundingRect(contours[0])
+    #                 # print('cropped area reduced ')
+    #                 self.image = self.image[y:y + h, x:x + w, :]
+    #
+    #         lines = detect_text_per_page([self.image], \
+    #                                      network=True, \
+    #                                      text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
+    #                                      low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
+    #                                      link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
+    #         angle = self.get_rotaion_angle(lines)
+    #         print("Angle of tilt after correction {} ".format(angle))
+    #         rotations += 1
+    #         # self.dump_out(east_cor,rotations)
+    #     cv2.imwrite(self.image_path,self.image)
+    #     words = detect_text_per_page([self.image], \
+    #                                      network=False, \
+    #                                      text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
+    #                                      low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
+    #                                      link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
+    #     # if config.ALIGN_MODE not "FAST":
+    #     #     upside_down = self.check_orientation(bbox1.gr_cordinates)
+    #
+    #
+    #     return words, lines
+    #
 
 
 
