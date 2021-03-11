@@ -59,6 +59,7 @@ class Listner(PubSubManager):
                         log_info("INSIDE _LISTEN KFMANGER OVERIDDEN", None)
                         log_info("DATA FROM KAFKA TOPIC: %s" % (message.value), None)
                         room = message.value['jobs'][0]['metadata']['userID']
+                        print("NOTIFIER KAFKA: EMITING TO ROOM: ", room)
                         PubSubManager.emit(self, event='task_updated', data=message.value, namespace='/', room=room,
                                            ignore_queue=True)
                 except Exception as e:

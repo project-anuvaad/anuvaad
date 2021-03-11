@@ -30,7 +30,7 @@ def bulk_search(request_body):
         print("INITIATE BULK SEARCH from Notifier API")
 
         # BULK_SEARCH_URL = urllib.parse.urljoin(ANUVAAD_URL_HOST, ANUVAAD_BULK_SEARCH_ENDPOINT)
-        BULK_SEARCH_URL = ANUVAAD_URL_HOST + ANUVAAD_BULK_SEARCH_ENDPOINT
+        BULK_SEARCH_URL = urllib.parse.urljoin(ANUVAAD_URL_HOST , ANUVAAD_BULK_SEARCH_ENDPOINT)
 
         ROOM = request_body['room']
         print("REQUEST FOR ROOM: ", ROOM)

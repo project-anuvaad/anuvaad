@@ -1,9 +1,9 @@
 #!/bin/python
-import urllib
 
 import eventlet
 eventlet.monkey_patch()
 import time
+import urllib
 
 from flask_cors import CORS
 import routes
@@ -72,7 +72,7 @@ def bulk_search(request_body):
     print("\n\n BULK SEARCH EVENT \n\n")
     print("INITIATE BULK SEARCH")
 
-    BULK_SEARCH_URL = ANUVAAD_URL_HOST+ ANUVAAD_BULK_SEARCH_ENDPOINT
+    BULK_SEARCH_URL = urllib.parse.urljoin(ANUVAAD_URL_HOST, ANUVAAD_BULK_SEARCH_ENDPOINT)
 
     ROOM = request_body['room']
 
