@@ -350,7 +350,8 @@ class TranslatorService:
                                     translation_obj = json.loads(translation)
                                     if translation_obj["timestamp"] > tgt["timestamp"]:
                                         tgt = translation_obj
-                                log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) + " | NEW TGT: " + response["data"][0]["tgt"], translate_wf_input)
+                                log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) +
+                                         " | NEW TGT: " + tgt["tgt"], translate_wf_input)
                                 nmt_res_sentence["tgt"] = tgt
             if nmt_res_sentence["tmx_phrases"]:
                 log_info("PAGE NO: " + str(page_no) + " BATCH ID: " + nmt_res_sentence["batch_id"] + " | SRC: " + nmt_res_sentence["src"] +
