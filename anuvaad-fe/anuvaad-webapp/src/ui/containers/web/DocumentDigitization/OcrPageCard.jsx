@@ -74,7 +74,8 @@ class OcrPageCard extends React.Component {
                 key={region.identifier}
             >
 
-                {region['children'] &&
+                {
+                    region['children'] &&
                     region['children'].map(line => this.renderText(line, region))
                 }
             </div>
