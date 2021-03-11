@@ -105,7 +105,7 @@ def glossary_create():
     data = request.get_json()
     data["userID"] = request.headers["x-user-id"]
     response = service.glossary_create(data)
-    if response["status"] == "FAILED":
+    if "errorID" in response.keys():
         return jsonify(response), 400
     else:
         return jsonify(response), 200
@@ -115,7 +115,7 @@ def glossary_delete():
     service = TMXService()
     data = request.get_json()
     response = service.glossary_delete(data)
-    if response["status"] == "FAILED":
+    if "errorID" in response.keys():
         return jsonify(response), 400
     else:
         return jsonify(response), 200
@@ -125,7 +125,7 @@ def glossary_get():
     service = TMXService()
     data = request.get_json()
     response = service.glossary_get(data)
-    if response["status"] == "FAILED":
+    if "errorID" in response.keys():
         return jsonify(response), 400
     else:
         return jsonify(response), 200
