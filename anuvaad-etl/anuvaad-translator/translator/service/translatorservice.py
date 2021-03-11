@@ -343,8 +343,13 @@ class TranslatorService:
                 if response:
                     if 'data' in response.keys():
                         if response["data"]:
-                            log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) + " | NEW TGT: " + response["data"][0]["tgt"], translate_wf_input)
-                            nmt_res_sentence["tgt"] = response["data"][0]["tgt"]
+                            if response["data"][0]["value"]:
+                                tgt = response["data"][0]["value"][0]
+                                for translation in response["data"][0]["value"]:
+                                    if translation["timestamp"] > tgt["timestamp"]:
+                                        tgt = translation
+                                log_info("User Translation | TGT: " + str(nmt_res_sentence["tgt"]) + " | NEW TGT: " + response["data"][0]["tgt"], translate_wf_input)
+                                nmt_res_sentence["tgt"] = tgt
             if nmt_res_sentence["tmx_phrases"]:
                 log_info("PAGE NO: " + str(page_no) + " BATCH ID: " + nmt_res_sentence["batch_id"] + " | SRC: " + nmt_res_sentence["src"] +
                          " | TGT: " + nmt_res_sentence["tgt"] + " | TMX Count: " + str(len(nmt_res_sentence["tmx_phrases"])), translate_wf_input)
