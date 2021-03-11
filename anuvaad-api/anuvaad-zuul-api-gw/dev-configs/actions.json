@@ -383,6 +383,14 @@
             "active":true,
             "whiteList":false,
             "description":"API tokenise paragraphs from a text file"
+        },
+        {
+            "id":"4d987d15-c096-4367-aeaa-cb5052bd2032",
+            "uri":"/anuvaad-etl/notifier/v0/notifier/bulksearch",
+            "module":"ANUVAAD-NOTIFIER",
+            "active":true,
+            "whiteList":true,
+            "description":"API for notifier"
         }
     ]
 }
