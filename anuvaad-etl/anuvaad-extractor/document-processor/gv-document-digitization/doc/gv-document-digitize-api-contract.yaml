@@ -1,0 +1,314 @@
+openapi: 3.0.0
+info:
+  title: Anuvaad Google Vision Document Digitization
+  description: A python based microservice to trigger and orchestrate block level
+    information present in the given file
+  contact:
+    name: Naresh & Dhiraj, dhiraj.daga@tarento.com
+    email: naresh.kumar@tarento.com
+  version: 1.0.0
+servers:
+  - url: /api
+paths:
+  /v0/10/document-digitize:
+    post:
+      tags:
+        - GV Digitization
+      summary: API to digitize scanned documents.
+      requestBody:
+        content:
+          "*/*":
+            schema:
+              $ref: "#/components/schemas/Request"
+        required: true
+      responses:
+        "200":
+          description: On successful completion of the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/Response"
+        "400":
+          description: On input errors causing a failure in the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-codegen-request-body-name: filename
+components:
+  schemas:
+    Request:
+      type: object
+      properties:
+        inputs:
+          type: array
+          description: array of files
+          items:
+            $ref: "#/components/schemas/Input"
+    Input:
+      required:
+        - config
+        - file
+      type: object
+      properties:
+        file:
+          $ref: "#/components/schemas/File"
+        config:
+          $ref: "#/components/schemas/FileConfig"
+    Response:
+      type: object
+      properties:
+        output:
+          type: object
+          properties:
+            files:
+              type: array
+              description: a list of objets having file, file_config and pages
+              items:
+                type: object
+                properties:
+                  file:
+                    $ref: "#/components/schemas/File"
+                  file_config:
+                    $ref: "#/components/schemas/FileConfig"
+                  pages:
+                    type: array
+                    description: page level paragraph, line, word  and symbol information
+                    items:
+                      $ref: "#/components/schemas/Page"
+    File:
+      type: object
+      properties:
+        name:
+          type: string
+          description: name of input file
+        type:
+          type: string
+          description: type of input file
+        identifier:
+          type: string
+          description: unique identifier for a file
+    FileConfig:
+      type: object
+      properties:
+        language:
+          type: string
+          description: ISO 639-1  language code
+    Page:
+      type: object
+      properties:
+        identifier:
+          type: string
+          description: unique page identifier
+        width:
+          type: integer
+          description: page width
+        height:
+          type: integer
+          description: page height
+        path:
+          type: string
+          description: page image name
+        resolution:
+          type: integer
+          description: dpi of the page image
+        regions:
+          type: array
+          description: coordinates of extracted regions
+          items:
+            $ref: "#/components/schemas/Region"
+    Region:
+      type: object
+      properties:
+        boundingbox:
+          type: object
+          properties: {}
+          description: region coordinates extracted from google vision
+        identifier:
+          type: string
+          description: unique identifier for region
+          format: uuid4
+        class:
+          type: string
+          description: class of detected region
+          enum:
+            - PARA
+            - LINE
+            - IMAGE
+            - TABLE
+            - TABLE_CELL
+            - SEPARATOR
+            - MATHEMATICAL_FORMULA
+            - HEADER
+            - FOOTER
+        path:
+          type: string
+          description: optional placeholder to hold image path
+        regions:
+          type: array
+          description: coordinates and attributes of extracted lines
+          items:
+              oneOf:
+                - $ref: '#/components/schemas/Region'
+                - $ref: '#/components/schemas/DataRegion'
+    DataRegion:
+      type: object
+      properties:
+        boundingbox:
+          type: object
+          properties: {}
+          description: region coordinates extracted from google vision
+        identifier:
+          type: string
+          description: unique identifier for region
+          format: uuid4
+        language:
+          type: string
+          description: language of the extracted text
+        confidence:
+          type: number
+          description: confidence of the extracted text
+        class:
+          type: string
+          description: class of detected region
+          enum:
+            - WORD
+            - SYMBOL
+            - SUPERSCRIPT
+            - SUBSCRIPT
+        text:
+          type: string
+          description: collated text at region level or class specific metadata
+        font:
+          $ref: "#/components/schemas/Font"
+    Line:
+      type: object
+      properties:
+        boundingbox:
+          $ref: "#/components/schemas/Coordinates"
+        font:
+          $ref: "#/components/schemas/Font"
+        class:
+          type: string
+          description: line
+          enum:
+            - LINE
+        identifier:
+          type: string
+          description: unique identifier for line
+          format: uuid4
+        regions:
+          type: array
+          description: coordinates of extracted words
+          items:
+            $ref: "#/components/schemas/Word"
+    Word:
+      type: object
+      properties:
+        identifier:
+          type: string
+          description: unique identifier for word
+          format: uuid4
+        text:
+          type: string
+          description: extracted text
+        language:
+          type: string
+          description: language of the extracted word
+        confidence:
+          type: number
+          description: confidence of the extracted word
+        font:
+          $ref: "#/components/schemas/Font"
+        class:
+          type: string
+          description: word
+          enum:
+            - WORD
+        boundingbox:
+          $ref: "#/components/schemas/Coordinates"
+        regions:
+          type: array
+          description: coordinates of extracted symbols
+          items:
+            $ref: "#/components/schemas/Symbol"
+      description: v1.0 this object behaves like Region, however in v1.5 onward it behaves
+        like DataRegion object
+    Symbol:
+      type: object
+      properties:
+        identifier:
+          type: string
+          description: unique identifier for symbol
+        text:
+          type: string
+          description: extracted text
+        confidence:
+          type: number
+          description: confidence of the extracted symbol
+        language:
+          type: string
+          description: language of the extracted symbol
+        font:
+          $ref: "#/components/schemas/Font"
+        class:
+          type: string
+          description: word
+          enum:
+            - SYMBOL
+        boundingbox:
+          $ref: "#/components/schemas/Coordinates"
+    Coordinates:
+      type: object
+      properties:
+        top_left:
+          type: object
+          properties: {}
+          description: top left x,y co-ordinate of the bounding box
+        top_right:
+          type: object
+          properties: {}
+          description: top right x,y co-ordinate of the bounding box
+        bottom_right:
+          type: object
+          properties: {}
+          description: bottom right x,y co-ordinate of the bounding box
+        bottom_left:
+          type: object
+          properties: {}
+          description: bottom left x,y co-ordinate of the bounding box
+    Font:
+      type: object
+      properties:
+        family:
+          type: string
+          description: font family
+        size:
+          type: number
+          description: font size
+        style:
+          type: string
+          description: font style like BOLD, ITALIC, REGULAR
+          enum:
+            - BOLD
+            - ITALIC
+            - REGULAR
+    HttpOutput:
+      type: object
+      properties:
+        status:
+          type: number
+          description: Status code.
+    Error:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          description: request successful indicator.
+        why:
+          type: string
+          description: Response message.
+        http:
+          type: object
+          properties: {}
+          description: Final output of this process.
