@@ -61,19 +61,9 @@ def process_vision_ocr_kf():
             log_info('process_vision_ocr_kf - received message from kafka, dumping into internal queue', data)
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
             
-            #if input_files[0]['locale'] == 'en':
-                #############
-            ####################################
             Queue.put(data)
             log_info('process_vision_ocr_kf - request in internal queue {}'.format(Queue.qsize()),
                         data)
-            ########################################
-            # else:
-            #     blockMergerOCRQueue.put(data)
-            #     log_info('process_block_merger_kf - request in internal OCR queue {}'.format(blockMergerOCRQueue.qsize()), data)
-
-            # We should reject kafka request if internal queue size become too-much.
-            #
     
     except KafkaConsumerError as e:
         response_custom = {}
@@ -94,9 +84,7 @@ def vision_ocr_request_worker():
 
     while True:
         data            = Queue.get(block=True)
-        #################
         task_id         = str("vision_ocr" + str(time.time()).replace('.', ''))
-        ###################
         task_starttime  = str(time.time()).replace('.', '')
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
         

@@ -44,9 +44,7 @@ class Response(object):
                 app_context.application_context             = self.json_data
                 #debug_flush = True
                 if debug_flush == False:
-                    ############################
                     response = Service(app_context=app_context)
-                    ##############################
                     if response['code'] == 200:
                         
                         output_filename_json = file_ops.writing_json_file(i, response['rsp'], self.DOWNLOAD_FOLDER)
@@ -92,7 +90,7 @@ class Response(object):
 
     def nonwf_response(self):
         log_info("non workflow response started the response generation", app_context.application_context)
-        input_files = self.json_data['input']['inputs']
+        input_files = self.json_data['files']
         app_context.init()
         app_context.application_context = self.json_data
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
@@ -131,14 +129,5 @@ class Response(object):
             response = copy.deepcopy(response)
             return response
 
-    def multi_thred_block_merger(self,task_id, task_starttime,jobid):
-        thread = threading.current_thread().name
-        log_info("multi_thred_block_merger" + str(thread)+" | block-merger process started ===>",app_context.application_context)
-        file_value_response = self.workflow_response(task_id, task_starttime)
-        if "errorID" not in file_value_response.keys():
-            producer = Producer()
-            producer.push_data_to_queue(config.output_topic, file_value_response, jobid, task_id)
-
-        else:
-            log_info("process_merger_kf error send to error handler", app_context.application_context)
+    
         
