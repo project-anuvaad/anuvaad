@@ -29,6 +29,8 @@ import InteractiveTranslateAPI from "../../../../flux/actions/apis/document_tran
 import DictionaryAPI from '../../../../flux/actions/apis/document_translate/word_dictionary';
 import AddToGlossaryModal from './AddToGlossaryModal';
 import Modal from '@material-ui/core/Modal';
+import CreateGlossary from '../../../../flux/actions/apis/document_translate/create_glossary';
+
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
@@ -916,14 +918,51 @@ class SentenceCard extends React.Component {
                 open={this.state.openModal}
                 onClose={this.handleGlossaryModalClose}
             >
-                <AddToGlossaryModal handleClose={this.handleGlossaryModalClose} selectedWords={this.state.selectedSentence} />
+                <AddToGlossaryModal
+                    handleClose={this.handleGlossaryModalClose}
+                    selectedWords={this.state.selectedSentence}
+                    makeCreateGlossaryAPICall={(tgt) => this.makeCreateGlossaryAPICall(tgt)}
+                    loading={this.state.loading}
+                />
             </Modal>
         )
+    }
+
+    makeCreateGlossaryAPICall = (tgt) => {
+        let locale = `${this.props.model.source_language_code}|${this.props.model.target_language_code}`
+        this.setState({ loading: true })
+        let userProfile = JSON.parse(localStorage.getItem('userProfile'))
+        let apiObj = new CreateGlossary(userProfile.orgID, this.state.selectedSentence, tgt, locale, 'JUDICIARY')
+        fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            body: JSON.stringify(apiObj.getBody()),
+            headers: apiObj.getHeaders().headers
+        })
+            .then(async res => {
+                if (res.ok) {
+                    await this.processResponse(res, 'success')
+                } else {
+                    await this.processResponse(res, 'error')
+                }
+            })
     }
 
     handleGlossaryModalClose = () => {
         this.setState({ openModal: false })
     }
+
+    processResponse = async (res, variant) => {
+        let message
+        let response = await res.json().then(obj => {
+            message = obj.message
+        })
+        this.setState({ loading: false, showStatus: true, snackBarMessage: message, snackBarVariant: variant, openModal: false }, () => {
+            setTimeout(() => {
+                this.setState({ showStatus: false, snackBarMessage: null, snackBarVariant: '' })
+            }, 3000)
+        })
+    }
+
     render() {
         return (
             <div >

@@ -35,6 +35,7 @@ const endpoints = {
   tmx_upload: '/anuvaad-etl/translator/v1/tmx/bulk/create/xls-upload',
   add_org: '/anuvaad/user-mgmt/v1/org/upsert',
   fetch_organization: '/anuvaad/user-mgmt/v1/org/search',
+  create_glossary:'/anuvaad-etl/translator/v1/glossary/create'
 };
 
 export default endpoints;
