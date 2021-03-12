@@ -116,7 +116,7 @@ class Orientation:
         M[1, 2] += (nH / 2) - cY
 
         # perform the actual rotation and return the image
-        return cv2.warpAffine(image, M, (nW, nH))
+        return cv2.warpAffine(image, M, (nW, nH),flags=cv2.INTER_LANCZOS4)
 
     def re_orient(self):
         lang = 'hi'
