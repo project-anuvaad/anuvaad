@@ -69,16 +69,6 @@ class SaveSentenceResource(Resource):
                 except Exception as e:
                     log_exception("SaveSentenceResource",  AppContext.getContext(), e)
 
-
-            # sentence_ids = []
-            # for sentence in sentences:
-            #     sentence_ids.append(sentence['s_id'])
-            
-            # result  = sentenceRepo.get_sentence(user_id, sentence_ids)
-            # if result == False:
-            #     res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
-            #     return res.getresjson(), 400
-            # else:
             res = CustomResponse(Status.SUCCESS.value, sentences)
             return res.getres()
 
