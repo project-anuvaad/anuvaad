@@ -28,7 +28,7 @@ def get_text(path,page_dict,font_info):
         content = image_file.read()
     image = vision.types.Image(content=content)
     response = client.document_text_detection(image=image)
-    page_dict = get_document_bounds(response.full_text_annotation,page_dict,font_info)
+    page_dict,_ = get_document_bounds(response.full_text_annotation,page_dict,font_info)
     return page_dict
 
 
@@ -178,6 +178,7 @@ def get_words(words_lis,page,font_info):
 
 def get_document_bounds(response,page_dict,font_info):
     regions  =[]
+    gv_lines = []
     for i,page in enumerate(response.pages):
         for block in page.blocks:
             block_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}, "class":'PARA'}
@@ -192,12 +193,16 @@ def get_document_bounds(response,page_dict,font_info):
                 line_coord, line_text,words_lis = extract_line(paragraph)
                 lines = add_line(page_dict, line_coord, line_text,words_lis,page,font_info)
                 block_lines.extend(lines)
+                gv_lines.extend(lines)
+
             
             block_region['regions'] = block_lines
+
+
             regions.append(block_region)
     page_dict['regions'] = regions
 
-    return page_dict
+    return page_dict,gv_lines
 
 
     
