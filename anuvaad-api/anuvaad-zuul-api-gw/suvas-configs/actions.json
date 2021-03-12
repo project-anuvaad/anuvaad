@@ -185,6 +185,14 @@
             "description":"API to fetch TMX data through API"
         },
         {
+            "id":"753e2245-75d8-4d88-bb87-26874c184907",
+            "uri":"/anuvaad-etl/translator/v1/tmx/delete",
+            "module":"ANUVAAD-TRANSLATOR",
+            "active":true,
+            "whiteList":false,
+            "description":"API to delete TMX records"
+        },
+        {
             "id":"e5d0b999-a2bb-41af-a267-2494b15fb6a5",
             "uri":"/nmt-inference/v1/fetch-models",
             "module":"ANUVAAD-NMT",
