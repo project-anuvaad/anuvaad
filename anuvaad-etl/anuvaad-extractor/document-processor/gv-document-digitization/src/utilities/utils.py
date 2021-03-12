@@ -36,7 +36,7 @@ class FileOperation(object):
     # extracting data from received json input
     def json_input_format(self, json_data):
         try:
-            input_data = json_data['input']['inputs']
+            input_data = json_data['files']
             workflow_id = json_data['workflowCode']
             jobid = json_data['jobID']
             tool_name = json_data['tool']

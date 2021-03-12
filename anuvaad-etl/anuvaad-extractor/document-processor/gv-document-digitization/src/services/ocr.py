@@ -2,17 +2,16 @@ import uuid, os, io
 import config
 import sys
 from google.cloud import vision
-from src.services.segment import horzontal_merging, break_block
-from src.utilities.region_operations import merge_text, set_font_info
-from src.services.region_unifier import Region_Unifier
 import cv2
 from src.utilities.model_response import set_bg_image
 import src.utilities.app_context as app_context
+from anuvaad_auditor.loghandler import log_exception
+from anuvaad_auditor.loghandler import log_info
 
 
 
 
-region_unifier = Region_Unifier()
+
 
 client = vision.ImageAnnotatorClient()
 breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
@@ -108,7 +107,7 @@ def add_line(page_dict, line_coord, line_text,words_lis,page,font_info):
         #line_region["text"] = text
         line_region["class"] = 'LINE'
         word_region = get_words(words,page,font_info)
-        line_region["dataregions"] = word_region
+        line_region["regions"] = word_region
 
         lines.append(line_region)
     return lines
@@ -170,7 +169,7 @@ def get_words(words_lis,page,font_info):
             if len(page.property.detected_languages)!=0:
                 word_region["language"] = page.property.detected_languages[0].language_code
         symbols = get_symbol(word,page)
-        word_region['dataregions'] = symbols
+        word_region['regions'] = symbols
         word_regions.append(word_region)
     return word_regions
     
@@ -237,7 +236,7 @@ def mask_image(path, page_dict,page_index,file_properties,image_width,image_heig
                     region_lines = page_region['regions']
                     if region_lines!=None:
                         for line_index, line in enumerate(region_lines):
-                            region_words = line['dataregions']
+                            region_words = line['regions']
                             if region_words!=None:
                                 for region in region_words:
                                     row_top, row_bottom,row_left,row_right = end_point_correction(region, 2,image_height,image_width)

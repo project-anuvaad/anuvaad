@@ -22,7 +22,6 @@
 FROM anuvaadio/python-opencv-slim:2
 COPY / /app
 WORKDIR /app
-RUN apt install -y libspatialindex-dev python-rtree
 RUN pip install -r requirements.txt
 
 COPY start.sh /usr/bin/start.sh
