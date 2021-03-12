@@ -116,7 +116,7 @@ class Orientation:
         M[1, 2] += (nH / 2) - cY
 
         # perform the actual rotation and return the image
-        return cv2.warpAffine(image, M, (nW, nH))
+        return cv2.warpAffine(image, M, (nW, nH),flags=cv2.INTER_LANCZOS4)
 
     def re_orient(self):
         lang = 'hi'
@@ -131,12 +131,12 @@ class Orientation:
         rotations = 1
         # self.dump_out(lines,rotations)
         # Orientation correction
-        if config.ALIGN_MODE == 'FAST':
-            tolerance = 0.1
-        if config.ALIGN_MODE == 'ACCURATE':
-            tolerance = 0.05
+        # if config.ALIGN_MODE == 'FAST':
+        #     tolerance = 0.1
+        # if config.ALIGN_MODE == 'ACCURATE':
+        #     tolerance = 0.05
 
-        if (abs(angle) > tolerance) :
+        if  (abs(angle) <= 0.5) or (abs(angle) > 1.4): #(abs(angle) > tolerance) :
             self.image = self.rotate_bound(self.image, -angle)
 
             lines = detect_text_per_page([self.image], \

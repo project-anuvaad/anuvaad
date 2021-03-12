@@ -2,10 +2,8 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 import src.utilities.app_context as app_context
-#from src.services.get_underline import get_underline
-#from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
 import config,copy
-from src.utilities.request_parse import get_files, File,get_json
+from src.utilities.request_parse import get_files, File
 from src.utilities.pdf_to_image import doc_pre_processing
 from src.services.ocr import text_extraction
 
@@ -18,7 +16,6 @@ def process_input(app_context,base_dir) :
         
         for index,file in enumerate(files):
             file_output    = {"status":{}}
-            #file   = get_json(base_dir, file['file']['name'])[0]
             file_properties = File(file)
             if "page_info" in file.keys():
                 page_paths = file_properties.get_pages()
