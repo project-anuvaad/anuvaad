@@ -46,7 +46,7 @@ def text_extraction(file_properties,image_paths,file):
             font_info = file_properties.get_fontinfo()
             page_dict = {"identifier": str(uuid.uuid4()),"resolution": config.EXRACTION_RESOLUTION ,"path":image_path,"boundingBox":{"vertices":[]}}
             page_dict["boundingBox"]["vertices"]=  [{"x":0,"y":0},{"x":width,"y":0},{"x":width,"y":height},{"x":0,"y":height}]
-
+            page_dict['page_no'] = int(idx)
             if config.ALIGN:
                 page_output = Orientation(image_path,get_text).re_orient(page_dict,font_info)
             else:
