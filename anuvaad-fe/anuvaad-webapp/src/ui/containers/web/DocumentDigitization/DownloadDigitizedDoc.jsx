@@ -4,6 +4,7 @@ import { Textfit } from "react-textfit";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import DownloadFile from '../../../../flux/actions/apis/download/download_zip_file';
+import { confscore } from '../../../../utils/OcrConfScore';
 
 
 class DownloadDigitziedDoc extends React.Component {
@@ -16,6 +17,9 @@ class DownloadDigitziedDoc extends React.Component {
         this.action = null
     }
 
+    /**
+     * render Sentences
+     */
 
     renderChild = (region) => {
         let width = (region.boundingBox.vertices[1].x - region.boundingBox.vertices[0].x) + 'px'
@@ -44,53 +48,66 @@ class DownloadDigitziedDoc extends React.Component {
 
     renderText = (line, region) => {
         return (
-            <div
-                key={line.identifier}
-            >
+            <div key={region.identifier}>
                 {
-                    line['children'].map(word => {
-                        return this.renderTextSpan(word, line, region)
-                    })
 
+                    line.children.map(word => this.renderTextSpan(word, line, region))
                 }
             </div>
         )
     }
 
-    renderTextSpan = (word, line, region) => {
-        if (line.class === "CELL") {
-            return (<div
+    renderTable = (word, region) => {
+        return (
+            <div
                 style={{
                     position: "absolute",
                     zIndex: this.action === word.identifier ? 100000 : 2,
-                    color: word.conf < this.props.percent ? 'red' : 'black',
-                    fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
+                    fontSize: this.props.fontSize + 'px',
                     top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
-                }} key={word.identifier}
+                }
+                }
+                key={word.identifier}
             >
-                <Textfit mode="single" min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
-                    {word.text}
-                </Textfit>
-            </div>
-            )
+                {
+                    <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(this.props.fontSize))} >
+                        {
+                            word.text
+                        }
+                    </Textfit>
+                }
+            </div >
+        )
+    }
+
+    renderTextSpan = (word, line, region) => {
+        if (line.class === "CELL") {
+            line.children.map(word => this.renderTable(word, region))
         }
         return (
             <div
                 style={{
                     position: "absolute",
-                    zIndex: 2,
-                    fontSize: word.font && parseInt(Math.ceil(word.font.size)) + 'px',
-                    top: line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    zIndex: this.action === word.identifier ? 100000 : 2,
+                    fontSize: this.props.fontSize + 'px',
+                    fontFamily: word.font && word.font.family,
+                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                 }}
-                id={word.identifier}
+                key={line.identifier}
             >
-                <Textfit mode="single" style={{ width: '100%' }} min={1} max={word.font && parseInt(Math.ceil(word.font.size))} >
-                    {word.text}
-                </Textfit>
+
+                {
+                    <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(this.props.fontSize))}>
+                        {
+                            word.text
+                        }
+                    </Textfit>
+                }
+
             </div>
         )
     }
@@ -162,12 +179,12 @@ class DownloadDigitziedDoc extends React.Component {
                 <div>
                     <Paper elevation={2} style={{ position: 'relative', width: width, height: height }}>
                         {page['regions'].map(region => this.renderChild(region))}
-                        {page['regions'].map(region => {
+                        {/* {page['regions'].map(region => {
                             if (region.class === 'BGIMAGE') {
                                 return this.renderImage(region.data, region)
                             }
                         })
-                        }
+                        } */}
                     </Paper>
                     <Divider />
                 </div>
@@ -183,6 +200,7 @@ class DownloadDigitziedDoc extends React.Component {
 const mapStateToProps = state => ({
     document_contents: state.document_contents,
     block_page: state.block_highlight.page_no,
+    fontSize: state.fetch_slider_pixel.percent
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

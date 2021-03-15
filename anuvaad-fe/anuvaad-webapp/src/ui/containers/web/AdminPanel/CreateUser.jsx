@@ -297,7 +297,7 @@ class CreateUser extends React.Component {
                     });
                   })
                   setTimeout(async () => {
-                    history.push(`${process.env.PUBLIC_URL}/user-details/0`);
+                    history.push(`${process.env.PUBLIC_URL}/user-details`);
                   }, 3000)
                 } else {
                   if (res.status === 400) {

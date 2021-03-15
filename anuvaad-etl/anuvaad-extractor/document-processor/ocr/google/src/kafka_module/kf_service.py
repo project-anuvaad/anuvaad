@@ -18,7 +18,7 @@ import threading, queue
 import config
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 ####################
-Queue    = queue.Queue()
+processQueue    = queue.Queue()
 controlQueue  = queue.Queue()
 controlQueue.put(1)
 
@@ -76,7 +76,7 @@ def process_vision_ocr_kf():
                 #if input_files[0]['locale'] == 'en':
                     #############
                 ####################################
-                Queue.put(data)
+                processQueue.put(data)
                 log_info('process_vision_ocr_kf - request in internal queue {}'.format(Queue.qsize()),
                             data)
                 break
@@ -107,7 +107,7 @@ def vision_ocr_request_worker():
     log_info("vision_ocr_request_worker : starting thread ", LOG_WITHOUT_CONTEXT)
 
     while True:
-        data            = Queue.get(block=True)
+        data            = processQueue.get(block=True)
         #################
         task_id         = str("vision_ocr" + str(time.time()).replace('.', ''))
         ###################
@@ -129,7 +129,7 @@ def vision_ocr_request_worker():
 
             log_info('vision_ocr_request_worker - request in internal queue {}'.format(Queue.qsize()), data)
 
-            Queue.task_done()
+            processQueue.task_done()
         except Exception as e:
             log_exception("vision_ocr_request_worker ",  LOG_WITHOUT_CONTEXT, e)
 

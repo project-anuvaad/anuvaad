@@ -40,7 +40,7 @@ CONSUMER_GROUP_identifier    = 'KAFKA_ANUVAAD_ETL_WD_CONSUMER_GRP'
 CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 #folders and file path
 #download_folder = 'upload'
-
+KAFKA_ANUVAAD_ETL_WF_ERROR_TOPIC='anuvaad-etl-wf-errors-v1'
 
 
 
@@ -53,6 +53,15 @@ logging.basicConfig(
 )
 
 EXRACTION_RESOLUTION = 300
+
+
+##########################################################################
+#Alignment
+ALIGN = True
+ALIGN_MODE= 'FAST'
+
+
+###########################################################################
 
 CRAFT_MODEL_PATH=  './src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
 CRAFT_REFINE_MODEL_PATH =  './src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth'

@@ -63,13 +63,14 @@ class UserDetails extends React.Component {
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('user-details');
     this.setState({ showLoader: true, })
-    if (parseInt(this.props.match.params.pageno) === 0)
-      this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
-    else {
-      let pageNo = parseInt(this.props.match.params.pageno)
-      this.processFetchBulkUserDetailAPI(this.state.offset, (pageNo + 1) * 10)
-      this.setState({ currentPageIndex: pageNo, offset: (pageNo + 1) * 10 })
-    }
+    this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+    // if (parseInt(this.props.match.params.pageno) === 0)
+    //   this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+    // else {
+    //   let pageNo = parseInt(this.props.match.params.pageno)
+    //   this.processFetchBulkUserDetailAPI(this.state.offset, (pageNo + 1) * 10)
+    //   this.setState({ currentPageIndex: pageNo, offset: (pageNo + 1) * 10 })
+    // }
   }
 
   componentDidUpdate(prevProps) {
@@ -152,7 +153,7 @@ class UserDetails extends React.Component {
 
   processTableClickedNextOrPrevious = (page) => {
     if (this.state.currentPageIndex < page) {
-      history.push(`${process.env.PUBLIC_URL}/user-details/${page}`)
+      history.push(`${process.env.PUBLIC_URL}/user-details`)
       this.processFetchBulkUserDetailAPI((this.state.currentPageIndex + 1) * 10, this.state.limit, true, false)
       this.setState({
         currentPageIndex: page,
@@ -160,7 +161,7 @@ class UserDetails extends React.Component {
       });
     }
     else {
-      history.push(`${process.env.PUBLIC_URL}/user-details/${page}`)
+      history.push(`${process.env.PUBLIC_URL}/user-details`)
     }
   }
   processSnackBar = () => {
@@ -284,7 +285,7 @@ class UserDetails extends React.Component {
         label: translate("common.page.label.email"),
         options: {
           filter: false,
-          sort: false,
+          sort: true,
         }
       },
       {
@@ -292,7 +293,7 @@ class UserDetails extends React.Component {
         label: translate("common.page.label.role"),
         options: {
           filter: false,
-          sort: false,
+          sort: true,
         }
       },
 
@@ -309,7 +310,7 @@ class UserDetails extends React.Component {
         label: translate("common.page.label.timeStamp"),
         options: {
           filter: true,
-          sort: false,
+          sort: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
               return (
@@ -374,27 +375,26 @@ class UserDetails extends React.Component {
         },
         options: { sortDirection: 'desc' }
       },
-      onTableChange: (action, tableState) => {
-        switch (action) {
-          case 'changePage':
-            this.processTableClickedNextOrPrevious(tableState.page)
-            break;
-          default:
-        }
-      },
+      // onTableChange: (action, tableState) => {
+      //   switch (action) {
+      //     case 'changePage':
+      //       this.processTableClickedNextOrPrevious(tableState.page)
+      //       break;
+      //     default:
+      //   }
+      // },
       count: this.props.count,
-      rowsPerPageOptions: [10],
+      rowsPerPageOptions: [10,20,50],
       filterType: "checkbox",
       download: false,
       print: false,
       fixedHeader: true,
       filter: false,
-      selectableRows: "none",
-      page: parseInt(this.props.match.params.pageno)
+      selectableRows: "none"
     };
 
     return (
-      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
+      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight-10, overflow: "auto" }}>
 
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <ToolBar />

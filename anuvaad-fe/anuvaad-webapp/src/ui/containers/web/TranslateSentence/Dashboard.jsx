@@ -59,8 +59,8 @@ class Dashboard extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.fetch_models.models != this.props.fetch_models.models) {
       this.setState({
-        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models),
-        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models)
+        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
+        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true)
       })
     }
   }
@@ -115,7 +115,7 @@ class Dashboard extends React.Component {
 
   processTranslateButtonPressed() {
       this.setState({ showStatus: true, message: "Fetching translation..." })
-      let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
+      let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code, true)
 
       this.makeAPICallInteractiveTranslation(this.state.text, modelId.model_id)
       // this.makeAPICallAutoML(this.state.text, this.state.source_language_code, this.state.target_language_code)
@@ -123,7 +123,7 @@ class Dashboard extends React.Component {
 
   processSourceLanguageSelected = (event) => {
     this.setState({ source_language_code: event.target.value })
-    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value)
+    const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value, true)
     this.setState({
       target_languages: languages
     })

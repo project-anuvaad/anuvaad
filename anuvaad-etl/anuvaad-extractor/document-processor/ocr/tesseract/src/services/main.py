@@ -105,10 +105,17 @@ def TesseractOCR(app_context,base_dir= config.BASE_DIR):
     log_debug('tesseract ocr process starting {}'.format(app_context.application_context), app_context.application_context)
     try:
         response   = process_info(app_context,base_dir)
-        return {
-                'code': 200,
-                'message': 'request completed',
-                'rsp': response
+        if response!=None:
+            return {
+                    'code': 200,
+                    'message': 'request completed',
+                    'rsp': response
+                    }
+        else:
+            return {
+                'code': 400,
+                'message': 'Error occured during tesseract ocr',
+                'rsp': None
                 }
     except Exception as e:
         log_exception("Error occured during tesseract ocr  ",  app_context.application_context, e)
