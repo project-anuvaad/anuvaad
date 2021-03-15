@@ -8,6 +8,9 @@ HOST = '0.0.0.0'
 PORT = 5001
 BASE_DIR      = 'upload'
 #BASE_DIR      = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/gv-document-digitization/upload'
+download_folder = 'upload'
+
+
 
 ENABLE_CORS = False
 
@@ -83,7 +86,6 @@ CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER
 # CONSUMER_GROUP_default       = 'anuvaad-etl-gvocr-consumer-group'
 # CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_GVOCR_CONSUMER_GROUP_V1'
 # CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
-# download_folder = 'upload'
 #
 #
 # logging.basicConfig(
