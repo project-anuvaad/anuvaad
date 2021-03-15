@@ -20,4 +20,4 @@ class CreateModel(Document):
     target_language_code = StringField(required=True,choices=source)
     target_language_name = StringField(required = True,Max_length=30)
     description = StringField()
-    status = StringField(required = True,Max_length=20)
+    status = StringField(required = True,Max_length=20,choices = ['ACTIVE','INACTIVE'])
