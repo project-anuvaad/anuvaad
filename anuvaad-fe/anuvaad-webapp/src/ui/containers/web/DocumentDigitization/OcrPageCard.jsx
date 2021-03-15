@@ -75,8 +75,8 @@ class OcrPageCard extends React.Component {
             >
 
                 {
-                    region['children'] &&
-                    region['children'].map(line => this.renderText(line, region))
+                    region['regions'] &&
+                    region['regions'].map(line => this.renderText(line, region))
                 }
             </div>
         );
@@ -95,7 +95,7 @@ class OcrPageCard extends React.Component {
                 }}
                 key={line.identifier}>
                 {
-                    line.children.map(word => line.class !== 'CELL' ?
+                    line.regions.map(word => line.class !== 'CELL' ?
                         this.renderTextSpan(word, region) :
                         this.renderTable(word, line)
                     )
@@ -133,7 +133,7 @@ class OcrPageCard extends React.Component {
             <div
                 style={{
                     position: "absolute",
-                    fontSize: `min(max(${region.avg_size}px),${this.props.fontSize}px)`,
+                    fontSize: `max(min(${word.font.avg_size }px),${this.props.fontSize}px)`,
                     top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
@@ -293,8 +293,8 @@ class OcrPageCard extends React.Component {
 
     renderPage = (page, image) => {
         if (page) {
-            let width = page['vertices'] && page.vertices[1].x - page.vertices[0].x + 'px'
-            let height = page['vertices'] && page.vertices[2].y - page.vertices[0].y + 'px'
+            let width = page['boundingBox'] && page.boundingBox.vertices[1].x - page.boundingBox.vertices[0].x + 'px'
+            let height = page['boundingBox'] && page.boundingBox.vertices[2].y - page.boundingBox.vertices[0].y + 'px'
             return (
                 <div>
                     <Paper elevation={2} style={{ position: 'relative', width: width, height: height }}>

@@ -573,7 +573,7 @@ class DocumentEditor extends React.Component {
             )
         }
 
-        let style = "@page { size: " + pages[0].vertices[1].x + "px " + pages[0].vertices[2].y + "px; margin:0pt; width: 100%; height:100%;font-family: 'Mangal'; } "
+        let style = "@page { size: " + pages[0].boundingBox.vertices[1].x + "px " + pages[0].boundingBox.vertices[2].y + "px; margin:0pt; width: 100%; height:100%;font-family: 'Mangal'; } "
         return (
             <Grid item xs={12} sm={12} lg={12} xl={12}
             >
