@@ -90,6 +90,14 @@ LANGUAGE_LINE_THRESOLDS ={
 
 
 
+##########################################################################
+#Alignment
+ALIGN = True
+ALIGN_MODE= 'FAST'
+
+
+###########################################################################
+
 
 WATERMARK_THRESHOLD_LOW = 175
 WATERMARK_THRESHOLD_HIGH = 250
