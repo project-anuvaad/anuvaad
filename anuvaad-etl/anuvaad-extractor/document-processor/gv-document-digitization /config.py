@@ -28,7 +28,7 @@ bootstrap_server    = os.environ.get(kafka_ip_host, kf_local_server)
 TASK_STAT           = 'GV-DOCUMENT-DIGITIZATION'
 
 CONSUMER_GROUP_default       = 'anuvaad-etl-gv-document-digitization-consumer-group'
-CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_TESS_CONSUMER_GROUP_V1'
+CONSUMER_GROUP_identifier    = 'ANUVAAD_ETL_GV_DOCUMENT_DIGITIZATION_CONSUMER_GROUP_V1'
 CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER_GROUP_default)
 # API_URL_PREFIX = "/anuvaad-etl/document-processor/ocr/google-vision"
 # HOST = '0.0.0.0'
@@ -67,3 +67,15 @@ download_folder = 'upload'
 #     datefmt="%d/%m/%y %H:%M:%S",
 # )
 EXRACTION_RESOLUTION  =  300
+
+
+
+CLEAN_BACKGROUND = False
+
+##########################################################################
+#Alignment
+ALIGN = True
+ALIGN_MODE= 'FAST'
+
+
+###########################################################################

@@ -18,7 +18,7 @@ class Orientation:
         self.text = {}
         self.lang = lang
 
-        self.re_orient()
+        #self.re_orient()
 
 
 
@@ -69,30 +69,7 @@ class Orientation:
 
         return angle * np.sign(box_dir[1])
 
-    # def check_orientation(self, group_cordinates, margin=5):
-    #     upside_down = False
-    #     orientation = []
-    #     for index, block in enumerate(group_cordinates):
-    #         crop = self.image[block[0][1] - margin: block[1][1] + margin,
-    #                block[0][0] - margin: block[1][0] + margin]
-    #         try:
-    #             osd = pytesseract.image_to_osd(crop)
-    #             angle = osd.split('\nRotate')[0].split(': ')[-1]
-    #             orientation.append(int(angle))
-    #         except:
-    #             pass
-    #     orientation = np.array(orientation)
-    #     chk_orientation = orientation > 170
-    #
-    #     # Taking vote of regions
-    #     if chk_orientation.sum() > (len(orientation) * 0.5):
-    #         # print ('Image is upside down')
-    #         upside_down = True
-    #         return upside_down
-    #
-    #     return upside_down
-    #
-    #
+
 
     def rotate_bound(self, image, angle):
         # grab the dimensions of the image and then determine the
@@ -128,15 +105,8 @@ class Orientation:
 
         angle = self.get_rotaion_angle(lines)
         print("Angle of tilt detected {} ".format(angle))
-        rotations = 1
-        # self.dump_out(lines,rotations)
-        # Orientation correction
-        # if config.ALIGN_MODE == 'FAST':
-        #     tolerance = 0.1
-        # if config.ALIGN_MODE == 'ACCURATE':
-        #     tolerance = 0.05
 
-        if  (abs(angle) <= 0.5) or (abs(angle) > 1.4): #(abs(angle) > tolerance) :
+        if abs(angle) > 0.1:
             self.image = self.rotate_bound(self.image, -angle)
 
             lines = detect_text_per_page([self.image], \
@@ -146,22 +116,15 @@ class Orientation:
                                          link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
             angle = self.get_rotaion_angle(lines)
             print("Angle of tilt after correction {} ".format(angle))
-            rotations += 1
-            # self.dump_out(east_cor,rotations)
-        cv2.imwrite(self.image_path, self.image)
+            cv2.imwrite(self.image_path, self.image)
+
         words = detect_text_per_page([self.image], \
                                      network=False, \
                                      text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
                                      low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
                                      link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
-        # if config.ALIGN_MODE not "FAST":
-        #     upside_down = self.check_orientation(bbox1.gr_cordinates)
 
         return words, lines
-
-
-
-
 
     #
     # def re_orient(self):
@@ -217,6 +180,29 @@ class Orientation:
     #     return words, lines
     #
 
-
+  # def check_orientation(self, group_cordinates, margin=5):
+    #     upside_down = False
+    #     orientation = []
+    #     for index, block in enumerate(group_cordinates):
+    #         crop = self.image[block[0][1] - margin: block[1][1] + margin,
+    #                block[0][0] - margin: block[1][0] + margin]
+    #         try:
+    #             osd = pytesseract.image_to_osd(crop)
+    #             angle = osd.split('\nRotate')[0].split(': ')[-1]
+    #             orientation.append(int(angle))
+    #         except:
+    #             pass
+    #     orientation = np.array(orientation)
+    #     chk_orientation = orientation > 170
+    #
+    #     # Taking vote of regions
+    #     if chk_orientation.sum() > (len(orientation) * 0.5):
+    #         # print ('Image is upside down')
+    #         upside_down = True
+    #         return upside_down
+    #
+    #     return upside_down
+    #
+    #
 
 

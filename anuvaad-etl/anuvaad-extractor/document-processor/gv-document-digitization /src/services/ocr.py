@@ -7,7 +7,8 @@ from src.utilities.model_response import set_bg_image
 import src.utilities.app_context as app_context
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_info
-
+from src.utilities.tilt_alignment import Orientation
+import config
 
 
 
@@ -19,27 +20,39 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 def get_text(path,page_dict,font_info):
     #path = "/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/gv-document-digitization/"+path
     
-    img = cv2.imread(path)
-    img[175 < img ] = 255
-    masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
-    cv2.imwrite(masked_path,img)
+
+    if config.CLEAN_BACKGROUND :
+        img = cv2.imread(path)
+        img[175 < img ] = 255
+        masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
+        cv2.imwrite(masked_path,img)
+    else:
+        masked_path = path
+
     with io.open(masked_path, 'rb') as image_file:
         content = image_file.read()
     image = vision.types.Image(content=content)
     response = client.document_text_detection(image=image)
-    page_dict,_ = get_document_bounds(response.full_text_annotation,page_dict,font_info)
-    return page_dict
+    page_dict,page_lines = get_document_bounds(response.full_text_annotation,page_dict,font_info)
+    return page_dict,page_lines
 
 
 def text_extraction(file_properties,image_paths,file):
     try:
         page_res = []
-        width, height = file_properties.get_pageinfo(0,image_paths[0])
+
         for idx,image_path in enumerate(image_paths):
+            width, height = file_properties.get_pageinfo(idx, image_paths[idx])
             font_info = file_properties.get_fontinfo()
             page_dict = {"identifier": str(uuid.uuid4()),"resolution": config.EXRACTION_RESOLUTION ,"path":image_path,"boundingBox":{"vertices":[]}}
             page_dict["boundingBox"]["vertices"]=  [{"x":0,"y":0},{"x":width,"y":0},{"x":width,"y":height},{"x":0,"y":height}]
-            page_output = get_text(image_path,page_dict,font_info)
+
+            if config.ALIGN:
+                page_output = Orientation(image_path,get_text).re_orient(page_dict,font_info)
+            else:
+                page_output,_ = get_text(image_path,page_dict,font_info)
+
+
             save_path = mask_image(image_path, page_output, idx, file_properties, width, height)
             page_output = set_bg_image(page_output, save_path, idx)
             page_res.append(page_output)
@@ -99,7 +112,7 @@ def extract_line(paragraph):
 
     return line_coord, line_text,words_lis
 
-def add_line(page_dict, line_coord, line_text,words_lis,page,font_info):
+def add_line(line_coord, line_text,words_lis,page,font_info):
     lines = []
     for coord, text,words in zip(line_coord, line_text,words_lis):
         line_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}}
@@ -190,7 +203,7 @@ def get_document_bounds(response,page_dict,font_info):
             block_lines = []
             for paragraph in block.paragraphs:
                 line_coord, line_text,words_lis = extract_line(paragraph)
-                lines = add_line(page_dict, line_coord, line_text,words_lis,page,font_info)
+                lines = add_line(line_coord, line_text,words_lis,page,font_info)
                 block_lines.extend(lines)
                 gv_lines.extend(lines)
 
