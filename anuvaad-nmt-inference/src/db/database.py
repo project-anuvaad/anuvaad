@@ -10,6 +10,7 @@ def connectmongo():
     try:
         # dbs = connect(db = 'nmt-inference',host='localhost', port=27017)
         dbs = connect(db = config.DB_NAME, host=config.MONGO_SERVER_URL)
+        log_info('***********Mongo Connected*************** ', MODULE_CONTEXT)
     except Exception as e:
         log_exception("cannot connect to database: {}".format(e),MODULE_CONTEXT,e)
         status = Status.SYSTEM_ERR.value
