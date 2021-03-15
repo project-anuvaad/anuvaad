@@ -18,7 +18,7 @@ export const init = () => {
       env: "DEV",
       did: "20d63257084c2dca33f31a8f14d8e94c0d939de4",
       channel: 'developers.anuvaad.org',
-      batchsize: 1,
+      batchsize: 0,
       endpoint: "/v1/telemetry",
       apislug: "/anuvaad-telemetry",
     }
@@ -33,7 +33,7 @@ export const init = () => {
       env: "PROD",
       did: "20d63257084c2dca33f31a8f14d8e94c0d939de4",
       channel: CONFIGS.BASE_URL_AUTO.replace(/(^\w+:|^)\/\//, ''),
-      batchsize: 1,
+      batchsize: 0,
       endpoint: "/v1/telemetry",
       apislug: "/anuvaad-telemetry",
     }
