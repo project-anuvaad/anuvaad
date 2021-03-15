@@ -2,10 +2,11 @@ from mongoengine import *
 import datetime
 import uuid
 from flask import  request, jsonify
+import config
 
 class CreateModel(Document):
 
-    meta = {'collection': 'nmt1'}
+    meta = {'collection': config.MONGO_NMT_MODELS_COLLECTION}
 
     source = ['en','hi','mr','ta','te','kn','gu','pa','bn','ml','as','brx','doi','ks','kok','mai','mni','ne','or','sd','si','ur','sat']
 

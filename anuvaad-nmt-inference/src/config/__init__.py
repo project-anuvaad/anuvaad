@@ -23,3 +23,9 @@ FETCH_MODEL_CONFG = os.path.join(APP_BASE_PATH, 'config/fetch_models.json')
 
 ## LaBSE model path
 LABSE_PATH = os.path.join(APP_BASE_PATH, 'available_nmt_models/sbert.net_models_LaBSE')
+
+## DB details
+# MONGO_SERVER_URL = os.environ.get('MONGO_CLUSTER_URL', 'localhost:27017')
+MONGO_SERVER_URL = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://172.30.0.173:27017,172.30.0.176:27017/?replicaSet=devrs')
+DB_NAME = os.environ.get('MONGO_NMT_DB', 'anvaad-nmt-inference')
+MONGO_NMT_MODELS_COLLECTION = os.environ.get('MONGO_NMT_MODELS_COLLECTION', 'anvaad-nmt-models')
