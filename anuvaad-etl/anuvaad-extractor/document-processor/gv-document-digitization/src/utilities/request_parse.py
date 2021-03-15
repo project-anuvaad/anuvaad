@@ -60,7 +60,7 @@ class File:
 
 def get_files(application_context):
     #files = copy.deepcopy(application_context['input']['files'])
-    files = copy.deepcopy(application_context['files'])
+    files = copy.deepcopy(application_context['input']['inputs'])
     return files
 
 
