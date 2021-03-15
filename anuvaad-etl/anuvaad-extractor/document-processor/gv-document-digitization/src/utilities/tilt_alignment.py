@@ -3,7 +3,7 @@
 
 import cv2
 import config
-import imutils
+#import imutils
 import pandas as pd
 import numpy as np
 
@@ -34,6 +34,7 @@ class Orientation:
     def augment_df(self,line_list):
         dic = []
         for i,box in enumerate(line_list):
+            #print(box)
             vertices = box["boundingBox"]["vertices"]
             dic.append({'x1': vertices[0]['x'] ,'y1': vertices[0]['y'] ,'x2': vertices[1]['x'] ,'y2': vertices[1]['y'] ,'x3': vertices[2]['x'] ,'y3': vertices[2]['y'] ,'x4': vertices[3]['x'] ,'y4': vertices[3]['y']})
         

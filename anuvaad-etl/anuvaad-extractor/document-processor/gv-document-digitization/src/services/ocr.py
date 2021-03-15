@@ -114,6 +114,7 @@ def extract_line(paragraph):
 
 def add_line(line_coord, line_text,words_lis,page,font_info):
     lines = []
+    wors  = []
     for coord, text,words in zip(line_coord, line_text,words_lis):
         line_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}}
         line_region["boundingBox"]["vertices"] = coord
@@ -121,9 +122,11 @@ def add_line(line_coord, line_text,words_lis,page,font_info):
         line_region["class"] = 'LINE'
         word_region = get_words(words,page,font_info)
         line_region["regions"] = word_region
+        wors.extend(word_region)
+        #print(word_region)
 
         lines.append(line_region)
-    return lines
+    return lines,wors
 def get_symbol(words,page):
     symbols = []
     for symbol in words.symbols:
@@ -203,9 +206,9 @@ def get_document_bounds(response,page_dict,font_info):
             block_lines = []
             for paragraph in block.paragraphs:
                 line_coord, line_text,words_lis = extract_line(paragraph)
-                lines = add_line(line_coord, line_text,words_lis,page,font_info)
+                lines,words = add_line(line_coord, line_text,words_lis,page,font_info)
                 block_lines.extend(lines)
-                gv_lines.extend(lines)
+                gv_lines.extend(words)
 
             
             block_region['regions'] = block_lines
