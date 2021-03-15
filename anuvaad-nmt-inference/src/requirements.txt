@@ -13,3 +13,6 @@ sentencepiece==0.1.81
 OpenNMT-py==1.0.0
 sentence-transformers==0.3.8
 sacremoses==0.0.43
+pymongo==3.11.3
+dateutils==0.6.12
+mongoengine==0.23.0

@@ -1,0 +1,290 @@
+swagger: "2.0"
+info:
+  version: 2.0.0
+  title: Anuvaad NMT Models API Contract
+  description: API to CRUD Operations of all available nmt models for inference generation along with their respective details
+  contact:
+    name: Kumar Deepak
+    email: kumar.deepak@tarento.com
+
+schemes:
+  - https
+produces:
+  - application/json  
+
+basePath: /nmt-inference
+
+paths: 
+  /v1/create-models:
+    post:
+      summary: REST API of Createing nmt models information.
+      description: POST api to store information into database model id, source and target language information which store in databse etc
+      parameters:
+         - in: body
+           name: Create Model
+           required: true
+           description: Create Operation of the Model.
+           
+           schema:
+            $ref: '#/definitions/nmt_input'
+            
+      tags:
+      - nmt-create-models
+
+      responses:
+        200:
+          description: On successful completion of the task.
+          schema:
+            $ref: '#/definitions/nmt_response'
+        401:
+          description: incorrect input data
+          schema:
+            $ref: '#/definitions/error_status'
+        404:
+          description: missing input data
+          schema:
+            $ref: '#/definitions/error_status'
+        500:
+          description: interal server/model error
+          schema:
+            $ref: '#/definitions/error_status'
+            
+  /v1/update-models/<string:id>:
+    post:
+      summary: REST API of updating existing nmt models information.
+      description: POST api to store information into database model id, source and target language information which store in databse etc
+      parameters:
+         - in: body
+           name: Update Model
+           required: false
+           description: Update Operation of the Model.
+           
+           schema:
+            $ref: '#/definitions/nmt_input'
+            
+      tags:
+      - nmt-update-models
+
+      responses:
+        200:
+          description: On successful completion of the task.
+          schema:
+            $ref: '#/definitions/nmt_response'
+        401:
+          description: incorrect input data
+          schema:
+            $ref: '#/definitions/error_status'
+        404:
+          description: missing input data
+          schema:
+            $ref: '#/definitions/error_status'
+        500:
+          description: interal server/model error
+          schema:
+            $ref: '#/definitions/error_status'  
+            
+  /v1/delete-models/<string:id>:
+    post:
+      summary: REST API to delete single model of nmt models information.
+      description: POST api to delete single model
+            
+      tags:
+      - nmt-delete-single-models
+
+      responses:
+        200:
+          description: On successful completion of the task.
+          schema:
+            $ref: '#/definitions/nmt_response_delete'
+        401:
+          description: incorrect input data
+          schema:
+            $ref: '#/definitions/error_status'
+        404:
+          description: missing input data
+          schema:
+            $ref: '#/definitions/error_status'
+        500:
+          description: interal server/model error
+          schema:
+            $ref: '#/definitions/error_status' 
+            
+  /v2/fetch-models:
+    get:
+      summary: REST API of Fetch nmt models information.
+      description: GET api to outputs the nmt model information like their model id, source and target language information etc
+            
+      tags:
+      - nmt-fetch-models
+
+      responses:
+        200:
+          description: On successful completion of the task.
+          schema:
+            $ref: '#/definitions/nmt_response'
+        401:
+          description: incorrect input data
+          schema:
+            $ref: '#/definitions/error_status'
+        404:
+          description: missing input data
+          schema:
+            $ref: '#/definitions/error_status'
+        500:
+          description: interal server/model error
+          schema:
+            $ref: '#/definitions/error_status'    
+            
+  /v1/fetch-single-models/<string:id>:
+    get:
+      summary: REST API of fetch single model of nmt models information.
+      description: GET api to outputs the nmt model information like their model id, source and target language information etc
+            
+      tags:
+      - nmt-fetch-single-models
+
+      responses:
+        200:
+          description: On successful completion of the task.
+          schema:
+            $ref: '#/definitions/nmt_response'
+        401:
+          description: incorrect input data
+          schema:
+            $ref: '#/definitions/error_status'
+        404:
+          description: missing input data
+          schema:
+            $ref: '#/definitions/error_status'
+        500:
+          description: interal server/model error
+          schema:
+            $ref: '#/definitions/error_status'    
+  
+  
+
+definitions:
+
+
+  nmt_input:
+    type: array
+    description: Create Operation of the Model.
+    items:
+      properties:
+          description:
+            type: string
+            description: model description  
+          is_primary:
+            type: boolean
+            description: whether the model is primary/main model for given language pair(decides for document translation)  
+          model_id:
+            type: integer
+            description: model id of the model 
+          model_name:
+            type: string
+            description: name of the model
+          source_language_code:
+            type: string
+            description: ISO 639-2 language code of the source language
+          source_language_name:
+            type: string
+            description: name of the source language  
+          target_language_code:
+            type: string
+            description: ISO 639-2 language code of the target language
+          target_language_name:
+            type: string
+            description: name of the target language 
+          status:
+            type: string
+            description: whether the model is ACTIVE or INACTIVE  
+            enum:
+              - "ACTIVE"
+              - "INACTIVE"
+ 
+ 
+  nmt_response:
+    type: object
+    properties:        
+      response_body:
+        type: array
+        description: A list of models and their details
+        items:
+          properties:
+            _id: 
+              description: Object Id
+              items:
+                properties:
+                  oid: 
+                    type: string
+            created_on:
+              type: string
+              description: model creation date
+            uuid:
+              type: string
+              description: model unique id
+            description:
+              type: string
+              description: model description  
+            is_primary:
+              type: boolean
+              description: whether the model is primary/main model for given language pair(decides for document translation)  
+            model_id:
+              type: integer
+              description: model id of the model 
+            model_name:
+              type: string
+              description: name of the model
+            source_language_code:
+              type: string
+              description: ISO 639-2 language code of the source language
+            source_language_name:
+              type: string
+              description: name of the source language  
+            target_language_code:
+              type: string
+              description: ISO 639-2 language code of the target language
+            target_language_name:
+              type: string
+              description: name of the target language 
+            status:
+              type: string
+              description: whether the model is ACTIVE or INACTIVE  
+              enum:
+                - "ACTIVE"
+                - "INACTIVE"
+              
+  nmt_response_delete:
+    type: object
+    properties:        
+      response_body:
+        type: string
+        description: Deleted model shown as 1 if not found 0
+       
+            
+      status:
+        $ref: '#/definitions/status_obj'
+  
+
+  error_status:
+    description: response for status code is not 200
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/status_obj'
+  
+  status_obj:
+    type: object
+    description: Status object with every request
+    properties:
+      ok:
+        type: string
+        enum:
+          - "true"
+          - "false"
+      statusCode: 
+        type: integer
+        description: http status code
+      why:
+        type: string
+        description: Success message or reason of failure in case of error  
