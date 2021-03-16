@@ -49,7 +49,7 @@ paths:
           schema:
             $ref: '#/definitions/error_status'
             
-  /v1/update-models/<string:id>:
+  /v1/update-models/uuid:
     post:
       summary: REST API of updating existing nmt models information.
       description: POST api to store information into database model id, source and target language information which store in databse etc
@@ -83,7 +83,7 @@ paths:
           schema:
             $ref: '#/definitions/error_status'  
             
-  /v1/delete-models/<string:id>:
+  /v1/delete-models/uuid:
     post:
       summary: REST API to delete single model of nmt models information.
       description: POST api to delete single model
@@ -135,7 +135,7 @@ paths:
           schema:
             $ref: '#/definitions/error_status'    
             
-  /v1/fetch-single-models/<string:id>:
+  /v1/fetch-single-models/uuid:
     get:
       summary: REST API of fetch single model of nmt models information.
       description: GET api to outputs the nmt model information like their model id, source and target language information etc
