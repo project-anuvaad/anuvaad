@@ -133,7 +133,7 @@ class OcrPageCard extends React.Component {
             <div
                 style={{
                     position: "absolute",
-                    fontSize: `max(min(${word.font.avg_size }px),${this.props.fontSize}px)`,
+                    fontSize: `${this.props.fontSize}px`,
                     top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
