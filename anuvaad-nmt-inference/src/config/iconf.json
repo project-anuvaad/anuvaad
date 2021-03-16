@@ -56,18 +56,6 @@
             "sp_decoder":"sentencepiece_models/marathi_exp-2-2019-11-07-24k.model"
         },
         {
-            "id":47,
-            "path":"nmt/47",
-            "sp_encoder":"sentencepiece_models/enKann-en-to-kn-2-2020-02-10-24k.model",
-            "sp_decoder":"sentencepiece_models/kannada-en-to-kn-2-2020-02-10-24k.model"
-        },
-        {
-            "id":48,
-            "path":"nmt/kn-en",
-            "sp_encoder":"sentencepiece_models/kannada-en-to-kn-2-2020-02-10-24k.model",
-            "sp_decoder":"sentencepiece_models/enKann-en-to-kn-2-2020-02-10-24k.model"
-        },
-        {
             "id":51,
             "path":"nmt/51",
             "sp_encoder":"sentencepiece_models/enGuj-en-to-guj-2-2020-02-14-24k.model",
@@ -162,6 +150,18 @@
             "path":"nmt/74",
             "sp_encoder":"nmt/74/en_en-to-ml-anuvaad-3-v1-2021-03-05-24000.model",
             "sp_decoder":"nmt/74/ml_en-to-ml-anuvaad-3-v1-2021-03-05-24000.model"
-        }    
+        },
+        {
+            "id": 75,
+            "path":"nmt/75",
+            "sp_encoder":"nmt/75/kn_kn-to-en-anuvaad-2.1-v1-2021-03-13-24000.model",
+            "sp_decoder":"nmt/75/en_kn-to-en-anuvaad-2.1-v1-2021-03-13-24000.model"
+        },
+        {
+            "id": 76,
+            "path":"nmt/76",
+            "sp_encoder":"nmt/76/en_en-to-kn-anuvaad-3.1-v1-2021-03-13-24000.model",
+            "sp_decoder":"nmt/76/kn_en-to-kn-anuvaad-3.1-v1-2021-03-13-24000.model"
+        }        
     ]
 }
