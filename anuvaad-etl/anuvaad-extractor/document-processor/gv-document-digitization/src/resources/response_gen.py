@@ -45,6 +45,7 @@ class Response(object):
                 #debug_flush = True
                 if debug_flush == False:
                     response = Service(app_context=app_context)
+                    gv_file_response = copy.deepcopy(response)
                     if response['code'] == 200:
                         
                         output_filename_json = file_ops.writing_json_file(i, response['rsp'], self.DOWNLOAD_FOLDER)
@@ -56,14 +57,14 @@ class Response(object):
                         response = copy.deepcopy(response_success)
                         log_info("successfully generated response for workflow", app_context.application_context)
                         
-                        return response
+                        return response, gv_file_response
                     else:
                         post_error_wf(response['code'], response['message'], app_context.application_context, None)
-                        return None
+                        return None, None
                 else:
                     log_info('flushing queue data, not handling file {}'.format(input_files), app_context.application_context)
                     post_error_wf(400, 'flushing queue data, not handling file {}'.format(input_files), app_context.application_context, None)
-                    return None
+                    return None, None
 
             
         except WorkflowkeyError as e:
