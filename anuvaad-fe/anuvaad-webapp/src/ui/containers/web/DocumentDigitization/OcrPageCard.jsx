@@ -156,7 +156,10 @@ class OcrPageCard extends React.Component {
     }
 
     saveWord = (word) => {
-        this.setState({ isOpen: false, text: word })
+        let originalWord = this.state.text;
+        let changedWord = word
+        TELEMETRY.saveEditedWordEvent(originalWord, changedWord, 'SAVE_EDITED_WORD')
+        this.setState({ isOpen: false, text: changedWord })
     }
     renderModal = () => {
         return (

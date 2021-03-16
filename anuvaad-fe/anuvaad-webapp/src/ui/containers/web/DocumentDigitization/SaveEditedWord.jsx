@@ -35,7 +35,9 @@ class SaveEditedWord extends React.Component {
                     backgroundColor: "white"
                 }} align='center' fullWidth
                 >
-                    <Typography variant="h5">{this.props.text}</Typography>
+                    <span style={{ margin: 'auto', fontSize: '20px', padding: "0px 5px", display: "inline-block", textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden", width: "295px" }}>
+                        You are changing: <br></br> <span style={{ fontSize: '20px', fontWeight: "bold" }}>{this.props.text}</span>
+                    </span>
                     <TextField id="email" type="text" value={this.state.word} placeholder="Word"
                         margin="dense" varient="outlined" style={{ width: '80%', marginBottom: '4%', backgroundColor: 'white' }}
                         disabled="true"
