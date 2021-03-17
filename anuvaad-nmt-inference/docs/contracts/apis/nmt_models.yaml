@@ -201,11 +201,27 @@ definitions:
             enum:
               - "ACTIVE"
               - "INACTIVE"
+          connection_details:
+            type: object
+            properties:
+              kafka:
+                type: object
+                properties:
+                  KAFKA_NMT_TRANSLATION_INPUT_TOPIC:
+                    type: string
+                  KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC:
+                    type: string
+              http_url:
+                type: string
+            description: Connection Details of kafka or HTTP URL.
+            
  
  
   nmt_response:
     type: object
-    properties:        
+    properties: 
+      status:
+        $ref: '#/definitions/success_status'
       response_body:
         type: array
         description: A list of models and their details
@@ -253,6 +269,20 @@ definitions:
               enum:
                 - "ACTIVE"
                 - "INACTIVE"
+            connection_details:
+              type: object
+              properties:
+                kafka:
+                  type: object
+                  properties:
+                    KAFKA_NMT_TRANSLATION_INPUT_TOPIC:
+                      type: string
+                    KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC:
+                      type: string
+                http_url:
+                  type: string
+              description: Connection Details of kafka or HTTP URL.
+              
               
   nmt_response_delete:
     type: object
@@ -263,17 +293,9 @@ definitions:
        
             
       status:
-        $ref: '#/definitions/status_obj'
-  
-
-  error_status:
-    description: response for status code is not 200
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/status_obj'
-  
-  status_obj:
+        $ref: '#/definitions/success_status'
+        
+  success_status:
     type: object
     description: Status object with every request
     properties:
@@ -281,6 +303,28 @@ definitions:
         type: string
         enum:
           - "true"
+      statusCode: 
+        type: integer
+        description: http status code
+      why:
+        type: string
+        description: Success message or reason of failure in case of error  
+  
+
+  error_status:
+    description: response for status code is not 200
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/status_error'
+  
+  status_error:
+    type: object
+    description: Status object for error request
+    properties:
+      ok:
+        type: string
+        enum:
           - "false"
       statusCode: 
         type: integer
