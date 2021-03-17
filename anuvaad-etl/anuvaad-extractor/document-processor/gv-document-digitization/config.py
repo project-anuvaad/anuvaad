@@ -6,8 +6,8 @@ DEBUG = False
 API_URL_PREFIX = "/anuvaad-etl/document-processor/gv-document-digitization"
 HOST = '0.0.0.0'
 PORT = 5001
-#BASE_DIR      = 'upload'
-BASE_DIR      = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/gv-document-digitization/upload'
+BASE_DIR      = 'upload'
+#BASE_DIR      = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/gv-document-digitization/upload'
 download_folder = 'upload'
 
 
