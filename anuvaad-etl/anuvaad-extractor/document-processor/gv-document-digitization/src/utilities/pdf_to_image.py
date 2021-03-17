@@ -49,11 +49,11 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
     pdf_filepath        = os.path.join(base_dir, filename)
 
     log_info('filepath {}, working_dir {}'.format(pdf_filepath, working_dir), app_context.application_context)
-    try:
-        pdf_image_paths         = extract_image_paths_from_pdf(pdf_filepath, working_dir)
-    except Exception as e:
-        log_error('error in extracting images from {}'.format(pdf_filepath), app_context.application_context, e)
-        return None
+    #try:
+    pdf_image_paths         = extract_image_paths_from_pdf(pdf_filepath, working_dir)
+    #except Exception as e:
+    #    log_error('error in extracting images from {} {}'.format(pdf_filepath,e), app_context.application_context, e)
+    #    return None
    
     end_time            = time.time()
     extraction_time     = end_time - start_time
