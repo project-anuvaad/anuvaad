@@ -30,14 +30,26 @@ const ShowCorrectedImage = ({ path }) => {
                 console.log('api failed because of server or network', error)
             });
     }
+
     useEffect(() => {
         makeDownloadImageAPI()
     })
-    return (
-        <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: 'auto' }}>
-            <img width='100%' src={url} alt="Loading..." />
+
+    // const selectedArea = (e) => {
+    //     console.log(e.clientX, e.clientY, e.screenX, e.screenY)
+    // }
+    if (!url) {
+        return <div style={{ width: '100%', margin: 'auto' }}>
+            Loading...
         </div>
-    )
+    }
+    return <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: 'auto' }}>
+        <img
+            // style={{ cursor: "grabbing" }} 
+            // onMouseUp={selectedArea} 
+            width='100%' src={url} />
+    </div>
+
 }
 
 export default ShowCorrectedImage;
