@@ -68,7 +68,7 @@ class StartDigitizationUpload extends React.Component {
             name: "",
             message: "File uplaoded successfully",
             showComponent: false,
-            workflow: "WF_A_FCWDLDBSOTES",
+            workflow: "WF_A_OTES",
             fileName: "",
             workspaceName: "",
             path: "",

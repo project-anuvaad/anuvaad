@@ -160,7 +160,7 @@ export const startWorkflow = (source_language, target_language, filename, job_id
   let user_id = null;
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
   let token = localStorage.getItem('token')
-  
+
   if (user_profile != null && token != null) {
     user_id = user_profile.userID
   } else {
@@ -461,11 +461,11 @@ export const log = (action_type, message, api) => {
     error_data: message,
   }
 
-  if(action_type) {
+  if (action_type) {
     data.action = action_type
   }
 
-  if(api) {
+  if (api) {
     data.api = api
   }
 
@@ -636,4 +636,29 @@ export const glossaryUpload = (file_id, organization) => {
     }
   }
   $t.impression(data, options)
+}
+
+export function saveEditedWordEvent(originalWord, changedWord,action) {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+
+  let data = {
+    type: 'click',
+    action: action
+  }
+
+  let values = {}
+  values.originalWord = originalWord
+  values.changedWord = changedWord
+  values.action = action
+
+  let options = {
+    ets: Date.now(),
+    context: {
+      cdata: values
+    },
+  }
+
+  $t.interact(data, options)
 }

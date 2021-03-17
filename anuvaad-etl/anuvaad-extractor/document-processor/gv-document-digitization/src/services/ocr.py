@@ -13,7 +13,6 @@ import config
 
 
 
-
 client = vision.ImageAnnotatorClient()
 breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
@@ -56,6 +55,7 @@ def text_extraction(file_properties,image_paths,file):
             save_path = mask_image(image_path, page_output, idx, file_properties, width, height)
             page_output = set_bg_image(page_output, save_path, idx)
             page_res.append(page_output)
+            
         file['pages'] = page_res
         return file
     except Exception as e:
