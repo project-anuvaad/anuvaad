@@ -37,7 +37,11 @@ class OcrPageCard extends React.Component {
             text: '',
             url: '',
             event: false,
-            isOpen: false
+            isOpen: false,
+            x1: 0,
+            y1: 0,
+            x2: 0,
+            y2: 0
         };
         this.handleTextChange = this.handleTextChange.bind(this);
         this.action = null
@@ -294,13 +298,35 @@ class OcrPageCard extends React.Component {
         }
     }
 
+    setOnMouseUp = (e) => {
+        this.setState({ x2: e.clientX, y2: e.clientY }, () => {
+            let { x1, x2, y1, y2, top, left } = this.state
+            let div = document.createElement('div')
+            div.style.width = (x2 - x1) + 'px'
+            div.style.height = (y2 - y1) + 'px'
+            div.style.top = top + 'px'
+            div.style.left = left + 'px'
+            div.style.position = "absolute"
+            div.style.border = "1px solid white"
+            this.paper.appendChild(div)
+        })
+
+    }
+
+    setOnMouseDown = (e) => {
+        this.setState({ x1: e.clientX, y1: e.clientY, top: e.nativeEvent.offsetY, left: e.nativeEvent.offsetX })
+    }
     renderPage = (page, image) => {
         if (page) {
             let width = page['boundingBox'] && page.boundingBox.vertices[1].x - page.boundingBox.vertices[0].x + 'px'
             let height = page['boundingBox'] && page.boundingBox.vertices[2].y - page.boundingBox.vertices[0].y + 'px'
             return (
                 <div>
-                    <Paper elevation={2} style={{ position: 'relative', width: width, height: height }}>
+                    <Paper
+                        ref={e => this.paper = e}
+                        onMouseUp={this.setOnMouseUp}
+                        onMouseDown={this.setOnMouseDown}
+                        elevation={2} style={{ position: 'relative', width: width, height: height }}>
                         {page['regions'].map(region => this.renderChild(region))}
                         {/* {
                             this.renderImage(image)
@@ -316,6 +342,7 @@ class OcrPageCard extends React.Component {
     }
 
     render() {
+        console.log(this.state)
         return (
             <>
                 <span style={{ zoom: `${this.props.zoomPercent}%` }}>{this.renderPage(this.props.page, this.props.image)}</span>

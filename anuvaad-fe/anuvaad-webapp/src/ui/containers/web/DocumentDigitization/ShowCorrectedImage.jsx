@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import DownloadImage from '../../../../flux/actions/apis/download/download_zip_file';
 const ShowCorrectedImage = ({ path }) => {
-    let [url, setUrl] = useState("")
+    let [info, setUrl] = useState({ url: "", msg: "" })
     const makeDownloadImageAPI = () => {
         let apiObj = new DownloadImage(path)
         fetch(apiObj.apiEndPoint(), {
@@ -11,34 +11,32 @@ const ShowCorrectedImage = ({ path }) => {
         })
             .then(async response => {
                 if (!response.ok) {
-                    this.setState({ msg: "Failed to load file..." })
+                    setUrl({ msg: "Failed to load file..." })
                     console.log("api failed")
                 } else {
-                    if (!url) {
-                        const buffer = new Uint8Array(await response.arrayBuffer());
-                        let res = Buffer.from(buffer).toString('base64')
-                        fetch("data:image/jpeg;base64," + res)
-                            .then(res => res.blob())
-                            .then(blob => {
-                                let url = URL.createObjectURL(blob);
-                                setUrl(url)
-                            });
-                    }
+                    const buffer = new Uint8Array(await response.arrayBuffer());
+                    let res = Buffer.from(buffer).toString('base64')
+                    fetch("data:image/jpeg;base64," + res)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            let url = URL.createObjectURL(blob);
+                            setUrl({ url })
+                        });
                 }
             }).catch((error) => {
-                this.setState({ msg: "Failed to load file..." })
+                setUrl({ msg: "Failed to load file..." })
                 console.log('api failed because of server or network', error)
             });
     }
 
     useEffect(() => {
-        makeDownloadImageAPI()
+        if (!info.url) makeDownloadImageAPI()
     })
 
     // const selectedArea = (e) => {
     //     console.log(e.clientX, e.clientY, e.screenX, e.screenY)
     // }
-    if (!url) {
+    if (!info.url) {
         return <div style={{ width: '100%', margin: 'auto' }}>
             Loading...
         </div>
@@ -47,7 +45,7 @@ const ShowCorrectedImage = ({ path }) => {
         <img
             // style={{ cursor: "grabbing" }} 
             // onMouseUp={selectedArea} 
-            width='100%' src={url} />
+            width='100%' src={info.url} />
     </div>
 
 }
