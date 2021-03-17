@@ -66,6 +66,14 @@ class CreateModelResource(Resource):
         try:
             if request.method=="POST":
                 body = request.json
+                for i in CreateModel.objects():
+                    if bool(body):
+                        if i.source_language_code ==body['source_language_code'] and i.target_language_code == body['target_language_code']:
+                            if body['is_primary'] == False:
+                                pass
+                            else:
+                                i.update(set__is_primary = False)
+                                i.save()
                 if not bool(body):
                     out = CustomResponse(Status.INCOMPLETE_API_REQUEST.value, None)
                     return out.getresjson(),401  

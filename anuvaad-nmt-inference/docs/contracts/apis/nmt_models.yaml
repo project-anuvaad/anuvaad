@@ -49,7 +49,7 @@ paths:
           schema:
             $ref: '#/definitions/error_status'
             
-  /v1/update-models/<string:id>:
+  /v1/update-models/uuid:
     post:
       summary: REST API of updating existing nmt models information.
       description: POST api to store information into database model id, source and target language information which store in databse etc
@@ -83,7 +83,7 @@ paths:
           schema:
             $ref: '#/definitions/error_status'  
             
-  /v1/delete-models/<string:id>:
+  /v1/delete-models/uuid:
     post:
       summary: REST API to delete single model of nmt models information.
       description: POST api to delete single model
@@ -135,7 +135,7 @@ paths:
           schema:
             $ref: '#/definitions/error_status'    
             
-  /v1/fetch-single-models/<string:id>:
+  /v1/fetch-single-models/uuid:
     get:
       summary: REST API of fetch single model of nmt models information.
       description: GET api to outputs the nmt model information like their model id, source and target language information etc
@@ -201,11 +201,27 @@ definitions:
             enum:
               - "ACTIVE"
               - "INACTIVE"
+          connection_details:
+            type: object
+            properties:
+              kafka:
+                type: object
+                properties:
+                  KAFKA_NMT_TRANSLATION_INPUT_TOPIC:
+                    type: string
+                  KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC:
+                    type: string
+              http_url:
+                type: string
+            description: Connection Details of kafka or HTTP URL.
+            
  
  
   nmt_response:
     type: object
-    properties:        
+    properties: 
+      status:
+        $ref: '#/definitions/success_status'
       response_body:
         type: array
         description: A list of models and their details
@@ -253,6 +269,20 @@ definitions:
               enum:
                 - "ACTIVE"
                 - "INACTIVE"
+            connection_details:
+              type: object
+              properties:
+                kafka:
+                  type: object
+                  properties:
+                    KAFKA_NMT_TRANSLATION_INPUT_TOPIC:
+                      type: string
+                    KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC:
+                      type: string
+                http_url:
+                  type: string
+              description: Connection Details of kafka or HTTP URL.
+              
               
   nmt_response_delete:
     type: object
@@ -263,17 +293,9 @@ definitions:
        
             
       status:
-        $ref: '#/definitions/status_obj'
-  
-
-  error_status:
-    description: response for status code is not 200
-    type: object
-    properties:
-      status:
-        $ref: '#/definitions/status_obj'
-  
-  status_obj:
+        $ref: '#/definitions/success_status'
+        
+  success_status:
     type: object
     description: Status object with every request
     properties:
@@ -281,6 +303,28 @@ definitions:
         type: string
         enum:
           - "true"
+      statusCode: 
+        type: integer
+        description: http status code
+      why:
+        type: string
+        description: Success message or reason of failure in case of error  
+  
+
+  error_status:
+    description: response for status code is not 200
+    type: object
+    properties:
+      status:
+        $ref: '#/definitions/status_error'
+  
+  status_error:
+    type: object
+    description: Status object for error request
+    properties:
+      ok:
+        type: string
+        enum:
           - "false"
       statusCode: 
         type: integer
