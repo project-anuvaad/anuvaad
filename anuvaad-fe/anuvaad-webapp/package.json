@@ -40,6 +40,7 @@
     "react-csv": "^2.0.3",
     "react-dom": "^17.0.0",
     "react-foundation": "^0.9.6",
+    "react-image-crop": "^8.6.6",
     "react-infinite-scroll-component": "^5.1.0",
     "react-js-pagination": "^3.0.3",
     "react-material-ui-form-validator": "^2.1.1",
