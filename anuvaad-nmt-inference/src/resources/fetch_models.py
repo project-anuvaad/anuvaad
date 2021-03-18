@@ -64,25 +64,24 @@ class CreateModelResource(Resource):
     def post(self):
         log_info("CreateModelResource api called",MODULE_CONTEXT)
         try:
-            if request.method=="POST":
+            if request.method=="POST" and bool(request.json):
                 body = request.json
-                for i in CreateModel.objects():
-                    if bool(body):
-                        if i.source_language_code ==body['source_language_code'] and i.target_language_code == body['target_language_code']:
-                            if body['is_primary'] == False:
-                                pass
-                            else:
-                                i.update(set__is_primary = False)
-                                i.save()
-                if not bool(body):
-                    out = CustomResponse(Status.INCOMPLETE_API_REQUEST.value, None)
-                    return out.getresjson(),401  
-                else:
-                    data = CreateModel(**body).save()
-                    i = data.to_json()
-                    json_data = json.loads(i)
-                    out = CustomResponse(Status.SUCCESS.value, json_data)
-                    return out.getresjson(),200
+                if body['is_primary'] and body['is_primary'] == True:
+                    ## changing the primary model      
+                    log_info("Changing the primary model for {0}-to-{1} pair".format(body['source_language_code'],body['target_language_code']),MODULE_CONTEXT)
+                    for i in CreateModel.objects():
+                        if i.source_language_code == body['source_language_code'] and i.target_language_code == body['target_language_code'] and i.is_primary == True:
+                            i.update(set__is_primary = False)
+                            # i.save()
+                data = CreateModel(**body).save()
+                log_info("New Model saved to DB: {}".format(body['model_id']),MODULE_CONTEXT)
+                i = data.to_json()
+                json_data = json.loads(i)
+                out = CustomResponse(Status.SUCCESS.value, json_data)
+                return out.getresjson(),200
+            else:
+                out = CustomResponse(Status.INCOMPLETE_API_REQUEST.value, None)
+                return out.getresjson(),401      
         except Exception as e:
             log_exception("Error in CreateModelResource: {}".format(e),MODULE_CONTEXT,e)
             status = Status.SYSTEM_ERR.value

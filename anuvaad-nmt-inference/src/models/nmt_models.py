@@ -10,7 +10,7 @@ class KafkaClass(EmbeddedDocument):
         KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC = StringField()
         
     kafka = DictField(Inner())
-    http_url = URLField(required=True)
+    http_url = StringField(required=True)
 
 class CreateModel(Document):
 
@@ -28,4 +28,5 @@ class CreateModel(Document):
     target_language_name = StringField(required = True,Max_length=30)
     description = StringField()
     status = StringField(required = True,choices=['ACTIVE','INACTIVE'])
-    connection_details = EmbeddedDocumentField(KafkaClass)
+    connection_details = EmbeddedDocumentField(KafkaClass,required=True)
+    interactive_translation = StringField(choices=['ACTIVE','INACTIVE'],default='INACTIVE')
