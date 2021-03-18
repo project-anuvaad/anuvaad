@@ -5,13 +5,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import '../../../styles/web/ShowCorrectedImage.css'
 import set_crop_size from '../../../../flux/actions/apis/view_digitized_document/set_crop_size';
 import copylocation from '../../../../flux/actions/apis/view_digitized_document/copy_location';
 
 const ShowCorrectedImage = ({ path, edit_status, set_crop_size, crop, copylocation, copy_status }) => {
 
     let [info, setUrl] = useState({ url: "", msg: "" })
-    // const [crop, setCrop] = useState({ unit: 'px' });
 
     const makeDownloadImageAPI = () => {
         let apiObj = new DownloadImage(path)
@@ -56,13 +56,14 @@ const ShowCorrectedImage = ({ path, edit_status, set_crop_size, crop, copylocati
     }
     if (edit_status) {
         return (<ReactCrop
-            style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: 'auto' }}
+            class="ReactCrop__image"
+            style={{ maxWidth: 'none' }}
             src={info.url}
             crop={crop}
             onChange={newCrop => setImageInfo(newCrop)}
         />)
     } else {
-        return <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: 'auto' }}>
+        return <div>
             <img width='100%' src={info.url} />
         </div>
     }

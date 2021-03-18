@@ -13,6 +13,7 @@ import SENTENCE_ACTION from '../DocumentEditor/SentenceActions'
 import { confscore } from '../../../../utils/OcrConfScore'
 import SaveEditedWord from './SaveEditedWord';
 import Modal from '@material-ui/core/Modal';
+import set_crop_size from '../../../../flux/actions/apis/view_digitized_document/set_crop_size';
 
 
 const PAGE_OPS = require("../../../../utils/page.operations");
@@ -294,6 +295,23 @@ class OcrPageCard extends React.Component {
         }
     }
 
+    setLocationCoords = () => {
+        let { x, y, height, width, unit } = this.props.crop_size.copiedCoords
+        let div = document.createElement('div');
+        div.style.left = x + unit
+        div.style.top = y + unit
+        div.style.height = height + unit
+        div.style.width = width + unit
+        div.style.border = `1px solid black`
+        div.style.position = "absolute"
+        div.setAttribute('contenteditable', true)
+        div.style.zIndex = 2
+        div.style.fontSize = this.props.fontSize + unit
+        div.onblur = () => {
+            div.style.border = "none"
+        }
+        this.paper.appendChild(div);
+    }
     renderPage = (page, image) => {
         if (page) {
             let width = page['boundingBox'] && page.boundingBox.vertices[1].x - page.boundingBox.vertices[0].x + 'px'
@@ -304,6 +322,7 @@ class OcrPageCard extends React.Component {
                         ref={e => this.paper = e}
                         elevation={2} style={{ position: 'relative', width: width, height: height }}>
                         {page['regions'].map(region => this.renderChild(region))}
+                        {(this.props.copy_status) && this.setLocationCoords()}
                     </Paper>
                     <Divider />
                 </div>
@@ -334,14 +353,16 @@ const mapStateToProps = state => ({
     status: state.showimagestatus.status,
     switch_style: state.switch_style.status,
     fontSize: state.fetch_slider_pixel.percent,
-    crop_size: state.cropsizeinfo
+    crop_size: state.cropsizeinfo,
+    copy_status: state.copylocation.status
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         highlightSentence,
         clearHighlighBlock,
-        cancelMergeSentence
+        cancelMergeSentence,
+        set_crop_size
     },
     dispatch
 );

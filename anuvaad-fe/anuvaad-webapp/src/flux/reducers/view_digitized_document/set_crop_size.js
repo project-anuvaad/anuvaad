@@ -15,6 +15,7 @@ export default (state = {
             }
         case C.RESET_CROP_SIZE:
             return {
+                copiedCoords: { ...state },
                 height: 0,
                 unit: "px",
                 width: 0,
