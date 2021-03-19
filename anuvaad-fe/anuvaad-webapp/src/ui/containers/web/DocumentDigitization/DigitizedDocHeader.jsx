@@ -71,6 +71,8 @@ class DigitizedDocHeader extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.active_page_number !== prevProps.active_page_number) {
             this.props.status && this.props.togglebtnstatus()
+            this.props.copy_status && this.props.copylocation()
+            this.props.edit_status && this.props.startediting()
         }
     }
 
@@ -201,9 +203,13 @@ class DigitizedDocHeader extends React.Component {
                     </Button>
                 }
 
-                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.startediting}>
+                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={() => {
+                    this.props.startediting()
+                    this.props.copy_status && this.props.copylocation()
+                }}>
                     {this.props.edit_status ? "End Editing" : "Start Editing"}
                 </Button>
+
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
                     Download
                     <DownIcon />
@@ -257,6 +263,7 @@ class DigitizedDocHeader extends React.Component {
                             <div style={{ display: "flex", flexDirection: "row" }}>
                                 <IconButton
                                     onClick={() => {
+                                        this.props.edit_status && this.props.startediting()
                                         history.push(`${process.env.PUBLIC_URL}/document-digitization`);
                                     }}
                                     className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}

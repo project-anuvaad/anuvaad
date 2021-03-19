@@ -295,9 +295,10 @@ class OcrPageCard extends React.Component {
         }
     }
 
-    setLocationCoords = () => {
+    setLocationCoords = (identifier) => {
         let { x, y, height, width, unit } = this.props.crop_size.copiedCoords
         let div = document.createElement('div');
+        div.className = identifier
         div.style.left = x + unit
         div.style.top = y + unit
         div.style.height = height + unit
@@ -312,6 +313,8 @@ class OcrPageCard extends React.Component {
         }
         this.paper.appendChild(div);
     }
+
+
     renderPage = (page, image) => {
         if (page) {
             let width = page['boundingBox'] && page.boundingBox.vertices[1].x - page.boundingBox.vertices[0].x + 'px'
@@ -319,10 +322,12 @@ class OcrPageCard extends React.Component {
             return (
                 <div>
                     <Paper
+                        id={page.identifier}
+                        key={page.identifier}
                         ref={e => this.paper = e}
                         elevation={2} style={{ position: 'relative', width: width, height: height }}>
                         {page['regions'].map(region => this.renderChild(region))}
-                        {(this.props.copy_status) && this.setLocationCoords()}
+                        {(this.props.copy_status) && this.setLocationCoords(page.identifier)}
                     </Paper>
                     <Divider />
                 </div>
