@@ -1,6 +1,7 @@
 from models import DigitalDocumentModel
 from utilities import ObjectValidation
-import datetime
+from anuvaad_auditor.errorhandler import post_error
+from datetime import datetime
 import uuid
 from utilities import AppContext
 from anuvaad_auditor.loghandler import log_info, log_exception
@@ -13,48 +14,33 @@ class DigitalDocumentRepositories:
     def __init__(self):
         self.docModel=DigitalDocumentModel()
 
-    def store(self, userID, jobID, files):
-        
-        blocks = []
-        for file in files:
-            block_info={}
-            block_info['userID']=userID
-            block_info['jobID']=jobID
-            block_info['recordID'] = file['file']['name']
-            block_info['file_identifier']=file['file']['identifier']
-            block_info['file_locale']=file['config']['language']
-            block_info['file_type']=file['file']['type']
-            block_info['created_on']=datetime.datetime.utcnow()
+    def store(self, userID, jobID, files):       
+        try:
+            for file in files:
 
-            pages =file['pages']
-            log_info("DigitalDocumentRepo save document for user: {}| record: {}| count of pages received: {}".format(userID,block_info['recordID'],str(len(pages))), AppContext.getContext())#str(page)
-                    
-            
-            try:
-                for page in pages:
-                    AppContext.addRecordID(block_info['recordID'])
-                    log_info("DigitalDocumentRepo for user: {}| record: {}| request: {}".format(userID,block_info['recordID'],"page"), AppContext.getContext())#str(page)
-                    page_info                        = {}
-                    page_info['page_no']             = page['page_no'] + 1
-                    page_info['page_identifier']     = page['identifier']
-                    page_info['page_boundingBox']    = page['boundingBox']
-                    page_info['page_resolution']     = page['resolution']
-                    
-                    block_info['page_info'] = page_info
-                    block_info['regions'] =None
+                recordID= file['file']['identifier']
+                file_name=file['file']['name']
+                locale=file['config']['language']
+                file_type=file['file']['type']
 
-                    if page['regions']:
-                        block_info['regions'] = page['regions']
-                        if '_id' in block_info.keys():
-                            del block_info['_id']
+                pages =file['pages']
+                log_info("DigitalDocumentRepo save document for user: {}| record: {}| count of pages received: {}".format(userID,recordID,str(len(pages))), AppContext.getContext())
+                
+                blocks=[] 
+            for page in pages:
+                block=self.create_regions_from_page(userID,jobID,recordID,file_name,locale,file_type,page)
+                if len(block.keys())>5:
+                    blocks.append(block)
+                else:
+                    return block
 
-                        result=self.docModel.store_bulk_blocks(block_info)
-                        if result == False:
-                            return False                   
-            except Exception as e:
-                AppContext.addRecordID(block_info['recordID'])
-                log_exception('Exception on save document | DigitalDocumentRepo :{}'.format(str(e)), AppContext.getContext(), e)
-                pass
+            result=self.docModel.store_bulk_blocks(blocks)
+            if result == False:
+                return False                   
+        except Exception as e:
+            AppContext.addRecordID(recordID)
+            log_exception('Exception on save document | DigitalDocumentRepo :{}'.format(str(e)), AppContext.getContext(), e)
+            pass
        
 
 
@@ -82,11 +68,9 @@ class DigitalDocumentRepositories:
                     for data in region_to_update['regions']:
                         for word in data['regions']:
                             if word['identifier']==word_id:
-                                print("yesssssss")
                                 word['ocr_text']=word['text']
                                 word['text']=user_word
-                            else:
-                                pass
+                                break
             else:
                 return None
 
@@ -118,9 +102,46 @@ class DigitalDocumentRepositories:
         data['pages']   = []
         for i in range(start_page, end_page+1):
             page_blocks = self.docModel.get_record_by_page(record_id, i)
-            data['pages'].append(page_blocks)
+            if page_blocks == False:
+                return False
+            else:
+                data['pages'].append(page_blocks)
 
         data['start_page']  = start_page
         data['end_page']    = end_page
         data['total']       = total_page_count
         return data
+
+    
+    def create_regions_from_page(self,userID,jobID,recordID,file_name,locale,file_type,page):
+        try:
+
+            block_info = {}
+            block_info['userID']=userID
+            block_info['jobID']=jobID
+            block_info['recordID']=recordID
+            block_info['file_name']=file_name
+            block_info['file_locale']=locale
+            block_info['file_type']= file_type
+            block_info['created_on']=datetime.utcnow()
+
+
+            page_info                        = {}
+            page_info['page_no']             = page['page_no'] + 1
+            page_info['page_identifier']     = page['identifier']
+            page_info['page_boundingBox']    = page['boundingBox']
+            page_info['page_img_path']       = page['path']
+            if 'resolution' in page.keys():
+                page_info['page_resolution']     = page['resolution']
+
+            block_info['page_info'] = page_info
+
+            block_info['regions'] = page['regions']
+
+            return block_info
+        except Exception as e:
+            AppContext.addRecordID(recordID)
+            log_exception('Exception on save document | DigitalDocumentRepo :{}'.format(str(e)), AppContext.getContext(), e)
+            return post_error("Data Missing","Failed to store doc since data is missing",None)
+
+

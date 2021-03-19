@@ -54,6 +54,9 @@ import ditigitization_pageno from './view_digitized_document/fetch_page_number';
 import document_pageno from './view_document/fetch_page_number';
 import switch_style from './view_digitized_document/swtch_styles';
 import fetch_slider_pixel from './view_digitized_document/fetch_slider_pixel';
+import startediting from './view_digitized_document/start_editing';
+import cropsizeinfo from './view_digitized_document/set_crop_size';
+import copylocation from './view_digitized_document/copy_location';
 
 export default {
     login,
@@ -110,5 +113,8 @@ export default {
     ditigitization_pageno,
     document_pageno,
     switch_style,
-    fetch_slider_pixel
+    fetch_slider_pixel,
+    startediting,
+    cropsizeinfo,
+    copylocation
 };

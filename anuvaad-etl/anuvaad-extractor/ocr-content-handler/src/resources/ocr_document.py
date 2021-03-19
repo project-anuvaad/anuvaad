@@ -12,24 +12,32 @@ class DigitalDocumentSaveResource(Resource):
 
     def post(self):
         body        = request.get_json()
-        if 'jobID' in body:
-            jobID = body['jobID']
-        if 'files' in body:
-            files = body['files']
-        if 'metadata' in body:
-            userID = body['metadata']['userID']
 
-        if not files or not userID or not jobID :
-            return post_error("Data Missing","jobID,files,userID keys are required",None), 400
+        if 'jobID' not in body or not body['jobID']:
+            return post_error("Data Missing","jobID is required",None), 400
+         
+        if 'files' not in body or not body['files']:
+            return post_error("Data Missing","files is required",None), 400
+
+        files = body['files']
+        jobID = body['jobID']
+        userID = body['metadata']['userID']
+
+        if  not userID:
+            return post_error("Data Missing","userID is required",None), 400
+
             AppContext.adduserID(userID)
             log_info('Missing params in DigitalDocumentSaveResource {}, user_id:{}'.format(body, userID), AppContext.getContext())
                
         try:
-            if digitalRepo.store(userID, jobID, files) == False:
+            result = digitalRepo.store(userID, jobID, files)
+            if result == False:
                 return post_error("Data Missing","Failed to store doc since data is missing",None), 400
-
-            res = CustomResponse(Status.SUCCESS.value, None)
-            return res.getres()
+            elif result is None:
+                res = CustomResponse(Status.SUCCESS.value, None)
+                return res.getres()
+            else:
+                return result, 400
         except Exception as e:
             AppContext.adduserID(userID)
             log_exception("Exception on save document | DigitalDocumentSaveResource :{}".format(str(e)),  AppContext.getContext(), e)
@@ -45,8 +53,7 @@ class DigitalDocumentUpdateWordResource(Resource):
         body        = request.get_json()
 
         if 'words' not in body and not body['words']:
-            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
-            return res.getresjson(), 400
+            return post_error("Data Missing","words are required",None), 400
 
         words = body['words']
         AppContext.adduserID(userID)
@@ -59,13 +66,9 @@ class DigitalDocumentUpdateWordResource(Resource):
                 return res.getres()
             return post_error("Data Missing","Failed to update word since data is missing",None), 400
 
-            
-
         except Exception as e:
             log_exception("Exception in DigitalDocumentUpdateWordResource |{}".format(str(e)),  AppContext.getContext(), e)
             return post_error("Data Missing","Failed to update word since data is missing",None), 400
-
-
 
 
 
@@ -95,7 +98,6 @@ class DigitalDocumentGetResource(Resource):
         except Exception as e:
             AppContext.addRecordID(args['recordID'])
             log_exception("Exception in DigitalDocumentGetResource |{}".format(str(e)),  AppContext.getContext(), e)
-            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return post_error("Data Missing","Failed to get pages since data is missing",None), 400
     
 

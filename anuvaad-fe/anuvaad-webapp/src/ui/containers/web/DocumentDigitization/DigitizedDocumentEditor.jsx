@@ -523,8 +523,8 @@ class DocumentEditor extends React.Component {
             if (imagePath)
                 return (
                     <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
-                        <Paper>
-                            <PDFRenderer path={imagePath.replace('upload/', '')} parent='digitized-document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} />
+                        <Paper style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: 'auto' }}>
+                            <PDFRenderer zoomPercent={this.state.zoomPercent} path={imagePath.replace('upload/', '')} parent='digitized-document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} />
                         </Paper>
                     </Grid>
                 )
