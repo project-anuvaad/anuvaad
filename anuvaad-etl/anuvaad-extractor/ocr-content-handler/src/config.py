@@ -1,7 +1,7 @@
 import os
 import time
 
-DEBUG = True
+DEBUG = False
 API_URL_PREFIX = "/anuvaad/ocr-content-handler"
 HOST = '0.0.0.0'
 PORT = 5001
