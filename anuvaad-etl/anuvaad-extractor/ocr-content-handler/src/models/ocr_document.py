@@ -2,6 +2,8 @@ from utilities import AppContext
 from db import get_db
 from anuvaad_auditor.loghandler import log_info, log_exception
 import json
+import pymongo
+
 DB_SCHEMA_NAME = 'ocr_document'
 
 class DigitalDocumentModel(object):
