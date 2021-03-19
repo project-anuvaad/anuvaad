@@ -1,351 +1,271 @@
-swagger: "2.0"
+openapi: 3.0.0
 info:
-  version: 1.0.0
-  title: Anuvaad Google Vision OCR
-  description: The specification defines various modules that participate in the orchestration of document processing flow. The document processing leverages various CV technique to achieve the desired results.
+  title: Anuvaad Document Digitization PRIMA and Google
+  description: A python based microservice to trigger and orchestrate block level
+    information present in the given file, incorportates custom layout detector and Google OCR for text extraction
   contact:
-    name: KD, Dhiraj, Naresh
-    email: kumar.deepak@tarento.com
-
-schemes:
-  - https
-basePath: '/google-vision'
-
+    name: Naresh & Dhiraj, dhiraj.daga@tarento.com
+    email: naresh.kumar@tarento.com
+  version: 1.0.0
+servers:
+  - url: /api
 paths:
-  /ocr/v0/google-vision:
+  /v0/15/document-digitize:
     post:
-      summary: google vision api for ocr
-      parameters:
-        - name: filename
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OCRRequest'
       tags:
-      - Google Vision OCR
+        - digitize
+      summary: API to digitize scanned documents.
+      requestBody:
+        content:
+          "*/*":
+            schema:
+              $ref: "#/components/schemas/DigitizationRequest"
+        required: true
       responses:
-        200:
+        "200":
           description: On successful completion of the job.
-          schema:
-            $ref: '#/definitions/HttpOutputSuccess'
-        400:
-          description: On errors causing a failure in the job.
-          schema:
-            $ref: '#/definitions/HttpOutputError'
-
-definitions:
-
-  OCRRequest:
-    type: object
-    properties:
-      inputs:
-        type: array
-        description: array of files
-        items:
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/DigitizationResponse"
+        "400":
+          description: On input errors causing a failure in the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorCode"
+      x-codegen-request-body-name: filename
+components:
+  schemas:
+  
+    DigitizationRequest:
+      type: object
+      properties:
+        files:
+          type: array
+          description: a list of objects having file, file_config and its pages
+          items:
+            type: object
+            properties:
+              file:
+                $ref: "#/components/schemas/File"
+              file_config:
+                $ref: "#/components/schemas/FileConfig"
+          
+    DigitizationResponse:
+      type: object
+      properties:
+        outputs:
+          type: array
+          description: a list of objects having file, file_config and its pages
+          items:
+            type: object
+            properties:
+              file:
+                $ref: "#/components/schemas/File"
+              file_config:
+                $ref: "#/components/schemas/FileConfig"
+              pages:
+                type: array
+                description: page level paragraph, line, word  and symbol information
+                items:
+                  $ref: "#/components/schemas/Page"
+    
+    File:
+      type: object
+      properties:
+        name:
           type: string
-          $ref: '#/definitions/OCRInput'
-
-  OCRResponse:
-    type: object
-    properties:
-      inputs:
-        type: array
-        description: array of word detector input object
-        items:
-          $ref: '#/definitions/OCRInput'
-      outputs:
-        type: array
-        description: array of word detector output object
-        items:
-          $ref: '#/definitions/OCROutput'
-    required:
-      - outputs
-
-  OCROutput:
-    type: object
-    properties:
-      file:
-        type: object
-        description: file object that is received for processing
-        $ref: '#/definitions/File'
-      pages:
-        type: array
-        description: pages present in the file
-        items:
-          $ref: '#/definitions/Page'
-      page_info:
-        type: array
-        description: metadata of pages
-        items:
+          description: name of input file
+        type:
           type: string
-      status:
-        type: object
-        description: operation result for the file that is processed
-        $ref: '#/definitions/ErrorCode'
-
-  OCRInput:
-    type: object
-    properties:
-      file:
-        type: object
-        description: file object on which configuration will be applied for processing
-        $ref: '#/definitions/File'
-      config:
-        type: object
-        description: detection configuration parameters that will be applied on the file
-        $ref: '#/definitions/DetectConfig'
-    required:
-      - file
-      - config
-
-  File:
-    type: object
-    properties:
-      identifier:
-        type: string
-        description: unique identifier, uuid-v4
-      name:
-        type: string
-        description: human readable name of file
-      format:
-        type: string
-        description: allowed file format
-        enum: ['PDF', 'PNG', 'JPEG', 'BMP']
-
-  OCR:
-    type: object
-    properties:
-      option:
-        type: string
-        description: ocr configuration settings
-        enum: ['HIGH_ACCURACY', 'MEDIUM_ACCURACY', 'LOW_ACCURACY']
-      language:
-        type: string
-        description: indic language code as per ISO 639-1
-        enum: ['hi','ma','ta', 'ml', 'ka']
-
-  DetectConfig:
-    type: object
-    properties:
-      OCR:
-        type: object
-        $ref: '#/definitions/OCR'
-
-  Point:
-    type: object
-    properties:
-      x:
-        type: integer
-        description: x-coordinate
-      y:
-        type: integer
-        description: y-coordinate
-      confidence:
-        type: number
-        description: detection confidence
-    required:
-      - x
-      - y
-      - confidence
-
-  Polygon:
-    type: object
-    properties:
-      vertices:
-        type: array
-        description: polygon that is enclosing the identification area
-        items:
-          $ref: '#/definitions/Point'
-
-  Font:
-    type: object
-    properties:
-      family:
-        type: string
-        description: font family
-      size:
-        type: number
-        description: font size
-      style:
-        type: string
-        description: font style like BOLD, ITALIC, REGULAR
-        enum: ['BOLD', "ITALIC", 'REGULAR']
-
-  Line:
-    type: object
-    description: a group of related words
-    properties:
-      identifier:
-        type: string
-        description: unique identifier, uuidv4
-        format: uuid
-      boundingBox:
-        type: object
-        description: positional information of bounding box
-        $ref: '#/definitions/Polygon'
-      class:
-        type: string
-        description: though not grammatical however used extensively in document writings
-        enum: ['HEADER', 'FOOTER','TEXT']
-      font:
-        type: object
-        description: font property
-        $ref: '#/definitions/Font'
-
-  Word:
-    type: object
-    description: a language script that can be written together and generates a meaning
-    properties:
-      identifier:
-        type: string
-        description: word level identifier
-        format: uuid
-      boundingBox:
-        type: object
-        description: positional information of bounding box
-        $ref: '#/definitions/Polygon'
-      class:
-        type: string
-        description: though not grammatical however used extensively in document writings
-        enum: ['SUPERSCRIPT', 'SUBSCRIPT']
-      text:
-        type: string
-        description: the textual payload
-      language:
-        type: string
-        description: indic language code as per ISO 639-1
-        enum: ['hi','ma','ta', 'ml', 'ka']
-      confidence:
-        type: number
-        description: detectiong confidence
-    required:
-      - identifier
-      - boundingBox
-
-  Region:
-    type: object
-    description: the group of related lines object
-    properties:
-      identifier:
-        type: string
-        description: unique identifier, uuidv4
-        format: uuid
-      boundingBox:
-        type: object
-        description: positional information of bounding box
-        $ref: '#/definitions/Polygon'
-      class:
-        type: string
-        description: category of block
-        enum: ['LINE', 'HEADER', 'FOOTER', 'FOOTNOTE', 'TABLE', 'IMAGE', 'BULLETS', 'BACKGROUND']
-    required:
-      - identifier
-      - boundingBox
-
-  Page:
-    type: object
-    properties:
-      identifier:
-        type: string
-        description: page identifier
-        format: uuid
-      vertices:
-        type: object
-        description: positional information of bounding box
-        $ref: '#/definitions/Polygon'
-      resolution:
-        type: number
-        description: resolution of page image
-      regions:
-        type: array
-        description: list of region present in a page
-        items:
-          $ref: '#/definitions/Region'
-      lines:
-        type: array
-        description: list of lines present in a page
-        items:
-          $ref: '#/definitions/Line'
-      words:
-        type: array
-        description: list of words present in a page
-        items:
-          $ref: '#/definitions/Word'
-    required:
-      - identifier
-      - vertices
-      - resolution
-
-  ErrorCode:
-    type: object
-    properties:
-      code:
-        type: integer
-        description: status code
-      message:
-        type: string
-        description: human understandable format
-    required:
-      - code
-      - message
-
-  HttpOutputSuccess:
-    type: object
-    properties:
-      ok:
-        type: boolean
-        description: request successful indicator.
-      why:
-        type: string
-        description: Response message.
-      status:
-        type: object
-        description: overall operation status
-      data:
-        type: object
-        description: the return value should be returned under this property
-        $ref: '#/definitions/OCRResponse'
-
-  HttpOutputError:
-    type: object
-    properties:
-      ok:
-        type: boolean
-        description: request successful indicator.
-      why:
-        type: string
-        description: Response message.
-      status:
-        type: object
-        description: overall operation status
-        $ref: '#/definitions/ErrorCode'
-      data:
-        type: integer
-        description: should be null object
-        default: null
-
-responses:
-  ERROR_MISSING_MANDATORY_PARAMETERS:
-    description: Input request does not have parameters are the required.
-    schema:
-      $ref: '#/definitions/ErrorCode'
-  ERROR_UNAUTHORIZED:
-    description: request does not have relevant authority to start the process.
-    schema:
-      $ref: '#/definitions/ErrorCode'
-  ERROR_INVALID_FILE_FORMAT:
-    description: provided file data is invalid, choose from the given list
-    schema:
-      $ref: '#/definitions/ErrorCode'
-  ERROR_WORD_DETECTION:
-    description: model detected error while executing its purpose
-    schema:
-      $ref: '#/definitions/ErrorCode'
-  ERROR_RESOURCE_EXHAUSTED:
-    description: application deprived of system resources
-    schema:
-      $ref: '#/definitions/ErrorCode'
-  SUCCESS:
-    description: all good
-    schema:
-      $ref: '#/definitions/ErrorCode'
+          description: type of input file
+        identifier:
+          type: string
+          description: unique identifier for a file generated by the file converter module.
+    
+    FileConfig:
+      type: object
+      properties:
+        languages:
+          type: array
+          description: list of ISO 639-1  language code
+          items:
+            type: string
+    
+    Page:
+      type: object
+      properties:
+        identifier:
+          type: string
+          description: unique page identifier
+        boundingbox:
+          type: object
+          $ref:  "#/components/schemas/Vertices"
+          description: page coordinates
+        path:
+          type: string
+          description: optional placeholder to hold image path of the page
+        resolution:
+          type: integer
+          description: dpi of the page image
+        regions:
+          type: array
+          description: coordinates of extracted regions
+          items:
+            $ref: "#/components/schemas/Region"
+    
+    Region:
+      type: object
+      properties:
+        boundingbox:
+          type: object
+          $ref:  "#/components/schemas/Vertices"
+          description: region coordinates
+        identifier:
+          type: string
+          description: unique identifier for region
+          format: uuid4
+        class:
+          type: string
+          description: class of detected region
+          enum:
+            - PARA
+            - LINE
+            - WORD
+            - IMAGE
+            - TABLE
+            - TABLE_CELL
+            - SEPARATOR
+            - MATHEMATICAL_FORMULA
+            - HEADER
+            - FOOTER
+            - BGIMAGE
+        path:
+          type: string
+          description: optional placeholder to hold image path of the region
+        regions:
+          type: array
+          description: various visual objects present on the page
+          items:
+              oneOf:
+                - $ref: '#/components/schemas/Region'
+                - $ref: '#/components/schemas/DataRegion'
+      required:
+        - boundingbox
+        - identifier
+        - class
+        - regions
+    
+    DataRegion:
+      type: object
+      required:
+        - boundingbox
+        - identifier
+        - confidence
+        - class
+        - text
+        - font
+      properties:
+        boundingbox:
+          type: object
+          $ref:  "#/components/schemas/Vertices"
+          description: region coordinates extracted
+        identifier:
+          type: string
+          description: unique identifier for region
+          format: uuid4
+        language:
+          type: string
+          description: language of the extracted text
+        confidence:
+          type: number
+          description: confidence of the extracted text
+        class:
+          type: string
+          description: class of detected region
+          enum:
+            - WORD
+            - SYMBOL
+            - SUPERSCRIPT
+            - SUBSCRIPT
+        text:
+          type: string
+          description: collated text at region level or class specific metadata
+        font:
+          $ref: "#/components/schemas/Font"
+      
+  
+    Vertices:
+      type: array
+      description: list of vertex object
+      items:
+        $ref: '#/components/schemas/Vertex'
+    
+    Vertex:
+      type: object
+      description: coordinate of a point, X & Y
+      required:
+        - x
+        - y
+      properties:
+        x:
+          type: number
+        y:
+          type: number
+      
+    Font:
+      type: object
+      properties:
+        family:
+          type: string
+          description: font family
+        size:
+          type: number
+          description: font size
+        style:
+          type: string
+          description: font style like BOLD, ITALIC, REGULAR
+          enum:
+            - BOLD
+            - ITALIC
+            - REGULAR
+    
+    ErrorCode:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: status code
+          enum:
+            - FILE_NOT_FOUND
+            - FILE_FORMAT_NOT_SUPPORTED
+            - OCR_SERVICE_NOT_AVAILABLE
+            - UNAUTHORIZED_ACCESS
+            - INAPPROPRIATE_DPI_RECEIVED
+            
+        message:
+          type: string
+          description: human understandable format
+      required:
+        - code
+        - message
+    
+    HttpOutput:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          description: request successful indicator.
+        why:
+          type: string
+          description: Response message.
+        status:
+          type: object
+          description: overall operation status
+          $ref: '#/components/schemas/ErrorCode'
+        data:
+          type: integer
+          description: should be null object
+          $ref: '#/components/schemas/DigitizationResponse'
+          

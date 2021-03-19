@@ -314,7 +314,13 @@ class Region_Unifier:
     def region_unifier(self,page_words, page_lines,page_regions):
         try:
             
-            text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(page_regions)
+            #sort regions 
+
+            page_regions.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
+            sorted_page_regions = sort_regions(page_regions,[])
+
+
+            text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(sorted_page_regions)
             
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
             filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
@@ -323,7 +329,7 @@ class Region_Unifier:
             for idx,table in enumerate(tabel_region):
                 filtered_words     = remvoe_regions(copy.deepcopy(table['children']), copy.deepcopy(filtered_words))
                 filtered_lines    = remvoe_regions(copy.deepcopy(table['children']), copy.deepcopy(filtered_lines))
-                tabel_region[idx]['children'] =  collate_regions(copy.deepcopy( table['children']),copy.deepcopy(page_words),grand_children=False,region_flag = False)
+                tabel_region[idx]['children'] =  collate_regions(copy.deepcopy( table['children']),copy.deepcopy(page_words),child_class='WORD',grand_children=False,region_flag = False)
                 page_words = filtered_words
                 page_lines = filtered_lines
             
@@ -337,17 +343,15 @@ class Region_Unifier:
             # filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_lines))
 
             
-            line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words))
+            line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words),child_class='WORD')
             
             
-            v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),grand_children=True,add_font=True )
+            v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),child_class='LINE' ,grand_children=True,add_font=True )
             #print(v_list)
             #t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
             t_list = tabel_region
             i_list       =  collate_regions(copy.deepcopy( image_region),copy.deepcopy(page_words),grand_children=True,region_flag = False,skip_enpty_children=True)
-            for i in i_list :
-                if 'chiildren' in i.keys():
-                    v_list.append(i)
+            
 
             # line_list    = collate_regions(page_lines,page_words)
             # v_list       = collate_regions(page_regions,line_list,grand_children=True)
@@ -360,12 +364,15 @@ class Region_Unifier:
             self.avg_ver_ratio =   avg_ver_dist /avg_height
 
             for idx,v_block in enumerate(v_list):
-                if 'class' not in v_block.keys():
-                    v_list[idx]['class']= "TEXT"
-                if   v_block['children'] != None and  len(v_block['children']) > 1 :
+                #if 'class' not in v_block.keys():
+                v_list[idx]['class']= "PARA"
+                if   v_block['regions'] != None and  len(v_block['regions']) > 1 :
                     avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([v_block])
                     v_block['avg_ver_dist'] = avg__region_ver_dist
                     avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
+
+                if 'children' in v_block.keys():
+                    v_block.pop('children')
 
                     #v_block['children'] = horzontal_merging(v_block['children'],avrage_region_ver_ratio)
                     
@@ -375,7 +382,8 @@ class Region_Unifier:
 
             
             for idx,t_block in enumerate(t_list):
-                if   t_block['children'] != None and  len(t_block['children']) > 1 :
+                t_list[idx]['class'] = 'TABLE_CELL'
+                if   t_block['regions'] != None and  len(t_block['regions']) > 1 :
                     avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([t_block])
                     t_block['avg_ver_dist'] = avg__region_ver_dist
 
@@ -383,9 +391,11 @@ class Region_Unifier:
                     #t_block['children'] = horzontal_merging(t_block['children'],avrage_region_ver_ratio)
                     t_list[idx] =copy.deepcopy(t_block)
 
+            # for i in i_list :
+            #     if 'regions' in i.keys():
+            #         v_list.append(i)
 
-
-            ################### page configs for region unifier
+            # ################### page configs for region unifier
             #avg_hor_dist      = page_config.avg_region_info(text_regions)
             avg_word_sepc     = page_config.avg_word_sep(line_list)
 
