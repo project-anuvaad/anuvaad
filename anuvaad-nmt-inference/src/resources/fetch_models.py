@@ -31,13 +31,13 @@ class FetchModelsResource_v2(Resource):
             i = fetch_model.to_json()
             json_data = json.loads(i)
             out = CustomResponse(Status.SUCCESS.value, json_data)
-            return out.getresjson(),200
+            return out.get_res_json(),200
         except Exception as e:
             log_exception("Error in FetchModelsResource_v2: {}".format(e),MODULE_CONTEXT,e)
             status = Status.SYSTEM_ERR.value
-            status['why'] = str(e)
+            status['message'] = str(e)
             out = CustomResponse(status, None)                  
-            return out.getresjson(),500
+            return out.get_res_json(),500
 
 class FetchSingleModelResource(Resource):
     def get(self,id):
@@ -49,16 +49,16 @@ class FetchSingleModelResource(Resource):
                     i = CreateModel.objects(uuid=id).to_json()
                     json_data = json.loads(i)
                     out = CustomResponse(Status.SUCCESS.value, json_data)
-                    return out.getresjson(),200
+                    return out.get_res_json(),200
                 else:
                     out = CustomResponse(Status.No_File_DB.value, None)
-                    return out.getresjson(),401
+                    return out.get_res_json(),401
         except Exception as e:
             log_exception("Error in FetchSingleModelResource: {}".format(e),MODULE_CONTEXT,e)
             status = Status.SYSTEM_ERR.value
-            status['why'] = str(e)
+            status['message'] = str(e)
             out = CustomResponse(status, None)                  
-            return out.getresjson(),500
+            return out.get_res_json(),500
          
 class CreateModelResource(Resource):
     def post(self):
@@ -78,16 +78,16 @@ class CreateModelResource(Resource):
                 i = data.to_json()
                 json_data = json.loads(i)
                 out = CustomResponse(Status.SUCCESS.value, json_data)
-                return out.getresjson(),200
+                return out.get_res_json(),200
             else:
                 out = CustomResponse(Status.INCOMPLETE_API_REQUEST.value, None)
-                return out.getresjson(),401      
+                return out.get_res_json(),401      
         except Exception as e:
             log_exception("Error in CreateModelResource: {}".format(e),MODULE_CONTEXT,e)
             status = Status.SYSTEM_ERR.value
-            status['why'] = str(e)
+            status['message'] = str(e)
             out = CustomResponse(status, None)                  
-            return out.getresjson(),500
+            return out.get_res_json(),500
 
 class UpdateModelsResource(Resource):
     def post(self,id):
@@ -98,22 +98,22 @@ class UpdateModelsResource(Resource):
                 check = CreateModel.objects(uuid=id)
                 if not bool(body):
                     out = CustomResponse(Status.INCOMPLETE_API_REQUEST.value, None)
-                    return out.getresjson(),401 
+                    return out.get_res_json(),401 
                 elif check.count()>0:
                     update_model = CreateModel.objects(uuid=id).update(**body)
                     i = CreateModel.objects(uuid=id).to_json()
                     json_data = json.loads(i)
                     out = CustomResponse(Status.SUCCESS.value, json_data)
-                    return out.getresjson(),200
+                    return out.get_res_json(),200
                 else:
                     out = CustomResponse(Status.No_File_DB.value, None)
-                    return out.getresjson(),401
+                    return out.get_res_json(),401
         except Exception as e:
             log_exception("Error in UpdateModelsResource: {}".format(e),MODULE_CONTEXT,e)
             status = Status.SYSTEM_ERR.value
-            status['why'] = str(e)
+            status['message'] = str(e)
             out = CustomResponse(status, None)                  
-            return out.getresjson(),500
+            return out.get_res_json(),500
 
 class DeleteModelResource(Resource):
     def post(self,id):
@@ -131,6 +131,6 @@ class DeleteModelResource(Resource):
         except Exception as e:
             log_exception("Error in DeleteModelResource: {}".format(ex),MODULE_CONTEXT,e)
             status = Status.SYSTEM_ERR.value
-            status['why'] = str(e)
+            status['message'] = str(e)
             out = CustomResponse(status, None)                  
-            return out.getresjson(),500
+            return out.get_res_json(),500

@@ -3,7 +3,7 @@ import enum
 
 class Status(enum.Enum):
     
-    SUCCESS = { "ok": "true",  "statusCode": 200 , "why": "Requested operation successful" }
+    SUCCESS = { "ok": "true",  "statusCode": 200 , "why": "Requested operation successful","message":"Request successfully executed!" }
     FILE_MISSING = { "ok": "false", "statusCode": 404 , "why": "No file found" }
     TYPE_MISSING = { "ok": "false", "statusCode": 404 , "why": "No type found in the request" }
     ID_MISSING = { "ok": "false", "statusCode": 404 , "why": "No ID found in the request" }
