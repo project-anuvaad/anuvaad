@@ -15,11 +15,12 @@ class DigitalDocumentModel(object):
         except Exception as e:
             log_exception("db connection exception ",  AppContext.getContext(), e)
 
-    def store_bulk_blocks(self, block):
+    def store_bulk_blocks(self, blocks):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
-            results     = collections.insert(block)
-            return None
+            results     = collections.insert_many(blocks)
+            if len(blocks) == len(results.inserted_ids):
+                return True
         except Exception as e:
             log_exception("Exception on save document | DigitalDocumentModel :{}".format(str(e)), AppContext.getContext(), e)
             return False
