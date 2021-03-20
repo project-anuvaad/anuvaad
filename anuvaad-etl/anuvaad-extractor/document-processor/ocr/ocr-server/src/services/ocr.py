@@ -20,6 +20,7 @@ def get_text(path,page_dict,page_regions,font_info):
     #path = "/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-server/"+path
     
     img = cv2.imread(path)
+    #print(path)
     img[175 < img ] = 255
     masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
     cv2.imwrite(masked_path,img)
@@ -44,6 +45,8 @@ def text_extraction(file_properties,image_paths,file):
         save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
         page_output = set_bg_image(page_output, save_path, idx,file)
         file_properties.set_regions(idx,page_output)
+        file_properties.pop_fontinfo(idx)
+
 
     return file_properties.get_file()
 

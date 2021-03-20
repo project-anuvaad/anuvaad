@@ -327,9 +327,9 @@ class Region_Unifier:
             filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_lines))
             
             for idx,table in enumerate(tabel_region):
-                filtered_words     = remvoe_regions(copy.deepcopy(table['children']), copy.deepcopy(filtered_words))
-                filtered_lines    = remvoe_regions(copy.deepcopy(table['children']), copy.deepcopy(filtered_lines))
-                tabel_region[idx]['children'] =  collate_regions(copy.deepcopy( table['children']),copy.deepcopy(page_words),child_class='WORD',grand_children=False,region_flag = False)
+                filtered_words     = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_words))
+                filtered_lines    = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_lines))
+                tabel_region[idx]['regions'] =  collate_regions(copy.deepcopy( table['regions']),copy.deepcopy(page_words),child_class='WORD',grand_children=False,region_flag = False)
                 page_words = filtered_words
                 page_lines = filtered_lines
             
@@ -382,7 +382,7 @@ class Region_Unifier:
 
             
             for idx,t_block in enumerate(t_list):
-                t_list[idx]['class'] = 'TABLE_CELL'
+                t_list[idx]['class'] = 'TABLE'
                 if   t_block['regions'] != None and  len(t_block['regions']) > 1 :
                     avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([t_block])
                     t_block['avg_ver_dist'] = avg__region_ver_dist
