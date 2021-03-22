@@ -52,7 +52,7 @@ class OCRDD10GV:
         else:
             return None
         tool_input = {
-            "files": files
+            "inputs": files
         }
         ocrddgv_input = {
             "jobID": task_output["jobID"],

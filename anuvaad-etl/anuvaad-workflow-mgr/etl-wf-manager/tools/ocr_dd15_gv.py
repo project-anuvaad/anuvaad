@@ -22,7 +22,7 @@ class OCRDD15GV:
             }
             inputs.append(obj)
         tool_input = {
-            "files": inputs
+            "inputs": inputs
         }
         ogv_input = {
             "jobID": wf_input["jobID"],
