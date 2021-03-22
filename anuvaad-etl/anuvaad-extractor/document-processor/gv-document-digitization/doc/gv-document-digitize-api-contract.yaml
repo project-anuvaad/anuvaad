@@ -55,7 +55,7 @@ components:
     DigitizationResponse:
       type: object
       properties:
-        files:
+        outputs:
           type: array
           description: a list of objects having file, file_config and its pages
           items:

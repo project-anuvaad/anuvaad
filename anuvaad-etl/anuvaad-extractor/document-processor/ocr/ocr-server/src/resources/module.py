@@ -58,5 +58,5 @@ class Vision_OCR(Resource):
                 log_info("Resource Vision_OCR api response completed", app_context.application_context)
                 return jsonify(response)
         except FormatError as e:
-            log_error("Resource Vision_OCR Input json format is not correct or dict_key is missing", app_context.application_context, e)
+            log_error("Resource Vision_OCR Input json format is not correct or dict_key is missing" + str(e), app_context.application_context, e)
             return Status.ERR_request_input_format.value
