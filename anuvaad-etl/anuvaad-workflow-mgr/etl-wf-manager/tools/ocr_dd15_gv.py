@@ -8,7 +8,7 @@ class OCRDD15GV:
         pass
 
     # Returns a json of the format accepted by OCR-GV
-    def get_oddgv_input_wf(self, wf_input):
+    def get_odd15gv_input_wf(self, wf_input):
         files = wf_input["input"]["files"]
         inputs = []
         for file in files:
@@ -36,7 +36,7 @@ class OCRDD15GV:
         return ogv_input
 
     # Returns a json of the format accepted by OCR-GV based on a predecessor.
-    def get_oddgv_input(self, task_output, predecessor):
+    def get_odd15gv_input(self, task_output, predecessor):
         files = []
         if predecessor == tool_blocksegmenter:
             output = task_output["output"]
@@ -52,7 +52,7 @@ class OCRDD15GV:
         else:
             return None
         tool_input = {
-            "files": files
+            "inputs": files
         }
         ocrddgv_input = {
             "jobID": task_output["jobID"],

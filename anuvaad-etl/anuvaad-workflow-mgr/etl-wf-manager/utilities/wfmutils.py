@@ -160,11 +160,9 @@ class WFMUtils:
             if current_tool == tool_ocrgooglevision:
                 tool_input = ocrgv.get_ogv_input(task_output, previous_tool)
             if current_tool == tool_ocrdd10googlevision:
-                tool_input = ocrdd10gv.get_oddgv_input(task_output, previous_tool)
-                log_info(tool_input, tool_input)
+                tool_input = ocrdd10gv.get_odd10gv_input(task_output, previous_tool)
             if current_tool == tool_ocrdd15googlevision:
-                tool_input = ocrdd15gv.get_oddgv_input(task_output, previous_tool)
-                log_info(tool_input, tool_input)
+                tool_input = ocrdd15gv.get_odd15gv_input(task_output, previous_tool)
             if current_tool in ocr_tools:
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 for file in tool_input["input"]["inputs"]:
@@ -187,9 +185,9 @@ class WFMUtils:
             if current_tool == tool_ocrgooglevision:
                 tool_input = ocrgv.get_ogv_input_wf(wf_input)
             if current_tool == tool_ocrdd10googlevision:
-                tool_input = ocrdd10gv.get_oddgv_input_wf(wf_input)
+                tool_input = ocrdd10gv.get_odd10gv_input_wf(wf_input)
             if current_tool == tool_ocrdd15googlevision:
-                tool_input = ocrdd15gv.get_oddgv_input_wf(wf_input)
+                tool_input = ocrdd15gv.get_odd15gv_input_wf(wf_input)
             if current_tool == tool_ocrtesseract:
                 tool_input = ocrtess.get_octs_input_wf(wf_input)
             if current_tool == tool_blocksegmenter:
