@@ -165,6 +165,56 @@ WorkflowConfigs:
           assignment: round-robin
       interruptenable: true
       endState: true
+
+
+
+
+  - workflowCode: WF_A_OD10GV
+    type: ASYNC
+    description: gv-ocr wf for doc digitisation. ocr wf 1.0
+    useCase: A_OD10GV
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-DD10-GOOGLE-VISION
+        description: ocr using google vision for doc digitisation.
+        kafka-input:
+        - topic: anuvaad-dp-tools-gv-document-digitization-input-v10
+          partitions: 2
+          keys: anuvaad-dp-tools-gv-document-digitization-input-key-one, anuvaad-dp-tools-gv-document-digitization-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-gv-document-digitization-output-v10
+          partitions: 2
+          keys: anuvaad-dp-tools-gv-document-digitization-output-key-one, anuvaad-dp-tools-gv-document-digitization-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
+
+
+
+
+  - workflowCode: WF_A_OD15GV
+    type: ASYNC
+    description: gv-ocr wf for doc digitisation. ocr wf 1.5
+    useCase: A_OD15GV
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-DD15-GOOGLE-VISION
+        description: ocr using google vision for doc digitisation.
+        kafka-input:
+        - topic: anuvaad-dp-tools-ocr-google-vision-input-v15
+          partitions: 2
+          keys: anuvaad-dp-tools-ocr-google-vision-input-key-one, anuvaad-dp-tools-ocr-google-vision-input-key-two
+          assignment: round-robin
+        kafka-output:
+        - topic: anuvaad-dp-tools-ocr-google-vision-output-v15
+          partitions: 2
+          keys: anuvaad-dp-tools-ocr-google-vision-output-key-one, anuvaad-dp-tools-ocr-google-vision-output-key-two
+          assignment: round-robin
+      interruptenable: true
+      endState: true
       
 
 
@@ -628,10 +678,10 @@ WorkflowConfigs:
 
 
 
-  - workflowCode: WF_A_FCWDLDBSOGV
+  - workflowCode: WF_A_FCWDLDBSOD15GV
     type: ASYNC
-    description: Document digitizarion wf version 1.5
-    useCase: A_FWLBOG
+    description: Document digitization wf version 1.5
+    useCase: A_FWLBOD15G
     sequence:
     - order: 0
       tool:
@@ -699,8 +749,8 @@ WorkflowConfigs:
       endState: false
     - order: 4
       tool:
-      - name: OCR-GOOGLE-VISION
-        description: ocr using gv server (1.5)
+      - name: OCR-DD15-GOOGLE-VISION
+        description: ocr using google vision for doc digitisation wf 1.5
         kafka-input:
         - topic: anuvaad-dp-tools-ocr-google-vision-input-v15
           partitions: 2

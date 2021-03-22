@@ -5,14 +5,8 @@ from anuvaad_auditor.errorhandler import post_error
 
 log = logging.getLogger('file')
 from utilities.wfmutils import WFMUtils
-from configs.wfmconfig import is_sync_flow_enabled
-from configs.wfmconfig import is_async_flow_enabled
-from configs.wfmconfig import tool_translator
-from configs.wfmconfig import tool_worddetector
-from configs.wfmconfig import tool_layoutdetector
-from configs.wfmconfig import tool_ocrgooglevision
-from configs.wfmconfig import tool_ocrtesseract
-from configs.wfmconfig import tool_blocksegmenter
+from configs.wfmconfig import is_sync_flow_enabled, is_async_flow_enabled, tool_translator, tool_worddetector, tool_layoutdetector
+from configs.wfmconfig import tool_ocrgooglevision, tool_ocrtesseract, tool_blocksegmenter, tool_ocrdd10googlevision, tool_ocrdd15googlevision
 
 
 wfmutils = WFMUtils()
@@ -107,7 +101,8 @@ class WFMValidator:
                                 if 'target_language_code' not in model.keys():
                                     return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
                         if tool_worddetector in tools or tool_layoutdetector in tools or tool_ocrgooglevision in tools \
-                                or tool_ocrtesseract in tools or tool_blocksegmenter in tools:
+                                or tool_ocrtesseract in tools or tool_blocksegmenter in tools or tool_ocrdd10googlevision in tools\
+                                or tool_ocrdd15googlevision in tools:
                             if 'config' not in file.keys():
                                 return post_error("CONFIG_NOT_FOUND", "OCR Config details are mandatory for this wf.", None)
                             else:

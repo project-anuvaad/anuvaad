@@ -1,16 +1,14 @@
-
-
-from configs.wfmconfig import tool_ocrgooglevision
+from configs.wfmconfig import tool_ocrdd15googlevision
 from configs.wfmconfig import tool_blocksegmenter
 
 
-class OCRGV:
+class OCRDD15GV:
 
     def __init__(self):
         pass
 
     # Returns a json of the format accepted by OCR-GV
-    def get_ogv_input_wf(self, wf_input):
+    def get_oddgv_input_wf(self, wf_input):
         files = wf_input["input"]["files"]
         inputs = []
         for file in files:
@@ -24,21 +22,21 @@ class OCRGV:
             }
             inputs.append(obj)
         tool_input = {
-            "inputs": inputs
+            "files": inputs
         }
         ogv_input = {
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
             "stepOrder": 0,
-            "tool": tool_ocrgooglevision,
+            "tool": tool_ocrdd15googlevision,
             "input": tool_input,
             "metadata": wf_input["metadata"]
         }
-        ogv_input["metadata"]["module"] = tool_ocrgooglevision
+        ogv_input["metadata"]["module"] = tool_ocrdd15googlevision
         return ogv_input
 
     # Returns a json of the format accepted by OCR-GV based on a predecessor.
-    def get_ogv_input(self, task_output, predecessor):
+    def get_oddgv_input(self, task_output, predecessor):
         files = []
         if predecessor == tool_blocksegmenter:
             output = task_output["output"]
@@ -54,15 +52,15 @@ class OCRGV:
         else:
             return None
         tool_input = {
-            "inputs": files
+            "files": files
         }
-        ocgv_input = {
+        ocrddgv_input = {
             "jobID": task_output["jobID"],
             "workflowCode": task_output["workflowCode"],
             "stepOrder": task_output["stepOrder"],
-            "tool": tool_ocrgooglevision,
+            "tool": tool_ocrdd15googlevision,
             "input": tool_input,
             "metadata": task_output["metadata"]
         }
-        ocgv_input["metadata"]["module"] = tool_ocrgooglevision
-        return ocgv_input
+        ocrddgv_input["metadata"]["module"] = tool_ocrdd15googlevision
+        return ocrddgv_input
