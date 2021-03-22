@@ -163,6 +163,8 @@ class WFMUtils:
                 tool_input = block_segmenter.get_bs_input(task_output, previous_tool)
             if current_tool == tool_ocrtesseract:
                 tool_input = ocrtess.get_octs_input(task_output, previous_tool)
+            if current_tool == tool_ocrgooglevision:
+                tool_input = ocrgv.get_ogv_input(task_output, previous_tool)
             if current_tool in ocr_tools:
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 for file in tool_input["input"]["inputs"]:
