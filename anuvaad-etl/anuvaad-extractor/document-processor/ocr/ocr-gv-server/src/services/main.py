@@ -27,7 +27,7 @@ def process_input(app_context,base_dir) :
             
             page_res = text_extraction(file_properties,page_paths,file)
             output_files.append(page_res)
-        app_context.application_context["outputs"] =output_files
+        app_context.application_context["outputs"] = output_files
         log_info("successfully completed google vision ocr", None)
 
     except Exception as e:
