@@ -161,8 +161,10 @@ class WFMUtils:
                 tool_input = ocrgv.get_ogv_input(task_output, previous_tool)
             if current_tool == tool_ocrdd10googlevision:
                 tool_input = ocrdd10gv.get_oddgv_input(task_output, previous_tool)
+                log_info(tool_input, tool_input)
             if current_tool == tool_ocrdd15googlevision:
                 tool_input = ocrdd15gv.get_oddgv_input(task_output, previous_tool)
+                log_info(tool_input, tool_input)
             if current_tool in ocr_tools:
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 for file in tool_input["input"]["inputs"]:
