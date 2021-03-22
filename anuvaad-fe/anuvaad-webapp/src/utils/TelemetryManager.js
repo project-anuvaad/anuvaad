@@ -53,12 +53,16 @@ export const pageLoadStarted = (page_id) => {
     init()
   }
   let user_id = null;
-  let session_id = null
+  let session_id = null;
+  let org_id = null;
+  let name = null;
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
   let token = localStorage.getItem('token')
 
   if (user_profile != null && token != null) {
     user_id = user_profile.userID
+    org_id = user_profile.orgID
+    name = user_profile.name
     session_id = token
   } else {
     user_id = 'anonymous'
@@ -75,6 +79,8 @@ export const pageLoadStarted = (page_id) => {
     ets: Date.now(),
     actor: {
       uid: user_id,
+      org_id : org_id,
+      name : name
     },
     context: {
       sid: session_id
@@ -95,11 +101,15 @@ export const pageLoadCompleted = (page_id) => {
 
   let user_id = null;
   let session_id = null
+  let org_id = null;
+  let name = null;
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
   let token = localStorage.getItem('token')
 
   if (user_profile != null && token != null) {
     user_id = user_profile.userID
+    org_id = user_profile.orgID
+    name = user_profile.name
     session_id = token
   } else {
     user_id = 'anonymous'
@@ -116,6 +126,8 @@ export const pageLoadCompleted = (page_id) => {
     ets: Date.now(),
     actor: {
       uid: user_id,
+      org_id : org_id,
+      name : name
     },
     context: {
       sid: session_id
@@ -158,11 +170,15 @@ export const startWorkflow = (source_language, target_language, filename, job_id
   }
 
   let user_id = null;
+  let org_id = null;
+  let name = null;
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
   let token = localStorage.getItem('token')
   
   if (user_profile != null && token != null) {
     user_id = user_profile.userID
+    org_id = user_profile.orgID
+    name = user_profile.name
   } else {
     user_id = 'anonymous'
   }
@@ -177,6 +193,8 @@ export const startWorkflow = (source_language, target_language, filename, job_id
     ets: Date.now(),
     actor: {
       uid: user_id,
+      org_id : org_id,
+      name : name
     },
     context: {
       cdata: [{
@@ -447,10 +465,14 @@ export const log = (action_type, message, api) => {
   }
 
   let user_id = null;
+  let org_id = null;
+  let name = null;
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
 
   if (user_profile != null) {
     user_id = user_profile.userID
+    org_id = user_profile.orgID
+    name = user_profile.name
   } else {
     user_id = 'anonymous'
   }
@@ -473,6 +495,8 @@ export const log = (action_type, message, api) => {
     ets: Date.now(),
     actor: {
       uid: user_id,
+      org_id : org_id,
+      name : name
     }
   }
 
