@@ -28,7 +28,7 @@ class ValidationResponse(object):
                     raise FileErrors("FILENAME_ERROR", "Filename not found or its empty")
                 elif not input_filename.endswith('.pdf'):
                     raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
-                elif in_file_type == "" or in_file_type is None:
+                elif in_file_type == "" or in_file_type is None or in_file_type not in ['PDF' ,'pdf'] :
                     raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
                 #elif file_ops.check_file_extension(in_file_type) is False:
                     #raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")

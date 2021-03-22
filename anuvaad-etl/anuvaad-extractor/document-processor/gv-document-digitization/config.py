@@ -96,8 +96,8 @@ CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER
 #     datefmt="%d/%m/%y %H:%M:%S",
 # )
 EXRACTION_RESOLUTION  =  300
-
-
+SAVE_URL = "http://localhost:5001//anuvaad/ocr-content-handler/v0/ocr/save-document"
+SAVE_NO_PAGE = 1
 
 CLEAN_BACKGROUND = False
 

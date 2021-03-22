@@ -96,7 +96,9 @@ def sort_regions(region_lines, sorted_lines=[]):
         sort_regions(next_line, sorted_lines)
     return sorted_lines
 
-def collate_regions(regions, lines,grand_children=False,region_flag = True,skip_enpty_children=False,add_font=False ):
+def collate_regions(regions, lines, child_class=None, grand_children=False,region_flag = True,skip_enpty_children=False,add_font=False ):
+
+    child_key='regions'
     idx = index.Index()
     lines_intersected = []
     if regions !=None and len(regions) > 0:
@@ -105,6 +107,8 @@ def collate_regions(regions, lines,grand_children=False,region_flag = True,skip_
             if add_font:
                 height = abs(line['boundingBox']['vertices'][0]['y'] - line['boundingBox']['vertices'][2]['y'])
                 lines[line_idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
+                if child_class is not None:
+                    lines[line_idx]['class'] = child_class
             poly = get_polygon(line['boundingBox'])
             idx.insert(line_idx, poly.bounds)
         for region_index, region in enumerate(regions):
@@ -115,8 +119,10 @@ def collate_regions(regions, lines,grand_children=False,region_flag = True,skip_
                 for intr_index in children_lines:
                     if intr_index not in lines_intersected:
                         if grand_children :
-                            if 'children' not in lines[intr_index].keys():
-                                lines[intr_index]['children'] = [copy.deepcopy(lines[intr_index])]
+                            if child_key not in lines[intr_index].keys():
+                                grand_child  = copy.deepcopy(lines[intr_index])
+                                grand_child['class'] = 'WORD'
+                                lines[intr_index][child_key] = [grand_child]
                     
                         line_poly = get_polygon(lines[intr_index]['boundingBox'])
                         area = region_poly.intersection(line_poly).area
@@ -128,22 +134,22 @@ def collate_regions(regions, lines,grand_children=False,region_flag = True,skip_
                     
                 region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 if len(region_lines) > 1:
-                    regions[region_index]['children'] = sort_regions(region_lines,[])
+                    regions[region_index][child_key] = sort_regions(region_lines,[])
                     #regions[region_index]['children'] = region_lines
                     regions[region_index]['avg_size'] = get_avrage_size(region_lines)
                 else :
-                    regions[region_index]['children']  = region_lines
+                    regions[region_index][child_key]  = region_lines
                     regions[region_index]['avg_size'] = get_avrage_size(region_lines)
             else:
                 if not skip_enpty_children :
                     if grand_children :
-                        regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
-                    regions[region_index]['children'] = [copy.deepcopy(regions[region_index])]
+                        regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
+                    regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
     #orphan_lines = []
     if region_flag:
         for line_index, line in enumerate(lines):
             if line_index not in lines_intersected:
-                line['children'] = [ copy.deepcopy(line)]
+                line[child_key] = [ copy.deepcopy(line)]
                 regions.append(line)
 
     return regions

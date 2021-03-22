@@ -13,6 +13,7 @@ import SENTENCE_ACTION from '../DocumentEditor/SentenceActions'
 import { confscore } from '../../../../utils/OcrConfScore'
 import SaveEditedWord from './SaveEditedWord';
 import Modal from '@material-ui/core/Modal';
+import set_crop_size from '../../../../flux/actions/apis/view_digitized_document/set_crop_size';
 
 
 const PAGE_OPS = require("../../../../utils/page.operations");
@@ -37,7 +38,7 @@ class OcrPageCard extends React.Component {
             text: '',
             url: '',
             event: false,
-            isOpen: false
+            isOpen: false,
         };
         this.handleTextChange = this.handleTextChange.bind(this);
         this.action = null
@@ -133,7 +134,7 @@ class OcrPageCard extends React.Component {
             <div
                 style={{
                     position: "absolute",
-                    fontSize: `max(min(${word.font.avg_size }px),${this.props.fontSize}px)`,
+                    fontSize: `${this.props.fontSize}px`,
                     top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
@@ -156,7 +157,10 @@ class OcrPageCard extends React.Component {
     }
 
     saveWord = (word) => {
-        this.setState({ isOpen: false, text: word })
+        let originalWord = this.state.text;
+        let changedWord = word
+        TELEMETRY.saveEditedWordEvent(originalWord, changedWord, 'SAVE_EDITED_WORD')
+        this.setState({ isOpen: false, text: changedWord })
     }
     renderModal = () => {
         return (
@@ -291,17 +295,39 @@ class OcrPageCard extends React.Component {
         }
     }
 
+    setLocationCoords = (identifier) => {
+        let { x, y, height, width, unit } = this.props.crop_size.copiedCoords
+        let div = document.createElement('div');
+        div.className = identifier
+        div.style.left = x + unit
+        div.style.top = y + unit
+        div.style.height = height + unit
+        div.style.width = width + unit
+        div.style.border = `1px solid black`
+        div.style.position = "absolute"
+        div.setAttribute('contenteditable', true)
+        div.style.zIndex = 2
+        div.style.fontSize = this.props.fontSize + unit
+        div.onblur = () => {
+            div.style.border = "none"
+        }
+        this.paper.appendChild(div);
+    }
+
+
     renderPage = (page, image) => {
         if (page) {
             let width = page['boundingBox'] && page.boundingBox.vertices[1].x - page.boundingBox.vertices[0].x + 'px'
             let height = page['boundingBox'] && page.boundingBox.vertices[2].y - page.boundingBox.vertices[0].y + 'px'
             return (
                 <div>
-                    <Paper elevation={2} style={{ position: 'relative', width: width, height: height }}>
+                    <Paper
+                        id={page.identifier}
+                        key={page.identifier}
+                        ref={e => this.paper = e}
+                        elevation={2} style={{ position: 'relative', width: width, height: height }}>
                         {page['regions'].map(region => this.renderChild(region))}
-                        {/* {
-                            this.renderImage(image)
-                        } */}
+                        {(this.props.copy_status) && this.setLocationCoords(page.identifier)}
                     </Paper>
                     <Divider />
                 </div>
@@ -331,14 +357,17 @@ const mapStateToProps = state => ({
     percent: state.fetchpercent.percent,
     status: state.showimagestatus.status,
     switch_style: state.switch_style.status,
-    fontSize: state.fetch_slider_pixel.percent
+    fontSize: state.fetch_slider_pixel.percent,
+    crop_size: state.cropsizeinfo,
+    copy_status: state.copylocation.status
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         highlightSentence,
         clearHighlighBlock,
-        cancelMergeSentence
+        cancelMergeSentence,
+        set_crop_size
     },
     dispatch
 );

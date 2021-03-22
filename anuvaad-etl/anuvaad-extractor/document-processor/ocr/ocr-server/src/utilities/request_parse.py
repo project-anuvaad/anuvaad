@@ -18,6 +18,7 @@ class File:
 
     def __init__(self, file):
         self.file = file
+        self.set_page_meta()
 
     @log_error
     def get_format(self):
@@ -48,6 +49,16 @@ class File:
         return self.file['pages'][page_index]['font_properties']
 
     @log_error
+    def pop_fontinfo(self, page_index):
+        self.file['pages'][page_index].pop('font_properties')
+
+
+
+    @log_error
+    def get_fontinfo(self, page_index):
+        return self.file['pages'][page_index]['font_properties']
+
+    @log_error
     def get_file(self):
         return self.file
     @log_error  
@@ -68,6 +79,13 @@ class File:
     @log_error
     def set_regions(self, page_index, regions):
         self.file['pages'][page_index]["regions"] = regions
+
+    @log_error
+    def set_page_meta(self):
+        for page_index, page_path in enumerate(self.get_pages()) :
+            self.file['pages'][page_index]['path'] = page_path
+            self.file['pages'][page_index]['page_no'] = page_index +1
+
 
 
 def get_files(application_context):
