@@ -176,7 +176,7 @@ class PRIMA(object):
 		if class_name == "SeparatorRegion":
 			class_name = "SEPARATOR"
 		if class_name == "CellRegion":
-			class_name = "CELL"
+			class_name = "TABLE_CELL"
 
 		return class_name
 
@@ -327,7 +327,7 @@ def cell_layout(regions,image):
 				layout   = model_primatablenet.detect(blank_image)
 				bbox,tag,score = prima.prima_region(layout)
 				layouts  = prima.update_box_format(bbox,tag,score)
-				tab_layouts['children']=layouts
+				tab_layouts['regions']=layouts
 				other_regions.append(tab_layouts)
 			return other_regions
 		else:
