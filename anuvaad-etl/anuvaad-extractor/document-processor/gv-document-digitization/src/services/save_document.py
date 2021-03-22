@@ -4,6 +4,8 @@ import src.utilities.app_context as app_context
 from flask.json import jsonify
 import copy 
 
+# token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6ImphaW55LmpveUB0YXJlbnRvLmNvbSIsInBhc3N3b3JkIjoiYickMmIkMTIkMmU4UzRYbHBDWVlMT21PclFLMjJ0T3JDS0s1N2xMME10TWJnNS44c0JYekJTTzd5V2lzZ1cnIiwiZXhwIjoxNjE2NDc5MTIwfQ.nROYtmjGsZwBo6VOVphQYptP-5qX-no6CXYh89iwqFg"
+# headers = {'auth-token' :token }
 def save_page_res(res):
     tmp_file = copy.deepcopy(res['rsp'])
     del tmp_file['input']
@@ -17,7 +19,7 @@ def save_page_res(res):
             pages = file['files'][0]['pages'][page_idx:page_idx+SAVE_NO_PAGE]
             save_file['files'][0]['pages'] = pages
             page_idx = page_idx+SAVE_NO_PAGE
-            #rsp = requests.post(SAVE_URL,json=file)
+            rsp = requests.post(SAVE_URL,json=file)
         
             
 
