@@ -313,6 +313,30 @@
             "description":"API to search records"
         },
         {
+            "id":"5b3dd208-5611-4a8c-9dd1-c4362ccf8371",
+            "uri":"/anuvaad/ocr-content-handler/v0/ocr/save-document",
+            "module":"OCR-CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to save OCR docs"
+        },
+        {
+            "id":"7d8858c2-dc66-43e9-8d7c-2931ac0908e9",
+            "uri":"/anuvaad/ocr-content-handler/v0/ocr/update-word",
+            "module":"OCR-CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update ocr record word"
+        },
+        {
+            "id":"a3b0fa2f-b088-49c9-8f87-5d0f764b9ccf",
+            "uri":"/anuvaad/ocr-content-handler/v0/ocr/fetch-document",
+            "module":"OCR-CONTENT-HANDLER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch ocr docs"
+        },
+        {
             "id":"9c1da068-aac9-4e93-97c0-e4dfa0306dfd",
             "uri":"/anuvaad-etl/document-converter/v0/document-converter",
             "module":"DOCUMENT-CONVERTER",
