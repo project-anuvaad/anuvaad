@@ -101,5 +101,3 @@ class DigitalDocumentGetResource(Resource):
             return post_error("Data Missing","Failed to get pages since data is missing",None), 400
     
 
-class DigitalDocumentExportResource(Resource):
-    pass

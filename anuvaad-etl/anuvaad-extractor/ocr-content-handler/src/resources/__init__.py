@@ -1,1 +1,1 @@
-from .ocr_document import DigitalDocumentSaveResource,DigitalDocumentUpdateWordResource, DigitalDocumentGetResource,DigitalDocumentExportResource
+from .ocr_document import DigitalDocumentSaveResource,DigitalDocumentUpdateWordResource, DigitalDocumentGetResource
