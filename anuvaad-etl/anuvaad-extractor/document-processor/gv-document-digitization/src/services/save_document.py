@@ -2,19 +2,22 @@ import requests
 from config import SAVE_URL, SAVE_NO_PAGE
 import src.utilities.app_context as app_context
 from flask.json import jsonify
+import copy 
 
 def save_page_res(res):
-    files = res['rsp']['inputs']
-    for file in files:
-        flag = True
+    tmp_file = copy.deepcopy(res['rsp'])
+    del tmp_file['input']
+    tmp_file['files'] =  res['rsp']['outputs']
+    del tmp_file['outputs']
+    for file in [tmp_file]:
         page_idx = 0
-        while flag:
-            pages = file['pages'][page_idx:page_idx+SAVE_NO_PAGE]
-            file['pages'] = pages
+        total_pages = len(file['files'][0]['pages'])
+        while page_idx<total_pages:
+            save_file = copy.deepcopy(file)
+            pages = file['files'][0]['pages'][page_idx:page_idx+SAVE_NO_PAGE]
+            save_file['files'][0]['pages'] = pages
             page_idx = page_idx+SAVE_NO_PAGE
-            if page_idx>=len(file['pages']):
-                flag=False
-            rsp = requests.post(SAVE_URL,json=jsonify(file))
+            #rsp = requests.post(SAVE_URL,json=file)
         
             
 
