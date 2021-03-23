@@ -11,7 +11,7 @@ const configs = {
     //CLIENT_ID: 'client_id='+process.env.REACT_APP_CLIENT_ID ,
     CLIENT_ID: process.env.REACT_APP_CLIENT_ID ? 'client_id=' + process.env.REACT_APP_CLIENT_ID : 'client_id=fc7ed37f-546a-41d3-b0f4-96e6ab8274bf',
     REDIRECT_URI: 'redirect_uri=' + window.location.protocol + '//' + window.location.hostname + (window.location.port ? (':' + window.location.port) : '') + '/callback',
-    IS_DEV: process.env.REACT_APP_APIGW_BASE_URL === 'https://developers.anuvaad.org/' ? true : false
+    IS_DEV: process.env.REACT_APP_BASE_URL === 'https://developers.anuvaad.org/' ? true : false
 };
 
 export default configs;
