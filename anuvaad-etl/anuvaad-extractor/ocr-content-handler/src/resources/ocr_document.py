@@ -12,25 +12,28 @@ class DigitalDocumentSaveResource(Resource):
 
     def post(self):
         body        = request.get_json()
-
-        if 'jobID' not in body or not body['jobID']:
-            return post_error("Data Missing","jobID is required",None), 400
          
         if 'files' not in body or not body['files']:
             return post_error("Data Missing","files is required",None), 400
+        
+        if 'recordID' not in body or not body['recordID']:
+            return post_error("Data Missing","recordID is required",None), 400
+
+        # if 'jobID' not in body or not body['jobID']:
+        #     return post_error("Data Missing","jobID is required",None), 400
 
         files = body['files']
-        jobID = body['jobID']
         userID = body['metadata']['userID']
+        recordID = body['recordID']
 
         if  not userID:
             return post_error("Data Missing","userID is required",None), 400
 
-            AppContext.adduserID(userID)
-            log_info('Missing params in DigitalDocumentSaveResource {}, user_id:{}'.format(body, userID), AppContext.getContext())
+            AppContext.addRecordID(recordID)
+            log_info('Missing params in DigitalDocumentSaveResource {}, user_id:{}, record_id:{}'.format(body, userID, recordID), AppContext.getContext())
                
         try:
-            result = digitalRepo.store(userID, jobID, files)
+            result = digitalRepo.store(userID, recordID, files)
             if result == False:
                 return post_error("Data Missing","Failed to store doc since data is missing",None), 400
             elif result is None:
@@ -39,7 +42,7 @@ class DigitalDocumentSaveResource(Resource):
             else:
                 return result, 400
         except Exception as e:
-            AppContext.adduserID(userID)
+            AppContext.addRecordID(recordID)
             log_exception("Exception on save document | DigitalDocumentSaveResource :{}".format(str(e)),  AppContext.getContext(), e)
             return post_error("Data Missing","Failed to store doc since data is missing",None), 400
 
@@ -64,7 +67,8 @@ class DigitalDocumentUpdateWordResource(Resource):
             if result == True:
                 res = CustomResponse(Status.SUCCESS.value, words)
                 return res.getres()
-            return post_error("Data Missing","Failed to update word since data is missing",None), 400
+            # return post_error("Data Missing","Failed to update word since data is missing",None), 400
+            return result, 400
 
         except Exception as e:
             log_exception("Exception in DigitalDocumentUpdateWordResource |{}".format(str(e)),  AppContext.getContext(), e)

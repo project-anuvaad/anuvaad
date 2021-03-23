@@ -42,8 +42,12 @@ class DigitalDocumentModel(object):
             
             # regions = []                                 
             for doc in docs:
-                region = doc['wordRegions'][0]
-                return region
+                if len(doc['wordRegions'])==1:
+                    print("yesssssssss")
+                    region = doc['wordRegions'][0]
+                    return region
+                else:
+                    pass
 
         except Exception as e:
             # print(e,"***********")
