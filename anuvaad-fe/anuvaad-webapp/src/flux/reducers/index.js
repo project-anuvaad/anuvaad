@@ -57,6 +57,7 @@ import fetch_slider_pixel from './view_digitized_document/fetch_slider_pixel';
 import startediting from './view_digitized_document/start_editing';
 import cropsizeinfo from './view_digitized_document/set_crop_size';
 import copylocation from './view_digitized_document/copy_location';
+import updated_words from './view_digitized_document/update_word';
 
 export default {
     login,
@@ -116,5 +117,6 @@ export default {
     fetch_slider_pixel,
     startediting,
     cropsizeinfo,
-    copylocation
+    copylocation,
+    updated_words,
 };
