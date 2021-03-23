@@ -73,9 +73,9 @@ class DigitalDocumentRepositories:
                                 word['text']=user_word
                                 break
                             else:
-                                return post_error("Data Missing","No record with the gived word_id",None)
+                                return post_error("Data Missing","No record with the given user_id,record_id and word_id",None)
             else:
-                return post_error("Data Missing","No record with the gived region_id",None)
+                return post_error("Data Missing","No record with the given user_id,record_id and region_id",None)
             
                 
             AppContext.addRecordID(record_id)
