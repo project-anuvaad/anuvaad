@@ -47,8 +47,8 @@ download_folder = 'upload'
 # )
 
 #SAVE_URL = "https://auth.anuvaad.org/anuvaad/ocr-content-handler/v0/ocr/save-document"
-#SAVE_URL = "http://gateway_anuvaad-ocr-content-handler:5001//anuvaad/ocr-content-handler/v0/ocr/save-document"
-SAVE_URL = "http://172.30.0.232:5009//anuvaad/ocr-content-handler/v0/ocr/save-document"
+SAVE_URL = "http://gateway_anuvaad-ocr-content-handler:5001//anuvaad/ocr-content-handler/v0/ocr/save-document"
+#SAVE_URL = "http://172.30.0.232:5009//anuvaad/ocr-content-handler/v0/ocr/save-document"
 SAVE_NO_PAGE = 1
 
 

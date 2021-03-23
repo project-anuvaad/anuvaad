@@ -179,8 +179,8 @@ class DownloadDigitziedDoc extends React.Component {
         let pId = "divToPrint" + this.props.index
         let page = this.props.page
         if (page) {
-            let width = page['boundingBox'] && page.boundingBox.vertices[1].x - page.boundingBox.vertices[0].x + 'px'
-            let height = page['boundingBox'] && page.boundingBox.vertices[2].y - page.boundingBox.vertices[0].y + 'px'
+            let width = page['vertices'] && page.vertices[1].x - page.vertices[0].x + 'px'
+            let height = page['vertices'] && page.vertices[2].y - page.vertices[0].y + 'px'
             return (
                 <div>
                     <Paper elevation={2} style={{ position: 'relative', width: width, height: height }}>
