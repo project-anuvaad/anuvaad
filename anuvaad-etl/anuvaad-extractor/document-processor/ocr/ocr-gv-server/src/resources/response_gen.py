@@ -46,6 +46,7 @@ class Response(object):
                 if debug_flush == False:
                     ############################
                     response = Service(app_context=app_context)
+                    gv_file_response = copy.deepcopy(response)
                     ##############################
                     if response['code'] == 200:
                         
@@ -58,7 +59,7 @@ class Response(object):
                         response = copy.deepcopy(response_success)
                         log_info("successfully generated response for workflow", app_context.application_context)
                         
-                        return response
+                        return response,gv_file_response
                     else:
                         post_error_wf(response['code'], response['message'], app_context.application_context, None)
                         return None

@@ -45,4 +45,10 @@ download_folder = 'upload'
 #         pid:%(process)s module:%(module)s %(message)s",
 #     datefmt="%d/%m/%y %H:%M:%S",
 # )
+
+#SAVE_URL = "https://auth.anuvaad.org/anuvaad/ocr-content-handler/v0/ocr/save-document"
+SAVE_URL = "http://gateway_anuvaad-ocr-content-handler:5001//anuvaad/ocr-content-handler/v0/ocr/save-document"
+SAVE_NO_PAGE = 1
+
+
 EXRACTION_RESOLUTION  =  300
