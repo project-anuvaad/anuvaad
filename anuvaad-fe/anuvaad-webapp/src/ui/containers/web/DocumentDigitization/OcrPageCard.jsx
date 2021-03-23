@@ -2,6 +2,7 @@ import React from "react";
 import { Paper, Divider } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import sentenceHighlight from '../../../../utils/SentenceHighlight'
 import DownloadJSON from '../../../../flux/actions/apis/download/download_json';
@@ -14,7 +15,7 @@ import { confscore } from '../../../../utils/OcrConfScore'
 import SaveEditedWord from './SaveEditedWord';
 import Modal from '@material-ui/core/Modal';
 import set_crop_size from '../../../../flux/actions/apis/view_digitized_document/set_crop_size';
-
+import UpdateWord from '../../../../flux/actions/apis/view_digitized_document/update_word';
 
 const PAGE_OPS = require("../../../../utils/page.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -144,7 +145,7 @@ class OcrPageCard extends React.Component {
                     fontFamily: word.font && word.font.family,
                 }}
                 key={word.identifier}
-                onDoubleClick={() => this.setModalState(word)}>
+                onDoubleClick={() => this.setModalState(word, region)}>
                 {
                     this.state.id === word.identifier ? this.state.text : word.text
                 }
@@ -152,16 +153,30 @@ class OcrPageCard extends React.Component {
         )
     }
 
-    setModalState = (word) => {
-        this.setState({ isOpen: true, text: word.text, id: word.identifier })
+    setModalState = (word, region) => {
+        this.setState({ regionID: region.identifier, wordID: word.identifier, isOpen: true, text: word.text, id: word.identifier })
     }
 
     saveWord = (word) => {
+        let { regionID, wordID } = this.state
+        let { jobId, filename } = this.props.match.params
         let originalWord = this.state.text;
         let changedWord = word
+        let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord)
+        this.makeUpdateWordAPICall(apiObj);
         TELEMETRY.saveEditedWordEvent(originalWord, changedWord, 'SAVE_EDITED_WORD')
         this.setState({ isOpen: false, text: changedWord })
     }
+
+    makeUpdateWordAPICall = (obj) => {
+        fetch(obj.apiEndPoint(), {
+            method: 'post',
+            headers: obj.getHeaders().headers,
+            body: JSON.stringify(obj.getBody())
+        })
+            .then(res => console.log(res))
+    }
+
     renderModal = () => {
         return (
             <Modal
@@ -317,8 +332,8 @@ class OcrPageCard extends React.Component {
 
     renderPage = (page, image) => {
         if (page) {
-            let width = page['boundingBox'] && page.boundingBox.vertices[1].x - page.boundingBox.vertices[0].x + 'px'
-            let height = page['boundingBox'] && page.boundingBox.vertices[2].y - page.boundingBox.vertices[0].y + 'px'
+            let width = page['vertices'] && page.vertices[1].x - page.vertices[0].x + 'px'
+            let height = page['vertices'] && page.vertices[2].y - page.vertices[0].y + 'px'
             return (
                 <div>
                     <Paper
@@ -372,4 +387,4 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     dispatch
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(OcrPageCard);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(OcrPageCard));
