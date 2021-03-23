@@ -71,7 +71,7 @@
           "target_language_code": "mr",
           "model_id": 42,
           "model_name": "Model_experiment_2(BPE-24K)",
-          "is_primary": true,
+          "is_primary": false,
           "description": "india_kanoon 8.5l cleaned,shabkosh,orders curated,BPE-24K,50knmt,shuff,pretok",
           "created_on": "2019-11-08T10:54:27.788Z",
           "status": "ACTIVE",
@@ -227,7 +227,7 @@
           "target_language_code": "en",
           "model_id": 62,
           "model_name": "Marathi-English Model-2",
-          "is_primary": true,
+          "is_primary": false,
           "description": "On newly tokenized IK corpus 1 Million- cleaned over ik-V3",
           "created_on": "2020-03-01T11:52:56.912Z",
           "status": "ACTIVE",
@@ -389,6 +389,30 @@
           "status": "ACTIVE",
           "source_language_name":"English",
           "target_language_name":"Kannada"
+        },
+        {
+          "source_language_code": "mr",
+          "target_language_code": "en",
+          "model_id": 77,
+          "model_name": "Marathi-English Model-3",
+          "is_primary": true,
+          "description": "Trained on 1.44M corpus dated 19-03-2021",
+          "created_on": "2021-03-19",
+          "status": "ACTIVE",
+          "source_language_name":"Marathi",
+          "target_language_name":"English"
+        },
+        {
+          "source_language_code": "en",
+          "target_language_code": "mr",
+          "model_id": 78,
+          "model_name": "English-Marathi Model-3",
+          "is_primary": true,
+          "description": "Trained on 1.44M corpus dated 19-03-2021",
+          "created_on": "2021-03-19",
+          "status": "ACTIVE",
+          "source_language_name":"English",
+          "target_language_name":"Marathi"
         },
         {
           "source_language_code": "en",

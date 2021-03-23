@@ -86,12 +86,6 @@
             "sp_decoder":"sentencepiece_models/hi_exp-5.6-2019-12-09-24k.model"
         },
         {
-            "id":62,
-            "path":"nmt/mr-en",
-            "sp_encoder":"sentencepiece_models/marathi-mr-to-en-2-2020-02-28-24k.model",
-            "sp_decoder":"sentencepiece_models/enMr-mr-to-en-2-2020-02-28-24k.model"
-        },
-        {
             "id": 65,
             "path":"nmt/65",
             "sp_encoder":"nmt/65/enBeng-en-to-bn-4-2021-01-19-24k.model",
@@ -162,6 +156,18 @@
             "path":"nmt/76",
             "sp_encoder":"nmt/76/en_en-to-kn-anuvaad-3.1-v1-2021-03-13-24000.model",
             "sp_decoder":"nmt/76/kn_en-to-kn-anuvaad-3.1-v1-2021-03-13-24000.model"
-        }        
+        },
+        {
+            "id": 77,
+            "path":"nmt/77",
+            "sp_encoder":"nmt/77/mr_mr-to-en-anuvaad-3-v1-2021-03-19-24000.model",
+            "sp_decoder":"nmt/77/en_mr-to-en-anuvaad-3-v1-2021-03-19-24000.model"
+        },
+        {
+            "id": 78,
+            "path":"nmt/78",
+            "sp_encoder":"nmt/78/en_en-to-mr-anuvaad-3-v1-2021-03-19-24000.model",
+            "sp_decoder":"nmt/78/mr_en-to-mr-anuvaad-3-v1-2021-03-19-24000.model" 
+        }         
     ]
 }
