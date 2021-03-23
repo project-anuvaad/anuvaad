@@ -4,6 +4,7 @@
 import API from "./api";
 import C from "../constants";
 import CONFIGS from "../../../configs/configs";
+import ENDPOINTS from "../../../configs/apiendpoints";
 
 export default class LoginAPI extends API {
   constructor(email, password, timeout = 2000) {
@@ -15,6 +16,7 @@ export default class LoginAPI extends API {
     this.userid = null;
     this.name = null;
     this.type = C.LOGIN;
+    this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.login}`;
   }
 
   toString() {
@@ -34,16 +36,13 @@ export default class LoginAPI extends API {
   }
 
   apiEndPoint() {
-    return `${super.apiEndPoint()}/sysuser/login`;
+    return this.endpoint;
   }
 
   getBody() {
     return {
-      email: this.email,
-      password: this.password,
-      role: this.role,
-      userid: this.userid,
-      name: this.name
+      userName: this.email,
+      password: this.password
     };
   }
 

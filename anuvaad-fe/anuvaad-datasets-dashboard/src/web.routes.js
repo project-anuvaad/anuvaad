@@ -3,8 +3,8 @@ import { Route, Redirect, Switch, Router } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import { connect } from "react-redux";
-import Login from "./ui/containers/web/Login";
-import Layout from "./ui/containers/web/Layout";
+import Login from "./ui/containers/web/Profile/Login";
+import Layout from "./ui/containers/web/common/Layout";
 
 import NotFound from "./ui/containers/web/NotFound";
 import history from "./web.history";
