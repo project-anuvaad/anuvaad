@@ -6,16 +6,18 @@ import config
 class KafkaClass(EmbeddedDocument):
 
     def Inner():
-        KAFKA_NMT_TRANSLATION_INPUT_TOPIC = StringField()
-        KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC = StringField()
+        input_topic = StringField()
+        output_topic = StringField()
         
     kafka = DictField(Inner())
-    http_url = StringField(required=True)
+    api_endpoint = StringField(required=True)
+    host = StringField(required=True)
 
 class CreateModel(Document):
 
     meta = {'collection': config.MONGO_NMT_MODELS_COLLECTION}
-    source = ['en','hi','mr','ta','te','kn','gu','pa','bn','ml','as','brx','doi','ks','kok','mai','mni','ne','or','sd','si','ur','sat','lus','njz','pnr','kha','grt']
+    # source = ['en','hi','mr','ta','te','kn','gu','pa','bn','ml','as','brx','doi','ks','kok','mai','mni','ne','or','sd','si','ur','sat','lus','njz','pnr','kha','grt']
+    source = config.source
 
     created_on = DateTimeField(default = datetime.datetime.now)
     uuid = UUIDField(default=uuid.uuid4, binary=False)
