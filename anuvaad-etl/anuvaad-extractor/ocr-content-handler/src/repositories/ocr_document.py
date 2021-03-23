@@ -42,7 +42,7 @@ class DigitalDocumentRepositories:
         except Exception as e:
             AppContext.addRecordID(recordID)
             log_exception('Exception on save document | DigitalDocumentRepo :{}'.format(str(e)), AppContext.getContext(), e)
-            pass
+            return post_error("Data Missing","Failed to store doc since :{}".format(str(e)),None)
        
 
 
