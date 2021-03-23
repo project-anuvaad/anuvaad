@@ -6,15 +6,15 @@ import copy
 class Status(enum.Enum):
     SUCCESS = {
         "status": "SUCCESS",
-        "state": "Tesseract-OCR"
+        "state": 'GOOGLE-VISION-OCR-15'
     }
     ERR_STATUS = {
         "status": "FAILED",
-        "state": "Tesseract-OCR",
+        "state": 'GOOGLE-VISION-OCR-15',
     }
     ERR_request_input_format = {
         "status" : "FAILED",
-        "state" : "Tesseract-OCR",
+        "state" : 'GOOGLE-VISION-OCR-15',
         "error": {
             "code" : "REQUEST_FORMAT_ERROR",
             "message" : "Json provided by user is not in proper format."
