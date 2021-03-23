@@ -3,6 +3,7 @@ from config import SAVE_URL, SAVE_NO_PAGE
 import src.utilities.app_context as app_context
 from flask.json import jsonify
 import copy 
+from anuvaad_auditor.loghandler import log_info
 
 # token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6ImphaW55LmpveUB0YXJlbnRvLmNvbSIsInBhc3N3b3JkIjoiYickMmIkMTIkMmU4UzRYbHBDWVlMT21PclFLMjJ0T3JDS0s1N2xMME10TWJnNS44c0JYekJTTzd5V2lzZ1cnIiwiZXhwIjoxNjE2NDc5MTIwfQ.nROYtmjGsZwBo6VOVphQYptP-5qX-no6CXYh89iwqFg"
 # headers = {'auth-token' :token }
@@ -24,6 +25,8 @@ def save_page_res(res,file_name):
             file['recordID'] = recordID
             page_idx = page_idx+SAVE_NO_PAGE
             rsp = requests.post(SAVE_URL,json=file)
+            log_info("successfully saved data to database with record id: "+str(recordID), file)
+            
         
             
 
