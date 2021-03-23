@@ -23,7 +23,6 @@ import WorkFlow from "../../../../../flux/actions/apis/common/fileupload";
 import { createJobEntry } from '../../../../../flux/actions/users/async_job_management';
 import Snackbar from "../../../../components/web/common/Snackbar";
 import Spinner from "../../../../components/web/common/Spinner"
-import apiStatus from '../../../../../configs/apigw';
 
 const theme = createMuiTheme({
     overrides: {
@@ -69,7 +68,7 @@ class StartDigitizationUpload extends React.Component {
             name: "",
             message: "File uplaoded successfully",
             showComponent: false,
-            workflow: "WF_A_OD10GV",
+            workflow: "",
             worflow_codes: [{
                 code: 'WF_A_OD10GV',
                 version: '1.0'
@@ -329,7 +328,7 @@ class StartDigitizationUpload extends React.Component {
                             </Grid>
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
                                 {this.renderSourceLanguagesItems()}
-                                {apiStatus.IS_DEV && this.renderVersion()}
+                                {this.renderVersion()}
                                 {this.renderTextField()}
                             </Grid>
                             <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>

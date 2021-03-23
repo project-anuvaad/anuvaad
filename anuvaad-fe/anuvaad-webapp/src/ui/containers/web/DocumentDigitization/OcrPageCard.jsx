@@ -331,9 +331,10 @@ class OcrPageCard extends React.Component {
 
 
     renderPage = (page, image) => {
+        console.log(page)
         if (page) {
-            let width = page['vertices'] && page.vertices[1].x - page.vertices[0].x + 'px'
-            let height = page['vertices'] && page.vertices[2].y - page.vertices[0].y + 'px'
+            let width = page['page_info']['page_boundingBox'] && page.page_info.page_boundingBox.vertices[1].x - page.page_info.page_boundingBox.vertices[0].x + 'px'
+            let height = page['page_info']['page_boundingBox'] && page.page_info.page_boundingBox.vertices[2].y - page.page_info.page_boundingBox.vertices[0].y + 'px'
             return (
                 <div>
                     <Paper
