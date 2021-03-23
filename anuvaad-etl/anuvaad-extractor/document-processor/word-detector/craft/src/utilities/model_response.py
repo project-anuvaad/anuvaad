@@ -88,7 +88,7 @@ class Page:
 
         self.page = {}
         self.page['identifier'] = str( uuid.uuid4())
-        self.page['vertices']   = []
+        self.page['boundingBox']   = {}
         self.page['resolution'] = 0
         self.page['regions']    = []
         self.page['words']      = []
@@ -103,7 +103,7 @@ class Page:
     def set_vertices(self):
         width, height = imagesize.get(self.path)
         vertices = [ {'x':0 ,'y':0},{'x':width ,'y':0},{'x':width ,'y':height},{'x':0,'y':height}]
-        self.page['vertices'] = vertices
+        self.page['boundingBox']['vertices'] = vertices
 
     @log_error
     def set_resolution(self):

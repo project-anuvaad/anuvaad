@@ -19,11 +19,13 @@
 
 # RUN pip install -r requirements.txt
 # RUN pip cache purge
-FROM anuvaadio/python-opencv-slim:2
+
+FROM anuvaadio/anuvaad-ocr-gv-server:10-0ee3dde0
+#FROM anuvaadio/python-opencv-slim:2
 COPY / /app
 WORKDIR /app
-RUN apt install -y libspatialindex-dev python-rtree
-RUN pip install -r requirements.txt
+#RUN apt install -y libspatialindex-dev python-rtree
+#RUN pip install -r requirements.txt
 
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh

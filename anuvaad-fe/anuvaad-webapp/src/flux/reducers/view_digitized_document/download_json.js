@@ -11,9 +11,9 @@ const download_json = (state = initial_state, action) => {
         case C.DOWNLOAD_JSON:
             return {
                 ...state,
-                page_info: action.payload.inputs[0].page_info,
-                pages: action.payload.inputs[0].pages,
-                count: action.payload.inputs[0].pages.length
+                page_info: action.payload.data[0].page_info,
+                pages: action.payload.data,
+                count: action.payload.count
             }
 
         case C.CLEAR_JSON:

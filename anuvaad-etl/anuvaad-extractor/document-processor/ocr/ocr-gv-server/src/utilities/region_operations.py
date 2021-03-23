@@ -107,8 +107,8 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
             if add_font:
                 height = abs(line['boundingBox']['vertices'][0]['y'] - line['boundingBox']['vertices'][2]['y'])
                 lines[line_idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
-                if child_class is not None:
-                    lines[line_idx]['class'] = child_class
+            if child_class is not None:
+                lines[line_idx]['class'] = child_class
             poly = get_polygon(line['boundingBox'])
             idx.insert(line_idx, poly.bounds)
         for region_index, region in enumerate(regions):

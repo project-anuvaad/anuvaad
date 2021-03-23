@@ -58,6 +58,7 @@ def process_vision_ocr_kf():
             
             data            = Consumer.get_json_data(msg.value)
             
+            
             jobid           = data['jobID']
             log_info('process_vision_ocr_kf - received message from kafka, dumping into internal queue', data)
             input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
@@ -97,8 +98,10 @@ def vision_ocr_request_worker():
             file_value_response,gv_file_response = response_gen.workflow_response(task_id, task_starttime, False)
             if file_value_response != None:
                 if "errorID" not in file_value_response.keys():
-                    push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
+                    
+                    log_info("save api started saving ocr response ", LOG_WITHOUT_CONTEXT)
                     save_page_res(gv_file_response,file_value_response)
+                    push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
                     log_info("vision_ocr_request_worker : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
                 else:
                     log_info("vision_ocr_request_worker : error send to error handler", data)

@@ -6,15 +6,15 @@ import copy
 class Status(enum.Enum):
     SUCCESS = {
         "status": "SUCCESS",
-        "state": "Tesseract-OCR"
+        "state": 'GOOGLE-VISION-OCR-15'
     }
     ERR_STATUS = {
         "status": "FAILED",
-        "state": "Tesseract-OCR",
+        "state": 'GOOGLE-VISION-OCR-15',
     }
     ERR_request_input_format = {
         "status" : "FAILED",
-        "state" : "Tesseract-OCR",
+        "state" : 'GOOGLE-VISION-OCR-15',
         "error": {
             "code" : "REQUEST_FORMAT_ERROR",
             "message" : "Json provided by user is not in proper format."
@@ -42,7 +42,7 @@ class CustomResponse():
 def set_bg_image(page_data,bg_image_path,page_index,file):
     bg_dic ={}
     bg_dic['identifier'] = str(uuid.uuid4())
-    bg_dic['boundingBox'] = {'vertices' : copy.deepcopy(file['pages'][page_index]['vertices'])}
+    bg_dic['boundingBox'] = {'vertices' : copy.deepcopy(file['pages'][page_index]['boundingBox']['vertices'])}
     bg_dic['class']  = 'BGIMAGE'
     bg_dic['base64'] = "null"
     bg_dic['data']  = bg_image_path

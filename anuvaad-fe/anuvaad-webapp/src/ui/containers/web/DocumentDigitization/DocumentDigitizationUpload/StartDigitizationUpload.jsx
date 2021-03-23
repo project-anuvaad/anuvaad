@@ -70,10 +70,10 @@ class StartDigitizationUpload extends React.Component {
             showComponent: false,
             workflow: "",
             worflow_codes: [{
-                code: 'WF_A_OGV',
+                code: 'WF_A_OD10GV',
                 version: '1.0'
             }, {
-                code: 'WF_A_FCWDLDBSOGV',
+                code: 'WF_A_FCWDLDBSOD15GV',
                 version: '1.5'
             }],
             fileName: "",

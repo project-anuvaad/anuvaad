@@ -342,7 +342,7 @@ class Region_Unifier:
             # filtered_words     = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
             # filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_lines))
 
-            
+            #print(filtered_words,'filterddddddddddddddddddddddddddddddddddddddddddddddddddddd')
             line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words),child_class='WORD')
             
             

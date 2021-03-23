@@ -32,10 +32,12 @@ const endpoints = {
   activate_deactivate_user: "/anuvaad/user-mgmt/v1/users/activate-user",
   download_file: '/anuvaad-api/file-uploader/v0/download-file',
   download_zip_file: '/anuvaad-api/file-uploader/v0/serve-file',
+  download_json:'/anuvaad/ocr-content-handler/v0/ocr/fetch-document',
   tmx_upload: '/anuvaad-etl/translator/v1/tmx/bulk/create/xls-upload',
   add_org: '/anuvaad/user-mgmt/v1/org/upsert',
   fetch_organization: '/anuvaad/user-mgmt/v1/org/search',
-  create_glossary:'/anuvaad-etl/translator/v1/glossary/create'
+  create_glossary:'/anuvaad-etl/translator/v1/glossary/create',
+  update_word:'/anuvaad/ocr-content-handler/v0/ocr/update-word'
 };
 
 export default endpoints;

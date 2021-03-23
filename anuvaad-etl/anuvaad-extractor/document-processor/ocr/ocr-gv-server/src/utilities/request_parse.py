@@ -63,8 +63,8 @@ class File:
         return self.file
     @log_error  
     def get_pageinfo(self, page_index):
-        width = self.file['pages'][page_index]['vertices'][1]['x']
-        height = self.file['pages'][page_index]['vertices'][3]['y']
+        width = self.file['pages'][page_index]['boundingBox']['vertices'][1]['x']
+        height = self.file['pages'][page_index]['boundingBox']['vertices'][3]['y']
         return width, height
     @log_error
     def get_region_lines(self, page_index,region_index):

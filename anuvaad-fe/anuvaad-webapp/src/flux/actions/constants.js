@@ -172,5 +172,6 @@ const constants = {
     SET_CROP_SIZE: 'SET_CROP_SIZE',
     RESET_CROP_SIZE: 'RESET_CROP_SIZE',
     COPY_LOCATION: 'COPY_LOCATION',
+    UPDATE_WORD: 'UPDATE_WORD'
 }
 export default constants;
