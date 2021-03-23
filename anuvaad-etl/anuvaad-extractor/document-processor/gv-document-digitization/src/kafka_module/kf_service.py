@@ -57,6 +57,7 @@ def process_vision_ocr_kf():
                 continue
             
             data            = Consumer.get_json_data(msg.value)
+            print(data)
             
             jobid           = data['jobID']
             log_info('process_vision_ocr_kf - received message from kafka, dumping into internal queue', data)
