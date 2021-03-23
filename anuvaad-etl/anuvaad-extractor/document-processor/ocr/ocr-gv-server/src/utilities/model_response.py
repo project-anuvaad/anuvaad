@@ -42,7 +42,7 @@ class CustomResponse():
 def set_bg_image(page_data,bg_image_path,page_index,file):
     bg_dic ={}
     bg_dic['identifier'] = str(uuid.uuid4())
-    bg_dic['boundingBox'] = {'vertices' : copy.deepcopy(file['pages'][page_index]['vertices'])}
+    bg_dic['boundingBox'] = {'vertices' : copy.deepcopy(file['pages'][page_index]['boundingBox']['vertices'])}
     bg_dic['class']  = 'BGIMAGE'
     bg_dic['base64'] = "null"
     bg_dic['data']  = bg_image_path
