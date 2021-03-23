@@ -68,7 +68,14 @@ class StartDigitizationUpload extends React.Component {
             name: "",
             message: "File uplaoded successfully",
             showComponent: false,
-            workflow: "WF_A_OTES",
+            workflow: "",
+            worflow_codes: [{
+                code: 'WF_A_OGV',
+                version: '1.0'
+            }, {
+                code: 'WF_A_FCWDLDBSOGV',
+                version: '1.5'
+            }],
             fileName: "",
             workspaceName: "",
             path: "",
@@ -101,7 +108,7 @@ class StartDigitizationUpload extends React.Component {
             var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, true)
             const { APITransport } = this.props;
             const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
-                this.state.target_language_code, this.state.path, this.state.model,"", sourceLang);
+                this.state.target_language_code, this.state.path, this.state.model, "", sourceLang);
             APITransport(apiObj);
         }
 
@@ -120,6 +127,9 @@ class StartDigitizationUpload extends React.Component {
         this.setState({ source_language_code: event.target.value })
     }
 
+    processVersionSelected = (event) => {
+        this.setState({ workflow: event.target.value })
+    }
 
     renderDropZone = () => {
         const { classes } = this.props
@@ -194,6 +204,43 @@ class StartDigitizationUpload extends React.Component {
                     {
                         this.state.source_languages.map(lang =>
                             <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                    }
+                </Select>
+            </Grid>
+        </Grid>
+        )
+    }
+
+
+    renderVersion = () => {
+        const { classes } = this.props
+        return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "1.5%" }}>
+            <Grid item xs={12} sm={12} lg={12} xl={12}>
+                <Typography value="" variant="h5">
+                    {translate("Version")}{" "}
+                </Typography>
+            </Grid>
+
+            <Grid item xs={12} sm={12} lg={12} xl={12} >
+                <Select
+                    labelId="demo-simple-select-outlined-label"
+                    id="source-lang"
+                    onChange={this.processVersionSelected}
+                    value={this.state.workflow}
+                    fullWidth
+                    className={classes.Select}
+                    style={{
+                        fullWidth: true,
+                        float: 'right',
+                        marginBottom: "15px"
+                    }}
+                    input={
+                        <OutlinedInput name="source" id="source" />
+                    }
+                >
+                    {
+                        this.state.worflow_codes.map((code, index) =>
+                            <MenuItem id={code.code} key={code.code} value={code.code + ''}>{code.version}</MenuItem>)
                     }
                 </Select>
             </Grid>
@@ -279,40 +326,45 @@ class StartDigitizationUpload extends React.Component {
                                     />
                                 </MuiThemeProvider>
                             </Grid>
-
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
                                 {this.renderSourceLanguagesItems()}
+                                {this.renderVersion()}
                                 {this.renderTextField()}
-                                <Button
-                                    id="upload"
-                                    variant="contained" color="primary"
-                                    // className={classes.button1} 
-                                    style={{
-                                        width: "100%",
-                                        backgroundColor: '#1C9AB7',
-                                        borderRadius: "20px 20px 20px 20px",
-                                        color: "#FFFFFF",
-                                        height: '46px',
-                                        marginBottom: '25px'
-
-                                    }}
-                                    size="large" onClick={this.handleSubmit.bind(this)}>
-                                    {translate("common.page.button.upload")}
-                                </Button>
+                            </Grid>
+                            <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
                                 <Button
                                     id="back"
                                     variant="contained" color="primary"
-                                    size="large" onClick={this.processBackButton.bind(this)}
+                                    size="large" onClick={this.processBackButton}
                                     style={{
                                         width: "100%",
                                         backgroundColor: '#1C9AB7',
                                         borderRadius: "20px 20px 20px 20px",
                                         color: "#FFFFFF",
-                                        height: '46px',
+                                        height: '46px'
                                     }}
                                 >
                                     {translate("common.page.button.back")}
                                 </Button>
+                            </Grid>
+                            <Grid item xs={6} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
+                                <Grid item xs={12} sm={12} lg={12} xl={12}>
+                                    <Button
+                                        id="upload"
+                                        variant="contained" color="primary"
+                                        // className={classes.button1} 
+                                        style={{
+                                            width: "100%",
+                                            backgroundColor: '#1C9AB7',
+                                            borderRadius: "20px 20px 20px 20px",
+                                            color: "#FFFFFF",
+                                            height: '46px'
+                                        }}
+                                        size="large" onClick={this.handleSubmit.bind(this)}>
+                                        {translate("common.page.button.upload")}
+                                    </Button>
+                                </Grid>
+
                             </Grid>
                         </Grid>
                         {this.state.open && (

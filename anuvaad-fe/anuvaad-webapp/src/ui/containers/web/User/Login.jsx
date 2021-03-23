@@ -35,7 +35,7 @@ class Login extends React.Component {
   }
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
-    TELEMETRY.pageLoadStarted('login')
+    // TELEMETRY.pageLoadStarted('login')
     /**
     * getSnapshotBeforeUpdate() must return null
     */
