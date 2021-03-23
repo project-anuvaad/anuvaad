@@ -3,6 +3,12 @@ from pathlib import Path
 import base64
 import math
 import uuid
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.fonts import addMapping
+from reportlab.pdfbase import pdfmetrics
+
+pdfmetrics.registerFont(TTFont('arial-unicode-ms', '/home/jainy/Documents/service local_copies/font/arial-unicode-ms.ttf'))
+addMapping('arial-unicode-ms', 0, 0, 'arial-unicode-ms')
 
 class FileUtilities():
 
@@ -44,3 +50,30 @@ class DocumentUtilities():
     def url_generation(self, url_pre, record_id, start_page, end_page):
         url_modified = url_pre + '/anuvaad/content-handler/v0/fetch-content?record_id={}&start_page={}&end_page={}'.format(record_id, start_page, end_page)
         return url_modified
+
+    def generate_url(self, url_pre, record_id, start_page, end_page):
+        url_modified = url_pre + '/anuvaad/ocr-content-handler/v0/fetch-document?record_id={}&start_page={}&end_page={}'.format(record_id, start_page, end_page)
+        return url_modified
+
+    def vertices_to_boundingbox(self,vertices):
+        c1, c2, c3, c4  = vertices[0], vertices[1], vertices[2], vertices[3]
+        left, top       = c1['x'], c1['y']
+        width, height   = (c3['x'] - c1['x']), (c3['y'] - c1['y'])
+        return (left, top, width, height)
+
+    def get_page_dimensions(self,page):
+        print(page.keys(),"*********")
+        _, _, w, h = self.vertices_to_boundingbox(page['page_info']['page_boundingBox']['vertices'])
+        return w, h
+
+    def draw_line_text(self,page_canvas, x, y, text, word_space=1.75, horizontal_scale=105, font_name=None, font_size=8):
+        txtobj = page_canvas.beginText()
+        txtobj.setTextOrigin(x, y)
+        txtobj.setWordSpace(word_space)
+        txtobj.setHorizScale(horizontal_scale)
+        txtobj.setFont(font_name, font_size)
+        txtobj.textLine(text=text)
+        page_canvas.drawText(txtobj)
+
+
+        

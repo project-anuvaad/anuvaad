@@ -4,15 +4,16 @@ from models.response import CustomResponse
 from models.status import Status
 import config
 from utilities.utils import FileUtilities
-from services.service import document_saving
+from services import DocumentExporterService
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
 from common.errors import ServiceError
 from common.errors import InternalServerError
 
 file_ops = FileUtilities()
-DOWNLOAD_FOLDER =file_ops.file_download(config.download_folder)
-    
+
+output_filepath  = config.DATA_OUTPUT_DIR
+exportService=DocumentExporterService()
 
 class DocumentExporterResource(Resource):
 
@@ -27,7 +28,9 @@ class DocumentExporterResource(Resource):
                 'file_type' not in body or file_type is None:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
                 return res.getresjson(), 400
-            formated_document = document_saving(record_id, user_id, DOWNLOAD_FOLDER, file_type)
+            
+            formated_document = exportService.export_document(record_id, output_filepath, file_type)
+            
             log_info("document type %s saved successfully"%file_type, MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS.value, formated_document)
             return res.getres()
