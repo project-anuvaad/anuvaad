@@ -64,7 +64,6 @@ class DigitalDocumentRepositories:
             region_to_update= self.docModel.get_word_region(user_id,record_id,region_id)
             if region_to_update:
                 if region_to_update['identifier']== region_id :
-
                     region_to_update['updated']=True
                     for data in region_to_update['regions']:
                         for word in data['regions']:
@@ -73,7 +72,8 @@ class DigitalDocumentRepositories:
                                 word['text']=user_word
                                 break
                             else:
-                                return post_error("Data Missing","No record with the given user_id,record_id and word_id",None)
+                                pass
+                                # return post_error("Data Missing","No record with the given user_id,record_id and word_id",None)
             else:
                 return post_error("Data Missing","No record with the given user_id,record_id and region_id",None)
             
