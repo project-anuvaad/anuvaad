@@ -11,6 +11,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import time
 import os
+from src.services.save_document import save_page_res
 
 import threading, queue
 import config
@@ -105,10 +106,12 @@ def vision_ocr_request_worker():
         try:
             response_gen    = Response(data, DOWNLOAD_FOLDER)
 
-            file_value_response = response_gen.workflow_response(task_id, task_starttime, False)
+            file_value_response ,gv_file_response= response_gen.workflow_response(task_id, task_starttime, False)
             if file_value_response != None:
                 if "errorID" not in file_value_response.keys():
                     push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
+                    log_info("save api started saving ocr response ", LOG_WITHOUT_CONTEXT)
+                    save_page_res(gv_file_response,file_value_response)
                     log_info("vision_ocr_request_worker : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
                 else:
                     log_info("vision_ocr_request_worker : error send to error handler", data)

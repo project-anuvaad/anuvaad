@@ -14,11 +14,13 @@ class DigitalDocumentRepositories:
     def __init__(self):
         self.docModel=DigitalDocumentModel()
 
-    def store(self, userID, jobID, files):       
+    def store(self, userID, recordID, files):       
         try:
             for file in files:
 
-                recordID= file['file']['identifier']
+                # recordID= recordID
+                jobID= recordID.split('|')[0]
+                # fileID=file['file']['identifier']
                 file_name=file['file']['name']
                 locale=file['config']['language']
                 file_type=file['file']['type']
@@ -40,7 +42,7 @@ class DigitalDocumentRepositories:
         except Exception as e:
             AppContext.addRecordID(recordID)
             log_exception('Exception on save document | DigitalDocumentRepo :{}'.format(str(e)), AppContext.getContext(), e)
-            pass
+            return post_error("Data Missing","Failed to store doc since :{}".format(str(e)),None)
        
 
 
@@ -60,7 +62,6 @@ class DigitalDocumentRepositories:
             AppContext.addRecordID(record_id)
             log_info("DigitalDocumentRepo update word request", AppContext.getContext())#str(page)
             region_to_update= self.docModel.get_word_region(user_id,record_id,region_id)
-
             if region_to_update:
                 if region_to_update['identifier']== region_id :
 
@@ -71,14 +72,17 @@ class DigitalDocumentRepositories:
                                 word['ocr_text']=word['text']
                                 word['text']=user_word
                                 break
+                            else:
+                                return post_error("Data Missing","No record with the given user_id,record_id and word_id",None)
             else:
-                return None
-
+                return post_error("Data Missing","No record with the given user_id,record_id and region_id",None)
+            
+                
             AppContext.addRecordID(record_id)
             log_info("DigitalDocumentRepo update word region :{}".format(str(region_to_update)), AppContext.getContext())
             print(region_to_update)
             if self.docModel.update_word(user_id,record_id,region_id,region_to_update) == False:
-                return None
+                return post_error("Data Missing","Failed to update word since data is missing",None)
         return True
 
 
