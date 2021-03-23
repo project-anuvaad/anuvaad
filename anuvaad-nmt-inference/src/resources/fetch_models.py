@@ -127,7 +127,7 @@ class DeleteModelResource(Resource):
                     return out.getres()
                 else:
                     out = CustomResponse(Status.No_File_DB.value, None)
-                    return out.getres()
+                    return out.get_res_json()
         except Exception as e:
             log_exception("Error in DeleteModelResource: {}".format(ex),MODULE_CONTEXT,e)
             status = Status.SYSTEM_ERR.value

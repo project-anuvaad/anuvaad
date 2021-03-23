@@ -31,4 +31,4 @@ class CreateModel(Document):
     description = StringField()
     status = StringField(required = True,choices=['ACTIVE','INACTIVE'])
     connection_details = EmbeddedDocumentField(KafkaClass,required=True)
-    interactive_translation = StringField(choices=['ACTIVE','INACTIVE'],default='INACTIVE')
+    interactive_translation = BooleanField(required = True,default=False)

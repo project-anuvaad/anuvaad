@@ -165,64 +165,68 @@ paths:
 
 definitions:
 
-
   nmt_input:
-    type: array
+    type: object
     description: Create Operation of the Model.
-    items:
-      properties:
-          description:
-            type: string
-            description: model description  
-          is_primary:
-            type: boolean
-            description: whether the model is primary/main model for given language pair(decides for document translation)  
-          model_id:
-            type: integer
-            description: model id of the model 
-          model_name:
-            type: string
-            description: name of the model
-          source_language_code:
-            type: string
-            description: ISO 639-2 language code of the source language
-          source_language_name:
-            type: string
-            description: name of the source language  
-          target_language_code:
-            type: string
-            description: ISO 639-2 language code of the target language
-          target_language_name:
-            type: string
-            description: name of the target language 
-          status:
-            type: string
-            description: whether the model is ACTIVE or INACTIVE  
-            enum:
-              - "ACTIVE"
-              - "INACTIVE"
-          connection_details:
+    properties:
+      description:
+        type: string
+        description: model description  
+      is_primary:
+        type: boolean
+        description: whether the model is primary/main model for given language pair(decides for document translation). Default is false.  
+      model_id:
+        type: integer
+        description: model id of the model 
+      model_name:
+        type: string
+        description: name of the model
+      source_language_code:
+        type: string
+        description: ISO 639-1 language code of the source language
+      source_language_name:
+        type: string
+        description: name of the source language  
+      target_language_code:
+        type: string
+        description: ISO 639-1 language code of the target language
+      target_language_name:
+        type: string
+        description: name of the target language 
+      status:
+        type: string
+        description: whether the model is ACTIVE or INACTIVE  
+        enum:
+          - "ACTIVE"
+          - "INACTIVE"
+      interactive_translation:
+        type: boolean
+        description: If interactive translation available with given model (true or false). Default is false
+      connection_details:
+        type: object
+        description: Connection over url is mandatory hence host and api_endpoint are required. kafka is optional
+        properties:
+          kafka:
             type: object
+            description: Environment varibale key for kafka input and output topics of NMT
             properties:
-              kafka:
-                type: object
-                properties:
-                  KAFKA_NMT_TRANSLATION_INPUT_TOPIC:
-                    type: string
-                  KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC:
-                    type: string
-              http_url:
+              input_topic:
                 type: string
-            description: Connection Details of kafka or HTTP URL.
+              output_topic:
+                type: string
+          host:
+            type: string
+            description: Host IP environment varibale key
+          api_endpoint:
+            type: string
             
- 
  
   nmt_response:
     type: object
     properties: 
       status:
         $ref: '#/definitions/success_status'
-      response_body:
+      data:
         type: array
         description: A list of models and their details
         items:
@@ -253,13 +257,13 @@ definitions:
               description: name of the model
             source_language_code:
               type: string
-              description: ISO 639-2 language code of the source language
+              description: ISO 639-1 language code of the source language
             source_language_name:
               type: string
               description: name of the source language  
             target_language_code:
               type: string
-              description: ISO 639-2 language code of the target language
+              description: ISO 639-1 language code of the target language
             target_language_name:
               type: string
               description: name of the target language 
@@ -269,29 +273,35 @@ definitions:
               enum:
                 - "ACTIVE"
                 - "INACTIVE"
+            interactive_translation:
+              type: boolean
+              description: If interactive translation available with given model (true or false). Default is false    
             connection_details:
               type: object
-              properties:
+              description: Connection over url is mandatory hence host and api_endpoint are required. kafka is optional
+              properties:  
                 kafka:
                   type: object
+                  description: Environment varibale key for kafka input and output topics of NMT
                   properties:
-                    KAFKA_NMT_TRANSLATION_INPUT_TOPIC:
+                    input_topic:
                       type: string
-                    KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC:
+                    output_topic:
                       type: string
-                http_url:
+                host:
                   type: string
-              description: Connection Details of kafka or HTTP URL.
+                  description: Host IP environment varibale key
+                api_endpoint:
+                  type: string
               
               
   nmt_response_delete:
     type: object
     properties:        
-      response_body:
+      data:
         type: string
         description: Deleted model shown as 1 if not found 0
-       
-            
+
       status:
         $ref: '#/definitions/success_status'
         
@@ -299,16 +309,12 @@ definitions:
     type: object
     description: Status object with every request
     properties:
-      ok:
-        type: string
-        enum:
-          - "true"
       statusCode: 
         type: integer
         description: http status code
-      why:
+      message:
         type: string
-        description: Success message or reason of failure in case of error  
+        description: Success message
   
 
   error_status:
@@ -322,13 +328,9 @@ definitions:
     type: object
     description: Status object for error request
     properties:
-      ok:
-        type: string
-        enum:
-          - "false"
       statusCode: 
         type: integer
         description: http status code
-      why:
+      message:
         type: string
-        description: Success message or reason of failure in case of error  
+        description: Reason of failure in case of error  
