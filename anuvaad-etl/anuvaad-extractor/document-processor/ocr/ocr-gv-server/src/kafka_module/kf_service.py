@@ -110,8 +110,9 @@ def vision_ocr_request_worker():
             if file_value_response != None:
                 if "errorID" not in file_value_response.keys():
                     
-                    log_info("save api started saving ocr response ", LOG_WITHOUT_CONTEXT)
+                    
                     save_page_res(gv_file_response,file_value_response)
+                    log_info("save api started saving ocr response ", LOG_WITHOUT_CONTEXT)
                     push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
                     log_info("vision_ocr_request_worker : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
                 else:
