@@ -26,7 +26,7 @@ def save_page_res(res,file_name):
             save_file['recordID'] = recordID
             page_idx = page_idx+SAVE_NO_PAGE
             rsp = requests.post(SAVE_URL,json=save_file)
-            log_info("successfully saved data to database with record id: "+str(recordID), file)
+            log_info("successfully saved data to database with record id: "+str(recordID)+str(rsp), save_file)
         
             
 
