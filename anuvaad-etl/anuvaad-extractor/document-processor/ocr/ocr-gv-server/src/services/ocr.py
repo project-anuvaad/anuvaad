@@ -17,7 +17,7 @@ client = vision.ImageAnnotatorClient()
 breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
 def get_text(path,page_dict,page_regions,font_info):
-    #path = "/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-server/"+path
+   # path = "/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-gv-server/"+path
     
     img = cv2.imread(path)
     #print(path)
@@ -188,7 +188,7 @@ def end_point_correction(region, margin, ymax,xmax):
 def mask_image_craft(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
     try:
         image   = cv2.imread(path)
-        #image    = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-server/"+path)
+        #image    = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-gv-server/"+path)
         #image    = copy.deepcopy(image2)
         #bg_image   = clean_image(image2)
         for region_idx, page_region in enumerate(page_regions):
@@ -228,7 +228,7 @@ def mask_image_craft(path, page_regions,page_index,file_properties,image_width,i
 def mask_image_vision(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
     #try:
     image   = cv2.imread(path)
-    #image    = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-server/"+path)
+    #image    = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-gv-server/"+path)
     #image    = copy.deepcopy(image2)
     #bg_image   = clean_image(image2)
     
