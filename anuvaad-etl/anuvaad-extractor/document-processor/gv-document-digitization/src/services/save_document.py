@@ -5,7 +5,7 @@ from flask.json import jsonify
 import copy 
 from anuvaad_auditor.loghandler import log_info
 
-# token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6ImphaW55LmpveUB0YXJlbnRvLmNvbSIsInBhc3N3b3JkIjoiYickMmIkMTIkMmU4UzRYbHBDWVlMT21PclFLMjJ0T3JDS0s1N2xMME10TWJnNS44c0JYekJTTzd5V2lzZ1cnIiwiZXhwIjoxNjE2NDc5MTIwfQ.nROYtmjGsZwBo6VOVphQYptP-5qX-no6CXYh89iwqFg"
+# token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6ImphaW55LmpveUB0YXJlbnRvLmNvbSIsInBhc3N3b3JkIjoiYickMmIkMTIkcXFjYUM2WW5yU2RFM2hDT2h4aXpnT0ZILjBxeFR4UWJBTHloZDFjTjBFOWluSnRqaTguOWknIiwiZXhwIjoxNjE2NTcxMjM3fQ.vCOncRM7BNK0qsv0OWnioIDfy-lOusTcMERsusm_ics"
 # headers = {'auth-token' :token }
 def save_page_res(res,file_name):
     
@@ -22,10 +22,10 @@ def save_page_res(res,file_name):
             save_file = copy.deepcopy(file)
             pages = file['files'][0]['pages'][page_idx:page_idx+SAVE_NO_PAGE]
             save_file['files'][0]['pages'] = pages
-            file['recordID'] = recordID
+            save_file['recordID'] = recordID
             page_idx = page_idx+SAVE_NO_PAGE
-            rsp = requests.post(SAVE_URL,json=file)
-            log_info("successfully saved data to database with record id: "+str(recordID), file)
+            rsp = requests.post(SAVE_URL,json=save_file)
+            log_info("successfully saved data to database with record id: "+str(recordID)+str(rsp), save_file)
             
         
             
