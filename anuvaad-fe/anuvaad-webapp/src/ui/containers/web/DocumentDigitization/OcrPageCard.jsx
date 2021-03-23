@@ -173,7 +173,7 @@ class OcrPageCard extends React.Component {
             let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord)
             APITransport(apiObj);
         }
-        this.setState({ isOpen: false, text: changedWord })
+        this.setState({ isOpen: false })
     }
 
     // makeUpdateWordAPICall = (obj) => {
