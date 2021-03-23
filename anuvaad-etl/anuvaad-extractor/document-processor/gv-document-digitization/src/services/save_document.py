@@ -19,7 +19,7 @@ def save_page_res(res,file_name):
         page_idx = 0
         total_pages = len(file['files'][0]['pages'])
         while page_idx<total_pages:
-            #file['files'][0]['config']   = copy.deepcopy(file['files'][0]['config']['OCR']['language'])
+            #file['files'][0]['config']   = copy.deepcopy(file['files'][0]['config']['OCR'])
 
             save_file = copy.deepcopy(file)
             pages = file['files'][0]['pages'][page_idx:page_idx+SAVE_NO_PAGE]

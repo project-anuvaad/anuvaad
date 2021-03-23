@@ -19,21 +19,28 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 def get_text(path,page_dict,font_info):
     #path = "/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/gv-document-digitization/"+path
     
+    try :
 
-    if config.CLEAN_BACKGROUND :
-        img = cv2.imread(path)
-        img[175 < img ] = 255
-        masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
-        cv2.imwrite(masked_path,img)
-    else:
-        masked_path = path
 
-    with io.open(masked_path, 'rb') as image_file:
-        content = image_file.read()
-    image = vision.types.Image(content=content)
-    response = client.document_text_detection(image=image)
-    page_dict,page_lines = get_document_bounds(response.full_text_annotation,page_dict,font_info)
-    return page_dict,page_lines
+        if config.CLEAN_BACKGROUND :
+            img = cv2.imread(path)
+            img[175 < img ] = 255
+            masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
+            cv2.imwrite(masked_path,img)
+        else:
+            masked_path = path
+
+        with io.open(masked_path, 'rb') as image_file:
+            content = image_file.read()
+        image = vision.types.Image(content=content)
+        response = client.document_text_detection(image=image)
+        page_dict,page_lines = get_document_bounds(response.full_text_annotation,page_dict,font_info)
+        return page_dict,page_lines
+
+    except Exception as e:
+        log_exception("Error occured during text_extraction  {}".format(e) ,  app_context.application_context, e)
+        return None, None
+
 
 
 def text_extraction(file_properties,image_paths,file):
