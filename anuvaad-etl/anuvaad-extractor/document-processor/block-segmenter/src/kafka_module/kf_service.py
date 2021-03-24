@@ -48,7 +48,7 @@ def process_block_segmenter_kf():
     producer_tok        = Producer(config.bootstrap_server)
     
     # instatiation of consumer for respective topic
- try:
+    try:
         consumer = consumer_validator()
         log_info("process_block_segmenter_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
 
