@@ -76,7 +76,7 @@ class DocumentEditor extends React.Component {
     componentDidMount() {
         TELEMETRY.pageLoadCompleted('digitized-document-editor')
         const { APITransport } = this.props
-        let obj = new DownloadJSON(this.props.match.params.filename)
+        let obj = new DownloadJSON(`${this.props.match.params.jobId}|${this.props.match.params.filename}`, 0, 0)
         this.setState({ apiFetchStatus: true })
         APITransport(obj)
     }
@@ -519,7 +519,7 @@ class DocumentEditor extends React.Component {
      */
     renderPDFDocument = () => {
         if (!this.state.apiFetchStatus) {
-            let imagePath = this.props.download_json.pages[this.props.active_page_number - 1] && this.props.download_json.pages[this.props.active_page_number - 1].path
+            let imagePath = this.props.download_json.pages[this.props.active_page_number - 1] && this.props.download_json.pages[this.props.active_page_number - 1].page_info.page_img_path
             if (imagePath)
                 return (
                     <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>

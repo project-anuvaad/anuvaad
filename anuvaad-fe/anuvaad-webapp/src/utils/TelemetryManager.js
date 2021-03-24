@@ -79,8 +79,8 @@ export const pageLoadStarted = (page_id) => {
     ets: Date.now(),
     actor: {
       uid: user_id,
-      org_id : org_id,
-      name : name
+      org_id: org_id,
+      name: name
     },
     context: {
       sid: session_id
@@ -126,8 +126,8 @@ export const pageLoadCompleted = (page_id) => {
     ets: Date.now(),
     actor: {
       uid: user_id,
-      org_id : org_id,
-      name : name
+      org_id: org_id,
+      name: name
     },
     context: {
       sid: session_id
@@ -193,8 +193,8 @@ export const startWorkflow = (source_language, target_language, filename, job_id
     ets: Date.now(),
     actor: {
       uid: user_id,
-      org_id : org_id,
-      name : name
+      org_id: org_id,
+      name: name
     },
     context: {
       cdata: [{
@@ -495,8 +495,8 @@ export const log = (action_type, message, api) => {
     ets: Date.now(),
     actor: {
       uid: user_id,
-      org_id : org_id,
-      name : name
+      org_id: org_id,
+      name: name
     }
   }
 
@@ -662,10 +662,16 @@ export const glossaryUpload = (file_id, organization) => {
   $t.impression(data, options)
 }
 
-export function saveEditedWordEvent(originalWord, changedWord,action) {
+export function saveEditedWordEvent(changedWord, action) {
   if ($t.isInitialized() === false) {
     init()
   }
+  let user_profile = JSON.parse(localStorage.getItem('userProfile'))
+  let token = localStorage.getItem('token')
+  let user_id = user_profile.userID
+  let org_id = user_profile.orgID
+  let name = user_profile.name
+  let session_id = token
 
   let data = {
     type: 'click',
@@ -673,14 +679,21 @@ export function saveEditedWordEvent(originalWord, changedWord,action) {
   }
 
   let values = {}
-  values.originalWord = originalWord
   values.changedWord = changedWord
   values.action = action
 
+  console.log(values)
+  
   let options = {
     ets: Date.now(),
+    actor: {
+      uid: user_id,
+      org_id: org_id,
+      name: name
+    },
     context: {
-      cdata: values
+      cdata: values,
+      sid: session_id
     },
   }
 

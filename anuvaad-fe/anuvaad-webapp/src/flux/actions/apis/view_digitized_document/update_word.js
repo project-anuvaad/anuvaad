@@ -46,7 +46,7 @@ export default class UpdateWord extends API {
         this.headers = {
             headers: {
                 'auth-token': `${decodeURI(localStorage.getItem("token"))}`,
-                'userID':  `${JSON.parse(localStorage.getItem("userProfile")).userID}`,
+                "x-user-id": `${localStorage.getItem('roles')}`,
                 "Content-Type": "application/json"
 
             }
@@ -55,6 +55,6 @@ export default class UpdateWord extends API {
     }
 
     getPayload() {
-        return this.sentences;
+        return this.response;
     }
 }

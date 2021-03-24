@@ -35,7 +35,7 @@ class DigitalDocumentRepositories:
                     blocks.append(block)
                 else:
                     return block
-
+            log_info('DigitalDocumentRepo page blocks created for insert, user_id:{}, record_id:{}, block length:{}'.format(userID, recordID,str(len(blocks))), AppContext.getContext())
             result=self.docModel.store_bulk_blocks(blocks)
             if result == False:
                 return False                   
@@ -64,7 +64,6 @@ class DigitalDocumentRepositories:
             region_to_update= self.docModel.get_word_region(user_id,record_id,region_id)
             if region_to_update:
                 if region_to_update['identifier']== region_id :
-
                     region_to_update['updated']=True
                     for data in region_to_update['regions']:
                         for word in data['regions']:
@@ -73,7 +72,8 @@ class DigitalDocumentRepositories:
                                 word['text']=user_word
                                 break
                             else:
-                                return post_error("Data Missing","No record with the given user_id,record_id and word_id",None)
+                                pass
+                                # return post_error("Data Missing","No record with the given user_id,record_id and word_id",None)
             else:
                 return post_error("Data Missing","No record with the given user_id,record_id and region_id",None)
             
@@ -119,7 +119,8 @@ class DigitalDocumentRepositories:
     
     def create_regions_from_page(self,userID,jobID,recordID,file_name,locale,file_type,page):
         try:
-
+            AppContext.addRecordID(recordID)
+            log_info('DigitalDocumentRepo page blocks creation started for record_id:{}, page_number:{}'.format(recordID,str(page['page_no'])), AppContext.getContext())
             block_info = {}
             block_info['userID']=userID
             block_info['jobID']=jobID
@@ -141,7 +142,6 @@ class DigitalDocumentRepositories:
             block_info['page_info'] = page_info
 
             block_info['regions'] = page['regions']
-
             return block_info
         except Exception as e:
             AppContext.addRecordID(recordID)
