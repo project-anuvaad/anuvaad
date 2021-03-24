@@ -95,7 +95,7 @@ def block_segmenter_request_worker():
 
     while True:
         data            = Queue.get(block=True)
-        #################
+        ################
         task_id         = str("layout_detector" + str(time.time()).replace('.', ''))
         ###################
         task_starttime  = str(time.time()).replace('.', '')
