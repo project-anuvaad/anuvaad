@@ -21,7 +21,7 @@ const themeDefault = createMuiTheme({
       contrastText: '#FFFFFF'
     },
     background: {
-      default: '#C0C0C0'
+      // default: '#C0C0C0'
     }
   },
   status: {

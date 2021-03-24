@@ -121,6 +121,8 @@ class ChartRender extends React.Component {
          return option
       }
 
+      
+
     handleOnClick(event) {
         // this.setState({secondRender:true})
         history.push(
@@ -130,8 +132,18 @@ class ChartRender extends React.Component {
         
     }
 
+    onChartClick = (params)=>{
+     console.log("sajish",params)
+    }
+
+    
+
     render() {
         const { classes, open_sidebar } = this.props;
+        const onEvents = {
+          'click': this.onChartClick,
+          'legendselectchanged': this.onChartLegendselectchanged
+        }
         this.getData()
         return (
 
@@ -141,10 +153,13 @@ class ChartRender extends React.Component {
   notMerge={true}
   lazyUpdate={true}
   theme={"theme_name"}
+  onEvents= {onEvents}
   onChartReady={this.onChartReadyCallback}
-  onChartClick = {
+  onChartClick = {(params)=>{
     console.log("sajish")
-}
+    // Do what you want to do on click event. params depend on the  type of  chart 
+}}
+  
   
   
 />
@@ -175,7 +190,7 @@ class ChartRender extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    open_sidebar: state.open_sidebar.open
+    // open_sidebar: state.open_sidebar.open
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

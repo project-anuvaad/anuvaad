@@ -116,7 +116,8 @@ class Login extends React.Component {
           history.push(`${process.env.PUBLIC_URL}/user-details`);
           // history.push(`${process.env.PUBLIC_URL}/create-user`)
         }else{
-          history.push(`${process.env.PUBLIC_URL}/`);
+          debugger
+          history.push(`${process.env.PUBLIC_URL}/parallel-corpus`);
         }
         // history.push(`${process.env.PUBLIC_URL}/create-user`)
       }

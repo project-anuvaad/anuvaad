@@ -84,8 +84,7 @@ class App extends React.Component {
 const mapStateToProps = state => ({
   user: state.login,
   apistatus: state.apistatus,
-  userProfile: state.userProfile,
-  open_sidebar: state.open_sidebar.open
+  userProfile: state.userProfile
 });
 
 const mapDispatchToProps = dispatch =>
