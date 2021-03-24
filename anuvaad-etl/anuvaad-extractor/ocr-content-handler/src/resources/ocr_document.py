@@ -33,11 +33,16 @@ class DigitalDocumentSaveResource(Resource):
             log_info('Missing params in DigitalDocumentSaveResource {}, user_id:{}, record_id:{}'.format(body, userID, recordID), AppContext.getContext())
                
         try:
+            AppContext.addRecordID(recordID)
+            log_info('DigitalDocumentSaveResource request received, user_id:{}, record_id:{}'.format(userID, recordID), AppContext.getContext())
+
             result = digitalRepo.store(userID, recordID, files)
             if result == False:
                 log_info('Missing params in DigitalDocumentSaveResource {}, user_id:{}, record_id:{}'.format(body, userID, recordID), AppContext.getContext())
                 return post_error("Data Missing","Failed to store doc since data is missing",None), 400
             elif result is None:
+                AppContext.addRecordID(recordID)
+                log_info('DigitalDocumentSaveResource request completed, user_id:{}, record_id:{}'.format(userID, recordID), AppContext.getContext())
                 res = CustomResponse(Status.SUCCESS.value, None)
                 return res.getres()
             else:

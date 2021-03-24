@@ -35,7 +35,7 @@ class DigitalDocumentRepositories:
                     blocks.append(block)
                 else:
                     return block
-
+            log_info('DigitalDocumentRepo page blocks created for insert, user_id:{}, record_id:{}, block length:{}'.format(userID, recordID,str(len(blocks))), AppContext.getContext())
             result=self.docModel.store_bulk_blocks(blocks)
             if result == False:
                 return False                   
