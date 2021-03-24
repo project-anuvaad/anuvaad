@@ -28,10 +28,10 @@ class DigitalDocumentModel(object):
             return False
 
     
-    def get_word_region(self,user_id,record_id,region_id):
+    def get_word_region(self,user_id,record_id,region_id,page):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
-            docs        = collections.aggregate([{ '$match':{'userID':user_id,'recordID':record_id}},
+            docs        = collections.aggregate([{ '$match':{'userID':user_id,'recordID':record_id,'page_info.page_no':page}},
                                         {'$project': {
                                                 'wordRegions': {
                                                    '$filter': {
@@ -53,14 +53,14 @@ class DigitalDocumentModel(object):
             log_exception("Exception on fetching word to update | DigitalDocumentModel :{}".format(str(e)),  AppContext.getContext(), e)
             return None
         
-    def update_word(self,user_id,record_id,region_id,region_to_update):
+    def update_word(self,user_id,record_id,region_id,region_to_update,page):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
 
-            docs=collections.update({ 'userID': user_id,'recordID': record_id },
+            docs=collections.update({ 'userID': user_id,'recordID': record_id,'page_info.page_no':page },
                                     { '$pull': { 'regions': { 'identifier': region_id } } })
 
-            docs= collections.update({ 'userID': user_id,'recordID': record_id  },
+            docs= collections.update({ 'userID': user_id,'recordID': record_id,'page_info.page_no':page },
                                       { '$push': { 'regions': region_to_update } })
 
         except Exception as e:
