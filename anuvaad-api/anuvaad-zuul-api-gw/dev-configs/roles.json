@@ -14,6 +14,11 @@
             "code":"TRANSLATOR",
             "active":true,
             "description":"Has access to translation related resources"
+        },
+        {
+            "code":"INTERNAL-TRANSLATOR",
+            "active":true,
+            "description":"Has access to translation related resources for an internal translator"
         }
     ]
 }
