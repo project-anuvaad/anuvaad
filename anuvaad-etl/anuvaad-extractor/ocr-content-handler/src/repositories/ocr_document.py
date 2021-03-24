@@ -53,7 +53,7 @@ class DigitalDocumentRepositories:
             if Validation is not None:
                 return Validation
 
-            # data_region_id=word['data_region_id']
+            page=word['page_no']
             region_id=word['region_id']
             word_id=word['word_id']
             record_id=word['record_id']
@@ -61,7 +61,7 @@ class DigitalDocumentRepositories:
 
             AppContext.addRecordID(record_id)
             log_info("DigitalDocumentRepo update word request", AppContext.getContext())#str(page)
-            region_to_update= self.docModel.get_word_region(user_id,record_id,region_id)
+            region_to_update= self.docModel.get_word_region(user_id,record_id,region_id,page)
             if region_to_update:
                 if region_to_update['identifier']== region_id :
                     region_to_update['updated']=True
@@ -81,7 +81,7 @@ class DigitalDocumentRepositories:
             AppContext.addRecordID(record_id)
             log_info("DigitalDocumentRepo update word region :{}".format(str(region_to_update)), AppContext.getContext())
             print(region_to_update)
-            if self.docModel.update_word(user_id,record_id,region_id,region_to_update) == False:
+            if self.docModel.update_word(user_id,record_id,region_id,region_to_update,page) == False:
                 return post_error("Data Missing","Failed to update word since data is missing",None)
         return True
 
