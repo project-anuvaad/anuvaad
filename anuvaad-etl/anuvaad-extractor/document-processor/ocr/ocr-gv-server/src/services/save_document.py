@@ -6,8 +6,6 @@ import copy
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 
-# token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6ImphaW55LmpveUB0YXJlbnRvLmNvbSIsInBhc3N3b3JkIjoiYickMmIkMTIkcXFjYUM2WW5yU2RFM2hDT2h4aXpnT0ZILjBxeFR4UWJBTHloZDFjTjBFOWluSnRqaTguOWknIiwiZXhwIjoxNjE2NTcxMjM3fQ.vCOncRM7BNK0qsv0OWnioIDfy-lOusTcMERsusm_ics"
-# headers = {'auth-token' :token }
 def save_page_res(res,file_name):
     try:
         tmp_file = copy.deepcopy(res['rsp'])
@@ -19,12 +17,13 @@ def save_page_res(res,file_name):
             recordID = file['jobID']+'|'+json_file_name
             page_idx = 0
             total_pages = len(file['files'][0]['pages'])
-            file['files'][0]['config']   = copy.deepcopy(file['files'][0]['config']['OCR'])
+            file['files'][0]['config'] = copy.deepcopy(file['files'][0]['config']['OCR'])
             while page_idx<total_pages:
-                
+
                 save_file = copy.deepcopy(file)
                 pages = file['files'][0]['pages'][page_idx:page_idx+SAVE_NO_PAGE]
                 save_file['files'][0]['pages'] = pages
+                
                 save_file['recordID'] = recordID
                 page_idx = page_idx+SAVE_NO_PAGE
                 rsp = requests.post(SAVE_URL,json=save_file)
