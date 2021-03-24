@@ -29,6 +29,7 @@ import UserReport from './ui/containers/web/AdminPanel/UserReport';
 import DocumentStats from './ui/containers/web/AdminPanel/DocumentStats';
 import OrganizationList from './ui/containers/web/AdminPanel/OrganizatonList';
 import AddOrganization from "./ui/containers/web/AdminPanel/AddOrganization";
+import GradeDocument from './ui/containers/web/GradeDocument/GradeDocument';
 import ViewDocumentDigitization from './ui/containers/web/DocumentDigitization/ViewDocumentDigitization';
 import DigitzeDocumentUpload from './ui/containers/web/DocumentDigitization/DocumentDigitizationUpload/StartDigitizationUpload';
 import DigitizedDocumentEditor from './ui/containers/web/DocumentDigitization/DigitizedDocumentEditor';
@@ -135,7 +136,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename`}
-              userRoles={["TRANSLATOR"]}
+              userRoles={["TRANSLATOR","INTERNAL-TRANSLATOR"]}
               component={DocumentEditorV1}
               title="Translate file"
               authenticate={this.authenticateUser}
@@ -157,7 +158,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-upload/:type`}
-              userRoles={["TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "INTERNAL-TRANSLATOR"]}
               component={FileUpload}
               title="Start Translate"
               authenticate={this.authenticateUser}
@@ -211,10 +212,20 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/view-document`}
               dontShowLoader
               title={"Document Translate"}
-              userRoles={["TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "INTERNAL-TRANSLATOR"]}
               component={ViewDocument}
               authenticate={this.authenticateUser}
               currentMenu="view-document"
+              dontShowHeader={true}
+            />
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/grade-document/:jobid/:inputfileid/:modelId/:filename`}
+              dontShowLoader
+              title={"Grade Document"}
+              userRoles={["INTERNAL-TRANSLATOR"]}
+              component={GradeDocument}
+              authenticate={this.authenticateUser}
+              currentMenu="grade-document"
               dontShowHeader={true}
             />
 

@@ -281,12 +281,23 @@ class ViewDocument extends React.Component {
   };
 
   processViewDocumentClick = (jobId, recordId, status) => {
+    let role = localStorage.getItem("roles")
+    debugger
     let job = this.getJobIdDetail(jobId);
     if (status === "COMPLETED") {
-      history.push(
-        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
-        this.state
-      );
+      if(role === "INTERNAL-TRANSLATOR"){
+        history.push(
+          `${process.env.PUBLIC_URL}/grade-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
+          this.state
+        );
+      }
+      else{
+        history.push(
+          `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
+          this.state
+        );
+      }
+      
     } else if (status === "INPROGRESS") {
       this.setState({
         dialogMessage: "Please wait process is Inprogress!",
