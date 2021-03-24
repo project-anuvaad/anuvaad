@@ -246,6 +246,16 @@
             "active":true
         },
         {
+            "role":"ADMIN",
+            "actionID": "e5d0b999-a2bb-41af-a267-2494b15fb6a5",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
+            "active":true
+        },
+        {
             "role":"INTERNAL-TRANSLATOR",
             "actionID": "30b20c13-db5a-465c-a6b4-50a7c0daee57",
             "active":true
