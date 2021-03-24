@@ -74,7 +74,6 @@ class DigitizedDocHeader extends React.Component {
             this.props.status && this.props.togglebtnstatus()
             this.props.copy_status && this.props.copylocation()
             this.props.edit_status && this.props.startediting()
-            this.props.reset_updated_word()
         }
     }
 
