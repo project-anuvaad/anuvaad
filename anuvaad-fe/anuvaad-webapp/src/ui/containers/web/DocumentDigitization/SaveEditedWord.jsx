@@ -48,11 +48,11 @@ class SaveEditedWord extends React.Component {
                         <Button
                             variant="contained" aria-label="edit" style={{
                                 width: '40%', marginRight: '2%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
-                                backgroundColor: '#1ca9c9', color: 'white',
-                            }} disabled={this.state.loading}
+                                backgroundColor: this.props.loading ? 'grey' : '#1ca9c9', color: 'white',
+                            }} disabled={this.props.loading}
                             onClick={() => this.props.saveWord(this.state.word)}
                         >
-                            {this.state.loading && <CircularProgress size={24} className={'success'} style={{
+                            {this.props.loading && <CircularProgress size={24} className={'success'} style={{
                                 color: 'green[500]',
                                 position: 'absolute',
                                 top: '50%',
@@ -66,7 +66,7 @@ class SaveEditedWord extends React.Component {
                         <Button
                             variant="contained" aria-label="edit" style={{
                                 width: '40%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
-                                backgroundColor: this.state.loading ? 'grey' : '#1ca9c9', color: 'white', color: 'white',
+                                backgroundColor: this.props.loading ? 'grey' : '#1ca9c9', color: 'white', color: 'white',
                             }}
                             onClick={this.props.handleClose}
                         >

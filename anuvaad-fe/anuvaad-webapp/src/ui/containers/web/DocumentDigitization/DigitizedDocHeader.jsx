@@ -33,6 +33,7 @@ import switchstyles from '../../../../flux/actions/apis/view_digitized_document/
 import startediting from '../../../../flux/actions/apis/view_digitized_document/start_editing';
 import copylocation from '../../../../flux/actions/apis/view_digitized_document/copy_location';
 import set_crop_size from '../../../../flux/actions/apis/view_digitized_document/set_crop_size';
+import reset_updated_word from '../../../../flux/actions/apis/view_digitized_document/reset_updated_word';
 
 const StyledMenu = withStyles({
     paper: {
@@ -73,6 +74,7 @@ class DigitizedDocHeader extends React.Component {
             this.props.status && this.props.togglebtnstatus()
             this.props.copy_status && this.props.copylocation()
             this.props.edit_status && this.props.startediting()
+            this.props.reset_updated_word()
         }
     }
 
@@ -264,6 +266,7 @@ class DigitizedDocHeader extends React.Component {
                                 <IconButton
                                     onClick={() => {
                                         this.props.edit_status && this.props.startediting()
+                                        this.props.reset_updated_word()
                                         history.push(`${process.env.PUBLIC_URL}/document-digitization`);
                                     }}
                                     className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
@@ -314,7 +317,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
         switchstyles,
         startediting,
         copylocation,
-        set_crop_size
+        set_crop_size,
+        reset_updated_word
     },
     dispatch
 );

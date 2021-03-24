@@ -49,6 +49,10 @@ class OcrPageCard extends React.Component {
         if (prevProps.status !== this.props.status) {
             this.setState({ url: '' })
         }
+        if (prevProps.words.length !== this.props.words.length) {
+            this.setState({ loading: false, isOpen: false })
+            TELEMETRY.saveEditedWordEvent(this.props.words[0].updated_word, 'UPDATED_WORD')
+        }
     }
 
     /**
@@ -170,22 +174,11 @@ class OcrPageCard extends React.Component {
         let originalWord = this.state.text;
         let changedWord = word
         if (changedWord !== originalWord) {
+            this.setState({ loading: true })
             let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord)
             APITransport(apiObj);
         }
-        this.setState({ isOpen: false })
     }
-
-    // makeUpdateWordAPICall = (obj) => {
-    //     fetch(obj.apiEndPoint(), {
-    //         method: 'post',
-    //         headers: obj.getHeaders().headers,
-    //         body: JSON.stringify(obj.getBody())
-    //     })
-    //         .then(res => {
-
-    //         })
-    // }
 
     renderModal = () => {
         return (
@@ -193,7 +186,7 @@ class OcrPageCard extends React.Component {
                 open={this.state.isOpen}
                 onClose={this.handleClose}
             >
-                <SaveEditedWord handleClose={this.handleClose} text={this.state.text} id={this.state.id} saveWord={this.saveWord} />
+                <SaveEditedWord handleClose={this.handleClose} text={this.state.text} id={this.state.id} loading={this.state.loading} saveWord={this.saveWord} />
             </Modal>
         )
     }
