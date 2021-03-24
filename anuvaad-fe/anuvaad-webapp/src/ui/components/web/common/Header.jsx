@@ -306,7 +306,31 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
+                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+                    <div>
+                      <Divider className={classes.divider} />
 
+                      <ListItem
+                        id="schedule-annotation-job"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "schedule-annotation-job" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/schedule-annotation-job`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: currentMenu === "schedule-annotation-job" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              Schedule Annotation Job
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )}
                   {role && Array.isArray(role) && (role.includes("TRANSLATOR")) && (
                     <>
                       <div>

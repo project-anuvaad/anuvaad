@@ -32,6 +32,7 @@ import AddOrganization from "./ui/containers/web/AdminPanel/AddOrganization";
 import ViewDocumentDigitization from './ui/containers/web/DocumentDigitization/ViewDocumentDigitization';
 import DigitzeDocumentUpload from './ui/containers/web/DocumentDigitization/DocumentDigitizationUpload/StartDigitizationUpload';
 import DigitizedDocumentEditor from './ui/containers/web/DocumentDigitization/DigitizedDocumentEditor';
+import ScheduleJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ScheduleJob';
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -53,8 +54,8 @@ const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, 
           {...props}
         />
       ) : (
-          <Redirect to={`${process.env.PUBLIC_URL}/logout`} />
-        )
+        <Redirect to={`${process.env.PUBLIC_URL}/logout`} />
+      )
     }
   />
 );
@@ -300,6 +301,17 @@ class AppRoutes extends React.Component {
               component={DocumentStats}
               authenticate={this.authenticateUser}
               currentMenu="document-stats"
+              dontShowHeader={true}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/schedule-annotation-job`}
+              dontShowLoader
+              title={"Schedule Job"}
+              userRoles={["ADMIN"]}
+              component={ScheduleJob}
+              authenticate={this.authenticateUser}
+              currentMenu="schedule-annotation-job"
               dontShowHeader={true}
             />
 
