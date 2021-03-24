@@ -13,7 +13,7 @@ class SaveEditedWord extends React.Component {
             loading: false,
             word: props.text
         }
-
+        
     }
 
     handleInputFieldChange = (e) => {
@@ -23,21 +23,23 @@ class SaveEditedWord extends React.Component {
     render() {
         return (
             <div>
-                <FormControl style={{
+                <FormControl 
+                style={{
                     position: 'absolute',
                     width: "30%",
-                    height: "20%",
                     top: "25%",
                     left: '35%',
                     paddingTop: '3%',
                     paddingBottom: '1%',
                     outline: 0,
                     backgroundColor: "white"
-                }} align='center' fullWidth
+                }} 
+                align='center' 
+                fullWidth
                 >
-                    <span style={{ margin: 'auto', fontSize: '20px', padding: "0px 5px", display: "inline-block", textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden", width: "295px" }}>
-                        You are changing: <br></br> <span style={{ fontSize: '20px', fontWeight: "bold" }}>{this.props.text}</span>
-                    </span>
+                    <Typography style={{ margin: 'auto', fontSize: '20px', padding: "0px 5px", display: "inline-block", textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden", width: "295px" }}>
+                        You are changing: <br></br> <Typography style={{ fontSize: '20px', fontWeight: "bold" }}>{this.props.text}</Typography>
+                    </Typography>
                     <TextField id="email" type="text" value={this.state.word} placeholder="Word"
                         margin="dense" varient="outlined" style={{ width: '80%', marginBottom: '4%', backgroundColor: 'white' }}
                         disabled="true"
