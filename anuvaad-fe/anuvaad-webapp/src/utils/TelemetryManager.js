@@ -1,4 +1,5 @@
 import $t from "@project-sunbird/telemetry-sdk/index.js";
+import { value } from "jsonpath";
 import CONFIGS from '../configs/configs.js'
 
 /**
@@ -662,7 +663,7 @@ export const glossaryUpload = (file_id, organization) => {
   $t.impression(data, options)
 }
 
-export function saveEditedWordEvent(changedWord, action) {
+export function saveEditedWordEvent(changedWordInfo, action) {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -679,11 +680,12 @@ export function saveEditedWordEvent(changedWord, action) {
   }
 
   let values = {}
-  values.changedWord = changedWord
+  values.changedWord = changedWordInfo.updated_word
+  values.word_id = changedWordInfo.word_id
+  values.record_id = changedWordInfo.record_id
   values.action = action
 
-  console.log(values)
-  
+
   let options = {
     ets: Date.now(),
     actor: {

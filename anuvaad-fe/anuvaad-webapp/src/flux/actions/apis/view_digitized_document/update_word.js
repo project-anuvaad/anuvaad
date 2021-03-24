@@ -3,13 +3,14 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class UpdateWord extends API {
-    constructor(recordId, regionID, wordID, updatedWord, timeout = 200000) {
+    constructor(recordId, regionID, wordID, updatedWord, page_no, timeout = 200000) {
         super("POST", timeout, false);
         this.recordId = recordId
         this.regionID = regionID
         this.wordID = wordID
         this.updatedWord = updatedWord
         this.type = C.UPDATE_WORD;
+        this.page_no = page_no
         this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.update_word}`;
     }
 
@@ -36,7 +37,8 @@ export default class UpdateWord extends API {
                     "record_id": this.recordId,
                     "region_id": this.regionID,
                     "word_id": this.wordID,
-                    "updated_word": this.updatedWord
+                    "updated_word": this.updatedWord,
+                    "page_no": this.page_no
                 },
             ]
         };

@@ -49,9 +49,9 @@ class OcrPageCard extends React.Component {
         if (prevProps.status !== this.props.status) {
             this.setState({ url: '' })
         }
-        if (prevProps.words.length !== this.props.words.length) {
+        if (this.props.words[0] && prevProps.words.length !== this.props.words.length) {
             this.setState({ loading: false, isOpen: false })
-            TELEMETRY.saveEditedWordEvent(this.props.words[0].updated_word, 'UPDATED_WORD')
+            TELEMETRY.saveEditedWordEvent(this.props.words[0], 'UPDATED_WORD')
         }
     }
 
@@ -175,7 +175,7 @@ class OcrPageCard extends React.Component {
         let changedWord = word
         if (changedWord !== originalWord) {
             this.setState({ loading: true })
-            let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord)
+            let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord,this.props.page.page_info.page_no)
             APITransport(apiObj);
         }
     }
