@@ -35,7 +35,7 @@ class DigitalDocumentRepositories:
                     blocks.append(block)
                 else:
                     return block
-
+            log_info('DigitalDocumentRepo page blocks created for insert, user_id:{}, record_id:{}, block length:{}'.format(userID, recordID,str(len(blocks))), AppContext.getContext())
             result=self.docModel.store_bulk_blocks(blocks)
             if result == False:
                 return False                   
@@ -119,7 +119,8 @@ class DigitalDocumentRepositories:
     
     def create_regions_from_page(self,userID,jobID,recordID,file_name,locale,file_type,page):
         try:
-
+            AppContext.addRecordID(recordID)
+            log_info('DigitalDocumentRepo page blocks creation started for record_id:{}, page_number:{}'.format(recordID,str(page['page_no'])), AppContext.getContext())
             block_info = {}
             block_info['userID']=userID
             block_info['jobID']=jobID
@@ -141,7 +142,6 @@ class DigitalDocumentRepositories:
             block_info['page_info'] = page_info
 
             block_info['regions'] = page['regions']
-
             return block_info
         except Exception as e:
             AppContext.addRecordID(recordID)
