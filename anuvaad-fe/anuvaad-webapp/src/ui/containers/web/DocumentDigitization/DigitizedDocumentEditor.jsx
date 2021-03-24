@@ -519,8 +519,7 @@ class DocumentEditor extends React.Component {
      */
     renderPDFDocument = () => {
         if (!this.state.apiFetchStatus) {
-            let imagePath 
-            = this.props.download_json.pages[this.props.active_page_number - 1] && this.props.download_json.pages[this.props.active_page_number - 1].page_info.page_img_path
+            let imagePath = this.props.download_json.pages[this.props.active_page_number - 1] && this.props.download_json.pages[this.props.active_page_number - 1].page_info.page_img_path
             if (imagePath)
                 return (
                     <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
