@@ -37,7 +37,7 @@ class SaveEditedWord extends React.Component {
                 align='center' 
                 fullWidth
                 >
-                    <Typography style={{ margin: 'auto', fontSize: '20px', padding: "0px 5px", display: "inline-block", textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden", width: "295px" }}>
+                    <Typography style={{ margin: 'auto', fontSize: '20px', padding: "0px 5px", display: "absolute", textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden" }}>
                         You are changing: <br></br> <Typography style={{ fontSize: '20px', fontWeight: "bold" }}>{this.props.text}</Typography>
                     </Typography>
                     <TextField id="email" type="text" value={this.state.word} placeholder="Word"
