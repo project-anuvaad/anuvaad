@@ -79,12 +79,18 @@ class File:
     @log_error
     def set_regions(self, page_index, regions):
         self.file['pages'][page_index]["regions"] = regions
+    @log_error
+    def delete_regions(self, page_index):
+        if 'words' in self.file['pages'][page_index].keys():
+            del self.file['pages'][page_index]["words"]
+        if 'lines' in self.file['pages'][page_index].keys():
+            del self.file['pages'][page_index]["lines"]
 
     @log_error
     def set_page_meta(self):
         for page_index, page_path in enumerate(self.get_pages()) :
             self.file['pages'][page_index]['path'] = page_path
-            self.file['pages'][page_index]['page_no'] = page_index +1
+            self.file['pages'][page_index]['page_no'] = page_index 
 
 
 
