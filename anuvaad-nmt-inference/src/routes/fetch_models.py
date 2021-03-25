@@ -29,5 +29,5 @@ Api(FETCH_MODELS_BLUEPRINT).add_resource(
 )
 
 Api(FETCH_MODELS_BLUEPRINT).add_resource(
-    FetchSingleModelResource, config.MODULE_NAME + "/v1/fetch-single-model/<string:id>"
+    FetchSingleModelResource, config.MODULE_NAME + "/v2/fetch-models/<string:id>"
 )
