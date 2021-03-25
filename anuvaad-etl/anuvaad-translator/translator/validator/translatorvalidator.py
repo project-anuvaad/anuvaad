@@ -59,8 +59,16 @@ class TranslatorValidator:
                             return post_error("TEXT_NOT_FOUND", "src is mandatory", None)
                         if 'taggedPrefix' not in text.keys():
                             return post_error("TAGGED_PREFIX_NOT_FOUND", "taggedPrefix is mandatory", None)
-                        if 'modelID' not in text.keys():
-                            return post_error("MODEL_ID_NOT_FOUND", "modelID is mandatory", None)
+            if 'model' not in api_input.keys():
+                return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
+            else:
+                model = api_input["model"]
+                if 'model_id' not in model.keys():
+                    return post_error("MODEL_ID_NOT_FOUND", "Model Id is mandatory.", None)
+                if 'source_language_code' not in model.keys():
+                    return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
+                if 'target_language_code' not in model.keys():
+                    return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
 
     # Validator that validates the input request for initiating translation through wf
     def validate_wf(self, data, is_api):
