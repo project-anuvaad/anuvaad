@@ -17,14 +17,12 @@ update_content_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_
                     + str(os.environ.get('UPDATE_CONTENT_ENDPOINT', '/api/v0/update-content'))
 sentence_fetch_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
                     + str(os.environ.get('SENTENCE_FETCH_ENDPOINT', '/api/v0/fetch-content-sentence'))
-#nmt_translate_url = os.environ.get('NMT_TRANSLATE_URL', 'http://172.30.0.234:5001/nmt-inference/v3/translate-anuvaad')
-nmt_interactive_translate_url = os.environ.get('NMT_IT_URL', 'http://172.30.0.234:5001/nmt-inference/v2/interactive-translation')
-nmt_labse_align_url = os.environ.get('NMT_LABSE_ALIGN_URL', 'http://172.30.0.234:5001/nmt-inference/v1/labse-aligner')
 fetch_user_translation_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
                     + str(os.environ.get('FETCH_USER_TRANSLATION_ENDPOINT', '/anuvaad/content-handler/v0/records/user-translation-search'))
 nmt_fetch_models_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')) + str(os.environ.get('FETCH_MODELS_ENDPOINT', '/nmt-inference/v2/fetch-models'))
 nmt_translate_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')) + str(os.environ.get('NMT_TRANSLATE_ENDPOINT', '/nmt-inference/v4/translate'))
 nmt_it_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')) + str(os.environ.get('NMT_IT_ENDPOINT', '/nmt-inference/v3/interactive-translation'))
+nmt_labse_align_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')) + str(os.environ.get('NMT_LABSE_ALIGN_ENDPOINT', '/nmt-inference/v1/labse-aligner'))
 
 
 
