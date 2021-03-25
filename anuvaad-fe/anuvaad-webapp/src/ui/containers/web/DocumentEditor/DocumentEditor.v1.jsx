@@ -703,6 +703,7 @@ class DocumentEditor extends React.Component {
               sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
               return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
                 pageNumber={page.page_no}
+                recordId = {this.props.match.params.jobid}
                 model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models )}
                 jobId={jobId}
                 sentence={sentence}
