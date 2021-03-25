@@ -128,6 +128,7 @@ def add_line(line_coord, line_text,words_lis,page,font_info):
         #line_region["text"] = text
         line_region["class"] = 'LINE'
         word_region = get_words(words,page,font_info)
+        print(word_region)
         line_region["regions"] = word_region
         wors.extend(word_region)
         #print(word_region)
@@ -169,6 +170,7 @@ def avg_word_sep(words_lis):
 def get_words(words_lis,page,font_info):
     word_regions = []
     avg_height   = avg_word_sep(words_lis)
+    #print(words_lis)
     for word in words_lis:
         word_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}}
         word_vertices = []
@@ -180,7 +182,7 @@ def get_words(words_lis,page,font_info):
         word_text = ''.join([
             symbol.text for symbol in word.symbols
         ])
-        print(word_text)
+        #print(word_text)
         word_region["text"]  = word_text
         word_region["class"] = 'WORD'
         font_info['size']    = abs(word.bounding_box.vertices[0].y-word.bounding_box.vertices[2].y)
