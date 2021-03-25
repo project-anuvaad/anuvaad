@@ -75,5 +75,11 @@ class ParallelSentenceRepo(object):
             return {'annotations': []}
         return {'annotations': results}
 
+    def search_tasks_annotationType(self, annotationType):
+        results = self.parallelSentenceModel.search_task_type(annotationType)
+        if len(results) == 0:
+            return {'tasks': []}
+        return {'tasks': results}
+
     def save_annotation(self, annotation):
         return self.parallelSentenceModel.save_annotation(annotation)

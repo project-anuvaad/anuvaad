@@ -76,6 +76,27 @@ class AnnotationTaskTaskIdSearchResource(Resource):
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
 
+class AnnotationTaskTaskTypeSearchResource(Resource):
+    def post(self):
+        body        = request.get_json()
+        if 'annotationType' not in body.keys():
+            log_info('Missing params in AnnotationTaskTaskTypeSearchResource {}'.format(body), LOG_WITHOUT_CONTEXT)
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
+        
+        try:
+            result = parallelSentenceAnnotationRepo.search_tasks_annotationType(body['annotationType'])
+            if result == False:
+                res = CustomResponse(Status.SUCCESS.value, None)
+                return res.getres()
+            else:
+                res = CustomResponse(Status.SUCCESS.value, result)
+                return res.getres()
+        except Exception as e:
+            log_exception("Exception at AnnotationTaskTaskTypeSearchResource ", LOG_WITHOUT_CONTEXT, e)
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
+
 class AnnotationTaskSaveAnnotationResource(Resource):
     def post(self):
         body        = request.get_json()

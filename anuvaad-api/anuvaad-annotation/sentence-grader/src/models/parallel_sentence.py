@@ -26,6 +26,19 @@ class ParallelSentenceModel(object):
         except Exception as e:
             log_exception("db connection exception ",  LOG_WITHOUT_CONTEXT, e)
             return False
+
+    def search_task_type(self, annotationType):
+        try:
+            collections     = get_db()[DB_SCHEMA_NAME]
+            docs            = collections.find({'annotationType': annotationType})
+            updated_docs    = []
+            for doc in docs:
+                del doc['annotations']
+                updated_docs.append(normalize_bson_to_json(doc))
+            return updated_docs
+        except Exception as e:
+            log_exception("db connection exception ",  LOG_WITHOUT_CONTEXT, e)
+            return updated_docs
     
     def search_user_task(self, userId):
         try:
