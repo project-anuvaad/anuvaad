@@ -19,7 +19,7 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 def get_text(path,page_dict,page_regions,font_info):
     
     img = cv2.imread(path)
-    #img[175 < img ] = 255
+    img[175 < img ] = 255
     masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
     cv2.imwrite(masked_path,img)
     with io.open(masked_path, 'rb') as image_file:
