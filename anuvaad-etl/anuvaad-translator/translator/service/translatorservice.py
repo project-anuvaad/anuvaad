@@ -278,12 +278,14 @@ class TranslatorService:
             translate_wf_input = file["transInput"]
             translate_wf_input["recordID"] = record_id
             if 'status' in nmt_output.keys():
-                if 'statusCode' in nmt_output["status"].keys():
-                    if nmt_output["status"]["statusCode"] != 200:
-                        skip_count += batch_size
-                        log_error("Error from NMT: " + str(nmt_output["status"]["message"]), translate_wf_input,
+                if nmt_output["status"]["statusCode"] != 200:
+                    skip_count += batch_size
+                    log_error("Error from NMT: " + str(nmt_output["status"]["message"]), translate_wf_input,
                                   nmt_output["status"])
             if 'data' in nmt_output.keys():
+                if not nmt_output["data"]:
+                    log_error("NMT returned empty data[]!", translate_wf_input, None)
+                    skip_count += batch_size
                 sentences_of_the_batch = []
                 for response in nmt_output["data"]:
                     node_id = response["n_id"]
