@@ -1,0 +1,370 @@
+openapi: 3.0.0
+info:
+  title: Anuvaad annotation api documentation
+  description: A python based microservice to enable various annotation activity related to translation enhancemet flow
+  contact:
+    name: KD
+    email: kumar.deepak@tarento.com
+  version: 1.0.0
+servers:
+  - url: /api
+  
+paths:
+  /v0/annotation-task/create:
+    post:
+      tags:
+        - annotation
+      summary: creates job for list of users to check quality of translation.
+      
+      requestBody:
+        content:
+          "*/*":
+            schema:
+              $ref: "#/components/schemas/AnnotationJobRequest"
+        required: true
+      responses:
+        "200":
+          description: On successful completion of the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/HttpResponse"
+        "400":
+          description: On input errors causing a failure in the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorCode"
+                
+  /v0/annotation-task/search:
+    post:
+      tags:
+        - annotation
+      summary: searches annotation task assigned to an annotator.
+      parameters:
+        - name: 'user-id-x'
+          in: 'header'
+          schema:
+            type: 'string'
+            description: userId initiating the call.
+      requestBody:
+        content:
+          "*/*":
+            schema:
+              $ref: "#/components/schemas/AnnotationJobRequest"
+        required: true
+      responses:
+        "200":
+          description: On successful completion of the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/HttpResponse"
+        "400":
+          description: On input errors causing a failure in the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorCode"
+
+  /v0/annotation-task/summary/search:
+    post:
+      tags:
+        - annotation
+      summary: saves annotation result submitted by a user for a sentence.
+      parameters:
+        - name: 'user-id-x'
+          in: 'header'
+          schema:
+            type: 'string'
+            description: userId initiating the call.
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/AnnotationJobSummaryDetailsRequest"
+        required: true
+      responses:
+        "200":
+          description: On successful completion of the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/HttpResponse"
+        "400":
+          description: On input errors causing a failure in the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorCode"
+                
+  /v0/annotation-task/details/search:
+    post:
+      tags:
+        - annotation
+      summary: saves annotation result submitted by a user for a sentence.
+      parameters:
+        - name: 'user-id-x'
+          in: 'header'
+          schema:
+            type: 'string'
+            description: userId initiating the call.
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/AnnotationJobDetailsRequest"
+        required: true
+      responses:
+        "200":
+          description: On successful completion of the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/HttpResponse"
+        "400":
+          description: On input errors causing a failure in the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorCode"
+  
+  /v0/annotation/sentence/annotate:
+    post:
+      tags:
+        - annotation
+      summary: saves annotation result submitted by a user for a sentence.
+      parameters:
+        - name: 'user-id-x'
+          in: 'header'
+          schema:
+            type: 'string'
+            description: userId initiating the call.
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/ParallelSentenceGradingRequest"
+        required: true
+      responses:
+        "200":
+          description: On successful completion of the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/HttpResponse"
+        "400":
+          description: On input errors causing a failure in the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorCode"
+
+components:
+  schemas:
+    AnnotationJobRequest:
+      type: object
+      properties:
+        annotationType:
+          type: string
+          enum:
+            - VET_PARALLEL_SENTENCE
+        sourceLanguage:
+          type: string
+          description: ISO-639-1 language code
+        targetLanguage:
+          type: string
+          description: ISO-639-1 language code
+        file:
+          $ref: '#/components/schemas/File'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    
+    AnnotationJobResponse:
+      type: object
+      
+    AnnotationJobSummaryDetailsRequest:
+      type: object
+      properties:
+        annotations:
+          type: array
+          description: list of annotation job identifier
+          items:
+            type: string
+            description: respective WFM job identifier
+  
+    AnnotationJobSummaryDetailsResponse:
+      type: object
+      properties:
+        annotations:
+          type: array
+          description: list of annotation job summary
+          items:
+            $ref: '#/components/schemas/AnnotationJobSummary'
+    
+    AnnotationJobSummary:
+      type: object
+      properties:
+        jobIdentifier:
+          type: string
+          description: WFM job identifier
+        completed:
+          type: integer
+          description: count of graded/completed entity present in a job
+        total:
+          type: integer
+          description: count of total entity present in a job
+              
+    AnnotationJobDetailsRequest:
+      type: object
+      properties:
+        annotations:
+          type: array
+          description: list of annotation job identifier
+          items:
+            type: string
+            description: respective WFM job identifier
+  
+    AnnotationJobDetailsResponse:
+      type: object
+      properties:
+        annotations:
+          type: array
+          description: list of annotation job summary
+          items:
+            $ref: '#/components/schemas/AnnotationJobDetails'
+        
+    AnnotationJobDetails:
+      type: object
+      properties:
+        jobIdentifier:
+          type: string
+          description: WFM job identifier
+        annotations:
+          type: array
+          description: collection of individual entity items
+          items:
+            $ref: "#/components/schemas/ParallelSentence"
+          
+          
+    ParallelSentenceGradingRequest:
+      type: object
+      properties:
+        identifier:
+          type: string
+          format: uuidv4
+          description: unique identifier parallel sentence entity
+        parallelSentence:
+          $ref: "#/components/schemas/ParallelSentence"
+        score:
+          type: integer
+          description: collects grading score of the given parallelSentence
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            
+    ParallelSentenceGradingResponse:
+      type: object
+      properties:
+        identifier:
+          type: string
+          format: uuidv4
+          description: unique identifier parallel sentence entity
+
+    ParallelSentence:
+      type: object
+      properties:
+        identifier:
+          type: string
+          format: uuidv4
+          description: unique identificattion
+        source:
+          $ref: "#/components/schemas/Sentence"
+        target:
+          $ref: "#/components/schemas/Sentence"
+    
+    Sentence:
+      type: object
+      properties:
+        identifier:
+          type: string
+          format: uuidv4
+          description: parallel sentence identifier
+        language:
+          type: string
+          description: ISO-639-1 language code
+        text:
+          type: string
+          description: actual sentence
+
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          description: name of user
+        userId:
+          type: string
+          description: userIdentifier defined in UMS
+    
+    File:
+      type: object
+      properties:
+        name:
+          type: string
+          description: name of input file
+        type:
+          type: string
+          description: type of input file only CSV supported
+        identifier:
+          type: string
+          description: unique identifier for a file generated by the file converter module.
+
+    ErrorCode:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: status code
+          enum:
+            - FILE_NOT_FOUND
+            - FILE_FORMAT_NOT_SUPPORTED
+            - UNAUTHORIZED_ACCESS
+            - MISSING_MANDATORY_PARAMETERS
+
+        message:
+          type: string
+          description: human understandable format
+      required:
+        - code
+        - message
+    
+    HttpResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          description: request successful indicator.
+        why:
+          type: string
+          description: Response message.
+        status:
+          type: object
+          description: overall operation status
+          $ref: '#/components/schemas/ErrorCode'
+        data:
+          type: integer
+          description: should be null object
+          oneOf:
+            - $ref: '#/components/schemas/AnnotationJobResponse'
+            - $ref: '#/components/schemas/ParallelSentenceGradingResponse'
+            - $ref: '#/components/schemas/AnnotationJobSummaryDetailsResponse'
+            - $ref: '#/components/schemas/AnnotationJobDetailsResponse'
+            
+          
