@@ -16,9 +16,9 @@
             "description":"Has access to translation related resources"
         },
         {
-            "code":"INTERNAL-TRANSLATOR",
+            "code":"ANNOTATOR",
             "active":true,
-            "description":"Has access to translation related resources for an internal translator"
+            "description":"Has access to translation related resources for an annotator"
         }
     ]
 }
