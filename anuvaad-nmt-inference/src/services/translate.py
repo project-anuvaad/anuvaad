@@ -405,7 +405,7 @@ class OpenNMTTranslateService:
 
         return out
      
-def encode_itranslate_decode(i,num_map,tp_tokenizer,num_hypotheses=3):
+def encode_itranslate_decode(i,num_map,tp_tokenizer,num_hypotheses=1):
     try:
         log_info("Inside encode_itranslate_decode function",MODULE_CONTEXT)
         model_path,sp_encoder,sp_decoder = get_model_path(i['id'])
@@ -433,7 +433,7 @@ def encode_itranslate_decode(i,num_map,tp_tokenizer,num_hypotheses=3):
         log_exception("Unexpexcted error in encode_itranslate_decode: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
         raise 
 
-def encode_itranslate_decode_v2(i,num_map,tp_tokenizer,num_hypotheses=3):
+def encode_itranslate_decode_v2(i,num_map,tp_tokenizer,num_hypotheses=1):
     try:
         log_info("Inside encode_itranslate_decode_v2 function",MODULE_CONTEXT)
         model_path,sp_encoder,sp_decoder = get_model_path(i['id'])

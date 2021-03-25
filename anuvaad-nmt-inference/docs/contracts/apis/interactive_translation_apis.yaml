@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  version: 2.0.0
+  version: 3.0.0
   title: Anuvaad Interactive Translation - API Contract
   description: A NMT based custom translation system to support document editing 
   contact:
@@ -15,7 +15,7 @@ produces:
 basePath: /nmt-inference
 
 paths:   
-  /v2/interactive-translation:
+  /v3/interactive-translation:
     post:
       summary: REST API to perform interactive translation at sentence level generating multiple possible translation.
       description: This api takes a sentence, model id and target prefix tokens as input and outputs multiple customised translation based on the prefix.
@@ -70,7 +70,7 @@ definitions:
   interactive_translation_multiple_hypothesis_response:
     type: object
     properties:        
-      response_body:
+      data:
         type: array
         description: A list of customised translation response along with intermediate data
         items:
@@ -106,14 +106,9 @@ definitions:
     type: object
     description: Status object with every request
     properties:
-      ok:
-        type: string
-        enum:
-          - "true"
-          - "false"
       statusCode: 
         type: integer
         description: http status code
-      why:
+      message:
         type: string
         description: Success message or reason of failure in case of error
