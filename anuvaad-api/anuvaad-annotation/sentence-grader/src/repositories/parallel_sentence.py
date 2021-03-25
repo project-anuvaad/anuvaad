@@ -1,7 +1,6 @@
 import config
 import datetime
-import uuid
-import csv
+import os
 
 from .parse_csv import ParseCSV
 from .parse_xls import ParseXLS
@@ -15,14 +14,15 @@ class ParallelSentenceRepo(object):
     
     def store(self, source_lang, target_lang, jobId, annotationType, users, fileInfo):
         parallel_sentences  = []
+        filepath            = os.path.join(os.curdir, config.download_folder, fileInfo['identifier'])
 
         try:
-            parallel_sentences = ParseCSV.get_parallel_sentences(fileInfo['identifier'], source_lang, target_lang)
+            parallel_sentences = ParseCSV.get_parallel_sentences(filepath, source_lang, target_lang)
         except Exception as e:
             log_exception("exception encountered while reading CSV, trying with XLS ",  LOG_WITHOUT_CONTEXT, e)
 
             try:
-                parallel_sentences = ParseXLS.get_parallel_sentences(fileInfo['identifier'], source_lang, target_lang)
+                parallel_sentences = ParseXLS.get_parallel_sentences(filepath, source_lang, target_lang)
             except Exception as e:
                 log_exception("exception encountered while reading XLS, won't try now ",  LOG_WITHOUT_CONTEXT, e)
                 return False

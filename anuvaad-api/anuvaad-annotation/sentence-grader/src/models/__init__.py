@@ -1,3 +1,3 @@
 from .parallel_sentence import ParallelSentenceModel
-from .response import CustomResponse
-from .status import Status
+from .app_response import CustomResponse
+from .app_status import Status

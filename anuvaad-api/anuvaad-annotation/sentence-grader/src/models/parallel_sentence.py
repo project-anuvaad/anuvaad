@@ -19,7 +19,7 @@ class ParallelSentenceModel(object):
         try:
             collections = get_db()[DB_SCHEMA_NAME]
             results     = collections.insert_many(tasks)
-            if len(blocks) == len(results.inserted_ids):
+            if len(tasks) == len(results.inserted_ids):
                 return True
         except Exception as e:
             log_exception("db connection exception ",  LOG_WITHOUT_CONTEXT, e)
