@@ -34,6 +34,7 @@ import ViewDocumentDigitization from './ui/containers/web/DocumentDigitization/V
 import DigitzeDocumentUpload from './ui/containers/web/DocumentDigitization/DocumentDigitizationUpload/StartDigitizationUpload';
 import DigitizedDocumentEditor from './ui/containers/web/DocumentDigitization/DigitizedDocumentEditor';
 import ScheduleJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ScheduleJob';
+import ViewAnnotationJob from './ui/containers/web/GradeDocument/ViewAnnotationJobs';
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -137,7 +138,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename`}
-              userRoles={["TRANSLATOR","INTERNAL-TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "INTERNAL-TRANSLATOR"]}
               component={DocumentEditorV1}
               title="Translate file"
               authenticate={this.authenticateUser}
@@ -213,7 +214,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/view-document`}
               dontShowLoader
               title={"Document Translate"}
-              userRoles={["TRANSLATOR", "INTERNAL-TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={ViewDocument}
               authenticate={this.authenticateUser}
               currentMenu="view-document"
@@ -223,7 +224,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/grade-document/:jobid/:inputfileid/:modelId/:filename`}
               dontShowLoader
               title={"Grade Document"}
-              userRoles={["INTERNAL-TRANSLATOR"]}
+              userRoles={["ANNOTATOR"]}
               component={GradeDocument}
               authenticate={this.authenticateUser}
               currentMenu="grade-document"
@@ -323,6 +324,16 @@ class AppRoutes extends React.Component {
               component={ScheduleJob}
               authenticate={this.authenticateUser}
               currentMenu="schedule-annotation-job"
+              dontShowHeader={true}
+            />
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/view-annotation-job`}
+              dontShowLoader
+              title={"View Annotation Job"}
+              userRoles={["ANNOTATOR"]}
+              component={ViewAnnotationJob}
+              authenticate={this.authenticateUser}
+              currentMenu="view-annotation-job"
               dontShowHeader={true}
             />
 

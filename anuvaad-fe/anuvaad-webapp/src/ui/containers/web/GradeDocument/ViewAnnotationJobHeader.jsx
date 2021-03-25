@@ -178,7 +178,7 @@ class InteractiveDocHeader extends React.Component {
 
         return (
             <div style={{ display: "flex", flexDirection: "row" }}>
-               
+
 
                 <StyledMenu
                     id="menu-appbar"
@@ -202,10 +202,10 @@ class InteractiveDocHeader extends React.Component {
                     >
                         As XLSX
                     </MenuItem>
-                   { !this.props.preview && <MenuItem
+                    {!this.props.preview && <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.setState({anchorEl: null})
+                            this.setState({ anchorEl: null })
                             this.props.onShowPreview()
                         }}
                     >
@@ -230,14 +230,6 @@ class InteractiveDocHeader extends React.Component {
                                 <CloseIcon />
                             </IconButton> :
                             <div style={{ display: "flex", flexDirection: "row" }}>
-                                <IconButton
-                                    onClick={() => {
-                                        history.push(`${process.env.PUBLIC_URL}/view-document`);
-                                    }}
-                                    className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
-                                >
-                                    <BackIcon />
-                                </IconButton>
                                 <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "1px", marginTop: "5px" }}></div>
 
                                 <IconButton onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
@@ -249,9 +241,9 @@ class InteractiveDocHeader extends React.Component {
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
 
                     <Typography variant="h5" color="inherit" className={classes.flex}>
-                        {this.props.match.params.filename}
+                        View Annotation Job
                     </Typography>
-                   
+
 
                 </Toolbar>
             </AppBar>
