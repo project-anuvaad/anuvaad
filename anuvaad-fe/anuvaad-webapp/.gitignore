@@ -11,6 +11,23 @@
 # production
 /build
 
+#cache
+/Backups
+/blob-storage
+/Cache
+/CachedExtensionVSIXs
+/CachedExtensions
+/Code Cache
+/Cookies
+/Crash Reports
+/Cookies-journal
+/Network Persistent State
+/TransportSecurity
+/User
+/machinedid
+rapid_render.json
+storage.json
+
 # misc
 .DS_Store
 .env.local
