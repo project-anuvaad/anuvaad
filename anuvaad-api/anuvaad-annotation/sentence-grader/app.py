@@ -35,6 +35,6 @@ def info():
     return "Welcome to Annotation APIs"
 
 if __name__ == "__main__":
-    # start_kafka()
+    start_kafka()
     log_info("starting sentence-grader module", LOG_WITHOUT_CONTEXT)
     flask_app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
