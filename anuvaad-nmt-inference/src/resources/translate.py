@@ -124,3 +124,17 @@ class TranslateResourceV4(Resource):
             status['message'] = "Missing mandatory data ('src_list','model_id')"
             out = CustomResponse(status,inputs)
             return out.jsonify_res()          
+        
+class InteractiveMultiTranslateResourceV3(Resource):  
+    def post(self):
+        inputs = request.get_json(force=True)
+        if len(inputs)>0:
+            log_info("Making v3/interactive-translation API call",MODULE_CONTEXT)
+            log_info("inputs---{}".format(inputs),MODULE_CONTEXT)
+            out = TranslateService.interactive_translation(inputs)
+            log_info("out from v3/interactive-translation done: {}".format(out.getresjson()),MODULE_CONTEXT)
+            return out.jsonify_res()
+        else:
+            log_info("null inputs in request in v3/interactive-translation API",MODULE_CONTEXT)
+            out = CustomResponse(Status.INVALID_API_REQUEST.value,None)
+            return out.jsonify_res()        

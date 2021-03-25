@@ -15,8 +15,8 @@ class Status(enum.Enum):
     SEVER_MODEL_ERR = { "ok": "false",  "statusCode": 500 , "why": "Something went wrong on the server !" }
     UNSUPPORTED_LANGUAGE = { "ok": "false",  "statusCode": 401 , "why": "only hindi and english languages are supported" }
     No_File_DB = { "ok": "false",  "statusCode": 401 , "why": "no file found in the db for the given id" }
-    ID_OR_SRC_MISSING = { "ok": "false",  "statusCode": 401 , "why": "Either id or src missing for some inputs in the request" }
+    ID_OR_SRC_MISSING = { "ok": "false",  "statusCode": 401 , "why": "Either id or src missing for some inputs in the request","message": "Either id or src missing for some inputs in the request" }
     INCORRECT_ID = { "ok": "false",  "statusCode": 401 , "why": "wrong model id for some input" }
-    INVALID_API_REQUEST = {"ok": "false",  "statusCode": 401 , "why": "invalid api request,either incorrect format or empty request"}
+    INVALID_API_REQUEST = {"ok": "false",  "statusCode": 401 , "why": "invalid api request,either incorrect format or empty request","message": "invalid api request,either incorrect format or empty request"}
     KAFKA_INVALID_REQUEST = {"ok": "false",  "statusCode": 401 , "why": "Mandatory param(id,record id,message) missing from batch translation request"}
     INCOMPLETE_API_REQUEST = { "ok": "false",  "statusCode": 401 , "why": "Mandatory input parameters missing" }
