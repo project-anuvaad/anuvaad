@@ -33,12 +33,12 @@ class AnnotationTaskCreateResource(Resource):
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
 
-class AnnotationTaskSearchResource(Resource):
+class AnnotationTaskUserTaskSearchResource(Resource):
     def post(self):
 
         user_id = request.headers.get('x-user-id')
         if user_id == None:
-            log_info('Missing params in AnnotationTaskSearchResource {}'.format(body), LOG_WITHOUT_CONTEXT)
+            log_info('Missing params in AnnotationTaskUserTaskSearchResource {}'.format(body), LOG_WITHOUT_CONTEXT)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
             return res.getresjson(), 400
         
@@ -51,6 +51,27 @@ class AnnotationTaskSearchResource(Resource):
                 res = CustomResponse(Status.SUCCESS.value, result)
                 return res.getres()
         except Exception as e:
-            log_exception("Exception at AnnotationTaskSearchResource ", LOG_WITHOUT_CONTEXT, e)
+            log_exception("Exception at AnnotationTaskUserTaskSearchResource ", LOG_WITHOUT_CONTEXT, e)
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
+
+class AnnotationTaskTaskIdSearchResource(Resource):
+    def post(self):
+        body        = request.get_json()
+        if 'taskIds' not in body.keys():
+            log_info('Missing params in AnnotationTaskTaskIdSearchResource {}'.format(body), LOG_WITHOUT_CONTEXT)
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
+        
+        try:
+            result = parallelSentenceAnnotationRepo.search_taskIds_annotations(body['taskIds'])
+            if result == False:
+                res = CustomResponse(Status.SUCCESS.value, None)
+                return res.getres()
+            else:
+                res = CustomResponse(Status.SUCCESS.value, result)
+                return res.getres()
+        except Exception as e:
+            log_exception("Exception at AnnotationTaskTaskIdSearchResource ", LOG_WITHOUT_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400

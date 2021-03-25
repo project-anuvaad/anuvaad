@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_restful import Api
 
-from src.resources import AnnotationTaskCreateResource, AnnotationTaskSearchResource
+from src.resources import AnnotationTaskCreateResource, AnnotationTaskUserTaskSearchResource, AnnotationTaskTaskIdSearchResource
 
 ANNOTATION_BLUEPRINT = Blueprint("annotation_task", __name__)
 
@@ -10,5 +10,9 @@ Api(ANNOTATION_BLUEPRINT).add_resource(
 )
 
 Api(ANNOTATION_BLUEPRINT).add_resource(
-    AnnotationTaskSearchResource, "/v0/task/search"
+    AnnotationTaskUserTaskSearchResource, "/v0/task/search"
+)
+
+Api(ANNOTATION_BLUEPRINT).add_resource(
+    AnnotationTaskTaskIdSearchResource, "/v0/task/details/search"
 )

@@ -1,6 +1,7 @@
 import config
 import datetime
 import os
+import uuid
 
 from .parse_csv import ParseCSV
 from .parse_xls import ParseXLS
@@ -36,6 +37,7 @@ class ParallelSentenceRepo(object):
             task['user']            = user
             task['fileInfo']        = fileInfo
             task['jobId']           = jobId
+            task['taskId']          = str(uuid.uuid4())
             task['annotationType']  = annotationType
             task['annotations']     = parallel_sentences
             task['createdOn']       = datetime.datetime.utcnow()
@@ -54,5 +56,21 @@ class ParallelSentenceRepo(object):
     def search_user_task(self, userId):
         results = self.parallelSentenceModel.search_user_task(userId)
         if len(results) == 0:
-            return False
+            return {'tasks': []}
         return {'tasks': results}
+
+    def search_taskIds_annotations(self, taskIds):
+        results = []
+        for taskId in taskIds:
+            task_results = self.search_taskId_annotations(taskId)
+            results.append({
+                'taskId': taskId,
+                'annotations': task_results['annotations']
+            })
+        return {'tasks': results}
+
+    def search_taskId_annotations(self, taskId):
+        results = self.parallelSentenceModel.search_taskId_annotations(taskId)
+        if len(results) == 0:
+            return {'annotations': []}
+        return {'annotations': results}
