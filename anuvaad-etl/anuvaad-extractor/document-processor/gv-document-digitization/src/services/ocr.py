@@ -180,6 +180,7 @@ def get_words(words_lis,page,font_info):
         word_text = ''.join([
             symbol.text for symbol in word.symbols
         ])
+        print(word_text)
         word_region["text"]  = word_text
         word_region["class"] = 'WORD'
         font_info['size']    = abs(word.bounding_box.vertices[0].y-word.bounding_box.vertices[2].y)
