@@ -285,7 +285,7 @@ class ViewDocument extends React.Component {
     debugger
     let job = this.getJobIdDetail(jobId);
     if (status === "COMPLETED") {
-      if(role === "INTERNAL-TRANSLATOR"){
+      if(role === "ANNOTATOR"){
         history.push(
           `${process.env.PUBLIC_URL}/grade-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
           this.state
