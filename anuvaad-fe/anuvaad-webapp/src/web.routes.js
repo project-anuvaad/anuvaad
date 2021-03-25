@@ -138,7 +138,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename`}
-              userRoles={["TRANSLATOR", "INTERNAL-TRANSLATOR"]}
+              userRoles={["TRANSLATOR","ANNOTATOR"]}
               component={DocumentEditorV1}
               title="Translate file"
               authenticate={this.authenticateUser}
@@ -160,7 +160,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-upload/:type`}
-              userRoles={["TRANSLATOR", "INTERNAL-TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={FileUpload}
               title="Start Translate"
               authenticate={this.authenticateUser}
