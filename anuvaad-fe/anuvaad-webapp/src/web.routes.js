@@ -136,7 +136,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename`}
-              userRoles={["TRANSLATOR","INTERNAL-TRANSLATOR"]}
+              userRoles={["TRANSLATOR","ANNOTATOR"]}
               component={DocumentEditorV1}
               title="Translate file"
               authenticate={this.authenticateUser}
@@ -158,7 +158,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-upload/:type`}
-              userRoles={["TRANSLATOR", "INTERNAL-TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={FileUpload}
               title="Start Translate"
               authenticate={this.authenticateUser}
@@ -212,7 +212,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/view-document`}
               dontShowLoader
               title={"Document Translate"}
-              userRoles={["TRANSLATOR", "INTERNAL-TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={ViewDocument}
               authenticate={this.authenticateUser}
               currentMenu="view-document"
@@ -222,7 +222,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/grade-document/:jobid/:inputfileid/:modelId/:filename`}
               dontShowLoader
               title={"Grade Document"}
-              userRoles={["INTERNAL-TRANSLATOR"]}
+              userRoles={["ANNOTATOR"]}
               component={GradeDocument}
               authenticate={this.authenticateUser}
               currentMenu="grade-document"
