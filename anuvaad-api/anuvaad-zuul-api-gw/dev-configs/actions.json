@@ -241,6 +241,46 @@
             "description":"API for interactive translation"
         },
         {
+            "id":"400772fd-15c1-4c89-9ab2-ad6b577916c4",
+            "uri":"/nmt-inference/v1/create-models",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to create NMT models"
+        },
+        {
+            "id":"cdbd4630-a2cd-4f32-a167-ebc734e43421",
+            "uri":"/nmt-inference/v1/update-models",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update NMT models"
+        },
+        {
+            "id":"ecda9694-e636-4211-aa85-4b146a9a543c",
+            "uri":"/nmt-inference/v1/delete-models",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to delete NMT models"
+        },
+        {
+            "id":"5b5ca44a-ddd8-4576-88d5-e370a48c368e",
+            "uri":"/nmt-inference/v2/fetch-models",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch NMT models"
+        },
+        {
+            "id":"433f58d2-de6f-4027-8689-43eee482c3ec",
+            "uri":"/nmt-inference/v4/translate",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API for machine translation"
+        },
+        {
             "id":"b0c793d1-215c-4de6-8d88-714f8394e75a",
             "uri":"/anuvaad-api/file-uploader/v0/upload-file",
             "module":"FILE-UPLOADER",
