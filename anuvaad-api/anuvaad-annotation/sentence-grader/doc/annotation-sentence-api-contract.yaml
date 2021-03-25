@@ -36,7 +36,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorCode"
                 
-  /v0/task/search:
+  /v0/user/task/search:
     post:
       tags:
         - annotation
@@ -52,6 +52,37 @@ paths:
           "*/*":
             schema:
               {}
+        required: true
+      responses:
+        "200":
+          description: On successful completion of the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/HttpResponse"
+        "400":
+          description: On input errors causing a failure in the job.
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorCode"
+  
+  /v0/annotation-type/task/search:
+    post:
+      tags:
+        - annotation
+      summary: searches annotation task assigned to an annotator.
+      parameters:
+        - name: 'x-user-id'
+          in: 'header'
+          schema:
+            type: 'string'
+            description: userId initiating the call.
+      requestBody:
+        content:
+          "*/*":
+            schema:
+              $ref: '#/components/schemas/Task'
         required: true
       responses:
         "200":
@@ -97,7 +128,7 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/ErrorCode"
-                
+  
   /v0/task/details/search:
     post:
       tags:
