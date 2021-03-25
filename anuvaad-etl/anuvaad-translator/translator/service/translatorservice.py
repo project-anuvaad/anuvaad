@@ -281,12 +281,12 @@ class TranslatorService:
                 if nmt_output["status"]["statusCode"] != 200:
                     skip_count += batch_size
                     log_error("Error from NMT: " + str(nmt_output["status"]["message"]), translate_wf_input, nmt_output["status"])
-            if 'response_body' in nmt_output.keys():
-                if not nmt_output["response_body"]:
+            if 'data' in nmt_output.keys():
+                if not nmt_output["data"]:
                     log_error("NMT returned empty data[]!", translate_wf_input, None)
                     skip_count += batch_size
                 sentences_of_the_batch = []
-                for response in nmt_output["response_body"]:
+                for response in nmt_output["data"]:
                     node_id = response["n_id"]
                     if not node_id:
                         log_error("Node ID missing!", translate_wf_input, None)
