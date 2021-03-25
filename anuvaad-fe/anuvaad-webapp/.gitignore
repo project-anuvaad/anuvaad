@@ -21,8 +21,13 @@
 /Cookies
 /Crash Reports
 /Cookies-journal
+/GPUCache
+/Dictionaries
+/exhost Crash Reports
 /Network Persistent State
+/Local Storage
 /TransportSecurity
+/Session Storage
 /User
 /machinedid
 rapid_render.json
