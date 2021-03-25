@@ -1,5 +1,6 @@
 import json
 import multiprocessing
+import os
 import random
 import time
 
@@ -13,17 +14,9 @@ from tmx.tmxrepo import TMXRepository
 from tmx.tmxservice import TMXService
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 from anuvaad_auditor.errorhandler import post_error, post_error_wf
-from configs.translatorconfig import nmt_max_batch_size
-from configs.translatorconfig import anu_translator_output_topic
-from configs.translatorconfig import tool_translator
-from configs.translatorconfig import anu_nmt_input_topic_mx
-from configs.translatorconfig import tmx_enabled
-from configs.translatorconfig import tmx_global_enabled
-from configs.translatorconfig import no_of_process
-from configs.translatorconfig import user_translation_enabled
-from configs.translatorconfig import fetch_user_translation_url
-from configs.translatorconfig import orgs_nmt_disable, total_no_of_partitions
-from configs.translatorconfig import anu_translator_nonmt_topic
+from configs.translatorconfig import nmt_max_batch_size, anu_translator_output_topic, tool_translator, anu_nmt_input_topic
+from configs.translatorconfig import tmx_enabled, tmx_global_enabled, no_of_process, user_translation_enabled
+from configs.translatorconfig import orgs_nmt_disable, total_no_of_partitions, anu_translator_nonmt_topic, fetch_user_translation_url
 
 
 
@@ -149,6 +142,7 @@ class TranslatorService:
             return batches_count, sentences_count, tmx_count
         batches_count, tmx_count = len(batches), pw_dict["tmx_count"]
         partition = random.choice(list(range(0, total_no_of_partitions))) # So that all batches of a page go to the same consumer
+        topic = self.get_nmt_in_topic(translate_wf_input)
         for batch_id in batches.keys():
             batch = batches[batch_id]
             record_id_enhanced = record_id + "|" + str(len(batch))
@@ -156,13 +150,24 @@ class TranslatorService:
             if translate_wf_input["metadata"]["orgID"] in nmt_disabled_orgs:
                 producer.produce(nmt_in, anu_translator_nonmt_topic, partition)
             else:
-                topic = self.nmt_router()
                 producer.produce(nmt_in, topic, partition)
             log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
                      " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
                 bw_data[batch_id]["tmx_count"]), translate_wf_input)
             sentences_count += len(batch)
         return batches_count, sentences_count, tmx_count
+
+    # Method to fetch topic from the connection details of the input object
+    def get_nmt_in_topic(self, translate_wf_input):
+        try:
+            model = translate_wf_input["model"]
+            kafka_details = model["connection_details"]["kafka"]
+            topic = os.environ.get(kafka_details["input_topic"], anu_nmt_input_topic)
+            return topic
+        except Exception as e:
+            log_exception("Exception while fetching topic from conn details: {}".format(str(e)), translate_wf_input, e)
+        log_info("Falling back to default Anuvaad NMT topic......", translate_wf_input)
+        return anu_nmt_input_topic
 
     # Method to fetch batches for sentences from the file for a page.
     def fetch_batches_of_sentences(self, file, record_id, page, tmx_present, tmx_file_cache, translate_wf_input):
@@ -246,11 +251,6 @@ class TranslatorService:
         tmx_phrases, res_dict = tmxservice.get_tmx_phrases(user_id, org_id, context, locale, sentence, tmx_level,
                                                            tmx_file_cache, translate_wf_input)
         return tmx_phrases, res_dict
-
-    # Distributes the NMT traffic across machines randomly.
-    def nmt_router(self):
-        input_topics = list(str(anu_nmt_input_topic_mx).split(","))
-        return random.choice(input_topics)
 
     # Consumer record handler
     def process_nmt_output(self, nmt_output):

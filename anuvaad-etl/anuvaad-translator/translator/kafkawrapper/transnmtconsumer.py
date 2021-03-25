@@ -2,10 +2,10 @@ import json
 import logging
 import random
 import string
-from multiprocessing import Process
 
 from kafka import KafkaConsumer, TopicPartition
 from service.translatorservice import TranslatorService
+from utilities.translatorutils import TranslatorUtils
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
@@ -13,7 +13,7 @@ from anuvaad_auditor.loghandler import log_exception
 from configs.translatorconfig import anu_translator_consumer_grp
 from configs.translatorconfig import kafka_bootstrap_server_host
 from configs.translatorconfig import translator_nmt_cons_no_of_partitions
-from configs.translatorconfig import anu_nmt_output_topic_mx
+from configs.translatorconfig import anu_nmt_output_topic
 
 log = logging.getLogger('file')
 
@@ -43,7 +43,9 @@ def get_topic_paritions(topics):
 # Method to read and process the requests from the kafka queue
 def consume_nmt():
     try:
-        topics = list(str(anu_nmt_output_topic_mx).split(","))
+        utils = TranslatorUtils()
+        topics = utils.get_topics_from_models()
+        topics.append(anu_nmt_output_topic)
         consumer = instantiate(topics)
         service = TranslatorService()
         rand_str = ''.join(random.choice(string.ascii_letters) for i in range(4))

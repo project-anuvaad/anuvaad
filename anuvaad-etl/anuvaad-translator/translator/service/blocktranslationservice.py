@@ -1,3 +1,4 @@
+import os
 import time
 
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
@@ -38,14 +39,15 @@ class BlockTranslationService:
                 fail_msg = "ERROR: there are no modified sentences for re-translation"
                 log_error(fail_msg, block_translate_input, None)
             else:
+                url, body = self.get_nmt_url_body(block_translate_input, nmt_in_txt)
                 nmt_disabled_orgs = list(str(orgs_nmt_disable).split(","))
                 if block_translate_input["metadata"]["orgID"] not in nmt_disabled_orgs:
                     log_info("API call to NMT...", block_translate_input)
-                    nmt_response = utils.call_api(nmt_translate_url, "POST", nmt_in_txt, None, block_translate_input["metadata"]["userID"])
+                    nmt_response = utils.call_api(url, "POST", body, None, block_translate_input["metadata"]["userID"])
                 else:
                     log_info("Job belongs to NONMT type!", block_translate_input)
-                    nmt_response = {"response_body": nmt_in_txt}
-                log_info("Response received from NMT!", block_translate_input)
+                    nmt_response = {"data": nmt_in_txt}
+                log_info("Response received from NMT, URL: {}".format(url), block_translate_input)
                 if nmt_response:
                     ch_input = self.get_translations_ip_ch(nmt_response, block_translate_input)
                     if ch_input:
@@ -60,7 +62,7 @@ class BlockTranslationService:
                                 fail_msg = "Error while updating blocks to CH: " + ch_response["why"]
                                 log_error(fail_msg, block_translate_input, None)
                     else:
-                        fail_msg = "Error while translating from NMT: " + str(nmt_response["status"]["why"])
+                        fail_msg = "Error while translating from NMT: " + str(nmt_response["status"]["message"])
                         log_error(fail_msg, block_translate_input, None)
                 else:
                     fail_msg = "Error while translating - empty/null res from NMT"
@@ -80,6 +82,20 @@ class BlockTranslationService:
             output["output"] = {"textBlocks": op_blocks}
         log_info("Block Translation Completed!", block_translate_input)
         return output
+
+    # Method to get body and url based on Model
+    def get_nmt_url_body(self, block_translate_input, nmt_txt):
+        model = block_translate_input["input"]["model"]
+        nmt_in = {"src_list": nmt_txt, "source_language_code": model["source_language_code"],
+                  "target_language_code": model["target_language_code"], "model_id": model["model_id"]}
+        host = model["connection_details"]["host"]
+        api_host = os.environ.get(host, 'NA')
+        if api_host == "NA":
+            log_info("Falling back to Anuvaad NMT translate URL....", block_translate_input)
+            return nmt_translate_url
+        endpoint = model["connection_details"]["api_endpoint"]
+        url = api_host + endpoint
+        return url, nmt_in
 
     # Method to fetch blocks from input and add it to list for translation
     def get_sentences_for_translation(self, block_translate_input):
@@ -109,8 +125,7 @@ class BlockTranslationService:
                             tmx_phrases = self.fetch_tmx(sentence["src"], tmx_present, tmx_blocks_cache, block_translate_input)
                         tmx_count += len(tmx_phrases)
                         n_id = str(record_id) + "|" + str(block["block_identifier"]) + "|" + str(sentence["s_id"])
-                        sent_nmt_in = {"s_id": sentence["s_id"], "src": sentence["src"], "id": model_id,
-                                           "n_id": n_id, "tmx_phrases": tmx_phrases}
+                        sent_nmt_in = {"s_id": sentence["s_id"], "src": sentence["src"], "n_id": n_id, "tmx_phrases": tmx_phrases}
                         sent_for_nmt.append(sent_nmt_in)
         log_info("NMT: " + str(len(sent_for_nmt)) + " | TMX: " + str(tmx_count), block_translate_input)
         log_info("TMX Blocks Cache Size (End): " + str(len(tmx_blocks_cache.keys())), block_translate_input)
@@ -153,9 +168,9 @@ class BlockTranslationService:
 
     # Parses the nmt response and builds input for ch
     def get_translations_ip_ch(self, nmt_response, block_translate_input):
-        if 'response_body' in nmt_response.keys():
-            if nmt_response['response_body']:
-                for translation in nmt_response["response_body"]:
+        if 'data' in nmt_response.keys():
+            if nmt_response['data']:
+                for translation in nmt_response["data"]:
                     if translation["tmx_phrases"]:
                         log_info("SRC: " + translation["src"] + " | TGT: " + translation["tgt"] +
                                  " | TMX Count: " + str(len(translation["tmx_phrases"])), block_translate_input)

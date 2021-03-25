@@ -1,9 +1,9 @@
+import os
 import time
 
 from anuvaad_auditor.loghandler import log_exception, log_info
 from anuvaad_auditor.errorhandler import post_error
-from configs.translatorconfig import nmt_interactive_translate_url
-from configs.translatorconfig import sentence_fetch_url
+from configs.translatorconfig import nmt_it_url, sentence_fetch_url
 from utilities.translatorutils import TranslatorUtils
 
 utils = TranslatorUtils()
@@ -27,16 +27,16 @@ class TextTranslationService:
             if text_for_nmt:
                 for text in text_for_nmt:
                     text_nmt.append({"s_id": text["s_id"], "id": text["modelID"], "src": text["src"], "target_prefix": text["taggedPrefix"]})
-                log_info("NMT IT URI - " + str(nmt_interactive_translate_url), text_translate_input)
-                nmt_response = utils.call_api(nmt_interactive_translate_url, "POST", text_nmt, None, text_translate_input["metadata"]["userID"])
+                log_info("NMT IT URI - " + str(nmt_it_url), text_translate_input)
+                nmt_response = utils.call_api(nmt_it_url, "POST", text_nmt, None, text_translate_input["metadata"]["userID"])
                 if nmt_response:
                     if 'status' in nmt_response.keys():
                         if 'statusCode' in nmt_response["status"].keys():
                             if nmt_response["status"]["statusCode"] != 200:
                                 output["error"] = post_error("TRANSLATION_FAILED", "Error while translating: " + str(
-                                    nmt_response["status"]["why"]), None)
+                                    nmt_response["status"]["message"]), None)
                                 return output
-                    ch_res.extend(nmt_response["response_body"])
+                    ch_res.extend(nmt_response["data"])
                     nmt_predictions = self.dedup_hypothesis(ch_res)
                     output["input"], output["status"] = None, "SUCCESS"
                     output["taskEndTime"], output["output"] = eval(str(time.time()).replace('.', '')[0:13]), {"predictions": nmt_predictions}

@@ -1,9 +1,10 @@
 import json
 import logging
+import os
 import time
 
 import requests
-from configs.translatorconfig import download_folder
+from configs.translatorconfig import download_folder, nmt_fetch_models_url
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 
 log = logging.getLogger('file')
@@ -53,4 +54,24 @@ class TranslatorUtils:
         except Exception as e:
             log_exception("Exception while making the api call: " + str(e), api_input, e)
             return None
+
+    # Util to fetch output topics from Models.
+    def get_topics_from_models(self):
+        topics = []
+        try:
+            models = self.call_api(nmt_fetch_models_url, "GET", None, None, "userID")
+            if models:
+                if 'data' in models.keys():
+                    if models["data"]:
+                        for model in models["data"]:
+                            if model["status"] == "ACTIVE":
+                                conn_details = model["connection_details"]
+                                if 'kafka' in conn_details.keys():
+                                    topic = os.environ.get(conn_details["kafka"]["output_topic"], 'NA')
+                                    if topic != "NA":
+                                        topics.append(topic)
+        except Exception as e:
+            log_exception("Exception while fetching topics from model: {}".format(str(e)), None, None)
+        return topics
+
 
