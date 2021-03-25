@@ -18,5 +18,5 @@ class Status(enum.Enum):
     ID_OR_SRC_MISSING = { "ok": "false",  "statusCode": 401 , "why": "Either id or src missing for some inputs in the request","message": "Either id or src missing for some inputs in the request" }
     INCORRECT_ID = { "ok": "false",  "statusCode": 401 , "why": "wrong model id for some input" }
     INVALID_API_REQUEST = {"ok": "false",  "statusCode": 401 , "why": "invalid api request,either incorrect format or empty request","message": "invalid api request,either incorrect format or empty request"}
-    KAFKA_INVALID_REQUEST = {"ok": "false",  "statusCode": 401 , "why": "Mandatory param(id,record id,message) missing from batch translation request"}
+    KAFKA_INVALID_REQUEST = {"ok": "false",  "statusCode": 401 , "why": "Mandatory param missing from batch translation request","message": "Mandatory param(id,record id,message) missing from batch translation request"}
     INCOMPLETE_API_REQUEST = { "ok": "false",  "statusCode": 401 , "why": "Mandatory input parameters missing" }

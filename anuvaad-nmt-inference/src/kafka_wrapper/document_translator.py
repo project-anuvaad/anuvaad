@@ -95,12 +95,12 @@ class KafkaTranslate:
                         out = CustomResponse(Status.SUCCESS.value,response_body)   
                     except Exception as e:
                         status = Status.SYSTEM_ERR.value
-                        status['why'] = str(e)
+                        status['message'] = str(e)
                         log_exception("Exception caught in batch_translator child block: {}".format(e),MODULE_CONTEXT,e) 
                         book.logs_book("RecordId",record_id,"Exception")
                         out = CustomResponse(status, inputs.get('message'))
                     
-                    out = out.getresjson()
+                    out = out.get_res_json()
                     out['record_id'] = record_id
                     log_info("Output for Record Id:{} at {}".format(record_id,datetime.datetime.now()),MODULE_CONTEXT)
                     log_info("Total time for processing Record Id:{} is: {}".format(record_id,(datetime.datetime.now()- input_time).total_seconds()),MODULE_CONTEXT)
@@ -108,7 +108,7 @@ class KafkaTranslate:
                 else:
                     status = Status.KAFKA_INVALID_REQUEST.value
                     out = CustomResponse(status, inputs.get('message'))
-                    out = out.getresjson()
+                    out = out.get_res_json()
                     if inputs.get('record_id'): out['record_id'] = inputs.get('record_id') 
                     log_info("Empty input request or key parameter missing in Batch translation request: batch_translator",MODULE_CONTEXT)
                     book.logs_book("RecordId",record_id,"Invalid Request")       
