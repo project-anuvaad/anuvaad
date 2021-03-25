@@ -51,7 +51,7 @@ paths:
         content:
           "*/*":
             schema:
-              $ref: "#/components/schemas/AnnotationJobRequest"
+              {}
         required: true
       responses:
         "200":
@@ -175,7 +175,7 @@ components:
         targetLanguage:
           type: string
           description: ISO-639-1 language code
-        file:
+        fileInfo:
           $ref: '#/components/schemas/File'
         users:
           type: array
@@ -367,3 +367,4 @@ components:
             - $ref: '#/components/schemas/AnnotationJobSummaryDetailsResponse'
             - $ref: '#/components/schemas/AnnotationJobDetailsResponse'
             
+          

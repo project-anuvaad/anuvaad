@@ -12,7 +12,7 @@ class ParallelSentenceRepo(object):
     def __init__(self):
         self.parallelSentenceModel  = ParallelSentenceModel()
     
-    def store(self, source_lang, target_lang, jobId, annotationType, users, fileInfo):
+    def store(self, source_lang, target_lang, jobId, annotationType, users, fileInfo, description):
         parallel_sentences  = []
         filepath            = os.path.join(os.curdir, config.download_folder, fileInfo['identifier'])
 
@@ -32,10 +32,13 @@ class ParallelSentenceRepo(object):
         tasks = []
         for user in users:
             task                    = {}
+            task['description']     = description
             task['user']            = user
             task['fileInfo']        = fileInfo
             task['jobId']           = jobId
+            task['annotationType']  = annotationType
             task['annotations']     = parallel_sentences
+            task['createdOn']       = datetime.datetime.utcnow()
             tasks.append(task)
 
         try:
@@ -48,4 +51,8 @@ class ParallelSentenceRepo(object):
         log_info('created tasks for the supplied users, successfully', LOG_WITHOUT_CONTEXT)
         return True
 
-        
+    def search_user_task(self, userId):
+        results = self.parallelSentenceModel.search_user_task(userId)
+        if len(results) == 0:
+            return False
+        return {'tasks': results}
