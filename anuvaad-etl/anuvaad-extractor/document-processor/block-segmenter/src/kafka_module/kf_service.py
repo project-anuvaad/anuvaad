@@ -48,7 +48,7 @@ def process_block_segmenter_kf():
     producer_tok        = Producer(config.bootstrap_server)
     
     # instatiation of consumer for respective topic
- try:
+    try:
         consumer = consumer_validator()
         log_info("process_block_segmenter_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
 
@@ -95,7 +95,7 @@ def block_segmenter_request_worker():
 
     while True:
         data            = Queue.get(block=True)
-        #################
+        ################
         task_id         = str("layout_detector" + str(time.time()).replace('.', ''))
         ###################
         task_starttime  = str(time.time()).replace('.', '')
