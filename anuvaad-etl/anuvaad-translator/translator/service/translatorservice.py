@@ -142,7 +142,7 @@ class TranslatorService:
             return batches_count, sentences_count, tmx_count
         batches_count, tmx_count = len(batches), pw_dict["tmx_count"]
         partition = random.choice(list(range(0, total_no_of_partitions))) # So that all batches of a page go to the same consumer
-        topic = self.get_nmt_in_topic(translate_wf_input)
+        topic = self.get_nmt_in_topic(translate_wf_input, file)
         for batch_id in batches.keys():
             batch = batches[batch_id]
             record_id_enhanced = record_id + "|" + str(len(batch))
@@ -158,9 +158,9 @@ class TranslatorService:
         return batches_count, sentences_count, tmx_count
 
     # Method to fetch topic from the connection details of the input object
-    def get_nmt_in_topic(self, translate_wf_input):
+    def get_nmt_in_topic(self, translate_wf_input, file):
         try:
-            model = translate_wf_input["model"]
+            model = file["model"]
             kafka_details = model["connection_details"]["kafka"]
             topic = os.environ.get(kafka_details["input_topic"], anu_nmt_input_topic)
             return topic
@@ -292,10 +292,12 @@ class TranslatorService:
                         skip_count += 1
                         continue
                     batch_id = response["batch_id"]
+                    if 'tgt' not in response.keys():
+                        log_info("TGT missing! s_id: {}, b_id: {}".format(response["s_id"], batch_id), translate_wf_input)
                     sentences_of_the_batch.append(response)
                 if len(sentences_of_the_batch) == 0:
                     skip_count += batch_size
-                    log_error("NMT returned empty response_body!!!", translate_wf_input, None)
+                    log_error("NMT returned empty response_body!", translate_wf_input, None)
                 else:
                     try:
                         self.update_sentences(record_id, sentences_of_the_batch, translate_wf_input)
