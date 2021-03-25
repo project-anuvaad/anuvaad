@@ -365,7 +365,8 @@ class Region_Unifier:
 
             for idx,v_block in enumerate(v_list):
                 #if 'class' not in v_block.keys():
-                v_list[idx]['class']= "PARA"
+                if v_list[idx]['class'] == 'TEXT':
+                    v_list[idx]['class']= "PARA"
                 if   v_block['regions'] != None and  len(v_block['regions']) > 1 :
                     avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([v_block])
                     v_block['avg_ver_dist'] = avg__region_ver_dist
