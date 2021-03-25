@@ -22,13 +22,11 @@ class TextTranslationService:
         output = text_translate_input
         output["status"], output["output"] = "FAILED", None
         try:
-            text_nmt = []
             text_for_nmt, ch_res = self.get_stored_hypothesis_ch(text_translate_input["input"]["textList"], text_translate_input)
             if text_for_nmt:
-                for text in text_for_nmt:
-                    text_nmt.append({"s_id": text["s_id"], "id": text["modelID"], "src": text["src"], "target_prefix": text["taggedPrefix"]})
-                log_info("NMT IT URI - " + str(nmt_it_url), text_translate_input)
-                nmt_response = utils.call_api(nmt_it_url, "POST", text_nmt, None, text_translate_input["metadata"]["userID"])
+                url, body = self.get_nmt_url_body(text_translate_input, text_for_nmt)
+                log_info("NMT IT URI - " + str(url), text_translate_input)
+                nmt_response = utils.call_api(url, "POST", body, None, text_translate_input["metadata"]["userID"])
                 if nmt_response:
                     if 'status' in nmt_response.keys():
                         if 'statusCode' in nmt_response["status"].keys():
@@ -81,6 +79,29 @@ class TextTranslationService:
                 text_for_nmt.append(sent_map[s_id])
         log_info("Translation fetched from CH! Count: " + str(len(ch_res.keys())), text_translate_input)
         return text_for_nmt, list(ch_res.values())
+
+
+    # Method to get body and url based on Model
+    def get_nmt_url_body(self, text_translate_input, text_for_nmt):
+        model = text_translate_input["input"]["model"]
+        text_nmt = []
+        for text in text_for_nmt:
+            text_nmt.append({"s_id": text["s_id"], "id": model["model_id"], "src": text["src"],
+                             "target_prefix": text["taggedPrefix"]})
+        try:
+            host = model["connection_details"]["host"]
+            api_host = os.environ.get(host, 'NA')
+            endpoint = model["connection_details"]["api_endpoint"]
+            api_endpoint = os.environ.get(endpoint, 'NA')
+            if api_host == "NA" or api_endpoint == "NA":
+                log_info("Falling back to Anuvaad NMT translate URL....", text_translate_input)
+                return nmt_it_url, text_nmt
+            url = api_host + api_endpoint
+            return url, text_nmt
+        except Exception as e:
+            log_exception("Exception while fetching API conn details: {}".format(str(e)), text_translate_input, None)
+        log_info("Falling back to Anuvaad NMT translate URL....", text_translate_input)
+        return nmt_it_url, text_nmt
 
     # Finds if there are duplicate predicitions and de-duplicates it.
     def dedup_hypothesis(self, hypothesis_list):
