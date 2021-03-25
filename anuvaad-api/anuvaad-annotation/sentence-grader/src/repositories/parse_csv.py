@@ -33,7 +33,7 @@ class ParseCSV (object):
                 target_sentence['text']     = row[1]
                 
                 parallel_sentences.append({
-                    'id': str(uuid.uuid4()),
+                    'annotationId': str(uuid.uuid4()),
                     'source': source_sentence,
                     'target': target_sentence
                 })
