@@ -10,7 +10,7 @@ servers:
   - url: /api
   
 paths:
-  /v0/annotation-task/create:
+  /v0/task/create:
     post:
       tags:
         - annotation
@@ -36,13 +36,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorCode"
                 
-  /v0/annotation-task/search:
+  /v0/task/search:
     post:
       tags:
         - annotation
       summary: searches annotation task assigned to an annotator.
       parameters:
-        - name: 'user-id-x'
+        - name: 'x-user-id'
           in: 'header'
           schema:
             type: 'string'
@@ -67,13 +67,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorCode"
 
-  /v0/annotation-task/summary/search:
+  /v0/task/summary/search:
     post:
       tags:
         - annotation
       summary: saves annotation result submitted by a user for a sentence.
       parameters:
-        - name: 'user-id-x'
+        - name: 'x-user-id'
           in: 'header'
           schema:
             type: 'string'
@@ -98,13 +98,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorCode"
                 
-  /v0/annotation-task/details/search:
+  /v0/task/details/search:
     post:
       tags:
         - annotation
       summary: saves annotation result submitted by a user for a sentence.
       parameters:
-        - name: 'user-id-x'
+        - name: 'x-user-id'
           in: 'header'
           schema:
             type: 'string'
@@ -129,13 +129,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorCode"
   
-  /v0/annotation/sentence/annotate:
+  /v0/task/sentence/annotate:
     post:
       tags:
         - annotation
       summary: saves annotation result submitted by a user for a sentence.
       parameters:
-        - name: 'user-id-x'
+        - name: 'x-user-id'
           in: 'header'
           schema:
             type: 'string'
@@ -367,4 +367,3 @@ components:
             - $ref: '#/components/schemas/AnnotationJobSummaryDetailsResponse'
             - $ref: '#/components/schemas/AnnotationJobDetailsResponse'
             
-          
