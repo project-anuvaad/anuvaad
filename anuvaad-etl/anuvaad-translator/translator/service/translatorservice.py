@@ -277,18 +277,16 @@ class TranslatorService:
             file, skip_count, trans_count, batch_id = file[0], 0, 0, None
             translate_wf_input = file["transInput"]
             translate_wf_input["recordID"] = record_id
-            log_info(nmt_output, translate_wf_input)
             if 'status' in nmt_output.keys():
                 if nmt_output["status"]["statusCode"] != 200:
                     skip_count += batch_size
-                    log_error("Error from NMT: " + str(nmt_output["status"]["message"]), translate_wf_input,
-                                  nmt_output["status"])
-            if 'data' in nmt_output.keys():
-                if not nmt_output["data"]:
+                    log_error("Error from NMT: " + str(nmt_output["status"]["message"]), translate_wf_input, nmt_output["status"])
+            if 'response_body' in nmt_output.keys():
+                if not nmt_output["response_body"]:
                     log_error("NMT returned empty data[]!", translate_wf_input, None)
                     skip_count += batch_size
                 sentences_of_the_batch = []
-                for response in nmt_output["data"]:
+                for response in nmt_output["response_body"]:
                     node_id = response["n_id"]
                     if not node_id:
                         log_error("Node ID missing!", translate_wf_input, None)
@@ -305,8 +303,6 @@ class TranslatorService:
                     try:
                         self.update_sentences(record_id, sentences_of_the_batch, translate_wf_input)
                         trans_count += len(sentences_of_the_batch)
-                        log_info("Sent: {}".format(len(sentences_of_the_batch)), translate_wf_input)
-                        log_info("TC: {}, SC: {}".format(trans_count, skip_count), translate_wf_input)
                     except Exception as e:
                         log_exception("Exception while saving translations to DB: " + str(e), translate_wf_input, e)
                         skip_count += len(sentences_of_the_batch)
