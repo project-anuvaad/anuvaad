@@ -14,7 +14,7 @@ const adminConfig = {
         },
         {
         
-            "roleCode":"INTERNAL-TRANSLATOR",
+            "roleCode":"ANNOTATOR",
             "roleDesc":"Access to evaluate our model"
         
         }
