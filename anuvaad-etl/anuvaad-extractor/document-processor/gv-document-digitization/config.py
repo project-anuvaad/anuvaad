@@ -43,7 +43,7 @@ CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER
 # ENABLE_CORS = False
 
 # # kafka
-#
+
 
 
 
@@ -97,12 +97,17 @@ CONSUMER_GROUP               = os.environ.get(CONSUMER_GROUP_identifier,CONSUMER
 # )
 EXRACTION_RESOLUTION  =  300
 #SAVE_URL = "https://auth.anuvaad.org/anuvaad/ocr-content-handler/v0/ocr/save-document"
-SAVE_URL = "http://gateway_anuvaad-ocr-content-handler:5001//anuvaad/ocr-content-handler/v0/ocr/save-document"
+
+SAVE_VAR = "OCR_CH_URL"
+SAVE_DEFAULT = "http://gateway_anuvaad-ocr-content-handler:5001//anuvaad/ocr-content-handler/v0/ocr/save-document"
+
+SAVE_URL = os.environ.get(SAVE_VAR,SAVE_DEFAULT)
+print(SAVE_URL)
 
 #SAVE_URL = "http://172.30.0.232:5009//anuvaad/ocr-content-handler/v0/ocr/save-document"
 SAVE_NO_PAGE = 1
 
-CLEAN_BACKGROUND = False
+CLEAN_BACKGROUND = True
 
 ##########################################################################
 #Alignment

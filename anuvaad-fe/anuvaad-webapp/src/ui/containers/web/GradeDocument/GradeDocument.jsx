@@ -12,13 +12,9 @@ import { translate } from "../../../../assets/localisation";
 import history from "../../../../web.history";
 import Spinner from "../../../components/web/common/Spinner";
 // import LanguageCodes from "../../../components/web/common/Languages.json"
-import PDFRenderer from './PDFRenderer';
+import InteractiveDocToolBar from "./ViewAnnotationJobHeader"
 import SentenceCard from './SentenceCard';
-import PageCard from "./PageCard";
-import InteractivePagination from './InteractivePagination';
-import SENTENCE_ACTION from './SentenceActions'
-import InteractiveDocToolBar from "./InteractiveDocHeader"
-import TranslatedDocument from "./TranslatedDocument";
+
 
 import WorkFlowAPI from "../../../../flux/actions/apis/common/fileupload";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
@@ -408,64 +404,7 @@ class DocumentEditor extends React.Component {
     setTimeout(() => { this.props.editorModeClear() }, 50)
   }
 
-  processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex) => {
-
-    switch (action) {
-      case SENTENCE_ACTION.SENTENCE_SAVED: {
-        this.makeAPICallSaveSentence(sentences[0], pageNumber)
-        return;
-      }
-
-      case SENTENCE_ACTION.SENTENCE_SPLITTED: {
-        if (startIndex === endIndex) {
-          this.informUserStatus(translate('common.page.label.SENTENCE_SPLITTED_INVALID_INPUT'), false)
-          return;
-        }
-        this.makeAPICallSplitSentence(sentences[0], pageNumber, startIndex, endIndex);
-
-        return;
-      }
-
-      case SENTENCE_ACTION.SENTENCE_MERGED: {
-        if (this.forMergeSentences.length < 2) {
-          this.informUserStatus(translate('common.page.label.SENTENCE_MERGED_INVALID_INPUT'), false)
-          this.processEndMergeMode(pageNumber)
-          return;
-        }
-        this.makeAPICallMergeSentence(this.forMergeSentences, pageNumber);
-        this.forMergeSentences = []
-        return;
-      }
-
-      case SENTENCE_ACTION.SENTENCE_SOURCE_EDITED: {
-        this.makeAPICallSourceSaveSentence(sentences, pageNumber)
-        return;
-      }
-
-      case SENTENCE_ACTION.START_MODE_MERGE: {
-        this.forMergeSentences = []
-        this.processStartMergeMode(pageNumber)
-
-        return;
-      }
-
-      case SENTENCE_ACTION.END_MODE_MERGE: {
-        this.processEndMergeMode(pageNumber)
-        this.forMergeSentences = []
-        return;
-      }
-      case SENTENCE_ACTION.ADD_SENTENCE_FOR_MERGE: {
-        this.forMergeSentences = [...this.forMergeSentences, ...sentences]
-        return;
-      }
-      case SENTENCE_ACTION.REMOVE_SENTENCE_FOR_MERGE: {
-        this.forMergeSentences = this.forMergeSentences.filter(sent => sent.s_id !== sentences[0].s_id)
-        return;
-      }
-      default:
-        return;
-    }
-  }
+ 
 
   /**
    * progress information for user from API
@@ -535,18 +474,7 @@ class DocumentEditor extends React.Component {
   /**
    * renders PDF document
    */
-  renderPDFDocument = () => {
-    if (!this.state.apiFetchStatus) {
-      return (
-        <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
-          <Paper>
-            <PDFRenderer parent='document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} />
-          </Paper>
-        </Grid>
-      )
-    }
-
-  }
+  
 
   closePreview = () => {
     this.setState({
@@ -591,9 +519,7 @@ class DocumentEditor extends React.Component {
         }}
 
         >
-          <div ref={el => (this.componentRef = el)} id="test">
-            {pages.map((page, index) => <TranslatedDocument totalPageCount={this.state.totalPageCount} download={this.state.download} index={index} key={index} page={page} onAction={this.processSentenceAction} />)}
-          </div>
+         
         </div>
       </Grid >
     )
@@ -627,28 +553,7 @@ class DocumentEditor extends React.Component {
   /**
    * render Document pages
    */
-  renderDocumentPages = () => {
-    let pages = this.getPages();
-
-    if (pages.length < 1) {
-      return (
-        <div></div>
-      )
-    }
-    return (
-      <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
-
-        <InfiniteScroll height={window.innerHeight - 141} style={{
-          maxHeight: window.innerHeight - 141,
-          overflowY: "auto",
-        }}
-          dataLength={pages.length}
-        >
-          {pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
-        </InfiniteScroll>
-      </Grid>
-    )
-  }
+  
   processZoomIn = () => {
     if (this.state.zoomPercent < 140) {
       if (this.state.zoomPercent + 10 === 140) {
@@ -756,28 +661,16 @@ class DocumentEditor extends React.Component {
     return (
       <div style={{ height: window.innerHeight }}>
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
-
-        { !this.state.preview ?
         <>
-          <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
-            {!this.state.docView && this.renderDocumentPages()}
-            {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
+          <div style={{ height: window.innerHeight - 131, maxHeight: window.innerHeight - 131, overflow: "hidden", padding: "0px 60px 0px 0px", display: "flex", flexDirection: "row" }}>
+            
+            {this.renderSentences()}
           </div>
-          <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
-          <InteractivePagination count={this.props.document_contents.count}
-             data={this.props.document_contents.pages}
-             zoomPercent={this.state.zoomPercent}
-             processZoom={this.processZoom}
-             zoomInDisabled={this.state.zoomInDisabled}
-             zoomOutDisabled={this.state.zoomOutDisabled}
-             onAction={this.processSentenceAction} />
-         </div>
+         
          </>
-          :
-          <div style={{ height: window.innerHeight - 80, maxHeight: window.innerHeight - 80, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
-            {this.renderTranslatedDocument()}
-          </div>
-        }
+          
+         
+        
         {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
         {this.state.showStatus ? this.renderStatusInformation() : <div />}
         {this.state.apiFetchStatus && <Spinner />}
