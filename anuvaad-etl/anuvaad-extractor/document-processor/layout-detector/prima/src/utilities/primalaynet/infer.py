@@ -176,7 +176,7 @@ class PRIMA(object):
 		if class_name == "SeparatorRegion":
 			class_name = "SEPARATOR"
 		if class_name == "CellRegion":
-			class_name = "TABLE_CELL"
+			class_name = "CELL"
 
 		return class_name
 
