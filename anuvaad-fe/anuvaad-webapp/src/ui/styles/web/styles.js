@@ -6,7 +6,7 @@ const GlobalStyles = theme => ({
   container: {
     margin: '4em 0em 0em 0em',
     width: '100%',
-    background: theme.palette.background.default,
+    // background: theme.palette.background.default,
     fontFamily: theme.typography.fontFamily,
     minHeight: 'calc(100vh - 5em)'
   },

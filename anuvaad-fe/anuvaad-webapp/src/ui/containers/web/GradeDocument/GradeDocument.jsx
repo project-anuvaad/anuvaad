@@ -12,7 +12,7 @@ import { translate } from "../../../../assets/localisation";
 import history from "../../../../web.history";
 import Spinner from "../../../components/web/common/Spinner";
 // import LanguageCodes from "../../../components/web/common/Languages.json"
-import InteractiveDocToolBar from "./InteractiveDocHeader"
+import InteractiveDocToolBar from "./ViewAnnotationJobHeader"
 import SentenceCard from './SentenceCard';
 
 
@@ -661,8 +661,6 @@ class DocumentEditor extends React.Component {
     return (
       <div style={{ height: window.innerHeight }}>
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
-
-        
         <>
           <div style={{ height: window.innerHeight - 131, maxHeight: window.innerHeight - 131, overflow: "hidden", padding: "0px 60px 0px 0px", display: "flex", flexDirection: "row" }}>
             

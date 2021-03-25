@@ -2,7 +2,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 from collections import namedtuple
-from src.utilities.region_operations import collate_regions, get_polygon,sort_regions, remvoe_regions
+from src.utilities.region_operations import collate_regions, get_polygon,sort_regions, remvoe_regions,filterd_regions
 from src.services.segment import horzontal_merging
 import src.utilities.app_context as app_context
 import copy
@@ -315,9 +315,11 @@ class Region_Unifier:
         try:
             
             #sort regions 
-
-            page_regions.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
-            sorted_page_regions = sort_regions(page_regions,[])
+            page_regions  = filterd_regions(page_regions)
+            if len(page_regions) > 0 :
+                page_regions
+                page_regions.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
+                sorted_page_regions = sort_regions(page_regions,[])
 
 
             text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(sorted_page_regions)
@@ -365,8 +367,9 @@ class Region_Unifier:
 
             for idx,v_block in enumerate(v_list):
                 #if 'class' not in v_block.keys():
-                if v_list[idx]['class'] == 'TEXT':
-                    v_list[idx]['class']= "PARA"
+                if 'class' in v_list[idx].keys():
+                    if v_list[idx]['class'] == 'TEXT':
+                        v_list[idx]['class']= "PARA"
                 if   v_block['regions'] != None and  len(v_block['regions']) > 1 :
                     avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([v_block])
                     v_block['avg_ver_dist'] = avg__region_ver_dist
