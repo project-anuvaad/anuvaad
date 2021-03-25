@@ -26,7 +26,7 @@ LABSE_PATH = os.path.join(APP_BASE_PATH, 'available_nmt_models/sbert.net_models_
 
 ## DB details
 # MONGO_SERVER_URL = os.environ.get('MONGO_CLUSTER_URL', 'localhost:27017')
-MONGO_SERVER_URL = os.environ.get('172.30.0.176 27017', 'localhost:27017')
+MONGO_SERVER_URL = os.environ.get('172.30.0.176:27017', 'localhost:27017')
 DB_NAME = os.environ.get('MONGO_NMT_DB', 'anvaad-nmt-inference')
 MONGO_NMT_MODELS_COLLECTION = os.environ.get('MONGO_NMT_MODELS_COLLECTION', 'anvaad-nmt-models')
 
