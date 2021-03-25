@@ -75,3 +75,26 @@ class AnnotationTaskTaskIdSearchResource(Resource):
             log_exception("Exception at AnnotationTaskTaskIdSearchResource ", LOG_WITHOUT_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
+
+class AnnotationTaskSaveAnnotationResource(Resource):
+    def post(self):
+        body        = request.get_json()
+
+        if 'annotationId' not in body.keys() or 'score' not in body.keys() or \
+            'saved' not  in body.keys():
+            log_info('Missing params in AnnotationTaskSaveAnnotationResource {}'.format(body), LOG_WITHOUT_CONTEXT)
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
+            return res.getresjson(), 400
+        
+        try:
+            result = parallelSentenceAnnotationRepo.save_annotation(body)
+            if result == False:
+                res = CustomResponse(Status.SUCCESS.value, None)
+                return res.getres()
+            else:
+                res = CustomResponse(Status.SUCCESS.value, None)
+                return res.getres()
+        except Exception as e:
+            log_exception("Exception at AnnotationTaskSaveAnnotationResource ", LOG_WITHOUT_CONTEXT, e)
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400

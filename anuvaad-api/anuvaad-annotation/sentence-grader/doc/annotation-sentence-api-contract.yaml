@@ -129,22 +129,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorCode"
   
-  /v0/task/sentence/annotate:
+  /v0/task/annotation/grading:
     post:
       tags:
         - annotation
       summary: saves annotation result submitted by a user for a sentence.
-      parameters:
-        - name: 'x-user-id'
-          in: 'header'
-          schema:
-            type: 'string'
-            description: userId initiating the call.
       requestBody:
         content:
           "application/json":
             schema:
-              $ref: "#/components/schemas/ParallelSentenceGradingRequest"
+              $ref: "#/components/schemas/ParallelSentenceAnnotation"
         required: true
       responses:
         "200":
@@ -181,6 +175,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/User'
+        description:
+          type: string
+          description: description of work
     
     AnnotationJobResponse:
       type: object
@@ -220,12 +217,12 @@ components:
     AnnotationJobDetailsRequest:
       type: object
       properties:
-        annotations:
+        taskIds:
           type: array
-          description: list of annotation job identifier
+          description: list of taskId 
           items:
             type: string
-            description: respective WFM job identifier
+            description: taskId list
   
     AnnotationJobDetailsResponse:
       type: object
@@ -239,25 +236,60 @@ components:
     AnnotationJobDetails:
       type: object
       properties:
-        jobIdentifier:
+        taskId:
           type: string
-          description: WFM job identifier
+          description: task identifier
         annotations:
           type: array
           description: collection of individual entity items
           items:
-            $ref: "#/components/schemas/ParallelSentence"
+            $ref: "#/components/schemas/ParallelSentenceAnnotation"
           
-          
-    ParallelSentenceGradingRequest:
+    AnnotationJobTaskResponse:
       type: object
       properties:
-        identifier:
+        tasks:
+          type: array
+          description: list of assigned tasks
+          items:
+            $ref: '#/components/schemas/Task'
+
+    Task:
+      type: object
+      properties:
+        taskId:
           type: string
           format: uuidv4
-          description: unique identifier parallel sentence entity
-        parallelSentence:
-          $ref: "#/components/schemas/ParallelSentence"
+          description: unique task identifier
+        annotationType:
+          type: string
+          enum:
+            - VET_PARALLEL_SENTENCE
+        sourceLanguage:
+          type: string
+          description: ISO-639-1 language code
+        targetLanguage:
+          type: string
+          description: ISO-639-1 language code
+        fileInfo:
+          $ref: '#/components/schemas/File'
+        user:
+          $ref: '#/components/schemas/User'
+        createdOn:
+          type: string
+          format: datetime
+    
+    ParallelSentenceAnnotation:
+      type: object
+      properties:
+        annotationId:
+          type: string
+          format: uuidv4
+          description: unique identificattion
+        source:
+          $ref: "#/components/schemas/Sentence"
+        target:
+          $ref: "#/components/schemas/Sentence"
         score:
           type: integer
           description: collects grading score of the given parallelSentence
@@ -268,31 +300,14 @@ components:
             - 3
             - 4
             - 5
-            
-    ParallelSentenceGradingResponse:
-      type: object
-      properties:
-        identifier:
-          type: string
-          format: uuidv4
-          description: unique identifier parallel sentence entity
-
-    ParallelSentence:
-      type: object
-      properties:
-        identifier:
-          type: string
-          format: uuidv4
-          description: unique identificattion
-        source:
-          $ref: "#/components/schemas/Sentence"
-        target:
-          $ref: "#/components/schemas/Sentence"
+        saved:
+          type: boolean
+          description: user has graded the annotation  or not
     
     Sentence:
       type: object
       properties:
-        identifier:
+        id:
           type: string
           format: uuidv4
           description: parallel sentence identifier
@@ -363,8 +378,9 @@ components:
           description: should be null object
           oneOf:
             - $ref: '#/components/schemas/AnnotationJobResponse'
-            - $ref: '#/components/schemas/ParallelSentenceGradingResponse'
+            - $ref: "#/components/schemas/ParallelSentenceAnnotation"
             - $ref: '#/components/schemas/AnnotationJobSummaryDetailsResponse'
             - $ref: '#/components/schemas/AnnotationJobDetailsResponse'
+            - $ref: '#/components/schemas/AnnotationJobTaskResponse'
             
           

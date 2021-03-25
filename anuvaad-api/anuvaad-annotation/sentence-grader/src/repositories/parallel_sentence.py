@@ -74,3 +74,6 @@ class ParallelSentenceRepo(object):
         if len(results) == 0:
             return {'annotations': []}
         return {'annotations': results}
+
+    def save_annotation(self, annotation):
+        return self.parallelSentenceModel.save_annotation(annotation)

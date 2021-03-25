@@ -51,3 +51,23 @@ class ParallelSentenceModel(object):
         except Exception as e:
             log_exception("db connection exception ",  LOG_WITHOUT_CONTEXT, e)
             return updated_docs
+
+    def save_annotation(self, annotation):
+        try:
+            collections = get_db()[DB_SCHEMA_NAME]
+            results     = collections.update({ 'annotations': {'$elemMatch': {'annotationId': {'$eq': annotation['annotationId']}}}},
+            { 
+                '$set': 
+                {
+                    'annotations.$.saved' : annotation['saved'],
+                    'annotations.$.score' : annotation['score']
+                } 
+            }, upsert=True)
+
+            if 'writeError' in list(results.keys()):
+                return False
+            return True
+
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+            return False

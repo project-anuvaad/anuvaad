@@ -1,1 +1,1 @@
-from .annotation_task import AnnotationTaskCreateResource, AnnotationTaskUserTaskSearchResource, AnnotationTaskTaskIdSearchResource
+from .annotation_task import AnnotationTaskCreateResource, AnnotationTaskUserTaskSearchResource, AnnotationTaskTaskIdSearchResource, AnnotationTaskSaveAnnotationResource
