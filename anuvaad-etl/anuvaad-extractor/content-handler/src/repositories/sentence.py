@@ -42,6 +42,9 @@ class SentenceRepositories:
 
             if 'time_spent_ms' not in sentence:
                 sentence['time_spent_ms'] = 0
+            
+            if 'rating_score' not in sentence:
+                sentence['rating_score'] =None
 
             n_id_splits = sentence['n_id'].split('|')
             record_id   = n_id_splits[0]+'|'+ n_id_splits[1]
