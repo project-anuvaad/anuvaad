@@ -7,7 +7,7 @@ import time
 import requests
 import yaml
 from configs.wfmconfig import config_file_url, tool_blockmerger, tool_tokeniser, tool_fileconverter, tool_aligner, tool_translator
-from configs.wfmconfig import tool_worddetector, tool_layoutdetector, tool_ch, tool_nmt, tool_ocrgooglevision, tool_ocrtesseract
+from configs.wfmconfig import tool_worddetector, tool_layoutdetector, tool_ch, tool_nmt, tool_ocrgooglevision, tool_ocrtesseract, tool_annotator
 from configs.wfmconfig import tool_blocksegmenter, tool_ocrdd10googlevision, tool_ocrdd15googlevision, jobid_random_str_length, tool_ocrtokeniser
 from repository.wfmrepository import WFMRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
@@ -27,6 +27,7 @@ from tools.ocr_dd15_gv import OCRDD15GV
 from tools.ocr_tesseract import OCRTESS
 from tools.block_segmenter import BlockSegmenter
 from tools.ocr_tokeniser import OCRTokeniser
+from tools.annotator import Annotator
 
 aligner = Aligner()
 tokeniser = Tokeniser()
@@ -43,6 +44,7 @@ ocrdd15gv = OCRDD15GV()
 ocrtess = OCRTESS()
 block_segmenter = BlockSegmenter()
 ocr_tokeniser = OCRTokeniser()
+annotator = Annotator()
 
 wfmrepo = WFMRepository()
 
@@ -197,7 +199,9 @@ class WFMUtils:
             if current_tool == tool_blocksegmenter:
                 tool_input = block_segmenter.get_bs_input_wf(wf_input)
             if current_tool == tool_ocrtokeniser:
-                tool_input = ocr_tokeniser.get_ocr_tokeniser_input_wf(task_output, previous_tool)
+                tool_input = ocr_tokeniser.get_ocr_tokeniser_input_wf(task_output, False)
+            if current_tool == tool_annotator:
+                tool_input = annotator.get_annotator_input_wf(task_output)
 
         return tool_input
 

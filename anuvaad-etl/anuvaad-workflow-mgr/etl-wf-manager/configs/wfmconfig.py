@@ -27,6 +27,7 @@ tool_ocrdd15googlevision = "OCR-DD15-GOOGLE-VISION"
 tool_ocrtokeniser = "OCR-TOKENISER"
 tool_ocrtesseract = "OCR-TESSERACT"
 tool_blocksegmenter = "BLOCK-SEGMENTER"
+tool_annotator = "ANNOTATOR"
 module_wfm_name = "WORKFLOW-MANAGER"
 is_sync_flow_enabled = True
 is_async_flow_enabled = True

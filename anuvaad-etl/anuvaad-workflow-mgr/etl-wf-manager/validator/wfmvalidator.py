@@ -5,7 +5,7 @@ from anuvaad_auditor.errorhandler import post_error
 
 log = logging.getLogger('file')
 from utilities.wfmutils import WFMUtils
-from configs.wfmconfig import is_sync_flow_enabled, is_async_flow_enabled, tool_translator, tool_worddetector, tool_layoutdetector
+from configs.wfmconfig import is_sync_flow_enabled, is_async_flow_enabled, tool_translator, tool_worddetector, tool_layoutdetector, tool_annotator
 from configs.wfmconfig import tool_ocrgooglevision, tool_ocrtesseract, tool_blocksegmenter, tool_ocrdd10googlevision, tool_ocrdd15googlevision
 
 
@@ -79,6 +79,9 @@ class WFMValidator:
                     return post_error("FILES_NOT_FOUND", "Input files are mandatory", None)
                 else:
                     tools = wfmutils.get_tools_of_wf(workflowCode)
+                    if tool_annotator in tools:
+                        self.validate_for_annotator(data)
+                        return
                     for file in data["files"]:
                         if 'path' not in file.keys():
                             return post_error("FILES_PATH_NOT_FOUND", "Path is mandatory for all files in the input",
@@ -112,3 +115,20 @@ class WFMValidator:
         else:
             return post_error("WORKFLOW_TYPE_DISABLED",
                               "This workflow belongs to ASYNC type, which is currently disabled.", None)
+
+    def validate_for_annotator(self, data):
+        for file in data["files"]:
+            if 'annotationType' not in file.keys():
+                return post_error("ANNOTATION_TYPE_NOT_FOUND", "annotationType is mandatory for all files for this wf", None)
+            if 'sourceLanguage' not in file.keys():
+                return post_error("SRC_LANG_NOT_FOUND", "sourceLanguage is mandatory for all files for this wf", None)
+            if 'targetLanguage' not in file.keys():
+                return post_error("TGT_LANG_NOT_FOUND", "targetLanguage is mandatory for all files for this wf", None)
+            if 'fileInfo' not in file.keys():
+                return post_error("FILES_INFO_NOT_FOUND", "fileInfo is mandatory for all files for this wf", None)
+            if 'users' not in file.keys():
+                return post_error("USERS_NOT_FOUND", "users is mandatory for all files for this wf", None)
+            if 'description' not in file.keys():
+                return post_error("DESC_NOT_FOUND", "description is mandatory for all files for this wf", None)
+
+
