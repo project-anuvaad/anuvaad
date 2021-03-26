@@ -3,6 +3,11 @@ import Header from './ViewAnnotationJobHeader';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import MUIDataTable from "mui-datatables";
 import { translate } from "../../../../assets/localisation";
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
+
 
 class ViewAnnotationJobs extends React.Component {
     getMuiTheme = () => createMuiTheme({
@@ -19,12 +24,49 @@ class ViewAnnotationJobs extends React.Component {
             }
         }
     })
+    processUserView = (id, name) => {
+        return (
+            <Tooltip title="View User Details" placement="right">
+                <IconButton style={{ color: '#233466', padding: '5px' }}
+                    component="a"
+                >
+                    <LibraryBooksIcon />
+                </IconButton>
+            </Tooltip>
+        );
+    }
 
+    processDownloadDocumentView = () => {
+        return <Tooltip title="Download input file" placement="left">
+            <IconButton
+                style={{ color: "#233466", padding: "5px" }}
+                component="a"
+            >
+                <CloudDownloadIcon />
+            </IconButton>
+        </Tooltip>
+    }
+
+    getDateTimeFromTimestamp = (t) => {
+        let date = new Date(t);
+        return (
+            ("0" + date.getDate()).slice(-2) +
+            "/" +
+            ("0" + (date.getMonth() + 1)).slice(-2) +
+            "/" +
+            date.getFullYear() +
+            " " +
+            ("0" + date.getHours()).slice(-2) +
+            ":" +
+            ("0" + date.getMinutes()).slice(-2)
+        );
+    };
     render() {
+        const dummyData = [{ fID: '1', fname: 'Dummy-file.csv', jobDesc: 'This is a dummy file.' }]
         const columns = [
             {
-                name: "userID",
-                label: "userID",
+                name: "fID",
+                label: "fID",
                 options: {
                     filter: false,
                     sort: false,
@@ -32,45 +74,19 @@ class ViewAnnotationJobs extends React.Component {
                 }
             },
             {
-                name: "userName",
-                label: "userName",
-                options: {
-                    filter: false,
-                    sort: false,
-                    display: "exclude"
-                }
-            },
-            {
-                name: "name",
-                label: 'Name',
+                name: "fname",
+                label: 'FileName',
                 options: {
                     filter: false,
                     sort: true,
                 }
             },
             {
-                name: "userName",
-                label: translate("common.page.label.email"),
+                name: "jobDesc",
+                label: 'Job Description',
                 options: {
                     filter: false,
                     sort: true,
-                }
-            },
-            {
-                name: "roles",
-                label: translate("common.page.label.role"),
-                options: {
-                    filter: false,
-                    sort: true,
-                }
-            },
-
-            {
-                name: "orgId",
-                label: "Organization",
-                options: {
-                    filter: false,
-                    sort: false,
                 }
             },
             {
@@ -83,7 +99,7 @@ class ViewAnnotationJobs extends React.Component {
                         if (tableMeta.rowData) {
                             return (
                                 <div>
-                                    {tableMeta.rowData[6]}
+                                    {this.getDateTimeFromTimestamp(Date.now())}
                                 </div>
                             )
                         }
@@ -101,9 +117,8 @@ class ViewAnnotationJobs extends React.Component {
                         if (tableMeta.rowData) {
                             return (
                                 <div>
-                                    {this.processSwitch(tableMeta.rowData[0], tableMeta.rowData[1], tableMeta.rowData[4], tableMeta.rowData[7])}
-                                    {this.processModal(tableMeta.rowData[1])}
                                     {this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
+                                    {this.processDownloadDocumentView()}
                                 </div>
                             );
                         }
@@ -141,7 +156,7 @@ class ViewAnnotationJobs extends React.Component {
                     {
                         <MuiThemeProvider theme={this.getMuiTheme()}>
                             <MUIDataTable title={translate("common.page.title.userdetails")}
-                                columns={columns} options={options} />
+                                columns={columns} options={options} data={dummyData} />
                         </MuiThemeProvider>
                     }
                 </div>
