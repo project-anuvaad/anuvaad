@@ -27,10 +27,10 @@ class ParallelSentenceModel(object):
             log_exception("db connection exception ",  LOG_WITHOUT_CONTEXT, e)
             return False
 
-    def search_task_type(self, annotationType):
+    def search_task_type(self, annotationType, jobId):
         try:
             collections     = get_db()[DB_SCHEMA_NAME]
-            docs            = collections.find({'annotationType': annotationType})
+            docs            = collections.find({'annotationType': annotationType, 'jobId': jobId})
             updated_docs    = []
             for doc in docs:
                 del doc['annotations']

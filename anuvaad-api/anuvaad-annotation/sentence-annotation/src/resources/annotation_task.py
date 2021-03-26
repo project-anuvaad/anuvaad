@@ -79,13 +79,13 @@ class AnnotationTaskTaskIdSearchResource(Resource):
 class AnnotationTaskTaskTypeSearchResource(Resource):
     def post(self):
         body        = request.get_json()
-        if 'annotationType' not in body.keys():
+        if 'annotationType' not in body.keys() or 'jobId' not in body.keys():
             log_info('Missing params in AnnotationTaskTaskTypeSearchResource {}'.format(body), LOG_WITHOUT_CONTEXT)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
         
         try:
-            result = parallelSentenceAnnotationRepo.search_tasks_annotationType(body['annotationType'])
+            result = parallelSentenceAnnotationRepo.search_tasks_annotationType(body['annotationType'], body['jobId'])
             if result == False:
                 res = CustomResponse(Status.SUCCESS.value, None)
                 return res.getres()
