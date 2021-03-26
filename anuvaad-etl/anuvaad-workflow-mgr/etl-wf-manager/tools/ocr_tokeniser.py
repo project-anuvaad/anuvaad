@@ -34,12 +34,12 @@ class OCRTokeniser:
         predecessors = [tool_ocrdd10googlevision, tool_ocrdd15googlevision]
         if predecessor in predecessors:
             files = []
-            op_files = task_output["outputs"]
+            op_files = task_output["output"]
             for file in op_files:
                 file = {
-                    "path": file["file"]["identifier"],
-                    "locale": file["config"]["OCR"]["language"],
-                    "type": file["file"]["type"]
+                    "path": file["outputFile"],
+                    "locale": file["outputLocale"],
+                    "type": file["outputType"]
                 }
                 files.append(file)
         else:
