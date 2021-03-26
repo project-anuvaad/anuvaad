@@ -8,10 +8,13 @@ class KafkaClass(EmbeddedDocument):
     def Inner():
         input_topic = StringField()
         output_topic = StringField()
+    def api():
+        host = StringField()
+        api_endpoint = StringField()      
         
     kafka = DictField(Inner())
-    api_endpoint = StringField(required=True)
-    host = StringField(required=True)
+    translation = DictField(api(),required = True)
+    interactive = DictField(api())
 
 class CreateModel(Document):
 
