@@ -38,7 +38,7 @@ class OCRTokeniser:
             for file in op_files:
                 file = {
                     "path": file["outputFile"],
-                    "locale": file["outputLocale"],
+                    "locale": file["outputLocale"][0],
                     "type": file["outputType"]
                 }
                 files.append(file)
