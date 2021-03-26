@@ -16,9 +16,9 @@
             "description":"Has access to translation related resources"
         },
         {
-            "code":"M-TRANSLATOR",
+            "code":"ANNOTATOR",
             "active":true,
-            "description":"Has access to only those resources which are used by METI."
+            "description":"Has access to translation related resources for an annotator"
         }
     ]
 }
