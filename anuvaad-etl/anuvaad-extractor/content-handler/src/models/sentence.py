@@ -64,7 +64,8 @@ class SentenceModel(object):
                                                         "data.tokenized_sentences.$.tgt"  : sentence['tgt'],
                                                         "data.tokenized_sentences.$.save" : sentence['save'],
                                                         "data.tokenized_sentences.$.bleu_score" : sentence['bleu_score'],
-                                                        "data.tokenized_sentences.$.time_spent_ms" : sentence['time_spent_ms']
+                                                        "data.tokenized_sentences.$.time_spent_ms" : sentence['time_spent_ms'],
+                                                        "data.tokenized_sentences.$.rating_score" : sentence['rating_score']
                                                     }
                                                 }, upsert=False)
 

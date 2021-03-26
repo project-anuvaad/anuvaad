@@ -378,7 +378,7 @@ class SentenceCard extends React.Component {
         let val = this.state.value.slice(0, caret)
         if (val) {
             this.setState({ isCardBusy: true })
-            let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.model.model_id, true, '', this.props.sentence.s_id);
+            let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.model, true, '', this.props.sentence.s_id);
             const apiReq = fetch(apiObj.apiEndPoint(), {
                 method: 'post',
                 body: JSON.stringify(apiObj.getBody()),

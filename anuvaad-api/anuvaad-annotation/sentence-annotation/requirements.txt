@@ -1,0 +1,8 @@
+flask==1.1.2
+flask-cors==3.0.8
+flask-restful==0.3.8
+uuid==1.30
+kafka_python==2.0.1
+anuvaad_auditor==0.1.6
+xlrd==1.2.0
+pymongo==3.11.3
