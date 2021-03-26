@@ -471,6 +471,46 @@
             "active":true,
             "whiteList":false,
             "description":"API tokenise paragraphs from a json file of ocr"
+        },
+        {
+            "id":"7dfdea6c-3dbf-43f0-949e-f78ce99e8c1d",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/task/create",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to create annotation task"
+        },
+        {
+            "id":"eb88f8fa-7649-4a30-9f59-d242ebe25bdd",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/user/task/search",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search annotation task"
+        },
+        {
+            "id":"07ce7b32-4eb3-4269-b73b-b69d5b84e2fd",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/annotation-type/task/search",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search annotation task on type"
+        },
+        {
+            "id":"3c02f80e-c12d-4555-9dcb-fc540be64645",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/task/details/search",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search task details"
+        },
+        {
+            "id":"75675521-a94e-424b-b2e8-1c46a3c4dc9b",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/task/annotation/grading",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to grade annotations"
         }
     ]
 }
