@@ -7,7 +7,9 @@ class Annotator:
 
     # Returns a json of the format accepted by Annotator for SYNC and ASYNC
     def get_annotator_input_wf(self, wf_input):
-        tool_input = wf_input["input"]["files"][0]
+        tool_input = {
+            "files": wf_input["input"]["files"]
+        }
         ano_input = {
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
