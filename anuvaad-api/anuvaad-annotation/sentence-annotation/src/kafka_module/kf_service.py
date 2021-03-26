@@ -66,13 +66,15 @@ def process_kf_request_payload():
         log_exception("response send to topic %s"%(config.output_topic), None, e)
 
 def processRequest(data):
+    log_info("1 ", LOG_WITHOUT_CONTEXT)
     file_ops            = FileOperation()
     producer_tok        = Producer(config.bootstrap_server)
-
+    log_info("2 ", LOG_WITHOUT_CONTEXT)
     DOWNLOAD_FOLDER     = file_ops.file_download(config.download_folder)
-
+    log_info("3 ", LOG_WITHOUT_CONTEXT)
     task_id             = str("ANNO-" + str(time.time()).replace('.', ''))
     task_starttime      = str(time.time()).replace('.', '')
+    log_info("4 ", LOG_WITHOUT_CONTEXT)
     input_params, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
     
     log_info("processing -- received message "+str(jobid), data)
