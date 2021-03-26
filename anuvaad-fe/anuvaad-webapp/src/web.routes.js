@@ -316,7 +316,7 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
 
-            <PrivateRoute
+            {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-scheduled-jobs`}
               dontShowLoader
               title={"View Job"}
@@ -336,7 +336,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="schedule-annotation-job"
               dontShowHeader={true}
-            />
+            /> */}
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/assign-nmt-model`}
@@ -348,7 +348,7 @@ class AppRoutes extends React.Component {
               currentMenu="assign-nmt-model"
               dontShowHeader={true}
             />
-            <PrivateRoute
+            {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-annotation-job`}
               dontShowLoader
               title={"View Annotation Job"}
@@ -357,9 +357,9 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="view-annotation-job"
               dontShowHeader={true}
-            />
+            /> */}
 
-            <PrivateRoute
+            {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-job-detail/:jobID`}
               dontShowLoader
               title={"View Annotation Job"}
@@ -368,9 +368,9 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="view-job-detail"
               dontShowHeader={true}
-            />
+            /> */}
 
-            <PrivateRoute
+            {/* <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-annotator-job/:taskId`}
               dontShowLoader
               title={"View Annotator Job"}
@@ -379,7 +379,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="view-job-detail"
               dontShowHeader={true}
-            />
+            /> */}
             
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
 
