@@ -28,7 +28,7 @@ class Response(object):
         app_context.init()
         app_context.application_context = self.json_data
 
-        input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
+        input_params, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(self.json_data)
         log_info("workflow_response started the response generation", app_context.application_context)
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         
@@ -37,7 +37,7 @@ class Response(object):
 
             # --------------------------
 
-            result = process_incoming_request(app_context, input_files)
+            result = process_incoming_request(app_context, input_params, jobid, workflow_id)
             
             # --------------------------
                 
