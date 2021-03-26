@@ -27,7 +27,7 @@ class FetchModelsResource_v2(Resource):
     def get(self):
         log_info("FetchModelsResource_v2 api called",MODULE_CONTEXT)
         try:
-            fetch_model = CreateModel.objects()
+            fetch_model = CreateModel.objects().exclude("id").exclude("created_on")
             i = fetch_model.to_json()
             json_data = json.loads(i)
             out = CustomResponse(Status.SUCCESS.value, json_data)
@@ -44,9 +44,9 @@ class FetchSingleModelResource(Resource):
         log_info("FetchSingleModelResource api called",MODULE_CONTEXT)
         try:
             if request.method == 'GET':
-                data = CreateModel.objects(uuid=id)
+                data = CreateModel.objects(uuid=id).exclude("id").exclude("created_on")
                 if data.count()>0:
-                    i = CreateModel.objects(uuid=id).to_json()
+                    i = data.to_json()
                     json_data = json.loads(i)
                     out = CustomResponse(Status.SUCCESS.value, json_data)
                     return out.get_res_json(),200
