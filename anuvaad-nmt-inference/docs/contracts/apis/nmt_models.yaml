@@ -135,7 +135,7 @@ paths:
           schema:
             $ref: '#/definitions/error_status'    
             
-  /v1/fetch-single-models/uuid:
+  /v2/fetch-models/uuid:
     get:
       summary: REST API of fetch single model of nmt models information.
       description: GET api to outputs the nmt model information like their model id, source and target language information etc
