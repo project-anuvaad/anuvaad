@@ -35,7 +35,7 @@ class Login extends React.Component {
   }
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
-    TELEMETRY.pageLoadStarted('login')
+    // TELEMETRY.pageLoadStarted('login')
     /**
     * getSnapshotBeforeUpdate() must return null
     */
@@ -115,10 +115,16 @@ class Login extends React.Component {
         localStorage.setItem("roles", roles)
         localStorage.setItem("lang", "en")
         localStorage.setItem("userProfile", JSON.stringify(resData));
-        if (roles.includes('ADMIN')){
+        if (roles.includes('ADMIN')) {
           history.push(`${process.env.PUBLIC_URL}/user-details`);
           // history.push(`${process.env.PUBLIC_URL}/create-user`)
-        }else{
+        } else if (roles.includes('TRANSLATOR')) {
+          history.push(`${process.env.PUBLIC_URL}/view-document`);
+        }
+        else if (roles.includes("ANNOTATOR")) {
+          history.push(`${process.env.PUBLIC_URL}/view-annotation-job`);
+        }
+        else {
           history.push(`${process.env.PUBLIC_URL}/view-document`);
         }
         // history.push(`${process.env.PUBLIC_URL}/create-user`)
@@ -152,7 +158,7 @@ class Login extends React.Component {
 
                 <div className={classes.wrapper}>
                   <Button
-                  id="signin-btn"
+                    id="signin-btn"
                     variant="contained" aria-label="edit" style={{
                       width: '50%', marginBottom: '2%', marginTop: '2%', borderRadius: '20px', height: '45px', textTransform: 'initial', fontWeight: '20px',
                       backgroundColor: this.state.loading ? 'grey' : '#1ca9c9', color: 'white',
@@ -167,7 +173,7 @@ class Login extends React.Component {
 
               <Typography>
                 <Link id="forgotpassword" style={{ cursor: 'pointer', color: '#0C8AA9', marginLeft: '25%', float: 'left' }} href="#" onClick={() => { history.push(`${process.env.PUBLIC_URL}/forgot-password`); }}> {translate('updatePassword.page.label.forgotPassword')}</Link>
-                <Link id= "signup" style={{ cursor: 'pointer', color: '#0C8AA9', marginRight: '25%', float: 'right' }} href="#" onClick={() =>{ history.push(`${process.env.PUBLIC_URL}/signup`); }}> {translate('singUp.page.label.signUp')}</Link>
+                <Link id="signup" style={{ cursor: 'pointer', color: '#0C8AA9', marginRight: '25%', float: 'right' }} href="#" onClick={() => { history.push(`${process.env.PUBLIC_URL}/signup`); }}> {translate('singUp.page.label.signUp')}</Link>
               </Typography>
             </Grid>
           </Grid>

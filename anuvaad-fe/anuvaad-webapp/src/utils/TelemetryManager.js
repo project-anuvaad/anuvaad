@@ -1,4 +1,5 @@
 import $t from "@project-sunbird/telemetry-sdk/index.js";
+import { value } from "jsonpath";
 import CONFIGS from '../configs/configs.js'
 
 /**
@@ -53,12 +54,16 @@ export const pageLoadStarted = (page_id) => {
     init()
   }
   let user_id = null;
-  let session_id = null
+  let session_id = null;
+  let org_id = null;
+  let name = null;
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
   let token = localStorage.getItem('token')
 
   if (user_profile != null && token != null) {
     user_id = user_profile.userID
+    org_id = user_profile.orgID
+    name = user_profile.name
     session_id = token
   } else {
     user_id = 'anonymous'
@@ -75,6 +80,8 @@ export const pageLoadStarted = (page_id) => {
     ets: Date.now(),
     actor: {
       uid: user_id,
+      org_id: org_id,
+      name: name
     },
     context: {
       sid: session_id
@@ -95,11 +102,15 @@ export const pageLoadCompleted = (page_id) => {
 
   let user_id = null;
   let session_id = null
+  let org_id = null;
+  let name = null;
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
   let token = localStorage.getItem('token')
 
   if (user_profile != null && token != null) {
     user_id = user_profile.userID
+    org_id = user_profile.orgID
+    name = user_profile.name
     session_id = token
   } else {
     user_id = 'anonymous'
@@ -116,6 +127,8 @@ export const pageLoadCompleted = (page_id) => {
     ets: Date.now(),
     actor: {
       uid: user_id,
+      org_id: org_id,
+      name: name
     },
     context: {
       sid: session_id
@@ -158,11 +171,15 @@ export const startWorkflow = (source_language, target_language, filename, job_id
   }
 
   let user_id = null;
+  let org_id = null;
+  let name = null;
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
   let token = localStorage.getItem('token')
-  
+
   if (user_profile != null && token != null) {
     user_id = user_profile.userID
+    org_id = user_profile.orgID
+    name = user_profile.name
   } else {
     user_id = 'anonymous'
   }
@@ -177,6 +194,8 @@ export const startWorkflow = (source_language, target_language, filename, job_id
     ets: Date.now(),
     actor: {
       uid: user_id,
+      org_id: org_id,
+      name: name
     },
     context: {
       cdata: [{
@@ -339,7 +358,7 @@ export const endSentenceEdit = (sentence, sentence_id, mode) => {
  * @param {*} src , extracted source sentence
  * 
  */
-export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, mode, src, bleu_score, time_spent) => {
+export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, mode, src, bleu_score, time_spent, rating_score) => {
   if ($t.isInitialized() === false) {
     init()
   }
@@ -363,6 +382,12 @@ export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, m
   values.final = sentence_final
   values.bleu_score = bleu_score
   values.time_spent = time_spent
+  values.s_id = sentence_id
+
+  debugger
+  if(rating_score) {
+    values.rating_score = rating_score
+  }
 
   options.context.cdata = values
   $t.interact(data, options)
@@ -447,10 +472,14 @@ export const log = (action_type, message, api) => {
   }
 
   let user_id = null;
+  let org_id = null;
+  let name = null;
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
 
   if (user_profile != null) {
     user_id = user_profile.userID
+    org_id = user_profile.orgID
+    name = user_profile.name
   } else {
     user_id = 'anonymous'
   }
@@ -461,11 +490,11 @@ export const log = (action_type, message, api) => {
     error_data: message,
   }
 
-  if(action_type) {
+  if (action_type) {
     data.action = action_type
   }
 
-  if(api) {
+  if (api) {
     data.api = api
   }
 
@@ -473,6 +502,8 @@ export const log = (action_type, message, api) => {
     ets: Date.now(),
     actor: {
       uid: user_id,
+      org_id: org_id,
+      name: name
     }
   }
 
@@ -636,4 +667,43 @@ export const glossaryUpload = (file_id, organization) => {
     }
   }
   $t.impression(data, options)
+}
+
+export function saveEditedWordEvent(changedWordInfo, action) {
+  if ($t.isInitialized() === false) {
+    init()
+  }
+  let user_profile = JSON.parse(localStorage.getItem('userProfile'))
+  let token = localStorage.getItem('token')
+  let user_id = user_profile.userID
+  let org_id = user_profile.orgID
+  let name = user_profile.name
+  let session_id = token
+
+  let data = {
+    type: 'click',
+    action: action
+  }
+
+  let values = {}
+  values.changedWord = changedWordInfo.updated_word
+  values.word_id = changedWordInfo.word_id
+  values.record_id = changedWordInfo.record_id
+  values.action = action
+
+
+  let options = {
+    ets: Date.now(),
+    actor: {
+      uid: user_id,
+      org_id: org_id,
+      name: name
+    },
+    context: {
+      cdata: values,
+      sid: session_id
+    },
+  }
+
+  $t.interact(data, options)
 }

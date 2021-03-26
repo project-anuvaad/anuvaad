@@ -85,8 +85,10 @@ class PdfUpload extends Component {
 
 
   handleSubmit(e) {
-    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
-
+   
+    let userModel = JSON.parse(localStorage.getItem("userProfile"))
+    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code,userModel.models )
+debugger
     e.preventDefault();
     this.setState({ model: modelId })
     if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code) {
@@ -160,9 +162,8 @@ class PdfUpload extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
-      debugger
       this.setState({
-        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, this.state.uploadType),
+        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, this.state.uploadType, ),
         target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, this.state.uploadType)
       })
       

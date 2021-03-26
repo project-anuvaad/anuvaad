@@ -55,13 +55,6 @@ logging.basicConfig(
 EXRACTION_RESOLUTION = 300
 
 
-##########################################################################
-#Alignment
-ALIGN = True
-ALIGN_MODE= 'FAST'
-
-
-###########################################################################
 
 CRAFT_MODEL_PATH=  './src/utilities/craft_pytorch/model/craft_mlt_25k.pth'
 CRAFT_REFINE_MODEL_PATH =  './src/utilities/craft_pytorch/model/craft_refiner_CTW1500.pth'
@@ -97,7 +90,16 @@ LANGUAGE_LINE_THRESOLDS ={
 
 
 
+##########################################################################
+#Alignment
+ALIGN = True
+ALIGN_MODE= 'FAST'
+
+
+###########################################################################
+
 
 WATERMARK_THRESHOLD_LOW = 175
 WATERMARK_THRESHOLD_HIGH = 250
-MAGNIFICATION_RATIO = 1.0
+#MAGNIFICATION_RATIO = 1.0
+MAGNIFICATION_RATIO = 0.5

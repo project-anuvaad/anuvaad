@@ -39,8 +39,8 @@ class DownloadDigitziedDoc extends React.Component {
                 key={region.identifier}
             >
 
-                {region['children'] &&
-                    region['children'].map(line => this.renderText(line, region))
+                {region['regions'] &&
+                    region['regions'].map(line => this.renderText(line, region))
                 }
             </div>
         );
@@ -48,10 +48,22 @@ class DownloadDigitziedDoc extends React.Component {
 
     renderText = (line, region) => {
         return (
-            <div key={region.identifier}>
+            <div
+                style={{
+                    border: line.class === 'CELL' && '1px solid black',
+                    top: line.class === 'CELL' && line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    left: line.class === 'CELL' && line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                    height: line.class === 'CELL' && line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
+                    width: line.class === 'CELL' && line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
+                    position: line.class === 'CELL' && 'absolute',
+                    textAlignLast: 'justify'
+                }}
+                key={line.identifier}>
                 {
-
-                    line.children.map(word => this.renderTextSpan(word, line, region))
+                    line.regions.map(word => line.class !== 'CELL' ?
+                        this.renderTextSpan(word, region) :
+                        this.renderTable(word, line)
+                    )
                 }
             </div>
         )
@@ -82,32 +94,26 @@ class DownloadDigitziedDoc extends React.Component {
         )
     }
 
-    renderTextSpan = (word, line, region) => {
-        if (line.class === "CELL") {
-            line.children.map(word => this.renderTable(word, region))
-        }
+    renderTextSpan = (word, region) => {
         return (
             <div
                 style={{
                     position: "absolute",
-                    zIndex: this.action === word.identifier ? 100000 : 2,
-                    fontSize: this.props.fontSize + 'px',
-                    fontFamily: word.font && word.font.family,
+                    fontSize: `min(max(${word.font.avg_size}px),${this.props.fontSize}px)`,
                     top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
-                    width: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
+                    maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
+                    maxHeight: word.boundingBox.vertices[2].y - word.boundingBox.vertices[0].y + 'px',
+                    width: 'fit-content',
+                    height: '100%',
+                    fontFamily: word.font && word.font.family,
                 }}
-                key={line.identifier}
+                key={word.identifier}
+            // onDoubleClick={() => this.setModalState(word)}
             >
-
                 {
-                    <Textfit mode="single" style={{ width: '100%' }} min={1} max={parseInt(Math.ceil(this.props.fontSize))}>
-                        {
-                            word.text
-                        }
-                    </Textfit>
+                    word.text
                 }
-
             </div>
         )
     }

@@ -306,8 +306,58 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
+                  {/* {role && Array.isArray(role) && role.includes("ADMIN") && (
+                    <div>
+                      <Divider className={classes.divider} />
 
-                  {role && Array.isArray(role) && (role.includes("TRANSLATOR")) && (
+                      <ListItem
+                        id="schedule-annotation-job"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "schedule-annotation-job" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/schedule-annotation-job`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: currentMenu === "schedule-annotation-job" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              Schedule Annotation Job
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )} */}
+
+{role && Array.isArray(role) && role.includes("ADMIN") && (
+                    <div>
+                      <Divider className={classes.divider} />
+
+                      <ListItem
+                        id="assign-nmt-model"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "assign-nmt-model" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/assign-nmt-model`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: currentMenu === "assign-nmt-model" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              Assign nmt models
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )}
+                  {role && Array.isArray(role) && (role.includes("TRANSLATOR") || (role.includes("ANNOTATOR"))) && (
                     <>
                       <div>
                         <Divider className={classes.divider} />
@@ -354,7 +404,28 @@ class Header extends React.Component {
                         </ListItem>
                       </div> */}
                     </>)}
+                  {role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
+                    <Divider className={classes.divider} />
+                    <ListItem
+                      id="view-annotation-job"
+                      style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "view-annotation-job" && themeAnuvaad.palette.primary.main }}
+                      button
+                      onClick={() => {
+                        this.handleDrawerClose(false);
+                        history.push(`${process.env.PUBLIC_URL}/view-annotation-job`);
+                      }}
+                    >
 
+                      <ListItemText
+                        disableTypography
+                        primary={
+                          <Typography type="body2" style={{ color: currentMenu === "view-annotation-job" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                            View Annotation Job
+                            </Typography>
+                        }
+                      />
+                    </ListItem>
+                  </div>)}
                   <div>
                     <Divider className={classes.divider} />
 

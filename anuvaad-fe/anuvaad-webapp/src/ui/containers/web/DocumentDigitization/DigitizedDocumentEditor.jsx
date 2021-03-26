@@ -11,7 +11,7 @@ import Alert from '@material-ui/lab/Alert';
 import { translate } from "../../../../assets/localisation";
 import history from "../../../../web.history";
 import Spinner from "../../../components/web/common/Spinner";
-import PDFRenderer from '../DocumentEditor/PDFRenderer';
+import PDFRenderer from '../DocumentDigitization/ShowCorrectedImage';
 import SentenceCard from '../DocumentEditor/SentenceCard';
 import OcrPageCard from "./OcrPageCard";
 import InteractivePagination from '../DocumentEditor/InteractivePagination';
@@ -69,16 +69,18 @@ class DocumentEditor extends React.Component {
         }
         this.forMergeSentences = []
     }
-
+    makeAPICallDownloadJSON = () => {
+        const { APITransport } = this.props
+        let obj = new DownloadJSON(`${this.props.match.params.jobId}|${this.props.match.params.filename}`, this.props.active_page_number, this.props.active_page_number + 1)
+        this.setState({ apiFetchStatus: true })
+        APITransport(obj)
+    }
     /**
      * life cycle methods
      */
     componentDidMount() {
         TELEMETRY.pageLoadCompleted('digitized-document-editor')
-        const { APITransport } = this.props
-        let obj = new DownloadJSON(this.props.match.params.filename)
-        this.setState({ apiFetchStatus: true })
-        APITransport(obj)
+        this.makeAPICallDownloadJSON()
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -91,7 +93,8 @@ class DocumentEditor extends React.Component {
         }
 
         if (prevProps.active_page_number !== this.props.active_page_number) {
-            this.makeAPICallFetchContent(this.props.active_page_number);
+            // this.makeAPICallFetchContent(this.props.active_page_number);
+            this.makeAPICallDownloadJSON()
         }
 
         if (prevProps.document_contents !== this.props.document_contents) {
@@ -519,13 +522,15 @@ class DocumentEditor extends React.Component {
      */
     renderPDFDocument = () => {
         if (!this.state.apiFetchStatus) {
-            return (
-                <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
-                    <Paper>
-                        <PDFRenderer parent='digitized-document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} />
-                    </Paper>
-                </Grid>
-            )
+            let imagePath = this.props.download_json.pages[0] && this.props.download_json.pages[0].page_info.page_img_path
+            if (imagePath)
+                return (
+                    <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginLeft: "5px" }}>
+                        <Paper style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: 'auto' }}>
+                            <PDFRenderer zoomPercent={this.state.zoomPercent} path={imagePath.replace('upload/', '')} parent='digitized-document-editor' filename={this.props.match.params.inputfileid} pageNo={this.props.active_page_number} />
+                        </Paper>
+                    </Grid>
+                )
         }
 
     }
@@ -573,7 +578,7 @@ class DocumentEditor extends React.Component {
             )
         }
 
-        let style = "@page { size: " + pages[0].vertices[1].x + "px " + pages[0].vertices[2].y + "px; margin:0pt; width: 100%; height:100%;font-family: 'Mangal'; } "
+        let style = "@page { size: " + pages[0].boundingBox.vertices[1].x + "px " + pages[0].boundingBox.vertices[2].y + "px; margin:0pt; width: 100%; height:100%;font-family: 'Mangal'; } "
         return (
             <Grid item xs={12} sm={12} lg={12} xl={12}
             >

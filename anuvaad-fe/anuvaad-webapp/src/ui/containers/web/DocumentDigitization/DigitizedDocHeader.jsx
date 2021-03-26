@@ -30,6 +30,10 @@ import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
 import togglebtnstatus from '../../../../flux/actions/apis/view_digitized_document/show_bg_image';
 import switchstyles from '../../../../flux/actions/apis/view_digitized_document/switch_styles';
+import startediting from '../../../../flux/actions/apis/view_digitized_document/start_editing';
+import copylocation from '../../../../flux/actions/apis/view_digitized_document/copy_location';
+import set_crop_size from '../../../../flux/actions/apis/view_digitized_document/set_crop_size';
+import reset_updated_word from '../../../../flux/actions/apis/view_digitized_document/reset_updated_word';
 
 const StyledMenu = withStyles({
     paper: {
@@ -61,13 +65,15 @@ class DigitizedDocHeader extends React.Component {
             timeOut: 3000,
             variant: "info",
             dialogMessage: null,
-            showImage: false
+            showImage: false,
         };
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.active_page_number !== prevProps.active_page_number) {
             this.props.status && this.props.togglebtnstatus()
+            this.props.copy_status && this.props.copylocation()
+            this.props.edit_status && this.props.startediting()
         }
     }
 
@@ -181,12 +187,30 @@ class DigitizedDocHeader extends React.Component {
         this.props.showPdf()
     };
 
+    copylocation = () => {
+        this.props.copylocation()
+        this.props.set_crop_size("", true)
+    }
     renderOptions() {
         const { anchorEl } = this.state;
         const openEl = Boolean(anchorEl);
 
         return (
             <div style={{ display: "flex", flexDirection: "row" }}>
+                {
+                    this.props.edit_status &&
+                    <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.copylocation} disabled={this.props.copy_status}>
+                        Copy Location
+                    </Button>
+                }
+
+                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={() => {
+                    this.props.startediting()
+                    this.props.copy_status && this.props.copylocation()
+                }}>
+                    {this.props.edit_status ? "End Editing" : "Start Editing"}
+                </Button>
+
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
                     Download
                     <DownIcon />
@@ -240,6 +264,8 @@ class DigitizedDocHeader extends React.Component {
                             <div style={{ display: "flex", flexDirection: "row" }}>
                                 <IconButton
                                     onClick={() => {
+                                        this.props.edit_status && this.props.startediting()
+                                        this.props.reset_updated_word()
                                         history.push(`${process.env.PUBLIC_URL}/document-digitization`);
                                     }}
                                     className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
@@ -276,7 +302,9 @@ const mapStateToProps = state => ({
     open_sidebar: state.open_sidebar.open,
     status: state.showimagestatus.status,
     active_page_number: state.active_page_number.page_number,
-    switch_style: state.switch_style.status
+    switch_style: state.switch_style.status,
+    edit_status: state.startediting.status,
+    copy_status: state.copylocation.status
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
@@ -285,7 +313,11 @@ const mapDispatchToProps = dispatch => bindActionCreators(
         showPdf,
         showSidebar,
         togglebtnstatus,
-        switchstyles
+        switchstyles,
+        startediting,
+        copylocation,
+        set_crop_size,
+        reset_updated_word
     },
     dispatch
 );
