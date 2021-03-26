@@ -275,6 +275,7 @@ class PRIMA(object):
 
 	def predict_primanet(self,image,craft_coords):
 		try:
+			
 			#print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
 			#image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
 			image   = cv2.imread(image)
