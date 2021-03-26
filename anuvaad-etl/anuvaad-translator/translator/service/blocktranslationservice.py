@@ -89,9 +89,9 @@ class BlockTranslationService:
         nmt_in = {"src_list": nmt_txt, "source_language_code": model["source_language_code"],
                   "target_language_code": model["target_language_code"], "model_id": model["model_id"]}
         try:
-            host = model["connection_details"]["host"]
+            host = model["connection_details"]["translation"]["host"]
             api_host = os.environ.get(host, 'NA')
-            endpoint = model["connection_details"]["api_endpoint"]
+            endpoint = model["connection_details"]["translation"]["api_endpoint"]
             api_endpoint = os.environ.get(endpoint, 'NA')
             if api_host == "NA" or api_endpoint == "NA":
                 log_info("Falling back to Anuvaad NMT translate URL....", block_translate_input)

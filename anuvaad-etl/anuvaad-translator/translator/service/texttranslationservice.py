@@ -89,9 +89,9 @@ class TextTranslationService:
             text_nmt.append({"s_id": text["s_id"], "id": model["model_id"], "src": text["src"],
                              "target_prefix": text["taggedPrefix"]})
         try:
-            host = model["connection_details"]["host"]
+            host = model["connection_details"]["interactive"]["host"]
             api_host = os.environ.get(host, 'NA')
-            endpoint = model["connection_details"]["api_endpoint"]
+            endpoint = model["connection_details"]["interactive"]["api_endpoint"]
             api_endpoint = os.environ.get(endpoint, 'NA')
             if api_host == "NA" or api_endpoint == "NA":
                 log_info("Falling back to Anuvaad NMT translate URL....", text_translate_input)
