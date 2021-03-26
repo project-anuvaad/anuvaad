@@ -61,10 +61,8 @@ def process_kf_request_payload():
         response_custom['message'] = e.message      
         file_ops.error_handler(response_custom, "KAFKA_PRODUCER_ERROR", True)
         log_exception("response send to topic %s"%(config.output_topic), None, e)
-    except Exception as e:
-        response_custom = {}
-        response_custom['message'] = e.message      
-        file_ops.error_handler(response_custom, "KAFKA_PRODUCER_ERROR", True)
+    except Exception as e: 
+        file_ops.error_handler(response_custom, "KAFKA_CONSUMER_ERROR", True)
         log_exception("response send to topic %s"%(config.output_topic), None, e)
 
 def processRequest(data):
