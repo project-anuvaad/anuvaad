@@ -82,5 +82,5 @@ class ParallelSentenceModel(object):
             return True
 
         except Exception as e:
-            log_exception("db connection exception ",  AppContext.getContext(), e)
+            log_exception("db connection exception ",  LOG_WITHOUT_CONTEXT, e)
             return False
