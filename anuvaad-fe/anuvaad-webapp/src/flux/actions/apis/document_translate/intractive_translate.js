@@ -45,13 +45,13 @@ export default class NMTSP extends API {
         modelArray.push({
             s_id: this.sId,
             src: this.src,
-            taggedPrefix: this.target,
-            modelID: parseInt(this.model, 10),
+            taggedPrefix: this.target
 
         });
 
         // reqObj.workflowCode = "DP_WFLOW_S_IT_T"
         textListObj.textList = modelArray
+        textListObj.model = this.model
         reqObj.input = textListObj
         return reqObj;
 
