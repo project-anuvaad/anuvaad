@@ -59,6 +59,8 @@ import cropsizeinfo from './view_digitized_document/set_crop_size';
 import copylocation from './view_digitized_document/copy_location';
 import updated_words from './view_digitized_document/update_word';
 import view_scheduled_jobs from './view_scheduled_jobs/fetch_scheduled_jobs';
+import fetch_job_details from './view_scheduled_jobs/fetch_job_detail';
+import taskdetail from './view_scheduled_jobs/fetch_annotator_job';
 
 export default {
     login,
@@ -120,5 +122,7 @@ export default {
     cropsizeinfo,
     copylocation,
     updated_words,
-    view_scheduled_jobs
+    view_scheduled_jobs,
+    fetch_job_details,
+    taskdetail
 };

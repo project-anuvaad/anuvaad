@@ -95,18 +95,20 @@ export default class RunExperiment extends API {
       }
     } else if (this.workflow === "WF_A_AN") {
       return {
-        "workflowCode": this.workflow,
-        "annotationType": "VET_PARALLEL_SENTENCE",
         "files": [{
-          "name": this.fileName,
-          "type": this.path,
-          "identifier": this.file,
+          "annotationType": "VET_PARALLEL_SENTENCE",
           "sourceLanguage": this.source,
           "targetLanguage": this.target,
-          "model": this.model
+          "fileInfo": {
+            "name": this.fileName,
+            "type": this.path,
+            "identifier": this.file
+          },
+
+          "description": this.description,
+          "users": this.arrayOfUsers
         }],
-        "users": this.arrayOfUsers,
-        "description": this.description
+        "workflowCode": this.workflow,
       }
     }
 

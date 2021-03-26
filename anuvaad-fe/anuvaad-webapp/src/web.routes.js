@@ -36,6 +36,8 @@ import DigitizedDocumentEditor from './ui/containers/web/DocumentDigitization/Di
 import ViewAnnotationJob from './ui/containers/web/GradeDocument/ViewAnnotationJobs';
 import ViewScheduledJobs from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewScheduledJobs';
 import ScheduleJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ScheduleJob';
+import ViewJobDetail from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewJobDetails';
+import ViewAnnotatorJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewAnnotatorJob';
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -350,6 +352,27 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
 
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/view-job-detail/:jobID`}
+              dontShowLoader
+              title={"View Annotation Job"}
+              userRoles={["ADMIN"]}
+              component={ViewJobDetail}
+              authenticate={this.authenticateUser}
+              currentMenu="view-job-detail"
+              dontShowHeader={true}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/view-annotator-job/:taskId`}
+              dontShowLoader
+              title={"View Annotator Job"}
+              userRoles={["ADMIN"]}
+              component={ViewAnnotatorJob}
+              authenticate={this.authenticateUser}
+              currentMenu="view-job-detail"
+              dontShowHeader={true}
+            />
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
 
 

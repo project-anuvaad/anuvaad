@@ -8,13 +8,13 @@ export default class BulkSearchAPI extends API {
     this.type = C.FETCH_SCHEDULED_JOBS;
 
     if (searchForNewJob) {
-      this.type = C.FETCHDOCUMENT_NEWJOB;
+      this.type = C.FETCH_SCHEDULED_NEWJOB;
     }
     if (isNextPage) {
-      this.type = C.FETCHDOCUMENT_NEXTPAGE;
+      this.type = C.FETCH_SCHEDULED_NEXTPAGE;
     }
     if (updateExisting) {
-      this.type = C.FETCHDOCUMENT_EXISTING;
+      this.type = C.FETCH_EXISTING_SCH_JOB;
     }
 
     this.offset = offset;

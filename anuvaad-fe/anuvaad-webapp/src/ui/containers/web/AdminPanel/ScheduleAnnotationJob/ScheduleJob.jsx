@@ -23,7 +23,8 @@ import FetchModel from "../../../../../flux/actions/apis/common/fetchmodel";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import history from "../../../../../web.history";
 import WorkFlow from "../../../../../flux/actions/apis/common/fileupload";
-
+import Spinner from '../../../../components/web/common/Spinner';
+import { createJobEntry } from '../../../../../flux/actions/users/async_job_management';
 
 const theme = createMuiTheme({
     overrides: {
@@ -55,6 +56,7 @@ const theme = createMuiTheme({
     }
 });
 const LANG_MODEL = require('../../../../../utils/language.model')
+const TELEMETRY = require('../../../../../utils/TelemetryManager')
 
 
 class ScheduleJob extends React.Component {
@@ -107,13 +109,22 @@ class ScheduleJob extends React.Component {
                 this.state.target_language_code, this.state.path, this.state.model, "", "", this.state.description, this.state.array_of_users);
             APITransport(apiObj);
         }
+        if (prevProps.workflowStatus !== this.props.workflowStatus) {
+            this.props.createJobEntry(this.props.workflowStatus)
+
+            // var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, this.state.uploadType)
+            // var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code, this.state.uploadType)
+
+            // TELEMETRY.startWorkflow(sourceLang, targetLang, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
+            history.push(`${process.env.PUBLIC_URL}/view-scheduled-jobs`);
+        }
     }
 
     handleSubmit(e) {
         let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
 
         e.preventDefault();
-        this.setState({ model: modelId })
+        this.setState({ model: modelId, showLoader: true })
         if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code) {
             const { APITransport } = this.props;
             const apiObj = new DocumentUpload(
@@ -166,7 +177,6 @@ class ScheduleJob extends React.Component {
     handleChange = files => {
 
         if (files.length > 0) {
-            console.log(files)
             let path = files[0].name.split('.')
             let fileType = path[path.length - 1]
             let fileName = path.splice(0, path.length - 1).join('.')
@@ -238,8 +248,15 @@ class ScheduleJob extends React.Component {
         )
     }
 
-    addUser = (value) => {
-        this.setState({ array_of_users: value })
+    addUser = (values) => {
+        let array_of_users = values.map(value => {
+            return {
+                userId: value.userID,
+                name: value.email_id
+            }
+        })
+        console.log(array_of_users)
+        this.setState({ array_of_users })
     }
     render() {
         const { classes } = this.props
@@ -373,7 +390,12 @@ class ScheduleJob extends React.Component {
                                 message={this.state.message}
                             />
                         )}
+                        {
+                            this.state.showLoader &&
+                            <Spinner />
+                        }
                     </Paper>
+
                 </div>
             </div>
         );
@@ -392,6 +414,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
     bindActionCreators(
         {
+            createJobEntry,
             APITransport
         },
         dispatch
