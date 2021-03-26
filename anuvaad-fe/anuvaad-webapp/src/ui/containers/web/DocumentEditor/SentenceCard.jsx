@@ -19,6 +19,11 @@ import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import copy from 'copy-to-clipboard';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 import MenuItems from "./PopUp";
 import SENTENCE_ACTION from './SentenceActions'
@@ -30,7 +35,6 @@ import DictionaryAPI from '../../../../flux/actions/apis/document_translate/word
 import AddToGlossaryModal from './AddToGlossaryModal';
 import Modal from '@material-ui/core/Modal';
 import CreateGlossary from '../../../../flux/actions/apis/document_translate/create_glossary';
-
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
@@ -118,7 +122,7 @@ class SentenceCard extends React.Component {
             snackBarMessage: null,
             highlight: false,
             hideSplit: false,
-            openModal: false
+            score: ""
 
         };
         this.textInput = React.createRef();
@@ -128,6 +132,12 @@ class SentenceCard extends React.Component {
         this.processMergeButtonClicked = this.processMergeButtonClicked.bind(this);
         this.processMergeNowButtonClicked = this.processMergeNowButtonClicked.bind(this);
         this.processMergeCancelButtonClicked = this.processMergeCancelButtonClicked.bind(this);
+    }
+
+    componentDidMount() {
+        if(this.props.sentence && this.props.sentence.hasOwnProperty("rating_score") && this.props.sentence.rating_score) {
+            this.setState({ score: this.props.sentence.rating_score})
+        } 
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -177,6 +187,7 @@ class SentenceCard extends React.Component {
      * user actions handlers
      */
     processSaveButtonClicked() {
+        let userRole= localStorage.getItem("roles")
         if (this.state.value.length < 1 || this.state.value === '') {
             // textfield has no value present.
             // - check availability of s0_tgt
@@ -194,6 +205,7 @@ class SentenceCard extends React.Component {
             this.setState({
                 value: this.props.sentence.s0_tgt
             })
+
             if (this.props.onAction) {
                 let sentence = { ...this.props.sentence };
                 sentence.save = true;
@@ -203,13 +215,18 @@ class SentenceCard extends React.Component {
                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;// max spent time is 5 min
                 time = 0;
                 sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()) : 0;
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms)
+
+                if(userRole === "ANNOTATOR" && this.state.score) {
+                    sentence.rating_score = this.state.score
+                }
+
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '')
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
                 return;
             }
         } else {
             // textfield has value present
-            if (!this.state.userEnteredText) {
+            if (!this.state.userEnteredText && this.props.sentence.rating_score === this.state.score) {
                 // value is present, however user hasn't edit it.
                 // no point saving
                 alert('Please edit your sentence and then save. ')
@@ -224,8 +241,11 @@ class SentenceCard extends React.Component {
                 sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()) : 0;
                 let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;
+                if(userRole === "ANNOTATOR" && this.state.score) {
+                    sentence.rating_score = this.state.score
+                }
                 time = 0;
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score)
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, '', userRole === "ANNOTATOR" ? this.state.score : '')
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
             }
         }
@@ -827,12 +847,53 @@ class SentenceCard extends React.Component {
         )
     }
 
+    handleChange = (event) => {
+        this.setState({
+            score: Number(event.target.value)
+        })
+    }
+
+    renderRating = () => {
+        let styles = {
+           dividerStyle: { border: 0,
+            height: 0,
+            borderTop: "1px solid rgba(0, 0, 0, 0.1)",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.3)"},
+            buttonStyle: {
+                color: 'rgb(28, 154, 183)'
+            },
+            label: {
+                fontSize: "5px"
+            }
+        }
+        return (
+            <div style={{ padding: "2% 0%" }}>
+                <hr style={styles.dividerStyle} />
+                <FormControl component="fieldset">
+                    <FormLabel component="legend" color="primary" style={{color: '#000000'}}>Rate machine translation</FormLabel>
+                    <RadioGroup color="primary" name="gender1" value={ this.state.score } onChange={this.handleChange} style={{ display: "flex", flexDirection: "row" }}>
+                        <FormControlLabel value={1} control={<Radio style={styles.buttonStyle}/>} label="1" labelPlacement="bottom" style={styles.label}/>
+                        <FormControlLabel value={2} control={<Radio style={styles.buttonStyle}/>} label="2" labelPlacement="bottom" />
+                        <FormControlLabel value={3} control={<Radio style={styles.buttonStyle}/>} label="3" labelPlacement="bottom" />
+                        <FormControlLabel value={4} control={<Radio style={styles.buttonStyle}/>} label="4" labelPlacement="bottom" />
+                        <FormControlLabel value={5} control={<Radio style={styles.buttonStyle}/>} label="5" labelPlacement="bottom" />
+
+
+                    </RadioGroup>
+                </FormControl>
+                <hr style={styles.dividerStyle} />
+
+            </div>
+        )
+    }
+
     renderSentenceCard = () => {
+        let userRole= localStorage.getItem("roles")
         return (
             <div key={12} style={{ padding: "1%" }}>
                 <MuiThemeProvider theme={theme}>
                     <Card style={this.cardBlockCompare() || (this.cardCompare()) ? styles.card_open : this.isSentenceSaved() ? styles.card_saved : styles.card_inactive}>
-                        <CardContent style={{ display: "flex", flexDirection: "row" }}>
+                        <CardContent style={{ display: "flex", flexDirection: "row", padding: "10px" }}>
                             <div style={{ width: "90%" }}>
                                 {this.renderSourceSentence()}
                             </div>
@@ -850,12 +911,13 @@ class SentenceCard extends React.Component {
                         </CardContent>}
 
                         <Collapse in={this.cardCompare()} timeout="auto" unmountOnExit>
-                            <CardContent>
+                            <CardContent style={{ padding: "10px"}}>
                                 {this.renderMTTargetSentence()}
                                 <br />
+                                {userRole === "ANNOTATOR" && this.renderRating()}
                                 {this.renderUserInputArea()}
                             </CardContent>
-                            <CardActions>
+                            <CardActions style={{ padding: "10px"}}>
                                 {this.renderNormaModeButtons()}
                             </CardActions>
                         </Collapse>
