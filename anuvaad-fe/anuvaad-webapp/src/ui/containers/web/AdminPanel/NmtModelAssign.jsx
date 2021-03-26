@@ -242,7 +242,7 @@ componentDidUpdate(prevProps) {
   getModelIDS = (source_language_code,target_language_code ) =>{
       
     const models = LANG_MODEL.get_nmt_models(this.props.fetch_models.models, source_language_code, target_language_code)
-    debugger
+
     this.setState({
       modelList: models
     })

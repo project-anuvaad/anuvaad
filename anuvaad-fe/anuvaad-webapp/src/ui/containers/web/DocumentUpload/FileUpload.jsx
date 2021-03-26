@@ -88,7 +88,6 @@ class PdfUpload extends Component {
    
     let userModel = JSON.parse(localStorage.getItem("userProfile"))
     let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code,userModel.models )
-debugger
     e.preventDefault();
     this.setState({ model: modelId })
     if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code) {

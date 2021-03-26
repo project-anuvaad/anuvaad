@@ -311,20 +311,20 @@ class Header extends React.Component {
                       <Divider className={classes.divider} />
 
                       <ListItem
-                        id="schedule-annotation-job"
-                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "schedule-annotation-job" && themeAnuvaad.palette.primary.main }}
+                        id="view-scheduled-jobs"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "view-scheduled-jobs" && themeAnuvaad.palette.primary.main }}
                         button
                         onClick={() => {
                           this.handleDrawerClose(false);
-                          history.push(`${process.env.PUBLIC_URL}/schedule-annotation-job`);
+                          history.push(`${process.env.PUBLIC_URL}/view-scheduled-jobs`);
                         }}
                       >
 
                         <ListItemText
                           disableTypography
                           primary={
-                            <Typography type="body2" style={{ color: currentMenu === "schedule-annotation-job" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              Schedule Annotation Job
+                            <Typography type="body2" style={{ color: currentMenu === "view-scheduled-jobs" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              View Jobs
                             </Typography>
                           }
                         />

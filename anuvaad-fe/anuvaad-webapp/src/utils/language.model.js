@@ -33,7 +33,8 @@ export const get_counterpart_languages = (languages, language_code, translate) =
 }
 
 export const get_nmt_models = (models, source_language, target_language_code) => {
-    let condition   = `$..[?(  @.source_language_code == '${source_language}' && @.target_language_code == '${target_language_code}')]`;
+    let condition   = `$..[?(  @.source_language_code == '${source_language}' && @.status == 'ACTIVE' && @.target_language_code == '${target_language_code}')]`;
+    debugger
     let result      = jp.query(models, condition)
     return result
 }

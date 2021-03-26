@@ -22,7 +22,9 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import FetchModel from "../../../../../flux/actions/apis/common/fetchmodel";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import history from "../../../../../web.history";
-
+import WorkFlow from "../../../../../flux/actions/apis/common/fileupload";
+import Spinner from '../../../../components/web/common/Spinner';
+import { createJobEntry } from '../../../../../flux/actions/users/async_job_management';
 
 const theme = createMuiTheme({
     overrides: {
@@ -54,6 +56,7 @@ const theme = createMuiTheme({
     }
 });
 const LANG_MODEL = require('../../../../../utils/language.model')
+const TELEMETRY = require('../../../../../utils/TelemetryManager')
 
 
 class ScheduleJob extends React.Component {
@@ -71,11 +74,13 @@ class ScheduleJob extends React.Component {
             showComponent: false,
             fileName: "",
             workspaceName: "",
+            workflow: "WF_A_AN",
             path: "",
             source_language_code: "",
             target_language_code: "",
             source_languages: [],
             target_languages: [],
+            description: '',
             array_of_users: []
         }
     }
@@ -98,6 +103,39 @@ class ScheduleJob extends React.Component {
                 showLoader: false
             })
         }
+        if (prevProps.documentUplaod !== this.props.documentUplaod) {
+            const { APITransport } = this.props;
+            const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
+                this.state.target_language_code, this.state.path, this.state.model, "", "", this.state.description, this.state.array_of_users);
+            APITransport(apiObj);
+        }
+        if (prevProps.workflowStatus !== this.props.workflowStatus) {
+            this.props.createJobEntry(this.props.workflowStatus)
+
+            // var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, this.state.uploadType)
+            // var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code, this.state.uploadType)
+
+            // TELEMETRY.startWorkflow(sourceLang, targetLang, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
+            history.push(`${process.env.PUBLIC_URL}/view-scheduled-jobs`);
+        }
+    }
+
+    handleSubmit(e) {
+        let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
+
+        e.preventDefault();
+        this.setState({ model: modelId, showLoader: true })
+        if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code) {
+            const { APITransport } = this.props;
+            const apiObj = new DocumentUpload(
+                this.state.files, "docUplaod",
+                modelId,
+            );
+            APITransport(apiObj);
+        } else {
+            alert("Field should not be empty!");
+        }
+
     }
 
     renderSourceLanguagesItems = () => {
@@ -137,13 +175,22 @@ class ScheduleJob extends React.Component {
     }
 
     handleChange = files => {
+
         if (files.length > 0) {
             let path = files[0].name.split('.')
             let fileType = path[path.length - 1]
+            let fileName = path.splice(0, path.length - 1).join('.')
             this.setState({
                 files,
                 fileName: files[0].name,
-                path: fileType
+                workspaceName: this.state.workspaceName ? this.state.workspaceName : fileName,
+                path: fileType,
+            });
+        } else {
+            this.setState({
+                files: {
+                    workspaceName: ""
+                }
             });
         }
     };
@@ -154,21 +201,6 @@ class ScheduleJob extends React.Component {
         });
     };
 
-    handleSubmit(e) {
-        let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, "hi")
-        e.preventDefault();
-        this.setState({ model: modelId, showLoader: true })
-        if (this.state.files.length > 0 && this.state.source_language_code) {
-            const { APITransport } = this.props;
-            const apiObj = new DocumentUpload(
-                this.state.files, "docUplaod",
-                modelId,
-            );
-            APITransport(apiObj);
-        } else {
-            alert("Field should not be empty!");
-        }
-    }
 
     processTargetLanguageSelected = (event) => {
         this.setState({ target_language_code: event.target.value })
@@ -194,7 +226,7 @@ class ScheduleJob extends React.Component {
                     labelId="demo-simple-select-outlined-label"
                     id="source-lang"
                     onChange={this.processTargetLanguageSelected}
-                    value={this.state.workflow}
+                    value={this.state.target_language_code}
                     fullWidth
                     className={classes.Select}
                     style={{
@@ -216,8 +248,15 @@ class ScheduleJob extends React.Component {
         )
     }
 
-    addUser = (value) => {
-        this.setState({ array_of_users: value })
+    addUser = (values) => {
+        let array_of_users = values.map(value => {
+            return {
+                userId: value.userID,
+                name: value.email_id
+            }
+        })
+        console.log(array_of_users)
+        this.setState({ array_of_users })
     }
     render() {
         const { classes } = this.props
@@ -240,7 +279,7 @@ class ScheduleJob extends React.Component {
                                     <DropzoneArea className={classes.DropZoneArea}
                                         showPreviewsInDropzone
                                         dropZoneClass={classes.dropZoneArea}
-                                        acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
+                                        acceptedFiles={[".csv", ".xlsx"]}
                                         onChange={this.handleChange.bind(this)}
                                         filesLimit={1}
                                         maxFileSize={200000000000}
@@ -264,11 +303,11 @@ class ScheduleJob extends React.Component {
                                     </Grid>
                                     <Grid item xs={12} sm={12} lg={12} xl={12}>
                                         <TextField
-                                            value={this.state.workspaceName}
+                                            value={this.state.description}
                                             id="outlined-name"
                                             margin="normal"
                                             onChange={event => {
-                                                this.handleTextChange("workspaceName", event);
+                                                this.handleTextChange("description", event);
                                             }}
                                             variant="outlined"
                                             style={{ width: "100%", margin: "0px" }}
@@ -304,7 +343,7 @@ class ScheduleJob extends React.Component {
                                     id="back"
                                     variant="contained" color="primary"
                                     size="large"
-                                    onClick={() => history.push(`${process.env.PUBLIC_URL}/user-details`)
+                                    onClick={() => history.push(`${process.env.PUBLIC_URL}/view-scheduled-jobs`)
                                     }
                                     style={{
                                         width: "100%",
@@ -322,7 +361,6 @@ class ScheduleJob extends React.Component {
                                     <Button
                                         id="upload"
                                         variant="contained" color="primary"
-                                        // className={classes.button1} 
                                         style={{
                                             width: "100%",
                                             backgroundColor: '#1C9AB7',
@@ -331,7 +369,7 @@ class ScheduleJob extends React.Component {
                                             height: '46px'
                                         }}
                                         size="large"
-                                    // onClick={this.handleSubmit.bind(this)}
+                                        onClick={this.handleSubmit.bind(this)}
                                     >
                                         {translate("common.page.button.upload")}
                                     </Button>
@@ -352,7 +390,12 @@ class ScheduleJob extends React.Component {
                                 message={this.state.message}
                             />
                         )}
+                        {
+                            this.state.showLoader &&
+                            <Spinner />
+                        }
                     </Paper>
+
                 </div>
             </div>
         );
@@ -360,14 +403,18 @@ class ScheduleJob extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    user: state.login,
-    fetch_models: state.fetch_models,
     userinfo: state.userinfo,
+    fileUpload: state.fileUpload,
+    configUplaod: state.configUplaod,
+    workflowStatus: state.workflowStatus,
+    documentUplaod: state.documentUplaod,
+    fetch_models: state.fetch_models
 });
 
 const mapDispatchToProps = dispatch =>
     bindActionCreators(
         {
+            createJobEntry,
             APITransport
         },
         dispatch
