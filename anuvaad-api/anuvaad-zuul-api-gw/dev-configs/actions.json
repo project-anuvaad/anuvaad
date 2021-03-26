@@ -463,6 +463,14 @@
             "active":true,
             "whiteList":true,
             "description":"API for notifier"
+        },
+        {
+            "id":"52042b5e-1068-43bf-b00b-4e502374e539",
+            "uri":"/anuvaad-etl/tokeniser-ocr/v0/tokenisation-wf",
+            "module":"TOKENISER-OCR",
+            "active":true,
+            "whiteList":false,
+            "description":"API tokenise paragraphs from a json file of ocr"
         }
     ]
 }
