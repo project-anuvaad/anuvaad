@@ -275,7 +275,7 @@ class PRIMA(object):
 
 	def predict_primanet(self,image,craft_coords):
 		try:
-			#print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
+			print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
 			#image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
 			image   = cv2.imread(image)
 			height, width, channels = image.shape
@@ -289,9 +289,11 @@ class PRIMA(object):
 			bbox, tag,score = self.prima_craft_refinement(bbox,craft_coords,tag,score)
 			layouts  = self.update_box_format(bbox,tag,score)
 			flag=True
+
 			while flag==True:
 				layouts, flag = self.merge_remove_overlap(layouts,height,width)
-			layouts = cell_layout(layouts,image)
+			if 'TABLE' in tag :
+				layouts = cell_layout(layouts,image)
 
 			return layouts
 		except Exception as e:
@@ -305,6 +307,7 @@ def cell_layout(regions,image):
 		#print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
 		#image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
 		#image   = cv2.imread(page_path)
+
 		height, width, channels = image.shape
 		table_regions = []
 		other_regions = []
@@ -322,6 +325,7 @@ def cell_layout(regions,image):
 				blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
 				blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)
 				ymin = region[0]['y'] ; ymax = region[2]['y'] ; xmin = region[0]['x']; xmax = region[2]['x']
+				print(ymin , ymax, xmin,xmax)
 				crop_img = image[ymin:ymax,xmin:xmax,:]
 				blank_image[ymin:ymax,xmin:xmax] = crop_img
 				layout   = model_primatablenet.detect(blank_image)
