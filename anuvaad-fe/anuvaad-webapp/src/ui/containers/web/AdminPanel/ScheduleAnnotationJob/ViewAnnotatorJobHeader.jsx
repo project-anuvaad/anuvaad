@@ -20,7 +20,8 @@ import GlobalStyles from "../../../../styles/web/styles";
 import Theme from "../../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 
-class ScheduleJobHeader extends React.Component {
+class ViewAnnotatorJobHeader extends React.Component {
+
     render() {
         const { classes, open_sidebar } = this.props;
         return (
@@ -35,13 +36,14 @@ class ScheduleJobHeader extends React.Component {
                             <div style={{ display: "flex", flexDirection: "row" }}>
                                 <IconButton
                                     onClick={() => {
-                                        history.push(`${process.env.PUBLIC_URL}/view-scheduled-jobs`);
+                                        history.goBack();
                                     }}
                                     className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
                                 >
                                     <BackIcon />
                                 </IconButton>
                                 <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "5px", marginTop: "5px" }} />
+
                                 <IconButton onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px 0px 3px" }}>
                                     <MenuIcon />
                                 </IconButton>
@@ -51,7 +53,7 @@ class ScheduleJobHeader extends React.Component {
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
 
                     <Typography variant="h5" color="inherit" className={classes.flex}>
-                        Schedule Annotation Job
+                        View Job Details
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -74,4 +76,4 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withStyles(GlobalStyles(Theme), { withTheme: true })(ScheduleJobHeader));
+)(withStyles(GlobalStyles(Theme), { withTheme: true })(ViewAnnotatorJobHeader));
