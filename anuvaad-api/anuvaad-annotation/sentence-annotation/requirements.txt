@@ -5,8 +5,4 @@ uuid==1.30
 kafka_python==2.0.1
 anuvaad_auditor==0.1.6
 xlrd==1.2.0
-bson
-pymongo
-
-
-
+pymongo==3.11.3

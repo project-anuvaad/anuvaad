@@ -1,5 +1,5 @@
 
-LOG_WITHOUT_CONTEXT = {'metadata':{'module':'SENTENCE-GRADER'}}
+LOG_WITHOUT_CONTEXT = {'metadata':{'module':'SENTENCE-ANNOTATION'}}
 
 def init():
     global app_context
