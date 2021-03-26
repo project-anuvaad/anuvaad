@@ -127,7 +127,7 @@ def get_document_bounds(response,page_dict,page_regions,font_info):
                     word_text = ''.join([
                         symbol.text for symbol in word.symbols
                     ])
-                    print(word_text)
+                    #print(word_text)
                     word_region["text"] = word_text
                     word_region["conf"] = word.confidence
                     if len(word.symbols[0].property.detected_languages)!=0:
