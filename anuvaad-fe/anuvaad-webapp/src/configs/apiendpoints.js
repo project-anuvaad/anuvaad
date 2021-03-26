@@ -2,7 +2,7 @@ const endpoints = {
   interactive_translate: "/interactive-translation",
   interactive_translate_v1: "/v1/interactive-translation",
   fetchlanguage: "/fetch-languages",
-  fetchmodel: "/nmt-inference/v1/fetch-models",
+  fetchmodel: "/nmt-inference/v2/fetch-models",
   forgotpassword: "/anuvaad/user-mgmt/v1/users/forgot-password",
   fetchducuments: '/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk',
   // insertSentence: "/v1/interactive-editor/add-sentence-node",
@@ -37,7 +37,8 @@ const endpoints = {
   add_org: '/anuvaad/user-mgmt/v1/org/upsert',
   fetch_organization: '/anuvaad/user-mgmt/v1/org/search',
   create_glossary:'/anuvaad-etl/translator/v1/glossary/create',
-  update_word:'/anuvaad/ocr-content-handler/v0/ocr/update-word'
+  update_word:'/anuvaad/ocr-content-handler/v0/ocr/update-word',
+  update_user:"/anuvaad/user-mgmt/v1/users/update",
 };
 
 export default endpoints;

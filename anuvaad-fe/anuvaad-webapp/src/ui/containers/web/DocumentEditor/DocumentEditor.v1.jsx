@@ -79,7 +79,6 @@ class DocumentEditor extends React.Component {
    */
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('document-editor')
-    debugger
     let recordId = this.props.match.params.jobid;
     let jobId = recordId ? recordId.split("|")[0] : ""
 

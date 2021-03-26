@@ -331,6 +331,32 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
+
+{role && Array.isArray(role) && role.includes("ADMIN") && (
+                    <div>
+                      <Divider className={classes.divider} />
+
+                      <ListItem
+                        id="assign-nmt-model"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "assign-nmt-model" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/assign-nmt-model`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: currentMenu === "assign-nmt-model" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              Assign nmt models
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )}
                   {role && Array.isArray(role) && (role.includes("TRANSLATOR") || (role.includes("ANNOTATOR"))) && (
                     <>
                       <div>
