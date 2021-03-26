@@ -199,9 +199,9 @@ class WFMUtils:
             if current_tool == tool_blocksegmenter:
                 tool_input = block_segmenter.get_bs_input_wf(wf_input)
             if current_tool == tool_ocrtokeniser:
-                tool_input = ocr_tokeniser.get_ocr_tokeniser_input_wf(task_output, False)
+                tool_input = ocr_tokeniser.get_ocr_tokeniser_input_wf(wf_input, False)
             if current_tool == tool_annotator:
-                tool_input = annotator.get_annotator_input_wf(task_output)
+                tool_input = annotator.get_annotator_input_wf(wf_input)
 
         return tool_input
 
