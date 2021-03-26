@@ -107,7 +107,7 @@ print(SAVE_URL)
 #SAVE_URL = "http://172.30.0.232:5009//anuvaad/ocr-content-handler/v0/ocr/save-document"
 SAVE_NO_PAGE = 1
 
-CLEAN_BACKGROUND = True
+CLEAN_BACKGROUND = False
 
 ##########################################################################
 #Alignment
