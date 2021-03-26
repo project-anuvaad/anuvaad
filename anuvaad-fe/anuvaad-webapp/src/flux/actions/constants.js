@@ -173,6 +173,11 @@ const constants = {
     RESET_CROP_SIZE: 'RESET_CROP_SIZE',
     COPY_LOCATION: 'COPY_LOCATION',
     UPDATE_WORD: 'UPDATE_WORD',
-    RESET_WORD: 'RESET_WORD'
+    RESET_WORD: 'RESET_WORD',
+
+    /**
+     * action for annotation job
+     */
+    FETCH_SCHEDULED_JOBS: "FETCH_SCHEDULED_JOBS"
 }
 export default constants;

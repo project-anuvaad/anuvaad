@@ -19,8 +19,34 @@ import { showSidebar } from '../../../../../flux/actions/apis/common/showSidebar
 import GlobalStyles from "../../../../styles/web/styles";
 import Theme from "../../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
+import { Button } from "@material-ui/core";
 
-class ScheduleJobHeader extends React.Component {
+class ViewScheduledJobsHeader extends React.Component {
+    handleOnClick() {
+        history.push(`${process.env.PUBLIC_URL}/schedule-annotation-job`);
+    }
+
+    renderOption() {
+        return (
+            <div>
+                <Button
+                    id='create-user'
+                    variant="contained"
+                    color="primary"
+                    style={{
+                        borderRadius: "20px",
+                        color: "#FFFFFF",
+                        backgroundColor: "#1C9AB7",
+                        height: "35px",
+                        fontSize: "16px",
+                    }}
+                    size="large"
+                    onClick={this.handleOnClick}>
+                    Create Job
+                </Button>
+            </div >
+        );
+    }
     render() {
         const { classes, open_sidebar } = this.props;
         return (
@@ -33,15 +59,8 @@ class ScheduleJobHeader extends React.Component {
                                 <CloseIcon />
                             </IconButton> :
                             <div style={{ display: "flex", flexDirection: "row" }}>
-                                <IconButton
-                                    onClick={() => {
-                                        history.push(`${process.env.PUBLIC_URL}/view-scheduled-jobs`);
-                                    }}
-                                    className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
-                                >
-                                    <BackIcon />
-                                </IconButton>
                                 <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "5px", marginTop: "5px" }} />
+
                                 <IconButton onClick={() => this.props.showSidebar(!open_sidebar)} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px 0px 3px" }}>
                                     <MenuIcon />
                                 </IconButton>
@@ -51,8 +70,11 @@ class ScheduleJobHeader extends React.Component {
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
 
                     <Typography variant="h5" color="inherit" className={classes.flex}>
-                        Schedule Annotation Job
+                        View Scheduled Jobs
                     </Typography>
+                    <div style={{ position: 'absolute', right: '3%' }}>
+                        {this.renderOption()}
+                    </div>
                 </Toolbar>
             </AppBar>
         )
@@ -74,4 +96,4 @@ const mapDispatchToProps = dispatch => bindActionCreators(
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withStyles(GlobalStyles(Theme), { withTheme: true })(ScheduleJobHeader));
+)(withStyles(GlobalStyles(Theme), { withTheme: true })(ViewScheduledJobsHeader));
