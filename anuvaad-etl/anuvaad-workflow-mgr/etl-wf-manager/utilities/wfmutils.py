@@ -168,6 +168,7 @@ class WFMUtils:
             if current_tool == tool_ocrdd15googlevision:
                 tool_input = ocrdd15gv.get_odd15gv_input(task_output, previous_tool)
             if current_tool == tool_ocrtokeniser:
+                log_info(task_output, task_output)
                 tool_input = ocr_tokeniser.get_ocr_tokeniser_input(task_output, previous_tool)
             if current_tool in ocr_tools:
                 job_details = self.get_job_details(task_output["jobID"])[0]
