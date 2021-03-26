@@ -375,10 +375,11 @@ class SentenceCard extends React.Component {
     * api calls
     */
     async makeAPICallInteractiveTranslation(caret) {
+        debugger
         let val = this.state.value.slice(0, caret)
-        if (val) {
+        if (val && this.props.model.interactive_translation) {
             this.setState({ isCardBusy: true })
-            let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.model, true, '', this.props.sentence.s_id);
+            let apiObj = new InteractiveTranslateAPI(this.props.sentence.src, val, this.props.model, true, '', this.props.sentence, this.props.recordId);
             const apiReq = fetch(apiObj.apiEndPoint(), {
                 method: 'post',
                 body: JSON.stringify(apiObj.getBody()),
@@ -440,7 +441,7 @@ class SentenceCard extends React.Component {
         /**
         * Ctrl+m to copy
         */
-        if ((event.ctrlKey || event.metaKey) && charCode === 'm' && this.props.model.status === "ACTIVE") {
+        if ((event.ctrlKey || event.metaKey) && charCode === 'm' && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation) {
             this.moveText()
             event.preventDefault();
             return false
@@ -449,7 +450,7 @@ class SentenceCard extends React.Component {
          * user requesting for suggestions
          */
         var TABKEY = 9;
-        if (event.keyCode === TABKEY && this.props.model.status === "ACTIVE") {
+        if (event.keyCode === TABKEY && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation) {
             var elem = document.getElementById(this.props.sentence.s_id)
             if (!this.props.sentence.s0_tgt && !this.state.value) {
                 alert("Sorry, Machine translated text is not available...")
@@ -615,7 +616,7 @@ class SentenceCard extends React.Component {
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
-                                helperText={this.props.model.status === "ACTIVE" ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+s to save"}
+                                helperText={this.props.model.status === "ACTIVE" && this.props.model.interactive_translation ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+s to save"}
                                 type="text"
                                 name={this.props.sentence.s_id}
                                 value={this.state.value}

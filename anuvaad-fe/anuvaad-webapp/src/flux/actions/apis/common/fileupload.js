@@ -5,13 +5,16 @@ import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class RunExperiment extends API {
 
 
-  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, source_language, timeout = 2000) {
+  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, source_language, description = "", arrayOfUsers = [], timeout = 2000) {
 
     super("POST", timeout, false);
     this.type = C.WORKFLOW;
     this.file = file;
     this.fileName = fileName;
-    this.endpoint = (workflow === "WF_A_FCBMTKTR" || workflow === "WF_A_OD10GV" || workflow === "WF_A_FCWDLDBSOD15GV") ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}` : `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`
+    this.endpoint = (workflow === "WF_A_FCBMTKTR" ||
+      workflow === "WF_A_OD10GV" ||
+      workflow === "WF_A_FCWDLDBSOD15GV" ||
+      workflow === "WF_A_AN") ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}` : `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`
     this.source = source;
     this.target = target;
     this.path = path;
@@ -19,7 +22,8 @@ export default class RunExperiment extends API {
     this.workflow = workflow;
     this.sentence_ids = sentence_ids;
     this.source_language = source_language;
-
+    this.description = description;
+    this.arrayOfUsers = arrayOfUsers
   }
 
   toString() {
@@ -88,6 +92,23 @@ export default class RunExperiment extends API {
             }
           }
         ]
+      }
+    } else if (this.workflow === "WF_A_AN") {
+      return {
+        "files": [{
+          "annotationType": "VET_PARALLEL_SENTENCE",
+          "sourceLanguage": this.source,
+          "targetLanguage": this.target,
+          "fileInfo": {
+            "name": this.fileName,
+            "type": this.path,
+            "identifier": this.file
+          },
+
+          "description": this.description,
+          "users": this.arrayOfUsers
+        }],
+        "workflowCode": this.workflow,
       }
     }
 
