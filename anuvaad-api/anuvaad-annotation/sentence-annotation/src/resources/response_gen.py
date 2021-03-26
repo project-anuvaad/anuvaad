@@ -37,7 +37,7 @@ class Response(object):
 
             # --------------------------
 
-            result = process_incoming_request(app_context, input_params, jobid, workflow_id)
+            result = process_incoming_request(app_context, input_params[0], jobid, workflow_id)
             
             # --------------------------
                 

@@ -51,7 +51,8 @@ class Response(object):
                     if response['code'] == 200:
                         
                         output_filename_json = file_ops.writing_json_file(i, response['rsp'], self.DOWNLOAD_FOLDER)
-                        file_res = file_ops.one_filename_response(output_filename_json)
+                        langs  = response['langs']
+                        file_res = file_ops.one_filename_response(output_filename_json,langs)
                         output_file_response.append(file_res)
                         task_endtime = eval(str(time.time()).replace('.', '')[0:13])
                         response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)

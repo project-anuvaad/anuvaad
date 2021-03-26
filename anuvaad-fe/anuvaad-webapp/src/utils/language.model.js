@@ -1,7 +1,6 @@
 var jp                = require('jsonpath')
 
 export const get_language_name = (languages, language_code, translate)  => {
-    debugger
     let condition   = translate ? `$..[?(@.status == 'ACTIVE' && @.target_language_code == '${language_code}' && @.is_primary==true)]` :  `$..[?(@.status == 'INACTIVE' && @.target_language_code == '${language_code}' && @.is_primary==true)]` ;
     let language    = jp.query(languages, condition)
     if (language.length > 0) {
@@ -33,12 +32,70 @@ export const get_counterpart_languages = (languages, language_code, translate) =
     })
 }
 
-export const get_model_details = (languages, source_language_code, target_language_code) => {
-    let condition   = `$..[?(@.source_language_code == '${source_language_code}' && @.is_primary == true && @.target_language_code == '${target_language_code}')]`
-    let language    = jp.query(languages, condition)
-    if (language.length === 1) {
-        return language[0]
+export const get_nmt_models = (models, source_language, target_language_code) => {
+    let condition   = `$..[?(  @.source_language_code == '${source_language}' && @.target_language_code == '${target_language_code}')]`;
+    let result      = jp.query(models, condition)
+    return result
+}
+
+export const get_model_list = (user, modelList, model_selected) =>{
+    let new_val     = []
+    if(user.models && user.models.length>0){
+        user.models.map(model=>{
+            if(model.src_lang   === model_selected.source_language_code && model.tgt_lang === model_selected.target_language_code){    
+            }
+            else{
+                new_val.push(model)
+            }
+        })
+        
     }
+
+    let val = {}
+    val.src_lang = model_selected.source_language_code
+    val.tgt_lang = model_selected.target_language_code
+    val.uuid     = model_selected.uuid
+
+    new_val.push(val)
+
+
+return new_val
+}
+
+
+export const get_filter_model = (models, source_language, target_language_code, model) => {
+
+    let condition   = `$..[?(  @.source_language_code == '${source_language}' && @.target_language_code == '${target_language_code}')]`;
+    let result      = jp.query(models, condition)
+    return result
+}
+
+
+
+export const get_model_details = (languages, source_language_code, target_language_code, models) => {
+    let result = []
+    if(models){
+        let condition       =   `$..[?(@.src_lang == '${source_language_code}'  && @.tgt_lang == '${target_language_code}')]`
+    let res        =   jp.query(models, condition)
+    result = res;
+    }
+    
+    let res_data        =   ""
+        if(result.length > 0){
+            let model_condition = result.length > 0 && `$..[?(@.uuid == '${result[0].uuid}')]`
+            res_data    = jp.query(languages, model_condition)
+            res_data    = res_data[0]
+        }
+        if(!res_data) {
+        let condition   =   `$..[?(@.source_language_code == '${source_language_code}' && @.is_primary == true && @.target_language_code == '${target_language_code}')]`
+        let result      =   jp.query(languages, condition)
+            if (result.length === 1) {
+                res_data = result[0]
+            }
+        }
+    return res_data
+   
+    
 }
 
 export const fetchModel = (modelId, docs) => {

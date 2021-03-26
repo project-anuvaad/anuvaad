@@ -23,6 +23,11 @@ class File:
     def get_format(self):
         return self.file['file']['type']
 
+    
+    @log_error
+    def get_language(self):
+        return self.file['config']['OCR']['language']
+
     @log_error
     def get_name(self):
         return self.file['file']['name']

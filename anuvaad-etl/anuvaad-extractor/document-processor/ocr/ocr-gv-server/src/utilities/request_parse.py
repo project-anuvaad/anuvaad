@@ -25,6 +25,10 @@ class File:
         return self.file['file']['type']
 
     @log_error
+    def get_language(self):
+        return self.file['config']['OCR']['language']
+   
+    @log_error
     def get_name(self):
         return self.file['file']['name']
 
@@ -52,20 +56,16 @@ class File:
     def pop_fontinfo(self, page_index):
         self.file['pages'][page_index].pop('font_properties')
 
-
-
-    @log_error
-    def get_fontinfo(self, page_index):
-        return self.file['pages'][page_index]['font_properties']
-
     @log_error
     def get_file(self):
         return self.file
+
     @log_error  
     def get_pageinfo(self, page_index):
         width = self.file['pages'][page_index]['boundingBox']['vertices'][1]['x']
         height = self.file['pages'][page_index]['boundingBox']['vertices'][3]['y']
         return width, height
+   
     @log_error
     def get_region_lines(self, page_index,region_index):
         if 'children' in self.file['pages'][page_index]['regions'][region_index].keys():
@@ -80,6 +80,7 @@ class File:
     def set_regions(self, page_index, regions):
         self.file['pages'][page_index]["regions"] = regions
     @log_error
+    
     def delete_regions(self, page_index):
         if 'words' in self.file['pages'][page_index].keys():
             del self.file['pages'][page_index]["words"]

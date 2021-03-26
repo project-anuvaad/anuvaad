@@ -34,10 +34,7 @@ import ViewDocumentDigitization from './ui/containers/web/DocumentDigitization/V
 import DigitzeDocumentUpload from './ui/containers/web/DocumentDigitization/DocumentDigitizationUpload/StartDigitizationUpload';
 import DigitizedDocumentEditor from './ui/containers/web/DocumentDigitization/DigitizedDocumentEditor';
 import ViewAnnotationJob from './ui/containers/web/GradeDocument/ViewAnnotationJobs';
-import ViewScheduledJobs from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewScheduledJobs';
-import ScheduleJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ScheduleJob';
-import ViewJobDetail from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewJobDetails';
-import ViewAnnotatorJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewAnnotatorJob';
+import NmtModelAssign from "./ui/containers/web/AdminPanel/NmtModelAssign";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -342,6 +339,16 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/assign-nmt-model`}
+              dontShowLoader
+              title={"Assign models"}
+              userRoles={["ADMIN"]}
+              component={NmtModelAssign}
+              authenticate={this.authenticateUser}
+              currentMenu="assign-nmt-model"
+              dontShowHeader={true}
+            />
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-annotation-job`}
               dontShowLoader
               title={"View Annotation Job"}
@@ -373,6 +380,7 @@ class AppRoutes extends React.Component {
               currentMenu="view-job-detail"
               dontShowHeader={true}
             />
+            
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
 
 

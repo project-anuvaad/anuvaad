@@ -112,6 +112,7 @@ def vision_ocr_request_worker():
                     log_info("save api started saving ocr response ", LOG_WITHOUT_CONTEXT)
                     save_page_res(gv_file_response,file_value_response)
                     push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
+                    log_info('process_ocr_gv_10_kf - message dumped :  {}'.format(file_value_response), data)
                     log_info("vision_ocr_request_worker : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
                 else:
                     log_info("vision_ocr_request_worker : error send to error handler", data)

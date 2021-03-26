@@ -282,7 +282,6 @@ class ViewDocument extends React.Component {
 
   processViewDocumentClick = (jobId, recordId, status) => {
     let role = localStorage.getItem("roles")
-    debugger
     let job = this.getJobIdDetail(jobId);
     if (status === "COMPLETED") {
       

@@ -2,7 +2,7 @@ const endpoints = {
   interactive_translate: "/interactive-translation",
   interactive_translate_v1: "/v1/interactive-translation",
   fetchlanguage: "/fetch-languages",
-  fetchmodel: "/nmt-inference/v1/fetch-models",
+  fetchmodel: "/nmt-inference/v2/fetch-models",
   forgotpassword: "/anuvaad/user-mgmt/v1/users/forgot-password",
   fetchducuments: '/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk',
   // insertSentence: "/v1/interactive-editor/add-sentence-node",
@@ -36,10 +36,16 @@ const endpoints = {
   tmx_upload: '/anuvaad-etl/translator/v1/tmx/bulk/create/xls-upload',
   add_org: '/anuvaad/user-mgmt/v1/org/upsert',
   fetch_organization: '/anuvaad/user-mgmt/v1/org/search',
+<<<<<<< HEAD
   create_glossary: '/anuvaad-etl/translator/v1/glossary/create',
   update_word: '/anuvaad/ocr-content-handler/v0/ocr/update-word',
   job_detail: "/anuvaad-annotation/sentence-annotation/v0/annotation-type/task/search",
   task_detail:"/anuvaad-annotation/sentence-annotation/v0/task/details/search",
+=======
+  create_glossary:'/anuvaad-etl/translator/v1/glossary/create',
+  update_word:'/anuvaad/ocr-content-handler/v0/ocr/update-word',
+  update_user:"/anuvaad/user-mgmt/v1/users/update",
+>>>>>>> d4334c27049199bcf02b90572d5af0767b8cbc7a
 };
 
 export default endpoints;
