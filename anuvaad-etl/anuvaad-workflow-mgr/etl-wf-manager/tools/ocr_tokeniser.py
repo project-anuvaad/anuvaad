@@ -1,12 +1,12 @@
-from configs.wfmconfig import tool_blockmerger, tool_tokeniser
+from configs.wfmconfig import tool_ocrdd10googlevision, tool_ocrdd15googlevision, tool_ocrtokeniser
 
 
-class Tokeniser:
+class OCRTokeniser:
     def __init__(self):
         pass
 
     # Returns a json of the format accepted by Tokeniser for SYNC and ASYNC
-    def get_tokeniser_input_wf(self, wf_input, is_sync):
+    def get_ocr_tokeniser_input_wf(self, wf_input, is_sync):
         if not is_sync:
             tool_input = {
                 "files": wf_input["input"]["files"]
@@ -22,16 +22,16 @@ class Tokeniser:
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],
             "stepOrder": 0,
-            "tool": tool_tokeniser,
+            "tool": tool_ocrtokeniser,
             "input": tool_input,
             "metadata": wf_input["metadata"]
         }
-        tok_input["metadata"]["module"] = tool_tokeniser
+        tok_input["metadata"]["module"] = tool_ocrtokeniser
         return tok_input
 
     # Returns a json of the format accepted by Tokeniser based on the predecessor.
-    def get_tokeniser_input(self, task_output, predecessor):
-        predecessors = [tool_blockmerger]
+    def get_ocr_tokeniser_input(self, task_output, predecessor):
+        predecessors = [tool_ocrdd10googlevision, tool_ocrdd15googlevision]
         if predecessor in predecessors:
             files = []
             op_files = task_output["output"]
@@ -51,9 +51,9 @@ class Tokeniser:
             "jobID": task_output["jobID"],
             "workflowCode": task_output["workflowCode"],
             "stepOrder": task_output["stepOrder"],
-            "tool": tool_tokeniser,
+            "tool": tool_ocrtokeniser,
             "input": tool_input,
             "metadata": task_output["metadata"]
         }
-        tok_input["metadata"]["module"] = tool_tokeniser
+        tok_input["metadata"]["module"] = tool_ocrtokeniser
         return tok_input

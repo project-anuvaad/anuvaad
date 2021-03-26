@@ -8,7 +8,7 @@ import requests
 import yaml
 from configs.wfmconfig import config_file_url, tool_blockmerger, tool_tokeniser, tool_fileconverter, tool_aligner, tool_translator
 from configs.wfmconfig import tool_worddetector, tool_layoutdetector, tool_ch, tool_nmt, tool_ocrgooglevision, tool_ocrtesseract
-from configs.wfmconfig import tool_blocksegmenter, tool_ocrdd10googlevision, tool_ocrdd15googlevision, jobid_random_str_length
+from configs.wfmconfig import tool_blocksegmenter, tool_ocrdd10googlevision, tool_ocrdd15googlevision, jobid_random_str_length, tool_ocrtokeniser
 from repository.wfmrepository import WFMRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 
@@ -26,6 +26,7 @@ from tools.ocr_dd10_gv import OCRDD10GV
 from tools.ocr_dd15_gv import OCRDD15GV
 from tools.ocr_tesseract import OCRTESS
 from tools.block_segmenter import BlockSegmenter
+from tools.ocr_tokeniser import OCRTokeniser
 
 aligner = Aligner()
 tokeniser = Tokeniser()
@@ -41,6 +42,7 @@ ocrdd10gv = OCRDD10GV()
 ocrdd15gv = OCRDD15GV()
 ocrtess = OCRTESS()
 block_segmenter = BlockSegmenter()
+ocr_tokeniser = OCRTokeniser()
 
 wfmrepo = WFMRepository()
 
@@ -163,6 +165,8 @@ class WFMUtils:
                 tool_input = ocrdd10gv.get_odd10gv_input(task_output, previous_tool)
             if current_tool == tool_ocrdd15googlevision:
                 tool_input = ocrdd15gv.get_odd15gv_input(task_output, previous_tool)
+            if current_tool == tool_ocrtokeniser:
+                tool_input = ocr_tokeniser.get_ocr_tokeniser_input(task_output, previous_tool)
             if current_tool in ocr_tools:
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 for file in tool_input["input"]["inputs"]:
@@ -192,6 +196,8 @@ class WFMUtils:
                 tool_input = ocrtess.get_octs_input_wf(wf_input)
             if current_tool == tool_blocksegmenter:
                 tool_input = block_segmenter.get_bs_input_wf(wf_input)
+            if current_tool == tool_ocrtokeniser:
+                tool_input = ocr_tokeniser.get_ocr_tokeniser_input_wf(task_output, previous_tool)
 
         return tool_input
 
