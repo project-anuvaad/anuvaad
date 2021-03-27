@@ -72,6 +72,7 @@ class TranslatorUtils:
                                         topics.append(topic)
         except Exception as e:
             log_exception("Exception while fetching topics from model: {}".format(str(e)), None, None)
+        log_info("Model Topics -- {}".format(topics), None)
         return topics
 
 
