@@ -69,10 +69,11 @@ class TranslatorUtils:
                                 if 'kafka' in conn_details.keys():
                                     topic = os.environ.get(conn_details["kafka"]["output_topic"], 'NA')
                                     if topic != "NA":
-                                        topics.append(topic)
+                                        if topic not in topics:
+                                            topics.append(topic)
         except Exception as e:
             log_exception("Exception while fetching topics from model: {}".format(str(e)), None, None)
-        log_info("Model Topics -- {}".format(topics), None)
+        log_info("ModelTopics -- {}".format(topics), None)
         return topics
 
 

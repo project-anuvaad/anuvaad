@@ -38,7 +38,7 @@ tmx_enabled = os.environ.get('TRANSLATOR_TMX_ENABLED', True)
 tmx_global_enabled = os.environ.get('TRANSLATOR_TMX_GLOBAL_ENABLED', False)
 tmx_org_enabled = os.environ.get('TRANSLATOR_TMX_ORG_ENABLED', True)
 tmx_user_enabled = os.environ.get('TRANSLATOR_TMX_USER_ENABLED', True)
-user_translation_enabled = os.environ.get('USER_TRANSLATION_ENABLED', True)
+user_translation_enabled = os.environ.get('USER_TRANSLATION_ENABLED', False)
 orgs_nmt_disable = os.environ.get('ORGS_NMT_DISABLE', 'NONMT')
 
 
