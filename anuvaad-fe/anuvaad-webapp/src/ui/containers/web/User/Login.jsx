@@ -122,7 +122,8 @@ class Login extends React.Component {
           history.push(`${process.env.PUBLIC_URL}/view-document`);
         }
         else if (roles.includes("ANNOTATOR")) {
-          history.push(`${process.env.PUBLIC_URL}/view-annotation-job`);
+          history.push(`${process.env.PUBLIC_URL}/view-document`);
+         ;
         }
         else {
           history.push(`${process.env.PUBLIC_URL}/view-document`);
