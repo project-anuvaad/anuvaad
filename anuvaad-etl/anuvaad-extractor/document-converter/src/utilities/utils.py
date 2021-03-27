@@ -7,8 +7,8 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.fonts import addMapping
 from reportlab.pdfbase import pdfmetrics
 
-pdfmetrics.registerFont(TTFont('arial-unicode-ms', '/home/jainy/Documents/service local_copies/font/arial-unicode-ms.ttf'))
-addMapping('arial-unicode-ms', 0, 0, 'arial-unicode-ms')
+# pdfmetrics.registerFont(TTFont('arial-unicode-ms', '/home/jainy/Documents/service local_copies/font/arial-unicode-ms.ttf'))
+# addMapping('arial-unicode-ms', 0, 0, 'arial-unicode-ms')
 
 class FileUtilities():
 
