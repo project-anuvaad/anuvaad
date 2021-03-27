@@ -9,7 +9,7 @@ PORT = 5001
 ENABLE_CORS = False
 
 #folders and file path
-download_folder = '/home/jainy/Documents/upload'
+download_folder = '/upload'
 
 WORKING_DIR      = os.path.dirname(os.getcwd())
 FONT_DIR         = os.path.join(WORKING_DIR, 'font')
