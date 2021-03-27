@@ -41,6 +41,7 @@ const endpoints = {
   job_detail: "/anuvaad-annotation/sentence-annotation/v0/annotation-type/task/search",
   task_detail:"/anuvaad-annotation/sentence-annotation/v0/task/details/search",
   update_user:"/anuvaad/user-mgmt/v1/users/update",
+  user_job:"/anuvaad-annotation/sentence-annotation/v0/user/task/search"
 };
 
 export default endpoints;

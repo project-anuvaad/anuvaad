@@ -7,9 +7,36 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
+import fetchUserJob from '../../../../flux/actions/apis/user/fetch_user_job';
+import APITransport from '../../../../flux/actions/apitransport/apitransport';
+import { withRouter } from "react-router-dom";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import Spinner from "../../../components/web/common/Spinner";
 
 
 class ViewAnnotationJobs extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            showLoader: false
+        }
+    }
+
+    componentDidMount() {
+        this.setState({ showLoader: true })
+        let { APITransport } = this.props
+        let apiObj = new fetchUserJob();
+        APITransport(apiObj);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.fetchuserjob.result.length !== this.props.fetchuserjob.result.length) {
+            this.setState({ showLoader: false })
+        }
+    }
+
     getMuiTheme = () => createMuiTheme({
         overrides: {
             MUIDataTableBodyCell: {
@@ -65,8 +92,8 @@ class ViewAnnotationJobs extends React.Component {
         const dummyData = [{ fID: '1', fname: 'Dummy-file.csv', jobDesc: 'This is a dummy file.' }]
         const columns = [
             {
-                name: "fID",
-                label: "fID",
+                name: "file_identifier",
+                label: "file_identifier",
                 options: {
                     filter: false,
                     sort: false,
@@ -74,7 +101,7 @@ class ViewAnnotationJobs extends React.Component {
                 }
             },
             {
-                name: "fname",
+                name: "file_name",
                 label: 'FileName',
                 options: {
                     filter: false,
@@ -82,7 +109,7 @@ class ViewAnnotationJobs extends React.Component {
                 }
             },
             {
-                name: "jobDesc",
+                name: "description",
                 label: 'Job Description',
                 options: {
                     filter: false,
@@ -90,20 +117,11 @@ class ViewAnnotationJobs extends React.Component {
                 }
             },
             {
-                name: "registered_time",
+                name: "createdOn",
                 label: translate("common.page.label.timeStamp"),
                 options: {
                     filter: true,
                     sort: true,
-                    customBodyRender: (value, tableMeta, updateValue) => {
-                        if (tableMeta.rowData) {
-                            return (
-                                <div>
-                                    {this.getDateTimeFromTimestamp(Date.now())}
-                                </div>
-                            )
-                        }
-                    }
                 }
             },
             {
@@ -118,7 +136,7 @@ class ViewAnnotationJobs extends React.Component {
                             return (
                                 <div>
                                     {this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
-                                    {this.processDownloadDocumentView()}
+                                    {/* {this.processDownloadDocumentView()} */}
                                 </div>
                             );
                         }
@@ -128,9 +146,6 @@ class ViewAnnotationJobs extends React.Component {
         ];
         const options = {
             textLabels: {
-                body: {
-                    noMatch: this.props.count > 0 && this.props.count > this.props.userinfo.data.length ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound")
-                },
                 toolbar: {
                     search: translate("graderReport.page.muiTable.search"),
                     viewColumns: translate("graderReport.page.muiTable.viewColumns")
@@ -140,7 +155,7 @@ class ViewAnnotationJobs extends React.Component {
                 },
                 options: { sortDirection: 'desc' }
             },
-            count: this.props.count,
+            count: this.props.fetchuserjob.count,
             rowsPerPageOptions: [10, 20, 50],
             filterType: "checkbox",
             download: false,
@@ -153,10 +168,13 @@ class ViewAnnotationJobs extends React.Component {
             <div style={{ height: window.innerHeight }}>
                 <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
                     <Header />
-                    {
+                    {this.state.showLoader ?
+                        <Spinner />
+                        :
                         <MuiThemeProvider theme={this.getMuiTheme()}>
-                            <MUIDataTable title={translate("common.page.title.userdetails")}
-                                columns={columns} options={options} data={dummyData} />
+                            <MUIDataTable title={"Job Details"}
+                                columns={columns} options={options}
+                                data={this.props.fetchuserjob.result} />
                         </MuiThemeProvider>
                     }
                 </div>
@@ -165,4 +183,18 @@ class ViewAnnotationJobs extends React.Component {
     }
 }
 
-export default ViewAnnotationJobs;
+const mapStateToProps = state => {
+    return {
+        fetchuserjob: state.fetchuserjob
+    }
+}
+
+const mapDispatchToProps = dispatch => bindActionCreators(
+    {
+        APITransport,
+    },
+    dispatch
+);
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ViewAnnotationJobs));
