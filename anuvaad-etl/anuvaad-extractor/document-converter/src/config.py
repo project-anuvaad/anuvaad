@@ -9,7 +9,7 @@ PORT = 5001
 ENABLE_CORS = False
 
 #folders and file path
-download_folder = '/upload'
+download_folder = 'upload'
 
 WORKING_DIR      = os.path.dirname(os.getcwd())
 FONT_DIR         = os.path.join(WORKING_DIR, 'font')
@@ -24,4 +24,4 @@ FILE_CONVERTER_ENDPOINT     = os.environ.get('FILE_CONVERTER_SERVER_URL', 'http:
 
 # OCR_CONTENT_HANDLER_ENDPOINT    = os.environ.get('OCR_CONTENT_HANDLER_SERVER_URL', 'http://172.30.0.232:5009/')
 OCR_CONTENT_HANDLER_ENDPOINT    = os.environ.get('OCR_CONTENT_HANDLER_SERVER_URL', 'https://auth.anuvaad.org')
-FILE_CONVERTER_ENDPOINT     = os.environ.get('FILE_CONVERTER_SERVER_URL', 'http://gateway_anuvaad-file-converter:5001/')
+# FILE_CONVERTER_ENDPOINT     = os.environ.get('FILE_CONVERTER_SERVER_URL', 'http://gateway_anuvaad-file-converter:5001/')
