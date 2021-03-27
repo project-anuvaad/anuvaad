@@ -87,7 +87,11 @@ class DocumentConversion(object):
                     
                     text_value = []
                     for processed_text in text['tokenized_sentences']:
-                        text_value.append(processed_text['tgt'])        
+                        if 'tgt' in processed_text:
+                            text_value.append(processed_text['tgt'])
+                        else:
+                            text_value.append(processed_text['src'])
+
                     text_values.append(' '.join(text_value))
                 for image in images:
                     text_tops.append(image['text_top'])
