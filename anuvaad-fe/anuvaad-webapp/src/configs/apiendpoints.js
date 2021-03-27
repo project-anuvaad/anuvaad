@@ -24,7 +24,7 @@ const endpoints = {
   word_dictionary: "/anuvaad/content-handler/v0/dictionary/search",
   save_content: "/anuvaad/content-handler/v0/save-content-sentence",
   translate: "/anuvaad-etl/translator/v1/text/translate",
-  instant_translate: "/nmt-inference/v3/translate-anuvaad",
+  instant_translate: "/nmt-inference/v4/translate",
   mark_inactive: "/anuvaad-etl/wf-manager/v1/workflow/jobs/mark-inactive",
   jobids: "/anuvaad/content-handler/v0/records/search",
   profile_details: '/anuvaad/user-mgmt/v1/users/auth-token-search',

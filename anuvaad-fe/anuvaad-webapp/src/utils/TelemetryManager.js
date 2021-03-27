@@ -384,7 +384,6 @@ export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, m
   values.time_spent = time_spent
   values.s_id = sentence_id
 
-  debugger
   if(rating_score) {
     values.rating_score = rating_score
   }

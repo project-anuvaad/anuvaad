@@ -6,7 +6,7 @@ import API from "../api";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class NMTSP extends API {
-    constructor(sId, nId, src, id, save, s0_src, s0_tgt, model, timeout = 200000) {
+    constructor(sId, nId, src, id, save, s0_src, s0_tgt, model,src_code,tgt_code, timeout = 200000) {
         super("POST", timeout, false);
         this.sId = sId;
         this.nId = nId;
@@ -16,6 +16,8 @@ export default class NMTSP extends API {
         this.s0_src = s0_src;
         this.s0_tgt = s0_tgt;
         this.model = model;
+        this.src_code = src_code;
+        this.tgt_code = tgt_code;
         // this.type = C.INTRACTIVE_TRANSLATE;
         this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.instant_translate}`
     }
@@ -42,19 +44,22 @@ export default class NMTSP extends API {
 
     getBody() {
         var modelArray = [];
+        var src_list = [];
 
-        modelArray.push({
-            s_id: this.sId,
-            nId: this.nId,
-            src: this.src,
-            id: parseInt(this.model, 10),
-            save: this.save,
-            s0_src: this.s0_src,
-            s0_tgt: this.s0_tgt,
+        src_list.push({src:this.src , s_id : this.sId } )
 
-        });
+      
+            return {
+                model_id: parseInt(this.model, 10),
+            source_language_code : this.src_code,
+            target_language_code : this.tgt_code,
+            src_list : src_list
+            }
+            
 
-        return modelArray;
+        
+
+        
     }
 
     getHeaders() {

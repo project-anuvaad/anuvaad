@@ -404,7 +404,7 @@ class Header extends React.Component {
                         </ListItem>
                       </div> */}
                     </>)}
-                  {role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
+                  {/* {role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
                     <Divider className={classes.divider} />
                     <ListItem
                       id="view-annotation-job"
@@ -425,7 +425,7 @@ class Header extends React.Component {
                         }
                       />
                     </ListItem>
-                  </div>)}
+                  </div>)} */}
                   <div>
                     <Divider className={classes.divider} />
 
