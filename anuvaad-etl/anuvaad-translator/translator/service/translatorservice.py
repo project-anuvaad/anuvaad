@@ -150,7 +150,7 @@ class TranslatorService:
             if translate_wf_input["metadata"]["orgID"] in nmt_disabled_orgs:
                 producer.produce(nmt_in, anu_translator_nonmt_topic, partition)
             else:
-                producer.produce(nmt_in, topic, partition)
+                producer.produce(nmt_in, topic, 1)
             log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
                      " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
                 bw_data[batch_id]["tmx_count"]), translate_wf_input)
