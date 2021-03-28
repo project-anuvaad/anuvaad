@@ -36,16 +36,12 @@ const endpoints = {
   tmx_upload: '/anuvaad-etl/translator/v1/tmx/bulk/create/xls-upload',
   add_org: '/anuvaad/user-mgmt/v1/org/upsert',
   fetch_organization: '/anuvaad/user-mgmt/v1/org/search',
-<<<<<<< HEAD
   create_glossary: '/anuvaad-etl/translator/v1/glossary/create',
   update_word: '/anuvaad/ocr-content-handler/v0/ocr/update-word',
   job_detail: "/anuvaad-annotation/sentence-annotation/v0/annotation-type/task/search",
   task_detail:"/anuvaad-annotation/sentence-annotation/v0/task/details/search",
-=======
-  create_glossary:'/anuvaad-etl/translator/v1/glossary/create',
-  update_word:'/anuvaad/ocr-content-handler/v0/ocr/update-word',
   update_user:"/anuvaad/user-mgmt/v1/users/update",
->>>>>>> d4334c27049199bcf02b90572d5af0767b8cbc7a
+  user_job:"/anuvaad-annotation/sentence-annotation/v0/user/task/search"
 };
 
 export default endpoints;

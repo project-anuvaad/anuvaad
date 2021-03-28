@@ -43,15 +43,7 @@ class ViewAnnotatorJob extends React.Component {
         let apiObj = new FetchTaskDetails(this.props.match.params.taskId)
         APITransport(apiObj);
     }
-
-    componentWillUnmount() {
-
-    }
-
-    componentDidUpdate(prevProps) {
-
-    }
-
+    
     getMuiTheme = () =>
         createMuiTheme({
             overrides: {
@@ -123,7 +115,6 @@ class ViewAnnotatorJob extends React.Component {
                 direction: "desc",
             },
         };
-        console.log(this.props.taskdetail.count, this.props.taskdetail.result)
         return (
             <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
                 <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
