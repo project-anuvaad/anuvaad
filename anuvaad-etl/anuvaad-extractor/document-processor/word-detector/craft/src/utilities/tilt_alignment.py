@@ -116,7 +116,7 @@ class Orientation:
         angle = self.get_rotaion_angle(words)
         print("Angle of tilt detected {} ".format(angle))
 
-        if abs(angle) > 0.2:
+        if abs(angle) > 0.25:
             self.image = self.rotate_bound(self.image, -angle)
 
             # lines = detect_text_per_page([self.image], \
