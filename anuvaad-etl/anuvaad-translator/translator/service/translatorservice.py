@@ -253,21 +253,21 @@ class TranslatorService:
         return tmx_phrases, res_dict
 
     # Consumer record handler
-    def process_nmt_output(self, nmt_output, partition):
+    def process_nmt_output(self, nmt_output):
         nmt_output = nmt_output["out"]
-        nmt_trans_process = Process(target=self.process_translation, args=(nmt_output, partition))
-        nmt_trans_process.start()
+        '''nmt_trans_process = Process(target=self.process_translation, args=(nmt_output,))
+        nmt_trans_process.start()'''
+        self.process_translation(nmt_output)
         return
 
     # Method to process the output received from the NMT
-    def process_translation(self, nmt_output, partition):
+    def process_translation(self, nmt_output):
         try:
             record_id = nmt_output["record_id"]
             recordid_split = str(record_id).split("|")
             job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
             record_id = str(job_id) + "|" + str(file_id)
             translate_wf_input = {"jobID": job_id, "metadata": {"module": tool_translator}}
-            log_info("Partition: {}".format(partition), translate_wf_input)
             file = self.get_content_from_db(record_id, None, translate_wf_input)
             if not file:
                 log_error("There is no data for this recordID: " + str(record_id), translate_wf_input,
