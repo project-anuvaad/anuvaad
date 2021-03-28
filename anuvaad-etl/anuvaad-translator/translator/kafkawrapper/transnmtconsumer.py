@@ -58,7 +58,7 @@ def consume_nmt():
                     data = msg.value
                     if data:
                         log_info(prefix + " | Received on Topic: " + msg.topic + " | Partition: " + str(msg.partition), data)
-                        service.process_nmt_output(data)
+                        service.process_nmt_output(data, msg.partition)
                     else:
                         break
                 except Exception as e:

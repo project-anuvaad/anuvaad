@@ -260,13 +260,14 @@ class TranslatorService:
         return
 
     # Method to process the output received from the NMT
-    def process_translation(self, nmt_output):
+    def process_translation(self, nmt_output, partition):
         try:
             record_id = nmt_output["record_id"]
             recordid_split = str(record_id).split("|")
             job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
             record_id = str(job_id) + "|" + str(file_id)
             translate_wf_input = {"jobID": job_id, "metadata": {"module": tool_translator}}
+            log_info("Partition: {}".format(partition), translate_wf_input)
             file = self.get_content_from_db(record_id, None, translate_wf_input)
             if not file:
                 log_error("There is no data for this recordID: " + str(record_id), translate_wf_input,
@@ -300,6 +301,7 @@ class TranslatorService:
                     skip_count += batch_size
                     log_error("NMT returned empty response_body!", translate_wf_input, None)
                 else:
+                    log_info(sentences_of_the_batch, translate_wf_input)
                     try:
                         self.update_sentences(record_id, sentences_of_the_batch, translate_wf_input)
                         trans_count += len(sentences_of_the_batch)
