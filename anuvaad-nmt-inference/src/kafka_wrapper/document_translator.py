@@ -68,6 +68,7 @@ class KafkaTranslate:
                 msg_count +=1
                 log_info("*******************msg received count: {}; at {} ************".format(msg_count,datetime.datetime.now()),MODULE_CONTEXT)
                 inputs = msg.value
+                partition = msg.partition
                 translation_batch = {}
                 src_list, response_body = list(), list()
 
@@ -113,7 +114,7 @@ class KafkaTranslate:
                     log_info("Empty input request or key parameter missing in Batch translation request: batch_translator",MODULE_CONTEXT)
                     book.logs_book("RecordId",record_id,"Invalid Request")       
             
-                producer.send(producer_topic, value={'out':out})
+                producer.send(producer_topic, value={'out':out},partition=partition)
                 producer.flush()
                 msg_sent += 1
                 log_info("*******************msg sent count: {}; at {} **************".format(msg_sent,datetime.datetime.now()),MODULE_CONTEXT)
