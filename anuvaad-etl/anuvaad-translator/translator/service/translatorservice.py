@@ -253,9 +253,9 @@ class TranslatorService:
         return tmx_phrases, res_dict
 
     # Consumer record handler
-    def process_nmt_output(self, nmt_output):
+    def process_nmt_output(self, nmt_output, partition):
         nmt_output = nmt_output["out"]
-        nmt_trans_process = Process(target=self.process_translation, args=(nmt_output,))
+        nmt_trans_process = Process(target=self.process_translation, args=(nmt_output, partition))
         nmt_trans_process.start()
         return
 
