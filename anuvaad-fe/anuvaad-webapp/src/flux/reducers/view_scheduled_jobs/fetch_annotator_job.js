@@ -3,9 +3,7 @@ import C from '../../actions/constants';
 const initialState = {
     count: 0,
     result: [],
-    updatedid: 0,
-    totalSentences: 0,
-    completedSentences: 0
+    updatedid: 0
 }
 
 const getTaskDetail = (payload) => {
@@ -56,9 +54,7 @@ export default (state = initialState, action) => {
                     ...state,
                     count: action.payload.data.tasks[0].annotations.length,
                     result,
-                    updatedid: 0,
-                    totalSentences: action.payload.data.tasks[0].annotations.length,
-                    completedSentences: getCompletedSentences(action.payload.data.tasks[0].annotations),
+                    updatedid: 0
                 }
 
             }
@@ -68,9 +64,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 result: updatedData,
-                updatedid: action.payload.data.annotations[0].annotationId,
-                totalSentences: updatedData.length,
-                completedSentences: getCompletedSentences(updatedData)
+                updatedid: action.payload.data.annotations[0].annotationId
             }
         }
         case C.CLEAR_ANNOTATOR_JOB:

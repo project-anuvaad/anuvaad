@@ -60,7 +60,7 @@ class ViewAnnotationJobs extends React.Component {
             <Tooltip title="View User Details" placement="right">
                 <IconButton style={{ color: '#233466', padding: '5px' }}
                     component="a"
-                    onClick={() => history.push(`${process.env.PUBLIC_URL}/grading-sentence-card/${taskId}`)}
+                    onClick={() => history.push(`${process.env.PUBLIC_URL}/grading-sentence-card/${taskId}/1/1`)}
                 >
                     <LibraryBooksIcon />
                 </IconButton>

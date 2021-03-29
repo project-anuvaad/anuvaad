@@ -4,6 +4,7 @@ import history from "../../../../web.history";
 import { withStyles } from '@material-ui/core/styles';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { withRouter } from 'react-router-dom'
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 
 import Toolbar from "@material-ui/core/Toolbar";
@@ -20,6 +21,8 @@ import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 import clearTask from '../../../../flux/actions/apis/view_scheduled_jobs/clear_task';
+import { Grid } from "@material-ui/core";
+
 
 class SentenceCardHeader extends React.Component {
     render() {
@@ -55,14 +58,12 @@ class SentenceCardHeader extends React.Component {
                     <Typography variant="h5" color="inherit" className={classes.flex}>
                         Rate Sentences
                     </Typography>
-                    <div style={{ width: '30%', margin: 'auto', display: 'grid', gridTemplateColumns: "repeat(1,50% 50%)" }}>
-                        <Typography variant="h6" color="inherit" className={classes.flex}>
-                            Total Sentences:{`${this.props.sentence_stats.totalSentences}`}
-                        </Typography>
-                        <Typography variant="h6" color="inherit" className={classes.flex}>
-                            Sentences Completed:{`${this.props.sentence_stats.completedSentences}`}
-                        </Typography>
-                    </div>
+                    <Typography variant="h6" color="inherit" style={{ marginLeft: '10vw' }} noWrap>
+                        Total Sentences:{` ${this.props.match.params.totalSentences}`}
+                    </Typography>
+                    <Typography variant="h6" color="inherit" style={{ marginLeft: '5vw' }} noWrap>
+                        Sentences Completed:{` ${this.props.match.params.completedSentences}`}
+                    </Typography>
                 </Toolbar>
             </AppBar>
         )
@@ -83,7 +84,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     dispatch
 );
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(withStyles(GlobalStyles(Theme), { withTheme: true })(SentenceCardHeader));
+)(withStyles(GlobalStyles(Theme), { withTheme: true })(SentenceCardHeader)));

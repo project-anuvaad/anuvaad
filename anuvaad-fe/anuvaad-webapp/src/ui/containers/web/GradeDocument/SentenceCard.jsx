@@ -199,27 +199,27 @@ class SentenceCard extends React.Component {
     }
 
     render() {
-        return (
-            <div style={{ height: window.innerHeight, overflow: 'auto' }}>
-                <Header />
-                <div style={{ marginTop: '3%' }}>
-                    {
-                        this.state.showLoader ?
-                            <Spinner /> :
-                            this.props.job_detail.map(job => this.renderSentenceCard(job))
-                    }
+            return (
+                <div style={{ height: window.innerHeight, overflow: 'auto' }}>
+                    <Header />
+                    <div style={{ marginTop: '3%' }}>
+                        {
+                            this.state.showLoader ?
+                                <Spinner /> :
+                                this.props.job_detail.map(job => this.renderSentenceCard(job))
+                        }
+                    </div>
+                    {this.state.open && this.processSnackBar()}
                 </div>
-                {this.state.open && this.processSnackBar()}
-            </div>
 
-        )
+            )
     }
 }
 
 const mapStateToProps = state => {
     return {
         job_detail: state.taskdetail.result,
-        updatedId: state.taskdetail.updatedid
+        updatedId: state.taskdetail.updatedid,
     }
 }
 
