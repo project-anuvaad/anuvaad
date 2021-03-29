@@ -113,8 +113,9 @@ class TranslatorService:
                 log_info("Job belongs to NONMT type!", translate_wf_input)
                 tmx_present, nonmt_user = False, True
             pool = multiprocessing.Pool(no_of_process)
-            if 'kafka' in file["model"].keys():
-                if file["model"]["kafka"]:
+            connection_details = file["model"]["connection_details"]
+            if 'kafka' in connection_details.keys():
+                if connection_details["kafka"]:
                     log_info("Translating via Kafka....", translate_wf_input)
                     func = partial(self.page_processor, record_id=record_id, file=file, tmx_present=tmx_present,
                                 nonmt_user=nonmt_user, tmx_file_cache=tmx_file_cache, translate_wf_input=translate_wf_input)
@@ -186,8 +187,8 @@ class TranslatorService:
                     nmt_in = {"data": batch}
                     self.process_api_translations(nmt_in, translate_wf_input)
                 else:
-                    api_host = os.environ.get(file["model"]["translate"]["api_host"], "NA")
-                    api_ep = os.environ.get(file["model"]["translate"]["api_endpoint"], "NA")
+                    api_host = os.environ.get(file["model"]["connection_details"]["translate"]["api_host"], "NA")
+                    api_ep = os.environ.get(file["model"]["connection_details"]["translate"]["api_endpoint"], "NA")
                     url = str(api_host) + str(api_ep)
                     response = utils.call_api(url, "POST", nmt_in, None, "userID")
                     if response["data"]:
