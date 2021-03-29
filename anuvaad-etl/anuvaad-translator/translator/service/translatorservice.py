@@ -217,6 +217,7 @@ class TranslatorService:
         tmx_enabled, utm_enabled = True, True
         tmx_dis_roles = list(tmx_disable_roles.split(","))
         utm_dis_roles = list(utm_disable_roles.split(","))
+        roles = list(roles.split(","))
         for role in roles:
             if role in tmx_dis_roles:
                 tmx_enabled = False
