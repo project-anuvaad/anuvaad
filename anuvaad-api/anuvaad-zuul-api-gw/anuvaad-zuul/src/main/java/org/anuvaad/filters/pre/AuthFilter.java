@@ -6,6 +6,7 @@ import com.netflix.zuul.context.RequestContext;
 import org.anuvaad.cache.ZuulConfigCache;
 import org.anuvaad.models.Action;
 import org.anuvaad.models.User;
+import org.anuvaad.models.UserRole;
 import org.anuvaad.utils.ExceptionUtils;
 import org.anuvaad.utils.UserUtils;
 import org.slf4j.Logger;
