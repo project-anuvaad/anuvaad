@@ -19,6 +19,8 @@ import Button from '@material-ui/core/Button';
 import Header from './SentenceCardHeader';
 import Spinner from "../../../components/web/common/Spinner";
 import GradeSentence from '../../../../flux/actions/apis/user/grade_sentence';
+import Snackbar from "../../../components/web/common/Snackbar";
+
 
 const styles = {
     card_open: {
@@ -57,11 +59,15 @@ class SentenceCard extends React.Component {
         this.state = {
             score: 0,
             annotationId: 0,
-            showLoader: false
+            showLoader: false,
+            open: false,
+            message: null,
+            variantType: null
         }
     }
 
     componentDidMount() {
+        this.setState({ showLoader: true })
         let { APITransport } = this.props
         let apiObj = new FetchJobDetail(this.props.match.params.taskId)
         APITransport(apiObj)
@@ -70,6 +76,15 @@ class SentenceCard extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.job_detail.length !== this.props.job_detail.length) {
             this.setState({ showLoader: false })
+        }
+        if (this.props.job_detail.length !== 0 && this.state.showLoader) {
+            this.setState({ showLoader: false })
+        }
+        if (this.state.open) {
+            setTimeout(() => this.setState({ open: false, message: null, variantType: null }), 3000)
+        }
+        if (prevProps.updatedId !== this.props.updatedId) {
+            this.setState({ open: true, message: 'Feedback saved successfully', variantType: 'success' })
         }
     }
 
@@ -114,7 +129,7 @@ class SentenceCard extends React.Component {
         )
     }
 
-    renderNormaModeButtons = (annotationId) => {
+    renderNormaModeButtons = () => {
         return (
             <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                 <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }}
@@ -127,20 +142,20 @@ class SentenceCard extends React.Component {
 
     saveRating = (id, score) => {
         if (id === 0 && score === 0) {
-            alert("Select a value")
+            this.setState({ open: true, message: 'Please select a value before saving', variantType: 'error' })
         } else {
             let { APITransport } = this.props
             let apiObj = new GradeSentence(id, score);
             APITransport(apiObj)
+            this.setState({ annotationId: 0, score: 0, open: true, message: 'Saving your feedback', variantType: 'info' })
         }
     }
 
     renderSentenceCard = (job) => {
-        let userRole = localStorage.getItem("roles")
         if (!job.saved) {
             return (
-                <div key={12} style={{ padding: "1%" }}>
-                    <MuiThemeProvider theme={theme} key={job.annotationId}>
+                <div key={job.annotationId} style={{ padding: "1%" }}>
+                    <MuiThemeProvider theme={theme} >
                         <Card style={styles.card_open}>
                             <CardContent style={{ display: "flex", flexDirection: "row", padding: "10px" }}>
                                 <div style={{ width: "90%" }}>
@@ -157,16 +172,31 @@ class SentenceCard extends React.Component {
                                 {this.renderRating(job.annotationId)}
                             </CardContent>
                             <CardActions style={{ padding: "10px" }}>
-                                {this.renderNormaModeButtons(job.annotationId)}
+                                {this.renderNormaModeButtons()}
                             </CardActions>
                         </Card>
                     </MuiThemeProvider>
                 </div>
             )
         }
-        return <div></div>
+        return <div key={job.annotationId}></div>
     }
 
+    handleClose = () => {
+        this.setState({ open: false, message: null, variantType: null })
+    }
+    processSnackBar = () => {
+        return (
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                open={this.state.open}
+                autoHideDuration={3000}
+                onClose={this.handleClose}
+                variant={this.state.variantType}
+                message={this.state.message}
+            />
+        );
+    }
 
     render() {
         return (
@@ -176,9 +206,10 @@ class SentenceCard extends React.Component {
                     {
                         this.state.showLoader ?
                             <Spinner /> :
-                            this.props.job_detail !== undefined && this.props.job_detail.map(job => this.renderSentenceCard(job))
+                            this.props.job_detail.map(job => this.renderSentenceCard(job))
                     }
                 </div>
+                {this.state.open && this.processSnackBar()}
             </div>
 
         )
@@ -187,7 +218,8 @@ class SentenceCard extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        job_detail: state.taskdetail.result
+        job_detail: state.taskdetail.result,
+        updatedId: state.taskdetail.updatedid
     }
 }
 

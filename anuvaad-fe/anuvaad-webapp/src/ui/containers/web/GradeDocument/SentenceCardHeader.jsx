@@ -53,7 +53,7 @@ class SentenceCardHeader extends React.Component {
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
 
                     <Typography variant="h5" color="inherit" className={classes.flex}>
-                        Give Rating
+                        Rate Sentences
                     </Typography>
                 </Toolbar>
             </AppBar>
