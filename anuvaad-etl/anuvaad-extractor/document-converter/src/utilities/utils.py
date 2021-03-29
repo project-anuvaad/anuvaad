@@ -6,9 +6,7 @@ import uuid
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.fonts import addMapping
 from reportlab.pdfbase import pdfmetrics
-
-# pdfmetrics.registerFont(TTFont('arial-unicode-ms', '/home/jainy/Documents/service local_copies/font/arial-unicode-ms.ttf'))
-# addMapping('arial-unicode-ms', 0, 0, 'arial-unicode-ms')
+from zipfile import ZipFile
 
 class FileUtilities():
 
@@ -24,6 +22,14 @@ class FileUtilities():
     def output_doc_path(self, record_id, download_folder):
         output_path = os.path.join(download_folder ,record_id + '.docx')
         return output_path
+
+    def zipfile_creation(filepath):
+        zip_file = filepath.split('.')[0] + '.zip'
+        with ZipFile(zip_file, 'w') as myzip:
+            myzip.write(filepath)
+            myzip.close()
+        os.remove(filepath)
+        return zip_file.split('/')[-1]
 
         
 class DocumentUtilities():
@@ -52,7 +58,7 @@ class DocumentUtilities():
         return url_modified
 
     def generate_url(self, url_pre, record_id, start_page, end_page):
-        url_modified = url_pre + '/anuvaad/ocr-content-handler/v0/fetch-document?record_id={}&start_page={}&end_page={}'.format(record_id, start_page, end_page)
+        url_modified = url_pre + '/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID={}&start_page={}&end_page={}'.format(record_id, start_page, end_page)
         return url_modified
 
     def vertices_to_boundingbox(self,vertices):
@@ -62,7 +68,6 @@ class DocumentUtilities():
         return (left, top, width, height)
 
     def get_page_dimensions(self,page):
-        print(page.keys(),"*********")
         _, _, w, h = self.vertices_to_boundingbox(page['page_info']['page_boundingBox']['vertices'])
         return w, h
 
@@ -75,5 +80,7 @@ class DocumentUtilities():
         txtobj.textLine(text=text)
         page_canvas.drawText(txtobj)
 
+    def load_font(self,font_name='arial-unicode-ms', font_dir=None):
+        pdfmetrics.registerFont(TTFont(font_name, os.path.join(font_dir, font_name + '.ttf')))
 
-        
+   

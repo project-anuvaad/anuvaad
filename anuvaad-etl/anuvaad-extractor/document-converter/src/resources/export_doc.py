@@ -11,8 +11,6 @@ from common.errors import ServiceError
 from common.errors import InternalServerError
 
 file_ops = FileUtilities()
-
-output_filepath  = config.DATA_OUTPUT_DIR
 exportService=DocumentExporterService()
 
 class DocumentExporterResource(Resource):
@@ -21,24 +19,25 @@ class DocumentExporterResource(Resource):
         body = request.get_json()
         log_info("request received", MODULE_CONTEXT)
         try:
+            if 'record_id' not in body or not body['record_id'] or 'user_id' not in body or not body['user_id'] or 'file_type' not in body or not body['file_type']:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
+                return res.getresjson(), 400
             record_id = body['record_id']
             user_id = body['user_id']
             file_type = body['file_type']
-            if 'record_id' not in body or record_id is None or 'user_id' not in body or user_id is None or \
-                'file_type' not in body or file_type is None:
-                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
-                return res.getresjson(), 400
-            
-            formated_document = exportService.export_document(record_id, output_filepath, file_type)
+
+            log_info("DocumentExporterResource request received | {}".format(body),MODULE_CONTEXT)
+
+            formated_document = exportService.export_document(record_id, user_id, file_type)
             
             log_info("document type %s saved successfully"%file_type, MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS.value, formated_document)
             return res.getres()
         except ServiceError as e:
-            log_exception("Error occured in at resource level due to service operation", MODULE_CONTEXT, e)
+            log_exception("Error occured at resource level due to service operation", MODULE_CONTEXT, e)
             res = CustomResponse(Status.OPERATION_NOT_PERMITTED.value,None)
             return res.getresjson(), 400
         except Exception as e:
-            log_exception("Error occured at resource level due to wrong request format", MODULE_CONTEXT, e)
+            log_exception("Error occured at resource level due to {}".format(str(e)), MODULE_CONTEXT, e)
             res = CustomResponse(Status.OPERATION_NOT_PERMITTED.value,None)
             return res.getresjson(), 400
