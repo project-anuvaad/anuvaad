@@ -511,6 +511,14 @@
             "active":true,
             "whiteList":false,
             "description":"API to grade annotations"
+        },
+        {
+            "id":"e6132e87-0616-4efe-9c68-6b4a37b16d18",
+            "uri":"/anuvaad-nmt-adaper/gnmt/v0/translate",
+            "module":"ANUVAAD-NMT-ADAPTER",
+            "active":true,
+            "whiteList":false,
+            "description":"API for GNMT adapter"
         }
     ]
 }
