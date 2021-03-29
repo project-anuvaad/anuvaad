@@ -100,7 +100,7 @@ public class AuthFilter extends ZuulFilter {
                 ctx.addZuulRequestHeader(ZUUL_ORG_ID_HEADER_KEY, user.getOrgID());
                 ctx.addZuulRequestHeader(ZUUL_SESSION_ID_HEADER_KEY, authToken); // A session is User activity per token.
                 List<String> rolesCodes = new ArrayList();
-                for(role: user.getRoles())
+                for(UserRole role: user.getRoles())
                     rolesCodes.add(role.getRoleCode());
                 ctx.addZuulRequestHeader(ZUUL_ROLES_HEADER_KEY, rolesCodes);
                 setShouldDoAuth(true);
