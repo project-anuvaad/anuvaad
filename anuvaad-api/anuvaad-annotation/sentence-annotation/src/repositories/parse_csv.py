@@ -13,8 +13,6 @@ class ParseCSV (object):
 
         with open(filename) as csv_file:
             reader           = csv.reader(csv_file, delimiter=',')
-            source_sentence  = {}
-            target_sentence  = {}
             rows             = []
             
             for row in reader:
@@ -23,7 +21,9 @@ class ParseCSV (object):
             if skip_header == True:
                 rows = rows[1:]
             
-            for row in rows:    
+            for row in rows:
+                source_sentence  = {}
+                target_sentence  = {}
                 source_sentence['language'] = source_language
                 source_sentence['id']       = str(uuid.uuid4())
                 source_sentence['text']     = row[0]
