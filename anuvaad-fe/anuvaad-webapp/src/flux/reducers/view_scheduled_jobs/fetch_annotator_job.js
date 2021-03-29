@@ -3,7 +3,9 @@ import C from '../../actions/constants';
 const initialState = {
     count: 0,
     result: [],
-    updatedid: 0
+    updatedid: 0,
+    totalSentences: 0,
+    completedSentences: 0
 }
 
 const getTaskDetail = (payload) => {
@@ -35,14 +37,28 @@ const getUpdatedAnnotations = (ogData, updatedData) => {
     return result
 }
 
+const getCompletedSentences = (data) => {
+    let count = 0;
+    data.map(val => {
+        if (val.saved) {
+            count++;
+        }
+    })
+    return count;
+}
+
 export default (state = initialState, action) => {
     switch (action.type) {
         case C.FETCH_ANNOTATOR_JOB:
             {
+                let result = getTaskDetail(action.payload)
                 return {
+                    ...state,
                     count: action.payload.data.tasks[0].annotations.length,
-                    result: getTaskDetail(action.payload),
-                    updatedid: 0
+                    result,
+                    updatedid: 0,
+                    totalSentences: action.payload.data.tasks[0].annotations.length,
+                    completedSentences: getCompletedSentences(action.payload.data.tasks[0].annotations),
                 }
 
             }
@@ -52,7 +68,9 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 result: updatedData,
-                updatedid: action.payload.data.annotations[0].annotationId
+                updatedid: action.payload.data.annotations[0].annotationId,
+                totalSentences: updatedData.length,
+                completedSentences: getCompletedSentences(updatedData)
             }
         }
         case C.CLEAR_ANNOTATOR_JOB:

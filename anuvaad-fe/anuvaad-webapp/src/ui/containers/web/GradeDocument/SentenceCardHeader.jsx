@@ -55,6 +55,14 @@ class SentenceCardHeader extends React.Component {
                     <Typography variant="h5" color="inherit" className={classes.flex}>
                         Rate Sentences
                     </Typography>
+                    <div style={{ width: '30%', margin: 'auto', display: 'grid', gridTemplateColumns: "repeat(1,50% 50%)" }}>
+                        <Typography variant="h6" color="inherit" className={classes.flex}>
+                            Total Sentences:{`${this.props.sentence_stats.totalSentences}`}
+                        </Typography>
+                        <Typography variant="h6" color="inherit" className={classes.flex}>
+                            Sentences Completed:{`${this.props.sentence_stats.completedSentences}`}
+                        </Typography>
+                    </div>
                 </Toolbar>
             </AppBar>
         )
@@ -62,7 +70,8 @@ class SentenceCardHeader extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    open_sidebar: state.open_sidebar.open
+    open_sidebar: state.open_sidebar.open,
+    sentence_stats: state.taskdetail
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
