@@ -9,7 +9,6 @@ class ParseXLS (object):
 
     def get_parallel_sentences(filename, source_language, target_language, skip_header=True):
         parallel_sentences = []
-        print('XLS')
         try:
             wb               = xlrd.open_workbook(filename)
             sheet            = wb.sheet_by_index(0)

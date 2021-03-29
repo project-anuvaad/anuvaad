@@ -88,4 +88,8 @@ class ParallelSentenceRepo(object):
         return {'tasks': results}
 
     def save_annotation(self, annotation):
-        return self.parallelSentenceModel.save_annotation(annotation)
+        if self.parallelSentenceModel.save_annotation(annotation) == True:
+            updated_annotation = self.parallelSentenceModel.search_annotation(annotation['annotationId'])
+            if len(updated_annotation) > 0:
+                return updated_annotation[0]
+        return None
