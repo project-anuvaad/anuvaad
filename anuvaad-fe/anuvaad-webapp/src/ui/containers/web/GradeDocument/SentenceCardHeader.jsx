@@ -21,7 +21,6 @@ import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 import clearTask from '../../../../flux/actions/apis/view_scheduled_jobs/clear_task';
-import { Grid } from "@material-ui/core";
 
 
 class SentenceCardHeader extends React.Component {
