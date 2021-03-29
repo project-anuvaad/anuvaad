@@ -293,7 +293,7 @@ class PRIMA(object):
 
 			while flag==True:
 				layouts, flag = self.merge_remove_overlap(layouts,height,width)
-			if 'TABLE' in tag :
+			if ('TABLE' in tag) or ("TableRegion" in tag) :
 				layouts = cell_layout(layouts,image)
 
 			return layouts

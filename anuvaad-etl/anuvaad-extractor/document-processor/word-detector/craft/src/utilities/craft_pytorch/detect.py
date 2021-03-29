@@ -70,6 +70,7 @@ def load_model():
         net.load_state_dict(copyStateDict(torch.load(config.CRAFT_MODEL_PATH, map_location='cpu')))
 
     if args.cuda:
+        print('Model is using cuda')
         net = net.cuda()
         net = torch.nn.DataParallel(net)
         cudnn.benchmark = False
