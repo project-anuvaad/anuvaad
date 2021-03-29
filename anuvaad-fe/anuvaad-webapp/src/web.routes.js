@@ -29,10 +29,16 @@ import UserReport from './ui/containers/web/AdminPanel/UserReport';
 import DocumentStats from './ui/containers/web/AdminPanel/DocumentStats';
 import OrganizationList from './ui/containers/web/AdminPanel/OrganizatonList';
 import AddOrganization from "./ui/containers/web/AdminPanel/AddOrganization";
-import GradeDocument from './ui/containers/web/GradeDocument/GradeDocument';
+import GradeDocument from './ui/containers/web/GradeDocument/SentenceCard';
 import ViewDocumentDigitization from './ui/containers/web/DocumentDigitization/ViewDocumentDigitization';
 import DigitzeDocumentUpload from './ui/containers/web/DocumentDigitization/DocumentDigitizationUpload/StartDigitizationUpload';
 import DigitizedDocumentEditor from './ui/containers/web/DocumentDigitization/DigitizedDocumentEditor';
+import ViewAnnotationJob from './ui/containers/web/GradeDocument/ViewAnnotationJobs';
+import ViewScheduledJobs from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewScheduledJobs';
+import ScheduleJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ScheduleJob';
+import ViewJobDetail from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewJobDetails';
+import ViewAnnotatorJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewAnnotatorJob';
+import NmtModelAssign from "./ui/containers/web/AdminPanel/NmtModelAssign";
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -54,8 +60,8 @@ const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, 
           {...props}
         />
       ) : (
-          <Redirect to={`${process.env.PUBLIC_URL}/logout`} />
-        )
+        <Redirect to={`${process.env.PUBLIC_URL}/logout`} />
+      )
     }
   />
 );
@@ -136,7 +142,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename`}
-              userRoles={["TRANSLATOR","INTERNAL-TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={DocumentEditorV1}
               title="Translate file"
               authenticate={this.authenticateUser}
@@ -158,7 +164,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-upload/:type`}
-              userRoles={["TRANSLATOR", "INTERNAL-TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={FileUpload}
               title="Start Translate"
               authenticate={this.authenticateUser}
@@ -212,17 +218,17 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/view-document`}
               dontShowLoader
               title={"Document Translate"}
-              userRoles={["TRANSLATOR", "INTERNAL-TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={ViewDocument}
               authenticate={this.authenticateUser}
               currentMenu="view-document"
               dontShowHeader={true}
             />
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/grade-document/:jobid/:inputfileid/:modelId/:filename`}
+              path={`${process.env.PUBLIC_URL}/grading-sentence-card/:taskId`}
               dontShowLoader
               title={"Grade Document"}
-              userRoles={["INTERNAL-TRANSLATOR"]}
+              userRoles={["ANNOTATOR"]}
               component={GradeDocument}
               authenticate={this.authenticateUser}
               currentMenu="grade-document"
@@ -314,6 +320,70 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
 
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/view-scheduled-jobs`}
+              dontShowLoader
+              title={"View Job"}
+              userRoles={["ADMIN"]}
+              component={ViewScheduledJobs}
+              authenticate={this.authenticateUser}
+              currentMenu="view-scheduled-jobs"
+              dontShowHeader={true}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/schedule-annotation-job`}
+              dontShowLoader
+              title={"Create Annotation Job"}
+              userRoles={["ADMIN"]}
+              component={ScheduleJob}
+              authenticate={this.authenticateUser}
+              currentMenu="schedule-annotation-job"
+              dontShowHeader={true}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/assign-nmt-model`}
+              dontShowLoader
+              title={"Assign models"}
+              userRoles={["ADMIN"]}
+              component={NmtModelAssign}
+              authenticate={this.authenticateUser}
+              currentMenu="assign-nmt-model"
+              dontShowHeader={true}
+            />
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/view-annotation-job`}
+              dontShowLoader
+              title={"View Annotation Job"}
+              userRoles={["ANNOTATOR"]}
+              component={ViewAnnotationJob}
+              authenticate={this.authenticateUser}
+              currentMenu="view-annotation-job"
+              dontShowHeader={true}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/view-job-detail/:jobID`}
+              dontShowLoader
+              title={"View Annotation Job"}
+              userRoles={["ADMIN"]}
+              component={ViewJobDetail}
+              authenticate={this.authenticateUser}
+              currentMenu="view-job-detail"
+              dontShowHeader={true}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/view-annotator-job/:taskId`}
+              dontShowLoader
+              title={"View Annotator Job"}
+              userRoles={["ADMIN"]}
+              component={ViewAnnotatorJob}
+              authenticate={this.authenticateUser}
+              currentMenu="view-job-detail"
+              dontShowHeader={true}
+            />
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
 
 

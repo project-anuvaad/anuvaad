@@ -110,9 +110,11 @@ def get_document_bounds(response,page_dict,page_regions,font_info):
             block_region["boundingBox"]["vertices"] = block_vertices
             page_dict["regions"].append(block_region)
 
+
             for paragraph in block.paragraphs:
                 line_coord, line_text = extract_line(paragraph)
                 page_dict = add_line(page_dict, line_coord, line_text)
+                #print(paragraph)
                 for word in paragraph.words:
                     word_region = {"identifier": str(uuid.uuid4()), "boundingBox":{"vertices":[]}}
                     word_vertices = []
@@ -125,6 +127,7 @@ def get_document_bounds(response,page_dict,page_regions,font_info):
                     word_text = ''.join([
                         symbol.text for symbol in word.symbols
                     ])
+                    #print(word_text)
                     word_region["text"] = word_text
                     word_region["conf"] = word.confidence
                     if len(word.symbols[0].property.detected_languages)!=0:

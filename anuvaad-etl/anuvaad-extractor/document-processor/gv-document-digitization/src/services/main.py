@@ -13,7 +13,8 @@ def process_input(app_context,base_dir) :
     try:
         files       = get_files(app_context.application_context)
         output_files= []
-        
+        langs = []
+
         for index,file in enumerate(files):
             file_output    = {"status":{}}
             file_properties = File(file)
@@ -24,25 +25,27 @@ def process_input(app_context,base_dir) :
             
             file_output = text_extraction(file_properties,page_paths,file)
             output_files.append(file_output)
+            langs.append(file_properties.get_language())
         app_context.application_context["outputs"] =output_files
         log_info("successfully completed google vision document digitization", None)
 
     except Exception as e:
         log_exception("Error occured during google vision document digitization",  app_context.application_context, e)
-        return None
+        return None, None
 
-    return app_context.application_context
+    return app_context.application_context, langs
 
 def GoogleVisionOCR(app_context,base_dir = config.BASE_DIR):
     
     log_debug('google vision document digitization process starting {}'.format(app_context.application_context), app_context.application_context)
     try:
-        response   = process_input(app_context,base_dir)
+        response,langs   = process_input(app_context,base_dir)
         if response!=None:
             return {
                     'code': 200,
                     'message': 'request completed',
-                    'rsp': response
+                    'rsp': response,
+                    'langs':langs
                     }
         else:
             return {

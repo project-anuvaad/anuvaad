@@ -104,9 +104,14 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
     if regions !=None and len(regions) > 0:
         lines_intersected =[]
         for line_idx, line in enumerate(lines):
+
+            if child_class == 'LINE':
+                if 'text' in line.keys():
+                    del lines[line_idx]['text']
             if add_font:
                 height = abs(line['boundingBox']['vertices'][0]['y'] - line['boundingBox']['vertices'][2]['y'])
                 lines[line_idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
+
             if child_class is not None:
                 lines[line_idx]['class'] = child_class
             poly = get_polygon(line['boundingBox'])
@@ -150,6 +155,11 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
         for line_index, line in enumerate(lines):
             if line_index not in lines_intersected:
                 line[child_key] = [ copy.deepcopy(line)]
+                if child_class is not None:
+                    if child_class is 'LINE':
+                        line['class'] = 'PARA'
+                    if child_class is 'WORD':
+                        line['class'] ='LINE'
                 regions.append(line)
 
     return regions
@@ -182,6 +192,16 @@ def remvoe_regions(regions, lines):
     return not_intersecting
 
 
+
+def filterd_regions(regions):
+    f_regions = []
+    if regions != None :
+        for region in regions :
+            height = abs(region['boundingBox']['vertices'][0]['y'] - region['boundingBox']['vertices'][2]['y'])
+            if height > 0 :
+                f_regions.append(region)
+
+    return f_regions
 
 
 
