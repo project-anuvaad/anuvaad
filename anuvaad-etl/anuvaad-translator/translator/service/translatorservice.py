@@ -113,10 +113,16 @@ class TranslatorService:
                 log_info("Job belongs to NONMT type!", translate_wf_input)
                 tmx_present, nonmt_user = False, True
             pool = multiprocessing.Pool(no_of_process)
-            if 'kafka' in file["model"].keys() or file["model"]["kafka"]:
-                log_info("Translating via Kafka....", translate_wf_input)
-                func = partial(self.page_processor, record_id=record_id, file=file, tmx_present=tmx_present,
-                            nonmt_user=nonmt_user, tmx_file_cache=tmx_file_cache, translate_wf_input=translate_wf_input)
+            if 'kafka' in file["model"].keys():
+                if file["model"]["kafka"]:
+                    log_info("Translating via Kafka....", translate_wf_input)
+                    func = partial(self.page_processor, record_id=record_id, file=file, tmx_present=tmx_present,
+                                nonmt_user=nonmt_user, tmx_file_cache=tmx_file_cache, translate_wf_input=translate_wf_input)
+                else:
+                    log_info("Translating via third-party API....", translate_wf_input)
+                    func = partial(self.page_processor_via_api, record_id=record_id, file=file, tmx_present=tmx_present,
+                                   nonmt_user=nonmt_user, tmx_file_cache=tmx_file_cache,
+                                   translate_wf_input=translate_wf_input)
             else:
                 log_info("Translating via third-party API....", translate_wf_input)
                 func = partial(self.page_processor_via_api, record_id=record_id, file=file, tmx_present=tmx_present,
@@ -349,9 +355,8 @@ class TranslatorService:
                     skip_count += batch_size
                 sentences_of_the_batch = []
                 for response in nmt_output["data"]:
-                    node_id = response["n_id"]
-                    if not node_id:
-                        log_error("Node ID missing!", translate_wf_input, None)
+                    if "n_id" not in response.keys():
+                        log_error("Node ID missing! s_id: {}, b_id: {}".format(response["s_id"], batch_id, translate_wf_input, None))
                         skip_count += 1
                         continue
                     batch_id = response["batch_id"]
@@ -378,7 +383,7 @@ class TranslatorService:
     def process_api_translations(self, api_response, translate_wf_input):
         api_res_translations, record_id = [], None
         for translation in api_response["data"]:
-            if 'tgt' not in translation:
+            if 'tgt' not in translation.keys():
                 log_error("TGT missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
             translation["n_id"] = translation["s_id"].split("xxx")[0]
             translation["batch_id"] = translation["s_id"].split("xxx")[1]
