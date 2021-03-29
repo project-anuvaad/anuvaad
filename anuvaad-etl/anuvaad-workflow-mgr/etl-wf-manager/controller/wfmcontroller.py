@@ -132,6 +132,7 @@ def add_headers(data, api_request):
     headers = {
         "userID": api_request.headers["x-user-id"],
         "orgID": api_request.headers["x-org-id"],
+        "roles": api_request.headers["x-roles"],
         "requestID": api_request.headers["x-request-id"],
         "sessionID": api_request.headers["x-session-id"],
         "receivedAt": eval(str(time.time()).replace('.', '')[0:13]),
