@@ -17,6 +17,7 @@ public class RequestContextConstants {
     public static final String ZUUL_REQUEST_ID_HEADER_KEY = "x-request-id";
     public static final String ZUUL_SESSION_ID_HEADER_KEY = "x-session-id";
     public static final String ZUUL_ORG_ID_HEADER_KEY = "x-org-id";
+    public static final String ZUUL_ROLES_HEADER_KEY = "x-roles";
 
 
 }
