@@ -6,24 +6,22 @@ const initialState = {
 }
 
 const getTaskDetail = (payload) => {
-    let result = payload.data.tasks.map(task => {
-        let source, target, score, saved
+    let result = []
+    payload.data.tasks.forEach(task => {
         task.annotations.forEach(annotation => {
             annotation.forEach(data => {
-                source = data.source.text
-                target = data.target.text
-                score = data.score ? data.score : 0
-                saved = data.saved ? data.saved : false
+                result.push({
+                    annotationId: data.annotationId,
+                    source: data.source.text,
+                    target: data.target.text,
+                    score: data.score ? data.score : 0,
+                    saved: data.saved ? data.saved : false
+                })
+
             })
         })
-        return {
-            source,
-            target,
-            score,
-            saved
-        }
     })
-    return  result
+    return result
 }
 
 export default (state = initialState, action) => {
@@ -35,6 +33,15 @@ export default (state = initialState, action) => {
                     result: getTaskDetail(action.payload)
                 }
 
+            }
+        case C.UPDATE_ANNOTATOR_JOB:{
+            
+        }
+        case C.CLEAR_ANNOTATOR_JOB:
+            {
+                return {
+                    ...initialState
+                }
             }
         default:
             return {

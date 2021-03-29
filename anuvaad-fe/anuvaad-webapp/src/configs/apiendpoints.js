@@ -39,9 +39,10 @@ const endpoints = {
   create_glossary: '/anuvaad-etl/translator/v1/glossary/create',
   update_word: '/anuvaad/ocr-content-handler/v0/ocr/update-word',
   job_detail: "/anuvaad-annotation/sentence-annotation/v0/annotation-type/task/search",
-  task_detail:"/anuvaad-annotation/sentence-annotation/v0/task/details/search",
-  update_user:"/anuvaad/user-mgmt/v1/users/update",
-  user_job:"/anuvaad-annotation/sentence-annotation/v0/user/task/search"
+  task_detail: "/anuvaad-annotation/sentence-annotation/v0/task/details/search",
+  update_user: "/anuvaad/user-mgmt/v1/users/update",
+  user_job: "/anuvaad-annotation/sentence-annotation/v0/user/task/search",
+  grade_sentence: "/anuvaad-annotation/sentence-annotation/v0/task/annotation/grading"
 };
 
 export default endpoints;

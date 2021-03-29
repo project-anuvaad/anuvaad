@@ -27,7 +27,7 @@ export default (state = initialState, action) => {
             {
                 return {
                     count: action.payload.data.tasks.length,
-                    result: getUserJob(action.payload.data)
+                    result: getUserJob(action.payload.data),
                 }
             }
         default:
