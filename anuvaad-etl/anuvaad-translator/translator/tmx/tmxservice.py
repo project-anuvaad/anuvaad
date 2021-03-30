@@ -7,12 +7,7 @@ import xlrd
 from anuvaad_auditor.loghandler import log_exception, log_info
 import requests
 from .tmxrepo import TMXRepository
-from configs.translatorconfig import nmt_labse_align_url
-from configs.translatorconfig import download_folder
-from configs.translatorconfig import tmx_global_enabled
-from configs.translatorconfig import tmx_org_enabled
-from configs.translatorconfig import tmx_user_enabled
-from configs.translatorconfig import tmx_word_length
+from configs.translatorconfig import nmt_labse_align_url, download_folder, tmx_global_enabled, tmx_org_enabled, tmx_user_enabled, tmx_word_length
 from anuvaad_auditor.errorhandler import post_error
 
 repo = TMXRepository()

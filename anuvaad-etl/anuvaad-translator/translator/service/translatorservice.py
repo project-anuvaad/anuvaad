@@ -384,29 +384,32 @@ class TranslatorService:
 
     # Processes the translations received via the API call
     def process_api_translations(self, api_response, tmx_phrase_dict, translate_wf_input):
-        api_res_translations, record_id = [], None
+        api_res_translations, record_id, batch_id = [], None, None
         for translation in api_response["data"]:
+            translation_obj = translation
             s_id_initial = translation["s_id"]
             if 'tgt' not in translation.keys():
                 log_error("TGT missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
-            translation["n_id"] = translation["s_id"].split("xxx")[0]
-            translation["batch_id"] = translation["s_id"].split("xxx")[1]
+            translation_obj["n_id"] = translation["s_id"].split("xxx")[0]
+            translation_obj["batch_id"] = translation["s_id"].split("xxx")[1]
             s_id = translation["s_id"].split("xxx")[2]
-            translation["s_id"] = s_id
+            translation_obj["s_id"] = s_id
             if 'tmx_phrases' not in translation.keys():
                 if tmx_phrase_dict:
-                    translation["tmx_phrases"] = tmx_phrase_dict[s_id_initial]
+                    translation_obj["tmx_phrases"] = tmx_phrase_dict[s_id_initial]
                 else:
-                    translation["tmx_phrases"] = []
+                    translation_obj["tmx_phrases"] = []
             record_id = translation["n_id"].split("|")[0] + "|" + translation["n_id"].split("|")[1]
-            api_res_translations.append(translation)
+            batch_id = translation_obj["batch_id"]
+            log_info(translation_obj, translate_wf_input)
+            api_res_translations.append(translation_obj)
         file = self.get_content_from_db(record_id, None, None, translate_wf_input)
         if not file:
             log_error("There is no data for this recordID: " + str(record_id), translate_wf_input, None)
             post_error_wf("TRANSLATION_FAILED",
                           "There is no data for this recordID: " + str(record_id), translate_wf_input, None)
             return
-        file, skip_count, trans_count, batch_id = file[0], 0, 0, None
+        file, skip_count, trans_count = file[0], 0, 0
         try:
             self.update_sentences(record_id, api_res_translations, translate_wf_input)
             trans_count += len(api_res_translations)
