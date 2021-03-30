@@ -9,13 +9,13 @@ import redis
 client = MongoClient(MONGO_CONNECTION_URL)
 
 def get_db():
-    log_info("Establishing connection with mongo", AppContext.getContext())
+#     log_info("Establishing connection with mongo", AppContext.getContext())
     return client[MONGO_DB_SCHEMA]
 
 
 def get_redis():
     if 'redisdb' not in g:
-        log_info("Establishing connection with redis store", AppContext.getContext())
+#         log_info("Establishing connection with redis store", AppContext.getContext())
         g.redisdb = redis.Redis(host=REDIS_SERVER_HOST, port=REDIS_SERVER_PORT, db=4)
     return g.redisdb
 
