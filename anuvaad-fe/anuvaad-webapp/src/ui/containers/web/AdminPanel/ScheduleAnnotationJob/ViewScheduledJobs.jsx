@@ -543,7 +543,7 @@ class ViewScheduledJobs extends React.Component {
                                         </IconButton>
                                     </Tooltip>
 
-                                    <Tooltip title="Download input file" placement="right">
+                                    {/* <Tooltip title="Download input file" placement="right">
                                         <IconButton
                                             style={{ color: "#233466", padding: "5px" }}
                                             component="a"
@@ -556,7 +556,7 @@ class ViewScheduledJobs extends React.Component {
                                         >
                                             <CloudDownloadIcon />
                                         </IconButton>
-                                    </Tooltip>
+                                    </Tooltip> */}
                                 </div>
                             );
                         }
