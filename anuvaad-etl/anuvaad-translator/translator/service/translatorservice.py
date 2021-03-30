@@ -96,7 +96,7 @@ class TranslatorService:
         try:
             log_info("File translation started... " + str(translate_wf_input["jobID"]), translate_wf_input)
             record_id = str(translate_wf_input["jobID"]) + "|" + str(file["path"])
-            content_from_db = self.get_content_from_db(record_id, None, translate_wf_input)
+            content_from_db = self.get_content_from_db(record_id, None, None, translate_wf_input)
             if not content_from_db:
                 log_exception("File content from DB couldn't be fetched, jobID: " + str(translate_wf_input["jobID"]),
                           translate_wf_input, None)
@@ -199,6 +199,9 @@ class TranslatorService:
                     url = str(api_host) + str(api_ep)
                     response = utils.call_api(url, "POST", nmt_in, None, "userID")
                     if response["data"]:
+                        log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
+                                 " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
+                            bw_data[batch_id]["tmx_count"]), translate_wf_input)
                         self.process_api_translations(response, tmx_phrase_dict, translate_wf_input)
                     else:
                         log_error("Empty response from API -- {}".format(url), translate_wf_input, None)
@@ -208,9 +211,6 @@ class TranslatorService:
                 log_exception("Exception while while translating via API -- {}".format(e), translate_wf_input, e)
                 post_error_wf("API_ERROR", "API failed to respond, model -- {}".format(file["model"]), translate_wf_input, e)
                 break
-            log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
-                     " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
-                bw_data[batch_id]["tmx_count"]), translate_wf_input)
             sentences_count += len(batch)
         return batches_count, sentences_count, tmx_count
 
@@ -341,7 +341,7 @@ class TranslatorService:
             job_id, file_id, batch_size = recordid_split[0], recordid_split[1], eval(recordid_split[2])
             record_id = str(job_id) + "|" + str(file_id)
             translate_wf_input = {"jobID": job_id, "metadata": {"module": tool_translator}}
-            file = self.get_content_from_db(record_id, None, translate_wf_input)
+            file = self.get_content_from_db(record_id, None, None, translate_wf_input)
             if not file:
                 log_error("There is no data for this recordID: " + str(record_id), translate_wf_input,
                           nmt_output["status"])
@@ -401,9 +401,9 @@ class TranslatorService:
                     translation["tmx_phrases"] = tmx_phrase_dict[s_id_initial]
                 else:
                     translation["tmx_phrases"] = []
-            record_id = translation["n_id"].split("|")[0]
+            record_id = translation["n_id"].split("|")[0] + "|" + translation["n_id"].split("|")[1]
             api_res_translations.append(translation)
-        file = self.get_content_from_db(record_id, None, translate_wf_input)
+        file = self.get_content_from_db(record_id, None, None, translate_wf_input)
         if not file:
             log_error("There is no data for this recordID: " + str(record_id), translate_wf_input, None)
             post_error_wf("TRANSLATION_FAILED",
@@ -419,9 +419,13 @@ class TranslatorService:
         self.update_translation_status(batch_id, trans_count, skip_count, translate_wf_input)
 
     # Method to search data from db
-    def get_content_from_db(self, record_id, page_no, translate_wf_input):
+    def get_content_from_db(self, record_id, job_id, page_no, translate_wf_input):
         try:
-            query = {"recordID": record_id}
+            query = {}
+            if record_id:
+                query["recordID"] = record_id
+            if record_id:
+                query["jobID"] = job_id
             if page_no:
                 query['data.page_no'] = page_no
             exclude = {'_id': False}
@@ -495,7 +499,7 @@ class TranslatorService:
         record_id = str(job_id) + "|" + str(file_id)
         translate_wf_input = {"jobID": job_id, "metadata": {"module": tool_translator}}
         try:
-            file = self.get_content_from_db(record_id, None, translate_wf_input)[0]
+            file = self.get_content_from_db(record_id, None, None, translate_wf_input)[0]
             translate_wf_input = file["transInput"]
             translate_wf_input["recordID"] = record_id
             skip_count, trans_count, batch_id = 0, 0, None
