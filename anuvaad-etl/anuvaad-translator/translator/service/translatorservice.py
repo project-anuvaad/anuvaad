@@ -421,10 +421,8 @@ class TranslatorService:
     # Method to search data from db
     def get_content_from_db(self, record_id, job_id, page_no, translate_wf_input):
         try:
-            query = {}
-            if record_id:
-                query["recordID"] = record_id
-            if record_id:
+            query = {"recordID": record_id}
+            if job_id:
                 query["jobID"] = job_id
             if page_no:
                 query['data.page_no'] = page_no
