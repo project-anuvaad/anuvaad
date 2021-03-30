@@ -126,13 +126,11 @@ class TranslatorService:
                                    translate_wf_input=translate_wf_input)
             else:
                 log_info("Translating via third-party API....", translate_wf_input)
-                func = partial(self.page_processor_via_api, record_id=record_id, file=file, tmx_present=tmx_present,
-                            nonmt_user=nonmt_user, tmx_file_cache=tmx_file_cache, translate_wf_input=translate_wf_input)
-            page_processors = pool.map_async(func, pages).get()
-            for page_result in page_processors:
-                total_batches += page_result[0]
-                total_sentences += page_result[1]
-                total_tmx += page_result[2]
+                for page in pages:
+                    page_result = self.page_processor_via_api(page, record_id, file, tmx_present, nonmt_user, tmx_file_cache, translate_wf_input)
+                    total_batches += page_result[0]
+                    total_sentences += page_result[1]
+                    total_tmx += page_result[2]
             if total_sentences > 0:
                 repo.update({"totalSentences": total_sentences, "batches": total_batches}, {"recordID": record_id})
                 log_info("recordID: " + record_id + " | PAGES: " + str(len(pages)) + " | BATCHES: " + str(total_batches)
