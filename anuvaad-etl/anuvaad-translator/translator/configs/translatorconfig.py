@@ -31,17 +31,17 @@ nmt_labse_align_url = str(os.environ.get('NMT_HOST', 'http://172.30.0.234:5001')
 tool_translator = "TRANSLATOR"
 download_folder = "/app/upload/"
 tmx_default_context = "JUDICIARY"
-nmt_max_batch_size = os.environ.get('NMT_MAX_BATCH_SIZE', 30)
+nmt_max_batch_size = os.environ.get('NMT_MAX_BATCH_SIZE', 25)
 tmx_word_length = os.environ.get('TRANSLATOR_TMX_WORD_LENGTH', 10)
-no_of_process = os.environ.get('TRANSLATOR_NO_OF_PROC', 20)
+no_of_process = os.environ.get('TRANSLATOR_NO_OF_PROC', 30)
 tmx_enabled = os.environ.get('TRANSLATOR_TMX_ENABLED', True)
 tmx_global_enabled = os.environ.get('TRANSLATOR_TMX_GLOBAL_ENABLED', False)
 tmx_org_enabled = os.environ.get('TRANSLATOR_TMX_ORG_ENABLED', True)
 tmx_user_enabled = os.environ.get('TRANSLATOR_TMX_USER_ENABLED', True)
 user_translation_enabled = os.environ.get('USER_TRANSLATION_ENABLED', True)
 orgs_nmt_disable = os.environ.get('ORGS_NMT_DISABLE', 'NONMT')
-tmx_disable_roles = os.environ.get('ORGS_NMT_DISABLE', 'ANNOTATOR')
-utm_disable_roles = os.environ.get('ORGS_NMT_DISABLE', 'ANNOTATOR')
+tmx_disable_roles = os.environ.get('ROLES_NMT_DISABLE', 'ANNOTATOR')
+utm_disable_roles = os.environ.get('ROLES_UTM_DISABLE', 'ANNOTATOR')
 
 
 

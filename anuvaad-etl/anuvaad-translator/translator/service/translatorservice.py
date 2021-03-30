@@ -179,20 +179,23 @@ class TranslatorService:
             return batches_count, sentences_count, tmx_count
         batches_count, tmx_count = len(batches), pw_dict["tmx_count"]
         for batch_id in batches.keys():
+            tmx_phrase_dict = {}
             batch = batches[batch_id]
+            for sentence in batch:
+                tmx_phrase_dict[sentence["s_id"]] = sentence["tmx_phrases"]
             try:
                 nmt_in = {"src_list": batch, "source_language_code": file["model"]["source_language_code"],
                           "target_language_code": file["model"]["target_language_code"]}
                 if nonmt_user:
                     nmt_in = {"data": batch}
-                    self.process_api_translations(nmt_in, translate_wf_input)
+                    self.process_api_translations(nmt_in, None, translate_wf_input)
                 else:
                     api_host = os.environ.get(file["model"]["connection_details"]["translate"]["api_host"], "NA")
                     api_ep = os.environ.get(file["model"]["connection_details"]["translate"]["api_endpoint"], "NA")
                     url = str(api_host) + str(api_ep)
                     response = utils.call_api(url, "POST", nmt_in, None, "userID")
                     if response["data"]:
-                        self.process_api_translations(response, translate_wf_input)
+                        self.process_api_translations(response, tmx_phrase_dict, translate_wf_input)
                     else:
                         log_error("Empty response from API -- {}".format(url), translate_wf_input, None)
                         post_error_wf("API_ERROR", "Empty response from API -- {}".format(url), translate_wf_input, None)
@@ -379,9 +382,10 @@ class TranslatorService:
             return
 
     # Processes the translations received via the API call
-    def process_api_translations(self, api_response, translate_wf_input):
+    def process_api_translations(self, api_response, tmx_phrase_dict, translate_wf_input):
         api_res_translations, record_id = [], None
         for translation in api_response["data"]:
+            s_id_initial = translation["s_id"]
             if 'tgt' not in translation.keys():
                 log_error("TGT missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
             translation["n_id"] = translation["s_id"].split("xxx")[0]
@@ -389,7 +393,10 @@ class TranslatorService:
             s_id = translation["s_id"].split("xxx")[2]
             translation["s_id"] = s_id
             if 'tmx_phrases' not in translation.keys():
-                translation["tmx_phrases"] = []
+                if tmx_phrase_dict:
+                    translation["tmx_phrases"] = tmx_phrase_dict[s_id_initial]
+                else:
+                    translation["tmx_phrases"] = []
             record_id = translation["n_id"].split("|")[0]
             api_res_translations.append(translation)
         file = self.get_content_from_db(record_id, None, translate_wf_input)
