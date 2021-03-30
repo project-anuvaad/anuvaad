@@ -167,6 +167,56 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
 
 
 
+def collate_text(craft_words, google_words):
+  
+    idx = index.Index()
+    words_intersected = []
+    if craft_words !=None and len(craft_words) > 0:
+        words_intersected =[]
+        for word_idx, g_word in enumerate(google_words):
+
+            poly = get_polygon(g_word['boundingBox'])
+            idx.insert(word_idx, poly.bounds)
+        for region_index, region in enumerate(craft_words):
+            region_poly = get_polygon(region['boundingBox'])
+            child_words = list(idx.intersection(region_poly.bounds))
+            text= ''
+            if len(child_words) > 0:
+                region_words = []
+                for intr_index in child_words:
+                    if intr_index not in words_intersected:
+                    
+                        line_poly = get_polygon(google_words[intr_index]['boundingBox'])
+                        area = region_poly.intersection(line_poly).area
+                        reg_area = region_poly.area
+                        line_area = line_poly.area
+                        if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                            region_words.append(google_words[intr_index][intr_index])
+                            words_intersected.append(intr_index)
+                    
+                region_words.sort(key=lambda x:x['boundingBox']['vertices'][0]['x'])
+
+                for region_words in region_words:
+                    try:
+                        text = text + ' ' + region_words['text']
+                    except Exception as e:
+                        print('error in collating text' + str(e))
+                if len(text)>1:
+                    text = text[1:]
+            craft_words[region_index]['text'] = text
+        
+    #orphan_lines = []
+    for g_word_index, g_word in enumerate(google_words):
+        if g_word_index not in words_intersected:
+            craft_words.append(g_word)
+
+    return craft_words
+
+
+
+
+
+
 def remvoe_regions(regions, lines):
     idx = index.Index()
     lines_intersected = []
