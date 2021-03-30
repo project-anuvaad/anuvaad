@@ -192,6 +192,10 @@ class TranslatorService:
                 else:
                     api_host = os.environ.get(file["model"]["connection_details"]["translation"]["host"], "NA")
                     api_ep = os.environ.get(file["model"]["connection_details"]["translation"]["api_endpoint"], "NA")
+                    if api_host == "NA" or api_ep == "NA":
+                        log_error("No API URL found!", translate_wf_input, None)
+                        post_error_wf("API_ERROR", "No API URL found!", translate_wf_input, None)
+                        break
                     url = str(api_host) + str(api_ep)
                     response = utils.call_api(url, "POST", nmt_in, None, "userID")
                     if response["data"]:
@@ -201,7 +205,7 @@ class TranslatorService:
                         post_error_wf("API_ERROR", "Empty response from API -- {}".format(url), translate_wf_input, None)
                         break
             except Exception as e:
-                log_exception("Exception while while translation via API -- {}".format(e), translate_wf_input, e)
+                log_exception("Exception while while translating via API -- {}".format(e), translate_wf_input, e)
                 post_error_wf("API_ERROR", "API failed to respond, model -- {}".format(file["model"]), translate_wf_input, e)
                 break
             log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
