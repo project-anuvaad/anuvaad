@@ -200,11 +200,11 @@ def collate_text(craft_words, google_words):
                 for region_words in region_words:
                     try:
                         #print(region_words['text'])
-                        text = text + ' ' + region_words['text']
+                        text = text + region_words['text']
                     except Exception as e:
                         print('error in collating text' + str(e))
-                if len(text)>1:
-                    text = text[1:]
+                # if len(text)>1:
+                #     text = text[1:]
             craft_words[region_index]['text'] = text
         
     #orphan_lines = []

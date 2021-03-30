@@ -62,7 +62,7 @@ CRAFT_REFINE_MODEL_PATH =  './src/utilities/craft_pytorch/model/craft_refiner_CT
 LANGUAGE_WORD_THRESOLDS ={
 'en':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
 'detect':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
-'hi':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
+'hi':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.2},
 'ma':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
 'ta':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
 'ml':{'text_threshold':0.1 ,'low_text': 0.5,'link_threshold':0.35},
@@ -101,5 +101,5 @@ ALIGN_MODE= 'FAST'
 
 WATERMARK_THRESHOLD_LOW = 175
 WATERMARK_THRESHOLD_HIGH = 250
-MAGNIFICATION_RATIO = 1.0
+MAGNIFICATION_RATIO = 1.5
 #MAGNIFICATION_RATIO = 0.5
