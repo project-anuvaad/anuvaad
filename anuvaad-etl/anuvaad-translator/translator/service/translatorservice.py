@@ -395,7 +395,8 @@ class TranslatorService:
             if 'tmx_phrases' not in translation.keys():
                 translation_obj["tmx_phrases"] = []
                 if tmx_phrase_dict:
-                    translation_obj["tmx_phrases"] = tmx_phrase_dict[translation["s_id"]]
+                    tmx = tmx_phrase_dict[translation["s_id"]]
+                    translation_obj["tmx_phrases"] = tmx if tmx else []
             record_id = translation_obj["n_id"].split("|")[0] + "|" + translation_obj["n_id"].split("|")[1]
             batch_id = translation_obj["batch_id"]
             api_res_translations.append(translation_obj)
