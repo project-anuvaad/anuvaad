@@ -283,8 +283,8 @@ class StartDigitizationUpload extends React.Component {
     handleSubmit(e) {
         let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, "hi")
         e.preventDefault();
-        this.setState({ model: modelId, showLoader: true })
-        if (this.state.files.length > 0 && this.state.source_language_code) {
+        if (this.state.files.length > 0 && this.state.source_language_code && this.state.workflow) {
+            this.setState({ model: modelId, showLoader: true })
             const { APITransport } = this.props;
             const apiObj = new DocumentUpload(
                 this.state.files, "docUplaod",

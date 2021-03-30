@@ -63,10 +63,16 @@ class ParallelSentenceRepo(object):
         results = []
         for taskId in taskIds:
             task_results = self.search_taskId_annotations(taskId)
-            results.append({
-                'taskId': taskId,
-                'annotations': task_results['annotations']
-            })
+            if len(task_results['annotations']) > 0:
+                results.append({
+                    'taskId': taskId,
+                    'annotations': task_results['annotations'][0]
+                })
+            else:
+                results.append({
+                    'taskId': taskId,
+                    'annotations': task_results['annotations']
+                })
         return {'tasks': results}
 
     def search_taskId_annotations(self, taskId):
@@ -82,4 +88,8 @@ class ParallelSentenceRepo(object):
         return {'tasks': results}
 
     def save_annotation(self, annotation):
-        return self.parallelSentenceModel.save_annotation(annotation)
+        if self.parallelSentenceModel.save_annotation(annotation) == True:
+            updated_annotation = self.parallelSentenceModel.search_annotation(annotation['annotationId'])
+            if len(updated_annotation) > 0:
+                return updated_annotation[0]
+        return None

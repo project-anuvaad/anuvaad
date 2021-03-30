@@ -13,6 +13,7 @@ import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import Spinner from "../../../components/web/common/Spinner";
+import history from "../../../../web.history";
 
 
 class ViewAnnotationJobs extends React.Component {
@@ -35,6 +36,9 @@ class ViewAnnotationJobs extends React.Component {
         if (prevProps.fetchuserjob.result.length !== this.props.fetchuserjob.result.length) {
             this.setState({ showLoader: false })
         }
+        if (prevProps.fetchuserjob.result.length > 0 && this.props.job_detail === 0 && this.state.showLoader) {
+            this.setState({ showLoader: false })
+        }
     }
 
     getMuiTheme = () => createMuiTheme({
@@ -51,11 +55,12 @@ class ViewAnnotationJobs extends React.Component {
             }
         }
     })
-    processUserView = (id, name) => {
+    processUserView = (taskId) => {
         return (
             <Tooltip title="View User Details" placement="right">
                 <IconButton style={{ color: '#233466', padding: '5px' }}
                     component="a"
+                    onClick={() => history.push(`${process.env.PUBLIC_URL}/grading-sentence-card/${taskId}/1/1`)}
                 >
                     <LibraryBooksIcon />
                 </IconButton>
@@ -124,6 +129,25 @@ class ViewAnnotationJobs extends React.Component {
                     sort: true,
                 }
             },
+
+            {
+                name: "jobId",
+                label: "Job ID",
+                options: {
+                    filter: true,
+                    sort: true,
+                    display: 'excluded'
+                }
+            },
+            {
+                name: "taskId",
+                label: "Task ID",
+                options: {
+                    filter: true,
+                    sort: true,
+                    display: 'excluded'
+                }
+            },
             {
                 name: "is_active",
                 label: translate('common.page.label.action'),
@@ -135,8 +159,7 @@ class ViewAnnotationJobs extends React.Component {
                         if (tableMeta.rowData) {
                             return (
                                 <div>
-                                    {this.processUserView(tableMeta.rowData[0], tableMeta.rowData[2])}
-                                    {/* {this.processDownloadDocumentView()} */}
+                                    {this.processUserView(tableMeta.rowData[5])}
                                 </div>
                             );
                         }
@@ -162,7 +185,11 @@ class ViewAnnotationJobs extends React.Component {
             print: false,
             fixedHeader: true,
             filter: false,
-            selectableRows: "none"
+            selectableRows: "none",
+            sortOrder: {
+                name: "createdOn",
+                direction: "desc",
+            },
         };
         return (
             <div style={{ height: window.innerHeight }}>
@@ -185,7 +212,8 @@ class ViewAnnotationJobs extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        fetchuserjob: state.fetchuserjob
+        fetchuserjob: state.fetchuserjob,
+        job_detail: state.taskdetail.count
     }
 }
 

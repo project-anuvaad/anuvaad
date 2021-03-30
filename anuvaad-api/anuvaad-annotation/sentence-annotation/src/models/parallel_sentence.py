@@ -28,10 +28,10 @@ class ParallelSentenceModel(object):
             return False
 
     def search_task_type(self, annotationType, jobId):
+        updated_docs    = []
         try:
             collections     = get_db()[DB_SCHEMA_NAME]
             docs            = collections.find({'annotationType': annotationType, 'jobId': jobId})
-            updated_docs    = []
             for doc in docs:
                 del doc['annotations']
                 updated_docs.append(normalize_bson_to_json(doc))
@@ -41,10 +41,11 @@ class ParallelSentenceModel(object):
             return updated_docs
     
     def search_user_task(self, userId):
+        updated_docs    = []
+    
         try:
             collections     = get_db()[DB_SCHEMA_NAME]
             docs            = collections.find({'user.userId': userId})
-            updated_docs    = []
             for doc in docs:
                 del doc['annotations']
                 updated_docs.append(normalize_bson_to_json(doc))
@@ -54,10 +55,11 @@ class ParallelSentenceModel(object):
             return updated_docs
 
     def search_taskId_annotations(self, taskId):
+        updated_docs    = []
+
         try:
             collections     = get_db()[DB_SCHEMA_NAME]
             docs            = collections.find({'taskId': taskId})
-            updated_docs    = []
             for doc in docs:
                 updated_docs.append(normalize_bson_to_json(doc)['annotations'])
             return updated_docs
@@ -76,7 +78,6 @@ class ParallelSentenceModel(object):
                     'annotations.$.score' : annotation['score']
                 } 
             }, upsert=True)
-
             if 'writeError' in list(results.keys()):
                 return False
             return True
@@ -84,3 +85,15 @@ class ParallelSentenceModel(object):
         except Exception as e:
             log_exception("db connection exception ",  LOG_WITHOUT_CONTEXT, e)
             return False
+
+    def search_annotation(self, annotationId):
+        updated_docs    = []
+        try:
+            collections     = get_db()[DB_SCHEMA_NAME]
+            docs            = collections.find({'annotations': {'$elemMatch': {'annotationId': {'$eq': annotationId}}}}, {"annotations.$" : 1})
+            for doc in docs:
+                updated_docs.append(normalize_bson_to_json(doc))
+            return updated_docs
+        except Exception as e:
+            log_exception("db connection exception ",  LOG_WITHOUT_CONTEXT, e)
+            return updated_docs
