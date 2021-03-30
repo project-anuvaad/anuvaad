@@ -114,16 +114,15 @@ class TranslatorService:
                 tmx_present, nonmt_user = False, True
             pool = multiprocessing.Pool(no_of_process)
             connection_details = file["model"]["connection_details"]
-            if 'kafka' in connection_details.keys():
-                if connection_details["kafka"]:
-                    log_info("Translating via Kafka....", translate_wf_input)
-                    func = partial(self.page_processor, record_id=record_id, file=file, tmx_present=tmx_present,
+            if connection_details["kafka"]:
+                log_info("Translating via Kafka....", translate_wf_input)
+                func = partial(self.page_processor, record_id=record_id, file=file, tmx_present=tmx_present,
                                 nonmt_user=nonmt_user, tmx_file_cache=tmx_file_cache, translate_wf_input=translate_wf_input)
-                else:
-                    log_info("Translating via third-party API....", translate_wf_input)
-                    func = partial(self.page_processor_via_api, record_id=record_id, file=file, tmx_present=tmx_present,
-                                   nonmt_user=nonmt_user, tmx_file_cache=tmx_file_cache,
-                                   translate_wf_input=translate_wf_input)
+                page_processors = pool.map_async(func, pages).get()
+                for page_result in page_processors:
+                    total_batches += page_result[0]
+                    total_sentences += page_result[1]
+                    total_tmx += page_result[2]
             else:
                 log_info("Translating via third-party API....", translate_wf_input)
                 for page in pages:
