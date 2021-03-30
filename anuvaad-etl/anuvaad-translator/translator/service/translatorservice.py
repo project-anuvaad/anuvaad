@@ -190,8 +190,8 @@ class TranslatorService:
                     nmt_in = {"data": batch}
                     self.process_api_translations(nmt_in, None, translate_wf_input)
                 else:
-                    api_host = os.environ.get(file["model"]["connection_details"]["translate"]["api_host"], "NA")
-                    api_ep = os.environ.get(file["model"]["connection_details"]["translate"]["api_endpoint"], "NA")
+                    api_host = os.environ.get(file["model"]["connection_details"]["translation"]["host"], "NA")
+                    api_ep = os.environ.get(file["model"]["connection_details"]["translation"]["api_endpoint"], "NA")
                     url = str(api_host) + str(api_ep)
                     response = utils.call_api(url, "POST", nmt_in, None, "userID")
                     if response["data"]:
