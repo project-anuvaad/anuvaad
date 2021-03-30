@@ -185,19 +185,21 @@ def collate_text(craft_words, google_words):
                 region_words = []
                 for intr_index in child_words:
                     if intr_index not in words_intersected:
+                        #print(intr_index)
                     
                         line_poly = get_polygon(google_words[intr_index]['boundingBox'])
                         area = region_poly.intersection(line_poly).area
                         reg_area = region_poly.area
                         line_area = line_poly.area
                         if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
-                            region_words.append(google_words[intr_index][intr_index])
+                            region_words.append(google_words[intr_index])
                             words_intersected.append(intr_index)
                     
                 region_words.sort(key=lambda x:x['boundingBox']['vertices'][0]['x'])
 
                 for region_words in region_words:
                     try:
+                        #print(region_words['text'])
                         text = text + ' ' + region_words['text']
                     except Exception as e:
                         print('error in collating text' + str(e))
