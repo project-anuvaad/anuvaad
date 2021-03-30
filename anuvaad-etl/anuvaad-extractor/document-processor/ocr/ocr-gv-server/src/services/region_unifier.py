@@ -2,7 +2,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 from collections import namedtuple
-from src.utilities.region_operations import collate_regions, get_polygon,sort_regions, remvoe_regions,filterd_regions
+from src.utilities.region_operations import collate_regions, get_polygon,sort_regions, remvoe_regions,filterd_regions,collate_text
 from src.services.segment import horzontal_merging
 import src.utilities.app_context as app_context
 import copy
@@ -311,7 +311,7 @@ class Region_Unifier:
 
 
 
-    def region_unifier(self,page_words, page_lines,page_regions):
+    def region_unifier(self,page_g_words, page_lines,page_regions,page_c_words):
         try:
             
             #sort regions 
@@ -320,6 +320,9 @@ class Region_Unifier:
                 page_regions.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 sorted_page_regions = sort_regions(page_regions,[])
 
+
+
+            page_words = collate_text(page_c_words, page_g_words)
 
             text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(sorted_page_regions)
             

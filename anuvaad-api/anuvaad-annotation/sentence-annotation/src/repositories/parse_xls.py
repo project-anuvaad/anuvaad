@@ -9,14 +9,11 @@ class ParseXLS (object):
 
     def get_parallel_sentences(filename, source_language, target_language, skip_header=True):
         parallel_sentences = []
-        print('XLS')
         try:
             wb               = xlrd.open_workbook(filename)
             sheet            = wb.sheet_by_index(0)
             
             num_rows         = sheet.nrows
-            source_sentence  = {}
-            target_sentence  = {}
             rows             = []
             
             for row_index in range(num_rows):
@@ -25,7 +22,9 @@ class ParseXLS (object):
             if skip_header == True:
                 rows = rows[1:]
             
-            for row in rows:    
+            for row in rows:
+                source_sentence  = {}
+                target_sentence  = {}
                 source_sentence['language'] = source_language
                 source_sentence['id']       = str(uuid.uuid4())
                 source_sentence['text']     = row[0]

@@ -252,10 +252,9 @@ class ScheduleJob extends React.Component {
         let array_of_users = values.map(value => {
             return {
                 userId: value.userID,
-                name: value.email_id
+                name: value.email
             }
         })
-        console.log(array_of_users)
         this.setState({ array_of_users })
     }
     render() {
