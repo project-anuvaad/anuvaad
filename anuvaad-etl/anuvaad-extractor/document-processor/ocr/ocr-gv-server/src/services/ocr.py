@@ -34,6 +34,7 @@ def text_extraction(file_properties,image_paths,file):
     page_res = []
     width, height = file_properties.get_pageinfo(0)
     for idx,image_path in enumerate(image_paths):
+        print(idx,'page_indexxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
         font_info = file_properties.get_fontinfo(idx)
         page_dict = {"identifier": str(uuid.uuid4()),"resolution": config.EXRACTION_RESOLUTION }
         page_regions =  file_properties.get_regions(idx)
