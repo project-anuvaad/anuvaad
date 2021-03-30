@@ -256,19 +256,17 @@ class TranslatorService:
             block_id = block["block_id"]
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
+                    tmx_phrases = []
+                    if tmx_present:
+                        tmx_phrases, res_dict = self.fetch_tmx(sentence["src"], file, tmx_present, tmx_file_cache, translate_wf_input)
+                        bw_tmx_count += len(tmx_phrases)
+                        bw_computed_count += res_dict["computed"]
+                    node_id = str(record_id) + "|" + str(page_no) + "|" + str(block_id)
                     if not third_party:
-                        tmx_phrases = []
-                        if tmx_present:
-                            tmx_phrases, res_dict = self.fetch_tmx(sentence["src"], file, tmx_present, tmx_file_cache, translate_wf_input)
-                            bw_tmx_count += len(tmx_phrases)
-                            bw_computed_count += res_dict["computed"]
-                        node_id = str(record_id) + "|" + str(page_no) + "|" + str(block_id)
-                        sent_nmt_in = {"src": sentence["src"], "s_id": sentence["s_id"], "n_id": node_id,
-                                   "batch_id": batch_id, "tmx_phrases": tmx_phrases}
+                        sent_nmt_in = {"src": sentence["src"], "s_id": sentence["s_id"], "n_id": node_id, "batch_id": batch_id, "tmx_phrases": tmx_phrases}
                     else:
-                        node_id = str(record_id) + "|" + str(page_no) + "|" + str(block_id)
                         s_id = node_id + "xxx" + batch_id + "xxx" + sentence["s_id"]
-                        sent_nmt_in = {"src": sentence["src"], "s_id": s_id}
+                        sent_nmt_in = {"src": sentence["src"], "s_id": s_id, "tmx_phrases": tmx_phrases}
                     if batch_id in sentences_for_trans.keys():
                         sentence_list = sentences_for_trans[batch_id]
                         sentence_list.append(sent_nmt_in)
@@ -390,7 +388,8 @@ class TranslatorService:
             translation["batch_id"] = translation["s_id"].split("xxx")[1]
             s_id = translation["s_id"].split("xxx")[2]
             translation["s_id"] = s_id
-            translation["tmx_phrases"] = []
+            if 'tmx_phrases' not in translation.keys():
+                translation["tmx_phrases"] = []
             record_id = translation["n_id"].split("|")[0]
             api_res_translations.append(translation)
         file = self.get_content_from_db(record_id, None, translate_wf_input)
