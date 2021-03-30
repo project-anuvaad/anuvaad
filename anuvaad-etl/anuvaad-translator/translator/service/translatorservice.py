@@ -194,7 +194,6 @@ class TranslatorService:
                         post_error_wf("API_ERROR", "No API URL found!", translate_wf_input, None)
                         break
                     url = str(api_host) + str(api_ep)
-                    log_info(nmt_in, translate_wf_input)
                     response = utils.call_api(url, "POST", nmt_in, None, "userID")
                     if response["data"]:
                         log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
@@ -386,25 +385,19 @@ class TranslatorService:
     # Processes the translations received via the API call
     def process_api_translations(self, api_response, tmx_phrase_dict, translate_wf_input):
         api_res_translations, record_id, batch_id = [], None, None
-        log_info(api_response["data"], translate_wf_input)
         for translation in api_response["data"]:
-            translation_obj, s_id_initial = {}, translation["s_id"]
-            translation_obj["src"] = translation["src"]
+            translation_obj = {"src": translation["src"], "n_id": translation["s_id"].split("xxx")[0],
+                               "batch_id": translation["s_id"].split("xxx")[1], "s_id": translation["s_id"].split("xxx")[2]}
             if 'tgt' not in translation.keys():
                 log_error("TGT missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
             else:
                 translation_obj["tgt"] = translation["tgt"]
-            translation_obj["n_id"] = translation["s_id"].split("xxx")[0]
-            translation_obj["batch_id"] = translation["s_id"].split("xxx")[1]
-            translation_obj["s_id"] = translation["s_id"].split("xxx")[2]
             if 'tmx_phrases' not in translation.keys():
+                translation_obj["tmx_phrases"] = []
                 if tmx_phrase_dict:
-                    translation_obj["tmx_phrases"] = tmx_phrase_dict[s_id_initial]
-                else:
-                    translation_obj["tmx_phrases"] = []
-            record_id = translation["n_id"].split("|")[0] + "|" + translation["n_id"].split("|")[1]
+                    translation_obj["tmx_phrases"] = tmx_phrase_dict[translation["s_id"]]
+            record_id = translation_obj["n_id"].split("|")[0] + "|" + translation_obj["n_id"].split("|")[1]
             batch_id = translation_obj["batch_id"]
-            log_info(translation_obj, translate_wf_input)
             api_res_translations.append(translation_obj)
         file = self.get_content_from_db(record_id, None, None, translate_wf_input)
         if not file:
