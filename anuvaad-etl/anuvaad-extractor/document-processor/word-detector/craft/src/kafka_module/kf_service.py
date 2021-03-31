@@ -65,7 +65,7 @@ def process_word_detector_kf():
                 print(data)
 
 
-                consumer.commit(asynchronous=True)
+                consumer.commit_async() 
 
                  # <--- This is what we need
                 #consumer.commit

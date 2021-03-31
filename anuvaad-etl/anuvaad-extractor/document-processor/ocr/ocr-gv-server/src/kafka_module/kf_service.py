@@ -64,7 +64,7 @@ def process_vision_ocr_kf():
                 data            = Consumer.get_json_data(msg.value)
 
 
-                consumer.commit(asynchronous=True)  # <--- This is what we need
+                consumer.commit_async()  # <--- This is what we need
                 # Optionally, To check if everything went good
                 #print('New Kafka offset: %s' % consumer.committed(TopicPartition(config.input_topic, msg.partition)))
 
