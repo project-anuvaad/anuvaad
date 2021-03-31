@@ -65,6 +65,7 @@ def process_word_detector_kf():
 
 
                 consumer.commit()  # <--- This is what we need
+                #consumer.commit
                 # Optionally, To check if everything went good
                 #print('New Kafka offset: %s' % consumer.committed(TopicPartition(config.input_topic, msg.partition)))
 
