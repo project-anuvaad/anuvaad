@@ -320,6 +320,9 @@ class Region_Unifier:
                 page_regions.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 sorted_page_regions = sort_regions(page_regions,[])
 
+            else:
+                sorted_page_regions = page_regions
+
 
 
             page_words = collate_text(page_c_words, page_g_words)
