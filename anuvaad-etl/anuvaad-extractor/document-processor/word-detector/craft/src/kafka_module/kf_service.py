@@ -54,7 +54,7 @@ def process_word_detector_kf():
         log_info("process_word_detector_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
 
         while True:
-            #wait_for_control = controlQueue.get(block=True)
+            wait_for_control = controlQueue.get(block=True)
 
             for msg in consumer:
 
@@ -69,13 +69,12 @@ def process_word_detector_kf():
                 # Optionally, To check if everything went good
                 #print('New Kafka offset: %s' % consumer.committed(TopicPartition(config.input_topic, msg.partition)))
 
-                print('conusmerrrrrrrrrrrrrrrrrr msg', data)
                 jobid           = data['jobID']
                 log_info('process_word_detector_kf - received message from kafka, dumping into internal queue', data)
                 input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
 
                 Queue.put(data)
-                #break
+                break
 
     
     except KafkaConsumerError as e:
