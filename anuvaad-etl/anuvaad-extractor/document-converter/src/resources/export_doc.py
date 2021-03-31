@@ -7,7 +7,7 @@ from utilities.utils import FileUtilities
 from services import DocumentExporterService
 from utilities import MODULE_CONTEXT
 from anuvaad_auditor.loghandler import log_info, log_exception
-from common.errors import ServiceError
+from common.errors import ServiceError,DataEmptyError
 from common.errors import InternalServerError
 
 file_ops = FileUtilities()
@@ -29,7 +29,11 @@ class DocumentExporterResource(Resource):
             log_info("DocumentExporterResource request received | {}".format(body),MODULE_CONTEXT)
 
             formated_document = exportService.export_document(record_id, user_id, file_type)
-            
+            if formated_document ==False:
+                log_info("Error occured at resource level due to service operation", MODULE_CONTEXT)
+                res = CustomResponse(Status.DATA_NOT_FOUND.value,None)
+                return res.getresjson(), 400
+
             log_info("document type %s saved successfully"%file_type, MODULE_CONTEXT)
             res = CustomResponse(Status.SUCCESS.value, formated_document)
             return res.getres()

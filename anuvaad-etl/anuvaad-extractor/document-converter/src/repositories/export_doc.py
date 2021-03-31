@@ -31,18 +31,16 @@ class DocumentExporterRepository(object):
 
     def __init__(self):
         pass
-        # self.DOWNLOAD_FOLDER = DOWNLOAD_FOLDER
-        # self.output_filepath  = os.path.join(self.DOWNLOAD_FOLDER ,"test")
 
     # getting document json data from fetch-content end point of content-handler.
     def get_data_from_ocr_content_handler(self, record_id, start_page=0, end_page=0):
         
         
         try:
-            token="xxxx"#auth-token,"auth-token":token
+            token="xxx"#auth-token,"auth-token":token
+            # headers = {"Content-Type": "application/json","auth-token": token}
             headers = {"Content-Type": "application/json"}
             request_url = doc_utils.generate_url(config.OCR_CONTENT_HANDLER_HOST, record_id, 0, 0)
-            print(request_url,"**********")
             log_info("Intiating request to fetch data from %s"%request_url, MODULE_CONTEXT)
             response = requests.get(request_url, headers = headers)
             response_data = response.content

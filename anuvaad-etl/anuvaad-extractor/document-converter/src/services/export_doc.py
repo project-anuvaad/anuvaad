@@ -2,7 +2,7 @@ from repositories import DocumentExporterRepository
 from utilities import MODULE_CONTEXT,FileUtilities
 import config
 from anuvaad_auditor.loghandler import log_info, log_exception
-from common.errors import ServiceError
+from common.errors import ServiceError,DataEmptyError
 import os
 import time
 from random import randint
@@ -18,10 +18,14 @@ class DocumentExporterService:
         try:
             log_info("document type %s formation started"%file_type, MODULE_CONTEXT)
             page_data = exportRepo.get_data_from_ocr_content_handler(record_id,user_id)
+            if "data" in page_data.keys():
+                data=page_data['data']
+            else:
+                return False
             
             if file_type == 'pdf':
                 output_filename=os.path.join(output_file_folder,record_id+'_'+str(randint(100, 999))+".pdf") 
-                export_result=exportRepo.create_pdf(page_data['data'],output_filename,'arial-unicode-ms',34, 4)
+                export_result=exportRepo.create_pdf(data,output_filename,'arial-unicode-ms',34, 4)
                 zip_file= FileUtilities.zipfile_creation(export_result)
                 log_info("docx file formation done!! filename: %s"%zip_file, MODULE_CONTEXT)
                 return zip_file
@@ -29,7 +33,7 @@ class DocumentExporterService:
             if file_type == 'txt':
                 log_info("document type %s formation started"%file_type, MODULE_CONTEXT)
                 output_filename=os.path.join(output_file_folder,record_id+'_'+str(randint(100, 999))+".pdf")
-                export_result=exportRepo.create_pdf(page_data['data'],output_filename,'arial-unicode-ms',34, 4)
+                export_result=exportRepo.create_pdf(data,output_filename,'arial-unicode-ms',34, 4)
                 convert_to_txt= exportRepo.create_pdf_to_text(export_result)
                 zip_file= FileUtilities.zipfile_creation(convert_to_txt)
                 log_info("docx file formation done!! filename: %s"%zip_file, MODULE_CONTEXT)
