@@ -18,8 +18,6 @@ import FetchJobDetail from '../../../../../flux/actions/apis/view_scheduled_jobs
 import history from "../../../../../web.history";
 
 
-const TELEMETRY = require("../../../../../utils/TelemetryManager");
-
 class ViewJobDetails extends React.Component {
     constructor(props) {
         super(props);
@@ -43,14 +41,6 @@ class ViewJobDetails extends React.Component {
         let { APITransport } = this.props
         let apiObj = new FetchJobDetail(this.props.match.params.jobID, "VET_PARALLEL_SENTENCE")
         APITransport(apiObj);
-    }
-
-    componentWillUnmount() {
-
-    }
-
-    componentDidUpdate(prevProps) {
-
     }
 
     getMuiTheme = () =>

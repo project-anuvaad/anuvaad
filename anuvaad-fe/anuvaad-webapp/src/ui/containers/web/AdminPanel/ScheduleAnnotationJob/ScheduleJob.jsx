@@ -404,7 +404,6 @@ class ScheduleJob extends React.Component {
 const mapStateToProps = state => ({
     userinfo: state.userinfo,
     fileUpload: state.fileUpload,
-    configUplaod: state.configUplaod,
     workflowStatus: state.workflowStatus,
     documentUplaod: state.documentUplaod,
     fetch_models: state.fetch_models
