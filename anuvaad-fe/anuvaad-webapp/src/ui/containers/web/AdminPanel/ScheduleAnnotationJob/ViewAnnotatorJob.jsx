@@ -4,10 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withStyles } from "@material-ui/core/styles";
 import MUIDataTable from "mui-datatables";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
+
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 
 import ToolBar from "./ViewAnnotatorJobHeader";
 import { translate } from "../../../../../assets/localisation";
@@ -15,9 +13,6 @@ import NewCorpusStyle from "../../../../styles/web/Newcorpus";
 
 import APITransport from "../../../../../flux/actions/apitransport/apitransport";
 import FetchTaskDetails from '../../../../../flux/actions/apis/view_scheduled_jobs/fetch_annotator_job';
-
-
-const TELEMETRY = require("../../../../../utils/TelemetryManager");
 
 class ViewAnnotatorJob extends React.Component {
     constructor(props) {
