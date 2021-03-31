@@ -604,6 +604,11 @@
             "role":"ANNOTATOR",
             "actionID": "e6132e87-0616-4efe-9c68-6b4a37b16d18",
             "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "68e90db3-0146-4e04-ba94-18671b1c5995",
+            "active":true
         }
     ]
 }
