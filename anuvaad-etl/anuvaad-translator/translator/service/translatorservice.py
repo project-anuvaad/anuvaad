@@ -106,7 +106,7 @@ class TranslatorService:
             pages = repo.fetch_pages({"record_id": record_id})
             total_sentences, total_tmx, total_batches, tmx_file_cache = 0, 0, 0, {}
             tmx_file_cache = {}
-            tmx_present, nonmt_user = self.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"])[0], False
+            tmx_present, nonmt_user = self.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input)[0], False
             if tmx_present:
                 tmx_present = self.is_tmx_present(file, translate_wf_input)
             if translate_wf_input["metadata"]["orgID"] in list(str(orgs_nmt_disable).split(",")):
@@ -224,16 +224,17 @@ class TranslatorService:
         return anu_nmt_input_topic
 
     # Method to check if tmx and utm are enabled based on role
-    def get_rbac_tmx_utm(self, roles):
+    def get_rbac_tmx_utm(self, roles, translate_wf_input):
         tmx_enabled, utm_enabled = True, True
-        tmx_dis_roles = list(tmx_disable_roles.split(","))
-        utm_dis_roles = list(utm_disable_roles.split(","))
+        tmx_dis_roles, utm_dis_roles = list(tmx_disable_roles.split(",")), list(utm_disable_roles.split(","))
         roles = list(roles.split(","))
         for role in roles:
             if role in tmx_dis_roles:
                 tmx_enabled = False
+                log_info("TMX Disabled for this user!", translate_wf_input)
             if role in utm_dis_roles:
                 utm_enabled = False
+                log_info("UTM Disabled for this user!", translate_wf_input)
         return tmx_enabled, utm_enabled
 
     # Method to fetch batches for sentences from the file for a page.
@@ -359,7 +360,7 @@ class TranslatorService:
                 sentences_of_the_batch = []
                 for response in nmt_output["data"]:
                     if "n_id" not in response.keys():
-                        log_error("Node ID missing! s_id: {}, b_id: {}".format(response["s_id"], batch_id, translate_wf_input, None))
+                        log_error("Node ID missing! s_id: {}, b_id: {}".format(response["s_id"], batch_id), translate_wf_input, None)
                         skip_count += 1
                         continue
                     batch_id = response["batch_id"]
@@ -443,7 +444,7 @@ class TranslatorService:
         page_no = str(nmt_res_batch[0]["n_id"]).split("|")[2]
         page = repo.fetch_pages({"record_id": record_id, "page_no": eval(page_no)})[0]
         page_enriched = page
-        utm_enabled = self.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"])[1]
+        utm_enabled = self.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input)[1]
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             if user_translation_enabled and utm_enabled:
