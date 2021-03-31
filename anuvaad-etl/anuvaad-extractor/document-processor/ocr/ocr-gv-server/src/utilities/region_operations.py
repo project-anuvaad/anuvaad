@@ -200,7 +200,7 @@ def collate_text(craft_words, google_words):
                 for region_words in region_words:
                     try:
                         #print(region_words['text'])
-                        text = text + region_words['text']
+                        text = text + str(region_words['text'])
                     except Exception as e:
                         print('error in collating text' + str(e))
                 # if len(text)>1:
