@@ -264,8 +264,6 @@ class Dashboard extends React.Component {
   render() {
     const { classes } = this.props;
 
-    console.log("------",process.env.REACT_APP_BASE_URL)
-
     return (
       <div className={classes.root}>
         <Typography variant="h4" className={classes.typographyHeader}>

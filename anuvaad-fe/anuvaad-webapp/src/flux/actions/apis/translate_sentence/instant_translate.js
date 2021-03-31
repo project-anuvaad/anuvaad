@@ -18,8 +18,12 @@ export default class NMTSP extends API {
         this.model = model;
         this.src_code = src_code;
         this.tgt_code = tgt_code;
+        let ep = process.env[this.model.connection_details.translation.api_endpoint]
+        let url = process.env[this.model.connection_details.translation.host]
+        console.log("-----------------",ep , url )
+        debugger
         // this.type = C.INTRACTIVE_TRANSLATE;
-        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.instant_translate}`
+        this.endpoint =  `${url ? url : super.apiEndPointAuto()}${ep ? ep :ENDPOINTS.instant_translate}`
     }
 
     toString() {
@@ -50,7 +54,7 @@ export default class NMTSP extends API {
 
       
             return {
-                model_id: parseInt(this.model, 10),
+                model_id: parseInt(this.model.model_id, 10),
             source_language_code : this.src_code,
             target_language_code : this.tgt_code,
             src_list : src_list
