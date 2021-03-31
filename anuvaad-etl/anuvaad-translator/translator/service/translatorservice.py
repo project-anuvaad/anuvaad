@@ -206,7 +206,7 @@ class TranslatorService:
                         break
             except Exception as e:
                 log_exception("Exception while while translating via API -- {}".format(e), translate_wf_input, e)
-                post_error_wf("API_ERROR", "API failed to respond, model -- {}".format(file["model"]), translate_wf_input, e)
+                post_error_wf("TRANSLATION_ERROR", "Exception while while translating via API -- {}".format(e), translate_wf_input, e)
                 break
             sentences_count += len(batch)
         return batches_count, sentences_count, tmx_count
@@ -386,37 +386,40 @@ class TranslatorService:
     # Processes the translations received via the API call
     def process_api_translations(self, api_response, tmx_phrase_dict, translate_wf_input):
         api_res_translations, record_id, batch_id = [], None, None
-        for translation in api_response["data"]:
-            translation_obj = {"src": translation["src"], "n_id": translation["s_id"].split("xxx")[0],
-                               "batch_id": translation["s_id"].split("xxx")[1], "s_id": translation["s_id"].split("xxx")[2]}
-            if 'tgt' not in translation.keys():
-                log_error("TGT missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
-            else:
-                translation_obj["tgt"] = translation["tgt"]
-            if 'tmx_phrases' not in translation.keys():
-                translation_obj["tmx_phrases"] = []
-                if tmx_phrase_dict:
-                    tmx = tmx_phrase_dict[translation["s_id"]]
-                    translation_obj["tmx_phrases"] = tmx if tmx else []
-            else:
-                translation_obj["tmx_phrases"] = translation["tmx_phrases"]
-            record_id = translation_obj["n_id"].split("|")[0] + "|" + translation_obj["n_id"].split("|")[1]
-            batch_id = translation_obj["batch_id"]
-            api_res_translations.append(translation_obj)
-        file = self.get_content_from_db(record_id, None, None, translate_wf_input)
-        if not file:
-            log_error("There is no data for this recordID: " + str(record_id), translate_wf_input, None)
-            post_error_wf("TRANSLATION_FAILED",
-                          "There is no data for this recordID: " + str(record_id), translate_wf_input, None)
-            return
-        file, skip_count, trans_count = file[0], 0, 0
         try:
-            self.update_sentences(record_id, api_res_translations, translate_wf_input)
-            trans_count += len(api_res_translations)
+            for translation in api_response["data"]:
+                translation_obj = {"src": translation["src"], "n_id": translation["s_id"].split("xxx")[0],
+                                   "batch_id": translation["s_id"].split("xxx")[1], "s_id": translation["s_id"].split("xxx")[2]}
+                if 'tgt' not in translation.keys():
+                    log_error("TGT missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
+                else:
+                    translation_obj["tgt"] = translation["tgt"]
+                if 'tmx_phrases' not in translation.keys():
+                    translation_obj["tmx_phrases"] = []
+                    if tmx_phrase_dict:
+                        tmx = tmx_phrase_dict[translation["s_id"]]
+                        translation_obj["tmx_phrases"] = tmx if tmx else []
+                else:
+                    translation_obj["tmx_phrases"] = translation["tmx_phrases"]
+                record_id = translation_obj["n_id"].split("|")[0] + "|" + translation_obj["n_id"].split("|")[1]
+                batch_id = translation_obj["batch_id"]
+                api_res_translations.append(translation_obj)
+            file = self.get_content_from_db(record_id, None, None, translate_wf_input)
+            if not file:
+                log_error("There is no data for this recordID: " + str(record_id), translate_wf_input, None)
+                post_error_wf("TRANSLATION_FAILED",
+                              "There is no data for this recordID: " + str(record_id), translate_wf_input, None)
+                return
+            file, skip_count, trans_count = file[0], 0, 0
+            try:
+                self.update_sentences(record_id, api_res_translations, translate_wf_input)
+                trans_count += len(api_res_translations)
+            except Exception as e:
+                log_exception("Exception while saving translations to DB: " + str(e), translate_wf_input, e)
+                skip_count += len(api_res_translations)
+            self.update_translation_status(batch_id, trans_count, skip_count, translate_wf_input)
         except Exception as e:
-            log_exception("Exception while saving translations to DB: " + str(e), translate_wf_input, e)
-            skip_count += len(api_res_translations)
-        self.update_translation_status(batch_id, trans_count, skip_count, translate_wf_input)
+            log_exception("Exception while processing the API output -- {}".format(e), translate_wf_input, None)
 
     # Method to search data from db
     def get_content_from_db(self, record_id, job_id, page_no, translate_wf_input):
