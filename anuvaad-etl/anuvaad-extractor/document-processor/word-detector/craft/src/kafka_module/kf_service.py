@@ -75,7 +75,7 @@ def process_word_detector_kf():
                 input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
 
                 Queue.put(data)
-                break
+                #break
 
     
     except KafkaConsumerError as e:
