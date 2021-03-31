@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import time
 import json
+from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
 import config
@@ -26,7 +27,9 @@ class FileOperation(object):
             file_type = files['type']
             identifier = files['identifier']
         except Exception as e:
-            log_exception("accessing_files, keys not found ",  LOG_WITHOUT_CONTEXT, e)
+            #log_exception("accessing_files, keys not found ",  LOG_WITHOUT_CONTEXT, e)
+            log_exception("accessing_files, keys not found ",  {'jobID':'jobID'}, e)
+        
         return filepath, file_type, identifier
 
     # generating input filepath for input filename
