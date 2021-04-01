@@ -109,7 +109,7 @@ class TranslatorService:
             total_sentences, total_tmx, total_batches, tmx_file_cache = 0, 0, 0, {}
             tmx_file_cache = {}
             tmx_present, nonmt_user = \
-            self.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input)[0], False
+                self.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, True)[0], False
             if tmx_present:
                 tmx_present = self.is_tmx_present(file, translate_wf_input)
             if translate_wf_input["metadata"]["orgID"] in list(str(orgs_nmt_disable).split(",")):
@@ -132,6 +132,8 @@ class TranslatorService:
                 for page in pages:
                     page_result = self.page_processor_via_api(page, record_id, file, tmx_present, nonmt_user,
                                                               tmx_file_cache, translate_wf_input)
+                    if not page_result:
+                        break
                     total_batches += page_result[0]
                     total_sentences += page_result[1]
                     total_tmx += page_result[2]
@@ -193,7 +195,9 @@ class TranslatorService:
                           "target_language_code": file["model"]["target_language_code"]}
                 if nonmt_user:
                     nmt_in = {"data": batch}
-                    self.process_api_translations(nmt_in, None, translate_wf_input)
+                    processed = self.process_api_translations(nmt_in, None, nonmt_user, translate_wf_input)
+                    if not processed:
+                        return None
                 else:
                     api_host = os.environ.get(file["model"]["connection_details"]["translation"]["host"], "NA")
                     api_ep = os.environ.get(file["model"]["connection_details"]["translation"]["api_endpoint"], "NA")
@@ -207,7 +211,9 @@ class TranslatorService:
                         log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
                                  " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
                             bw_data[batch_id]["tmx_count"]), translate_wf_input)
-                        self.process_api_translations(response, tmx_phrase_dict, translate_wf_input)
+                        processed = self.process_api_translations(response, tmx_phrase_dict, nonmt_user, translate_wf_input)
+                        if not processed:
+                            return None
                     else:
                         log_error("Empty response from API -- {}".format(url), translate_wf_input, None)
                         post_error_wf("API_ERROR", "Empty response from API -- {}".format(url), translate_wf_input,
@@ -234,17 +240,19 @@ class TranslatorService:
         return anu_nmt_input_topic
 
     # Method to check if tmx and utm are enabled based on role
-    def get_rbac_tmx_utm(self, roles, translate_wf_input):
+    def get_rbac_tmx_utm(self, roles, translate_wf_input, log):
         tmx_enabled, utm_enabled = True, True
         tmx_dis_roles, utm_dis_roles = list(tmx_disable_roles.split(",")), list(utm_disable_roles.split(","))
         roles = list(roles.split(","))
         for role in roles:
             if role in tmx_dis_roles:
                 tmx_enabled = False
-                log_info("TMX Disabled for this user!", translate_wf_input)
+                if log:
+                    log_info("TMX Disabled for this user!", translate_wf_input)
             if role in utm_dis_roles:
                 utm_enabled = False
-                log_info("UTM Disabled for this user!", translate_wf_input)
+                if log:
+                    log_info("UTM Disabled for this user!", translate_wf_input)
         return tmx_enabled, utm_enabled
 
     # Method to fetch batches for sentences from the file for a page.
@@ -403,20 +411,24 @@ class TranslatorService:
             return
 
     # Processes the translations received via the API call
-    def process_api_translations(self, api_response, tmx_phrase_dict, translate_wf_input):
+    def process_api_translations(self, api_response, tmx_phrase_dict, no_nmt, translate_wf_input):
         api_res_translations, record_id, batch_id, skip_count, trans_count = [], None, None, 0, 0
         try:
             for translation in api_response["data"]:
                 if type(translation) == "str":
                     translation = json.loads(translation)
+                if "s_id" not in translation.keys():
+                    log_error("S_ID missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
+                    continue
                 translation_obj = {"src": translation["src"],
                                    "n_id": translation["s_id"].split("xxx")[0],
                                    "batch_id": translation["s_id"].split("xxx")[1],
                                    "s_id": translation["s_id"].split("xxx")[2]}
-                if 'tgt' not in translation.keys():
-                    log_error("TGT missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
-                else:
-                    translation_obj["tgt"] = translation["tgt"]
+                if not no_nmt:
+                    if 'tgt' not in translation.keys():
+                        log_error("TGT missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
+                    else:
+                        translation_obj["tgt"] = translation["tgt"]
                 if 'tmx_phrases' not in translation.keys():
                     translation_obj["tmx_phrases"] = []
                     if tmx_phrase_dict:
@@ -432,18 +444,23 @@ class TranslatorService:
                 log_error("There is no data for this recordID: " + str(record_id), translate_wf_input, None)
                 post_error_wf("TRANSLATION_FAILED",
                               "There is no data for this recordID: " + str(record_id), translate_wf_input, None)
-                return
+                return False
             try:
-                self.update_sentences(record_id, api_res_translations, translate_wf_input)
-                trans_count += len(api_res_translations)
+                if no_nmt:
+                    self.process_no_nmt_jobs({"recordID": record_id, "message": api_res_translations})
+                    trans_count += len(api_res_translations)
+                else:
+                    self.update_sentences(record_id, api_res_translations, translate_wf_input)
+                    trans_count += len(api_res_translations)
             except Exception as e:
                 log_exception("Exception while saving translations to DB: " + str(e), translate_wf_input, e)
                 skip_count += len(api_res_translations)
             self.update_translation_status(batch_id, trans_count, skip_count, translate_wf_input)
+            return True
         except Exception as e:
-            log_exception("Exception while processing the API output -- {}".format(e), translate_wf_input, None)
-            skip_count += len(api_res_translations)
-            self.update_translation_status(batch_id, trans_count, skip_count, translate_wf_input)
+            log_exception("Exception while processing the API output -- {}".format(e), translate_wf_input, e)
+            post_error_wf("TRANSLATION_ERROR", "Exception while processing the API output -- {}".format(e), translate_wf_input, e)
+            return False
 
     # Method to search data from db
     def get_content_from_db(self, record_id, job_id, page_no, translate_wf_input):
@@ -467,12 +484,12 @@ class TranslatorService:
         log_info("Status -- B_ID: " + str(batch_id) + " (T: " + str(trans_count) + ", S: " + str(skip_count) + ")",
                  translate_wf_input)
 
-    # Back up method to update sentences from DB.
+    # method to update sentences from DB after translation
     def update_sentences(self, record_id, nmt_res_batch, translate_wf_input):
         page_no = str(nmt_res_batch[0]["n_id"]).split("|")[2]
         page = repo.fetch_pages({"record_id": record_id, "page_no": eval(page_no)})[0]
         page_enriched = page
-        utm_enabled = self.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input)[1]
+        utm_enabled = self.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, False)[1]
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             if user_translation_enabled and utm_enabled:
@@ -521,7 +538,7 @@ class TranslatorService:
         query = {"record_id": record_id, "page_no": eval(page_no)}
         repo.update_pages(query, page_enriched)
 
-    # Saves sentences sent internally through Translator
+    # Saves sentences sent internally through Translator for NONMT jobs
     def process_no_nmt_jobs(self, no_nmt_input):
         record_id = no_nmt_input["record_id"]
         recordid_split = str(record_id).split("|")
