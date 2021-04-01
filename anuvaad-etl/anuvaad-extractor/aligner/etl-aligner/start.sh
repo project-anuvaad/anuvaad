@@ -1,2 +1,2 @@
-#!/bin/sh
-python app.py
+#!/bin/bash
+python3 app.py
