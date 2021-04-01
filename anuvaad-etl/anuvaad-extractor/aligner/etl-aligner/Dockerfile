@@ -1,5 +1,6 @@
 FROM nvidia/cuda:10.2-base
 CMD nvidia-smi
+RUN apt update && apt install python3-pip -y
 #FROM anuvaadio/anuvaad-etl-aligner-base:1
 COPY / /app
 WORKDIR /app
