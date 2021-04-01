@@ -5,7 +5,7 @@ from anuvaad_auditor.loghandler import log_info
 from sentence_transformers import SentenceTransformer
 from configs.alignerconfig import labse_folder_path
 
-model = SentenceTransformer(labse_folder_path, device='auto')
+model = SentenceTransformer(labse_folder_path, device='cuda')
 # model = SentenceTransformer("/home/aswin/Downloads/LaBSE")
 
 log = logging.getLogger('file')
