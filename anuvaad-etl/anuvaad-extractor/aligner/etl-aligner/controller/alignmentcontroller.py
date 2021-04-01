@@ -17,21 +17,11 @@ alignapp = Flask(__name__)
 @alignapp.route(context_path + '/v1/sentences/align', methods=["POST"])
 def createalignmentjob():
     service = AlignmentService()
-    jsonservice = JsonAlignmentService()
     validator = AlignmentValidator()
     data = request.get_json()
-    try:
-        srctype = str(data['source']['type'])
-        tgttype = str(data['target']['type'])
-    except:
-        pass
     error = validator.validate_input(data)
     if error is not None:
         return error
-
-    if(srctype == "json"):
-        return jsonservice.register_job(data)
-
     return service.register_job(data)
 
 
