@@ -150,13 +150,19 @@ class PRIMA(object):
 		
 		return coords, layout_class,score
 	
-	def get_polygon(self, region):
+	
+	def get_polygon(self,region):
 		points = []
 		vertices = region['vertices']
 		for point in vertices:
 			points.append((point['x'], point['y']))
-		poly = Polygon(points)
-		return poly
+		if not (max(points)==(0,0) and min(points)==(0,0)):
+			poly = Polygon(points)
+			if not poly.is_valid:
+				poly = poly.buffer(0.01)
+			return poly
+		else:
+			return False
 
 	def class_mapping(self, class_name):
 		if class_name == "TextRegion":
@@ -222,9 +228,11 @@ class PRIMA(object):
         
 		region_poly = self.get_polygon(region2['boundingBox'])
 		base_poly = self.get_polygon(region1['boundingBox'])
-		area = base_poly.intersection(region_poly).area
-		area1 = base_poly.area
-		area2 = region_poly.area
+		area=0; area1=0; area2=0
+		if region_poly and base_poly:
+			area = base_poly.intersection(region_poly).area
+			area1 = base_poly.area
+			area2 = region_poly.area
 		tag1 = region1['class']
 		tag2 = region2['class']
 		score1 = region1['score']

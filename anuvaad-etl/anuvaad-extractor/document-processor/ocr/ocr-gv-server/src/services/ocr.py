@@ -18,7 +18,9 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
 def get_text(path,page_dict,page_regions,page_c_words,font_info):
     
+    
     img = cv2.imread(path)
+    
     img[175 < img ] = 255
     masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
     cv2.imwrite(masked_path,img)
@@ -34,6 +36,8 @@ def text_extraction(file_properties,image_paths,file):
     page_res = []
     width, height = file_properties.get_pageinfo(0)
     for idx,image_path in enumerate(image_paths):
+
+        
         font_info = file_properties.get_fontinfo(idx)
         page_dict = {"identifier": str(uuid.uuid4()),"resolution": config.EXRACTION_RESOLUTION }
         page_regions =  file_properties.get_regions(idx)
