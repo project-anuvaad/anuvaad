@@ -151,7 +151,7 @@ class Header extends React.Component {
                 </IconButton>
               }
               <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
-              
+              {/* {forDemo &&
                 <img src={logo}
                   alt=""
                   style={{
@@ -159,7 +159,7 @@ class Header extends React.Component {
                     display: 'block',
                     marginLeft: '1%'
                   }} />
-             
+              } */}
 
               <Typography variant="h5" color="inherit" className={forDemo ? classes.felxDemo : classes.flex}>
                 {title}

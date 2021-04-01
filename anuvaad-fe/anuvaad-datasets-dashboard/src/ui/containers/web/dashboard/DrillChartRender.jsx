@@ -122,7 +122,7 @@ class DrillCharts extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    open_sidebar: state.open_sidebar.open
+    // open_sidebar: state.open_sidebar.open
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

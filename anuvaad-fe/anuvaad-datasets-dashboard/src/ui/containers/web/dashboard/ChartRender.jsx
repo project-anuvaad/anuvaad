@@ -28,65 +28,17 @@ import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 
 var randomColor = require('randomcolor');
 var jp                = require('jsonpath')
-const data = [
-    {
-        "updatedTimestamp" : "2021-02-25T00:00:00.000Z",
-        "version" : "2021-v1",
-        "src_name" : "PIB",
-        "domain" : "General",
-        "languagePair" : "en-hi",
-        "site" : "pib.gov.in",
-        "count" : 401859,
-        "pair-type" : "Machine Readable"
-      },
-      {
-        "updatedTimestamp" : "2021-02-25T00:00:00.000Z",
-        "version" : "2021-v1",
-        "src_name" : "PIB",
-        "domain" : "General",
-        "languagePair" : "en-bn",
-        "site" : "pib.gov.in",
-        "count" : 74433,
-        "pair-type" : "Machine Readable"
-      },
-      {
-        "updatedTimestamp" : "2021-02-25T00:00:00.000Z",
-        "version" : "2021-v1",
-        "src_name" : "PIB",
-        "domain" : "General",
-        "languagePair" : "en-ta",
-        "site" : "pib.gov.in",
-        "count" : 104836,
-        "pair-type" : "Machine Readable"
-      },
-      {
-        "updatedTimestamp" : "2021-02-25T00:00:00.000Z",
-        "version" : "2021-v1",
-        "src_name" : "PIB",
-        "domain" : "General",
-        "languagePair" : "en-te",
-        "site" : "pib.gov.in",
-        "count" : 65842,
-        "pair-type" : "Machine Readable"
-      },
-      {
-        "updatedTimestamp" : "2021-02-25T00:00:00.000Z",
-        "version" : "2021-v1",
-        "src_name" : "PIB",
-        "domain" : "General",
-        "languagePair" : "en-ml",
-        "site" : "pib.gov.in",
-        "count" : 27538,
-        "pair-type" : "Machine Readable"
-      }
-    
-  ];
+const data = [{value:2400614, label:'Hindi'}, {value:1290410, label:'Bengali'}, {value:1190325, label:'Tamil'}, {value:1283020, label:'Malayalam'},{value:1362367, label:'Telugu'}, {value:1085055, label:'Kannada'}, {value:1456320, label:'Marathi'},]
+const source = [{value:81884, label:'HC/SUVAS'}, {value:3000, label:'Legal Terminologies'}, {value:263100, label:'PIB'}, {value:264200, label:'NewsOnAir'},{value:81884, label:'DD News Sports'}, {value:307430, label:'OneIndia'}, {value:263100, label:'Times of India'}]
+const domain = [{value:1442876, label:'Judicial'}, {value:569327, label:'News'}, {value:754631, label:'General'}, {value:632419, label:'Tourism'}, {value:654631, label:'sports'}, {value:652419, label:'Financial'}]
 class ChartRender extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             loading: false,
             word: "",
+            currentPage:0,
+            dataSet : data
         }
 
     }
@@ -103,14 +55,14 @@ class ChartRender extends React.Component {
             tooltip: {},
             xAxis: {
                 type: 'category',
-                data: this.getData("languagePair"),
+                data: this.getData("label"),
               },
               yAxis: {
                 type: 'value',
               },
               series: [
                 {
-                  data:this.getData("count"),
+                  data:this.getData("value"),
                   type: 'bar',
                   smooth: true,
                 },
@@ -124,11 +76,22 @@ class ChartRender extends React.Component {
       
 
     handleOnClick(event) {
-        // this.setState({secondRender:true})
-        history.push(
-            `${process.env.PUBLIC_URL}/parallel-corpus/${event.languagePair}`,
-            this.state
-          );
+
+      switch(this.state.currentPage) {
+        case 0:
+          this.setState({currentPage: 1, dataSet: domain, title : "Domain Details Chart"})
+          break;
+        case 1:
+          this.setState({currentPage: 2, dataSet: source, "Source Details Chart"})
+          break;
+        default:
+          this.setState({currentPage: 0, dataSet: data, "Language Datasets Chart"})
+      }
+      console.log(event.target)
+      if(this.state.currentPage <3){
+        this.setState({currentPage: this.state.currentPage +1})
+      } 
+        console.log(this.state.currentPage)
         
     }
 
@@ -148,7 +111,7 @@ class ChartRender extends React.Component {
         return (
 
             <div>
-                <ReactECharts
+                {/* <ReactECharts
   option={this.getOption()}
   notMerge={true}
   lazyUpdate={true}
@@ -162,27 +125,24 @@ class ChartRender extends React.Component {
   
   
   
-/>
-<BarChart width={800} height={400} data={data} maxBarSize={100} barSize={80} style={{marginLeft:'20%',marginTop:"10%"}}>
-              <XAxis dataKey="languagePair"/>
+/> */}
+<BarChart width={800} height={400} data={this.state.dataSet} maxBarSize={100} barSize={80} style={{marginLeft:'20%',marginTop:"10%"}}>
+              <XAxis dataKey="label"/>
               <YAxis type="number" />
               <CartesianGrid horizontal={true} vertical={false}/>
+              
               <Tooltip />
-              <Bar dataKey="count" fill="green" maxBarSize={100} isAnimationActive={false} onClick={(event)=>{this.handleOnClick(event)}}>
+              <Bar dataKey="value" fill="green" maxBarSize={100}  onClick={(event)=>{this.handleOnClick(event)}}>
+                
+              <LabelList dataKey="value" position="top"  />
        		{
           	data.map((entry, index) => {
             	const color = Math.floor(Math.random()*16777215).toString(16);
-                console.log(color)
             	return <Cell fill={`#${color}`} />;
             })
           }
        </Bar>
-              {/* <Bar dataKey="count" fill={randomColor()} maxBarSize={100} isAnimationActive={false} onClick={(event)=>{this.handleOnClick(event)}}/> */}
             </BarChart>
-           
-           
-            {/* {this.state.secondRender && <DrillChartRender />}
-            <DrillSourceRender/> */}
             </div>
          
         )
