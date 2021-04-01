@@ -82,10 +82,10 @@ class ChartRender extends React.Component {
           this.setState({currentPage: 1, dataSet: domain, title : "Domain Details Chart"})
           break;
         case 1:
-          this.setState({currentPage: 2, dataSet: source, "Source Details Chart"})
+          this.setState({currentPage: 2, dataSet: source, title:"Source Details Chart"})
           break;
         default:
-          this.setState({currentPage: 0, dataSet: data, "Language Datasets Chart"})
+          this.setState({currentPage: 0, dataSet: data, title:"Language Datasets Chart"})
       }
       console.log(event.target)
       if(this.state.currentPage <3){
