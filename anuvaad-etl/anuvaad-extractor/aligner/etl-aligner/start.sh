@@ -1,2 +1,3 @@
 #!/bin/bash
-python3 app.py
+ln -s /usr/bin/python3 /bin/python
+python app.py
