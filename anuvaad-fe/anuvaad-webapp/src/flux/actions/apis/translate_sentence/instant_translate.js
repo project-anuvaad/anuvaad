@@ -20,7 +20,7 @@ export default class NMTSP extends API {
         this.tgt_code = tgt_code;
         let ep = process.env[this.model.connection_details.translation.api_endpoint]
         let url = process.env[this.model.connection_details.translation.host]
-        console.log("-----------------",ep , url )
+        console.log("-----------------",ep , url, process.env )
         debugger
         // this.type = C.INTRACTIVE_TRANSLATE;
         this.endpoint =  `${url ? url : super.apiEndPointAuto()}${ep ? ep :ENDPOINTS.instant_translate}`
