@@ -79,6 +79,7 @@ class PdfUpload extends Component {
       target_language_code: '',
       source_languages: [],
       target_languages: [],
+      jobDescription:''
     };
   }
 
@@ -171,7 +172,7 @@ class PdfUpload extends Component {
     if (prevProps.documentUplaod !== this.props.documentUplaod) {
       const { APITransport } = this.props;
       const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
-        this.state.target_language_code, this.state.path, this.state.model);
+        this.state.target_language_code, this.state.path, this.state.model,"","", this.state.workspaceName);
       APITransport(apiObj);
     }
 
@@ -220,7 +221,7 @@ class PdfUpload extends Component {
 
   handleDelete = () => {
     this.setState({
-      files: []
+      files: [],workspaceName :''
     });
   };
   handleTextChange(key, event) {
@@ -238,7 +239,6 @@ class PdfUpload extends Component {
       this.setState({
         files,
         fileName: files[0].name,
-        workspaceName: this.state.workspaceName ? this.state.workspaceName : fileName,
         path: fileType
       });
     } else {
@@ -370,13 +370,14 @@ class PdfUpload extends Component {
                 <Grid item xs={12} sm={12} lg={12} xl={12}>
                   <Grid item xs={12} sm={12} lg={12} xl={12}>
                     <Typography variant="h5">
-                      {translate("common.page.label.filename")}
+                      Enter File Description
                     </Typography>
                   </Grid>
                   <Grid item xs={12} sm={12} lg={12} xl={12}>
                     <TextField
                       // className={classes.textfield}
                       value={this.state.workspaceName}
+                      placeholder = "Enter your own description here (optional)"
                       id="outlined-name"
                       margin="normal"
                       onChange={event => {

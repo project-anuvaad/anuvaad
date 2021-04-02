@@ -64,12 +64,12 @@ export default function(state = initialUserState, action) {
           
 
           let id  = value.jobID;
-          
           var b = {};
           b["tgt_locale"] = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.target_language_code
           b["status"] = ((value.status === "INPROGRESS" || value.status === "STARTED")&& timeDiff > 300) ? "FAILED" : value.status;
           b["job"] = value.jobID;
           b["name"] = value.input.jobName ? value.input.jobName : value.input.files[0].name;
+          b["description"] = value.input && value.input.jobDescription;
           b["id"] = value.output && (value.output[0].hasOwnProperty('outputFilePath') ? value.output[0].outputFilePath : value.output[0].outputFile);
           b["inputFile"] = value.taskDetails && value.taskDetails.length > 0 && value.taskDetails[0].output && value.taskDetails[0].output.length > 0 && value.taskDetails[0].output[0].outputFile;
           b["modelId"] = value && value.input && value.input.files && value.input.files.length > 0 && value.input.files[0].model && value.input.files[0].model.model_id

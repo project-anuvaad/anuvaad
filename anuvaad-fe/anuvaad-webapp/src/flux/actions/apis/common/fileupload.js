@@ -5,7 +5,7 @@ import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class RunExperiment extends API {
 
 
-  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, source_language, description = "", arrayOfUsers = [], timeout = 2000) {
+  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, source_language, description = "", arrayOfUsers = [],workspaceName, timeout = 2000) {
 
     super("POST", timeout, false);
     this.type = C.WORKFLOW;
@@ -23,7 +23,8 @@ export default class RunExperiment extends API {
     this.sentence_ids = sentence_ids;
     this.source_language = source_language;
     this.description = description;
-    this.arrayOfUsers = arrayOfUsers
+    this.arrayOfUsers = arrayOfUsers;
+    this.jobDescription = workspaceName; 
   }
 
   toString() {
@@ -49,6 +50,7 @@ export default class RunExperiment extends API {
 
         "workflowCode": this.workflow,
         "jobName": this.fileName,
+        "jobDescription":this.description,
         "files": [
           {
             "path": this.file,
