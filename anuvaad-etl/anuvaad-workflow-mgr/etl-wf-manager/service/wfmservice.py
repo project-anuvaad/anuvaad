@@ -322,6 +322,8 @@ class WFMService:
             client_input = {"workflowCode": wf_input["workflowCode"], "files": wf_input["files"]}
             if 'jobName' in wf_input.keys():
                 client_input["jobName"] = wf_input["jobName"]
+            if 'jobDescription' in wf_input.keys():
+                client_input["jobDescription"] = wf_input["jobDescription"]
             client_output = {"input": client_input, "jobID": wf_input["jobID"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
