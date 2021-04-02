@@ -34,6 +34,9 @@ import ReactToPrint from 'react-to-print';
 import DownloadJSON from '../../../../flux/actions/apis/download/download_json';
 import Loader from "../../../components/web/common/CircularLoader";
 import DownloadDigitizedDoc from "./DownloadDigitizedDoc";
+import DownloadFile from '../../../../flux/actions/apis/view_digitized_document/download_digitized_doc';
+import Download from "../../../../flux/actions/apis/download/download_zip_file";
+
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager');
@@ -769,6 +772,66 @@ class DocumentEditor extends React.Component {
     }
     handleBgImage = () => {
     }
+
+    downloadFile = (recordId, userId, type) => {
+        let apiObj = new DownloadFile(recordId, userId, type);
+        fetch(apiObj.apiEndPoint(),{
+            method:'post',
+            headers:apiObj.getHeaders().headers,
+            body:JSON.stringify(apiObj.getBody())
+        })
+        .then(async response => {
+            const rsp_data = await response.json();
+            if (!response.ok) {
+                this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
+                return Promise.reject('');
+            } else {
+                let fileName = encodeURI(rsp_data && rsp_data.translated_document ? rsp_data.translated_document : "")
+                if (fileName) {
+                    let obj = new Download(fileName)
+                    const apiReq1 = fetch(obj.apiEndPoint(), {
+                        method: 'get', dialogMessage: "Unable to download file", headers: obj.getHeaders().headers
+                    }).then(async response => {
+                        if (!response.ok) {
+                            this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
+                            console.log('api failed')
+                        } else {
+                            const buffer = new Uint8Array(await response.arrayBuffer());
+                            let res = Buffer.from(buffer).toString('base64')
+                            this.downloadBlob(res, fileName)
+                        }
+
+                    }).catch((error) => {
+                        this.setState({ dialogMessage: "Unable to download file" })
+                        console.log('api failed because of server or network', error)
+                    });
+
+                } else {
+                    this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
+                }
+            }
+        }).catch((error) => {
+            this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
+            console.log('api failed because of server or network', error)
+        });
+    }
+
+    downloadBlob = (res, fileName) => {
+        fetch("data:image/jpeg;base64," + res)
+            .then(res => res.blob())
+            .then(blob => {
+                let a = document.createElement('a');
+                let url = URL.createObjectURL(blob);
+                a.href = url;
+                a.download = fileName;
+                this.setState({ showStatus: false, message: null })
+                a.click();
+
+            }).catch((error) => {
+                this.setState({ dialogMessage: "Unable to download file" })
+                console.log("Unable to download file")
+            });
+    }
     render() {
         return (
             <div style={{ height: window.innerHeight }}>
@@ -777,7 +840,8 @@ class DocumentEditor extends React.Component {
                         docView={this.state.docView}
                         onAction={this.handleDocumentView}
                         onShowPreview={this.showPreview}
-                        handleBgImage={this.handleBgImage} />
+                        handleBgImage={this.handleBgImage}
+                        downloadFile={this.downloadFile} />
                 </div>
 
                 { !this.state.preview ?

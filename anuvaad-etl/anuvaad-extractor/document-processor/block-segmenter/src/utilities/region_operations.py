@@ -76,13 +76,19 @@ class MapKeys:
 def index_tree(poly_index, poly, idx):
     idx.insert(poly_index, poly.bounds)
 
+
 def get_polygon(region):
     points = []
     vertices = region['vertices']
     for point in vertices:
         points.append((point['x'], point['y']))
-    poly = Polygon(points)
-    return poly
+    if not (max(points)==(0,0) and min(points)==(0,0)):
+        poly = Polygon(points)
+        if not poly.is_valid:
+            poly = poly.buffer(0.01)
+        return poly
+    else:
+        return False
 
 def sort_regions(region_lines, sorted_lines=[]):
     check_y =region_lines[0]['boundingBox']['vertices'][0]['y']
@@ -103,10 +109,13 @@ def collate_regions(regions, lines,grand_children=False,region_flag = True,skip_
         lines_intersected =[]
         for line_idx, line in enumerate(lines):
             poly = get_polygon(line['boundingBox'])
-            idx.insert(line_idx, poly.bounds)
+            if poly:
+                idx.insert(line_idx, poly.bounds)
         for region_index, region in enumerate(regions):
             region_poly = get_polygon(region['boundingBox'])
-            children_lines = list(idx.intersection(region_poly.bounds))
+            children_lines =[]
+            if region_poly:
+                children_lines = list(idx.intersection(region_poly.bounds))
             if len(children_lines) > 0:
                 region_lines = []
                 for intr_index in children_lines:
@@ -116,12 +125,13 @@ def collate_regions(regions, lines,grand_children=False,region_flag = True,skip_
                                 lines[intr_index]['children'] = [copy.deepcopy(lines[intr_index])]
                     
                         line_poly = get_polygon(lines[intr_index]['boundingBox'])
-                        area = region_poly.intersection(line_poly).area
-                        reg_area = region_poly.area
-                        line_area = line_poly.area
-                        if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
-                            region_lines.append(lines[intr_index])
-                            lines_intersected.append(intr_index)
+                        if line_poly:
+                            area = region_poly.intersection(line_poly).area
+                            reg_area = region_poly.area
+                            line_area = line_poly.area
+                            if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                                region_lines.append(lines[intr_index])
+                                lines_intersected.append(intr_index)
                 region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 if len(region_lines) > 1:
                     regions[region_index]['children'] = sort_regions(region_lines,[])
@@ -154,15 +164,17 @@ def remvoe_regions(regions, lines):
         lines_intersected =[]
         for line_idx, line in enumerate(lines):
             poly = get_polygon(line['boundingBox'])
-            idx.insert(line_idx, poly.bounds)
+            if poly:
+                idx.insert(line_idx, poly.bounds)
         for region_index, region in enumerate(regions):
             region_poly = get_polygon(region['boundingBox'])
-            children_lines = list(idx.intersection(region_poly.bounds))
-            if len(children_lines) > 0:
-                region_lines = []
-                for intr_index in children_lines:
-                    region_lines.append(lines[intr_index])
-                    lines_intersected.append(intr_index)
+            if region_poly:
+                children_lines = list(idx.intersection(region_poly.bounds))
+                if len(children_lines) > 0:
+                    region_lines = []
+                    for intr_index in children_lines:
+                        region_lines.append(lines[intr_index])
+                        lines_intersected.append(intr_index)
 
     for line_index, line in enumerate(lines):
         if line_index not in lines_intersected:

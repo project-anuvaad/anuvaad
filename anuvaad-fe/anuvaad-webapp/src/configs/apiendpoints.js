@@ -42,7 +42,8 @@ const endpoints = {
   task_detail: "/anuvaad-annotation/sentence-annotation/v0/task/details/search",
   update_user: "/anuvaad/user-mgmt/v1/users/update",
   user_job: "/anuvaad-annotation/sentence-annotation/v0/user/task/search",
-  grade_sentence: "/anuvaad-annotation/sentence-annotation/v0/task/annotation/grading"
+  grade_sentence: "/anuvaad-annotation/sentence-annotation/v0/task/annotation/grading",
+  downlod_digitized_file:"/anuvaad-etl/document-converter/v0/document-exporter"
 };
 
 export default endpoints;

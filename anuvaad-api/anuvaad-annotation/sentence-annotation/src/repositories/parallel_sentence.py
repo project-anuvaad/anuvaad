@@ -12,6 +12,16 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 class ParallelSentenceRepo(object):
     def __init__(self):
         self.parallelSentenceModel  = ParallelSentenceModel()
+
+    def update_parallel_sentences(self, sentences):
+        parallel_sentences = []
+
+        for sentence in sentences:
+            new_sentence = sentence.copy()
+            new_sentence['annotationId'] = str(uuid.uuid4())
+            parallel_sentences.append(new_sentence)
+
+        return parallel_sentences
     
     def store(self, source_lang, target_lang, jobId, annotationType, users, fileInfo, description):
         parallel_sentences  = []
@@ -39,7 +49,7 @@ class ParallelSentenceRepo(object):
             task['jobId']           = jobId
             task['taskId']          = str(uuid.uuid4())
             task['annotationType']  = annotationType
-            task['annotations']     = parallel_sentences
+            task['annotations']     = self.update_parallel_sentences(parallel_sentences)
             task['createdOn']       = datetime.datetime.utcnow()
             tasks.append(task)
 
