@@ -30,7 +30,10 @@ class FileUploader(Resource):
                                help='File is required', required=True)
             args = parse.parse_args()
             f = args['file']
+            mime_type = f.mimetype
             log.info("Filename: " + str(f.filename))
+            log.info("File MIME Type: " + str(mime_type))
+
             file_real_name, file_extension = os.path.splitext(f.filename)
             fileallowed = False
             filename = str(uuid.uuid4()) + file_extension
@@ -39,6 +42,10 @@ class FileUploader(Resource):
                 if file_extension.endswith(allowed_file_extension):
                     fileallowed = True
                     break
+            if fileallowed is False:
+                if mime_type in ALLOWED_FILE_TYPES:
+                    fileallowed = True
+
             if fileallowed:
                 f.save(filepath)
                 file_size = os.stat(filepath).st_size
