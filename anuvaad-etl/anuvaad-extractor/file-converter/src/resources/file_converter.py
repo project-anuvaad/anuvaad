@@ -13,6 +13,7 @@ import os
 from uuid import uuid4
 from datetime import datetime
 from shutil import copyfile
+import magic
 
 # rest request for block merging individual service
 class FileConverter(Resource):
@@ -23,7 +24,9 @@ class FileConverter(Resource):
         upload_id = str(uuid4())
         filename = body['filename']
         filepath = os.path.join(config.download_folder, filename)
-        if filename.endswith('.pdf'):
+        # if filename.endswith('.pdf'):
+        mime = magic.Magic(mime=True)
+        if mime.from_file(filepath) == 'application/pdf':
             res = CustomResponse(Status.SUCCESS.value, filename)
             return res.getres()
         try:
