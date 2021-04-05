@@ -100,14 +100,14 @@ class OcrPageCard extends React.Component {
                 {
                     line.regions.map(word => line.class !== 'CELL' ?
                         this.renderTextSpan(word, region) :
-                        this.renderTable(word, line)
+                        this.renderTable(word, line, region)
                     )
                 }
             </div>
         )
     }
 
-    renderTable = (word, line) => {
+    renderTable = (word, line, region) => {
         return (
             <div
                 style={{
@@ -122,12 +122,11 @@ class OcrPageCard extends React.Component {
                     fontFamily: word.font && word.font.family,
                 }}
                 key={word.identifier}
-                onDoubleClick={() => this.setModalState(word)}
-            >
+                onDoubleClick={() => this.setModalState(this.renderUpdatedWords(word), word.identifier, region.identifier)}>
                 {
-                    this.state.id === word.identifier ? this.state.text : word.text
+                    this.renderUpdatedWords(word)
                 }
-            </div >
+            </div>
         )
     }
 
@@ -175,7 +174,7 @@ class OcrPageCard extends React.Component {
         let changedWord = word
         if (changedWord !== originalWord) {
             this.setState({ loading: true })
-            let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord,this.props.page.page_info.page_no)
+            let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord, this.props.page.page_info.page_no)
             APITransport(apiObj);
         }
     }
