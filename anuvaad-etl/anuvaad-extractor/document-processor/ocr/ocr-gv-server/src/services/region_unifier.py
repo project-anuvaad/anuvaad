@@ -348,9 +348,9 @@ class Region_Unifier:
             
 
 
-            tabel_region =  collate_regions(copy.deepcopy(tabel_region),copy.deepcopy(filtered_words),child_class='CELL_TEXT',grand_children=False,region_flag = False)
+            t_list =  collate_regions(copy.deepcopy(t_list),copy.deepcopy(page_words),child_class='CELL_TEXT',grand_children=True,region_flag = False)
             
-            page_words   = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
+            page_words   = remvoe_regions(copy.deepcopy(t_list), copy.deepcopy(page_words))
             filtered_words = copy.deepcopy(page_words)
             text_region  = remvoe_regions(copy.deepcopy(t_list) ,copy.deepcopy(text_region))
             

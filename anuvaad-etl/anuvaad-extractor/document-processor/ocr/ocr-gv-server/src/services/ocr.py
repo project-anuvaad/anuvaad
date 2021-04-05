@@ -18,13 +18,13 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
 def get_text(path,page_dict,page_regions,page_c_words,font_info):
     
-    
+    #path = config.BASE_DIR+path
     img = cv2.imread(path)
     
-    img[175 < img ] = 255
-    masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
-    cv2.imwrite(masked_path,img)
-    with io.open(masked_path, 'rb') as image_file:
+    #img[175 < img ] = 255
+    #masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
+    #cv2.imwrite(masked_path,img)
+    with io.open(path, 'rb') as image_file:
         content = image_file.read()
     image = vision.types.Image(content=content)
     response = client.document_text_detection(image=image)
@@ -193,6 +193,7 @@ def end_point_correction(region, margin, ymax,xmax):
 
 def mask_image_craft(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
     try:
+        #path = config.BASE_DIR+path
         image   = cv2.imread(path)
         for region_idx, page_region in enumerate(page_regions):
             if 'class' in page_region.keys():
