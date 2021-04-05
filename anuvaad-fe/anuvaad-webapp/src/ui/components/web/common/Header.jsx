@@ -381,7 +381,7 @@ class Header extends React.Component {
                           />
                         </ListItem>
                       </div>
-                      <div>
+                      {/* {<div>
                         <Divider className={classes.divider} />
                         <ListItem
                           id="document-digitization"
@@ -402,7 +402,7 @@ class Header extends React.Component {
                             }
                           />
                         </ListItem>
-                      </div>
+                      </div>} */}
                     </>)}
                   {/* {role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
                     <Divider className={classes.divider} />
