@@ -7,7 +7,7 @@ import numpy as np
 from scipy.spatial import distance
 import config
 
-model = SentenceTransformer(config.LABSE_PATH,device='cuda')
+model = SentenceTransformer(config.LABSE_PATH,device='cpu')
 
 class LabseAlignerService:
     @staticmethod  
