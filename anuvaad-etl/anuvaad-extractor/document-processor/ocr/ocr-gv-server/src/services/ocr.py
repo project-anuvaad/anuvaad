@@ -43,8 +43,8 @@ def text_extraction(file_properties,image_paths,file):
         page_regions =  file_properties.get_regions(idx)
         page_c_words = file_properties.get_words(idx)
         page_output,page_words = get_text(image_path,page_dict,page_regions,page_c_words,font_info)
-        #save_path = mask_image_craft(image_path, page_regions, idx, file_properties, width, height)
-        save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
+        save_path = mask_image_craft(image_path, page_regions, idx, file_properties, width, height)
+        #save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
         page_output = set_bg_image(page_output, save_path, idx,file)
         file_properties.set_regions(idx,page_output)
         file_properties.delete_regions(idx)
@@ -197,7 +197,7 @@ def mask_image_craft(path, page_regions,page_index,file_properties,image_width,i
         for region_idx, page_region in enumerate(page_regions):
             if 'class' in page_region.keys():
                 region_class = page_region['class']
-                if region_class not in ["IMAGE","LINE","SEPARATOR"]:
+                if region_class not in ["IMAGE","OTHER","SEPARATOR"]:
                     region_lines = file_properties.get_region_lines(page_index,region_idx)
                     if region_lines!=None:
                         for line_index, line in enumerate(region_lines):
