@@ -589,6 +589,21 @@
             "role":"ANNOTATOR",
             "actionID": "75675521-a94e-424b-b2e8-1c46a3c4dc9b",
             "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "e6132e87-0616-4efe-9c68-6b4a37b16d18",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "e6132e87-0616-4efe-9c68-6b4a37b16d18",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "e6132e87-0616-4efe-9c68-6b4a37b16d18",
+            "active":true
         }
     ]
 }
