@@ -393,6 +393,14 @@
             "description":"API to document conversion"
         },
         {
+            "id":"68e90db3-0146-4e04-ba94-18671b1c5995",
+            "uri":"/anuvaad-etl/document-converter/v0/document-exporter",
+            "module":"DOCUMENT-CONVERTER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to export ocr digitized doc"
+        },
+        {
             "id":"a22e8462-160e-4372-88c0-d1e4713568fd",
             "uri":"/anuvaad-telemetry/v1/telemetry",
             "module":"ANUVAAD-TELEMETRY",
@@ -519,6 +527,14 @@
             "active":true,
             "whiteList":false,
             "description":"API for GNMT adapter"
+        },
+        {
+            "id":"b705297f-ede2-47e8-a264-29b8fc8189cf",
+            "uri":"/aai4b-nmt-inference/v1/translate",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT"
         }
     ]
 }

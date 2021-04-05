@@ -527,6 +527,14 @@
             "active":true,
             "whiteList":false,
             "description":"API for GNMT adapter"
+        },
+        {
+            "id":"b705297f-ede2-47e8-a264-29b8fc8189cf",
+            "uri":"/aai4b-nmt-inference/v1/translate",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT"
         }
     ]
 }
