@@ -15,7 +15,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 
 import history from "../../../../web.history";
 
-import MenuIcon from '@material-ui/icons/Menu';
+import MenuIcon from '@material-ui/icons/ArrowBack';
 
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
@@ -124,6 +124,32 @@ class Header extends React.Component {
     this.setState({ anchorEl: null });
   };
 
+
+  handleBack = () => {
+
+    let drillDownVal = this.props.drill_down.page_data
+
+    if (drillDownVal) {
+      let pageNo = drillDownVal.currentPage - 1
+      let title = ""
+
+      switch (pageNo) {
+        case 0:
+          title = "Domain Details Chart"
+          break;
+        case 1:
+           title ="Source Details Chart" 
+          break;
+        default:
+          title = "Language Datasets Chart" 
+      }
+
+      this.props.currentPageUpdate({ currentPage: drillDownVal.currentPage - 1, dataSet: drillDownVal.domain, title})
+
+    }
+
+  }
+
   render() {
     const { classes, title, forDemo, dontShowHeader, currentMenu, open_sidebar } = this.props;
 
@@ -138,7 +164,7 @@ class Header extends React.Component {
     return (
       <div>
         {!dontShowHeader &&
-          <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, this.props.open_sidebar && classes.appBarShift)} style={{ height: '50px' }}>
+          <AppBar position="fixed" color="primary" className={classNames(classes.appBar, this.props.open_sidebar && classes.appBarShift)} style={{ height: '50px' }}>
 
             <Toolbar disableGutters={!open_sidebar} style={{ minHeight: "50px" }}>
 
@@ -146,21 +172,17 @@ class Header extends React.Component {
                 <IconButton onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
                   <CloseIcon />
                 </IconButton> :
-                <IconButton id="menu" onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
-                  <MenuIcon />
-                </IconButton>
+                <div>
+                  {this.props.drill_down.page_data && this.props.drill_down.page_data.hasOwnProperty("currentPage") && this.props.drill_down.page_data.currentPage !== 0
+                    &&
+                    <IconButton id="menu" onClick={this.handleMenuOpenClose} className={classes.menuButton} color="inherit" aria-label="Menu">
+                      <MenuIcon />
+                    </IconButton>
+                  }
+                </div>
+
               }
               <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
-              {/* {forDemo &&
-                <img src={logo}
-                  alt=""
-                  style={{
-                    width: '2%',
-                    display: 'block',
-                    marginLeft: '1%'
-                  }} />
-              } */}
-
               <Typography variant="h5" color="inherit" className={forDemo ? classes.felxDemo : classes.flex}>
                 {title}
               </Typography>
@@ -415,6 +437,7 @@ class Header extends React.Component {
 
 const mapStateToProps = state => ({
   // open_sidebar: state.open_sidebar.open
+  drill_down: state.drill_down
 });
 
 const mapDispatchToProps = dispatch =>

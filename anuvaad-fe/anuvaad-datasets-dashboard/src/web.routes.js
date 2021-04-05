@@ -39,9 +39,9 @@ class AppRoutes extends React.Component {
               title={"Organization List"}
               userRoles={["TRANSLATOR"]}
               component={DrillSourceRender}
-              authenticate={this.authenticateUser}
+              authenticate={true}
               currentMenu="organization-list"
-              dontShowHeader={true}
+              // dontShowHeader={true}
 
             />
             
@@ -51,9 +51,9 @@ class AppRoutes extends React.Component {
               title={"Organization List"}
               userRoles={["TRANSLATOR"]}
               component={DrillChartRender}
-              authenticate={this.authenticateUser}
+              authenticate={true}
               currentMenu="organization-list"
-              dontShowHeader={true}
+              // dontShowHeader={true}
 
             />
             <PrivateRoute
@@ -62,9 +62,9 @@ class AppRoutes extends React.Component {
               title={"Organization List"}
               userRoles={["TRANSLATOR"]}
               component={ChartRender}
-              authenticate={this.authenticateUser}
+              authenticate={true}
               currentMenu="organization-list"
-              dontShowHeader={true}
+              // dontShowHeader={true}
 
             />
           </Switch>
