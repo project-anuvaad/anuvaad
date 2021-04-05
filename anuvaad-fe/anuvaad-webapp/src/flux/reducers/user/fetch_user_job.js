@@ -7,7 +7,7 @@ const initialState = {
 
 
 const getUserJob = (payload) => {
-    let result = payload.tasks.map(task => {
+    let result = payload.map(task => {
         let date = new Date(task.createdOn).toLocaleString()
         return {
             createdOn: date,
@@ -21,13 +21,26 @@ const getUserJob = (payload) => {
     return result
 }
 
+const getSortedData = (unSortedData) => {
+    console.log(unSortedData)
+    let sortedData = unSortedData.tasks.sort((a, b) => {
+        if (a.createdOn < b.createdOn) {
+            return 1
+        }
+        return -1;
+    })
+    return sortedData
+}
+
 export default (state = initialState, action) => {
     switch (action.type) {
         case C.FETCH_USER_JOB:
             {
+                let sortedData = getSortedData(action.payload.data)
+                let result = getUserJob(sortedData)
                 return {
                     count: action.payload.data.tasks.length,
-                    result: getUserJob(action.payload.data),
+                    result,
                 }
             }
         default:
