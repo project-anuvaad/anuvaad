@@ -102,10 +102,99 @@ def sort_regions(region_lines, sorted_lines=[]):
     return sorted_lines
 
 def collate_regions(regions, lines, child_class=None, grand_children=False,region_flag = True,skip_enpty_children=False,add_font=False ):
+    child_key='regions'
+    idx = index.Index()
+    lines_intersected = []
+   
+    if regions !=None and len(regions) > 0:
+        lines_intersected =[]
+        for line_idx, line in enumerate(lines):
+            print("lineeeeeeeeeeeeeeee",line)
+            if child_class == 'LINE':
+                if 'text' in line.keys():
+                    del lines[line_idx]['text']
+            if add_font:
+                height = abs(line['boundingBox']['vertices'][0]['y'] - line['boundingBox']['vertices'][2]['y'])
+                lines[line_idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
+
+            if child_class is not None:
+                lines[line_idx]['class'] = child_class
+            poly = get_polygon(line['boundingBox'])
+            if poly:
+                idx.insert(line_idx, poly.bounds)
+        for region_index, region in enumerate(regions):
+            
+            region_poly = get_polygon(region['boundingBox'])
+            children_lines =[]
+            if region_poly:
+                children_lines = list(idx.intersection(region_poly.bounds))
+            if len(children_lines) > 0:
+                region_lines = []
+                for intr_index in children_lines:
+                    if intr_index not in lines_intersected:
+                        if grand_children :
+                            if child_key not in lines[intr_index].keys():
+                                grand_child  = copy.deepcopy(lines[intr_index])
+                                grand_child['class'] = 'WORD'
+                                lines[intr_index][child_key] = [grand_child]
+                        
+                        line_poly = get_polygon(lines[intr_index]['boundingBox'])
+                        if line_poly:
+                            area = region_poly.intersection(line_poly).area
+                            reg_area = region_poly.area
+                            line_area = line_poly.area
+                            if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                                region_lines.append(lines[intr_index])
+                                lines_intersected.append(intr_index)
+                    
+                region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
+                
+                if len(region_lines) > 0:
+                    regions[region_index][child_key] = sort_regions(region_lines,[])
+                    #regions[region_index]['children'] = region_lines
+                    regions[region_index]['avg_size'] = get_avrage_size(region_lines)
+                else:
+                    if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
+                        tmp_region = copy.deepcopy(regions[region_index])
+                        regions[region_index]['class']=="CELL"
+                        tmp_region['class'] = "WORD"
+                        tmp_region['text'] = ""
+                        regions[region_index][child_key] = tmp_region
+                    else:
+                       regions[region_index][child_key] = [copy.deepcopy(regions[region_index])] 
+            else:
+                if not skip_enpty_children :
+                    
+                    if grand_children :
+                        regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
+                    
+                    if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
+                        tmp_region = copy.deepcopy(regions[region_index])
+                        regions[region_index]['class']=="CELL"
+                        tmp_region['class'] = "WORD"
+                        tmp_region['text'] = ""
+                        regions[region_index][child_key] = tmp_region
+                    else:
+                        regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
+    if region_flag:
+        for line_index, line in enumerate(lines):
+            if line_index not in lines_intersected:
+                line[child_key] = [ copy.deepcopy(line)]
+                if child_class is not None:
+                    if child_class is 'LINE':
+                        line['class'] = 'PARA'
+                    if child_class is 'WORD':
+                        line['class'] ='LINE'
+                regions.append(line)
+
+    return regions
+
+def collate_cell_regions(regions, lines, child_class=None, grand_children=False,region_flag = True,skip_enpty_children=False,add_font=False ):
 
     child_key='regions'
     idx = index.Index()
     lines_intersected = []
+    
     if regions !=None and len(regions) > 0:
         lines_intersected =[]
         for line_idx, line in enumerate(lines):
@@ -135,7 +224,6 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                                 grand_child  = copy.deepcopy(lines[intr_index])
                                 grand_child['class'] = 'WORD'
                                 lines[intr_index][child_key] = [grand_child]
-                        
                         line_poly = get_polygon(lines[intr_index]['boundingBox'])
                         if line_poly:
                             area = region_poly.intersection(line_poly).area
@@ -144,36 +232,20 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                             if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
                                 region_lines.append(lines[intr_index])
                                 lines_intersected.append(intr_index)
-                    
+                if child_key in region.keys() and type(region[child_key]) is list:
+                    pass
+                else:
+                    region[child_key] = []
+
                 region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 if len(region_lines) > 1:
-                    regions[region_index][child_key] = sort_regions(region_lines,[])
-                    #regions[region_index]['children'] = region_lines
+                    regions[region_index][child_key].extend(sort_regions(region_lines,[]))
                     regions[region_index]['avg_size'] = get_avrage_size(region_lines)
                 else :
-                    regions[region_index][child_key]  = region_lines
+                    regions[region_index][child_key].extend(region_lines)
                     regions[region_index]['avg_size'] = get_avrage_size(region_lines)
-            else:
-                if not skip_enpty_children :
-                    if grand_children :
-                        regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
-                    regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
-    #orphan_lines = []
-    if region_flag:
-        for line_index, line in enumerate(lines):
-            if line_index not in lines_intersected:
-                line[child_key] = [ copy.deepcopy(line)]
-                if child_class is not None:
-                    if child_class is 'LINE':
-                        line['class'] = 'PARA'
-                    if child_class is 'WORD':
-                        line['class'] ='LINE'
-                regions.append(line)
-
+                
     return regions
-
-
-
 
 def collate_text(craft_words, google_words):
   
@@ -189,15 +261,12 @@ def collate_text(craft_words, google_words):
         for region_index, region in enumerate(craft_words):
             region_poly = get_polygon(region['boundingBox'])
             if region_poly:
-            #print(region_poly.bounds)
                 child_words = list(idx.intersection(region_poly.bounds))
-            #print(idx.intersection(region_poly.bounds))
                 text= ''
                 if len(child_words) > 0:
                     region_words = []
                     for intr_index in child_words:
                         if intr_index not in words_intersected:
-                            #print(intr_index)
                         
                             line_poly = get_polygon(google_words[intr_index]['boundingBox'])
                             if line_poly:
