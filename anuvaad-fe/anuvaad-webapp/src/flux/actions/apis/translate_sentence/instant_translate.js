@@ -22,9 +22,10 @@ export default class NMTSP extends API {
         let eURL  = "REACT_APP_"+this.model.connection_details.translation.host
         let ep = process.env[url]
         let appURL = process.env[eURL]
+        console.log("-----------------",ep , url,appURL,eURL, process.env )
         
         // this.type = C.INTRACTIVE_TRANSLATE;
-        this.endpoint =  `${appURL ? appURL : super.apiEndPointAuto()}${ep ? ep :ENDPOINTS.instant_translate}`
+        this.endpoint =  ((appURL &&ep) ?  (eURL+url) : `${super.apiEndPointAuto()}${ENDPOINTS.instant_translate}`)
     }
 
     toString() {
