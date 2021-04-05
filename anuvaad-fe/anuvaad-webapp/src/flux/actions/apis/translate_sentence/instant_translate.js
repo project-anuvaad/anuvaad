@@ -25,7 +25,7 @@ export default class NMTSP extends API {
         console.log("-----------------",ep , url,appURL,eURL, process.env )
         
         // this.type = C.INTRACTIVE_TRANSLATE;
-        this.endpoint =  ((appURL &&ep) ?  (eURL+url) : `${super.apiEndPointAuto()}${ENDPOINTS.instant_translate}`)
+        this.endpoint =  ((appURL &&ep) ?  (ep+appURL) : `${super.apiEndPointAuto()}${ENDPOINTS.instant_translate}`)
     }
 
     toString() {
