@@ -13,7 +13,7 @@ ENABLE_CORS = False
 download_folder = 'upload'
 
 FONT_DIR         = os.environ.get('DOC_EXPORTER_FONTS','fonts')
-DATA_OUTPUT_DIR  = os.environ.get('DOC_EXPORTER_OUTPUT_FOLDER','output')
+DATA_OUTPUT_DIR  = os.environ.get('DOC_EXPORTER_OUTPUT_FOLDER','upload')
 
 
 # internal url
