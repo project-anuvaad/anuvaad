@@ -4,10 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withStyles } from "@material-ui/core/styles";
 import MUIDataTable from "mui-datatables";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
+
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 
 import ToolBar from "./ViewAnnotatorJobHeader";
 import { translate } from "../../../../../assets/localisation";
@@ -15,9 +13,6 @@ import NewCorpusStyle from "../../../../styles/web/Newcorpus";
 
 import APITransport from "../../../../../flux/actions/apitransport/apitransport";
 import FetchTaskDetails from '../../../../../flux/actions/apis/view_scheduled_jobs/fetch_annotator_job';
-
-
-const TELEMETRY = require("../../../../../utils/TelemetryManager");
 
 class ViewAnnotatorJob extends React.Component {
     constructor(props) {
@@ -43,15 +38,7 @@ class ViewAnnotatorJob extends React.Component {
         let apiObj = new FetchTaskDetails(this.props.match.params.taskId)
         APITransport(apiObj);
     }
-
-    componentWillUnmount() {
-
-    }
-
-    componentDidUpdate(prevProps) {
-
-    }
-
+    
     getMuiTheme = () =>
         createMuiTheme({
             overrides: {
@@ -123,7 +110,6 @@ class ViewAnnotatorJob extends React.Component {
                 direction: "desc",
             },
         };
-        console.log(this.props.taskdetail.count, this.props.taskdetail.result)
         return (
             <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
                 <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>

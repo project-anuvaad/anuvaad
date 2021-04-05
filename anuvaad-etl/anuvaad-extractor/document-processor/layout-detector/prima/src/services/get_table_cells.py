@@ -58,7 +58,7 @@ def get_regions(regions,clss):
             tab.set_coords(table)
             tab_coord =  tab.get_box()
             
-            r_box.append(tab_coord)
+            #r_box.append(tab_coord)
             #####
 
             for t_cell in table['rect']:

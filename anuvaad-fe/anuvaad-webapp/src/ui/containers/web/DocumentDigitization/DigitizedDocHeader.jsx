@@ -17,17 +17,14 @@ import BackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
-import { translate } from '../../../../../src/assets/localisation';
 import GlobalStyles from "../../../styles/web/styles";
 import Theme from "../../../theme/web/theme-anuvaad";
 import classNames from "classnames";
 import history from "../../../../web.history";
 
-import DocumentConverterAPI from "../../../../flux/actions/apis/document_translate/documentconverter";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { showPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
 import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
-import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
 import togglebtnstatus from '../../../../flux/actions/apis/view_digitized_document/show_bg_image';
 import switchstyles from '../../../../flux/actions/apis/view_digitized_document/switch_styles';
 import startediting from '../../../../flux/actions/apis/view_digitized_document/start_editing';
@@ -119,69 +116,9 @@ class DigitizedDocHeader extends React.Component {
         )
     }
 
-    fetchFile(fileType) {
-        this.setState({ anchorEl: null, showStatus: true, message: translate("common.page.label.download") });
+    
 
-        let apiObj = new DocumentConverterAPI(fileType, this.props.match.params.jobid, JSON.parse(localStorage.getItem('userProfile')) ? JSON.parse(localStorage.getItem('userProfile')).userID : '')
-
-        const apiReq = fetch(apiObj.apiEndPoint(), {
-            method: 'post',
-            body: JSON.stringify(apiObj.getBody()),
-            headers: apiObj.getHeaders().headers
-        }).then(async response => {
-            const rsp_data = await response.json();
-            if (!response.ok) {
-                this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
-                return Promise.reject('');
-            } else {
-                let fileName = rsp_data && rsp_data.translated_document ? rsp_data.translated_document : ""
-
-                if (fileName) {
-                    let obj = new DownloadFile(fileName)
-
-                    const apiReq1 = fetch(obj.apiEndPoint(), {
-                        method: 'get', dialogMessage: "Unable to download file", headers: obj.getHeaders().headers
-                    }).then(async response => {
-                        if (!response.ok) {
-                            this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
-                            console.log('api failed')
-                        } else {
-                            const buffer = new Uint8Array(await response.arrayBuffer());
-                            let res = Buffer.from(buffer).toString('base64')
-                            this.downloadFile(res, fileName)
-                        }
-
-                    }).catch((error) => {
-                        this.setState({ dialogMessage: "Unable to download file" })
-                        console.log('api failed because of server or network', error)
-                    });
-
-                } else {
-                    this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
-                }
-            }
-        }).catch((error) => {
-            this.setState({ showStatus: false, message: null, dialogMessage: "Unable to download file" })
-            console.log('api failed because of server or network', error)
-        });
-    }
-
-    downloadFile = (res, fileName) => {
-        fetch("data:image/jpeg;base64," + res)
-            .then(res => res.blob())
-            .then(blob => {
-                let a = document.createElement('a');
-                let url = URL.createObjectURL(blob);
-                a.href = url;
-                a.download = fileName;
-                this.setState({ showStatus: false, message: null })
-                a.click();
-
-            }).catch((error) => {
-                this.setState({ dialogMessage: "Unable to download file" })
-                console.log("Unable to download file")
-            });
-    }
+    
 
     openPDF = event => {
         this.props.showPdf()
@@ -194,6 +131,9 @@ class DigitizedDocHeader extends React.Component {
     renderOptions() {
         const { anchorEl } = this.state;
         const openEl = Boolean(anchorEl);
+        let {jobId,filename} = this.props.match.params
+        let recordId = `${jobId}|${filename}`
+        let userID = JSON.parse(localStorage.getItem("userProfile")).userID
 
         return (
             <div style={{ display: "flex", flexDirection: "row" }}>
@@ -225,8 +165,10 @@ class DigitizedDocHeader extends React.Component {
                     <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
+                            
                             this.setState({ anchorEl: null })
-                            this.props.onShowPreview()
+                            // this.props.onShowPreview()
+                            this.props.downloadFile(recordId,userID,'txt')
                         }}
                     >
                         As TXT
@@ -235,10 +177,11 @@ class DigitizedDocHeader extends React.Component {
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
                             this.setState({ anchorEl: null })
-                            this.props.onShowPreview()
+                            // this.props.onShowPreview()
+                            this.props.downloadFile(recordId,userID,'pdf')
                         }}
                     >
-                        As DOCX
+                        As PDF
                     </MenuItem>
                 </StyledMenu>
                 {/* <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.togglebtnstatus}>

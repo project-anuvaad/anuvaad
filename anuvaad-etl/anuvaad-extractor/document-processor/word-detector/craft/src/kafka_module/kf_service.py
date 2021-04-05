@@ -62,12 +62,15 @@ def process_word_detector_kf():
                     log_info('process_word_detector_kf - received invalid data {}'.format(msg.value), None)
                     continue
                 data            = Consumer.get_json_data(msg.value)
+                print(data)
 
 
-                consumer.commit()  # <--- This is what we need
+                consumer.commit_async() 
+
+                 # <--- This is what we need
+                #consumer.commit
                 # Optionally, To check if everything went good
                 #print('New Kafka offset: %s' % consumer.committed(TopicPartition(config.input_topic, msg.partition)))
-
 
                 jobid           = data['jobID']
                 log_info('process_word_detector_kf - received message from kafka, dumping into internal queue', data)

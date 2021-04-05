@@ -118,7 +118,7 @@ class Dashboard extends React.Component {
       let userModel = JSON.parse(localStorage.getItem("userProfile"))
       let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code, userModel.models)
 
-      this.makeAPICallInteractiveTranslation(this.state.text, modelId.model_id)
+      this.makeAPICallInteractiveTranslation(this.state.text, modelId)
       // this.makeAPICallAutoML(this.state.text, this.state.source_language_code, this.state.target_language_code)
   }
 

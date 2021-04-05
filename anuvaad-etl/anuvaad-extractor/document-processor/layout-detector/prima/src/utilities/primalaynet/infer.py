@@ -150,13 +150,19 @@ class PRIMA(object):
 		
 		return coords, layout_class,score
 	
-	def get_polygon(self, region):
+	
+	def get_polygon(self,region):
 		points = []
 		vertices = region['vertices']
 		for point in vertices:
 			points.append((point['x'], point['y']))
-		poly = Polygon(points)
-		return poly
+		if not (max(points)==(0,0) and min(points)==(0,0)):
+			poly = Polygon(points)
+			if not poly.is_valid:
+				poly = poly.buffer(0.01)
+			return poly
+		else:
+			return False
 
 	def class_mapping(self, class_name):
 		if class_name == "TextRegion":
@@ -212,7 +218,7 @@ class PRIMA(object):
 		reg1["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
 		reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
 		reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
-		#reg1['class'] = 'TEXT'
+		reg1['class'] = clss
 		# except:
 		#     pass
 
@@ -222,9 +228,11 @@ class PRIMA(object):
         
 		region_poly = self.get_polygon(region2['boundingBox'])
 		base_poly = self.get_polygon(region1['boundingBox'])
-		area = base_poly.intersection(region_poly).area
-		area1 = base_poly.area
-		area2 = region_poly.area
+		area=0; area1=0; area2=0
+		if region_poly and base_poly:
+			area = base_poly.intersection(region_poly).area
+			area1 = base_poly.area
+			area2 = region_poly.area
 		tag1 = region1['class']
 		tag2 = region2['class']
 		score1 = region1['score']
@@ -234,10 +242,6 @@ class PRIMA(object):
 		# 	return None, False
 		if (area>0 and tag1 =='TABLE') or (area>0 and tag2=='TABLE'):
 				return "TABLE", True
-		# if (area>0 and area1<area2 and area1/area2>0.2 and float(score1)>float(score2)) or (area>0 and area1>area2 and area2/area1>0.2 and  float(score1)>float(score2)):
-		# 		return tag1, True
-		# elif (area>0 and area1<area2 and area1/area2>0.2 and float(score1)<float(score2)) or (area>0 and area1>area2 and area2/area1>0.2 and  float(score1)<float(score2)):
-		# 		return tag2, True
 		elif (area>0 and float(score1)>float(score2)): # or (area>0 and area1>area2 and area2/area1>0.2 and  float(score1)>float(score2)):
 			if tag2!="TABLE":
 				return tag1, True
@@ -250,6 +254,12 @@ class PRIMA(object):
 				return "TABLE",True
 		elif area>0 and tag1=='TEXT' and tag2=='TEXT':
 			return 'TEXT',True
+		elif area>0 and score1>score2:
+			
+			return tag1,True
+		elif area>0 and score2>score1:
+			
+			return tag2,True
 		else:
 			return None, False
 		
@@ -275,7 +285,8 @@ class PRIMA(object):
 
 	def predict_primanet(self,image,craft_coords):
 		try:
-			print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
+			
+			#print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
 			#image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/"+image)
 			image   = cv2.imread(image)
 			height, width, channels = image.shape
@@ -289,10 +300,10 @@ class PRIMA(object):
 			bbox, tag,score = self.prima_craft_refinement(bbox,craft_coords,tag,score)
 			layouts  = self.update_box_format(bbox,tag,score)
 			flag=True
-
+			#flag=False
 			while flag==True:
 				layouts, flag = self.merge_remove_overlap(layouts,height,width)
-			if 'TABLE' in tag :
+			if ('TABLE' in tag) or ("TableRegion" in tag) :
 				layouts = cell_layout(layouts,image)
 
 			return layouts
@@ -312,7 +323,7 @@ def cell_layout(regions,image):
 		table_regions = []
 		other_regions = []
 		for region in regions:
-			if region['class']=='TABLE':
+			if region['class']=='TABLE' or region['class']=='TableRegion':
 				table_regions.append(region)
 			else:
 				other_regions.append(region)
@@ -324,8 +335,7 @@ def cell_layout(regions,image):
 				blank_image = np.zeros(image.shape, dtype=np.uint8)
 				blank_image[:,0:image.shape[1]//2] = (255,255,255)      # (B, G, R)
 				blank_image[:,image.shape[1]//2:image.shape[1]] = (255,255,255)
-				ymin = region[0]['y'] ; ymax = region[2]['y'] ; xmin = region[0]['x']; xmax = region[2]['x']
-				print(ymin , ymax, xmin,xmax)
+				ymin = int(region[0]['y']) ; ymax = int(region[2]['y']) ; xmin = int(region[0]['x']); xmax = int(region[2]['x'])
 				crop_img = image[ymin:ymax,xmin:xmax,:]
 				blank_image[ymin:ymax,xmin:xmax] = crop_img
 				layout   = model_primatablenet.detect(blank_image)

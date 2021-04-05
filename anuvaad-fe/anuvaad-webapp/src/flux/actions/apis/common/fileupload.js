@@ -5,14 +5,14 @@ import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class RunExperiment extends API {
 
 
-  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, source_language, description = "", arrayOfUsers = [], timeout = 2000) {
+  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, source_language, description = "", arrayOfUsers = [],workspaceName, timeout = 2000) {
 
     super("POST", timeout, false);
     this.type = C.WORKFLOW;
     this.file = file;
     this.fileName = fileName;
     this.endpoint = (workflow === "WF_A_FCBMTKTR" ||
-      workflow === "WF_A_OD10GV" ||
+      workflow === "WF_A_FCOD10GV" ||
       workflow === "WF_A_FCWDLDBSOD15GV" ||
       workflow === "WF_A_AN") ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}` : `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`
     this.source = source;
@@ -23,7 +23,8 @@ export default class RunExperiment extends API {
     this.sentence_ids = sentence_ids;
     this.source_language = source_language;
     this.description = description;
-    this.arrayOfUsers = arrayOfUsers
+    this.arrayOfUsers = arrayOfUsers;
+    this.jobDescription = workspaceName; 
   }
 
   toString() {
@@ -49,6 +50,7 @@ export default class RunExperiment extends API {
 
         "workflowCode": this.workflow,
         "jobName": this.fileName,
+        "jobDescription":this.description,
         "files": [
           {
             "path": this.file,
@@ -74,7 +76,7 @@ export default class RunExperiment extends API {
 
       }
       //List of text 
-    } else if (this.workflow === "WF_A_OD10GV" || this.workflow === "WF_A_FCWDLDBSOD15GV") {
+    } else if (this.workflow === "WF_A_FCOD10GV" || this.workflow === "WF_A_FCWDLDBSOD15GV") {
       return {
         "workflowCode": this.workflow,
         "jobName": this.fileName,

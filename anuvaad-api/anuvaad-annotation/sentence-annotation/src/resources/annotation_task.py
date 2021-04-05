@@ -109,11 +109,11 @@ class AnnotationTaskSaveAnnotationResource(Resource):
         
         try:
             result = parallelSentenceAnnotationRepo.save_annotation(body)
-            if result == False:
-                res = CustomResponse(Status.SUCCESS.value, None)
+            if result == None:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getres()
             else:
-                res = CustomResponse(Status.SUCCESS.value, None)
+                res = CustomResponse(Status.SUCCESS.value, result)
                 return res.getres()
         except Exception as e:
             log_exception("Exception at AnnotationTaskSaveAnnotationResource ", LOG_WITHOUT_CONTEXT, e)

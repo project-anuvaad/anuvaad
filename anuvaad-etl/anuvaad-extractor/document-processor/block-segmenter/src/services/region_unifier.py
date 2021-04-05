@@ -310,8 +310,11 @@ class Region_Unifier:
         
         region_poly = get_polygon(region2['boundingBox'])
         base_poly = get_polygon(region1['boundingBox'])
-        area = base_poly.intersection(region_poly).area
-        check = self.check_region_unification(region1,region2,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
+        area=0
+        check=False
+        if region_poly and base_poly:
+            area = base_poly.intersection(region_poly).area
+            check = self.check_region_unification(region1,region2,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
         return  area>0 or check
 
 

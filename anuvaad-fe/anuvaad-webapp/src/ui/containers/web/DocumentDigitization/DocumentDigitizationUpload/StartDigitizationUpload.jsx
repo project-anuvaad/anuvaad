@@ -70,7 +70,7 @@ class StartDigitizationUpload extends React.Component {
             showComponent: false,
             workflow: "",
             worflow_codes: [{
-                code: 'WF_A_OD10GV',
+                code: 'WF_A_FCOD10GV',
                 version: '1.0'
             }, {
                 code: 'WF_A_FCWDLDBSOD15GV',
@@ -283,8 +283,8 @@ class StartDigitizationUpload extends React.Component {
     handleSubmit(e) {
         let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, "hi")
         e.preventDefault();
-        this.setState({ model: modelId, showLoader: true })
-        if (this.state.files.length > 0 && this.state.source_language_code) {
+        if (this.state.files.length > 0 && this.state.source_language_code && this.state.workflow) {
+            this.setState({ model: modelId, showLoader: true })
             const { APITransport } = this.props;
             const apiObj = new DocumentUpload(
                 this.state.files, "docUplaod",

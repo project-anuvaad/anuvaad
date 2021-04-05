@@ -29,7 +29,6 @@ import UserReport from './ui/containers/web/AdminPanel/UserReport';
 import DocumentStats from './ui/containers/web/AdminPanel/DocumentStats';
 import OrganizationList from './ui/containers/web/AdminPanel/OrganizatonList';
 import AddOrganization from "./ui/containers/web/AdminPanel/AddOrganization";
-import GradeDocument from './ui/containers/web/GradeDocument/GradeDocument';
 import ViewDocumentDigitization from './ui/containers/web/DocumentDigitization/ViewDocumentDigitization';
 import DigitzeDocumentUpload from './ui/containers/web/DocumentDigitization/DocumentDigitizationUpload/StartDigitizationUpload';
 import DigitizedDocumentEditor from './ui/containers/web/DocumentDigitization/DigitizedDocumentEditor';
@@ -220,17 +219,6 @@ class AppRoutes extends React.Component {
               currentMenu="view-document"
               dontShowHeader={true}
             />
-            <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/grade-document/:jobid/:inputfileid/:modelId/:filename`}
-              dontShowLoader
-              title={"Grade Document"}
-              userRoles={["ANNOTATOR"]}
-              component={GradeDocument}
-              authenticate={this.authenticateUser}
-              currentMenu="grade-document"
-              dontShowHeader={true}
-            />
-
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-digitization`}
               dontShowLoader

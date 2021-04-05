@@ -2,7 +2,7 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 from collections import namedtuple
-from src.utilities.region_operations import collate_regions, get_polygon,sort_regions, remvoe_regions,filterd_regions
+from src.utilities.region_operations import collate_regions, get_polygon,sort_regions, remvoe_regions,filterd_regions,collate_text
 from src.services.segment import horzontal_merging
 import src.utilities.app_context as app_context
 import copy
@@ -286,8 +286,11 @@ class Region_Unifier:
         
         region_poly = get_polygon(region2['boundingBox'])
         base_poly = get_polygon(region1['boundingBox'])
-        area = base_poly.intersection(region_poly).area
-        check = self.check_region_unification(region1,region2,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
+        area=0
+        check=False
+        if region_poly and base_poly:
+            area = base_poly.intersection(region_poly).area
+            check = self.check_region_unification(region1,region2,avg_height, avg_ver_dist, avg_width,avg_word_sepc)
         return  area>0 or check
 
 
@@ -311,16 +314,21 @@ class Region_Unifier:
 
 
 
-    def region_unifier(self,page_words, page_lines,page_regions):
+    def region_unifier(self,page_g_words, page_lines,page_regions,page_c_words):
         try:
             
             #sort regions 
             page_regions  = filterd_regions(page_regions)
             if len(page_regions) > 0 :
-                page_regions
                 page_regions.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 sorted_page_regions = sort_regions(page_regions,[])
 
+            else:
+                sorted_page_regions = page_regions
+
+
+
+            page_words = collate_text(page_c_words, page_g_words)
 
             text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(sorted_page_regions)
             
@@ -328,17 +336,23 @@ class Region_Unifier:
             filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
             filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_lines))
             
+            t_list = []
             for idx,table in enumerate(tabel_region):
-                filtered_words     = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_words))
-                filtered_lines    = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_lines))
-                tabel_region[idx]['regions'] =  collate_regions(copy.deepcopy( table['regions']),copy.deepcopy(page_words),child_class='WORD',grand_children=False,region_flag = False)
-                page_words = filtered_words
-                page_lines = filtered_lines
+                if 'regions' in table.keys():
+                    filtered_words     = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_words))
+                    filtered_lines    = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_lines))
+                    tabel_region[idx]['regions'] =  collate_regions(copy.deepcopy( table['regions']),copy.deepcopy(page_words),child_class='WORD',grand_children=False,region_flag = False)
+                    page_words = filtered_words
+                    page_lines = filtered_lines
+                    t_list.append(tabel_region[idx])
             
 
 
+            tabel_region =  collate_regions(copy.deepcopy(tabel_region),copy.deepcopy(filtered_words),child_class='CELL_TEXT',grand_children=False,region_flag = False)
             
-            text_region     = remvoe_regions(copy.deepcopy(tabel_region) ,copy.deepcopy(text_region))
+            page_words   = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
+            filtered_words = copy.deepcopy(page_words)
+            text_region  = remvoe_regions(copy.deepcopy(t_list) ,copy.deepcopy(text_region))
             
 
             # filtered_words     = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
@@ -351,7 +365,7 @@ class Region_Unifier:
             v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),child_class='LINE' ,grand_children=True,add_font=True )
             #print(v_list)
             #t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
-            t_list = tabel_region
+            #t_list = tabel_region
             i_list       =  collate_regions(copy.deepcopy( image_region),copy.deepcopy(page_words),grand_children=True,region_flag = False,skip_enpty_children=True)
             
 

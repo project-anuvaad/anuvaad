@@ -252,10 +252,9 @@ class ScheduleJob extends React.Component {
         let array_of_users = values.map(value => {
             return {
                 userId: value.userID,
-                name: value.email_id
+                name: value.email
             }
         })
-        console.log(array_of_users)
         this.setState({ array_of_users })
     }
     render() {
@@ -405,7 +404,6 @@ class ScheduleJob extends React.Component {
 const mapStateToProps = state => ({
     userinfo: state.userinfo,
     fileUpload: state.fileUpload,
-    configUplaod: state.configUplaod,
     workflowStatus: state.workflowStatus,
     documentUplaod: state.documentUplaod,
     fetch_models: state.fetch_models
