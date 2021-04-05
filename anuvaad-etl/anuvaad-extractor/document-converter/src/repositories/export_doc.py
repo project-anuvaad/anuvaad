@@ -37,9 +37,10 @@ class DocumentExporterRepository(object):
         
         
         try:
-            token="xxx"#auth-token,"auth-token":token
+            token="xx"#auth-token,"auth-token":token
             # headers = {"Content-Type": "application/json","auth-token": token}
             headers = {"Content-Type": "application/json"}
+            # request_url="https://auth.anuvaad.org/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=A_FWLBOD15G-XYxbO-1617601281774%7C0-16176012928555748.json&start_page=0&end_page=0"
             request_url = doc_utils.generate_url(config.OCR_CONTENT_HANDLER_HOST, record_id, 0, 0)
             log_info("Intiating request to fetch data from %s"%request_url, MODULE_CONTEXT)
             response = requests.get(request_url, headers = headers)
@@ -60,7 +61,7 @@ class DocumentExporterRepository(object):
             if 'regions'in page.keys():
                 for para_region in page['regions']:
                     if 'class' in para_region.keys() and 'regions' in para_region.keys():
-                        if para_region['class'] == 'PARA':
+                        if para_region['class'] in ['PARA','HEADER','FOOTER']:
                             lines = []
                             for line_region in para_region['regions']:
                                 if 'class' in line_region.keys() and 'regions' in line_region.keys():
