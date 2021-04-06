@@ -43,9 +43,9 @@ function get_document_details(input) {
                 timeline['stepOrder'] = task['stepOrder'];
                 timeline['status'] = task['status'];
 
-                if (task['stepOrder'] === 0) {
-                    document['converted_filename'] = task['output'][0]['outputFile'];
-                }
+                // if (task['stepOrder'] === 0) {
+                //     document['converted_filename'] = task['output'][0]['outputFile'];
+                // }
 
                 if (task['stepOrder'] === 3) {
                     document['recordId'] = task['output'][0]['outputFile'];

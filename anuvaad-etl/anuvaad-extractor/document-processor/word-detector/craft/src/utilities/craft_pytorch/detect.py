@@ -70,6 +70,7 @@ def load_model():
         net.load_state_dict(copyStateDict(torch.load(config.CRAFT_MODEL_PATH, map_location='cpu')))
 
     if args.cuda:
+        print('Model is using cuda')
         net = net.cuda()
         net = torch.nn.DataParallel(net)
         cudnn.benchmark = False
@@ -97,7 +98,7 @@ def test_net(image, text_threshold, link_threshold, low_text, cuda, poly, refine
     t0 = time.time()
 
     # resize
-    img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, args.canvas_size, interpolation=cv2.INTER_LINEAR, mag_ratio=config.MAGNIFICATION_RATIO)
+    img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, args.canvas_size, interpolation=cv2.INTER_CUBIC, mag_ratio=config.MAGNIFICATION_RATIO)
     ratio_h = ratio_w = 1 / target_ratio
 
     # preprocessing
@@ -110,7 +111,7 @@ def test_net(image, text_threshold, link_threshold, low_text, cuda, poly, refine
     # forward pass
     with torch.no_grad():
         y, feature = net(x)
-
+ 
     # make score and link map
     score_text = y[0,:,:,0].cpu().data.numpy()
     score_link = y[0,:,:,1].cpu().data.numpy()

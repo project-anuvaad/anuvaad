@@ -2,7 +2,7 @@ const endpoints = {
   interactive_translate: "/interactive-translation",
   interactive_translate_v1: "/v1/interactive-translation",
   fetchlanguage: "/fetch-languages",
-  fetchmodel: "/nmt-inference/v1/fetch-models",
+  fetchmodel: "/nmt-inference/v2/fetch-models",
   forgotpassword: "/anuvaad/user-mgmt/v1/users/forgot-password",
   fetchducuments: '/anuvaad-etl/wf-manager/v1/workflow/jobs/search/bulk',
   // insertSentence: "/v1/interactive-editor/add-sentence-node",
@@ -24,7 +24,7 @@ const endpoints = {
   word_dictionary: "/anuvaad/content-handler/v0/dictionary/search",
   save_content: "/anuvaad/content-handler/v0/save-content-sentence",
   translate: "/anuvaad-etl/translator/v1/text/translate",
-  instant_translate: "/nmt-inference/v3/translate-anuvaad",
+  instant_translate: "/nmt-inference/v4/translate",
   mark_inactive: "/anuvaad-etl/wf-manager/v1/workflow/jobs/mark-inactive",
   jobids: "/anuvaad/content-handler/v0/records/search",
   profile_details: '/anuvaad/user-mgmt/v1/users/auth-token-search',
@@ -32,9 +32,18 @@ const endpoints = {
   activate_deactivate_user: "/anuvaad/user-mgmt/v1/users/activate-user",
   download_file: '/anuvaad-api/file-uploader/v0/download-file',
   download_zip_file: '/anuvaad-api/file-uploader/v0/serve-file',
+  download_json: '/anuvaad/ocr-content-handler/v0/ocr/fetch-document',
   tmx_upload: '/anuvaad-etl/translator/v1/tmx/bulk/create/xls-upload',
   add_org: '/anuvaad/user-mgmt/v1/org/upsert',
   fetch_organization: '/anuvaad/user-mgmt/v1/org/search',
+  create_glossary: '/anuvaad-etl/translator/v1/glossary/create',
+  update_word: '/anuvaad/ocr-content-handler/v0/ocr/update-word',
+  job_detail: "/anuvaad-annotation/sentence-annotation/v0/annotation-type/task/search",
+  task_detail: "/anuvaad-annotation/sentence-annotation/v0/task/details/search",
+  update_user: "/anuvaad/user-mgmt/v1/users/update",
+  user_job: "/anuvaad-annotation/sentence-annotation/v0/user/task/search",
+  grade_sentence: "/anuvaad-annotation/sentence-annotation/v0/task/annotation/grading",
+  downlod_digitized_file:"/anuvaad-etl/document-converter/v0/document-exporter"
 };
 
 export default endpoints;

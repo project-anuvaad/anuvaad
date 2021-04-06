@@ -3,11 +3,13 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class DownloadJSON extends API {
-    constructor(file_name, timeout = 200000) {
+    constructor(recordID, startPage = 0, endPage = 0, timeout = 200000) {
         super("GET", timeout, false);
-        this.json = file_name;
+        this.recordID = recordID;
         this.type = C.DOWNLOAD_JSON;
-        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.download_zip_file}`;
+        this.startPage = startPage;
+        this.endPage = endPage;
+        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.download_json}`;
     }
 
     toString() {
@@ -22,7 +24,7 @@ export default class DownloadJSON extends API {
     }
 
     apiEndPoint() {
-        let url = `${this.endpoint}?filename=${this.json}`
+        let url = encodeURI(`${this.endpoint}?recordID=${this.recordID}&start_page=${this.startPage}&end_page=${this.endPage}`)
         return url
     }
 

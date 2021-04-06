@@ -68,7 +68,17 @@ class MenuClass extends React.Component {
                 {" "}
                 Copy
               </Button>
-
+              <Button
+                style={{
+                  textTransform: "none",
+                  width: "100%",
+                  justifyContent: "left",
+                }}
+                onClick={() => this.props.handleOperation(3)}
+              >
+                {" "}
+                Add to glossary
+              </Button>
               <br />
 
               <br />

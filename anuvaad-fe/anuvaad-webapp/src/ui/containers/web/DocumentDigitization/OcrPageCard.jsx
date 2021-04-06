@@ -2,17 +2,16 @@ import React from "react";
 import { Paper, Divider } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { bindActionCreators } from "redux";
-import sentenceHighlight from '../../../../utils/SentenceHighlight'
-import DownloadJSON from '../../../../flux/actions/apis/download/download_json';
 import DownloadFile from '../../../../flux/actions/apis/download/download_zip_file';
-import { Textfit } from "react-textfit";
 import { highlightSentence, clearHighlighBlock, cancelMergeSentence } from '../../../../flux/actions/users/translator_actions';
-import Popper from '@material-ui/core/Popper';
 import SENTENCE_ACTION from '../DocumentEditor/SentenceActions'
-import { confscore } from '../../../../utils/OcrConfScore'
 import SaveEditedWord from './SaveEditedWord';
 import Modal from '@material-ui/core/Modal';
+import set_crop_size from '../../../../flux/actions/apis/view_digitized_document/set_crop_size';
+import UpdateWord from '../../../../flux/actions/apis/view_digitized_document/update_word';
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
 
 
 const PAGE_OPS = require("../../../../utils/page.operations");
@@ -37,7 +36,7 @@ class OcrPageCard extends React.Component {
             text: '',
             url: '',
             event: false,
-            isOpen: false
+            isOpen: false,
         };
         this.handleTextChange = this.handleTextChange.bind(this);
         this.action = null
@@ -49,6 +48,10 @@ class OcrPageCard extends React.Component {
         }
         if (prevProps.status !== this.props.status) {
             this.setState({ url: '' })
+        }
+        if (this.props.words[0] && prevProps.words.length !== this.props.words.length) {
+            this.setState({ loading: false, isOpen: false })
+            TELEMETRY.saveEditedWordEvent(this.props.words[0], 'UPDATED_WORD')
         }
     }
 
@@ -74,8 +77,9 @@ class OcrPageCard extends React.Component {
                 key={region.identifier}
             >
 
-                {region['children'] &&
-                    region['children'].map(line => this.renderText(line, region))
+                {
+                    region['regions'] &&
+                    region['regions'].map(line => this.renderText(line, region))
                 }
             </div>
         );
@@ -83,22 +87,35 @@ class OcrPageCard extends React.Component {
 
     renderText = (line, region) => {
         return (
-            <div key={line.identifier}>
+            <div
+                style={{
+                    border: (line.class === 'CELL' || line.class === 'CELL_TEXT') && '1px solid black',
+                    top: (line.class === 'CELL' || line.class === 'CELL_TEXT') && line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    left: line.class === 'CELL' || line.class === 'CELL_TEXT' && line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                    height: line.class === 'CELL' || line.class === 'CELL_TEXT' && line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
+                    width: line.class === 'CELL' || line.class === 'CELL_TEXT' && line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
+                    position: line.class === 'CELL' || line.class === 'CELL_TEXT' && 'absolute',
+                }}
+                key={line.identifier}>
                 {
-                    line.children.map(word => this.renderTextSpan(word, line, region))
+                    line.regions.map(word =>
+                        line.class !== 'CELL' || line.class !== 'CELL_TEXT' ?
+                            this.renderTextSpan(word, region) :
+                            this.renderTable(word, line, region)
+                    )
                 }
             </div>
         )
     }
 
-    renderTable = (word, region) => {
+    renderTable = (word, line, region) => {
         return (
             <div
                 style={{
                     position: "absolute",
                     fontSize: word.font && `min(max(${word.font.size}px),${this.props.fontSize}px)`,
-                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
-                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                    top: word.boundingBox.vertices[0].y - line.boundingBox.vertices[0].y + 'px',
+                    left: word.boundingBox.vertices[0].x - line.boundingBox.vertices[0].x + 'px',
                     maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                     maxHeight: word.boundingBox.vertices[2].y - word.boundingBox.vertices[0].y + 'px',
                     width: 'fit-content',
@@ -106,55 +123,70 @@ class OcrPageCard extends React.Component {
                     fontFamily: word.font && word.font.family,
                 }}
                 key={word.identifier}
-                onDoubleClick={() => this.setModalState(word)}
-            >
+                onDoubleClick={() => this.setModalState(this.renderUpdatedWords(word), word.identifier, region.identifier)}>
                 {
-                    this.state.id === word.identifier ? this.state.text : word.text
-                }
-            </div >
-        )
-    }
-
-    renderTextSpan = (word, line, region) => {
-        if (line.class === "CELL") {
-            return this.renderTable(word, region)
-        }
-        return (
-            <div
-                style={{
-                    position: "absolute",
-                    fontSize: `min(max(${region.avg_size}px),${this.props.fontSize}px)`,
-                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
-                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
-                    maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
-                    maxHeight: word.boundingBox.vertices[2].y - word.boundingBox.vertices[0].y + 'px',
-                    width: 'fit-content',
-                    height: '100%',
-                    fontFamily: word.font && word.font.family,
-                }}
-                key={word.identifier}
-                onDoubleClick={() => this.setModalState(word)}>
-                {
-                    this.state.id === word.identifier ? this.state.text : word.text
+                    this.renderUpdatedWords(word)
                 }
             </div>
         )
     }
 
-    setModalState = (word) => {
-        this.setState({ isOpen: true, text: word.text, id: word.identifier })
+    renderUpdatedWords = (word) => {
+        let updatedWord = this.props.words.length && this.props.words.filter(data => {
+            return word.identifier === data.word_id
+        })
+        if (updatedWord[0]) {
+            return updatedWord[0].updated_word
+        }
+        return word.text
+    }
+    renderTextSpan = (word, region) => {
+        return (
+            <div
+                style={{
+                    position: "absolute",
+                    fontSize: `${this.props.fontSize}px`,
+                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                    maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
+                    maxHeight: word.boundingBox.vertices[2].y - word.boundingBox.vertices[0].y + 'px',
+                    width: 'fit-content',
+                    height: '100%',
+                    fontFamily: word.font && word.font.family,
+                }}
+                key={word.identifier}
+                onDoubleClick={() => this.setModalState(this.renderUpdatedWords(word), word.identifier, region.identifier)}>
+                {
+                    this.renderUpdatedWords(word)
+                }
+            </div>
+        )
+    }
+
+    setModalState = (word, word_identifier, region_identifier) => {
+        this.setState({ regionID: region_identifier, wordID: word_identifier, isOpen: true, text: word })
     }
 
     saveWord = (word) => {
-        this.setState({ isOpen: false, text: word })
+        let { regionID, wordID } = this.state
+        let { APITransport } = this.props
+        let { jobId, filename } = this.props.match.params
+        let originalWord = this.state.text;
+        let changedWord = word
+        if (changedWord !== originalWord) {
+            this.setState({ loading: true })
+            let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord, this.props.page.page_info.page_no)
+            APITransport(apiObj);
+        }
     }
+
     renderModal = () => {
         return (
             <Modal
                 open={this.state.isOpen}
                 onClose={this.handleClose}
             >
-                <SaveEditedWord handleClose={this.handleClose} text={this.state.text} id={this.state.id} saveWord={this.saveWord} />
+                <SaveEditedWord handleClose={this.handleClose} text={this.state.text} id={this.state.id} loading={this.state.loading} saveWord={this.saveWord} />
             </Modal>
         )
     }
@@ -281,17 +313,39 @@ class OcrPageCard extends React.Component {
         }
     }
 
+    setLocationCoords = (identifier) => {
+        let { x, y, height, width, unit } = this.props.crop_size.copiedCoords
+        let div = document.createElement('div');
+        div.className = identifier
+        div.style.left = x + unit
+        div.style.top = y + unit
+        div.style.height = height + unit
+        div.style.width = width + unit
+        div.style.border = `1px solid black`
+        div.style.position = "absolute"
+        div.setAttribute('contenteditable', true)
+        div.style.zIndex = 2
+        div.style.fontSize = this.props.fontSize + unit
+        div.onblur = () => {
+            div.style.border = "none"
+        }
+        this.paper.appendChild(div);
+    }
+
+
     renderPage = (page, image) => {
         if (page) {
-            let width = page['vertices'] && page.vertices[1].x - page.vertices[0].x + 'px'
-            let height = page['vertices'] && page.vertices[2].y - page.vertices[0].y + 'px'
+            let width = page['page_info']['page_boundingBox'] && page.page_info.page_boundingBox.vertices[1].x - page.page_info.page_boundingBox.vertices[0].x + 'px'
+            let height = page['page_info']['page_boundingBox'] && page.page_info.page_boundingBox.vertices[2].y - page.page_info.page_boundingBox.vertices[0].y + 'px'
             return (
                 <div>
-                    <Paper elevation={2} style={{ position: 'relative', width: width, height: height }}>
+                    <Paper
+                        id={page.identifier}
+                        key={page.identifier}
+                        ref={e => this.paper = e}
+                        elevation={2} style={{ position: 'relative', width: width, height: height }}>
                         {page['regions'].map(region => this.renderChild(region))}
-                        {/* {
-                            this.renderImage(image)
-                        } */}
+                        {(this.props.copy_status) && this.setLocationCoords(page.identifier)}
                     </Paper>
                     <Divider />
                 </div>
@@ -321,16 +375,21 @@ const mapStateToProps = state => ({
     percent: state.fetchpercent.percent,
     status: state.showimagestatus.status,
     switch_style: state.switch_style.status,
-    fontSize: state.fetch_slider_pixel.percent
+    fontSize: state.fetch_slider_pixel.percent,
+    crop_size: state.cropsizeinfo,
+    copy_status: state.copylocation.status,
+    words: state.updated_words.words
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         highlightSentence,
         clearHighlighBlock,
-        cancelMergeSentence
+        cancelMergeSentence,
+        set_crop_size,
+        APITransport
     },
     dispatch
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(OcrPageCard);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(OcrPageCard));

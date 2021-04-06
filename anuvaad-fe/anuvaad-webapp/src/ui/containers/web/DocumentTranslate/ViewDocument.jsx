@@ -203,6 +203,7 @@ class ViewDocument extends React.Component {
    * helper methods
    */
   getJobsSortedByTimestamp = () => {
+    debugger
     let jobs = this.props.job_details.documents.sort((a, b) => {
       if (a.created_on < b.created_on) {
         return 1;
@@ -281,12 +282,16 @@ class ViewDocument extends React.Component {
   };
 
   processViewDocumentClick = (jobId, recordId, status) => {
+    let role = localStorage.getItem("roles")
     let job = this.getJobIdDetail(jobId);
     if (status === "COMPLETED") {
-      history.push(
-        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
-        this.state
-      );
+      
+        history.push(
+          `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
+          this.state
+        );
+     
+      
     } else if (status === "INPROGRESS") {
       this.setState({
         dialogMessage: "Please wait process is Inprogress!",
@@ -469,14 +474,14 @@ class ViewDocument extends React.Component {
           empty: true,
         },
       },
-      //  {
-      //   name: "bleu_score",
-      //   label: "Average Bleu",
-      //   options: {
-      //     hint: "Total bleu score / Total saved sentence",
-      //     sort: false
-      //   }
-      // }, 
+       {
+        name: "description",
+        label: "Description",
+        options: {
+          display: 'false',
+          sort: false
+        }
+      }, 
       {
         name: "spent_time",
         label: "Time Spent",
@@ -503,8 +508,8 @@ class ViewDocument extends React.Component {
                 <div>
                   {tableMeta.rowData[5] === "COMPLETED" &&
                     this.getDateTimeDifference(
-                      tableMeta.rowData[9],
-                      tableMeta.rowData[11]
+                      tableMeta.rowData[10],
+                      tableMeta.rowData[12]
                     )}
                 </div>
               );
@@ -522,7 +527,7 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.getDateTimeFromTimestamp(tableMeta.rowData[11])}
+                  {this.getDateTimeFromTimestamp(tableMeta.rowData[12])}
                 </div>
               );
             }

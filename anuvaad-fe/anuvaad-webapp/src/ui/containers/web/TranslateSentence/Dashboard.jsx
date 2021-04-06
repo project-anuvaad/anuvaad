@@ -115,9 +115,10 @@ class Dashboard extends React.Component {
 
   processTranslateButtonPressed() {
       this.setState({ showStatus: true, message: "Fetching translation..." })
-      let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code, true)
+      let userModel = JSON.parse(localStorage.getItem("userProfile"))
+      let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code, userModel.models)
 
-      this.makeAPICallInteractiveTranslation(this.state.text, modelId.model_id)
+      this.makeAPICallInteractiveTranslation(this.state.text, modelId)
       // this.makeAPICallAutoML(this.state.text, this.state.source_language_code, this.state.target_language_code)
   }
 
@@ -160,7 +161,7 @@ class Dashboard extends React.Component {
   }
 
   async makeAPICallInteractiveTranslation(text, modelId) {
-    let apiObj = new InstantTranslateAPI(v4(), '', text, "", false, text, "", modelId);
+    let apiObj = new InstantTranslateAPI(v4(), '', text, "", false, text, "", modelId, this.state.source_language_code, this.state.target_language_code);
 
     this.setState({ anuvaadAPIInProgress: true })
 
@@ -174,7 +175,7 @@ class Dashboard extends React.Component {
         this.setState({ anuvaadAPIInProgress: false, showStatus: false, message: null, dialogMessage: "Unable to fetch translation..." })
         return Promise.reject('');
       } else {
-        let filteredTexts = rsp_data && rsp_data.response_body && rsp_data.response_body[0] && rsp_data.response_body[0].tgt ? rsp_data.response_body[0].tgt : ""
+        let filteredTexts = rsp_data && rsp_data.data && rsp_data.data[0] && rsp_data.data[0].tgt ? rsp_data.data[0].tgt : ""
 
         if (filteredTexts) {
           this.setState({})

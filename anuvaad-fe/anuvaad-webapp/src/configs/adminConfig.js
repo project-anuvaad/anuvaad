@@ -11,6 +11,12 @@ const adminConfig = {
             "roleCode":"ADMIN",
             "roleDesc":"Has access to manage the users"
         
+        },
+        {
+        
+            "roleCode":"ANNOTATOR",
+            "roleDesc":"Access to evaluate our model"
+        
         }
     
     ],

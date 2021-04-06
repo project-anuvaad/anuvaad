@@ -17,6 +17,8 @@ import config
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 ####################
 Queue    = queue.Queue()
+controlQueue  = queue.Queue()
+controlQueue.put(1)
 ######################
 
 def consumer_validator():
@@ -48,31 +50,31 @@ def process_block_segmenter_kf():
     # instatiation of consumer for respective topic
     try:
         consumer = consumer_validator()
-        log_info("process_document_segmenter_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
-        
-        for msg in consumer:
-            if Consumer.get_json_data(msg.value) == None:
-                log_info('process_document_segmenter_kf - received invalid data {}'.format(msg.value), None)
-                continue
-            data            = Consumer.get_json_data(msg.value)
+        log_info("process_block_segmenter_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
 
-            jobid           = data['jobID']
-            log_info('process_document_segmenter_kf - received message from kafka, dumping into internal queue', data)
-            input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
-            
-            #if input_files[0]['locale'] == 'en':
-                #############
-            ####################################
-            Queue.put(data)
-            log_info('process_document_segmenter_kf - request in internal queue {}'.format(Queue.qsize()),
-                        data)
-            ########################################
-            # else:
-            #     blockMergerOCRQueue.put(data)
-            #     log_info('process_block_merger_kf - request in internal OCR queue {}'.format(blockMergerOCRQueue.qsize()), data)
+        while True:
+            wait_for_control = controlQueue.get(block=True)
 
-            # We should reject kafka request if internal queue size become too-much.
-            #
+            for msg in consumer:
+
+                if Consumer.get_json_data(msg.value) == None:
+                    log_info('process_block_segmenter_kf - received invalid data {}'.format(msg.value), None)
+                    continue
+                data            = Consumer.get_json_data(msg.value)
+
+
+                consumer.commit()  # <--- This is what we need
+                # Optionally, To check if everything went good
+                #print('New Kafka offset: %s' % consumer.committed(TopicPartition(config.input_topic, msg.partition)))
+
+
+                jobid           = data['jobID']
+                log_info('process_block_segmenter_kf - received message from kafka, dumping into internal queue', data)
+                input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+
+                Queue.put(data)
+                break
+
     
     except KafkaConsumerError as e:
         response_custom = {}
@@ -93,7 +95,7 @@ def block_segmenter_request_worker():
 
     while True:
         data            = Queue.get(block=True)
-        #################
+        ################
         task_id         = str("layout_detector" + str(time.time()).replace('.', ''))
         ###################
         task_starttime  = str(time.time()).replace('.', '')
@@ -118,3 +120,4 @@ def block_segmenter_request_worker():
         except Exception as e:
             log_exception("layout_detector_request_worker ",  LOG_WITHOUT_CONTEXT, e)
 
+        controlQueue.put(1)

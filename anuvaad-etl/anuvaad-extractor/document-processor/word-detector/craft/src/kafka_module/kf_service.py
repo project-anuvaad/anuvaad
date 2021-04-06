@@ -17,6 +17,9 @@ import config
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 ####################
 Queue    = queue.Queue()
+
+controlQueue  = queue.Queue()
+controlQueue.put(1)
 ######################
 
 def consumer_validator():
@@ -49,30 +52,33 @@ def process_word_detector_kf():
     try:
         consumer = consumer_validator()
         log_info("process_word_detector_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
-        
-        for msg in consumer:
-            if Consumer.get_json_data(msg.value) == None:
-                log_info('process_word_detector_kf - received invalid data {}'.format(msg.value), None)
-                continue
-            data            = Consumer.get_json_data(msg.value)
-            jobid           = data['jobID']
-            #print("data",data)
-            log_info('process_word_detector_kf - received message from kafka, dumping into internal queue', data)
-            input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
-            
-            #if input_files[0]['locale'] == 'en':
-                #############
-            ####################################
-            Queue.put(data)
-            log_info('process_word_detector_kf - request in internal queue {}'.format(Queue.qsize()),
-                        data)
-            ########################################
-            # else:
-            #     blockMergerOCRQueue.put(data)
-            #     log_info('process_block_merger_kf - request in internal OCR queue {}'.format(blockMergerOCRQueue.qsize()), data)
 
-            # We should reject kafka request if internal queue size become too-much.
-            #
+        while True:
+            wait_for_control = controlQueue.get(block=True)
+
+            for msg in consumer:
+
+                if Consumer.get_json_data(msg.value) == None:
+                    log_info('process_word_detector_kf - received invalid data {}'.format(msg.value), None)
+                    continue
+                data            = Consumer.get_json_data(msg.value)
+                print(data)
+
+
+                consumer.commit_async() 
+
+                 # <--- This is what we need
+                #consumer.commit
+                # Optionally, To check if everything went good
+                #print('New Kafka offset: %s' % consumer.committed(TopicPartition(config.input_topic, msg.partition)))
+
+                jobid           = data['jobID']
+                log_info('process_word_detector_kf - received message from kafka, dumping into internal queue', data)
+                input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
+
+                Queue.put(data)
+                break
+
     
     except KafkaConsumerError as e:
         response_custom = {}
@@ -119,4 +125,6 @@ def word_detector_request_worker():
             Queue.task_done()
         except Exception as e:
             log_exception("word_detector_request_worker ",  LOG_WITHOUT_CONTEXT, e)
+        
+        controlQueue.put(1)
 

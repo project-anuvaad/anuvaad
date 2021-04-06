@@ -4,7 +4,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 const themeRed = createMuiTheme({
   typography: {
     fontFamily: '"Gill Sans", sans-serif',
-    fontSize: 'small'
+    fontSize: 14
   },
   palette: {
     primary: {
