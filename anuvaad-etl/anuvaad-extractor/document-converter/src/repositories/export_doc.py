@@ -65,7 +65,7 @@ class DocumentExporterRepository(object):
                             lines = []
                             for line_region in para_region['regions']:
                                 if 'class' in line_region.keys() and 'regions' in line_region.keys():
-                                    if line_region['class'] == 'LINE':
+                                    if line_region['class'] in ['LINE','CELL']:
                                         words = []
                                         for word_region in line_region['regions']:
                                             if 'class' in word_region.keys() and 'text' in word_region.keys():
