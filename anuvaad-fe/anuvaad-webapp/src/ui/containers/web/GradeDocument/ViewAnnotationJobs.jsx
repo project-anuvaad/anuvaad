@@ -186,10 +186,6 @@ class ViewAnnotationJobs extends React.Component {
             fixedHeader: true,
             filter: false,
             selectableRows: "none",
-            sortOrder: {
-                name: "createdOn",
-                direction: "desc",
-            },
         };
         return (
             <div style={{ height: window.innerHeight }}>

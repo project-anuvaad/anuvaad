@@ -18,12 +18,14 @@ export default class NMTSP extends API {
         this.model = model;
         this.src_code = src_code;
         this.tgt_code = tgt_code;
-        let ep = process.env[this.model.connection_details.translation.api_endpoint]
-        let url = process.env[this.model.connection_details.translation.host]
-        console.log("-----------------",ep , url, process.env )
-        debugger
+        let url = "REACT_APP_"+this.model.connection_details.translation.api_endpoint;
+        let eURL  = "REACT_APP_"+this.model.connection_details.translation.host
+        let ep = process.env[url]
+        let appURL = process.env[eURL]
+        console.log("-----------------",ep , url,appURL,eURL, process.env )
+        
         // this.type = C.INTRACTIVE_TRANSLATE;
-        this.endpoint =  `${url ? url : super.apiEndPointAuto()}${ep ? ep :ENDPOINTS.instant_translate}`
+        this.endpoint =  `${appURL ? appURL : super.apiEndPointAuto()}${ep ? ep :ENDPOINTS.instant_translate}`
     }
 
     toString() {

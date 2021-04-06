@@ -18,13 +18,13 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
 def get_text(path,page_dict,page_regions,page_c_words,font_info):
     
-    
+    #path = config.BASE_DIR+path.split('/')[-1]
     img = cv2.imread(path)
     
-    img[175 < img ] = 255
-    masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
-    cv2.imwrite(masked_path,img)
-    with io.open(masked_path, 'rb') as image_file:
+    #img[175 < img ] = 255
+    #masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
+    #cv2.imwrite(masked_path,img)
+    with io.open(path, 'rb') as image_file:
         content = image_file.read()
     image = vision.types.Image(content=content)
     response = client.document_text_detection(image=image)
@@ -43,8 +43,8 @@ def text_extraction(file_properties,image_paths,file):
         page_regions =  file_properties.get_regions(idx)
         page_c_words = file_properties.get_words(idx)
         page_output,page_words = get_text(image_path,page_dict,page_regions,page_c_words,font_info)
-        #save_path = mask_image_craft(image_path, page_regions, idx, file_properties, width, height)
-        save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
+        save_path = mask_image_craft(image_path, page_regions, idx, file_properties, width, height)
+        #save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
         page_output = set_bg_image(page_output, save_path, idx,file)
         file_properties.set_regions(idx,page_output)
         file_properties.delete_regions(idx)
@@ -193,11 +193,12 @@ def end_point_correction(region, margin, ymax,xmax):
 
 def mask_image_craft(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
     try:
+        #path = config.BASE_DIR+path.split('/')[-1]
         image   = cv2.imread(path)
         for region_idx, page_region in enumerate(page_regions):
             if 'class' in page_region.keys():
                 region_class = page_region['class']
-                if region_class not in ["IMAGE","LINE","SEPARATOR"]:
+                if region_class not in ["IMAGE","OTHER","SEPARATOR"]:
                     region_lines = file_properties.get_region_lines(page_index,region_idx)
                     if region_lines!=None:
                         for line_index, line in enumerate(region_lines):

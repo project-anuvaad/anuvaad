@@ -2,10 +2,12 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 from collections import namedtuple
-from src.utilities.region_operations import collate_regions, get_polygon,sort_regions, remvoe_regions,filterd_regions,collate_text
+from src.utilities.region_operations import collate_cell_regions,collate_regions, get_polygon,sort_regions, remvoe_regions,filterd_regions,collate_text
 from src.services.segment import horzontal_merging
 import src.utilities.app_context as app_context
 import copy
+from shapely.geometry import Polygon
+from rtree import index
 Rectangle = namedtuple('Rectangle', 'xmin ymin xmax ymax')
 
 class MapKeys:
@@ -107,8 +109,6 @@ class Page_Config:
                     for idx, word in enumerate(line['children']):
 
                         if idx < len(line['children']) - 1:
-
-                            #print(len(line['children']))
                             next_line_left = keys.get_left(line['children'][idx + 1])
                             current_line_right = keys.get_right(line['children'][idx])
                             spacing = abs(next_line_left - current_line_right)
@@ -329,7 +329,7 @@ class Region_Unifier:
 
 
             page_words = collate_text(page_c_words, page_g_words)
-
+            
             text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(sorted_page_regions)
             
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
@@ -341,35 +341,31 @@ class Region_Unifier:
                 if 'regions' in table.keys():
                     filtered_words     = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_words))
                     filtered_lines    = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_lines))
-                    tabel_region[idx]['regions'] =  collate_regions(copy.deepcopy( table['regions']),copy.deepcopy(page_words),child_class='WORD',grand_children=False,region_flag = False)
+                    tabel_region[idx]['regions'] =  collate_regions(regions = copy.deepcopy(table['regions']),lines = copy.deepcopy(page_words),child_class='WORD',grand_children=False,region_flag = False)
                     page_words = filtered_words
                     page_lines = filtered_lines
                     t_list.append(tabel_region[idx])
+                    
+
+            t_list =  collate_cell_regions(copy.deepcopy(t_list),copy.deepcopy(page_words),child_class='CELL_TEXT',grand_children=True,region_flag = False)
+            
+            page_words   = remvoe_regions(copy.deepcopy(t_list), copy.deepcopy(page_words))
+            filtered_lines   = remvoe_regions(copy.deepcopy(t_list), copy.deepcopy(page_lines))
+            filtered_words = copy.deepcopy(page_words)
+            text_region  = remvoe_regions(copy.deepcopy(t_list) ,copy.deepcopy(text_region))
+            
+            
             
 
-
-            
-            text_region     = remvoe_regions(copy.deepcopy(t_list) ,copy.deepcopy(text_region))
-            
-
-            # filtered_words     = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_words))
-            # filtered_lines    = remvoe_regions(copy.deepcopy(tabel_region), copy.deepcopy(page_lines))
-
-            #print(filtered_words,'filterddddddddddddddddddddddddddddddddddddddddddddddddddddd')
             line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words),child_class='WORD')
             
             
             v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),child_class='LINE' ,grand_children=True,add_font=True )
-            #print(v_list)
-            #t_list       = collate_regions(copy.deepcopy( tabel_region),copy.deepcopy(page_words),grand_children=True,region_flag = False)
-            #t_list = tabel_region
             i_list       =  collate_regions(copy.deepcopy( image_region),copy.deepcopy(page_words),grand_children=True,region_flag = False,skip_enpty_children=True)
             
 
-            # line_list    = collate_regions(page_lines,page_words)
-            # v_list       = collate_regions(page_regions,line_list,grand_children=True)
+            
             page_config                         = Page_Config()
-            # text_regions, n_text_regions = self.get_text_region(v_list)
             avg_height, avg_ver_dist, avg_width = page_config.avg_line_info(v_list)
 
             if avg_height == 0:
@@ -377,7 +373,6 @@ class Region_Unifier:
             self.avg_ver_ratio =   avg_ver_dist /avg_height
 
             for idx,v_block in enumerate(v_list):
-                #if 'class' not in v_block.keys():
                 if 'class' in v_list[idx].keys():
                     if v_list[idx]['class'] == 'TEXT':
                         v_list[idx]['class']= "PARA"
@@ -388,8 +383,6 @@ class Region_Unifier:
 
                 if 'children' in v_block.keys():
                     v_block.pop('children')
-
-                    #v_block['children'] = horzontal_merging(v_block['children'],avrage_region_ver_ratio)
                     
                     
                     v_list[idx] =copy.deepcopy(v_block)
@@ -403,20 +396,12 @@ class Region_Unifier:
                     t_block['avg_ver_dist'] = avg__region_ver_dist
 
                     avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
-                    #t_block['children'] = horzontal_merging(t_block['children'],avrage_region_ver_ratio)
                     t_list[idx] =copy.deepcopy(t_block)
 
-            # for i in i_list :
-            #     if 'regions' in i.keys():
-            #         v_list.append(i)
-
-            # ################### page configs for region unifier
-            #avg_hor_dist      = page_config.avg_region_info(text_regions)
+            
             avg_word_sepc     = page_config.avg_word_sep(line_list)
 
             v_list.extend(t_list)
-            #n_text_table_regions.extend(t_list)
-            #n_text_table_regions.extend(image_region)
 
             if self.check_double_column(v_list,avg_height):
                 print("this document is double columnssssssss")
