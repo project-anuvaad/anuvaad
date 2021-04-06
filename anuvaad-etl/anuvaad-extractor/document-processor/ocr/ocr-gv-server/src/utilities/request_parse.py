@@ -67,14 +67,18 @@ class File:
         return width, height
    
     @log_error
-    def get_region_lines(self, page_index,region_index):
-        if 'children' in self.file['pages'][page_index]['regions'][region_index].keys():
-            return self.file['pages'][page_index]['regions'][region_index]['children']
+    def get_region_lines(self, page_index,region_index,page_region):
+        
+        if 'regions' in page_region.keys():
+            return page_region['regions']
         else:
             return None
     @log_error
-    def get_region_words(self, page_index,region_index,child_index):
-        return self.file['pages'][page_index]['regions'][region_index]['children'][child_index]['children']
+    def get_region_words(self, page_index,region_index,child_index,page_region):
+        if 'regions' in page_region.keys():
+            return page_region['regions']
+        else:
+            return None
 
     @log_error
     def set_regions(self, page_index, regions):

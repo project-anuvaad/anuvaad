@@ -134,18 +134,21 @@ class Region_Unifier:
         tabel_region = []
         image_region  = []
         n_text_table_regions = []
+        head_foot= []
         for region in regions:
-            if region['class'] in ['TEXT', "HEADER",'FOOTER']:
+            if region['class'] in ['TEXT']:
                 text_region.append(region)
             else:
-                if region['class']=='TABLE':
+                if region['class']=='HEADER' or region['class']=='FOOTER':
+                    head_foot.append(region)
+                elif region['class']=='TABLE':
                     tabel_region.append(region)
                 else:
                     if region['class']=='IMAGE':
                         image_region.append(region)
                     else :
                         n_text_table_regions.append(region)
-        return text_region,n_text_table_regions,tabel_region,image_region
+        return text_region,n_text_table_regions,tabel_region,image_region,head_foot
     
     def check_double_column(self,boxes,avg_height):
         total_regions = len(boxes)
@@ -331,8 +334,7 @@ class Region_Unifier:
 
             page_words = collate_text(page_c_words, page_g_words)
             
-            text_region,n_text_table_regions,tabel_region,image_region = self.get_text_tabel_region(sorted_page_regions)
-            
+            text_region,n_text_table_regions,tabel_region,image_region,head_foot_region = self.get_text_tabel_region(sorted_page_regions)
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
             filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
             filtered_lines = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_lines))
@@ -354,14 +356,17 @@ class Region_Unifier:
             filtered_lines   = remvoe_regions(copy.deepcopy(t_list), copy.deepcopy(page_lines))
             filtered_words = copy.deepcopy(page_words)
             text_region  = remvoe_regions(copy.deepcopy(t_list) ,copy.deepcopy(text_region))
+            line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words),child_class='WORD',add_font=True)
+
+            head_foot_list =  collate_cell_regions(copy.deepcopy(head_foot_region),copy.deepcopy(line_list),child_class='LINE',grand_children=True,region_flag = False)
+            filtered_lines  = remvoe_regions(copy.deepcopy(head_foot_list), copy.deepcopy(line_list))
             
             
             
 
-            line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words),child_class='WORD',add_font=True)
             
             
-            v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( line_list ),child_class='LINE' ,grand_children=True,add_font=True )
+            v_list       = collate_regions( copy.deepcopy( text_region),copy.deepcopy( filtered_lines ),child_class='LINE' ,grand_children=True,add_font=True )
             i_list       =  collate_regions(copy.deepcopy( image_region),copy.deepcopy(page_words),grand_children=True,region_flag = False,skip_enpty_children=True)
             
 
@@ -372,6 +377,7 @@ class Region_Unifier:
             if avg_height == 0:
                 avg_height = 1
             self.avg_ver_ratio =   avg_ver_dist /avg_height
+            v_list.extend(head_foot_list)
 
             for idx,v_block in enumerate(v_list):
                 if 'class' in v_list[idx].keys():

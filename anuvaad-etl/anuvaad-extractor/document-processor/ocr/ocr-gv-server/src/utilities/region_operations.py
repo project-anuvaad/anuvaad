@@ -171,7 +171,7 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                         tmp_region['class'] = child_class
                         regions[region_index][child_key] = [tmp_region] 
             else:
-                if not skip_enpty_children :
+                if not skip_enpty_children:
                     
                     if grand_children :
                         regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
