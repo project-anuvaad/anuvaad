@@ -98,45 +98,45 @@ class Orientation:
 
     def re_orient(self):
         lang = 'hi'
-        # lines = detect_text_per_page([self.image], \
-        #                              network=True, \
-        #                              text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
-        #                              low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
-        #                              link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
-
-        words = detect_text_per_page([self.image], \
-                                     network=False, \
+        lines = detect_text_per_page([self.image], \
+                                     network=True, \
                                      text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
                                      low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
                                      link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
 
+        # words = detect_text_per_page([self.image], \
+        #                              network=False, \
+        #                              text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
+        #                              low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
+        #                              link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
 
 
-        #angle = self.get_rotaion_angle(lines)
-        angle = self.get_rotaion_angle(words)
+
+        angle = self.get_rotaion_angle(lines)
+        #angle = self.get_rotaion_angle(words)
         print("Angle of tilt detected {} ".format(angle))
 
-        if abs(angle) > 2.5:
+        if abs(angle) > 0.05:
             self.image = self.rotate_bound(self.image, -angle)
 
-            # lines = detect_text_per_page([self.image], \
-            #                              network=True, \
-            #                              text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
-            #                              low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
-            #                              link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
+            lines = detect_text_per_page([self.image], \
+                                         network=True, \
+                                         text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
+                                         low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
+                                         link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
             
             cv2.imwrite(self.image_path, self.image)
 
-            words = detect_text_per_page([self.image], \
-                                        network=False, \
-                                        text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
-                                        low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
-                                        link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
-            angle = self.get_rotaion_angle(words)
-            print("Angle of tilt after correction {} ".format(angle))
+        words = detect_text_per_page([self.image], \
+                                    network=False, \
+                                    text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
+                                    low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
+                                    link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
+        angle = self.get_rotaion_angle(words)
+        print("Angle of tilt after correction {} ".format(angle))
 
 
-        lines = words
+        #lines = words
 
         return words, lines
 
