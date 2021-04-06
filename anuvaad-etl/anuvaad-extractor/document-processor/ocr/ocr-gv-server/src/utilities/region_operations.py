@@ -101,6 +101,13 @@ def sort_regions(region_lines, sorted_lines=[]):
         sort_regions(next_line, sorted_lines)
     return sorted_lines
 
+def add_font(regions):
+    for idx,region in enumerate(regions):
+        if not 'font' in region.keys():
+            height = abs(region['boundingBox']['vertices'][0]['y'] - region['boundingBox']['vertices'][2]['y'])
+            regions[idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
+    return regions
+
 def collate_regions(regions, lines, child_class=None, grand_children=False,region_flag = True,skip_enpty_children=False,add_font=False ):
     child_key='regions'
     idx = index.Index()
@@ -109,11 +116,10 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
     if regions !=None and len(regions) > 0:
         lines_intersected =[]
         for line_idx, line in enumerate(lines):
-            print("lineeeeeeeeeeeeeeee",line)
             if child_class == 'LINE':
                 if 'text' in line.keys():
                     del lines[line_idx]['text']
-            if add_font:
+            if add_font and 'font' not in line.keys():
                 height = abs(line['boundingBox']['vertices'][0]['y'] - line['boundingBox']['vertices'][2]['y'])
                 lines[line_idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
 
@@ -159,9 +165,11 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                         regions[region_index]['class']=="CELL"
                         tmp_region['class'] = "WORD"
                         tmp_region['text'] = ""
-                        regions[region_index][child_key] = tmp_region
+                        regions[region_index][child_key] = [tmp_region]
                     else:
-                       regions[region_index][child_key] = [copy.deepcopy(regions[region_index])] 
+                        tmp_region = copy.deepcopy(regions[region_index])
+                        tmp_region['class'] = child_class
+                        regions[region_index][child_key] = [tmp_region] 
             else:
                 if not skip_enpty_children :
                     
@@ -173,9 +181,11 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                         regions[region_index]['class']=="CELL"
                         tmp_region['class'] = "WORD"
                         tmp_region['text'] = ""
-                        regions[region_index][child_key] = tmp_region
+                        regions[region_index][child_key] = [tmp_region]
                     else:
-                        regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
+                        tmp_region = copy.deepcopy(regions[region_index])
+                        tmp_region['class'] = child_class
+                        regions[region_index][child_key] = [tmp_region]
     if region_flag:
         for line_index, line in enumerate(lines):
             if line_index not in lines_intersected:
