@@ -184,9 +184,9 @@ class DigitizedDocHeader extends React.Component {
                         As PDF
                     </MenuItem>
                 </StyledMenu>
-                {/* <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.togglebtnstatus}>
+                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.props.togglebtnstatus}>
                     {this.props.status ? "Hide Image" : "Show Image"}
-                </Button> */}
+                </Button>
             </div>
         );
     }
