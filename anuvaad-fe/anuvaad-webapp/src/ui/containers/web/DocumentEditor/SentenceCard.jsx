@@ -375,7 +375,6 @@ class SentenceCard extends React.Component {
     * api calls
     */
     async makeAPICallInteractiveTranslation(caret) {
-        debugger
         let val = this.state.value.slice(0, caret)
         if (val && this.props.model.interactive_translation) {
             this.setState({ isCardBusy: true })

@@ -68,7 +68,7 @@ class StartDigitizationUpload extends React.Component {
             name: "",
             message: "File uplaoded successfully",
             showComponent: false,
-            workflow: "",
+            workflow: "WF_A_FCOD10GV",
             worflow_codes: [{
                 code: 'WF_A_FCOD10GV',
                 version: '1.0'
@@ -300,7 +300,7 @@ class StartDigitizationUpload extends React.Component {
     render() {
         const { classes } = this.props
         return (
-            <div style={{ height: window.innerHeight - 150 }}>
+            <div style={{ height: window.innerHeight - 141 }}>
                 <Header />
 
                 <div className={classes.div}>
@@ -328,7 +328,7 @@ class StartDigitizationUpload extends React.Component {
                             </Grid>
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
                                 {this.renderSourceLanguagesItems()}
-                                {this.renderVersion()}
+                                {/* {this.renderVersion()} */}
                                 {this.renderTextField()}
                             </Grid>
                             <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>

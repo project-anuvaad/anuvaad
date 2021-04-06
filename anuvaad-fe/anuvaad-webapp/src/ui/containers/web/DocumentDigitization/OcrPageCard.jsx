@@ -98,17 +98,16 @@ class OcrPageCard extends React.Component {
                 }}
                 key={line.identifier}>
                 {
-                    line.regions.map(word =>
-                        line.class !== 'CELL' || line.class !== 'CELL_TEXT' ?
-                            this.renderTextSpan(word, region) :
-                            this.renderTable(word, line, region)
+                    line.regions.map(word => line.class !== 'CELL' ?
+                        this.renderTextSpan(word, region) :
+                        this.renderTable(word, line,region)
                     )
                 }
             </div>
         )
     }
 
-    renderTable = (word, line, region) => {
+    renderTable = (word, line,region) => {
         return (
             <div
                 style={{
@@ -123,11 +122,12 @@ class OcrPageCard extends React.Component {
                     fontFamily: word.font && word.font.family,
                 }}
                 key={word.identifier}
-                onDoubleClick={() => this.setModalState(this.renderUpdatedWords(word), word.identifier, region.identifier)}>
-                {
-                    this.renderUpdatedWords(word)
-                }
-            </div>
+                onDoubleClick={() => this.setModalState(this.renderUpdatedWords(word), word.identifier, region.identifier)}
+                >
+                    {
+                        this.renderUpdatedWords(word)
+                    }
+                </div >
         )
     }
 
