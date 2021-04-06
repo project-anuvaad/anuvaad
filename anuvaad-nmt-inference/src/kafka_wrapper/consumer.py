@@ -3,13 +3,14 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 from utilities import MODULE_CONTEXT
 import config
 import json
+import config.kafka_topics as kafka_topics
 
 
 def get_consumer(topics):
     try:
         consumer = KafkaConsumer(
             bootstrap_servers=list(str(config.bootstrap_server).split(",")),
-            value_deserializer=lambda x: json.loads(x.decode('utf-8')))
+            value_deserializer=lambda x: json.loads(x.decode('utf-8')),group_id=kafka_topics.group_id)
     
         consumer.subscribe(topics)    
         log_info('get_consumer : consumer returned for topics:{}'.format(topics),MODULE_CONTEXT)
