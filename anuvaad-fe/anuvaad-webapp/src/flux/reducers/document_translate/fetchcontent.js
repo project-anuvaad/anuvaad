@@ -32,7 +32,8 @@ function getUserContent(data) {
             s0_tgt: val.s0_tgt,
             tgt: val.tgt,
             bleu_score: val.bleu_score ? Math.round(val.bleu_score * 100) / 100 : '-',
-            time_spent: getTimeSpent(val.time_spent_ms)
+            time_spent: getTimeSpent(val.time_spent_ms),
+            rating_score: val.rating_score ? val.rating_score : '-'
           })
         }
       })
