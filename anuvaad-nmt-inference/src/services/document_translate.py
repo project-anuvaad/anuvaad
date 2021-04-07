@@ -76,25 +76,12 @@ class NMTTranslateService:
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
                 translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]
-
             elif model_id == 7:  
                 "english-tamil"
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
             elif model_id == 10:  
                 "english-gujrati"
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-            elif model_id == 15:  
-                "english-kannada"
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-            elif model_id == 16:  
-                "english-telgu"
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-            elif model_id == 17:  
-                "english-malayalam"
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
             elif model_id == 18:  
@@ -111,96 +98,18 @@ class NMTTranslateService:
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)                           
                 translation_array = [sentence_processor.indic_detokenizer(translation)  for translation  in translation_array]
-            elif model_id == 8:
-                "ta-en 1st"
-                input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]   
-            elif model_id == 44:
-                "eng-mr-3rd"
-                input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.indic_detokenizer(translation)  for translation  in translation_array]            
-            elif model_id == 47:
-                "en-kn 2nd"
-                input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.indic_detokenizer(translation)  for translation  in translation_array] 
-            elif model_id == 48:
-                "kn-en 1st"
-                input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]
-            elif model_id == 49:
-                "en-tel 2nd"
-                input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.indic_detokenizer(translation)  for translation  in translation_array] 
-            elif model_id == 50:
-                "tel-en 1st"
-                input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]
-            elif model_id == 51:
-                "en-guj 2nd"
-                input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.indic_detokenizer(translation)  for translation  in translation_array] 
             elif model_id == 52:
                 "guj-en 1st"
                 input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]
-            elif model_id == 53:
-                "en-punjabi 2nd"
-                input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.indic_detokenizer(translation)  for translation  in translation_array] 
+                translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array] 
             elif model_id == 55:
                 "punjabi-en 1st"
                 input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
                 translation_array, input_subwords_list, output_subwords_list, score_list = \
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
                 translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]
-            elif model_id == 57:
-                "en-bengali 3rd"
-                input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.indic_detokenizer(translation)  for translation  in translation_array] 
-            elif model_id == 58:
-                "bengali-en 2nd"
-                input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]
-            elif model_id == 59:
-                "en-malay 2nd"
-                input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.indic_detokenizer(translation)  for translation  in translation_array] 
-            elif model_id == 60:
-                "malay-en 1st"
-                input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]
-            elif model_id == 62:
-                "mr-to-en 2nd"
-                input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
-                translation_array, input_subwords_list, output_subwords_list, score_list = \
-                encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
-                translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]  
             elif model_id == 65:
                 "en-bengali 4th"
                 input_sentence_array_prepd = [sentence_processor.moses_tokenizer(sentence) for sentence in input_sentence_array_prepd]
