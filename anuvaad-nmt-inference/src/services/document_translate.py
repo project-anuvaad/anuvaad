@@ -54,7 +54,7 @@ class NMTTranslateService:
                 num_words = len(sent.split())
                 if num_words > config.trunc_limit:
                     sent = sent[:config.trunc_limit]
-                    log_info("sentence truncated as it exceeds maximum length limit",MODULE_CONTEXT)
+                    log_info("Sentence truncated as it exceeds maximum length limit",MODULE_CONTEXT)
 
                 if src_language == 'en' and input_sentence.isupper():
                     input_sentence = input_sentence.title()
@@ -193,6 +193,7 @@ def encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_
     try:
         log_info("Inside encode_translate_decode function",MODULE_CONTEXT)
         input_subwords_list = [str(sp.encode_line(sp_encoder,sent)) for sent in input_sentence_array_prepd]
+        log_info("Encoding finished: sp model {}".format(sp_encoder),MODULE_CONTEXT)
         input_final_array = [format_converter(input_subwords) for input_subwords in input_subwords_list]
         m_out = translator.translate_batch(input_final_array,beam_size = 5,num_hypotheses=1,replace_unknowns=True)
         translation_array = [None] * len(output_subwords_list)
@@ -200,6 +201,7 @@ def encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_
                 output_subwords_list[i] = " ".join(m_out[i][0]['tokens'])
                 score_list[i] = m_out[i][0]['score']
                 translation_array[i] = multiple_hypothesis_decoding(m_out[i],sp_decoder)[0]
+        log_info("Decoding finished: sp model {}".format(sp_decoder),MODULE_CONTEXT)        
         return translation_array, input_subwords_list, output_subwords_list, score_list
     except ServerModelError as e:
         log_exception("ServerModelError error in encode_translate_decode: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
@@ -213,12 +215,14 @@ def encode_translate_decode_v2(input_sentence_array_prepd,sp_encoder,translator,
     try:
         log_info("Inside encode_translate_decode function",MODULE_CONTEXT)
         input_subwords_list = [(sp.encode_line_v2(sp_encoder,sent)) for sent in input_sentence_array_prepd]
+        log_info("Encoding finished: sp model {}".format(sp_encoder),MODULE_CONTEXT)
         m_out = translator.translate_batch(input_subwords_list,beam_size = 5,num_hypotheses=1,replace_unknowns=True)
         translation_array = [None] * len(output_subwords_list)
         for i, _ in enumerate(output_subwords_list):
                 output_subwords_list[i] = " ".join(m_out[i][0]['tokens'])
                 score_list[i] = m_out[i][0]['score']
                 translation_array[i] = multiple_hypothesis_decoding_v2(m_out[i],sp_decoder)[0]
+        log_info("Decoding finished: sp model {}".format(sp_decoder),MODULE_CONTEXT)        
         return translation_array, input_subwords_list, output_subwords_list, score_list
     except ServerModelError as e:
         log_exception("ServerModelError error in encode_translate_decode_v2: {} and {}".format(e,sys.exc_info()[0]),MODULE_CONTEXT,e)
