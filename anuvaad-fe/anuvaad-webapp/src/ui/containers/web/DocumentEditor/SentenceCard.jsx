@@ -135,9 +135,9 @@ class SentenceCard extends React.Component {
     }
 
     componentDidMount() {
-        if(this.props.sentence && this.props.sentence.hasOwnProperty("rating_score") && this.props.sentence.rating_score) {
-            this.setState({ score: this.props.sentence.rating_score})
-        } 
+        if (this.props.sentence && this.props.sentence.hasOwnProperty("rating_score") && this.props.sentence.rating_score) {
+            this.setState({ score: this.props.sentence.rating_score })
+        }
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -187,7 +187,7 @@ class SentenceCard extends React.Component {
      * user actions handlers
      */
     processSaveButtonClicked() {
-        let userRole= localStorage.getItem("roles")
+        let userRole = localStorage.getItem("roles")
         if (this.state.value.length < 1 || this.state.value === '') {
             // textfield has no value present.
             // - check availability of s0_tgt
@@ -216,7 +216,7 @@ class SentenceCard extends React.Component {
                 time = 0;
                 sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()) : 0;
 
-                if(userRole === "ANNOTATOR" && this.state.score) {
+                if (userRole === "ANNOTATOR" && this.state.score) {
                     sentence.rating_score = this.state.score
                 }
 
@@ -239,9 +239,9 @@ class SentenceCard extends React.Component {
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
                 sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()) : 0;
-                let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
+                let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - sentence.timestamp) : (new Date() - sentence.timestamp);
                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;
-                if(userRole === "ANNOTATOR" && this.state.score) {
+                if (userRole === "ANNOTATOR" && this.state.score) {
                     sentence.rating_score = this.state.score
                 }
                 time = 0;
@@ -375,7 +375,6 @@ class SentenceCard extends React.Component {
     * api calls
     */
     async makeAPICallInteractiveTranslation(caret) {
-        debugger
         let val = this.state.value.slice(0, caret)
         if (val && this.props.model.interactive_translation) {
             this.setState({ isCardBusy: true })
@@ -856,10 +855,12 @@ class SentenceCard extends React.Component {
 
     renderRating = () => {
         let styles = {
-           dividerStyle: { border: 0,
-            height: 0,
-            borderTop: "1px solid rgba(0, 0, 0, 0.1)",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.3)"},
+            dividerStyle: {
+                border: 0,
+                height: 0,
+                borderTop: "1px solid rgba(0, 0, 0, 0.1)",
+                borderBottom: "1px solid rgba(255, 255, 255, 0.3)"
+            },
             buttonStyle: {
                 color: 'rgb(28, 154, 183)'
             },
@@ -871,13 +872,13 @@ class SentenceCard extends React.Component {
             <div style={{ padding: "2% 0%" }}>
                 <hr style={styles.dividerStyle} />
                 <FormControl component="fieldset">
-                    <FormLabel component="legend" color="primary" style={{color: '#000000'}}>Rate machine translation</FormLabel>
-                    <RadioGroup color="primary" name="gender1" value={ this.state.score } onChange={this.handleChange} style={{ display: "flex", flexDirection: "row" }}>
-                        <FormControlLabel value={1} control={<Radio style={styles.buttonStyle}/>} label="1" labelPlacement="bottom" style={styles.label}/>
-                        <FormControlLabel value={2} control={<Radio style={styles.buttonStyle}/>} label="2" labelPlacement="bottom" />
-                        <FormControlLabel value={3} control={<Radio style={styles.buttonStyle}/>} label="3" labelPlacement="bottom" />
-                        <FormControlLabel value={4} control={<Radio style={styles.buttonStyle}/>} label="4" labelPlacement="bottom" />
-                        <FormControlLabel value={5} control={<Radio style={styles.buttonStyle}/>} label="5" labelPlacement="bottom" />
+                    <FormLabel component="legend" color="primary" style={{ color: '#000000' }}>Rate machine translation</FormLabel>
+                    <RadioGroup color="primary" name="gender1" value={this.state.score} onChange={this.handleChange} style={{ display: "flex", flexDirection: "row" }}>
+                        <FormControlLabel value={1} control={<Radio style={styles.buttonStyle} />} label="1" labelPlacement="bottom" style={styles.label} />
+                        <FormControlLabel value={2} control={<Radio style={styles.buttonStyle} />} label="2" labelPlacement="bottom" />
+                        <FormControlLabel value={3} control={<Radio style={styles.buttonStyle} />} label="3" labelPlacement="bottom" />
+                        <FormControlLabel value={4} control={<Radio style={styles.buttonStyle} />} label="4" labelPlacement="bottom" />
+                        <FormControlLabel value={5} control={<Radio style={styles.buttonStyle} />} label="5" labelPlacement="bottom" />
 
 
                     </RadioGroup>
@@ -889,7 +890,7 @@ class SentenceCard extends React.Component {
     }
 
     renderSentenceCard = () => {
-        let userRole= localStorage.getItem("roles")
+        let userRole = localStorage.getItem("roles")
         return (
             <div key={12} style={{ padding: "1%" }}>
                 <MuiThemeProvider theme={theme}>
@@ -912,13 +913,13 @@ class SentenceCard extends React.Component {
                         </CardContent>}
 
                         <Collapse in={this.cardCompare()} timeout="auto" unmountOnExit>
-                            <CardContent style={{ padding: "10px"}}>
+                            <CardContent style={{ padding: "10px" }}>
                                 {this.renderMTTargetSentence()}
                                 <br />
                                 {userRole === "ANNOTATOR" && this.renderRating()}
                                 {this.renderUserInputArea()}
                             </CardContent>
-                            <CardActions style={{ padding: "10px"}}>
+                            <CardActions style={{ padding: "10px" }}>
                                 {this.renderNormaModeButtons()}
                             </CardActions>
                         </Collapse>
