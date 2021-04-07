@@ -50,7 +50,7 @@ class NMTTranslateService:
         try:
             for i,sent in enumerate(src_list):
                 input_sentence = sent.strip()
-                if src_language == 'English' and input_sentence.isupper():
+                if src_language == 'en' and input_sentence.isupper():
                     input_sentence = input_sentence.title()
                 
                 input_sentence = misc.convert_digits_preprocess(src_language,input_sentence)
@@ -214,7 +214,7 @@ class NMTTranslateService:
                 encode_translate_decode(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     
                 translation_array = [sentence_processor.moses_detokenizer(translation) for translation in translation_array]                                                        
             elif model_id in range(67,79):
-                if tgt_language == "English":
+                if tgt_language == "en":
                     input_sentence_array_prepd = [sentence_processor.indic_tokenizer(sentence) for sentence in input_sentence_array_prepd]
                     translation_array, input_subwords_list, output_subwords_list, score_list = \
                     encode_translate_decode_v2(input_sentence_array_prepd,sp_encoder,translator,sp_decoder,input_subwords_list,output_subwords_list,score_list)     

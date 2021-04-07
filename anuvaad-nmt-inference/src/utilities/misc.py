@@ -72,16 +72,16 @@ def get_src_tgt_langauge(model_id):
   try:
     log_info("Inside get_src_tgt_langauge",MODULE_CONTEXT)
     
-    all_models_dict_file = config.FETCH_MODEL_CONFG
+    all_models_dict_file = config.ICONFG_FILE
     with open(all_models_dict_file,'r') as f:
-      all_models_dict = json.load(f)["data"]
+      all_models_dict = json.load(f)["models"]
 
     for model_dict in all_models_dict:
-      if model_dict["model_id"] == model_id:
+      if model_dict["id"] == model_id:
         model = model_dict
         break
     
-    return model["source_language_name"], model["target_language_name"] 
+    return model["source_language_code"], model["target_language_code"] 
 
   except Exception as e:
     log_exception("Error in source language checker: {}".format(e),MODULE_CONTEXT,e)
@@ -93,7 +93,7 @@ def get_language_stop_puncs(language):
   '''
   try:
     log_info("Inside get_language_stop_puncs",MODULE_CONTEXT)
-    if language in ['Hindi','Bengali']:
+    if language in ['hi','bn']:
       return ["।","?","!",":",";","."]
     else:
       return [".","?","!",":",";","।"]
@@ -152,7 +152,7 @@ def convert_digits_preprocess(language, sentence):
   '''
   try:
     indic_dict = list(digit_dict.keys())
-    if language == "English":
+    if language == "en":
       return sentence
     elif language in indic_dict:
       return sub_indic_digits_w_roman(language, sentence)
@@ -170,7 +170,7 @@ def convert_digits_postprocess(language, sentence):
   '''
   try:
     indic_dict = list(digit_dict.keys())
-    if language == "English":
+    if language == "en":
       return sentence
     elif language in indic_dict:
       return sub_roman_digits_w_indic(language, sentence)
