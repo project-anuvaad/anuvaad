@@ -93,7 +93,14 @@ class DocumentStats extends React.Component {
           filter: false,
           sort: false,
         }
-      },
+      },{
+        name: "rating_score",
+        label: "Rating",
+        options: {
+          filter: false,
+          sort: false,
+        }
+      }
     ];
 
 
