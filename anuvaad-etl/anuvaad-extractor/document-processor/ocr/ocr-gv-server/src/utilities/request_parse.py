@@ -83,6 +83,7 @@ class File:
     @log_error
     def set_regions(self, page_index, regions):
         self.file['pages'][page_index]["regions"] = regions
+    
     @log_error
     
     def delete_regions(self, page_index):
@@ -97,6 +98,47 @@ class File:
             self.file['pages'][page_index]['path'] = page_path
             self.file['pages'][page_index]['page_no'] = page_index 
 
+class MapKeys:
+    def __init__(self):
+        self.left    =  None
+        self.right   =  None
+        self.top     =  None
+        self.bottom  =  None
+
+    def get_left(self,box):
+        left = int(box['boundingBox']['vertices'][0]['x'])
+        return left
+
+    def get_right(self,box):
+        right = int(box['boundingBox']['vertices'][1]['x'])
+        return right
+
+    def get_top(self,box):
+        top = int(box['boundingBox']['vertices'][0]['y'])
+        return top
+
+    def get_bottom(self,box):
+        bottom = int(box['boundingBox']['vertices'][3]['y'])
+        return bottom
+    def get_height(self,box):
+        height = int(abs(self.get_top(box) - self.get_bottom(box)))
+        return height
+    def get_width(self,box):
+        width =  int(abs(self.get_left(box) - self.get_right(box)))
+        return width
+class UpdateKeys:
+    def __init__(self):
+        self.left    =  None
+        self.right   =  None
+        self.top     =  None
+        self.bottom  =  None
+
+    def update_x(self,box,val,idx):
+        box['boundingBox']['vertices'][idx]['x'] = val
+        return box
+    def update_y(self,box,val,idx):
+        box['boundingBox']['vertices'][idx]['y'] = val
+        return box
 
 
 def get_files(application_context):
