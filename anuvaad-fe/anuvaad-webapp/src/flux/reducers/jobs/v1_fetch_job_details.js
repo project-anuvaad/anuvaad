@@ -43,7 +43,6 @@ function get_document_details(input) {
     input['jobs'].forEach(job => {
         let document = {}
         let timelines = []
-        debugger
         document['filename'] = job['input']['jobName']
         document['description'] = job['input']['jobDescription']
         document['filetype'] = job['input']['files'][0]['type']

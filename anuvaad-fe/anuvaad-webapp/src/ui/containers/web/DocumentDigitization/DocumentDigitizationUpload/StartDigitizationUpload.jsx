@@ -70,7 +70,7 @@ class StartDigitizationUpload extends React.Component {
             showComponent: false,
             workflow: "",
             worflow_codes: [{
-                code: 'WF_A_OD10GVOTK',
+                code: 'WF_A_FCOD10GVOTK',
                 version: '1.0'
             }, {
                 code: 'WF_A_FCWDLDBSOD15GVOTK',
