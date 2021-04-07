@@ -58,7 +58,7 @@ def resize_image(image_paths):
                 
                 if img_res >= max_res:
                     scaling_factor = math.sqrt(max_res / img_res)
-                    img = cv2.resize(img,fx= scaling_factor,fy=scaling_factor)
+                    img = cv2.resize(img,None,fx= scaling_factor,fy=scaling_factor)
                     cv2.imwrite(path,img)
     except Exception as e :
         log_error('error in resizing images ' + str(e), app_context.application_context, e)
