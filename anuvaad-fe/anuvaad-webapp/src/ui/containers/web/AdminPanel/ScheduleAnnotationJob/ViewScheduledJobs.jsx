@@ -256,6 +256,10 @@ class ViewScheduledJobs extends React.Component {
 
     processViewJobClick = (jobId, recordId, status) => {
         let role = localStorage.getItem("roles")
+<<<<<<< HEAD
+=======
+        
+>>>>>>> develop
         let job = this.getJobIdDetail(jobId);
         if (status === "COMPLETED") {
 

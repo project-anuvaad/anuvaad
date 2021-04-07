@@ -12,8 +12,8 @@ export default class RunExperiment extends API {
     this.file = file;
     this.fileName = fileName;
     this.endpoint = (workflow === "WF_A_FCBMTKTR" ||
-      workflow === "WF_A_FCOD10GV" ||
-      workflow === "WF_A_FCWDLDBSOD15GV" ||
+      workflow === "WF_A_FCOD10GVOTK" ||
+      workflow === "WF_A_FCWDLDBSOD15GVOTK" ||
       workflow === "WF_A_AN") ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}` : `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`
     this.source = source;
     this.target = target;
@@ -76,7 +76,7 @@ export default class RunExperiment extends API {
 
       }
       //List of text 
-    } else if (this.workflow === "WF_A_FCOD10GV" || this.workflow === "WF_A_FCWDLDBSOD15GV") {
+    } else if (this.workflow === "WF_A_FCOD10GVOTK" || this.workflow === "WF_A_FCWDLDBSOD15GVOTK") {
       return {
         "workflowCode": this.workflow,
         "jobName": this.fileName,

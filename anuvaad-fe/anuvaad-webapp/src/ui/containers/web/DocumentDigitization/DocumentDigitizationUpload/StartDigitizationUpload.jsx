@@ -68,9 +68,9 @@ class StartDigitizationUpload extends React.Component {
             name: "",
             message: "File uplaoded successfully",
             showComponent: false,
-            workflow: "WF_A_FCOD10GV",
+            workflow: "WF_A_FCOD10GVOTK",
             worflow_codes: [{
-                code: 'WF_A_OD10GVOTK',
+                code: 'WF_A_FCOD10GVOTK',
                 version: '1.0'
             }, {
                 code: 'WF_A_FCWDLDBSOD15GVOTK',
