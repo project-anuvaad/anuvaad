@@ -57,7 +57,7 @@ def resize_image(image_paths):
                 log_info("Resolution of pdf too high scaling down to enable OCR" ,app_context.application_context)
                 
                 if img_res >= max_res:
-                    scaling_factor = math.sqrt(max_res / img_res)
+                    scaling_factor = max_res / img_res
                     img = cv2.resize(img,None,fx= scaling_factor,fy=scaling_factor)
                     cv2.imwrite(path,img)
     except Exception as e :
