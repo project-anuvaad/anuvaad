@@ -6,6 +6,8 @@ import time
 import os
 import uuid
 import config
+import cv2
+import math
 
 from src.utilities.request_parse import get_files, File
 
@@ -42,6 +44,26 @@ def extract_pdf_images(filename, base_dir):
 
 
 
+def resize_image(image_paths):
+    '''
+    Google ocr will not process an image if it has more than 75M pixels
+    '''
+    max_res  = 75_000_000
+    try:
+        if image_paths is not None and len(image_paths) > 0:
+            for path in image_paths:
+                img = cv2.imread(path)
+                img_res = img.shape[0] * img.shape[1]
+                log_info("Resolution of pdf too high scaling down to enable OCR" ,app_context.application_context)
+                
+                if img_res >= max_res:
+                    scaling_factor = max_res / img_res
+                    img = cv2.resize(img,None,fx= scaling_factor,fy=scaling_factor)
+                    cv2.imwrite(path,img)
+    except Exception as e :
+        log_error('error in resizing images ' + str(e), app_context.application_context, e)
+
+
 def extract_images(app_context,base_dir):
 
     files = get_files(app_context.application_context)
@@ -54,11 +76,14 @@ def extract_images(app_context,base_dir):
             if file_format in ['PDF' ,'pdf']:
                 filename = file_properties.get_name()
                 image_paths = extract_pdf_images(filename,base_dir)
+                resize_image(image_paths)
                 file_images.append(image_paths)
+                
             else:
                 if file_format in ['PNG', 'JPEG', 'BMP','jpg','png','bmp','jpeg' ] :
                     filename = file_properties.get_name()
                     image_paths = [os.path.join(base_dir, filename)]
+                    resize_image(image_paths)
                     file_images.append(image_paths)
                 else:
                     log_info("currently we do not support {} files .".format(file_format) ,app_context.application_context)

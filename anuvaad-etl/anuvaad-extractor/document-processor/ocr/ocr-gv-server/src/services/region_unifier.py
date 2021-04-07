@@ -317,7 +317,7 @@ class Region_Unifier:
 
 
 
-    def region_unifier(self,page_g_words, page_lines,page_regions,page_c_words):
+    def region_unifier(self,page_g_words, page_lines,page_regions,page_c_words,path):
         try:
             
             #sort regions 
@@ -358,7 +358,7 @@ class Region_Unifier:
             text_region  = remvoe_regions(copy.deepcopy(t_list) ,copy.deepcopy(text_region))
             line_list    = collate_regions(copy.deepcopy( filtered_lines), copy.deepcopy( filtered_words),child_class='WORD',add_font=True)
 
-            head_foot_list =  collate_cell_regions(copy.deepcopy(head_foot_region),copy.deepcopy(line_list),child_class='LINE',grand_children=True,region_flag = False)
+            head_foot_list =  collate_regions(copy.deepcopy(head_foot_region),copy.deepcopy(line_list),child_class='LINE',grand_children=True,region_flag = False)
             filtered_lines  = remvoe_regions(copy.deepcopy(head_foot_list), copy.deepcopy(line_list))
             
             
@@ -383,10 +383,14 @@ class Region_Unifier:
                 if 'class' in v_list[idx].keys():
                     if v_list[idx]['class'] == 'TEXT':
                         v_list[idx]['class']= "PARA"
-                if   v_block['regions'] != None and  len(v_block['regions']) > 1 :
-                    avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([v_block])
-                    v_block['avg_ver_dist'] = avg__region_ver_dist
-                    avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
+
+                if 'regions' in v_block.keys():
+                    if   v_block['regions'] != None and  len(v_block['regions']) > 1 :
+                        avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([v_block])
+                        v_block['avg_ver_dist'] = avg__region_ver_dist
+                        avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
+                else:
+                    log_info('region key not found for {}  in page {}'.format(v_block, path),app_context.application_context )
 
                 if 'children' in v_block.keys():
                     v_block.pop('children')

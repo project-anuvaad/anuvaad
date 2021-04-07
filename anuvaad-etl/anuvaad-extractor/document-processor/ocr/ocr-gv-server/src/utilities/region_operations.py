@@ -222,6 +222,7 @@ def collate_cell_regions(regions, lines, child_class=None, grand_children=False,
             if poly:
                 idx.insert(line_idx, poly.bounds)
         for region_index, region in enumerate(regions):
+            children_lines =[]
             region_poly = get_polygon(region['boundingBox'])
             if region_poly:
                 children_lines = list(idx.intersection(region_poly.bounds))

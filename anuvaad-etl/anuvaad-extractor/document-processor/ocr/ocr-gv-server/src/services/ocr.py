@@ -29,7 +29,7 @@ def get_text(path,page_dict,page_regions,page_c_words,font_info):
         content = image_file.read()
     image = vision.types.Image(content=content)
     response = client.document_text_detection(image=image)
-    page_output,page_words = get_document_bounds(response.full_text_annotation,page_dict,page_regions,page_c_words,font_info)
+    page_output,page_words = get_document_bounds(response.full_text_annotation,page_dict,page_regions,page_c_words,font_info,path)
     return page_output,page_words
 
 
@@ -98,7 +98,7 @@ def add_line(page_dict, line_coord, line_text):
         page_dict["lines"].append(line_region)
     return page_dict
 
-def get_document_bounds(response,page_dict,page_regions,page_c_words,font_info):
+def get_document_bounds(response,page_dict,page_regions,page_c_words,font_info,path):
     page_dict["regions"] = []
     page_dict["lines"]   = []
     page_dict["words"]   = []
@@ -133,7 +133,7 @@ def get_document_bounds(response,page_dict,page_regions,page_c_words,font_info):
                     word_text = ''.join([
                         symbol.text for symbol in word.symbols
                     ])
-                    #print(word_text)
+                    print(word_text)
                     word_region["text"] = word_text
                     word_region["conf"] = word.confidence
                     if len(word.symbols[0].property.detected_languages)!=0:
@@ -149,7 +149,7 @@ def get_document_bounds(response,page_dict,page_regions,page_c_words,font_info):
     page_words   = set_font_info(page_words,font_info)
 
     
-    v_list = segment_regions(page_words,page_lines,page_regions,page_c_words)
+    v_list = segment_regions(page_words,page_lines,page_regions,page_c_words,path)
 
     return v_list,page_words
 
@@ -214,7 +214,7 @@ def coord_alignment(regions):
 
 
 
-def segment_regions(words, lines,regions,page_c_words):
+def segment_regions(words, lines,regions,page_c_words,path):
     #regions = segment_regions(page_words,page_lines,page_regions)
 
     v_list, n_text_regions = region_unifier.region_unifier(words,lines,regions,page_c_words)

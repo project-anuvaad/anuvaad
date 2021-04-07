@@ -63,6 +63,7 @@ class Orientation:
             cosine = 1
         angle = np.arccos(cosine) * 180 / np.pi
         avrage_height = bbox_df['height'].mean()
+
         avrage_width = bbox_df['width'].mean()
         if avrage_height > avrage_width:
             angle = 90 - angle
