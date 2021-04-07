@@ -217,7 +217,7 @@ def coord_alignment(regions):
 def segment_regions(words, lines,regions,page_c_words,path):
     #regions = segment_regions(page_words,page_lines,page_regions)
 
-    v_list, n_text_regions = region_unifier.region_unifier(words,lines,regions,page_c_words)
+    v_list, n_text_regions = region_unifier.region_unifier(words,lines,regions,page_c_words,path)
     v_list = coord_alignment(v_list)
     #print("v_lis",v_list)
     #v_list += n_text_regions
