@@ -188,6 +188,7 @@ class SentenceCard extends React.Component {
      */
     processSaveButtonClicked() {
         let userRole = localStorage.getItem("roles")
+        // time = new Date();
         if (this.state.value.length < 1 || this.state.value === '') {
             // textfield has no value present.
             // - check availability of s0_tgt
@@ -213,7 +214,7 @@ class SentenceCard extends React.Component {
                 delete sentence.block_identifier;
                 let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;// max spent time is 5 min
-                time = 0;
+                time = new Date();
                 sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()) : 0;
 
                 if (userRole === "ANNOTATOR" && this.state.score) {
@@ -239,7 +240,7 @@ class SentenceCard extends React.Component {
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
                 sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()) : 0;
-                let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - sentence.timestamp) : (new Date() - sentence.timestamp);
+                let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
                 sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;
                 if (userRole === "ANNOTATOR" && this.state.score) {
                     sentence.rating_score = this.state.score
@@ -848,6 +849,7 @@ class SentenceCard extends React.Component {
     }
 
     handleChange = (event) => {
+        time = time === 0 ? new Date() : time
         this.setState({
             score: Number(event.target.value)
         })
