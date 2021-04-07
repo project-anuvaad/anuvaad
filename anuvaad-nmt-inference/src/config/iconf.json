@@ -14,34 +14,10 @@
             "sp_decoder":"sentencepiece_models/tamil-2019-09-23-10k.model"
         },
         {
-            "id":8,
-            "path":"nmt/ta-en",
-            "sp_encoder":"sentencepiece_models/tamil-2020-01-09-24k.model",
-            "sp_decoder":"sentencepiece_models/enTa-2020-01-09-24k.model"
-        },
-        {
             "id":10,
             "path":"nmt/en-gu",
             "sp_encoder":"sentencepiece_models/en-2019-09-10-10k.model",
             "sp_decoder":"sentencepiece_models/guj-2019-09-10-10k.model"
-        },
-        {
-            "id": 15,
-            "path":"nmt/en-kn",
-            "sp_encoder":"sentencepiece_models/enKn-2019-09-20-10k.model",
-            "sp_decoder":"sentencepiece_models/kannada-2019-09-20-10k.model"
-        },
-        {
-            "id":16,
-            "path":"nmt/en-te",
-            "sp_encoder":"sentencepiece_models/enTe-2019-09-20-10k.model",
-            "sp_decoder":"sentencepiece_models/telgu-2019-09-20-10k.model"
-        },
-        {
-            "id": 17,
-            "path":"nmt/en-ml",
-            "sp_encoder":"sentencepiece_models/enMl-2019-09-20-10k.model",
-            "sp_decoder":"sentencepiece_models/malayalam-2019-09-20-10k.model"
         },
         {
             "id":18,
@@ -56,22 +32,10 @@
             "sp_decoder":"sentencepiece_models/marathi_exp-2-2019-11-07-24k.model"
         },
         {
-            "id":51,
-            "path":"nmt/51",
-            "sp_encoder":"sentencepiece_models/enGuj-en-to-guj-2-2020-02-14-24k.model",
-            "sp_decoder":"sentencepiece_models/gujarati-en-to-guj-2-2020-02-14-24k.model"
-        },
-        {
             "id":52,
             "path":"nmt/gu-en",
             "sp_encoder":"sentencepiece_models/gujarati-en-to-guj-2-2020-02-14-24k.model",
             "sp_decoder":"sentencepiece_models/enGuj-en-to-guj-2-2020-02-14-24k.model"
-        },
-        {
-            "id":53,
-            "path":"nmt/53",
-            "sp_encoder":"sentencepiece_models/enPun-en-to-pun-2-2020-02-16-24k.model",
-            "sp_decoder":"sentencepiece_models/punjabi-en-to-pun-2-2020-02-16-24k.model"
         },
         {
             "id":55,
