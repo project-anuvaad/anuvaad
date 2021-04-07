@@ -5,8 +5,9 @@ from google.cloud import vision
 from src.services.segment import horzontal_merging, break_block
 from src.utilities.region_operations import merge_text, set_font_info
 from src.services.region_unifier import Region_Unifier
-import cv2
+import cv2,copy
 from src.utilities.model_response import set_bg_image
+from src.utilities.request_parse import MapKeys,UpdateKeys
 
 
 
@@ -152,13 +153,72 @@ def get_document_bounds(response,page_dict,page_regions,page_c_words,font_info):
 
     return v_list,page_words
 
+keys = MapKeys()
+update_key = UpdateKeys()
+def update_coord(line,new_top,line_t,line_b):
+    for word_idx, word in enumerate(line['regions']):
+        if 'class' not in word.keys():
+            word['class'] ='WORD'
+        word_t = keys.get_top(word); word_h = keys.get_height(word)
+        #if word_h+new_top<=line_b:
+        word = update_key.update_y(word,new_top,0); word = update_key.update_y(word,new_top,1)
+        word = update_key.update_y(word,new_top+word_h,2); word = update_key.update_y(word,new_top+word_h,3)
+        line['regions'][word_idx] = word
+    return line
+
+def delete_region(regions,indexes):
+    updated_regions = []
+    for idx,region in enumerate(regions):
+        if idx not in indexes:
+            updated_regions.append(regions[idx])
+    return updated_regions
+
+
+def coord_alignment(regions):
+    region_del_index = []
+    for region_idx,region in enumerate(regions):
+        if 'regions' in region.keys():
+            if 'class' in region.keys() and region['class'] in ["PARA"]:
+                line_del_index = []
+                for line_idx,line in enumerate(region['regions']):
+                    if 'regions' in line.keys():
+                        line_t = keys.get_top(line); line_h = keys.get_height(line); line_b = keys.get_bottom(line)
+                        min_t = sys.maxsize
+                        for word_idx, word in enumerate(line['regions']):
+                            word_t = keys.get_top(word)
+                            if word_t<min_t:
+                                min_t = word_t
+                        new_top =  int((min_t+line_t)/2)
+                        
+                        line = update_coord(copy.deepcopy(line),new_top,line_t,line_b)
+                        if "class" not in line.keys():
+                            line['class']="LINE"
+                        region['regions'][line_idx] = copy.deepcopy(line)
+                    else:
+                        line_del_index.append(line_idx)
+                
+                if len(line_del_index)>0:
+                    line_updated = delete_region(region['regions'],line_del_index)
+                else:
+                    line_updated = region['regions']
+                regions[region_idx]['regions'] = copy.deepcopy(line_updated)
+            elif 'class' not in region.keys():
+                region['class']  = "PARA"   
+                regions[region_idx] = copy.deepcopy(region)    
+        else:
+            region_del_index.append(region_idx)
+    if len(region_del_index)>0:
+        regions = delete_region(regions,region_del_index)
+    return regions
+            
+
 
 
 def segment_regions(words, lines,regions,page_c_words):
     #regions = segment_regions(page_words,page_lines,page_regions)
 
     v_list, n_text_regions = region_unifier.region_unifier(words,lines,regions,page_c_words)
-
+    v_list = coord_alignment(v_list)
     #print("v_lis",v_list)
     #v_list += n_text_regions
     
@@ -202,6 +262,7 @@ def mask_image_craft(path, page_regions,page_index,file_properties,image_width,i
                 
                 if region_class not in ["IMAGE","OTHER","SEPARATOR"]:
                     region_lines = file_properties.get_region_lines(page_index,region_idx,page_region)
+                    
                     if region_lines!=None:
                         
                         for line_index, line in enumerate(region_lines):
