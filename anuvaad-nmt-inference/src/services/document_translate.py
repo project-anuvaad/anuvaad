@@ -50,6 +50,12 @@ class NMTTranslateService:
         try:
             for i,sent in enumerate(src_list):
                 input_sentence = sent.strip()
+                
+                num_words = len(sent.split())
+                if num_words > config.trunc_limit:
+                    sent = sent[:config.trunc_limit]
+                    log_info("sentence truncated as it exceeds maximum length limit",MODULE_CONTEXT)
+
                 if src_language == 'en' and input_sentence.isupper():
                     input_sentence = input_sentence.title()
                 
