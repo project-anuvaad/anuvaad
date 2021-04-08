@@ -290,7 +290,7 @@ class TMXService:
         if redis_records:
             if "userID" in req.keys():
                 filtered = filter(lambda record: record["userID"] == req["userID"], redis_records)
-                redis_records = filtered
+                redis_records = list(filtered)
         return redis_records
 
     # Creates a md5 hash values using userID, orgID, context, locale and src for inserting records.
