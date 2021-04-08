@@ -54,9 +54,10 @@ def resize_image(image_paths):
             for path in image_paths:
                 img = cv2.imread(path)
                 img_res = img.shape[0] * img.shape[1]
-                log_info("Resolution of pdf too high scaling down to enable OCR" ,app_context.application_context)
+                
                 
                 if img_res >= max_res:
+                    log_info("Resolution of pdf too high scaling down to enable OCR" ,app_context.application_context)
                     scaling_factor = max_res / img_res
                     img = cv2.resize(img,None,fx= scaling_factor,fy=scaling_factor)
                     cv2.imwrite(path,img)
