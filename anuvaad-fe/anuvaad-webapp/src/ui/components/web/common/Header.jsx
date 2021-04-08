@@ -332,7 +332,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-{role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -377,6 +377,28 @@ class Header extends React.Component {
                               <Typography type="body2" style={{ color: currentMenu === "view-document" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
                                 Translate document
                             </Typography>
+                            }
+                          />
+                        </ListItem>
+                      </div>
+                      <div>
+                        <Divider className={classes.divider} />
+                        <ListItem
+                          id="my-glossary"
+                          style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "my-glossary" && themeAnuvaad.palette.primary.main }}
+                          button
+                          onClick={() => {
+                            this.handleDrawerClose(false);
+                            history.push(`${process.env.PUBLIC_URL}/my-glossary`);
+                          }}
+                        >
+
+                          <ListItemText
+                            disableTypography
+                            primary={
+                              <Typography type="body2" style={{ color: currentMenu === "my-glossary" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                                My Glossary
+                          </Typography>
                             }
                           />
                         </ListItem>

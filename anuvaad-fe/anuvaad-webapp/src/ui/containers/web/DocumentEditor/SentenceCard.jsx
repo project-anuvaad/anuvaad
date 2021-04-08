@@ -35,6 +35,7 @@ import DictionaryAPI from '../../../../flux/actions/apis/document_translate/word
 import AddToGlossaryModal from './AddToGlossaryModal';
 import Modal from '@material-ui/core/Modal';
 import CreateGlossary from '../../../../flux/actions/apis/document_translate/create_glossary';
+import { Grid } from '@material-ui/core';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
@@ -658,14 +659,21 @@ class SentenceCard extends React.Component {
     }
 
     renderNormaModeButtons = () => {
-
         return (
             <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                 <span style={{ textAlign: 'left', width: "30%" }}>
-                    <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }} onClick={this.processSaveButtonClicked} >
-                        SAVE
-                </Button>
-
+                    <Grid container>
+                        <Grid item xs={6} spacing={3}>
+                            <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }} onClick={this.processSaveButtonClicked} >
+                                SAVE
+                            </Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }}>
+                                RETRANSLATE
+                            </Button>
+                        </Grid>
+                    </Grid>
                 </span>
                 {this.props.sentence && this.props.sentence.hasOwnProperty("bleu_score") && <span style={{ width: "70%", margin: "auto", display: "flex", flexDirection: "row", justifyContent: "flex-end", color: "#233466" }}><Typography>Bleu Score:&nbsp;{parseFloat(this.props.sentence.bleu_score).toFixed(2)}</Typography></span>}
                 {this.props.sentence && this.props.sentence.hasOwnProperty("time_spent_ms") && this.handleSpentTime()}
