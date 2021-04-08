@@ -110,7 +110,7 @@ class FileContentUpdateResource(Resource):
         blocks          = body['blocks']
         AppContext.addRecordID(record_id)
         log_info("FileContentUpdateResource for user ({}), to update ({}) blocks".format(user_id, len(blocks)), AppContext.getContext())
-
+        log_info(blocks, AppContext.getContext())
         try:
             result, updated_blocks  = fileContentRepo.update(record_id,user_id, blocks, workflowCode)
 
