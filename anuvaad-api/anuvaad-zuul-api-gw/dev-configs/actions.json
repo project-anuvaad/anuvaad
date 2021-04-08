@@ -149,8 +149,16 @@
             "uri":"/anuvaad/user-mgmt/v1/org/search",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
-            "whiteList":true,
+            "whiteList":false,
             "description":"API for searching orgs"
+        },
+        {
+            "id":"b5ff81c9-8c7b-44eb-ad19-92c4d21b239c",
+            "uri":"/anuvaad/user-mgmt/v1/users/get-roles",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch roles"
         },
         {
             "id":"bde39a83-8a4f-400e-bcf0-d14b8895f0ae",
