@@ -156,11 +156,19 @@ class TMXService:
 
     # Generates a 3 flavors for a sentence - title case, lowercase and uppercase.
     def fetch_diff_flavors_of_sentence(self, sentence):
-        sentence = str(sentence)
-        title = sentence.title()
-        small = sentence.lower()
-        caps = sentence.upper()
-        return sentence, title, small, caps
+        result = []
+        org_sentence = str(sentence)
+        result.append(org_sentence)
+        title = org_sentence.title()
+        if org_sentence != title:
+            result.append(title)
+        small = org_sentence.lower()
+        if org_sentence != small:
+            result.append(small)
+        caps = org_sentence.upper()
+        if org_sentence != caps:
+            result.append(caps)
+        return result
 
     # Searches for all tmx phrases of a fixed length within a given sentence
     # Uses a custom implementation of the sliding window search algorithm.
