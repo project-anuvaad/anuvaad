@@ -398,6 +398,12 @@ definitions:
   UpdateBlocks:
     type: object
     properties:
+        modifiedSentences:
+          type: array
+          description: list of modified sentence identifier
+          items:
+            type: string
+            format: uuidv4
         blocks:
           type: array
           description: list of blocks to be updated under a given workflow code
