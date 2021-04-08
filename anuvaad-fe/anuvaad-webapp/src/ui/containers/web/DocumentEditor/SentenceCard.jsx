@@ -188,8 +188,11 @@ class SentenceCard extends React.Component {
      */
     processSaveButtonClicked() {
         let userRole = localStorage.getItem("roles")
+        if (!this.state.score) {
+            alert('Please rate the sentence and then save. ')
+        }
         // time = new Date();
-        if (this.state.value.length < 1 || this.state.value === '') {
+        else if (this.state.value.length < 1 || this.state.value === '') {
             // textfield has no value present.
             // - check availability of s0_tgt
             //  - if s0_tgt is not available, alert user

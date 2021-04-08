@@ -95,6 +95,7 @@ class OcrPageCard extends React.Component {
                     height: line.class === 'CELL' && line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
                     width: line.class === 'CELL' && line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
                     position: line.class === 'CELL' && 'absolute',
+                    zIndex: 5,
                 }}
                 key={line.identifier}>
                 {
