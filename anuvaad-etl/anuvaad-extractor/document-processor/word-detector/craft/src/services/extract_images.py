@@ -48,17 +48,18 @@ def resize_image(image_paths):
     '''
     Google ocr will not process an image if it has more than 75M pixels
     '''
-    max_res  = 75_000_000
+    max_res  = 74_000_000
     try:
         if image_paths is not None and len(image_paths) > 0:
             for path in image_paths:
                 img = cv2.imread(path)
                 img_res = img.shape[0] * img.shape[1]
-                log_info("Resolution of pdf too high scaling down to enable OCR" ,app_context.application_context)
+                
                 
                 if img_res >= max_res:
-                    scaling_factor = max_res / img_res
-                    img = cv2.resize(img,None,fx= scaling_factor,fy=scaling_factor)
+                    log_info("Resolution of pdf too high scaling down to enable OCR" ,app_context.application_context)
+                    scaling_factor = math.sqrt(max_res / img_res)
+                    img = cv2.resize(img,None,fx= scaling_factor,fy=scaling_factor,interpolation=cv2.INTER_AREA)
                     cv2.imwrite(path,img)
     except Exception as e :
         log_error('error in resizing images ' + str(e), app_context.application_context, e)

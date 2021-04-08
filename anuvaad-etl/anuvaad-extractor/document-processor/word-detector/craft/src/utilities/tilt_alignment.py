@@ -133,7 +133,7 @@ class Orientation:
                                     text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
                                     low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
                                     link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
-        angle = self.get_rotaion_angle(words)
+        angle = self.get_rotaion_angle(lines)
         print("Angle of tilt after correction {} ".format(angle))
 
 
