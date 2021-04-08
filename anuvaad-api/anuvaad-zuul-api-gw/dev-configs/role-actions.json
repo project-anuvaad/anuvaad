@@ -620,10 +620,10 @@
             "actionID": "b5ff81c9-8c7b-44eb-ad19-92c4d21b239c",
             "active":true
         },
-         {
+        {
             "role":"ADMIN",
             "actionID": "0976372a-28b2-438b-9ec5-15952a31d224",
             "active":true
-        },
+        }
     ]
 }
