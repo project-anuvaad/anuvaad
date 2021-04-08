@@ -7,10 +7,12 @@ import xlrd
 from anuvaad_auditor.loghandler import log_exception, log_info
 import requests
 from .tmxrepo import TMXRepository
-from configs.translatorconfig import nmt_labse_align_url, download_folder, tmx_global_enabled, tmx_org_enabled, tmx_user_enabled, tmx_word_length
+from configs.translatorconfig import nmt_labse_align_url, download_folder, tmx_global_enabled, tmx_org_enabled, \
+    tmx_user_enabled, tmx_word_length
 from anuvaad_auditor.errorhandler import post_error
 
 repo = TMXRepository()
+
 
 class TMXService:
 
@@ -59,14 +61,16 @@ class TMXService:
             if res["status"] == "FAILED":
                 return {"message": "bulk creation failed", "status": "FAILED"}
             db_record = tmx_record
-            db_record["sentences"], db_record["file"], db_record["timeStamp"] = len(tmx_input), file_path, eval(str(time.time()).replace('.', '')[0:13])
+            db_record["sentences"], db_record["file"], db_record["timeStamp"] = len(tmx_input), file_path, eval(
+                str(time.time()).replace('.', '')[0:13])
             db_record["locale"], db_record["id"] = locale, str(uuid.uuid4())
             repo.tmx_create(db_record)
             db_record_reverse = tmx_record
             reverse_locale_array = str(locale).split("|")
             reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
             db_record_reverse["sentences"], db_record_reverse["file"], = len(tmx_input), file_path
-            db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
+            db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(
+                str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
             repo.tmx_create(db_record_reverse)
             log_info("Bulk Create DONE!", None)
             return {"message": "bulk creation successful", "status": "SUCCESS"}
@@ -80,7 +84,7 @@ class TMXService:
         try:
             for sentence in tmx_input["sentences"]:
                 tmx_records = []
-                sentence_types = self.fetch_diff_flavors_of_sentence(sentence["src"])
+                sentence_types, i = self.fetch_diff_flavors_of_sentence(sentence["src"]), 0
                 for sent in sentence_types:
                     tmx_record_pair = {"src": sent, "locale": sentence["locale"], "nmt_tgt": [],
                                        "user_tgt": sentence["tgt"], "context": tmx_input["context"]}
@@ -88,7 +92,10 @@ class TMXService:
                         tmx_record_pair["userID"] = tmx_input["userID"]
                     if 'orgID' in tmx_input.keys():
                         tmx_record_pair["orgID"] = tmx_input["orgID"]
+                    if i == 0:
+                        tmx_record_pair["original"] = True
                     tmx_records.append(tmx_record_pair)
+                    i += 1
                 reverse_locale_array = str(sentence["locale"]).split("|")
                 reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
                 tmx_record_reverse_pair = {"src": sentence["tgt"], "locale": reverse_locale, "nmt_tgt": [],
@@ -289,9 +296,30 @@ class TMXService:
         redis_records = repo.get_all_records(keys)
         if redis_records:
             if "userID" in req.keys():
-                filtered = filter(lambda record: record["userID"] == req["userID"], redis_records)
+                filtered = filter(lambda record: self.filter_user_records(record, req["userID"]), redis_records)
                 redis_records = list(filtered)
+                if "allUserKeys" not in req.keys():
+                    filtered = filter(lambda record: self.filter_original_keys(record), redis_records)
+                    redis_records = list(filtered)
+                elif not req["allUserKeys"]:
+                    filtered = filter(lambda record: self.filter_original_keys(record), redis_records)
+                    redis_records = list(filtered)
         return redis_records
+
+    def filter_user_records(self, record, user_id):
+        if "userID" in record.keys():
+            if record["userID"] == user_id:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def filter_original_keys(self, record):
+        if "original" in record.keys():
+            return record["original"]
+        else:
+            return False
 
     # Creates a md5 hash values using userID, orgID, context, locale and src for inserting records.
     def get_hash_key(self, tmx_record):
@@ -320,11 +348,11 @@ class TMXService:
         if tmx_level == "BOTH":
             if tmx_org_enabled:
                 org_hash = tmx_record["orgID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + \
-                       tmx_record["src"]
+                           tmx_record["src"]
                 hash_dict["ORG"] = hashlib.sha256(org_hash.encode('utf-16')).hexdigest()
             if tmx_user_enabled:
                 user_hash = tmx_record["userID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + \
-                        tmx_record["src"]
+                            tmx_record["src"]
                 hash_dict["USER"] = hashlib.sha256(user_hash.encode('utf-16')).hexdigest()
         elif tmx_level == "USER" and tmx_user_enabled:
             user_hash = tmx_record["userID"] + "__" + tmx_record["context"] + "__" + tmx_record["locale"] + "__" + \
@@ -365,7 +393,8 @@ class TMXService:
                 repo.glossary_create(translation)
             return {"message": "Glossary created successfully", "status": "SUCCESS"}
         except Exception as e:
-            return post_error("GLOSSARY_CREATION_FAILED", "Glossary creation failed due to exception: {}".format(str(e)), None)
+            return post_error("GLOSSARY_CREATION_FAILED",
+                              "Glossary creation failed due to exception: {}".format(str(e)), None)
 
     # Method to delete glossary from the db
     def glossary_delete(self, delete_req):
@@ -386,7 +415,6 @@ class TMXService:
             query["created_on"] = {"$lte": delete_req["endDate"]}
         repo.glossary_delete(query)
         return {"message": "Glossary deleted successfully", "status": "SUCCESS"}
-
 
     # Method to search glossary from the glossay db.
     def glossary_get(self, searc_req):
