@@ -34,7 +34,7 @@ class BlockTranslationService:
         output = block_translate_input
         is_successful, fail_msg, record_id, op_blocks = False, None, block_translate_input["input"]["recordID"], None
         try:
-            nmt_in_txt = self.get_sentences_for_translation(block_translate_input)
+            nmt_in_txt, modified_sentences = self.get_sentences_for_translation(block_translate_input)
             if not nmt_in_txt:
                 fail_msg = "ERROR: there are no modified sentences for re-translation"
                 log_error(fail_msg, block_translate_input, None)
@@ -52,6 +52,7 @@ class BlockTranslationService:
                     ch_input = self.get_translations_ip_ch(nmt_response, block_translate_input)
                     if ch_input:
                         log_info("API call to CH...", block_translate_input)
+                        ch_input["modifiedSentences"] = modified_sentences
                         ch_response = utils.call_api(update_content_url, "POST", ch_input, None, block_translate_input["metadata"]["userID"])
                         log_info("Response received from CH!", block_translate_input)
                         if ch_response:
@@ -135,7 +136,7 @@ class BlockTranslationService:
                         sent_for_nmt.append(sent_nmt_in)
         log_info("NMT: " + str(len(sent_for_nmt)) + " | TMX: " + str(tmx_count), block_translate_input)
         log_info("TMX Blocks Cache Size (End): " + str(len(tmx_blocks_cache.keys())), block_translate_input)
-        return sent_for_nmt
+        return sent_for_nmt, modified_sentences
 
     # Checks if org level or user level TMX is applicable to the file under translation.
     def is_tmx_present(self, block_translate_input):
