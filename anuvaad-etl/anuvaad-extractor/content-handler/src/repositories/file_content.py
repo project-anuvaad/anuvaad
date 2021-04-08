@@ -43,18 +43,18 @@ class FileContentRepositories:
                     del elem['pred_score']
         return new_block
 
-    def update_block_info(self, block, update_s0):
+    def update_block_info(self, block, update_s0, modifiedSentences=None):
         new_block                   = {}
         new_block['data']           = block
         # log_info("update_block_info payload {}".format(json.dumps(block)), AppContext.getContext())
 
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
-                if update_s0:
-                    if 'tgt' in elem:
-                        # if  
-                        elem['s0_tgt']    = elem['tgt']
-                    elem['s0_src']    = elem['src']
+                if update_s0 and modifiedSentences != None and len(modifiedSentences) != 0:
+                    if 's_id' in elem and elem['s_id'] in modifiedSentences:
+                        if 'tgt' in elem:
+                            elem['s0_tgt']    = elem['tgt']
+                        elem['s0_src']    = elem['src']
 
                 if 'input_subwords' in elem:
                     del elem['input_subwords']
