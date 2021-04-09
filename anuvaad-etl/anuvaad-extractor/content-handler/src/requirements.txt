@@ -10,7 +10,7 @@ Flask-Cors==3.0.9
 Flask-JWT-Extended==3.24.1
 Flask-RESTful==0.3.8
 itsdangerous==1.1.0
-Jinja2==2.11.2
+Jinja2==2.11.3
 kafka-python==2.0.2
 MarkupSafe==1.1.1
 nltk==3.4.5
