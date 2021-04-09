@@ -44,10 +44,10 @@ class BlockTranslationService:
                 if block_translate_input["metadata"]["orgID"] not in nmt_disabled_orgs:
                     log_info("API call to NMT...", block_translate_input)
                     nmt_response = utils.call_api(url, "POST", body, None, block_translate_input["metadata"]["userID"])
+                    log_info("Response received from NMT!", block_translate_input)
                 else:
                     log_info("Job belongs to NONMT type!", block_translate_input)
                     nmt_response = {"data": nmt_in_txt}
-                log_info("Response received from NMT, URL: {}".format(url), block_translate_input)
                 if nmt_response:
                     ch_input = self.get_translations_ip_ch(nmt_response, block_translate_input)
                     if ch_input:

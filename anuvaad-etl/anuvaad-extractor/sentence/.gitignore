@@ -1,0 +1,7 @@
+# file folder
+para_sen_api.py
+**__pycache__
+*.vscode
+*.log
+uwsgi.ini
+wsgi_test.py
