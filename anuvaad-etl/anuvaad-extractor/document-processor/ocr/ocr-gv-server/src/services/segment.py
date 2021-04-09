@@ -33,9 +33,9 @@ def horzontal_merging(children,avg_ver_ratio):
 
 
 def update_children(reg1,reg2):
-    if reg1['children']!=None and len(reg1['children']) > 0 :
-        if reg2['children']!=None and len(reg2['children']) > 0 :
-            agg_children =  reg1['children'] + reg2['children']
+    if reg1['regions']!=None and len(reg1['regions']) > 0 :
+        if reg2['regions']!=None and len(reg2['regions']) > 0 :
+            agg_children =  reg1['regions'] + reg2['regions']
             agg_children.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'])
 
             children = sort_regions(agg_children , [])
@@ -45,10 +45,10 @@ def update_children(reg1,reg2):
             else:
                 return children
         else :
-            return reg1['children']
+            return reg1['regions']
     else :
-        if reg2['children']!=None and len(reg2['children']) > 0 :
-            return reg2['children']
+        if reg2['regions']!=None and len(reg2['regions']) > 0 :
+            return reg2['regions']
         else :
             return []
 
@@ -56,9 +56,9 @@ def update_children(reg1,reg2):
 def update_coord(reg1,reg2):
     box1 = MapKeys(reg1)
     box2 = MapKeys(reg2)
-    reg1['children'] = update_children(reg1, reg2)
+    reg1['regions'] = update_children(reg1, reg2)
     text = ""
-    for word in reg1['children']:
+    for word in reg1['regions']:
         text = text+ " " + word['text']
     reg1['text'] = text[1:]
     reg1["boundingBox"]["vertices"][0]['x']= min(box1.get_left(),box2.get_left())
@@ -80,7 +80,7 @@ def update_coord(reg1,reg2):
 def break_block(v_block):
     try:
         block_configs = config.BLOCK_CONFIGS
-        if  v_block['children'] != None and  len(v_block['children'] ) < 2 :
+        if  v_block['regions'] != None and  len(v_block['regions'] ) < 2 :
             print(v_block)
             return [v_block]
         else:
@@ -95,7 +95,7 @@ def break_block(v_block):
 def break_paragraph(v_block,block_configs):
     map_v_block = MapKeys(v_block)
 
-    bi_gram = get_ngram(v_block['children'], 2)
+    bi_gram = get_ngram(v_block['regions'], 2)
     blocks = [[bi_gram[0][0]]]
     for pair in bi_gram:
         connected =    left_right_condition(MapKeys(pair[0]),MapKeys(pair[1]) ,map_v_block.get_right(),map_v_block.get_left(),block_configs)

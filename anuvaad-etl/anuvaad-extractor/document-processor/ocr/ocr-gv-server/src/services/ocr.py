@@ -150,8 +150,8 @@ def get_document_bounds(response,page_dict,page_regions,page_c_words,page_c_line
     page_words   = set_font_info(page_words,font_info)
 
     
-    #v_list = segment_regions(page_words,page_lines,page_regions,page_c_words,path)
-    v_list = segment_regions(page_words,page_c_lines,page_regions,page_c_words,path)
+    v_list = segment_regions(page_words,page_lines,page_regions,page_c_words,path)
+    #v_list = segment_regions(page_words,page_c_lines,page_regions,page_c_words,path)
 
     return v_list,page_words
 

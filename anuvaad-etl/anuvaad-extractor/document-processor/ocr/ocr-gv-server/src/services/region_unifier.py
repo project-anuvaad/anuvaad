@@ -389,6 +389,7 @@ class Region_Unifier:
                         avg__region_height, avg__region_ver_dist, avg__region_width = page_config.avg_line_info([v_block])
                         v_block['avg_ver_dist'] = avg__region_ver_dist
                         avrage_region_ver_ratio= avg__region_ver_dist / max(1,avg__region_height)
+                        v_block['regions'] = horzontal_merging(v_block['regions'],avrage_region_ver_ratio)
                 else:
                     log_info('region key not found for {}  in page {}'.format(v_block, path),app_context.application_context )
 
