@@ -36,6 +36,9 @@ import AddToGlossaryModal from './AddToGlossaryModal';
 import Modal from '@material-ui/core/Modal';
 import CreateGlossary from '../../../../flux/actions/apis/document_translate/create_glossary';
 import { Grid } from '@material-ui/core';
+import ViewGlossary from '../../../../flux/actions/apis/user_glossary/fetch_user_glossary';
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
@@ -123,7 +126,8 @@ class SentenceCard extends React.Component {
             snackBarMessage: null,
             highlight: false,
             hideSplit: false,
-            score: ""
+            score: "",
+            openModal: false
 
         };
         this.textInput = React.createRef();
@@ -664,7 +668,7 @@ class SentenceCard extends React.Component {
             <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                 <span style={{ textAlign: 'left', width: "30%" }}>
                     <Grid container>
-                        <Grid item xs={6} spacing={3}>
+                        <Grid item xs={6}>
                             <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }} onClick={this.processSaveButtonClicked} >
                                 SAVE
                             </Button>
@@ -1010,7 +1014,7 @@ class SentenceCard extends React.Component {
         let locale = `${this.props.model.source_language_code}|${this.props.model.target_language_code}`
         this.setState({ loading: true })
         let userProfile = JSON.parse(localStorage.getItem('userProfile'))
-        let apiObj = new CreateGlossary(userProfile.orgID, this.state.selectedSentence, tgt, locale, 'JUDICIARY')
+        let apiObj = new CreateGlossary(userProfile.userID, this.state.selectedSentence, tgt, locale, 'JUDICIARY')
         fetch(apiObj.apiEndPoint(), {
             method: 'post',
             body: JSON.stringify(apiObj.getBody()),
@@ -1018,6 +1022,9 @@ class SentenceCard extends React.Component {
         })
             .then(async res => {
                 if (res.ok) {
+                    let apiObj = new ViewGlossary(userProfile.userID);
+                    let { APITransport } = this.props
+                    APITransport(apiObj)
                     await this.processResponse(res, 'success')
                 } else {
                     await this.processResponse(res, 'error')
@@ -1066,7 +1073,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         highlightBlock,
-        clearHighlighBlock
+        clearHighlighBlock,
+        APITransport
     },
     dispatch
 );
