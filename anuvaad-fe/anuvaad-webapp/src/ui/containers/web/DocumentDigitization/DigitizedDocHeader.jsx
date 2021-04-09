@@ -144,12 +144,12 @@ class DigitizedDocHeader extends React.Component {
                     </Button>
                 }
 
-                <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={() => {
+                {/* <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={() => {
                     this.props.startediting()
                     this.props.copy_status && this.props.copylocation()
                 }}>
                     {this.props.edit_status ? "End Editing" : "Start Editing"}
-                </Button>
+                </Button> */}
 
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
                     Download

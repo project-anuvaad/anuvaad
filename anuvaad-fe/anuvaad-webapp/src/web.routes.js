@@ -154,7 +154,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-digitization/:jobId/:filename/:inputfileid/:og_fname`}
-              userRoles={["TRANSLATOR"]}
+              userRoles={["TRANSLATOR","ANNOTATOR"]}
               component={DigitizedDocumentEditor}
               title="Digitized File"
               authenticate={this.authenticateUser}
@@ -240,7 +240,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/document-digitization`}
               dontShowLoader
               title={"Document Digitization"}
-              userRoles={["TRANSLATOR"]}
+              userRoles={["TRANSLATOR","ANNOTATOR"]}
               component={ViewDocumentDigitization}
               authenticate={this.authenticateUser}
               currentMenu="document-digitization"
@@ -251,7 +251,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/digitize-document-upload`}
               dontShowLoader
               title={"Start Digitization"}
-              userRoles={["TRANSLATOR"]}
+              userRoles={["TRANSLATOR","ANNOTATOR"]}
               component={DigitzeDocumentUpload}
               authenticate={this.authenticateUser}
               currentMenu="digitize-document-upload"

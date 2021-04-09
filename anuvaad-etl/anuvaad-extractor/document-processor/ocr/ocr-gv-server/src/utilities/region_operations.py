@@ -157,35 +157,41 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                 
                 if len(region_lines) > 0:
                     regions[region_index][child_key] = sort_regions(region_lines,[])
-                    #regions[region_index]['children'] = region_lines
+                    #regions[region_index]['regions'] = region_lines
                     regions[region_index]['avg_size'] = get_avrage_size(region_lines)
                 else:
-                    if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
-                        tmp_region = copy.deepcopy(regions[region_index])
-                        regions[region_index]['class']=="CELL"
-                        tmp_region['class'] = "WORD"
-                        tmp_region['text'] = ""
-                        regions[region_index][child_key] = [tmp_region]
-                    else:
-                        tmp_region = copy.deepcopy(regions[region_index])
-                        tmp_region['class'] = child_class
-                        regions[region_index][child_key] = [tmp_region] 
+                    regions[region_index][child_key] = []
+                    # if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
+                    #     tmp_region = copy.deepcopy(regions[region_index])
+                    #     regions[region_index]['class']=="CELL"
+                    #     tmp_region['class'] = "WORD"
+                    #     tmp_region['text'] = ""
+                    #     regions[region_index][child_key] = [tmp_region]
+                    # else:
+                    #     tmp_region = copy.deepcopy(regions[region_index])
+                    #     tmp_region['class'] = child_class
+                    #     regions[region_index][child_key] = [tmp_region] 
             else:
-                if not skip_enpty_children:
+                regions[region_index][child_key] = []
+
+
+                # if not skip_enpty_children:
                     
-                    if grand_children :
-                        regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
+                #     if grand_children :
+                #         regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
                     
-                    if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
-                        tmp_region = copy.deepcopy(regions[region_index])
-                        regions[region_index]['class']=="CELL"
-                        tmp_region['class'] = "WORD"
-                        tmp_region['text'] = ""
-                        regions[region_index][child_key] = [tmp_region]
-                    else:
-                        tmp_region = copy.deepcopy(regions[region_index])
-                        tmp_region['class'] = child_class
-                        regions[region_index][child_key] = [tmp_region]
+                #     if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
+                #         tmp_region = copy.deepcopy(regions[region_index])
+                #         regions[region_index]['class']=="CELL"
+                #         tmp_region['class'] = "WORD"
+                #         tmp_region['text'] = ""
+                #         regions[region_index][child_key] = [tmp_region]
+                #     else:
+                #         tmp_region = copy.deepcopy(regions[region_index])
+                #         tmp_region['class'] = child_class
+                #         regions[region_index][child_key] = [tmp_region]
+
+
     if region_flag:
         for line_index, line in enumerate(lines):
             if line_index not in lines_intersected:
@@ -379,12 +385,12 @@ def merge_text(v_blocks):
     for block_index, v_block in enumerate(v_blocks):
         try:
             v_blocks[block_index]['font']    ={'family':'Arial Unicode MS', 'size':0, 'style':'REGULAR'}
-            v_blocks['font']['size'] = max(v_block['children'], key=lambda x: x['font']['size'])['font']['size']
-            if len(v_block['children']) > 0 :
-                v_blocks[block_index]['text'] = v_block['children'][0]['text']
-                if  len(v_block['children']) > 1:
-                    for child in range(1, len(v_block['children'])):
-                        v_blocks[block_index]['text'] += ' ' + str(v_block['children'][child]['text'])
+            v_blocks['font']['size'] = max(v_block['regions'], key=lambda x: x['font']['size'])['font']['size']
+            if len(v_block['regions']) > 0 :
+                v_blocks[block_index]['text'] = v_block['regions'][0]['text']
+                if  len(v_block['regions']) > 1:
+                    for child in range(1, len(v_block['regions'])):
+                        v_blocks[block_index]['text'] += ' ' + str(v_block['regions'][child]['text'])
             #print('text merged')
         except Exception as e:
             print('Error in merging text {}'.format(e))
@@ -461,7 +467,7 @@ def update_style(prior_cls, cls):
 def merge_children(siblings,children_none=False):
     box = Box().get_box()
     if not children_none:
-            box['children'] = copy.deepcopy(siblings)
+            box['regions'] = copy.deepcopy(siblings)
 
 
     box['boundingBox']['vertices'][0]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['x'])['boundingBox']['vertices'][0]['x']
