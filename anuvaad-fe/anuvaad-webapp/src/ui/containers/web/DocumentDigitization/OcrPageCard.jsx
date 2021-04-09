@@ -101,7 +101,7 @@ class OcrPageCard extends React.Component {
                 {
                     line.regions.map(word =>
                         line.class !== 'CELL' ?
-                            this.renderTextSpan(word, region) :
+                            this.renderTextSpan(word, line, region) :
                             this.renderTable(word, line, region)
                     )
                 }
@@ -141,13 +141,13 @@ class OcrPageCard extends React.Component {
         }
         return word.text
     }
-    renderTextSpan = (word, region) => {
+    renderTextSpan = (word, line,region) => {
         return (
             <div
                 style={{
                     position: "absolute",
                     fontSize: `${this.props.fontSize}px`,
-                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    top: line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                     maxHeight: word.boundingBox.vertices[2].y - word.boundingBox.vertices[0].y + 'px',
