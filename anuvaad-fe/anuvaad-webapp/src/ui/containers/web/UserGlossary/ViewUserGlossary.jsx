@@ -36,7 +36,8 @@ class MyGlossary extends React.Component {
             loading: false,
             open: false,
             message: "",
-            variant: 'success'
+            variant: 'success',
+            loadMsg: ""
         }
     }
     getUserGlossary = () => {
@@ -56,7 +57,9 @@ class MyGlossary extends React.Component {
             this.setState({ loading: false })
         }
         if (prevProps.glossaryData.count > this.props.glossaryData.count && this.props.glossaryData.deleted) {
-            this.setState({ open: true, message: 'Glossary deleted successfully', variant: 'success' })
+            this.setState({ open: true, message: 'Glossary deleted successfully', variant: 'success' }, () => {
+                setTimeout(() => this.setState({ open: false, message: "", variant: "info" }), 3000)
+            })
         }
     }
 
@@ -159,7 +162,7 @@ class MyGlossary extends React.Component {
         const options = {
             textLabels: {
                 body: {
-                    // noMatch: this.props.glossaryData.count > 0 ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound"),
+                    noMatch: this.props.glossaryData.count > 0 ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound"),
                 },
                 toolbar: {
                     search: translate("graderReport.page.muiTable.search"),
