@@ -108,7 +108,7 @@ def add_font(regions):
             regions[idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
     return regions
 
-def collate_regions(regions, lines, child_class=None, grand_children=False,region_flag = True,skip_enpty_children=False,add_font=False ):
+     def collate_regions(regions, lines, child_class=None, grand_children=False,region_flag = True,skip_enpty_children=False,add_font=False ):
     child_key='regions'
     idx = index.Index()
     lines_intersected = []
