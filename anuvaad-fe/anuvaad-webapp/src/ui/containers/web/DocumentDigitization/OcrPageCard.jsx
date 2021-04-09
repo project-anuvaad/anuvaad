@@ -89,25 +89,26 @@ class OcrPageCard extends React.Component {
         return (
             <div
                 style={{
-                    border: (line.class === 'CELL' || line.class === 'CELL_TEXT') && '1px solid black',
-                    top: (line.class === 'CELL' || line.class === 'CELL_TEXT') && line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
-                    left: line.class === 'CELL' || line.class === 'CELL_TEXT' && line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
-                    height: line.class === 'CELL' || line.class === 'CELL_TEXT' && line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
-                    width: line.class === 'CELL' || line.class === 'CELL_TEXT' && line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
-                    position: line.class === 'CELL' || line.class === 'CELL_TEXT' && 'absolute',
+                    // border: (line.class === 'CELL' || line.class === 'CELL_TEXT') && '1px solid black',
+                    top: (line.class === 'CELL') && line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    left: line.class === 'CELL' && line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
+                    height: line.class === 'CELL' && line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
+                    width: line.class === 'CELL' && line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
+                    position: line.class === 'CELL' && 'absolute',
                 }}
                 key={line.identifier}>
                 {
-                    line.regions.map(word => line.class !== 'CELL' ?
-                        this.renderTextSpan(word, region) :
-                        this.renderTable(word, line,region)
+                    line.regions.map(word =>
+                        line.class !== 'CELL' ?
+                            this.renderTextSpan(word, region) :
+                            this.renderTable(word, line, region)
                     )
                 }
             </div>
         )
     }
 
-    renderTable = (word, line,region) => {
+    renderTable = (word, line, region) => {
         return (
             <div
                 style={{
@@ -345,6 +346,7 @@ class OcrPageCard extends React.Component {
                         ref={e => this.paper = e}
                         elevation={2} style={{ position: 'relative', width: width, height: height }}>
                         {page['regions'].map(region => this.renderChild(region))}
+                        {this.props.status && this.renderImage(image)}
                         {(this.props.copy_status) && this.setLocationCoords(page.identifier)}
                     </Paper>
                     <Divider />
@@ -378,7 +380,7 @@ const mapStateToProps = state => ({
     fontSize: state.fetch_slider_pixel.percent,
     crop_size: state.cropsizeinfo,
     copy_status: state.copylocation.status,
-    words: state.updated_words.words
+    words: state.updated_words.words,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(

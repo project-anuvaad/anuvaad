@@ -121,10 +121,6 @@ class Login extends React.Component {
         } else if (roles.includes('TRANSLATOR')) {
           history.push(`${process.env.PUBLIC_URL}/view-document`);
         }
-        else if (roles.includes("ANNOTATOR")) {
-          history.push(`${process.env.PUBLIC_URL}/view-document`);
-         ;
-        }
         else {
           history.push(`${process.env.PUBLIC_URL}/view-document`);
         }
