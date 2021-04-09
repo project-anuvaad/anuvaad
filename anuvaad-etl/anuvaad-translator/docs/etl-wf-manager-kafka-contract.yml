@@ -1,0 +1,194 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Anuvaad Worfklow Manager - Kafka Contract 
+  description: A python based microservice to trigger and orchestrate the workflow of the anuvaad-etl pipeline. This service will expose REST APIs for workflow related activities on the other hand will also be plugged into the system as a consumer that picks records posted onto the Kafka Queue in order to perform workflow related activities.
+  contact:
+    name: Kumar Deepak
+    email: kumar.deepak@tarento.com
+    
+    
+usecase:
+  intiate-workflow:
+    input-topic: anuvaad-etl-wf-initate
+    description: In order to intiate the job asynchronously, the below mentioned JSON has to be pushed to the above mentioned topic. The wf-manager will consume this data and trigger the workflow. Since it is async, there'll be no response and the status of the workflow can only be fetched using the search API.
+    $ref: '#/definitions/WFInitiateRequest'
+    
+  interrupt-workflow:
+    input-topic: anuvaad-etl-wf-interrupt
+    description: In order to interrupt the job asynchronously, the below mentioned JSON has to be pushed to the above mentioned topic. The wf-manager will consume this data and interrupt all the workflows that belonging to the jobIDs and the taskIDs mentioned in the request. Since it is async, there'll be no response and the status of the workflow can only be fetched using the search API.
+    $ref: '#/definitions/WFInterruptRequest'
+    
+  update-wf-status:
+    input-topic: anuvaad-etl-wf-status-update
+    $ref: '#/definitions/WFStatusUpdateInstance'
+    description:|-
+      In order to update the status of every workflow this topic will be used. It
+      works as follows - 
+      * Every step in workflow like ingester, transformer etc (referred to as tasks), will build and push the above mentioned JSON to the above mentioned topic. This JSON will contain all the metadata of that particular task.
+      * Workflow Manager will pick this JSON and store it as the task details against that particular taskID and its parent jobID. WFM will also use this JSON to build a job-level-status-update object and stores it as the job details against the jobID.
+      * The idea is to have 2 tables - job_details and task_details which will not only store data extensively but will also faciliate in fetching either current status of the job or the entire history of the job at any point in time.
+      
+  pipeline-orcherstration:
+    topics: Consumes from all output topics and Produces to all input topics.
+    description: WFM acts as orcherstrator which means - WFM decides the step 'n+1' after step 'n'. This is entirely driven by configs. 
+      For example, lets say -
+      * Transformer recieves input on topic 't-in' and produces the output on 't-out'
+      * Extractor recieves input on topic 'e-in' and produces the output on 'e-out'
+      * The WF definition is the config says, perform extraction after transformation.
+      * So the WF handles it this way - 
+        * WF will produce to 't-in', Transformer will process it and produce the output to 't-out'.
+        * WF will now consume from 't-out', check the config for next step and finds out that extraction is the next step.
+        * WF will now produce the output of Transformer to the topic 'e-in'. Extractor processes it and produces the output to 'e-out'.
+        * WF will consume from 'e-out', find the next step from config and posts is accordingly.
+      
+
+    
+definitions:
+
+  File:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the file. This will be obtained in the output of the file upload API exposed by the anuvaad system. 
+      type:
+        type: string
+        description: type of the file.
+        enum:
+          - PDF
+          - IMAGE
+          - TEXT
+          - CSV
+      locale:
+        type: string
+        description: The locale of the file. Meaning, in which language is the uploaded file. For instance, 'en' for English, 'hi' for Hindi etc.
+        format: varchar
+        
+        
+  FileInput:
+    type: object
+    properties:
+      source:
+        type: object
+        description: Details of the source file.
+        $ref: '#/definitions/File'        
+      target:
+        type: object
+        description: Details of the target file.
+        $ref: '#/definitions/File'
+        
+        
+  User:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the user
+      id:
+        type: string
+        description: Unique ID of the user. It can be the ID used to log into anuvaad's system.
+      email:
+        type: string
+        description: Email ID of the user.
+        
+        
+  WFInitiateRequest:
+    type: object
+    properties:
+      input:
+        type: object
+        description: Details of the source and target files of which a parallel corp has to be generated
+        $ref: '#/definitions/FileInput'        
+      userDetails:
+        type: object
+        description: Details of the user initiating this job.
+        $ref: '#/definitions/User'
+      workflowCode:
+        type: string
+        description: Code of the workflow that has to be picked to process this input. These workflows are configured at the application level.
+        
+  WFStatusUpdateInstance:
+    type: object
+    properties:
+      jobID:
+        type: string
+        description: A unique job ID generated for this workflow.
+      taskID:
+        type: string
+        description: A unique task ID generated for the current on-going task of the workflow.
+      status:
+        type: string
+        description: Current status of the particular task.
+        enum:
+          - SUCCESS
+          - FAIL
+      state:
+        type: string
+        description: Current state of the workflow
+        enum:
+          - INGESTED
+          - TRANSFORMED
+          - PARAGRAPH-EXTRACTED
+          - SENTENCE-TOKENISED
+          - SENTENCES-ALIGNED
+          - PROCESSED
+      output:
+        type: object
+        description: Intermediate or final output of the process. If the status = COMPLETE and the state = PROCESSED, this output is considered to be the final output, intermediate otherwise.
+        $ref: '#/definitions/FileInput'
+      error:
+        type: object
+        description: Incase the job fails due to an error, that error details will be logged here.
+        $ref: '#/definitions/Error'
+      taskStartTime:
+        type: number
+        description: 13 digit epoch of the start time.
+      taskEndTime:
+        type: number
+        description: 13 digit epoch of the end time.
+        
+        
+  WFInterruptRequest:
+    type: object
+    properties:
+      jobIDs:
+        type: array
+        items:
+          type: string
+        description: IDs of the jobs to be interrupted.
+      taskIDs:
+        type: array
+        items:
+          type: string
+        description: IDs of the tasks to be interrupted.
+
+        
+        
+  Error:
+    type: object
+    properties:
+      errorID:
+        type: string
+        description: Unique ID generated for this error.
+      jobID:
+        type: string
+        description: ID of the job within which the error occured.
+      taskID:
+        type: string
+        description: ID of the task within which the error occured.
+      state:
+        type: string
+        description: Processing state of the job just before the error.
+      httpCode:
+        type: string
+        description: Http Code of the error
+      errorMsg:
+        type: string
+        description: This is the machine generated error message like TypeError, ValueError etc with line number.
+      cause:
+        type: string
+        description: This is the cause of the error in a user understandable format that is defined by the developer.
+      timeStamp:
+        type: number
+        description: epoch time at the instant of error.
