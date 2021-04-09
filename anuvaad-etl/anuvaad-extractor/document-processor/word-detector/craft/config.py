@@ -92,7 +92,7 @@ LANGUAGE_LINE_THRESOLDS ={
 
 ##########################################################################
 #Alignment
-ALIGN = True
+ALIGN = False
 ALIGN_MODE= 'FAST'
 
 
