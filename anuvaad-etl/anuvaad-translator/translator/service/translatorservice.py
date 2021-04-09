@@ -211,7 +211,8 @@ class TranslatorService:
                         log_info("B_ID: " + batch_id + " | SENTENCES: " + str(len(batch)) +
                                  " | COMPUTED: " + str(bw_data[batch_id]["computed"]) + " | TMX: " + str(
                             bw_data[batch_id]["tmx_count"]), translate_wf_input)
-                        processed = self.process_api_translations(response, tmx_phrase_dict, nonmt_user, translate_wf_input)
+                        processed = self.process_api_translations(response, tmx_phrase_dict, nonmt_user,
+                                                                  translate_wf_input)
                         if not processed:
                             return None
                     else:
@@ -459,7 +460,8 @@ class TranslatorService:
             return True
         except Exception as e:
             log_exception("Exception while processing the API output -- {}".format(e), translate_wf_input, e)
-            post_error_wf("TRANSLATION_ERROR", "Exception while processing the API output -- {}".format(e), translate_wf_input, e)
+            post_error_wf("TRANSLATION_ERROR", "Exception while processing the API output -- {}".format(e),
+                          translate_wf_input, e)
             return False
 
     # Method to search data from db
@@ -512,13 +514,16 @@ class TranslatorService:
                                 nmt_res_sentence["tgt"] = tgt["tgt"]
                                 nmt_res_sentence["tmx_phrases"] = []
             if nmt_res_sentence["tmx_phrases"]:
-                log_info("PAGE NO: " + str(page_no) + " BATCH ID: " + nmt_res_sentence["batch_id"] + " | SRC: " +
-                         nmt_res_sentence["src"] +
-                         " | TGT: " + nmt_res_sentence["tgt"] + " | TMX Count: " + str(
-                    len(nmt_res_sentence["tmx_phrases"])), translate_wf_input)
-                nmt_res_sentence["tgt"] = tmxservice.replace_nmt_tgt_with_user_tgt(nmt_res_sentence["tmx_phrases"],
-                                                                                   nmt_res_sentence["tgt"],
-                                                                                   translate_wf_input)
+                log_info("PAGE NO: {} | BATCH ID: {} "
+                         "| SRC: {} | TGT: {} | TMX Count: {}".format(page_no, nmt_res_sentence["batch_id"],
+                                                                      nmt_res_sentence["src"],
+                                                                      nmt_res_sentence["tgt"],
+                                                                      str(len(nmt_res_sentence["tmx_phrases"]))),
+                         translate_wf_input)
+                nmt_res_sentence["tgt"], nmt_res_sentence["tmx_replacement"] = tmxservice.replace_nmt_tgt_with_user_tgt(
+                    nmt_res_sentence["tmx_phrases"],
+                    nmt_res_sentence["tgt"], translate_wf_input)
+                log_info(nmt_res_sentence["tmx_replacement"], translate_wf_input)
             block_id = node[3]
             b_index, s_index = None, None
             sentence_id = nmt_res_sentence["s_id"]
