@@ -183,6 +183,7 @@ def get_pdfs(page_dfs,lang):
         block_configs = config.BLOCK_CONFIGS
         for page_index in range(pages):
             page_df     = page_dfs[page_index]
+            page_df = page_df.reset_index(drop=True)
             cols        = page_df.columns.values.tolist()
             df          = pd.DataFrame(columns=cols)
             for index, row in page_df.iterrows():
