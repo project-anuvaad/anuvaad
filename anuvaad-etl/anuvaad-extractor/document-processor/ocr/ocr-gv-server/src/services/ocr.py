@@ -174,7 +174,29 @@ def delete_region(regions,indexes):
             updated_regions.append(regions[idx])
     return updated_regions
 
+def verify__table_structure(regions):
+    region_del_index = []
+    for region_idx,region in enumerate(regions):
+        if 'regions' in region.keys():
+            if 'class' in region.keys() and region['class'] == 'TABLE':
+                line_del_index = []
+                for line_idx,line in enumerate(region['regions']):
+                    if 'regions' in line.keys():
+                        pass
+                    else:
+                        line_del_index.append(line_idx)
 
+                if len(line_del_index)>0:
+                    line_updated = delete_region(region['regions'],line_del_index)
+                else:
+                    line_updated = region['regions']
+                regions[region_idx]['regions'] = copy.deepcopy(line_updated)
+        else:
+            region_del_index.append(region_idx)
+    if len(region_del_index)>0:
+        regions = delete_region(regions,region_del_index)
+    return regions
+    
 def coord_alignment(regions):
     region_del_index = []
     for region_idx,region in enumerate(regions):
@@ -221,7 +243,7 @@ def segment_regions(words, lines,regions,page_c_words,path,file_properties,idx):
     v_list, n_text_regions = region_unifier.region_unifier(words,lines,regions,page_c_words,path)
     save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
     v_list = coord_alignment(v_list)
-    #v_list = verify__table_structure(v_list)
+    v_list = verify__table_structure(v_list)
     #print("v_lis",v_list)
     #v_list += n_text_regions
     
