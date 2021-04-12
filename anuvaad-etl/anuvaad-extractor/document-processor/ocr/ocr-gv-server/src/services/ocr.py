@@ -1,6 +1,7 @@
 import uuid, os, io
 import config
 import sys
+import numpy as np
 from google.cloud import vision
 from src.services.segment import horzontal_merging, break_block
 from src.utilities.region_operations import merge_text, set_font_info
@@ -8,7 +9,7 @@ from src.services.region_unifier import Region_Unifier
 import cv2,copy
 from src.utilities.model_response import set_bg_image
 from src.utilities.request_parse import MapKeys,UpdateKeys
-
+from src.services.dynamic_adjustment import coord_adjustment
 
 
 
@@ -17,7 +18,7 @@ region_unifier = Region_Unifier()
 client = vision.ImageAnnotatorClient()
 breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
-def get_text(path,page_dict,page_regions,page_c_words,font_info):
+def get_text(path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
     
     #path = config.BASE_DIR+path
     img = cv2.imread(path)
@@ -29,8 +30,8 @@ def get_text(path,page_dict,page_regions,page_c_words,font_info):
         content = image_file.read()
     image = vision.types.Image(content=content)
     response = client.document_text_detection(image=image)
-    page_output,page_words = get_document_bounds(response.full_text_annotation,page_dict,page_regions,page_c_words,font_info,path)
-    return page_output,page_words
+    page_output,page_words,save_path = get_document_bounds(response.full_text_annotation,page_dict,page_regions,page_c_words,font_info,path,file_properties,idx)
+    return page_output,page_words,save_path
 
 
 def text_extraction(file_properties,image_paths,file):
@@ -43,8 +44,8 @@ def text_extraction(file_properties,image_paths,file):
         page_dict = {"identifier": str(uuid.uuid4()),"resolution": config.EXRACTION_RESOLUTION }
         page_regions =  file_properties.get_regions(idx)
         page_c_words = file_properties.get_words(idx)
-        page_output,page_words = get_text(image_path,page_dict,page_regions,page_c_words,font_info)
-        save_path = mask_image_craft(image_path, page_output, idx, file_properties, width, height)
+        page_output,page_words,save_path = get_text(image_path,page_dict,page_regions,page_c_words,font_info,file_properties,idx)
+        
         #save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
         page_output = set_bg_image(page_output, save_path, idx,file)
         file_properties.set_regions(idx,page_output)
@@ -98,7 +99,7 @@ def add_line(page_dict, line_coord, line_text):
         page_dict["lines"].append(line_region)
     return page_dict
 
-def get_document_bounds(response,page_dict,page_regions,page_c_words,font_info,path):
+def get_document_bounds(response,page_dict,page_regions,page_c_words,font_info,path,file_properties,idx):
     page_dict["regions"] = []
     page_dict["lines"]   = []
     page_dict["words"]   = []
@@ -149,9 +150,9 @@ def get_document_bounds(response,page_dict,page_regions,page_c_words,font_info,p
     page_words   = set_font_info(page_words,font_info)
 
     
-    v_list = segment_regions(page_words,page_lines,page_regions,page_c_words,path)
+    v_list,save_path = segment_regions(page_words,page_lines,page_regions,page_c_words,path,file_properties,idx)
 
-    return v_list,page_words
+    return v_list,page_words,save_path
 
 keys = MapKeys()
 update_key = UpdateKeys()
@@ -214,53 +215,88 @@ def coord_alignment(regions):
 
 
 
-def segment_regions(words, lines,regions,page_c_words,path):
+def segment_regions(words, lines,regions,page_c_words,path,file_properties,idx):
     #regions = segment_regions(page_words,page_lines,page_regions)
-
+    width, height = file_properties.get_pageinfo(0)
     v_list, n_text_regions = region_unifier.region_unifier(words,lines,regions,page_c_words,path)
+    save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
     v_list = coord_alignment(v_list)
     #print("v_lis",v_list)
     #v_list += n_text_regions
     
     #print("v_ln_text_regionsis",len(n_text_regions))
-    return v_list
+    return v_list,save_path
 
 
     
-def end_point_correction(region, margin, ymax,xmax):
+def end_point_correction(region, y_margin,x_margin, ymax,xmax):
     # check if after adding margin the endopints are still inside the image
     x = region["boundingBox"]['vertices'][0]['x']; y = region["boundingBox"]['vertices'][0]['y']
     w = abs(region["boundingBox"]['vertices'][0]['x']-region["boundingBox"]['vertices'][1]['x'])
     h = abs(region["boundingBox"]['vertices'][0]['y']-region["boundingBox"]['vertices'][2]['y'])
-    if (y - margin) < 0:
-        ystart = 0
-    else:
-        ystart = y - margin
-    if (y + h + margin) > ymax:
-        yend = ymax
-    else:
-        yend = y + h + margin
-    if (x - margin) < 0:
-        xstart = 0
-    else:
-        xstart = x - margin
-    if (x + w + margin) > xmax:
-        xend = xmax
-    else:
-        xend = x + w + margin
-    return int(ystart), int(yend), int(xstart), int(xend)
-
+    if abs(h-ymax)<50:
+        return False,False,False,False,False
+    # if (y + margin) < 0:
+    #     ystart = y
+    # else:
+    ystart = y + y_margin
+    # if (y + h - margin) > ymax:
+    #     yend = y+h
+    # else:
+    yend = y + h - y_margin
+    # if (x + margin) < 0:
+    #     xstart = x
+    # else:
+    xstart = x + x_margin
+    # if (x + w - margin) > xmax:
+    #     xend = x+w
+    # else:
+    xend = x + w - x_margin
+    return True,int(ystart), int(yend), int(xstart), int(xend)
+def mask_table_region(image,region,image_height,image_width,y_margin,x_margin,fill):
+    try:
+        if ('text' in region.keys() and (region['text'] in ["(", ")", "/"] or len(region['text'])==0)):
+            y_margin=0; x_margin=-2
+        if 'text' in region.keys() and region['text'] !="|" and region['text'] !="।":
+            flag,row_top, row_bottom,row_left,row_right = end_point_correction(region, y_margin,x_margin,image_height,image_width)
+            if flag:
+                if len(image.shape) == 2 :
+                    image[row_top  : row_bottom  , row_left : row_right ] = fill
+                if len(image.shape) == 3 :
+                    image[row_top : row_bottom , row_left : row_right ,:] = fill
+        return image
+    except:
+        return image
+def remove_noise(img):
+    try:
+        res = img.copy()
+        kernel = np.ones((10,10), np.uint8)
+        img = cv2.erode(img, kernel, iterations=1)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        _, thresh = cv2.threshold(gray,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+        contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+        for i in contours:
+            cnt = cv2.contourArea(i)
+            if cnt < 1500:
+                x,y,w,h = cv2.boundingRect(i)
+                cv2.rectangle(res,(x-1,y-1),(x+w+1,y+h+1),(255,255,255),-1)
+        return res
+    except:
+        return img
 
 def mask_image_craft(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):
     try:
         #path = config.BASE_DIR+path
         image   = cv2.imread(path)
-        
         for region_idx, page_region in enumerate(page_regions):
             if 'class' in page_region.keys():
                 region_class = page_region['class']
                 
                 if region_class not in ["IMAGE","OTHER","SEPARATOR"]:
+                    if region_class =='TABLE':
+                        y_margin=0; x_margin=0
+                    else:
+                        y_margin=0; x_margin=0
                     region_lines = file_properties.get_region_lines(page_index,region_idx,page_region)
                     
                     if region_lines!=None:
@@ -268,17 +304,22 @@ def mask_image_craft(path, page_regions,page_index,file_properties,image_width,i
                         for line_index, line in enumerate(region_lines):
                             region_words = file_properties.get_region_words(page_index,region_idx,line_index,line)
                             if region_words!=None:
-                                #if config.IS_DYNAMIC:
-                                #    region_words = coord_adjustment(path, region_words)
-                                for region in region_words:
-                                    
-                                    row_top, row_bottom,row_left,row_right = end_point_correction(region, 2,image_height,image_width)
-                                    
-                                    if len(image.shape) == 2 :
-                                        image[row_top - margin : row_bottom + margin , row_left - margin: row_right + margin] = fill
-                                    if len(image.shape) == 3 :
-                                        image[row_top - margin: row_bottom + margin, row_left - margin: row_right + margin,:] = fill
-                                    
+                                if config.IS_DYNAMIC and region_class!="TABLE":
+                                    region_words = coord_adjustment(path, region_words)
+                                for word_index,region in enumerate(region_words):
+                                    if region_class =='TABLE':
+                                        image = mask_table_region(image,region,image_height,image_width,y_margin,x_margin,fill)
+                                    else:
+                                        flag,row_top, row_bottom,row_left,row_right = end_point_correction(region, y_margin,x_margin,image_height,image_width)
+                                        if flag:
+                                            if len(image.shape) == 2 :
+                                                image[row_top  : row_bottom  , row_left : row_right ] = fill
+                                            if len(image.shape) == 3 :
+                                                image[row_top : row_bottom , row_left : row_right ,:] = fill
+        image = remove_noise(image)
+
+                
+                                        
         if '.jpg' in path:
             save_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
         elif '.png' in path:
