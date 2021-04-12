@@ -381,7 +381,6 @@ class Header extends React.Component {
                           />
                         </ListItem>
                       </div>
-                      {role && Array.isArray(role) && role.includes("TRANSLATOR") || role.includes("ANNOTATOR") && (
                         <div>
                           <Divider className={classes.divider} />
                           <ListItem
@@ -404,7 +403,6 @@ class Header extends React.Component {
                             />
                           </ListItem>
                         </div>
-                      )}
                     </>)}
                   {role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
                     <Divider className={classes.divider} />

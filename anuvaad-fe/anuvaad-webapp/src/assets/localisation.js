@@ -419,6 +419,7 @@ const localization_EN_Data = {
   "newCorpus.page.stepper.label.addTargetFile": "Add target file",
   "newCorpus.page.stepper.label.addFileDetails": "Add file details",
   "profile.page.label.role": "Role",
+  "profile.page.label.org": "Organization",
   "parallel_corpus.page.dialog.message": "Edit source and target sentence here",
   "common.page.label.document_count": "Document Count",
   "common.page.label.addDropDocument": "Please Add/Drop Document here",
