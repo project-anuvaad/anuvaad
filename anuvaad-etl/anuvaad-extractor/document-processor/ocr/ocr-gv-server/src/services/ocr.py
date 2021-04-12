@@ -20,7 +20,7 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 def get_text(path,page_dict,page_regions,page_c_words,page_c_lines,font_info):
     
     #path = config.BASE_DIR+path
-    img = cv2.imread(path)
+    #img = cv2.imread(path)
     
     #img[175 < img ] = 255
     #masked_path = path.split('.jpg')[0]+"_watermarks.jpg"

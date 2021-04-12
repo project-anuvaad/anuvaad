@@ -160,32 +160,38 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                     #regions[region_index]['regions'] = region_lines
                     regions[region_index]['avg_size'] = get_avrage_size(region_lines)
                 else:
-                    if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
-                        tmp_region = copy.deepcopy(regions[region_index])
-                        regions[region_index]['class']=="CELL"
-                        tmp_region['class'] = "WORD"
-                        tmp_region['text'] = ""
-                        regions[region_index][child_key] = [tmp_region]
-                    else:
-                        tmp_region = copy.deepcopy(regions[region_index])
-                        tmp_region['class'] = child_class
-                        regions[region_index][child_key] = [tmp_region] 
+                    regions[region_index][child_key] = []
+                    # if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
+                    #     tmp_region = copy.deepcopy(regions[region_index])
+                    #     regions[region_index]['class']=="CELL"
+                    #     tmp_region['class'] = "WORD"
+                    #     tmp_region['text'] = ""
+                    #     regions[region_index][child_key] = [tmp_region]
+                    # else:
+                    #     tmp_region = copy.deepcopy(regions[region_index])
+                    #     tmp_region['class'] = child_class
+                    #     regions[region_index][child_key] = [tmp_region] 
             else:
-                if not skip_enpty_children:
+                regions[region_index][child_key] = []
+
+
+                # if not skip_enpty_children:
                     
-                    if grand_children :
-                        regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
+                #     if grand_children :
+                #         regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
                     
-                    if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
-                        tmp_region = copy.deepcopy(regions[region_index])
-                        regions[region_index]['class']=="CELL"
-                        tmp_region['class'] = "WORD"
-                        tmp_region['text'] = ""
-                        regions[region_index][child_key] = [tmp_region]
-                    else:
-                        tmp_region = copy.deepcopy(regions[region_index])
-                        tmp_region['class'] = child_class
-                        regions[region_index][child_key] = [tmp_region]
+                #     if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
+                #         tmp_region = copy.deepcopy(regions[region_index])
+                #         regions[region_index]['class']=="CELL"
+                #         tmp_region['class'] = "WORD"
+                #         tmp_region['text'] = ""
+                #         regions[region_index][child_key] = [tmp_region]
+                #     else:
+                #         tmp_region = copy.deepcopy(regions[region_index])
+                #         tmp_region['class'] = child_class
+                #         regions[region_index][child_key] = [tmp_region]
+
+
     if region_flag:
         for line_index, line in enumerate(lines):
             if line_index not in lines_intersected:
