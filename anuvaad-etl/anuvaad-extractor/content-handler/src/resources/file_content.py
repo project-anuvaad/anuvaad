@@ -95,7 +95,11 @@ class FileContentUpdateResource(Resource):
         user_id     = request.headers.get('userid')
         if user_id == None:
             user_id = request.headers.get('x-user-id')
-            
+        
+        modifiedSentences   = None
+        if 'modifiedSentences' in body:
+            modifiedSentences   = body['modifiedSentences']
+    
         workflowCode= None
         record_id = None
         if 'blocks' not in body or user_id is None:
@@ -110,9 +114,9 @@ class FileContentUpdateResource(Resource):
         blocks          = body['blocks']
         AppContext.addRecordID(record_id)
         log_info("FileContentUpdateResource for user ({}), to update ({}) blocks".format(user_id, len(blocks)), AppContext.getContext())
-
+        log_info(blocks, AppContext.getContext())
         try:
-            result, updated_blocks  = fileContentRepo.update(record_id,user_id, blocks, workflowCode)
+            result, updated_blocks  = fileContentRepo.update(record_id,user_id, blocks, workflowCode, modifiedSentences)
 
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)

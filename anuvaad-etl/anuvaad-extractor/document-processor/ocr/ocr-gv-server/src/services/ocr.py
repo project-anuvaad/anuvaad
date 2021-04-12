@@ -21,7 +21,7 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 def get_text(path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
     
     #path = config.BASE_DIR+path
-    img = cv2.imread(path)
+    #img = cv2.imread(path)
     
     #img[175 < img ] = 255
     #masked_path = path.split('.jpg')[0]+"_watermarks.jpg"
@@ -179,7 +179,7 @@ def coord_alignment(regions):
     region_del_index = []
     for region_idx,region in enumerate(regions):
         if 'regions' in region.keys():
-            if 'class' in region.keys() and region['class'] in ["PARA"]:
+            if 'class' in region.keys() and region['class'] in ["PARA","HEADER","FOOTER"]:
                 line_del_index = []
                 for line_idx,line in enumerate(region['regions']):
                     if 'regions' in line.keys():
@@ -221,6 +221,7 @@ def segment_regions(words, lines,regions,page_c_words,path,file_properties,idx):
     v_list, n_text_regions = region_unifier.region_unifier(words,lines,regions,page_c_words,path)
     save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
     v_list = coord_alignment(v_list)
+    v_list = verify__table_structure(v_list)
     #print("v_lis",v_list)
     #v_list += n_text_regions
     

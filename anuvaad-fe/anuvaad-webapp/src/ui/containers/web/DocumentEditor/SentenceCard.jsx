@@ -188,7 +188,8 @@ class SentenceCard extends React.Component {
      */
     processSaveButtonClicked() {
         let userRole = localStorage.getItem("roles")
-        if (!this.state.score) {
+        let orgId = JSON.parse(localStorage.getItem("userProfile")).orgID
+        if (!this.state.score && userRole === "ANNOTATOR" && orgId !== "NONMT") {
             alert('Please rate the sentence and then save. ')
         }
         // time = new Date();
