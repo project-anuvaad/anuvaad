@@ -1,0 +1,19 @@
+Service name: anuvaad-etl-aligner
+Git path: https://github.com/project-anuvaad/anuvaad/tree/wfmanager_feature/anuvaad-etl/anuvaad-extractor/aligner/etl-aligner
+Port number: 5003
+Packages to be installed: Refer requirements.txt
+Build Steps: Refer DockerFile
+Startup Commands: Refer start.sh
+Nginx access: Yes
+Volume mount: Yes
+context path: /anuvaad-etl/extractor/aligner
+
+Environment Variables:
+SA_DIRECTORY_PATH = /opt/share/sentence-alignment/upload:/app/upload
+LASER_PATH = http://127.0.0.1:8050/vectorize
+FILE_UPLOAD_URL = http://auth.anuvaad.org/upload
+KAFKA_CLUSTER_DETAILS = localhost:1234
+MONGO_CLIENT = mongodb://localhost:27017/
+MONGO_ETL_ALIGNMENT_DB = anuvaad-etl
+MONGO_ETL_ALIGNMENT_COL = extractor-aligner
+

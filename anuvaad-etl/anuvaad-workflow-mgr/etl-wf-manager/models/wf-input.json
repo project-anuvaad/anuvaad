@@ -1,0 +1,15 @@
+{
+  "workflowCode":"DP_WFLOW_<tools_involved>",
+  "files": [
+    {
+      "path":"0032374903",
+      "type":"txt",
+      "locale":"en"
+    },
+    {
+      "path":"0032374904",
+      "type":"txt",
+      "locale":"hi"
+    }
+  ]
+}

@@ -1,0 +1,1048 @@
+[2020-06-03 14:53:28,592] {producer.py:37} Thread-1 ERROR in producer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
+[2020-06-03 14:56:54,561] {producer.py:37} Thread-1 ERROR in producer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
+[2020-06-03 15:04:07,106] {consumer.py:38} keep_on_running INFO in consumer: Consumer running.......
+[2020-06-03 15:09:07,070] {consumer.py:38} keep_on_running INFO in consumer: Consumer running.......
+[2020-06-03 15:22:32,322] {consumer.py:35} keep_on_running INFO in consumer: ['anuvaad-dp-tools-transformer-output', 'anuvaad-dp-tools-transformer-input', 'anuvaad-dp-tools-extractor-output', 'anuvaad-dp-tools-extractor-input']
+[2020-06-03 15:34:09,242] {consumer.py:35} keep_on_running INFO in consumer: ['anuvaad-dp-tools-transformer-output', 'anuvaad-dp-tools-transformer-input', 'anuvaad-dp-tools-extractor-output', 'anuvaad-dp-tools-extractor-input']
+[2020-06-04 12:41:36,217] {producer.py:36} Thread-1 INFO in producer: Done.
+[2020-06-11 17:38:03,605] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-11 17:38:03,607] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-11 17:38:03,610] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-11 17:38:04,008] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-11 17:39:05,560] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [11/Jun/2020 17:39:05] "[33mPOST /anuvaad-etl/wf-manager/v1/workflow/initiate HTTP/1.1[0m" 404 -
+[2020-06-11 17:40:17,558] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-11 17:40:17,740] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-11 17:40:17,741] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-11 17:40:17,748] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-11 17:40:29,046] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [11/Jun/2020 17:40:29] "[33mPOST /anuvaad-etl/wf-manager/v1/workflow/initiate HTTP/1.1[0m" 404 -
+[2020-06-11 17:40:58,346] {app.py:1892} Thread-2 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 37, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 30, in validate_input
+    if 'workflowCode' not in data.keys():
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-11 17:40:58,431] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [11/Jun/2020 17:40:58] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-11 17:41:43,952] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-11 17:41:44,422] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-11 17:41:44,423] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-11 17:41:44,427] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-11 17:41:49,144] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 38, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 31, in validate_input
+    if 'workflowCode' not in data.keys():
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-11 17:41:49,147] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [11/Jun/2020 17:41:49] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-11 17:43:20,383] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-11 17:43:21,388] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-11 17:43:21,390] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-11 17:43:21,399] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-11 17:43:23,481] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 31, in validate_input
+    data = json.loads(data)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\json\__init__.py", line 341, in loads
+    raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+TypeError: the JSON object must be str, bytes or bytearray, not dict
+[2020-06-11 17:43:23,611] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [11/Jun/2020 17:43:23] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-11 17:45:43,773] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-11 17:45:43,940] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-11 17:45:43,941] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-11 17:45:43,944] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-11 17:45:48,438] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 40, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 32, in validate_input
+    print(data.keys())
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-11 17:45:48,698] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [11/Jun/2020 17:45:48] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-11 17:50:29,488] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-11 17:50:29,978] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-11 17:50:29,979] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-11 17:50:29,983] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-11 17:50:35,266] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 32, in validate_input
+    data = ast.literal_eval(data)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 91, in literal_eval
+    return _convert(node_or_string)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 90, in _convert
+    return _convert_signed_num(node)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 63, in _convert_signed_num
+    return _convert_num(node)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 55, in _convert_num
+    raise ValueError('malformed node or string: ' + repr(node))
+ValueError: malformed node or string: {'workflowCode': 'DP_WFLOW_T', 'files': [{'path': '0032374903', 'type': 'txt', 'locale': 'en'}, {'path': '0032374904', 'type': 'txt', 'locale': 'hi'}]}
+[2020-06-11 17:50:35,310] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [11/Jun/2020 17:50:35] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-11 17:53:10,687] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-11 17:53:11,162] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-11 17:53:11,162] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-11 17:53:11,166] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-11 17:53:32,442] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 21, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 39, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 32, in validate_input
+    if 'workflowCode' not in data.keys():
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-11 17:53:32,448] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [11/Jun/2020 17:53:32] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-11 17:54:44,583] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-11 17:54:44,750] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-11 17:54:44,751] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-11 17:54:44,755] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-11 17:55:01,868] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 22, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 40, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 33, in validate_input
+    if 'workflowCode' not in data.keys():
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-11 17:55:01,881] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [11/Jun/2020 17:55:01] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-11 17:57:16,778] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-11 17:57:16,938] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-11 17:57:16,939] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-11 17:57:16,942] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-11 17:57:20,585] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 21, in initiate_workflow
+    error = validator.validate_input(wf_input)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 40, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 33, in validate_input
+    if 'workflowCode' not in data.keys():
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-11 17:57:20,591] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [11/Jun/2020 17:57:20] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:33:08,671] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:33:09,426] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:33:09,431] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-12 13:33:09,444] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 13:33:40,875] {app.py:1892} Thread-1 ERROR in app: Exception on /anuvaad-etl/wf-manager/v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 39, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 32, in validate_input
+    if 'workflowCode' not in data.keys():
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-12 13:33:40,917] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 13:33:40] "[35m[1mPOST /anuvaad-etl/wf-manager/v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:36:16,080] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:36:16,424] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:36:16,454] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-12 13:36:16,518] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 13:36:24,635] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 33, in validate_input
+    data = json.loads(str(data))
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\json\__init__.py", line 348, in loads
+    return _default_decoder.decode(s)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\json\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\json\decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+[2020-06-12 13:36:24,697] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 13:36:24] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:38:37,456] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:38:38,038] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:38:38,039] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-12 13:38:38,047] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 13:38:58,966] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 34, in validate_input
+    data = json.loads(str(data))
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\json\__init__.py", line 348, in loads
+    return _default_decoder.decode(s)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\json\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\json\decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+[2020-06-12 13:38:58,972] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 13:38:58] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:39:51,550] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:39:51,914] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:39:51,915] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-12 13:39:51,921] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 13:39:55,272] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 42, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 35, in validate_input
+    if 'workflowCode' not in data.keys():
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-12 13:39:55,275] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 13:39:55] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:41:15,721] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:41:16,342] {wfmutils.py:47} keep_on_running INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:41:16,343] {wfmconsumer.py:39} keep_on_running INFO in wfmconsumer: ['anuvaad-dp-tools-tokeniser-output_2', 'anuvaad-dp-tools-tokeniser-output', 'anuvaad-dp-tools-aligner-output']
+[2020-06-12 13:41:16,348] {wfmconsumer.py:42} keep_on_running INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 13:41:26,049] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 40, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 33, in validate_input
+    if 'workflowCode' not in data.keys():
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-12 13:41:26,054] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 13:41:26] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:44:51,901] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:44:52,510] {wfmutils.py:47} wfm_kafka_consumer INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:44:52,514] {wfmconsumer.py:41} wfm_kafka_consumer INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 13:45:10,190] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 41, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 34, in validate_input
+    if 'workflowCode' not in data.keys():
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-12 13:45:10,195] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 13:45:10] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:48:10,061] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:48:10,890] {wfmutils.py:47} wfm_kafka_consumer INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:48:10,893] {wfmconsumer.py:41} wfm_kafka_consumer INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 13:48:15,007] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 33, in validate_input
+    data.replace("\'", "\"")
+AttributeError: 'dict' object has no attribute 'replace'
+[2020-06-12 13:48:15,014] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 13:48:15] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:49:12,671] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:49:12,976] {wfmutils.py:47} wfm_kafka_consumer INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:49:12,981] {wfmconsumer.py:41} wfm_kafka_consumer INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 13:49:17,012] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 33, in validate_input
+    data = ast.literal_eval(data)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 91, in literal_eval
+    return _convert(node_or_string)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 90, in _convert
+    return _convert_signed_num(node)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 63, in _convert_signed_num
+    return _convert_num(node)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 55, in _convert_num
+    raise ValueError('malformed node or string: ' + repr(node))
+ValueError: malformed node or string: {'workflowCode': 'DP_WFLOW_T', 'files': [{'path': '0032374903', 'type': 'txt', 'locale': 'en'}, {'path': '0032374904', 'type': 'txt', 'locale': 'hi'}]}
+[2020-06-12 13:49:17,094] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 13:49:17] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:50:56,239] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:50:56,789] {wfmutils.py:47} wfm_kafka_consumer INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:50:56,793] {wfmconsumer.py:41} wfm_kafka_consumer INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 13:51:00,017] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 21, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 42, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 33, in validate_input
+    data = ast.literal_eval(str(data))
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 91, in literal_eval
+    return _convert(node_or_string)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 90, in _convert
+    return _convert_signed_num(node)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 63, in _convert_signed_num
+    return _convert_num(node)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 55, in _convert_num
+    raise ValueError('malformed node or string: ' + repr(node))
+ValueError: malformed node or string: <_ast.Name object at 0x0000024DCF92CF88>
+[2020-06-12 13:51:00,030] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 13:51:00] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:54:06,765] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:54:07,044] {wfmutils.py:47} wfm_kafka_consumer INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:54:07,050] {wfmconsumer.py:41} wfm_kafka_consumer INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 13:54:11,842] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 21, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 41, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 33, in validate_input
+    data = ast.literal_eval(data)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 91, in literal_eval
+    return _convert(node_or_string)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 90, in _convert
+    return _convert_signed_num(node)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 63, in _convert_signed_num
+    return _convert_num(node)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 55, in _convert_num
+    raise ValueError('malformed node or string: ' + repr(node))
+ValueError: malformed node or string: <_ast.Name object at 0x00000174F505CEC8>
+[2020-06-12 13:54:11,852] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 13:54:11] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:55:22,571] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:55:22,864] {wfmutils.py:47} wfm_kafka_consumer INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:55:22,871] {wfmconsumer.py:41} wfm_kafka_consumer INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 13:55:25,942] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 21, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 43, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 35, in validate_input
+    data = ast.literal_eval(data)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 91, in literal_eval
+    return _convert(node_or_string)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 90, in _convert
+    return _convert_signed_num(node)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 63, in _convert_signed_num
+    return _convert_num(node)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 55, in _convert_num
+    raise ValueError('malformed node or string: ' + repr(node))
+ValueError: malformed node or string: <_ast.Name object at 0x000002184813B048>
+[2020-06-12 13:55:25,947] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 13:55:25] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:57:26,965] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:57:27,501] {wfmutils.py:47} wfm_kafka_consumer INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:57:27,506] {wfmconsumer.py:41} wfm_kafka_consumer INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 13:57:35,803] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 44, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 36, in validate_input
+    data = ast.literal_eval(data)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 91, in literal_eval
+    return _convert(node_or_string)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 90, in _convert
+    return _convert_signed_num(node)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 63, in _convert_signed_num
+    return _convert_num(node)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\ast.py", line 55, in _convert_num
+    raise ValueError('malformed node or string: ' + repr(node))
+ValueError: malformed node or string: <_ast.Name object at 0x000001A0933B8B88>
+[2020-06-12 13:57:35,809] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 13:57:35] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 13:59:58,545] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 13:59:59,032] {wfmutils.py:47} wfm_kafka_consumer INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 13:59:59,036] {wfmconsumer.py:41} wfm_kafka_consumer INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:00:01,591] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 42, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 35, in validate_input
+    if 'workflowCode' not in data.keys():
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-12 14:00:01,602] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:00:01] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 14:01:32,834] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 14:01:33,344] {wfmutils.py:47} wfm_kafka_consumer INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 14:01:33,347] {wfmconsumer.py:41} wfm_kafka_consumer INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:01:36,439] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 46, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 39, in validate_input
+    if 'workflowCode' not in data.keys():
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-12 14:01:36,445] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:01:36] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 14:03:57,740] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 14:03:57,972] {wfmutils.py:47} wfm_kafka_consumer INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 14:03:57,975] {wfmconsumer.py:41} wfm_kafka_consumer INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:04:02,727] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 46, in validate_input
+    self.validate_input(data["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 39, in validate_input
+    if 'workflowCode' not in data.keys():
+AttributeError: 'str' object has no attribute 'keys'
+[2020-06-12 14:04:02,733] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:04:02] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 14:07:14,491] {_internal.py:113} MainThread INFO in _internal:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+[2020-06-12 14:07:15,121] {wfmutils.py:47} WFMKafkaConsumer-Thread INFO in wfmutils: Config files has been parsed an stored.
+[2020-06-12 14:07:15,127] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:08:29,278] {wfmproducer.py:34} Thread-1 ERROR in wfmproducer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
+[2020-06-12 14:08:29,340] {wfmservice.py:30} Thread-1 INFO in wfmservice: Job registered for the job: TOK-1591951049122984
+[2020-06-12 14:08:29,342] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:08:29] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 14:31:06,704] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:31:06,986] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 14:32:18,270] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:32:18,585] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 14:32:22,428] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 14:32:22,430] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 20, in initiate_workflow
+    error = validator.validate_input(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 41, in validate_input
+    self.validate_files(data)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\validator\wfmvalidator.py", line 55, in validate_files
+    tools = wfmutils.get_tools_of_wf(wf_input["workflowCode"])
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 73, in get_tools_of_wf
+    config = configs[workflowCode]
+KeyError: 'DP_WFLOW_X'
+[2020-06-12 14:32:22,441] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:32:22] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 14:33:58,042] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:33:58,661] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 14:34:03,278] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 14:34:03,293] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:34:03] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 14:34:27,076] {wfmvalidator.py:32} Thread-2 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 14:34:27,086] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:34:27] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 14:34:37,006] {wfmvalidator.py:32} Thread-3 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 14:34:37,007] {_internal.py:113} Thread-3 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:34:37] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 14:38:26,901] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:38:27,240] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 14:38:32,225] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 14:38:32,230] {app.py:1892} Thread-1 ERROR in app: Exception on /v1/workflow/initiate [POST]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\controller\wfmcontroller.py", line 23, in initiate_workflow
+    flask.abort(error, 400)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\werkzeug\exceptions.py", line 822, in abort
+    return _aborter(status, *args, **kwargs)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\werkzeug\exceptions.py", line 806, in __call__
+    raise LookupError("no exception for %r" % code)
+LookupError: no exception for <Response 122 bytes [200 OK]>
+[2020-06-12 14:38:32,281] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:38:32] "[35m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 500 -
+[2020-06-12 14:40:15,133] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:40:15,727] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 14:40:24,598] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 14:40:24,599] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 14:40:24] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 14:55:45,844] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 14:55:46,297] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 15:05:55,934] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 15:06:03,005] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 15:06:03,010] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 15:06:03] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 15:06:03,699] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 15:06:14,989] {wfmvalidator.py:32} Thread-2 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 15:06:14,991] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 15:06:14] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 15:12:23,103] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 15:12:28,557] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 15:12:28,559] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 15:12:28] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 15:12:29,170] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 15:13:17,951] {app.py:1892} Thread-2 ERROR in app: Exception on /v1/workflow/configs/reload [GET]
+Traceback (most recent call last):
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vishal\AppData\Local\Programs\Python\Python37\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+TypeError: config_reload() missing 1 required positional argument: 'job_id'
+[2020-06-12 15:13:17,955] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 15:13:17] "[35m[1mGET /v1/workflow/configs/reload HTTP/1.1[0m" 500 -
+[2020-06-12 15:13:45,677] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 15:13:55,313] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 15:13:55,317] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 15:13:55] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 15:13:55,842] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 15:14:12,555] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 15:14:12] "[37mGET /v1/workflow/configs/reload HTTP/1.1[0m" 200 -
+[2020-06-12 15:14:51,423] {wfmvalidator.py:32} Thread-3 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 15:14:51,424] {_internal.py:113} Thread-3 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 15:14:51] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 15:17:26,419] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 15:17:30,929] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 15:17:30,931] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 15:17:30] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 15:17:37,040] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 15:58:34,333] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 15:58:40,423] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 15:58:40,440] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 15:58:40] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 15:58:41,091] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 15:58:45,373] {wfmvalidator.py:32} Thread-2 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 15:58:45,375] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 15:58:45] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:01:14,820] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:01:22,695] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:01:22,697] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:01:22] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:01:22,966] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:01:24,264] {wfmvalidator.py:32} Thread-2 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:01:24,279] {tokeniser.py:13} Thread-2 INFO in tokeniser: {'path': '0032374903', 'type': 'txt', 'locale': 'en'}
+[2020-06-12 16:01:24,280] {tokeniser.py:13} Thread-2 INFO in tokeniser: {'path': '0032374904', 'type': 'txt', 'locale': 'hi'}
+[2020-06-12 16:01:24,286] {wfmvalidator.py:46} Thread-2 INFO in wfmvalidator: Validation Complete.
+[2020-06-12 16:02:24,529] {wfmproducer.py:34} Thread-2 ERROR in wfmproducer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
+[2020-06-12 16:02:24,582] {wfmservice.py:30} Thread-2 INFO in wfmservice: Job registered with the ID: TOK-15919578842928522
+[2020-06-12 16:02:24,588] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:02:24] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 16:06:10,745] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:06:19,132] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:06:21,567] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:07:05,788] {wfmvalidator.py:46} Thread-1 INFO in wfmvalidator: Validation Complete.
+[2020-06-12 16:08:13,068] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:08:17,680] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:08:19,142] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:08:19,143] {wfmvalidator.py:46} Thread-1 INFO in wfmvalidator: Validation Complete.
+[2020-06-12 16:09:19,204] {wfmproducer.py:34} Thread-1 ERROR in wfmproducer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
+[2020-06-12 16:09:19,217] {wfmservice.py:30} Thread-1 INFO in wfmservice: Job registered with the ID: TOK-1591958299143421
+[2020-06-12 16:09:19,227] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:09:19] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 16:17:35,553] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:27:25,318] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:27:36,836] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:27:36,837] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:27:36] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:27:37,577] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:28:25,550] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:28:31,099] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:28:31,101] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:28:31] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:28:31,165] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:28:39,813] {wfmvalidator.py:32} Thread-2 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:28:39,817] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:28:39] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:28:40,175] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:29:08,013] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:29:08,413] {wfmvalidator.py:32} Thread-3 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:29:08,414] {_internal.py:113} Thread-3 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:29:08] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:30:13,274] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:30:16,639] {wfmcontroller.py:26} Thread-1 INFO in wfmcontroller: Loading configs
+[2020-06-12 16:30:19,334] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:30:19,652] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:30:19,655] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:30:19] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:30:45,577] {wfmcontroller.py:26} Thread-2 INFO in wfmcontroller: Loading configs
+[2020-06-12 16:30:48,227] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:30:48,586] {wfmvalidator.py:32} Thread-2 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:30:48,588] {_internal.py:113} Thread-2 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:30:48] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:35:23,443] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:35:27,410] {wfmcontroller.py:26} Thread-1 INFO in wfmcontroller: Loading configs
+[2020-06-12 16:35:30,841] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:38:08,190] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:38:11,299] {wfmcontroller.py:26} Thread-1 INFO in wfmcontroller: Loading configs
+[2020-06-12 16:38:14,137] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:38:59,168] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:38:59,169] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:38:59] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:39:29,878] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:39:33,685] {wfmcontroller.py:26} Thread-1 INFO in wfmcontroller: Loading configs
+[2020-06-12 16:39:36,158] {wfmconsumer.py:41} MainThread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:40:48,146] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:40:48,147] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:40:48] "[31m[1mPOST /v1/workflow/initiate HTTP/1.1[0m" 400 -
+[2020-06-12 16:46:41,493] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:46:52,592] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:46:56,943] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:46:56,943] {wfmvalidator.py:46} Thread-1 INFO in wfmvalidator: Validation Complete.
+[2020-06-12 16:47:57,012] {wfmproducer.py:34} Thread-1 ERROR in wfmproducer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
+[2020-06-12 16:47:57,028] {wfmservice.py:30} Thread-1 INFO in wfmservice: Job registered with the ID: TOK-15919606169447315
+[2020-06-12 16:47:57,030] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:47:57] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-12 16:49:32,356] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-12 16:49:37,505] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-12 16:49:51,760] {wfmvalidator.py:32} Thread-1 INFO in wfmvalidator: Workflow initiation request received.
+[2020-06-12 16:49:51,760] {wfmvalidator.py:46} Thread-1 INFO in wfmvalidator: Validation Complete.
+[2020-06-12 16:50:51,800] {wfmproducer.py:34} Thread-1 ERROR in wfmproducer: Exception while producing: KafkaTimeoutError: Failed to update metadata after 60.0 secs.
+[2020-06-12 16:50:51,820] {wfmservice.py:30} Thread-1 INFO in wfmservice: Job registered with the ID: TOK-15919607917624786
+[2020-06-12 16:50:51,831] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [12/Jun/2020 16:50:51] "[37mPOST /v1/workflow/initiate HTTP/1.1[0m" 200 -
+[2020-06-15 13:43:46,833] {app.py:21} MainThread INFO in app: Starting Kafka Consumer........
+[2020-06-15 13:43:46,835] {app.py:25} MainThread INFO in app: Done
+[2020-06-15 13:43:47,418] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-15 13:43:48,932] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-15 13:56:25,332] {app.py:21} MainThread INFO in app: Starting Kafka Consumer........
+[2020-06-15 13:56:25,333] {wfmconsumer.py:35} WFMKafkaConsumer-Thread INFO in wfmconsumer: Consumer....
+[2020-06-15 13:56:25,916] {wfmconsumer.py:39} WFMKafkaConsumer-Thread INFO in wfmconsumer: Configs ready
+[2020-06-15 13:56:25,916] {wfmconsumer.py:43} WFMKafkaConsumer-Thread INFO in wfmconsumer: Topics Ready
+[2020-06-15 13:56:25,921] {wfmconsumer.py:29} WFMKafkaConsumer-Thread INFO in wfmconsumer: Cons prepared
+[2020-06-15 13:56:25,922] {wfmconsumer.py:45} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-15 13:56:29,341] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-15 14:02:17,332] {app.py:21} MainThread INFO in app: Starting Kafka Consumer........
+[2020-06-15 14:02:17,333] {wfmconsumer.py:35} WFMKafkaConsumer-Thread INFO in wfmconsumer: Consumer....
+[2020-06-15 14:02:17,333] {wfmutils.py:38} WFMKafkaConsumer-Thread INFO in wfmutils: reading configss....
+[2020-06-15 14:02:17,785] {wfmutils.py:41} WFMKafkaConsumer-Thread INFO in wfmutils: File path: C:\Users\Vishal\Desktop\new-repoconfigfile.yml
+[2020-06-15 14:02:17,787] {wfmutils.py:43} WFMKafkaConsumer-Thread INFO in wfmutils: Downloaded
+[2020-06-15 14:02:17,806] {wfmutils.py:50} WFMKafkaConsumer-Thread INFO in wfmutils: Configs read.
+[2020-06-15 14:02:17,807] {wfmconsumer.py:39} WFMKafkaConsumer-Thread INFO in wfmconsumer: Configs ready
+[2020-06-15 14:02:17,807] {wfmutils.py:57} WFMKafkaConsumer-Thread INFO in wfmutils: Fetching configs...
+[2020-06-15 14:02:17,808] {wfmconsumer.py:43} WFMKafkaConsumer-Thread INFO in wfmconsumer: Topics Ready
+[2020-06-15 14:02:17,811] {wfmconsumer.py:29} WFMKafkaConsumer-Thread INFO in wfmconsumer: Cons prepared
+[2020-06-15 14:02:17,812] {wfmconsumer.py:45} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-15 14:02:18,212] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-06-15 14:33:19,235] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-06-15 14:33:19,789] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-07-02 09:55:12,557] {wfmutils.py:46} WFMKafkaConsumer-Thread ERROR in wfmutils: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 38, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-07-02 09:55:12,566] {wfmconsumer.py:41} WFMKafkaConsumer-Thread INFO in wfmconsumer: WFM Consumer Running..........
+[2020-07-02 09:55:12,991] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-10-29 13:57:50,353] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFMCoreConsumer-Instance-0 Running..........
+[2020-10-29 13:57:50,356] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFMErrorConsumer-Instance-0 | Running..........
+[2020-10-29 13:57:51,345] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-10-29 13:57:53,945] {loghandler.py:78} WFMConsumer-Instance-0 ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 64, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-10-29 13:57:53,949] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFMConsumer-Instance-0 Running..........
+[2020-10-29 13:58:54,625] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFMCoreConsumer-Instance-0 Running..........
+[2020-10-29 13:58:54,628] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFMErrorConsumer-Instance-0 | Running..........
+[2020-10-29 13:58:55,369] {loghandler.py:78} WFMConsumer-Instance-0 ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 64, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-10-29 13:58:55,372] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFMConsumer-Instance-0 Running..........
+[2020-10-29 13:58:55,487] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-10-29 13:59:57,692] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [29/Oct/2020 13:59:57] "[31m[1mPOST /anuvaad-etl/wf-manager/v1/workflow/async/initiate HTTP/1.1[0m" 400 -
+[2020-10-29 14:01:48,566] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFMCoreConsumer-Instance-0 Running..........
+[2020-10-29 14:01:48,572] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFMErrorConsumer-Instance-0 | Running..........
+[2020-10-29 14:01:48,579] {_internal.py:113} MainThread INFO in _internal:  * Running on http://localhost:5002/ (Press CTRL+C to quit)
+[2020-10-29 14:01:49,247] {loghandler.py:78} WFMConsumer-Instance-0 ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 64, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-10-29 14:01:49,263] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFMConsumer-Instance-0 Running..........
+[2020-10-29 14:02:05,475] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [29/Oct/2020 14:02:05] "[31m[1mPOST /anuvaad-etl/wf-manager/v1/workflow/async/initiate HTTP/1.1[0m" 400 -
+[2020-10-29 14:25:18,976] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFMCoreConsumer-Instance-0 Running..........
+[2020-10-29 14:25:19,029] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFMErrorConsumer-Instance-0 | Running..........
+[2020-10-29 14:25:19,065] {_internal.py:113} MainThread INFO in _internal:  * Running on http://localhost:5002/ (Press CTRL+C to quit)
+[2020-10-29 14:25:20,054] {loghandler.py:78} WFMConsumer-Instance-0 ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 64, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-10-29 14:25:20,061] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFMConsumer-Instance-0 Running..........
+[2020-10-29 14:25:40,232] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [29/Oct/2020 14:25:40] "[31m[1mPOST /anuvaad-etl/wf-manager/v1/workflow/async/initiate HTTP/1.1[0m" 400 -
+[2020-10-29 15:31:31,400] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFMCoreConsumer-Instance-0 Running..........
+[2020-10-29 15:31:31,403] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFMErrorConsumer-Instance-0 | Running..........
+[2020-10-29 15:31:31,412] {_internal.py:113} MainThread INFO in _internal:  * Running on http://localhost:5002/ (Press CTRL+C to quit)
+[2020-10-29 15:31:32,291] {loghandler.py:78} WFMConsumer-Instance-0 ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 64, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-10-29 15:31:32,296] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFMConsumer-Instance-0 Running..........
+[2020-10-30 18:02:35,013] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFMErrorConsumer-Instance-0 | Running..........
+[2020-10-30 18:02:35,016] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFMCoreConsumer-Instance-0 Running..........
+[2020-10-30 18:02:35,030] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-10-30 18:02:36,410] {loghandler.py:78} WFMConsumer-Instance-0 ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 64, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-10-30 18:02:36,449] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFMConsumer-Instance-0 Running..........
+[2020-10-30 18:02:44,724] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [30/Oct/2020 18:02:44] "[31m[1mPOST /anuvaad-etl/wf-manager/v1/workflow/async/initiate HTTP/1.1[0m" 400 -
+[2020-11-09 14:02:17,133] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFMErrorConsumer-Instance-0 | Running..........
+[2020-11-09 14:02:17,137] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFMCoreConsumer-Instance-0 Running..........
+[2020-11-09 14:02:18,108] {loghandler.py:78} WFMConsumer-Instance-0 ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 64, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-11-09 14:02:18,139] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFMConsumer-Instance-0 Running..........
+[2020-11-09 14:02:18,350] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-11-09 14:08:51,894] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [09/Nov/2020 14:08:51] "[31m[1mPOST /anuvaad-etl/wf-manager/v1/workflow/async/initiate HTTP/1.1[0m" 400 -
+[2020-11-09 14:19:38,539] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFMCoreConsumer-Instance-0 Running..........
+[2020-11-09 14:19:38,543] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFMErrorConsumer-Instance-0 | Running..........
+[2020-11-09 14:19:39,410] {loghandler.py:78} WFMConsumer-Instance-0 ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 64, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-11-09 14:19:39,420] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFMConsumer-Instance-0 Running..........
+[2020-11-09 14:19:39,496] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-11-09 14:19:59,239] {_internal.py:113} Thread-1 INFO in _internal: 127.0.0.1 - - [09/Nov/2020 14:19:59] "[31m[1mPOST /anuvaad-etl/wf-manager/v1/workflow/async/initiate HTTP/1.1[0m" 400 -
+[2020-11-09 14:45:52,647] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFMCoreConsumer-Instance-0 Running..........
+[2020-11-09 14:45:52,655] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFMErrorConsumer-Instance-0 | Running..........
+[2020-11-09 14:45:53,500] {loghandler.py:78} WFMConsumer-Instance-0 ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 64, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-11-09 14:45:53,504] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFMConsumer-Instance-0 Running..........
+[2020-11-09 14:45:53,623] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5002/ (Press CTRL+C to quit)
+[2020-11-23 17:05:31,973] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFMCoreConsumer-Instance-0 Running..........
+[2020-11-23 17:05:31,986] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFMErrorConsumer-Instance-0 | Running..........
+[2020-11-23 17:05:32,000] {_internal.py:113} MainThread INFO in _internal:  * Running on http://localhost:5001/ (Press CTRL+C to quit)
+[2020-11-23 17:05:33,091] {loghandler.py:78} WFMConsumer-Instance-0 ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 64, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-11-23 17:05:33,094] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFMConsumer-Instance-0 Running..........
+[2020-12-02 19:39:38,138] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFMErrorConsumer-Instance-0 | Running..........
+[2020-12-02 19:39:38,140] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFMCoreConsumer-Instance-0 Running..........
+[2020-12-02 19:39:38,151] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5001/ (Press CTRL+C to quit)
+[2020-12-02 19:39:38,971] {loghandler.py:78} WFMConsumer-Instance-0 ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 66, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2020-12-02 19:39:38,980] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFMConsumer-Instance-0 Running..........
+[2021-01-06 16:05:14,490] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFM-Core-(FFcN) | Running..........
+[2021-01-06 16:05:14,492] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFM-Error-(BkUX) | Running..........
+[2021-01-06 16:05:14,493] {loghandler.py:21} WFMCoreConsumer-Instance-0 INFO in loghandler: WFM-Core-(FFcN) | Topics: ['anuvaad-etl-wf-initiate-v3']
+[2021-01-06 16:05:14,497] {loghandler.py:21} WFMErrorConsumer-Instance-0 INFO in loghandler: WFM-Error-(BkUX) | Topics: ['anuvaad-etl-wf-errors-v1']
+[2021-01-06 16:05:14,531] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5001/ (Press CTRL+C to quit)
+[2021-01-06 16:05:15,350] {loghandler.py:78} WFMConsumer-Instance-0 ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "C:\Users\Vishal\Desktop\new-repo\anuvaad\anuvaad-etl\anuvaad-workflow-mgr\etl-wf-manager\utilities\wfmutils.py", line 72, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2021-01-06 16:05:15,354] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFM--(fBuj) | Running..........
+[2021-01-06 16:05:15,354] {loghandler.py:21} WFMConsumer-Instance-0 INFO in loghandler: WFM--(fBuj) | Topics: []
+[2021-02-10 14:40:42,390] {loghandler.py:21} MainThread INFO in loghandler: WFM-Core-(MdDX) | Running..........
+[2021-02-10 14:40:42,390] {loghandler.py:21} MainThread INFO in loghandler: WFM-Error-(eGca) | Running..........
+[2021-02-10 14:40:42,390] {loghandler.py:21} MainThread INFO in loghandler: WFM-Core-(MdDX) | Topics: ['anuvaad-etl-wf-initiate-v3']
+[2021-02-10 14:40:42,390] {loghandler.py:21} MainThread INFO in loghandler: WFM-Error-(eGca) | Topics: ['anuvaad-etl-wf-errors-v1']
+[2021-02-10 14:40:43,174] {loghandler.py:78} MainThread ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "/Users/mahulivishal/Desktop/anuvaad/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py", line 72, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2021-02-10 14:40:43,179] {loghandler.py:21} MainThread INFO in loghandler: WFM--(aiTa) | Running..........
+[2021-02-10 14:40:43,180] {loghandler.py:21} MainThread INFO in loghandler: WFM--(aiTa) | Topics: []
+[2021-02-10 14:40:46,968] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5001/ (Press CTRL+C to quit)
+[2021-02-10 14:53:38,539] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(pnDn) | Running..........
+[2021-02-10 14:53:38,541] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(feVX) | Running..........
+[2021-02-10 14:53:38,541] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(pnDn) | Topics: ['anuvaad-etl-wf-initiate-v3']
+[2021-02-10 14:53:38,541] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(feVX) | Topics: ['anuvaad-etl-wf-errors-v1']
+[2021-02-10 14:53:39,239] {loghandler.py:78} wfm-cons-th ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "/Users/mahulivishal/Desktop/anuvaad/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py", line 72, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2021-02-10 14:53:39,245] {loghandler.py:21} wfm-cons-th INFO in loghandler: WFM--(MbhG) | Running..........
+[2021-02-10 14:53:39,245] {loghandler.py:21} wfm-cons-th INFO in loghandler: WFM--(MbhG) | Topics: []
+[2021-02-10 14:53:43,549] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5001/ (Press CTRL+C to quit)
+[2021-02-10 15:45:38,140] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(CbyN) | Running..........
+[2021-02-10 15:45:38,140] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(CbyN) | Topics: ['anuvaad-etl-wf-initiate-v3']
+[2021-02-10 15:45:38,142] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(CSAl) | Running..........
+[2021-02-10 15:45:38,142] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(CSAl) | Topics: ['anuvaad-etl-wf-errors-v1']
+[2021-02-10 15:45:38,834] {loghandler.py:78} wfm-cons-th ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "/Users/mahulivishal/Desktop/anuvaad/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py", line 72, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2021-02-10 15:45:38,839] {loghandler.py:21} wfm-cons-th INFO in loghandler: WFM--(SJsx) | Running..........
+[2021-02-10 15:45:38,839] {loghandler.py:21} wfm-cons-th INFO in loghandler: WFM--(SJsx) | Topics: []
+[2021-02-10 16:12:25,813] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(vcgA) | Running..........
+[2021-02-10 16:12:25,814] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(vcgA) | Topics: ['anuvaad-etl-wf-initiate-v3']
+[2021-02-10 16:12:25,816] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(FzoM) | Running..........
+[2021-02-10 16:12:25,816] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(FzoM) | Topics: ['anuvaad-etl-wf-errors-v1']
+[2021-02-10 16:12:26,510] {loghandler.py:78} wfm-cons-th ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "/Users/mahulivishal/Desktop/anuvaad/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py", line 72, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2021-02-10 16:12:26,515] {loghandler.py:21} wfm-cons-th INFO in loghandler: WFM--(uDLR) | Running..........
+[2021-02-10 16:12:26,516] {loghandler.py:21} wfm-cons-th INFO in loghandler: WFM--(uDLR) | Topics: []
+[2021-03-22 15:47:17,458] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(TrVg) | Running..........
+[2021-03-22 15:47:17,459] {loghandler.py:21} wfm-core-cons-th INFO in loghandler: WFM-Core-(TrVg) | Topics: ['anuvaad-etl-wf-initiate-v3']
+[2021-03-22 15:47:17,461] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(hlXv) | Running..........
+[2021-03-22 15:47:17,461] {loghandler.py:21} wfm-error-cons-th INFO in loghandler: WFM-Error-(hlXv) | Topics: ['anuvaad-etl-wf-errors-v1']
+[2021-03-22 15:47:17,605] {_internal.py:113} MainThread INFO in _internal:  * Running on http://0.0.0.0:5001/ (Press CTRL+C to quit)
+[2021-03-22 15:47:17,909] {loghandler.py:78} wfm-cons-th ERROR in loghandler: Exception while reading configs: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+Traceback (most recent call last):
+  File "/Users/mahulivishal/Desktop/anuvaad/anuvaad/anuvaad-etl/anuvaad-workflow-mgr/etl-wf-manager/utilities/wfmutils.py", line 65, in read_all_configs
+    open(file_path, 'wb').write(file.content)
+FileNotFoundError: [Errno 2] No such file or directory: '/app/configs/wfconfig.yml'
+[2021-03-22 15:47:17,913] {loghandler.py:21} wfm-cons-th INFO in loghandler: WFM--(tZfC) | Running..........
+[2021-03-22 15:47:17,913] {loghandler.py:21} wfm-cons-th INFO in loghandler: WFM--(tZfC) | Topics: []
