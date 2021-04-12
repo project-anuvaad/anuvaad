@@ -89,18 +89,19 @@ class OcrPageCard extends React.Component {
         return (
             <div
                 style={{
-                    border: (line.class === 'CELL') && '1px solid black',
+                    // border: (line.class === 'CELL') && '1px solid black',
                     top: (line.class === 'CELL') && line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                     left: line.class === 'CELL' && line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     height: line.class === 'CELL' && line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
                     width: line.class === 'CELL' && line.boundingBox.vertices[1].x - line.boundingBox.vertices[0].x + 'px',
                     position: line.class === 'CELL' && 'absolute',
+                    zIndex: 5,
                 }}
                 key={line.identifier}>
                 {
                     line.regions.map(word =>
                         line.class !== 'CELL' ?
-                            this.renderTextSpan(word, region) :
+                            this.renderTextSpan(word, line, region) :
                             this.renderTable(word, line, region)
                     )
                 }
@@ -123,12 +124,11 @@ class OcrPageCard extends React.Component {
                     fontFamily: word.font && word.font.family,
                 }}
                 key={word.identifier}
-                onDoubleClick={() => this.setModalState(this.renderUpdatedWords(word), word.identifier, region.identifier)}
-                >
-                    {
-                        this.renderUpdatedWords(word)
-                    }
-                </div >
+                onDoubleClick={() => this.setModalState(this.renderUpdatedWords(word), word.identifier, region.identifier)}>
+                {
+                    this.renderUpdatedWords(word)
+                }
+            </div>
         )
     }
 
@@ -141,13 +141,13 @@ class OcrPageCard extends React.Component {
         }
         return word.text
     }
-    renderTextSpan = (word, region) => {
+    renderTextSpan = (word, line,region) => {
         return (
             <div
                 style={{
                     position: "absolute",
                     fontSize: `${this.props.fontSize}px`,
-                    top: word.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
+                    top: line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                     left: word.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     maxWidth: word.boundingBox.vertices[1].x - word.boundingBox.vertices[0].x + 'px',
                     maxHeight: word.boundingBox.vertices[2].y - word.boundingBox.vertices[0].y + 'px',
@@ -336,8 +336,8 @@ class OcrPageCard extends React.Component {
 
     renderPage = (page, image) => {
         if (page) {
-            let width = page['page_info']['page_boundingBox'] && page.page_info.page_boundingBox.vertices[1].x - page.page_info.page_boundingBox.vertices[0].x + 'px'
-            let height = page['page_info']['page_boundingBox'] && page.page_info.page_boundingBox.vertices[2].y - page.page_info.page_boundingBox.vertices[0].y + 'px'
+            let width = page['boundingBox'] && page.boundingBox.vertices[1].x - page.boundingBox.vertices[0].x + 'px'
+            let height = page['boundingBox'] && page.boundingBox.vertices[2].y - page.boundingBox.vertices[0].y + 'px'
             return (
                 <div>
                     <Paper

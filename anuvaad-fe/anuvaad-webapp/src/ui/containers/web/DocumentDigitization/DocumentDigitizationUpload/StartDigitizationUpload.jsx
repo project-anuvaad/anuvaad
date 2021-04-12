@@ -68,7 +68,7 @@ class StartDigitizationUpload extends React.Component {
             name: "",
             message: "File uplaoded successfully",
             showComponent: false,
-            workflow: "WF_A_FCOD10GVOTK",
+            workflow: localStorage.getItem("roles") === "TRANSLATOR" ? "WF_A_FCOD10GVOTK" : "",
             worflow_codes: [{
                 code: 'WF_A_FCOD10GVOTK',
                 version: '1.0'
@@ -328,7 +328,7 @@ class StartDigitizationUpload extends React.Component {
                             </Grid>
                             <Grid item xs={12} sm={6} lg={6} xl={6}>
                                 {this.renderSourceLanguagesItems()}
-                                {/* {this.renderVersion()} */}
+                                {localStorage.getItem("roles") === 'ANNOTATOR' && this.renderVersion()}
                                 {this.renderTextField()}
                             </Grid>
                             <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>

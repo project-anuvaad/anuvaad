@@ -37,12 +37,15 @@ def preprocess_file(file_properties,lang,ocr_level):
                         else:
                             region_ocr = text_extraction(lang, page_path, region_words,region_words, width, height,mode_height)
 
-                        file['pages'][page_index]['regions'][idx]['children'][line_index]['children'] = region_ocr
+                        #file['pages'][page_index]['regions'][idx]['children'][line_index]['children'] = region_ocr
+                        file['pages'][page_index]['regions'][idx]['regions'][line_index]['regions'] = region_ocr
                 else:
                         
                     file['pages'][page_index]['regions'][idx] = copy.deepcopy(region)
-                file['pages'][page_index]['regions'][idx]['children'] = merge_text(file['pages'][page_index]['regions'][idx]['children'],merge_tess_confidence=True)
-            file['pages'][page_index]['regions'] = merge_text(file['pages'][page_index]['regions'])
+                #file['pages'][page_index]['regions'][idx]['children'] = merge_text(file['pages'][page_index]['regions'][idx]['children'],merge_tess_confidence=True)
+                file['pages'][page_index]['regions'][idx]['regions'] = merge_text(file['pages'][page_index]['regions'][idx]['regions'],merge_tess_confidence=True)
+            #file['pages'][page_index]['regions'] = merge_text(file['pages'][page_index]['regions'])
+            
 
 
         if config.OCR_LEVEL[ocr_level] == 'lines':

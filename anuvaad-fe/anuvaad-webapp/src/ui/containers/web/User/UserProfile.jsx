@@ -138,7 +138,7 @@ class UserProfile extends React.Component {
             });
             const apiObj = new Updatepassword(
               this.state.userDetails.userName,
-              
+
               this.state.newpassword,
               this.state.oldpassword
             );
@@ -198,7 +198,7 @@ class UserProfile extends React.Component {
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow} style={{ marginTop: '0px' }}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
                 <Typography value="" variant="h5" >
-                 Name{" "}
+                  Name{" "}
                 </Typography>
               </Grid>
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
@@ -219,7 +219,7 @@ class UserProfile extends React.Component {
               <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
                 {/* <br />
                 <br /> */}
-                {/* <Typography value="" variant="h5" style={{ textTransform: "capitalize" }}>
+            {/* <Typography value="" variant="h5" style={{ textTransform: "capitalize" }}>
                   {" "}
                   {this.state.userDetails.lastname}{" "}
                 </Typography>
@@ -261,6 +261,22 @@ class UserProfile extends React.Component {
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
               <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
+                <Typography value="" variant="h5">
+                  {translate("profile.page.label.org")}{" "}
+                </Typography>
+              </Grid>
+              <Grid item xs={6} sm={6} lg={6} xl={6} style={{ textAlign: 'left' }}>
+                {/* <br />
+                <br />
+                <br /> */}
+                <Typography value="" variant="h5" style={{ marginTop: "-1%" }}>
+                  {this.state.userDetails.orgID}{" "}
+                </Typography>
+              </Grid>
+            </Grid>
+
+            <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.dataRow}>
+              <Grid item xs={5} sm={5} lg={5} xl={5} style={{ textAlign: 'left' }}>
                 <Typography value="" variant="h5" >
                   Language{" "}
                 </Typography>
@@ -272,7 +288,7 @@ class UserProfile extends React.Component {
                   {" "}
                   {this.state.lang}{" "}
                 </Typography>
-{/* 
+                {/* 
                 <Select
                   // gutterBottom="true"
                   name="selectlanguage"
@@ -395,8 +411,8 @@ class UserProfile extends React.Component {
             </DialogContent>
           </Dialog>
         ) : (
-            ""
-          )}
+          ""
+        )}
       </div>
     );
   }

@@ -289,7 +289,7 @@ class ViewDocumentDigitization extends React.Component {
                 currentPageIndex: page,
                 offset: this.state.offset + this.state.limit,
             });
-        }
+        } 
     };
 
     snackBarMessage = () => {

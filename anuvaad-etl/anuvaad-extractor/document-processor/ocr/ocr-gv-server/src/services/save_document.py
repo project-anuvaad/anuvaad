@@ -18,14 +18,13 @@ def save_page_res(res,file_name):
             page_idx = 0
             total_pages = len(file['files'][0]['pages'])
             file['files'][0]['config'] = copy.deepcopy(file['files'][0]['config']['OCR'])
+            save_file = copy.deepcopy(file)
+            save_file['recordID'] = recordID
             while page_idx<total_pages:
-
-                save_file = copy.deepcopy(file)
                 pages = file['files'][0]['pages'][page_idx:page_idx+SAVE_NO_PAGE]
                 save_file['files'][0]['pages'] = pages
-                
-                save_file['recordID'] = recordID
                 page_idx = page_idx+SAVE_NO_PAGE
+                log_info("started saving data to database with record id: "+str(recordID), app_context.application_context)
                 rsp = requests.post(SAVE_URL,json=save_file)
                 log_info("successfully saved data to database with record id: "+str(recordID), app_context.application_context)
     except Exception as e:

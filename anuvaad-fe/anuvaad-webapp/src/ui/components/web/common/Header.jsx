@@ -332,7 +332,7 @@ class Header extends React.Component {
                     </div>
                   )} */}
 
-{role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 

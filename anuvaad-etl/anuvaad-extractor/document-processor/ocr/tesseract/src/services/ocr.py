@@ -156,14 +156,14 @@ def text_extraction(lang, page_path, regions,region_org,width, height,mode_heigh
         if len(coord)!=0 and abs(coord[3] - coord[1]) > config.REJECT_FILTER :
             text, tess_coord = get_text(page_path, coord, lang, width, height,mode_height,level)
             region_org[idx]['text'] = text
-            region_org[idx]['children'] = tess_coord
+            region_org[idx]['regions'] = tess_coord
             #print("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
             #region_org[idx]['tess_word_coords'] = tess_coord
 
         else:
             
             region_org[idx]['text'] = ""
-            region_org[idx]['children'] =[]
+            region_org[idx]['regions'] =[]
             #region_org[idx]['tess_word_coords'] = []
     
     
@@ -227,20 +227,7 @@ def mask_image(path, page_regions,page_index,file_properties,image_width,image_h
         cv2.imwrite(save_path,image)
         return save_path
     
-    # bg_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
-    # mask_path = path.split('.jpg')[0]+"_maskimages_"+'.jpg'
-    # overlay_path = path.split('.jpg')[0]+"_overlay_"
-    # base_path ="/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"
-    # cv2.imwrite("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+bg_path,bg_image)
-    # cv2.imwrite("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+mask_path,image)
-    # background = Image.open(base_path+bg_path)
-    # overlay = Image.open(base_path+mask_path)
-
-    # background = background.convert("RGBA")
-    # overlay = overlay.convert("RGBA")
-
-    # new_img = Image.blend(overlay,background, 0.5)
-    # new_img.save("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+overlay_path,'PNG')
+    
     except Exception as e :
         print('Service Tesseract Error in masking out image {}'.format(e))
         return None
@@ -252,21 +239,21 @@ def merge_text(v_blocks,merge_tess_confidence=False):
         #try:
         v_blocks[block_index]['font']    ={'family':'Arial Unicode MS', 'size':0, 'style':'REGULAR'}
         #v_blocks[block_index]['font']['size'] = max(v_block['children'], key=lambda x: x['font']['size'])['font']['size']
-        if "children" in v_block.keys() and len(v_block['children']) > 0 :
-            v_blocks[block_index]['text'] = v_block['children'][0]['text']
+        if "regions" in v_block.keys() and len(v_block['regions']) > 0 :
+            v_blocks[block_index]['text'] = v_block['regions'][0]['text']
             if merge_tess_confidence:
                 try:
-                    v_blocks[block_index]['tess_word_coords'] =  v_block['children'][0]['tess_word_coords']
+                    v_blocks[block_index]['tess_word_coords'] =  v_block['regions'][0]['tess_word_coords']
                 except:
                     print('error in adding tess confidence score_1')
-            if "children" in v_block.keys() and len(v_block['children']) > 1:
-                for child in range(1, len(v_block['children'])):
+            if "regions" in v_block.keys() and len(v_block['regions']) > 1:
+                for child in range(1, len(v_block['regions'])):
                     if merge_tess_confidence :
                         try:
-                            v_blocks[block_index]['tess_word_coords'] += v_block['children'][child]['tess_word_coords']
+                            v_blocks[block_index]['tess_word_coords'] += v_block['regions'][child]['tess_word_coords']
                         except:
                             print('error in adding tess confidence score')
-                    v_blocks[block_index]['text'] += ' ' + str(v_block['children'][child]['text'])
+                    v_blocks[block_index]['text'] += ' ' + str(v_block['regions'][child]['text'])
         #print('text merged')
         #except Exception as e:
         #    print('Error in merging text {}'.format(e))

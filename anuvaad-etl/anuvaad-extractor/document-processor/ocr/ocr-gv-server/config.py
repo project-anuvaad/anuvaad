@@ -6,7 +6,7 @@ API_URL_PREFIX = "/anuvaad-etl/document-processor/gv-document-digitization"
 HOST = '0.0.0.0'
 PORT = 5001
 BASE_DIR      = 'upload'
-#BASE_DIR      = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/gv-document-digitization/upload'
+#BASE_DIR      = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-gv-server/'
 download_folder = 'upload'
 
 
@@ -51,9 +51,9 @@ SAVE_VAR = "OCR_CH_URL"
 SAVE_DEFAULT = "http://gateway_anuvaad-ocr-content-handler:5001//anuvaad/ocr-content-handler/v0/ocr/save-document"
 
 SAVE_URL = os.environ.get(SAVE_VAR,SAVE_DEFAULT)
-print(SAVE_URL)
+#print(SAVE_URL)
 #SAVE_URL = "http://172.30.0.232:5009//anuvaad/ocr-content-handler/v0/ocr/save-document"
 SAVE_NO_PAGE = 1
 
-
+IS_DYNAMIC =True
 EXRACTION_RESOLUTION  =  300
