@@ -125,7 +125,7 @@ class DocumentEditor extends React.Component {
           this.fetchPages(this.state.paginationIndex, this.state.currentIndex + 1)
         } else {
           this.setState({ download: true, loaderValue: 0, paginationIndex: 1, currentIndex: 0, totalLoaderValue: 0 })
-         
+
         }
       }
     }
@@ -273,9 +273,9 @@ class DocumentEditor extends React.Component {
   async makeAPICallSaveSentence(sentence, pageNumber) {
 
     this.informUserProgress(translate('common.page.label.SENTENCE_SAVED'))
-    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId),this.props.fetch_models)
+    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
     sentence["src_lang"] = model.source_language_code
-    sentence['tgt_lang']  = model.target_language_code
+    sentence['tgt_lang'] = model.target_language_code
     let apiObj = new SaveSentenceAPI(sentence)
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
@@ -301,6 +301,47 @@ class DocumentEditor extends React.Component {
       }
     }).catch((error) => {
       this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_FAILED'), false)
+    });
+  }
+
+  makeAPICallReTranslateSentence = (sentences, pageNumber) => {
+    let sentence_ids = sentences.s_id
+    let updated_blocks = BLOCK_OPS.do_sentence_retranslation(this.props.document_contents.pages, sentence_ids);
+    /**
+     * telemetry information.
+     */
+    // let initial_sentences = sentences.map(sentence => sentence.src);
+    // let final_sentence = updated_blocks['blocks'][0].tokenized_sentences[0].src;
+    // TELEMETRY.mergeSentencesEvent(initial_sentences, final_sentence)
+    let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
+    this.informUserProgress(translate('common.page.label.RETRANSLATE_SENTENCE'))
+    let apiObj = new WorkFlowAPI("WF_S_TR", updated_blocks, this.props.match.params.jobid, model.source_language_code,
+      '', '', model, sentence_ids)
+    const apiReq = fetch(apiObj.apiEndPoint(), {
+      method: 'post',
+      body: JSON.stringify(apiObj.getBody()),
+      headers: apiObj.getHeaders().headers
+    }).then(async response => {
+      const rsp_data = await response.json();
+      if (!response.ok) {
+        TELEMETRY.log("merge", JSON.stringify(rsp_data))
+        if (Number(response.status) === 401) {
+          this.handleRedirect()
+        }
+        else {
+          this.informUserStatus(translate('common.page.label.RETRANSLATE_SENTENCE_FAILED'), false)
+        }
+        return Promise.reject('');
+      } else {
+        this.props.contentUpdateStarted();
+        this.props.update_blocks(pageNumber, rsp_data.output.textBlocks);
+        this.processEndMergeMode(pageNumber)
+        this.informUserStatus(translate('common.page.label.RETRANSLATE_SENTENCE_SUCCESS'), true)
+        this.makeAPICallDocumentsTranslationProgress();
+      }
+    }).catch((error) => {
+      this.informUserStatus(translate('common.page.label.RETRANSLATE_SENTENCE_FAILED'), false)
+      this.processEndMergeMode(pageNumber)
     });
   }
 
@@ -459,6 +500,11 @@ class DocumentEditor extends React.Component {
       }
       case SENTENCE_ACTION.REMOVE_SENTENCE_FOR_MERGE: {
         this.forMergeSentences = this.forMergeSentences.filter(sent => sent.s_id !== sentences[0].s_id)
+        return;
+      }
+
+      case SENTENCE_ACTION.RETRANSLATE_SENTENCE: {
+        this.makeAPICallReTranslateSentence(...sentences, pageNumber);
         return;
       }
       default:
@@ -702,8 +748,8 @@ class DocumentEditor extends React.Component {
               sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
               return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
                 pageNumber={page.page_no}
-                recordId = {this.props.match.params.jobid}
-                model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models )}
+                recordId={this.props.match.params.jobid}
+                model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)}
                 jobId={jobId}
                 sentence={sentence}
                 onAction={this.processSentenceAction} />
@@ -758,21 +804,21 @@ class DocumentEditor extends React.Component {
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         { !this.state.preview ?
-        <>
-          <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
-            {!this.state.docView && this.renderDocumentPages()}
-            {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
-          </div>
-          <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
-          <InteractivePagination count={this.props.document_contents.count}
-             data={this.props.document_contents.pages}
-             zoomPercent={this.state.zoomPercent}
-             processZoom={this.processZoom}
-             zoomInDisabled={this.state.zoomInDisabled}
-             zoomOutDisabled={this.state.zoomOutDisabled}
-             onAction={this.processSentenceAction} />
-         </div>
-         </>
+          <>
+            <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
+              {!this.state.docView && this.renderDocumentPages()}
+              {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
+            </div>
+            <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
+              <InteractivePagination count={this.props.document_contents.count}
+                data={this.props.document_contents.pages}
+                zoomPercent={this.state.zoomPercent}
+                processZoom={this.processZoom}
+                zoomInDisabled={this.state.zoomInDisabled}
+                zoomOutDisabled={this.state.zoomOutDisabled}
+                onAction={this.processSentenceAction} />
+            </div>
+          </>
           :
           <div style={{ height: window.innerHeight - 80, maxHeight: window.innerHeight - 80, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
             {this.renderTranslatedDocument()}

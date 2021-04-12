@@ -663,6 +663,14 @@ class SentenceCard extends React.Component {
 
     }
 
+
+    retranslateSentence = () => {
+        if (this.props.onAction) {
+            this.setState({ value: '' })
+            this.props.onAction(SENTENCE_ACTION.RETRANSLATE_SENTENCE, this.props.pageNumber, [this.props.sentence])
+        }
+    }
+
     renderNormaModeButtons = () => {
         return (
             <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
@@ -674,7 +682,9 @@ class SentenceCard extends React.Component {
                             </Button>
                         </Grid>
                         <Grid item xs={6}>
-                            <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }}>
+                            <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }}
+                                onClick={this.retranslateSentence}
+                            >
                                 RETRANSLATE
                             </Button>
                         </Grid>

@@ -320,6 +320,9 @@ const localization_EN_Data = {
   "common.page.label.SOURCE_SENTENCE_SAVED_FAILED": "Saving sentence failed ...",
   "common.page.label.SOURCE_SENTENCE_SAVED_SUCCESS": "Sentence saved ...",
   "common.page.label.FILE_DOWNLOAD_FAILED": "File download failed ...",
+  "common.page.label.RETRANSLATE_SENTENCE": "Retranslating sentence ...",
+  "common.page.label.RETRANSLATE_SENTENCE_SUCCESS": "Sentence retranslated ...",
+  "common.page.label.RETRANSLATE_SENTENCE_FAILED": "Retranslation failed ...",
 
   "GraderReport.page.title.graderDetails": "Grader Details",
   "gradeReport.page.muiNoTitle.sorryRecordNotFound": "Sorry, no matching records found",
@@ -420,6 +423,7 @@ const localization_EN_Data = {
   "newCorpus.page.stepper.label.addTargetFile": "Add target file",
   "newCorpus.page.stepper.label.addFileDetails": "Add file details",
   "profile.page.label.role": "Role",
+  "profile.page.label.org": "Organization",
   "parallel_corpus.page.dialog.message": "Edit source and target sentence here",
   "common.page.label.document_count": "Document Count",
   "common.page.label.addDropDocument": "Please Add/Drop Document here",

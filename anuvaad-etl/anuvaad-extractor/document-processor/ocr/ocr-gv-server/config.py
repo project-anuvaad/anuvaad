@@ -55,5 +55,5 @@ SAVE_URL = os.environ.get(SAVE_VAR,SAVE_DEFAULT)
 #SAVE_URL = "http://172.30.0.232:5009//anuvaad/ocr-content-handler/v0/ocr/save-document"
 SAVE_NO_PAGE = 1
 
-
+IS_DYNAMIC =True
 EXRACTION_RESOLUTION  =  300

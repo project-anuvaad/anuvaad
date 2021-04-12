@@ -403,30 +403,28 @@ class Header extends React.Component {
                           />
                         </ListItem>
                       </div>
-                      {role && Array.isArray(role) && role.includes("TRANSLATOR") || role.includes("ANNOTATOR") && (
-                        <div>
-                          <Divider className={classes.divider} />
-                          <ListItem
-                            id="document-digitization"
-                            style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "document-digitization" && themeAnuvaad.palette.primary.main }}
-                            button
-                            onClick={() => {
-                              this.handleDrawerClose(false);
-                              history.push(`${process.env.PUBLIC_URL}/document-digitization`);
-                            }}
-                          >
+                      <div>
+                        <Divider className={classes.divider} />
+                        <ListItem
+                          id="document-digitization"
+                          style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "document-digitization" && themeAnuvaad.palette.primary.main }}
+                          button
+                          onClick={() => {
+                            this.handleDrawerClose(false);
+                            history.push(`${process.env.PUBLIC_URL}/document-digitization`);
+                          }}
+                        >
 
-                            <ListItemText
-                              disableTypography
-                              primary={
-                                <Typography type="body2" style={{ color: currentMenu === "document-digitization" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                                  Digitize Document
+                          <ListItemText
+                            disableTypography
+                            primary={
+                              <Typography type="body2" style={{ color: currentMenu === "document-digitization" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                                Digitize Document
                           </Typography>
-                              }
-                            />
-                          </ListItem>
-                        </div>
-                      )}
+                            }
+                          />
+                        </ListItem>
+                      </div>
                     </>)}
                   {role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
                     <Divider className={classes.divider} />
