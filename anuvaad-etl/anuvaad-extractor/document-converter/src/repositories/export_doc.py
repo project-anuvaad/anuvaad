@@ -37,10 +37,10 @@ class DocumentExporterRepository(object):
         
         
         try:
-            token="xx"#auth-token,"auth-token":token
+            token="xx"
             # headers = {"Content-Type": "application/json","auth-token": token}
             headers = {"Content-Type": "application/json"}
-            # request_url="https://auth.anuvaad.org/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=A_FWLBOD15G-XYxbO-1617601281774%7C0-16176012928555748.json&start_page=0&end_page=0"
+            # request_url="https://auth.anuvaad.org/anuvaad/ocr-content-handler/v0/ocr/fetch-document?recordID=A_FOD10GVOT-KAEOf-1618214957929%7C0-16182149661869102.json&start_page=0&end_page=0"
             request_url = doc_utils.generate_url(config.OCR_CONTENT_HANDLER_HOST, record_id, 0, 0)
             log_info("Intiating request to fetch data from %s"%request_url, MODULE_CONTEXT)
             response = requests.get(request_url, headers = headers)
@@ -61,7 +61,7 @@ class DocumentExporterRepository(object):
             if 'regions'in page.keys():
                 for para_region in page['regions']:
                     if 'class' in para_region.keys() and 'regions' in para_region.keys():
-                        if para_region['class'] in ['PARA','HEADER','FOOTER']:
+                        if para_region['class'] in ['PARA','HEADER','FOOTER','TABLE']:
                             lines = []
                             for line_region in para_region['regions']:
                                 if 'class' in line_region.keys() and 'regions' in line_region.keys():
@@ -69,7 +69,7 @@ class DocumentExporterRepository(object):
                                         words = []
                                         for word_region in line_region['regions']:
                                             if 'class' in word_region.keys() and 'text' in word_region.keys():
-                                                if word_region['class'] == 'WORD':
+                                                if word_region['class'] in ['WORD','CELL_TEXT']:
                                                     words.append(word_region['text'])
 
                                         lines.append(' '.join(words) + '\n')
@@ -83,15 +83,15 @@ class DocumentExporterRepository(object):
             log_exception("Page regions formation error", MODULE_CONTEXT, e)
 
 
-    def create_pdf(self,pages, pdf_filepath, font_name, font_size=40, scale_factor=4):
+    def create_pdf(self,record, pdf_filepath, font_name, font_size=40, scale_factor=4):
 
         doc_utils.load_font('arial-unicode-ms', config.FONT_DIR)
         
-        w, h                      = doc_utils.get_page_dimensions(pages[0])
+        w, h                      = doc_utils.get_page_dimensions(record["pages"][0])
         pagesize                  = (w/scale_factor, h/scale_factor)
         c                         = canvas.Canvas(pdf_filepath, pagesize=pagesize)
   
-        for page in pages:
+        for page in record["pages"]:
 
             paragraphs, lines     = self.get_page_paragraphs_lines(page)
                 

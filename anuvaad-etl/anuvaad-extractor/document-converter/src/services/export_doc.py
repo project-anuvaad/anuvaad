@@ -17,9 +17,9 @@ class DocumentExporterService:
         exportRepo=DocumentExporterRepository()
         try:
             log_info("document type %s formation started"%file_type, MODULE_CONTEXT)
-            page_data = exportRepo.get_data_from_ocr_content_handler(record_id,user_id)
-            if "data" in page_data.keys():
-                data=page_data['data']
+            record = exportRepo.get_data_from_ocr_content_handler(record_id,user_id)
+            if "data" in record.keys():
+                data=record['data']
             else:
                 return False
             

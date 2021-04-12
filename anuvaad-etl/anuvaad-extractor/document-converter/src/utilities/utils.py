@@ -68,7 +68,7 @@ class DocumentUtilities():
         return (left, top, width, height)
 
     def get_page_dimensions(self,page):
-        _, _, w, h = self.vertices_to_boundingbox(page['page_info']['page_boundingBox']['vertices'])
+        _, _, w, h = self.vertices_to_boundingbox(page['boundingBox']['vertices'])
         return w, h
 
     def draw_line_text(self,page_canvas, x, y, text, word_space=1.75, horizontal_scale=105, font_name=None, font_size=8):
