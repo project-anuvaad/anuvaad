@@ -89,7 +89,7 @@ class OcrPageCard extends React.Component {
         return (
             <div
                 style={{
-                    border: (line.class === 'CELL') && '1px solid black',
+                    // border: (line.class === 'CELL') && '1px solid black',
                     top: (line.class === 'CELL') && line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                     left: line.class === 'CELL' && line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     height: line.class === 'CELL' && line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
