@@ -99,6 +99,8 @@ class DigitalDocumentRepositories:
             end_page   = 5
         if start_page > end_page:
             return False
+        if start_page > total_page_count:
+            return False
 
         AppContext.addRecordID(record_id)
         log_info("DigitalDocumentRepo fetching doc by pages for record_id:{}".format(str(record_id)), AppContext.getContext())
@@ -170,6 +172,9 @@ class DigitalDocumentRepositories:
         pages["config"]             = config
         pages["pages"]              = []
         for block in page_blocks:
+            if block == None:
+                pages["pages"].append(None)
+                continue
             block_info              = {}
             block_info["identifier"]= block["page_info"]["page_identifier"]
             block_info["resolution"]= block["page_info"]["page_resolution"]
