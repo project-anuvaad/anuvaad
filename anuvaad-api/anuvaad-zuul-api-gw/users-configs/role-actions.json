@@ -601,6 +601,11 @@
             "active":true
         },
         {
+            "role":"ANNOTATOR",
+            "actionID": "68e90db3-0146-4e04-ba94-18671b1c5995",
+            "active":true
+        },
+        {
             "role":"ADMIN",
             "actionID": "98360963-7f7b-4b4b-93d5-5f055d283868",
             "active":true
