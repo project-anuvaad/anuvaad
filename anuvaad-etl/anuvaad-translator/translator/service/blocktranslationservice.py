@@ -117,11 +117,11 @@ class BlockTranslationService:
             modified_sentences = block_translate_input["input"]["modifiedSentences"]
         if 'retranslate' in block_translate_input["input"].keys():
             retranslate = block_translate_input["input"]["retranslate"]
-        log_info("TMX Blocks Cache Size (Start): " + str(len(tmx_blocks_cache.keys())), block_translate_input)
         for block in block_translate_input["input"]["textBlocks"]:
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
                     if retranslate:
+                        log_info("Retranslation job!", block_translate_input)
                         add_to_nmt = retranslate
                     else:
                         if 'save' not in sentence.keys():
@@ -141,7 +141,6 @@ class BlockTranslationService:
                                        "tmx_phrases": tmx_phrases}
                         sent_for_nmt.append(sent_nmt_in)
         log_info("NMT: " + str(len(sent_for_nmt)) + " | TMX: " + str(tmx_count), block_translate_input)
-        log_info("TMX Blocks Cache Size (End): " + str(len(tmx_blocks_cache.keys())), block_translate_input)
         return sent_for_nmt, modified_sentences
 
     # Checks if org level or user level TMX is applicable to the file under translation.
