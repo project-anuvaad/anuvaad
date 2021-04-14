@@ -16,7 +16,7 @@
             "active":true
         },
         {
-            "role":"TRANSLATOR",
+            "role":"ADMIN",
             "actionID": "216313cc-0668-442f-a13e-3fd022be5eb2",
             "active":true
         },
@@ -277,11 +277,6 @@
         },
         {
             "role":"ANNOTATOR",
-            "actionID": "216313cc-0668-442f-a13e-3fd022be5eb2",
-            "active":true
-        },
-        {
-            "role":"ANNOTATOR",
             "actionID": "bde39a83-8a4f-400e-bcf0-d14b8895f0ae",
             "active":true
         },
@@ -508,11 +503,6 @@
         {
             "role":"ANNOTATOR",
             "actionID": "fe0decb2-78de-4f53-8ca7-c073ab2b1396",
-            "active":true
-        },
-        {
-            "role":"ADMIN",
-            "actionID": "216313cc-0668-442f-a13e-3fd022be5eb2",
             "active":true
         },
         {
