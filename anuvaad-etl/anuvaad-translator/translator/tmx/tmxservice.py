@@ -111,18 +111,16 @@ class TMXService:
 
     # Method to push tmx related metadata
     def push_tmx_metadata(self, tmx_record, file_path):
-        locale = tmx_record["sentences"][0]["locale"]
+        locale, length = tmx_record["sentences"][0]["locale"], len(tmx_record["sentences"])
         db_record = tmx_record
-        db_record["sentences"], db_record["file"], db_record["timeStamp"] = len(tmx_record["sentences"]), file_path, eval(
-            str(time.time()).replace('.', '')[0:13])
+        db_record["sentences"], db_record["file"], db_record["timeStamp"] = length, file_path, eval(str(time.time()).replace('.', '')[0:13])
         db_record["locale"], db_record["id"] = locale, str(uuid.uuid4())
         repo.tmx_create(db_record)
         db_record_reverse = tmx_record
         reverse_locale_array = str(locale).split("|")
         reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
-        db_record_reverse["sentences"], db_record_reverse["file"], = len(tmx_record["sentences"]), file_path
-        db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(
-            str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
+        db_record_reverse["sentences"], db_record_reverse["file"], = length, file_path
+        db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
         repo.tmx_create(db_record_reverse)
 
     # Method to delete records from TMX store.
