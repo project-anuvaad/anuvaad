@@ -302,7 +302,7 @@ def collate_text(craft_words, google_words):
                         except Exception as e:
                             print('error in collating text' + str(e))
                 if len(region_words)>0:
-                    craft_words['boundingBox'] = merge_corrds(region_words)
+                    craft_words[region_index]['boundingBox'] = merge_corrds(region_words)
                 craft_words[region_index]['text'] = text
         
     #orphan_lines = []
