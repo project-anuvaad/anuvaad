@@ -32,8 +32,10 @@ class TMXService:
             wb = xlrd.open_workbook(file_path)
             sheet = wb.sheet_by_index(0)
             number_of_rows, number_of_columns = sheet.nrows, sheet.ncols
+            if number_of_rows == 0 or number_of_columns == 0:
+                return {"message": "The file cannot be empty", "status": "FAILED"}
             tmx_input, locale = [], None
-            for row in range(2, number_of_rows):
+            for row in range(0, number_of_rows):
                 if row == 1:
                     continue
                 values = []
@@ -70,6 +72,8 @@ class TMXService:
     def push_to_tmx_store(self, tmx_input):
         log_info("Pushing to TMX......", None)
         try:
+            if not tmx_input["sentences"]:
+                return {"message": "Sentences list cannot be empty", "status": "FAILED"}
             for sentence in tmx_input["sentences"]:
                 tmx_records = []
                 sentence_types, i = self.fetch_diff_flavors_of_sentence(sentence["src"]), 0
@@ -98,6 +102,7 @@ class TMXService:
                     for hash_key in hash_dict.keys():
                         tmx_record["hash"] = hash_dict[hash_key]
                         repo.upsert(tmx_record["hash"], tmx_record)
+            self.push_tmx_metadata(tmx_input, None)
             log_info("Translations pushed to TMX!", None)
             return {"message": "created", "status": "SUCCESS"}
         except Exception as e:
@@ -105,20 +110,20 @@ class TMXService:
             return {"message": "creation failed", "status": "FAILED"}
 
     # Method to push tmx related metadata
-    def push_tmx_metadata(self, tmx_record):
-            db_record = tmx_record
-            db_record["sentences"], db_record["file"], db_record["timeStamp"] = len(tmx_input), file_path, eval(
-                str(time.time()).replace('.', '')[0:13])
-            db_record["locale"], db_record["id"] = locale, str(uuid.uuid4())
-            repo.tmx_create(db_record)
-            db_record_reverse = tmx_record
-            reverse_locale_array = str(locale).split("|")
-            reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
-            db_record_reverse["sentences"], db_record_reverse["file"], = len(tmx_input), file_path
-            db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(
-                str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
-            repo.tmx_create(db_record_reverse)
-        pass
+    def push_tmx_metadata(self, tmx_record, file_path):
+        locale = tmx_record["sentences"][0]["locale"]
+        db_record = tmx_record
+        db_record["sentences"], db_record["file"], db_record["timeStamp"] = len(tmx_record["sentences"]), file_path, eval(
+            str(time.time()).replace('.', '')[0:13])
+        db_record["locale"], db_record["id"] = locale, str(uuid.uuid4())
+        repo.tmx_create(db_record)
+        db_record_reverse = tmx_record
+        reverse_locale_array = str(locale).split("|")
+        reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
+        db_record_reverse["sentences"], db_record_reverse["file"], = len(tmx_record["sentences"]), file_path
+        db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(
+            str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
+        repo.tmx_create(db_record_reverse)
 
     # Method to delete records from TMX store.
     def delete_from_tmx_store(self, tmx_input):
