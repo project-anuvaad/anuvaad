@@ -223,6 +223,8 @@ class WFMUtils:
                     tool_input["input"]["modifiedSentences"] = job_details["input"]["modifiedSentences"]
                 if 'context' in job_details["input"].keys():
                     tool_input["input"]["context"] = job_details["input"]["context"]
+                if 'retranslate' in job_details["input"].keys():
+                    tool_input["input"]["retranslate"] = job_details["input"]["retranslate"]
         else:
             if current_tool == tool_tokeniser:
                 tool_input = tokeniser.get_tokeniser_input_wf(wf_input, True)
