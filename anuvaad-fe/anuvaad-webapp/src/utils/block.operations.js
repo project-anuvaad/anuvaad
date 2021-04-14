@@ -402,7 +402,6 @@ const get_sentence_data = (sentence_id, blocks) => {
         let found_block = false
         block.tokenized_sentences.forEach(sentence => {
             if (sentence.s_id === sentence_id) {
-                sentence.save = false 
                 found_block = true
             }
         })
