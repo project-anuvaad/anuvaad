@@ -290,7 +290,7 @@ def collate_text(craft_words, google_words):
                                 area = region_poly.intersection(line_poly).area
                                 reg_area = region_poly.area
                                 line_area = line_poly.area
-                                if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                                if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.3 :
                                     region_words.append(google_words[intr_index])
                                     words_intersected.append(intr_index)
                         
@@ -301,7 +301,8 @@ def collate_text(craft_words, google_words):
                             text = text + str(region_words['text'])
                         except Exception as e:
                             print('error in collating text' + str(e))
-                   
+                if len(region_words)>0:
+                    craft_words['boundingBox'] = merge_corrds(region_words)
                 craft_words[region_index]['text'] = text
         
     #orphan_lines = []
@@ -480,4 +481,23 @@ def merge_children(siblings,children_none=False):
     box['boundingBox']['vertices'][3]['y']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][3]['y'])['boundingBox']['vertices'][3]['y']
 
     return box
+
+
+
+
+def merge_corrds(siblings,children_none=False):
+    box = Box().get_box()
+   
+
+
+    box['boundingBox']['vertices'][0]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['x'])['boundingBox']['vertices'][0]['x']
+    box['boundingBox']['vertices'][0]['y']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['y'])['boundingBox']['vertices'][0]['y']
+    box['boundingBox']['vertices'][1]['x']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][1]['x'])['boundingBox']['vertices'][1]['x']
+    box['boundingBox']['vertices'][1]['y']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][1]['y'])['boundingBox']['vertices'][1]['y']
+    box['boundingBox']['vertices'][2]['x']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][2]['x'])['boundingBox']['vertices'][2]['x']
+    box['boundingBox']['vertices'][2]['y']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][2]['y'])['boundingBox']['vertices'][2]['y']
+    box['boundingBox']['vertices'][3]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][3]['x'])['boundingBox']['vertices'][3]['x']
+    box['boundingBox']['vertices'][3]['y']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][3]['y'])['boundingBox']['vertices'][3]['y']
+
+    return box['boundingBox']
 
