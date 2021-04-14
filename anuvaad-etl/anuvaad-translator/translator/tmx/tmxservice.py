@@ -60,23 +60,11 @@ class TMXService:
             res = self.push_to_tmx_store(tmx_record)
             if res["status"] == "FAILED":
                 return {"message": "bulk creation failed", "status": "FAILED"}
-            db_record = tmx_record
-            db_record["sentences"], db_record["file"], db_record["timeStamp"] = len(tmx_input), file_path, eval(
-                str(time.time()).replace('.', '')[0:13])
-            db_record["locale"], db_record["id"] = locale, str(uuid.uuid4())
-            repo.tmx_create(db_record)
-            db_record_reverse = tmx_record
-            reverse_locale_array = str(locale).split("|")
-            reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
-            db_record_reverse["sentences"], db_record_reverse["file"], = len(tmx_input), file_path
-            db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(
-                str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
-            repo.tmx_create(db_record_reverse)
             log_info("Bulk Create DONE!", None)
             return {"message": "bulk creation successful", "status": "SUCCESS"}
         except Exception as e:
             log_exception("Exception while pushing to TMX: " + str(e), None, e)
-            return {"message": "bulk creation failed", "status": "FAILED"}
+            return {"message": "bulk creation failed - Exception", "status": "FAILED"}
 
     # Pushes translations to the tmx.
     def push_to_tmx_store(self, tmx_input):
@@ -116,6 +104,23 @@ class TMXService:
             log_exception("Exception while pushing to TMX: " + str(e), None, e)
             return {"message": "creation failed", "status": "FAILED"}
 
+    # Method to push tmx related metadata
+    def push_tmx_metadata(self, tmx_record):
+            db_record = tmx_record
+            db_record["sentences"], db_record["file"], db_record["timeStamp"] = len(tmx_input), file_path, eval(
+                str(time.time()).replace('.', '')[0:13])
+            db_record["locale"], db_record["id"] = locale, str(uuid.uuid4())
+            repo.tmx_create(db_record)
+            db_record_reverse = tmx_record
+            reverse_locale_array = str(locale).split("|")
+            reverse_locale = str(reverse_locale_array[1]) + "|" + str(reverse_locale_array[0])
+            db_record_reverse["sentences"], db_record_reverse["file"], = len(tmx_input), file_path
+            db_record_reverse["timeStamp"], db_record_reverse["locale"], db_record["id"] = eval(
+                str(time.time()).replace('.', '')[0:13]), reverse_locale, str(uuid.uuid4())
+            repo.tmx_create(db_record_reverse)
+        pass
+
+    # Method to delete records from TMX store.
     def delete_from_tmx_store(self, tmx_input):
         log_info("Deleting to TMX......", None)
         try:
@@ -251,7 +256,8 @@ class TMXService:
                     tmx_without_nmt_phrases.append(tmx_phrase)
             tmx_tgt = tgt
             if tmx_without_nmt_phrases:
-                tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt, tmx_replacement, ctx)
+                tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt,
+                                                                              tmx_replacement, ctx)
             if tmx_tgt:
                 return tmx_tgt, tmx_replacement
             else:

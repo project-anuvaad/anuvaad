@@ -112,19 +112,24 @@ class BlockTranslationService:
             tmx_present = False
         record_id, model_id = block_translate_input["input"]["recordID"], block_translate_input["input"]["model"][
             "model_id"]
-        modified_sentences, tmx_blocks_cache = [], {}
+        modified_sentences, retranslate, tmx_blocks_cache = [], False, {}
         if 'modifiedSentences' in block_translate_input["input"].keys():
             modified_sentences = block_translate_input["input"]["modifiedSentences"]
+        if 'retranslate' in block_translate_input["input"].keys():
+            retranslate = block_translate_input["input"]["retranslate"]
         log_info("TMX Blocks Cache Size (Start): " + str(len(tmx_blocks_cache.keys())), block_translate_input)
         for block in block_translate_input["input"]["textBlocks"]:
             if 'tokenized_sentences' in block.keys():
                 for sentence in block["tokenized_sentences"]:
-                    if 'save' not in sentence.keys():
-                        sentence["save"] = False
-                    if modified_sentences:
-                        add_to_nmt = (sentence["save"] is False) and (sentence["s_id"] in modified_sentences)
+                    if retranslate:
+                        add_to_nmt = retranslate
                     else:
-                        add_to_nmt = sentence["save"] is False
+                        if 'save' not in sentence.keys():
+                            sentence["save"] = False
+                        if modified_sentences:
+                            add_to_nmt = (sentence["save"] is False) and (sentence["s_id"] in modified_sentences)
+                        else:
+                            add_to_nmt = sentence["save"] is False
                     if add_to_nmt:
                         tmx_phrases = []
                         if tmx_present:
