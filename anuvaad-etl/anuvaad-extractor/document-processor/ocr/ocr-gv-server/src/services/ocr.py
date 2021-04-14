@@ -312,7 +312,8 @@ def mask_image_craft(path, page_regions,page_index,file_properties,image_width,i
         #path = config.BASE_DIR+path
         image   = cv2.imread(path)
         for region_idx, page_region in enumerate(page_regions):
-            if 'class' in page_region.keys():
+            
+            if page_region is not None and 'class' in page_region.keys():
                 region_class = page_region['class']
                 
                 if region_class not in ["IMAGE","OTHER","SEPARATOR"]:
@@ -325,20 +326,22 @@ def mask_image_craft(path, page_regions,page_index,file_properties,image_width,i
                     if region_lines!=None:
                         
                         for line_index, line in enumerate(region_lines):
-                            region_words = file_properties.get_region_words(page_index,region_idx,line_index,line)
-                            if region_words!=None:
-                                if config.IS_DYNAMIC and region_class!="TABLE":
-                                    region_words = coord_adjustment(path, region_words)
-                                for word_index,region in enumerate(region_words):
-                                    if region_class =='TABLE':
-                                        image = mask_table_region(image,region,image_height,image_width,y_margin,x_margin,fill)
-                                    else:
-                                        flag,row_top, row_bottom,row_left,row_right = end_point_correction(region, y_margin,x_margin,image_height,image_width)
-                                        if flag:
-                                            if len(image.shape) == 2 :
-                                                image[row_top  : row_bottom  , row_left : row_right ] = fill
-                                            if len(image.shape) == 3 :
-                                                image[row_top : row_bottom , row_left : row_right ,:] = fill
+                            if line is not None:
+                                region_words = file_properties.get_region_words(page_index,region_idx,line_index,line)
+                                if region_words!=None:
+                                    if config.IS_DYNAMIC and region_class!="TABLE":
+                                        region_words = coord_adjustment(path, region_words)
+                                    for word_index,region in enumerate(region_words):
+                                        if region is not None:
+                                            if region_class =='TABLE':
+                                                image = mask_table_region(image,region,image_height,image_width,y_margin,x_margin,fill)
+                                            else:
+                                                flag,row_top, row_bottom,row_left,row_right = end_point_correction(region, y_margin,x_margin,image_height,image_width)
+                                                if flag:
+                                                    if len(image.shape) == 2 :
+                                                        image[row_top  : row_bottom  , row_left : row_right ] = fill
+                                                    if len(image.shape) == 3 :
+                                                        image[row_top : row_bottom , row_left : row_right ,:] = fill
         image = remove_noise(image)
 
                 
@@ -354,7 +357,16 @@ def mask_image_craft(path, page_regions,page_index,file_properties,image_width,i
         return save_path
     except Exception as e :
         print('Service Tesseract Error in masking out image {}'.format(e))
-        return None
+        if '.jpg' in path:
+            save_path = path.split('.jpg')[0]+"_bgimages_"+'.jpg'
+        elif '.png' in path:
+            save_path = path.split('.png')[0]+"_bgimages_"+'.png'
+        else:
+            save_path = path.split('.')[0]+"_bgimages_"+'.jpg'
+        img = cv2.imread(path)
+        img[:] = 255
+        cv2.imwrite(save_path,img)
+        return save_path
 
 
 def mask_image_vision(path, page_regions,page_index,file_properties,image_width,image_height,margin= 0 ,fill=255):

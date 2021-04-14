@@ -176,7 +176,7 @@ class OcrPageCard extends React.Component {
         let changedWord = word
         if (changedWord !== originalWord) {
             this.setState({ loading: true })
-            let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord, this.props.page.page_info.page_no)
+            let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord, this.props.page.page_no)
             APITransport(apiObj);
         }
     }
