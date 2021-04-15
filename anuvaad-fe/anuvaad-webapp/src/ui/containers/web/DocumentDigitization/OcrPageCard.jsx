@@ -89,7 +89,7 @@ class OcrPageCard extends React.Component {
         return (
             <div
                 style={{
-                    border: (line.class === 'CELL') && '1px solid black',
+                    // border: (line.class === 'CELL') && '1px solid black',
                     top: (line.class === 'CELL') && line.boundingBox.vertices[0].y - region.boundingBox.vertices[0].y + 'px',
                     left: line.class === 'CELL' && line.boundingBox.vertices[0].x - region.boundingBox.vertices[0].x + 'px',
                     height: line.class === 'CELL' && line.boundingBox.vertices[2].y - line.boundingBox.vertices[0].y + 'px',
@@ -176,7 +176,7 @@ class OcrPageCard extends React.Component {
         let changedWord = word
         if (changedWord !== originalWord) {
             this.setState({ loading: true })
-            let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord, this.props.page.page_info.page_no)
+            let apiObj = new UpdateWord(`${jobId}|${filename}`, regionID, wordID, changedWord, this.props.page.page_no)
             APITransport(apiObj);
         }
     }
@@ -336,8 +336,8 @@ class OcrPageCard extends React.Component {
 
     renderPage = (page, image) => {
         if (page) {
-            let width = page['page_info']['page_boundingBox'] && page.page_info.page_boundingBox.vertices[1].x - page.page_info.page_boundingBox.vertices[0].x + 'px'
-            let height = page['page_info']['page_boundingBox'] && page.page_info.page_boundingBox.vertices[2].y - page.page_info.page_boundingBox.vertices[0].y + 'px'
+            let width = page['boundingBox'] && page.boundingBox.vertices[1].x - page.boundingBox.vertices[0].x + 'px'
+            let height = page['boundingBox'] && page.boundingBox.vertices[2].y - page.boundingBox.vertices[0].y + 'px'
             return (
                 <div>
                     <Paper
