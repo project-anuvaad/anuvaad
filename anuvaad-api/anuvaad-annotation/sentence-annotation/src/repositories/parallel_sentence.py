@@ -25,9 +25,7 @@ class ParallelSentenceRepo(object):
     
     def store(self, source_lang, target_lang, jobId, annotationType, users, fileInfo, description):
         parallel_sentences  = []
-        # filepath            = os.path.join(os.curdir, config.download_folder, fileInfo['identifier'])
-        filepath=config.file_path
-        print(filepath,"****************************")
+        filepath            = os.path.join(os.curdir, config.download_folder, fileInfo['identifier'])
         try:
             parallel_sentences = ParseCSV.get_parallel_sentences(filepath, source_lang, target_lang)
         except Exception as e:
