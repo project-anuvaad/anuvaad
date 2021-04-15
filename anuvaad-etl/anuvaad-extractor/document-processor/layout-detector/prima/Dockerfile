@@ -30,9 +30,6 @@ RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf \
 ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
 ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
 
-ENV VIRTUAL_ENV=/opt/venv
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-
 # nvidia-container-runtime
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
@@ -83,7 +80,6 @@ RUN pip install -r requirements.txt
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
 #CMD ["python", "app.py"]
-CMD nvidia-smi
 
 ENTRYPOINT ["/bin/bash","/usr/bin/start.sh"]
 
