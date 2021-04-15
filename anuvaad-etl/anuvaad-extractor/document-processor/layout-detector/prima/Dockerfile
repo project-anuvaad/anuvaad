@@ -72,7 +72,7 @@ COPY / /app
 WORKDIR /app
 
 #RUN apt-get install -y make git
-RUN pip install -r requirements.txt
+#RUN pip install -r requirements.txt
 #RUN pip install 'git+https://github.com/facebookresearch/detectron2.git#egg=detectron2'
 
 #RUN pip cache purge
