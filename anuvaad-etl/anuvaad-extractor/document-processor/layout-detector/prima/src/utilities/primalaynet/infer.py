@@ -32,7 +32,7 @@ model_primatablenet = lp.Detectron2LayoutModel(LAYOUT_CELL_CONFIG_PATH,model_pat
 #model_primalaynet = lp.Detectron2LayoutModel('/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/src/utilities/primalaynet/layout_v2_trained_config.yaml',model_path = "/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/src/utilities/primalaynet/model_0059999_new.pth" ,label_map = {0:"FooterRegion",1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"HeaderRegion",5:"OtherRegion", 6:"MathsRegion", 7:"SeparatorRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", 0.5] )
 #model_primatablenet = lp.Detectron2LayoutModel('/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/src/utilities/primalaynet/tablenet_config.yaml',model_path = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/layout-detector/prima/src/utilities/primalaynet/model_0059999_tablenet.pth',label_map = {0:"CellRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_CELL_SCORE_THRESH_TEST])
 model_primalaynet = lp.Detectron2LayoutModel(LAYOUT_CONFIG_PATH,model_path = LAYOUT_MODEL_PATH ,label_map = {0:"FooterRegion",1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"HeaderRegion",5:"OtherRegion", 6:"MathsRegion", 7:"SeparatorRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", 0.5] )
-
+model_primalaynet.cuda()
 #model_primalaynet = lp.Detectron2LayoutModel(LAYOUT_CONFIG_PATH,model_path = LAYOUT_MODEL_PATH,label_map = {0:"FooterRegion", 1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"HeaderRegion", 5:"OtherRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])
 
 class MapKeys:
