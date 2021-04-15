@@ -98,6 +98,17 @@ export const get_model_details = (languages, source_language_code, target_langua
     
 }
 
+export const get_users = (models,uuid) =>{
+    let condition   =   `$..[?(@.uuid == '${uuid}')]`
+        let result      =   jp.query(models, condition)
+    return result.length>0 ? true : false
+}
+
+export const get_selected_users = (userDetails, uuid) =>{
+    let result = userDetails.filter(user => (user.is_active && (user.roles !== 'ADMIN')&&user.models && get_users(user.models,uuid) ))
+    return result;
+}
+
 export const fetchModel = (modelId, docs) => {
     let model = ""
 
