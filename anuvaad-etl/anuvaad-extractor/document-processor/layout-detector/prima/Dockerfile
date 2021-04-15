@@ -35,6 +35,7 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV NVIDIA_REQUIRE_CUDA "cuda>=11.2 brand=tesla,driver>=418,driver<419 brand=tesla,driver>=440,driver<441 driver>=450,driver<451"
 
+CMD nvidia-smi
 # FROM ubuntu:20.04
 # # both files are explicitly required!
 # #COPY Pipfile Pipfile.lock ./
