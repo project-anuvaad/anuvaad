@@ -38,7 +38,6 @@ import CreateGlossary from '../../../../flux/actions/apis/document_translate/cre
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
-var time = 0;
 const styles = {
     card_active: {
         background: 'rgb(211,211,211)',
@@ -122,7 +121,8 @@ class SentenceCard extends React.Component {
             snackBarMessage: null,
             highlight: false,
             hideSplit: false,
-            score: ""
+            score: "",
+            eventArray:[]
 
         };
         this.textInput = React.createRef();
@@ -189,10 +189,11 @@ class SentenceCard extends React.Component {
     processSaveButtonClicked() {
         let userRole = localStorage.getItem("roles")
         let orgId = JSON.parse(localStorage.getItem("userProfile")).orgID
+        let eventArray = this.handleTimeCalc("onSave", "",(this.state.value.length < 1 || this.state.value === '')?this.props.sentence.s0_tgt :this.state.value )
+        this.setState({eventArray})
         if (!this.state.score && userRole === "ANNOTATOR" && orgId !== "NONMT") {
             alert('Please rate the sentence and then save. ')
         }
-        // time = new Date();
         else if (this.state.value.length < 1 || this.state.value === '') {
             // textfield has no value present.
             // - check availability of s0_tgt
@@ -216,17 +217,16 @@ class SentenceCard extends React.Component {
                 sentence.save = true;
                 sentence.tgt = this.props.sentence.s0_tgt;
                 delete sentence.block_identifier;
-                let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
-                sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;// max spent time is 5 min
-                time = new Date();
+                let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + this.timeSpent() : this.timeSpent();
+                sentence.time_spent_ms = timeCalc;
                 sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()) : 0;
 
                 if (userRole === "ANNOTATOR" && this.state.score) {
                     sentence.rating_score = this.state.score
                 }
-
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '')
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+                this.setState({eventArray:[]})
                 return;
             }
         } else {
@@ -244,14 +244,15 @@ class SentenceCard extends React.Component {
                 sentence.tgt = this.state.value;
                 delete sentence.block_identifier;
                 sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()) : 0;
-                let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + (new Date() - time) : (new Date() - time);
-                sentence.time_spent_ms = timeCalc > 300000 ? 300000 : timeCalc;
+                let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + this.timeSpent() : this.timeSpent();
+                sentence.time_spent_ms = timeCalc;
+                
                 if (userRole === "ANNOTATOR" && this.state.score) {
                     sentence.rating_score = this.state.score
                 }
-                time = 0;
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, '', userRole === "ANNOTATOR" ? this.state.score : '')
+                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+                this.setState({eventArray:[]})
             }
         }
     }
@@ -414,7 +415,10 @@ class SentenceCard extends React.Component {
     }
 
     handleKeyDown = (event) => {
+        
         let charCode = String.fromCharCode(event.which).toLowerCase();
+        let eventArray = this.handleTimeCalc(charCode, event.keyCode, event.target.value+charCode)
+        this.setState({eventArray})
 
         if (charCode === 'enter' || event.keyCode == '13') {
             event.preventDefault();
@@ -560,14 +564,35 @@ class SentenceCard extends React.Component {
         }
     }
 
+    handleTimeCalc = (value, key , text) =>{
+        console.log(text)
+        let eventArray = this.state.eventArray;
+        let currentObj = {}
+        currentObj["timeStamp"]   = new Date();
+        currentObj["value"]       = value;
+        currentObj["key"]         = key;
+        currentObj["timeTaken"]   = eventArray.length>0 ? currentObj["timeStamp"] - eventArray[eventArray.length-1].timeStamp : 0 ;
+        currentObj["currentText"] = text;
+        eventArray.push(currentObj)
+        return eventArray;
+    }
+
+    timeSpent = () =>{
+        let totalTimeSpent = 0
+        this.state.eventArray.map((value,index)=>{
+            totalTimeSpent = totalTimeSpent + (value.timeTaken < 180000 ? value.timeTaken : 0) 
+        })
+        return totalTimeSpent;
+    }
+
     handleUserInputText(event) {
         if (this.state.showSuggestions) {
             this.setState({
                 showSuggestions: false,
                 suggestions: []
+                
             });
         }
-        time = (time === 0 ? new Date() : time)
 
         this.setState({
             value: event.target.value,
@@ -676,7 +701,8 @@ class SentenceCard extends React.Component {
 
 
     async makeAPICallDictionary() {
-        this.setState({ showProgressStatus: true, message: "Fetching meanings" })
+        let eventArray = this.handleTimeCalc(this.state.selectedSentence, "dictionary" , this.state.value)
+        this.setState({ showProgressStatus: true, message: "Fetching meanings", eventArray })
 
         let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.model.source_language_code, this.props.model.target_language_code)
         const apiReq = await fetch(apiObj.apiEndPoint(), {
@@ -744,11 +770,14 @@ class SentenceCard extends React.Component {
 
     handleCopy = () => {
         copy(this.state.selectedSentence)
+        let eventArray = this.handleTimeCalc(this.state.selectedSentence, "copy",this.state.value)
+        this.setState({ eventArray })
         this.handleClose()
     }
 
     handleAddToGlossary = () => {
-        this.setState({ openModal: true })
+        let eventArray = this.handleTimeCalc("", "glossary",this.state.value)
+        this.setState({ openModal: true , eventArray})
     }
 
     handleOperation = (action) => {
@@ -853,7 +882,6 @@ class SentenceCard extends React.Component {
     }
 
     handleChange = (event) => {
-        time = time === 0 ? new Date() : time
         this.setState({
             score: Number(event.target.value)
         })
@@ -938,22 +966,20 @@ class SentenceCard extends React.Component {
 
     handleCardExpandClick = () => {
         if (this.cardCompare()) {
-            this.setState({ cardInFocus: false })
+            this.setState({ cardInFocus: false, eventArray:[] })
             this.props.clearHighlighBlock()
-            time = 0
             TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         } else {
             if (this.props.block_highlight && this.props.block_highlight.current_sid) {
-                time = 0
                 TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.block_highlight.current_sid)
             }
             this.setState({ cardInFocus: true })
             this.props.highlightBlock(this.props.sentence, this.props.pageNumber)
+            this.handleTimeCalc("cardOpen","",this.state.value)
             /**
              * For highlighting textarea on card expand
              */
             this.textInput && this.textInput.current && this.textInput.current.focus();
-            time = new Date()
             TELEMETRY.startSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         }
 
