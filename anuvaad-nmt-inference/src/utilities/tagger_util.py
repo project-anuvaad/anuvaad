@@ -25,7 +25,7 @@ def tag_number_date_url(text):
     url_dict = {}
     
     num_array,text,num_map = build_src_num_array(text)
-    log_info("number-tag mappings-{}".format(num_map),MODULE_CONTEXT)
+    #log_info("number-tag mappings-{}".format(num_map),MODULE_CONTEXT)
     for word in text.split():
         try:
           if misc.token_is_url(word) or misc.token_is_email(word):
@@ -40,7 +40,7 @@ def tag_number_date_url(text):
         resultant_str.append(word)   
         s = [str(i) for i in resultant_str] 
         res = str(" ".join(s))   
-    log_info("tagged response:{} and date:{} and url:{}".format(res,date_original,url_dict),MODULE_CONTEXT) 
+    #log_info("tagged response:{} and date:{} and url:{}".format(res,date_original,url_dict),MODULE_CONTEXT) 
 
     return res,date_original,url_dict,num_array,num_map 
 
@@ -62,7 +62,7 @@ def replace_tags_with_original(text,date_original,url_dict,num_array,num_map):
     for url_tag,url in url_dict.items():
       res = text.replace(url_tag,url)
 
-    log_info("response after url and date replacemnt:{}".format(res),MODULE_CONTEXT)    
+    #log_info("response after url and date replacemnt:{}".format(res),MODULE_CONTEXT)    
     
     if len(num_map) == 0:
       ''' handling the case when model outputs a tag which is not in tagged_src(src is without any number'''
@@ -73,7 +73,7 @@ def replace_tags_with_original(text,date_original,url_dict,num_array,num_map):
       res = res.replace(item['tag'],str(item['no.']),1)
    
     res = remove_extra_tags(res)     
-    log_info("response after tags replacement:{}".format(res),MODULE_CONTEXT)
+    #log_info("response after tags replacement:{}".format(res),MODULE_CONTEXT)
     return res    
   except Exception as e:
     log_exception("Error in parent except block of replace_tags_with_original_1 function, returning tagged output:{}".format(e),MODULE_CONTEXT,e)
