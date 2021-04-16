@@ -62,11 +62,11 @@ class FileContentRepositories:
                     del elem['output_subwords']
                 if 'pred_score' in elem:
                     del elem['pred_score']
-
-                if update_s0 and modifiedSentences==None:  # case in which entire block is updated/ updating source file 
+                # case in which entire block is updated/ updating source file 
+                if update_s0 and modifiedSentences==None:
                     if 'tgt' in elem:
-                            elem['s0_tgt']    = elem['tgt']
-                        elem['s0_src']    = elem['src']
+                        elem['s0_tgt']    = elem['tgt']
+                    elem['s0_src']    = elem['src']
 
 
         log_info("updating new block for block_identifier {}".format(block['block_identifier']), AppContext.getContext())
