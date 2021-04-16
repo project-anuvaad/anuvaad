@@ -47,7 +47,6 @@ class FileContentRepositories:
         new_block                   = {}
         new_block['data']           = block
         # log_info("update_block_info payload {}".format(json.dumps(block)), AppContext.getContext())
-
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
                 if update_s0 and modifiedSentences != None and len(modifiedSentences) != 0:  #case in which only the targeted setences are modified
@@ -56,6 +55,11 @@ class FileContentRepositories:
                             elem['s0_tgt']    = elem['tgt']
                         elem['s0_src']    = elem['src']
 
+                if update_s0 and modifiedSentences == None:
+                    if 'tgt' in elem:
+                        elem['s0_tgt']    = elem['tgt']
+                    elem['s0_src']    = elem['src']
+
                 if 'input_subwords' in elem:
                     del elem['input_subwords']
                 if 'output_subwords' in elem:
@@ -63,10 +67,7 @@ class FileContentRepositories:
                 if 'pred_score' in elem:
                     del elem['pred_score']
                 # case in which entire block is updated/ updating source file 
-                if update_s0 and modifiedSentences==None:
-                    if 'tgt' in elem:
-                        elem['s0_tgt']    = elem['tgt']
-                    elem['s0_src']    = elem['src']
+                
 
 
         log_info("updating new block for block_identifier {}".format(block['block_identifier']), AppContext.getContext())
