@@ -243,11 +243,11 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
     v_list, n_text_regions = region_unifier.region_unifier(file,words,lines,regions,page_c_words,path)
     save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
     if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
-        v_list = coord_alignment(v_list,flag=False)
+        v_list = coord_alignment(v_list,False)
         v_list = verify__table_structure(v_list)
         return v_list,save_path
     else:
-        v_list = coord_alignment(v_list,flag=True)
+        v_list = coord_alignment(v_list,True)
         v_list = verify__table_structure(v_list)
         return v_list,save_path
     #print("v_lis",v_list)
