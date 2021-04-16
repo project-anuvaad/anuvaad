@@ -267,7 +267,8 @@ class SentenceCard extends React.Component {
 
     processSplitButtonClicked(start_index, end_index) {
         if (this.props.onAction) {
-            this.setState({ value: '' })
+            let eventArray = this.handleTimeCalc(this.state.selectedSentence, "split" , this.state.value)
+            this.setState({ value: '',eventArray })
             this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
         }
     }
@@ -565,7 +566,6 @@ class SentenceCard extends React.Component {
     }
 
     handleTimeCalc = (value, key , text) =>{
-        console.log(text)
         let eventArray = this.state.eventArray;
         let currentObj = {}
         currentObj["timeStamp"]   = new Date();
@@ -882,8 +882,9 @@ class SentenceCard extends React.Component {
     }
 
     handleChange = (event) => {
+        let eventArray = this.handleTimeCalc(Number(event.target.value), "Rating" , this.state.value)
         this.setState({
-            score: Number(event.target.value)
+            score: Number(event.target.value) , eventArray
         })
     }
 
