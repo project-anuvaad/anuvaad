@@ -1,4 +1,4 @@
-FROM anuvaadio/nmt:3
+FROM anuvaadio/nmt:4
 #FROM nvidia/cuda:10.2-base
 CMD nvidia-smi
 RUN apt-get update
