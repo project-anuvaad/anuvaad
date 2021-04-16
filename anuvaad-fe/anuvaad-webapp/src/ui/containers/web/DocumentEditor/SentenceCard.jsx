@@ -580,7 +580,7 @@ class SentenceCard extends React.Component {
     timeSpent = () =>{
         let totalTimeSpent = 0
         this.state.eventArray.map((value,index)=>{
-            totalTimeSpent = totalTimeSpent + (value.timeTaken < 180000 ? value.timeTaken : 0) 
+            totalTimeSpent = totalTimeSpent + (value.timeTaken < 180000 ? value.timeTaken : 15000) 
         })
         return totalTimeSpent;
     }
