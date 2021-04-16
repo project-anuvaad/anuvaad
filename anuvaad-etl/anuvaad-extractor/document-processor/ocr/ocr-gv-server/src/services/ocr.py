@@ -18,7 +18,7 @@ region_unifier = Region_Unifier()
 client = vision.ImageAnnotatorClient()
 breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
-def get_text(path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
+def get_text(file,path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
     
     #path = config.BASE_DIR+path
     #img = cv2.imread(path)
@@ -30,7 +30,7 @@ def get_text(path,page_dict,page_regions,page_c_words,font_info,file_properties,
         content = image_file.read()
     image = vision.types.Image(content=content)
     response = client.document_text_detection(image=image)
-    page_output,page_words,save_path = get_document_bounds(response.full_text_annotation,page_dict,page_regions,page_c_words,font_info,path,file_properties,idx)
+    page_output,page_words,save_path = get_document_bounds(file,response.full_text_annotation,page_dict,page_regions,page_c_words,font_info,path,file_properties,idx)
     return page_output,page_words,save_path
 
 
@@ -44,7 +44,7 @@ def text_extraction(file_properties,image_paths,file):
         page_dict = {"identifier": str(uuid.uuid4()),"resolution": config.EXRACTION_RESOLUTION }
         page_regions =  file_properties.get_regions(idx)
         page_c_words = file_properties.get_words(idx)
-        page_output,page_words,save_path = get_text(image_path,page_dict,page_regions,page_c_words,font_info,file_properties,idx)
+        page_output,page_words,save_path = get_text(file,image_path,page_dict,page_regions,page_c_words,font_info,file_properties,idx)
         
         #save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
         page_output = set_bg_image(page_output, save_path, idx,file)
@@ -99,7 +99,7 @@ def add_line(page_dict, line_coord, line_text):
         page_dict["lines"].append(line_region)
     return page_dict
 
-def get_document_bounds(response,page_dict,page_regions,page_c_words,font_info,path,file_properties,idx):
+def get_document_bounds(file,response,page_dict,page_regions,page_c_words,font_info,path,file_properties,idx):
     page_dict["regions"] = []
     page_dict["lines"]   = []
     page_dict["words"]   = []
@@ -150,7 +150,7 @@ def get_document_bounds(response,page_dict,page_regions,page_c_words,font_info,p
     page_words   = set_font_info(page_words,font_info)
 
     
-    v_list,save_path = segment_regions(page_words,page_lines,page_regions,page_c_words,path,file_properties,idx)
+    v_list,save_path = segment_regions(file,page_words,page_lines,page_regions,page_c_words,path,file_properties,idx)
 
     return v_list,page_words,save_path
 
@@ -197,7 +197,7 @@ def verify__table_structure(regions):
         regions = delete_region(regions,region_del_index)
     return regions
     
-def coord_alignment(regions):
+def coord_alignment(regions,top_flag):
     region_del_index = []
     for region_idx,region in enumerate(regions):
         if 'regions' in region.keys():
@@ -212,8 +212,8 @@ def coord_alignment(regions):
                             if word_t<min_t:
                                 min_t = word_t
                         new_top =  int((min_t+line_t)/2)
-                        
-                        line = update_coord(copy.deepcopy(line),new_top,line_t,line_b)
+                        if top_flag==True:
+                            line = update_coord(copy.deepcopy(line),new_top,line_t,line_b)
                         if "class" not in line.keys():
                             line['class']="LINE"
                         region['regions'][line_idx] = copy.deepcopy(line)
@@ -237,18 +237,24 @@ def coord_alignment(regions):
 
 
 
-def segment_regions(words, lines,regions,page_c_words,path,file_properties,idx):
+def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,idx):
     #regions = segment_regions(page_words,page_lines,page_regions)
     width, height = file_properties.get_pageinfo(0)
-    v_list, n_text_regions = region_unifier.region_unifier(words,lines,regions,page_c_words,path)
+    v_list, n_text_regions = region_unifier.region_unifier(file,words,lines,regions,page_c_words,path)
     save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
-    v_list = coord_alignment(v_list)
-    v_list = verify__table_structure(v_list)
+    if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
+        v_list = coord_alignment(v_list,False)
+        v_list = verify__table_structure(v_list)
+        return v_list,save_path
+    else:
+        v_list = coord_alignment(v_list,True)
+        v_list = verify__table_structure(v_list)
+        return v_list,save_path
     #print("v_lis",v_list)
     #v_list += n_text_regions
     
     #print("v_ln_text_regionsis",len(n_text_regions))
-    return v_list,save_path
+    
 
 
     
