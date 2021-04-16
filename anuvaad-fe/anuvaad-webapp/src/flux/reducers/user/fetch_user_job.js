@@ -15,7 +15,9 @@ const getUserJob = (payload) => {
             file_identifier: task.fileInfo.identifier,
             file_name: task.fileInfo.name,
             jobId: task.jobId,
-            taskId: task.taskId
+            taskId: task.taskId,
+            saved_sentences: task.saved_sentences,
+            total_sentences: task.total_sentences
         }
     })
     return result
