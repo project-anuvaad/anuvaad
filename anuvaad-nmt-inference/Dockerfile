@@ -1,9 +1,9 @@
-#FROM anuvaadio/nmt:2
-FROM nvidia/cuda:10.2-base
+FROM anuvaadio/nmt:3
+#FROM nvidia/cuda:10.2-base
 CMD nvidia-smi
 RUN apt-get update
-RUN apt-get -y install python3
-RUN apt-get -y install python3-pip
+#RUN apt-get -y install python3
+#RUN apt-get -y install python3-pip
 RUN apt-get install -y locales locales-all
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
