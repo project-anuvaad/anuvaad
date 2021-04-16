@@ -1,33 +1,25 @@
 import React from 'react';
 
 const getHighlightedSentence = (src, nextWord, nextColor) => {
-    // let wordArr = nextWord.split(' ')
-    // let modifiedSentence = []
-    // let found = false
-    // typeof src === 'string' ? src.split(' ').map(word => {
-    //     wordArr.map(val => {
-    //         if (val === word) {
-    //             found = true
-    //             return <span style={{ backgroundColor: nextColor, color: "white" }}>{`${val}`}</span>
-    //         }
-    //     })
-    // }) :
-    //     src.map(word => {
-    //         wordArr.map(val => {
-    //             if (val === word) {
-    //                 found = true
-    //                 return <span style={{ backgroundColor: nextColor, color: "white" }}>{`${val}`}</span>
-    //             }
-    //         })
-    //     })
-
-    // return modifiedSentence
-
-    let keyword = nextWord;
-    let title = src;
-    let regex = new RegExp(`${keyword}`, "ig");
-    let titleToDisplay = title.replace(regex, <span style={{ backgroundColor: nextColor, color: "white" }}>{keyword}</span>)
-    return titleToDisplay
+    let wordArr = nextWord.split(' ')
+    let found = false
+    return (typeof src === 'string' ? src.split(' ').map(word => {
+        wordArr.map(val => {
+            if (val === word) {
+                return <span style={{ backgroundColor: nextColor, color: "white" }}>{`${val} `}</span>
+            }
+            return `${word} `
+        })
+    }) :
+        src.map(word => {
+            wordArr.map(val => {
+                if (val === word) {
+                    return <span style={{ backgroundColor: nextColor, color: "white" }}>{`${val} `}</span>
+                }
+                return `${word} `
+            })
+        })
+    )
 }
 
 export const showTmxIndicator = (source, tmxArr) => {
