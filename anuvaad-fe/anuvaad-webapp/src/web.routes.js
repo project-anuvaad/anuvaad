@@ -225,7 +225,7 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/grading-sentence-card/:taskId/:totalSentences/:completedSentences`}
+              path={`${process.env.PUBLIC_URL}/grading-sentence-card/:taskId`}
               dontShowLoader
               title={"Grade Document"}
               userRoles={["ANNOTATOR"]}

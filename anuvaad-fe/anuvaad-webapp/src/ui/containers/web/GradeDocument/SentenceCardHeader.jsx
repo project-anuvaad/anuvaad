@@ -53,15 +53,14 @@ class SentenceCardHeader extends React.Component {
                     }
 
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
-
                     <Typography variant="h5" color="inherit" className={classes.flex}>
                         Rate Sentences
                     </Typography>
                     <Typography variant="h6" color="inherit" style={{ marginLeft: '10vw' }} noWrap>
-                        Total Sentences:{` ${this.props.match.params.totalSentences}`}
+                        Total Sentences:{` ${this.props.total_count}`}
                     </Typography>
                     <Typography variant="h6" color="inherit" style={{ marginLeft: '5vw' }} noWrap>
-                        Sentences Completed:{` ${this.props.match.params.completedSentences}`}
+                        Sentences Completed:{` ${this.props.saved_count}`}
                     </Typography>
                 </Toolbar>
             </AppBar>

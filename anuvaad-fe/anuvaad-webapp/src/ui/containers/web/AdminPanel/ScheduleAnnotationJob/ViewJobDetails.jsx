@@ -16,21 +16,16 @@ import NewCorpusStyle from "../../../../styles/web/Newcorpus";
 import APITransport from "../../../../../flux/actions/apitransport/apitransport";
 import FetchJobDetail from '../../../../../flux/actions/apis/view_scheduled_jobs/fetch_job_detail';
 import history from "../../../../../web.history";
+import Snackbar from "../../../../components/web/common/Snackbar";
 
 
 class ViewJobDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            role: localStorage.getItem("roles"),
-            showInfo: false,
-            offset: 0,
-            limit: 10,
-            currentPageIndex: 0,
-            maxPageNum: 0,
-            dialogMessage: null,
-            timeOut: 3000,
-            variant: "info",
+            open: false,
+            message: null,
+            variantType: null
         };
     }
 
@@ -55,9 +50,33 @@ class ViewJobDetails extends React.Component {
             },
         });
 
-    /**
-     * API calls
-     */
+    handleJobDetailClick = (taskId, save_count) => {
+        if (save_count < 1) {
+            this.setState({ open: true, message: 'No sentences are saved', variantType: 'info' })
+        } else {
+            history.push(`${process.env.PUBLIC_URL}/view-annotator-job/${taskId}`)
+        }
+        setTimeout(() => {
+            this.handleClose();
+        }, 3000)
+    }
+
+    handleClose = () => {
+        this.setState({ open: false, message: null, variantType: null })
+    }
+
+    processSnackBar = () => {
+        return (
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                open={this.state.open}
+                autoHideDuration={3000}
+                onClose={this.handleClose}
+                variant={this.state.variantType}
+                message={this.state.message}
+            />
+        );
+    }
 
     render() {
         const columns = [
@@ -108,6 +127,24 @@ class ViewJobDetails extends React.Component {
                 },
             },
             {
+                name: "saved_sentences",
+                label: "Saved Sentences",
+                options: {
+                    filter: false,
+                    sort: false,
+                    display: 'excluded'
+                },
+            },
+            {
+                name: "total_sentences",
+                label: "Total Sentences",
+                options: {
+                    filter: false,
+                    sort: false,
+                    display: 'excluded'
+                },
+            },
+            {
                 name: "Action",
                 label: translate("common.page.label.action"),
                 options: {
@@ -122,7 +159,7 @@ class ViewJobDetails extends React.Component {
                                         <IconButton
                                             style={{ color: "#233466", padding: "5px" }}
                                             component="a"
-                                        onClick={()=>history.push(`${process.env.PUBLIC_URL}/view-annotator-job/${tableMeta.rowData[0]}`)}
+                                            onClick={() => this.handleJobDetailClick(tableMeta.rowData[0], tableMeta.rowData[6])}
                                         >
                                             <LibraryBooksIcon />
                                         </IconButton>
@@ -163,19 +200,21 @@ class ViewJobDetails extends React.Component {
             },
         };
         return (
-            <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>
+            < div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }
+            }>
                 <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
                     <ToolBar />
                     <MuiThemeProvider theme={this.getMuiTheme()}>
                         <MUIDataTable
                             title={"Job Details"}
-                            data={this.props.job_details.count && this.props.job_details.result}
+                            data={this.props.job_details.result}
                             columns={columns}
                             options={options}
                         />
                     </MuiThemeProvider>
                 </div>
-            </div>
+                { this.state.open && this.processSnackBar()}
+            </div >
         );
     }
 }
