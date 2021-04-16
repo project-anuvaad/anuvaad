@@ -417,7 +417,7 @@ class SentenceCard extends React.Component {
     handleKeyDown = (event) => {
         
         let charCode = String.fromCharCode(event.which).toLowerCase();
-        let eventArray = this.handleTimeCalc(charCode, event.keyCode, event.target.value+charCode)
+        let eventArray = this.handleTimeCalc(charCode, event.keyCode, event.target.value)
         this.setState({eventArray})
 
         if (charCode === 'enter' || event.keyCode == '13') {
@@ -572,7 +572,7 @@ class SentenceCard extends React.Component {
         currentObj["value"]       = value;
         currentObj["key"]         = key;
         currentObj["timeTaken"]   = eventArray.length>0 ? currentObj["timeStamp"] - eventArray[eventArray.length-1].timeStamp : 0 ;
-        currentObj["currentText"] = text;
+        currentObj["previousText"] = text;
         eventArray.push(currentObj)
         return eventArray;
     }
