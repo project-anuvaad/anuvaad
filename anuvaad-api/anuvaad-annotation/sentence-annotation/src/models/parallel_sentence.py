@@ -33,6 +33,8 @@ class ParallelSentenceModel(object):
             collections     = get_db()[DB_SCHEMA_NAME]
             docs            = collections.find({'annotationType': annotationType, 'jobId': jobId})
             for doc in docs:
+                doc['src_locale'] = doc['annotations'][0]["source"]["language"]
+                doc['tgt_locale'] = doc['annotations'][0]["target"]["language"]
                 del doc['annotations']
                 updated_docs.append(normalize_bson_to_json(doc))
             return updated_docs
@@ -47,6 +49,8 @@ class ParallelSentenceModel(object):
             collections     = get_db()[DB_SCHEMA_NAME]
             docs            = collections.find({'user.userId': userId})
             for doc in docs:
+                doc['src_locale'] = doc['annotations'][0]["source"]["language"]
+                doc['tgt_locale'] = doc['annotations'][0]["target"]["language"]
                 del doc['annotations']
                 updated_docs.append(normalize_bson_to_json(doc))
             return updated_docs
