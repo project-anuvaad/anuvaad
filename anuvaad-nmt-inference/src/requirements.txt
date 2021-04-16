@@ -1,5 +1,5 @@
 tqdm==4.30.*
-torch==1.6.0
+#torch==1.6.0
 torchtext==0.4.0
 Flask-Cors==3.0.9
 anuvaad-auditor==0.1.4
