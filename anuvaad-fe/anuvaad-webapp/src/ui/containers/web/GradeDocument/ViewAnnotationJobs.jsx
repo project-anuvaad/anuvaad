@@ -130,7 +130,6 @@ class ViewAnnotationJobs extends React.Component {
     }
 
     render() {
-        const dummyData = [{ fID: '1', fname: 'Dummy-file.csv', jobDesc: 'This is a dummy file.' }]
         const columns = [
             {
                 name: "file_identifier",
@@ -144,6 +143,22 @@ class ViewAnnotationJobs extends React.Component {
             {
                 name: "file_name",
                 label: 'FileName',
+                options: {
+                    filter: false,
+                    sort: true,
+                }
+            },
+            {
+                name: "source",
+                label: 'Source',
+                options: {
+                    filter: false,
+                    sort: true,
+                }
+            },
+            {
+                name: "target",
+                label: 'Target',
                 options: {
                     filter: false,
                     sort: true,
@@ -213,7 +228,7 @@ class ViewAnnotationJobs extends React.Component {
                         if (tableMeta.rowData) {
                             return (
                                 <div>
-                                    {this.processUserView(tableMeta.rowData[5], tableMeta.rowData[6], tableMeta.rowData[7])}
+                                    {this.processUserView(tableMeta.rowData[7], tableMeta.rowData[8], tableMeta.rowData[9])}
                                 </div>
                             );
                         }
