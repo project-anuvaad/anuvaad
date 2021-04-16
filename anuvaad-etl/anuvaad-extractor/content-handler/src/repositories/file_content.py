@@ -50,7 +50,7 @@ class FileContentRepositories:
 
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
-                if update_s0 and modifiedSentences != None and len(modifiedSentences) != 0:
+                if update_s0 and modifiedSentences != None and len(modifiedSentences) != 0:  #case in which only the targeted setences are modified
                     if 's_id' in elem and elem['s_id'] in modifiedSentences:
                         if 'tgt' in elem:
                             elem['s0_tgt']    = elem['tgt']
@@ -61,7 +61,13 @@ class FileContentRepositories:
                 if 'output_subwords' in elem:
                     del elem['output_subwords']
                 if 'pred_score' in elem:
-                    del elem['pred_score'] 
+                    del elem['pred_score']
+
+                if update_s0 and modifiedSentences==None:  # case in which entire block is updated/ updating source file 
+                    if 'tgt' in elem:
+                            elem['s0_tgt']    = elem['tgt']
+                        elem['s0_src']    = elem['src']
+
 
         log_info("updating new block for block_identifier {}".format(block['block_identifier']), AppContext.getContext())
         return new_block
