@@ -42,6 +42,8 @@ import APITransport from "../../../../flux/actions/apitransport/apitransport";
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
+const TMX_HIGHLIGHT = require('../../../../utils/TmxHighlight');
+
 var time = 0;
 const styles = {
     card_active: {
@@ -330,6 +332,17 @@ class SentenceCard extends React.Component {
     }
 
     renderSourceSentence = () => {
+        if (this.state.cardInFocus && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
+            const { src, tmx_replacement } = this.props.sentence
+            const modified_src = TMX_HIGHLIGHT.showTmxIndicator(src, tmx_replacement)
+            return (
+                <div >
+                    <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
+                        {modified_src}
+                    </Typography>
+                </div>
+            )
+        }
         return (
             <div >
                 <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
