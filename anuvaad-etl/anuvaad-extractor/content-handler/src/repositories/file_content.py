@@ -56,7 +56,7 @@ class FileContentRepositories:
                             elem['s0_tgt']    = elem['tgt']
                         elem['s0_src']    = elem['src']
 
-                if update_s0 and modifiedSentences == None:
+                if update_s0 and (modifiedSentences == None or len(modifiedSentences) == 0) :
                     if 'tgt' in elem:
                         elem['s0_tgt']    = elem['tgt']
                     elem['s0_src']    = elem['src']
