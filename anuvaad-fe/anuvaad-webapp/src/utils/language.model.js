@@ -79,10 +79,9 @@ export const get_model_details = (languages, source_language_code, target_langua
     let res        =   jp.query(models, condition)
     result = res;
     }
-    
     let res_data        =   ""
         if(result.length > 0){
-            let model_condition = result.length > 0 && `$..[?(@.uuid == '${result[0].uuid}')]`
+            let model_condition = result.length > 0 && `$..[?(@.uuid == '${result[0].uuid}'&& @.status == 'ACTIVE')]`
             res_data    = jp.query(languages, model_condition)
             res_data    = res_data[0]
         }
