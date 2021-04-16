@@ -1,12 +1,5 @@
 import C from '../../actions/constants'
 
-const initialState = {
-    count: 0,
-    data: {
-        tasks: []
-    }
-}
-
 const getJobDetails = (payload) => {
     let result = payload.tasks.map(task => {
         let d = new Date(task.createdOn).toLocaleString()
@@ -16,11 +9,18 @@ const getJobDetails = (payload) => {
             file_name: task.fileInfo.name,
             taskId: task.taskId,
             name: task.user.name,
-            userId: task.user.userId
+            userId: task.user.userId,
+            saved_sentences: task.saved_sentences,
+            total_sentences: task.total_sentences
 
         }
     })
     return result
+}
+
+const initialState = {
+    result: [],
+    count: 0
 }
 
 export default (state = initialState, action) => {
@@ -32,7 +32,7 @@ export default (state = initialState, action) => {
             }
         default:
             return {
-                result: state
+                ...state
             }
     }
 }
