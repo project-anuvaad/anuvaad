@@ -25,6 +25,8 @@ import history from "../../../../../web.history";
 import WorkFlow from "../../../../../flux/actions/apis/common/fileupload";
 import Spinner from '../../../../components/web/common/Spinner';
 import { createJobEntry } from '../../../../../flux/actions/users/async_job_management';
+import FetchUserDetails from "../../../../../flux/actions/apis/user/userdetails";
+
 
 const theme = createMuiTheme({
     overrides: {
@@ -85,12 +87,17 @@ class ScheduleJob extends React.Component {
         }
     }
 
+    processFetchBulkUserDetailAPI = (offset, limit, updateExisiting = false, updateUserDetail = false, userIDs = [], userNames = [], roleCodes = []) => {
+        const token = localStorage.getItem("token");
+        const userObj = new FetchUserDetails(offset, limit, token, updateExisiting, updateUserDetail, userIDs, userNames, roleCodes)
+        this.props.APITransport(userObj)
+    }
 
     componentDidMount() {
-
         const { APITransport } = this.props;
         const apiModel = new FetchModel();
         APITransport(apiModel);
+        this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
         this.setState({ showLoader: true });
 
     }
@@ -133,6 +140,7 @@ class ScheduleJob extends React.Component {
             );
             APITransport(apiObj);
         } else {
+            this.setState({ showLoader: false })
             alert("Field should not be empty!");
         }
 
