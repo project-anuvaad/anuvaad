@@ -317,7 +317,7 @@ class Region_Unifier:
 
 
 
-    def region_unifier(self,page_g_words, page_lines,page_regions,page_c_words,path):
+    def region_unifier(self,file,page_g_words, page_lines,page_regions,page_c_words,path):
         try:
             
             #sort regions 
@@ -332,7 +332,7 @@ class Region_Unifier:
 
 
 
-            page_words = collate_text(page_c_words, page_g_words)
+            page_words = collate_text(file,page_c_words, page_g_words)
             
             text_region,n_text_table_regions,tabel_region,image_region,head_foot_region = self.get_text_tabel_region(sorted_page_regions)
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
