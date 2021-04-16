@@ -134,33 +134,6 @@ paths:
           description: interal server/model error
           schema:
             $ref: '#/definitions/error_status'    
-            
-  /v2/fetch-models/uuid:
-    get:
-      summary: REST API of fetch single model of nmt models information.
-      description: GET api to outputs the nmt model information like their model id, source and target language information etc
-            
-      tags:
-      - nmt-fetch-single-models
-
-      responses:
-        200:
-          description: On successful completion of the task.
-          schema:
-            $ref: '#/definitions/nmt_response'
-        401:
-          description: incorrect input data
-          schema:
-            $ref: '#/definitions/error_status'
-        404:
-          description: missing input data
-          schema:
-            $ref: '#/definitions/error_status'
-        500:
-          description: interal server/model error
-          schema:
-            $ref: '#/definitions/error_status'    
-  
   
 
 definitions:
@@ -214,11 +187,22 @@ definitions:
                 type: string
               output_topic:
                 type: string
-          host:
-            type: string
-            description: Host IP environment varibale key
-          api_endpoint:
-            type: string
+          translation:
+            type: object
+            description: Environment varibale key for NMT translate api
+            properties:
+              api_endpoint:
+                type: string
+              host:
+                type: string
+          interactive:
+            type: object
+            description: Environment varibale key for NMT interactive translate api if applicable
+            properties:
+              api_endpoint:
+                type: string
+              host:
+                type: string  
             
  
   nmt_response:
@@ -279,7 +263,7 @@ definitions:
             connection_details:
               type: object
               description: Connection over url is mandatory hence host and api_endpoint are required. kafka is optional
-              properties:  
+              properties:
                 kafka:
                   type: object
                   description: Environment varibale key for kafka input and output topics of NMT
@@ -288,11 +272,23 @@ definitions:
                       type: string
                     output_topic:
                       type: string
-                host:
-                  type: string
-                  description: Host IP environment varibale key
-                api_endpoint:
-                  type: string
+                translation:
+                  type: object
+                  description: Environment varibale key for NMT translate api
+                  properties:
+                    api_endpoint:
+                      type: string
+                    host:
+                      type: string
+                interactive:
+                  type: object
+                  description: Environment varibale key for NMT interactive translate api if applicable
+                  properties:
+                    api_endpoint:
+                      type: string
+                    host:
+                      type: string               
+            
               
               
   nmt_response_delete:
