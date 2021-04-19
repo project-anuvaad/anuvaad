@@ -325,7 +325,7 @@ class DocumentEditor extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        TELEMETRY.log("merge", JSON.stringify(rsp_data))
+        // TELEMETRY.log("merge", JSON.stringify(rsp_data))
         if (Number(response.status) === 401) {
           this.handleRedirect()
         }
