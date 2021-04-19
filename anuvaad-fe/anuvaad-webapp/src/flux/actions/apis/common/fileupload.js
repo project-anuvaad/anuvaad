@@ -5,7 +5,7 @@ import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class RunExperiment extends API {
 
 
-  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, source_language, description = "", arrayOfUsers = [],workspaceName, timeout = 2000) {
+  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, source_language, description = "", arrayOfUsers = [], workspaceName, retranslate = false, timeout = 2000) {
 
     super("POST", timeout, false);
     this.type = C.WORKFLOW;
@@ -24,7 +24,8 @@ export default class RunExperiment extends API {
     this.source_language = source_language;
     this.description = description;
     this.arrayOfUsers = arrayOfUsers;
-    this.jobDescription = workspaceName; 
+    this.jobDescription = workspaceName;
+    this.retranslate = retranslate;
   }
 
   toString() {
@@ -50,7 +51,7 @@ export default class RunExperiment extends API {
 
         "workflowCode": this.workflow,
         "jobName": this.fileName,
-        "jobDescription":this.description,
+        "jobDescription": this.description,
         "files": [
           {
             "path": this.file,
@@ -72,7 +73,8 @@ export default class RunExperiment extends API {
         "model": this.model, //Only when Translation is needed
         "textBlocks": this.file,
         "context": "JUDICIARY",
-        "modifiedSentences": this.sentence_ids
+        "modifiedSentences": this.sentence_ids,
+        "retranslate": this.retranslate
 
       }
       //List of text 

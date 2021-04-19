@@ -62,6 +62,7 @@ import view_scheduled_jobs from './view_scheduled_jobs/fetch_scheduled_jobs';
 import fetch_job_details from './view_scheduled_jobs/fetch_job_detail';
 import taskdetail from './view_scheduled_jobs/fetch_annotator_job';
 import fetchuserjob from './user/fetch_user_job';
+import fetchglossary from './user_glossary/fetch_user_glossary';
 
 export default {
     login,
@@ -126,5 +127,6 @@ export default {
     view_scheduled_jobs,
     fetch_job_details,
     taskdetail,
-    fetchuserjob
+    fetchuserjob,
+    fetchglossary,
 };

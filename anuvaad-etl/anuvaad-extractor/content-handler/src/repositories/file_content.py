@@ -49,13 +49,14 @@ class FileContentRepositories:
         # log_info("update_block_info payload {}".format(json.dumps(block)), AppContext.getContext())
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
-                if update_s0 and modifiedSentences != None and len(modifiedSentences) != 0:  #case in which only the targeted setences are modified
+                #case in which only the targeted setences are modified
+                if update_s0 and modifiedSentences != None and len(modifiedSentences) != 0:  
                     if 's_id' in elem and elem['s_id'] in modifiedSentences:
                         if 'tgt' in elem:
                             elem['s0_tgt']    = elem['tgt']
                         elem['s0_src']    = elem['src']
 
-                if update_s0 and modifiedSentences == None:
+                if update_s0 and (modifiedSentences == None or len(modifiedSentences) == 0) :
                     if 'tgt' in elem:
                         elem['s0_tgt']    = elem['tgt']
                     elem['s0_src']    = elem['src']
@@ -157,9 +158,10 @@ class FileContentRepositories:
             - WF_S_TR and WF_S_TKTR, changes the sentence structure hence s0 pair needs to be updated
             - DP_WFLOW_S_C, doesn't changes the sentence structure hence no need to update the s0 pair
         '''
+        
         if workflowCode is not None and (workflowCode == 'WF_S_TR' or workflowCode == 'WF_S_TKTR'):
             update_s0 = True
-
+        log_info("FileContentUpdateRepo -workflowcode : {} | update_S0 : {}".format(workflowCode,update_s0),AppContext.getContext())
         for block in blocks:
             updated_blocks.append(self.update_block_info(block, update_s0, modifiedSentences))
         
@@ -174,5 +176,5 @@ class FileContentRepositories:
                 saved_block_results = self.blockModel.get_block_by_block_identifier(record_id,user_id, updated_block['data']['block_identifier'])
                 for saved_block in saved_block_results:
                     saved_blocks.append(saved_block['data'][0])
-                
+                log_info("FileContentUpdateRepo -updated blocks : {}".format(str(saved_blocks)),AppContext.getContext())
         return True, saved_blocks

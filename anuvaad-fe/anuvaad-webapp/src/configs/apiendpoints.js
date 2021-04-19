@@ -36,14 +36,16 @@ const endpoints = {
   tmx_upload: '/anuvaad-etl/translator/v1/tmx/bulk/create/xls-upload',
   add_org: '/anuvaad/user-mgmt/v1/org/upsert',
   fetch_organization: '/anuvaad/user-mgmt/v1/org/search',
-  create_glossary: '/anuvaad-etl/translator/v1/glossary/create',
+  create_glossary: '/anuvaad-etl/translator/v1/tmx/create',
   update_word: '/anuvaad/ocr-content-handler/v0/ocr/update-word',
   job_detail: "/anuvaad-annotation/sentence-annotation/v0/annotation-type/task/search",
   task_detail: "/anuvaad-annotation/sentence-annotation/v0/task/details/search",
   update_user: "/anuvaad/user-mgmt/v1/users/update",
   user_job: "/anuvaad-annotation/sentence-annotation/v0/user/task/search",
   grade_sentence: "/anuvaad-annotation/sentence-annotation/v0/task/annotation/grading",
-  downlod_digitized_file:"/anuvaad-etl/document-converter/v0/document-exporter"
+  downlod_digitized_file: "/anuvaad-etl/document-converter/v0/document-exporter",
+  view_user_glossary: "/anuvaad-etl/translator/v1/tmx/get-all-keys",
+  delete_user_glossary: "/anuvaad-etl/translator/v1/tmx/delete"
 };
 
 export default endpoints;

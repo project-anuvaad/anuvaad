@@ -35,9 +35,16 @@ import DictionaryAPI from '../../../../flux/actions/apis/document_translate/word
 import AddToGlossaryModal from './AddToGlossaryModal';
 import Modal from '@material-ui/core/Modal';
 import CreateGlossary from '../../../../flux/actions/apis/document_translate/create_glossary';
+import { Grid } from '@material-ui/core';
+import ViewGlossary from '../../../../flux/actions/apis/user_glossary/fetch_user_glossary';
+import APITransport from "../../../../flux/actions/apitransport/apitransport";
+
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const BLEUCALCULATOR = require('../../../../utils/BleuScoreCalculator')
+const TMX_HIGHLIGHT = require('../../../../utils/TmxHighlight');
+
+var time = 0;
 const styles = {
     card_active: {
         background: 'rgb(211,211,211)',
@@ -122,7 +129,8 @@ class SentenceCard extends React.Component {
             highlight: false,
             hideSplit: false,
             score: "",
-            eventArray:[]
+            openModal: false,
+            eventArray: []
 
         };
         this.textInput = React.createRef();
@@ -189,8 +197,8 @@ class SentenceCard extends React.Component {
     processSaveButtonClicked() {
         let userRole = localStorage.getItem("roles")
         let orgId = JSON.parse(localStorage.getItem("userProfile")).orgID
-        let eventArray = this.handleTimeCalc("onSave", "",(this.state.value.length < 1 || this.state.value === '')?this.props.sentence.s0_tgt :this.state.value )
-        this.setState({eventArray})
+        let eventArray = this.handleTimeCalc("onSave", "", (this.state.value.length < 1 || this.state.value === '') ? this.props.sentence.s0_tgt : this.state.value)
+        this.setState({ eventArray })
         if (!this.state.score && userRole === "ANNOTATOR" && orgId !== "NONMT") {
             alert('Please rate the sentence and then save. ')
         }
@@ -246,7 +254,7 @@ class SentenceCard extends React.Component {
                 sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()) : 0;
                 let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + this.timeSpent() : this.timeSpent();
                 sentence.time_spent_ms = timeCalc;
-                
+
                 if (userRole === "ANNOTATOR" && this.state.score) {
                     sentence.rating_score = this.state.score
                 }
@@ -269,8 +277,8 @@ class SentenceCard extends React.Component {
 
     processSplitButtonClicked(start_index, end_index) {
         if (this.props.onAction) {
-            let eventArray = this.handleTimeCalc(this.state.selectedSentence, "split" , this.state.value)
-            this.setState({ value: '',eventArray })
+            let eventArray = this.handleTimeCalc(this.state.selectedSentence, "split", this.state.value)
+            this.setState({ value: '', eventArray })
             this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
         }
     }
@@ -317,9 +325,11 @@ class SentenceCard extends React.Component {
     getSelectionText = (event) => {
         this.setState({ selectedSentence: '' })
         let selectedSentence = window.getSelection().toString();
-        let endIndex = window.getSelection().focusOffset;
-        let startIndex = window.getSelection().anchorOffset;
-        let sentenceSource = event.target.innerHTML;
+        // let endIndex = window.getSelection().focusOffset;
+        // let startIndex = window.getSelection().anchorOffset;
+        let startIndex = TMX_HIGHLIGHT.getSelectionOffsetFrom(event.target)
+        let endIndex = startIndex + selectedSentence.length
+        let sentenceSource = event.target.textContent;
         if (selectedSentence && sentenceSource.includes(selectedSentence) && this.state.cardInFocus) {
             this.setState({
                 selectedSentence, sentenceSource, positionX: event.clientX, startIndex, endIndex, positionY: event.clientY, isopenMenuItems: true,
@@ -329,6 +339,17 @@ class SentenceCard extends React.Component {
     }
 
     renderSourceSentence = () => {
+        if (this.cardCompare() && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
+            const { src, tmx_replacement } = this.props.sentence
+            const modified_src = TMX_HIGHLIGHT.showSrcTmxIndicator(src, tmx_replacement)
+            return (
+                <div>
+                    <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
+                        {modified_src}
+                    </Typography>
+                </div>
+            )
+        }
         return (
             <div >
                 <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
@@ -339,6 +360,18 @@ class SentenceCard extends React.Component {
     }
 
     renderMTTargetSentence = () => {
+        if (this.state.cardInFocus && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
+            const tmx_replacement = this.props.sentence.tmx_replacement
+            const tgt = this.props.sentence.s0_tgt
+            const modified_tgt = TMX_HIGHLIGHT.showTgtTmxIndicator(tgt, tmx_replacement)
+            return (
+                <div>
+                    <Typography variant="subtitle1" gutterBottom>
+                        {modified_tgt}
+                    </Typography>
+                </div >
+            )
+        }
         return (
             <div>
                 <Divider />
@@ -418,10 +451,10 @@ class SentenceCard extends React.Component {
     }
 
     handleKeyDown = (event) => {
-        
+
         let charCode = String.fromCharCode(event.which).toLowerCase();
         let eventArray = this.handleTimeCalc(charCode, event.keyCode, event.target.value)
-        this.setState({eventArray})
+        this.setState({ eventArray })
 
         if (charCode === 'enter' || event.keyCode == '13') {
             event.preventDefault();
@@ -567,22 +600,22 @@ class SentenceCard extends React.Component {
         }
     }
 
-    handleTimeCalc = (value, key , text) =>{
+    handleTimeCalc = (value, key, text) => {
         let eventArray = this.state.eventArray;
         let currentObj = {}
-        currentObj["timeStamp"]   = new Date();
-        currentObj["value"]       = value;
-        currentObj["key"]         = key;
-        currentObj["timeTaken"]   = eventArray.length>0 ? currentObj["timeStamp"] - eventArray[eventArray.length-1].timeStamp : 0 ;
+        currentObj["timeStamp"] = new Date();
+        currentObj["value"] = value;
+        currentObj["key"] = key;
+        currentObj["timeTaken"] = eventArray.length > 0 ? currentObj["timeStamp"] - eventArray[eventArray.length - 1].timeStamp : 0;
         currentObj["previousText"] = text;
         eventArray.push(currentObj)
         return eventArray;
     }
 
-    timeSpent = () =>{
+    timeSpent = () => {
         let totalTimeSpent = 0
-        this.state.eventArray.map((value,index)=>{
-            totalTimeSpent = totalTimeSpent + (value.timeTaken < 180000 ? value.timeTaken : 15000) 
+        this.state.eventArray.map((value, index) => {
+            totalTimeSpent = totalTimeSpent + (value.timeTaken < 180000 ? value.timeTaken : 15000)
         })
         return totalTimeSpent;
     }
@@ -592,7 +625,7 @@ class SentenceCard extends React.Component {
             this.setState({
                 showSuggestions: false,
                 suggestions: []
-                
+
             });
         }
 
@@ -685,15 +718,32 @@ class SentenceCard extends React.Component {
 
     }
 
-    renderNormaModeButtons = () => {
 
+    retranslateSentence = () => {
+        if (this.props.onAction) {
+            this.setState({ value: '' })
+            this.props.onAction(SENTENCE_ACTION.RETRANSLATE_SENTENCE, this.props.pageNumber, [this.props.sentence])
+        }
+    }
+
+    renderNormaModeButtons = () => {
         return (
             <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                 <span style={{ textAlign: 'left', width: "30%" }}>
-                    <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }} onClick={this.processSaveButtonClicked} >
-                        SAVE
-                </Button>
-
+                    <Grid container>
+                        <Grid item xs={6}>
+                            <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }} onClick={this.processSaveButtonClicked} >
+                                SAVE
+                            </Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Button variant="outlined" color="primary" style={{ marginRight: '10px', border: '1px solid #1C9AB7', color: "#1C9AB7" }}
+                                onClick={this.retranslateSentence}
+                            >
+                                RETRANSLATE
+                            </Button>
+                        </Grid>
+                    </Grid>
                 </span>
                 {this.props.sentence && this.props.sentence.hasOwnProperty("bleu_score") && <span style={{ width: "70%", margin: "auto", display: "flex", flexDirection: "row", justifyContent: "flex-end", color: "#233466" }}><Typography>Bleu Score:&nbsp;{parseFloat(this.props.sentence.bleu_score).toFixed(2)}</Typography></span>}
                 {this.props.sentence && this.props.sentence.hasOwnProperty("time_spent_ms") && this.handleSpentTime()}
@@ -703,7 +753,7 @@ class SentenceCard extends React.Component {
 
 
     async makeAPICallDictionary() {
-        let eventArray = this.handleTimeCalc(this.state.selectedSentence, "dictionary" , this.state.value)
+        let eventArray = this.handleTimeCalc(this.state.selectedSentence, "dictionary", this.state.value)
         this.setState({ showProgressStatus: true, message: "Fetching meanings", eventArray })
 
         let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.model.source_language_code, this.props.model.target_language_code)
@@ -772,14 +822,14 @@ class SentenceCard extends React.Component {
 
     handleCopy = () => {
         copy(this.state.selectedSentence)
-        let eventArray = this.handleTimeCalc(this.state.selectedSentence, "copy",this.state.value)
+        let eventArray = this.handleTimeCalc(this.state.selectedSentence, "copy", this.state.value)
         this.setState({ eventArray })
         this.handleClose()
     }
 
     handleAddToGlossary = () => {
-        let eventArray = this.handleTimeCalc("", "glossary",this.state.value)
-        this.setState({ openModal: true , eventArray})
+        let eventArray = this.handleTimeCalc("", "glossary", this.state.value)
+        this.setState({ openModal: true, eventArray })
     }
 
     handleOperation = (action) => {
@@ -884,9 +934,9 @@ class SentenceCard extends React.Component {
     }
 
     handleChange = (event) => {
-        let eventArray = this.handleTimeCalc(Number(event.target.value), "Rating" , this.state.value)
+        let eventArray = this.handleTimeCalc(Number(event.target.value), "Rating", this.state.value)
         this.setState({
-            score: Number(event.target.value) , eventArray
+            score: Number(event.target.value), eventArray
         })
     }
 
@@ -969,7 +1019,7 @@ class SentenceCard extends React.Component {
 
     handleCardExpandClick = () => {
         if (this.cardCompare()) {
-            this.setState({ cardInFocus: false, eventArray:[] })
+            this.setState({ cardInFocus: false, eventArray: [] })
             this.props.clearHighlighBlock()
             TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         } else {
@@ -978,7 +1028,7 @@ class SentenceCard extends React.Component {
             }
             this.setState({ cardInFocus: true })
             this.props.highlightBlock(this.props.sentence, this.props.pageNumber)
-            this.handleTimeCalc("cardOpen","",this.state.value)
+            this.handleTimeCalc("cardOpen", "", this.state.value)
             /**
              * For highlighting textarea on card expand
              */
@@ -1031,7 +1081,7 @@ class SentenceCard extends React.Component {
         let locale = `${this.props.model.source_language_code}|${this.props.model.target_language_code}`
         this.setState({ loading: true })
         let userProfile = JSON.parse(localStorage.getItem('userProfile'))
-        let apiObj = new CreateGlossary(userProfile.orgID, this.state.selectedSentence, tgt, locale, 'JUDICIARY')
+        let apiObj = new CreateGlossary(userProfile.userID, this.state.selectedSentence, tgt, locale, 'JUDICIARY')
         fetch(apiObj.apiEndPoint(), {
             method: 'post',
             body: JSON.stringify(apiObj.getBody()),
@@ -1039,6 +1089,9 @@ class SentenceCard extends React.Component {
         })
             .then(async res => {
                 if (res.ok) {
+                    let apiObj = new ViewGlossary(userProfile.userID);
+                    let { APITransport } = this.props
+                    APITransport(apiObj)
                     await this.processResponse(res, 'success')
                 } else {
                     await this.processResponse(res, 'error')
@@ -1087,7 +1140,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         highlightBlock,
-        clearHighlighBlock
+        clearHighlighBlock,
+        APITransport
     },
     dispatch
 );
