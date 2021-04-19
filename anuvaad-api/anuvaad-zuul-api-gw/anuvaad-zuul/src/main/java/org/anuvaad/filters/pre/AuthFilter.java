@@ -71,6 +71,7 @@ public class AuthFilter extends ZuulFilter {
             setShouldDoAuth(false);
             if (!uri.contains("/telemetry"))
                 logger.info(SKIP_AUTH_CHECK, uri);
+            ctx.set(REQ_URI, uri);
             return null;
         }
         if (!isURIValid(uri, ctx)){
