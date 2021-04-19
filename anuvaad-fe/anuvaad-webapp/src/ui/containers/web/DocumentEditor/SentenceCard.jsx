@@ -224,8 +224,8 @@ class SentenceCard extends React.Component {
                 if (userRole === "ANNOTATOR" && this.state.score) {
                     sentence.rating_score = this.state.score
                 }
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
-                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+                // TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence],"","",userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
                 this.setState({eventArray:[]})
                 return;
             }
@@ -250,8 +250,10 @@ class SentenceCard extends React.Component {
                 if (userRole === "ANNOTATOR" && this.state.score) {
                     sentence.rating_score = this.state.score
                 }
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
-                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
+
+                
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence],"","",userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
+                // TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
                 this.setState({eventArray:[]})
             }
         }

@@ -270,11 +270,11 @@ class DocumentEditor extends React.Component {
     });
   }
 
-  async makeAPICallSaveSentence(sentence, pageNumber) {
+  async makeAPICallSaveSentence(sentence, pageNumber,score, eventArray) {
 
     this.informUserProgress(translate('common.page.label.SENTENCE_SAVED'))
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId),this.props.fetch_models)
-    sentence["src_lang"] = model.source_language_code
+    sentence["src_lang"] = model.hasOwnProperty('source_language_code') && model.source_language_code
     sentence['tgt_lang']  = model.target_language_code
     let apiObj = new SaveSentenceAPI(sentence)
     const apiReq = fetch(apiObj.apiEndPoint(), {
@@ -297,6 +297,7 @@ class DocumentEditor extends React.Component {
         this.props.contentUpdateStarted()
         this.props.update_sentences(pageNumber, rsp_data.data);
         this.informUserStatus(translate('common.page.label.SENTENCE_SAVED_SUCCESS'), true)
+        TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, score, eventArray)
         this.makeAPICallDocumentsTranslationProgress();
       }
     }).catch((error) => {
@@ -407,11 +408,10 @@ class DocumentEditor extends React.Component {
     setTimeout(() => { this.props.editorModeClear() }, 50)
   }
 
-  processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex) => {
-
+  processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex , score, eventArray) => {
     switch (action) {
       case SENTENCE_ACTION.SENTENCE_SAVED: {
-        this.makeAPICallSaveSentence(sentences[0], pageNumber)
+        this.makeAPICallSaveSentence(sentences[0], pageNumber,score, eventArray)
         return;
       }
 
