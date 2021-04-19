@@ -120,8 +120,15 @@ public class AuthFilter extends ZuulFilter {
         boolean isValid = false;
         for(Object obj: ZuulConfigCache.actions){
             Action action = objectMapper.convertValue(obj, Action.class);
-            if (uri.equals(action.getUri()) && action.getActive())
-                isValid = true;
+            if (action.getActive()){
+                if (uri.equals(action.getUri()))
+                    isValid = true;
+                else if (action.getUri().endsWith("/*")){
+                    String actionURI = action.getUri().substring(0, (action.getUri().length() - 1));
+                    if (uri.contains(actionURI))
+                        isValid = true;
+                }
+            }
         }
         return isValid;
     }
