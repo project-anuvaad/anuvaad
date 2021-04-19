@@ -1,7 +1,8 @@
 #FROM anuvaadio/python3.6-opencv-4.1.0:7
 #FROM python:3.7-slim
-FROM anuvaadio/anuvaad-layout-detector-prima:4-ba5d7d74
-
+#FROM anuvaadio/anuvaad-layout-detector-prima:4-ba5d7d74
+FROM nvidia/cuda:10.2-base
+CMD nvidia-smi
 #FROM ubuntu:20.04
 
 LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
