@@ -130,7 +130,7 @@ class SentenceCard extends React.Component {
             hideSplit: false,
             score: "",
             openModal: false,
-            eventArray:[]
+            eventArray: []
 
         };
         this.textInput = React.createRef();
@@ -197,8 +197,8 @@ class SentenceCard extends React.Component {
     processSaveButtonClicked() {
         let userRole = localStorage.getItem("roles")
         let orgId = JSON.parse(localStorage.getItem("userProfile")).orgID
-        let eventArray = this.handleTimeCalc("onSave", "",(this.state.value.length < 1 || this.state.value === '')?this.props.sentence.s0_tgt :this.state.value )
-        this.setState({eventArray})
+        let eventArray = this.handleTimeCalc("onSave", "", (this.state.value.length < 1 || this.state.value === '') ? this.props.sentence.s0_tgt : this.state.value)
+        this.setState({ eventArray })
         if (!this.state.score && userRole === "ANNOTATOR" && orgId !== "NONMT") {
             alert('Please rate the sentence and then save. ')
         }
@@ -234,7 +234,7 @@ class SentenceCard extends React.Component {
                 }
                 TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
-                this.setState({eventArray:[]})
+                this.setState({ eventArray: [] })
                 return;
             }
         } else {
@@ -254,13 +254,13 @@ class SentenceCard extends React.Component {
                 sentence.bleu_score = (sentence.s0_tgt && sentence.tgt) ? BLEUCALCULATOR.scoreSystem((sentence.s0_tgt).trim(), (sentence.tgt).trim()) : 0;
                 let timeCalc = sentence.hasOwnProperty("time_spent_ms") ? sentence.time_spent_ms + this.timeSpent() : this.timeSpent();
                 sentence.time_spent_ms = timeCalc;
-                
+
                 if (userRole === "ANNOTATOR" && this.state.score) {
                     sentence.rating_score = this.state.score
                 }
                 TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
                 this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
-                this.setState({eventArray:[]})
+                this.setState({ eventArray: [] })
             }
         }
     }
@@ -275,8 +275,8 @@ class SentenceCard extends React.Component {
 
     processSplitButtonClicked(start_index, end_index) {
         if (this.props.onAction) {
-            let eventArray = this.handleTimeCalc(this.state.selectedSentence, "split" , this.state.value)
-            this.setState({ value: '',eventArray })
+            let eventArray = this.handleTimeCalc(this.state.selectedSentence, "split", this.state.value)
+            this.setState({ value: '', eventArray })
             this.props.onAction(SENTENCE_ACTION.SENTENCE_SPLITTED, this.props.pageNumber, [this.props.sentence], start_index, end_index)
         }
     }
@@ -323,9 +323,11 @@ class SentenceCard extends React.Component {
     getSelectionText = (event) => {
         this.setState({ selectedSentence: '' })
         let selectedSentence = window.getSelection().toString();
-        let endIndex = window.getSelection().focusOffset;
-        let startIndex = window.getSelection().anchorOffset;
-        let sentenceSource = event.target.innerHTML;
+        // let endIndex = window.getSelection().focusOffset;
+        // let startIndex = window.getSelection().anchorOffset;
+        let startIndex = TMX_HIGHLIGHT.getSelectionOffsetFrom(event.target)
+        let endIndex = startIndex + selectedSentence.length
+        let sentenceSource = event.target.textContent;
         if (selectedSentence && sentenceSource.includes(selectedSentence) && this.state.cardInFocus) {
             this.setState({
                 selectedSentence, sentenceSource, positionX: event.clientX, startIndex, endIndex, positionY: event.clientY, isopenMenuItems: true,
@@ -335,17 +337,17 @@ class SentenceCard extends React.Component {
     }
 
     renderSourceSentence = () => {
-        // if (this.state.cardInFocus && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
-        //     const { src, tmx_replacement } = this.props.sentence
-        //     const modified_src = TMX_HIGHLIGHT.showTmxIndicator(src, tmx_replacement)
-        //     return (
-        //         <div >
-        //             <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
-        //                 {modified_src}
-        //             </Typography>
-        //         </div>
-        //     )
-        // }
+        if (this.state.cardInFocus && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
+            const { src, tmx_replacement } = this.props.sentence
+            const modified_src = TMX_HIGHLIGHT.showSrcTmxIndicator(src, tmx_replacement)
+            return (
+                <div>
+                    <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
+                        {modified_src}
+                    </Typography>
+                </div>
+            )
+        }
         return (
             <div >
                 <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
@@ -356,6 +358,18 @@ class SentenceCard extends React.Component {
     }
 
     renderMTTargetSentence = () => {
+        if (this.state.cardInFocus && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
+            const tmx_replacement = this.props.sentence.tmx_replacement
+            const tgt = this.props.sentence.s0_tgt
+            const modified_tgt = TMX_HIGHLIGHT.showTgtTmxIndicator(tgt, tmx_replacement)
+            return (
+                <div>
+                    <Typography variant="subtitle1" gutterBottom>
+                        {modified_tgt}
+                    </Typography>
+                </div >
+            )
+        }
         return (
             <div>
                 <Divider />
@@ -435,10 +449,10 @@ class SentenceCard extends React.Component {
     }
 
     handleKeyDown = (event) => {
-        
+
         let charCode = String.fromCharCode(event.which).toLowerCase();
         let eventArray = this.handleTimeCalc(charCode, event.keyCode, event.target.value)
-        this.setState({eventArray})
+        this.setState({ eventArray })
 
         if (charCode === 'enter' || event.keyCode == '13') {
             event.preventDefault();
@@ -584,22 +598,22 @@ class SentenceCard extends React.Component {
         }
     }
 
-    handleTimeCalc = (value, key , text) =>{
+    handleTimeCalc = (value, key, text) => {
         let eventArray = this.state.eventArray;
         let currentObj = {}
-        currentObj["timeStamp"]   = new Date();
-        currentObj["value"]       = value;
-        currentObj["key"]         = key;
-        currentObj["timeTaken"]   = eventArray.length>0 ? currentObj["timeStamp"] - eventArray[eventArray.length-1].timeStamp : 0 ;
+        currentObj["timeStamp"] = new Date();
+        currentObj["value"] = value;
+        currentObj["key"] = key;
+        currentObj["timeTaken"] = eventArray.length > 0 ? currentObj["timeStamp"] - eventArray[eventArray.length - 1].timeStamp : 0;
         currentObj["previousText"] = text;
         eventArray.push(currentObj)
         return eventArray;
     }
 
-    timeSpent = () =>{
+    timeSpent = () => {
         let totalTimeSpent = 0
-        this.state.eventArray.map((value,index)=>{
-            totalTimeSpent = totalTimeSpent + (value.timeTaken < 180000 ? value.timeTaken : 15000) 
+        this.state.eventArray.map((value, index) => {
+            totalTimeSpent = totalTimeSpent + (value.timeTaken < 180000 ? value.timeTaken : 15000)
         })
         return totalTimeSpent;
     }
@@ -609,7 +623,7 @@ class SentenceCard extends React.Component {
             this.setState({
                 showSuggestions: false,
                 suggestions: []
-                
+
             });
         }
 
@@ -737,7 +751,7 @@ class SentenceCard extends React.Component {
 
 
     async makeAPICallDictionary() {
-        let eventArray = this.handleTimeCalc(this.state.selectedSentence, "dictionary" , this.state.value)
+        let eventArray = this.handleTimeCalc(this.state.selectedSentence, "dictionary", this.state.value)
         this.setState({ showProgressStatus: true, message: "Fetching meanings", eventArray })
 
         let apiObj = new DictionaryAPI(this.state.selectedSentence, this.props.model.source_language_code, this.props.model.target_language_code)
@@ -806,14 +820,14 @@ class SentenceCard extends React.Component {
 
     handleCopy = () => {
         copy(this.state.selectedSentence)
-        let eventArray = this.handleTimeCalc(this.state.selectedSentence, "copy",this.state.value)
+        let eventArray = this.handleTimeCalc(this.state.selectedSentence, "copy", this.state.value)
         this.setState({ eventArray })
         this.handleClose()
     }
 
     handleAddToGlossary = () => {
-        let eventArray = this.handleTimeCalc("", "glossary",this.state.value)
-        this.setState({ openModal: true , eventArray})
+        let eventArray = this.handleTimeCalc("", "glossary", this.state.value)
+        this.setState({ openModal: true, eventArray })
     }
 
     handleOperation = (action) => {
@@ -918,9 +932,9 @@ class SentenceCard extends React.Component {
     }
 
     handleChange = (event) => {
-        let eventArray = this.handleTimeCalc(Number(event.target.value), "Rating" , this.state.value)
+        let eventArray = this.handleTimeCalc(Number(event.target.value), "Rating", this.state.value)
         this.setState({
-            score: Number(event.target.value) , eventArray
+            score: Number(event.target.value), eventArray
         })
     }
 
@@ -1003,7 +1017,7 @@ class SentenceCard extends React.Component {
 
     handleCardExpandClick = () => {
         if (this.cardCompare()) {
-            this.setState({ cardInFocus: false, eventArray:[] })
+            this.setState({ cardInFocus: false, eventArray: [] })
             this.props.clearHighlighBlock()
             TELEMETRY.endSentenceTranslation(this.props.model.source_language_name, this.props.model.target_language_name, this.props.jobId, this.props.sentence.s_id)
         } else {
@@ -1012,7 +1026,7 @@ class SentenceCard extends React.Component {
             }
             this.setState({ cardInFocus: true })
             this.props.highlightBlock(this.props.sentence, this.props.pageNumber)
-            this.handleTimeCalc("cardOpen","",this.state.value)
+            this.handleTimeCalc("cardOpen", "", this.state.value)
             /**
              * For highlighting textarea on card expand
              */
