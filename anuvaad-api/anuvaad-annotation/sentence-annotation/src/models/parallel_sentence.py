@@ -33,6 +33,8 @@ class ParallelSentenceModel(object):
             collections     = get_db()[DB_SCHEMA_NAME]
             docs            = collections.find({'annotationType': annotationType, 'jobId': jobId})
             for doc in docs:
+                doc['src_locale'] = doc['annotations'][0]["source"]["language"]
+                doc['tgt_locale'] = doc['annotations'][0]["target"]["language"]
                 del doc['annotations']
                 updated_docs.append(normalize_bson_to_json(doc))
             return updated_docs
@@ -47,6 +49,8 @@ class ParallelSentenceModel(object):
             collections     = get_db()[DB_SCHEMA_NAME]
             docs            = collections.find({'user.userId': userId})
             for doc in docs:
+                doc['src_locale'] = doc['annotations'][0]["source"]["language"]
+                doc['tgt_locale'] = doc['annotations'][0]["target"]["language"]
                 del doc['annotations']
                 updated_docs.append(normalize_bson_to_json(doc))
             return updated_docs
@@ -97,3 +101,45 @@ class ParallelSentenceModel(object):
         except Exception as e:
             log_exception("db connection exception ",  LOG_WITHOUT_CONTEXT, e)
             return updated_docs
+
+    def get_annotation_stats(self,taskId,code):
+        empty_sent_count     = 0
+        saved_sent_count     = 0
+        unsaved_sent_count   = 0
+
+        if code == 0:
+            val="user.userId"
+        if code==1:
+            val="jobId"
+        tasks = []
+
+        try:
+            collections     = get_db()[DB_SCHEMA_NAME]
+
+            docs            =  collections.aggregate([{ "$match":{ val: taskId }},{ "$unwind": "$annotations" },
+                                                      { "$group": {"_id": {"task": "$taskId","status": "$annotations.saved"},
+                                                        "sentCount": { "$sum": 1 }}},
+                                                      { "$group": {"_id": "$_id.task","sentStats": {"$push": { 
+                                                        "status":"$_id.status","count": "$sentCount"},},
+                                                        "count": { "$sum": "$sentCount" }}}])
+            for doc in docs:
+                count                       =  {}
+                count["taskId"]             =  doc["_id"]
+                count["total_sentences"]    =  doc["count"]
+                count["saved_sentences"]    =  0
+                for data in doc["sentStats"]:
+                    if "status" in data and data["status"]== True:
+                        count["saved_sentences"]    =   data["count"]
+
+                tasks.append(count)
+
+            return tasks
+        except Exception as e:
+            log_exception("db connection exception ",  LOG_WITHOUT_CONTEXT, e)
+            return [
+                {
+                    "taskId"         : None,
+                    "total_sentences": 0,
+                    "saved_sentences": 0
+                }
+            ]

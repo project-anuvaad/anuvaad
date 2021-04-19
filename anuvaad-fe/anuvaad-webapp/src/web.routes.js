@@ -39,6 +39,7 @@ import ScheduleJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/Sc
 import ViewJobDetail from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewJobDetails';
 import ViewAnnotatorJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewAnnotatorJob';
 import NmtModelAssign from "./ui/containers/web/AdminPanel/NmtModelAssign";
+import ViewUserGlossary from './ui/containers/web/UserGlossary/ViewUserGlossary';
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -225,7 +226,7 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/grading-sentence-card/:taskId/:totalSentences/:completedSentences`}
+              path={`${process.env.PUBLIC_URL}/grading-sentence-card/:taskId`}
               dontShowLoader
               title={"Grade Document"}
               userRoles={["ANNOTATOR"]}
@@ -382,6 +383,16 @@ class AppRoutes extends React.Component {
               component={ViewAnnotatorJob}
               authenticate={this.authenticateUser}
               currentMenu="view-job-detail"
+              dontShowHeader={true}
+            />
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/my-glossary`}
+              dontShowLoader
+              title={"My Glossary"}
+              userRoles={["TRANSLATOR","ANNOTATOR"]}
+              component={ViewUserGlossary}
+              authenticate={this.authenticateUser}
+              currentMenu="my-glossary"
               dontShowHeader={true}
             />
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />

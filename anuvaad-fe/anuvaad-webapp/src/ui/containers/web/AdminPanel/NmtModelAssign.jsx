@@ -32,8 +32,8 @@ import FetchUserDetails from "../../../../flux/actions/apis/user/userdetails";
 import FetchOrganizationList from "../../../../flux/actions/apis/organization/organization-list";
 import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import modelUpdate from "../../../../flux/actions/apis/user/update_user";
+import Chip from '@material-ui/core/Chip';
 
-import Checkbox from '@material-ui/core/Checkbox';
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 const LANG_MODEL = require('../../../../utils/language.model');
 
@@ -89,7 +89,8 @@ class CreateUser extends React.Component {
       source_language_code:'',
       target_language_code:'',
       model_selected:'',
-      array_of_users:[]
+      array_of_users:[],
+      selectedUsers:[]
     };
   }
 
@@ -235,7 +236,7 @@ componentDidUpdate(prevProps) {
 
   processTargetLanguageSelected = (event) => {
     
-    this.setState({ target_language_code: event.target.value })
+    this.setState({ target_language_code: event.target.value, selectedUsers:[] })
     this.state.source_language_code && this.getModelIDS(this.state.source_language_code , event.target.value)
   }
 
@@ -249,10 +250,15 @@ componentDidUpdate(prevProps) {
   }
 
   processModelSelected = (event) => {
-    this.setState({ model_selected : event.target.value })
+    const selectedUsers = LANG_MODEL.get_selected_users(this.props.userinfo.data, event.target.value.uuid)
+    this.setState({ model_selected : event.target.value, selectedUsers })
+    
+    
+    
   }
 
-  addUser = (value) => {
+  addUser = (e,value) => {
+
     this.setState({ array_of_users: value })
 }
 
@@ -431,6 +437,24 @@ handleAssignModel = () =>{
     
 }
 
+renderExistingUser = () =>{
+  return <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
+  <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
+      <Typography variant="h5">
+          Existing Users
+      </Typography>
+  </Grid>
+  <Grid item xs={6} sm={6} lg={4} xl={4} >
+  
+  
+  {this.state.selectedUsers.length>0 && this.state.selectedUsers.map((value, i) =>
+  <Chip key = {i} label={value.email} style={{margin:"1px"}}/>
+  )}
+  </Grid>
+  </Grid>
+
+}
+
 renderUserList =() =>{
     
     return<Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
@@ -446,7 +470,7 @@ renderUserList =() =>{
         options={this.props.userinfo.data.filter(user => (user.is_active && (user.roles !== 'ADMIN')) )}
         getOptionLabel={(option) => option.userName}
         filterSelectedOptions
-        onChange={(e, value) => this.addUser(value)}
+        onChange={(e, value) => this.addUser(e,value)}
         renderInput={(params) => (
             <TextField
                 {...params}
@@ -473,7 +497,7 @@ renderUserList =() =>{
 
             {this.renderTargetLanguagesItems()}
             {this.renderModelList()}
-
+            {this.state.selectedUsers.length>0 && Object.keys(this.state.model_selected).length > 0 && this.renderExistingUser()}
             {this.renderUserList()}
             
            

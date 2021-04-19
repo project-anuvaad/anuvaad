@@ -2,17 +2,17 @@ import API from "../api";
 import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
-export default class CreateGlossary extends API {
+export default class DeleteGlossary extends API {
     constructor(userID = "", src = "", tgt = "", locale = "", context = "", timeout = 2000) {
         super('POST', timeout, false);
-        this.type = C.CREATE_GLOSARY;
+        this.type = C.DELETE_GLOSSARY;
         this.userID = userID;
-        this.src = src
-        this.tgt = tgt
+        this.src = src;
+        this.tgt = tgt;
         this.locale = locale;
-        this.context = context;
+        this.context = context
         this.response = "";
-        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.create_glossary}`;
+        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.delete_user_glossary}`;
     }
 
     toString() {
@@ -32,13 +32,18 @@ export default class CreateGlossary extends API {
 
     getBody() {
         return {
-            userID: this.userID,
             context: this.context,
+            userID: this.userID,
             sentences: [
                 {
                     src: this.src,
-                    tgt: this.tgt,
-                    locale: this.locale
+                    locale: this.locale,
+                    tgt: this.tgt
+                },
+                {
+                    src: this.tgt,
+                    locale: this.locale,
+                    tgt: this.src
                 }
             ]
         };
