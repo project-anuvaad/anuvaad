@@ -73,7 +73,7 @@ public class AuthFilter extends ZuulFilter {
                 logger.info(SKIP_AUTH_CHECK, uri);
             return null;
         }
-        if (!isURIValid(uri)){
+        if (!isURIValid(uri, ctx)){
             logger.info("Invalid resource: {}", uri);
             ExceptionUtils.raiseCustomException(HttpStatus.NOT_FOUND, INVALID_ENDPOINT_MSG);
         }
@@ -116,17 +116,23 @@ public class AuthFilter extends ZuulFilter {
      * Verifies if the URI is valid.
      * @return
      */
-    public Boolean isURIValid(String uri){
+    public Boolean isURIValid(String uri, RequestContext ctx){
         boolean isValid = false;
         for(Object obj: ZuulConfigCache.actions){
             Action action = objectMapper.convertValue(obj, Action.class);
             if (action.getActive()){
-                if (uri.equals(action.getUri()))
+                if (uri.equals(action.getUri())){
                     isValid = true;
+                    ctx.set(PATH_PARAM_URI, false);
+                    ctx.set(REQ_URI, uri);
+                }
                 else if (action.getUri().endsWith("/*")){
                     String actionURI = action.getUri().substring(0, (action.getUri().length() - 1));
-                    if (uri.contains(actionURI))
+                    if (uri.contains(actionURI)){
                         isValid = true;
+                        ctx.set(PATH_PARAM_URI, true);
+                        ctx.set(REQ_URI, action.getUri());
+                    }
                 }
             }
         }
