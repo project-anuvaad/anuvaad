@@ -18,7 +18,7 @@ region_unifier = Region_Unifier()
 client = vision.ImageAnnotatorClient()
 breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
-def get_text(file,path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
+def get_text(page_c_lines,file,path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
     
     #path = config.BASE_DIR+path
     #img = cv2.imread(path)
@@ -30,7 +30,7 @@ def get_text(file,path,page_dict,page_regions,page_c_words,font_info,file_proper
         content = image_file.read()
     image = vision.types.Image(content=content)
     response = client.document_text_detection(image=image)
-    page_output,page_words,save_path = get_document_bounds(file,response.full_text_annotation,page_dict,page_regions,page_c_words,font_info,path,file_properties,idx)
+    page_output,page_words,save_path = get_document_bounds(page_c_lines,file,response.full_text_annotation,page_dict,page_regions,page_c_words,font_info,path,file_properties,idx)
     return page_output,page_words,save_path
 
 
@@ -44,7 +44,8 @@ def text_extraction(file_properties,image_paths,file):
         page_dict = {"identifier": str(uuid.uuid4()),"resolution": config.EXRACTION_RESOLUTION }
         page_regions =  file_properties.get_regions(idx)
         page_c_words = file_properties.get_words(idx)
-        page_output,page_words,save_path = get_text(file,image_path,page_dict,page_regions,page_c_words,font_info,file_properties,idx)
+        page_c_lines = file_properties.get_lines(idx)
+        page_output,page_words,save_path = get_text(page_c_lines,file,image_path,page_dict,page_regions,page_c_words,font_info,file_properties,idx)
         
         #save_path = mask_image_vision(image_path, page_words, idx, file_properties, width, height)
         page_output = set_bg_image(page_output, save_path, idx,file)
@@ -99,7 +100,7 @@ def add_line(page_dict, line_coord, line_text):
         page_dict["lines"].append(line_region)
     return page_dict
 
-def get_document_bounds(file,response,page_dict,page_regions,page_c_words,font_info,path,file_properties,idx):
+def get_document_bounds(page_c_lines,file,response,page_dict,page_regions,page_c_words,font_info,path,file_properties,idx):
     page_dict["regions"] = []
     page_dict["lines"]   = []
     page_dict["words"]   = []
@@ -143,7 +144,11 @@ def get_document_bounds(file,response,page_dict,page_regions,page_c_words,font_i
                         if len(page.property.detected_languages)!=0:
                             word_region["language"] = page.property.detected_languages[0].language_code
 
-    page_lines   =  page_dict["lines"]
+    if "craft_line" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_line"]=="True":
+        page_lines = page_c_lines
+    else:
+        page_lines   =  page_dict["lines"]
+
     page_words   =  page_dict["words"]
 
     #add font information to words
