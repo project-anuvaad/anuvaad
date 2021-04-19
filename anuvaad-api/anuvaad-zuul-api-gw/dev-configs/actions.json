@@ -258,7 +258,7 @@
         },
         {
             "id":"cdbd4630-a2cd-4f32-a167-ebc734e43421",
-            "uri":"/nmt-inference/v1/update-models",
+            "uri":"/nmt-inference/v1/update-models/*",
             "module":"ANUVAAD-NMT",
             "active":true,
             "whiteList":false,
@@ -266,7 +266,7 @@
         },
         {
             "id":"ecda9694-e636-4211-aa85-4b146a9a543c",
-            "uri":"/nmt-inference/v1/delete-models",
+            "uri":"/nmt-inference/v1/delete-models/*",
             "module":"ANUVAAD-NMT",
             "active":true,
             "whiteList":false,
