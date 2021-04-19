@@ -337,7 +337,7 @@ class SentenceCard extends React.Component {
     }
 
     renderSourceSentence = () => {
-        if (this.state.cardInFocus && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
+        if (this.cardCompare() && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
             const { src, tmx_replacement } = this.props.sentence
             const modified_src = TMX_HIGHLIGHT.showSrcTmxIndicator(src, tmx_replacement)
             return (
