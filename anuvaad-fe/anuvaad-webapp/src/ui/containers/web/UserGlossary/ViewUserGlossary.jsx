@@ -180,7 +180,6 @@ class MyGlossary extends React.Component {
             print: false,
             fixedHeader: true,
             filter: false,
-            selectableRows: "none",
             sortOrder: {
                 name: "timestamp",
                 direction: "desc",
