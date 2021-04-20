@@ -4,7 +4,7 @@ import os
 import time
 
 import requests
-from configs.translatorconfig import download_folder, nmt_fetch_models_url
+from configs.translatorconfig import download_folder, nmt_fetch_models_url, tmx_disable_roles, utm_disable_roles
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 
 log = logging.getLogger('file')
@@ -75,5 +75,21 @@ class TranslatorUtils:
             log_exception("Exception while fetching topics from model: {}".format(str(e)), None, None)
         log_info("ModelTopics -- {}".format(topics), None)
         return topics
+
+    # Method to check if tmx and utm are enabled based on role
+    def get_rbac_tmx_utm(self, roles, translate_wf_input, log):
+        tmx_enabled, utm_enabled = True, True
+        tmx_dis_roles, utm_dis_roles = list(tmx_disable_roles.split(",")), list(utm_disable_roles.split(","))
+        roles = list(roles.split(","))
+        for role in roles:
+            if role in tmx_dis_roles:
+                tmx_enabled = False
+                if log:
+                    log_info("TMX Disabled for this user!", translate_wf_input)
+            if role in utm_dis_roles:
+                utm_enabled = False
+                if log:
+                    log_info("UTM Disabled for this user!", translate_wf_input)
+        return tmx_enabled, utm_enabled
 
 

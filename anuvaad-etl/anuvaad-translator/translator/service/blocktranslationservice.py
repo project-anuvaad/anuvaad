@@ -107,7 +107,9 @@ class BlockTranslationService:
         sent_for_nmt, tmx_count = [], 0
         nmt_disabled_orgs = list(str(orgs_nmt_disable).split(","))
         if block_translate_input["metadata"]["orgID"] not in nmt_disabled_orgs:
-            tmx_present = self.is_tmx_present(block_translate_input)
+            tmx_present = utils.get_rbac_tmx_utm(block_translate_input["metadata"]["roles"], block_translate_input, True)[0]
+            if tmx_present:
+                tmx_present = self.is_tmx_present(block_translate_input)
         else:
             tmx_present = False
         record_id, model_id = block_translate_input["input"]["recordID"], block_translate_input["input"]["model"][
@@ -180,6 +182,7 @@ class BlockTranslationService:
         return phrases
 
     # Parses the nmt response and builds input for ch
+    # No UTM here, cuz user is specifically asking the machine to translate
     def get_translations_ip_ch(self, nmt_response, block_translate_input):
         if 'data' in nmt_response.keys():
             if nmt_response['data']:

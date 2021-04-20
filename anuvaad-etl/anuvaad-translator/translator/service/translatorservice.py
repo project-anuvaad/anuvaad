@@ -109,7 +109,7 @@ class TranslatorService:
             total_sentences, total_tmx, total_batches, tmx_file_cache = 0, 0, 0, {}
             tmx_file_cache = {}
             tmx_present, nonmt_user = \
-                self.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, True)[0], False
+                utils.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, True)[0], False
             if tmx_present:
                 tmx_present = self.is_tmx_present(file, translate_wf_input)
             if translate_wf_input["metadata"]["orgID"] in list(str(orgs_nmt_disable).split(",")):
@@ -239,22 +239,6 @@ class TranslatorService:
             log_exception("Exception while fetching topic from conn details: {}".format(str(e)), translate_wf_input, e)
         log_info("Falling back to default Anuvaad NMT topic......", translate_wf_input)
         return anu_nmt_input_topic
-
-    # Method to check if tmx and utm are enabled based on role
-    def get_rbac_tmx_utm(self, roles, translate_wf_input, log):
-        tmx_enabled, utm_enabled = True, True
-        tmx_dis_roles, utm_dis_roles = list(tmx_disable_roles.split(",")), list(utm_disable_roles.split(","))
-        roles = list(roles.split(","))
-        for role in roles:
-            if role in tmx_dis_roles:
-                tmx_enabled = False
-                if log:
-                    log_info("TMX Disabled for this user!", translate_wf_input)
-            if role in utm_dis_roles:
-                utm_enabled = False
-                if log:
-                    log_info("UTM Disabled for this user!", translate_wf_input)
-        return tmx_enabled, utm_enabled
 
     # Method to fetch batches for sentences from the file for a page.
     def fetch_batches_of_sentences(self, file, record_id, page, tmx_present, tmx_file_cache, third_party,
@@ -491,7 +475,7 @@ class TranslatorService:
         page_no = str(nmt_res_batch[0]["n_id"]).split("|")[2]
         page = repo.fetch_pages({"record_id": record_id, "page_no": eval(page_no)})[0]
         page_enriched = page
-        utm_enabled = self.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, False)[1]
+        utm_enabled = utils.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, False)[1]
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
             if user_translation_enabled and utm_enabled:
