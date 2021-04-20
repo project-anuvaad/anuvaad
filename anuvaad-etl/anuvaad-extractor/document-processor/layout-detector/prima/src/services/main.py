@@ -41,8 +41,8 @@ def get_layout(app_context) :
                 #masked_image, table_and_lines = extract_table_line_regions(page_path)
                 #cell_regions = cell_layout(table_and_lines,page_path)
                 if torch.cuda.is_available():
-	            torch.cuda.device(0)
-	            print("*******cuda available")
+	                torch.cuda.device(0)
+	                print("*******cuda available")
                     torch.cuda.empty_cache()
                 time.sleep(1)
                 regions     = primalaynet.predict_primanet(page_path, line_coords)
