@@ -87,17 +87,27 @@ def tmx_create():
 def tmx_delete():
     service = TMXService()
     data = request.get_json()
-    response = service.delete_from_tmx_store(data)
-    if response["status"] == "FAILED":
+    try:
+        data = add_headers(data, request)
+        response = service.delete_from_tmx_store(data)
+        if response["status"] == "FAILED":
+            return jsonify(response), 400
+        else:
+            return jsonify(response), 200
+    except Exception as e:
+        response = {"message": "Something went wrong.", "status": "FAILED"}
         return jsonify(response), 400
-    else:
-        return jsonify(response), 200
 
 @translatorapp.route(context_path + '/v1/tmx/get-all-keys', methods=["POST"])
 def tmx_get_all_keys():
     service = TMXService()
     data = request.get_json()
-    return jsonify(service.get_tmx_data(data)), 200
+    try:
+        data = add_headers(data, request)
+        return jsonify(service.get_tmx_data(data)), 200
+    except Exception as e:
+        response = {"message": "Something went wrong.", "status": "FAILED"}
+        return jsonify(response), 400
 
 @translatorapp.route(context_path + '/v1/glossary/create', methods=["POST"])
 def glossary_create():

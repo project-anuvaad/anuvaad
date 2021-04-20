@@ -126,6 +126,9 @@ class TMXService:
     # Method to delete records from TMX store.
     def delete_from_tmx_store(self, tmx_input):
         log_info("Deleting to TMX......", None)
+        if "ADMIN" not in str(tmx_input["metadata"]["roles"]).split(","):
+            if 'orgID' in tmx_input.keys():
+                return {"message": "Only an ADMIN can delete ORG-level TMX", "status": "FAILED"}
         try:
             for sentence in tmx_input["sentences"]:
                 tmx_records = []
@@ -307,13 +310,17 @@ class TMXService:
 
     # Method to fetch all keys from the redis db
     def get_tmx_data(self, req):
-        keys = []
         if "keys" in req.keys():
-            keys = req["keys"]
-        redis_records = repo.get_all_records(keys)
-        if redis_records:
-            if "userID" in req.keys():
-                filtered = filter(lambda record: self.filter_user_records(record, req["userID"]), redis_records)
+            if req["keys"]:
+                return repo.get_all_records(req["keys"])
+        elif "getAll" in req.keys():
+            if req["getAll"]:
+                return repo.get_all_records([])
+        try:
+            user_id, org_id = req["metadata"]["userID"], req["metadata"]["orgID"]
+            redis_records = repo.get_all_records([])
+            if redis_records:
+                filtered = filter(lambda record: self.filter_user_records(record, user_id, org_id), redis_records)
                 redis_records = list(filtered)
                 if "allUserKeys" not in req.keys():
                     filtered = filter(lambda record: self.filter_original_keys(record), redis_records)
@@ -321,14 +328,16 @@ class TMXService:
                 elif not req["allUserKeys"]:
                     filtered = filter(lambda record: self.filter_original_keys(record), redis_records)
                     redis_records = list(filtered)
-        return redis_records
+            return redis_records
+        except Exception as e:
+            log_info("Exception while returning TMX data: {}".format(e), None)
+            return []
 
-    def filter_user_records(self, record, user_id):
+    def filter_user_records(self, record, user_id, org_id):
         if "userID" in record.keys():
-            if record["userID"] == user_id:
-                return True
-            else:
-                return False
+            return record["userID"] == user_id
+        elif "orgID" in record.keys:
+            return record["orgID"] == org_id
         else:
             return False
 
