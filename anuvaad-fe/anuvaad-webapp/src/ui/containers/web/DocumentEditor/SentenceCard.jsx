@@ -615,7 +615,7 @@ class SentenceCard extends React.Component {
     timeSpent = () => {
         let totalTimeSpent = 0
         this.state.eventArray.map((value, index) => {
-            totalTimeSpent = totalTimeSpent + (value.timeTaken < 180000 ? value.timeTaken : this.sentenceTime())
+            totalTimeSpent = totalTimeSpent + (value.timeTaken < 300000 ? value.timeTaken : this.sentenceTime())
         })
         return totalTimeSpent;
     }
