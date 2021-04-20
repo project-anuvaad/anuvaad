@@ -144,10 +144,13 @@ def get_document_bounds(page_c_lines,file,response,page_dict,page_regions,page_c
                         if len(page.property.detected_languages)!=0:
                             word_region["language"] = page.property.detected_languages[0].language_code
 
+    
     if "craft_line" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_line"]=="True":
         page_lines = page_c_lines
+        print("craft lines are processing--->>>")
     else:
         page_lines   =  page_dict["lines"]
+        print("google lines are processing--->>>")
 
     page_words   =  page_dict["words"]
 
