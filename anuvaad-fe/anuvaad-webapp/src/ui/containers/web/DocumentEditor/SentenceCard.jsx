@@ -615,9 +615,19 @@ class SentenceCard extends React.Component {
     timeSpent = () => {
         let totalTimeSpent = 0
         this.state.eventArray.map((value, index) => {
-            totalTimeSpent = totalTimeSpent + (value.timeTaken < 180000 ? value.timeTaken : 15000)
+            totalTimeSpent = totalTimeSpent + (value.timeTaken < 180000 ? value.timeTaken : this.sentenceTime())
         })
         return totalTimeSpent;
+    }
+
+    sentenceTime = () =>{
+        let sentenceTime = 0;
+        if(this.props.sentence){
+            let srcLength = (this.props.sentence.src.split(" ").length);
+            let tgtLength  = (this.props.sentence.hasOwnProperty("s0_tgt")&& this.props.sentence.s0_tgt.split(" ").length)
+            sentenceTime   = (srcLength + tgtLength) * 2000;
+        }
+        return sentenceTime;
     }
 
     handleUserInputText(event) {
@@ -721,6 +731,8 @@ class SentenceCard extends React.Component {
 
     retranslateSentence = () => {
         if (this.props.onAction) {
+            let eventArray = this.handleTimeCalc("Retranslate", "", (this.state.value.length < 1 || this.state.value === '') ? this.props.sentence.s0_tgt : this.state.value)
+            this.setState({ eventArray })
             this.setState({ value: '' })
             this.props.onAction(SENTENCE_ACTION.RETRANSLATE_SENTENCE, this.props.pageNumber, [this.props.sentence])
         }
