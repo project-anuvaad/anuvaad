@@ -57,6 +57,8 @@ export const pageLoadStarted = (page_id) => {
   let session_id = null;
   let org_id = null;
   let name = null;
+  let email = null;
+  
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
   let token = localStorage.getItem('token')
 
@@ -64,6 +66,7 @@ export const pageLoadStarted = (page_id) => {
     user_id = user_profile.userID
     org_id = user_profile.orgID
     name = user_profile.name
+    email= user_profile.email
     session_id = token
   } else {
     user_id = 'anonymous'
@@ -81,7 +84,8 @@ export const pageLoadStarted = (page_id) => {
     actor: {
       uid: user_id,
       org_id: org_id,
-      name: name
+      name: name,
+      email: email
     },
     context: {
       sid: session_id
@@ -104,6 +108,7 @@ export const pageLoadCompleted = (page_id) => {
   let session_id = null
   let org_id = null;
   let name = null;
+  let email = null;
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
   let token = localStorage.getItem('token')
 
@@ -111,6 +116,7 @@ export const pageLoadCompleted = (page_id) => {
     user_id = user_profile.userID
     org_id = user_profile.orgID
     name = user_profile.name
+    email = user_profile.email
     session_id = token
   } else {
     user_id = 'anonymous'
@@ -128,7 +134,8 @@ export const pageLoadCompleted = (page_id) => {
     actor: {
       uid: user_id,
       org_id: org_id,
-      name: name
+      name: name,
+      email: email
     },
     context: {
       sid: session_id
@@ -173,6 +180,7 @@ export const startWorkflow = (source_language, target_language, filename, job_id
   let user_id = null;
   let org_id = null;
   let name = null;
+  let email = null;
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
   let token = localStorage.getItem('token')
 
@@ -180,6 +188,7 @@ export const startWorkflow = (source_language, target_language, filename, job_id
     user_id = user_profile.userID
     org_id = user_profile.orgID
     name = user_profile.name
+    email = user_profile.email
   } else {
     user_id = 'anonymous'
   }
@@ -195,7 +204,8 @@ export const startWorkflow = (source_language, target_language, filename, job_id
     actor: {
       uid: user_id,
       org_id: org_id,
-      name: name
+      name: name,
+      email: email
     },
     context: {
       cdata: [{
@@ -383,7 +393,7 @@ export const sentenceChanged = (sentence_initial, sentence_final, sentence_id, m
   values.bleu_score = bleu_score
   values.time_spent = time_spent
   values.s_id = sentence_id
-  values.events = eventArray
+  values.user_events = eventArray
 
   
   if(rating_score) {
@@ -475,12 +485,14 @@ export const log = (action_type, message, api) => {
   let user_id = null;
   let org_id = null;
   let name = null;
+  let email = null;
   let user_profile = JSON.parse(localStorage.getItem('userProfile'))
 
   if (user_profile != null) {
     user_id = user_profile.userID
     org_id = user_profile.orgID
     name = user_profile.name
+    email = user_profile.email
   } else {
     user_id = 'anonymous'
   }
@@ -504,7 +516,8 @@ export const log = (action_type, message, api) => {
     actor: {
       uid: user_id,
       org_id: org_id,
-      name: name
+      name: name,
+      email: email
     }
   }
 
@@ -679,6 +692,7 @@ export function saveEditedWordEvent(changedWordInfo, action) {
   let user_id = user_profile.userID
   let org_id = user_profile.orgID
   let name = user_profile.name
+  let email = user_profile.email
   let session_id = token
 
   let data = {
@@ -698,7 +712,8 @@ export function saveEditedWordEvent(changedWordInfo, action) {
     actor: {
       uid: user_id,
       org_id: org_id,
-      name: name
+      name: name,
+      email: email
     },
     context: {
       cdata: values,

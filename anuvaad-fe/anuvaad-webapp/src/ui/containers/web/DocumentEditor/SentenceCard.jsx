@@ -232,9 +232,9 @@ class SentenceCard extends React.Component {
                 if (userRole === "ANNOTATOR" && this.state.score) {
                     sentence.rating_score = this.state.score
                 }
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
-                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
-                this.setState({ eventArray: [] })
+                // TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence],"","",userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
+                this.setState({eventArray:[]})
                 return;
             }
         } else {
@@ -258,9 +258,11 @@ class SentenceCard extends React.Component {
                 if (userRole === "ANNOTATOR" && this.state.score) {
                     sentence.rating_score = this.state.score
                 }
-                TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
-                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence])
-                this.setState({ eventArray: [] })
+
+                
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence],"","",userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
+                // TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
+                this.setState({eventArray:[]})
             }
         }
     }
@@ -337,7 +339,7 @@ class SentenceCard extends React.Component {
     }
 
     renderSourceSentence = () => {
-        if (this.state.cardInFocus && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
+        if (this.cardCompare() && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
             const { src, tmx_replacement } = this.props.sentence
             const modified_src = TMX_HIGHLIGHT.showSrcTmxIndicator(src, tmx_replacement)
             return (
@@ -613,9 +615,19 @@ class SentenceCard extends React.Component {
     timeSpent = () => {
         let totalTimeSpent = 0
         this.state.eventArray.map((value, index) => {
-            totalTimeSpent = totalTimeSpent + (value.timeTaken < 180000 ? value.timeTaken : 15000)
+            totalTimeSpent = totalTimeSpent + (value.timeTaken < 300000 ? value.timeTaken : this.sentenceTime())
         })
         return totalTimeSpent;
+    }
+
+    sentenceTime = () =>{
+        let sentenceTime = 0;
+        if(this.props.sentence){
+            let srcLength = (this.props.sentence.src.split(" ").length);
+            let tgtLength  = (this.props.sentence.hasOwnProperty("s0_tgt")&& this.props.sentence.s0_tgt.split(" ").length)
+            sentenceTime   = (srcLength + tgtLength) * 2000;
+        }
+        return sentenceTime;
     }
 
     handleUserInputText(event) {
@@ -719,6 +731,8 @@ class SentenceCard extends React.Component {
 
     retranslateSentence = () => {
         if (this.props.onAction) {
+            let eventArray = this.handleTimeCalc("Retranslate", "", (this.state.value.length < 1 || this.state.value === '') ? this.props.sentence.s0_tgt : this.state.value)
+            this.setState({ eventArray })
             this.setState({ value: '' })
             this.props.onAction(SENTENCE_ACTION.RETRANSLATE_SENTENCE, this.props.pageNumber, [this.props.sentence])
         }
