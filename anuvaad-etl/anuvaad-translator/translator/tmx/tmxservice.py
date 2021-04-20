@@ -330,7 +330,7 @@ class TMXService:
                     redis_records = list(filtered)
             return redis_records
         except Exception as e:
-            log_info("Exception while returning TMX data: {}".format(e), None)
+            log_exception("Exception while returning TMX data: {}".format(e), None, None)
             return []
 
     def filter_user_records(self, record, user_id, org_id):
