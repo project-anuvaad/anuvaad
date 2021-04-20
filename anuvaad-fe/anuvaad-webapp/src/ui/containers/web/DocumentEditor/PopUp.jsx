@@ -68,7 +68,7 @@ class MenuClass extends React.Component {
                 {" "}
                 Copy
               </Button>
-              <Button
+              {/* <Button
                 style={{
                   textTransform: "none",
                   width: "100%",
@@ -78,7 +78,7 @@ class MenuClass extends React.Component {
               >
                 {" "}
                 Add to glossary
-              </Button>
+              </Button> */}
               <br />
 
               <br />
