@@ -44,9 +44,10 @@ def get_layout(app_context) :
 	                torch.cuda.device(0)
 	                print("*******cuda available")
                     torch.cuda.empty_cache()
-                    regions     = primalaynet.predict_primanet(page_path, line_coords)
-                    #regions += cell_regions
-                    file['pages'][idx]["regions"]=regions
+                time.sleep(1)
+                regions     = primalaynet.predict_primanet(page_path, line_coords)
+                #regions += cell_regions
+                file['pages'][idx]["regions"]=regions
             file['file'] = file_new['file']
             file['config'] = file_new['config']
             output.append(file)
