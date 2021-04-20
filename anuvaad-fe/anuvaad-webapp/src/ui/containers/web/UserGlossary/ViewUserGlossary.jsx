@@ -37,7 +37,8 @@ class MyGlossary extends React.Component {
             open: false,
             message: "",
             variant: 'success',
-            loadMsg: ""
+            loadMsg: "",
+            rowsToDelete: []
         }
     }
     getUserGlossary = () => {
@@ -63,9 +64,9 @@ class MyGlossary extends React.Component {
         }
     }
 
-    handleDeleteGlossary = (dataArray) => {
+    makeDeleteGlossaryAPICall = (userId, src, tgt, locale, reverseLocale, context, bulkDelete = false, deletionArray = []) => {
         this.setState({ open: true, message: 'Glossary deletion in progress...', variant: 'info' })
-        let apiObj = new DeleteGlossary(dataArray[2], dataArray[0], dataArray[1], dataArray[3], dataArray[4])
+        let apiObj = new DeleteGlossary(userId, src, tgt, locale, reverseLocale, context, bulkDelete, deletionArray)
         fetch(apiObj.apiEndPoint(), {
             method: 'post',
             headers: apiObj.getHeaders().headers,
@@ -74,18 +75,40 @@ class MyGlossary extends React.Component {
             .then(async res => {
                 if (res.ok) {
                     this.setState({ open: false })
-                    let apiObj = new ViewGlossary(dataArray[2])
+                    let apiObj = new ViewGlossary(userId)
                     let { APITransport } = this.props
                     APITransport(apiObj)
+                    return true;
                 } else {
                     this.setState({ open: true, message: 'Glossary deletion failed', variant: 'error' })
+                    return false;
                 }
             })
+    }
+
+    handleDeleteGlossary = (dataArray) => {
+        let reverseLocale = dataArray[3].split("|").reverse().join("|");
+        this.makeDeleteGlossaryAPICall(dataArray[2], dataArray[0], dataArray[1], dataArray[3], reverseLocale, dataArray[4])
     }
 
     handleClose = () => {
         this.setState({ open: false })
     }
+
+    deleteMultipleRows = () => {
+        let rowsToBeDeleted = []
+        let userId = JSON.parse(localStorage.getItem("userProfile")).userID
+        this.props.glossaryData.result.forEach((val, i) => {
+            this.state.rowsToDelete.forEach(row => {
+                if (row.dataIndex === i) {
+                    rowsToBeDeleted.push({ src: val.src, tgt: val.tgt, locale: val.locale })
+                    rowsToBeDeleted.push({ src: val.tgt, tgt: val.src, locale: val.locale.split("|").reverse().join("|") })
+                }
+            })
+        })
+        this.makeDeleteGlossaryAPICall(userId, "", "", "", "", "JUDICIARY", true, rowsToBeDeleted)
+    }
+
     render() {
         const columns = [
             {
@@ -132,10 +155,18 @@ class MyGlossary extends React.Component {
                 },
             },
             {
+                name: "typeOfGlossary",
+                label: "Glossary Type",
+                option: {
+                    filter: false,
+                    sort: false
+                }
+            },
+            {
                 name: "Action",
                 label: translate("common.page.label.action"),
+                filter: true,
                 options: {
-                    filter: true,
                     sort: false,
                     empty: true,
                     customBodyRender: (value, tableMeta, updateValue) => {
@@ -144,9 +175,10 @@ class MyGlossary extends React.Component {
                                 <div>
                                     <Tooltip title="Delete Glossary" placement="left">
                                         <IconButton
-                                            style={{ color: "#233466", padding: "5px" }}
+                                            style={{ color: tableMeta.rowData[5] === "Organization" ? "grey" : "#233466", padding: "5px" }}
                                             component="a"
                                             onClick={() => this.handleDeleteGlossary(tableMeta.rowData)}
+                                            disabled={tableMeta.rowData[5] === "Organization"}
                                         >
                                             <DeleteIcon />
                                         </IconButton>
@@ -162,7 +194,7 @@ class MyGlossary extends React.Component {
         const options = {
             textLabels: {
                 body: {
-                    noMatch: this.props.glossaryData.count > 0 ? "Loading...." : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound"),
+                    noMatch: translate("gradeReport.page.muiNoTitle.sorryRecordNotFound"),
                 },
                 toolbar: {
                     search: translate("graderReport.page.muiTable.search"),
@@ -184,6 +216,12 @@ class MyGlossary extends React.Component {
                 name: "timestamp",
                 direction: "desc",
             },
+            onRowSelectionChange: (currentSelectedRows, allRowsSelected, rowsSelected) => {
+                this.setState({ rowsToDelete: allRowsSelected })
+            },
+            onRowsDelete: () => {
+                this.deleteMultipleRows()
+            }
         };
         return (
             <div style={{ maxHeight: window.innerHeight, height: window.innerHeight, overflow: "auto" }}>

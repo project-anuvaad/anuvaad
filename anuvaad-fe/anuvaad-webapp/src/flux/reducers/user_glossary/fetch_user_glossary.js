@@ -13,7 +13,8 @@ const getGlossaryData = (data) => {
             tgt: val.user_tgt,
             locale: val.locale,
             userID: val.userID,
-            context: val.context
+            context: val.context,
+            typeOfGlossary: val.orgID ? "Organization" : "Individual"
         }
     })
     return result

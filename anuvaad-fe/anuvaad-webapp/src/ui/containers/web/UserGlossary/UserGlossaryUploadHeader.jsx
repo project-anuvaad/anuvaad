@@ -36,7 +36,7 @@ class UserGlossaryUploadHeader extends React.Component {
                             <div style={{ display: "flex", flexDirection: "row" }}>
                                 <IconButton
                                     onClick={() => {
-                                        history.push(`${process.env.PUBLIC_URL}/document-digitization`);
+                                        history.push(`${process.env.PUBLIC_URL}/my-glossary`);
                                     }}
                                     className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
                                 >
@@ -54,7 +54,7 @@ class UserGlossaryUploadHeader extends React.Component {
                     <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "10px" }}></div>
 
                     <Typography variant="h5" color="inherit" className={classes.flex}>
-                        Upload User Glossary
+                        Create Glossary
                     </Typography>
                 </Toolbar>
             </AppBar>

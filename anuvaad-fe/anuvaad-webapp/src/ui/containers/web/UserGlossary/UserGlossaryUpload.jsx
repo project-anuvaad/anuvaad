@@ -2,9 +2,8 @@ import React from 'react';
 import Header from './UserGlossaryUploadHeader';
 import { Typography } from '@material-ui/core';
 import { translate } from "../../../../assets/localisation";
-import FileUploadStyles from "../../../styles/web/FileUpload";
+import DashboardStyles from "../../../styles/web/DashboardStyles";
 import { withStyles } from "@material-ui/core/styles";
-import { DropzoneArea } from "material-ui-dropzone";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -12,17 +11,17 @@ import TextField from "@material-ui/core/TextField";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
 import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import history from "../../../../web.history";
-import DocumentUpload from "../../../../flux/actions/apis/document_upload/document_upload";
-import WorkFlow from "../../../../flux/actions/apis/common/fileupload";
 import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
 import Snackbar from "../../../components/web/common/Snackbar";
-import Spinner from "../../../components/web/common/Spinner"
+import Spinner from "@material-ui/core/CircularProgress"
+import FormControl from '@material-ui/core/FormControl';
+import CreateGlossary from '../../../../flux/actions/apis/document_translate/create_glossary';
+
 
 const theme = createMuiTheme({
     overrides: {
@@ -53,6 +52,8 @@ const theme = createMuiTheme({
         }
     }
 });
+
+
 const LANG_MODEL = require('../../../../utils/language.model')
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
@@ -66,16 +67,12 @@ class UserGlossaryUpload extends React.Component {
             open: false,
             modelLanguage: [],
             name: "",
-            message: "File uplaoded successfully",
+            message: "",
+            variantType: "success",
+
             showComponent: false,
             workflow: localStorage.getItem("roles") === "TRANSLATOR" ? "WF_A_FCOD10GVOTK" : "",
-            worflow_codes: [{
-                code: 'WF_A_FCOD10GVOTK',
-                version: '1.0'
-            }, {
-                code: 'WF_A_FCWDLDBSOD15GVOTK',
-                version: '1.5'
-            }],
+
             fileName: "",
             workspaceName: "",
             path: "",
@@ -83,11 +80,13 @@ class UserGlossaryUpload extends React.Component {
             target_language_code: '',
             source_languages: [],
             target_languages: [],
+            target: "",
+            source: ""
         }
     }
 
     componentDidMount() {
-        TELEMETRY.pageLoadStarted('document-digitization')
+        TELEMETRY.pageLoadStarted('upload-user-glossary')
         const { APITransport } = this.props;
         const apiModel = new FetchModel();
         APITransport(apiModel);
@@ -103,169 +102,129 @@ class UserGlossaryUpload extends React.Component {
                 showLoader: false
             })
         }
-
-        if (prevProps.documentUplaod !== this.props.documentUplaod) {
-            var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, true)
-            const { APITransport } = this.props;
-            const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
-                this.state.target_language_code, this.state.path, this.state.model, "", sourceLang);
-            APITransport(apiObj);
-        }
-
-        if (prevProps.workflowStatus !== this.props.workflowStatus) {
-            this.props.createJobEntry(this.props.workflowStatus)
-
-            var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, true)
-            var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code, true)
-
-            TELEMETRY.startWorkflow(sourceLang, targetLang, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
-            history.push(`${process.env.PUBLIC_URL}/document-digitization`);
-        }
     }
 
     processSourceLanguageSelected = (event) => {
         this.setState({ source_language_code: event.target.value })
-    }
-
-    processVersionSelected = (event) => {
-        this.setState({ workflow: event.target.value })
-    }
-
-    renderDropZone = () => {
-        const { classes } = this.props
-        return <MuiThemeProvider theme={theme}>
-            <DropzoneArea className={classes.DropZoneArea}
-                showPreviewsInDropzone
-                key={this.state.key}
-                dropZoneClass={classes.dropZoneArea}
-                acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
-                onChange={this.handleChange.bind(this)}
-                filesLimit={1}
-                clearOnUnmount={this.state.cleared}
-                maxFileSize={200000000}
-                dropzoneText={"Please Add / Drop document here"}
-                onDelete={this.handleDelete.bind(this)}
-            />
-        </MuiThemeProvider>
-    }
-
-    handleDelete = () => {
+        const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value, true)
         this.setState({
-            files: []
-        });
-    };
+            target_languages: languages
+        })
+    }
 
-    handleChange = files => {
-        if (files.length > 0) {
-            let path = files[0].name.split('.')
-            let fileType = path[path.length - 1]
-            let fileName = path.splice(0, path.length - 1).join('.')
-            this.setState({
-                files,
-                fileName: files[0].name,
-                workspaceName: this.state.workspaceName ? this.state.workspaceName : fileName,
-                path: fileType
-            });
-        } else {
-            this.setState({
-                files: {
-                    workspaceName: ""
-                }
-            });
-        }
-    };
+    processTargetLanguageSelected = (event) => {
+        this.setState({ target_language_code: event.target.value })
+    }
+
 
     renderSourceLanguagesItems = () => {
-        const { classes } = this.props
-        return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "1.5%" }}>
-            <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography value="" variant="h5">
-                    {translate("common.page.label.sourceLang")}{" "}
-                </Typography>
-            </Grid>
+        return (
+            <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ marginTop: "0%" }}>
+                <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
+                    <Typography value="" variant="h5">
+                        {translate("common.page.label.sourceLang")}&nbsp;<span style={{ color: "red" }}>*</span>
+                    </Typography>
+                </Grid>
 
-            <Grid item xs={12} sm={12} lg={12} xl={12} >
-                <Select
-                    labelId="demo-simple-select-outlined-label"
-                    id="source-lang"
-                    onChange={this.processSourceLanguageSelected}
-                    value={this.state.source_language_code}
-                    fullWidth
-                    className={classes.Select}
-                    style={{
-                        fullWidth: true,
-                        float: 'right',
-                        marginBottom: "15px"
-                    }}
-                    input={
-                        <OutlinedInput name="source" id="source" />
-                    }
-                >
-                    {
-                        this.state.source_languages.map(lang =>
-                            <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
-                    }
-                </Select>
+                <Grid item xs={6} sm={6} lg={4} xl={4} >
+                    <FormControl variant="outlined" className={this.props.classes.select}>
+                        <Select
+                            labelId="demo-simple-select-outlined-label"
+                            id="demo-simple-select-outlined"
+                            onChange={this.processSourceLanguageSelected}
+                            value={this.state.source_language_code}
+                            style={{
+                                fullWidth: true,
+                                float: 'right'
+                            }}
+                        >
+                            {
+                                this.state.source_languages.map(lang =>
+                                    <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                            }
+                        </Select>
+                    </FormControl>
+                </Grid>
             </Grid>
-        </Grid>
         )
     }
 
-
-    renderVersion = () => {
-        const { classes } = this.props
-        return (<Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginTop: "1.5%" }}>
-            <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography value="" variant="h5">
-                    {translate("Version")}{" "}
-                </Typography>
+    renderTargetLanguagesItems = () => {
+        return (
+            <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ paddingTop: "20px" }}>
+                <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
+                    <Typography value="" variant="h5">
+                        {translate("common.page.label.targetLang")}&nbsp;<span style={{ color: "red" }}>*</span>
+                    </Typography>
+                </Grid>
+                <Grid item xs={6} sm={6} lg={4} xl={4}>
+                    <FormControl variant="outlined" className={this.props.classes.select}>
+                        <Select
+                            labelId="demo-simple-select-outlined-label"
+                            id="demo-simple-select-outlined"
+                            value={this.state.target}
+                            onChange={this.processTargetLanguageSelected}
+                            value={this.state.target_language_code}
+                            style={{
+                                fullWidth: true,
+                                float: 'right'
+                            }}
+                        >
+                            {
+                                this.state.target_languages.map(lang =>
+                                    <MenuItem key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+                            }
+                        </Select>
+                    </FormControl>
+                </Grid>
             </Grid>
-
-            <Grid item xs={12} sm={12} lg={12} xl={12} >
-                <Select
-                    labelId="demo-simple-select-outlined-label"
-                    id="source-lang"
-                    onChange={this.processVersionSelected}
-                    value={this.state.workflow}
-                    fullWidth
-                    className={classes.Select}
-                    style={{
-                        fullWidth: true,
-                        float: 'right',
-                        marginBottom: "15px"
-                    }}
-                    input={
-                        <OutlinedInput name="source" id="source" />
-                    }
-                >
-                    {
-                        this.state.worflow_codes.map((code, index) =>
-                            <MenuItem id={code.code} key={code.code} value={code.code + ''}>{code.version}</MenuItem>)
-                    }
-                </Select>
-            </Grid>
-        </Grid>
         )
     }
 
-    renderTextField = () => {
-        return <Grid item xs={12} sm={12} lg={12} xl={12}>
-            <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <Typography variant="h5">
-                    {translate("common.page.label.filename")}
+    renderSourceTextField = () => {
+        return <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ paddingTop: "20px" }}>
+            <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
+                <Typography value="" variant="h5">
+                    {"Enter Source Text"}&nbsp;<span style={{ color: "red" }}>*</span>
                 </Typography>
             </Grid>
-            <Grid item xs={12} sm={12} lg={12} xl={12}>
-                <TextField
-                    value={this.state.workspaceName}
-                    id="outlined-name"
-                    margin="normal"
-                    onChange={event => {
-                        this.handleTextChange("workspaceName", event);
-                    }}
-                    variant="outlined"
-                    style={{ width: "100%", margin: '0%', marginBottom: "25px" }}
-                />
+            <Grid item xs={6} sm={6} lg={4} xl={4}>
+                <FormControl variant="outlined" className={this.props.classes.select}>
+                    <TextField
+                        value={this.state.source}
+                        id="outlined-name"
+                        margin="normal"
+                        onChange={event => {
+                            this.handleTextChange("source", event);
+                        }}
+                        variant="outlined"
+                        style={{ width: "100%", margin: '0%', marginBottom: "25px" }}
+                    />
+                </FormControl>
+            </Grid>
+        </Grid>
+    }
+
+    renderTargetTextField = () => {
+        return <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ paddingTop: "20px" }}>
+            <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
+                <Typography value="" variant="h5">
+                    {"Enter Target Text"}&nbsp;<span style={{ color: "red" }}>*</span>
+                </Typography>
+            </Grid>
+            <Grid item xs={6} sm={6} lg={4} xl={4}>
+                <FormControl variant="outlined" className={this.props.classes.select}>
+                    <TextField
+                        value={this.state.target}
+                        id="outlined-name"
+                        margin="normal"
+                        onChange={event => {
+                            this.handleTextChange("target", event);
+                        }}
+                        variant="outlined"
+                        style={{ width: "100%", margin: '0%', marginBottom: "25px" }}
+                    />
+                </FormControl>
             </Grid>
         </Grid>
     }
@@ -276,113 +235,102 @@ class UserGlossaryUpload extends React.Component {
         });
     }
 
-    processBackButton = () => {
-        history.push(`${process.env.PUBLIC_URL}/document-digitization`);
-    }
 
-    handleSubmit(e) {
-        let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, "hi")
+    handleSubmit = (e) => {
+        let userModel = JSON.parse(localStorage.getItem("userProfile"))
+        let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code, userModel.models)
         e.preventDefault();
-        if (this.state.files.length > 0 && this.state.source_language_code && this.state.workflow) {
+        if (this.state.source && this.state.target && this.state.source_language_code && this.state.target_language_code) {
             this.setState({ model: modelId, showLoader: true })
+            let locale = `${modelId.source_language_code}|${modelId.target_language_code}`
             const { APITransport } = this.props;
-            const apiObj = new DocumentUpload(
-                this.state.files, "docUplaod",
-                modelId,
-            );
-            APITransport(apiObj);
+            let apiObj = new CreateGlossary(userModel.userID, this.state.source, this.state.target, locale, 'JUDICIARY')
+            fetch(apiObj.apiEndPoint(), {
+                method: 'post',
+                body: JSON.stringify(apiObj.getBody()),
+                headers: apiObj.getHeaders().headers
+            })
+                .then(res => {
+                    if (res.ok) {
+                        this.setState({ open: true, variantType: 'success', message:"Glossary created successfully...", showLoader: false }, () => {
+                            setTimeout(() => {
+                                history.push(`${process.env.PUBLIC_URL}/my-glossary`)
+                            }, 3000)
+                        })
+                    } else {
+                        this.setState({ open: true, variantType: 'error',  message:"Error in creating glossary...", showLoader: false })
+                    }
+                })
         } else {
             alert("Field should not be empty!");
         }
+    }
 
+    handleClose = () => {
+        this.setState({ open: false })
     }
 
     render() {
         const { classes } = this.props
         return (
-            <div style={{ height: window.innerHeight - 150 }}>
+            <div className={classes.root}>
                 <Header />
 
-                <div className={classes.div}>
-                    <Typography value="" variant="h4" className={classes.typographyHeader}>
-                        {translate("common.page.label.uploadFile")}
-                    </Typography>
-                    <br />
-                    <Typography className={classes.typographySubHeader}>{translate("doc_upload.page.label.uploadMessage")}</Typography>
-                    <br />
-                    <Paper elevation={3} className={classes.paper}>
-                        <Grid container spacing={8}>
-                            <Grid item xs={12} sm={6} lg={6} xl={6}>
-                                <MuiThemeProvider theme={theme}>
-                                    <DropzoneArea className={classes.DropZoneArea}
-                                        showPreviewsInDropzone
-                                        dropZoneClass={classes.dropZoneArea}
-                                        acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
-                                        onChange={this.handleChange.bind(this)}
-                                        filesLimit={1}
-                                        maxFileSize={200000000000}
-                                        dropzoneText={translate("common.page.label.addDropDocument")}
-                                        onDelete={this.handleDelete.bind(this)}
-                                    />
-                                </MuiThemeProvider>
-                            </Grid>
-                            <Grid item xs={12} sm={6} lg={6} xl={6}>
-                                {this.renderSourceLanguagesItems()}
-                                {localStorage.getItem("roles") === 'ANNOTATOR' && this.renderVersion()}
-                                {this.renderTextField()}
-                            </Grid>
-                            <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
+                <Typography variant="h4" className={classes.typographyHeader}>
+                    {"Create Glossary"}
+                </Typography>
+                <Paper className={classes.paper}>
+                    <Grid container >
+
+                        {this.renderSourceLanguagesItems()}
+                        {this.renderTargetLanguagesItems()}
+                        {this.renderSourceTextField()}
+                        {this.renderTargetTextField()}
+
+                        <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid} style={{ display: "flex", flexDirection: "row", marginTop: '5vh' }}>
+                            <Grid item xs={6} sm={6} lg={6} xl={6}>
                                 <Button
-                                    id="back"
-                                    variant="contained" color="primary"
-                                    size="large" onClick={this.processBackButton}
-                                    style={{
-                                        width: "100%",
-                                        backgroundColor: '#1C9AB7',
-                                        borderRadius: "20px 20px 20px 20px",
-                                        color: "#FFFFFF",
-                                        height: '46px'
-                                    }}
+                                    variant="contained"
+                                    color="primary"
+                                    aria-label="edit"
+                                    className={classes.button1}
+                                    onClick={() => history.push(`${process.env.PUBLIC_URL}/my-glossary`)}
                                 >
                                     {translate("common.page.button.back")}
                                 </Button>
                             </Grid>
-                            <Grid item xs={6} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
-                                <Grid item xs={12} sm={12} lg={12} xl={12}>
-                                    <Button
-                                        id="upload"
-                                        variant="contained" color="primary"
-                                        // className={classes.button1} 
-                                        style={{
-                                            width: "100%",
-                                            backgroundColor: '#1C9AB7',
-                                            borderRadius: "20px 20px 20px 20px",
-                                            color: "#FFFFFF",
-                                            height: '46px'
-                                        }}
-                                        size="large" onClick={this.handleSubmit.bind(this)}>
-                                        {translate("common.page.button.upload")}
-                                    </Button>
-                                </Grid>
-
+                            <Grid item xs={6} sm={6} lg={6} xl={6}>
+                                <Button
+                                    color="primary"
+                                    variant="contained"
+                                    aria-label="edit"
+                                    className={classes.button1}
+                                    onClick={this.handleSubmit}
+                                >
+                                    {translate("common.page.button.submit")}
+                                </Button>
                             </Grid>
                         </Grid>
-                        {this.state.open && (
-                            <Snackbar
-                                anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                                open={this.state.open}
-                                autoHideDuration={6000}
-                                onClose={this.handleClose}
-                                variant="success"
-                                message={this.state.message}
-                            />
-                        )}
-                        {this.state.showLoader &&
-                            <Spinner />
-                        }
-                    </Paper>
-                </div>
-            </div >
+                    </Grid>
+                </Paper>
+                {
+                    this.state.open &&
+                    <Snackbar
+                        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                        open={this.state.open}
+                        autoHideDuration={3000}
+                        onClose={this.handleClose}
+                        variant={this.state.variantType}
+                        message={this.state.message}
+                    />
+                }
+                {
+                    this.state.showLoader &&
+                    <div className={classes.progressDiv}>
+                        <Spinner size={80} className={classes.progress} />
+                    </div>
+                }
+            </div>
         );
     }
 }
@@ -404,4 +352,4 @@ const mapDispatchToProps = dispatch =>
         dispatch
     );
 
-export default withStyles(FileUploadStyles)(connect(mapStateToProps, mapDispatchToProps)(UserGlossaryUpload));
+export default withStyles(DashboardStyles)(connect(mapStateToProps, mapDispatchToProps)(UserGlossaryUpload));
