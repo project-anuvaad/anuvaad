@@ -336,7 +336,7 @@ class TMXService:
     def filter_user_records(self, record, user_id, org_id):
         if "userID" in record.keys():
             return record["userID"] == user_id
-        elif "orgID" in record.keys:
+        elif "orgID" in record.keys():
             return record["orgID"] == org_id
         else:
             return False
