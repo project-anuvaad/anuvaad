@@ -2,7 +2,7 @@ import logging
 import os
 import time
 
-DEBUG = True
+DEBUG = False
 API_URL_PREFIX = "/anuvaad-etl/document-processor/layout-detector"
 HOST = '0.0.0.0'
 PORT = 5001
