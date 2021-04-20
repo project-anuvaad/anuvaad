@@ -17,6 +17,8 @@ import Spinner from "../../../components/web/common/Spinner";
 import DeleteGlossary from '../../../../flux/actions/apis/user_glossary/delete_glossary';
 import Snackbar from "../../../components/web/common/Snackbar";
 
+var delete_glossary = require("../../../../utils/deleteGlossary.operation");
+
 const getMuiTheme = () =>
     createMuiTheme({
         overrides: {
@@ -96,17 +98,17 @@ class MyGlossary extends React.Component {
     }
 
     deleteMultipleRows = () => {
-        let rowsToBeDeleted = []
-        let userId = JSON.parse(localStorage.getItem("userProfile")).userID
-        this.props.glossaryData.result.forEach((val, i) => {
-            this.state.rowsToDelete.forEach(row => {
-                if (row.dataIndex === i) {
-                    rowsToBeDeleted.push({ src: val.src, tgt: val.tgt, locale: val.locale })
-                    rowsToBeDeleted.push({ src: val.tgt, tgt: val.src, locale: val.locale.split("|").reverse().join("|") })
-                }
-            })
-        })
-        this.makeDeleteGlossaryAPICall(userId, "", "", "", "", "JUDICIARY", true, rowsToBeDeleted)
+        let isOrg = delete_glossary.isOrg(this.props.glossaryData, this.state.rowsToDelete)
+        if (!isOrg) {
+            let userId = JSON.parse(localStorage.getItem("userProfile")).userID
+            let rowsToBeDeleted = delete_glossary.getBulkDeletionArray(this.props.glossaryData, this.state.rowsToDelete)
+            this.makeDeleteGlossaryAPICall(userId, "", "", "", "", "JUDICIARY", true, rowsToBeDeleted)
+        } else {
+            this.setState({ open: true, message: "Cannot delete glossary of type Organization..", variant: "error" })
+        }
+        setTimeout(() => {
+            this.setState({ open: false, message: "", variant: "" })
+        }, 2000)
     }
 
     render() {
@@ -206,7 +208,7 @@ class MyGlossary extends React.Component {
                 options: { sortDirection: "desc" },
             },
             rowsPerPageOptions: [10],
-            count: 0,
+            count: this.props.glossaryData.count,
             filterType: "checkbox",
             download: true,
             print: false,
