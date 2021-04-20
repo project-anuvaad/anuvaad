@@ -39,7 +39,7 @@ class Header extends React.Component {
                     size="large"
                     onClick={this.handleOnClick}
                 >
-                    Upload Glossary
+                    Create Glossary
                 </Button>
             </div >
         );
