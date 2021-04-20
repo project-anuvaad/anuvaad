@@ -233,8 +233,8 @@ class SentenceCard extends React.Component {
                     sentence.rating_score = this.state.score
                 }
                 // TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
-                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence],"","",userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
-                this.setState({eventArray:[]})
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence], "", "", userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
+                this.setState({ eventArray: [] })
                 return;
             }
         } else {
@@ -259,10 +259,10 @@ class SentenceCard extends React.Component {
                     sentence.rating_score = this.state.score
                 }
 
-                
-                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence],"","",userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
+
+                this.props.onAction(SENTENCE_ACTION.SENTENCE_SAVED, this.props.pageNumber, [sentence], "", "", userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
                 // TELEMETRY.sentenceChanged(sentence.s0_tgt, sentence.tgt, sentence.s_id, "translation", sentence.s0_src, sentence.bleu_score, sentence.time_spent_ms, userRole === "ANNOTATOR" ? this.state.score : '', eventArray)
-                this.setState({eventArray:[]})
+                this.setState({ eventArray: [] })
             }
         }
     }
@@ -620,12 +620,12 @@ class SentenceCard extends React.Component {
         return totalTimeSpent;
     }
 
-    sentenceTime = () =>{
+    sentenceTime = () => {
         let sentenceTime = 0;
-        if(this.props.sentence){
+        if (this.props.sentence) {
             let srcLength = (this.props.sentence.src.split(" ").length);
-            let tgtLength  = (this.props.sentence.hasOwnProperty("s0_tgt")&& this.props.sentence.s0_tgt.split(" ").length)
-            sentenceTime   = (srcLength + tgtLength) * 2000;
+            let tgtLength = (this.props.sentence.hasOwnProperty("s0_tgt") && this.props.sentence.s0_tgt.split(" ").length)
+            sentenceTime = (srcLength + tgtLength) * 2000;
         }
         return sentenceTime;
     }
@@ -990,6 +990,7 @@ class SentenceCard extends React.Component {
 
     renderSentenceCard = () => {
         let userRole = localStorage.getItem("roles")
+        let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID
         return (
             <div key={12} style={{ padding: "1%" }}>
                 <MuiThemeProvider theme={theme}>
@@ -1015,7 +1016,7 @@ class SentenceCard extends React.Component {
                             <CardContent style={{ padding: "10px" }}>
                                 {this.renderMTTargetSentence()}
                                 <br />
-                                {userRole === "ANNOTATOR" && this.renderRating()}
+                                {userRole === "ANNOTATOR" && orgID !== "NONMT" && this.renderRating()}
                                 {this.renderUserInputArea()}
                             </CardContent>
                             <CardActions style={{ padding: "10px" }}>
