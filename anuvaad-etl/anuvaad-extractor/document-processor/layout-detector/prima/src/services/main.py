@@ -5,6 +5,7 @@ import src.utilities.app_context as app_context
 from src.services.get_table_cells import mask_tables
 import config,time
 import json
+import torch,torchvision
 from src.utilities.primalaynet.infer import PRIMA,cell_layout
 
 from src.utilities.request_parse import get_files, File,get_json
@@ -39,9 +40,13 @@ def get_layout(app_context) :
 
                 #masked_image, table_and_lines = extract_table_line_regions(page_path)
                 #cell_regions = cell_layout(table_and_lines,page_path)
-                regions     = primalaynet.predict_primanet(page_path, line_coords)
-                #regions += cell_regions
-                file['pages'][idx]["regions"]=regions
+                if torch.cuda.is_available():
+	                torch.cuda.device(0)
+	                print("*******cuda available")
+                    torch.cuda.empty_cache()
+                    regions     = primalaynet.predict_primanet(page_path, line_coords)
+                    #regions += cell_regions
+                    file['pages'][idx]["regions"]=regions
             file['file'] = file_new['file']
             file['config'] = file_new['config']
             output.append(file)
