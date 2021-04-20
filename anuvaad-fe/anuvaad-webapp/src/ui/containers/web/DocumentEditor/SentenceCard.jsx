@@ -339,17 +339,17 @@ class SentenceCard extends React.Component {
     }
 
     renderSourceSentence = () => {
-        if (this.cardCompare() && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
-            const { src, tmx_replacement } = this.props.sentence
-            const modified_src = TMX_HIGHLIGHT.showSrcTmxIndicator(src, tmx_replacement)
-            return (
-                <div>
-                    <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
-                        {modified_src}
-                    </Typography>
-                </div>
-            )
-        }
+        // if (this.cardCompare() && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
+        //     const { src, tmx_replacement } = this.props.sentence
+        //     const modified_src = TMX_HIGHLIGHT.showSrcTmxIndicator(src, tmx_replacement)
+        //     return (
+        //         <div>
+        //             <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
+        //                 {modified_src}
+        //             </Typography>
+        //         </div>
+        //     )
+        // }
         return (
             <div >
                 <Typography variant="subtitle1" gutterBottom onMouseUp={(event) => { this.getSelectionText(event) }}>
@@ -360,18 +360,18 @@ class SentenceCard extends React.Component {
     }
 
     renderMTTargetSentence = () => {
-        if (this.state.cardInFocus && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
-            const tmx_replacement = this.props.sentence.tmx_replacement
-            const tgt = this.props.sentence.s0_tgt
-            const modified_tgt = TMX_HIGHLIGHT.showTgtTmxIndicator(tgt, tmx_replacement)
-            return (
-                <div>
-                    <Typography variant="subtitle1" gutterBottom>
-                        {modified_tgt}
-                    </Typography>
-                </div >
-            )
-        }
+        // if (this.state.cardInFocus && this.props.sentence.tmx_replacement && this.props.sentence.tmx_replacement.length > 0) {
+        //     const tmx_replacement = this.props.sentence.tmx_replacement
+        //     const tgt = this.props.sentence.s0_tgt
+        //     const modified_tgt = TMX_HIGHLIGHT.showTgtTmxIndicator(tgt, tmx_replacement)
+        //     return (
+        //         <div>
+        //             <Typography variant="subtitle1" gutterBottom>
+        //                 {modified_tgt}
+        //             </Typography>
+        //         </div >
+        //     )
+        // }
         return (
             <div>
                 <Divider />
