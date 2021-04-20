@@ -46,8 +46,8 @@ utm_disable_roles = os.environ.get('ROLES_UTM_DISABLE', 'ANNOTATOR')
 
 
 #nmt-machine-topics
-anu_nmt_input_topic = os.environ.get('KAFKA_NMT_INPUT_TOPIC', 'anuvaad-nmt-translate')
-anu_nmt_output_topic = os.environ.get('KAFKA_NMT_OUTPUT_TOPIC', 'anuvaad-nmt-translate-processed')
+anu_nmt_input_topic = os.environ.get('KAFKA_NMT_TRANSLATION_INPUT_TOPIC', 'anuvaad-nmt-translate')
+anu_nmt_output_topic = os.environ.get('KAFKA_NMT_TRANSLATION_OUTPUT_TOPIC', 'anuvaad-nmt-translate-processed')
 
 
 #kafka-configs
