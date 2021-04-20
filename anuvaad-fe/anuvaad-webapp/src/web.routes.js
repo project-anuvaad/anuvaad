@@ -34,6 +34,7 @@ import DigitzeDocumentUpload from './ui/containers/web/DocumentDigitization/Docu
 import DigitizedDocumentEditor from './ui/containers/web/DocumentDigitization/DigitizedDocumentEditor';
 import ViewAnnotationJob from './ui/containers/web/GradeDocument/ViewAnnotationJobs';
 import NmtModelAssign from "./ui/containers/web/AdminPanel/NmtModelAssign";
+import ViewUserGlossary from './ui/containers/web/UserGlossary/ViewUserGlossary';
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route

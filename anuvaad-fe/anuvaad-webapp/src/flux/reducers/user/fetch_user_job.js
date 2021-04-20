@@ -1,4 +1,5 @@
 import C from '../../actions/constants';
+import LanguageCodes from "../../../ui/components/web/common/Languages.json"
 
 const initialState = {
     count: 0,
@@ -9,20 +10,36 @@ const initialState = {
 const getUserJob = (payload) => {
     let result = payload.map(task => {
         let date = new Date(task.createdOn).toLocaleString()
+
+        let source = LanguageCodes.filter(code => {
+            if (code.language_code === task.src_locale) {
+                return true
+            }
+        })[0].language_name
+
+        let target = LanguageCodes.filter(code => {
+            if (code.language_code === task.tgt_locale) {
+                return true
+            }
+        })[0].language_name
+
         return {
             createdOn: date,
             description: task.description,
             file_identifier: task.fileInfo.identifier,
             file_name: task.fileInfo.name,
             jobId: task.jobId,
-            taskId: task.taskId
+            taskId: task.taskId,
+            saved_sentences: task.saved_sentences,
+            total_sentences: task.total_sentences,
+            source,
+            target
         }
     })
     return result
 }
 
 const getSortedData = (unSortedData) => {
-    console.log(unSortedData)
     let sortedData = unSortedData.tasks.sort((a, b) => {
         if (a.createdOn < b.createdOn) {
             return 1

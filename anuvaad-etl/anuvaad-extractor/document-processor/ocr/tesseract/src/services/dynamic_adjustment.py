@@ -36,8 +36,9 @@ def correct_region(region,energy_density):
 
     if box_height > 0:
         #order : top, left, right, bottom
-        boundry_top    = [ max(box_top - box_height * 0.5 ,0), box_left ,box_right ,box_top + box_height * 0.5]
-        boundry_bottom = [ box_bottom - box_height * 0.5 , box_left ,box_right ,min(box_bottom + box_height * 0.5,image_height)]
+        margin  = 0.25
+        boundry_top    = [ max(box_top - box_height * margin ,0), box_left ,box_right ,box_top + box_height * margin]
+        boundry_bottom = [ box_bottom - box_height * margin , box_left ,box_right ,min(box_bottom + box_height * margin,image_height)]
 
         top_delta    = get_equilibrium_delta(boundry_top , energy_density,axis=1)
         bottom_delta = get_equilibrium_delta(boundry_bottom, energy_density,axis=1)

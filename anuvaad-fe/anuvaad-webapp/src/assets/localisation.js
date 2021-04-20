@@ -93,6 +93,7 @@ const localization_EN_Data = {
   "common.page.label.timeStamp": "Timestamp",
   "commonCorpus.page.button.corpus": "Corpus",
   "common.page.title.document": "Documents",
+  "common.page.title.glossary": "Glossary Details",
   "common.page.title.userdetails": "User Details",
   "viewCorpus.title.viewSentence": "View Sentence",
   "common.page.title.gradeSentence": "Grade Sentence",
@@ -319,6 +320,9 @@ const localization_EN_Data = {
   "common.page.label.SOURCE_SENTENCE_SAVED_FAILED": "Saving sentence failed ...",
   "common.page.label.SOURCE_SENTENCE_SAVED_SUCCESS": "Sentence saved ...",
   "common.page.label.FILE_DOWNLOAD_FAILED": "File download failed ...",
+  "common.page.label.RETRANSLATE_SENTENCE": "Retranslating sentence ...",
+  "common.page.label.RETRANSLATE_SENTENCE_SUCCESS": "Sentence retranslated ...",
+  "common.page.label.RETRANSLATE_SENTENCE_FAILED": "Retranslation failed ...",
 
   "GraderReport.page.title.graderDetails": "Grader Details",
   "gradeReport.page.muiNoTitle.sorryRecordNotFound": "Sorry, no matching records found",
