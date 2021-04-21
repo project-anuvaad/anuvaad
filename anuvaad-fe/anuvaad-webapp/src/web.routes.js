@@ -40,6 +40,7 @@ import ViewJobDetail from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/
 import ViewAnnotatorJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewAnnotatorJob';
 import NmtModelAssign from "./ui/containers/web/AdminPanel/NmtModelAssign";
 import ViewUserGlossary from './ui/containers/web/UserGlossary/ViewUserGlossary';
+import UserGlossaryUpload from './ui/containers/web/UserGlossary/UserGlossaryUpload';
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -154,7 +155,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-digitization/:jobId/:filename/:inputfileid/:og_fname`}
-              userRoles={["TRANSLATOR","ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={DigitizedDocumentEditor}
               title="Digitized File"
               authenticate={this.authenticateUser}
@@ -240,7 +241,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/document-digitization`}
               dontShowLoader
               title={"Document Digitization"}
-              userRoles={["TRANSLATOR","ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={ViewDocumentDigitization}
               authenticate={this.authenticateUser}
               currentMenu="document-digitization"
@@ -251,7 +252,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/digitize-document-upload`}
               dontShowLoader
               title={"Start Digitization"}
-              userRoles={["TRANSLATOR","ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={DigitzeDocumentUpload}
               authenticate={this.authenticateUser}
               currentMenu="digitize-document-upload"
@@ -389,12 +390,24 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/my-glossary`}
               dontShowLoader
               title={"My Glossary"}
-              userRoles={["TRANSLATOR","ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={ViewUserGlossary}
               authenticate={this.authenticateUser}
               currentMenu="my-glossary"
               dontShowHeader={true}
             />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/user-glossary-upload`}
+              dontShowLoader
+              title={"User Glossary Upload"}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              component={UserGlossaryUpload}
+              authenticate={this.authenticateUser}
+              currentMenu="user-glossary-upload"
+
+            />
+
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
 
 
