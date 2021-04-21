@@ -21,6 +21,7 @@ import Snackbar from "../../../components/web/common/Snackbar";
 import Spinner from "@material-ui/core/CircularProgress"
 import FormControl from '@material-ui/core/FormControl';
 import CreateGlossary from '../../../../flux/actions/apis/document_translate/create_glossary';
+import ViewGlossary from '../../../../flux/actions/apis/user_glossary/fetch_user_glossary';
 
 
 const theme = createMuiTheme({
@@ -254,6 +255,10 @@ class UserGlossaryUpload extends React.Component {
                     if (res.ok) {
                         this.setState({ open: true, variantType: 'success', message:"Glossary created successfully...", showLoader: false }, () => {
                             setTimeout(() => {
+                                    const { APITransport } = this.props
+                                    let userID = JSON.parse(localStorage.getItem("userProfile")).userID
+                                    let apiObj = new ViewGlossary(userID)
+                                    APITransport(apiObj)
                                 history.push(`${process.env.PUBLIC_URL}/my-glossary`)
                             }, 3000)
                         })
