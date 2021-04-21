@@ -18,7 +18,7 @@ class LabseAlignerService:
         out = {}
         aligned_phrases = {}
         try:
-            l#og_info("Performing phrase alignenment using LABSE",MODULE_CONTEXT)
+            #log_info("Performing phrase alignenment using LABSE",MODULE_CONTEXT)
             #log_info("Input for phrase_aligner:{}".format(inputs),MODULE_CONTEXT)
             src_phrases, tgt = inputs.get("src_phrases"), inputs.get("tgt")
             
