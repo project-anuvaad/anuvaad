@@ -1,3 +1,4 @@
+import json
 import os
 import time
 
@@ -187,6 +188,8 @@ class BlockTranslationService:
         if 'data' in nmt_response.keys():
             if nmt_response['data']:
                 for translation in nmt_response["data"]:
+                    if type(translation) == "str":
+                        translation = json.loads(translation)
                     if translation["tmx_phrases"]:
                         log_info("SRC: {} | TGT: {} | TMX Count: {}".format(translation["src"], translation["tgt"],
                                                                             str(len(translation["tmx_phrases"]))), block_translate_input)
