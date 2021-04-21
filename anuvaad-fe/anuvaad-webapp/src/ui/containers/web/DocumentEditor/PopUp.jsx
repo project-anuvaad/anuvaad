@@ -14,7 +14,8 @@ class MenuClass extends React.Component {
     return result;
   }
   render() {
-    const { positionX,positionY } = this.props;
+    const { positionX, positionY } = this.props;
+    let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID
     return (
       <Popover
         id="menu-appbar"
@@ -49,12 +50,12 @@ class MenuClass extends React.Component {
 
           {!this.props.targetDict && (
             <div>
-              {!this.props.hideSplit && 
-              <Button
-                style={{ width: "100%", justifyContent: "left" }}
-                onClick={() => this.props.handleOperation(1)}
-              >
-                Split sentence
+              {!this.props.hideSplit &&
+                <Button
+                  style={{ width: "100%", justifyContent: "left" }}
+                  onClick={() => this.props.handleOperation(1)}
+                >
+                  Split sentence
               </Button>
               }
               <Button
@@ -68,24 +69,28 @@ class MenuClass extends React.Component {
                 {" "}
                 Copy
               </Button>
-              <Button
-                style={{
-                  textTransform: "none",
-                  width: "100%",
-                  justifyContent: "left",
-                }}
-                onClick={() => this.props.handleOperation(3)}
-              >
-                {" "}
-                Add to glossary
-              </Button>
-              <br />
-
-              <br />
+              {
+              orgID !== 'NONMT' &&
+                <Button
+                  style={{
+                    textTransform: "none",
+                    width: "100%",
+                    justifyContent: "left",
+                  }}
+                  onClick={() => this.props.handleOperation(3)}
+                >
+                  {" "}
+                  Add to glossary
+                </Button>
+                }
+                <br />
+  
+                <br />
+                
             </div>
           )}
         </div>
-        
+
       </Popover>
     );
   }
