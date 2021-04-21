@@ -252,16 +252,21 @@ class TMXService:
         try:
             for tmx_phrase in tmx_phrases:
                 if tmx_phrase["nmt_tgt"]:
+                    found = False
                     for nmt_tgt_phrase in tmx_phrase["nmt_tgt"]:
                         if nmt_tgt_phrase in tgt:
                             tmx_replacement.append({"src_phrase": tmx_phrase["src"], "tmx_tgt": tmx_phrase["user_tgt"],
                                                     "tgt": str(nmt_tgt_phrase), "type": "NMT"})
                             tgt = tgt.replace(nmt_tgt_phrase, tmx_phrase["user_tgt"])
+                            found = True
                             break
+                    if not found:
+                        tmx_without_nmt_phrases.append(tmx_phrase)
                 else:
                     tmx_without_nmt_phrases.append(tmx_phrase)
             tmx_tgt = tgt
             if tmx_without_nmt_phrases:
+                log_info("Phrases to LaBSE: {} | Total: {}".format(len(tmx_without_nmt_phrases), len(tmx_phrases)), ctx)
                 tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt,
                                                                               tmx_replacement, ctx)
             if tmx_tgt:
@@ -269,7 +274,7 @@ class TMXService:
             else:
                 return tgt, tmx_replacement
         except Exception as e:
-            log_exception("Exception while replacing nmt_tgt with user_tgt: " + str(e), ctx, e)
+            log_exception("Exception while replacing nmt_tgt with user_tgt: {}".format(e), ctx, e)
             return tgt, tmx_replacement
 
     # Replaces phrases in tgt with user tgts using labse alignments and updates nmt_tgt in TMX
