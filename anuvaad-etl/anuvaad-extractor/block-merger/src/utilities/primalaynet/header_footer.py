@@ -438,12 +438,15 @@ torch.manual_seed(seed)
 # model_primalaynet = lp.Detectron2LayoutModel('lp://PrimaLayout/mask_rcnn_R_50_FPN_3x/config',label_map = {1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"MathsRegion", 5:"SeparatorRegion", 6:"OtherRegion"},extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST", PRIMA_SCORE_THRESH_TEST])#,"MODEL.ROI_HEADS.NMS_THRESH_TEST", 0.2])
 # model_primalaynet = lp.Detectron2LayoutModel(
 
+# model_primalaynet = lp.Detectron2LayoutModel(LAYOUT_CONFIG_PATH, model_path=LAYOUT_MODEL_PATH,
+#                                              label_map={0: "FooterRegion", 1: "TextRegion", 2: "ImageRegion",
+#                                                         3: "TableRegion", 4: "HeaderRegion", 5: "OtherRegion"},
+#                                              extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST",
+#                                                            PRIMA_SCORE_THRESH_TEST])
 model_primalaynet = lp.Detectron2LayoutModel(LAYOUT_CONFIG_PATH, model_path=LAYOUT_MODEL_PATH,
-                                             label_map={0: "FooterRegion", 1: "TextRegion", 2: "ImageRegion",
-                                                        3: "TableRegion", 4: "HeaderRegion", 5: "OtherRegion"},
+                                             label_map={0:"FooterRegion",1:"TextRegion", 2:"ImageRegion", 3:"TableRegion", 4:"HeaderRegion",5:"OtherRegion", 6:"MathsRegion", 7:"SeparatorRegion"},
                                              extra_config=["MODEL.ROI_HEADS.SCORE_THRESH_TEST",
                                                            PRIMA_SCORE_THRESH_TEST])
-
 
 #             config_path ='lp://PubLayNet/mask_rcnn_X_101_32x8d_FPN_3x/config', # In model catalog
 #             label_map   ={0: "Text", 1: "Title", 2: "List", 3:"Table", 4:"Figure"}, # In model`label_map`
