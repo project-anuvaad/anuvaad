@@ -309,9 +309,9 @@ class TMXService:
                         log_info("LaBSE - " + str(nmt_req), ctx)
                     return tgt, tmx_replacement
             else:
-                return None
+                return tgt, tmx_replacement
         else:
-            return None
+            return tgt, tmx_replacement
 
     # Method to fetch all keys from the redis db
     def get_tmx_data(self, req):
