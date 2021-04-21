@@ -382,30 +382,6 @@ class Header extends React.Component {
                           />
                         </ListItem>
                       </div>
-                      { orgID !== 'NONMT' &&
-                        <div>
-                          <Divider className={classes.divider} />
-                          <ListItem
-                            id="my-glossary"
-                            style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "my-glossary" && themeAnuvaad.palette.primary.main }}
-                            button
-                            onClick={() => {
-                              this.handleDrawerClose(false);
-                              history.push(`${process.env.PUBLIC_URL}/my-glossary`);
-                            }}
-                          >
-
-                            <ListItemText
-                              disableTypography
-                              primary={
-                                <Typography type="body2" style={{ color: currentMenu === "my-glossary" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                                  My Glossary
-                          </Typography>
-                              }
-                            />
-                          </ListItem>
-                        </div>
-                      }
                       <div>
                         <Divider className={classes.divider} />
                         <ListItem
@@ -451,6 +427,32 @@ class Header extends React.Component {
                       />
                     </ListItem>
                   </div>)}
+                  {orgID !== 'NONMT' &&
+                    <> { role && Array.isArray(role) && !(role.includes("ANNOTATOR")) &&
+                      <div>
+                        <Divider className={classes.divider} />
+                        <ListItem
+                          id="my-glossary"
+                          style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "my-glossary" && themeAnuvaad.palette.primary.main }}
+                          button
+                          onClick={() => {
+                            this.handleDrawerClose(false);
+                            history.push(`${process.env.PUBLIC_URL}/my-glossary`);
+                          }}
+                        >
+
+                          <ListItemText
+                            disableTypography
+                            primary={
+                              <Typography type="body2" style={{ color: currentMenu === "my-glossary" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                                My Glossary
+                        </Typography>
+                            }
+                          />
+                        </ListItem>
+                      </div>
+                    }</>
+                  }
                   <div>
                     <Divider className={classes.divider} />
 

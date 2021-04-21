@@ -16,6 +16,7 @@ class MenuClass extends React.Component {
   render() {
     const { positionX, positionY } = this.props;
     let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID
+    let role = localStorage.getItem("roles")
     return (
       <Popover
         id="menu-appbar"
@@ -70,23 +71,25 @@ class MenuClass extends React.Component {
                 Copy
               </Button>
               {
-              orgID !== 'NONMT' &&
-                <Button
-                  style={{
-                    textTransform: "none",
-                    width: "100%",
-                    justifyContent: "left",
-                  }}
-                  onClick={() => this.props.handleOperation(3)}
-                >
-                  {" "}
-                  Add to glossary
-                </Button>
-                }
-                <br />
-  
-                <br />
-                
+                orgID !== 'NONMT' &&
+                <>{role !== 'ANNOTATOR' &&
+                  <Button
+                    style={{
+                      textTransform: "none",
+                      width: "100%",
+                      justifyContent: "left",
+                    }}
+                    onClick={() => this.props.handleOperation(3)}
+                  >
+                    {" "}
+                    Add to glossary
+                  </Button>
+                }</>
+              }
+              <br />
+
+              <br />
+
             </div>
           )}
         </div>
