@@ -59,6 +59,9 @@ class File:
     @log_error
     def get_file(self):
         return self.file
+    @log_error
+    def get_config(self):
+        return self.file
 
     @log_error  
     def get_pageinfo(self, page_index):

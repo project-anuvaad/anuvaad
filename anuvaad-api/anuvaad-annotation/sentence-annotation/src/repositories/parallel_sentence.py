@@ -26,7 +26,6 @@ class ParallelSentenceRepo(object):
     def store(self, source_lang, target_lang, jobId, annotationType, users, fileInfo, description):
         parallel_sentences  = []
         filepath            = os.path.join(os.curdir, config.download_folder, fileInfo['identifier'])
-
         try:
             parallel_sentences = ParseCSV.get_parallel_sentences(filepath, source_lang, target_lang)
         except Exception as e:
@@ -65,8 +64,16 @@ class ParallelSentenceRepo(object):
 
     def search_user_task(self, userId):
         results = self.parallelSentenceModel.search_user_task(userId)
+        annoted_sent_stats = self.parallelSentenceModel.get_annotation_stats(userId,code=0)
+
         if len(results) == 0:
             return {'tasks': []}
+        for result in results:
+            for stat in annoted_sent_stats:
+                if result["taskId"]==stat["taskId"]:
+                    result["saved_sentences"] = stat["saved_sentences"]
+                    result["total_sentences"] = stat["total_sentences"]
+
         return {'tasks': results}
 
     def search_taskIds_annotations(self, taskIds):
@@ -93,8 +100,16 @@ class ParallelSentenceRepo(object):
 
     def search_tasks_annotationType(self, annotationType, jobId):
         results = self.parallelSentenceModel.search_task_type(annotationType, jobId)
+        annoted_sent_stats = self.parallelSentenceModel.get_annotation_stats(jobId,code=1)
+
         if len(results) == 0:
             return {'tasks': []}
+        for result in results:
+            for stat in annoted_sent_stats:
+                if result["taskId"]==stat["taskId"]:
+                    result["saved_sentences"] = stat["saved_sentences"]
+                    result["total_sentences"] = stat["total_sentences"]
+
         return {'tasks': results}
 
     def save_annotation(self, annotation):
@@ -103,3 +118,5 @@ class ParallelSentenceRepo(object):
             if len(updated_annotation) > 0:
                 return updated_annotation[0]
         return None
+
+    

@@ -11,7 +11,7 @@ from src.services.ocr import text_extraction
 
 
 
-def process_input(app_context,base_dir) :
+def process_input(app_context,base_dir):
     try:
         files       = get_files(app_context.application_context)
         output_files= []
@@ -19,6 +19,7 @@ def process_input(app_context,base_dir) :
         for index,file in enumerate(files):
             file_output    = {"status":{}}
             file   = get_json(base_dir, file['file']['name'])[0]
+            
             file_properties = File(file)
             if "page_info" in file.keys():
                 page_paths = file_properties.get_pages()

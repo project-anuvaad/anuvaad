@@ -15,7 +15,7 @@ const getTaskDetail = (payload) => {
                 source: annotation.source.text,
                 target: annotation.target.text,
                 score: annotation.score ? annotation.score : 0,
-                saved: annotation.saved ? annotation.saved : false
+                saved: annotation.saved ? annotation.saved : ""
             })
         })
     })

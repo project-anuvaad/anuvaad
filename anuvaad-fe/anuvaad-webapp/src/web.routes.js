@@ -34,6 +34,8 @@ import DigitzeDocumentUpload from './ui/containers/web/DocumentDigitization/Docu
 import DigitizedDocumentEditor from './ui/containers/web/DocumentDigitization/DigitizedDocumentEditor';
 import ViewAnnotationJob from './ui/containers/web/GradeDocument/ViewAnnotationJobs';
 import NmtModelAssign from "./ui/containers/web/AdminPanel/NmtModelAssign";
+import ViewUserGlossary from './ui/containers/web/UserGlossary/ViewUserGlossary';
+import UserGlossaryUpload from './ui/containers/web/UserGlossary/UserGlossaryUpload';
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -148,7 +150,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-digitization/:jobId/:filename/:inputfileid/:og_fname`}
-              userRoles={["TRANSLATOR","ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={DigitizedDocumentEditor}
               title="Digitized File"
               authenticate={this.authenticateUser}
@@ -219,11 +221,22 @@ class AppRoutes extends React.Component {
               currentMenu="view-document"
               dontShowHeader={true}
             />
+            {/* <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/grading-sentence-card/:taskId`}
+              dontShowLoader
+              title={"Grade Document"}
+              userRoles={["ANNOTATOR"]}
+              component={GradeDocument}
+              authenticate={this.authenticateUser}
+              currentMenu="grade-document"
+              dontShowHeader={true}
+            /> */}
+
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-digitization`}
               dontShowLoader
               title={"Document Digitization"}
-              userRoles={["TRANSLATOR","ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={ViewDocumentDigitization}
               authenticate={this.authenticateUser}
               currentMenu="document-digitization"
@@ -234,7 +247,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/digitize-document-upload`}
               dontShowLoader
               title={"Start Digitization"}
-              userRoles={["TRANSLATOR","ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={DigitzeDocumentUpload}
               authenticate={this.authenticateUser}
               currentMenu="digitize-document-upload"
@@ -367,8 +380,29 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="view-job-detail"
               dontShowHeader={true}
-            /> */}
-            
+            />*/}
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/my-glossary`}
+              dontShowLoader
+              title={"My Glossary"}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              component={ViewUserGlossary}
+              authenticate={this.authenticateUser}
+              currentMenu="my-glossary"
+              dontShowHeader={true}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/user-glossary-upload`}
+              dontShowLoader
+              title={"User Glossary Upload"}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              component={UserGlossaryUpload}
+              authenticate={this.authenticateUser}
+              currentMenu="user-glossary-upload"
+
+            />
+
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
 
 

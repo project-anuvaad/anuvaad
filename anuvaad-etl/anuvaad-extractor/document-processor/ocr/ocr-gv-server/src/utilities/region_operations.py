@@ -264,7 +264,7 @@ def collate_cell_regions(regions, lines, child_class=None, grand_children=False,
                 
     return regions
 
-def collate_text(craft_words, google_words):
+def collate_text(file,craft_words, google_words):
   
     idx = index.Index()
     words_intersected = []
@@ -302,8 +302,9 @@ def collate_text(craft_words, google_words):
                         except Exception as e:
                             print('error in collating text' + str(e))
 
-                    #print(text)
-                    if len(region_words)>0:
+                    if  "craft_word" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_word"]=="False" and len(region_words)>0:
+                        craft_words[region_index]['boundingBox'] = merge_corrds(region_words)
+                    if  "craft_word" not in file['config']["OCR"].keys() and len(region_words)>0:
                         craft_words[region_index]['boundingBox'] = merge_corrds(region_words)
                 craft_words[region_index]['text'] = text
         
