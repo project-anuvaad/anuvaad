@@ -478,6 +478,10 @@ class TranslatorService:
         utm_enabled = utils.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, False)[1]
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
+            log_info("PAGE_NO: {} | BATCH_ID: {} | SRC: {} | TGT: {}".format(page_no, nmt_res_sentence["batch_id"],
+                                                                             nmt_res_sentence["src"],
+                                                                             nmt_res_sentence["tgt"]),
+                     translate_wf_input)
             if user_translation_enabled and utm_enabled:
                 user_id = translate_wf_input["metadata"]["userID"]
                 file = translate_wf_input["input"]["files"][0]

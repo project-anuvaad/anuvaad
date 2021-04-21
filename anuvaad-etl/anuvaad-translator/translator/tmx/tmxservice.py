@@ -291,7 +291,8 @@ class TMXService:
                 nmt_response = json.loads(nmt_response.text)
             if 'status' in nmt_response.keys():
                 if nmt_response["status"]["statusCode"] != 200:
-                    return None
+                    log_info("LaBSE Error: {}".format(nmt_response["status"]["message"]), ctx)
+                    return tgt, tmx_replacement
                 else:
                     nmt_aligned_phrases = nmt_response["response_body"][0]["aligned_phrases"]
                     if nmt_aligned_phrases:
