@@ -478,10 +478,6 @@ class TranslatorService:
         utm_enabled = utils.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, False)[1]
         for nmt_res_sentence in nmt_res_batch:
             node = str(nmt_res_sentence["n_id"]).split("|")
-            log_info("PAGE_NO: {} | BATCH_ID: {} | SRC: {} | TGT: {}".format(page_no, nmt_res_sentence["batch_id"],
-                                                                             nmt_res_sentence["src"],
-                                                                             nmt_res_sentence["tgt"]),
-                     translate_wf_input)
             if user_translation_enabled and utm_enabled:
                 user_id = translate_wf_input["metadata"]["userID"]
                 file = translate_wf_input["input"]["files"][0]
@@ -504,13 +500,10 @@ class TranslatorService:
             if nmt_res_sentence["tmx_phrases"]:
                 log_info("PAGE NO: {} | BATCH ID: {} "
                          "| SRC: {} | TGT: {} | TMX Count: {}".format(page_no, nmt_res_sentence["batch_id"],
-                                                                      nmt_res_sentence["src"],
-                                                                      nmt_res_sentence["tgt"],
-                                                                      str(len(nmt_res_sentence["tmx_phrases"]))),
+                          nmt_res_sentence["src"], nmt_res_sentence["tgt"], str(len(nmt_res_sentence["tmx_phrases"]))),
                          translate_wf_input)
                 nmt_res_sentence["tgt"], nmt_res_sentence["tmx_replacement"] = tmxservice.replace_nmt_tgt_with_user_tgt(
-                    nmt_res_sentence["tmx_phrases"],
-                    nmt_res_sentence["tgt"], translate_wf_input)
+                    nmt_res_sentence["tmx_phrases"], nmt_res_sentence["tgt"], translate_wf_input)
                 log_info(nmt_res_sentence["tmx_replacement"], translate_wf_input)
             block_id = node[3]
             b_index, s_index = None, None

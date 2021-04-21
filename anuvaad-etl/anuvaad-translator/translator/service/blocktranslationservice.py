@@ -150,7 +150,7 @@ class BlockTranslationService:
         log_info("NMT: " + str(len(sent_for_nmt)) + " | TMX: " + str(tmx_count), block_translate_input)
         return sent_for_nmt, modified_sentences
 
-    # Checks if org level or user level TMX is applicable to the file under translation.
+    # Checks if org level or user level TMX is applicable to the blocks under translation.
     def is_tmx_present(self, block_translate_input):
         if tmx_enabled:
             if 'context' not in block_translate_input["input"].keys():
