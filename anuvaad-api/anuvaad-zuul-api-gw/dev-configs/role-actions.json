@@ -619,6 +619,21 @@
             "role":"ADMIN",
             "actionID": "0976372a-28b2-438b-9ec5-15952a31d224",
             "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "752bff69-e7ed-44bd-9218-ee65f4febb8c",
+            "active":true
+        },
+        {
+            "role":"TRANSLATOR",
+            "actionID": "752bff69-e7ed-44bd-9218-ee65f4febb8c",
+            "active":true
+        },
+        {
+            "role":"ANNOTATOR",
+            "actionID": "752bff69-e7ed-44bd-9218-ee65f4febb8c",
+            "active":true
         }
     ]
 }
