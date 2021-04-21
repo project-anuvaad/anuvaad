@@ -3,15 +3,18 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class DeleteGlossary extends API {
-    constructor(userID = "", src = "", tgt = "", locale = "", context = "", timeout = 2000) {
+    constructor(userID = "", src = "", tgt = "", locale = "", reversedLocale = "", context = "", bulkDelete = false, deletionArray = [], timeout = 2000) {
         super('POST', timeout, false);
         this.type = C.DELETE_GLOSSARY;
         this.userID = userID;
         this.src = src;
         this.tgt = tgt;
         this.locale = locale;
-        this.context = context
+        this.context = context;
+        this.reversedLocale = reversedLocale;
         this.response = "";
+        this.bulkDelete = bulkDelete;
+        this.deletionArray = deletionArray;
         this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.delete_user_glossary}`;
     }
 
@@ -31,6 +34,13 @@ export default class DeleteGlossary extends API {
     }
 
     getBody() {
+        if (this.bulkDelete) {
+            return {
+                context: this.context,
+                userID: this.userID,
+                sentences: this.deletionArray
+            }
+        }
         return {
             context: this.context,
             userID: this.userID,
@@ -42,7 +52,7 @@ export default class DeleteGlossary extends API {
                 },
                 {
                     src: this.tgt,
-                    locale: this.locale,
+                    locale: this.reversedLocale,
                     tgt: this.src
                 }
             ]

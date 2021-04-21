@@ -133,6 +133,7 @@ class Header extends React.Component {
       useRole.push(item); value !== role.length - 1 && useRole.push(", ")
       return true;
     });
+    let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID
     const ToolbarComp = this.props.toolBarComp; // eslint-disable-line
 
     return (
@@ -381,28 +382,30 @@ class Header extends React.Component {
                           />
                         </ListItem>
                       </div>
-                      <div>
-                        <Divider className={classes.divider} />
-                        <ListItem
-                          id="my-glossary"
-                          style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "my-glossary" && themeAnuvaad.palette.primary.main }}
-                          button
-                          onClick={() => {
-                            this.handleDrawerClose(false);
-                            history.push(`${process.env.PUBLIC_URL}/my-glossary`);
-                          }}
-                        >
+                      { orgID !== 'NONMT' &&
+                        <div>
+                          <Divider className={classes.divider} />
+                          <ListItem
+                            id="my-glossary"
+                            style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "my-glossary" && themeAnuvaad.palette.primary.main }}
+                            button
+                            onClick={() => {
+                              this.handleDrawerClose(false);
+                              history.push(`${process.env.PUBLIC_URL}/my-glossary`);
+                            }}
+                          >
 
-                          <ListItemText
-                            disableTypography
-                            primary={
-                              <Typography type="body2" style={{ color: currentMenu === "my-glossary" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                                My Glossary
+                            <ListItemText
+                              disableTypography
+                              primary={
+                                <Typography type="body2" style={{ color: currentMenu === "my-glossary" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                                  My Glossary
                           </Typography>
-                            }
-                          />
-                        </ListItem>
-                      </div>
+                              }
+                            />
+                          </ListItem>
+                        </div>
+                      }
                       <div>
                         <Divider className={classes.divider} />
                         <ListItem
