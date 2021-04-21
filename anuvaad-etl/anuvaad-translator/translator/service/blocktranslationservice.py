@@ -47,6 +47,10 @@ class BlockTranslationService:
                     log_info("Job belongs to NONMT type!", block_translate_input)
                     nmt_response = {"data": nmt_in_txt}
                 if nmt_response:
+                    if 'status' in nmt_response.keys():
+                        if nmt_response["status"]["statusCode"] != 200:
+                            fail_msg = "Error while translating from NMT: " + str(nmt_response["status"]["message"])
+                            log_error(fail_msg, block_translate_input, None)
                     ch_input = self.get_translations_ip_ch(nmt_response, block_translate_input)
                     if ch_input:
                         log_info("API call to CH...", block_translate_input)

@@ -292,6 +292,8 @@ class TMXService:
             if 'status' in nmt_response.keys():
                 if nmt_response["status"]["statusCode"] != 200:
                     log_info("LaBSE Error: {}".format(nmt_response["status"]["message"]), ctx)
+                    log_info("LaBSE Error URL: {}".format(nmt_labse_align_url), ctx)
+                    log_info("LaBSE Error Body: {}".format(nmt_response), ctx)
                     return tgt, tmx_replacement
                 else:
                     nmt_aligned_phrases = nmt_response["response_body"][0]["aligned_phrases"]
