@@ -188,11 +188,12 @@ class TMXService:
                 phrase = sentence[hopping_pivot:sliding_pivot]
                 phrase_size = phrase.split(" ")
                 if len(phrase_size) <= tmx_word_length:
-                    suffix_phrase_list = [phrase]
+                    suffix_phrase_list, found = [phrase], False
                     if phrase.endswith(".") or phrase.endswith(","):
                         short = phrase.rstrip('.,')
                         suffix_phrase_list.append(short)
-                    log_info("PHRASES: {}".format(suffix_phrase_list), ctx)
+                    if len(suffix_phrase_list) > 1:
+                        log_info("PHRASES: {}".format(suffix_phrase_list), ctx)
                     for phrases in suffix_phrase_list:
                         tmx_record["src"] = phrases
                         tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
@@ -207,8 +208,10 @@ class TMXService:
                                 r_count += 1
                             else:
                                 c_count += 1
+                            found = True
                             break
-                    continue
+                    if found:
+                        continue
                 sent_list = sentence.split(" ")
                 phrase_list = phrase.split(" ")
                 reduced_phrase = ' '.join(sent_list[0: len(sent_list) - i])
