@@ -192,8 +192,6 @@ class TMXService:
                     if phrase.endswith(".") or phrase.endswith(","):
                         short = phrase.rstrip('.,')
                         suffix_phrase_list.append(short)
-                    if len(suffix_phrase_list) > 1:
-                        log_info("PHRASES: {}".format(suffix_phrase_list), ctx)
                     for phrases in suffix_phrase_list:
                         tmx_record["src"] = phrases
                         tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
