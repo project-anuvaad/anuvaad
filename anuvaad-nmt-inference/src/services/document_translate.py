@@ -161,7 +161,7 @@ class NMTTranslateService:
                     tagged_tgt_list[i] = translation_array[i]                           
                     translation_array[i] = tagger_util.replace_tags_with_original(translation_array[i],\
                         date_original_array[i],url_original_array[i],num_array_array[i],num_map_array[i])
-                    translation_array[i] = oc.cleaner(tagged_src_list[i],translation_array[i],model_id)
+                    translation_array[i] = oc.cleaner(tagged_src_list[i],translation_array[i],tgt_language)
                     tgt_list[i] = translation_array[i]
                     log_info("translate_function-experiment-{} output: {}".format(model_id,translation_array[i]),MODULE_CONTEXT)
 

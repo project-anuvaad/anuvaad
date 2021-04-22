@@ -6,8 +6,8 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 from utilities import MODULE_CONTEXT
 import utilities.misc as misc
 
-def cleaner(src,tgt,id):
-    if id == 56:
+def cleaner(src,tgt,tgt_language):
+    if tgt_language in ["hi","bn"]:
         return purnaviram_applier(src,tgt)
     else:
         return tgt
