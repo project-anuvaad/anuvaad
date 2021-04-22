@@ -46,9 +46,9 @@ def extract_pdf_images(filename, base_dir):
 
 def resize_image(image_paths):
     '''
-    Google ocr will not process an image if it has more than 75M pixels
+    Google ocr will not process an image if it has more than 65M pixels
     '''
-    max_res  = 74_000_000
+    max_res  = 65_000_000
     try:
         if image_paths is not None and len(image_paths) > 0:
             for path in image_paths:
