@@ -190,8 +190,9 @@ class TMXService:
                 if len(phrase_size) <= tmx_word_length:
                     suffix_phrase_list = [phrase]
                     if phrase.endswith(".") or phrase.endswith(","):
-                        short = phrase
+                        short = phrase.rstrip('.,')
                         suffix_phrase_list.append(short)
+                    log_info("PHRASES: {}".format(suffix_phrase_list), ctx)
                     for phrases in suffix_phrase_list:
                         tmx_record["src"] = phrases
                         tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
@@ -249,7 +250,7 @@ class TMXService:
                     return tmx_result, True
             else:
                 return tmx_file_cache[hash_dict["GLOBAL"]], False
-        return None, None
+        return None, False
 
     # Replaces TMX phrases in NMT tgt using TMX NMT phrases and LaBSE alignments
     def replace_nmt_tgt_with_user_tgt(self, tmx_phrases, tgt, ctx):
