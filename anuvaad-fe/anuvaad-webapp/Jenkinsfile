@@ -20,7 +20,7 @@ if [  $( docker ps -q -f status=exited --filter "name=$JOB_BASE_NAME" ) ]
 then
 docker rm "$JOB_BASE_NAME"
 fi
-docker run -v $(pwd):/opt --name "$JOB_BASE_NAME" anuvaadio/anuvaad-node-npm6.14.8-base:1 /bin/sh -c "cd /opt && rm -rf package-lock.json && npm install &&  npm run build"
+docker run -v $(pwd):/opt --name "$JOB_BASE_NAME" anuvaadio/anuvaad-node-npm6.14.8-base:1 /bin/sh -c "cd /opt && rm -rf package-lock.json && npm cache clean --force && npm install &&  npm run build"
 docker rm "$JOB_BASE_NAME"
 commit_id=${BUILD_ID}-$(git rev-parse --short HEAD)
 echo $commit_id> commit_id.txt
