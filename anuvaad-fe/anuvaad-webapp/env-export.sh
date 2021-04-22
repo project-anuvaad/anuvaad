@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ENV_FILE_PATH='/usr/share/nginx/html/env'
+ENV_FILE_PATH='/usr/share/nginx/html/.env'
 echo `echo NGINX_VERSION=$NGINX_VERSION` > $ENV_FILE_PATH
 echo `echo SHELL=$SHELL` >> $ENV_FILE_PATH
 echo `echo REACT_APP_GNMT_ADAPTER_TRANSLATE_ENDPOINT`=$REACT_APP_GNMT_ADAPTER_TRANSLATE_ENDPOINT >>  $ENV_FILE_PATH
