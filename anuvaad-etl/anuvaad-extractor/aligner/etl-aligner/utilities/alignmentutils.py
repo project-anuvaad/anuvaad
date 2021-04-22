@@ -21,11 +21,13 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
 from anuvaad_auditor.loghandler import log_exception
+from configs.alignerconfig import gpu_status
 
+
+use_gpu = gpu_status
 log = logging.getLogger('file')
 two_files = True
 no_of_words = 200
-use_gpu = True
 file_encoding = 'utf-16'
 
 class AlignmentUtils:
@@ -179,34 +181,34 @@ class AlignmentUtils:
         return scores
 
 
-    def kNN(self, x, y, k, use_ann_search=False, ann_num_clusters=32768, ann_num_cluster_probe=3):
+    def kNN(self, object_in, x, y, k, use_ann_search=False, ann_num_clusters=32768, ann_num_cluster_probe=3):
         start_time = time.time()
         if use_ann_search:
 
-            log_info("Performing approx. kNN search" , None)
+            log_info("Performing Approx. kNN search" , object_in)
             n_cluster = min(ann_num_clusters, int(y.shape[0]/1000))
             quantizer = faiss.IndexFlatIP(y.shape[1])
             index = faiss.IndexIVFFlat(quantizer, y.shape[1], n_cluster, faiss.METRIC_INNER_PRODUCT)
             if use_gpu:
                 index = faiss.index_cpu_to_all_gpus(index)
-                log_info("GPU Enabled" , None)
+                log_info("GPU Enabled for Faiss" , object_in)
 
             index.nprobe = ann_num_cluster_probe
             index.train(y)
             index.add(y)
             sim, ind = index.search(x, k)
         else:
-            log_info("Performing Exact kNN search" , None)
+            log_info("Performing Exact kNN search" , object_in)
 
             idx = faiss.IndexFlatIP(y.shape[1])
             if use_gpu:
                 idx = faiss.index_cpu_to_all_gpus(idx)  
-                log_info("GPU Enabled" , None)
+                log_info("GPU Enabled for Faiss" , object_in)
           
             idx.add(y)
             sim, ind = idx.search(x, k)
 
-        log_info("Done: {:.2f} sec".format(time.time()-start_time) , None)
+        log_info("KNN Done: {:.2f} sec".format(time.time()-start_time) , None)
 
 
         return sim, ind

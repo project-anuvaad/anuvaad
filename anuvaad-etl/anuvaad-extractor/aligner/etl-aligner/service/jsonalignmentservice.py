@@ -39,7 +39,7 @@ service = AlignmentService()
 knn_neighbors = 2
 
 # Min score for text pairs. Note, score can be larger than 1
-min_threshold = 1
+min_threshold = 1.02
 
 #Do we want to use exact search of approximate nearest neighbor search (ANN)
 #Exact search: Slower, but we don't miss any parallel sentences
@@ -130,10 +130,10 @@ class JsonAlignmentService:
             # y = target_embeddings
             y = y / np.linalg.norm(y, axis=1, keepdims=True)
             # Perform kNN in both directions
-            x2y_sim, x2y_ind = util.kNN(x, y, knn_neighbors, use_ann_search, ann_num_clusters, ann_num_cluster_probe)
+            x2y_sim, x2y_ind = util.kNN(object_in, x, y, knn_neighbors, use_ann_search, ann_num_clusters, ann_num_cluster_probe)
             x2y_mean = x2y_sim.mean(axis=1)
 
-            y2x_sim, y2x_ind = util.kNN(y, x, knn_neighbors, use_ann_search, ann_num_clusters, ann_num_cluster_probe)
+            y2x_sim, y2x_ind = util.kNN(object_in, y, x, knn_neighbors, use_ann_search, ann_num_clusters, ann_num_cluster_probe)
             y2x_mean = y2x_sim.mean(axis=1)
 
             # Compute forward and backward scores
@@ -161,16 +161,12 @@ class JsonAlignmentService:
                 if src_ind not in seen_src and trg_ind not in seen_trg:
                     seen_src.add(src_ind)
                     seen_trg.add(trg_ind)
-                    # fOut.write("{:.4f}\t{}\t{}\n".format(scores[i], source_sentences[src_ind].replace("\t", " "), target_sentences[trg_ind].replace("\t", " ")))
                     src_out.append(source[src_ind].replace("\t", " "))
                     tgt_out.append(target_corp[trg_ind].replace("\t", " "))
                     score_out.append(scores[i])
                     sentences_written += 1
             try:
                 df = pd.DataFrame(list(zip(src_out, tgt_out, score_out)),columns = ['src_out', 'tgt_out','score_out'])
-
-                # df = pd.DataFrame(list(zip(source_reformatted, target_refromatted, source_target_ref_score)),columns = ['src', 'tgt','cs'])
-
                 output_dict = self.generate_output(object_in, df)
                 if output_dict is not None:
 
@@ -229,9 +225,10 @@ class JsonAlignmentService:
     def generate_output(self, object_in, df):
         try:
             log_info("Generating the Json output.....", object_in)
-            output_json = directory_path + file_path_delimiter +  object_in["jobID"]+ "-aligner-op.json"
+            json_filename = object_in["jobID"]+ "-aligner-op.json"
+            output_json = directory_path + file_path_delimiter +  json_filename
             alignmentutils.write_json_output(df, output_json)
-            return {"json_out" : output_json }
+            return {"json_out" : json_filename }
         except Exception as e:
             log_exception("Exception while writing output to files: " + str(e), object_in, e)
             return None
