@@ -158,12 +158,8 @@ class TMXService:
             tmx_record["userID"] = user_id
         if org_id:
             tmx_record["orgID"] = org_id
-        try:
-            tmx_phrases, res_dict = self.tmx_phrase_search(tmx_record, tmx_level, tmx_file_cache, ctx)
-            return tmx_phrases, res_dict
-        except Exception as e:
-            log_exception("Exception while searching tmx from redis: " + str(e), ctx, e)
-            return [], {"computed": 0, "redis": 0, "cache": 0}
+        tmx_phrases, res_dict = self.tmx_phrase_search(tmx_record, tmx_level, tmx_file_cache, ctx)
+        return tmx_phrases, res_dict
 
     # Generates a 3 flavors for a sentence - title case, lowercase and uppercase.
     def fetch_diff_flavors_of_sentence(self, sentence):
@@ -182,38 +178,47 @@ class TMXService:
         return result
 
     # Searches for all tmx phrases of a fixed length within a given sentence
-    # Uses a custom implementation of the sliding window search algorithm.
+    # Uses a custom implementation of the sliding window search algorithm - we call it hopping window.
     def tmx_phrase_search(self, tmx_record, tmx_level, tmx_file_cache, ctx):
         sentence, tmx_phrases = tmx_record["src"], []
         hopping_pivot, sliding_pivot, i = 0, len(sentence), 1
         computed, r_count, c_count = 0, 0, 0,
-        while hopping_pivot < len(sentence):
-            phrase = sentence[hopping_pivot:sliding_pivot]
-            phrase_size = phrase.split(" ")
-            if len(phrase_size) <= tmx_word_length:
-                tmx_record["src"] = phrase
-                tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
-                computed += 1
-                if tmx_result:
-                    tmx_phrases.append(tmx_result[0])
-                    phrase_list = phrase.split(" ")
+        try:
+            while hopping_pivot < len(sentence):
+                phrase = sentence[hopping_pivot:sliding_pivot]
+                phrase_size = phrase.split(" ")
+                if len(phrase_size) <= tmx_word_length:
+                    suffix_phrase_list = [phrase]
+                    if phrase.endswith(".") or phrase.endswith(","):
+                        short = phrase[:-1]
+                        suffix_phrase_list.append(short)
+                    for phrases in suffix_phrase_list:
+                        tmx_record["src"] = phrases
+                        tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
+                        computed += 1
+                        if tmx_result:
+                            tmx_phrases.append(tmx_result[0])
+                            phrase_list = phrase.split(" ")
+                            hopping_pivot += (1 + len(' '.join(phrase_list)))
+                            sliding_pivot = len(sentence)
+                            i = 1
+                            if fetch is True:
+                                r_count += 1
+                            else:
+                                c_count += 1
+                            break
+                    continue
+                sent_list = sentence.split(" ")
+                phrase_list = phrase.split(" ")
+                reduced_phrase = ' '.join(sent_list[0: len(sent_list) - i])
+                sliding_pivot = len(reduced_phrase)
+                i += 1
+                if hopping_pivot == sliding_pivot or (hopping_pivot - 1) == sliding_pivot:
                     hopping_pivot += (1 + len(' '.join(phrase_list)))
                     sliding_pivot = len(sentence)
                     i = 1
-                    if fetch is True:
-                        r_count += 1
-                    else:
-                        c_count += 1
-                    continue
-            sent_list = sentence.split(" ")
-            phrase_list = phrase.split(" ")
-            reduced_phrase = ' '.join(sent_list[0: len(sent_list) - i])
-            sliding_pivot = len(reduced_phrase)
-            i += 1
-            if hopping_pivot == sliding_pivot or (hopping_pivot - 1) == sliding_pivot:
-                hopping_pivot += (1 + len(' '.join(phrase_list)))
-                sliding_pivot = len(sentence)
-                i = 1
+        except Exception as e:
+            log_exception("Exception in Hopping Window Search: {}".format(e), ctx, None)
         res_dict = {"computed": computed, "redis": r_count, "cache": c_count}
         return tmx_phrases, res_dict
 
@@ -252,16 +257,21 @@ class TMXService:
         try:
             for tmx_phrase in tmx_phrases:
                 if tmx_phrase["nmt_tgt"]:
+                    found = False
                     for nmt_tgt_phrase in tmx_phrase["nmt_tgt"]:
                         if nmt_tgt_phrase in tgt:
                             tmx_replacement.append({"src_phrase": tmx_phrase["src"], "tmx_tgt": tmx_phrase["user_tgt"],
                                                     "tgt": str(nmt_tgt_phrase), "type": "NMT"})
                             tgt = tgt.replace(nmt_tgt_phrase, tmx_phrase["user_tgt"])
+                            found = True
                             break
+                    if not found:
+                        tmx_without_nmt_phrases.append(tmx_phrase)
                 else:
                     tmx_without_nmt_phrases.append(tmx_phrase)
             tmx_tgt = tgt
             if tmx_without_nmt_phrases:
+                log_info("Phrases to LaBSE: {} | Total: {}".format(len(tmx_without_nmt_phrases), len(tmx_phrases)), ctx)
                 tmx_tgt, tmx_replacement = self.replace_with_labse_alignments(tmx_without_nmt_phrases, tgt,
                                                                               tmx_replacement, ctx)
             if tmx_tgt:
@@ -269,7 +279,7 @@ class TMXService:
             else:
                 return tgt, tmx_replacement
         except Exception as e:
-            log_exception("Exception while replacing nmt_tgt with user_tgt: " + str(e), ctx, e)
+            log_exception("Exception while replacing nmt_tgt with user_tgt: {}".format(e), ctx, e)
             return tgt, tmx_replacement
 
     # Replaces phrases in tgt with user tgts using labse alignments and updates nmt_tgt in TMX
@@ -286,7 +296,8 @@ class TMXService:
                 nmt_response = json.loads(nmt_response.text)
             if 'status' in nmt_response.keys():
                 if nmt_response["status"]["statusCode"] != 200:
-                    return None
+                    log_info("LaBSE Error: {}".format(nmt_response["status"]["message"]), ctx)
+                    return tgt, tmx_replacement
                 else:
                     nmt_aligned_phrases = nmt_response["response_body"][0]["aligned_phrases"]
                     if nmt_aligned_phrases:
@@ -304,9 +315,9 @@ class TMXService:
                         log_info("LaBSE - " + str(nmt_req), ctx)
                     return tgt, tmx_replacement
             else:
-                return None
+                return tgt, tmx_replacement
         else:
-            return None
+            return tgt, tmx_replacement
 
     # Method to fetch all keys from the redis db
     def get_tmx_data(self, req):

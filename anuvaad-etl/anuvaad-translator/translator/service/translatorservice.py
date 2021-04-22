@@ -500,13 +500,10 @@ class TranslatorService:
             if nmt_res_sentence["tmx_phrases"]:
                 log_info("PAGE NO: {} | BATCH ID: {} "
                          "| SRC: {} | TGT: {} | TMX Count: {}".format(page_no, nmt_res_sentence["batch_id"],
-                                                                      nmt_res_sentence["src"],
-                                                                      nmt_res_sentence["tgt"],
-                                                                      str(len(nmt_res_sentence["tmx_phrases"]))),
+                          nmt_res_sentence["src"], nmt_res_sentence["tgt"], str(len(nmt_res_sentence["tmx_phrases"]))),
                          translate_wf_input)
                 nmt_res_sentence["tgt"], nmt_res_sentence["tmx_replacement"] = tmxservice.replace_nmt_tgt_with_user_tgt(
-                    nmt_res_sentence["tmx_phrases"],
-                    nmt_res_sentence["tgt"], translate_wf_input)
+                    nmt_res_sentence["tmx_phrases"], nmt_res_sentence["tgt"], translate_wf_input)
                 log_info(nmt_res_sentence["tmx_replacement"], translate_wf_input)
             block_id = node[3]
             b_index, s_index = None, None
