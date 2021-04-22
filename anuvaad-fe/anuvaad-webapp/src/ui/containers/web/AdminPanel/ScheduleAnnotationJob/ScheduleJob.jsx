@@ -132,7 +132,7 @@ class ScheduleJob extends React.Component {
 
         e.preventDefault();
         this.setState({ model: modelId, showLoader: true })
-        if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code) {
+        if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code && this.state.description) {
             const { APITransport } = this.props;
             const apiObj = new DocumentUpload(
                 this.state.files, "docUplaod",
