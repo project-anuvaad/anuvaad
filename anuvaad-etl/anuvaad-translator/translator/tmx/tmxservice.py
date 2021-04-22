@@ -182,7 +182,7 @@ class TMXService:
         return result
 
     # Searches for all tmx phrases of a fixed length within a given sentence
-    # Uses a custom implementation of the sliding window search algorithm.
+    # Uses a custom implementation of the sliding window search algorithm - we call it hopping window.
     def tmx_phrase_search(self, tmx_record, tmx_level, tmx_file_cache, ctx):
         sentence, tmx_phrases = tmx_record["src"], []
         hopping_pivot, sliding_pivot, i = 0, len(sentence), 1
@@ -191,20 +191,25 @@ class TMXService:
             phrase = sentence[hopping_pivot:sliding_pivot]
             phrase_size = phrase.split(" ")
             if len(phrase_size) <= tmx_word_length:
-                tmx_record["src"] = phrase
-                tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
-                computed += 1
-                if tmx_result:
-                    tmx_phrases.append(tmx_result[0])
-                    phrase_list = phrase.split(" ")
-                    hopping_pivot += (1 + len(' '.join(phrase_list)))
-                    sliding_pivot = len(sentence)
-                    i = 1
-                    if fetch is True:
-                        r_count += 1
-                    else:
-                        c_count += 1
-                    continue
+                phrase_list = [phrase]
+                if str(phrase).endswith(".") or str(phrase).endswith(","):
+                    phrase_list.append(phrase[:-1])
+                for phrases in phrase_list:
+                    tmx_record["src"] = phrases
+                    tmx_result, fetch = self.get_tmx_with_fallback(tmx_record, tmx_level, tmx_file_cache, ctx)
+                    computed += 1
+                    if tmx_result:
+                        tmx_phrases.append(tmx_result[0])
+                        phrase_list = phrases.split(" ")
+                        hopping_pivot += (1 + len(' '.join(phrase_list)))
+                        sliding_pivot = len(sentence)
+                        i = 1
+                        if fetch is True:
+                            r_count += 1
+                        else:
+                            c_count += 1
+                        break
+                continue
             sent_list = sentence.split(" ")
             phrase_list = phrase.split(" ")
             reduced_phrase = ' '.join(sent_list[0: len(sent_list) - i])
