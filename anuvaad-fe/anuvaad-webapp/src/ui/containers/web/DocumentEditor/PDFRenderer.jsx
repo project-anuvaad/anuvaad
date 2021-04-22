@@ -82,7 +82,7 @@ class PDFRenderer extends React.Component {
 
   render() {
     const { pageNo, filename } = this.props;
-    const url = `${process.env.REACT_APP_BASE_URL ? process.env.REACT_APP_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${filename}`;
+    const url = `${process.env.REACT_APP_APIGW_BASE_URL ? process.env.REACT_APP_APIGW_BASE_URL : "https://auth.anuvaad.org"}/anuvaad/v1/download?file=${filename}`;
 
     return (
       <div>
