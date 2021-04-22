@@ -198,7 +198,7 @@ class AlignmentUtils:
             index.add(y)
             sim, ind = index.search(x, k)
         else:
-            log_info("Performing Exact kNN search" , object_in)
+            log_info("Performing Exact search" , object_in)
 
             idx = faiss.IndexFlatIP(y.shape[1])
             if use_gpu:
@@ -208,7 +208,7 @@ class AlignmentUtils:
             idx.add(y)
             sim, ind = idx.search(x, k)
 
-        log_info("KNN Done: {:.2f} sec".format(time.time()-start_time) , None)
+        log_info("KNN Done: {:.2f} sec".format(time.time()-start_time) , object_in)
 
 
         return sim, ind
