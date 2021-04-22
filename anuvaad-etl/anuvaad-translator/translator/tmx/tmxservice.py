@@ -198,7 +198,7 @@ class TMXService:
                         computed += 1
                         if tmx_result:
                             tmx_phrases.append(tmx_result[0])
-                            phrase_list = phrases.split(" ")
+                            phrase_list = phrase.split(" ")
                             hopping_pivot += (1 + len(' '.join(phrase_list)))
                             sliding_pivot = len(sentence)
                             i = 1
