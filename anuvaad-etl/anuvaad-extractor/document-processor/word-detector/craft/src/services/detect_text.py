@@ -1,10 +1,15 @@
 from src.utilities.tilt_alignment import Orientation
 from src.utilities.craft_pytorch.detect import detect_text
 import config
-
+import torch
 
 
 def get_coords(images,languages='hi'):
+    if torch.cuda.is_available():
+        torch.cuda.device(0)
+        print("*******cuda available")
+        torch.cuda.empty_cache()
+        
     if config.ALIGN:
         words, lines = [] , []
         for file_imgs in images:
