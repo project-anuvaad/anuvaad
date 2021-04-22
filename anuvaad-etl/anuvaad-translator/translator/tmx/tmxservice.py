@@ -188,9 +188,9 @@ class TMXService:
                 phrase = sentence[hopping_pivot:sliding_pivot]
                 phrase_size = phrase.split(" ")
                 if len(phrase_size) <= tmx_word_length:
-                    suffix_phrase_list = [phrase]
+                    suffix_phrase_list, found = [phrase], False
                     if phrase.endswith(".") or phrase.endswith(","):
-                        short = phrase[:-1]
+                        short = phrase.rstrip('.,')
                         suffix_phrase_list.append(short)
                     for phrases in suffix_phrase_list:
                         tmx_record["src"] = phrases
@@ -206,8 +206,10 @@ class TMXService:
                                 r_count += 1
                             else:
                                 c_count += 1
+                            found = True
                             break
-                    continue
+                    if found:
+                        continue
                 sent_list = sentence.split(" ")
                 phrase_list = phrase.split(" ")
                 reduced_phrase = ' '.join(sent_list[0: len(sent_list) - i])
@@ -249,7 +251,7 @@ class TMXService:
                     return tmx_result, True
             else:
                 return tmx_file_cache[hash_dict["GLOBAL"]], False
-        return None, None
+        return None, False
 
     # Replaces TMX phrases in NMT tgt using TMX NMT phrases and LaBSE alignments
     def replace_nmt_tgt_with_user_tgt(self, tmx_phrases, tgt, ctx):

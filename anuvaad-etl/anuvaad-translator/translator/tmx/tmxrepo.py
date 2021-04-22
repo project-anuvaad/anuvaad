@@ -51,7 +51,7 @@ class TMXRepository:
             client.set(key, json.dumps(value))
             return 1
         except Exception as e:
-            log_exception("Exception in REPO: upsert | Cause: " + str(e), None, e)
+            log_exception("Exception in TMXREPO: upsert | Cause: " + str(e), None, e)
             return None
 
     def delete(self, key):
@@ -60,7 +60,7 @@ class TMXRepository:
             client.delete(key)
             return 1
         except Exception as e:
-            log_exception("Exception in REPO: delete | Cause: " + str(e), None, e)
+            log_exception("Exception in TMXREPO: delete | Cause: " + str(e), None, e)
             return None
 
     def search(self, key_list):
@@ -73,7 +73,7 @@ class TMXRepository:
                     result.append(json.loads(val))
             return result
         except Exception as e:
-            log_exception("Exception in REPO: search | Cause: " + str(e), None, e)
+            log_exception("Exception in TMXREPO: search | Cause: " + str(e), None, e)
             return None
 
     def get_all_records(self, key_list):
@@ -88,7 +88,7 @@ class TMXRepository:
                     result.append(json.loads(val))
             return result
         except Exception as e:
-            log_exception("Exception in REPO: search | Cause: " + str(e), None, e)
+            log_exception("Exception in TMXREPO: search | Cause: " + str(e), None, e)
             return None
 
     # Inserts the object into mongo collection
