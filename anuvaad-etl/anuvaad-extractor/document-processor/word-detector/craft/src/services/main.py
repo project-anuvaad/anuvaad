@@ -6,6 +6,7 @@ import config
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
+import torch
 
 from src.services.detect_text import get_coords
 
@@ -36,6 +37,10 @@ def get_response(app_context, words, lines, images):
                     page_lines = lines[file_index][page_index]
                 else:
                     page_lines = []
+                if torch.cuda.is_available():
+                    torch.cuda.device(0)
+                    print("*******cuda available")
+                    torch.cuda.empty_cache()
                 page_properties = Page(page_words, page_lines, page)
                 file_prperties.set_page(page_properties.get_page())
                 file_prperties.set_page_info(page)
