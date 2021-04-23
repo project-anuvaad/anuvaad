@@ -46,12 +46,8 @@ class AnnotationTaskUserTaskSearchResource(Resource):
         
         try:
             result = parallelSentenceAnnotationRepo.search_user_task(user_id)
-            if result == False:
-                res = CustomResponse(Status.SUCCESS.value, None)
-                return res.getres()
-            else:
-                res = CustomResponse(Status.SUCCESS.value, result)
-                return res.getres()
+            res = CustomResponse(Status.SUCCESS.value, result)
+            return res.getres()
         except Exception as e:
             log_exception("Exception at AnnotationTaskUserTaskSearchResource ", LOG_WITHOUT_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
