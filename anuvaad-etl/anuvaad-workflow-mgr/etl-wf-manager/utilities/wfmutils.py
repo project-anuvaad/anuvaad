@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import random
 import string
 import time
@@ -91,8 +92,8 @@ class WFMUtils:
             for step in sequence:
                 tool_details = step["tool"][0]
                 if 'kafka-output' in tool_details.keys():
-                    output_topic = tool_details["kafka-output"][0]["topic"]
-                    if output_topic not in topics:
+                    output_topic = os.environ.get(tool_details["kafka-output"][0]["topic"], "NA")
+                    if output_topic != "NA" and output_topic not in topics:
                         topics.append(output_topic)
         return topics
 
