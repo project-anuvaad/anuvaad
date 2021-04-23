@@ -220,8 +220,8 @@ class WFMService:
                 self.update_job_details(client_output, False)
                 log_error("The workflow contains incompatible steps.", wf_input, None)
                 return None
-            partitions = os.environ.get(eval(first_tool["kafka-input"][0]["partitions"]), total_no_of_partitions)
-            producer.push_to_queue(first_tool_input, input_topic, partitions)
+            partitions = os.environ.get(first_tool["kafka-input"][0]["partitions"], str(total_no_of_partitions))
+            producer.push_to_queue(first_tool_input, input_topic, eval(partitions))
             client_output = self.get_wf_details_async(wf_input, None, False, None)
             self.update_job_details(client_output, False)
             wf_input["metadata"]["module"] = module_wfm_name  # FOR LOGGING ONLY.
@@ -256,7 +256,7 @@ class WFMService:
                     self.update_job_details(client_output, False)
                     next_step_input, next_tool = next_step_details[0], next_step_details[1]
                     topic = os.environ.get(next_tool["kafka-input"][0]["topic"], "NA")
-                    partitions = os.environ.get(eval(next_tool["kafka-input"][0]["partitions"]), total_no_of_partitions)
+                    partitions = os.environ.get(next_tool["kafka-input"][0]["partitions"], str(total_no_of_partitions))
                     if next_step_input is None or topic == "NA":
                         log_error("The workflow contains incompatible steps in sequence. Please check the wf config.",
                                   task_output, None)
@@ -265,7 +265,7 @@ class WFMService:
                                       task_output, None)
                         return None
                     next_step_input["stepOrder"] = task_output["stepOrder"] + 1
-                    producer.push_to_queue(next_step_input, topic, partitions)
+                    producer.push_to_queue(next_step_input, topic, eval(partitions))
                     log_info(next_tool["name"] + log_msg_start + " jobID: " + task_output["jobID"], task_output)
                 else:
                     client_output = self.get_wf_details_async(None, task_output, True, None)
