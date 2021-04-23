@@ -40,7 +40,7 @@ class WFMService:
         log_info("Initiating ASYNC job..", wf_async_input)
         client_output = self.get_wf_details_async(wf_async_input, None, False, None)
         self.update_job_details(client_output, True)
-        prod_res = producer.push_to_queue(client_output, anu_etl_wfm_core_topic)
+        prod_res = producer.push_to_queue(client_output, anu_etl_wfm_core_topic, total_no_of_partitions)
         if prod_res:
             client_output = self.get_wf_details_async(wf_async_input, None, False, prod_res)
             self.update_job_details(client_output, False)
