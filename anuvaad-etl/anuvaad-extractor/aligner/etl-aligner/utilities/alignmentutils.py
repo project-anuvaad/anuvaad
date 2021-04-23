@@ -64,14 +64,28 @@ class AlignmentUtils:
         source = []
         target_corp = []
         if two_files:
-            with codecs.open(path_indic, 'r',file_encoding) as txt_file:
-                for row in txt_file:
-                    if len(row.rstrip()) != 0:
-                        source.append(row.rstrip())
-            with codecs.open(path_eng, 'r',file_encoding) as txt_file:
-                for row in txt_file:
-                    if len(row.rstrip()) != 0:
-                        target_corp.append(row.rstrip())       
+            try:
+                with codecs.open(path_indic, 'r',file_encoding) as txt_file:
+                    for row in txt_file:
+                        if len(row.rstrip()) != 0:
+                            source.append(row.rstrip())
+                with codecs.open(path_eng, 'r',file_encoding) as txt_file:
+                    for row in txt_file:
+                        if len(row.rstrip()) != 0:
+                            target_corp.append(row.rstrip())  
+            except UnicodeError:
+                with codecs.open(path_indic, 'r', "utf-8") as txt_file:
+                    for row in txt_file:
+                        if len(row.rstrip()) != 0:
+                            source.append(row.rstrip())
+                with codecs.open(path_eng, 'r', "utf-8") as txt_file:
+                    for row in txt_file:
+                        if len(row.rstrip()) != 0:
+                            target_corp.append(row.rstrip())
+            except:
+                pass
+        source = list(set(source))
+        target_corp = list(set(target_corp))  
         return source, target_corp  
         #code for reading json from tokenizer output
         # source = []
@@ -208,7 +222,7 @@ class AlignmentUtils:
             idx.add(y)
             sim, ind = idx.search(x, k)
 
-        log_info("KNN Done: {:.2f} sec".format(time.time()-start_time) , object_in)
+        log_info("Matching Done: {:.2f} sec".format(time.time()-start_time) , object_in)
 
 
         return sim, ind
