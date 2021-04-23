@@ -326,8 +326,8 @@ class ScheduleJob extends React.Component {
                                     <Autocomplete
                                         multiple
                                         id="tags-outlined"
-                                        options={this.props.userinfo.data.filter(user => user.roles === 'ANNOTATOR')}
-                                        getOptionLabel={(option) => option.userName}
+                                        options={this.props.userinfo.data.filter(user => user.roles === 'ANNOTATOR' && user.orgId !== 'NONMT')}
+                                        getOptionLabel={(option) => option.email}
                                         filterSelectedOptions
                                         onChange={(e, value) => this.addUser(value)}
                                         renderInput={(params) => (
