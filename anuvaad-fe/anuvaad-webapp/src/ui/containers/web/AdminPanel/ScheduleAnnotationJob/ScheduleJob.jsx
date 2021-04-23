@@ -258,7 +258,6 @@ class ScheduleJob extends React.Component {
                 name: value.userName
             }
         })
-        console.log(array_of_users)
         this.setState({ array_of_users })
     }
     render() {
