@@ -256,7 +256,7 @@ class UserDetails extends React.Component {
     const columns = [
       {
         name: "userID",
-        label: "userID",
+        label: "User ID",
         options: {
           filter: false,
           sort: false,
@@ -265,7 +265,7 @@ class UserDetails extends React.Component {
       },
       {
         name: "userName",
-        label: "userName",
+        label: "User Name",
         options: {
           filter: false,
           sort: false,
@@ -281,7 +281,7 @@ class UserDetails extends React.Component {
         }
       },
       {
-        name: "userName",
+        name: "email",
         label: translate("common.page.label.email"),
         options: {
           filter: false,

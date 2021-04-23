@@ -255,9 +255,10 @@ class ScheduleJob extends React.Component {
         let array_of_users = values.map(value => {
             return {
                 userId: value.userID,
-                name: value.email
+                name: value.userName
             }
         })
+        console.log(array_of_users)
         this.setState({ array_of_users })
     }
     render() {
@@ -327,7 +328,7 @@ class ScheduleJob extends React.Component {
                                         multiple
                                         id="tags-outlined"
                                         options={this.props.userinfo.data.filter(user => user.roles === 'ANNOTATOR' && user.orgId !== 'NONMT')}
-                                        getOptionLabel={(option) => option.email}
+                                        getOptionLabel={(option) => option.userName}
                                         filterSelectedOptions
                                         onChange={(e, value) => this.addUser(value)}
                                         renderInput={(params) => (
