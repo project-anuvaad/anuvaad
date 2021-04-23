@@ -2,7 +2,7 @@ from logging.config import dictConfig
 
 from flask import Blueprint
 from flask_restful import Api
-from resources.file_handler import FileUploader, FileDownloader, FileServe
+from src.resources.file_handler import FileUploader, FileDownloader, FileServe
 
 # end-point for independent service
 FILE_UPLOADER_BLUEPRINT = Blueprint("file_uploader", __name__)

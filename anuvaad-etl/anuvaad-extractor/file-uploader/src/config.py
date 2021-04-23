@@ -18,9 +18,10 @@ ALLOWED_FILE_TYPES = ['application/vnd.openxmlformats-officedocument.presentatio
                       'application/vnd.oasis.opendocument.spreadsheet', 'application/zip', 'application/octet-stream',
                       'application/msword', 'application/pdf', 'image/x-ms-bmp', 'image/jpeg', 'image/jpg', 'image/png',
                       'text/plain', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                      'application/json', 'application/vnd.oasis.opendocument.text', 'application/xml', 'image/bmp']
+                      'application/json', 'application/vnd.oasis.opendocument.text', 'application/xml', 'image/bmp',
+                      'text/csv']
 ALLOWED_FILE_EXTENSIONS = ['json', 'xlm', 'xla', 'xls', 'xlsx', 'excel', 'xlsm', 'xlt', 'xltx', 'xlsb', 'odt', 'pdf',
-                           'txt', 'ods', 'pptx', 'ppt', 'doc', 'docx', 'docm', 'png', 'jpg', 'jpeg', 'bmp']
+                           'txt', 'ods', 'pptx', 'ppt', 'doc', 'docx', 'docm', 'png', 'jpg', 'jpeg', 'bmp', 'csv']
 
 # mongo
 MONGO_IP = 'MONGO_CLUSTER_URL'

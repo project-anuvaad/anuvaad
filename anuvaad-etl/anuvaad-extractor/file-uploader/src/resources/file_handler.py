@@ -2,18 +2,19 @@ from logging.config import dictConfig
 
 from flask_restful import fields, marshal_with, reqparse, Resource
 from flask import request
-from models.response import CustomResponse
-from models.status import Status
+from src.models.response import CustomResponse
+from src.models.status import Status
 import werkzeug
 from flask import send_file
 import os
-import config
+from src import config
 import logging
 import uuid
 from datetime import datetime
 import magic
-from models.user_files import UserFiles
+from src.models.user_files import UserFiles
 import json
+from src.services.service import is_file_empty
 
 ALLOWED_FILE_TYPES = config.ALLOWED_FILE_TYPES
 ALLOWED_FILE_EXTENSIONS = config.ALLOWED_FILE_EXTENSIONS
@@ -54,6 +55,11 @@ class FileUploader(Resource):
                     os.remove(filepath)
                     res = CustomResponse(Status.ERROR_FILE_SIZE.value, None)
                     return res.getresjson(), 400
+                if is_file_empty(f, file_size):
+                    os.remove(filepath)
+                    res = CustomResponse(Status.FILE_BLANK_ERROR.value, None)
+                    return res.getresjson(), 400
+
                 userfile = UserFiles(created_by=request.headers.get('x-user-id'),
                                      filename=filename, file_real_name=file_real_name + file_extension,
                                      created_on=datetime.now())
