@@ -8,5 +8,4 @@ anuvaad-auditor==0.0.7
 python-magic==0.4.18
 mongoengine==0.18.0
 pandas==1.2.4
-xlrd==2.0.1
-python-docx==0.8.10
+openpyxl==3.0.7

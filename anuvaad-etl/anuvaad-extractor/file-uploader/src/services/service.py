@@ -12,7 +12,7 @@ def is_file_empty(file, file_size):
         csv_file = pd.read_csv(file_name)
         return csv_file.empty
     elif mime_type in ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
-        xls_file = pd.read_excel(file)
+        xls_file = pd.read_excel(file, engine='openpyxl')
         return xls_file.empty
     else:
         return file_size <= 0
