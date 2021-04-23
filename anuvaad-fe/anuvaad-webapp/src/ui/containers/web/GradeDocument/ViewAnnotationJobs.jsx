@@ -75,7 +75,7 @@ class ViewAnnotationJobs extends React.Component {
 
     processUserView = (taskId, save_count, total_count) => {
         return (
-            <Tooltip title="View User Details" placement="right">
+            <Tooltip title="View Job Details" placement="right">
                 <IconButton style={{ color: '#233466', padding: '5px' }}
                     component="a"
                     onClick={() => this.handleUserViewClick(taskId, save_count, total_count)}
