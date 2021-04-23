@@ -33,12 +33,14 @@ class ParallelSentenceModel(object):
             collections     = get_db()[DB_SCHEMA_NAME]
             docs            = collections.find({'annotationType': annotationType, 'jobId': jobId})
             for doc in docs:
-                if doc['annotations']:
+                try:
                     doc['src_locale'] = doc['annotations'][0]["source"]["language"]
                     doc['tgt_locale'] = doc['annotations'][0]["target"]["language"]
-                else:
+                except Exception as e:
+                    log_exception("Exception on annotation job search",  LOG_WITHOUT_CONTEXT, e)
                     doc['src_locale'] = None
                     doc['tgt_locale'] = None
+                    pass
 
                 del doc['annotations']
                 updated_docs.append(normalize_bson_to_json(doc))
