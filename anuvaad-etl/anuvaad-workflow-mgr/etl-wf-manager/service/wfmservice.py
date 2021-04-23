@@ -1,4 +1,5 @@
 import logging
+import os
 import threading
 import time
 
@@ -6,7 +7,7 @@ from utilities.wfmutils import WFMUtils
 from kafkawrapper.wfmproducer import Producer
 from repository.wfmrepository import WFMRepository
 from validator.wfmvalidator import WFMValidator
-from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, anu_etl_notifier_input_topic
+from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, anu_etl_notifier_input_topic, total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error_wf, post_error, log_exception
 from anuvaad_auditor.loghandler import log_info, log_error
 
@@ -211,15 +212,16 @@ class WFMService:
             order_of_execution = wfmutils.get_order_of_exc(wf_input["workflowCode"])
             first_step_details = order_of_execution[0]
             first_tool = first_step_details["tool"][0]
-            input_topic = first_tool["kafka-input"][0]["topic"]
+            input_topic = os.environ.get(first_tool["kafka-input"][0]["topic"], "NA")
             first_tool_input = wfmutils.get_tool_input_async(first_tool["name"], None, None, wf_input)
-            if first_tool_input is None:
+            if first_tool_input is None or input_topic == "NA":
                 error = validator.get_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.")
                 client_output = self.get_wf_details_async(wf_input, None, True, error)
                 self.update_job_details(client_output, False)
                 log_error("The workflow contains incompatible steps.", wf_input, None)
                 return None
-            producer.push_to_queue(first_tool_input, input_topic)
+            partitions = os.environ.get(first_tool["kafka-input"][0]["partitions"], total_no_of_partitions)
+            producer.push_to_queue(first_tool_input, input_topic, partitions)
             client_output = self.get_wf_details_async(wf_input, None, False, None)
             self.update_job_details(client_output, False)
             wf_input["metadata"]["module"] = module_wfm_name  # FOR LOGGING ONLY.
@@ -252,18 +254,18 @@ class WFMService:
                         return None
                     client_output = self.get_wf_details_async(None, task_output, False, None)
                     self.update_job_details(client_output, False)
-                    next_step_input = next_step_details[0]
-                    if next_step_input is None:
+                    next_step_input, next_tool = next_step_details[0], next_step_details[1]
+                    topic = os.environ.get(next_tool["kafka-input"][0]["topic"], "NA")
+                    partitions = os.environ.get(next_tool["kafka-input"][0]["partitions"], total_no_of_partitions)
+                    if next_step_input is None or topic == "NA":
                         log_error("The workflow contains incompatible steps in sequence. Please check the wf config.",
                                   task_output, None)
                         post_error_wf("INCOMPATIBLE_TOOL_SEQUENCE",
                                       "The wf contains incompatible steps in sequence. Please check the wf config.",
                                       task_output, None)
                         return None
-                    next_tool = next_step_details[1]
-                    step_completed = task_output["stepOrder"]
-                    next_step_input["stepOrder"] = step_completed + 1
-                    producer.push_to_queue(next_step_input, next_tool["kafka-input"][0]["topic"])
+                    next_step_input["stepOrder"] = task_output["stepOrder"] + 1
+                    producer.push_to_queue(next_step_input, topic, partitions)
                     log_info(next_tool["name"] + log_msg_start + " jobID: " + task_output["jobID"], task_output)
                 else:
                     client_output = self.get_wf_details_async(None, task_output, True, None)
@@ -281,7 +283,7 @@ class WFMService:
     # Method to push details to noifier module.
     def push_to_notifier(self, task_output):
         job_details = self.get_job_details_bulk({"jobIDs": [task_output["jobID"]]}, True)
-        producer.push_to_queue(anu_etl_notifier_input_topic, job_details)
+        producer.push_to_queue(anu_etl_notifier_input_topic, job_details, total_no_of_partitions)
         log_info("Job details pushed to notifier. | Topic -- {}".format(anu_etl_notifier_input_topic), task_output)
 
     # This method computes the input to the next step based on the step just completed.
