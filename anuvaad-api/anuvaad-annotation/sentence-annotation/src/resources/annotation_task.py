@@ -4,6 +4,7 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import request
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 from src.models import CustomResponse, Status
+from anuvaad_auditor.errorhandler import post_error_wf
 
 parallelSentenceAnnotationRepo  = ParallelSentenceRepo()
 
@@ -24,6 +25,7 @@ class AnnotationTaskCreateResource(Resource):
             if result == False:
                 log_info('Missing params in ParallelSentenceTaskCreateResource {}'.format(body), LOG_WITHOUT_CONTEXT)
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
+                post_error_wf("TASK_CREATION_FAILED","Annotation task creation failed due to file error", LOG_WITHOUT_CONTEXT,None)
                 return res.getresjson(), 400
             else:
                 res = CustomResponse(Status.SUCCESS.value, None)
@@ -65,12 +67,8 @@ class AnnotationTaskTaskIdSearchResource(Resource):
         
         try:
             result = parallelSentenceAnnotationRepo.search_taskIds_annotations(body['taskIds'])
-            if result == False:
-                res = CustomResponse(Status.SUCCESS.value, None)
-                return res.getres()
-            else:
-                res = CustomResponse(Status.SUCCESS.value, result)
-                return res.getres()
+            res = CustomResponse(Status.SUCCESS.value, result)
+            return res.getres()
         except Exception as e:
             log_exception("Exception at AnnotationTaskTaskIdSearchResource ", LOG_WITHOUT_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
@@ -86,12 +84,8 @@ class AnnotationTaskTaskTypeSearchResource(Resource):
         
         try:
             result = parallelSentenceAnnotationRepo.search_tasks_annotationType(body['annotationType'], body['jobId'])
-            if result == False:
-                res = CustomResponse(Status.SUCCESS.value, None)
-                return res.getres()
-            else:
-                res = CustomResponse(Status.SUCCESS.value, result)
-                return res.getres()
+            res = CustomResponse(Status.SUCCESS.value, result)
+            return res.getres()
         except Exception as e:
             log_exception("Exception at AnnotationTaskTaskTypeSearchResource ", LOG_WITHOUT_CONTEXT, e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
