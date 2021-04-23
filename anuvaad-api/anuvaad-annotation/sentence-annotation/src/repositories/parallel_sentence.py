@@ -28,11 +28,15 @@ class ParallelSentenceRepo(object):
         filepath            = os.path.join(os.curdir, config.download_folder, fileInfo['identifier'])
         try:
             parallel_sentences = ParseCSV.get_parallel_sentences(filepath, source_lang, target_lang)
+            if not parallel_sentences:
+                return False
         except Exception as e:
             log_exception("exception encountered while reading CSV, trying with XLS ",  LOG_WITHOUT_CONTEXT, e)
 
             try:
                 parallel_sentences = ParseXLS.get_parallel_sentences(filepath, source_lang, target_lang)
+                if not parallel_sentences:
+                    return False
             except Exception as e:
                 log_exception("exception encountered while reading XLS, won't try now ",  LOG_WITHOUT_CONTEXT, e)
                 return False

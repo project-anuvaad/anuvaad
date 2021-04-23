@@ -54,8 +54,15 @@ class ParallelSentenceModel(object):
             collections     = get_db()[DB_SCHEMA_NAME]
             docs            = collections.find({'user.userId': userId})
             for doc in docs:
-                doc['src_locale'] = doc['annotations'][0]["source"]["language"]
-                doc['tgt_locale'] = doc['annotations'][0]["target"]["language"]
+                try:
+                    doc['src_locale'] = doc['annotations'][0]["source"]["language"]
+                    doc['tgt_locale'] = doc['annotations'][0]["target"]["language"]
+                except Exception as e:
+                    log_exception("Exception on user task search",  LOG_WITHOUT_CONTEXT, e)
+                    doc['src_locale'] = None
+                    doc['tgt_locale'] = None
+                    pass
+
                 del doc['annotations']
                 updated_docs.append(normalize_bson_to_json(doc))
             return updated_docs
