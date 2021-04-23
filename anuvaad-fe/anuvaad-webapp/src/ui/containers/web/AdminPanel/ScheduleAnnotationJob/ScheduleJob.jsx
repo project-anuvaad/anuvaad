@@ -118,11 +118,6 @@ class ScheduleJob extends React.Component {
         }
         if (prevProps.workflowStatus !== this.props.workflowStatus) {
             this.props.createJobEntry(this.props.workflowStatus)
-
-            // var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, this.state.uploadType)
-            // var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code, this.state.uploadType)
-
-            // TELEMETRY.startWorkflow(sourceLang, targetLang, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
             history.push(`${process.env.PUBLIC_URL}/view-scheduled-jobs`);
         }
     }

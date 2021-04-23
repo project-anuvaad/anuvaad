@@ -15,13 +15,13 @@ const getUserJob = (payload) => {
             if (code.language_code === task.src_locale) {
                 return true
             }
-        })[0].language_name
+        })
 
         let target = LanguageCodes.filter(code => {
             if (code.language_code === task.tgt_locale) {
                 return true
             }
-        })[0].language_name
+        })
 
         return {
             createdOn: date,
@@ -32,8 +32,8 @@ const getUserJob = (payload) => {
             taskId: task.taskId,
             saved_sentences: task.saved_sentences,
             total_sentences: task.total_sentences,
-            source,
-            target
+            source: source[0] ? source[0].language_name : "",
+            target: target[0] ? target[0].language_name : ""
         }
     })
     return result
