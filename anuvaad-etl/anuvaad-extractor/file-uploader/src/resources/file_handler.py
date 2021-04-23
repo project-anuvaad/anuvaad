@@ -11,9 +11,7 @@ import config
 import logging
 import uuid
 from datetime import datetime
-import magic
 from models.user_files import UserFiles
-import json
 from services.service import is_file_empty
 
 ALLOWED_FILE_TYPES = config.ALLOWED_FILE_TYPES

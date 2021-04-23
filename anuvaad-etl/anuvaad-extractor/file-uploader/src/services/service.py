@@ -1,8 +1,5 @@
-import os
 
-import docx
 import pandas as pd
-from docx import Document
 
 
 def is_file_empty(file, file_size):
