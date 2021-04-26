@@ -35,6 +35,7 @@ class FileUploader(Resource):
 
             file_real_name, file_extension = os.path.splitext(f.filename)
             fileallowed = False
+            file_empty = False
             filename = str(uuid.uuid4()) + file_extension
             filepath = os.path.join(config.download_folder, filename)
             for allowed_file_extension in ALLOWED_FILE_EXTENSIONS:
@@ -45,15 +46,17 @@ class FileUploader(Resource):
                 if mime_type in ALLOWED_FILE_TYPES:
                     fileallowed = True
 
-            if fileallowed:
+            file_empty = is_file_empty(f)
+
+            if fileallowed or file_empty:
                 f.save(filepath)
                 file_size = os.stat(filepath).st_size
-                file_size = file_size / (1024 * 1024)
-                if file_size > eval(str(config.MAX_UPLOAD_SIZE)):
+                file_size_in_MB = file_size / (1024 * 1024)
+                if file_size_in_MB > eval(str(config.MAX_UPLOAD_SIZE)):
                     os.remove(filepath)
                     res = CustomResponse(Status.ERROR_FILE_SIZE.value, None)
                     return res.getresjson(), 400
-                if is_file_empty(f, file_size):
+                if file_size <= 0:
                     os.remove(filepath)
                     res = CustomResponse(Status.FILE_BLANK_ERROR.value, None)
                     return res.getresjson(), 400
@@ -66,7 +69,7 @@ class FileUploader(Resource):
                 res = CustomResponse(Status.SUCCESS.value, filename)
                 return res.getres()
             else:
-                log.error("ERROR: Unsupported File -- " + str(f.filename))
+                log.error("ERROR: Unsupported File/Blank File -- " + str(f.filename))
                 res = CustomResponse(Status.ERROR_UNSUPPORTED_FILE.value, None)
                 return res.getresjson(), 400
         except Exception as e:

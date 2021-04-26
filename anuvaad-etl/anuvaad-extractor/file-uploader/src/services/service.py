@@ -2,14 +2,14 @@
 import pandas as pd
 
 
-def is_file_empty(file, file_size):
+def is_file_empty(file):
     file_name = file.filename
     mime_type = file.mimetype
     if mime_type in ['text/csv']:
-        csv_file = pd.read_csv(file_name)
+        csv_file = pd.read_csv(file)
         return csv_file.empty
     elif mime_type in ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
         xls_file = pd.read_excel(file, engine='openpyxl')
         return xls_file.empty
     else:
-        return file_size <= 0
+        return False
