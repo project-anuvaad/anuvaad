@@ -30,6 +30,10 @@ export default (state = initialState, action) => {
                 count: action.payload.data.tasks.length,
                 result: getJobDetails(action.payload.data)
             }
+            case C.CLEAR_JOB_DETAIL:
+                return {
+                    ...initialState
+                }
         default:
             return {
                 ...state

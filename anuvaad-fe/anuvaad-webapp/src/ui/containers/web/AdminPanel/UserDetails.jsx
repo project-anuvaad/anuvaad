@@ -23,8 +23,7 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import SetPasswordApi from "../../../../flux/actions/apis/user/setpassword";
 import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
 import history from "../../../../web.history";
-
-
+import clearStatus from '../../../../flux/actions/apis/admin/clear_job_status';
 
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
@@ -47,6 +46,8 @@ class UserDetails extends React.Component {
       status: false,
       isModalOpen: false,
       username: '',
+      showLoader: false
+
     };
 
   }
@@ -63,14 +64,8 @@ class UserDetails extends React.Component {
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('user-details');
     this.setState({ showLoader: true, })
+    this.props.clearStatus();
     this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
-    // if (parseInt(this.props.match.params.pageno) === 0)
-    //   this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
-    // else {
-    //   let pageNo = parseInt(this.props.match.params.pageno)
-    //   this.processFetchBulkUserDetailAPI(this.state.offset, (pageNo + 1) * 10)
-    //   this.setState({ currentPageIndex: pageNo, offset: (pageNo + 1) * 10 })
-    // }
   }
 
   componentDidUpdate(prevProps) {
@@ -149,20 +144,6 @@ class UserDetails extends React.Component {
           })
         }
       })
-  }
-
-  processTableClickedNextOrPrevious = (page) => {
-    if (this.state.currentPageIndex < page) {
-      history.push(`${process.env.PUBLIC_URL}/user-details`)
-      this.processFetchBulkUserDetailAPI((this.state.currentPageIndex + 1) * 10, this.state.limit, true, false)
-      this.setState({
-        currentPageIndex: page,
-        offset: (this.state.currentPageIndex + 1) * 10
-      });
-    }
-    else {
-      history.push(`${process.env.PUBLIC_URL}/user-details`)
-    }
   }
   processSnackBar = () => {
     return (
@@ -256,7 +237,7 @@ class UserDetails extends React.Component {
     const columns = [
       {
         name: "userID",
-        label: "userID",
+        label: "User ID",
         options: {
           filter: false,
           sort: false,
@@ -265,11 +246,11 @@ class UserDetails extends React.Component {
       },
       {
         name: "userName",
-        label: "userName",
+        label: "User Name",
         options: {
           filter: false,
           sort: false,
-          display: "exclude"
+          // display: "exclude"
         }
       },
       {
@@ -281,11 +262,12 @@ class UserDetails extends React.Component {
         }
       },
       {
-        name: "userName",
+        name: "email",
         label: translate("common.page.label.email"),
         options: {
           filter: false,
           sort: true,
+          display: "exclude"
         }
       },
       {
@@ -375,16 +357,8 @@ class UserDetails extends React.Component {
         },
         options: { sortDirection: 'desc' }
       },
-      // onTableChange: (action, tableState) => {
-      //   switch (action) {
-      //     case 'changePage':
-      //       this.processTableClickedNextOrPrevious(tableState.page)
-      //       break;
-      //     default:
-      //   }
-      // },
       count: this.props.count,
-      rowsPerPageOptions: [10,20,50],
+      rowsPerPageOptions: [10, 20, 50],
       filterType: "checkbox",
       download: false,
       print: false,
@@ -394,7 +368,7 @@ class UserDetails extends React.Component {
     };
 
     return (
-      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight-10, overflow: "auto" }}>
+      <div style={{ maxHeight: window.innerHeight, height: window.innerHeight - 10, overflow: "auto" }}>
 
         <div style={{ margin: '0% 3% 3% 3%', paddingTop: "7%" }}>
           <ToolBar />
@@ -442,7 +416,8 @@ const mapDispatchToProps = dispatch =>
     {
       clearJobEntry,
       APITransport,
-      CreateCorpus: APITransport
+      CreateCorpus: APITransport,
+      clearStatus
     },
     dispatch
   );
