@@ -64,12 +64,12 @@ class UserDetails extends React.Component {
   componentDidMount() {
     TELEMETRY.pageLoadCompleted('user-details');
     this.setState({ showLoader: true, })
+    this.props.clearStatus();
     this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.userinfo.data !== this.props.userinfo.data) {
-      this.props.clearStatus();
       this.setState({ showLoader: false, isenabled: false, status: false })
     }
     else if (prevProps.userinfo.data === undefined && this.props.userinfo.data !== undefined) {
