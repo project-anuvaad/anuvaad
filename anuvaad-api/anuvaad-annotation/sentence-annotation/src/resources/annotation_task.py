@@ -15,8 +15,10 @@ class AnnotationTaskCreateResource(Resource):
         if 'annotationType' not in body.keys() or 'sourceLanguage' not in body.keys() or \
             'targetLanguage' not  in body.keys() or 'fileInfo' not in body.keys() or \
                 'users' not in body.keys() or 'description' not in body.keys():
+            LOG_WITHOUT_CONTEXT['jobID']=body['jobId']
             log_info('Missing params in ParallelSentenceTaskCreateResource {}'.format(body), LOG_WITHOUT_CONTEXT)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
+            post_error_wf("TASK_CREATION_FAILED","Annotation task creation failed due to missing params", LOG_WITHOUT_CONTEXT,None)
             return res.getresjson(), 400
 
         try:
