@@ -25,6 +25,7 @@ class AnnotationTaskCreateResource(Resource):
             if result == False:
                 log_info('Missing params in ParallelSentenceTaskCreateResource {}'.format(body), LOG_WITHOUT_CONTEXT)
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
+                LOG_WITHOUT_CONTEXT['jobID']=body['jobId']
                 post_error_wf("TASK_CREATION_FAILED","Annotation task creation failed due to file error", LOG_WITHOUT_CONTEXT,None)
                 return res.getresjson(), 400
             else:

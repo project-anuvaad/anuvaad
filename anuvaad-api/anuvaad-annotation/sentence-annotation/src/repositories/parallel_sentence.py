@@ -2,7 +2,7 @@ import config
 import datetime
 import os
 import uuid
-
+import time
 from .parse_csv import ParseCSV
 from .parse_xls import ParseXLS
 from src.models import ParallelSentenceModel
@@ -31,6 +31,7 @@ class ParallelSentenceRepo(object):
             if not parallel_sentences:
                 return False
         except Exception as e:
+            LOG_WITHOUT_CONTEXT['jobID']=jobId
             log_exception("exception encountered while reading CSV, trying with XLS ",  LOG_WITHOUT_CONTEXT, e)
 
             try:
@@ -38,9 +39,10 @@ class ParallelSentenceRepo(object):
                 if not parallel_sentences:
                     return False
             except Exception as e:
+                LOG_WITHOUT_CONTEXT['jobID']=jobId
                 log_exception("exception encountered while reading XLS, won't try now ",  LOG_WITHOUT_CONTEXT, e)
                 return False
-
+        LOG_WITHOUT_CONTEXT['jobID']=jobId
         log_info('received parallel sentences [%d], proceeding with storage'%(len(parallel_sentences)), LOG_WITHOUT_CONTEXT)
 
         tasks = []
@@ -53,16 +55,18 @@ class ParallelSentenceRepo(object):
             task['taskId']          = str(uuid.uuid4())
             task['annotationType']  = annotationType
             task['annotations']     = self.update_parallel_sentences(parallel_sentences)
-            task['createdOn']       = datetime.datetime.utcnow()
+            task['createdOn']       = eval(str(time.time()).replace('.', '')[0:13])
             tasks.append(task)
 
         try:
+            LOG_WITHOUT_CONTEXT['jobID']=jobId
             log_info('creating tasks for the supplied users', LOG_WITHOUT_CONTEXT)
             self.parallelSentenceModel.store_bulk(tasks)
         except Exception as e:
+            LOG_WITHOUT_CONTEXT['jobID']=jobId
             log_exception("exception encountered while creating tasks for users",  LOG_WITHOUT_CONTEXT, e)
             return False
-
+        LOG_WITHOUT_CONTEXT['jobID']=jobId
         log_info('created tasks for the supplied users, successfully', LOG_WITHOUT_CONTEXT)
         return True
 
