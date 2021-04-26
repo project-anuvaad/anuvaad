@@ -95,7 +95,7 @@ class Datautils:
 
     @staticmethod
     def validate_annotation_input(source_lang, target_lang, jobId, annotationType, users, fileInfo):
-        if not source_lang or not target_lang or not jobId or not annotationType:
+        if not source_lang or not target_lang or not jobId or not annotationType or not users or not fileInfo :
             return False
         if 'identifier' not in fileInfo or not fileInfo['identifier'] or 'type' not in fileInfo or not fileInfo['type']:
             return False
