@@ -225,10 +225,10 @@ WorkflowConfigs:
         description: WF for annotation
         kafka-input:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_SENTENCE_ANNOTATION_INPUT
-          partitions: 2
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_SENTENCE_ANNOTATION_OUTPUT
-          partitions: 2
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: true
 
 
