@@ -23,9 +23,9 @@ class AnnotationTaskCreateResource(Resource):
             result = parallelSentenceAnnotationRepo.store(body['sourceLanguage'], body['targetLanguage'], \
                 body['jobId'], body['annotationType'], body['users'], body['fileInfo'], body['description'])
             if result == False:
+                LOG_WITHOUT_CONTEXT['jobID']=body['jobId']
                 log_info('Missing params in ParallelSentenceTaskCreateResource {}'.format(body), LOG_WITHOUT_CONTEXT)
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
-                LOG_WITHOUT_CONTEXT['jobID']=body['jobId']
                 post_error_wf("TASK_CREATION_FAILED","Annotation task creation failed due to file error", LOG_WITHOUT_CONTEXT,None)
                 return res.getresjson(), 400
             else:
