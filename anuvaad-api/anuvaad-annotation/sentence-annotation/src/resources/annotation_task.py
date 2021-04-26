@@ -3,6 +3,7 @@ from src.repositories import ParallelSentenceRepo
 from anuvaad_auditor.loghandler import log_info, log_exception
 from flask import request
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
+from src.utilities.utils import Datautils
 from src.models import CustomResponse, Status
 from anuvaad_auditor.errorhandler import post_error_wf
 
@@ -20,6 +21,15 @@ class AnnotationTaskCreateResource(Resource):
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
             post_error_wf("TASK_CREATION_FAILED","Annotation task creation failed due to missing params", LOG_WITHOUT_CONTEXT,None)
             return res.getresjson(), 400
+        
+        validity = Datautils.validate_annotation_input(body['sourceLanguage'], body['targetLanguage'], body['jobId'], body['annotationType'], body['users'], body['fileInfo'])
+        if validity is not None:
+            LOG_WITHOUT_CONTEXT['jobID']=body['jobId']
+            log_info('Missing params in ParallelSentenceTaskCreateResource {}'.format(body), LOG_WITHOUT_CONTEXT)
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value,None)
+            post_error_wf("TASK_CREATION_FAILED","Annotation task creation failed due to missing params", LOG_WITHOUT_CONTEXT,None)
+            return res.getresjson(), 400
+
 
         try:
             result = parallelSentenceAnnotationRepo.store(body['sourceLanguage'], body['targetLanguage'], \
