@@ -250,7 +250,7 @@ class UserDetails extends React.Component {
         options: {
           filter: false,
           sort: false,
-          display: "exclude"
+          // display: "exclude"
         }
       },
       {
@@ -267,6 +267,7 @@ class UserDetails extends React.Component {
         options: {
           filter: false,
           sort: true,
+          display: "exclude"
         }
       },
       {
