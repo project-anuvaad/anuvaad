@@ -61,14 +61,17 @@ class ParallelSentenceRepo(object):
         try:
             LOG_WITHOUT_CONTEXT['jobID']=jobId
             log_info('creating tasks for the supplied users', LOG_WITHOUT_CONTEXT)
-            self.parallelSentenceModel.store_bulk(tasks)
+            if self.parallelSentenceModel.store_bulk(tasks) == True:
+                LOG_WITHOUT_CONTEXT['jobID']=jobId
+                log_info('created tasks for the supplied users, successfully', LOG_WITHOUT_CONTEXT)
+                return True
+            else:
+                return False
         except Exception as e:
             LOG_WITHOUT_CONTEXT['jobID']=jobId
             log_exception("exception encountered while creating tasks for users",  LOG_WITHOUT_CONTEXT, e)
             return False
-        LOG_WITHOUT_CONTEXT['jobID']=jobId
-        log_info('created tasks for the supplied users, successfully', LOG_WITHOUT_CONTEXT)
-        return True
+        
 
     def search_user_task(self, userId):
         results = self.parallelSentenceModel.search_user_task(userId)
@@ -127,4 +130,5 @@ class ParallelSentenceRepo(object):
                 return updated_annotation[0]
         return None
 
+    
     

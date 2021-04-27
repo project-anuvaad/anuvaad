@@ -30,7 +30,8 @@ class AnnotationTaskCreateResource(Resource):
             post_error_wf("TASK_CREATION_FAILED","Annotation task creation failed due to missing params", LOG_WITHOUT_CONTEXT,None)
             return res.getresjson(), 400
 
-
+        log_info('Received annotation task creation request | ParallelSentenceTaskCreateResource: {}'.format(body), LOG_WITHOUT_CONTEXT)
+        
         try:
             result = parallelSentenceAnnotationRepo.store(body['sourceLanguage'], body['targetLanguage'], \
                 body['jobId'], body['annotationType'], body['users'], body['fileInfo'], body['description'])
@@ -45,6 +46,7 @@ class AnnotationTaskCreateResource(Resource):
                 return res.getres()
         except Exception as e:
             log_exception("Exception at ParallelSentenceTaskCreateResource ", LOG_WITHOUT_CONTEXT, e)
+            post_error_wf("TASK_CREATION_FAILED","Annotation task creation failed due to missing params", LOG_WITHOUT_CONTEXT,None)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
 
