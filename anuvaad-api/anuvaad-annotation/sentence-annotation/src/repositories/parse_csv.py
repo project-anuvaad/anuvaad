@@ -21,6 +21,11 @@ class ParseCSV (object):
             if skip_header == True:
                 rows = rows[1:]
             
+            if len(rows)==0:
+                log_info("no sentences found on %s" % (filename), LOG_WITHOUT_CONTEXT)
+                return []
+
+            
             for row in rows:
                 source_sentence  = {}
                 target_sentence  = {}

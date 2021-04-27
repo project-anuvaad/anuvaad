@@ -32,7 +32,12 @@ import AddOrganization from "./ui/containers/web/AdminPanel/AddOrganization";
 import ViewDocumentDigitization from './ui/containers/web/DocumentDigitization/ViewDocumentDigitization';
 import DigitzeDocumentUpload from './ui/containers/web/DocumentDigitization/DocumentDigitizationUpload/StartDigitizationUpload';
 import DigitizedDocumentEditor from './ui/containers/web/DocumentDigitization/DigitizedDocumentEditor';
+import GradeDocument from './ui/containers/web/GradeDocument/SentenceCard';
 import ViewAnnotationJob from './ui/containers/web/GradeDocument/ViewAnnotationJobs';
+import ViewScheduledJobs from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewScheduledJobs';
+import ScheduleJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ScheduleJob';
+import ViewJobDetail from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewJobDetails';
+import ViewAnnotatorJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewAnnotatorJob';
 import NmtModelAssign from "./ui/containers/web/AdminPanel/NmtModelAssign";
 import ViewUserGlossary from './ui/containers/web/UserGlossary/ViewUserGlossary';
 import UserGlossaryUpload from './ui/containers/web/UserGlossary/UserGlossaryUpload';
@@ -221,7 +226,7 @@ class AppRoutes extends React.Component {
               currentMenu="view-document"
               dontShowHeader={true}
             />
-            {/* <PrivateRoute
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/grading-sentence-card/:taskId`}
               dontShowLoader
               title={"Grade Document"}
@@ -230,7 +235,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="grade-document"
               dontShowHeader={true}
-            /> */}
+            />
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-digitization`}
@@ -317,7 +322,7 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
 
-            {/* <PrivateRoute
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-scheduled-jobs`}
               dontShowLoader
               title={"View Job"}
@@ -337,7 +342,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="schedule-annotation-job"
               dontShowHeader={true}
-            /> */}
+            />
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/assign-nmt-model`}
@@ -349,7 +354,7 @@ class AppRoutes extends React.Component {
               currentMenu="assign-nmt-model"
               dontShowHeader={true}
             />
-            {/* <PrivateRoute
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-annotation-job`}
               dontShowLoader
               title={"View Annotation Job"}
@@ -358,9 +363,9 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="view-annotation-job"
               dontShowHeader={true}
-            /> */}
+            />
 
-            {/* <PrivateRoute
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-job-detail/:jobID`}
               dontShowLoader
               title={"View Annotation Job"}
@@ -369,9 +374,9 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="view-job-detail"
               dontShowHeader={true}
-            /> */}
+            />
 
-            {/* <PrivateRoute
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-annotator-job/:taskId`}
               dontShowLoader
               title={"View Annotator Job"}
@@ -380,7 +385,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="view-job-detail"
               dontShowHeader={true}
-            />*/}
+            />
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/my-glossary`}
               dontShowLoader
