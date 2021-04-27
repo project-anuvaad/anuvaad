@@ -56,7 +56,8 @@ class FileUploader(Resource):
                     os.remove(filepath)
                     res = CustomResponse(Status.ERROR_FILE_SIZE.value, None)
                     return res.getresjson(), 400
-                if is_file_empty(f, filepath) or file_size <= 0:
+                # if is_file_empty(f, filepath) or file_size <= 0:
+                if file_size <= 0:
                     os.remove(filepath)
                     res = CustomResponse(Status.FILE_BLANK_ERROR.value, None)
                     return res.getresjson(), 400
