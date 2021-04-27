@@ -1,6 +1,5 @@
 import logging
 import os
-import threading
 import time
 
 from utilities.wfmutils import WFMUtils
@@ -215,7 +214,7 @@ class WFMService:
             input_topic = os.environ.get(first_tool["kafka-input"][0]["topic"], "NA")
             first_tool_input = wfmutils.get_tool_input_async(first_tool["name"], None, None, wf_input)
             if first_tool_input is None or input_topic == "NA":
-                error = validator.get_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.")
+                error = post_error("INCOMPATIBLE_TOOL_SEQUENCE", "The workflow contains incompatible steps.", None)
                 client_output = self.get_wf_details_async(wf_input, None, True, error)
                 self.update_job_details(client_output, False)
                 log_error("The workflow contains incompatible steps.", wf_input, None)
