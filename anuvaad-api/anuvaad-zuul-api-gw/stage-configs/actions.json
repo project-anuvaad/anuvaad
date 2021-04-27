@@ -149,8 +149,16 @@
             "uri":"/anuvaad/user-mgmt/v1/org/search",
             "module":"USER-MANAGEMENT-SYSTEM",
             "active":true,
-            "whiteList":true,
+            "whiteList":false,
             "description":"API for searching orgs"
+        },
+        {
+            "id":"b5ff81c9-8c7b-44eb-ad19-92c4d21b239c",
+            "uri":"/anuvaad/user-mgmt/v1/users/get-roles",
+            "module":"USER-MANAGEMENT-SYSTEM",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch roles"
         },
         {
             "id":"bde39a83-8a4f-400e-bcf0-d14b8895f0ae",
@@ -239,6 +247,62 @@
             "active":true,
             "whiteList":false,
             "description":"API for interactive translation"
+        },
+        {
+            "id":"400772fd-15c1-4c89-9ab2-ad6b577916c4",
+            "uri":"/nmt-inference/v1/create-models",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to create NMT models"
+        },
+        {
+            "id":"cdbd4630-a2cd-4f32-a167-ebc734e43421",
+            "uri":"/nmt-inference/v1/update-models/*",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to update NMT models"
+        },
+        {
+            "id":"ecda9694-e636-4211-aa85-4b146a9a543c",
+            "uri":"/nmt-inference/v1/delete-models/*",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to delete NMT models"
+        },
+        {
+            "id":"5b5ca44a-ddd8-4576-88d5-e370a48c368e",
+            "uri":"/nmt-inference/v2/fetch-models",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API to fetch NMT models"
+        },
+        {
+            "id":"433f58d2-de6f-4027-8689-43eee482c3ec",
+            "uri":"/nmt-inference/v4/translate",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API for machine translation"
+        },
+        {
+            "id":"fe0decb2-78de-4f53-8ca7-c073ab2b1396",
+            "uri":"/nmt-inference/v3/interactive-translation",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API for interactive translation"
+        },
+        {
+            "id":"752bff69-e7ed-44bd-9218-ee65f4febb8c",
+            "uri":"/nmt-inference/v1/labse-aligner",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":false,
+            "description":"API for LABSE alignment"
         },
         {
             "id":"b0c793d1-215c-4de6-8d88-714f8394e75a",
@@ -345,6 +409,14 @@
             "description":"API to document conversion"
         },
         {
+            "id":"68e90db3-0146-4e04-ba94-18671b1c5995",
+            "uri":"/anuvaad-etl/document-converter/v0/document-exporter",
+            "module":"DOCUMENT-CONVERTER",
+            "active":true,
+            "whiteList":false,
+            "description":"API to export ocr digitized doc"
+        },
+        {
             "id":"a22e8462-160e-4372-88c0-d1e4713568fd",
             "uri":"/anuvaad-telemetry/v1/telemetry",
             "module":"ANUVAAD-TELEMETRY",
@@ -415,6 +487,70 @@
             "active":true,
             "whiteList":true,
             "description":"API for notifier"
+        },
+        {
+            "id":"52042b5e-1068-43bf-b00b-4e502374e539",
+            "uri":"/anuvaad-etl/tokeniser-ocr/v0/tokenisation-wf",
+            "module":"TOKENISER-OCR",
+            "active":true,
+            "whiteList":false,
+            "description":"API tokenise paragraphs from a json file of ocr"
+        },
+        {
+            "id":"7dfdea6c-3dbf-43f0-949e-f78ce99e8c1d",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/task/create",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to create annotation task"
+        },
+        {
+            "id":"eb88f8fa-7649-4a30-9f59-d242ebe25bdd",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/user/task/search",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search annotation task"
+        },
+        {
+            "id":"07ce7b32-4eb3-4269-b73b-b69d5b84e2fd",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/annotation-type/task/search",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search annotation task on type"
+        },
+        {
+            "id":"3c02f80e-c12d-4555-9dcb-fc540be64645",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/task/details/search",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to search task details"
+        },
+        {
+            "id":"75675521-a94e-424b-b2e8-1c46a3c4dc9b",
+            "uri":"/anuvaad-annotation/sentence-annotation/v0/task/annotation/grading",
+            "module":"ANUVAAD-ANNOTATION",
+            "active":true,
+            "whiteList":false,
+            "description":"API to grade annotations"
+        },
+        {
+            "id":"e6132e87-0616-4efe-9c68-6b4a37b16d18",
+            "uri":"/anuvaad-nmt-adapter/gnmt/v0/translate",
+            "module":"ANUVAAD-NMT-ADAPTER",
+            "active":true,
+            "whiteList":false,
+            "description":"API for GNMT adapter"
+        },
+        {
+            "id":"b705297f-ede2-47e8-a264-29b8fc8189cf",
+            "uri":"/aai4b-nmt-inference/v1/translate",
+            "module":"AIB-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"API for AIB NMT"
         }
     ]
 }
