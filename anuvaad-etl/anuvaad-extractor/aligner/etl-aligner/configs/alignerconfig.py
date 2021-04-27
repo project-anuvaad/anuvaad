@@ -1,7 +1,7 @@
 import os
 
 #set GPU status
-gpu_status = True
+gpu_status = False
 
 #CROSS-MODULE-COMMON-CONFIGS
 kafka_bootstrap_server_host = os.environ.get('KAFKA_BOOTSTRAP_SERVER_HOST', 'localhost:9092')
