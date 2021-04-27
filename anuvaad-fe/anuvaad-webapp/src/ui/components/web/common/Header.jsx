@@ -405,7 +405,7 @@ class Header extends React.Component {
                         </ListItem>
                       </div>
                     </>)}
-                  {role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
+                  {orgID !== 'NONMT' && role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
                     <Divider className={classes.divider} />
                     <ListItem
                       id="view-annotation-job"
