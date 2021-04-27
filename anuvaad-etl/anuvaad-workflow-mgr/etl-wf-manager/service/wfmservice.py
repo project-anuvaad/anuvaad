@@ -267,9 +267,9 @@ class WFMService:
                     producer.push_to_queue(next_step_input, topic, eval(partitions))
                     log_info(next_tool["name"] + log_msg_start + " jobID: " + task_output["jobID"], task_output)
                 else:
+                    log_info("Job COMPLETED: " + task_output["jobID"], task_output)
                     client_output = self.get_wf_details_async(None, task_output, True, None)
                     self.update_job_details(client_output, False)
-                    log_info("Job COMPLETED: " + task_output["jobID"], task_output)
             else:  # Safety else block, in case module fails to push data to error topic
                 log_error("Job FAILED: " + task_output["jobID"], task_output, None)
                 client_output = self.get_wf_details_async(None, task_output, False, task_output["error"])

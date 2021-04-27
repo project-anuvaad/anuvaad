@@ -57,7 +57,8 @@ anu_translator_nonmt_topic = os.environ.get('KAFKA_ANUVAAD_TRANSLATOR_NONMT_TOPI
 anu_translator_consumer_grp = os.environ.get('KAFKA_ANUVAAD_ETL_TRANSLATOR_CONSUMER_GRP', 'anuvaad-etl-translator-consumer-group')
 translator_cons_no_of_partitions = 1
 translator_nmt_cons_no_of_partitions = 1
-total_no_of_partitions = os.environ.get('KAFKA_PARTITIONS_PER_TOPIC', 6)
+#total_no_of_partitions = os.environ.get('KAFKA_PARTITIONS_PER_TOPIC', 6)
+total_no_of_partitions = 6
 
 
 #datastore-configs
