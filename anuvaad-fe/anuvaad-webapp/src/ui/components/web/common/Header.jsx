@@ -307,7 +307,7 @@ class Header extends React.Component {
                       </ListItem>
                     </div>
                   )}
-                  {/* {role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -331,7 +331,7 @@ class Header extends React.Component {
                         />
                       </ListItem>
                     </div>
-                  )} */}
+                  )}
 
                   {role && Array.isArray(role) && role.includes("ADMIN") && (
                     <div>
@@ -405,7 +405,7 @@ class Header extends React.Component {
                         </ListItem>
                       </div>
                     </>)}
-                  {/* {role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
+                  {orgID !== 'NONMT' && role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
                     <Divider className={classes.divider} />
                     <ListItem
                       id="view-annotation-job"
@@ -426,9 +426,9 @@ class Header extends React.Component {
                         }
                       />
                     </ListItem>
-                  </div>)} */}
-                  {orgID !== 'NONMT' &&
-                    <> { role && Array.isArray(role) && !(role.includes("ANNOTATOR")) &&
+                  </div>)}
+                  {orgID !== 'NONMT' && role && Array.isArray(role) && !role.includes("ADMIN") &&
+                    <> {role && Array.isArray(role) && !(role.includes("ANNOTATOR")) &&
                       <div>
                         <Divider className={classes.divider} />
                         <ListItem

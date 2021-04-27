@@ -2,9 +2,18 @@ import C from '../../actions/constants'
 
 const getJobDetails = (payload) => {
     let result = payload.tasks.map(task => {
-        let d = new Date(task.createdOn).toLocaleString()
+        let date = new Date(task.createdOn)
+        let localDate = ("0" + date.getDate()).slice(-2) +
+            "/" +
+            ("0" + (date.getMonth() + 1)).slice(-2) +
+            "/" +
+            date.getFullYear() +
+            " " +
+            ("0" + date.getHours()).slice(-2) +
+            ":" +
+            ("0" + date.getMinutes()).slice(-2)
         return {
-            createdOn: d,
+            createdOn: localDate,
             description: task.description,
             file_name: task.fileInfo.name,
             taskId: task.taskId,
@@ -29,6 +38,10 @@ export default (state = initialState, action) => {
             return {
                 count: action.payload.data.tasks.length,
                 result: getJobDetails(action.payload.data)
+            }
+        case C.CLEAR_JOB_DETAIL:
+            return {
+                ...initialState
             }
         default:
             return {
