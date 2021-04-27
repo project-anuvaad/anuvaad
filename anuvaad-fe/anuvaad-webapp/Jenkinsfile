@@ -20,7 +20,7 @@ if [  $( docker ps -q -f status=exited --filter "name=$JOB_BASE_NAME" ) ]
 then
 docker rm "$JOB_BASE_NAME"
 fi
-docker run --env REACT_APP_GNMT_ADAPTER_TRANSLATE_ENDPOINT=$gnmt_endpoint --env REACT_APP_GNMT_ADAPTER_HOST=$gnmt_host --env REACT_APP_AAI4B_NMT_HOST=$aai4b_host --env REACT_APP_AAIB_NMT_TRANSLATE_ENDPOINT=$aaib_nmt_endpoint --env REACT_APP_NMT_TRANSLATE_ENDPOINT=$nmt_translate_endpoint --env REACT_APP_NMT_HOST=$nmt_host --env REACT_APP_BASE_URL=$base_url --env REACT_APP_APIGW_BASE_URL=$apigw_url --env REACT_APP_DOWNLOAD_URL=$download_url --env REACT_APP_CLIENT_ID=$client_id -v $(pwd):/opt --name "$JOB_BASE_NAME" anuvaadio/anuvaad-node-npm6.14.8-base:1 /bin/sh -c "cd /opt && rm -rf package-lock.json && npm install && npm run build"
+docker run -v $(pwd):/opt --name "$JOB_BASE_NAME" anuvaadio/anuvaad-node-npm6.14.8-base:1 /bin/sh -c "cd /opt && rm -rf package-lock.json && npm cache clean --force && npm install &&  npm run build"
 docker rm "$JOB_BASE_NAME"
 commit_id=${BUILD_ID}-$(git rev-parse --short HEAD)
 echo $commit_id> commit_id.txt
