@@ -133,7 +133,7 @@ class Header extends React.Component {
       useRole.push(item); value !== role.length - 1 && useRole.push(", ")
       return true;
     });
-    let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID
+    // let orgID = JSON.parse(localStorage.getItem("userProfile")).orgID
     const ToolbarComp = this.props.toolBarComp; // eslint-disable-line
 
     return (
@@ -405,7 +405,7 @@ class Header extends React.Component {
                         </ListItem>
                       </div>
                     </>)}
-                  {orgID !== 'NONMT' && role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
+                  {JSON.parse(localStorage.getItem("userProfile")).orgID !== 'NONMT' && role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
                     <Divider className={classes.divider} />
                     <ListItem
                       id="view-annotation-job"
@@ -427,7 +427,7 @@ class Header extends React.Component {
                       />
                     </ListItem>
                   </div>)}
-                  {orgID !== 'NONMT' && role && Array.isArray(role) && !role.includes("ADMIN") &&
+                  {JSON.parse(localStorage.getItem("userProfile")).orgID !== 'NONMT' && role && Array.isArray(role) && !role.includes("ADMIN") &&
                     <> {role && Array.isArray(role) && !(role.includes("ANNOTATOR")) &&
                       <div>
                         <Divider className={classes.divider} />
