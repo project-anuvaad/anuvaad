@@ -21,6 +21,7 @@ def process_incoming_request(app_context, request_params, jobId, workflowId) :
             LOG_WITHOUT_CONTEXT['jobID']=jobId
             log_info('Missing params in annotation task creation | requestparams:{}'.format(str(request_params)), LOG_WITHOUT_CONTEXT)
             post_error_wf('TASK_CREATION_FAILED','Annotation task creation failed due to missing params', LOG_WITHOUT_CONTEXT,None)
+            return None
 
         create_task = parallelSentenceAnnotationRepo.store(request_params['sourceLanguage'], request_params['targetLanguage'], \
                         jobId, request_params['annotationType'], request_params['users'], request_params['fileInfo'], request_params['description'])
@@ -28,6 +29,7 @@ def process_incoming_request(app_context, request_params, jobId, workflowId) :
             LOG_WITHOUT_CONTEXT['jobID']=jobId
             log_info('Annotation task creation failed due to file error', LOG_WITHOUT_CONTEXT)
             post_error_wf('TASK_CREATION_FAILED','Annotation task creation failed due to file error', LOG_WITHOUT_CONTEXT,None)
+            return None
 
 
 
