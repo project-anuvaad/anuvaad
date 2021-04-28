@@ -214,7 +214,7 @@ class AlignmentUtils:
         else:
             log_info("Performing Exact search" , object_in)
 
-            idx = faiss.IndexFlatIP(y.shape[1])
+            idx = faiss.IndexFlatL2(y.shape[1])
             if use_gpu:
                 idx = faiss.index_cpu_to_all_gpus(idx)  
                 log_info("GPU Enabled for Faiss" , object_in)
