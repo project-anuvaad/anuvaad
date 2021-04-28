@@ -101,6 +101,13 @@ def sort_regions(region_lines, sorted_lines=[]):
         sort_regions(next_line, sorted_lines)
     return sorted_lines
 
+def add_font(regions):
+    for idx,region in enumerate(regions):
+        if not 'font' in region.keys():
+            height = abs(region['boundingBox']['vertices'][0]['y'] - region['boundingBox']['vertices'][2]['y'])
+            regions[idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
+    return regions
+
 def collate_regions(regions, lines, child_class=None, grand_children=False,region_flag = True,skip_enpty_children=False,add_font=False ):
     child_key='regions'
     idx = index.Index()
@@ -109,11 +116,10 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
     if regions !=None and len(regions) > 0:
         lines_intersected =[]
         for line_idx, line in enumerate(lines):
-            print("lineeeeeeeeeeeeeeee",line)
             if child_class == 'LINE':
                 if 'text' in line.keys():
                     del lines[line_idx]['text']
-            if add_font:
+            if add_font and 'font' not in line.keys():
                 height = abs(line['boundingBox']['vertices'][0]['y'] - line['boundingBox']['vertices'][2]['y'])
                 lines[line_idx]['font']={'family':'Arial Unicode MS', 'size':height, 'style':'REGULAR'}
 
@@ -151,31 +157,41 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                 
                 if len(region_lines) > 0:
                     regions[region_index][child_key] = sort_regions(region_lines,[])
-                    #regions[region_index]['children'] = region_lines
+                    #regions[region_index]['regions'] = region_lines
                     regions[region_index]['avg_size'] = get_avrage_size(region_lines)
                 else:
-                    if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
-                        tmp_region = copy.deepcopy(regions[region_index])
-                        regions[region_index]['class']=="CELL"
-                        tmp_region['class'] = "WORD"
-                        tmp_region['text'] = ""
-                        regions[region_index][child_key] = tmp_region
-                    else:
-                       regions[region_index][child_key] = [copy.deepcopy(regions[region_index])] 
+                    regions[region_index][child_key] = []
+                    # if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
+                    #     tmp_region = copy.deepcopy(regions[region_index])
+                    #     regions[region_index]['class']=="CELL"
+                    #     tmp_region['class'] = "WORD"
+                    #     tmp_region['text'] = ""
+                    #     regions[region_index][child_key] = [tmp_region]
+                    # else:
+                    #     tmp_region = copy.deepcopy(regions[region_index])
+                    #     tmp_region['class'] = child_class
+                    #     regions[region_index][child_key] = [tmp_region] 
             else:
-                if not skip_enpty_children :
+                regions[region_index][child_key] = []
+
+
+                # if not skip_enpty_children:
                     
-                    if grand_children :
-                        regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
+                #     if grand_children :
+                #         regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
                     
-                    if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
-                        tmp_region = copy.deepcopy(regions[region_index])
-                        regions[region_index]['class']=="CELL"
-                        tmp_region['class'] = "WORD"
-                        tmp_region['text'] = ""
-                        regions[region_index][child_key] = tmp_region
-                    else:
-                        regions[region_index][child_key] = [copy.deepcopy(regions[region_index])]
+                #     if 'class' in regions[region_index].keys() and regions[region_index]['class']=="CELL":
+                #         tmp_region = copy.deepcopy(regions[region_index])
+                #         regions[region_index]['class']=="CELL"
+                #         tmp_region['class'] = "WORD"
+                #         tmp_region['text'] = ""
+                #         regions[region_index][child_key] = [tmp_region]
+                #     else:
+                #         tmp_region = copy.deepcopy(regions[region_index])
+                #         tmp_region['class'] = child_class
+                #         regions[region_index][child_key] = [tmp_region]
+
+
     if region_flag:
         for line_index, line in enumerate(lines):
             if line_index not in lines_intersected:
@@ -212,6 +228,7 @@ def collate_cell_regions(regions, lines, child_class=None, grand_children=False,
             if poly:
                 idx.insert(line_idx, poly.bounds)
         for region_index, region in enumerate(regions):
+            children_lines =[]
             region_poly = get_polygon(region['boundingBox'])
             if region_poly:
                 children_lines = list(idx.intersection(region_poly.bounds))
@@ -247,7 +264,7 @@ def collate_cell_regions(regions, lines, child_class=None, grand_children=False,
                 
     return regions
 
-def collate_text(craft_words, google_words):
+def collate_text(file,craft_words, google_words):
   
     idx = index.Index()
     words_intersected = []
@@ -273,18 +290,22 @@ def collate_text(craft_words, google_words):
                                 area = region_poly.intersection(line_poly).area
                                 reg_area = region_poly.area
                                 line_area = line_poly.area
-                                if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                                if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.3 :
                                     region_words.append(google_words[intr_index])
                                     words_intersected.append(intr_index)
                         
                     region_words.sort(key=lambda x:x['boundingBox']['vertices'][0]['x'])
 
-                    for region_words in region_words:
+                    for region_word in region_words:
                         try:
-                            text = text + str(region_words['text'])
+                            text = text + str(region_word['text'])
                         except Exception as e:
                             print('error in collating text' + str(e))
-                   
+
+                    if  "craft_word" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_word"]=="False" and len(region_words)>0:
+                        craft_words[region_index]['boundingBox'] = merge_corrds(region_words)
+                    if  "craft_word" not in file['config']["OCR"].keys() and len(region_words)>0:
+                        craft_words[region_index]['boundingBox'] = merge_corrds(region_words)
                 craft_words[region_index]['text'] = text
         
     #orphan_lines = []
@@ -368,12 +389,12 @@ def merge_text(v_blocks):
     for block_index, v_block in enumerate(v_blocks):
         try:
             v_blocks[block_index]['font']    ={'family':'Arial Unicode MS', 'size':0, 'style':'REGULAR'}
-            v_blocks['font']['size'] = max(v_block['children'], key=lambda x: x['font']['size'])['font']['size']
-            if len(v_block['children']) > 0 :
-                v_blocks[block_index]['text'] = v_block['children'][0]['text']
-                if  len(v_block['children']) > 1:
-                    for child in range(1, len(v_block['children'])):
-                        v_blocks[block_index]['text'] += ' ' + str(v_block['children'][child]['text'])
+            v_blocks['font']['size'] = max(v_block['regions'], key=lambda x: x['font']['size'])['font']['size']
+            if len(v_block['regions']) > 0 :
+                v_blocks[block_index]['text'] = v_block['regions'][0]['text']
+                if  len(v_block['regions']) > 1:
+                    for child in range(1, len(v_block['regions'])):
+                        v_blocks[block_index]['text'] += ' ' + str(v_block['regions'][child]['text'])
             #print('text merged')
         except Exception as e:
             print('Error in merging text {}'.format(e))
@@ -450,7 +471,7 @@ def update_style(prior_cls, cls):
 def merge_children(siblings,children_none=False):
     box = Box().get_box()
     if not children_none:
-            box['children'] = copy.deepcopy(siblings)
+            box['regions'] = copy.deepcopy(siblings)
 
 
     box['boundingBox']['vertices'][0]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['x'])['boundingBox']['vertices'][0]['x']
@@ -463,4 +484,23 @@ def merge_children(siblings,children_none=False):
     box['boundingBox']['vertices'][3]['y']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][3]['y'])['boundingBox']['vertices'][3]['y']
 
     return box
+
+
+
+
+def merge_corrds(siblings,children_none=False):
+    box = Box().get_box()
+   
+
+
+    box['boundingBox']['vertices'][0]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['x'])['boundingBox']['vertices'][0]['x']
+    box['boundingBox']['vertices'][0]['y']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][0]['y'])['boundingBox']['vertices'][0]['y']
+    box['boundingBox']['vertices'][1]['x']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][1]['x'])['boundingBox']['vertices'][1]['x']
+    box['boundingBox']['vertices'][1]['y']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][1]['y'])['boundingBox']['vertices'][1]['y']
+    box['boundingBox']['vertices'][2]['x']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][2]['x'])['boundingBox']['vertices'][2]['x']
+    box['boundingBox']['vertices'][2]['y']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][2]['y'])['boundingBox']['vertices'][2]['y']
+    box['boundingBox']['vertices'][3]['x']   =  min(siblings, key=lambda x: x['boundingBox']['vertices'][3]['x'])['boundingBox']['vertices'][3]['x']
+    box['boundingBox']['vertices'][3]['y']   =  max(siblings, key=lambda x: x['boundingBox']['vertices'][3]['y'])['boundingBox']['vertices'][3]['y']
+
+    return box['boundingBox']
 

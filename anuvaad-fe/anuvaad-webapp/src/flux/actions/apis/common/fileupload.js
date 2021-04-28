@@ -5,15 +5,15 @@ import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class RunExperiment extends API {
 
 
-  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, source_language, description = "", arrayOfUsers = [],workspaceName, timeout = 2000) {
+  constructor(workflow, file, fileName, source, target, path, model, sentence_ids, source_language, description = "", arrayOfUsers = [], workspaceName, retranslate = false, timeout = 2000) {
 
     super("POST", timeout, false);
     this.type = C.WORKFLOW;
     this.file = file;
     this.fileName = fileName;
     this.endpoint = (workflow === "WF_A_FCBMTKTR" ||
-      workflow === "WF_A_FCOD10GV" ||
-      workflow === "WF_A_FCWDLDBSOD15GV" ||
+      workflow === "WF_A_FCOD10GVOTK" ||
+      workflow === "WF_A_FCWDLDBSOD15GVOTK" ||
       workflow === "WF_A_AN") ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}` : `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`
     this.source = source;
     this.target = target;
@@ -24,7 +24,8 @@ export default class RunExperiment extends API {
     this.source_language = source_language;
     this.description = description;
     this.arrayOfUsers = arrayOfUsers;
-    this.jobDescription = workspaceName; 
+    this.jobDescription = workspaceName;
+    this.retranslate = retranslate;
   }
 
   toString() {
@@ -50,7 +51,7 @@ export default class RunExperiment extends API {
 
         "workflowCode": this.workflow,
         "jobName": this.fileName,
-        "jobDescription":this.description,
+        "jobDescription": this.description,
         "files": [
           {
             "path": this.file,
@@ -72,11 +73,12 @@ export default class RunExperiment extends API {
         "model": this.model, //Only when Translation is needed
         "textBlocks": this.file,
         "context": "JUDICIARY",
-        "modifiedSentences": this.sentence_ids
+        "modifiedSentences": this.sentence_ids,
+        "retranslate": this.retranslate
 
       }
       //List of text 
-    } else if (this.workflow === "WF_A_FCOD10GV" || this.workflow === "WF_A_FCWDLDBSOD15GV") {
+    } else if (this.workflow === "WF_A_FCOD10GVOTK" || this.workflow === "WF_A_FCWDLDBSOD15GVOTK") {
       return {
         "workflowCode": this.workflow,
         "jobName": this.fileName,

@@ -63,6 +63,7 @@ class Orientation:
             cosine = 1
         angle = np.arccos(cosine) * 180 / np.pi
         avrage_height = bbox_df['height'].mean()
+
         avrage_width = bbox_df['width'].mean()
         if avrage_height > avrage_width:
             angle = 90 - angle
@@ -116,7 +117,7 @@ class Orientation:
         #angle = self.get_rotaion_angle(words)
         print("Angle of tilt detected {} ".format(angle))
 
-        if abs(angle) > 0.05:
+        if abs(angle) > 2.5:
             self.image = self.rotate_bound(self.image, -angle)
 
             lines = detect_text_per_page([self.image], \
@@ -132,7 +133,7 @@ class Orientation:
                                     text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
                                     low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
                                     link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
-        angle = self.get_rotaion_angle(words)
+        angle = self.get_rotaion_angle(lines)
         print("Angle of tilt after correction {} ".format(angle))
 
 

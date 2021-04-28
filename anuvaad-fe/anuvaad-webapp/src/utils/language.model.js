@@ -79,10 +79,9 @@ export const get_model_details = (languages, source_language_code, target_langua
     let res        =   jp.query(models, condition)
     result = res;
     }
-    
     let res_data        =   ""
         if(result.length > 0){
-            let model_condition = result.length > 0 && `$..[?(@.uuid == '${result[0].uuid}')]`
+            let model_condition = result.length > 0 && `$..[?(@.uuid == '${result[0].uuid}'&& @.status == 'ACTIVE')]`
             res_data    = jp.query(languages, model_condition)
             res_data    = res_data[0]
         }
@@ -96,6 +95,17 @@ export const get_model_details = (languages, source_language_code, target_langua
     return res_data
    
     
+}
+
+export const get_users = (models,uuid) =>{
+    let condition   =   `$..[?(@.uuid == '${uuid}')]`
+        let result      =   jp.query(models, condition)
+    return result.length>0 ? true : false
+}
+
+export const get_selected_users = (userDetails, uuid) =>{
+    let result = userDetails.filter(user => (user.is_active && (user.roles !== 'ADMIN')&&user.models && get_users(user.models,uuid) ))
+    return result;
 }
 
 export const fetchModel = (modelId, docs) => {

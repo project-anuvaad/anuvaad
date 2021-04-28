@@ -1,0 +1,23 @@
+{
+  "jobID": "jobID",
+  "workflowCode": "workflowCode",
+  "stepOrder": 2,
+  "tool": "TRANSLATOR",
+  "input": {
+    "textList": [
+      {
+        "node": {
+          "recordID": "recordID",
+          "pageNo": 0,
+          "blockID": 1,
+          "sentenceID": 0
+        },
+        "content": {
+          "text": "I am awesome",
+          "locale": "en",
+          "model_id": 1
+        }
+      }
+    ]
+  }
+}

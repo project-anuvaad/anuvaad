@@ -43,14 +43,20 @@ class FileContentRepositories:
                     del elem['pred_score']
         return new_block
 
-    def update_block_info(self, block, update_s0):
+    def update_block_info(self, block, update_s0, modifiedSentences=None):
         new_block                   = {}
         new_block['data']           = block
         # log_info("update_block_info payload {}".format(json.dumps(block)), AppContext.getContext())
-
         if 'tokenized_sentences' in list(block.keys()):
             for elem in block['tokenized_sentences']:
-                if update_s0:
+                #case in which only the targeted setences are modified
+                if update_s0 and modifiedSentences != None and len(modifiedSentences) != 0:  
+                    if 's_id' in elem and elem['s_id'] in modifiedSentences:
+                        if 'tgt' in elem:
+                            elem['s0_tgt']    = elem['tgt']
+                        elem['s0_src']    = elem['src']
+
+                if update_s0 and (modifiedSentences == None or len(modifiedSentences) == 0) :
                     if 'tgt' in elem:
                         elem['s0_tgt']    = elem['tgt']
                     elem['s0_src']    = elem['src']
@@ -60,7 +66,10 @@ class FileContentRepositories:
                 if 'output_subwords' in elem:
                     del elem['output_subwords']
                 if 'pred_score' in elem:
-                    del elem['pred_score'] 
+                    del elem['pred_score']
+                # case in which entire block is updated/ updating source file 
+                
+
 
         log_info("updating new block for block_identifier {}".format(block['block_identifier']), AppContext.getContext())
         return new_block
@@ -139,7 +148,7 @@ class FileContentRepositories:
         data['total']       = total_page_count
         return data
 
-    def update(self, record_id,user_id, blocks, workflowCode):
+    def update(self, record_id,user_id, blocks, workflowCode, modifiedSentences=None):
         updated_blocks  = []
         saved_blocks    = []
         update_s0       = False
@@ -149,11 +158,12 @@ class FileContentRepositories:
             - WF_S_TR and WF_S_TKTR, changes the sentence structure hence s0 pair needs to be updated
             - DP_WFLOW_S_C, doesn't changes the sentence structure hence no need to update the s0 pair
         '''
+        
         if workflowCode is not None and (workflowCode == 'WF_S_TR' or workflowCode == 'WF_S_TKTR'):
             update_s0 = True
-
+        log_info("FileContentUpdateRepo -workflowcode : {} | update_S0 : {}".format(workflowCode,update_s0),AppContext.getContext())
         for block in blocks:
-            updated_blocks.append(self.update_block_info(block, update_s0))
+            updated_blocks.append(self.update_block_info(block, update_s0, modifiedSentences))
         
         if len(updated_blocks) > 0:
             for updated_block in updated_blocks:
@@ -166,5 +176,5 @@ class FileContentRepositories:
                 saved_block_results = self.blockModel.get_block_by_block_identifier(record_id,user_id, updated_block['data']['block_identifier'])
                 for saved_block in saved_block_results:
                     saved_blocks.append(saved_block['data'][0])
-                
+                log_info("FileContentUpdateRepo -updated blocks : {}".format(str(saved_blocks)),AppContext.getContext())
         return True, saved_blocks

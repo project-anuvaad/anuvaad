@@ -20,11 +20,11 @@ class SentenceModel(object):
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return None
         
-    def get_sentence_by_s_id(self, user_id, s_id):
-        try:
+    def get_sentence_by_s_id(self, user_id, record_id, block_id, s_id):
+        try: 
             collections = get_db()[DB_SCHEMA_NAME]
             docs        = collections.aggregate([
-                    { '$match': {'data.tokenized_sentences.s_id' : s_id } },
+                    { '$match': {'$and': [{"record_id": record_id}, {"block_identifier": block_id}, {'data.tokenized_sentences.s_id' : s_id }]} },
                     { '$project': {
                         'tokenized_sentences': {
                             '$filter': {

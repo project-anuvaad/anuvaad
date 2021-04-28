@@ -32,8 +32,15 @@ import AddOrganization from "./ui/containers/web/AdminPanel/AddOrganization";
 import ViewDocumentDigitization from './ui/containers/web/DocumentDigitization/ViewDocumentDigitization';
 import DigitzeDocumentUpload from './ui/containers/web/DocumentDigitization/DocumentDigitizationUpload/StartDigitizationUpload';
 import DigitizedDocumentEditor from './ui/containers/web/DocumentDigitization/DigitizedDocumentEditor';
+import GradeDocument from './ui/containers/web/GradeDocument/SentenceCard';
 import ViewAnnotationJob from './ui/containers/web/GradeDocument/ViewAnnotationJobs';
+import ViewScheduledJobs from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewScheduledJobs';
+import ScheduleJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ScheduleJob';
+import ViewJobDetail from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewJobDetails';
+import ViewAnnotatorJob from './ui/containers/web/AdminPanel/ScheduleAnnotationJob/ViewAnnotatorJob';
 import NmtModelAssign from "./ui/containers/web/AdminPanel/NmtModelAssign";
+import ViewUserGlossary from './ui/containers/web/UserGlossary/ViewUserGlossary';
+import UserGlossaryUpload from './ui/containers/web/UserGlossary/UserGlossaryUpload';
 
 const PrivateRoute = ({ headerAttribute: headerAttribute, component: Component, userRoles, title, drawer, showLogo, forDemo, dontShowLoader, dontShowHeader, currentMenu, authenticate, ...rest }) => (
   <Route
@@ -148,7 +155,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-digitization/:jobId/:filename/:inputfileid/:og_fname`}
-              userRoles={["TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={DigitizedDocumentEditor}
               title="Digitized File"
               authenticate={this.authenticateUser}
@@ -219,10 +226,21 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
             <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/grading-sentence-card/:taskId`}
+              dontShowLoader
+              title={"Grade Document"}
+              userRoles={["ANNOTATOR"]}
+              component={GradeDocument}
+              authenticate={this.authenticateUser}
+              currentMenu="grade-document"
+              dontShowHeader={true}
+            />
+
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-digitization`}
               dontShowLoader
               title={"Document Digitization"}
-              userRoles={["TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={ViewDocumentDigitization}
               authenticate={this.authenticateUser}
               currentMenu="document-digitization"
@@ -233,7 +251,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/digitize-document-upload`}
               dontShowLoader
               title={"Start Digitization"}
-              userRoles={["TRANSLATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={DigitzeDocumentUpload}
               authenticate={this.authenticateUser}
               currentMenu="digitize-document-upload"
@@ -303,7 +321,7 @@ class AppRoutes extends React.Component {
               dontShowHeader={true}
             />
 
-            {/* <PrivateRoute
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-scheduled-jobs`}
               dontShowLoader
               title={"View Job"}
@@ -323,7 +341,7 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="schedule-annotation-job"
               dontShowHeader={true}
-            /> */}
+            />
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/assign-nmt-model`}
@@ -335,7 +353,7 @@ class AppRoutes extends React.Component {
               currentMenu="assign-nmt-model"
               dontShowHeader={true}
             />
-            {/* <PrivateRoute
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-annotation-job`}
               dontShowLoader
               title={"View Annotation Job"}
@@ -344,9 +362,9 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="view-annotation-job"
               dontShowHeader={true}
-            /> */}
+            />
 
-            {/* <PrivateRoute
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-job-detail/:jobID`}
               dontShowLoader
               title={"View Annotation Job"}
@@ -355,9 +373,9 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="view-job-detail"
               dontShowHeader={true}
-            /> */}
+            />
 
-            {/* <PrivateRoute
+            <PrivateRoute
               path={`${process.env.PUBLIC_URL}/view-annotator-job/:taskId`}
               dontShowLoader
               title={"View Annotator Job"}
@@ -366,8 +384,29 @@ class AppRoutes extends React.Component {
               authenticate={this.authenticateUser}
               currentMenu="view-job-detail"
               dontShowHeader={true}
-            /> */}
-            
+            />
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/my-glossary`}
+              dontShowLoader
+              title={"My Glossary"}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              component={ViewUserGlossary}
+              authenticate={this.authenticateUser}
+              currentMenu="my-glossary"
+              dontShowHeader={true}
+            />
+
+            <PrivateRoute
+              path={`${process.env.PUBLIC_URL}/user-glossary-upload`}
+              dontShowLoader
+              title={"User Glossary Upload"}
+              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              component={UserGlossaryUpload}
+              authenticate={this.authenticateUser}
+              currentMenu="user-glossary-upload"
+
+            />
+
             <PrivateRoute path={`${process.env.PUBLIC_URL}/*`} component={NotFound} authenticate={this.authenticateUser} />
 
 

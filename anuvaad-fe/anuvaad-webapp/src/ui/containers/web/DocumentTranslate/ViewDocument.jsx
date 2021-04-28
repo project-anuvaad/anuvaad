@@ -203,7 +203,6 @@ class ViewDocument extends React.Component {
    * helper methods
    */
   getJobsSortedByTimestamp = () => {
-    debugger
     let jobs = this.props.job_details.documents.sort((a, b) => {
       if (a.created_on < b.created_on) {
         return 1;

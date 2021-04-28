@@ -3,10 +3,10 @@ import C from "../../constants";
 import ENDPOINTS from "../../../../configs/apiendpoints";
 
 export default class CreateGlossary extends API {
-    constructor(orgID = "", src = "", tgt = "", locale = "", context = "", timeout = 2000) {
+    constructor(userID = "", src = "", tgt = "", locale = "", context = "", timeout = 2000) {
         super('POST', timeout, false);
         this.type = C.CREATE_GLOSARY;
-        this.orgID = orgID;
+        this.userID = userID;
         this.src = src
         this.tgt = tgt
         this.locale = locale;
@@ -32,9 +32,9 @@ export default class CreateGlossary extends API {
 
     getBody() {
         return {
-            org: this.orgID,
+            userID: this.userID,
             context: this.context,
-            translations: [
+            sentences: [
                 {
                     src: this.src,
                     tgt: this.tgt,
@@ -55,6 +55,6 @@ export default class CreateGlossary extends API {
     }
 
     getPayload() {
-        return this.data;
+        return this.response;
     }
 }
