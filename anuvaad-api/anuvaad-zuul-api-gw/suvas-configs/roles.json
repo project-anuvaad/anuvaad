@@ -17,7 +17,7 @@
         },
         {
             "code":"ANNOTATOR",
-            "active":true,
+            "active":false,
             "description":"Has access to translation related resources for an annotator"
         }
     ]
