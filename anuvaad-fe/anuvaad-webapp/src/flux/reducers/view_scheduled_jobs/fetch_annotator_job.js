@@ -5,7 +5,8 @@ const initialState = {
     result: [],
     updatedid: 0,
     save_count: 0,
-    total_count: 0
+    total_count: 0,
+    taskId: 0
 }
 
 const getTaskDetail = (payload) => {
@@ -58,7 +59,8 @@ export default (state = initialState, action) => {
                     result,
                     updatedid: 0,
                     save_count: action.payload.data.tasks[0].saved_sentences,
-                    total_count: action.payload.data.tasks[0].total_sentences
+                    total_count: action.payload.data.tasks[0].total_sentences,
+                    taskId: action.payload.data.tasks[0].taskId
                 }
 
             }
@@ -68,15 +70,14 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 result: updatedData,
-                updatedid: action.payload.data.annotations[0].annotationId,
-                // save_count: action.payload.data.tasks[0].saved_sentences,
-                // total_count: action.payload.data.tasks[0].total_sentences
+                updatedid: action.payload.data.annotations[0].annotationId
             }
         }
         case C.CLEAR_ANNOTATOR_JOB:
             {
                 return {
-                    ...initialState
+                    ...initialState,
+                    taskId: state.taskId
                 }
             }
         default:

@@ -64,9 +64,7 @@ class SentenceCard extends React.Component {
             showLoader: false,
             open: false,
             message: null,
-            variantType: null,
-            total_count: 0,
-            saved_count: 0
+            variantType: null
         }
     }
 
@@ -99,7 +97,7 @@ class SentenceCard extends React.Component {
                 variantType: 'success',
             })
         }
-        if (this.props.total_count !== 0 && this.props.total_count === this.props.saved_count) {
+        if (this.props.total_count !== 0 && this.props.total_count === this.props.saved_count && this.props.taskId === this.props.match.params.taskId) {
             this.props.clearAnnotatorJob()
             history.push(`${process.env.PUBLIC_URL}/view-annotation-job`)
         }
@@ -219,8 +217,8 @@ class SentenceCard extends React.Component {
     render() {
         return (
             <div style={{ height: window.innerHeight, overflow: 'auto' }}>
-                <Header total_count={this.props.total_count} saved_count={this.props.saved_count} />
                 <div style={{ marginTop: '3%' }}>
+                <Header total_count={this.props.total_count} saved_count={this.props.saved_count} />
                     {
                         this.state.showLoader ?
                             <Spinner /> :
@@ -240,7 +238,8 @@ const mapStateToProps = state => {
         updatedId: state.taskdetail.updatedid,
         fetchuserjob: state.fetchuserjob,
         saved_count: state.taskdetail.save_count,
-        total_count: state.taskdetail.total_count
+        total_count: state.taskdetail.total_count,
+        taskId: state.taskdetail.taskId
     }
 }
 
