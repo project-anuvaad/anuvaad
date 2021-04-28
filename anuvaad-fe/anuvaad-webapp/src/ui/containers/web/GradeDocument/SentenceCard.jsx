@@ -22,7 +22,7 @@ import GradeSentence from '../../../../flux/actions/apis/user/grade_sentence';
 import Snackbar from "../../../components/web/common/Snackbar";
 import fetchUserJob from '../../../../flux/actions/apis/user/fetch_user_job';
 import history from "../../../../web.history";
-
+import clearAnnotatorJob from '../../../../flux/actions/apis/view_scheduled_jobs/clear_task';
 
 const styles = {
     card_open: {
@@ -64,33 +64,18 @@ class SentenceCard extends React.Component {
             showLoader: false,
             open: false,
             message: null,
-            variantType: null,
-            total_count: 0,
-            saved_count: 0
+            variantType: null
         }
     }
 
     componentDidMount() {
-        let data = this.props.fetchuserjob.result.filter(val => {
-            return val.taskId === this.props.match.params.taskId
-        })
-        let saved_sentences = data.length && data[0].saved_sentences
-        let total_sentences = data.length && data[0].total_sentences
-        this.setState({
-            showLoader: true,
-            saved_count: saved_sentences,
-            total_count: total_sentences
-        })
+        this.setState({ showLoader: true })
         let { APITransport } = this.props
         let apiObj = new FetchJobDetail(this.props.match.params.taskId)
         APITransport(apiObj)
     }
 
     componentDidUpdate(prevProps, prevState) {
-        let data = this.props.fetchuserjob.result.filter(user => {
-            return this.props.match.params.taskId === user.taskId
-        })
-
         if (prevProps.job_detail.length !== this.props.job_detail.length) {
             this.setState({ showLoader: false })
         }
@@ -103,22 +88,23 @@ class SentenceCard extends React.Component {
         if (prevProps.updatedId !== this.props.updatedId) {
             let { APITransport } = this.props
             let apiObj = new fetchUserJob();
+            let apiObj1 = new FetchJobDetail(this.props.match.params.taskId)
             APITransport(apiObj);
+            APITransport(apiObj1);
             this.setState({
                 open: true,
                 message: 'Feedback saved successfully',
                 variantType: 'success',
             })
         }
-        if (data.length && prevState.saved_count !== data[0].saved_sentences) {
-            this.setState({ saved_count: data[0].saved_sentences, total_count: data[0].total_sentences })
-        }
-        if (this.state.total_count === this.state.saved_count){
+        if (this.props.total_count !== 0 && this.props.total_count === this.props.saved_count && this.props.taskId === this.props.match.params.taskId) {
+            this.props.clearAnnotatorJob()
             history.push(`${process.env.PUBLIC_URL}/view-annotation-job`)
         }
     }
 
     handleChange = (event, id) => {
+        event.preventDefault();
         this.setState({
             score: Number(event.target.value),
             annotationId: id
@@ -231,8 +217,8 @@ class SentenceCard extends React.Component {
     render() {
         return (
             <div style={{ height: window.innerHeight, overflow: 'auto' }}>
-                <Header total_count={this.state.total_count} saved_count={this.state.saved_count} />
                 <div style={{ marginTop: '3%' }}>
+                <Header total_count={this.props.total_count} saved_count={this.props.saved_count} />
                     {
                         this.state.showLoader ?
                             <Spinner /> :
@@ -251,12 +237,16 @@ const mapStateToProps = state => {
         job_detail: state.taskdetail.result,
         updatedId: state.taskdetail.updatedid,
         fetchuserjob: state.fetchuserjob,
+        saved_count: state.taskdetail.save_count,
+        total_count: state.taskdetail.total_count,
+        taskId: state.taskdetail.taskId
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
-        APITransport
+        APITransport,
+        clearAnnotatorJob
     },
         dispatch)
 }

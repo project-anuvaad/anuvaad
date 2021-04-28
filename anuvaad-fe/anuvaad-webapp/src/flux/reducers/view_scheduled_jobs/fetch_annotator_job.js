@@ -3,7 +3,10 @@ import C from '../../actions/constants';
 const initialState = {
     count: 0,
     result: [],
-    updatedid: 0
+    updatedid: 0,
+    save_count: 0,
+    total_count: 0,
+    taskId: 0
 }
 
 const getTaskDetail = (payload) => {
@@ -15,7 +18,7 @@ const getTaskDetail = (payload) => {
                 source: annotation.source.text,
                 target: annotation.target.text,
                 score: annotation.score ? annotation.score : 0,
-                saved: annotation.saved ? annotation.saved : ""
+                saved: annotation.saved ? annotation.saved : "",
             })
         })
     })
@@ -54,7 +57,10 @@ export default (state = initialState, action) => {
                     ...state,
                     count: action.payload.data.tasks[0].annotations.length,
                     result,
-                    updatedid: 0
+                    updatedid: 0,
+                    save_count: action.payload.data.tasks[0].saved_sentences,
+                    total_count: action.payload.data.tasks[0].total_sentences,
+                    taskId: action.payload.data.tasks[0].taskId
                 }
 
             }
@@ -70,7 +76,8 @@ export default (state = initialState, action) => {
         case C.CLEAR_ANNOTATOR_JOB:
             {
                 return {
-                    ...initialState
+                    ...initialState,
+                    taskId: state.taskId
                 }
             }
         default:
