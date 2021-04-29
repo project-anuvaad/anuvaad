@@ -14,7 +14,7 @@ def get_text(app_context,base_dir) :
     images   = extract_images(app_context,base_dir)
     #languages = get_languages(app_context)
     #words,lines = detect_text(images,languages)
-    words,lines  = get_coords(images)
+    words,lines  = get_coords(images,app_context)
 
     return  words,lines,images
 

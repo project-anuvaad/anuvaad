@@ -7,10 +7,11 @@ import numpy as np
 
 class Orientation:
 
-    def __init__(self, image_path ,conf_threshold=50, lang='eng'):
+    def __init__(self, image_path,file_properties ,conf_threshold=50, lang='eng'):
 
         self.image_path     = image_path
         self.image          = cv2.imread(image_path)
+        self.file_properties = file_properties
         # self.lines          = lines
         self.conf_threshold = int(conf_threshold)
 
@@ -99,11 +100,23 @@ class Orientation:
 
     def re_orient(self):
         lang = 'hi'
+        
+        craft_config = self.file_properties.get_craft_config()
+
+        if craft_config == None :
+            text_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold']
+            low_text_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['low_text']
+            link_threshold = config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold']
+        else:
+            text_threshold = craft_config['text_threshold']
+            low_text_threshold = craft_config['low_text']
+            link_threshold = craft_config['link_threshold']
+
         lines = detect_text_per_page([self.image], \
                                      network=True, \
-                                     text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
-                                     low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
-                                     link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
+                                     text_threshold=text_threshold, \
+                                     low_text_threshold=low_text_threshold,
+                                     link_threshold=link_threshold)[0]
 
         # words = detect_text_per_page([self.image], \
         #                              network=False, \
@@ -122,17 +135,17 @@ class Orientation:
 
             lines = detect_text_per_page([self.image], \
                                          network=True, \
-                                         text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
-                                         low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
-                                         link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
+                                         text_threshold=text_threshold, \
+                                         low_text_threshold=low_text_threshold,
+                                         link_threshold=link_threshold)[0]
             
             cv2.imwrite(self.image_path, self.image)
 
         words = detect_text_per_page([self.image], \
                                     network=False, \
-                                    text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['text_threshold'], \
-                                    low_text_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['low_text'],
-                                    link_threshold=config.LANGUAGE_LINE_THRESOLDS[lang]['link_threshold'])[0]
+                                    text_threshold=text_threshold, \
+                                    low_text_threshold=low_text_threshold,
+                                    link_threshold=link_threshold)[0]
         angle = self.get_rotaion_angle(lines)
         print("Angle of tilt after correction {} ".format(angle))
 

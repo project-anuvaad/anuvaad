@@ -49,6 +49,14 @@ class File:
     @log_error
     def get_language(self):
         return self.file['config']['OCR']['language']
+    
+    @log_error
+    def get_craft_config(self):
+        if 'craft' not in self.file['config'].keys():
+            return None
+        else:
+            return self.file['config']['craft']
+
 
     @log_error
     def get_file(self):
@@ -61,6 +69,7 @@ def get_files(application_context):
     files = copy.deepcopy(application_context['input']['inputs'])
     return files
 
+    
 
 def get_languages(app_context):
     languages = []
