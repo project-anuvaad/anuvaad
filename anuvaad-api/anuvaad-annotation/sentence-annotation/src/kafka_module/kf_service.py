@@ -48,6 +48,7 @@ def process_kf_request_payload():
                 continue
             
             data            = Consumer.get_json_data(msg.value)
+            LOG_WITHOUT_CONTEXT['jobID']=data['jobID']
             log_info("received input request from Kafka queue for JobID: %s " % (data['jobID']), LOG_WITHOUT_CONTEXT)
             processRequest(data)
     

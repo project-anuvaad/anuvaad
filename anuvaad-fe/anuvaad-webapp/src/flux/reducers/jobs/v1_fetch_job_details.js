@@ -236,6 +236,12 @@ export default function (state = initialState, action) {
             }
         }
 
+        case C.CLEAR_JOB_STATUS: {
+            return {
+                ...initialState
+            }
+        }
+
         default:
             return state;
     }
