@@ -106,7 +106,7 @@ class TranslateService:
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
                         translation = encode_itranslate_decode(i,num_map,tp_tokenizer)
                         translation = [sentence_processor.moses_detokenizer(i) for i in translation]                                              
-                    elif i['id'] in range(67,79):
+                    elif i['id'] in range(67,81):
                         if i['tgt_lang'] == "en":
                             tp_tokenizer = sentence_processor.moses_tokenizer 
                             i['src'] = sentence_processor.indic_tokenizer(i['src'])
@@ -242,7 +242,7 @@ class OpenNMTTranslateService:
                         i['src'] = sentence_processor.indic_tokenizer(i['src'])
                         translation,scores,input_sw,output_sw = encode_translate_decode(i)
                         translation = sentence_processor.moses_detokenizer(translation)                                                                           
-                    elif i['id'] in range(67,79):
+                    elif i['id'] in range(67,81):
                         if tgt_language == "en":
                             i['src'] = sentence_processor.indic_tokenizer(i['src'])
                             translation,scores,input_sw,output_sw = encode_translate_decode_v2(i)

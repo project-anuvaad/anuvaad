@@ -60,7 +60,7 @@
           "target_language_code": "pa",
           "model_id": 18,
           "model_name": "model-punjabi-1-80k",
-          "is_primary": true,
+          "is_primary": false,
           "created_on": "2019-09-22T13:44:16.761Z",
           "status": "ACTIVE",
           "source_language_name":"English",
@@ -191,7 +191,7 @@
           "target_language_code": "en",
           "model_id": 55,
           "model_name": "Punjabi-English Model-1",
-          "is_primary": true,
+          "is_primary": false,
           "description": "On newly tokenized IK(v-3) corpus 1.1 Million",
           "created_on": "2020-02-19T06:04:01.168Z",
           "status": "ACTIVE",
@@ -413,6 +413,30 @@
           "status": "ACTIVE",
           "source_language_name":"English",
           "target_language_name":"Marathi"
+        },
+        {
+          "source_language_code": "pa",
+          "target_language_code": "en",
+          "model_id": 79,
+          "model_name": "Punjabi-English Model-2",
+          "is_primary": true,
+          "description": "Trained on 1.3M corpus dated 29-04-2021",
+          "created_on": "2021-04-29",
+          "status": "ACTIVE",
+          "source_language_name":"Punjabi",
+          "target_language_name":"English"
+        },
+        {
+          "source_language_code": "en",
+          "target_language_code": "pa",
+          "model_id": 80,
+          "model_name": "English-Punjabi Model-3",
+          "is_primary": true,
+          "description": "Trained on 1.3M corpus dated 29-04-2021",
+          "created_on": "2021-04-29",
+          "status": "ACTIVE",
+          "source_language_name":"English",
+          "target_language_name":"Punjabi"
         },
         {
           "source_language_code": "en",
