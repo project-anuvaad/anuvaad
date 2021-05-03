@@ -3,11 +3,13 @@ from src.services.extract_images import extract_images
 from src.utilities.model_response import FileOutput, Page
 from src.utilities.request_parse import get_files, get_languages
 import config
+import copy
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 
 from src.services.detect_text import get_coords
+from src.services.collate import RemoveOverlap, merger_lines_words
 
 def get_text(app_context,base_dir) :
 
@@ -36,6 +38,11 @@ def get_response(app_context, words, lines, images):
                     page_lines = lines[file_index][page_index]
                 else:
                     page_lines = []
+
+                ################ remove overlap at page level in lines
+                page_lines = copy.deepcopy(RemoveOverlap.remove_overlap(page_lines))
+                ################ horizontal merging 
+                page_lines = copy.deepcopy(merger_lines_words(page_lines,page_words))
                 page_properties = Page(page_words, page_lines, page)
                 file_prperties.set_page(page_properties.get_page())
                 file_prperties.set_page_info(page)

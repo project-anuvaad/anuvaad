@@ -70,6 +70,7 @@ ENV NVIDIA_REQUIRE_CUDA "cuda>=11.2 brand=tesla,driver>=418,driver<419 brand=tes
 
 COPY / /app
 WORKDIR /app
+RUN apt install -y libspatialindex-dev python-rtree
 RUN pip install -r requirements.txt
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
