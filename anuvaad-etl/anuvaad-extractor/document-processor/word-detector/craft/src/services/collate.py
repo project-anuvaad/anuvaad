@@ -93,7 +93,7 @@ class RemoveOverlap:
     def merge_overlap(self,text_regions):
         region_updated = []
         flag =False
-        while len(text_regions)>0:
+        while len(text_regions)>1:
             check = False
             region_temp= text_regions[1:]
             for idx2,region2 in enumerate(region_temp):
@@ -114,7 +114,7 @@ class RemoveOverlap:
             layouts, flag = self.merge_overlap(layouts)
         return layouts
 
-        
+
 def get_coord(bbox):
     temp_box_cv = []
     temp_box_cv.append(bbox["boundingBox"]['vertices'][0]['x'])
