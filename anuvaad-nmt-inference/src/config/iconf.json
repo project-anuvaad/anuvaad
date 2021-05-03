@@ -26,14 +26,6 @@
             "target_language_code": "gu"
         },
         {
-            "id":18,
-            "path":"nmt/en-pa",
-            "sp_encoder":"sentencepiece_models/enPu-2019-09-20-10k.model",
-            "sp_decoder":"sentencepiece_models/punjabi-2019-09-20-10k.model",
-            "source_language_code": "en",
-            "target_language_code": "pa"
-        },
-        {
             "id":42,
             "path":"nmt/en-mr",
             "sp_encoder":"sentencepiece_models/enMr_exp-2-2019-11-07-24k.model",
@@ -47,14 +39,6 @@
             "sp_encoder":"sentencepiece_models/gujarati-en-to-guj-2-2020-02-14-24k.model",
             "sp_decoder":"sentencepiece_models/enGuj-en-to-guj-2-2020-02-14-24k.model",
             "source_language_code": "gu",
-            "target_language_code": "en"
-        },
-        {
-            "id":55,
-            "path":"nmt/pa-en",
-            "sp_encoder":"sentencepiece_models/punjabi-en-to-pun-2-2020-02-16-24k.model",
-            "sp_decoder":"sentencepiece_models/enPun-en-to-pun-2-2020-02-16-24k.model",
-            "source_language_code": "pa",
             "target_language_code": "en"
         },
         {
