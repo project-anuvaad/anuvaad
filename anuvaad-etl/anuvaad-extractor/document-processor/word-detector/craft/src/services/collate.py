@@ -93,7 +93,7 @@ class RemoveOverlap:
     def merge_overlap(self,text_regions):
         region_updated = []
         flag =False
-        while len(text_regions)>1:
+        while len(text_regions)>0:
             check = False
             region_temp= text_regions[1:]
             
