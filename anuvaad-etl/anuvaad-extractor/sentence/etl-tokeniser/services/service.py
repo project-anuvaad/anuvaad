@@ -13,7 +13,6 @@ from anuvaad_auditor.loghandler import log_error
 from anuvaad_auditor.loghandler import log_exception
 import re
 import json
-import requests
 import config
 import uuid
 
