@@ -11,6 +11,7 @@ from anuvaad_auditor.loghandler import log_debug
 from src.services.detect_text import get_coords
 from src.services.collate import RemoveOverlap, merger_lines_words
 
+removeoverlap = RemoveOverlap()
 def get_text(app_context,base_dir) :
 
     images   = extract_images(app_context,base_dir)
@@ -40,7 +41,7 @@ def get_response(app_context, words, lines, images):
                     page_lines = []
 
                 ################ remove overlap at page level in lines
-                page_lines = RemoveOverlap.remove_overlap(page_lines)
+                page_lines = removeoverlap.remove_overlap(page_lines)
                 ################ horizontal merging 
                 page_lines = merger_lines_words(page_lines,page_words)
                 page_properties = Page(page_words, page_lines, page)
