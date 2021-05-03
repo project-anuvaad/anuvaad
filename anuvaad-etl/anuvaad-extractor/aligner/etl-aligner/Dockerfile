@@ -8,6 +8,7 @@
 FROM anuvaadio/anuvaad-etl-aligner-base:1
 COPY / /app
 WORKDIR /app
+RUN apt install libomp-dev
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 COPY start.sh /usr/bin/start.sh

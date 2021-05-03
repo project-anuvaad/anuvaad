@@ -47,8 +47,8 @@ def createalignmentwflowjob():
     validator = AlignmentValidator()
     data = request.get_json()
     try:
-        srctype = str(data['source']['type'])
-        tgttype = str(data['target']['type'])
+        srctype = str(data['files'][0]['type'])   
+        tgttype = str(data['files'][1]['type'])
     except:
         pass
     error = validator.validate_input(data)

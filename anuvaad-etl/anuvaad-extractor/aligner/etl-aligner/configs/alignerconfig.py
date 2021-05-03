@@ -19,9 +19,9 @@ anu_dp_wf_aligner_in_topic = "anuvaad-dp-tools-aligner-input-v3"
 anu_dp_wf_aligner_out_topic = "anuvaad-dp-tools-aligner-output-v3"
 
 #common variables for json based alignment
-jsonalign_job_topic = "anuvaad-etl-jsonalignment-jobs-v7"
-anu_dp_wf_jsonaligner_in_topic = "anuvaad-dp-tools-jsonaligner-input-v3"
-anu_dp_wf_jsonaligner_out_topic = "anuvaad-dp-tools-jsonaligner-output-v3"
+jsonalign_job_topic = "anuvaad-etl-jsonalignment-jobs-v1"
+anu_dp_wf_jsonaligner_in_topic = "anuvaad-dp-tools-jsonaligner-input-v1"
+anu_dp_wf_jsonaligner_out_topic = "anuvaad-dp-tools-jsonaligner-output-v1"
 
 
 #kafka-configs
