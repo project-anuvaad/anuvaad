@@ -44,4 +44,3 @@ sentence-transformers==0.3.8
 #additions for saving as json
 pandas==1.1.5
 faiss==1.5.3
-faiss-gpu==1.7.0
