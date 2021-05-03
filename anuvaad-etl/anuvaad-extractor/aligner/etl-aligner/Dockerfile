@@ -12,6 +12,8 @@ RUN apt-get update -y
 RUN apt install libomp-dev -y
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
+RUN pip3 install faiss-cpu --no-cache
+RUN apt-get install libomp-dev -y
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
 CMD ["python3", "/app/app.py"]
