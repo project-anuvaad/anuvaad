@@ -9,16 +9,16 @@ class SentenceRepositories:
     def __init__(self):
         self.sentenceModel  = SentenceModel()
 
-    def get_sentence(self, user_id, s_ids):
-        sentences = []
-        for s_id in s_ids:
-            sentence = self.sentenceModel.get_sentence_by_s_id(user_id, s_id)
+    def get_sentence(self, user_id, sentences):
+        result_sentences = []
+        for sent in sentences:
+            sentence = self.sentenceModel.get_sentence_by_s_id(user_id, sent["record_id"], sent["block_identifier"], sent["s_id"])
             if sentence == None:
-                log_info('could not get sentence for s_id {}'.format(s_id), AppContext.getContext())
+                log_info('could not get sentence for s_id {}'.format(sent["s_id"]), AppContext.getContext())
                 continue
-            sentences.append(sentence)
+            result_sentences.append(sentence)
 
-        return sentences
+        return result_sentences
         
     def update_sentences(self, user_id, sentences, workflowCode):
         update_s0       = False

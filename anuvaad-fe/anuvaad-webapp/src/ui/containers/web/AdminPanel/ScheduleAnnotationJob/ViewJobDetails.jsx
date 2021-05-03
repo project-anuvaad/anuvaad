@@ -17,7 +17,8 @@ import APITransport from "../../../../../flux/actions/apitransport/apitransport"
 import FetchJobDetail from '../../../../../flux/actions/apis/view_scheduled_jobs/fetch_job_detail';
 import history from "../../../../../web.history";
 import Snackbar from "../../../../components/web/common/Snackbar";
-
+import clearJobDetails from '../../../../../flux/actions/apis/view_scheduled_jobs/clear_job_detail';
+import clearTask from '../../../../../flux/actions/apis/view_scheduled_jobs/clear_task';
 
 class ViewJobDetails extends React.Component {
     constructor(props) {
@@ -33,6 +34,8 @@ class ViewJobDetails extends React.Component {
      * life cycle methods
      */
     componentDidMount() {
+        this.props.clearJobDetails();
+        this.props.clearTask();
         let { APITransport } = this.props
         let apiObj = new FetchJobDetail(this.props.match.params.jobID, "VET_PARALLEL_SENTENCE")
         APITransport(apiObj);
@@ -228,6 +231,8 @@ const mapDispatchToProps = (dispatch) =>
         {
             APITransport,
             CreateCorpus: APITransport,
+            clearJobDetails,
+            clearTask
         },
         dispatch
     );

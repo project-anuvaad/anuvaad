@@ -83,7 +83,8 @@ class ScheduleJob extends React.Component {
             source_languages: [],
             target_languages: [],
             description: '',
-            array_of_users: []
+            array_of_users: [],
+            variant: 'success'
         }
     }
 
@@ -110,40 +111,50 @@ class ScheduleJob extends React.Component {
                 showLoader: false
             })
         }
-        if (prevProps.documentUplaod !== this.props.documentUplaod) {
-            const { APITransport } = this.props;
-            const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
-                this.state.target_language_code, this.state.path, this.state.model, "", "", this.state.description, this.state.array_of_users);
-            APITransport(apiObj);
-        }
         if (prevProps.workflowStatus !== this.props.workflowStatus) {
             this.props.createJobEntry(this.props.workflowStatus)
-
-            // var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, this.state.uploadType)
-            // var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code, this.state.uploadType)
-
-            // TELEMETRY.startWorkflow(sourceLang, targetLang, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
             history.push(`${process.env.PUBLIC_URL}/view-scheduled-jobs`);
         }
     }
 
     handleSubmit(e) {
         let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code)
-
         e.preventDefault();
         this.setState({ model: modelId, showLoader: true })
-        if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code) {
-            const { APITransport } = this.props;
+        if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code && this.state.description) {
             const apiObj = new DocumentUpload(
                 this.state.files, "docUplaod",
                 modelId,
             );
-            APITransport(apiObj);
+            fetch(apiObj.apiEndPoint(), {
+                method: 'post',
+                headers: { 'auth-token': `${decodeURI(localStorage.getItem("token"))}` },
+                body: apiObj.getFormData()
+            })
+                .then(async res => {
+                    if (!res.ok) {
+                        await res.json().then(obj => {
+                            this.setState({ showLoader: false, variant: 'error', message: obj.why, open: true })
+                        })
+                    } else {
+                        let identifier
+                        const { APITransport } = this.props;
+                        await res.json().then(obj => {
+                            identifier = obj.data
+                        })
+                        const apiObj = new WorkFlow(this.state.workflow, identifier, this.state.fileName, this.state.source_language_code,
+                            this.state.target_language_code, this.state.path, this.state.model, "", "", this.state.description, this.state.array_of_users);
+                        APITransport(apiObj);
+                    }
+                })
         } else {
             this.setState({ showLoader: false })
             alert("Field should not be empty!");
         }
-
+        setTimeout(() => {
+            this.setState({ variant: 'success', message: "", open: false }, () => {
+            }, 6000)
+        })
     }
 
     renderSourceLanguagesItems = () => {
@@ -260,7 +271,7 @@ class ScheduleJob extends React.Component {
         let array_of_users = values.map(value => {
             return {
                 userId: value.userID,
-                name: value.email
+                name: value.userName
             }
         })
         this.setState({ array_of_users })
@@ -331,7 +342,7 @@ class ScheduleJob extends React.Component {
                                     <Autocomplete
                                         multiple
                                         id="tags-outlined"
-                                        options={this.props.userinfo.data.filter(user => user.roles === 'ANNOTATOR')}
+                                        options={this.props.userinfo.data.filter(user => user.roles === 'ANNOTATOR' && user.orgId !== 'NONMT')}
                                         getOptionLabel={(option) => option.userName}
                                         filterSelectedOptions
                                         onChange={(e, value) => this.addUser(value)}
@@ -389,11 +400,11 @@ class ScheduleJob extends React.Component {
 
                         {this.state.open && (
                             <Snackbar
-                                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                                 open={this.state.open}
                                 autoHideDuration={6000}
                                 onClose={this.handleClose}
-                                variant="success"
+                                variant={this.state.variant}
                                 message={this.state.message}
                             />
                         )}

@@ -14,20 +14,20 @@ class FetchSentenceResource(Resource):
         if user_id == None:
             user_id = request.headers.get('x-user-id')
 
-        s_ids       = None
+        sentences       = None
         if 'sentences' in body:
-            s_ids       = body['sentences']
+            sentences       = body['sentences']
 
-        if user_id is None or s_ids is None:
+        if user_id is None or sentences is None:
             log_info('Missing params in FetchSentenceResource {}, user_id:{}'.format(body, user_id), AppContext.getContext())
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
         
         AppContext.addRecordID(None)
-        log_info("FetchSentenceResource s_ids {} for user {}".format(len(s_ids), user_id), AppContext.getContext())
+        log_info("FetchSentenceResource s_ids {} for user {}".format(len(sentences), user_id), AppContext.getContext())
 
         try:
-            result  = sentenceRepo.get_sentence(user_id, s_ids)
+            result  = sentenceRepo.get_sentence(user_id, sentences)
             if result == False:
                 res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
                 return res.getresjson(), 400

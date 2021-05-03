@@ -33,12 +33,14 @@ class ParallelSentenceModel(object):
             collections     = get_db()[DB_SCHEMA_NAME]
             docs            = collections.find({'annotationType': annotationType, 'jobId': jobId})
             for doc in docs:
-                if doc['annotations']:
+                try:
                     doc['src_locale'] = doc['annotations'][0]["source"]["language"]
                     doc['tgt_locale'] = doc['annotations'][0]["target"]["language"]
-                else:
+                except Exception as e:
+                    log_exception("Exception on annotation job search",  LOG_WITHOUT_CONTEXT, e)
                     doc['src_locale'] = None
                     doc['tgt_locale'] = None
+                    pass
 
                 del doc['annotations']
                 updated_docs.append(normalize_bson_to_json(doc))
@@ -54,8 +56,15 @@ class ParallelSentenceModel(object):
             collections     = get_db()[DB_SCHEMA_NAME]
             docs            = collections.find({'user.userId': userId})
             for doc in docs:
-                doc['src_locale'] = doc['annotations'][0]["source"]["language"]
-                doc['tgt_locale'] = doc['annotations'][0]["target"]["language"]
+                try:
+                    doc['src_locale'] = doc['annotations'][0]["source"]["language"]
+                    doc['tgt_locale'] = doc['annotations'][0]["target"]["language"]
+                except Exception as e:
+                    log_exception("Exception on user task search",  LOG_WITHOUT_CONTEXT, e)
+                    doc['src_locale'] = None
+                    doc['tgt_locale'] = None
+                    pass
+
                 del doc['annotations']
                 updated_docs.append(normalize_bson_to_json(doc))
             return updated_docs
@@ -113,9 +122,11 @@ class ParallelSentenceModel(object):
         unsaved_sent_count   = 0
 
         if code == 0:
-            val="user.userId"
-        if code==1:
-            val="jobId"
+            val =  "user.userId"
+        if code == 1:
+            val =  "jobId"
+        if code == 2:
+            val =  "taskId"
         tasks = []
 
         try:
