@@ -93,14 +93,11 @@ class RemoveOverlap:
     def merge_overlap(self,text_regions):
         region_updated = []
         flag =False
-        print("text region original",text_regions)
         while len(text_regions)>1:
             check = False
             region_temp= text_regions[1:]
             
             for idx2,region2 in enumerate(region_temp):
-                print("region2",region2)
-                print("text region",text_regions)
                 cond = self.is_connected(text_regions[0], region2)
                 if cond:
                     region1 = self.update_coord(text_regions[0],region2)
