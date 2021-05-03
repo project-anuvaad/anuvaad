@@ -115,7 +115,7 @@ class RemoveOverlap:
             layouts, flag = self.merge_overlap(layouts)
         return layouts
 
-
+removeoverlap = RemoveOverlap()
 def get_coord(bbox):
     temp_box_cv = []
     temp_box_cv.append(bbox["boundingBox"]['vertices'][0]['x'])
@@ -155,12 +155,12 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
     if regions !=None and len(regions) > 0:
         lines_intersected =[]
         for line_idx, line in enumerate(lines):
-            poly = RemoveOverlap.get_polygon(line['boundingBox'])
+            poly = removeoverlap.get_polygon(line['boundingBox'])
             if poly:
                 idx.insert(line_idx, poly.bounds)
         for region_index, region in enumerate(regions):
             
-            region_poly = RemoveOverlap.get_polygon(region['boundingBox'])
+            region_poly = removeoverlap.get_polygon(region['boundingBox'])
             children_lines =[]
             if region_poly:
                 children_lines = list(idx.intersection(region_poly.bounds))
@@ -168,7 +168,7 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                 region_lines = []
                 for intr_index in children_lines:
                     if intr_index not in lines_intersected:                        
-                        line_poly = RemoveOverlap.get_polygon(lines[intr_index]['boundingBox'])
+                        line_poly = removeoverlap.get_polygon(lines[intr_index]['boundingBox'])
                         if line_poly:
                             area = region_poly.intersection(line_poly).area
                             reg_area = region_poly.area
