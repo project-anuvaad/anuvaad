@@ -173,15 +173,8 @@ class WFMService:
         else:
             wf_details = wfmutils.get_job_details(task_output["jobID"])
         if wf_details is None or len(wf_details) == 0:
-            client_input = {"workflowCode": wf_input["workflowCode"], "textBlocks": wf_input["textBlocks"],
-                            "recordID": wf_input["recordID"], "locale": wf_input["locale"], "model": wf_input["model"]}
-            if "modifiedSentences" in wf_input.keys():
-                client_input["modifiedSentences"] = wf_input["modifiedSentences"]
-            if "context" in wf_input.keys():
-                client_input["context"] = wf_input["context"]
-            if "retranslate" in wf_input.keys():
-                client_input["retranslate"] = wf_input["retranslate"]
-            client_output = {"input": client_input, "jobID": wf_input["jobID"],
+            config = wfmutils.get_configs()[wf_input["workflowCode"]]
+            client_output = {"input": wf_input, "jobID": wf_input["jobID"], "translation": config["translation"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
                              "startTime": eval(str(time.time()).replace('.', '')[0:13]), "taskDetails": []}
@@ -322,12 +315,7 @@ class WFMService:
             task_details = []
             if task_output:
                 task_details = [task_output]
-            client_input = {"workflowCode": wf_input["workflowCode"], "files": wf_input["files"]}
-            if 'jobName' in wf_input.keys():
-                client_input["jobName"] = wf_input["jobName"]
-            if 'jobDescription' in wf_input.keys():
-                client_input["jobDescription"] = wf_input["jobDescription"]
-            client_output = {"input": client_input, "jobID": wf_input["jobID"],
+            client_output = {"input": wf_input, "jobID": wf_input["jobID"],
                              "workflowCode": wf_input["workflowCode"], "active": True,
                              "status": "STARTED", "state": "INITIATED", "metadata": wf_input["metadata"],
                              "startTime": eval(str(time.time()).replace('.', '')[0:13]), "taskDetails": task_details}

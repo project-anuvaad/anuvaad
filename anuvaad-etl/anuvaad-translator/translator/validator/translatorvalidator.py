@@ -70,6 +70,25 @@ class TranslatorValidator:
                 if 'target_language_code' not in model.keys():
                     return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
 
+    def validate_sentences_translate(self, data):
+        if 'input' not in data.keys():
+            return post_error("INPUT_NOT_FOUND", "Input key is mandatory", None)
+        else:
+            api_input = data["input"]
+            if 'sentences' not in api_input.keys():
+                return post_error("SENTENCES_NOT_FOUND", "Sentences is mandatory", None)
+            else:
+                if not api_input["sentences"]:
+                    return post_error("TEXT_LIST_EMPTY", "Text list cannot be empty", None)
+                else:
+                    for text in api_input["sentences"]:
+                        if 's_id' not in text.keys():
+                            return post_error("SENTENCE_ID_NOT_FOUND", "s_id is mandatory", None)
+                        if 'src' not in text.keys():
+                            return post_error("TEXT_NOT_FOUND", "src is mandatory", None)
+            if 'model_id' not in api_input.keys():
+                return post_error("MODEL_NOT_FOUND", "Model ID is mandatory for this wf.", None)
+
     # Validator that validates the input request for initiating translation through wf
     def validate_wf(self, data, is_api):
         if 'jobID' not in data.keys():

@@ -31,40 +31,64 @@ class WFMValidator:
     def validate_sync(self, data, workflowCode):
         if is_sync_flow_enabled:
             configs = wfmutils.get_configs()
-            if configs[workflowCode]["type"] != "SYNC":
+            config = configs[workflowCode]
+            if config["type"] != "SYNC":
                 return post_error("UNSUPPORTED_WF_CODE", "This workflow is NOT of the SYNC type.", None)
-            if 'recordID' not in data.keys():
-                return post_error("RECORD_ID_NOT_FOUND", "Record id is mandatory.", None)
-            if 'locale' not in data.keys():
-                return post_error("LOCALE_NOT_FOUND", "Locale is mandatory.", None)
-            if 'textBlocks' not in data.keys():
-                return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory.", None)
-            else:
-                if not data["textBlocks"]:
-                    return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory.", None)
-                tools = wfmutils.get_tools_of_wf(workflowCode)
-                if tool_translator in tools:
-                    if 'model' not in data.keys():
-                        return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
-                    else:
-                        model = dict(data["model"])
-                        if 'model_id' not in model.keys():
-                            return post_error("MODEL_ID_NOT_FOUND", "Model Id is mandatory.", None)
-                        if 'source_language_code' not in model.keys():
-                            return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
-                        if 'target_language_code' not in model.keys():
-                            return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
-                    if len(tools) == 1:
-                        if 'modifiedSentences' not in data.keys():
-                            return post_error("MODIFIED_SENT_NOT_FOUND", "Ids of modified sentences is mandatory", None)
-                        else:
-                            if not data["modifiedSentences"]:
-                                return post_error("MODIFIED_SENT_NOT_FOUND", "Ids of modified sentences is mandatory",
-                                                  None)
-
+            if config["translation"] not in ["BLOCK", "SENTENCE"]:
+                return post_error("UNSUPPORTED_SYNC_WF", "This workflow is NOT of the VALID SYNC type.", None)
+            if config["translation"] == "BLOCK":
+                return self.validate_sync_block(data, workflowCode)
+            elif config["translation"] == "SENTENCE":
+                return self.validate_sync_sentence(data)
         else:
             return post_error("WORKFLOW_TYPE_DISABLED",
                               "This workflow belongs to SYNC type, which is currently disabled.", None)
+
+    def validate_sync_block(self, data, workflowCode):
+        if 'recordID' not in data.keys():
+            return post_error("RECORD_ID_NOT_FOUND", "Record id is mandatory.", None)
+        if 'locale' not in data.keys():
+            return post_error("LOCALE_NOT_FOUND", "Locale is mandatory.", None)
+        if 'textBlocks' not in data.keys():
+            return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory.", None)
+        else:
+            if not data["textBlocks"]:
+                return post_error("TEXT_BLOCKS_NOT_FOUND", "text blocks are mandatory.", None)
+            tools = wfmutils.get_tools_of_wf(workflowCode)
+            if tool_translator in tools:
+                if 'model' not in data.keys():
+                    return post_error("MODEL_NOT_FOUND", "Model details are mandatory for this wf.", None)
+                else:
+                    model = dict(data["model"])
+                    if 'model_id' not in model.keys():
+                        return post_error("MODEL_ID_NOT_FOUND", "Model Id is mandatory.", None)
+                    if 'source_language_code' not in model.keys():
+                        return post_error("SRC_LANG_NOT_FOUND", "Source language code is mandatory.", None)
+                    if 'target_language_code' not in model.keys():
+                        return post_error("TGT_LANG_NOT_FOUND", "Target language code is mandatory.", None)
+                if len(tools) == 1:
+                    if 'modifiedSentences' not in data.keys():
+                        return post_error("MODIFIED_SENT_NOT_FOUND", "Ids of modified sentences is mandatory", None)
+                    else:
+                        if not data["modifiedSentences"]:
+                            return post_error("MODIFIED_SENT_NOT_FOUND", "Ids of modified sentences is mandatory",
+                                              None)
+        return None
+
+    def validate_sync_sentence(self, data):
+        if 'model_id' not in data.keys():
+            return post_error("MODEL_ID_NOT_FOUND", "Model ID is mandatory.", None)
+        if 'sentences' not in data.keys():
+            return post_error("TEXT_NOT_FOUND", "Sentences are mandatory.", None)
+        else:
+            if not data["sentences"]:
+                return post_error("TEXT_NOT_FOUND", "Sentences are mandatory.", None)
+            for sentence in data["sentences"]:
+                if 's_id' not in sentence.keys():
+                    return post_error("SENTENCE_ID_NOT_FOUND", "s_id is mandatory", None)
+                if 'src' not in sentence.keys():
+                    return post_error("TEXT_NOT_FOUND", "src is mandatory", None)
+        return None
 
     # Input Validations for ASYNC flow
     def validate_async(self, data, workflowCode):

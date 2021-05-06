@@ -650,21 +650,37 @@ WorkflowConfigs:
 
   - workflowCode: WF_S_TR
     type: SYNC
-    description: Translates the sentences.
+    translation: BLOCK
+    description: Translates the blocks.
     useCase: S_TR
+    sequence:
+    - order: 0
+      tool:
+      - name: TRANSLATOR
+        description: Translates the blocks.
+        api-details:
+        - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
+      endState: true
+
+
+  - workflowCode: WF_S_STR
+    type: SYNC
+    translation: SENTENCE
+    description: Translates the sentences.
+    useCase: S_STR
     sequence:
     - order: 0
       tool:
       - name: TRANSLATOR
         description: Translates the sentences.
         api-details:
-        - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
+        - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/sentences/workflow/translate
       endState: true
-
 
 
   - workflowCode: WF_S_TKTR
     type: SYNC
+    translation: BLOCK
     description: Tokenises the text blocks to sentences and Translates them.
     useCase: S_TTR
     sequence:
