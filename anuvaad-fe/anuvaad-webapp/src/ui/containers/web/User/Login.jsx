@@ -17,12 +17,15 @@ import history from "../../../../web.history";
 import TextField from '../../../components/web/common/TextField';
 import Snackbar from "../../../components/web/common/Snackbar";
 import { translate } from "../../../../assets/localisation";
-
+import CONFIG from "../../../../configs/configs";
 import LoginAPI from "../../../../flux/actions/apis/user/login";
 import profileDetails from '../../../../flux/actions/apis/user/profile_details';
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 
+const nacl = require('tweetnacl')
+const utils = require('tweetnacl-util')
+const encodeBase64 = utils.encodeBase64
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -65,13 +68,27 @@ class Login extends React.Component {
   };
 
   /**
+   * password encription
+   */
+  encriptPassword =(password) =>{
+    const nonce = nacl.randomBytes(24)
+    // Our secret key must be a 32 bytes Buffer (or Uint8Array)
+    const secretKey = Buffer.from(CONFIG.DEV_SALT, 'utf8')
+    // Make sure your data is also a Buffer of Uint8Array
+    const secretData = Buffer.from(password, 'utf8')
+    const encrypted = nacl.secretbox(secretData, nonce, secretKey)
+    return `${encodeBase64(nonce)}:${encodeBase64(encrypted)}`
+  }
+
+  /**
    * user input handlers
    * captures form submit request
    */
   processLoginButtonPressed = () => {
     const { email, password } = this.state;
     this.setState({ error: false, loading: true })
-    const apiObj = new LoginAPI(email, password);
+    const result = this.encriptPassword(password)
+    const apiObj = new LoginAPI(email, result);
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -134,7 +151,6 @@ class Login extends React.Component {
 
   render() {
     const { classes } = this.props;
-    console.log("---------",window._env_)
     return (
       <MuiThemeProvider theme={ThemeDefault} >
 
