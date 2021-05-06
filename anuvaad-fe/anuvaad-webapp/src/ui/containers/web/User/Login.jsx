@@ -134,7 +134,6 @@ class Login extends React.Component {
 
   render() {
     const { classes } = this.props;
-    console.log("---------",window._env_)
     return (
       <MuiThemeProvider theme={ThemeDefault} >
 
