@@ -446,6 +446,7 @@ class TranslatorService:
             return True
         except Exception as e:
             log_exception("Exception while processing the API output -- {}".format(e), translate_wf_input, e)
+            log_exception("API Response -- {}".format(api_response), translate_wf_input, e)
             post_error_wf("TRANSLATION_ERROR", "Exception while processing the API output -- {}".format(e),
                           translate_wf_input, e)
             return False
