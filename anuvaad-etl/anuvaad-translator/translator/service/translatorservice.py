@@ -400,26 +400,29 @@ class TranslatorService:
         api_res_translations, record_id, batch_id, skip_count, trans_count = [], None, None, 0, 0
         try:
             for translation in api_response["data"]:
-                translation = json.loads(translation)
-                if "s_id" not in translation.keys():
-                    log_error("S_ID missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
+                if type(translation) == "str":
+                    translation_formatted = json.loads(translation)
+                else:
+                    translation_formatted = translation
+                if "s_id" not in translation_formatted.keys():
+                    log_error("S_ID missing for SRC: {}".format(translation_formatted["src"]), translate_wf_input, None)
                     continue
-                translation_obj = {"src": translation["src"],
-                                   "n_id": translation["s_id"].split("xxx")[0],
-                                   "batch_id": translation["s_id"].split("xxx")[1],
-                                   "s_id": translation["s_id"].split("xxx")[2]}
+                translation_obj = {"src": translation_formatted["src"],
+                                   "n_id": translation_formatted["s_id"].split("xxx")[0],
+                                   "batch_id": translation_formatted["s_id"].split("xxx")[1],
+                                   "s_id": translation_formatted["s_id"].split("xxx")[2]}
                 if not no_nmt:
-                    if 'tgt' not in translation.keys():
-                        log_error("TGT missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
+                    if 'tgt' not in translation_formatted.keys():
+                        log_error("TGT missing for SRC: {}".format(translation_formatted["src"]), translate_wf_input, None)
                     else:
-                        translation_obj["tgt"] = translation["tgt"]
-                if 'tmx_phrases' not in translation.keys():
+                        translation_obj["tgt"] = translation_formatted["tgt"]
+                if 'tmx_phrases' not in translation_formatted.keys():
                     translation_obj["tmx_phrases"] = []
                     if tmx_phrase_dict:
-                        tmx = tmx_phrase_dict[translation["s_id"]]
+                        tmx = tmx_phrase_dict[translation_formatted["s_id"]]
                         translation_obj["tmx_phrases"] = tmx if tmx else []
                 else:
-                    translation_obj["tmx_phrases"] = translation["tmx_phrases"]
+                    translation_obj["tmx_phrases"] = translation_formatted["tmx_phrases"]
                 record_id = translation_obj["n_id"].split("|")[0] + "|" + translation_obj["n_id"].split("|")[1]
                 batch_id = translation_obj["batch_id"]
                 api_res_translations.append(translation_obj)
