@@ -132,7 +132,7 @@ class TextTranslationService:
                             if model_response["data"]:
                                 model = model_response["data"][0]
             if not model:
-                error = post_error("TRANSLATION_FAILED", "Error while fetching models: {} ".format(model_response["status"]["message"]), None)
+                error = post_error("TRANSLATION_FAILED", "Error while fetching models: {} ".format(model_response["status"]["why"]), None)
                 output["status"], output["error"] = "FAILED", error
                 return output
             log_info("Done!", sentence_translation_input)

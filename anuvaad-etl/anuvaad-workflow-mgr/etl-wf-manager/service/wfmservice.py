@@ -151,7 +151,7 @@ class WFMService:
             if 'error' in tool_response.keys():
                 if tool_response["error"]:
                     fail_msg = "Error from the tool: " + str(tool_details["name"]) + " | Cause: " + str(
-                        tool_response["error"])
+                        tool_response["error"]["message"])
             elif 'http' in tool_response.keys():
                 if 'status' in tool_response["http"]:
                     if tool_response["http"]["status"] != 200:
@@ -159,7 +159,7 @@ class WFMService:
                             tool_response["why"])
             if fail_msg:
                 log_error(fail_msg, wf_input, None)
-                error = post_error("ERROR_FROM_TOOL", fail_msg, None)
+                error = post_error("ERROR_FROM_TOOL", fail_msg, tool_response["error"])
                 client_output = self.get_wf_details_sync(wf_input, None, True, error)
                 self.update_job_details(client_output, False)
                 log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
