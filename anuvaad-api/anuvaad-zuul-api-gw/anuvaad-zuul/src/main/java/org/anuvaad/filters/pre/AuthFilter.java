@@ -128,10 +128,18 @@ public class AuthFilter extends ZuulFilter {
                     ctx.set(REQ_URI, uri);
                 }
                 else if (action.getUri().endsWith("/*")){
-                    String actionURI = action.getUri().substring(0, (action.getUri().length() - 1));
+                    String actionURI = action.getUri().substring(0, (action.getUri().length() - 2));
                     if (uri.contains(actionURI)){
                         isValid = true;
                         ctx.set(PATH_PARAM_URI, true);
+                        ctx.set(REQ_URI, action.getUri());
+                    }
+                }
+                else if (action.getUri().endsWith("?*")){
+                    String actionURI = action.getUri().substring(0, (action.getUri().length() - 2));
+                    if (uri.contains(actionURI)){
+                        isValid = true;
+                        ctx.set(QUERY_PARAM_URI, true);
                         ctx.set(REQ_URI, action.getUri());
                     }
                 }
