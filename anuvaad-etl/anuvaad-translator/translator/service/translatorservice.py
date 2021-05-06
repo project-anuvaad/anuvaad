@@ -400,8 +400,7 @@ class TranslatorService:
         api_res_translations, record_id, batch_id, skip_count, trans_count = [], None, None, 0, 0
         try:
             for translation in api_response["data"]:
-                if type(translation) == "str":
-                    translation = json.loads(translation)
+                translation = json.loads(translation)
                 if "s_id" not in translation.keys():
                     log_error("S_ID missing for SRC: {}".format(translation["src"]), translate_wf_input, None)
                     continue
