@@ -21,6 +21,8 @@ import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
 import EventIcon from '@material-ui/icons/Event';
+import clearEvent from '../../../../flux/actions/apis/admin/clear_user_event_report';
+
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -46,6 +48,7 @@ class UserReport extends React.Component {
      */
     componentDidMount() {
         TELEMETRY.pageLoadStarted("user-report");
+        this.props.clearEvent();
         if (this.props.job_details.documents.length < 1) {
             this.setState({ showLoader: true });
             this.makeAPICallJobsBulkSearch(
@@ -376,23 +379,36 @@ class UserReport extends React.Component {
             });
     };
 
-    processEventView = (jobId) => {
-        console.log(jobId,this.state.userID)
+    processEventView = (jobId, status, sentenceCount) => {
         return <Tooltip title="View Events" placement="right">
             <IconButton
                 style={{ color: "#233466", padding: "5px" }}
                 component="a"
-                // onClick={() =>
-                //     this.makeGetUserReportAPICall(jobId)
-                // }
+                onClick={() =>
+                    this.handleEventView(jobId, status, sentenceCount)
+                }
             >
                 <EventIcon />
             </IconButton>
         </Tooltip>
     }
+    handleEventView = (fid, status, sentenceCount) => {
+        if (status === 'COMPLETED' && sentenceCount[0] !== '.' && sentenceCount[0] !== '0') {
+            history.push(`${process.env.PUBLIC_URL}/user-event-view/${fid}/${this.state.userID}`)
+        } else {
+            if (status === 'FAILED') {
+                this.setState({ dialogMessage: 'Document translation is failed' })
+            }
+            else if (status === 'INPROGRESS') {
+                this.setState({ dialogMessage: 'Document still in progress' })
 
-    makeGetUserReportAPICall = (jobId) => {
-        
+            } else {
+                this.setState({ dialogMessage: 'No sentences are saved' })
+            }
+        }
+        setTimeout(() => {
+            this.setState({ dialogMessage: "" })
+        }, 3000)
     }
 
     render() {
@@ -537,7 +553,7 @@ class UserReport extends React.Component {
                                 <div>
                                     {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
                                     {this.processDocumentDownload(tableMeta.rowData[1])}
-                                    {/* {this.processEventView(tableMeta.rowData[1])} */}
+                                    {this.processEventView(tableMeta.rowData[1], tableMeta.rowData[5], tableMeta.rowData[6])}
                                 </div>
                             );
                         }
@@ -626,7 +642,8 @@ const mapDispatchToProps = (dispatch) =>
             clearJobEntry,
             APITransport,
             CreateCorpus: APITransport,
-            FetchDocument
+            FetchDocument,
+            clearEvent
         },
         dispatch
     );

@@ -44,6 +44,7 @@
     "react-image-crop": "^8.6.6",
     "react-infinite-scroll-component": "^5.1.0",
     "react-js-pagination": "^3.0.3",
+    "react-json-pretty": "^2.2.0",
     "react-material-ui-form-validator": "^2.1.1",
     "react-native": "0.63.3",
     "react-native-router-flux": "~4.2.0",
