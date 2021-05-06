@@ -152,7 +152,7 @@ class TextTranslationService:
                             if not translations:
                                 log_info("NMT returned zero translations!", sentence_translation_input)
             log_info("Done!", sentence_translation_input)
-            output["status"], output["translations"] = "SUCCESS", translations
+            output["status"], output["output"] = "SUCCESS", {"translations": translations}
             return output
         except Exception as e:
             log_exception("Exception while translating: {}".format(e), sentence_translation_input, None)
