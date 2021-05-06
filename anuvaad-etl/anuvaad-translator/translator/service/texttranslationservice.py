@@ -114,37 +114,51 @@ class TextTranslationService:
 
     # Method to translate plain sentences
     def translate_sentences(self, sentence_translation_input):
-        model_id = sentence_translation_input["input"]["model_id"]
-        url = f'{nmt_fetch_models_url}/{model_id}'
-        log_info("Fetching Model.....", sentence_translation_input)
-        model_response = utils.call_api(url, "GET", None, None, sentence_translation_input["metadata"]["userID"])
-        model, error = None, None
-        if model_response:
-            if 'status' in model_response.keys():
-                if 'statusCode' in model_response["status"].keys():
-                    if model_response["status"]["statusCode"] == 200:
-                        if model_response["data"]:
-                            model = model_response["data"][0]
-        if not model:
-            error = post_error("TRANSLATION_FAILED", "Error while fetching models: {} ".format(model_response["status"]["message"]), None)
-            return {"message": "Translation Failed", "status": "FAILED", "error": error}
-        log_info("Done!", sentence_translation_input)
-        log_info("Fetching Translations.....", sentence_translation_input)
-        nmt_url, nmt_body = self.get_nmt_data_sent_translation(sentence_translation_input, model)
-        nmt_response = utils.call_api(nmt_url, "POST", nmt_body, None, sentence_translation_input["metadata"]["userID"])
-        translations = []
-        if nmt_response:
-            if 'status' in nmt_response.keys():
-                if 'statusCode' in nmt_response["status"].keys():
-                    if nmt_response["status"]["statusCode"] != 200:
-                        error = post_error("TRANSLATION_FAILED", "Error while translating: {} ".format(nmt_response["status"]["message"]), None)
-                        return {"message": "Translation Failed", "status": "FAILED", "error": error}
-                    else:
-                        translations = nmt_response["data"]
-                        if not translations:
-                            log_info("NMT returned zero translations!", sentence_translation_input)
-        log_info("Done!", sentence_translation_input)
-        return {"message": "Translated!", "status": "SUCCESS", "translations": translations}
+        sentence_translation_input["taskID"] = utils.generate_task_id()
+        sentence_translation_input["taskStartTime"] = eval(str(time.time()).replace('.', '')[0:13])
+        sentence_translation_input["state"] = "TRANSLATED"
+        output = sentence_translation_input
+        try:
+            log_info("Translating Sentences...", sentence_translation_input)
+            model_id = sentence_translation_input["input"]["model_id"]
+            url = f'{nmt_fetch_models_url}/{model_id}'
+            log_info("Fetching Model.....", sentence_translation_input)
+            model_response = utils.call_api(url, "GET", None, None, sentence_translation_input["metadata"]["userID"])
+            model, error = None, None
+            if model_response:
+                if 'status' in model_response.keys():
+                    if 'statusCode' in model_response["status"].keys():
+                        if model_response["status"]["statusCode"] == 200:
+                            if model_response["data"]:
+                                model = model_response["data"][0]
+            if not model:
+                error = post_error("TRANSLATION_FAILED", "Error while fetching models: {} ".format(model_response["status"]["message"]), None)
+                output["status"], output["error"] = "FAILED", error
+                return output
+            log_info("Done!", sentence_translation_input)
+            log_info("Fetching Translations.....", sentence_translation_input)
+            nmt_url, nmt_body = self.get_nmt_data_sent_translation(sentence_translation_input, model)
+            nmt_response = utils.call_api(nmt_url, "POST", nmt_body, None, sentence_translation_input["metadata"]["userID"])
+            translations = []
+            if nmt_response:
+                if 'status' in nmt_response.keys():
+                    if 'statusCode' in nmt_response["status"].keys():
+                        if nmt_response["status"]["statusCode"] != 200:
+                            error = post_error("TRANSLATION_FAILED", "Error while translating: {} ".format(nmt_response["status"]["message"]), None)
+                            output["status"], output["error"] = "FAILED", error
+                            return output
+                        else:
+                            translations = nmt_response["data"]
+                            if not translations:
+                                log_info("NMT returned zero translations!", sentence_translation_input)
+            log_info("Done!", sentence_translation_input)
+            output["status"], output["translations"] = "SUCCESS", translations
+            return output
+        except Exception as e:
+            log_exception("Exception while translating: {}".format(e), sentence_translation_input, None)
+            error = post_error("TRANSLATION_FAILED", "Exception while translating: {}".format(e), None)
+            output["status"], output["error"] = "FAILED", error
+            return output
 
     # Method to get body and url based on Model for sentence translation
     def get_nmt_data_sent_translation(self, sentence_translation_input, model):
