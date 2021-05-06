@@ -84,20 +84,12 @@ definitions:
         type: object
         description: Status object with every message
         properties:
-          ok:
-            type: string
-            enum:
-              - "true"
-              - "false"
           statusCode: 
             type: integer
             description: http status code
-          why:
+          message:
             type: string
             description: Success message or reason of failure in case of error
-          errObj:
-            type: string
-            description: System generated failure message, available only when statusCode is not 200.
             
 
         

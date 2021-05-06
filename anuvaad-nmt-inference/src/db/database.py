@@ -14,6 +14,6 @@ def connectmongo():
     except Exception as e:
         log_exception("cannot connect to database: {}".format(e),MODULE_CONTEXT,e)
         status = Status.SYSTEM_ERR.value
-        status['why'] = str(e)
+        status['message'] = str(e)
         out = CustomResponse(status, None)                  
         return out.getresjson(),500
