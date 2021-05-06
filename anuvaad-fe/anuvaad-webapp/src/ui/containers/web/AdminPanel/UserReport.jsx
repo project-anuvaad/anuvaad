@@ -20,7 +20,7 @@ import IconButton from "@material-ui/core/IconButton";
 import AssessmentOutlinedIcon from '@material-ui/icons/AssessmentOutlined';
 import CloudDownloadIcon from "@material-ui/icons/CloudDownload";
 import DownloadFile from "../../../../flux/actions/apis/download/download_file";
-
+import EventIcon from '@material-ui/icons/Event';
 
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 
@@ -376,6 +376,25 @@ class UserReport extends React.Component {
             });
     };
 
+    processEventView = (jobId) => {
+        console.log(jobId,this.state.userID)
+        return <Tooltip title="View Events" placement="right">
+            <IconButton
+                style={{ color: "#233466", padding: "5px" }}
+                component="a"
+                // onClick={() =>
+                //     this.makeGetUserReportAPICall(jobId)
+                // }
+            >
+                <EventIcon />
+            </IconButton>
+        </Tooltip>
+    }
+
+    makeGetUserReportAPICall = (jobId) => {
+        
+    }
+
     render() {
         const columns = [
             {
@@ -518,6 +537,7 @@ class UserReport extends React.Component {
                                 <div>
                                     {this.processDocumentView(tableMeta.rowData[1], tableMeta.rowData[0], tableMeta.rowData[5], tableMeta.rowData[6])}
                                     {this.processDocumentDownload(tableMeta.rowData[1])}
+                                    {/* {this.processEventView(tableMeta.rowData[1])} */}
                                 </div>
                             );
                         }
