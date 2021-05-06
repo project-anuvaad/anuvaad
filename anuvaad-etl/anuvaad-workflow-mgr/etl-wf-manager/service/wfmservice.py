@@ -142,6 +142,7 @@ class WFMService:
         if not tool_response:
             log_error("Error from the tool: " + str(tool_details["name"]), wf_input, None)
             error = post_error("ERROR_FROM_TOOL", "Error from the tool: " + str(tool_details["name"]), None)
+            error["jobID"] = wf_input["jobID"]
             client_output = self.get_wf_details_sync(wf_input, None, True, error)
             self.update_job_details(client_output, False)
             log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
@@ -160,9 +161,10 @@ class WFMService:
             if fail_msg:
                 log_error(fail_msg, wf_input, None)
                 error = post_error("ERROR_FROM_TOOL", fail_msg, tool_response["error"])
+                error["jobID"] = wf_input["jobID"]
                 client_output = self.get_wf_details_sync(wf_input, None, True, error)
                 self.update_job_details(client_output, False)
-                log_info("Job FAILED, jobID: " + str(wf_input["jobID"]), wf_input)
+                log_info("Job FAILED, jobID: {}".format(wf_input["jobID"]), wf_input)
                 return client_output
 
     # Method fetch wf details in a certain format using wf_input or task_output

@@ -163,7 +163,7 @@ class TextTranslationService:
     # Method to get body and url based on Model for sentence translation
     def get_nmt_data_sent_translation(self, sentence_translation_input, model):
         text_nmt = []
-        for text in sentence_translation_input["sentences"]:
+        for text in sentence_translation_input["input"]["sentences"]:
             text_nmt.append({"s_id": text["s_id"], "src": text["src"]})
         nmt_in = {"src_list": text_nmt, "source_language_code": model["source_language_code"],
                   "target_language_code": model["target_language_code"], "model_id": model["model_id"]}
