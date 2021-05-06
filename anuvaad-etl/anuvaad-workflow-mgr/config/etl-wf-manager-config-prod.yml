@@ -661,6 +661,7 @@ WorkflowConfigs:
 
   - workflowCode: WF_S_TKTR
     type: SYNC
+    translation: BLOCK
     description: Tokenises the text blocks to sentences and Translates them.
     useCase: S_TTR
     sequence:
