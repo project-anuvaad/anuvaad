@@ -38,7 +38,7 @@ const getUserEventData = (payload) => {
             result.push({
                 src,
                 mt: initial !== undefined ? initial : "",
-                bleu_score,
+                bleu_score: Number(bleu_score).toFixed(2),
                 tgt: final,
                 time_spent: getTime(time_spent),
                 s_id,

@@ -2,11 +2,9 @@ import React from 'react';
 import Header from './UserEventViewHeader';
 import UserEventReport from '../../../../flux/actions/apis/admin/get_user_event_report';
 import APITransport from "../../../../flux/actions/apitransport/apitransport";
-import NewCorpusStyle from "../../../styles/web/Newcorpus";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { withStyles } from "@material-ui/core/styles";
 import MUIDataTable from "mui-datatables";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Spinner from "../../../components/web/common/Spinner";
@@ -102,7 +100,6 @@ class UserEventView extends React.Component {
     }
 
     handleCopyJSON = () => {
-
         var data = document.getElementById("json-pretty").innerText
         copy(data)
 
@@ -261,7 +258,5 @@ const mapDispatchToProps = (dispatch) =>
     );
 
 export default withRouter(
-    withStyles(NewCorpusStyle)(
-        connect(mapStateToProps, mapDispatchToProps)(UserEventView)
-    )
+    connect(mapStateToProps, mapDispatchToProps)(UserEventView)
 );
