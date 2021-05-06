@@ -226,7 +226,7 @@
         },
         {
             "id":"e5d0b999-a2bb-41af-a267-2494b15fb6a5",
-            "uri":"/nmt-inference/v1/fetch-models",
+            "uri":"/nmt-inference/v1/fetch-models/*",
             "module":"ANUVAAD-NMT",
             "active":true,
             "whiteList":false,
@@ -274,7 +274,7 @@
         },
         {
             "id":"5b5ca44a-ddd8-4576-88d5-e370a48c368e",
-            "uri":"/nmt-inference/v2/fetch-models",
+            "uri":"/nmt-inference/v2/fetch-models/*",
             "module":"ANUVAAD-NMT",
             "active":true,
             "whiteList":false,
