@@ -128,6 +128,7 @@ class WFMService:
             client_output = self.get_wf_details_sync(None, tool_output, True, None)
             self.update_job_details(client_output, False)
             log_info("Job COMPLETED, jobID: " + str(wf_input["jobID"]), ctx)
+            client_output["input"], client_output["metadata"] = None, None
             return client_output
         except Exception as e:
             log_exception("Exception while processing SYNC workflow: " + str(e), wf_input, e)
