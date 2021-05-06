@@ -59,6 +59,27 @@ class FetchSingleModelResource(Resource):
             status['message'] = str(e)
             out = CustomResponse(status, None)                  
             return out.get_res_json(),500
+
+class FetchSingleModelIDResource(Resource):
+    def get(self,model_id):
+        log_info("FetchSingleModelIDResource api called",MODULE_CONTEXT)
+        try:
+            if request.method == 'GET':
+                data = CreateModel.objects(model_id=model_id).exclude("id").exclude("created_on")
+                if data.count()>0:
+                    i = data.to_json()
+                    json_data = json.loads(i)
+                    out = CustomResponse(Status.SUCCESS.value, json_data)
+                    return out.get_res_json(),200
+                else:
+                    out = CustomResponse(Status.No_File_DB.value, None)
+                    return out.get_res_json(),401
+        except Exception as e:
+            log_exception("Error in FetchSingleModelIDResource: {}".format(e),MODULE_CONTEXT,e)
+            status = Status.SYSTEM_ERR.value
+            status['message'] = str(e)
+            out = CustomResponse(status, None)                  
+            return out.get_res_json(),500        
          
 class CreateModelResource(Resource):
     def post(self):
