@@ -166,7 +166,7 @@ class JsonAlignmentService:
                     score_out.append(scores[i])
                     sentences_written += 1
             try:
-                df = pd.DataFrame(list(zip(src_out, tgt_out, score_out)),columns = ['src_out', 'tgt_out','score_out'])
+                df = pd.DataFrame(list(zip(src_out, tgt_out, score_out)),columns = ['sourceText', 'targetText','alignmentScore'])
                 output_dict = self.generate_output(object_in, df)
                 if output_dict is not None:
 

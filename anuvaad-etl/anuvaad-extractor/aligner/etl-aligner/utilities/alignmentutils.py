@@ -116,7 +116,7 @@ class AlignmentUtils:
     # Utility to write the JSON output to a file
     def write_json_output(self, df, path):
         with open(path, 'w', encoding = "utf-8") as json_file:
-            df.to_json(json_file, force_ascii=False,orient='records')
+            df.to_json(json_file, force_ascii=False, indent=2, orient='records')
 
 
     # Utility to calculate cosine distances between 2 vectors
