@@ -88,7 +88,7 @@ def are_hlines(region1,region2):
 
 def horzontal_merging(region_words):
     if len(region_words)>0:
-	    children = sort_regions(region_words, sorted_lines=[])
+        children = sort_regions(region_words, sorted_lines=[])
         if len(children) > 1:
             bi_gram = get_ngram(children, 2)
             lines = [bi_gram[0][0]]
@@ -102,5 +102,5 @@ def horzontal_merging(region_words):
                 else:
                     lines.append(pair[1])
             return lines
-	else:
-		return region_words
+    else:
+        return region_words
