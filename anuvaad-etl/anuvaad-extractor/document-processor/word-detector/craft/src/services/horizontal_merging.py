@@ -40,8 +40,8 @@ def sort_regions(region_lines, sorted_lines=[]):
         same_line =  list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) <= spacing_threshold), region_lines))
         next_line =   list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) > spacing_threshold), region_lines))
         if len(same_line) >1 :
-        same_line.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
-        sorted_lines += same_line
+            same_line.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
+            sorted_lines += same_line
         if len(next_line) > 0:
             sort_regions(next_line, sorted_lines)
         return sorted_lines
