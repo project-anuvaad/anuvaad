@@ -640,14 +640,19 @@
             "actionID": "3b9b7642-356a-4027-9c2a-ac44901dd5d4",
             "active":true
         },
-	{
+	    {
             "role":"ADMIN",
             "actionID": "a1d46e6d-bbe6-4ffc-bb8e-cc8412e0353d",
             "active":true
         },
-	{
+	    {
             "role":"ADMIN",
             "actionID": "736e5d42-e8da-4a6d-b89d-1cca1b54c787",
+            "active":true
+        },
+        {
+            "role":"ADMIN",
+            "actionID": "1fd85b70-ee0e-4bb8-aff4-fe1c57efcf21",
             "active":true
         }
     ]
