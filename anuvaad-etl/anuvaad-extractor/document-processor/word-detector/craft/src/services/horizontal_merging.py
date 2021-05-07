@@ -102,5 +102,7 @@ def horzontal_merging(region_words):
                 else:
                     lines.append(pair[1])
             return lines
+        else:
+            return children
     else:
         return region_words

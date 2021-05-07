@@ -206,7 +206,7 @@ def merger_lines_words(lines,words):
         if abs(box_bottom-box_top)>mode_height:
             updated_line =  collate_regions(regions = copy.deepcopy([line]),lines = copy.deepcopy(words),grand_children=False,region_flag = False)
             h_lines      =  horzontal_merging(updated_line[0]['regions'])
-            if len(h_lines)>0:
+            if h_lines!=None and len(h_lines)>0:
                 updated_lines.extend(h_lines)
             else:
                 updated_lines.extend(updated_line)
