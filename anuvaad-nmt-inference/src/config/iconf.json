@@ -176,22 +176,6 @@
             "sp_decoder":"nmt/78/mr_en-to-mr-anuvaad-3-v1-2021-03-19-24000.model",
             "source_language_code": "en",
             "target_language_code": "mr" 
-        },
-        {
-            "id": 79,
-            "path":"nmt/79",
-            "sp_encoder":"nmt/79/pa_pa-to-en-anuvaad-2-v1-2021-04-20-24000.model",
-            "sp_decoder":"nmt/79/en_pa-to-en-anuvaad-2-v1-2021-04-20-24000.model",
-            "source_language_code": "pa",
-            "target_language_code": "en"
-        },
-        {
-            "id": 80,
-            "path":"nmt/80",
-            "sp_encoder":"nmt/80/en_en-to-pa-anuvaad-3-v1-2021-04-20-24000.model",
-            "sp_decoder":"nmt/80/pa_en-to-pa-anuvaad-3-v1-2021-04-20-24000.model",
-            "source_language_code": "en",
-            "target_language_code": "pa" 
-        }         
+        }        
     ]
 }
