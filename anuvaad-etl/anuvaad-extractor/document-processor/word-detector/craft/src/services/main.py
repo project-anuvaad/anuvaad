@@ -46,12 +46,12 @@ def get_response(app_context, words, lines, images):
                 temp_page = page_properties.get_page()
                 page_lines =  temp_page['lines']
                 page_words =  temp_page['words']
-                #if len(page_lines)>0 and len(page_words)>0:
-                    #page_lines = removeoverlap.remove_overlap(page_lines)
+                if len(page_lines)>0 and len(page_words)>0:
+                    page_lines = removeoverlap.remove_overlap(page_lines)
                     ################ horizontal merging 
-                    #page_lines = merger_lines_words(page_lines,page_words)
+                    page_lines = merger_lines_words(page_lines,page_words)
 
-                    #temp_page['lines'] = copy.deepcopy(page_lines)
+                    temp_page['lines'] = copy.deepcopy(page_lines)
                 file_prperties.set_page(temp_page)
                 file_prperties.set_page_info(page)
             file_prperties.set_staus(True)
