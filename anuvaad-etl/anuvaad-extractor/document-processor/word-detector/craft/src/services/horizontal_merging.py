@@ -33,16 +33,20 @@ class MapKeys:
 
 #keys = MapKeys()
 def sort_regions(region_lines, sorted_lines=[]):
-    check_y =region_lines[0]['boundingBox']['vertices'][0]['y']
-    spacing_threshold = abs(check_y - region_lines[0]['boundingBox']['vertices'][3]['y'])* 0.8  # *2 #*0.5
-    same_line =  list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) <= spacing_threshold), region_lines))
-    next_line =   list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) > spacing_threshold), region_lines))
-    if len(same_line) >1 :
-       same_line.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
-    sorted_lines += same_line
-    if len(next_line) > 0:
-        sort_regions(next_line, sorted_lines)
-    return sorted_lines
+    if len(region_lines[0]['boundingBox']['vertices'])==4:
+        print("lines are sorting out")
+        check_y =region_lines[0]['boundingBox']['vertices'][0]['y']
+        spacing_threshold = abs(check_y - region_lines[0]['boundingBox']['vertices'][3]['y'])* 0.8  # *2 #*0.5
+        same_line =  list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) <= spacing_threshold), region_lines))
+        next_line =   list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) > spacing_threshold), region_lines))
+        if len(same_line) >1 :
+        same_line.sort(key=lambda x: x['boundingBox']['vertices'][0]['x'],reverse=False)
+        sorted_lines += same_line
+        if len(next_line) > 0:
+            sort_regions(next_line, sorted_lines)
+        return sorted_lines
+    else:
+        return region_lines
 
 
 
@@ -83,19 +87,20 @@ def are_hlines(region1,region2):
     return  sepration  < 5 * max_height  and space <= diff_threshold
 
 def horzontal_merging(region_words):
-	children = sort_regions(region_words, sorted_lines=[])
-	if len(children) > 1:
-		bi_gram = get_ngram(children, 2)
-		lines = [bi_gram[0][0]]
-		for pair in bi_gram:
-			connected = are_hlines(pair[0], pair[1])
-			if connected:
-			    #reg1 = pair[0]
-			    reg1 = copy.deepcopy(lines[-1])
-			    reg2 = copy.deepcopy(pair[1])
-			    lines[-1]= update_coord(reg1,reg2)
-			else:
-			    lines.append(pair[1])
-		return lines
+    if len(region_words)>0:
+	    children = sort_regions(region_words, sorted_lines=[])
+        if len(children) > 1:
+            bi_gram = get_ngram(children, 2)
+            lines = [bi_gram[0][0]]
+            for pair in bi_gram:
+                connected = are_hlines(pair[0], pair[1])
+                if connected:
+                    #reg1 = pair[0]
+                    reg1 = copy.deepcopy(lines[-1])
+                    reg2 = copy.deepcopy(pair[1])
+                    lines[-1]= update_coord(reg1,reg2)
+                else:
+                    lines.append(pair[1])
+            return lines
 	else:
-		return children
+		return region_words
