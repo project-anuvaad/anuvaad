@@ -3,7 +3,7 @@
  */
 import API from "../api";
 import C from "../../constants";
-
+import ENDPOINTS from "../../../../configs/apiendpoints";
 export default class AutoML extends API {
     constructor(action, jobId, uid, timeout = 200000) {
         super("POST", timeout, false);
@@ -11,7 +11,7 @@ export default class AutoML extends API {
         this.jobId = jobId
         this.uid = uid
         this.type = C.GET_USER_EVENT_REPORT;
-        this.endpoint = `http://54.188.215.158:8080/dashboard/getUserReport`;
+        this.endpoint = `${super.apiEndPointAuto()}${ENDPOINTS.getUserReport}`;
     }
 
     toString() {
@@ -38,7 +38,7 @@ export default class AutoML extends API {
     getHeaders() {
         this.headers = {
             headers: {
-                'Authorization': decodeURI(localStorage.getItem('token')),
+                'auth-token': `${decodeURI(localStorage.getItem("token"))}`,
                 "Content-Type": "application/json"
             }
         };
