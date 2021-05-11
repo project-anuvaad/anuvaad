@@ -282,9 +282,6 @@ def collate_text(file,craft_words, google_words):
             if region_poly:
                 child_words = list(idx.intersection(region_poly.bounds))
                 text= ''
-                avg_conf = 0
-                conf_counter = 0
-                lang = []
                 if len(child_words) > 0:
                     region_words = []
                     for intr_index in child_words:
@@ -300,7 +297,9 @@ def collate_text(file,craft_words, google_words):
                                     words_intersected.append(intr_index)
                         
                     region_words.sort(key=lambda x:x['boundingBox']['vertices'][0]['x'])
-                   
+                    avg_conf = 0
+                    conf_counter = 0
+                    lang = []
 
                     for region_word in region_words:
                         try:
@@ -308,7 +307,7 @@ def collate_text(file,craft_words, google_words):
                             if 'conf' in region_word.keys() and region_word['conf'] is not None:
                                  avg_conf += region_word['conf']
                                  conf_counter += 1
-                            if 'language' in region_word.keys() and region_word['language'] is not None:
+                             if 'language' in region_word.keys() and region_word['language'] is not None:
                                  lang.append(region_word['language'])
                                  
                         except Exception as e:
