@@ -71,8 +71,9 @@
 FROM anuvaadio/anuvaad-word-detector-craft:19-9aecb9ef
 COPY / /app
 WORKDIR /app
-
-#RUN pip install -r requirements.txt
+RUN apt-get update
+RUN apt-get install -y libspatialindex-dev python-rtree
+RUN pip install -r requirements.txt
 
 
 COPY start.sh /usr/bin/start.sh

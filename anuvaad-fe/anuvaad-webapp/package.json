@@ -44,6 +44,7 @@
     "react-image-crop": "^8.6.6",
     "react-infinite-scroll-component": "^5.1.0",
     "react-js-pagination": "^3.0.3",
+    "react-json-pretty": "^2.2.0",
     "react-material-ui-form-validator": "^2.1.1",
     "react-native": "0.63.3",
     "react-native-router-flux": "~4.2.0",
@@ -91,6 +92,8 @@
     "redux-thunk": "^2.3.0",
     "semantic-ui-react": "^0.88.1",
     "textarea-caret": "^3.1.0",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1",
     "winwheel": "^1.0.1"
   },
   "devDependencies": {

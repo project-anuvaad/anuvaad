@@ -122,9 +122,11 @@ class ParallelSentenceModel(object):
         unsaved_sent_count   = 0
 
         if code == 0:
-            val="user.userId"
-        if code==1:
-            val="jobId"
+            val =  "user.userId"
+        if code == 1:
+            val =  "jobId"
+        if code == 2:
+            val =  "taskId"
         tasks = []
 
         try:

@@ -3,7 +3,8 @@ import LanguageCodes from "../../../ui/components/web/common/Languages.json"
 
 const initialState = {
     count: 0,
-    result: []
+    result: [],
+    status: "INPROGRESS"
 }
 
 
@@ -58,6 +59,7 @@ export default (state = initialState, action) => {
                 return {
                     count: action.payload.data.tasks.length,
                     result,
+                    status: "COMPLETED"
                 }
             }
         default:

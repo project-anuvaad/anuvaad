@@ -91,6 +91,7 @@ class ParallelSentenceRepo(object):
         results = []
         for taskId in taskIds:
             task_results = self.search_taskId_annotations(taskId)
+            annoted_sent_stats = self.parallelSentenceModel.get_annotation_stats(taskId,code=2)
             if len(task_results['annotations']) > 0:
                 results.append({
                     'taskId': taskId,
@@ -101,6 +102,13 @@ class ParallelSentenceRepo(object):
                     'taskId': taskId,
                     'annotations': task_results['annotations']
                 })
+                
+        for result in results:
+            for stat in annoted_sent_stats:
+                if result["taskId"]==stat["taskId"]:
+                    result["saved_sentences"] = stat["saved_sentences"]
+                    result["total_sentences"] = stat["total_sentences"]
+
         return {'tasks': results}
 
     def search_taskId_annotations(self, taskId):

@@ -46,6 +46,9 @@ class ViewAnnotationJobs extends React.Component {
         if (prevProps.fetchuserjob.result.length > 0 && prevProps.fetchuserjob.result.length === this.props.fetchuserjob.result.length && this.state.showLoader) {
             this.setState({ showLoader: false })
         }
+        if (this.props.fetchuserjob.result.length === 0 && this.state.showLoader && this.props.fetchuserjob.status === "COMPLETED") {
+            this.setState({ showLoader: false })
+        }
     }
 
     getMuiTheme = () => createMuiTheme({

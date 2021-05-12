@@ -3,18 +3,21 @@ from src.services.extract_images import extract_images
 from src.utilities.model_response import FileOutput, Page
 from src.utilities.request_parse import get_files, get_languages
 import config
+import copy
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 
 from src.services.detect_text import get_coords
+from src.services.collate import RemoveOverlap, merger_lines_words
 
+removeoverlap = RemoveOverlap()
 def get_text(app_context,base_dir) :
 
     images   = extract_images(app_context,base_dir)
     #languages = get_languages(app_context)
     #words,lines = detect_text(images,languages)
-    words,lines  = get_coords(images)
+    words,lines  = get_coords(images,app_context)
 
     return  words,lines,images
 
@@ -36,8 +39,20 @@ def get_response(app_context, words, lines, images):
                     page_lines = lines[file_index][page_index]
                 else:
                     page_lines = []
+
+                ################ remove overlap at page level in lines
+                
                 page_properties = Page(page_words, page_lines, page)
-                file_prperties.set_page(page_properties.get_page())
+                temp_page = page_properties.get_page()
+                page_lines =  temp_page['lines']
+                page_words =  temp_page['words']
+                if len(page_lines)>0 and len(page_words)>0:
+                    page_lines = removeoverlap.remove_overlap(page_lines)
+                    ################ horizontal merging 
+                    page_lines = merger_lines_words(page_lines,page_words)
+
+                    temp_page['lines'] = copy.deepcopy(page_lines)
+                file_prperties.set_page(temp_page)
                 file_prperties.set_page_info(page)
             file_prperties.set_staus(True)
         except Exception as e:
