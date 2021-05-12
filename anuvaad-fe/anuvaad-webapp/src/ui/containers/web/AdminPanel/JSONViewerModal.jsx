@@ -7,10 +7,10 @@ import Typography from '@material-ui/core/Typography';
 const JSONViewerModal = (props) => {
     const formStyle = {
         position: 'absolute',
-        width: "30vw",
-        height: "40vh",
-        top: "25vh",
-        left: '35vw',
+        width: "45vw",
+        height: "65vh",
+        top: "15vh",
+        left: '25vw',
         outline: 0,
         backgroundColor: "white"
     }

@@ -451,9 +451,8 @@ class SentenceCard extends React.Component {
     }
 
     handleKeyDown = (event) => {
-
         let charCode = String.fromCharCode(event.which).toLowerCase();
-        let eventArray = this.handleTimeCalc(charCode, event.keyCode, event.target.value)
+        let eventArray = this.handleTimeCalc(event.key, event.keyCode, event.target.value)
         this.setState({ eventArray })
 
         if (charCode === 'enter' || event.keyCode == '13') {
