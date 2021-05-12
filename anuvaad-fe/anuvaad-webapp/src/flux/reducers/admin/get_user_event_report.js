@@ -35,7 +35,7 @@ const getUserEventData = (payload) => {
     payload.forEach(res => {
         res.forEach(data => {
             const { src, initial, bleu_score, final, time_spent, s_id, user_events } = data.context.cdata
-            result.push({
+            src && result.push({
                 src,
                 mt: initial !== undefined ? initial : "",
                 bleu_score: Number(bleu_score).toFixed(2),
