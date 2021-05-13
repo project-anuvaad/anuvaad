@@ -63,9 +63,10 @@ class UserEventView extends React.Component {
       },
     });
 
-  renderEventList = (s_id) => {
+  renderEventList = (s_id, time) => {
+      debugger
     const sentence_data = this.props.eventData.filter(
-      (data) => data.s_id === s_id
+      (data) => data.s_id === s_id && data.time_spent === time
     );
     return (
       <Tooltip title="View Events JSON" placement="right">
@@ -225,7 +226,7 @@ class UserEventView extends React.Component {
           empty: true,
           customBodyRender: (value, tableMeta, updateValue) => {
             if (tableMeta.rowData) {
-              return <div>{this.renderEventList(tableMeta.rowData[0])}</div>;
+              return <div>{this.renderEventList(tableMeta.rowData[0], tableMeta.rowData[5])}</div>;
             }
           },
         },
