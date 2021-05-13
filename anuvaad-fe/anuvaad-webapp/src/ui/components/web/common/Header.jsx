@@ -248,7 +248,7 @@ class Header extends React.Component {
                           disableTypography
                           primary={
                             <Typography type="body2" style={{ color: currentMenu === "user-details" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              User details
+                              User Details
                             </Typography>
                           }
                         />
