@@ -47,9 +47,10 @@ const getUserEventData = (payload) => {
         })
     })
 
-    let latestEvent = removeDuplicates(result, 's_id')
+    // let latestEvent = removeDuplicates(result, 's_id')
 
-    return latestEvent;
+    // return latestEvent;
+    return result;
 }
 
 export default (state = initialState, action) => {
