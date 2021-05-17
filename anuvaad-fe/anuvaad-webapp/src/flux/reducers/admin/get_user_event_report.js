@@ -1,4 +1,5 @@
 import C from '../../actions/constants';
+var jp = require('jsonpath')
 
 const initialState = {
     responseData: []
@@ -35,22 +36,38 @@ const getUserEventData = (payload) => {
     payload.forEach(res => {
         res.forEach(data => {
             const { src, initial, bleu_score, final, time_spent, s_id, user_events } = data.context.cdata
-            src && result.push({
-                src,
-                mt: initial !== undefined ? initial : "",
-                bleu_score: Number(bleu_score).toFixed(2),
-                tgt: final,
-                time_spent: getTime(time_spent),
-                s_id,
-                user_events: user_events !== undefined ? user_events : []
-            })
+            var index = result.findIndex(row=> row.s_id === s_id);
+            if(index<0){
+                src && result.push({
+                    src,
+                    mt: initial !== undefined ? initial : "",
+                    bleu_score: Number(bleu_score).toFixed(2),
+                    tgt: final,
+                    time_spent: getTime(time_spent),
+                    s_id,
+                    user_events: user_events !== undefined ? user_events : []
+                })
+
+            }
+            else{
+                result[index]=({
+                    src,
+                    mt: initial !== undefined ? initial : "",
+                    bleu_score: Number(bleu_score).toFixed(2),
+                    tgt: final,
+                    time_spent: getTime(time_spent),
+                    s_id,
+                    user_events: result[index].user_events !== undefined ? result[index].user_events.concat(data.context.cdata.user_events) : []
+                })
+
+            }
+            
         })
     })
 
     // let latestEvent = removeDuplicates(result, 's_id')
 
     // return latestEvent;
-    console.log(result)
     return result;
 }
 

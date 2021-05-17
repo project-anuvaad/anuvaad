@@ -64,7 +64,6 @@ class UserEventView extends React.Component {
     });
 
   renderEventList = (s_id, time) => {
-      debugger
     const sentence_data = this.props.eventData.filter(
       (data) => data.s_id === s_id && data.time_spent === time
     );
