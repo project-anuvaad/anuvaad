@@ -7,10 +7,8 @@ from configs.translatorconfig import redis_server_host
 from configs.translatorconfig import redis_server_port
 
 import pymongo
-from configs.translatorconfig import mongo_server_host
-from configs.translatorconfig import mongo_translator_db
-from configs.translatorconfig import mongo_tmx_collection
-from configs.translatorconfig import mongo_glossary_collection
+from configs.translatorconfig import mongo_server_host, mongo_translator_db, mongo_tmx_collection
+from configs.translatorconfig import mongo_glossary_collection, tmx_org_enabled, tmx_user_enabled
 
 redis_client = None
 mongo_client = None
@@ -100,13 +98,17 @@ class TMXRepository:
     # Searches tmx entries from mongo collection
     def search_tmx_db(self, user_id, org_id, locale):
         col = self.get_mongo_instance(mongo_tmx_collection)
-        res_user = col.find({"locale": locale, "userID": user_id}, {'_id': False})
-        res_org = col.find({"locale": locale, "orgID": org_id}, {'_id': False})
         user, org = 0, 0
-        for record in res_user:
-            user += 1
-        for record in res_org:
-            org += 1
+        if tmx_user_enabled:
+            res_user = col.find({"locale": locale, "userID": user_id}, {'_id': False})
+            if res_user:
+                for record in res_user:
+                    user += 1
+        if tmx_org_enabled:
+            res_org = col.find({"locale": locale, "orgID": org_id}, {'_id': False})
+            if res_org:
+                for record in res_org:
+                    org += 1
         if user > 0 and org > 0:
             return "BOTH"
         else:
