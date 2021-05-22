@@ -45,7 +45,8 @@ const endpoints = {
   grade_sentence: "/anuvaad-annotation/sentence-annotation/v0/task/annotation/grading",
   downlod_digitized_file: "/anuvaad-etl/document-converter/v0/document-exporter",
   view_user_glossary: "/anuvaad-etl/translator/v1/tmx/get-all-keys",
-  delete_user_glossary: "/anuvaad-etl/translator/v1/tmx/delete"
+  delete_user_glossary: "/anuvaad-etl/translator/v1/tmx/delete",
+  getUserReport: '/dashboard/getUserReport'
 };
 
 export default endpoints;
