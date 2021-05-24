@@ -247,7 +247,8 @@ def get_text_from_table_cells(pdf_data, p_dfs,flags):
                                     else:
                                         cell['attrib'] = str(cell['attrib']) + ',TABLE'
                                     cell['text'] = ' '.join(pd.DataFrame(cell['text'])['text'].values)
-
+                            else :
+                                cell['text'] = ''
                             table_cells.append(cell)
 
                 t_cells_df = pd.DataFrame(table_cells)
