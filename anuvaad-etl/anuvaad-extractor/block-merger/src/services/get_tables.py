@@ -121,43 +121,76 @@ def extract_and_delete_region(page_df, table_df):
 
     return page_df, table_df
 
-#
-# def get_text_from_table_cells(table_dfs, p_dfs):
-#     for page_index in range(len(p_dfs)):
-#         table_cells = []
-#         table_df = table_dfs[page_index]
-#         if len(table_df) > 0:
-#             for t_index, row in table_df.iterrows():
-#                 cells = row['children']
-#                 if cells != None:
-#                     for cell in cells:
-#                         cell.pop('index')
-#                         if cell['text'] != None:
-#                             text_df = pd.DataFrame(cell['text'])
-#                             text_df['children'] = None
-#
-#                             cell['children'] = text_df.to_json()
-#                             if len(text_df) > 0:
-#                                 add_keys = ['font_size', 'font_family', 'font_color', 'attrib', 'font_family_updated',
-#                                             'font_size_updated']
-#                                 for add_key in add_keys:
-#                                     #print(text_df)
-#                                     cell[add_key] = most_frequent(text_df[add_key])
-#
-#                                 if (cell['attrib'] == None) or (cell['attrib'] == '') :
-#                                     cell['attrib']  = 'TABLE'
+
+
+# def get_text_from_table_cells(pdf_data, p_dfs,flags):
+
+#     try :
+#         table_dfs = pdf_data['table_dfs']
+
+#         for page_index in range(len(p_dfs)):
+#             table_cells = []
+#             table_df = table_dfs[page_index]
+#             if len(table_df) > 0:
+#                 table_df = table_df.sort_values(by=['text_top'])
+#                 for t_index, row in table_df.iterrows():
+#                     cells = row['children']
+#                     if cells != None:
+#                         for cell in cells:
+
+#                             cell['cell_index'] = cell['index']
+#                             cell['table_index'] = t_index
+#                             cell.pop('index')
+
+
+#                             if cell['text'] != None:
+#                                 text_df = pd.DataFrame(cell['text'])
+#                                 if len(text_df) >1 :
+#                                     h_dfs =  get_xml.get_hdfs([text_df], pd.DataFrame() , pd.DataFrame(),1,1,table=True)
 #                                 else:
-#                                     cell['attrib'] = str(cell['attrib']) + ',TABLE'
-#                                 cell['text'] = ' '.join(pd.DataFrame(cell['text'])['text'].values)
-#
-#
-#                                 table_cells.append(cell)
-#
-#             t_cells_df = pd.DataFrame(table_cells)
-#
-#             p_dfs[page_index] = pd.concat([p_dfs[page_index], t_cells_df])
-#
-#     return p_dfs
+#                                      h_dfs = [text_df]
+#                                 p_df_data ={}
+#                                 p_df_data['pdf_image_paths'] = [pdf_data['pdf_image_paths'][page_index]]
+#                                 p_df_data['page_width']  = pdf_data['page_width']
+#                                 p_df_data['page_height'] = pdf_data['page_height']
+#                                 p_df_data['h_dfs'] = h_dfs
+#                                 p_df_data['lang'] = pdf_data['lang']
+
+#                                 if (pdf_data['lang'] != 'en') or (flags['doc_class'] != 'class_1'):
+#                                     text_df = tesseract_ocr( p_df_data, {'page_layout':'single_column'})[0]
+#                                 else:
+#                                     text_df = h_dfs[0]
+
+
+#                                 text_df['children'] = None
+
+#                                 cell['children'] = text_df.to_json()
+#                                 if len(text_df) > 0:
+#                                     add_keys = ['font_size', 'font_family', 'font_color', 'attrib', 'font_family_updated',
+#                                                 'font_size_updated']
+#                                     for add_key in add_keys:
+#                                         # print(text_df)
+#                                         cell[add_key] = most_frequent(text_df[add_key])
+
+#                                     if (cell['attrib'] == None) or (cell['attrib'] == ''):
+#                                         cell['attrib'] = 'TABLE'
+#                                     else:
+#                                         cell['attrib'] = str(cell['attrib']) + ',TABLE'
+#                                     cell['text'] = ' '.join(pd.DataFrame(cell['text'])['text'].values)
+
+#                                     table_cells.append(cell)
+
+#                 t_cells_df = pd.DataFrame(table_cells)
+
+#                 p_dfs[page_index] = pd.concat([p_dfs[page_index], t_cells_df])
+
+#         return p_dfs
+#     except Exception as e:
+#         log_error('Error in getting text from table cells' + str(e), app_context.application_context, e)
+#         return None
+
+
+
 
 
 def get_text_from_table_cells(pdf_data, p_dfs,flags):
@@ -215,7 +248,7 @@ def get_text_from_table_cells(pdf_data, p_dfs,flags):
                                         cell['attrib'] = str(cell['attrib']) + ',TABLE'
                                     cell['text'] = ' '.join(pd.DataFrame(cell['text'])['text'].values)
 
-                                    table_cells.append(cell)
+                            table_cells.append(cell)
 
                 t_cells_df = pd.DataFrame(table_cells)
 
@@ -224,8 +257,7 @@ def get_text_from_table_cells(pdf_data, p_dfs,flags):
         return p_dfs
     except Exception as e:
         log_error('Error in getting text from table cells' + str(e), app_context.application_context, e)
-        return None
-
+        return None,
 
 def get_text_table_line_df(pdf_data,flags, check=False):
     xml_dfs = pdf_data['in_dfs']
