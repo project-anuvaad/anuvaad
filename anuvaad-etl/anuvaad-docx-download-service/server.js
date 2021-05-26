@@ -35,7 +35,7 @@ app.post('/download-docx', (request, response) => {
 
             res.on('end', e => {
                 data = JSON.stringify(refactorSourceJSON(JSON.parse(data).data))
-                fs.writeFile('./source.json', data, async (err) => {
+                fs.writeFile('./upload/source.json', data, async (err) => {
                     if (!err) {
                         try {
                             generateDocx(fname)

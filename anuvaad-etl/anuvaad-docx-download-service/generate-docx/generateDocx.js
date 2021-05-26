@@ -20,7 +20,7 @@ const generateDocx = (fname) => {
         console.log(err)
     })
 
-    let sourceJson = fs.readFileSync('./source.json', { encoding: 'utf-8' })
+    let sourceJson = fs.readFileSync('./upload/source.json', { encoding: 'utf-8' })
     let parsedSource = JSON.parse(sourceJson)
 
     parsedSource.forEach((tokens, i) => {
@@ -64,7 +64,7 @@ const generateDocx = (fname) => {
         }
     })
 
-    out = fs.createWriteStream(fname)
+    out = fs.createWriteStream(`./upload/${fname}`)
     out.on('error', function (err) {
         console.log(err)
     })
