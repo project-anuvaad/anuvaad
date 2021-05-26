@@ -14,7 +14,7 @@ app.use((req, res, next) => {
     next();
 })
 
-app.post('/download-docx', (request, response) => {
+app.post('/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx', (request, response) => {
     let { fname, jobId, authToken } = request.body
     let data = ""
     var options = {
