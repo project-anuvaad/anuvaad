@@ -41,9 +41,9 @@ app.post('/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx', (request, resp
                     if (!err) {
                         try {
                             generateDocx(fname)
-                            fs.readFile(`./${fname}`, { encoding: 'utf-8' }, (err, data) => {
+                            fs.readFile(`./upload/${fname}`, { encoding: 'utf-8' }, (err, data) => {
                                 setTimeout(() => {
-                                    response.sendFile(path.join(__dirname, `./${fname}`))
+                                    response.sendFile(path.join(__dirname, `./upload/${fname}`))
                                 }, 2000)
                             })
                         } catch (e) {
