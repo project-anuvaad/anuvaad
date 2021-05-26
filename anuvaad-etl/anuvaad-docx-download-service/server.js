@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const path = require('path')
 const { HOSTNAME } = require('./config/end-point-config');
 
+console.log('server.js called')
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
@@ -15,6 +16,7 @@ app.use((req, res, next) => {
 })
 
 app.post('/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx', (request, response) => {
+    console.log('inside download-docx')
     let { fname, jobId, authToken } = request.body
     let data = ""
     var options = {
@@ -84,4 +86,5 @@ app.post('/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx', (request, resp
 
     req.end();
 })
-app.listen(5001)
+app.listen(5001);
+console.log('listening on port 5001')
