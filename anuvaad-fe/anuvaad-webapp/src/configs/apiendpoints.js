@@ -46,7 +46,8 @@ const endpoints = {
   downlod_digitized_file: "/anuvaad-etl/document-converter/v0/document-exporter",
   view_user_glossary: "/anuvaad-etl/translator/v1/tmx/get-all-keys",
   delete_user_glossary: "/anuvaad-etl/translator/v1/tmx/delete",
-  getUserReport: '/dashboard/getUserReport'
+  getUserReport: '/dashboard/getUserReport',
+  downloadDocxFile: '/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx'
 };
 
 export default endpoints;
