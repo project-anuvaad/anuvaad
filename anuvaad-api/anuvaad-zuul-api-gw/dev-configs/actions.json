@@ -583,6 +583,14 @@
             "active":true,
             "whiteList":false,
             "description":"API for Anuvaad Dashboard"
+        },
+        {
+            "id":"e8a2d3c4-bbe8-4a63-950e-5687278cd8d2",
+            "uri":"/anuvaad-etl/anuvaad-docx-downloader/v0/download-docx",
+            "module":"ANUVAAD-DOCX-DOWNLOADER",
+            "active":true,
+            "whiteList":true,
+            "description":"API for docx download"
         }
     ]
 }
