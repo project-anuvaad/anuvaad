@@ -1,3 +1,3 @@
-const HOSTNAME = process.env.HOSTNAME === 'development'  ? 'auth.anuvaad.org' : 'users-auth.anuvaad.org'
+const HOSTNAME = process.env.HOSTNAME
 
 module.exports = { HOSTNAME }

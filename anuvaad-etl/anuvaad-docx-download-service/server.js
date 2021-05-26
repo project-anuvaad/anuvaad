@@ -18,7 +18,7 @@ app.post('/download-docx', (request, response) => {
     let { fname, jobId, authToken } = request.body
     let data = ""
     var options = {
-        hostname: 'users-auth.anuvaad.org',
+        hostname: HOSTNAME,
         path: `/anuvaad/content-handler/v0/fetch-content?record_id=${jobId}&start_page=0&end_page=0`,
         method: 'GET',
         headers: {
