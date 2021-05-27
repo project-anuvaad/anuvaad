@@ -480,6 +480,8 @@ class TranslatorService:
         page_enriched = page
         utm_enabled = utils.get_rbac_tmx_utm(translate_wf_input["metadata"]["roles"], translate_wf_input, False)[1]
         for nmt_res_sentence in nmt_res_batch:
+            if 'tgt' not in nmt_res_sentence.keys():
+                nmt_res_sentence["tgt"] = None
             node = str(nmt_res_sentence["n_id"]).split("|")
             if user_translation_enabled and utm_enabled:
                 user_id = translate_wf_input["metadata"]["userID"]
