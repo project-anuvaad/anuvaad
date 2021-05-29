@@ -451,10 +451,11 @@ class SentenceCard extends React.Component {
     }
 
     handleKeyDown = (event) => {
-
         let charCode = String.fromCharCode(event.which).toLowerCase();
-        let eventArray = this.handleTimeCalc(charCode, event.keyCode, event.target.value)
+        let eventArray = this.handleTimeCalc(event.key, event.keyCode, event.target.value)
+        let org = JSON.parse(localStorage.getItem('userProfile')).orgID
         this.setState({ eventArray })
+
 
         if (charCode === 'enter' || event.keyCode == '13') {
             event.preventDefault();
@@ -485,98 +486,102 @@ class SentenceCard extends React.Component {
         /**
         * Ctrl+m to copy
         */
-        if ((event.ctrlKey || event.metaKey) && charCode === 'm' && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation) {
-            this.moveText()
-            event.preventDefault();
-            return false
+        if (org !== 'NONMT') {
+            if ((event.ctrlKey || event.metaKey) && charCode === 'm' && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation) {
+                this.moveText()
+                event.preventDefault();
+                return false
+            }
         }
         /**
          * user requesting for suggestions
          */
         var TABKEY = 9;
-        if (event.keyCode === TABKEY && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation) {
-            var elem = document.getElementById(this.props.sentence.s_id)
-            if (!this.props.sentence.s0_tgt && !this.state.value) {
-                alert("Sorry, Machine translated text is not available...")
-            } else {
-                if (!this.state.showSuggestions) {
-                    this.setState({ showSuggestions: true, highlight: false })
-                    this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
+        if (org !== 'NONMT') {
+            if (event.keyCode === TABKEY && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation) {
+                var elem = document.getElementById(this.props.sentence.s_id)
+                if (!this.props.sentence.s0_tgt && !this.state.value) {
+                    alert("Sorry, Machine translated text is not available...")
                 } else {
-                    if (this.state.suggestions[0]) {
-                        let suggestionArray = this.state.suggestions[0].name.split(' ')
-                        let textFieldArray = this.state.value.toString().replace(/\s{2,}/, ' ').trim().slice(0, elem.selectionEnd).split(' ')
-                        let remainingTextFieldArray = this.state.value.toString().replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
-                        let remainingSuggestion = this.state.suggestions[0].name.toString().replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
-                        let lenTextField = [...textFieldArray].length
-                        let lenSuggestion = [...suggestionArray].length
-                        let nextSuggestion = remainingSuggestion.shift()
-                        let nextTextField = remainingTextFieldArray.shift()
-                        if (lenSuggestion !== lenTextField) {
-                            if (remainingTextFieldArray.length === 0 && nextSuggestion !== undefined) {
-                                if (remainingSuggestion.length >= 1) {
-                                    if (nextSuggestion !== nextTextField) {
-                                        this.setState({ highlight: true, value: this.state.value + nextSuggestion + " ", userEnteredText: true }, () => {
+                    if (!this.state.showSuggestions) {
+                        this.setState({ showSuggestions: true, highlight: false })
+                        this.makeAPICallInteractiveTranslation(elem.selectionStart, this.props.sentence)
+                    } else {
+                        if (this.state.suggestions[0]) {
+                            let suggestionArray = this.state.suggestions[0].name.split(' ')
+                            let textFieldArray = this.state.value.toString().replace(/\s{2,}/, ' ').trim().slice(0, elem.selectionEnd).split(' ')
+                            let remainingTextFieldArray = this.state.value.toString().replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
+                            let remainingSuggestion = this.state.suggestions[0].name.toString().replace(/\s{2,}/, ' ').trim().slice(elem.selectionEnd).split(' ')
+                            let lenTextField = [...textFieldArray].length
+                            let lenSuggestion = [...suggestionArray].length
+                            let nextSuggestion = remainingSuggestion.shift()
+                            let nextTextField = remainingTextFieldArray.shift()
+                            if (lenSuggestion !== lenTextField) {
+                                if (remainingTextFieldArray.length === 0 && nextSuggestion !== undefined) {
+                                    if (remainingSuggestion.length >= 1) {
+                                        if (nextSuggestion !== nextTextField) {
+                                            this.setState({ highlight: true, value: this.state.value + nextSuggestion + " ", userEnteredText: true }, () => {
+                                                elem.focus()
+                                                elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
+                                            })
+                                        } else {
+                                            this.setState({ highlight: true, value: this.state.value + nextSuggestion + " ", userEnteredText: true }, () => {
+                                                elem.focus()
+                                                elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
+                                            })
+                                        }
+                                    }
+                                    else {
+                                        this.setState({ highlight: true, value: this.state.value + nextSuggestion, userEnteredText: true }, () => {
                                             elem.focus()
-                                            elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
+                                            elem.setSelectionRange([...this.state.value].length + 1, [...this.state.value].length + 1)
                                         })
-                                    } else {
-                                        this.setState({ highlight: true, value: this.state.value + nextSuggestion + " ", userEnteredText: true }, () => {
+                                    }
+                                } else if (nextSuggestion !== nextTextField) {
+                                    if (nextSuggestion !== "") {
+                                        this.setState({ highlight: true, showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd).trim() + " " + nextSuggestion + " " + this.state.value.substr(elem.selectionEnd), userEnteredText: true }, () => {
                                             elem.focus()
-                                            elem.setSelectionRange([...this.state.value].length, [...this.state.value].length)
+                                            elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
                                         })
                                     }
                                 }
                                 else {
-                                    this.setState({ highlight: true, value: this.state.value + nextSuggestion, userEnteredText: true }, () => {
-                                        elem.focus()
-                                        elem.setSelectionRange([...this.state.value].length + 1, [...this.state.value].length + 1)
-                                    })
-                                }
-                            } else if (nextSuggestion !== nextTextField) {
-                                if (nextSuggestion !== "") {
-                                    this.setState({ highlight: true, showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd).trim() + " " + nextSuggestion + " " + this.state.value.substr(elem.selectionEnd), userEnteredText: true }, () => {
-                                        elem.focus()
-                                        elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
-                                    })
+                                    if (nextSuggestion.length !== 0) {
+                                        this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
+                                            elem.focus()
+                                            elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
+                                        })
+                                    } else {
+                                        this.setState({ showSuggestions: true, userEnteredText: true }, () => {
+                                            elem.focus()
+                                            elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
+                                        })
+                                    }
                                 }
                             }
                             else {
-                                if (nextSuggestion.length !== 0) {
+                                if (nextSuggestion !== nextTextField && remainingSuggestion.length === 0) {
+                                    this.setState({
+                                        showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd) + nextSuggestion + this.state.value.substr(elem.selectionEnd).trim()
+                                        , userEnteredText: true,
+                                        highlight: true
+                                    }, () => {
+                                        elem.focus()
+                                        elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
+                                    })
+                                } else {
                                     this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
                                         elem.focus()
                                         elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
                                     })
-                                } else {
-                                    this.setState({ showSuggestions: true, userEnteredText: true }, () => {
-                                        elem.focus()
-                                        elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
-                                    })
                                 }
-                            }
-                        }
-                        else {
-                            if (nextSuggestion !== nextTextField && remainingSuggestion.length === 0) {
-                                this.setState({
-                                    showSuggestions: true, value: this.state.value.substr(0, elem.selectionEnd) + nextSuggestion + this.state.value.substr(elem.selectionEnd).trim()
-                                    , userEnteredText: true,
-                                    highlight: true
-                                }, () => {
-                                    elem.focus()
-                                    elem.setSelectionRange([...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1, [...textFieldArray.join(' ')].length + [...nextSuggestion].length + 1)
-                                })
-                            } else {
-                                this.setState({ highlight: true, showSuggestions: true, userEnteredText: true }, () => {
-                                    elem.focus()
-                                    elem.setSelectionRange(elem.selectionEnd + [...nextTextField].length + 1, elem.selectionEnd + [...nextTextField].length + 1)
-                                })
                             }
                         }
                     }
                 }
+                event.preventDefault();
+                return false
             }
-            event.preventDefault();
-            return false
         }
     }
 
@@ -646,7 +651,7 @@ class SentenceCard extends React.Component {
     }
 
     renderUserInputArea = () => {
-
+        let orgID = JSON.parse(localStorage.getItem('userProfile')).orgID
         return (
             <form >
                 <div>
@@ -690,7 +695,7 @@ class SentenceCard extends React.Component {
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
-                                helperText={this.props.model.status === "ACTIVE" && this.props.model.interactive_translation ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+s to save"}
+                                helperText={this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+s to save"}
                                 type="text"
                                 name={this.props.sentence.s_id}
                                 value={this.state.value}

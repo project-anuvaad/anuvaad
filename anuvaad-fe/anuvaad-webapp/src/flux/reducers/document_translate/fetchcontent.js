@@ -24,7 +24,7 @@ function getTimeSpent(time_spent) {
 function getUserContent(data) {
   let sentence = []
   data.data.forEach(data => {
-    data.text_blocks.forEach(token => {
+    data.hasOwnProperty('text_blocks') && data.text_blocks.forEach(token => {
       token.tokenized_sentences.forEach(val => {
         if (val.save) {
           sentence.push({
