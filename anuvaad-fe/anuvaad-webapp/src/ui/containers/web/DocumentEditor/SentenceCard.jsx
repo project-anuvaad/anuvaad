@@ -487,7 +487,8 @@ class SentenceCard extends React.Component {
         * Ctrl+m to copy
         */
         if (org !== 'NONMT') {
-            if ((event.ctrlKey || event.metaKey) && charCode === 'm' && this.props.model.status === "ACTIVE" && this.props.model.interactive_translation) {
+
+            if ((event.ctrlKey || event.metaKey) && charCode === 'm') {
                 this.moveText()
                 event.preventDefault();
                 return false
@@ -695,7 +696,7 @@ class SentenceCard extends React.Component {
                         }}
                         renderInput={params => (
                             <TextField {...params} label="Enter translated sentence"
-                                helperText={this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+s to save"}
+                                helperText={this.props.model.status === "ACTIVE" && this.props.model.interactive_translation && orgID !== 'NONMT' ? "Ctrl+m to move text, TAB key to move suggested words, Ctrl+s to save" : "Ctrl+m to move text, Ctrl+s to save"}
                                 type="text"
                                 name={this.props.sentence.s_id}
                                 value={this.state.value}
