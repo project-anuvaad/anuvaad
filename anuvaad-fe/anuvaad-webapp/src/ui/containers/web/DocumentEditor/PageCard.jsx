@@ -83,10 +83,12 @@ class PageCard extends React.Component {
     }
 
     renderTextFit = (text, merged_block_id) => {
+        let data = text
+        data.text = data.text.toString()
         return (
             sentenceHighlight(
                 this.props.block_highlight,
-                text,
+                data,
                 merged_block_id,
                 this.renderTextSpan)
         )
