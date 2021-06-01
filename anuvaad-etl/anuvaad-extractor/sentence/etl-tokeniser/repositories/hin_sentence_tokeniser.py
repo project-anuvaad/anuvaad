@@ -164,15 +164,19 @@ class AnuvaadHindiTokenizer(object):
         return text
 
     def serialize_bullet_points(self, text):
-        pattern = re.compile(r'(?!^)[•]')
-        text = pattern.sub('TT__TT UU__UU', text)
+        pattern1 = re.compile(r'(?!^)[•]')
+        text = pattern1.sub('TT__TT UU_0_UU', text)
+        pattern2 = re.compile(r'(?!^)[▪]')
+        text = pattern2.sub('TT__TT UU_1_UU', text)
         return text
 
     def deserialize_bullet_points(self, text):
         pattern = re.compile(re.escape('TT__TT'), re.IGNORECASE)
         text = pattern.sub('', text)
-        pattern = re.compile(re.escape('UU__UU'), re.IGNORECASE)
+        pattern = re.compile(re.escape('UU_0_UU'), re.IGNORECASE)
         text = pattern.sub('•', text)
+        pattern = re.compile(re.escape('UU_1_UU'), re.IGNORECASE)
+        text = pattern.sub('▪', text)
         return text
 
     def serialize_table_points(self, text):
