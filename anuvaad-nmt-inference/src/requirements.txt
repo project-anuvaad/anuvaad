@@ -1,5 +1,5 @@
 tqdm==4.30.*
-torch==1.6.0
+#torch==1.6.0
 torchtext==0.4.0
 Flask-Cors==3.0.9
 anuvaad-auditor==0.1.4
@@ -7,9 +7,11 @@ Flask-RESTful==0.3.8
 six==1.15.0
 kafka-python==2.0.2
 Flask==1.1.2
-ctranslate2==1.17.0
+#ctranslate2==1.17.0
 python-dateutil==2.7.3
 sentencepiece==0.1.81
 OpenNMT-py==1.0.0
 sentence-transformers==0.3.8
 sacremoses==0.0.43
+dateutils==0.6.12
+mongoengine==0.23.0

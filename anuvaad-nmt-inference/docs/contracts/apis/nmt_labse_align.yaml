@@ -104,6 +104,6 @@ definitions:
       statusCode: 
         type: integer
         description: http status code
-      why:
+      message:
         type: string
         description: Success message or reason of failure in case of error  
