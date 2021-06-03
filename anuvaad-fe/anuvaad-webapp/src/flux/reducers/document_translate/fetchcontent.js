@@ -23,9 +23,9 @@ function getTimeSpent(time_spent) {
 
 function getUserContent(data) {
   let sentence = []
-  data.data.forEach(data => {
+  data.hasOwnProperty('data') && data.data.forEach(data => {
     data.hasOwnProperty('text_blocks') && data.text_blocks.forEach(token => {
-      token.tokenized_sentences.forEach(val => {
+      token.hasOwnProperty('tokenized_sentences') && token.tokenized_sentences.forEach(val => {
         if (val.save) {
           sentence.push({
             s0_src: val.s0_src,
@@ -43,16 +43,16 @@ function getUserContent(data) {
 }
 
 function removeSpaces(actionPayload) {
-  actionPayload.data.forEach(data => {
+  actionPayload.hasOwnProperty('data') && actionPayload.data.forEach(data => {
     if (data.text_blocks) {
-      data.text_blocks.forEach(text_blocks => {
+      data.hasOwnProperty('text_blocks') && data.text_blocks.forEach(text_blocks => {
         text_blocks.text = text_blocks.text.toString().replace(/\s{2,}/g, " ").trim()
         if (text_blocks.children) {
-          text_blocks.children.forEach(children => {
+          text_blocks.hasOwnProperty('children') && text_blocks.children.forEach(children => {
             if (children.text) {
               children.text = children.text.toString().replace(/\s{2,}/g, " ").trim()
               if (children.children) {
-                children.children.forEach(nestedChild => {
+                children.hasOwnProperty('children') && children.children.forEach(nestedChild => {
                   nestedChild.text = nestedChild.text.toString().replace(/\s{2,}/g, " ").trim()
                 })
               }
@@ -70,8 +70,8 @@ export default function (state = initialUserState, action) {
       let result = state.result;
       let status = false, i, pageD;
       if (result !== null && result.data) {
-        action.payload.data.map(payloadData => {
-          result.data.map((pageDetails, index) => {
+        action.payload.hasOwnProperty('data') && action.payload.data.map(payloadData => {
+          result.hasOwnProperty('data') && result.data.map((pageDetails, index) => {
             if (pageDetails.page_no === payloadData.page_no) {
               pageDetails = payloadData;
               status = true;
