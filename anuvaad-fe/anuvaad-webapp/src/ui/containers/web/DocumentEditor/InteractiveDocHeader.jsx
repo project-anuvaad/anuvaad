@@ -252,12 +252,12 @@ class InteractiveDocHeader extends React.Component {
                     >
                         As PDF
                     </MenuItem>}
-                    <MenuItem
+                    {/* <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={this.fetchDocxFile}
                     >
                         As DOCX
-                    </MenuItem>
+                    </MenuItem> */}
                 </StyledMenu>
             </div>
         );
