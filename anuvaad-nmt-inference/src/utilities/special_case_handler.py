@@ -9,18 +9,12 @@ def handle_single_token(token):
        if misc.isfloat(token):
             return (token)
        elif misc.token_is_date(token):
-           log_info("Returning date as single token",MODULE_CONTEXT)
-           return token     
-    #    elif token.isalnum():
-    #         logger.info("transliterating alphanum")
-    #         return transliterate_text(token)    
+           #log_info("Returning date as single token",MODULE_CONTEXT)
+           return token        
        elif len(token) > 1 and token_is_alphanumeric_char(token):
             if len(token) ==3 and (token[0].isalnum() == False) and (token[1].isalnum() == True):
-                return token 
-            print("token is alphanumericchar: ",token)    
+                return token   
             prefix,suffix,translation_text = separate_alphanumeric_and_symbol(token)
-            # translation_text = transliterate_text(translation_text)
-            # return prefix+translation_text+suffix
             return ""
        elif len(token)==1:
            log_info("Handling single token and returning character as it is",MODULE_CONTEXT)
@@ -64,8 +58,7 @@ def separate_alphanumeric_and_symbol(text):
                 translation_text = translation_text + '.' 
         else:
             end = ""            
-    
-        print(start,end,translation_text)     
+        
         return start,end,translation_text
     except Exception as e:
         log_exception("Error in separate_alphanumeric_and_symbol Funtion, handling it. Error:{}".format(e),MODULE_CONTEXT,e)
@@ -126,7 +119,7 @@ def prefix_handler(text):
         if not all(v is None for v in matches):
             prefix = token_p
             text = str(" ".join(tokens[1:]))
-        log_info("Returning from prefix_handler",MODULE_CONTEXT)    
+        #log_info("Returning from prefix_handler",MODULE_CONTEXT)    
         return prefix,text
     except Exception as e:
         log_exception("Error in prefix handler, returning original text,error:{}".format(e),MODULE_CONTEXT,e)
@@ -148,7 +141,7 @@ def handle_sentences_wo_stop(language,sentence_array):
         if language is None:
             return sentence_array, []
         else:
-            log_info("Inside handle_sentences_wo_stop",MODULE_CONTEXT)
+            #log_info("Inside handle_sentences_wo_stop",MODULE_CONTEXT)
             stop_puncs = misc.get_language_stop_puncs(language)
             full_stop_or_purnviram = stop_puncs[0]
             sent_indices_wo_stop = []
@@ -172,7 +165,7 @@ def handle_a_sentence_wo_stop(language,sentence):
         if language is None:
             return sentence, False
         else:
-            log_info("Inside handle_a_sentence_wo_stop",MODULE_CONTEXT)
+            #log_info("Inside handle_a_sentence_wo_stop",MODULE_CONTEXT)
             stop_puncs = misc.get_language_stop_puncs(language)
             full_stop_or_purnviram = stop_puncs[0]
             is_missing_stop_punc = misc.is_sentence_wo_stop(sentence,stop_puncs)

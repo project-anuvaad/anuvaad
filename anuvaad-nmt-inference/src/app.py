@@ -8,6 +8,7 @@ import config
 from utilities import MODULE_CONTEXT
 import threading
 from kafka_wrapper import KafkaTranslate
+from db.database import connectmongo
 
 server  = Flask(__name__)
 
@@ -28,4 +29,5 @@ for blueprint in vars(routes).values():
 
 if __name__ == "__main__":
     log_info('starting server at {} at port {}'.format(config.HOST, config.PORT), MODULE_CONTEXT)
+    connectmongo()
     server.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
