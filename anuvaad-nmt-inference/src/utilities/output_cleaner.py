@@ -6,8 +6,8 @@ from anuvaad_auditor.loghandler import log_info, log_exception
 from utilities import MODULE_CONTEXT
 import utilities.misc as misc
 
-def cleaner(src,tgt,id):
-    if id == 56:
+def cleaner(src,tgt,tgt_language):
+    if tgt_language in ["hi","bn"]:
         return purnaviram_applier(src,tgt)
     else:
         return tgt
@@ -26,10 +26,10 @@ def purnaviram_applier(src,tgt):
             return tgt
         elif src.endswith('.') and tgt[-1] != '।':
             if tgt.endswith('.'):
-                log_info("Replacing '.' with purnaviram",MODULE_CONTEXT)
+                #log_info("Replacing '.' with purnaviram",MODULE_CONTEXT)
                 tgt = tgt[:-1] + str("।")
             else:
-                log_info("Adding the missing purnaviram",MODULE_CONTEXT)
+                #log_info("Adding the missing purnaviram",MODULE_CONTEXT)
                 tgt = tgt + str("।")
             return tgt
         else:
@@ -49,7 +49,7 @@ def postprocess_sentences_wo_stop(language, sentence_array, sent_indices_wo_stop
         if language is None:
             return sentence_array
         else:
-            log_info("Inside postprocess_sentences_wo_stop",MODULE_CONTEXT)
+            #log_info("Inside postprocess_sentences_wo_stop",MODULE_CONTEXT)
             stop_puncs = misc.get_language_stop_puncs(language)
             for i in sent_indices_wo_stop:
                 sentence_array[i] = misc.remove_stop_punc(sentence_array[i],stop_puncs)
@@ -70,7 +70,7 @@ def postprocess_a_sentence_wo_stop(language, sentence, is_missing_stop_punc):
         if language is None:
             return sentence
         else:
-            log_info("Inside postprocess_a_sentence_wo_stop",MODULE_CONTEXT)
+            #log_info("Inside postprocess_a_sentence_wo_stop",MODULE_CONTEXT)
             stop_puncs = misc.get_language_stop_puncs(language)
             if is_missing_stop_punc:
                 sentence = misc.remove_stop_punc(sentence,stop_puncs)

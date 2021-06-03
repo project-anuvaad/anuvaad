@@ -196,6 +196,12 @@ const constants = {
      * action for user event report
      */
     GET_USER_EVENT_REPORT: "GET_USER_EVENT_REPORT",
-    CLEAR_USER_EVENT: "CLEAR_USER_EVENT"
+    CLEAR_USER_EVENT: "CLEAR_USER_EVENT",
+
+    /**
+     * action for downloading docx
+     */
+
+    DOWNLOAD_DOCX_FILE: 'DOWNLOAD_DOCX_FILE'
 }
 export default constants;

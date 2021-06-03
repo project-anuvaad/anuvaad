@@ -565,11 +565,7 @@ class UserReport extends React.Component {
             textLabels: {
                 body: {
                     noMatch:
-                        this.props.job_details.count > 0 &&
-                            this.props.job_details.count >
-                            this.props.job_details.documents.length
-                            ? "Loading...."
-                            : translate("gradeReport.page.muiNoTitle.sorryRecordNotFound"),
+                        this.props.fetch_document.state,
                 },
                 toolbar: {
                     search: translate("graderReport.page.muiTable.search"),
@@ -609,19 +605,20 @@ class UserReport extends React.Component {
             <div style={{ height: window.innerHeight }}>
                 <div style={{ margin: "0% 3% 3% 3%", paddingTop: "7%" }}>
                     <UserReportHeader />
-                    {!this.state.showLoader && (
-                        <MuiThemeProvider theme={this.getMuiTheme()}>
-                            <MUIDataTable
-                                title={`${this.props.match.params.name}'s Detail`}
-                                data={this.getJobsSortedByTimestamp()}
-                                columns={columns}
-                                options={options}
-                            />
-                        </MuiThemeProvider>
-                    )}{
+                    {/* {!this.state.showLoader && ( */}
+                    <MuiThemeProvider theme={this.getMuiTheme()}>
+                        <MUIDataTable
+                            title={`${this.props.match.params.name}'s Detail`}
+                            data={this.getJobsSortedByTimestamp()}
+                            columns={columns}
+                            options={options}
+                        />
+                    </MuiThemeProvider>
+                    {/* )} */}
+                    {/* {
                         this.state.showLoader &&
                         <Spinner />
-                    }
+                    } */}
                 </div>
                 {this.state.dialogMessage && this.snackBarMessage()}
             </div>

@@ -33,7 +33,7 @@ class ModelConvertService:
         except Exception as e:
             log_exception("Error in model_conversion interactive translate: {} and {}".format(sys.exc_info()[0],e),MODULE_CONTEXT,e)
             status = Status.SYSTEM_ERR.value
-            status['why'] = str(e)
+            status['message'] = str(e)
             out = CustomResponse(status, None)  
 
         return out
