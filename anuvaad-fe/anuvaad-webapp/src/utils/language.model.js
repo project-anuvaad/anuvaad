@@ -110,10 +110,14 @@ export const get_selected_users = (userDetails, uuid) =>{
 
 export const fetchModel = (modelId, docs) => {
     let model = ""
-
     if (docs && docs.length > 0) {
       let condition = `$[?(@.model_id == '${modelId}')]`;
       model = jp.query(docs, condition)
+      if(model[0].status==="INACTIVE"){
+        let condition = `$[?(@.source_language_code == '${model[0].source_language_code}' && @.target_language_code =='${model[0].target_language_code}' && @.status === "ACTIVE" && @.is_primary === true)]`;
+        model = jp.query(docs, condition)
+      }
+      
     }
 
     return model.length > 0 ? model[0] : null
