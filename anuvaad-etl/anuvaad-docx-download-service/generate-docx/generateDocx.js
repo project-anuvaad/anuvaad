@@ -2,12 +2,15 @@ const officegen = require('officegen')
 const fs = require('fs')
 const { generateTableArray } = require('./utils');
 
-const generateDocx = (fname) => {
+const generateDocx = (fname, height, width) => {
 
     let docx = officegen({
         type: 'docx',
         orientation: 'portrait',
-        pageMargins: { top: 1000, left: 1000, bottom: 1000, right: 500 }
+        pageSize: {
+            width,
+            height
+        }
     })
 
     docx.on('finalize', function (written) {
