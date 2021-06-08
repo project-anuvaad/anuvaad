@@ -91,8 +91,8 @@ class DocumentConversion(object):
                             text_value.append(processed_text['tgt'])
                         else:
                             text_value.append(processed_text['src'])
-
-                    text_values.append(' '.join(text_value))
+                    if text_value:
+                        text_values.append(' '.join(text_value))
                 for image in images:
                     text_tops.append(image['text_top'])
                     text_lefts.append(image['text_left'])
