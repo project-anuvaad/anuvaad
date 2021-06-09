@@ -70,18 +70,18 @@ def get_src_tgt_langauge(model_id):
   Returns source and target language 
   '''
   try:
-    log_info("Inside get_src_tgt_langauge",MODULE_CONTEXT)
+    #log_info("Inside get_src_tgt_langauge",MODULE_CONTEXT)
     
-    all_models_dict_file = config.FETCH_MODEL_CONFG
+    all_models_dict_file = config.ICONFG_FILE
     with open(all_models_dict_file,'r') as f:
-      all_models_dict = json.load(f)["data"]
+      all_models_dict = json.load(f)["models"]
 
     for model_dict in all_models_dict:
-      if model_dict["model_id"] == model_id:
+      if model_dict["id"] == model_id:
         model = model_dict
         break
     
-    return model["source_language_name"], model["target_language_name"] 
+    return model["source_language_code"], model["target_language_code"] 
 
   except Exception as e:
     log_exception("Error in source language checker: {}".format(e),MODULE_CONTEXT,e)
@@ -92,8 +92,8 @@ def get_language_stop_puncs(language):
   Gets the sentence ending punctuation list given the language
   '''
   try:
-    log_info("Inside get_language_stop_puncs",MODULE_CONTEXT)
-    if language in ['Hindi','Bengali']:
+    #log_info("Inside get_language_stop_puncs",MODULE_CONTEXT)
+    if language in ['hi','bn']:
       return ["।","?","!",":",";","."]
     else:
       return [".","?","!",":",";","।"]
@@ -108,7 +108,7 @@ def is_sentence_wo_stop(sentence,stop_puncs):
   sentence ending punctuation
   '''
   try:
-    log_info("Inside is_sentence_wo_stop",MODULE_CONTEXT)
+    #log_info("Inside is_sentence_wo_stop",MODULE_CONTEXT)
     if sentence and (sentence[-1] in stop_puncs):
       return False
     else:
@@ -123,7 +123,7 @@ def add_stop_punc(sentence,stop_punc):
   Adds punctuation at the end of the sentence
   '''
   try:
-    log_info("Inside add_stop_punc",MODULE_CONTEXT)
+    #log_info("Inside add_stop_punc",MODULE_CONTEXT)
     return sentence + stop_punc
 
   except Exception as e:
@@ -135,7 +135,7 @@ def remove_stop_punc(sentence,stop_puncs):
   Removes the puncuation at the end of the sentence
   '''
   try:
-    log_info("Inside remove_stop_punc",MODULE_CONTEXT)
+    #log_info("Inside remove_stop_punc",MODULE_CONTEXT)
     if sentence and (sentence[-1] in stop_puncs):
       return sentence[:-1]
     else:
@@ -152,7 +152,7 @@ def convert_digits_preprocess(language, sentence):
   '''
   try:
     indic_dict = list(digit_dict.keys())
-    if language == "English":
+    if language == "en":
       return sentence
     elif language in indic_dict:
       return sub_indic_digits_w_roman(language, sentence)
@@ -170,7 +170,7 @@ def convert_digits_postprocess(language, sentence):
   '''
   try:
     indic_dict = list(digit_dict.keys())
-    if language == "English":
+    if language == "en":
       return sentence
     elif language in indic_dict:
       return sub_roman_digits_w_indic(language, sentence)
@@ -188,7 +188,7 @@ def sub_roman_digits_w_indic(language,sentence):
   given the indic language
   '''
   try:
-    log_info("Inside sub_roman_digits_w_indic",MODULE_CONTEXT)
+    #log_info("Inside sub_roman_digits_w_indic",MODULE_CONTEXT)
     roman_to_indic_digits_map = digit_dict[language]
     roman_digits_in_sentence = re.findall(r'[0-9]', sentence)
     for roman_digit in roman_digits_in_sentence:
@@ -207,7 +207,7 @@ def sub_indic_digits_w_roman(language,sentence):
   given the indic language
   '''
   try:
-    log_info("Inside sub_indic_digits_w_roman",MODULE_CONTEXT)
+    #log_info("Inside sub_indic_digits_w_roman",MODULE_CONTEXT)
     roman_to_indic_digits_map = digit_dict[language]
     indic_to_roman_digits_map = {v: k for k, v in roman_to_indic_digits_map.items()}
     indic_digits = list(indic_to_roman_digits_map.keys())

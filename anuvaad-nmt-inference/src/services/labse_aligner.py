@@ -18,12 +18,12 @@ class LabseAlignerService:
         out = {}
         aligned_phrases = {}
         try:
-            log_info("Performing phrase alignenment using LABSE",MODULE_CONTEXT)
-            log_info("Input for phrase_aligner:{}".format(inputs),MODULE_CONTEXT)
+            #log_info("Performing phrase alignenment using LABSE",MODULE_CONTEXT)
+            #log_info("Input for phrase_aligner:{}".format(inputs),MODULE_CONTEXT)
             src_phrases, tgt = inputs.get("src_phrases"), inputs.get("tgt")
             
             for src_phrase in src_phrases:
-                length_src_phrase = len(src_phrase.split())           
+                length_src_phrase = len(src_phrase.split())        
                 tgt_token_list = split_tgt(length_src_phrase,tgt)
                 embeddings_src_phrase, embeddings_tgt_tokens = generate_embeddings([src_phrase],tgt_token_list)
                 alignments = get_target_sentence(embeddings_tgt_tokens, embeddings_src_phrase, length_src_phrase)
@@ -53,6 +53,7 @@ def split_tgt(length_src_phrase,tgt):
                             length_src_phrase != 1]
     tgt_token_list = tgt_token_list + tgt_token_list_plus + tgt_token_list_minus
     tgt_token_list = [" ".join(j) for j in tgt_token_list]
+    if len(tgt_token_list) == 0: tgt_token_list = [tgt] 
     return tgt_token_list
         
 def generate_embeddings(input_1, input_2):
