@@ -141,7 +141,7 @@ class Region_Unifier:
             else:
                 if region['class']=='HEADER' or region['class']=='FOOTER':
                     head_foot.append(region)
-                elif region['class']=='TABLE':
+                elif region['class']=='TABLE' or region['class']=='CELL':
                     tabel_region.append(region)
                 else:
                     if region['class']=='IMAGE':
@@ -238,9 +238,9 @@ class Region_Unifier:
     def update_children(self,reg1,reg2):
         page_config                         = Page_Config()
 
-        if reg1['children']!=None and len(reg1['children']) > 0 :
-            if reg2['children']!=None and len(reg2['children']) > 0 :
-                agg_children =  reg1['children'] + reg2['children']
+        if reg1['regions']!=None and len(reg1['regions']) > 0 :
+            if reg2['regions']!=None and len(reg2['regions']) > 0 :
+                agg_children =  reg1['regions'] + reg2['regions']
                 agg_children.sort(key=lambda x: x['boundingBox']['vertices'][0]['y'])
 
                 children = sort_regions(agg_children , [])
@@ -252,22 +252,22 @@ class Region_Unifier:
                 else:
                     return children
             else :
-                return reg1['children']
+                return reg1['regions']
         else :
-            if reg2['children']!=None and len(reg2['children']) > 0 :
-                return reg2['children']
+            if reg2['regions']!=None and len(reg2['regions']) > 0 :
+                return reg2['regions']
             else :
                 return []
 
 
-    def update_coord(self,reg1,reg2):
+    def update_coord(self,reg1,reg2,clss,add_word = False):
         #try:
         box1_top = keys.get_top(reg1); box1_bottom = keys.get_bottom(reg1)
         box1_left = keys.get_left(reg1); box1_right = keys.get_right(reg1)
         box2_top = keys.get_top(reg2); box2_bottom = keys.get_bottom(reg2)
         box2_left = keys.get_left(reg2); box2_right = keys.get_right(reg2)
-
-        reg1['children'] = self.update_children(reg1, reg2)
+        if add_word==False:
+            reg1['regions'] = self.update_children(reg1, reg2)
 
 
         reg1["boundingBox"]["vertices"][0]['x']= min(box1_left,box2_left)
@@ -278,7 +278,13 @@ class Region_Unifier:
         reg1["boundingBox"]["vertices"][2]['y']= max(box1_bottom,box2_bottom)
         reg1["boundingBox"]["vertices"][3]['x']= min(box1_left,box2_left)
         reg1["boundingBox"]["vertices"][3]['y']= max(box1_bottom,box2_bottom)
-        #reg1['class'] = 'TEXT'
+        reg1['class'] = clss
+        if add_word:
+            if 'regions' in reg1.keys():
+                reg1['regions'].append(reg2)
+            else:
+                reg1['regions']=[]
+                reg1['regions'].append(reg2)
         # except:
         #     pass
 
@@ -315,9 +321,34 @@ class Region_Unifier:
                 del text_regions[0]
         return region_updated, flag
 
+    def table_no_cell(self,tables,words,idxx):
+        
+        for idx,table in enumerate(tables):
+            if 'regions' in table.keys():
+                for idx2,cell in enumerate(table['regions']):
+                    tmp_cells = copy.deepcopy(table['regions'])
+                    del tmp_cells[idx2]
+                    for word in words:
+                        region_poly =get_polygon(word['boundingBox']); base_poly = get_polygon(cell['boundingBox'])
+                        area=0
+                        if region_poly and base_poly:
+                            area = base_poly.intersection(region_poly).area
+                            flag=False
+                            indx = index.Index()
+                            if area>0:
+                                for idx3,tmp_cell in enumerate(tmp_cells):
+                                    poly = get_polygon(tmp_cell['boundingBox'])
+                                    indx.insert(idx3, poly.bounds)
+                                intersected_regions = list(indx.intersection(region_poly.bounds))
+                                if len(intersected_regions) > 0:
+                                    flag=True
+                                if flag==False:
+                                    cell = self.update_coord(cell,word,cell['class'],True)
+                                    tables[idx]['regions'][idx2] = cell
+        return tables
+                
 
-
-    def region_unifier(self,file,page_g_words, page_lines,page_regions,page_c_words,path):
+    def region_unifier(self,idx2,file,page_g_words, page_lines,page_regions,page_c_words,path):
         try:
             
             #sort regions 
@@ -333,7 +364,7 @@ class Region_Unifier:
 
 
             page_words = collate_text(file,page_c_words, page_g_words)
-            
+            page_words2 = copy.deepcopy(page_words)
             text_region,n_text_table_regions,tabel_region,image_region,head_foot_region = self.get_text_tabel_region(sorted_page_regions)
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
             filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
@@ -345,14 +376,17 @@ class Region_Unifier:
                     filtered_words     = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_words))
                     filtered_lines    = remvoe_regions(copy.deepcopy(table['regions']), copy.deepcopy(filtered_lines))
                     tabel_region[idx]['regions'] =  collate_regions(regions = copy.deepcopy(table['regions']),lines = copy.deepcopy(page_words),child_class='WORD',grand_children=False,region_flag = False)
+                    
                     page_words = filtered_words
                     page_lines = filtered_lines
                     t_list.append(tabel_region[idx])
                     
-
+            
             t_list =  collate_cell_regions(copy.deepcopy(t_list),copy.deepcopy(page_words),child_class='CELL_TEXT',grand_children=True,region_flag = False)
+            t_list = self.table_no_cell(t_list,page_words2,idx2)
             
             page_words   = remvoe_regions(copy.deepcopy(t_list), copy.deepcopy(page_words))
+            
             filtered_lines   = remvoe_regions(copy.deepcopy(t_list), copy.deepcopy(page_lines))
             filtered_words = copy.deepcopy(page_words)
             text_region  = remvoe_regions(copy.deepcopy(t_list) ,copy.deepcopy(text_region))

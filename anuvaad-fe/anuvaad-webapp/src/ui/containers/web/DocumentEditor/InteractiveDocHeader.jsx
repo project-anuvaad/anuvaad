@@ -28,6 +28,7 @@ import APITransport from "../../../../flux/actions/apitransport/apitransport";
 import { showPdf } from '../../../../flux/actions/apis/document_translate/showpdf';
 import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
+import DownloadDOCX from "../../../../flux/actions/apis/document_translate/download_docx";
 
 const StyledMenu = withStyles({
     paper: {
@@ -76,6 +77,7 @@ class InteractiveDocHeader extends React.Component {
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
                 open={this.state.showStatus}
                 message={this.state.message}
+                variant={this.state.variant}
             >
                 <Alert elevation={6} variant="filled" severity="info">{this.state.message}</Alert>
             </Snackbar>
@@ -172,6 +174,40 @@ class InteractiveDocHeader extends React.Component {
         this.props.showPdf()
     };
 
+    fetchDocxFile = () => {
+        let fname = this.props.match.params.jobid.replace('.json', '.docx');
+        let jobId = encodeURI(this.props.match.params.jobid);
+        console.log(fname, jobId);
+        const apiObj = new DownloadDOCX(jobId, fname)
+        this.setState({ anchorEl: null, showStatus: true, message: translate("common.page.label.download") });
+        fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            headers: apiObj.getHeaders().headers,
+            body: JSON.stringify(apiObj.getBody())
+        })
+            .then(res => {
+                if (res.ok) {
+                    res.blob().then(data => {
+                        let url = URL.createObjectURL(data);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute(
+                            'download',
+                            fname,
+                        );
+                        document.body.appendChild(link);
+                        link.click();
+                        link.parentNode.removeChild(link);
+                    })
+                } else {
+                    this.setState({ anchorEl: null, showStatus: true, message: 'Downloading failed...' });
+                }
+            })
+        setTimeout(() => {
+            this.setState({ showStatus: false })
+        }, 3000)
+    }
+
     renderOptions() {
         const { anchorEl } = this.state;
         const openEl = Boolean(anchorEl);
@@ -207,15 +243,21 @@ class InteractiveDocHeader extends React.Component {
                     >
                         As XLSX
                     </MenuItem>
-                   { !this.props.preview && <MenuItem
+                    {!this.props.preview && <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
-                            this.setState({anchorEl: null})
+                            this.setState({ anchorEl: null })
                             this.props.onShowPreview()
                         }}
                     >
                         As PDF
                     </MenuItem>}
+                    <MenuItem
+                        style={{ borderTop: "1px solid #D6D6D6" }}
+                        onClick={this.fetchDocxFile}
+                    >
+                        As DOCX
+                    </MenuItem>
                 </StyledMenu>
             </div>
         );
