@@ -164,6 +164,7 @@ def doc_structure_response(pdf_data,flags):
     '''
     try :
         bg_dfs          = pdf_data['bg_dfs']
+        img_dfs         = pdf_data['img_dfs']
         text_block_dfs  = pdf_data['p_dfs']
         table_dfs       = pdf_data['table_dfs']
         line_dfs        = pdf_data['line_dfs']
@@ -179,12 +180,12 @@ def doc_structure_response(pdf_data,flags):
         response = {'result': []}
         pages = len(text_block_dfs)
 
-        for page_index in range(pages):
-            img_df = bg_dfs[page_index]
-            text_df = text_block_dfs[page_index]
-            text_df = get_xml.drop_update_col(text_df)
-            table_df = table_dfs[page_index]
-            line_df = line_dfs[page_index]
+        for page_index in range(pages):  
+            img_df    = bg_dfs[page_index].append(img_dfs[page_index])
+            text_df   = text_block_dfs[page_index]
+            text_df   = get_xml.drop_update_col(text_df)
+            table_df  = table_dfs[page_index]
+            line_df   = line_dfs[page_index]
             # text_df    = adopt_child(text_df)
 
             page_json = response_per_page(text_df, img_df, table_df, line_df, page_index, page_width, page_height)

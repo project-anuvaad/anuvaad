@@ -332,7 +332,7 @@ def get_text_table_line_df(pdf_data,flags, check=False):
         # bg_image = mask_image(bg_image, line_df,image_width,image_height, app_context.application_context, margin=0, fill=255)
         bg_binary = base64.b64encode(cv2.imencode('.png', bg_image)[1])  # base64.b64encode(bg_image)
 
-        bg_df = pd.DataFrame([[0, 0, image_width, image_height, bg_binary, 'IMAGE']],
+        bg_df = pd.DataFrame([[0, 0, image_width, image_height, bg_binary, 'BGIMAGE']],
                              columns=['text_top', 'text_left', 'text_width', 'text_height', 'base64', 'attrib'])
 
         bg_dfs.append(bg_df)
