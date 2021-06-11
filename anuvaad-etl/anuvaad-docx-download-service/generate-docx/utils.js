@@ -15,6 +15,10 @@ const refactorSourceJSON = (sourceJson) => {
                 }
             }
         })
+        src.images.forEach(image => {
+            if (image.attrib === 'IMAGE')
+                refactoredOutput.push(image)
+        })
     })
     refactoredOutput = sortData(refactoredOutput)
     return refactoredOutput;
