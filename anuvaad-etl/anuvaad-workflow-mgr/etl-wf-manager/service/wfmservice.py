@@ -6,7 +6,8 @@ from utilities.wfmutils import WFMUtils
 from kafkawrapper.wfmproducer import Producer
 from repository.wfmrepository import WFMRepository
 from validator.wfmvalidator import WFMValidator
-from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, anu_etl_notifier_input_topic, total_no_of_partitions
+from configs.wfmconfig import anu_etl_wfm_core_topic, log_msg_start, log_msg_end, module_wfm_name, page_default_limit, \
+    anu_etl_notifier_input_topic, total_no_of_partitions
 from anuvaad_auditor.errorhandler import post_error_wf, post_error, log_exception
 from anuvaad_auditor.loghandler import log_info, log_error
 

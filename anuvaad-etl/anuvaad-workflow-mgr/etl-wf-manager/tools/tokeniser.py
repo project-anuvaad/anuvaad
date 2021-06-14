@@ -1,4 +1,4 @@
-from configs.wfmconfig import tool_blockmerger, tool_tokeniser
+from configs.wfmconfig import tool_blockmerger, tool_tokeniser, tool_filetranslator
 
 
 class Tokeniser:
@@ -31,7 +31,7 @@ class Tokeniser:
 
     # Returns a json of the format accepted by Tokeniser based on the predecessor.
     def get_tokeniser_input(self, task_output, predecessor):
-        predecessors = [tool_blockmerger]
+        predecessors = [tool_blockmerger, tool_filetranslator]
         if predecessor in predecessors:
             files = []
             op_files = task_output["output"]

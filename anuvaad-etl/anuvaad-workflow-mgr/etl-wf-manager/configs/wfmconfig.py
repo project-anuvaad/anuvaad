@@ -29,6 +29,7 @@ tool_ocrtesseract = "OCR-TESSERACT"
 tool_blocksegmenter = "BLOCK-SEGMENTER"
 tool_annotator = "ANNOTATOR"
 module_wfm_name = "WORKFLOW-MANAGER"
+tool_filetranslator = "FILE-TRANSLATOR"
 is_sync_flow_enabled = True
 is_async_flow_enabled = True
 page_default_limit = os.environ.get('WFM_PAGE_DEFAULT_LIMIT', 20)
