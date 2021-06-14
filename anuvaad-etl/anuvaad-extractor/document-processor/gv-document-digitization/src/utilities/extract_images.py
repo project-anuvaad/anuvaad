@@ -67,18 +67,18 @@ def resize_image(image_paths):
 
 def get_images(filename,file_format,base_dir):
 
-    file_images =[]
+    
     try :
         if file_format in ['PDF' ,'pdf']:
             image_paths = extract_pdf_images(filename,base_dir)
             resize_image(image_paths)
-            file_images.append(image_paths)
+            file_images = image_paths
             
         else:
             if file_format in ['PNG', 'JPEG', 'BMP','jpg','png','bmp','jpeg' ] :
                 image_paths = [os.path.join(base_dir, filename)]
                 resize_image(image_paths)
-                file_images.append(image_paths)
+                file_images = image_paths
             else:
                 log_info("currently we do not support {} files .".format(file_format) ,app_context.application_context)
                 return None

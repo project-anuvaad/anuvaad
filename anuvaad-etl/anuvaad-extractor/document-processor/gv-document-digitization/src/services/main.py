@@ -24,6 +24,7 @@ def process_input(app_context,base_dir) :
             else:
                 #page_paths = doc_pre_processing(file['file']['name'],config.BASE_DIR)
                 page_paths = get_images(file_properties.get_name(),file_properties.get_format()  ,config.BASE_DIR)
+
             
             file_output = text_extraction(file_properties,page_paths,file)
             output_files.append(file_output)
