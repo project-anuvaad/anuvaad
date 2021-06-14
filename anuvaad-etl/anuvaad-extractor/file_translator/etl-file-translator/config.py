@@ -15,20 +15,20 @@ CONSUMER_GROUP = os.environ.get(consumer_grp_identifier, consumer_grp_default)
 
 # For Transform flow
 input_topic_default = 'anuvaad-dp-tools-file-translator-transform-input-v1'
-input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_FILE_TRANSLATOR_TRANSFORM_INPUT'
+input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_FT_INPUT'
 transform_input_topic = os.environ.get(input_topic_identifier, input_topic_default)
 
 output_topic_default = 'anuvaad-dp-tools-file-translator-transform-output-v1'
-output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_FILE_TRANSLATOR_TRANSFORM_OUTPUT'
+output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_FT_OUTPUT'
 transform_output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
 # For download flow
 input_topic_default = 'anuvaad-dp-tools-file-translator-download-input-v1'
-input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_FILE_TRANSLATOR_DOWNLOAD_INPUT'
+input_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_FT_DOWNLOAD_INPUT'
 download_input_topic = os.environ.get(input_topic_identifier, input_topic_default)
 
 output_topic_default = 'anuvaad-dp-tools-file-translator-download-output-v1'
-output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_FILE_TRANSLATOR_DOWNLOAD_OUTPUT'
+output_topic_identifier = 'KAFKA_ANUVAAD_DP_TOOLS_FT_DOWNLOAD_OUTPUT'
 download_output_topic = os.environ.get(output_topic_identifier, output_topic_default)
 
 kf_local_server = 'localhost:9092'

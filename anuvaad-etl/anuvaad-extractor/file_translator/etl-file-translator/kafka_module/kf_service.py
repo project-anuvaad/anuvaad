@@ -24,7 +24,7 @@ def process_transform_file_kf():
     try:
         consumer_class = Consumer(config.transform_input_topic, list(str(config.bootstrap_server).split(",")))
         consumer = consumer_class.consumer_instantiate()
-        log_info("process_input_file_kf : trying to receive value from consumer ", None)
+        log_info("process_transform_input_file_kf : trying to receive value from consumer ", None)
         for msg in consumer:
             data = msg.value
             log_info("process_input_file_kf : received input json from input topic consumer ", data)
@@ -58,10 +58,10 @@ def process_download_file_kf():
     try:
         consumer_class = Consumer(config.download_input_topic, list(str(config.bootstrap_server).split(",")))
         consumer = consumer_class.consumer_instantiate()
-        log_info("process_input_file_kf : trying to receive value from consumer ", None)
+        log_info("process_download_input_file_kf : trying to receive value from consumer ", None)
         for msg in consumer:
             data = msg.value
-            log_info("process_input_file_kf : received input json from input topic consumer ", data)
+            log_info("process_download_input_file_kf : received input json from input topic consumer ", data)
             task_id = str("TOK-" + str(time.time()).replace('.', '')[0:13])
             task_starttime = eval(str(time.time()).replace('.', '')[0:13])
             input_files, workflow_id, jobid, tool_name, step_order, user_id = file_ops.json_input_format(data)

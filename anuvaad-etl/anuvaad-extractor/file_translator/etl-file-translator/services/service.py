@@ -70,22 +70,22 @@ class Common(object):
 
     def generate_id(self, file_id='', table='', cell='', row='', slide='', shape='', para='', run=''):
         idx = ''
-        # if file_id != '':
-        #     idx += str(file_id)
+        if file_id != '':
+            idx += str(file_id)
         if table != '':
-            idx += '|TABLE-' + str(table)
+            idx += '_TABLE-' + str(table)
         if row != '':
-            idx += '|ROW-' + str(row)
+            idx += '_ROW-' + str(row)
         if cell != '':
-            idx += '|CELL-' + str(cell)
+            idx += '_CELL-' + str(cell)
         if slide != '':
-            idx += 'SLIDE-' + str(slide)
+            idx += '_SLIDE-' + str(slide)
         if shape != '':
-            idx += 'SHAPE-' + str(shape)
+            idx += '_SHAPE-' + str(shape)
         if para != '':
-            idx += '|PARA-' + str(para)
+            idx += '_PARA-' + str(para)
         if run != '':
-            idx += '|RUN-' + str(run)
+            idx += '_RUN-' + str(run)
 
         return idx
 
