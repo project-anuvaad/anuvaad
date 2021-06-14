@@ -46,10 +46,11 @@ class FileOperation(object):
         return input_data, workflow_id, jobid, tool_name, step_order
 
     # output format for individual pdf file
-    def one_filename_response(self,output_json_file):
+    def one_filename_response(self,output_json_file,langs):
         file_res = {
             "outputFile" : output_json_file,
-            "outputType" : "json"
+            "outputType" : "json",
+            "outputLocale":langs
         }
         return file_res     
 

@@ -10,18 +10,16 @@ from src.errors.errors_exception import KafkaProducerError
 from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 import time
-from kafka import TopicPartition
-
 import os
+from src.services.save_document import save_page_res
 
 import threading, queue
 import config
 from src.utilities.app_context import LOG_WITHOUT_CONTEXT
 ####################
-processQueue    = queue.Queue()
+Queue    = queue.Queue()
 controlQueue  = queue.Queue()
 controlQueue.put(1)
-
 ######################
 
 def consumer_validator():
@@ -51,9 +49,9 @@ def process_vision_ocr_kf():
     producer_tok        = Producer(config.bootstrap_server)
     
     # instatiation of consumer for respective topic
-   try:
+    try:
         consumer = consumer_validator()
-        log_info("process_google_ocr_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
+        log_info("process_gv_ocr_10_kf : trying to receive value from consumer ", LOG_WITHOUT_CONTEXT)
 
         while True:
             wait_for_control = controlQueue.get(block=True)
@@ -61,7 +59,7 @@ def process_vision_ocr_kf():
             for msg in consumer:
 
                 if Consumer.get_json_data(msg.value) == None:
-                    log_info('process_google_ocr_kf - received invalid data {}'.format(msg.value), None)
+                    log_info('process_gv_ocr_10_kf - received invalid data {}'.format(msg.value), None)
                     continue
                 data            = Consumer.get_json_data(msg.value)
 
@@ -72,20 +70,12 @@ def process_vision_ocr_kf():
 
 
                 jobid           = data['jobID']
-                log_info('process_google_ocr_kf - received message from kafka, dumping into internal queue', data)
+                log_info('process_gv_ocr_10_kf - received message from kafka, dumping into internal queue', data)
                 input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
 
                 Queue.put(data)
                 break
 
-
-            ########################################
-            # else:
-            #     blockMergerOCRQueue.put(data)
-            #     log_info('process_block_merger_kf - request in internal OCR queue {}'.format(blockMergerOCRQueue.qsize()), data)
-
-            # We should reject kafka request if internal queue size become too-much.
-            #
     
     except KafkaConsumerError as e:
         response_custom = {}
@@ -105,10 +95,8 @@ def vision_ocr_request_worker():
     log_info("vision_ocr_request_worker : starting thread ", LOG_WITHOUT_CONTEXT)
 
     while True:
-        data            = processQueue.get(block=True)
-        #################
+        data            = Queue.get(block=True)
         task_id         = str("vision_ocr" + str(time.time()).replace('.', ''))
-        ###################
         task_starttime  = str(time.time()).replace('.', '')
         input_files, workflow_id, jobid, tool_name, step_order = file_ops.json_input_format(data)
         
@@ -117,19 +105,22 @@ def vision_ocr_request_worker():
         try:
             response_gen    = Response(data, DOWNLOAD_FOLDER)
 
-            file_value_response = response_gen.workflow_response(task_id, task_starttime, False)
+            file_value_response,gv_file_response = response_gen.workflow_response(task_id, task_starttime, False)
             if file_value_response != None:
                 if "errorID" not in file_value_response.keys():
+                    
+                    #log_info("save api started saving ocr response ", LOG_WITHOUT_CONTEXT)
+                    #save_page_res(gv_file_response,file_value_response)
                     push_output(producer_tok, config.output_topic, file_value_response, jobid, task_id,data)
+                    log_info('process_ocr_gv_10_kf - message dumped :  {}'.format(file_value_response), data)
                     log_info("vision_ocr_request_worker : response send to topic %s"%(config.output_topic), LOG_WITHOUT_CONTEXT)
                 else:
                     log_info("vision_ocr_request_worker : error send to error handler", data)
 
             log_info('vision_ocr_request_worker - request in internal queue {}'.format(Queue.qsize()), data)
 
-            processQueue.task_done()
+            Queue.task_done()
         except Exception as e:
             log_exception("vision_ocr_request_worker ",  LOG_WITHOUT_CONTEXT, e)
-
         controlQueue.put(1)
 

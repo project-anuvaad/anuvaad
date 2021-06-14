@@ -19,7 +19,12 @@
 
 # RUN pip install -r requirements.txt
 # RUN pip cache purge
-FROM anuvaadio/python-opencv-slim:2
+#FROM anuvaadio/python-opencv-slim:2
+#FROM anuvaadio/anuvaad-ocr-tesseract:68-9d6cc426
+
+FROM anuvaadio/anuvaad-ocr-gv-server:10-0ee3dde0
+
+
 COPY / /app
 WORKDIR /app
 RUN pip install -r requirements.txt

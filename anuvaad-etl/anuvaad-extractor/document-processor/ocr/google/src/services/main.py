@@ -2,61 +2,63 @@ from anuvaad_auditor.loghandler import log_info
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_debug
 import src.utilities.app_context as app_context
-#from src.services.get_underline import get_underline
-#from src.services.get_tables import get_text_table_line_df, get_text_from_table_cells
-import config
+import config,copy
 from src.utilities.request_parse import get_files, File
-from src.utilities.pdf_to_image import doc_pre_processing
+#from src.utilities.pdf_to_image import doc_pre_processing
+from src.utilities.extract_images import get_images 
 from src.services.ocr import text_extraction
 
-def process_input(app_context) :
+
+
+def process_input(app_context,base_dir) :
     try:
         files       = get_files(app_context.application_context)
         output_files= []
-        
+        langs = []
+
         for index,file in enumerate(files):
             file_output    = {"status":{}}
             file_properties = File(file)
             if "page_info" in file.keys():
                 page_paths = file_properties.get_pages()
             else:
-                page_paths = doc_pre_processing(file['file']['name'],config.BASE_DIR)
-            page_res = text_extraction(page_paths)
-            file_output["page_info"] = page_paths
-            file_output["file"]      = file
-            file_output["pages"]     = page_res
-            file_output['status']['message']="google-vision ocr run successfully"
+                #page_paths = doc_pre_processing(file['file']['name'],config.BASE_DIR)
+                page_paths = get_images(file_properties.get_name(),file_properties.get_format()  ,config.BASE_DIR)
+            
+            file_output = text_extraction(file_properties,page_paths,file)
             output_files.append(file_output)
+            langs.append(file_properties.get_language())
         app_context.application_context["outputs"] =output_files
-        log_info("successfully completed google vision ocr", None)
+        log_info("successfully completed google vision document digitization", None)
 
     except Exception as e:
-        log_exception("Error occured during google vision ocr",  app_context.application_context, e)
-        return None
+        log_exception("Error occured during google vision document digitization",  app_context.application_context, e)
+        return None, None
 
-    return app_context.application_context
+    return app_context.application_context, langs
 
 def GoogleVisionOCR(app_context,base_dir = config.BASE_DIR):
     
-    log_debug('google vision ocr process starting {}'.format(app_context.application_context), app_context.application_context)
+    log_debug('google vision document digitization process starting {}'.format(app_context.application_context), app_context.application_context)
     try:
-        response   = process_input(app_context)
+        response,langs   = process_input(app_context,base_dir)
         if response!=None:
             return {
                     'code': 200,
                     'message': 'request completed',
-                    'rsp': response
+                    'rsp': response,
+                    'langs':langs
                     }
         else:
             return {
                 'code': 400,
-                'message': 'Error occured during google vision ocr',
+                'message': 'Error occured during google vision document digitization',
                 'rsp': None
                 }
     except Exception as e:
-        log_exception("Error occured during google vision ocr  ",  app_context.application_context, e)
+        log_exception("Error occured during google vision document digitization  ",  app_context.application_context, e)
         return {
             'code': 400,
-            'message': 'Error occured during google vision ocr ',
+            'message': 'Error occured during google vision document digitization ',
             'rsp': None
             }

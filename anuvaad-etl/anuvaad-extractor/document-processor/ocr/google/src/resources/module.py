@@ -24,7 +24,7 @@ class Vision_OCR_WF(Resource):
         json_data = request.get_json(force=True)
         app_context.init()
         app_context.application_context = json_data
-        log_info("Resource Vision_OCR_WF  Vision_OCR service started", app_context.application_context)
+        log_info("Resource Vision_OCR_WF  GV document digitization service started", app_context.application_context)
         task_id = str("GVOCR-" + str(time.time()).replace('.', '')[0:13])
         task_starttime  =  eval(str(time.time()).replace('.', '')[0:13])
         #json_data = request.get_json(force = True)
@@ -33,7 +33,7 @@ class Vision_OCR_WF(Resource):
             if error_validator.format_error(json_data) is True:
                 response_gen = Response(json_data, DOWNLOAD_FOLDER)
                 response = response_gen.workflow_response(task_id, task_starttime)
-                log_info("Resource Vision_OCR_WF Vision_OCR api response completed", app_context.application_context)
+                log_info("Resource Vision_OCR_WF GV document digitization api response completed", app_context.application_context)
                 return jsonify(response)
         except FormatError as e:
             log_error("Resource Vision_OCR_WF Input json format is not correct or dict_key is missing", app_context.application_context, e)
@@ -55,7 +55,7 @@ class Vision_OCR(Resource):
             if error_validator.format_error(json_data) is True:
                 response_gen = Response(json_data, DOWNLOAD_FOLDER)
                 response = response_gen.nonwf_response()
-                log_info("Resource Vision_OCR api response completed", app_context.application_context)
+                log_info("Resource GV document digitization api response completed", app_context.application_context)
                 return jsonify(response)
         except FormatError as e:
             log_error("Resource Vision_OCR Input json format is not correct or dict_key is missing", app_context.application_context, e)
