@@ -78,7 +78,7 @@ def get_images(filename,file_format,base_dir):
             if file_format in ['PNG', 'JPEG', 'BMP','jpg','png','bmp','jpeg' ] :
                 image_paths = [os.path.join(base_dir, filename)]
                 resize_image(image_paths)
-                file_images = image_paths
+                file_images =  image_paths
             else:
                 log_info("currently we do not support {} files .".format(file_format) ,app_context.application_context)
                 return None
