@@ -68,8 +68,8 @@ class Response(object):
                             output_filename = translated_docx_file_name
                             out_file_type = 'docx'
 
-                        if 'PPTX-' in input_filename:
-                            json_file_name = input_filename.split('|')[-1]
+                        if config.PPTX_FILE_PREFIX in input_filename:
+                            json_file_name = input_filename.split(config.PPTX_FILE_PREFIX)[-1]
                             json_file_name = json_file_name.replace('.json', '.pptx')
 
                             pptx_transform_obj = PptxTransform(json_file_name)

@@ -407,7 +407,7 @@ class PptxTransform(object):
         return base_json
 
     def write_json_file(self, transformed_obj):
-        out_file_name = 'PPTX-' + self.file_name_without_ext + '.json'
+        out_file_name = config.PPTX_FILE_PREFIX + self.file_name_without_ext + '.json'
         out_json_filepath = common_obj.write_json_file(out_file_name=out_file_name, transformed_obj=transformed_obj)
 
     def distribute_over_runs(self, iterable_obj, trans_para):

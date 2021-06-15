@@ -74,6 +74,7 @@ PPTX_MULTI_PAGE = False
 PPTX_MAX_PARA_IN_A_PAGE = 100
 
 DOCX_FILE_PREFIX = 'DOCX-'
+PPTX_FILE_PREFIX = 'PPTX-'
 
 
 ALLOWED_FILE_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document',
