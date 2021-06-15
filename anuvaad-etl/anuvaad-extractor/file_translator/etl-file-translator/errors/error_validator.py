@@ -48,7 +48,8 @@ class ValidationResponse(object):
                         raise FileErrors("FILE_TYPE_ERROR",
                                          "This file type is not allowed. Currently, support only txt file.")
 
-                    elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(
+                    elif in_file_type not in ['json'] and file_ops.check_path_exists(
+                            input_filepath) is False or file_ops.check_path_exists(
                             self.DOWNLOAD_FOLDER) is False:
                         raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory.")
 

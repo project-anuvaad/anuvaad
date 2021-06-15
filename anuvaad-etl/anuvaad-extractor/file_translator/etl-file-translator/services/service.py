@@ -5,11 +5,12 @@ import re
 import uuid
 
 import requests
+from anuvaad_auditor import log_info
 from docx import Document
 from pptx import Presentation
 
 import config
-from errors.errors_exception import FileErrors
+from errors.errors_exception import FileErrors, FormatError
 from utilities.utils import FileOperation
 
 file_ops = FileOperation()
@@ -170,12 +171,13 @@ class DocxTransform(object):
 
     # reading content of docx file
     def read_docx_file(self, input_filename):
+        log_info("read_docx_file :: started the reading docx file: %s" % input_filename, None)
         input_docx_filepath = common_obj.input_path(input_filename)
         input_docx = Document(input_docx_filepath)
         return input_docx
 
     def write_json_file(self, transformed_obj):
-        out_file_name = 'DOCX-' + self.file_name_without_ext + '.json'
+        out_file_name = config.DOCX_FILE_PREFIX + self.file_name_without_ext + '.json'
         return common_obj.write_json_file(out_file_name=out_file_name, transformed_obj=transformed_obj)
 
     def distribute_over_runs(self, iterable_obj, trans_para):
@@ -254,6 +256,7 @@ class DocxTransform(object):
 
     def translate_docx_file(self, document, trans_map):  # TODO
         file_id = self.file_name_without_ext
+        log_info("translate_docx_file :: Translation Docx Process started.", None)
 
         if config.DOCX_PARAGRAPH_GEN and config.DOCX_PARAGRAPH_TRANS:
             for idx, para in enumerate(document.paragraphs):
@@ -292,7 +295,7 @@ class DocxTransform(object):
 class FetchContent(object):
     def __init__(self, record_id):
         self.record_id = record_id
-        self.block_trans_map = []
+        self.block_trans_map = dict()
 
     def map_translated_text_with_blockid(self, page):
         for idx, text_block in enumerate(page['text_blocks']):
@@ -309,14 +312,23 @@ class FetchContent(object):
         return url + '?record_id=' + record_id + '&start_page=' + str(start_page) + '&end_page=' + str(end_page)
 
     def fetch_content(self, record_id, start_page=0, end_page=0):
+        log_info("fetch_content :: started fetching content for recordId: %s" % record_id, None)
         fetch_url = self.generate_url(record_id=record_id, start_page=start_page, end_page=end_page)
-        rsp = requests.get(fetch_url)
-        return rsp
+
+        rspn = requests.get(url=fetch_url)
+
+        log_info("fetch_content :: received response for recordId: %s" % record_id, None)
+
+        if rspn.status_code not in [200]:
+            raise FormatError(400, "Fetch Content failed for recordId: " % record_id)
+
+        return rspn.json()
 
     def generate_map_from_fetch_content_response(self):
         response = self.fetch_content(record_id=self.record_id)
         for page in response['data']:
             self.map_translated_text_with_blockid(page)
+        log_info("generate_map_from_fetch_content_response :: Generated Map from fetch content.", None)
 
 
 class PptxTransform(object):
@@ -427,4 +439,3 @@ class PptxTransform(object):
         file_out_path = common_obj.input_path(file_name)
         document.save(file_out_path)
         return file_name
-

@@ -32,7 +32,7 @@ class FileOperation(object):
 
     # checking file extension of received file type
     def check_file_extension(self, file_type):
-        allowed_extensions = ['docx']
+        allowed_extensions = ['docx', 'pptx', 'json']
         if file_type in allowed_extensions:
             return True
         else:

@@ -73,6 +73,8 @@ PPTX_HYPERLINK_SUPPORT = False
 PPTX_MULTI_PAGE = False
 PPTX_MAX_PARA_IN_A_PAGE = 100
 
+DOCX_FILE_PREFIX = 'DOCX-'
+
 
 ALLOWED_FILE_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                       'application/vnd.openxmlformats-officedocument.presentationml.presentation',

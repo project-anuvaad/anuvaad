@@ -13,6 +13,7 @@ from services.service import DocxTransform, FetchContent, PptxTransform
 from utilities.model_response import CustomResponse
 from utilities.model_response import Status
 from utilities.utils import FileOperation
+import config
 
 file_ops = FileOperation()
 
@@ -51,8 +52,8 @@ class Response(object):
                         out_file_type = 'json'
 
                     elif in_file_type == "json" and download_flow:
-                        if 'DOCX-' in input_filename:
-                            json_file_name = input_filename.split('|')[-1]
+                        if config.DOCX_FILE_PREFIX in input_filename:
+                            json_file_name = input_filename.split(config.DOCX_FILE_PREFIX)[-1]
                             json_file_name = json_file_name.replace('.json', '.docx')
 
                             docx_transform_obj = DocxTransform(json_file_name)
