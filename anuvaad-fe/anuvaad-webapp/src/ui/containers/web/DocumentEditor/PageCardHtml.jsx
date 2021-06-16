@@ -66,6 +66,7 @@ class PageCardHtml extends React.Component {
 
     componentDidMount() {
         this.getHTML()
+        $('.MuiGrid-grid-lg-6').css('max-width','100%')
         $('#paper').html('Loading...')
     }
 
