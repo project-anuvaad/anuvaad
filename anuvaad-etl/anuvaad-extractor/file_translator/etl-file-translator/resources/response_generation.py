@@ -9,7 +9,7 @@ from errors.errors_exception import FileEncodingError
 from errors.errors_exception import FileErrors
 from errors.errors_exception import ServiceError
 from errors.errors_exception import WorkflowkeyError
-from services.service import DocxTransform, FetchContent, PptxTransform
+from services.service import DocxTransform, FetchContent, PptxTransform, HtmlConvert
 from utilities.model_response import CustomResponse
 from utilities.model_response import Status
 from utilities.utils import FileOperation
@@ -38,6 +38,8 @@ class Response(object):
                     input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
                     if in_file_type == "docx" and transform_flow:
                         docx_transform_obj = DocxTransform(input_filename)
+                        html_convert_obj = HtmlConvert(input_filename)
+                        out_html_path = html_convert_obj.generate_html(input_filename)
                         docx_obj = docx_transform_obj.read_docx_file(input_filename)
                         transformed_obj = docx_transform_obj.generate_json_structure(docx_obj)
                         out_json_filepath = docx_transform_obj.write_json_file(transformed_obj)

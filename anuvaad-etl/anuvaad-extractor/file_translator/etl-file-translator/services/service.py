@@ -7,7 +7,10 @@ import uuid
 import requests
 from anuvaad_auditor import log_info
 from docx import Document
+from docx.oxml.table import CT_Tbl
+from docx.oxml.text.paragraph import CT_P
 from pptx import Presentation
+from pydocx import PyDocX
 
 import config
 from errors.errors_exception import FileErrors, FormatError
@@ -156,6 +159,50 @@ class Common(object):
         json.dump(transformed_obj, file_write, indent=6)
         return out_file_name
 
+    def word_count(self, text):
+        if text:
+            return len(text.split(' '))
+        return 0
+
+    def is_page_size_exceeded(self, DOCX=False, PPTX=False, para_count=0, run_count=0, word_count=0):
+        if DOCX:
+            if config.DOCX_PAGE_LIMIT_ENABLE:
+                if config.PARA_WISE_PAGE_LIMIT:
+                    if config.MAX_PARA_IN_A_PAGE <= para_count:
+                        return True
+
+                elif config.RUN_WISE_PAGE_LIMIT:
+                    if config.MAX_RUN_IN_A_PAGE <= run_count:
+                        return True
+
+                elif config.WORD_WISE_PAGE_LIMIT:
+                    if config.MAX_WORD_IN_A_PAGE <= word_count:
+                        return True
+        if PPTX:
+            if config.PPTX_PAGE_LIMIT_ENABLE:
+                if config.PARA_WISE_PAGE_LIMIT:
+                    if config.MAX_PARA_IN_A_PAGE <= para_count:
+                        return True
+
+                elif config.RUN_WISE_PAGE_LIMIT:
+                    if config.MAX_RUN_IN_A_PAGE <= run_count:
+                        return True
+
+                elif config.WORD_WISE_PAGE_LIMIT:
+                    if config.MAX_WORD_IN_A_PAGE <= word_count:
+                        return True
+
+    def reset_page_limit(self, para_count=0, run_count=0, word_count=0):
+        if config.PARA_WISE_PAGE_LIMIT:
+            para_count = 0
+
+        elif config.RUN_WISE_PAGE_LIMIT:
+            run_count = 0
+
+        elif config.WORD_WISE_PAGE_LIMIT:
+            word_count = 0
+        return para_count, run_count, word_count
+
 
 common_obj = Common()
 
@@ -211,37 +258,73 @@ class DocxTransform(object):
         page_list = base_json['result']
         file_id = self.file_name_without_ext
 
-        para_count = 0
+        para_count = 0  # Total no of Para indivisual and in table combined for page limit
+        run_count = 0  # Total number of runs indivisual and in table combined for page limit
+        word_count = 0  # Total number of words for page limit
         page_number = 1
+
+        sequence_para_index = 0  # Sequence wise total number of para iterated
+        sequence_table_index = 0  # Sequence wise total number of table iterated
 
         page_list.append(self.generate_json_for_page(page_number))
 
-        if config.DOCX_PARAGRAPH_GEN:
-            for idx, para in enumerate(document.paragraphs):
+        # START# NEW LOGIC TO ITERATE FILE SEQUENCIALLY
+        for ide, child in enumerate(document.element.body):
+            if common_obj.is_page_size_exceeded(DOCX=True, para_count=para_count, run_count=run_count,
+                                                word_count=word_count):
+                para_count, run_count, word_count = common_obj.reset_page_limit(para_count=para_count,
+                                                                                run_count=run_count,
+                                                                                word_count=word_count)
+                page_number += 1
+                log_info(
+                    "generate_json_structure :: Page limit exceeded generating new page obj, new page index: %s" % page_number,
+                    None)
+                page_list.append(self.generate_json_for_page(page_number))
+
+            if config.DOCX_PARAGRAPH_GEN and isinstance(child, CT_P):
+                if len(document.paragraphs) <= sequence_para_index:
+                    raise FileErrors("DOCX_PARAGRAPH_DATA_GEN_ERROR", "Paragraph Data mismatched in the Docx")
+
                 para_count += 1
+
+                para = document.paragraphs[sequence_para_index]
                 json_para = self.generate_json_for_para(para=para, file_id=file_id,
-                                                        para_idx=str(idx))
+                                                        para_idx=str(sequence_para_index))
+
+                words_no = common_obj.word_count(json_para.get('text'))
+                word_count += words_no
 
                 for idr, run in enumerate(para.runs):
+                    run_count += 1
                     json_run = self.generate_json_for_run(run=run, file_id=file_id,
-                                                          para_idx=str(idx),
+                                                          para_idx=str(sequence_para_index),
                                                           run_idx=str(idr))
                     json_para['children'].append(json_run)
 
-                page_list[0]['text_blocks'].append(json_para)
+                page_list[page_number - 1]['text_blocks'].append(json_para)
+                sequence_para_index += 1
 
-        if config.DOCX_TABLE_DATA_GEN:
-            for idt, table in enumerate(document.tables):
+            elif config.DOCX_TABLE_DATA_GEN and isinstance(child, CT_Tbl):
+                if len(document.tables) <= sequence_table_index:
+                    raise FileErrors("DOCX_TABLE_DATA_GEN_ERROR", "Table Data mismatched in the Docx")
+
+                table = document.tables[sequence_table_index]
+                idt = sequence_table_index
                 for idr, row in enumerate(table.rows):
-                    for idc, cell in enumerate(set(row.cells)):
+                    for idc, cell in enumerate(row.cells):
                         for idp, para in enumerate(cell.paragraphs):
+                            para_count += 1
                             json_para = self.generate_json_for_para(para=para, file_id=file_id,
                                                                     table=str(idt),
                                                                     cell=str(idc),
                                                                     row=str(idr),
                                                                     para_idx=str(idp))
 
+                            words_no = common_obj.word_count(json_para.get('text'))
+                            word_count += words_no
+
                             for id_run, run in enumerate(para.runs):
+                                run_count += 1
                                 json_run = self.generate_json_for_run(run=run, file_id=file_id,
                                                                       table=str(idt),
                                                                       cell=str(idc),
@@ -250,9 +333,49 @@ class DocxTransform(object):
                                                                       run_idx=str(id_run))
                                 json_para['children'].append(json_run)
 
-                            page_list[0]['text_blocks'].append(json_para)
+                            page_list[page_number - 1]['text_blocks'].append(json_para)
 
+                sequence_table_index += 1
         return base_json
+        # END# NEW LOGIC TO ITERATE FILE SEQUENCIALLY
+
+        # if config.DOCX_PARAGRAPH_GEN:
+        #     for idx, para in enumerate(document.paragraphs):
+        #         para_count += 1
+        #         json_para = self.generate_json_for_para(para=para, file_id=file_id,
+        #                                                 para_idx=str(idx))
+        #
+        #         for idr, run in enumerate(para.runs):
+        #             json_run = self.generate_json_for_run(run=run, file_id=file_id,
+        #                                                   para_idx=str(idx),
+        #                                                   run_idx=str(idr))
+        #             json_para['children'].append(json_run)
+        #
+        #         page_list[0]['text_blocks'].append(json_para)
+        #
+        # if config.DOCX_TABLE_DATA_GEN:
+        #     for idt, table in enumerate(document.tables):
+        #         for idr, row in enumerate(table.rows):
+        #             for idc, cell in enumerate(set(row.cells)):
+        #                 for idp, para in enumerate(cell.paragraphs):
+        #                     json_para = self.generate_json_for_para(para=para, file_id=file_id,
+        #                                                             table=str(idt),
+        #                                                             cell=str(idc),
+        #                                                             row=str(idr),
+        #                                                             para_idx=str(idp))
+        #
+        #                     for id_run, run in enumerate(para.runs):
+        #                         json_run = self.generate_json_for_run(run=run, file_id=file_id,
+        #                                                               table=str(idt),
+        #                                                               cell=str(idc),
+        #                                                               row=str(idr),
+        #                                                               para_idx=str(idp),
+        #                                                               run_idx=str(id_run))
+        #                         json_para['children'].append(json_run)
+        #
+        #                     page_list[0]['text_blocks'].append(json_para)
+        #
+        # return base_json
 
     def translate_docx_file(self, document, trans_map):  # TODO
         file_id = self.file_name_without_ext
@@ -270,7 +393,7 @@ class DocxTransform(object):
         if config.DOCX_TABLE_DATA_GEN and config.DOCX_TABLE_DATA_TRANS:
             for idt, table in enumerate(document.tables):
                 for idr, row in enumerate(table.rows):
-                    for idc, cell in enumerate(set(row.cells)):
+                    for idc, cell in enumerate(row.cells):
                         for idp, para in enumerate(cell.paragraphs):
                             runs = common_obj.get_runs(para, para_obj=True)
                             para_id = common_obj.generate_id(file_id=file_id,
@@ -439,3 +562,18 @@ class PptxTransform(object):
         file_out_path = common_obj.input_path(file_name)
         document.save(file_out_path)
         return file_name
+
+
+class HtmlConvert(object):
+    def __init__(self, input_filename):
+        self.file_name_without_ext = os.path.splitext(input_filename)[0]
+
+    def generate_html(self, input_filename):
+        input_docx_filepath = common_obj.input_path(input_filename)
+        output_html_filepath = common_obj.input_path(self.file_name_without_ext + '.html')
+        with open(input_docx_filepath, "rb") as docx_file:
+            html = PyDocX.to_html(docx_file)
+            f = open(output_html_filepath, "w")
+            f.write(html)
+            f.close()
+        return output_html_filepath
