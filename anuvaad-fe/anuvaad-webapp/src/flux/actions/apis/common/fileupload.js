@@ -14,7 +14,8 @@ export default class RunExperiment extends API {
     this.endpoint = (workflow === "WF_A_FCBMTKTR" ||
       workflow === "WF_A_FCOD10GVOTK" ||
       workflow === "WF_A_FCWDLDBSOD15GVOTK" ||
-      workflow === "WF_A_AN") ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}` : `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`
+      workflow === "WF_A_AN" ||
+      workflow === "WF_A_FTTKTR") ? `${super.apiEndPointAuto()}${ENDPOINTS.workflowAsync}` : `${super.apiEndPointAuto()}${ENDPOINTS.workflowSync}`
     this.source = source;
     this.target = target;
     this.path = path;
@@ -46,7 +47,7 @@ export default class RunExperiment extends API {
   }
 
   getBody() {
-    if (this.workflow === "WF_A_FCBMTKTR") {
+    if (this.workflow === "WF_A_FCBMTKTR" || this.workflow === 'WF_A_FTTKTR') {
       return {
 
         "workflowCode": this.workflow,
@@ -59,7 +60,7 @@ export default class RunExperiment extends API {
             "locale": this.source,
             "model": this.model,
             "context": "JUDICIARY",
-            "modifiedSentences": this.sentence_ids
+            "modifiedSentences": this.sentence_ids?this.sentence_ids:'a'
           }
         ]
 

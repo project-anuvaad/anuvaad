@@ -37,6 +37,7 @@ import { Button } from "@material-ui/core";
 // import html2canvas from "html2canvas"
 // import { jsPDF } from "jspdf";
 import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
+import PageCardHtml from './PageCardHtml';
 
 import Loader from "../../../components/web/common/CircularLoader";
 const LANG_MODEL = require('../../../../utils/language.model')
@@ -270,7 +271,7 @@ class DocumentEditor extends React.Component {
     });
   }
 
-  async makeAPICallSaveSentence(sentence, pageNumber,score, eventArray) {
+  async makeAPICallSaveSentence(sentence, pageNumber, score, eventArray) {
 
     this.informUserProgress(translate('common.page.label.SENTENCE_SAVED'))
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
@@ -449,10 +450,10 @@ class DocumentEditor extends React.Component {
     setTimeout(() => { this.props.editorModeClear() }, 50)
   }
 
-  processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex , score, eventArray) => {
+  processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex, score, eventArray) => {
     switch (action) {
       case SENTENCE_ACTION.SENTENCE_SAVED: {
-        this.makeAPICallSaveSentence(sentences[0], pageNumber,score, eventArray)
+        this.makeAPICallSaveSentence(sentences[0], pageNumber, score, eventArray)
         return;
       }
 
@@ -674,7 +675,7 @@ class DocumentEditor extends React.Component {
    */
   renderDocumentPages = () => {
     let pages = this.getPages();
-
+    let { workflow } = this.props.match.params
     if (pages.length < 1) {
       return (
         <div></div>
@@ -682,14 +683,19 @@ class DocumentEditor extends React.Component {
     }
     return (
       <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
-
         <InfiniteScroll height={window.innerHeight - 141} style={{
           maxHeight: window.innerHeight - 141,
           overflowY: "auto",
         }}
           dataLength={pages.length}
         >
-          {pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
+          {
+            workflow !== 'WF_A_FTTKTR'
+              ?
+              pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)
+              :
+              <PageCardHtml zoomPercent={this.state.zoomPercent} onAction={this.processSentenceAction} getHTML={this.getHTML} />
+          }
         </InfiniteScroll>
       </Grid>
     )
@@ -775,7 +781,7 @@ class DocumentEditor extends React.Component {
           onClick={this.processZoomIn}
           disabled={this.state.zoomInDisabled} >
           +
-          </Button>
+        </Button>
         <input
           style={{
             backgroundColor: 'white',
@@ -795,15 +801,16 @@ class DocumentEditor extends React.Component {
           disabled={this.state.zoomOutDisabled}
         >
           -
-          </Button>
+        </Button>
       </div >);
   }
   render() {
+    let { workflow } = this.props.match.params
     return (
       <div style={{ height: window.innerHeight }}>
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
-        { !this.state.preview ?
+        {!this.state.preview ?
           <>
             <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
               {!this.state.docView && this.renderDocumentPages()}
@@ -827,7 +834,7 @@ class DocumentEditor extends React.Component {
         {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
         {this.state.showStatus ? this.renderStatusInformation() : <div />}
         {this.state.apiFetchStatus && <Spinner />}
-        { !this.state.download && this.state.preview && <Loader value={this.state.loaderValue}></Loader>}
+        {!this.state.download && this.state.preview && <Loader value={this.state.loaderValue}></Loader>}
       </div>
     )
   }
