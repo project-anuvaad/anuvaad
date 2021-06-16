@@ -605,7 +605,7 @@
             "uri":"/anuvaad-etl/file-translator/v0/download-wf",
             "module":"ANUVAAD-TRANSLATED-FILE-DOWNLOADER",
             "active":true,
-            "whiteList":true,
+            "whiteList":false,
             "description":"API for translated file download"
         }
         ,
@@ -614,7 +614,7 @@
             "uri":"/anuvaad-etl/file-translator/v0/transform-wf",
             "module":"ANUVAAD-TRANSFORM-FILE-TO-JSON",
             "active":true,
-            "whiteList":true,
+            "whiteList":false,
             "description":"API for transform file to json format"
         }
     ]
