@@ -812,19 +812,10 @@ class DocumentEditor extends React.Component {
 
         {!this.state.preview ?
           <>
-            {workflow !== 'WF_A_FTTKTR' ? <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
+            <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
               {!this.state.docView && this.renderDocumentPages()}
               {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
-            </div> :
-              <Grid container style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px" }}>
-                <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-                  {!this.state.docView && this.renderDocumentPages()}
-                </Grid>
-                <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-                  {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
-                </Grid>
-              </Grid>
-            }
+            </div>
             <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
               <InteractivePagination count={this.props.document_contents.count}
                 data={this.props.document_contents.pages}
