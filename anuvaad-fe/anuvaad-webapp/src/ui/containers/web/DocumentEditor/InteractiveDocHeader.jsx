@@ -194,9 +194,33 @@ class InteractiveDocHeader extends React.Component {
             headers: apiObj.getHeaders().headers,
             body: JSON.stringify(apiObj.getBody())
         })
-            .then(res => {
+            .then(async res => {
                 if (res.ok) {
-                    console.log(res)
+                    let output = await res.json()
+                    let fileName = output.output[0].outputFile
+                    if (fileName) {
+                        let obj = new DownloadFile(fileName)
+
+                        const apiReq1 = fetch(obj.apiEndPoint(), {
+                            method: 'get', dialogMessage: "Unable to download file", headers: obj.getHeaders().headers
+                        }).then(async response => {
+                            if (!response.ok) {
+                                this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
+                                console.log('api failed')
+                            } else {
+                                const buffer = new Uint8Array(await response.arrayBuffer());
+                                let res = Buffer.from(buffer).toString('base64')
+                                this.downloadFile(res, fileName)
+                            }
+
+                        }).catch((error) => {
+                            this.setState({ dialogMessage: "Unable to download file" })
+                            console.log('api failed because of server or network', error)
+                        });
+
+                    } else {
+                        this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
+                    }
                 } else {
                     this.setState({ anchorEl: null, showStatus: true, message: 'Downloading failed...' });
                 }
