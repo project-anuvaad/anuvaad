@@ -3,13 +3,14 @@ import React from 'react';
 import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-
+import { v4 as uuid4 } from 'uuid'
 const $ = require('jquery');
 
 
 class PageCardHtml extends React.Component {
     constructor(props) {
         super(props);
+        this.prev_sid = React.createRef()
     }
     getHTML = () => {
         let filename = this.props.match.params.inputfileid.split('DOCX-')[1].split('.')[0] + '.html'
@@ -34,17 +35,19 @@ class PageCardHtml extends React.Component {
         if (highlightBlock.block) {
             let { src } = highlightBlock.block
             if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
-                let prev = document.getElementById(highlightBlock.prev_sid)
+                let prev = document.getElementById(this.prev_sid)
                 if (prev) prev.style.backgroundColor = "white"
-                this.highlight(src, 'orange', highlightBlock.current_sid)
-                let current = document.getElementById(highlightBlock.current_sid)
+                this.prev_sid = uuid4()
+                this.highlight(src, 'orange', this.prev_sid)
+                let current = document.getElementById(this.prev_sid)
                 current && current.scrollIntoView({ inline: 'nearest' });
             } else if (highlightBlock.current_sid && !highlightBlock.prev_sid) {
-                this.highlight(src, 'orange', highlightBlock.current_sid)
-                let current = document.getElementById(highlightBlock.current_sid)
+                this.prev_sid = uuid4()
+                this.highlight(src, 'orange', this.prev_sid)
+                let current = document.getElementById(this.prev_sid)
                 current && current.scrollIntoView({ inline: 'nearest' });
             } else if (highlightBlock.current_sid === highlightBlock.prev_sid && highlightBlock.prev_sid) {
-                let prev = document.getElementById(highlightBlock.prev_sid)
+                let prev = document.getElementById(this.prev_sid)
                 if (prev) prev.style.backgroundColor = "white"
             }
         }
