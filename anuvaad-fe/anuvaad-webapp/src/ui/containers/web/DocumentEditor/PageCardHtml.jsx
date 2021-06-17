@@ -79,6 +79,10 @@ class PageCardHtml extends React.Component {
         if (this.page_no !== this.props.active_page && this.state.loaded) {
             this.page_no = this.props.active_page
             let source = this.getSource(this.props.fetchContent, this.page_no)
+            if (this.prev_sid) {
+                let sentenceToHighlight = document.getElementById(this.prev_sid)
+                if(sentenceToHighlight) sentenceToHighlight.style.backgroundColor = 'white'
+            }
             if (source) {
                 this.prev_sid = uuid4()
                 this.highlight(source, 'white', this.prev_sid)
