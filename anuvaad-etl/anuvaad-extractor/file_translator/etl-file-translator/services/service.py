@@ -453,13 +453,15 @@ class FetchContent(object):
         # HEADERS = {'auth-token': 'AUTH'}
         # rspn = requests.get(url=fetch_url, headers=HEADERS)
         # END :: TO TEST LOCALLY
+        log_info('Fetch URL: %s' % fetch_url, None)
 
         rspn = requests.get(url=fetch_url)
 
         log_info("fetch_content :: received response for recordId: %s" % record_id, None)
 
         if rspn.status_code not in [200]:
-            raise FormatError(400, "Fetch Content failed for recordId: " % record_id)
+            log_info('Response:: %s', rspn.text, None)
+            raise FormatError(400, "Fetch Content failed for recordId: %s" % record_id)
 
         return rspn.json()
 
