@@ -816,7 +816,7 @@ class DocumentEditor extends React.Component {
               {!this.state.docView && this.renderDocumentPages()}
               {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
             </div> */}
-            <Grid container>
+            <Grid container style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px"}}>
               <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
                 {!this.state.docView && this.renderDocumentPages()}
               </Grid>
