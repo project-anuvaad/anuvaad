@@ -4,6 +4,9 @@ import DownloadFile from "../../../../flux/actions/apis/download/download_zip_fi
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { v4 as uuid4 } from 'uuid'
+import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
+import { bindActionCreators } from "redux";
+
 const $ = require('jquery');
 
 
@@ -73,7 +76,17 @@ class PageCardHtml extends React.Component {
 
     componentDidUpdate(prevProps) {
         const { highlightBlock } = this.props
-        if (highlightBlock.block) {
+        if (this.page_no !== this.props.active_page && this.state.loaded) {
+            this.page_no = this.props.active_page
+            let source = this.getSource(this.props.fetchContent, this.page_no)
+            if (source) {
+                this.prev_sid = uuid4()
+                this.highlight(source, 'white', this.prev_sid)
+                let sentenceToHighlight = document.getElementById(this.prev_sid)
+                if (sentenceToHighlight) sentenceToHighlight.scrollIntoView({ behavior: "smooth", inline: "nearest" })
+            }
+            this.props.clearHighlighBlock();
+        } else if (highlightBlock.block) {
             let { src } = highlightBlock.block
             if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
                 let prev = document.getElementById(this.prev_sid)
@@ -90,16 +103,6 @@ class PageCardHtml extends React.Component {
             } else if (highlightBlock.current_sid === highlightBlock.prev_sid && highlightBlock.prev_sid) {
                 let prev = document.getElementById(this.prev_sid)
                 if (prev) prev.style.backgroundColor = "white"
-            }
-        }
-        if (this.page_no !== this.props.active_page && this.state.loaded) {
-            this.page_no = this.props.active_page
-            let source = this.getSource(this.props.fetchContent, this.page_no)
-            if (source) {
-                let id = uuid4()
-                this.highlight(source, 'white', id)
-                let sentenceToHighlight = document.getElementById(id)
-                if (sentenceToHighlight) sentenceToHighlight.scrollIntoView({ behavior: "smooth", inline: "nearest" })
             }
         }
     }
@@ -121,4 +124,11 @@ const mapStateToProps = state => ({
     fetchContent: state.fetchContent
 });
 
-export default withRouter(connect(mapStateToProps)(PageCardHtml));
+const mapDispatchToProps = dispatch => bindActionCreators(
+    {
+        clearHighlighBlock
+    },
+    dispatch
+);
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PageCardHtml));
