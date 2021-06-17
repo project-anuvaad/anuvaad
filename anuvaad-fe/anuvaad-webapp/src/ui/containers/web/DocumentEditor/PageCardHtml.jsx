@@ -11,6 +11,10 @@ class PageCardHtml extends React.Component {
     constructor(props) {
         super(props);
         this.prev_sid = React.createRef()
+        this.page_no = React.createRef()
+        this.state = {
+            loaded: false
+        }
     }
     getHTML = () => {
         let filename = this.props.match.params.inputfileid.split('DOCX-')[1].split('.')[0] + '.html'
@@ -24,6 +28,7 @@ class PageCardHtml extends React.Component {
                     let html = await res.text()
                     $('#paper').html(html)
                     $('body').css('width', '100%')
+                    this.setState({ loaded: true })
                 } else {
                     $('#paper').html('Failed to load...')
                 }
@@ -44,12 +49,25 @@ class PageCardHtml extends React.Component {
     }
 
 
-    componentDidMount() {
-        this.getHTML()
-        $('#paper').html('Loading...')
+    getSource = (fetchContent, pageNo) => {
+        let tokenized_source
+        fetchContent && fetchContent['result']['data'].forEach(value => {
+            if (value.page_no === pageNo) {
+                tokenized_source = value['text_blocks'].filter(text => {
+                    return text.text !== ''
+                })
+            }
+        })
+        return tokenized_source[0]['tokenized_sentences'][0]['s0_src']
+
     }
 
-    componentDidUpdate() {
+    componentDidMount() {
+        $('#paper').html('Loading...')
+        this.getHTML()
+    }
+
+    componentDidUpdate(prevProps) {
         const { highlightBlock } = this.props
         if (highlightBlock.block) {
             let { src } = highlightBlock.block
@@ -59,15 +77,24 @@ class PageCardHtml extends React.Component {
                 this.prev_sid = uuid4()
                 this.highlight(src, 'orange', this.prev_sid)
                 let current = document.getElementById(this.prev_sid)
-                current && current.scrollIntoView({behavior: "smooth", inline: "nearest"});
+                current && current.scrollIntoView({ behavior: "smooth", inline: "nearest" });
             } else if (highlightBlock.current_sid && !highlightBlock.prev_sid) {
                 this.prev_sid = uuid4()
                 this.highlight(src, 'orange', this.prev_sid)
                 let current = document.getElementById(this.prev_sid)
-                current && current.scrollIntoView({behavior: "smooth", inline: "nearest"});
+                current && current.scrollIntoView({ behavior: "smooth", inline: "nearest" });
             } else if (highlightBlock.current_sid === highlightBlock.prev_sid && highlightBlock.prev_sid) {
                 let prev = document.getElementById(this.prev_sid)
                 if (prev) prev.style.backgroundColor = "white"
+            }
+        }
+        if (this.page_no !== this.props.active_page && this.state.loaded) {
+            this.page_no = this.props.active_page
+            let source = this.getSource(this.props.fetchContent, this.page_no)
+            if (source) {
+                let id = uuid4()
+                this.highlight(source, 'white', id)
+                document.getElementById(id).scrollIntoView({ behavior: "smooth", inline: "nearest" })
             }
         }
     }
@@ -85,7 +112,8 @@ class PageCardHtml extends React.Component {
 
 const mapStateToProps = state => ({
     highlightBlock: state.block_highlight,
-    active_page: state.active_page_number.page_number
+    active_page: state.active_page_number.page_number,
+    fetchContent: state.fetchContent
 });
 
 export default withRouter(connect(mapStateToProps)(PageCardHtml));
