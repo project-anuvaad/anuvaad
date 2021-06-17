@@ -69,8 +69,8 @@ class Common(object):
         input_filepath = os.path.join('upload', input_filename)
         return input_filepath
 
-    def is_only_space_line_break_tabs(self, text):
-        return re.sub(r"([ ]{0,}(\n){0,}(\t){0,})", '', text) == ''
+    def is_only_line_breaks_n_tabs(self, text):
+        return re.sub(r"((\n){0,}(\t){0,})", '', text) == ''
 
     def generate_id(self, file_id='', table='', cell='', row='', slide='', shape='', para='', run=''):
         idx = ''
@@ -97,12 +97,10 @@ class Common(object):
         para_text = ''
 
         for ru in iterable_obj:
-            if common_obj.is_only_space_line_break_tabs(ru.text):
+            if common_obj.is_only_line_breaks_n_tabs(ru.text):
                 continue
-            if para_text.endswith(' '):
-                para_text += ru.text
             else:
-                para_text += ' ' + ru.text
+                para_text += ru.text
         return para_text
 
     def get_runs(self, iterable_obj, para_obj=False, run_obj=False, run_lst=False):
@@ -119,14 +117,15 @@ class Common(object):
 
     def distribute_over_runs(self, iterable_obj, trans_para):
         start_run = True
+        last_processed_run = None
         for idx, ru in enumerate(iterable_obj):
-            if common_obj.is_only_space_line_break_tabs(ru.text):
+            if common_obj.is_only_line_breaks_n_tabs(ru.text):
                 continue
             run_word_len = len([i for i in ru.text.split(' ') if i not in ['', ' ']])
             trans_para_word_len = len([i for i in trans_para.split(' ') if i not in ['', ' ']])
 
             if trans_para.strip() in ['', ' '] and len(ru.text) != 0:
-                # When trans para is already empty but there still run having data in them
+                # When trans para is already blank but still there are runs having data in them
                 ru.text = ''
             elif idx == len(iterable_obj) - 1 and start_run:  # If current run is both last and First run
                 ru.text = trans_para
@@ -147,11 +146,23 @@ class Common(object):
                 ru.text = ' '.join(trans_para.split(' ', run_word_len)[0:run_word_len])
                 start_run = False
                 trans_para = trans_para.split(' ', run_word_len)[-1]
+                last_processed_run = ru
 
             else:  # If current run is the not the starting of a sentence we are appending this sentence with another
                 # sentence in that case there will be space in between those
                 ru.text = ' ' + ' '.join(trans_para.split(' ', run_word_len)[0:run_word_len])
                 trans_para = trans_para.split(' ', run_word_len)[-1]
+                last_processed_run = ru
+
+        # Trans para is not empty, In that case take the last_processed_run and put the remaining trans para in it
+        # This is for the case where translated para has more word then all runs and last runs has \n or \t
+        # because of which it got skipped
+        if trans_para.strip() not in ['', ' '] and last_processed_run is not None:
+            if not start_run and not trans_para.startswith(' '):
+                last_processed_run.text = ' ' + trans_para
+            else:
+                last_processed_run.text = trans_para
+            trans_para = ''
 
     def write_json_file(self, out_file_name, transformed_obj):
         out_json_filepath = self.input_path(out_file_name)
@@ -438,6 +449,11 @@ class FetchContent(object):
         log_info("fetch_content :: started fetching content for recordId: %s" % record_id, None)
         fetch_url = self.generate_url(record_id=record_id, start_page=start_page, end_page=end_page)
 
+        # START:: TO TEST LOCALLY
+        # HEADERS = {'auth-token': 'AUTH'}
+        # rspn = requests.get(url=fetch_url, headers=HEADERS)
+        # END :: TO TEST LOCALLY
+
         rspn = requests.get(url=fetch_url)
 
         log_info("fetch_content :: received response for recordId: %s" % record_id, None)
@@ -531,7 +547,7 @@ class PptxTransform(object):
 
     def write_json_file(self, transformed_obj):
         out_file_name = config.PPTX_FILE_PREFIX + self.file_name_without_ext + '.json'
-        out_json_filepath = common_obj.write_json_file(out_file_name=out_file_name, transformed_obj=transformed_obj)
+        return common_obj.write_json_file(out_file_name=out_file_name, transformed_obj=transformed_obj)
 
     def distribute_over_runs(self, iterable_obj, trans_para):
         common_obj.distribute_over_runs(iterable_obj=iterable_obj, trans_para=trans_para)

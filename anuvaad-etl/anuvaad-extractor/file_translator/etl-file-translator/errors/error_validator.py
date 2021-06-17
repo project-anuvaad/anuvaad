@@ -48,10 +48,11 @@ class ValidationResponse(object):
                         raise FileErrors("FILE_TYPE_ERROR",
                                          "This file type is not allowed. Currently, support only txt file.")
 
-                    elif in_file_type not in ['json'] and file_ops.check_path_exists(
-                            input_filepath) is False or file_ops.check_path_exists(
-                            self.DOWNLOAD_FOLDER) is False:
-                        raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory.")
+                    elif in_file_type not in ['json'] and file_ops.check_path_exists(input_filepath) is False:
+                        raise FileErrors("DIRECTORY_ERROR", "There is no file: ", input_filepath)
+
+                    elif file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
+                        raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory: ", self.DOWNLOAD_FOLDER)
 
                     elif in_locale == "" or in_locale is None:
                         raise FileErrors("LOCALE_ERROR", "No language input or None value.")

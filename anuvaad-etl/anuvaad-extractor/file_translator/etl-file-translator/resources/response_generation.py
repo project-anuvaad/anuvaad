@@ -4,6 +4,7 @@ import time
 from anuvaad_auditor.loghandler import log_exception
 from anuvaad_auditor.loghandler import log_info
 
+import config
 from errors.error_validator import ValidationResponse
 from errors.errors_exception import FileEncodingError
 from errors.errors_exception import FileErrors
@@ -13,7 +14,6 @@ from services.service import DocxTransform, FetchContent, PptxTransform, HtmlCon
 from utilities.model_response import CustomResponse
 from utilities.model_response import Status
 from utilities.utils import FileOperation
-import config
 
 file_ops = FileOperation()
 
@@ -56,10 +56,10 @@ class Response(object):
                     elif in_file_type == "json" and download_flow:
                         if config.DOCX_FILE_PREFIX in input_filename:
                             json_file_name = input_filename.split(config.DOCX_FILE_PREFIX)[-1]
-                            json_file_name = json_file_name.replace('.json', '.docx')
+                            DOCX_file_name = json_file_name.replace('.json', '.docx')
 
-                            docx_transform_obj = DocxTransform(json_file_name)
-                            docx_obj = docx_transform_obj.read_docx_file(input_filename)
+                            docx_transform_obj = DocxTransform(DOCX_file_name)
+                            docx_obj = docx_transform_obj.read_docx_file(DOCX_file_name)
 
                             fc_obj = FetchContent(input_filename)
                             fc_obj.generate_map_from_fetch_content_response()
@@ -72,10 +72,10 @@ class Response(object):
 
                         if config.PPTX_FILE_PREFIX in input_filename:
                             json_file_name = input_filename.split(config.PPTX_FILE_PREFIX)[-1]
-                            json_file_name = json_file_name.replace('.json', '.pptx')
+                            PPTX_file_name = json_file_name.replace('.json', '.pptx')
 
-                            pptx_transform_obj = PptxTransform(json_file_name)
-                            pptx_obj = pptx_transform_obj.read_pptx_file(input_filename)
+                            pptx_transform_obj = PptxTransform(PPTX_file_name)
+                            pptx_obj = pptx_transform_obj.read_pptx_file(PPTX_file_name)
 
                             fc_obj = FetchContent(input_filename)
                             fc_obj.generate_map_from_fetch_content_response()
@@ -85,6 +85,9 @@ class Response(object):
 
                             output_filename = translated_pptx_file_name
                             out_file_type = 'pptx'
+                    else:
+                        raise WorkflowkeyError(400,
+                                               "Wrong File Type: We are supporting only docx, pptx for transform flow and json files download flow.")
 
                     file_res = file_ops.one_filename_response(input_filename,
                                                               output_filename=output_filename,

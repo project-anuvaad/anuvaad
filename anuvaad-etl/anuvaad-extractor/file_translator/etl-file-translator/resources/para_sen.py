@@ -32,10 +32,10 @@ class TransformFile(Resource):
             if error_validator.format_error(json_data) is True:
                 response_gen = Response(json_data, DOWNLOAD_FOLDER)
                 response = response_gen.workflow_response(task_id, task_starttime, transform_flow=True)
-                log_info("Resource SenTokenisePostWF : Transform api response completed", json_data)
+                log_info("TransformFile :: Transform api response completed", json_data)
                 return jsonify(response)
         except FormatError as e:
-            log_error("Resource SenTokenisePostWF : Input json format is not correct or dict_key is missing", json_data,
+            log_error("TransformFile :: Input json format is not correct or dict_key is missing", json_data,
                       e)
             return Status.ERR_request_input_format.value
 
@@ -47,16 +47,16 @@ class DownloadFile(Resource):
         task_id = str("TOK-" + str(time.time()).replace('.', '')[0:13])
         task_starttime = eval(str(time.time()).replace('.', '')[0:13])
         json_data = request.get_json(force=True)
-        log_info("Resource SenTokenisePostWF : data from api request received", json_data)
+        log_info("DownloadFile :: data from api request received", json_data)
         try:
             error_validator = ValidationResponse(DOWNLOAD_FOLDER)
             if error_validator.format_error(json_data) is True:
                 response_gen = Response(json_data, DOWNLOAD_FOLDER)
                 response = response_gen.workflow_response(task_id, task_starttime, download_flow=True)
-                log_info("Resource SenTokenisePostWF : Transform api response completed", json_data)
+                log_info("DownloadFile :: DownloadFile api response completed", json_data)
                 return jsonify(response)
         except FormatError as e:
-            log_error("Resource SenTokenisePostWF : Input json format is not correct or dict_key is missing", json_data,
+            log_error("DownloadFile :: Input json format is not correct or dict_key is missing", json_data,
                       e)
             return Status.ERR_request_input_format.value
 
