@@ -94,7 +94,8 @@ class PageCardHtml extends React.Component {
             if (source) {
                 let id = uuid4()
                 this.highlight(source, 'white', id)
-                document.getElementById(id).scrollIntoView({ behavior: "smooth", inline: "nearest" })
+                let sentenceToHighlight = document.getElementById(id)
+                if (sentenceToHighlight) sentenceToHighlight.scrollIntoView({ behavior: "smooth", inline: "nearest" })
             }
         }
     }
