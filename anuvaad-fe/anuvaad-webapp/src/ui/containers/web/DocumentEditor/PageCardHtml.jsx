@@ -58,7 +58,11 @@ class PageCardHtml extends React.Component {
                 })
             }
         })
-        return tokenized_source[0]['tokenized_sentences'][0]['s0_src']
+        if (Array.isArray(tokenized_source) &&
+            tokenized_source[0].hasOwnProperty('tokenized_sentences')
+            && tokenized_source[0]['tokenized_sentences'][0]
+        )
+            return tokenized_source[0]['tokenized_sentences'][0]['s0_src']
 
     }
 
