@@ -201,6 +201,9 @@ class InteractiveDocHeader extends React.Component {
                     this.setState({ anchorEl: null, showStatus: true, message: 'Downloading failed...' });
                 }
             })
+        setTimeout(() => {
+            this.setState({ showStatus: false })
+        }, 3000)
     }
 
     fetchDocxFile = () => {

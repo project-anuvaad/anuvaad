@@ -682,22 +682,22 @@ class DocumentEditor extends React.Component {
       )
     }
     return (
-      <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
-        <InfiniteScroll height={window.innerHeight - 141} style={{
-          maxHeight: window.innerHeight - 141,
-          overflowY: "auto",
-        }}
-          dataLength={pages.length}
-        >
-          {
-            workflow !== 'WF_A_FTTKTR'
-              ?
-              pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)
-              :
-              <PageCardHtml zoomPercent={this.state.zoomPercent} onAction={this.processSentenceAction} />
-          }
-        </InfiniteScroll>
-      </Grid>
+      // <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
+      <InfiniteScroll height={window.innerHeight - 141} style={{
+        maxHeight: window.innerHeight - 141,
+        overflowY: "auto",
+      }}
+        dataLength={pages.length}
+      >
+        {
+          workflow !== 'WF_A_FTTKTR'
+            ?
+            pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)
+            :
+            <PageCardHtml zoomPercent={this.state.zoomPercent} onAction={this.processSentenceAction} />
+        }
+      </InfiniteScroll>
+      // </Grid>
     )
   }
   processZoomIn = () => {
@@ -740,31 +740,31 @@ class DocumentEditor extends React.Component {
     let recordId = this.props.match.params.jobid;
     let jobId = recordId ? recordId.split("|")[0] : ""
     return (
-      <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginLeft: "5px" }}>
+      // <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginLeft: "5px" }}>
 
-        <InfiniteScroll height={window.innerHeight - 141} style={{
-          maxHeight: window.innerHeight - 141,
-          overflowY: "auto",
-        }}
-          hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
-          dataLength={pages.length}
-        >
-          {
-            pages.map(page => page['translated_texts'].map((sentence, index) => {
-              sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
-              return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
-                pageNumber={page.page_no}
-                recordId={this.props.match.params.jobid}
-                model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)}
-                jobId={jobId}
-                sentence={sentence}
-                onAction={this.processSentenceAction} />
-              </div>
-            })
-            )
-          }
-        </InfiniteScroll>
-      </Grid >
+      <InfiniteScroll height={window.innerHeight - 141} style={{
+        maxHeight: window.innerHeight - 141,
+        overflowY: "auto",
+      }}
+        hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
+        dataLength={pages.length}
+      >
+        {
+          pages.map(page => page['translated_texts'].map((sentence, index) => {
+            sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
+            return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
+              pageNumber={page.page_no}
+              recordId={this.props.match.params.jobid}
+              model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)}
+              jobId={jobId}
+              sentence={sentence}
+              onAction={this.processSentenceAction} />
+            </div>
+          })
+          )
+        }
+      </InfiniteScroll>
+      // </Grid >
 
     )
   }
@@ -812,10 +812,18 @@ class DocumentEditor extends React.Component {
 
         {!this.state.preview ?
           <>
-            <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
+            {/* <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row", flexBasis: 'auto' }}>
               {!this.state.docView && this.renderDocumentPages()}
               {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
-            </div>
+            </div> */}
+            <Grid container>
+              <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
+                {!this.state.docView && this.renderDocumentPages()}
+              </Grid>
+              <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
+                {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
+              </Grid>
+            </Grid>
             <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
               <InteractivePagination count={this.props.document_contents.count}
                 data={this.props.document_contents.pages}
