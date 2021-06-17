@@ -30,30 +30,6 @@ class PageCardHtml extends React.Component {
             })
     }
 
-    componentDidUpdate() {
-        const { highlightBlock } = this.props
-        if (highlightBlock.block) {
-            let { src } = highlightBlock.block
-            if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
-                let prev = document.getElementById(this.prev_sid)
-                if (prev) prev.style.backgroundColor = "white"
-                this.prev_sid = uuid4()
-                this.highlight(src, 'orange', this.prev_sid)
-                let current = document.getElementById(this.prev_sid)
-                current && current.scrollIntoView({ inline: 'nearest' });
-            } else if (highlightBlock.current_sid && !highlightBlock.prev_sid) {
-                this.prev_sid = uuid4()
-                this.highlight(src, 'orange', this.prev_sid)
-                let current = document.getElementById(this.prev_sid)
-                current && current.scrollIntoView({ inline: 'nearest' });
-            } else if (highlightBlock.current_sid === highlightBlock.prev_sid && highlightBlock.prev_sid) {
-                let prev = document.getElementById(this.prev_sid)
-                if (prev) prev.style.backgroundColor = "white"
-            }
-        }
-    }
-
-
     highlight = (source, color, id) => {
         if (source) {
             const paper = $('#paper').html();
@@ -67,9 +43,33 @@ class PageCardHtml extends React.Component {
         }
     }
 
+
     componentDidMount() {
         this.getHTML()
         $('#paper').html('Loading...')
+    }
+
+    componentDidUpdate() {
+        const { highlightBlock } = this.props
+        if (highlightBlock.block) {
+            let { src } = highlightBlock.block
+            if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
+                let prev = document.getElementById(this.prev_sid)
+                if (prev) prev.style.backgroundColor = "white"
+                this.prev_sid = uuid4()
+                this.highlight(src, 'orange', this.prev_sid)
+                let current = document.getElementById(this.prev_sid)
+                current && current.scrollIntoView({behavior: "smooth", inline: "nearest"});
+            } else if (highlightBlock.current_sid && !highlightBlock.prev_sid) {
+                this.prev_sid = uuid4()
+                this.highlight(src, 'orange', this.prev_sid)
+                let current = document.getElementById(this.prev_sid)
+                current && current.scrollIntoView({behavior: "smooth", inline: "nearest"});
+            } else if (highlightBlock.current_sid === highlightBlock.prev_sid && highlightBlock.prev_sid) {
+                let prev = document.getElementById(this.prev_sid)
+                if (prev) prev.style.backgroundColor = "white"
+            }
+        }
     }
 
     render() {
@@ -85,6 +85,7 @@ class PageCardHtml extends React.Component {
 
 const mapStateToProps = state => ({
     highlightBlock: state.block_highlight,
+    active_page: state.active_page_number.page_number
 });
 
 export default withRouter(connect(mapStateToProps)(PageCardHtml));

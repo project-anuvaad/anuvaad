@@ -694,7 +694,7 @@ class DocumentEditor extends React.Component {
               ?
               pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)
               :
-              <PageCardHtml zoomPercent={this.state.zoomPercent} onAction={this.processSentenceAction} getHTML={this.getHTML} />
+              <PageCardHtml zoomPercent={this.state.zoomPercent} onAction={this.processSentenceAction} />
           }
         </InfiniteScroll>
       </Grid>
