@@ -723,6 +723,23 @@ WorkflowConfigs:
       endState: true
 
 
+
+  - workflowCode: WF_S_FT
+    type: SYNC
+    translation: DOWNLOAD
+    description: Search WF for docx download
+    useCase: S_FT
+    sequence:
+    - order: 0
+      tool:
+      - name: FILE-TRANSLATOR
+        description: Search WF for docx download
+        api-details:
+        - uri: http://gateway_anuvaad-etl-file-translator:5001/anuvaad-etl/file-translator/v0/download-wf
+      endState: true
+
+
+
   - workflowCode: WF_S_STR
     type: SYNC
     translation: SENTENCE
@@ -736,6 +753,7 @@ WorkflowConfigs:
         api-details:
         - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/sentences/workflow/translate
       endState: true
+
 
 
   - workflowCode: WF_S_TKTR

@@ -241,6 +241,8 @@ class WFMUtils:
                 tool_input = ch.get_ch_update_req(wf_input)
             if current_tool == tool_nmt:
                 tool_input = nmt.get_nmt_it_req(wf_input)
+            if current_tool == tool_filetranslator:
+                tool_input = file_translator.get_ft_input_wf(wf_input)
         return tool_input
 
     # Util method to make an API call and fetch the result

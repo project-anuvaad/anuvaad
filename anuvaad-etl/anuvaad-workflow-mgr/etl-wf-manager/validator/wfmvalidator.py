@@ -34,7 +34,7 @@ class WFMValidator:
             config = configs[workflowCode]
             if config["type"] != "SYNC":
                 return post_error("UNSUPPORTED_WF_CODE", "This workflow is NOT of the SYNC type.", None)
-            if config["translation"] not in ["BLOCK", "SENTENCE"]:
+            if config["translation"] not in ["BLOCK", "SENTENCE", "DOWNLOAD"]:
                 return post_error("UNSUPPORTED_SYNC_WF", "This workflow is NOT of the VALID SYNC type.", None)
             if config["translation"] == "BLOCK":
                 return self.validate_sync_block(data, workflowCode)
