@@ -460,7 +460,7 @@ class FetchContent(object):
         log_info("fetch_content :: received response for recordId: %s" % record_id, None)
 
         if rspn.status_code not in [200]:
-            log_info('Response:: %s', rspn.text, None)
+            log_info('Response:: %s' % rspn.text, None)
             raise FormatError(400, "Fetch Content failed for recordId: %s" % record_id)
 
         return rspn.json()
