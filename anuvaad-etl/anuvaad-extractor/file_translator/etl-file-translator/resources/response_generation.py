@@ -10,7 +10,10 @@ from errors.errors_exception import FileEncodingError
 from errors.errors_exception import FileErrors
 from errors.errors_exception import ServiceError
 from errors.errors_exception import WorkflowkeyError
-from services.service import DocxTransform, FetchContent, PptxTransform, HtmlConvert
+from services.docx_transform import DocxTransform
+from services.fetch_content import FetchContent
+from services.pptx_transform import PptxTransform
+from services.html_converter import HtmlConvert
 from utilities.model_response import CustomResponse
 from utilities.model_response import Status
 from utilities.utils import FileOperation
@@ -38,17 +41,26 @@ class Response(object):
                     input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
                     if in_file_type == "docx" and transform_flow:
                         docx_transform_obj = DocxTransform(input_filename)
-                        html_convert_obj = HtmlConvert(input_filename)
-                        out_html_path = html_convert_obj.generate_html(input_filename)
+                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type='docx')
+
+                        out_html_path = html_convert_obj.generate_html(input_filename=input_filename)
+
                         docx_obj = docx_transform_obj.read_docx_file(input_filename)
                         transformed_obj = docx_transform_obj.generate_json_structure(docx_obj)
+
                         out_json_filepath = docx_transform_obj.write_json_file(transformed_obj)
                         output_filename = out_json_filepath
                         out_file_type = 'json'
+
                     elif in_file_type == "pptx" and transform_flow:
                         pptx_transform_obj = PptxTransform(input_filename)
+                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type='pptx')
+
+                        out_html_path = html_convert_obj.generate_html(input_filename=input_filename)
+
                         pptx_obj = pptx_transform_obj.read_pptx_file(input_filename)
                         transformed_obj = pptx_transform_obj.generate_json_structure(pptx_obj)
+
                         out_json_filepath = pptx_transform_obj.write_json_file(transformed_obj)
                         output_filename = out_json_filepath
                         out_file_type = 'json'

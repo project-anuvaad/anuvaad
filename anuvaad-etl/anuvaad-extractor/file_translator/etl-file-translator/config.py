@@ -36,9 +36,12 @@ kafka_ip_host = 'KAFKA_BOOTSTRAP_SERVER_HOST'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 
 # Fetch Content
-FETCH_CONTENT_URL_VAR = 'FETCH_CONTENT_URL'
 FETCH_CONTENT_URL_DEFAULT = 'https://auth.anuvaad.org/anuvaad/content-handler/v0/fetch-content'
+FETCH_CONTENT_URL_VAR = 'FETCH_CONTENT_URL'
 FC_URL = os.environ.get(FETCH_CONTENT_URL_VAR, FETCH_CONTENT_URL_DEFAULT)
+
+# ENV HOST
+ENV_HOST_URL = 'https://auth.anuvaad.org/'
 
 # folders and file path
 download_folder = 'upload'

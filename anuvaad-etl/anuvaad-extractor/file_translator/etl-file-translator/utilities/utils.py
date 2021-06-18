@@ -4,6 +4,7 @@ import re
 import time
 from pathlib import Path
 
+from anuvaad_auditor import log_info
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
 
@@ -129,3 +130,14 @@ class FileOperation(object):
             message = ""
             error = post_error(code, message, None)
             return error
+
+    def create_directory(self, path):
+        try:
+            os.mkdir(path)
+            return True
+        except FileExistsError as fe_error:
+            return True
+        except OSError as error:
+            log_info('unable to create directory : {}'.format(path), None)
+
+        return False

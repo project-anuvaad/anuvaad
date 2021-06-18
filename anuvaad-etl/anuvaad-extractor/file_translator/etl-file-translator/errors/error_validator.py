@@ -52,7 +52,8 @@ class ValidationResponse(object):
                         raise FileErrors("DIRECTORY_ERROR", "There is no file: ", input_filepath)
 
                     elif file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
-                        raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory: ", self.DOWNLOAD_FOLDER)
+                        raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory: ",
+                                         self.DOWNLOAD_FOLDER)
 
                     elif in_locale == "" or in_locale is None:
                         raise FileErrors("LOCALE_ERROR", "No language input or None value.")
