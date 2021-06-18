@@ -20,8 +20,5 @@ class PdfToHtml(object):
         process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
         log_info("convert_pdf_to_html:: PDF to HTML conversion process ENDED.", None)
 
-        # filename = re.search('-> (.*?) using filter', process.stdout.decode())
-        if process.stderr.decode() != '':
-            raise FileErrors("convert_pdf_to_html", "Error while Converting pdf to html.")
         generated_html_file_name = self.get_new_html_file_name()
         return generated_html_file_name

@@ -16,7 +16,7 @@ class PdfConverter(object):
 
         log_info("convert_to_pdf:: PDF conversion process STARTED.", None)
         process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
-        log_info("convert_to_pdf:: PDF conversion process STARTED.", None)
+        log_info("convert_to_pdf:: PDF conversion process END.", None)
 
         filename = re.search('-> (.*?) using filter', process.stdout.decode())
 
