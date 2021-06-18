@@ -80,8 +80,11 @@ class PageCardHtml extends React.Component {
             this.page_no = this.props.active_page
             let source = this.getSource(this.props.fetchContent, this.page_no)
             if (this.prev_sid) {
-                let sentenceToHighlight = document.getElementById(this.prev_sid)
-                if(sentenceToHighlight) sentenceToHighlight.style.backgroundColor = 'white'
+                var font = document.getElementsByTagName('font');
+                var counter = font.length - 1;
+                for (let i = counter; i >= 0; i--) {
+                    font[i].outerHTML = font[i].innerHTML;
+                }
             }
             if (source) {
                 this.prev_sid = uuid4()
@@ -93,8 +96,11 @@ class PageCardHtml extends React.Component {
         } else if (highlightBlock.block) {
             let { src } = highlightBlock.block
             if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
-                let prev = document.getElementById(this.prev_sid)
-                if (prev) prev.style.backgroundColor = "white"
+                var font = document.getElementsByTagName('font');
+                var counter = font.length - 1;
+                for (let i = counter; i >= 0; i--) {
+                    font[i].outerHTML = font[i].innerHTML;
+                }
                 this.prev_sid = uuid4()
                 this.highlight(src, 'orange', this.prev_sid)
                 let current = document.getElementById(this.prev_sid)
@@ -105,8 +111,11 @@ class PageCardHtml extends React.Component {
                 let current = document.getElementById(this.prev_sid)
                 current && current.scrollIntoView({ behavior: "smooth", inline: "nearest" });
             } else if (highlightBlock.current_sid === highlightBlock.prev_sid && highlightBlock.prev_sid) {
-                let prev = document.getElementById(this.prev_sid)
-                if (prev) prev.style.backgroundColor = "white"
+                var font = document.getElementsByTagName('font');
+                var counter = font.length - 1;
+                for (let i = counter; i >= 0; i--) {
+                    font[i].outerHTML = font[i].innerHTML;
+                }
             }
         }
     }
