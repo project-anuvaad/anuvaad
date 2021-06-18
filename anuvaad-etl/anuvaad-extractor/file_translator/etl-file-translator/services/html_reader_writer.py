@@ -14,7 +14,7 @@ class HtmlReaderWriter(object):
 
     def read_html_file(self, html_path):
         if os.path.exists(html_path):
-            with open(html_path, "rb", encoding='utf-8') as html:
+            with open(html_path, "rb") as html:
                 return BeautifulSoup(html, 'html.parser')
         else:
             raise FileErrors("INPUT_FILE_DOESNT_EXISTS", "read_html_file : File Doesn't exist")
@@ -38,7 +38,7 @@ class HtmlReaderWriter(object):
 
     def write_html(self, soup):
 
-        with open(self.html_file_out_path, "wb+", encoding='utf-8') as file:
+        with open(self.html_file_out_path, "wb+") as file:
             file.write(str(soup))
             file.close()
 

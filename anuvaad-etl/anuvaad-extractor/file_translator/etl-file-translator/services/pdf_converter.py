@@ -3,6 +3,8 @@ import re
 import subprocess
 import sys
 
+from anuvaad_auditor import log_info
+
 
 class PdfConverter(object):
     def __init__(self, input_filename):
@@ -12,7 +14,10 @@ class PdfConverter(object):
         args = [self.libreoffice_exec(), '--headless', '--convert-to', 'pdf', '--outdir', pdf_output_path,
                 input_file_path]
 
+        log_info("convert_to_pdf:: PDF conversion process STARTED.", None)
         process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
+        log_info("convert_to_pdf:: PDF conversion process STARTED.", None)
+
         filename = re.search('-> (.*?) using filter', process.stdout.decode())
 
         if filename is None:
