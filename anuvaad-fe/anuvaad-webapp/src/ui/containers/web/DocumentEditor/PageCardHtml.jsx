@@ -20,7 +20,8 @@ class PageCardHtml extends React.Component {
         }
     }
     getHTML = () => {
-        let filename = this.props.match.params.inputfileid.split('DOCX-')[1].split('.')[0] + '.html'
+        let inputField = this.props.match.params.inputfileid
+        let filename = inputField.substr(inputField.indexOf('-') + 1).replace('.json', '.html')
         let obj = new DownloadFile(filename)
         fetch(obj.apiEndPoint(), {
             method: 'get',
