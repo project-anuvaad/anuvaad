@@ -15,7 +15,7 @@ class PdfToHtml(object):
 
     # Usage: pdftohtml [options] <PDF-file> [<html-file> <xml-file>]
     def convert_pdf_to_html(self, input_pdf_file_path, html_output_dir, timeout=None):
-        args = ['pdftohtml', '-s', '-zoom', 1, input_pdf_file_path, html_output_dir]
+        args = ['pdftohtml', '-s', input_pdf_file_path, html_output_dir]
         log_info("convert_pdf_to_html:: PDF to HTML conversion process STARTED.", None)
         process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
         log_info("convert_pdf_to_html:: PDF to HTML conversion process ENDED.", None)
