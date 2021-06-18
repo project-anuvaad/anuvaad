@@ -46,6 +46,10 @@ ENV_HOST_URL = 'https://auth.anuvaad.org/'
 # folders and file path
 download_folder = 'upload'
 
+# TIMEOUT
+PDF_TO_HTML_TIMEOUT = 300
+PDF_CONVERSION_TIMEOUT = 300
+
 # DOCX CONFIG
 DOCX_PARAGRAPH_GEN = True
 DOCX_TABLE_DATA_GEN = True
@@ -84,7 +88,6 @@ PPTX_PAGE_LIMIT_ENABLE = False
 
 DOCX_FILE_PREFIX = 'DOCX-'
 PPTX_FILE_PREFIX = 'PPTX-'
-
 
 ALLOWED_FILE_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                       'application/vnd.openxmlformats-officedocument.presentationml.presentation',

@@ -41,7 +41,7 @@ class HtmlConvert(object):
             html_output_file = common_obj.input_path(self.file_name_without_ext)
             generated_html_file_name = pdf_to_html.convert_pdf_to_html(html_output_dir=html_output_file,
                                                                        input_pdf_file_path=new_pdf_file_path,
-                                                                       timeout=120)
+                                                                       timeout=config.PDF_TO_HTML_TIMEOUT)
             generated_html_file_path = common_obj.input_path(generated_html_file_name)
 
             html_reader_writer = HtmlReaderWriter(input_filename=input_filename,
