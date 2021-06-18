@@ -187,26 +187,29 @@ def convert_to_in_df(craft_df):
 
 
 def detect_text(pdf_data,text_threshold=args.text_threshold,low_text_threshold= args.low_text,img_class="single_col"):
-    image_paths = pdf_data['pdf_image_paths']
-    width_ratio = pdf_data['page_width'] / pdf_data['pdf_image_width']
-    height_ratio = pdf_data['page_height'] / pdf_data['pdf_image_height']
+    
+    
+    for idxx in range(len(pdf_data['page_width'])):
+        image_paths = pdf_data['pdf_image_paths'][idxx]
+        width_ratio = pdf_data['page_width'][idxx] / pdf_data['pdf_image_width'][idxx]
+        height_ratio = pdf_data['page_height'][idxx] / pdf_data['pdf_image_height'][idxx]
 
-    pdf_data['width_ratio'] = width_ratio
-    pdf_data['height_ratio'] = height_ratio
+        pdf_data['width_ratio'] = width_ratio
+        pdf_data['height_ratio'] = height_ratio
 
-    in_dfs = []
-    number_of_pages = len(image_paths)
-    if img_class == "double_col":
-        number_of_pages = 1
-        image_paths = [image_paths]
+        in_dfs = []
+        number_of_pages = len(image_paths)
+        if img_class == "double_col":
+            number_of_pages = 1
+            image_paths = [image_paths]
 
-    t = time.time()
-    for image_path in image_paths :
+        t = time.time()
+        #for image_path in image_paths :
 
         if img_class == "double_col":
-            image = image_path
+            image = image_paths
         else:
-            image = imgproc.loadImage(image_path)
+            image = imgproc.loadImage(image_paths)
         bboxes, polys, score_text = test_net(image, text_threshold, args.link_threshold, low_text_threshold, args.cuda, args.poly, refine_net)
         column_names = ["x1","y1" ,"x4","y4", "x2","y2","x3","y3"]
 

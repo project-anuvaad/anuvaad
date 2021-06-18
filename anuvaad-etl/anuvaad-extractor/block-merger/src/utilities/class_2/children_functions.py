@@ -30,56 +30,62 @@ def doc_pre_processing(filename, base_dir, lang):
     log_info("document preprocessing started ===>", app_context.application_context)
     flags = {}
     #pdf_data={}
-
-    img_dfs, xml_dfs, page_width, page_height, working_dir, pdf_bg_img_filepaths, pdf_image_paths = get_xml.process_input_pdf(
+    
+    img_dfs, xml_dfs,page_width, page_height,working_dir, pdf_bg_img_filepaths, pdf_image_paths, = get_xml.process_input_pdf(
         filename, base_dir, lang)
+    
+    pdf_img_height = []
+    pdf_img_width  = []
+    for idx,i in enumerate(pdf_image_paths):
 
-    img_filepath = pdf_image_paths[0]
-    image        = cv2.imread(img_filepath)
-    pdf_image_height  = image.shape[0]
-    pdf_image_width = image.shape[1]
-    #print("langgggggggggggggggggggg",lang)
-    text_blocks_count = check_text(xml_dfs)
-    if (text_blocks_count == 0) or (lang in config.CLASS_2_LANG):
-        #print("DocumentStructure : looks like the file is either empty or scanned")
-        log_info("DocumentStructure : looks like the file is either empty or scanned", app_context.application_context)
-        flags['doc_class'] = 'class_2'
-    else:
-        flags['doc_class'] = 'class_1'
+        img_filepath = pdf_image_paths[idx]
 
-    pdf_data = {'in_dfs':xml_dfs,'img_dfs':img_dfs , 'page_width':page_width,'page_height':page_height,
-                'pdf_bg_img_filepaths':pdf_bg_img_filepaths ,'pdf_image_paths':pdf_image_paths,
-                'pdf_image_height':pdf_image_height,'pdf_image_width':pdf_image_width}
-
+        image        = cv2.imread(img_filepath,0)
+        pdf_image_height, pdf_image_width = image.shape[:2]
+        # pdf_image_height  = image.shape[0]
+        pdf_img_height.append(pdf_image_height)
+        # pdf_image_width = image.shape[1]
+        pdf_img_width.append(pdf_image_width)
+        text_blocks_count = check_text(xml_dfs)
+        if (text_blocks_count == 0) or (lang in config.CLASS_2_LANG):
+            #print("DocumentStructure : looks like the file is either empty or scanned")
+            log_info("DocumentStructure : looks like the file is either empty or scanned", app_context.application_context)
+            flags['doc_class'] = 'class_2'
+        else:
+            flags['doc_class'] = 'class_1'
+        pdf_data = {'in_dfs':xml_dfs,'img_dfs':img_dfs , 'page_width':page_width,'page_height':page_height,
+                        'pdf_bg_img_filepaths':pdf_bg_img_filepaths ,'pdf_image_paths':pdf_image_paths,
+                        'pdf_image_height':pdf_img_height,'pdf_image_width':pdf_img_width
+                        }
     return pdf_data, flags
-
-
 
 def get_layout_proposals(pdf_data,flags) :
 
-    width_ratio = pdf_data['page_width'] / pdf_data['pdf_image_width']
-    height_ratio = pdf_data['page_height'] / pdf_data['pdf_image_height']
+    for indx in range(len(pdf_data["page_width"])):
+        width_ratio = pdf_data['page_width'][indx] / pdf_data['pdf_image_width'][indx]
+        height_ratio = pdf_data['page_height'][indx]/ pdf_data['pdf_image_height'][indx]
+        print(pdf_data['page_width'][indx], pdf_data['page_height'][indx])
+        print(width_ratio,height_ratio)
 
-    if (flags['page_layout'] =='single_column')or(flags['doc_class'] == 'class_1') :
+        if (flags['page_layout'] =='single_column')or(flags['doc_class'] == 'class_1') :
 
 
-        h_dfs = get_xml.get_hdfs(pdf_data['in_dfs'],  pdf_data['header_region'], pdf_data['footer_region'],width_ratio,height_ratio ,images=pdf_data['pdf_image_paths'])
+            h_dfs = get_xml.get_hdfs(pdf_data['in_dfs'],  pdf_data['header_region'], pdf_data['footer_region'],width_ratio,height_ratio ,images=pdf_data['pdf_image_paths'])
+            return h_dfs
+        else :
+            h_dfs = []
+            pdf_data['sub_in_dfs'] = []
+            if flags['page_layout'] == 'double_column' :
 
-        return h_dfs
-    else :
-        h_dfs = []
-        pdf_data['sub_in_dfs'] = []
-        if flags['page_layout'] == 'double_column' :
-
-            for page_index, pdf_image in enumerate(pdf_data['pdf_image_paths']):
-                
-                #regions = get_column(pdf_image, width_ratio)
-                regions = predict_primanet(pdf_image, pdf_data['in_dfs'][page_index],width_ratio,height_ratio)
-                sub_in_dfs = collate_regions(regions,pdf_data['in_dfs'][page_index])
+                #for page_index, pdf_image in enumerate(pdf_data['pdf_image_paths']):
+                    
+                    #regions = get_column(pdf_image, width_ratio)
+                regions = predict_primanet(pdf_data['pdf_image_paths'][indx], pdf_data['in_dfs'][indx],width_ratio,height_ratio)
+                sub_in_dfs = collate_regions(regions,pdf_data['in_dfs'][indx])
                 pdf_data['sub_in_dfs'].append(sub_in_dfs)
 
                 if config.HEADER_FOOTER_BY_PRIMA:
-                    region_df = primalaynet.predict_primanet(pdf_image, [])
+                    region_df = primalaynet.predict_primanet(pdf_data['pdf_image_paths'][indx], [])
                     sub_h_dfs = get_xml.get_hdfs(sub_in_dfs,region_df, pd.DataFrame(),width_ratio,height_ratio)
                 else:
                     sub_h_dfs  = get_xml.get_hdfs(sub_in_dfs,  pdf_data['header_region'], pdf_data['footer_region'],width_ratio,height_ratio)
@@ -169,8 +175,8 @@ def doc_structure_response(pdf_data,flags):
         table_dfs       = pdf_data['table_dfs']
         line_dfs        = pdf_data['line_dfs']
         #if flags['doc_class'] == 'class_1':
-        page_width      = pdf_data['page_width']
-        page_height     = pdf_data['page_height']
+        # page_width      = pdf_data['page_width']
+        # page_height     = pdf_data['page_height']
         # else :
         #     page_width = pdf_data['pdf_image_width']
         #     page_height = pdf_data['pdf_image_height']
@@ -180,7 +186,9 @@ def doc_structure_response(pdf_data,flags):
         response = {'result': []}
         pages = len(text_block_dfs)
 
-        for page_index in range(pages):  
+        for page_index in range(pages):
+            page_width      = pdf_data['page_width'][page_index]
+            page_height     = pdf_data['page_height'][page_index]
             img_df    = bg_dfs[page_index].append(img_dfs[page_index])
             text_df   = text_block_dfs[page_index]
             text_df   = get_xml.drop_update_col(text_df)

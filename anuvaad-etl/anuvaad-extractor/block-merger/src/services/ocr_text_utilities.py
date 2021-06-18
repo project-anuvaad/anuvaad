@@ -60,48 +60,48 @@ def extract_text_from_image(filepath, desired_width, desired_height, df, lang):
     #image   = Image.open(filepath)
     #h_ratio = image.size[1] / desired_height
     #w_ratio = image.size[0] / desired_width
+    for idx in range(len(desired_width)):
+        image = cv2.imread(filepath)
+        h_ratio = image.shape[0]/desired_height[idx]
+        w_ratio = image.shape[1]/desired_width[idx]
+        word_coord_lis = []
+        text_list = []
 
-    image = cv2.imread(filepath)
-    h_ratio = image.shape[0]/desired_height
-    w_ratio = image.shape[1]/desired_width
-    word_coord_lis = []
-    text_list = []
-
-    check ={"devnagari_text:":[],"original":[]}
-    try :
-        for index, row in df.iterrows():
-            left   = row['text_left']*w_ratio
-            top    = row['text_top']*h_ratio
-            right  = (row['text_left'] + row['text_width'])*w_ratio
-            bottom = (row['text_top'] + row['text_height'])*h_ratio
-            coord  = []
-            #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
-            #print(left,top,right,bottom, 'ddddddddddddddddddddddddddd',image.shape)
-            updated_top, updated_bottom, updated_left, update_right = corrds_correction(top,left,right,bottom,image.shape,lang)
-            #print(updated_top, updated_bottom, updated_left, update_right, 'ddddddddddddddddddddddddddd', image.shape)
-            if  (updated_bottom -updated_top >0 ) and (update_right -updated_left > 0) :
-                crop_image = image[updated_top:updated_bottom, updated_left:update_right]
-                #cv2.imwrite("/home/dhiraj/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg',crop_image)
-                if row['text_height']>2*row['font_size']:
-                    coord,text = ocr(crop_image,False,left,top,lang)
-                    # word_coord_lis.append(coord)
-                    # text_list.append(text)
-                else:
-                    coord,text = ocr(crop_image,True,left,top,lang)
-                    if len(text)==0:
+        check ={"devnagari_text:":[],"original":[]}
+        try :
+            for index, row in df.iterrows():
+                left   = row['text_left']*w_ratio
+                top    = row['text_top']*h_ratio
+                right  = (row['text_left'] + row['text_width'])*w_ratio
+                bottom = (row['text_top'] + row['text_height'])*h_ratio
+                coord  = []
+                #crop_image = image.crop((left-CROP_CONFIG[lang]['left'], top-CROP_CONFIG[lang]['top'], right+CROP_CONFIG[lang]['right'], bottom+CROP_CONFIG[lang]['bottom']))
+                #print(left,top,right,bottom, 'ddddddddddddddddddddddddddd',image.shape)
+                updated_top, updated_bottom, updated_left, update_right = corrds_correction(top,left,right,bottom,image.shape,lang)
+                #print(updated_top, updated_bottom, updated_left, update_right, 'ddddddddddddddddddddddddddd', image.shape)
+                if  (updated_bottom -updated_top >0 ) and (update_right -updated_left > 0) :
+                    crop_image = image[updated_top:updated_bottom, updated_left:update_right]
+                    #cv2.imwrite("/home/dhiraj/tmp/"+str(uuid.uuid4())+"_____"+str(index) + '.jpg',crop_image)
+                    if row['text_height']>2*row['font_size']:
                         coord,text = ocr(crop_image,False,left,top,lang)
+                        # word_coord_lis.append(coord)
+                        # text_list.append(text)
+                    else:
+                        coord,text = ocr(crop_image,True,left,top,lang)
+                        if len(text)==0:
+                            coord,text = ocr(crop_image,False,left,top,lang)
 
-            else :
-                text = ''
-            word_coord_lis.append(coord)
-            text_list.append(text)
+                else :
+                    text = ''
+                word_coord_lis.append(coord)
+                text_list.append(text)
 
-        df['word_coords'] = word_coord_lis
-        df['text']        = text_list
-        return df
-    except Exception as e:
-        log_exception("Error in tesseract ocr extraction " + str(e), app_context.application_context, e)
-        return None
+            df['word_coords'] = word_coord_lis
+            df['text']        = text_list
+            return df
+        except Exception as e:
+            log_exception("Error in tesseract ocr extraction " + str(e), app_context.application_context, e)
+            return None
 
 
 def corrds_correction(top,left, right,bottom,shape,lang):
