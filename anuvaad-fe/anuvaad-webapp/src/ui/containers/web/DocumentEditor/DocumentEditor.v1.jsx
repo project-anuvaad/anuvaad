@@ -38,13 +38,16 @@ import { Button } from "@material-ui/core";
 // import { jsPDF } from "jspdf";
 import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
 import PageCardHtml from './PageCardHtml';
-
+import Split from 'react-split';
+import '../../../styles/web/InteractiveEditor.css';
 import Loader from "../../../components/web/common/CircularLoader";
 const LANG_MODEL = require('../../../../utils/language.model')
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 var jp = require('jsonpath')
+
+
 
 class DocumentEditor extends React.Component {
   constructor(props) {
@@ -682,7 +685,6 @@ class DocumentEditor extends React.Component {
       )
     }
     return (
-      // <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
       <InfiniteScroll height={window.innerHeight - 141} style={{
         maxHeight: window.innerHeight - 141,
         overflowY: "auto",
@@ -697,7 +699,6 @@ class DocumentEditor extends React.Component {
             <PageCardHtml zoomPercent={this.state.zoomPercent} onAction={this.processSentenceAction} />
         }
       </InfiniteScroll>
-      // </Grid>
     )
   }
   processZoomIn = () => {
@@ -740,8 +741,6 @@ class DocumentEditor extends React.Component {
     let recordId = this.props.match.params.jobid;
     let jobId = recordId ? recordId.split("|")[0] : ""
     return (
-      // <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginLeft: "5px" }}>
-
       <InfiniteScroll height={window.innerHeight - 141} style={{
         maxHeight: window.innerHeight - 141,
         overflowY: "auto",
@@ -764,8 +763,6 @@ class DocumentEditor extends React.Component {
           )
         }
       </InfiniteScroll>
-      // </Grid >
-
     )
   }
 
@@ -805,25 +802,16 @@ class DocumentEditor extends React.Component {
       </div >);
   }
   render() {
-    let { workflow } = this.props.match.params
     return (
       <div style={{ height: window.innerHeight }}>
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
         {!this.state.preview ?
           <>
-            {/* <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row", flexBasis: 'auto' }}>
-              {!this.state.docView && this.renderDocumentPages()}
-              {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
-            </div> */}
-            <Grid container style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px"}}>
-              <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
-                {!this.state.docView && this.renderDocumentPages()}
-              </Grid>
-              <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
-                {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
-              </Grid>
-            </Grid>
+            <Split className='split'>
+              <div>{!this.state.docView && this.renderDocumentPages()}</div>
+              <div>{!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}</div>
+            </Split>
             <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
               <InteractivePagination count={this.props.document_contents.count}
                 data={this.props.document_contents.pages}
