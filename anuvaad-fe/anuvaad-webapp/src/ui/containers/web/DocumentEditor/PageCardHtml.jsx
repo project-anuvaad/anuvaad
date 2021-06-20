@@ -45,7 +45,7 @@ class PageCardHtml extends React.Component {
             let index = paper.indexOf(source)
             if (index >= 0) {
                 let firstHalf = paper.substr(0, index)
-                let secondHalf = `<font id=${id} style='background-color:${color}'>${paper.substr(index, source.length)}</font>`
+                let secondHalf = `<font id=${id} style='background-color:${color};padding:3px 0'>${paper.substr(index, source.length)}</font>`
                 let thirdHalf = paper.substr(index + source.length)
                 $('#paper').html(`${firstHalf}${secondHalf}${thirdHalf}`)
             }
