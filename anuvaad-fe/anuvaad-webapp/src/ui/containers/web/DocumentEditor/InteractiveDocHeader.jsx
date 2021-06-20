@@ -182,7 +182,7 @@ class InteractiveDocHeader extends React.Component {
         APITransport(apiObj);
     }
 
-    fetchDirectDocxFile = async () => {
+    fetchDigitalFile = async () => {
         let { modelId, filename, jobid } = this.props.match.params
         await this.getModel()
         let model = this.props.fetch_models.models.filter(data => data.model_id === Number(modelId))
@@ -266,8 +266,8 @@ class InteractiveDocHeader extends React.Component {
     renderOptions() {
         const { anchorEl } = this.state;
         const openEl = Boolean(anchorEl);
-        let { workflow } = this.props.match.params
-
+        let { workflow, filename } = this.props.match.params
+        let type = filename.split('.').pop().toUpperCase()
         return (
             <div style={{ display: "flex", flexDirection: "row" }}>
                 {!this.props.show_pdf && !this.props.preview && <Button color="primary" variant="outlined" onClick={this.hideDocument.bind(this)}>{this.props.docView ? "Show Document" : " Hide document"}</Button>}
@@ -308,12 +308,21 @@ class InteractiveDocHeader extends React.Component {
                     >
                         As PDF
                     </MenuItem>}
-                    <MenuItem
-                        style={{ borderTop: "1px solid #D6D6D6" }}
-                        onClick={workflow !== 'WF_A_FTTKTR' ? this.fetchDocxFile : this.fetchDirectDocxFile}
-                    >
-                        As DOCX
-                    </MenuItem>
+                    {workflow !== 'WF_A_FTTKTR' ?
+                        <MenuItem
+                            style={{ borderTop: "1px solid #D6D6D6" }}
+                            onClick={this.fetchDocxFile}
+                        >
+                            As DOCX
+                        </MenuItem>
+                        :
+                        <MenuItem
+                            style={{ borderTop: "1px solid #D6D6D6" }}
+                            onClick={this.fetchDigitalFile}
+                        >
+                            As {type}
+                        </MenuItem>
+                    }
                 </StyledMenu>
             </div>
         );
