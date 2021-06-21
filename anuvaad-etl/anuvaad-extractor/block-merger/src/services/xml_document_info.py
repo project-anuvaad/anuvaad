@@ -192,7 +192,6 @@ def get_xml_image_info(filepath):
         attribs     = []
         
         images      = get_specific_tags(page, 'image')
-        print("****************image***********************",images)
         for index, image in enumerate(images):
             p_t, p_l, p_w, p_h, t_t, t_l, t_w, t_h, img_base64 = get_page_image_element_attrib(page, image)
             

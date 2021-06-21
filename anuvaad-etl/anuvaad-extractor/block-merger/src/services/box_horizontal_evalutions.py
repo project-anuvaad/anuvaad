@@ -12,7 +12,7 @@ def are_hlines(df, configs, idx1, idx2,table=False, debug=False):
 
     diff_threshold = max(df.iloc[idx1]['text_height']   ,df.iloc[idx2]['text_height']  )*0.50
     if not table :
-        return ((space <= diff_threshold ) or(sepration <= 3 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 ) #configs['SUPERSCRIPT_HEIGHT_DIFFERENCE']
+        return ((space <= diff_threshold ) or(sepration <= 0.9 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 ) #configs['SUPERSCRIPT_HEIGHT_DIFFERENCE']
     else :
         return space <= diff_threshold
 
