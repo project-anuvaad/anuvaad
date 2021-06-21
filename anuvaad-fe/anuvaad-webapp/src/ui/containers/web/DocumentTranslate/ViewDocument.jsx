@@ -280,17 +280,17 @@ class ViewDocument extends React.Component {
     // this.makeAPICallJobDelete(jobId);
   };
 
-  processViewDocumentClick = (jobId, recordId, status) => {
+  processViewDocumentClick = (jobId, recordId, status, workflowCode) => {
     let role = localStorage.getItem("roles")
     let job = this.getJobIdDetail(jobId);
     if (status === "COMPLETED") {
-      
-        history.push(
-          `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
-          this.state
-        );
-     
-      
+
+      history.push(
+        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}/${workflowCode}`,
+        this.state
+      );
+
+
     } else if (status === "INPROGRESS") {
       this.setState({
         dialogMessage: "Please wait process is Inprogress!",
@@ -473,14 +473,14 @@ class ViewDocument extends React.Component {
           empty: true,
         },
       },
-       {
+      {
         name: "description",
         label: "Description",
         options: {
           display: 'false',
           sort: false
         }
-      }, 
+      },
       {
         name: "spent_time",
         label: "Time Spent",
@@ -534,6 +534,13 @@ class ViewDocument extends React.Component {
         },
       },
       {
+        name: "workflowCode",
+        label: "Workflow Code",
+        options: {
+          display: "excluded",
+        },
+      },
+      {
         name: "Action",
         label: translate("common.page.label.action"),
         options: {
@@ -567,7 +574,8 @@ class ViewDocument extends React.Component {
                         this.processViewDocumentClick(
                           tableMeta.rowData[1],
                           tableMeta.rowData[2],
-                          tableMeta.rowData[5]
+                          tableMeta.rowData[5],
+                          tableMeta.rowData[13]
                         )
                       }
                     >

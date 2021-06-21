@@ -61,6 +61,7 @@ function get_document_details(input) {
         document['word_count'] = '...'
         document['bleu_score'] = '...'
         document['spent_time'] = '...'
+        document['workflowCode'] = job['workflowCode']
 
         job['taskDetails'].forEach(task => {
             let timeline = {}
@@ -78,9 +79,14 @@ function get_document_details(input) {
                 document['converted_filename'] = task['output'][0]['outputFile'];
             }
 
+            if (task['stepOrder'] === 2) {
+                document['recordId'] = task['output'][0]['outputFile'];
+            }
+
             if (task['stepOrder'] === 3) {
                 document['recordId'] = task['output'][0]['outputFile'];
             }
+
             timelines.push(timeline)
         })
 
