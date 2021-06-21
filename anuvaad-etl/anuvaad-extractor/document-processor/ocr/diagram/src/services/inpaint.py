@@ -1,5 +1,7 @@
 import numpy as np
 import cv2
+
+
 def get_words(response,page_index):
     page_data = response['outputs'][0]['pages'][page_index]
     words = []
@@ -9,8 +11,7 @@ def get_words(response,page_index):
                 words.append(word)
                 
     return words
-            
-
+    
 
 def get_border_color(image, box):
     points = box['boundingBox']['vertices']
@@ -23,11 +24,11 @@ def get_border_color(image, box):
     #excpet
     return  np.median(border[:,0]),np.median(border[:,1]),np.median(border[:,2])
 
-def inpaint_image(image,box,color):
+def inpaint_image(image,box,color,margin=2):
     #try:
     
     points = box['boundingBox']['vertices']
-    image[points[0]['y'] : points[3]['y'],points[0]['x'] : points[1]['x'],:] = color
+    image[points[0]['y'] - margin : points[3]['y'] + margin,points[0]['x'] -margin*2 : points[1]['x'] + margin*2,:] = color
     #except:
     return image
 

@@ -52,7 +52,7 @@ def extract_pdf_metadata(filename, working_dir, base_dir):
     try:
         pdf_image_paths         = extract_image_paths_from_pdf(pdf_filepath, working_dir)
     except Exception as e:
-        log_error('error in extracting images from {} {}'.format(pdf_filepath ,e), app_context.application_context, e)
+        log_error('error in extracting images from {}'.format(pdf_filepath), app_context.application_context, e)
         return None
    
     end_time            = time.time()
