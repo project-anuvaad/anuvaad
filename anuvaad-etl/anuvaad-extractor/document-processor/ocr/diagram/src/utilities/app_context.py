@@ -1,5 +1,5 @@
 
-LOG_WITHOUT_CONTEXT = {'metadata':{'module':'GOOGLE-VISION-OCR'}}
+LOG_WITHOUT_CONTEXT = {'metadata':{'module':'BLOCK-MERGER'}}
 
 def init():
     global app_context

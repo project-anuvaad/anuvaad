@@ -40,7 +40,6 @@ for blueprint in vars(routes).values():
 
 if __name__ == "__main__":
     start_kafka()
-    print(merge_app.url_map)
     merge_app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
     
 

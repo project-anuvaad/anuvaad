@@ -1,4 +1,5 @@
 from src.utilities.utils import FileOperation
+from src.services.main import DiagramOcr
 from src.utilities.model_response import CustomResponse
 from src.utilities.model_response import Status
 from src.errors.errors_exception import WorkflowkeyError
@@ -14,18 +15,18 @@ import copy
 import threading
 from src.kafka_module.producer import Producer
 import src.utilities.app_context as app_context
-###################################
-from src.services.main import GoogleVisionOCR as Service
-#####################################
+import requests
 
 file_ops = FileOperation()
-
-
 class Response(object):
     def __init__(self, json_data, DOWNLOAD_FOLDER):
         self.json_data          = json_data
         self.DOWNLOAD_FOLDER    = DOWNLOAD_FOLDER
-
+    def upload(self,json_file):
+        url = config.file_upload_url
+        r = requests.post(url, files = json_file)
+        filename = r["data"]
+        return filename
     def workflow_response(self, task_id, task_starttime, debug_flush=False):
 
         app_context.init()
@@ -39,20 +40,20 @@ class Response(object):
             error_validator.inputfile_list_error(input_files)
             output_file_response = list()
             for i, item in enumerate(input_files):
-                input_filename, in_file_type, identifier     = file_ops.accessing_files(item['file'])
+                input_filename, in_file_type, in_locale     = file_ops.accessing_files(item)
                 self.json_data['taskID']                    = task_id
                 app_context.application_context             = self.json_data
                 #debug_flush = True
                 if debug_flush == False:
-                    ############################
-                    response = Service(app_context=app_context)
-                    gv_file_response = copy.deepcopy(response)
-                    ##############################
-                    if response['code'] == 200:
+                    bm_response = DiagramOcr(app_context=app_context, file_name=input_filename)
+                    if bm_response['code'] == 200:
                         
-                        output_filename_json = file_ops.writing_json_file(i, response['rsp'], self.DOWNLOAD_FOLDER)
-                        langs  = response['langs']
-                        file_res = file_ops.one_filename_response(output_filename_json,langs)
+                        output_filename_json = file_ops.writing_json_file(i, bm_response['rsp'], self.DOWNLOAD_FOLDER)
+
+                        #output_filename = self.upload(bm_response['rsp'])
+                        #file_res = file_ops.one_filename_response(input_filename, output_filename, in_locale, in_file_type)
+
+                        file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
                         output_file_response.append(file_res)
                         task_endtime = eval(str(time.time()).replace('.', '')[0:13])
                         response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
@@ -60,9 +61,9 @@ class Response(object):
                         response = copy.deepcopy(response_success)
                         log_info("successfully generated response for workflow", app_context.application_context)
                         
-                        return response,gv_file_response
+                        return response
                     else:
-                        post_error_wf(response['code'], response['message'], app_context.application_context, None)
+                        post_error_wf(bm_response['code'], bm_response['message'], app_context.application_context, None)
                         return None
                 else:
                     log_info('flushing queue data, not handling file {}'.format(input_files), app_context.application_context)
@@ -88,36 +89,28 @@ class Response(object):
             response_custom = CustomResponse(Status.ERR_STATUS.value, jobid, task_id)
             response_custom.status_code['message'] = str(e)
             response = file_ops.error_handler(response_custom.status_code, "SERVICE_ERROR", True)
-            log_exception("workflow_response Something went wrong during ocr.", app_context.application_context, e)
+            log_exception("workflow_response Something went wrong during pdf to block conversion.", app_context.application_context, e)
             response = copy.deepcopy(response)
             return response
 
     def nonwf_response(self):
         log_info("non workflow response started the response generation", app_context.application_context)
-        input_files = self.json_data['input']['inputs']
-        app_context.init()
-        app_context.application_context = self.json_data
+        input_files = self.json_data['input']['files']
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         try:
             error_validator.inputfile_list_error(input_files)
-            # output_file_response = list()
-            # for item in input_files:
-            #     input_filename, in_file_type, identifier = file_ops.accessing_files(item['file'])
-            #     output_json_data = DocumentStructure(None, input_filename)
-            #     output_filename_json = file_ops.writing_json_file(i, output_json_data, self.DOWNLOAD_FOLDER)
-            #     file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_file_type)
-            #     output_file_response.append(file_res)
+            output_file_response = list()
+            for index, item in enumerate(input_files):
+                input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
+                output_json_data = DiagramOcr(app_context=app_context, file_name=input_filename)
+                output_filename_json = file_ops.writing_json_file(index, output_json_data, self.DOWNLOAD_FOLDER)
+                file_res = file_ops.one_filename_response(input_filename, output_filename_json, in_locale, in_file_type)
+                output_file_response.append(file_res)
             response_true = Status.SUCCESS.value
-            #response_true['output'] = output_file_response
-
-            output_json_data = Service(app_context=app_context)
-            output_filename_json = file_ops.writing_json_file( 0,output_json_data, self.DOWNLOAD_FOLDER)
-            response_true        =   file_ops.one_filename_response( output_filename_json,langs=' ')
-
+            response_true['output'] = output_file_response
             log_info("non workflow_response successfully generated response for rest server", app_context.application_context)
             response_true = copy.deepcopy(response_true)
             return response_true
-
         except FileErrors as e:
             response_custom = Status.ERR_STATUS.value
             response_custom['message'] = e.message
@@ -129,7 +122,7 @@ class Response(object):
             response_custom = Status.ERR_STATUS.value
             response_custom['message'] = str(e)
             response = file_ops.error_handler(response_custom, "SERVICE_ERROR", False)
-            log_exception("non workflow_response Something went wrong during ocr.", app_context.application_context, e)
+            log_exception("non workflow_response Something went wrong during pdf to block conversion.", app_context.application_context, e)
             response = copy.deepcopy(response)
             return response
 

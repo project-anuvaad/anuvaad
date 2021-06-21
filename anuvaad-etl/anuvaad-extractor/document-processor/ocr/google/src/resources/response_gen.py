@@ -44,13 +44,13 @@ class Response(object):
                 app_context.application_context             = self.json_data
                 #debug_flush = True
                 if debug_flush == False:
+                    ############################
                     response = Service(app_context=app_context)
-                    gv_file_response = copy.deepcopy(response)
+                    ##############################
                     if response['code'] == 200:
                         
                         output_filename_json = file_ops.writing_json_file(i, response['rsp'], self.DOWNLOAD_FOLDER)
-                        langs  = response['langs']
-                        file_res = file_ops.one_filename_response(output_filename_json,langs)
+                        file_res = file_ops.one_filename_response(output_filename_json)
                         output_file_response.append(file_res)
                         task_endtime = eval(str(time.time()).replace('.', '')[0:13])
                         response_true = CustomResponse(Status.SUCCESS.value, jobid, task_id)
@@ -58,14 +58,14 @@ class Response(object):
                         response = copy.deepcopy(response_success)
                         log_info("successfully generated response for workflow", app_context.application_context)
                         
-                        return response, gv_file_response
+                        return response
                     else:
                         post_error_wf(response['code'], response['message'], app_context.application_context, None)
-                        return None, None
+                        return None
                 else:
                     log_info('flushing queue data, not handling file {}'.format(input_files), app_context.application_context)
                     post_error_wf(400, 'flushing queue data, not handling file {}'.format(input_files), app_context.application_context, None)
-                    return None, None
+                    return None
 
             
         except WorkflowkeyError as e:
@@ -131,5 +131,14 @@ class Response(object):
             response = copy.deepcopy(response)
             return response
 
-    
+    def multi_thred_block_merger(self,task_id, task_starttime,jobid):
+        thread = threading.current_thread().name
+        log_info("multi_thred_block_merger" + str(thread)+" | block-merger process started ===>",app_context.application_context)
+        file_value_response = self.workflow_response(task_id, task_starttime)
+        if "errorID" not in file_value_response.keys():
+            producer = Producer()
+            producer.push_data_to_queue(config.output_topic, file_value_response, jobid, task_id)
+
+        else:
+            log_info("process_merger_kf error send to error handler", app_context.application_context)
         
