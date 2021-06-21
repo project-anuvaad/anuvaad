@@ -133,4 +133,77 @@ class FileContentUpdateResource(Resource):
             log_exception("FileContentUpdateResource ",  AppContext.getContext(), e)
             res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
             return res.getresjson(), 400
+
+class FileContentStoreReference(Resource):
+    def post(self):
+        body        = request.get_json()
+
+        if body.get("records") == None :
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
+
+        records          = body['records']
+        log_info("FileContentStoreReference - received {} record/s ".format(len(records)), AppContext.getContext())
+        log_info(str(body), AppContext.getContext())
+        try:
+            result  = fileContentRepo.store_reference(records)
+
+            if result == False:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+                return res.getresjson(), 400
+
+            res = CustomResponse(Status.SUCCESS.value, None)
+            return res.getres()            
+        except Exception as e:
+            log_exception("FileContentUpdateResource ",  AppContext.getContext(), e)
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
+class FileContentStoreReference(Resource):
+    def post(self):
+        body        = request.get_json()
+
+        if body.get("records") == None :
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
+
+        records          = body['records']
+        log_info("FileContentStoreReference - received {} record/s ".format(len(records)), AppContext.getContext())
+        log_info(str(body), AppContext.getContext())
+        try:
+            result  = fileContentRepo.store_reference(records)
+
+            if result == False:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+                return res.getresjson(), 400
+
+            res = CustomResponse(Status.SUCCESS.value, None)
+            return res.getres()            
+        except Exception as e:
+            log_exception("FileContentUpdateResource ",  AppContext.getContext(), e)
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
         
+class FileContentGetReference(Resource):
+    def post(self):
+        body        = request.get_json()
+
+        if body.get("job_ids") == None or len(body["job_ids"])==0:
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
+
+        records          = body['job_ids']
+        log_info("FileContentStoreReference - received {} record/s ".format(len(records)), AppContext.getContext())
+        log_info(str(body), AppContext.getContext())
+        try:
+            result  = fileContentRepo.get_reference(records)
+
+            if result == False:
+                res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+                return res.getresjson(), 400
+
+            res = CustomResponse(Status.SUCCESS.value, result)
+            return res.getres()            
+        except Exception as e:
+            log_exception("FileContentUpdateResource ",  AppContext.getContext(), e)
+            res = CustomResponse(Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+            return res.getresjson(), 400
