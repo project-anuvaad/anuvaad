@@ -1,7 +1,9 @@
+from enum import unique
 from utilities import AppContext
 from db import get_db
 from anuvaad_auditor.loghandler import log_info, log_exception
 import pymongo
+from config import MONGO_s3_LINK_STORE
 
 DB_SCHEMA_NAME  = 'file_content'
 
@@ -12,6 +14,12 @@ class BlockModel(object):
             collections.create_index('record_id')
         except pymongo.errors.DuplicateKeyError as e:
             log_info("duplicate key, ignoring", AppContext.getContext())
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+            
+        try:
+            ref_repo = get_db()[MONGO_s3_LINK_STORE]
+            ref_repo.create_index('job_id',unique=True)
         except Exception as e:
             log_exception("db connection exception ",  AppContext.getContext(), e)
     
@@ -100,3 +108,20 @@ class BlockModel(object):
         except Exception as e:
             log_exception("db connection exception ",  AppContext.getContext(), e)
             return 0
+
+    def store_s3_link(self, data):
+        try:
+            collections = get_db()[MONGO_s3_LINK_STORE]
+            collections.insert(data)
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+            return False
+
+    def get_s3_link(self, job_id):
+        try:
+            collections = get_db()[MONGO_s3_LINK_STORE]
+            result = collections.find({"job_id":job_id},{"_id":0})
+            return result[0]
+        except Exception as e:
+            log_exception("db connection exception ",  AppContext.getContext(), e)
+            return False
