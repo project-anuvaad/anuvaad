@@ -19,18 +19,26 @@ class PageCardHtml extends React.Component {
             loaded: false
         }
     }
+    replaceNbsps(str) {
+        let cleanedHtml = str.replace(/&#160;/g, String.fromCharCode(32));
+        return cleanedHtml.replace(/\s{2,}/g, ' ');
+    }
+
     getHTML = () => {
         let inputField = this.props.match.params.inputfileid
         let filename = inputField.substr(inputField.indexOf('-') + 1).replace('.json', '.html')
         let obj = new DownloadFile(filename)
-        fetch(obj.apiEndPoint(), {
+        fetch('https://anuvaad1.s3.ap-south-1.amazonaws.com/pdf_test/NDEAR+-+short+version+v2.0-html.html', {
             method: 'get',
             headers: obj.getHeaders().headers
         })
             .then(async res => {
                 if (res.status === 200) {
                     let html = await res.text()
-                    $('#paper').html(html)
+                    let cleanedHtml = this.replaceNbsps(html)
+                    $('#paper').html(cleanedHtml)
+                    let src = `https://anuvaad1.s3.ap-south-1.amazonaws.com/pdf_test/${$('img').attr('src')}`
+                    $('img').attr('src', src)
                     $('body').css('width', '100%')
                     this.setState({ loaded: true })
                 } else {
@@ -41,7 +49,7 @@ class PageCardHtml extends React.Component {
 
     highlight = (source, color, id) => {
         if (source) {
-            const paper = $('#paper').html();
+            const paper = $('#paper').html()
             let index = paper.indexOf(source)
             if (index >= 0) {
                 let firstHalf = paper.substr(0, index)
