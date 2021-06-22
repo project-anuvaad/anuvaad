@@ -47,7 +47,7 @@ class PageCardHtml extends React.Component {
     getInitialText = (arr, pattern) => {
         let str = ""
         let i = 0
-        while (i <= 4) {
+        while (i <= 2) {
             str = str + arr[i] + pattern
             i++;
         }
@@ -65,10 +65,12 @@ class PageCardHtml extends React.Component {
     highlight = (source, color, id) => {
         if (source) {
             const paper = $('#paper').html()
-            const pattern = '( |<([^>]+)>+|&[a-z]+;|[._,;*+?^${}()|[\\]\\\\])+'
+            const pattern = '( |<([^>]+)>+|&[a-z]+;|[_,;*+?^${}()|[\\]\\\\])+'
             try {
-
                 let regExpSource = source.split(' ').join(pattern)
+                if (regExpSource[regExpSource.length - 1] === '.') {
+                    regExpSource = regExpSource.substr(0, regExpSource.length - 1)
+                }
                 regExpSource = new RegExp(regExpSource, 'gm')
                 let m;
                 let regArr = [];
