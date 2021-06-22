@@ -44,6 +44,24 @@ class PageCardHtml extends React.Component {
             })
     }
 
+    getInitialText = (arr, pattern) => {
+        let str = ""
+        let i = 0
+        while (i <= 4) {
+            str = str + arr[i] + pattern
+            i++;
+        }
+        return str;
+    }
+
+    highlightSentence = (paper, startIndex, totalLen, color,id) => {
+        let coloredText = paper.substr(startIndex, totalLen)
+        let firstHalf = paper.substr(0, startIndex)
+        let secondHalf = `<font id=${id} style='background-color:${color};padding:3px 0'>${coloredText}</font>`
+        let thirdHalf = paper.substr(startIndex + totalLen)
+        $('#paper').html(`${firstHalf}${secondHalf}${thirdHalf}`)
+    }
+
     highlight = (source, color, id) => {
         if (source) {
             const paper = $('#paper').html()
@@ -61,12 +79,25 @@ class PageCardHtml extends React.Component {
                 let startIndex = matchArr && matchArr.index
                 let totalLen = 0
                 if (matchArr) totalLen += matchArr[0].length
-                let coloredText = paper.substr(startIndex, totalLen)
                 if (startIndex >= 0) {
-                    let firstHalf = paper.substr(0, startIndex)
-                    let secondHalf = `<font id=${id} style='background-color:${color};padding:3px 0'>${coloredText}</font>`
-                    let thirdHalf = paper.substr(startIndex + totalLen)
-                    $('#paper').html(`${firstHalf}${secondHalf}${thirdHalf}`)
+                    this.highlightSentence(paper, startIndex, totalLen, color, id)
+                } 
+                else {
+                    let regExpArr = source.split(' ')
+                    let regExpSource = this.getInitialText(regExpArr, pattern)
+                    regExpSource = new RegExp(regExpSource, 'gm')
+                    let m;
+                    let regArr = [];
+                    while ((m = regExpSource.exec(paper)) !== null) {
+                        regArr.push(m)
+                    }
+                    let matchArr = regArr[regArr.length - 1]
+                    let startIndex = matchArr && matchArr.index
+                    let totalLen = 0
+                    if (matchArr) totalLen += matchArr[0].length
+                    if (startIndex >= 0) {
+                        this.highlightSentence(paper, startIndex, totalLen, '#e1f5b3', id)
+                    }
                 }
             } catch (error) {
                 console.log('error occurred!', source)
