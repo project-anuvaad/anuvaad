@@ -69,7 +69,7 @@ class PageCardHtml extends React.Component {
             let hasFullStop = false
             try {
                 let regExpSource = source.split(' ').join(pattern)
-                if (regExpSource[regExpSource.length - 1] === '.') {
+                if (regExpSource[regExpSource.length - 1] === '.' || regExpSource[regExpSource.length - 1] === ':') {
                     hasFullStop = true
                     regExpSource = regExpSource.substr(0, regExpSource.length - 1)
                 }
