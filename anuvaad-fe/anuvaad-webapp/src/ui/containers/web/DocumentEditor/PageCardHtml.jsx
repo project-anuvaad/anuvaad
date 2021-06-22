@@ -66,9 +66,11 @@ class PageCardHtml extends React.Component {
         if (source) {
             const paper = $('#paper').html()
             const pattern = '( |<([^>]+)>+|&[a-z]+;|[_,;*+?^${}()|[\\]\\\\])+'
+            let hasFullStop = false
             try {
                 let regExpSource = source.split(' ').join(pattern)
                 if (regExpSource[regExpSource.length - 1] === '.') {
+                    hasFullStop = true
                     regExpSource = regExpSource.substr(0, regExpSource.length - 1)
                 }
                 regExpSource = new RegExp(regExpSource, 'gm')
@@ -82,6 +84,7 @@ class PageCardHtml extends React.Component {
                 let totalLen = 0
                 if (matchArr) totalLen += matchArr[0].length
                 if (startIndex >= 0) {
+                    if (!hasFullStop) totalLen = totalLen + 1
                     this.highlightSentence(paper, startIndex, totalLen, color, id)
                 }
                 else {
