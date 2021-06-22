@@ -19,10 +19,6 @@ class PageCardHtml extends React.Component {
             loaded: false
         }
     }
-    replaceNbsps(str) {
-        let cleanedHtml = str.replace(/&#160;/g, String.fromCharCode(32));
-        return cleanedHtml
-    }
 
     getHTML = () => {
         let inputField = this.props.match.params.inputfileid
@@ -35,10 +31,11 @@ class PageCardHtml extends React.Component {
             .then(async res => {
                 if (res.status === 200) {
                     let html = await res.text()
-                    // let cleanedHtml = this.replaceNbsps(html)
                     $('#paper').html(html)
-                    let src = `https://anuvaad1.s3.ap-south-1.amazonaws.com/pdf_test/${$('img').attr('src')}`
-                    $('img').attr('src', src)
+                    let images = document.getElementsByTagName('img')
+                    for (let i = 0; i < images.length; i++) {
+                        images[i].src = 'https://anuvaad1.s3.ap-south-1.amazonaws.com/pdf_test/' + images[i].src.substr(images[i].src.lastIndexOf('/') + 1)
+                    }
                     $('body').css('width', '100%')
                     this.setState({ loaded: true })
                 } else {
@@ -50,14 +47,29 @@ class PageCardHtml extends React.Component {
     highlight = (source, color, id) => {
         if (source) {
             const paper = $('#paper').html()
-            const pattern = '( |<br>+|<span>+|<b>+|&[a-z]+;|[.,*+?^${}()|[\\]\\\\])+'
-            let regExpSource = source.split(' ').join(pattern)
-            let index = paper.search(regExpSource)
-            if (index >= 0) {
-                let firstHalf = paper.substr(0, index)
-                let secondHalf = `<font id=${id} style='background-color:${color};padding:3px 0'>${paper.substr(index, source.length)}</font>`
-                let thirdHalf = paper.substr(index + source.length)
-                $('#paper').html(`${firstHalf}${secondHalf}${thirdHalf}`)
+            const pattern = '( |<br>+|<span>+|<b>+|<i>+|&[a-z]+;|[._,;*+?^${}()|[\\]\\\\])+'
+            try {
+
+                let regExpSource = source.split(' ').join(pattern)
+                regExpSource = new RegExp(regExpSource, 'gm')
+                let m;
+                let regArr = [];
+                while ((m = regExpSource.exec(paper)) !== null) {
+                    regArr.push(m)
+                }
+                let matchArr = regArr[regArr.length - 1]
+                let startIndex = matchArr && matchArr.index
+                let totalLen = 0
+                if (matchArr) totalLen += matchArr[0].length
+                let coloredText = paper.substr(startIndex, totalLen)
+                if (startIndex >= 0) {
+                    let firstHalf = paper.substr(0, startIndex)
+                    let secondHalf = `<font id=${id} style='background-color:${color};padding:3px 0'>${coloredText}</font>`
+                    let thirdHalf = paper.substr(startIndex + totalLen)
+                    $('#paper').html(`${firstHalf}${secondHalf}${thirdHalf}`)
+                }
+            } catch (error) {
+                console.log('error occurred!', source)
             }
         }
     }
