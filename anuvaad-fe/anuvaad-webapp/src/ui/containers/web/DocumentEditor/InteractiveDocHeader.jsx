@@ -61,7 +61,8 @@ class InteractiveDocHeader extends React.Component {
             message: null,
             timeOut: 3000,
             variant: "info",
-            dialogMessage: null
+            dialogMessage: null,
+            optionsEl: null
         };
     }
 
@@ -69,8 +70,13 @@ class InteractiveDocHeader extends React.Component {
         this.setState({ anchorEl: event.currentTarget });
     };
 
+    handleOptionsMenu = event => {
+        this.setState({ optionsEl: event.currentTarget });
+    }
+
     handleClose = () => {
         this.setState({ anchorEl: null });
+        this.setState({ optionsEl: null });
     };
 
     renderProgressInformation = () => {
@@ -264,14 +270,42 @@ class InteractiveDocHeader extends React.Component {
     }
 
     renderOptions() {
-        const { anchorEl } = this.state;
+        const { optionsEl, anchorEl } = this.state;
         const openEl = Boolean(anchorEl);
+        const openOptionsEl = Boolean(optionsEl);
         let { workflow, filename } = this.props.match.params
         let type = filename.split('.').pop().toUpperCase()
         return (
             <div style={{ display: "flex", flexDirection: "row" }}>
-                {!this.props.show_pdf && !this.props.preview && <Button color="primary" variant="outlined" onClick={this.hideDocument.bind(this)}>{this.props.docView ? "Show Document" : " Hide document"}</Button>}
+                {!this.props.show_pdf && !this.props.preview && workflow !== 'WF_A_FTTKTR' && <Button color="primary" variant="outlined" onClick={this.hideDocument.bind(this)}>{this.props.docView ? "Show Document" : " Hide document"}</Button>}
                 {!this.props.docView && !this.props.preview && workflow !== 'WF_A_FTTKTR' && <Button color="primary" variant="outlined" style={{ marginLeft: "10px" }} onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" : " Show PDF"}</Button>}
+                {/* {
+                    workflow === 'WF_A_FTTKTR' &&
+                    <>
+                        <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleOptionsMenu.bind(this)}>
+                            View Options
+                            <DownIcon />
+                        </Button>
+                        <StyledMenu
+                            id="menu-appbar"
+                            anchorEl={optionsEl}
+                            open={openOptionsEl}
+                            onClose={this.handleClose.bind(this)}
+                        >
+                            <MenuItem
+                                style={{ borderTop: "1px solid #D6D6D6" }}
+                            >
+                                View Document
+                            </MenuItem>
+                            <MenuItem
+                                style={{ borderTop: "1px solid #D6D6D6" }}
+                            >
+                                View Images
+                            </MenuItem>
+                        </StyledMenu>
+                    </>
+                } */}
+
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
                     Download
                     <DownIcon />
@@ -324,6 +358,7 @@ class InteractiveDocHeader extends React.Component {
                         </MenuItem>
                     }
                 </StyledMenu>
+
             </div>
         );
     }
