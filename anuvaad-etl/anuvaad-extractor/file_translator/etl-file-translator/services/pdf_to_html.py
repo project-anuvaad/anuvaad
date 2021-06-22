@@ -25,5 +25,5 @@ class PdfToHtml(object):
         generated_html_file_name = self.get_new_html_file_name()
         generated_html_file_path = self.get_new_html_file_path(html_output_dir=html_output_dir,
                                                                generated_html_file_name=generated_html_file_name)
-
+        log_info(f"convert_pdf_to_html:: Generated html file path: {generated_html_file_path}", None)
         return generated_html_file_path

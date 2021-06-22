@@ -4,6 +4,7 @@ import os
 from logging.config import dictConfig
 
 import boto3 as boto3
+from anuvaad_auditor import log_info
 
 from config import aws_access_key, aws_secret_key, aws_bucket_name, aws_link_prefix
 
@@ -88,6 +89,7 @@ class S3BucketUtils(object):
         s3_client = boto3.client('s3', aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_key)
         roo_dir, html_dir = os.path.split(dir_path)
         urls = []
+        log_info(f"upload_dir:: UPLOADING dir to s3. dir: {dir_path}", None)
         for root, dirs, files in os.walk(dir_path):
             for filename in files:
                 s3_file_name = os.path.join(html_dir, filename)
@@ -96,6 +98,7 @@ class S3BucketUtils(object):
                 if file_url:
                     urls.append(file_url)
 
+        log_info(f"upload_dir:: UPLOADED dir to s3. DIR: {dir_path}", None)
         return urls
 
     # Utility to upload files to Anuvaad1 S3 Bucket

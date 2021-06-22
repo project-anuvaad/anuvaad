@@ -21,6 +21,8 @@ class HtmlConvert(object):
             input_docx_filepath = common_obj.input_path(input_filename)
             pdf_output_dir = config.download_folder
 
+            log_info("generate_html :: DOC to PDF Conversion STARTED ", None)
+
             pdf_converter = PdfConverter(input_filename=input_filename)
             generated_pdf_file_path = pdf_converter.convert_to_pdf(pdf_output_path=pdf_output_dir,
                                                                    input_file_path=input_docx_filepath,

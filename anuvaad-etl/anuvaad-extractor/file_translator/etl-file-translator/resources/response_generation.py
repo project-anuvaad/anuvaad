@@ -50,6 +50,7 @@ class Response(object):
 
                         html_convert_obj = HtmlConvert(input_filename=input_filename, file_type='docx')
                         out_html_path = html_convert_obj.generate_html(input_filename=input_filename)
+                        log_info(f"URL TO HTML FILE FOR JOBID {jobid}: {out_html_path}")
 
                         fc_obj = FetchContent(input_filename)
                         fc_obj.store_reference_link(job_id=jobid, location=out_html_path)

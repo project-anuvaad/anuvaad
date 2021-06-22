@@ -176,6 +176,7 @@ class DocxTransform(object):
                             page_list[page_number - 1]['text_blocks'].append(json_para)
 
                 sequence_table_index += 1
+        log_info(f'Generated JSON FILE for file: {self.file_name_without_ext}', None)
         return base_json
         # END# NEW LOGIC TO ITERATE FILE SEQUENCIALLY
 
@@ -262,8 +263,7 @@ class DocxTransform(object):
                                 if para_id in trans_map:
                                     self.distribute_over_runs(runs, trans_para=trans_map[para_id])
                                 else:
-                                    raise FileErrors("translate_docx_file:",
-                                                     "PARA ID :{} not found in fetch content".format(para_id))
+                                    log_info(f"translate_docx_file: PARA ID :{para_id} not found in fetch content", None)
                         sequence_sdt_index += 1
             except Exception as e:
                 log_info(
