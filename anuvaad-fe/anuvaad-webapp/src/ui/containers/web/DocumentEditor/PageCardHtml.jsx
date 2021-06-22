@@ -19,10 +19,6 @@ class PageCardHtml extends React.Component {
             loaded: false
         }
     }
-    replaceNbsps(str) {
-        let cleanedHtml = str.replace(/&#160;/g, String.fromCharCode(32));
-        return cleanedHtml.replace(/\s{2,}/g, ' ');
-    }
 
     getHTML = () => {
         let inputField = this.props.match.params.inputfileid
@@ -35,10 +31,11 @@ class PageCardHtml extends React.Component {
             .then(async res => {
                 if (res.status === 200) {
                     let html = await res.text()
-                    let cleanedHtml = this.replaceNbsps(html)
-                    $('#paper').html(cleanedHtml)
-                    let src = `https://anuvaad1.s3.ap-south-1.amazonaws.com/pdf_test/${$('img').attr('src')}`
-                    $('img').attr('src', src)
+                    $('#paper').html(html)
+                    let images = document.getElementsByTagName('img')
+                    for (let i = 0; i < images.length; i++) {
+                        images[i].src = 'https://anuvaad1.s3.ap-south-1.amazonaws.com/pdf_test/' + images[i].src.substr(images[i].src.lastIndexOf('/') + 1)
+                    }
                     $('body').css('width', '100%')
                     this.setState({ loaded: true })
                 } else {
@@ -47,15 +44,65 @@ class PageCardHtml extends React.Component {
             })
     }
 
+    getInitialText = (arr, pattern) => {
+        let str = ""
+        let i = 0
+        while (i <= 2) {
+            str = str + arr[i] + pattern
+            i++;
+        }
+        return str;
+    }
+
+    highlightSentence = (paper, startIndex, totalLen, color, id) => {
+        let coloredText = paper.substr(startIndex, totalLen)
+        let firstHalf = paper.substr(0, startIndex)
+        let secondHalf = `<font id=${id} style='background-color:${color};padding:3px 0'>${coloredText}</font>`
+        let thirdHalf = paper.substr(startIndex + totalLen)
+        $('#paper').html(`${firstHalf}${secondHalf}${thirdHalf}`)
+    }
+
     highlight = (source, color, id) => {
         if (source) {
             const paper = $('#paper').html()
-            let index = paper.indexOf(source)
-            if (index >= 0) {
-                let firstHalf = paper.substr(0, index)
-                let secondHalf = `<font id=${id} style='background-color:${color};padding:3px 0'>${paper.substr(index, source.length)}</font>`
-                let thirdHalf = paper.substr(index + source.length)
-                $('#paper').html(`${firstHalf}${secondHalf}${thirdHalf}`)
+            const pattern = '( |<([^>]+)>+|&[a-z]+;|[_,;*+?^${}()|[\\]\\\\])+'
+            try {
+                let regExpSource = source.split(' ').join(pattern)
+                if (regExpSource[regExpSource.length - 1] === '.') {
+                    regExpSource = regExpSource.substr(0, regExpSource.length - 1)
+                }
+                regExpSource = new RegExp(regExpSource, 'gm')
+                let m;
+                let regArr = [];
+                while ((m = regExpSource.exec(paper)) !== null) {
+                    regArr.push(m)
+                }
+                let matchArr = regArr[regArr.length - 1]
+                let startIndex = matchArr && matchArr.index
+                let totalLen = 0
+                if (matchArr) totalLen += matchArr[0].length
+                if (startIndex >= 0) {
+                    this.highlightSentence(paper, startIndex, totalLen, color, id)
+                }
+                else {
+                    let regExpArr = source.split(' ')
+                    let regExpSource = this.getInitialText(regExpArr, pattern)
+                    regExpSource = new RegExp(regExpSource, 'gm')
+                    let m;
+                    let regArr = [];
+                    while ((m = regExpSource.exec(paper)) !== null) {
+                        regArr.push(m)
+                    }
+                    let matchArr = regArr[regArr.length - 1]
+                    let startIndex = matchArr && matchArr.index
+                    let totalLen = 0
+                    if (matchArr) totalLen += matchArr[0].length
+                    if (startIndex >= 0) {
+                        this.highlightSentence(paper, startIndex, totalLen, '#e1f5b3', id)
+                    }
+                }
+            } catch (error) {
+                console.log('error occurred!', source)
             }
         }
     }
@@ -131,9 +178,7 @@ class PageCardHtml extends React.Component {
 
     render() {
         return (
-            <span style={{ zoom: `${this.props.zoomPercent}%` }}>
-                <Paper style={{ padding: '3%' }} id='paper'></Paper>
-            </span>
+            <span id='paper' style={{ zoom: `${this.props.zoomPercent}%` }}></span>
 
         )
     }
