@@ -1,8 +1,11 @@
+import json
+from urllib.parse import urljoin
+
 import requests
 from anuvaad_auditor import log_info
 
 import config
-from errors.errors_exception import FormatError
+from errors.errors_exception import FormatError, FileErrors
 
 
 class FetchContent(object):
@@ -20,13 +23,13 @@ class FetchContent(object):
             block_id = text_block['block_id']
             self.block_trans_map[block_id] = trans_para
 
-    def generate_url(self, record_id, start_page, end_page):
-        url = config.FC_URL
+    def generate_url_for_fetch_content(self, record_id, start_page, end_page):
+        url = urljoin(config.CH_URL, config.FETCH_CONTENT_ENDPOINT)
         return url + '?record_id=' + record_id + '&start_page=' + str(start_page) + '&end_page=' + str(end_page)
 
     def fetch_content(self, record_id, start_page=0, end_page=0):
         log_info("fetch_content :: started fetching content for recordId: %s" % record_id, None)
-        fetch_url = self.generate_url(record_id=record_id, start_page=start_page, end_page=end_page)
+        fetch_url = self.generate_url_for_fetch_content(record_id=record_id, start_page=start_page, end_page=end_page)
 
         # START:: TO TEST LOCALLY
         # HEADERS = {'auth-token': 'AUTH'}
@@ -49,3 +52,29 @@ class FetchContent(object):
         for page in response['data']:
             self.map_translated_text_with_blockid(page)
         log_info("generate_map_from_fetch_content_response :: Generated Map from fetch content.", None)
+
+    def store_reference_link(self, job_id='', location=''):
+        # Checking if any one of the para is blank or None
+        if len([para for para in [job_id, location] if not para]) > 0:
+            raise FileErrors("INPUT_PARA_BLANK", "Input para can not be empty for store_reference_link")
+
+        body = json.dumps({
+            "records": [
+                {"job_id": job_id,
+                 "location": location}
+            ]
+        })
+
+        store_url = urljoin(config.CH_URL, config.REF_LINK_STORE_ENDPOINT)
+
+        log_info(f'Store Reference Link STARTED for job id: {job_id}', None)
+
+        rspn = requests.post(url=store_url, data=body)
+
+        log_info(f'Store Reference Link ENDED for job id: {job_id}', None)
+
+        if rspn.status_code not in [200, 201]:
+            log_info('Response:: %s' % rspn.text, None)
+            raise FormatError(400, "Store Reference Link failed for job Id: %s" % job_id)
+
+        return rspn.json()

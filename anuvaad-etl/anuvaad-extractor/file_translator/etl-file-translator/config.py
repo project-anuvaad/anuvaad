@@ -35,10 +35,14 @@ kf_local_server = 'localhost:9092'
 kafka_ip_host = 'KAFKA_BOOTSTRAP_SERVER_HOST'
 bootstrap_server = os.environ.get(kafka_ip_host, kf_local_server)
 
-# Fetch Content
-FETCH_CONTENT_URL_DEFAULT = 'https://auth.anuvaad.org/anuvaad/content-handler/v0/fetch-content'
-FETCH_CONTENT_URL_VAR = 'FETCH_CONTENT_URL'
-FC_URL = os.environ.get(FETCH_CONTENT_URL_VAR, FETCH_CONTENT_URL_DEFAULT)
+# Content Handler
+FETCH_CONTENT_URL_DEFAULT = 'https://auth.anuvaad.org/'
+FETCH_CONTENT_URL_VAR = 'CONTENT_HANDLER_URL'
+CH_URL = os.environ.get(FETCH_CONTENT_URL_VAR, FETCH_CONTENT_URL_DEFAULT)
+
+FETCH_CONTENT_ENDPOINT = 'anuvaad/content-handler/v0/fetch-content'
+REF_LINK_STORE_ENDPOINT = 'anuvaad/content-handler/v0/ref-link/store'
+
 
 # ENV HOST
 ENV_HOST_URL = 'https://auth.anuvaad.org/'
@@ -88,6 +92,18 @@ PPTX_PAGE_LIMIT_ENABLE = False
 
 DOCX_FILE_PREFIX = 'DOCX-'
 PPTX_FILE_PREFIX = 'PPTX-'
+
+PUSH_GENERATED_HTML_TO_S3 = True
+aws_access_key = os.environ.get('ULCA_AWS_S3_ACCESS_KEY', 'access-key')
+aws_secret_key = os.environ.get('ULCA_AWS_S3_SECRET_KEY', 'secret-key')
+aws_bucket_name = os.environ.get('ULCA_AWS_BUCKET_NAME', 'anuvaad1')
+aws_ocr_prefix = os.environ.get('ULCA_AWS_S3_OCR_PREFIX', 'ocr/')
+aws_asr_prefix = os.environ.get('ULCA_AWS_S3_ASR_PREFIX', 'asr/')
+aws_dataset_prefix = os.environ.get('ULCA_AWS_S3_DATASET_PREFIX', 'datasets/')
+aws_error_prefix = os.environ.get('ULCA_AWS_S3_ERROR_PREFIX', 'errors/')
+aws_link_prefix = f'http://{aws_bucket_name}.s3.amazonaws.com/'
+
+
 
 ALLOWED_FILE_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                       'application/vnd.openxmlformats-officedocument.presentationml.presentation',

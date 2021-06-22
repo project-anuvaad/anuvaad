@@ -2,7 +2,7 @@ import os
 import re
 import subprocess
 import sys
-
+import time
 from anuvaad_auditor import log_info
 
 
@@ -14,9 +14,9 @@ class PdfConverter(object):
         args = [self.libreoffice_exec(), '--headless', '--convert-to', 'pdf', '--outdir', pdf_output_path,
                 input_file_path]
 
-        log_info("convert_to_pdf:: PDF conversion process STARTED.", None)
+        log_info(f"convert_to_pdf:: PDF conversion process STARTED at {time.time_ns()}", None)
         process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
-        log_info("convert_to_pdf:: PDF conversion process END.", None)
+        log_info(f"convert_to_pdf:: PDF conversion process ENDED at {time.time_ns()}", None)
 
         filename = re.search('-> (.*?) using filter', process.stdout.decode())
 

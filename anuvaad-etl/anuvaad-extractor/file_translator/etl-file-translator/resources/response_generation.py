@@ -41,16 +41,17 @@ class Response(object):
                     input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
                     if in_file_type == "docx" and transform_flow:
                         docx_transform_obj = DocxTransform(input_filename)
-                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type='docx')
-
-                        out_html_path = html_convert_obj.generate_html(input_filename=input_filename)
-
                         docx_obj = docx_transform_obj.read_docx_file(input_filename)
                         transformed_obj = docx_transform_obj.generate_json_structure(docx_obj)
-
                         out_json_filepath = docx_transform_obj.write_json_file(transformed_obj)
                         output_filename = out_json_filepath
                         out_file_type = 'json'
+
+
+                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type='docx')
+                        out_html_path = html_convert_obj.generate_html(input_filename=input_filename)
+
+
 
                     elif in_file_type == "pptx" and transform_flow:
                         pptx_transform_obj = PptxTransform(input_filename)

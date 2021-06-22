@@ -72,6 +72,7 @@ class DocxTransform(object):
 
         page_list.append(self.generate_json_for_page(page_number))
 
+
         # START# NEW LOGIC TO ITERATE FILE SEQUENCIALLY
         for ide, child in enumerate(document.element.body):
             if common_obj.is_page_size_exceeded(DOCX=True, para_count=para_count, run_count=run_count,
@@ -217,4 +218,9 @@ class DocxTransform(object):
         file_out_path = common_obj.input_path(file_name)
         document.save(file_out_path)
         return file_name
+
+
+    def remove_table_of_content(self):
+        pass
+
 
