@@ -66,6 +66,7 @@ class FetchContent(object):
         })
 
         store_url = urljoin(config.CH_URL, config.REF_LINK_STORE_ENDPOINT)
+        log_info(f"store_reference_link:: STORE URL: {store_url}", None)
 
         log_info(f'Store Reference Link STARTED for job id: {job_id}', None)
 
@@ -75,6 +76,6 @@ class FetchContent(object):
 
         if rspn.status_code not in [200, 201]:
             log_info('Response:: %s' % rspn.text, None)
-            raise FormatError(400, "Store Reference Link failed for job Id: %s" % job_id)
+            raise FormatError(400, f"Store Reference Link failed for job Id: {job_id}")
 
         return rspn.json()
