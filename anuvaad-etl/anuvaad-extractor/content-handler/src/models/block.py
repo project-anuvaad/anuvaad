@@ -114,7 +114,7 @@ class BlockModel(object):
             collections = get_db()[MONGO_s3_LINK_STORE]
             collections.insert(data)
         except Exception as e:
-            log_exception("db connection exception ",  AppContext.getContext(), e)
+            log_exception("db connection exception |{}".format(str(e)),  AppContext.getContext(), e)
             return False
 
     def get_s3_link(self, job_id):
@@ -123,5 +123,5 @@ class BlockModel(object):
             result = collections.find({"job_id":job_id},{"_id":0})
             return result[0]
         except Exception as e:
-            log_exception("db connection exception ",  AppContext.getContext(), e)
+            log_exception("db connection exception |{}".format(str(e)),  AppContext.getContext(), e)
             return False
