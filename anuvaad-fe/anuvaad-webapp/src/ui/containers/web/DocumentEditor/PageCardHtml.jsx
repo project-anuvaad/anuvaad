@@ -54,7 +54,7 @@ class PageCardHtml extends React.Component {
         return str;
     }
 
-    highlightSentence = (paper, startIndex, totalLen, color,id) => {
+    highlightSentence = (paper, startIndex, totalLen, color, id) => {
         let coloredText = paper.substr(startIndex, totalLen)
         let firstHalf = paper.substr(0, startIndex)
         let secondHalf = `<font id=${id} style='background-color:${color};padding:3px 0'>${coloredText}</font>`
@@ -81,7 +81,7 @@ class PageCardHtml extends React.Component {
                 if (matchArr) totalLen += matchArr[0].length
                 if (startIndex >= 0) {
                     this.highlightSentence(paper, startIndex, totalLen, color, id)
-                } 
+                }
                 else {
                     let regExpArr = source.split(' ')
                     let regExpSource = this.getInitialText(regExpArr, pattern)
@@ -176,9 +176,7 @@ class PageCardHtml extends React.Component {
 
     render() {
         return (
-            <span style={{ zoom: `${this.props.zoomPercent}%` }}>
-                <Paper style={{ padding: '3%' }} id='paper'></Paper>
-            </span>
+            <span id='paper' style={{ zoom: `${this.props.zoomPercent}%` }}></span>
 
         )
     }
