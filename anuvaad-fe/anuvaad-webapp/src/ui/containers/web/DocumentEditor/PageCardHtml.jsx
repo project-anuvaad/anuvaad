@@ -47,7 +47,7 @@ class PageCardHtml extends React.Component {
     highlight = (source, color, id) => {
         if (source) {
             const paper = $('#paper').html()
-            const pattern = '( |<br>+|<span>+|<b>+|<i>+|&[a-z]+;|[._,;*+?^${}()|[\\]\\\\])+'
+            const pattern = '( |<([^>]+)>+|&[a-z]+;|[._,;*+?^${}()|[\\]\\\\])+'
             try {
 
                 let regExpSource = source.split(' ').join(pattern)
