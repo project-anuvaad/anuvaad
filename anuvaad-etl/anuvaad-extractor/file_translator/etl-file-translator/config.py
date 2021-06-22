@@ -94,13 +94,9 @@ DOCX_FILE_PREFIX = 'DOCX-'
 PPTX_FILE_PREFIX = 'PPTX-'
 
 PUSH_GENERATED_HTML_TO_S3 = True
-aws_access_key = os.environ.get('ULCA_AWS_S3_ACCESS_KEY', 'access-key')
-aws_secret_key = os.environ.get('ULCA_AWS_S3_SECRET_KEY', 'secret-key')
-aws_bucket_name = os.environ.get('ULCA_AWS_BUCKET_NAME', 'anuvaad1')
-aws_ocr_prefix = os.environ.get('ULCA_AWS_S3_OCR_PREFIX', 'ocr/')
-aws_asr_prefix = os.environ.get('ULCA_AWS_S3_ASR_PREFIX', 'asr/')
-aws_dataset_prefix = os.environ.get('ULCA_AWS_S3_DATASET_PREFIX', 'datasets/')
-aws_error_prefix = os.environ.get('ULCA_AWS_S3_ERROR_PREFIX', 'errors/')
+aws_access_key = os.environ.get('FT_AWS_S3_ACCESS_KEY', 'access-key')
+aws_secret_key = os.environ.get('FT_AWS_S3_SECRET_KEY', 'secret-key')
+aws_bucket_name = os.environ.get('FT_AWS_BUCKET_NAME', 'anuvaad1')
 aws_link_prefix = f'http://{aws_bucket_name}.s3.amazonaws.com/'
 
 
