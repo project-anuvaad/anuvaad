@@ -64,6 +64,8 @@ import taskdetail from './view_scheduled_jobs/fetch_annotator_job';
 import fetchuserjob from './user/fetch_user_job';
 import fetchglossary from './user_glossary/fetch_user_glossary';
 import getUserReport from './admin/get_user_event_report';
+import getHtmlLink from './editor/getHtmlLink';
+
 export default {
     login,
     automl,
@@ -129,5 +131,6 @@ export default {
     taskdetail,
     fetchuserjob,
     fetchglossary,
-    getUserReport
+    getUserReport,
+    getHtmlLink
 };

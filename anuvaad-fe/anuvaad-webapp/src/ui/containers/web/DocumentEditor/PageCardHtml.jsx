@@ -1,11 +1,11 @@
-import { Paper } from "@material-ui/core"
 import React from 'react';
-import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
+import GetHtmlLink from "../../../../flux/actions/editor/getHtmlLink";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { v4 as uuid4 } from 'uuid'
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import { bindActionCreators } from "redux";
+import APITransport from '../../../../flux/actions/apitransport/apitransport';
 
 const $ = require('jquery');
 
@@ -21,27 +21,11 @@ class PageCardHtml extends React.Component {
     }
 
     getHTML = () => {
-        let inputField = this.props.match.params.inputfileid
-        let filename = inputField.substr(inputField.indexOf('-') + 1).replace('.json', '.html')
-        let obj = new DownloadFile(filename)
-        fetch('https://anuvaad1.s3.ap-south-1.amazonaws.com/pdf_test/NDEAR+-+short+version+v2.0-html.html', {
-            method: 'get',
-            headers: obj.getHeaders().headers
-        })
-            .then(async res => {
-                if (res.status === 200) {
-                    let html = await res.text()
-                    $('#paper').html(html)
-                    let images = document.getElementsByTagName('img')
-                    for (let i = 0; i < images.length; i++) {
-                        images[i].src = 'https://anuvaad1.s3.ap-south-1.amazonaws.com/pdf_test/' + images[i].src.substr(images[i].src.lastIndexOf('/') + 1)
-                    }
-                    $('body').css('width', '100%')
-                    this.setState({ loaded: true })
-                } else {
-                    $('#paper').html('Failed to load...')
-                }
-            })
+        let { jobid } = this.props.match.params
+        let { APITransport } = this.props
+        jobid = jobid.split('|').shift()
+        let obj = new GetHtmlLink([jobid])
+        APITransport(obj)
     }
 
     getInitialText = (arr, pattern) => {
@@ -125,6 +109,35 @@ class PageCardHtml extends React.Component {
 
     }
 
+    fetchHtmlData = (link) => {
+        fetch(link, {
+            method: 'get',
+            headers: {
+                'Content-Type': 'application/json',
+                'auth-token': `${decodeURI(localStorage.getItem("token"))}`
+            }
+        })
+            .then(async res => {
+                if (res.status === 200) {
+                    let html = await res.text()
+                    $('#paper').html(html)
+                    let images = document.getElementsByTagName('img')
+                    let urls = document.getElementsByTagName('a')
+                    let baseUrl = link.substr(0, link.lastIndexOf('/') + 1)
+                    for (let i = 0; i < images.length; i++) {
+                        images[i].src = baseUrl + images[i].src.substr(images[i].src.lastIndexOf('/') + 1)
+                    }
+                    for (let i = 0; i < urls.length; i++) {
+                        urls[i].href = baseUrl + urls[i].href.substr(urls[i].href.lastIndexOf('/') + 1)
+                    }
+                    $('body').css('width', '100%')
+                    this.setState({ loaded: true })
+                } else {
+                    $('#paper').html('Failed to load...')
+                }
+            })
+    }
+
     componentDidMount() {
         $('#paper').html('Loading...')
         this.getHTML()
@@ -132,6 +145,11 @@ class PageCardHtml extends React.Component {
 
     componentDidUpdate(prevProps) {
         const { highlightBlock } = this.props
+
+        if (prevProps.link !== this.props.link) {
+            this.fetchHtmlData(this.props.link)
+        }
+
         if (this.page_no !== this.props.active_page && this.state.loaded) {
             this.page_no = this.props.active_page
             let source = this.getSource(this.props.fetchContent, this.page_no)
@@ -188,12 +206,14 @@ class PageCardHtml extends React.Component {
 const mapStateToProps = state => ({
     highlightBlock: state.block_highlight,
     active_page: state.active_page_number.page_number,
-    fetchContent: state.fetchContent
+    fetchContent: state.fetchContent,
+    link: state.getHtmlLink.link
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
-        clearHighlighBlock
+        clearHighlighBlock,
+        APITransport
     },
     dispatch
 );
