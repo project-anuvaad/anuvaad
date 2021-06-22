@@ -58,7 +58,7 @@ class FetchContent(object):
         if len([para for para in [job_id, location] if not para]) > 0:
             raise FileErrors("INPUT_PARA_BLANK", "Input para can not be empty for store_reference_link")
 
-        body = {"records": [{"job_id": job_id, "location": location}]}
+        body = json.dumps({"records": [{"job_id": job_id, "file_link": location}]})
 
         store_url = urljoin(config.CH_URL, config.REF_LINK_STORE_ENDPOINT)
         log_info(f"store_reference_link:: STORE URL: {store_url}", None)
@@ -66,7 +66,11 @@ class FetchContent(object):
 
         log_info(f'Store Reference Link STARTED for job id: {job_id}', None)
 
-        rspn = requests.post(url=store_url, data=body)
+        # LOCAL TEST
+        headers = {'content-type': 'application/json'}
+        # LOCAL TEST
+
+        rspn = requests.post(url=store_url, data= body, headers=headers)
 
         log_info(f'Store Reference Link ENDED for job id: {job_id}', None)
 
