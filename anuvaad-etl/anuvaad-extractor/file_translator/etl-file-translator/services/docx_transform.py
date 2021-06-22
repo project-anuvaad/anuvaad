@@ -133,7 +133,7 @@ class DocxTransform(object):
                                 json_para['children'].append(json_run)
 
                             page_list[page_number - 1]['text_blocks'].append(json_para)
-                            sequence_sdt_index += 1
+                    sequence_sdt_index += 1
                 except Exception as e:
                     log_info(
                         f"generate_json_structure :: JSON CREATION FAILED FOR SDT:{sequence_sdt_index}ERROR:{str(e)}",
@@ -252,14 +252,14 @@ class DocxTransform(object):
                 sequence_sdt_index = 0
                 for ide, child in enumerate(document.element.body):
                     if isinstance(child, CT_SDT):
-                        for sdtc, sdt_content in (child.sdtContent_lst):
+                        for sdtc, sdt_content in enumerate(child.sdtContent_lst):
                             for parax, para in enumerate(sdt_content.p_lst):
                                 para = Paragraph(para, sdtc)
                                 runs = common_obj.get_runs(para, para_obj=True)
                                 para_id = common_obj.generate_id(file_id=file_id,
                                                                  sdt=str(sequence_sdt_index),
                                                                  sdtc=str(sdtc),
-                                                                 para_idx=str(parax))
+                                                                 para=str(parax))
                                 if para_id in trans_map:
                                     self.distribute_over_runs(runs, trans_para=trans_map[para_id])
                                 else:
@@ -267,7 +267,7 @@ class DocxTransform(object):
                         sequence_sdt_index += 1
             except Exception as e:
                 log_info(
-                    f"translate_docx_file :: DISTRIBUTE OVER RUN FAILED FOR SDT:{sequence_sdt_index}ERROR:{str(e)}",
+                    f"translate_docx_file :: DISTRIBUTE OVER RUN FAILED FOR SDT:{sequence_sdt_index}, ERROR: {str(e)}",
                     None)
                 pass
 
