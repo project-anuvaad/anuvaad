@@ -91,7 +91,8 @@ class S3BucketUtils(object):
         for root, dirs, files in os.walk(dir_path):
             for filename in files:
                 s3_file_name = os.path.join(html_dir, filename)
-                file_url = self.upload_file(s3_client=s3_client, file_name=s3_file_name, s3_file_name=s3_file_name)
+                file_name = dir_path + '/' + filename
+                file_url = self.upload_file(s3_client=s3_client, file_name=file_name, s3_file_name=s3_file_name)
                 if file_url:
                     urls.append(file_url)
 

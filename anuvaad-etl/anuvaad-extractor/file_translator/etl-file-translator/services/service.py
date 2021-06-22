@@ -3,6 +3,8 @@ import os
 import re
 
 import config
+from docx.oxml import CT_R, CT_HYPERLINK
+from docx.text.run import Run
 from utilities.utils import FileOperation
 
 file_ops = FileOperation()
@@ -66,7 +68,7 @@ class Common(object):
     def is_only_line_breaks_n_tabs(self, text):
         return re.sub(r"((\n){0,}(\t){0,})", '', text) == ''
 
-    def generate_id(self, file_id='', table='', cell='', row='', slide='', shape='', para='', run=''):
+    def generate_id(self, file_id='', table='', cell='', row='', slide='', shape='', sdt='', sdtc='', para='', run=''):
         idx = ''
         if file_id != '':
             idx += str(file_id)
@@ -80,6 +82,10 @@ class Common(object):
             idx += '_SLIDE-' + str(slide)
         if shape != '':
             idx += '_SHAPE-' + str(shape)
+        if sdt != '':
+            idx += '_SDT-' + str(sdt)
+        if sdtc != '':
+            idx += '_SDTC-' + str(sdtc)
         if para != '':
             idx += '_PARA-' + str(para)
         if run != '':
@@ -103,7 +109,18 @@ class Common(object):
         if len([i for i in [para_obj, run_obj, run_lst] if not i]) == 0:
             raise Exception('::Get Runs:: All can not be False')
         if para_obj:
-            return iterable_obj.runs
+            runs = []
+            for rid, child in enumerate(iterable_obj._element):
+                if isinstance(child, CT_R):
+                    run_obj = Run(child, iterable_obj)
+                    runs.append(run_obj)
+                elif isinstance(child, CT_HYPERLINK):
+                    for hlrid, hl_run in enumerate(child.r_lst):
+                        if isinstance(hl_run, CT_R):
+                            run_obj = Run(hl_run, iterable_obj)
+                            runs.append(run_obj)
+
+            return runs
         if run_obj:
             return [iterable_obj]
         if run_lst:

@@ -42,6 +42,10 @@ class HtmlConvert(object):
             self.generated_html_file_path = pdf_to_html.convert_pdf_to_html(html_output_dir=html_output_file,
                                                                             input_pdf_file_path=new_pdf_file_path,
                                                                             timeout=config.PDF_TO_HTML_TIMEOUT)
+            dir, file = os.path.split(self.generated_html_file_path)
+            s3_obj = S3BucketUtils()
+            urls = s3_obj.upload_dir(dir_path=dir)
+            return s3_obj.get_url_for_specific_file(urls=urls, file_pattern='-html.html')
 
 
         elif self.file_type in ['pptx']:

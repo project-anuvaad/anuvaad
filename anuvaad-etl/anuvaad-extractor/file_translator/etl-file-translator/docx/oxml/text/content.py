@@ -5,7 +5,7 @@ from ..xmlchemy import BaseOxmlElement, OxmlElement, ZeroOrMore, ZeroOrOne
 
 class CT_SDT(BaseOxmlElement):
     """
-    ``<w:p>`` element, containing the properties and text for a paragraph.
+    ``<w:psdt>`` element, containing the properties and text for a sdt.
     """
     sdtContent = ZeroOrMore('w:sdtContent')
     

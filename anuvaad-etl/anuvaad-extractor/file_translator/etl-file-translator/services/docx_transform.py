@@ -3,10 +3,11 @@ import os
 import uuid
 
 from anuvaad_auditor import log_info
-from docx import Document
-from docx.oxml import CT_P, CT_Tbl
 
 import config
+from docx import Document
+from docx.oxml import CT_P, CT_Tbl, CT_SDT
+from docx.text.paragraph import Paragraph
 from errors.errors_exception import FileErrors
 from services.service import common_obj
 
@@ -34,21 +35,22 @@ class DocxTransform(object):
     def distribute_over_runs(self, iterable_obj, trans_para):
         common_obj.distribute_over_runs(iterable_obj=iterable_obj, trans_para=trans_para)
 
-    def generate_json_for_run(self, run, file_id='', table='', cell='', row='', para_idx='', run_idx=''):
+    def generate_json_for_run(self, run, file_id='', table='', cell='', row='', sdt='', sdtc='', para_idx='',
+                              run_idx=''):
         new_run_template = copy.deepcopy(self.run_struct)
         new_run_template['text'] = run.text
-        new_run_template['block_id'] = common_obj.generate_id(file_id=file_id, table=table, cell=cell, row=row,
-                                                              para=para_idx, run=run_idx)
+        new_run_template['block_id'] = common_obj.generate_id(file_id=file_id, table=table, cell=cell, row=row, sdt=sdt,
+                                                              sdtc=sdtc, para=para_idx, run=run_idx)
         return new_run_template
 
     '''generate_json_for_para accept para object and using that it tries to create a json structure'''
 
-    def generate_json_for_para(self, para, file_id='', table='', cell='', row='', para_idx=''):
+    def generate_json_for_para(self, para, file_id='', table='', cell='', row='', para_idx='', sdt='', sdtc=''):
         new_para_template = copy.deepcopy(self.para_struct)
         runs = common_obj.get_runs(para, para_obj=True)
         new_para_template['text'] = common_obj.get_para_text(runs)
         new_para_template['block_id'] = common_obj.generate_id(file_id=file_id, table=table, cell=cell, row=row,
-                                                               para=para_idx)
+                                                               sdt=sdt, sdtc=sdtc, para=para_idx)
         return new_para_template
 
     def generate_json_for_page(self, page_number):
@@ -69,9 +71,9 @@ class DocxTransform(object):
 
         sequence_para_index = 0  # Sequence wise total number of para iterated
         sequence_table_index = 0  # Sequence wise total number of table iterated
+        sequence_sdt_index = 0
 
         page_list.append(self.generate_json_for_page(page_number))
-
 
         # START# NEW LOGIC TO ITERATE FILE SEQUENCIALLY
         for ide, child in enumerate(document.element.body):
@@ -99,7 +101,7 @@ class DocxTransform(object):
                 words_no = common_obj.word_count(json_para.get('text'))
                 word_count += words_no
 
-                for idr, run in enumerate(para.runs):
+                for idr, run in enumerate(common_obj.get_runs(para, para_obj=True)):
                     run_count += 1
                     json_run = self.generate_json_for_run(run=run, file_id=file_id,
                                                           para_idx=str(sequence_para_index),
@@ -108,6 +110,39 @@ class DocxTransform(object):
 
                 page_list[page_number - 1]['text_blocks'].append(json_para)
                 sequence_para_index += 1
+
+            elif config.DOCX_TABLE_OF_CONTENT_GEN and isinstance(child, CT_SDT):
+                try:
+                    for sdtc, sdt_content in enumerate(child.sdtContent_lst):
+                        for parax, para in enumerate(sdt_content.p_lst):
+                            para = Paragraph(para, sdtc)
+                            json_para = self.generate_json_for_para(para=para, file_id=file_id,
+                                                                    sdt=str(sequence_sdt_index),
+                                                                    sdtc=str(sdtc),
+                                                                    para_idx=str(parax))
+                            words_no = common_obj.word_count(json_para.get('text'))
+                            word_count += words_no
+
+                            for idr, run in enumerate(common_obj.get_runs(para, para_obj=True)):
+                                run_count += 1
+                                json_run = self.generate_json_for_run(run=run, file_id=file_id,
+                                                                      sdt=str(sequence_sdt_index),
+                                                                      sdtc=str(sdtc),
+                                                                      para_idx=str(parax),
+                                                                      run_idx=str(idr))
+                                json_para['children'].append(json_run)
+
+                            page_list[page_number - 1]['text_blocks'].append(json_para)
+                            sequence_sdt_index += 1
+                except Exception as e:
+                    log_info(
+                        f"generate_json_structure :: JSON CREATION FAILED FOR SDT:{sequence_sdt_index}ERROR:{str(e)}",
+                        None)
+
+                    pass
+
+
+
 
             elif config.DOCX_TABLE_DATA_GEN and isinstance(child, CT_Tbl):
                 if len(document.tables) <= sequence_table_index:
@@ -128,7 +163,7 @@ class DocxTransform(object):
                             words_no = common_obj.word_count(json_para.get('text'))
                             word_count += words_no
 
-                            for id_run, run in enumerate(para.runs):
+                            for id_run, run in enumerate(common_obj.get_runs(para, para_obj=True)):
                                 run_count += 1
                                 json_run = self.generate_json_for_run(run=run, file_id=file_id,
                                                                       table=str(idt),
@@ -211,6 +246,31 @@ class DocxTransform(object):
                             else:
                                 raise FileErrors("translate_docx_file:",
                                                  "PARA ID :{} not found in fetch content".format(para_id))
+        if config.DOCX_TABLE_OF_CONTENT_GEN and config.DOCX_TABLE_OF_CONTENT_TRANS:
+            try:
+                sequence_sdt_index = 0
+                for ide, child in enumerate(document.element.body):
+                    if isinstance(child, CT_SDT):
+                        for sdtc, sdt_content in (child.sdtContent_lst):
+                            for parax, para in enumerate(sdt_content.p_lst):
+                                para = Paragraph(para, sdtc)
+                                runs = common_obj.get_runs(para, para_obj=True)
+                                para_id = common_obj.generate_id(file_id=file_id,
+                                                                 sdt=str(sequence_sdt_index),
+                                                                 sdtc=str(sdtc),
+                                                                 para_idx=str(parax))
+                                if para_id in trans_map:
+                                    self.distribute_over_runs(runs, trans_para=trans_map[para_id])
+                                else:
+                                    raise FileErrors("translate_docx_file:",
+                                                     "PARA ID :{} not found in fetch content".format(para_id))
+                        sequence_sdt_index += 1
+            except Exception as e:
+                log_info(
+                    f"translate_docx_file :: DISTRIBUTE OVER RUN FAILED FOR SDT:{sequence_sdt_index}ERROR:{str(e)}",
+                    None)
+                pass
+
         return document
 
     def write_docx_file(self, document):
@@ -219,8 +279,5 @@ class DocxTransform(object):
         document.save(file_out_path)
         return file_name
 
-
     def remove_table_of_content(self):
         pass
-
-

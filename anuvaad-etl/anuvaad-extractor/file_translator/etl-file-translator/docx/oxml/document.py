@@ -31,7 +31,7 @@ class CT_Body(BaseOxmlElement):
     p = ZeroOrMore('w:p', successors=('w:sectPr',))
     tbl = ZeroOrMore('w:tbl', successors=('w:sectPr',))
     sectPr = ZeroOrOne('w:sectPr', successors=())
-    # sdt = ZeroOrMore('w:sdt')
+    sdt = ZeroOrMore('w:sdt')
 
     def add_section_break(self):
         """Return `w:sectPr` element for new section added at end of document.

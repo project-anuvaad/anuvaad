@@ -3,6 +3,7 @@ import re
 import subprocess
 import sys
 import time
+
 from anuvaad_auditor import log_info
 
 
@@ -20,10 +21,13 @@ class PdfConverter(object):
 
         filename = re.search('-> (.*?) using filter', process.stdout.decode())
 
-        if filename is None:
-            raise LibreOfficeError(process.stdout.decode())
-        else:
-            return filename.group(1)
+        # if filename is None:
+        #     log_info(f"convert_to_pdf: ERROR while converting to pdf, OP: {process.stdout.decode()}", None)
+        #     raise LibreOfficeError(process.stdout.decode())
+        # else:
+        #     return filename.group(1)
+
+        return self.file_name_without_ext+'.pdf'
 
     def libreoffice_exec(self):
         if sys.platform == 'darwin':
