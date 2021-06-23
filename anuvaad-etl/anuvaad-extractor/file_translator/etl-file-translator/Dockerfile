@@ -8,6 +8,7 @@ RUN add-apt-repository --remove ppa:libreoffice/ppa
 RUN apt update
 RUN apt-cache policy libreoffice
 RUN apt install -y libreoffice
+RUN apt-get install -y pdftohtml
 RUN apt-get install -y poppler-utils
 
 COPY / /app
