@@ -99,7 +99,7 @@ PUSH_GENERATED_HTML_TO_S3 = True
 aws_access_key = os.environ.get('FT_AWS_S3_ACCESS_KEY', 'access-key')
 aws_secret_key = os.environ.get('FT_AWS_S3_SECRET_KEY', 'secret-key')
 aws_bucket_name = os.environ.get('FT_AWS_BUCKET_NAME', 'anuvaad1')
-aws_link_prefix = f'http://{aws_bucket_name}.s3.amazonaws.com/'
+aws_link_prefix = f'https://{aws_bucket_name}.s3.amazonaws.com/'
 
 
 
