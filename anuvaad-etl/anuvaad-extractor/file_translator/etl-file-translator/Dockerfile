@@ -4,7 +4,7 @@ RUN apt-get install -y build-essential libssl-dev libffi-dev python3-dev wget
 RUN mkdir /usr/share/man/man1
 
 RUN apt-get install -y software-properties-common
-RUN add-apt-repository ppa:libreoffice/ppa
+RUN add-apt-repository --remove ppa:libreoffice/ppa
 RUN apt update
 RUN apt install libreoffice
 RUN apt-get install -y poppler-utils
