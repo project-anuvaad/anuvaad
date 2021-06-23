@@ -1,16 +1,16 @@
-export const pattern = '( |<([^>]+)>*|&[a-zA-Z0-9]*;|[_,;*+?^${}()|[\\]\\\\]||<(\\/[a-z])*>|\n*)*';
+export const pattern = '( |<([^>]+)>*|&[a-zA-Z0-9]*;|[_,;\\:\\-\\n\\+\\?\\^\\$\\*{}()|[\\]\\\\]||<(\\/[a-z])*>)*';
 export const highlightSource = (source, color, id, highlightSentence, paper) => {
-    let regExpSource = source.replace(/[|,|\.|\-]+/g,' ').split(' ').join(pattern)
+    let regExpSource = source.replace(/[|,|\.|\-]+/g, ' ').split(' ').join(pattern)
     if (regExpSource[regExpSource.length - 1] === '.') {
         regExpSource = regExpSource.substr(0, regExpSource.length - 1)
     }
     regExpSource = new RegExp(regExpSource, 'gm')
     let m;
     let regArr = [];
-    while ((m = regExpSource.exec(paper.replace(/\n/g," "))) !== null) {
+    while ((m = regExpSource.exec(paper.replace(/\n/g, " "))) !== null) {
         regArr.push(m)
     }
-    let matchArr = regArr[regArr.length - 1]
+    let matchArr = regArr[0]
     let startIndex = matchArr && matchArr.index
     let totalLen = 0
     if (matchArr) totalLen += matchArr[0].length
@@ -18,15 +18,16 @@ export const highlightSource = (source, color, id, highlightSentence, paper) => 
         highlightSentence(paper, startIndex, totalLen, color, id)
     }
     else {
-        let regExpArr = source.split(' ')
+        let regExpArr = source.replace(/[|,|\.|\-]+/g, ' ').split(' ')
         let regExpSource = getInitialText(regExpArr, pattern)
+        console.log(regExpSource);
         regExpSource = new RegExp(regExpSource, 'gm')
         let m;
         let regArr = [];
-        while ((m = regExpSource.exec(paper)) !== null) {
+        while ((m = regExpSource.exec(paper.replace(/\n/g, " "))) !== null) {
             regArr.push(m)
         }
-        let matchArr = regArr[regArr.length - 1]
+        let matchArr = regArr[0]
         let startIndex = matchArr && matchArr.index
         let totalLen = 0
         if (matchArr) totalLen += matchArr[0].length
