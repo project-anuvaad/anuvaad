@@ -6,7 +6,7 @@ import { v4 as uuid4 } from 'uuid'
 import { clearHighlighBlock } from '../../../../flux/actions/users/translator_actions';
 import { bindActionCreators } from "redux";
 import APITransport from '../../../../flux/actions/apitransport/apitransport';
-
+import { highlightSource } from '../../../../utils/HtmlHighlightProcess';
 const $ = require('jquery');
 
 
@@ -20,22 +20,45 @@ class PageCardHtml extends React.Component {
         }
     }
 
+    componentDidMount() {
+        $('#paper').html('Loading...')
+        this.getHTML()
+    }
+
+    componentDidUpdate(prevProps) {
+        const { highlightBlock } = this.props
+
+        if (prevProps.link !== this.props.link) {
+            this.fetchHtmlData(this.props.link)
+        }
+
+        if (this.page_no !== this.props.active_page && this.state.loaded) {
+            this.page_no = this.props.active_page
+            let source = this.getSource(this.props.fetchContent, this.page_no)
+            if (this.prev_sid) {
+                this.removeFontTag();
+            }
+            if (source) {
+                this.processScrollIntoView('white', source)
+            }
+            this.props.clearHighlighBlock();
+        } else if (highlightBlock.block) {
+            let { src } = highlightBlock.block
+            if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
+                this.removeFontTag();
+                this.processScrollIntoView('orange', src)
+            } else if (highlightBlock.current_sid && !highlightBlock.prev_sid) {
+                this.processScrollIntoView('orange', src)
+            }
+        }
+    }
+
     getHTML = () => {
         let { jobid } = this.props.match.params
         let { APITransport } = this.props
         jobid = jobid.split('|').shift()
         let obj = new GetHtmlLink([jobid])
         APITransport(obj)
-    }
-
-    getInitialText = (arr, pattern) => {
-        let str = ""
-        let i = 0
-        while (i <= 2) {
-            str = str + arr[i] + pattern
-            i++;
-        }
-        return str;
     }
 
     highlightSentence = (paper, startIndex, totalLen, color, id) => {
@@ -49,42 +72,8 @@ class PageCardHtml extends React.Component {
     highlight = (source, color, id) => {
         if (source) {
             const paper = $('#paper').html()
-            const pattern = '( |<([^>]+)>+|&[a-z]+;|[_,;*+?^${}()|[\\]\\\\])+'
             try {
-                let regExpSource = source.split(' ').join(pattern)
-                if (regExpSource[regExpSource.length - 1] === '.') {
-                    regExpSource = regExpSource.substr(0, regExpSource.length - 1)
-                }
-                regExpSource = new RegExp(regExpSource, 'gm')
-                let m;
-                let regArr = [];
-                while ((m = regExpSource.exec(paper)) !== null) {
-                    regArr.push(m)
-                }
-                let matchArr = regArr[regArr.length - 1]
-                let startIndex = matchArr && matchArr.index
-                let totalLen = 0
-                if (matchArr) totalLen += matchArr[0].length
-                if (startIndex >= 0) {
-                    this.highlightSentence(paper, startIndex, totalLen, color, id)
-                }
-                else {
-                    let regExpArr = source.split(' ')
-                    let regExpSource = this.getInitialText(regExpArr, pattern)
-                    regExpSource = new RegExp(regExpSource, 'gm')
-                    let m;
-                    let regArr = [];
-                    while ((m = regExpSource.exec(paper)) !== null) {
-                        regArr.push(m)
-                    }
-                    let matchArr = regArr[regArr.length - 1]
-                    let startIndex = matchArr && matchArr.index
-                    let totalLen = 0
-                    if (matchArr) totalLen += matchArr[0].length
-                    if (startIndex >= 0) {
-                        this.highlightSentence(paper, startIndex, totalLen, '#e1f5b3', id)
-                    }
-                }
+                highlightSource(source, color, id, this.highlightSentence, paper)
             } catch (error) {
                 console.log('error occurred!', source)
             }
@@ -109,6 +98,12 @@ class PageCardHtml extends React.Component {
 
     }
 
+    setTagAttrib = (baseUrl, tag, property) => {
+        for (let i = 0; i < tag.length; i++) {
+            tag[i][property] = baseUrl + tag[i][property].substr(tag[i][property].lastIndexOf('/') + 1)
+        }
+    }
+
     fetchHtmlData = (link) => {
         fetch(link, {
             method: 'get',
@@ -124,12 +119,8 @@ class PageCardHtml extends React.Component {
                     let images = document.getElementsByTagName('img')
                     let urls = document.getElementsByTagName('a')
                     let baseUrl = link.substr(0, link.lastIndexOf('/') + 1)
-                    for (let i = 0; i < images.length; i++) {
-                        images[i].src = baseUrl + images[i].src.substr(images[i].src.lastIndexOf('/') + 1)
-                    }
-                    for (let i = 0; i < urls.length; i++) {
-                        urls[i].href = baseUrl + urls[i].href.substr(urls[i].href.lastIndexOf('/') + 1)
-                    }
+                    this.setTagAttrib(baseUrl, images, 'src')
+                    this.setTagAttrib(baseUrl, urls, 'href')
                     $('body').css('width', '100%')
                     this.setState({ loaded: true })
                 } else {
@@ -138,59 +129,18 @@ class PageCardHtml extends React.Component {
             })
     }
 
-    componentDidMount() {
-        $('#paper').html('Loading...')
-        this.getHTML()
+    processScrollIntoView = (color, src) => {
+        this.prev_sid = uuid4()
+        this.highlight(src, color, this.prev_sid)
+        let current = document.getElementById(this.prev_sid)
+        current && current.scrollIntoView({ behavior: "smooth", inline: "nearest" });
     }
 
-    componentDidUpdate(prevProps) {
-        const { highlightBlock } = this.props
-
-        if (prevProps.link !== this.props.link) {
-            this.fetchHtmlData(this.props.link)
-        }
-
-        if (this.page_no !== this.props.active_page && this.state.loaded) {
-            this.page_no = this.props.active_page
-            let source = this.getSource(this.props.fetchContent, this.page_no)
-            if (this.prev_sid) {
-                var font = document.getElementsByTagName('font');
-                var counter = font.length - 1;
-                for (let i = counter; i >= 0; i--) {
-                    font[i].outerHTML = font[i].innerHTML;
-                }
-            }
-            if (source) {
-                this.prev_sid = uuid4()
-                this.highlight(source, 'white', this.prev_sid)
-                let sentenceToHighlight = document.getElementById(this.prev_sid)
-                if (sentenceToHighlight) sentenceToHighlight.scrollIntoView({ behavior: "smooth", inline: "nearest" })
-            }
-            this.props.clearHighlighBlock();
-        } else if (highlightBlock.block) {
-            let { src } = highlightBlock.block
-            if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
-                var font = document.getElementsByTagName('font');
-                var counter = font.length - 1;
-                for (let i = counter; i >= 0; i--) {
-                    font[i].outerHTML = font[i].innerHTML;
-                }
-                this.prev_sid = uuid4()
-                this.highlight(src, 'orange', this.prev_sid)
-                let current = document.getElementById(this.prev_sid)
-                current && current.scrollIntoView({ behavior: "smooth", inline: "nearest" });
-            } else if (highlightBlock.current_sid && !highlightBlock.prev_sid) {
-                this.prev_sid = uuid4()
-                this.highlight(src, 'orange', this.prev_sid)
-                let current = document.getElementById(this.prev_sid)
-                current && current.scrollIntoView({ behavior: "smooth", inline: "nearest" });
-            } else if (highlightBlock.current_sid === highlightBlock.prev_sid && highlightBlock.prev_sid) {
-                var font = document.getElementsByTagName('font');
-                var counter = font.length - 1;
-                for (let i = counter; i >= 0; i--) {
-                    font[i].outerHTML = font[i].innerHTML;
-                }
-            }
+    removeFontTag = () => {
+        var font = document.getElementsByTagName('font');
+        var counter = font.length - 1;
+        for (let i = counter; i >= 0; i--) {
+            font[i].outerHTML = font[i].innerHTML;
         }
     }
 
