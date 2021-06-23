@@ -3,7 +3,7 @@ RUN apt-get update
 RUN apt-get install -y build-essential libssl-dev libffi-dev python3-dev wget
 RUN mkdir /usr/share/man/man1
 
-
+RUN sudo apt-get install -y software-properties-common
 RUN  add-apt-repository ppa:libreoffice/libreoffice-7-1
 RUN apt update
 RUN apt-get install -y poppler-utils
