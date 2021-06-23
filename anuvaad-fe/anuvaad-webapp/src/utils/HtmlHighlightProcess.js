@@ -1,10 +1,9 @@
-export const pattern = '( |<([^>]+)>+|&[a-z]+;|[_,;*+?^${}()|[\\]\\\\]||<(\\/[a-z])+>|\n+)+';
+export const pattern = '( |<([^>]+)>*|&[a-zA-Z0-9]*;|[_,;*+?^${}()|[\\]\\\\]||<(\\/[a-z])*>|\n*)*';
 export const highlightSource = (source, color, id, highlightSentence, paper) => {
     let regExpSource = source.replace(/[|,|\.|\-]+/g,' ').split(' ').join(pattern)
     if (regExpSource[regExpSource.length - 1] === '.') {
         regExpSource = regExpSource.substr(0, regExpSource.length - 1)
     }
-    console.log(regExpSource)
     regExpSource = new RegExp(regExpSource, 'gm')
     let m;
     let regArr = [];
