@@ -33,4 +33,4 @@ MONGO_NMT_MODELS_COLLECTION = os.environ.get('MONGO_NMT_MODELS_COLLECTION', 'anv
 source = ['en','hi','mr','ta','te','kn','gu','pa','bn','ml','as','brx','doi','ks','kok','mai','mni','ne','or','sd','si','ur','sat','lus','njz','pnr','kha','grt','sa']
 
 ## truncation limit for sentence length
-trunc_limit = 180
+trunc_limit = 160
