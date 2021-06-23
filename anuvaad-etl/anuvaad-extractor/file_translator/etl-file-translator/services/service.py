@@ -225,5 +225,12 @@ class Common(object):
             word_count = 0
         return para_count, run_count, word_count
 
+    def get_url_for_specific_file(self, urls, file_pattern):
+        if not isinstance(urls, list):
+            return None
+        for url in urls:
+            if file_pattern in url:
+                return url
+
 
 common_obj = Common()

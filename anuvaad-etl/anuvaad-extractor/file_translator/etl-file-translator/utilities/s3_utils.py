@@ -88,7 +88,7 @@ class S3BucketUtils(object):
 
     def upload_dir(self, dir_path):
         s3_client = boto3.client('s3', aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_key)
-        roo_dir, html_dir = os.path.split(dir_path)
+        root_dir, html_dir = os.path.split(dir_path)
         urls = []
         log_info(f"upload_dir:: UPLOADING dir to s3. dir: {dir_path}", None)
         for root, dirs, files in os.walk(dir_path):
@@ -100,7 +100,8 @@ class S3BucketUtils(object):
 
                 s3_file_name = os.path.join(html_dir, filename)
                 file_name = dir_path + '/' + filename
-                file_url = self.upload_file(s3_client=s3_client, file_name=file_name, s3_file_name=s3_file_name, ExtraArgs = ExtraArgs)
+                file_url = self.upload_file(s3_client=s3_client, file_name=file_name, s3_file_name=s3_file_name,
+                                            ExtraArgs=ExtraArgs)
                 if file_url:
                     urls.append(file_url)
 
@@ -132,13 +133,6 @@ class S3BucketUtils(object):
         except Exception as e:
             log.exception(e)
             return False
-
-    def get_url_for_specific_file(self, urls, file_pattern):
-        if not isinstance(urls, list):
-            return None
-        for url in urls:
-            if file_pattern in url:
-                return url
 
 
 # Log config

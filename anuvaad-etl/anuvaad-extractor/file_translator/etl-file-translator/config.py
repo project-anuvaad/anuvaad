@@ -67,6 +67,10 @@ DOCX_HEADER_FOOTER_TRANS = False
 
 DOCX_HYPERLINK_SUPPORT = False
 
+# FLOWS
+FLOW_DOCX_PDF_HTML_S3_ENABLED = False
+FLOW_DOCX_LIBREHTML_S3_ENABLED = True
+
 # PAGE LIMIT
 DOCX_PAGE_LIMIT_ENABLE = True
 PARA_WISE_PAGE_LIMIT = False
@@ -92,12 +96,13 @@ PPTX_PAGE_LIMIT_ENABLE = False
 
 DOCX_FILE_PREFIX = 'DOCX-'
 PPTX_FILE_PREFIX = 'PPTX-'
-GENERATED_HTML_FILE_PATTERN = '-html.html'
+GENERATED_HTML_FILE_PATTERN = '.html'
 GENERATED_HTML_DEFAULT_NAME = 'document.html'
 
 PUSH_GENERATED_HTML_TO_S3 = True
-aws_access_key = os.environ.get('FT_AWS_S3_ACCESS_KEY', 'access-key')
-aws_secret_key = os.environ.get('FT_AWS_S3_SECRET_KEY', 'secret-key')
+
+aws_access_key = os.environ.get('FT_AWS_S3_ACCESS_KEY', 'ACCESS_KEY')
+aws_secret_key = os.environ.get('FT_AWS_S3_SECRET_KEY', 'SECRET_KEY')
 aws_bucket_name = os.environ.get('FT_AWS_BUCKET_NAME', 'anuvaad1')
 aws_link_prefix = f'https://{aws_bucket_name}.s3.amazonaws.com/'
 
