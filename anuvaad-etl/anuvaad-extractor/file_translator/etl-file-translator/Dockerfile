@@ -6,7 +6,8 @@ RUN mkdir /usr/share/man/man1
 RUN apt-get install -y software-properties-common
 RUN add-apt-repository --remove ppa:libreoffice/ppa
 RUN apt update
-RUN apt install libreoffice
+RUN apt-cache policy libreoffice
+RUN apt install -y libreoffice
 RUN apt-get install -y poppler-utils
 
 COPY / /app
