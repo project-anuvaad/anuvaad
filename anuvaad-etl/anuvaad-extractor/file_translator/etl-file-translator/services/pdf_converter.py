@@ -23,7 +23,6 @@ class LibreConverter(object):
 
         return os.path.join(html_output_path, self.file_name_without_ext + '.html')
 
-
     def convert_to_pdf(self, pdf_output_path, input_file_path, timeout=None):
         args = [self.libreoffice_exec(), '--headless', '--convert-to', 'pdf', '--outdir', pdf_output_path,
                 input_file_path]
@@ -40,7 +39,7 @@ class LibreConverter(object):
         # else:
         #     return filename.group(1)
 
-        return self.file_name_without_ext+'.pdf'
+        return os.path.join(pdf_output_path + self.file_name_without_ext+'.pdf')
 
     def libreoffice_exec(self):
         if sys.platform == 'darwin':
