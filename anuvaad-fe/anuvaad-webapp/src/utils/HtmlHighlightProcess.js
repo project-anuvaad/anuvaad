@@ -1,14 +1,14 @@
-export const pattern = '( |<([^>]+)>+|&[a-z]+;|[_,;*+?^${}()|[\\]\\\\])+';
-
+export const pattern = '( |<([^>]+)>+|&[a-z]+;|[_,;*+?^${}()|[\\]\\\\]||<(\\/[a-z])+>|\n+)+';
 export const highlightSource = (source, color, id, highlightSentence, paper) => {
-    let regExpSource = source.split(' ').join(pattern)
+    let regExpSource = source.replace(/[|,|\.|\-]+/g,' ').split(' ').join(pattern)
     if (regExpSource[regExpSource.length - 1] === '.') {
         regExpSource = regExpSource.substr(0, regExpSource.length - 1)
     }
+    console.log(regExpSource)
     regExpSource = new RegExp(regExpSource, 'gm')
     let m;
     let regArr = [];
-    while ((m = regExpSource.exec(paper)) !== null) {
+    while ((m = regExpSource.exec(paper.replace(/\n/g," "))) !== null) {
         regArr.push(m)
     }
     let matchArr = regArr[regArr.length - 1]
