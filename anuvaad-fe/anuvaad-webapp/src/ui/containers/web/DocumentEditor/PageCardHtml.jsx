@@ -64,7 +64,7 @@ class PageCardHtml extends React.Component {
     highlightSentence = (paper, startIndex, totalLen, color, id) => {
         let coloredText = paper.substr(startIndex, totalLen)
         let firstHalf = paper.substr(0, startIndex)
-        let secondHalf = `<font id=${id} style='background-color:${color};padding:3px 0'>${coloredText}</font>`
+        let secondHalf = `<font id=${id} style='background-color:${color};padding:1px 0'>${coloredText}</font>`
         let thirdHalf = paper.substr(startIndex + totalLen)
         $('#paper').html(`${firstHalf}${secondHalf}${thirdHalf}`)
     }
