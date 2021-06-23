@@ -94,13 +94,13 @@ class S3BucketUtils(object):
         for root, dirs, files in os.walk(dir_path):
             for filename in files:
                 if config.GENERATED_HTML_FILE_PATTERN in filename:
-                    filename_for_s3 = config.GENERATED_HTML_DEFAULT_NAME
+                    ExtraArgs = {'ContentType': 'text/html'}
                 else:
-                    filename_for_s3 = filename
+                    ExtraArgs = ''
 
-                s3_file_name = os.path.join(html_dir, filename_for_s3)
+                s3_file_name = os.path.join(html_dir, filename)
                 file_name = dir_path + '/' + filename
-                file_url = self.upload_file(s3_client=s3_client, file_name=file_name, s3_file_name=s3_file_name)
+                file_url = self.upload_file(s3_client=s3_client, file_name=file_name, s3_file_name=s3_file_name, ExtraArgs = ExtraArgs)
                 if file_url:
                     urls.append(file_url)
 
@@ -108,12 +108,16 @@ class S3BucketUtils(object):
         return urls
 
     # Utility to upload files to Anuvaad1 S3 Bucket
-    def upload_file(self, s3_client, file_name, s3_file_name):
+    def upload_file(self, s3_client, file_name, s3_file_name, ExtraArgs=''):
         if s3_file_name is None:
             s3_file_name = file_name
         log.info(f'Pushing {file_name} to S3 at {s3_file_name} ......')
         try:
-            s3_client.upload_file(file_name, aws_bucket_name, s3_file_name)
+            if ExtraArgs:
+                s3_client.upload_file(file_name, aws_bucket_name, s3_file_name, ExtraArgs=ExtraArgs)
+            else:
+                s3_client.upload_file(file_name, aws_bucket_name, s3_file_name)
+
             return f'{aws_link_prefix}{s3_file_name}'
         except Exception as e:
             log.exception(f'Exception while pushing to s3: {e}', e)

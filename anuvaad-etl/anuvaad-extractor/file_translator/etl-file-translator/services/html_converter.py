@@ -47,7 +47,7 @@ class HtmlConvert(object):
             dir, file = os.path.split(self.generated_html_file_path)
             s3_obj = S3BucketUtils()
             urls = s3_obj.upload_dir(dir_path=dir)
-            return s3_obj.get_url_for_specific_file(urls=urls, file_pattern=config.GENERATED_HTML_DEFAULT_NAME)
+            return s3_obj.get_url_for_specific_file(urls=urls, file_pattern=config.GENERATED_HTML_FILE_PATTERN)
 
 
         elif self.file_type in ['pptx']:
