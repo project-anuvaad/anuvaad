@@ -6,6 +6,7 @@ from logging.config import dictConfig
 import boto3 as boto3
 from anuvaad_auditor import log_info
 
+import config
 from config import aws_access_key, aws_secret_key, aws_bucket_name, aws_link_prefix
 
 # from config import shared_storage_path
@@ -92,7 +93,12 @@ class S3BucketUtils(object):
         log_info(f"upload_dir:: UPLOADING dir to s3. dir: {dir_path}", None)
         for root, dirs, files in os.walk(dir_path):
             for filename in files:
-                s3_file_name = os.path.join(html_dir, filename)
+                if config.GENERATED_HTML_FILE_PATTERN in filename:
+                    filename_for_s3 = config.GENERATED_HTML_DEFAULT_NAME
+                else:
+                    filename_for_s3 = filename
+
+                s3_file_name = os.path.join(html_dir, filename_for_s3)
                 file_name = dir_path + '/' + filename
                 file_url = self.upload_file(s3_client=s3_client, file_name=file_name, s3_file_name=s3_file_name)
                 if file_url:

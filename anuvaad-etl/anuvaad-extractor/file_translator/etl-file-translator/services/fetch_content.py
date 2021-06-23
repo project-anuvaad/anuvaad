@@ -13,15 +13,21 @@ class FetchContent(object):
         self.record_id = record_id
         self.block_trans_map = dict()
 
-    def map_translated_text_with_blockid(self, page):
+    def map_translated_text_with_blockid(self, page_id, page):
         for idx, text_block in enumerate(page['text_blocks']):
             trans_para = ''
-            for id_ts, tokenized_sentence in enumerate(text_block['tokenized_sentences']):
-                trans_para += tokenized_sentence['tgt']
+            try:
 
-            text_block['trans_text'] = trans_para
-            block_id = text_block['block_id']
-            self.block_trans_map[block_id] = trans_para
+                for id_ts, tokenized_sentence in enumerate(text_block['tokenized_sentences']):
+                    trans_para += tokenized_sentence['tgt']
+
+                text_block['trans_text'] = trans_para
+                block_id = text_block['block_id']
+                self.block_trans_map[block_id] = trans_para
+            except Exception as e:
+                log_info(
+                    f'map_translated_text_with_blockid:: Got Exception while processing PAGE NO: {page_id}, PARA NO: {idx}',
+                    None)
 
     def generate_url_for_fetch_content(self, record_id, start_page, end_page):
         url = urljoin(config.CH_URL, config.FETCH_CONTENT_ENDPOINT)
@@ -49,8 +55,9 @@ class FetchContent(object):
 
     def generate_map_from_fetch_content_response(self):
         response = self.fetch_content(record_id=self.record_id)
-        for page in response['data']:
-            self.map_translated_text_with_blockid(page)
+        for page_id, page in enumerate(response['data']):
+            log_info(f"generate_map_from_fetch_content_response:: Processing page {page_id}", None)
+            self.map_translated_text_with_blockid(page_id=page_id, page=page)
         log_info("generate_map_from_fetch_content_response :: Generated Map from fetch content.", None)
 
     def store_reference_link(self, job_id='', location=''):
@@ -70,7 +77,7 @@ class FetchContent(object):
         headers = {'content-type': 'application/json'}
         # LOCAL TEST
 
-        rspn = requests.post(url=store_url, data= body, headers=headers)
+        rspn = requests.post(url=store_url, data=body, headers=headers)
 
         log_info(f'Store Reference Link ENDED for job id: {job_id}', None)
 

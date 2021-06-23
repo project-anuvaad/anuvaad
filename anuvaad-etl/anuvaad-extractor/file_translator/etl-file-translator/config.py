@@ -92,6 +92,8 @@ PPTX_PAGE_LIMIT_ENABLE = False
 
 DOCX_FILE_PREFIX = 'DOCX-'
 PPTX_FILE_PREFIX = 'PPTX-'
+GENERATED_HTML_FILE_PATTERN = '-html.html'
+GENERATED_HTML_DEFAULT_NAME = 'document.html'
 
 PUSH_GENERATED_HTML_TO_S3 = True
 aws_access_key = os.environ.get('FT_AWS_S3_ACCESS_KEY', 'access-key')
