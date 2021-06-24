@@ -21,7 +21,7 @@ class HealthResource(Resource):
             return out.jsonify_res()      
         except Exception as e:
             log_exception("GPU out of memory usage",MODULE_CONTEXT,e)  
-            out = CustomResponse(Status.SEVER_MODEL_ERR.value,res)
+            out = CustomResponse(Status.SEVER_MODEL_ERR.value,[])
             return out.jsonify_res()  
         
         
