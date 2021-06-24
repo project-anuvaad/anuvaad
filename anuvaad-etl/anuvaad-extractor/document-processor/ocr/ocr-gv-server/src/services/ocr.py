@@ -20,7 +20,7 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
 def get_text(page_c_lines,file,path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
     
-    path = path
+    #path = config.BASE_DIR+path
     #img = cv2.imread(path)
     
     #img[175 < img ] = 255
