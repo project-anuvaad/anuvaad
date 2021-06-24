@@ -252,6 +252,25 @@ WorkflowConfigs:
 
 
 
+  - workflowCode: WF_A_IO
+    type: ASYNC
+    description: WF for OCR on images
+    useCase: A_IO
+    sequence:
+    - order: 0
+      tool:
+      - name: IMAGE-OCR
+        description: WF for OCR on images
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_DIAGRAM_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_DIAGRAM_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
   - workflowCode: WF_A_FT_S
     type: ASYNC
     description: Search WF for docx download
@@ -480,7 +499,7 @@ WorkflowConfigs:
         kafka-output:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_FT_OUTPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
-      endState: true
+      endState: false
     - order: 1
       tool:
       - name: TOKENISER
@@ -493,6 +512,59 @@ WorkflowConfigs:
           partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 2
+      tool:
+      - name: TRANSLATOR
+        description: Translates sentences from a bm-tok processed json file.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_TOPIC
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TRANSLATOR_OUTPUT_TOPIC
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+
+  - workflowCode: WF_A_FTIOTKTR
+    type: ASYNC
+    description: WF for translating docx/pptx
+    useCase: A_FTIOTTR
+    sequence:
+    - order: 0
+      tool:
+      - name: FILE-TRANSLATOR
+        description: WF for docx translation
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 1
+      tool:
+      - name: IMAGE-OCR
+        description: WF for OCR on images
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_DIAGRAM_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_DIAGRAM_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 2
+      tool:
+      - name: TOKENISER
+        description: Tokenises a given file with paragraphs
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 3
       tool:
       - name: TRANSLATOR
         description: Translates sentences from a bm-tok processed json file.
