@@ -3,6 +3,8 @@ import subprocess
 
 from anuvaad_auditor import log_info
 
+import config
+
 
 class PdfToHtmlConverter(object):
     def __init__(self, input_filename):
@@ -23,6 +25,9 @@ class PdfToHtmlConverter(object):
         # PDFTOHTML take out directory with the 'file name' you want to name it
         # if you provide upload/123/sample, it will generate files under upload/123 and 
         # all the file will have prefix 'sample'
+        if not timeout:
+            timeout = config.PDF_TO_HTML_TIMEOUT
+
         if file_name:
             # file_name shouldn't have extension, it should have only file name
             html_file_path = os.path.join(html_output_dir, file_name)

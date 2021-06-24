@@ -6,13 +6,18 @@ import time
 
 from anuvaad_auditor import log_info
 
+import config
+
 
 class LibreConverter(object):
     def __init__(self, input_filename):
         self.file_name_without_ext = os.path.splitext(input_filename)[0]
 
-    def convert_to_html(self, html_output_path, input_file_path, timeout=None):
-        args = [self.libreoffice_exec(), '--headless', '--convert-to', 'html', '--outdir', html_output_path,
+    def convert_to_html(self, html_output_dir, input_file_path, timeout=None):
+        if not timeout:
+            timeout = config.PDF_TO_HTML_TIMEOUT
+
+        args = [self.libreoffice_exec(), '--headless', '--convert-to', 'html', '--outdir', html_output_dir,
                 input_file_path]
 
         log_info(f"convert_to_html:: HTML conversion process STARTED.", None)
@@ -21,9 +26,13 @@ class LibreConverter(object):
 
         filename = re.search('-> (.*?) using filter', process.stdout.decode())
 
-        return os.path.join(html_output_path, self.file_name_without_ext + '.html')
+        return os.path.join(html_output_dir, self.file_name_without_ext + '.html')
 
     def convert_to_pdf(self, pdf_output_path, input_file_path, timeout=None):
+
+        if not timeout:
+            timeout = config.PDF_CONVERSION_TIMEOUT
+
         args = [self.libreoffice_exec(), '--headless', '--convert-to', 'pdf', '--outdir', pdf_output_path,
                 input_file_path]
 

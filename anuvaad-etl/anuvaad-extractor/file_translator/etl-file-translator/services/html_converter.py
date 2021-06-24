@@ -4,8 +4,9 @@ from anuvaad_auditor import log_info
 
 import config
 from errors.errors_exception import FileErrors
-from services.pdf_converter import LibreConverter
-from services.pdf_to_html import PdfToHtmlConverter
+from services.libre_converter import LibreConverter
+from services.pdftohtml_converter import PdfToHtmlConverter
+from services.pydocx_converter import PyDocxConverter
 from services.service import common_obj, file_ops
 from utilities.s3_utils import S3BucketUtils
 
@@ -23,6 +24,12 @@ from utilities.s3_utils import S3BucketUtils
     7. After HTML is generated we push the data to s3 in bucket anuvaad1, there we follow the same file structure 
     for html file. 
                 inside bucket path: <fileNAme>/<fileName>.html
+    
+    COVERTER SUPPORTED:
+    1. docx to pdf: Libre
+    2. docx to html: Libre, pydocx
+    3. pptx to pdf: Libre
+    4. pdf to html: pdftohtml 
 '''
 
 
@@ -31,6 +38,29 @@ class HtmlConvert(object):
         self.file_name_without_ext = os.path.splitext(input_filename)[0]
         self.file_type = file_type
         self.generated_html_file_path = None
+
+    def check_compatibility_of_tool(self, input_type, output_type, tool):
+        if tool == config.TOOL_LIBRE:
+            if input_type == config.TYPE_DOCX:
+                if output_type == config.TYPE_PDF:
+                    return True
+                elif output_type == config.TYPE_HTML:
+                    return True
+            elif input_type == config.TYPE_PPTX:
+                if output_type == config.TYPE_PDF:
+                    return True
+
+        elif tool == config.TOOL_PYDOCX:
+            if input_type == config.TYPE_DOCX:
+                if output_type == config.TYPE_HTML:
+                    return True
+
+        elif tool == config.TOOL_PDF_TO_HTML:
+            if input_type == config.TYPE_PDF:
+                if output_type == config.TYPE_HTML:
+                    return True
+        else:
+            return False
 
     def create_html_out_dir(self, filename_without_extension):
         # All the html file should get stored with folder structure /upload/<file_name>/<HTML_FILE>
@@ -71,74 +101,115 @@ class HtmlConvert(object):
         generated_html_file_url = self.get_file_url_with_specific_pattern(urls=urls, pattern=pattern)
         return generated_html_file_url
 
-    def convert_to_pdf_libre(self, input_filename, input_filepath, pdf_output_dir):
+    def convert_docx_to_html_pydocx(self, input_filename, input_docx_filepath):
+        html_output_dir = self.create_html_out_dir(filename_without_extension=self.file_name_without_ext)
+        pydocx_obj = PyDocxConverter(input_filename=input_filename)
+        generated_html_file_path = pydocx_obj.convert_to_html(html_output_dir=html_output_dir,
+                                                              input_docx_file_path=input_docx_filepath)
+        return generated_html_file_path
+
+    def convert_to_pdf_libre(self, input_filename, input_filepath):
+        pdf_output_dir = self.get_pdf_out_dir()
         libre_converter = LibreConverter(input_filename=input_filename)
         generated_pdf_file_path = libre_converter.convert_to_pdf(pdf_output_path=pdf_output_dir,
-                                                                 input_file_path=input_filepath,
-                                                                 timeout=config.PDF_CONVERSION_TIMEOUT)
+                                                                 input_file_path=input_filepath)
         return generated_pdf_file_path
 
     def convert_pdf_to_html_pdftohtml(self, input_filename, generated_pdf_file_path):
         html_output_dir = self.create_html_out_dir(filename_without_extension=self.file_name_without_ext)
         pdf_to_html = PdfToHtmlConverter(input_filename=input_filename)
         generated_html_file_path = pdf_to_html.convert_pdf_to_html(html_output_dir=html_output_dir,
-                                                                   input_pdf_file_path=generated_pdf_file_path,
-                                                                   timeout=config.PDF_TO_HTML_TIMEOUT)
+                                                                   input_pdf_file_path=generated_pdf_file_path)
         return generated_html_file_path
 
     def convert_docx_to_html_libre(self, input_filename, input_docx_filepath):
         html_output_dir = self.create_html_out_dir(self.file_name_without_ext)
         libre_converter = LibreConverter(input_filename=input_filename)
-        generated_html_file_path = libre_converter.convert_to_html(html_output_path=html_output_dir,
-                                                                   input_file_path=input_docx_filepath,
-                                                                   timeout=config.PDF_TO_HTML_TIMEOUT)
+        generated_html_file_path = libre_converter.convert_to_html(html_output_dir=html_output_dir,
+                                                                   input_file_path=input_docx_filepath)
         return generated_html_file_path
+
+    def convert_directly_to_html(self, input_filename, tool=None):
+        if not tool:
+            raise FileErrors("DOCX_HTML_CONVERTER_TOOL_MISSING", "convert_docx_directly_to_html: Tool is missing.")
+
+        if not self.check_compatibility_of_tool(input_type=self.file_type, output_type=config.TYPE_PDF, tool=tool):
+            raise FileErrors("DOCX_HTML_CONVERTER_TOOL_INCOMPATIBLE",
+                             "convert_docx_directly_to_html: Tool is Incompatible.")
+
+        input_filepath = self.get_input_file_path(file_name=input_filename)
+
+        if tool == config.TOOL_LIBRE:
+            return self.convert_docx_to_html_libre(input_filename=input_filename, input_docx_filepath=input_filepath)
+        elif tool == config.TOOL_PYDOCX:
+            return self.convert_docx_to_html_pydocx(input_filename=input_filename, input_docx_filepath=input_filepath)
+        else:
+            raise FileErrors("DOCX_HTML_CONVERTER_TOOL_INVALID", "convert_docx_directly_to_html: pass a valid tool.")
+
+    def convert_to_pdf(self, input_filename, tool=''):
+        if not tool:
+            raise FileErrors("DOCX_PDF_CONVERTER_TOOL_MISSING", "convert_to_pdf: Tool is missing.")
+
+        if not self.check_compatibility_of_tool(input_type=self.file_type, output_type=config.TYPE_PDF, tool=tool):
+            raise FileErrors("DOCX_PDF_CONVERTER_TOOL_INCOMPATIBLE", "convert_to_pdf: Tool is Incompatible.")
+
+        input_filepath = self.get_input_file_path(file_name=input_filename)
+
+        if tool == config.TOOL_LIBRE:
+            return self.convert_to_pdf_libre(input_filename=input_filename, input_filepath=input_filepath)
+        else:
+            raise FileErrors("DOCX_PDF_CONVERTER_TOOL_INVALID", "convert_docx_to_pdf: pass a valid tool.")
 
     def generate_html(self, input_filename):
         if self.file_type in ['docx']:
-            if config.FLOW_DOCX_PDF_HTML_S3_ENABLED:
-                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_PDF_HTML_S3_ENABLED Started. ", None)
-
-                input_docx_filepath = self.get_input_file_path(file_name=input_filename)
-                pdf_output_dir = self.get_pdf_out_dir()
+            if config.FLOW_DOCX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED:
+                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED Started. ",
+                         None)
 
                 # CONVERT DOCX TO PDF: LIBRE
-                generated_pdf_file_path = self.convert_to_pdf_libre(input_filename=input_filename,
-                                                                    input_filepath=input_docx_filepath,
-                                                                    pdf_output_dir=pdf_output_dir)
+                generated_pdf_file_path = self.convert_to_pdf(input_filename=input_filename,
+                                                              tool=config.TOOL_LIBRE)
                 # CONVERT PDF TO HTML: PDF TO HTML
                 self.generated_html_file_path = self.convert_pdf_to_html_pdftohtml(input_filename=input_filename,
                                                                                    generated_pdf_file_path=generated_pdf_file_path)
                 # PUSH TO S3
                 generated_html_file_url = self.push_to_s3(generated_html_file_path=self.generated_html_file_path)
 
-                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_PDF_HTML_S3_ENABLED ENDED. ", None)
+                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED ENDED. ",
+                         None)
                 return generated_html_file_url
 
             elif config.FLOW_DOCX_LIBREHTML_S3_ENABLED:
                 log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBREHTML_S3_ENABLED Started. ", None)
 
-                input_docx_filepath = self.get_input_file_path(file_name=input_filename)
-
                 # CONVERT DOCX TO HTML: LIBRE
-                self.generated_html_file_path = self.convert_docx_to_html_libre(input_filename=input_filename,
-                                                                                input_docx_filepath=input_docx_filepath)
+                self.generated_html_file_path = self.convert_directly_to_html(input_filename=input_filename,
+                                                                              tool=config.TOOL_LIBRE)
 
                 generated_html_file_url = self.push_to_s3(generated_html_file_path=self.generated_html_file_path)
 
                 log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBREHTML_S3_ENABLED Ended. ", None)
                 return generated_html_file_url
 
+            elif config.FLOW_DOCX_PYDOCXHTML_S3_ENABLED:
+                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_PYDOCXHTML_S3_ENABLED Started. ", None)
+
+                # CONVERT DOCX TO HTML: PYDOCX
+                self.generated_html_file_path = self.convert_directly_to_html(input_filename=input_filename,
+                                                                              tool=config.TOOL_PYDOCX)
+
+                generated_html_file_url = self.push_to_s3(generated_html_file_path=self.generated_html_file_path)
+
+                log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_PYDOCXHTML_S3_ENABLED Ended. ", None)
+
+                return generated_html_file_url
+
         elif self.file_type in ['pptx']:
             log_info("generate_html :: PPTX to HTML FLOW Started. ", None)
 
-            input_pptx_filepath = self.get_input_file_path(file_name=input_filename)
-            pdf_output_dir = self.get_pdf_out_dir()
-
             # CONVERT PPTX TO PDF: LIBRE
-            generated_pdf_file_path = self.convert_to_pdf_libre(input_filename=input_filename,
-                                                                input_filepath=input_pptx_filepath,
-                                                                pdf_output_dir=pdf_output_dir)
+            generated_pdf_file_path = self.convert_to_pdf(input_filename=input_filename, tool=config.TOOL_LIBRE)
+
             # CONVERT PDF TO HTML: PDF TO HTML
             self.generated_html_file_path = self.convert_pdf_to_html_pdftohtml(input_filename=input_filename,
                                                                                generated_pdf_file_path=generated_pdf_file_path)
