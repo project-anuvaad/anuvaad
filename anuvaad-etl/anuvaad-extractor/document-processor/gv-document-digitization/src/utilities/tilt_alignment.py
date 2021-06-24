@@ -8,17 +8,16 @@ import pandas as pd
 import numpy as np
 
 
-
-#Version 1.0 delivery in this week!
+# Version 1.0 delivery in this week!
 
 
 class Orientation:
 
-    def __init__(self, image_path,get_text ,conf_threshold=50, lang='eng'):
+    def __init__(self, image_path, get_text, conf_threshold=50, lang='eng'):
 
-        self.image_path     = image_path
-        self.image          = cv2.imread(image_path)
-        self.get_text       = get_text
+        self.image_path = image_path
+        self.image = cv2.imread(image_path)
+        self.get_text = get_text
 
         self.conf_threshold = int(conf_threshold)
 
@@ -26,19 +25,18 @@ class Orientation:
         self.text = {}
         self.lang = lang
 
-        #self.re_orient()
+        # self.re_orient()
 
-
-
-
-    def augment_df(self,line_list):
+    def augment_df(self, line_list):
         dic = []
-        for i,box in enumerate(line_list):
-            #print(box)
+        for i, box in enumerate(line_list):
+            # print(box)
             vertices = box["boundingBox"]["vertices"]
-            dic.append({'x1': vertices[0]['x'] ,'y1': vertices[0]['y'] ,'x2': vertices[1]['x'] ,'y2': vertices[1]['y'] ,'x3': vertices[2]['x'] ,'y3': vertices[2]['y'] ,'x4': vertices[3]['x'] ,'y4': vertices[3]['y']})
-        
-        df = pd.DataFrame(dic, columns=['x1', 'y1', 'x2', 'y2', 'x3', 'y3', 'x4', 'y4'])
+            dic.append({'x1': vertices[0]['x'], 'y1': vertices[0]['y'], 'x2': vertices[1]['x'], 'y2': vertices[1]
+                       ['y'], 'x3': vertices[2]['x'], 'y3': vertices[2]['y'], 'x4': vertices[3]['x'], 'y4': vertices[3]['y']})
+
+        df = pd.DataFrame(
+            dic, columns=['x1', 'y1', 'x2', 'y2', 'x3', 'y3', 'x4', 'y4'])
         df['height'] = df['y4'] - df['y1']
         df['width'] = df['x2'] - df['x1']
         df['ymid'] = (df['y4'] + df['y3']) * 0.5
@@ -67,7 +65,8 @@ class Orientation:
         # print(box_dir)
         x_axis = [1, 0]
         try:
-            cosine = np.dot(box_dir, x_axis) / (np.linalg.norm(box_dir) * np.linalg.norm(x_axis))
+            cosine = np.dot(box_dir, x_axis) / \
+                (np.linalg.norm(box_dir) * np.linalg.norm(x_axis))
         except Exception as e:
             print('ERROR in finding angle of rotaion!!!')
             print(e)
@@ -75,11 +74,10 @@ class Orientation:
         angle = np.arccos(cosine) * 180 / np.pi
         avrage_height = bbox_df['height'].mean()
         avrage_width = bbox_df['width'].mean()
-        if avrage_height > avrage_width:
-            angle = 90 - angle
+        # if avrage_height > avrage_width:
+        #    angle = 90 - angle
 
         return angle * np.sign(box_dir[1])
-
 
     def rotate_bound(self, image, angle):
         # grab the dimensions of the image and then determine the
@@ -104,29 +102,24 @@ class Orientation:
 
         # perform the actual rotation and return the image
 
-        #return cv2.warpAffine(image, M, (nW, nH),flags=cv2.INTER_LANCZOS4)
-        #return cv2.warpAffine(image, M, (nW, nH),flags=cv2.INTER_LANCZOS4, borderMode=cv2.BORDER_REPLICATE)
-        return cv2.warpAffine(image, M, (nW, nH),flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
+        # return cv2.warpAffine(image, M, (nW, nH),flags=cv2.INTER_LANCZOS4)
+        # return cv2.warpAffine(image, M, (nW, nH),flags=cv2.INTER_LANCZOS4, borderMode=cv2.BORDER_REPLICATE)
+        return cv2.warpAffine(image, M, (nW, nH), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
 
+    def re_orient(self, page_dict, font_info):
 
-
-    def re_orient(self,page_dict, font_info):
-        
-        page_dict,lines = self.get_text(self.image_path, page_dict,font_info)
+        page_dict, lines = self.get_text(self.image_path, page_dict, font_info)
         angle = self.get_rotaion_angle(lines)
         print("Angle of tilt detected {} ".format(angle))
         if abs(angle) >= 0.1:
             self.image = self.rotate_bound(self.image, -angle)
             cv2.imwrite(self.image_path, self.image)
-            page_dict,lines = self.get_text(self.image_path, page_dict,font_info)
+            page_dict, lines = self.get_text(
+                self.image_path, page_dict, font_info)
             angle = self.get_rotaion_angle(lines)
             print("Angle of tilt after correction {} ".format(angle))
-        
+
         return page_dict
-
-
-
-
 
     #
     # def re_orient(self):
@@ -182,7 +175,6 @@ class Orientation:
     #     return words, lines
     #
 
-
   # def check_orientation(self, group_cordinates, margin=5):
     #     upside_down = False
     #     orientation = []
@@ -207,5 +199,3 @@ class Orientation:
     #     return upside_down
     #
     #
-
-
