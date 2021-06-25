@@ -265,7 +265,7 @@ WorkflowConfigs:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_DIAGRAM_INPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_DIAGRAM_OUTPUT
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_DIAGRAM__OUTPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: true
 
@@ -550,7 +550,7 @@ WorkflowConfigs:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_DIAGRAM_INPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
-        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_DIAGRAM_OUTPUT
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_DIAGRAM__OUTPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 2
