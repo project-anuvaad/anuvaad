@@ -177,7 +177,7 @@ class WFMUtils:
                 tool_input = ocr_tokeniser.get_ocr_tokeniser_input(task_output, previous_tool)
             if current_tool == tool_filetranslator:
                 tool_input = file_translator.get_ft_input(task_output)
-            if current_tool == image_ocr:
+            if current_tool == tool_imageocr:
                 tool_input = image_ocr.get_image_ocr_input(task_output)
             if current_tool in ocr_tools:
                 job_details = self.get_job_details(task_output["jobID"])[0]
