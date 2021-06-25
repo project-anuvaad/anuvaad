@@ -214,7 +214,7 @@ class WFMUtils:
                 tool_input = annotator.get_annotator_input_wf(wf_input)
             if current_tool == tool_filetranslator:
                 tool_input = file_translator.get_ft_input_wf(wf_input)
-            if current_tool == image_ocr:
+            if current_tool == tool_imageocr:
                 tool_input = image_ocr.get_image_ocr_input_wf(wf_input)
         return tool_input
 
