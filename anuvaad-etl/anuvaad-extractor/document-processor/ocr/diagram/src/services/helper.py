@@ -1,6 +1,3 @@
-/tess_train_data_prep/reports/hindi/
-
-
 import os
 import config
 import numpy as np
