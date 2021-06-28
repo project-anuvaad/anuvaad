@@ -6,8 +6,9 @@ from anuvaad_auditor import log_info, log_exception
 
 import config
 from config import aws_access_key, aws_secret_key, aws_bucket_name, aws_link_prefix
+import logging
+logging.getLogger('boto').setLevel(logging.ERROR)
 
-# from config import shared_storage_path
 
 
 mongo_instance = None
