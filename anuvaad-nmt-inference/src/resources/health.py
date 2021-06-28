@@ -20,10 +20,10 @@ class HealthResource(Resource):
             usage_percent = usage_0.memoryUsed/usage_0.memoryTotal
             log_info("GPU usage :{}".format(usage_percent),MODULE_CONTEXT)
             # pipe = os.system('gpustat --json')
-            out = CustomResponse(Status.SUCCESS.value,usage_percent)
+            out = CustomResponse(Status.SUCCESS.value,usage_0)
             return out.jsonify_res()      
         except Exception as e:
-            log_exception("GPU out of memory usage",MODULE_CONTEXT,e)  
+            log_exception("*********************GPU out of memory usage*************************",MODULE_CONTEXT,e)  
             out = CustomResponse(Status.SEVER_MODEL_ERR.value,[])
             return out.jsonify_res()  
         
