@@ -1,17 +1,14 @@
 import hashlib
-import logging
 import os
-from logging.config import dictConfig
 
 import boto3 as boto3
-from anuvaad_auditor import log_info
+from anuvaad_auditor import log_info, log_exception
 
 import config
 from config import aws_access_key, aws_secret_key, aws_bucket_name, aws_link_prefix
 
 # from config import shared_storage_path
 
-log = logging.getLogger('file')
 
 mongo_instance = None
 
@@ -62,14 +59,14 @@ class S3BucketUtils(object):
     #         return False, False
 
     def delete_from_s3(self, file):
-        log.info(f'Deleting {file} from S3......')
+        log_info(f'Deleting {file} from S3......', None)
         s3_client = boto3.client('s3', aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_key)
         try:
             objects = [{"Key": file}]
             response = s3_client.delete_objects(Bucket=aws_bucket_name, Delete={"Objects": objects})
             return response
         except Exception as e:
-            log.exception(e)
+            log_exception('delete_from_s3: DELETION FAILED', None, e)
             return False
 
     # Utility to hash a file
@@ -83,7 +80,7 @@ class S3BucketUtils(object):
                     h.update(chunk)
             return h.hexdigest()
         except Exception as e:
-            log.exception(e)
+            log_exception("hash_file: HASH FAILED.", None, e)
             return None
 
     def upload_dir(self, dir_path):
@@ -112,7 +109,7 @@ class S3BucketUtils(object):
     def upload_file(self, file_name, s3_file_name, ExtraArgs=''):
         if s3_file_name is None:
             s3_file_name = file_name
-        log.info(f'Pushing {file_name} to S3 at {s3_file_name} ......')
+        log_info(f'Pushing {file_name} to S3 at {s3_file_name} ......', None)
         try:
             if ExtraArgs:
                 self.s3_client.upload_file(file_name, aws_bucket_name, s3_file_name, ExtraArgs=ExtraArgs)
@@ -121,7 +118,7 @@ class S3BucketUtils(object):
 
             return f'{aws_link_prefix}{s3_file_name}'
         except Exception as e:
-            log.exception(f'Exception while pushing to s3: {e}', e)
+            log_exception(f'Exception while pushing to s3: {e}', None, e)
         return False
 
     # Utility to download files to ULCA S3 Bucket
@@ -131,39 +128,5 @@ class S3BucketUtils(object):
             response = s3_client.download_file(aws_bucket_name, s3_file_name)
             return response
         except Exception as e:
-            log.exception(e)
+            log_exception("download_file: EXCEPTION ", None, e)
             return False
-
-
-# Log config
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] {%(filename)s:%(lineno)d} %(threadName)s %(levelname)s in %(module)s: %(message)s',
-    }},
-    'handlers': {
-        'info': {
-            'class': 'logging.FileHandler',
-            'level': 'DEBUG',
-            'formatter': 'default',
-            'filename': 'info.log'
-        },
-        'console': {
-            'class': 'logging.StreamHandler',
-            'level': 'DEBUG',
-            'formatter': 'default',
-            'stream': 'ext://sys.stdout',
-        }
-    },
-    'loggers': {
-        'file': {
-            'level': 'DEBUG',
-            'handlers': ['info', 'console'],
-            'propagate': ''
-        }
-    },
-    'root': {
-        'level': 'DEBUG',
-        'handlers': ['info', 'console']
-    }
-})
