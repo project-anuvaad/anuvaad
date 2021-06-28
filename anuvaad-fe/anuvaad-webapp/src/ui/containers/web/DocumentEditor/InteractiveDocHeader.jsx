@@ -31,6 +31,8 @@ import DownloadFile from "../../../../flux/actions/apis/download/download_zip_fi
 import DownloadDOCX from "../../../../flux/actions/apis/document_translate/download_docx";
 import DirectDocxDownload from "../../../../flux/actions/apis/download/download_direct_docx";
 import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
+import SwitchView from '../../../../flux/actions/apis/document_translate/getViewOption';
+import clear_html_link from "../../../../flux/actions/apis/document_translate/clear_html_link";
 
 const StyledMenu = withStyles({
     paper: {
@@ -279,8 +281,8 @@ class InteractiveDocHeader extends React.Component {
             <div style={{ display: "flex", flexDirection: "row" }}>
                 {!this.props.show_pdf && !this.props.preview && workflow !== 'WF_A_FTTKTR' && <Button color="primary" variant="outlined" onClick={this.hideDocument.bind(this)}>{this.props.docView ? "Show Document" : " Hide document"}</Button>}
                 {!this.props.docView && !this.props.preview && workflow !== 'WF_A_FTTKTR' && <Button color="primary" variant="outlined" style={{ marginLeft: "10px" }} onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" : " Show PDF"}</Button>}
-                {/* {
-                    workflow === 'WF_A_FTTKTR' &&
+                {
+                    workflow === 'WF_A_FTTKTR' && type === 'DOCX' &&
                     <>
                         <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleOptionsMenu.bind(this)}>
                             View Options
@@ -294,17 +296,25 @@ class InteractiveDocHeader extends React.Component {
                         >
                             <MenuItem
                                 style={{ borderTop: "1px solid #D6D6D6" }}
+                                onClick={() => {
+                                    this.props.SwitchView('View1')
+                                    this.setState({ optionsEl: false })
+                                }}
                             >
-                                View Document
+                                View DOCX-HTML
                             </MenuItem>
                             <MenuItem
                                 style={{ borderTop: "1px solid #D6D6D6" }}
+                                onClick={(e) => {
+                                    this.props.SwitchView('View2')
+                                    this.setState({ optionsEl: false })
+                                }}
                             >
-                                View Images
+                                View PDF-HTML
                             </MenuItem>
                         </StyledMenu>
                     </>
-                } */}
+                }
 
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
                     Download
@@ -317,22 +327,27 @@ class InteractiveDocHeader extends React.Component {
                     open={openEl}
                     onClose={this.handleClose.bind(this)}
                 >
-                    <MenuItem
-                        style={{ borderTop: "1px solid #D6D6D6" }}
-                        onClick={() => {
-                            this.fetchFile("txt")
-                        }}
-                    >
-                        As TXT
-                    </MenuItem>
-                    <MenuItem
-                        style={{ borderTop: "1px solid #D6D6D6" }}
-                        onClick={() => {
-                            this.fetchFile("xlsx")
-                        }}
-                    >
-                        As XLSX
-                    </MenuItem>
+                    {workflow !== 'WF_A_FTTKTR' &&
+                        <>
+                            <MenuItem
+                                style={{ borderTop: "1px solid #D6D6D6" }}
+                                onClick={() => {
+                                    this.fetchFile("txt")
+                                }}
+                            >
+                                As TXT
+                            </MenuItem>
+                            <MenuItem
+                                style={{ borderTop: "1px solid #D6D6D6" }}
+                                onClick={() => {
+                                    this.fetchFile("xlsx")
+                                }}
+                            >
+                                As XLSX
+                            </MenuItem>
+                        </>
+                    }
+
                     {!this.props.preview && workflow !== 'WF_A_FTTKTR' && <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
@@ -359,7 +374,7 @@ class InteractiveDocHeader extends React.Component {
                     }
                 </StyledMenu>
 
-            </div>
+            </div >
         );
     }
 
@@ -379,6 +394,7 @@ class InteractiveDocHeader extends React.Component {
                             <div style={{ display: "flex", flexDirection: "row" }}>
                                 <IconButton
                                     onClick={() => {
+                                        this.props.clear_html_link()
                                         history.push(`${process.env.PUBLIC_URL}/view-document`);
                                     }}
                                     className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
@@ -420,7 +436,9 @@ const mapDispatchToProps = dispatch => bindActionCreators(
     {
         APITransport,
         showPdf,
-        showSidebar
+        showSidebar,
+        SwitchView,
+        clear_html_link
     },
     dispatch
 );

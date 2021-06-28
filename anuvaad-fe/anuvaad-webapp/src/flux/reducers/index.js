@@ -65,6 +65,7 @@ import fetchuserjob from './user/fetch_user_job';
 import fetchglossary from './user_glossary/fetch_user_glossary';
 import getUserReport from './admin/get_user_event_report';
 import getHtmlLink from './editor/getHtmlLink';
+import getViewOptions from './editor/getViewOptions';
 
 export default {
     login,
@@ -132,5 +133,6 @@ export default {
     fetchuserjob,
     fetchglossary,
     getUserReport,
-    getHtmlLink
+    getHtmlLink,
+    getViewOptions
 };

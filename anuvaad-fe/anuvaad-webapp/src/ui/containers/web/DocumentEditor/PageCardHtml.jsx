@@ -7,6 +7,9 @@ import { clearHighlighBlock } from '../../../../flux/actions/users/translator_ac
 import { bindActionCreators } from "redux";
 import APITransport from '../../../../flux/actions/apitransport/apitransport';
 import { highlightSource } from '../../../../utils/HtmlHighlightProcess';
+import { Paper } from '@material-ui/core';
+import SwitchView from '../../../../flux/actions/apis/document_translate/getViewOption';
+
 const $ = require('jquery');
 
 
@@ -22,14 +25,33 @@ class PageCardHtml extends React.Component {
 
     componentDidMount() {
         $('#paper').html('Loading...')
-        this.getHTML()
+        if (this.props.link.count < 1) this.getHTML()
+        this.props.SwitchView('View1')
     }
 
     componentDidUpdate(prevProps) {
         const { highlightBlock } = this.props
+        let { link } = this.props.link
+        if (prevProps.link.count && prevProps.link.count !== this.props.link.count) {
+            let { filename } = this.props.match.params
+            if (filename && filename.split('.').pop() === 'docx' && link) {
+                this.fetchHtmlData(link['HTML']['LIBRE'])
+            } else if (filename && filename.split('.').pop() === 'pptx' && link) {
+                this.fetchHtmlData(link['PDF']['LIBRE'])
+            }
+        }
 
-        if (prevProps.link !== this.props.link) {
-            this.fetchHtmlData(this.props.link)
+        if (this.props.option !== prevProps.option) {
+            let { filename } = this.props.match.params
+            if (filename && filename.split('.').pop() === 'docx' && link) {
+                if (this.props.option === 'View1') {
+                    this.fetchHtmlData(link['HTML']['LIBRE'])
+                } else if (this.props.option === 'View2') {
+                    this.fetchHtmlData(link['HTML']['PDFTOHTML'])
+                }
+            } else if (filename && filename.split('.').pop() === 'pptx' && link) {
+                this.fetchHtmlData(link['PDF']['LIBRE'])
+            }
         }
 
         if (this.page_no !== this.props.active_page && this.state.loaded) {
@@ -39,7 +61,7 @@ class PageCardHtml extends React.Component {
                 this.removeFontTag();
             }
             if (source) {
-                this.processScrollIntoView('white', source)
+                this.processScrollIntoView('none', source)
             }
             this.props.clearHighlighBlock();
         } else if (highlightBlock.block) {
@@ -146,7 +168,9 @@ class PageCardHtml extends React.Component {
 
     render() {
         return (
-            <span id='paper' style={{ zoom: `${this.props.zoomPercent}%` }}></span>
+            <span style={{ zoom: `${this.props.zoomPercent}%` }}>
+                <Paper id="paper" style={{ background: 'none', padding: '2%' }}></Paper>
+            </span>
 
         )
     }
@@ -157,13 +181,15 @@ const mapStateToProps = state => ({
     highlightBlock: state.block_highlight,
     active_page: state.active_page_number.page_number,
     fetchContent: state.fetchContent,
-    link: state.getHtmlLink.link
+    link: state.getHtmlLink,
+    option: state.getViewOptions.option
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         clearHighlighBlock,
-        APITransport
+        APITransport,
+        SwitchView
     },
     dispatch
 );
