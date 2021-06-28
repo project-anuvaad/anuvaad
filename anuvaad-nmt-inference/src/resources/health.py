@@ -10,6 +10,7 @@ import GPUtil
 class HealthResource(Resource):
     def get(self):
         try:
+            gpu_stat = {}
             log_info("NMT Health api called",MODULE_CONTEXT)
             Gpus = GPUtil.getGPUs()
             GPUtil.showUtilization()
@@ -18,9 +19,11 @@ class HealthResource(Resource):
             # res = res.decode('utf-8')
             usage_0 = Gpus[0]
             usage_percent = usage_0.memoryUsed/usage_0.memoryTotal
-            log_info("GPU usage :{}".format(usage_percent),MODULE_CONTEXT)
+            gpu_stat['memoryUsed'] = usage_0.memoryUsed
+            gpu_stat['memoryTotal'] = usage_0.memoryTotal
+            log_info("GPU usage %:{}".format(usage_percent*100),MODULE_CONTEXT)
             # pipe = os.system('gpustat --json')
-            out = CustomResponse(Status.SUCCESS.value,usage_0)
+            out = CustomResponse(Status.SUCCESS.value,gpu_stat)
             return out.jsonify_res()      
         except Exception as e:
             log_exception("*********************GPU out of memory usage*************************",MODULE_CONTEXT,e)  
