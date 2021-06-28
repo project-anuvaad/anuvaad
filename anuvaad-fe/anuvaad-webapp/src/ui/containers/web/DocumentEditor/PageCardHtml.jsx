@@ -35,13 +35,17 @@ class PageCardHtml extends React.Component {
         if (prevProps.link.count && prevProps.link.count !== this.props.link.count) {
             let { filename } = this.props.match.params
             if (filename && filename.split('.').pop() === 'docx' && link) {
-                this.fetchHtmlData(link['HTML']['LIBRE'])
+                if (this.props.option === 'View1') {
+                    this.fetchHtmlData(link['HTML']['LIBRE'])
+                } else if (this.props.option === 'View2') {
+                    this.fetchHtmlData(link['HTML']['PDFTOHTML'])
+                }
             } else if (filename && filename.split('.').pop() === 'pptx' && link) {
                 this.fetchHtmlData(link['PDF']['LIBRE'])
             }
         }
 
-        if (this.props.option !== prevProps.option) {
+        if (this.props.link.count && this.props.option !== prevProps.option) {
             if (this.props.option === 'View1') {
                 this.fetchHtmlData(link['HTML']['LIBRE'])
             } else if (this.props.option === 'View2') {
