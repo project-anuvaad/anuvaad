@@ -74,8 +74,10 @@ class FetchContent(object):
         log_info(f'Store Reference Link STARTED for job id: {job_id}', None)
 
         # LOCAL TEST
-        headers = {'content-type': 'application/json'}
+        # headers = {'content-type': 'application/json', 'auth-token': 'AUTH'}
         # LOCAL TEST
+
+        headers = {'content-type': 'application/json'}
 
         rspn = requests.post(url=store_url, data=body, headers=headers)
 

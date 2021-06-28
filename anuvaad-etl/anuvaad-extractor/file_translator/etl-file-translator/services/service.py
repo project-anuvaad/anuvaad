@@ -225,7 +225,14 @@ class Common(object):
             word_count = 0
         return para_count, run_count, word_count
 
-    def get_url_for_specific_file(self, urls, file_pattern):
+    def get_url_for_specific_file(self, urls, out_dir, file_name, extension, tool):
+        file_pattern = os.path.join(out_dir, file_name)
+
+        if tool == config.TOOL_PDF_TO_HTML:
+            file_pattern = file_pattern+'-html.html'
+        else:
+            file_pattern = file_pattern+extension
+
         if not isinstance(urls, list):
             return None
         for url in urls:

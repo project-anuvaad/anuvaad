@@ -49,18 +49,20 @@ class Response(object):
 
 
                         html_convert_obj = HtmlConvert(input_filename=input_filename, file_type='docx')
-                        out_html_path = html_convert_obj.generate_html(input_filename=input_filename)
-                        log_info(f"URL TO HTML FILE FOR JOBID {jobid}: {out_html_path}", None)
+                        out_files_url = html_convert_obj.generate_html(input_filename=input_filename)
+                        log_info(f"URL TO HTML FILE FOR JOBID {jobid}: {str(out_files_url)}", None)
 
                         fc_obj = FetchContent(input_filename)
-                        fc_obj.store_reference_link(job_id=jobid, location=out_html_path)
+                        fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
 
 
                     elif in_file_type == "pptx" and transform_flow:
                         pptx_transform_obj = PptxTransform(input_filename)
                         html_convert_obj = HtmlConvert(input_filename=input_filename, file_type='pptx')
 
-                        out_html_path = html_convert_obj.generate_html(input_filename=input_filename)
+                        out_files_url = html_convert_obj.generate_html(input_filename=input_filename)
+                        fc_obj = FetchContent(input_filename)
+                        fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
 
                         pptx_obj = pptx_transform_obj.read_pptx_file(input_filename)
                         transformed_obj = pptx_transform_obj.generate_json_structure(pptx_obj)

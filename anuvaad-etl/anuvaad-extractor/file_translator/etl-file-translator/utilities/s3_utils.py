@@ -87,18 +87,19 @@ class S3BucketUtils(object):
             return None
 
     def upload_dir(self, dir_path):
-        root_dir, html_dir = os.path.split(dir_path)
         urls = []
         log_info(f"upload_dir:: UPLOADING dir to s3. DIR: {dir_path}", None)
         for root, dirs, files in os.walk(dir_path):
             for filename in files:
                 if config.GENERATED_HTML_FILE_PATTERN in filename:
                     ExtraArgs = {'ContentType': 'text/html'}
+                elif config.GENERATED_PDF_FILE_PATTERN in filename:
+                    ExtraArgs = {'ContentType': 'application/pdf'}
                 else:
                     ExtraArgs = ''
 
-                s3_file_name = os.path.join(html_dir, filename)
-                file_name = dir_path + '/' + filename
+                s3_file_name = os.path.join(dir_path, filename)
+                file_name = os.path.join(dir_path, filename)
                 file_url = self.upload_file(file_name=file_name, s3_file_name=s3_file_name,
                                             ExtraArgs=ExtraArgs)
                 if file_url:

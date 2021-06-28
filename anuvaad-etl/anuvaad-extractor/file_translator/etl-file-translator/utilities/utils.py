@@ -122,7 +122,7 @@ class FileOperation(object):
     def error_handler(self, object_in, code, iswf):
         if iswf:
             object_in['status'] = "FAILED"
-            object_in['state'] = "SENTENCE-TOKENISED"
+            object_in['state'] = "FILE-TRANSLATED"
             error = post_error_wf(code, object_in['message'], object_in, None)
             return error
         else:

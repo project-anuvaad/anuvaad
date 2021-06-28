@@ -17,8 +17,7 @@ class LibreConverter(object):
         if not timeout:
             timeout = config.PDF_TO_HTML_TIMEOUT
 
-        args = [self.libreoffice_exec(), '--headless', '--convert-to', 'html', '--outdir', html_output_dir,
-                input_file_path]
+        args = [self.libreoffice_exec(), '--headless', '--convert-to', 'html', '--outdir', html_output_dir, input_file_path]
 
         log_info(f"convert_to_html:: HTML conversion process STARTED.", None)
         process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
@@ -48,7 +47,7 @@ class LibreConverter(object):
         # else:
         #     return filename.group(1)
 
-        return os.path.join(pdf_output_path + self.file_name_without_ext+'.pdf')
+        return os.path.join(pdf_output_path, self.file_name_without_ext+'.pdf')
 
     def libreoffice_exec(self):
         if sys.platform == 'darwin':
