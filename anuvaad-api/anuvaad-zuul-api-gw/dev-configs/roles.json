@@ -19,6 +19,11 @@
             "code":"ANNOTATOR",
             "active":true,
             "description":"Has access to translation related resources for an annotator"
+        },
+        {
+            "code":"SCHOLAR",
+            "active":true,
+            "description":"Has access to translation or test models"
         }
     ]
 }
