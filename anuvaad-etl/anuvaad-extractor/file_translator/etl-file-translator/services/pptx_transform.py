@@ -1,7 +1,7 @@
 import copy
 import os
-
 import uuid
+
 from pptx import Presentation
 
 import config
@@ -80,7 +80,7 @@ class PptxTransform(object):
                                                                   run_idx=str(idr))
                             json_para['children'].append(json_run)
 
-                        page_list[page_number-1]['text_blocks'].append(json_para)
+                        page_list[page_number - 1]['text_blocks'].append(json_para)
                 page_number += 1
                 page_list.append(self.generate_json_for_page(page_number))
 
@@ -102,7 +102,7 @@ class PptxTransform(object):
                     if not shape.has_text_frame:
                         continue
                     for idx, para in enumerate(shape.text_frame.paragraphs):
-                        runs = common_obj.get_runs(para, para_obj=True)
+                        runs = common_obj.get_runs(para, para_obj=True, file_type=config.TYPE_PPTX)
                         para_id = common_obj.generate_id(file_id=file_id,
                                                          slide=str(id_sld),
                                                          shape=str(id_shp),
