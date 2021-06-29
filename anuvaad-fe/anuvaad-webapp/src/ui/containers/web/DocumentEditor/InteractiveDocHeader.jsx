@@ -285,7 +285,7 @@ class InteractiveDocHeader extends React.Component {
                     workflow === 'WF_A_FTTKTR' && type === 'DOCX' &&
                     <>
                         <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleOptionsMenu.bind(this)}>
-                            View Options
+                        Source Document View
                             <DownIcon />
                         </Button>
                         <StyledMenu
@@ -301,7 +301,7 @@ class InteractiveDocHeader extends React.Component {
                                     this.setState({ optionsEl: false })
                                 }}
                             >
-                                View DOCX-HTML
+                                Continuous View
                             </MenuItem>
                             <MenuItem
                                 style={{ borderTop: "1px solid #D6D6D6" }}
@@ -310,7 +310,7 @@ class InteractiveDocHeader extends React.Component {
                                     this.setState({ optionsEl: false })
                                 }}
                             >
-                                View PDF-HTML
+                                Separator View
                             </MenuItem>
                         </StyledMenu>
                     </>
