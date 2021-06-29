@@ -1,4 +1,7 @@
 import hashlib
+import logging
+
+
 import os
 
 import boto3 as boto3
@@ -6,10 +9,8 @@ from anuvaad_auditor import log_info, log_exception
 
 import config
 from config import aws_access_key, aws_secret_key, aws_bucket_name, aws_link_prefix
-import logging
-logging.getLogger('boto').setLevel(logging.ERROR)
 
-
+boto3.set_stream_logger(name='boto3', level=logging.ERROR)
 
 mongo_instance = None
 
@@ -131,3 +132,4 @@ class S3BucketUtils(object):
         except Exception as e:
             log_exception("download_file: EXCEPTION ", None, e)
             return False
+

@@ -33,7 +33,7 @@ class PptxTransform(object):
 
     def generate_json_for_para(self, para, file_id='', table='', cell='', row='', slide='', shape='', para_idx=''):
         new_para_template = copy.deepcopy(self.para_struct)
-        runs = common_obj.get_runs(para, para_obj=True)
+        runs = common_obj.get_runs(para, para_obj=True, file_type=config.TYPE_PPTX)
         new_para_template['text'] = common_obj.get_para_text(runs)
         new_para_template['block_id'] = common_obj.generate_id(file_id=file_id, table=table, cell=cell, row=row,
                                                                slide=slide, shape=shape, para=para_idx)

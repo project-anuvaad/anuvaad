@@ -58,18 +58,17 @@ class Response(object):
 
                     elif in_file_type == "pptx" and transform_flow:
                         pptx_transform_obj = PptxTransform(input_filename)
-                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type='pptx')
-
-                        out_files_url = html_convert_obj.generate_html(input_filename=input_filename)
-                        fc_obj = FetchContent(input_filename)
-                        fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
-
                         pptx_obj = pptx_transform_obj.read_pptx_file(input_filename)
                         transformed_obj = pptx_transform_obj.generate_json_structure(pptx_obj)
 
                         out_json_filepath = pptx_transform_obj.write_json_file(transformed_obj)
                         output_filename = out_json_filepath
                         out_file_type = 'json'
+
+                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type='pptx')
+                        out_files_url = html_convert_obj.generate_html(input_filename=input_filename)
+                        fc_obj = FetchContent(input_filename)
+                        fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
 
                     elif in_file_type == "json" and download_flow:
                         if config.DOCX_FILE_PREFIX in input_filename:
