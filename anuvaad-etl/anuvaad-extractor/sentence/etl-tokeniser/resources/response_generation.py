@@ -44,7 +44,9 @@ class Response(object):
                             input_jsonfile_data, file_write = file_ops.read_json_file(input_filename)
                             input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item, in_locale, page_id) 
                                                                 for page_id, item in enumerate(input_jsonfile_data['result'])]
-                            input_jsonfile_data['result'] = tokenisation.getting_incomplete_text_merging_blocks(input_jsonfile_data['result'])
+                            if workflow_id not in ['WF_A_FTTKTR']:
+                                input_jsonfile_data['result'] = tokenisation.getting_incomplete_text_merging_blocks(input_jsonfile_data['result'])
+
                             input_jsonfile_data['file_locale'] = in_locale
                             json_data_write = json.dumps(input_jsonfile_data)
                             file_write.seek(0)
