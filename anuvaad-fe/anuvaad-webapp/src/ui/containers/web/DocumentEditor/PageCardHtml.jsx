@@ -9,6 +9,7 @@ import APITransport from '../../../../flux/actions/apitransport/apitransport';
 import { highlightSource } from '../../../../utils/HtmlHighlightProcess';
 import { Paper } from '@material-ui/core';
 import SwitchView from '../../../../flux/actions/apis/document_translate/getViewOption';
+import { Document, Page } from "react-pdf/dist/entry.webpack";
 
 const $ = require('jquery');
 
@@ -19,7 +20,11 @@ class PageCardHtml extends React.Component {
         this.prev_sid = React.createRef()
         this.page_no = React.createRef()
         this.state = {
-            loaded: false
+            loaded: false,
+            url: '',
+            scale: 0,
+            pageScale: 0,
+            msg: 'Loading...'
         }
     }
 
@@ -134,18 +139,34 @@ class PageCardHtml extends React.Component {
             }
         })
             .then(async res => {
+                let { filename } = this.props.match.params
+                let type = filename && filename.split('.').pop()
                 if (res.status === 200) {
-                    let html = await res.text()
-                    $('#paper').html(html)
-                    let images = document.getElementsByTagName('img')
-                    let urls = document.getElementsByTagName('a')
-                    let baseUrl = link.substr(0, link.lastIndexOf('/') + 1)
-                    this.setTagAttrib(baseUrl, images, 'src')
-                    this.setTagAttrib(baseUrl, urls, 'href')
-                    $('body').css('width', '100%')
-                    this.setState({ loaded: true })
+                    if (type === 'docx') {
+                        let html = await res.text()
+                        $('#paper').html(html)
+                        let images = document.getElementsByTagName('img')
+                        let urls = document.getElementsByTagName('a')
+                        let baseUrl = link.substr(0, link.lastIndexOf('/') + 1)
+                        this.setTagAttrib(baseUrl, images, 'src')
+                        this.setTagAttrib(baseUrl, urls, 'href')
+                        $('body').css('width', '100%')
+                        this.setState({ loaded: true })
+                    } else if (type === 'pptx') {
+                        const buffer = new Uint8Array(await res.arrayBuffer());
+                        let response = Buffer.from(buffer).toString('base64')
+                        fetch("data:image/jpeg;base64," + response)
+                            .then(res => res.blob())
+                            .then(blob => {
+                                let url = URL.createObjectURL(blob);
+                                this.setState({ url })
+                            });
+                    }
                 } else {
-                    $('#paper').html('Failed to load...')
+                    if (type === 'docx')
+                        $('#paper').html('Failed to load...')
+                    else if (type === 'pptx')
+                        this.setState({ msg: 'Failed to load PDF...' })
                 }
             })
     }
@@ -164,14 +185,42 @@ class PageCardHtml extends React.Component {
             font[i].outerHTML = font[i].innerHTML;
         }
     }
+    onPageLoad = page => {
+        const parentDiv = document.querySelector("#pdfDocument");
+        let pageScale = parentDiv.clientHeight / page.originalHeight;
+        let pageScaleWidth = parentDiv.clientWidth / page.originalWidth;
+        if (this.state.scale !== pageScale) {
+            this.setState({ scale: pageScale, pageScaleWidth });
+        }
+    };
+
+    renderPDF = () => {
+        return (
+            <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
+                <Document loading={"Loading..."} noData={this.state.msg} file={this.state.url} onLoadSuccess={this.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                    <Page scale={this.state.pageScaleWidth} pageNumber={Number(this.props.active_page)} onLoadSuccess={this.onPageLoad} />
+                </Document>
+            </div>
+        )
+    }
 
     render() {
+        let { filename } = this.props.match.params
         return (
-            <span style={{ zoom: `${this.props.zoomPercent}%` }}>
-                <Paper id="paper" style={{ background: 'none', padding: '2%' }}></Paper>
-            </span>
-
+            <>
+                {
+                    filename && filename.split('.').pop() === 'docx' ?
+                        < span style={{ zoom: `${this.props.zoomPercent}%` }}>
+                            <Paper id="paper" style={{ background: 'none', padding: '2%' }}></Paper>
+                        </span >
+                        :
+                        this.renderPDF()
+                }
+            </>
         )
+
+
+
     }
 }
 
