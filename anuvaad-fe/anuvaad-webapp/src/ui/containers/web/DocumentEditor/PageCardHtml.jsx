@@ -29,9 +29,11 @@ class PageCardHtml extends React.Component {
     }
 
     componentDidMount() {
-        $('#paper').html('Loading...')
-        if (this.props.link.count < 1) this.getHTML()
-        this.props.SwitchView('View1')
+        if (this.props.link.count < 1) {
+            $('#paper').html('Loading...')
+            this.getHTML()
+        }
+        this.props.SwitchView(this.props.option)
     }
 
     componentDidUpdate(prevProps) {
@@ -40,22 +42,15 @@ class PageCardHtml extends React.Component {
         if (prevProps.link.count && prevProps.link.count !== this.props.link.count) {
             let { filename } = this.props.match.params
             if (filename && filename.split('.').pop() === 'docx' && link) {
-                if (this.props.option === 'View1') {
-                    this.fetchHtmlData(link['HTML']['LIBRE'])
-                } else if (this.props.option === 'View2') {
-                    this.fetchHtmlData(link['HTML']['PDFTOHTML'])
-                }
+                this.handleDocxView(link)
             } else if (filename && filename.split('.').pop() === 'pptx' && link) {
                 this.fetchHtmlData(link['PDF']['LIBRE'])
             }
         }
+        this.handleDocxView(link)
 
         if (this.props.link.count && this.props.option !== prevProps.option) {
-            if (this.props.option === 'View1') {
-                this.fetchHtmlData(link['HTML']['LIBRE'])
-            } else if (this.props.option === 'View2') {
-                this.fetchHtmlData(link['HTML']['PDFTOHTML'])
-            }
+            this.handleDocxView(link)
         }
 
         if (this.page_no !== this.props.active_page && this.state.loaded) {
@@ -68,13 +63,29 @@ class PageCardHtml extends React.Component {
                 this.processScrollIntoView('none', source)
             }
             this.props.clearHighlighBlock();
-        } else if (highlightBlock.block) {
+        }
+        if (this.page_no === this.props.active_page && !this.state.loaded) {
+            this.handleDocxView(link)
+        }
+
+        if (highlightBlock.block) {
             let { src } = highlightBlock.block
             if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
                 this.removeFontTag();
                 this.processScrollIntoView('orange', src)
             } else if (highlightBlock.current_sid && !highlightBlock.prev_sid) {
                 this.processScrollIntoView('orange', src)
+            }
+        }
+    }
+
+
+    handleDocxView = (link) => {
+        if (link) {
+            if (this.props.option === 'View1') {
+                this.fetchHtmlData(link['HTML']['LIBRE'])
+            } else if (this.props.option === 'View2') {
+                this.fetchHtmlData(link['HTML']['PDFTOHTML'])
             }
         }
     }
