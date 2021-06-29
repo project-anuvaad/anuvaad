@@ -184,7 +184,7 @@ class HtmlConvert(object):
         self.pdf_file_dir = self.create_pdf_out_dir()
         self.html_file_dir = self.create_html_out_dir()
 
-        if self.file_type in ['docx']:
+        if self.file_type in [config.TYPE_DOCX]:
             if config.FLOW_DOCX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED:  # TODO make change in the return
                 log_info("generate_html :: DOC to HTML FLOW: FLOW_DOCX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED Started. ", None)
 
@@ -274,7 +274,7 @@ class HtmlConvert(object):
 
 
 
-        elif self.file_type in ['pptx']:
+        elif self.file_type in [config.TYPE_PPTX]:
             log_info("generate_html :: PPTX to HTML FLOW Started. ", None)
             if config.FLOW_PPTX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED:
                 log_info("generate_html :: PPTX to HTML START : FLOW_PPTX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED Started.", None)
@@ -295,7 +295,6 @@ class HtmlConvert(object):
 
                 self.input_file_dir = config.download_folder
                 self.pdf_file_dir = self.create_pdf_out_dir(self.file_name_without_ext)
-                self.html_file_dir = self.create_html_out_dir(self.file_name_without_ext)
 
                 log_info("generate_html :: PPTX to PDF START : FLOW_PPTX_LIBRE_PDF_S3_ENABLED Started.", None)
 

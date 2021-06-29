@@ -48,7 +48,7 @@ class Response(object):
                         out_file_type = 'json'
 
 
-                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type='docx')
+                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type=config.TYPE_DOCX)
                         out_files_url = html_convert_obj.generate_html(input_filename=input_filename)
                         log_info(f"URL TO HTML FILE FOR JOBID {jobid}: {str(out_files_url)}", None)
 
@@ -65,7 +65,7 @@ class Response(object):
                         output_filename = out_json_filepath
                         out_file_type = 'json'
 
-                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type='pptx')
+                        html_convert_obj = HtmlConvert(input_filename=input_filename, file_type=config.TYPE_PPTX)
                         out_files_url = html_convert_obj.generate_html(input_filename=input_filename)
                         fc_obj = FetchContent(input_filename)
                         fc_obj.store_reference_link(job_id=jobid, location=out_files_url)
