@@ -22,7 +22,7 @@ class PageCardHtml extends React.Component {
         this.state = {
             loaded: false,
             url: '',
-            scale: 0,
+            scale: 1.0,
             pageScale: 0,
             msg: 'Loading...'
         }
@@ -39,43 +39,45 @@ class PageCardHtml extends React.Component {
     componentDidUpdate(prevProps) {
         const { highlightBlock } = this.props
         let { link } = this.props.link
-        if (prevProps.link.count && prevProps.link.count !== this.props.link.count) {
-            let { filename } = this.props.match.params
-            if (filename && filename.split('.').pop() === 'docx' && link) {
+        let { filename } = this.props.match.params
+        if (filename && filename.split('.').pop() === 'docx' && link) {
+            if (prevProps.link.count && prevProps.link.count !== this.props.link.count) {
+                if (filename && filename.split('.').pop() === 'docx' && link) {
+                    this.handleDocxView(link)
+                }
+            } else if (prevProps.link.count && prevProps.link.count === this.props.link.count && !this.state.loaded) {
                 this.handleDocxView(link)
-            } else if (filename && filename.split('.').pop() === 'pptx' && link) {
-                this.fetchHtmlData(link['PDF']['LIBRE'])
             }
-        }
-        this.handleDocxView(link)
+            if (this.props.link.count && this.props.option !== prevProps.option) {
+                this.handleDocxView(link)
+            }
 
-        if (this.props.link.count && this.props.option !== prevProps.option) {
-            this.handleDocxView(link)
-        }
+            if (this.page_no !== this.props.active_page && this.state.loaded) {
+                this.page_no = this.props.active_page
+                let source = this.getSource(this.props.fetchContent, this.page_no)
+                if (this.prev_sid) {
+                    this.removeFontTag();
+                }
+                if (source) {
+                    this.processScrollIntoView('none', source)
+                }
+                this.props.clearHighlighBlock();
+            }
+            if (this.page_no === this.props.active_page && !this.state.loaded) {
+                this.handleDocxView(link)
+            }
 
-        if (this.page_no !== this.props.active_page && this.state.loaded) {
-            this.page_no = this.props.active_page
-            let source = this.getSource(this.props.fetchContent, this.page_no)
-            if (this.prev_sid) {
-                this.removeFontTag();
+            if (highlightBlock.block) {
+                let { src } = highlightBlock.block
+                if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
+                    this.removeFontTag();
+                    this.processScrollIntoView('orange', src)
+                } else if (highlightBlock.current_sid && !highlightBlock.prev_sid) {
+                    this.processScrollIntoView('orange', src)
+                }
             }
-            if (source) {
-                this.processScrollIntoView('none', source)
-            }
-            this.props.clearHighlighBlock();
-        }
-        if (this.page_no === this.props.active_page && !this.state.loaded) {
-            this.handleDocxView(link)
-        }
-
-        if (highlightBlock.block) {
-            let { src } = highlightBlock.block
-            if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
-                this.removeFontTag();
-                this.processScrollIntoView('orange', src)
-            } else if (highlightBlock.current_sid && !highlightBlock.prev_sid) {
-                this.processScrollIntoView('orange', src)
-            }
+        } else if (filename && filename.split('.').pop() === 'pptx' && link && !this.state.loaded) {
+            this.fetchHtmlData(link['PDF']['LIBRE'])
         }
     }
 
@@ -163,15 +165,9 @@ class PageCardHtml extends React.Component {
                         this.setTagAttrib(baseUrl, urls, 'href')
                         $('body').css('width', '100%')
                         this.setState({ loaded: true })
-                    } else if (type === 'pptx') {
-                        const buffer = new Uint8Array(await res.arrayBuffer());
-                        let response = Buffer.from(buffer).toString('base64')
-                        fetch("data:image/jpeg;base64," + response)
-                            .then(res => res.blob())
-                            .then(blob => {
-                                let url = URL.createObjectURL(blob);
-                                this.setState({ url })
-                            });
+                    }
+                    else if (type === 'pptx') {
+                        this.setState({ url: link, loaded: true })
                     }
                 } else {
                     if (type === 'docx')
@@ -205,6 +201,12 @@ class PageCardHtml extends React.Component {
         }
     };
 
+
+
+    onDocumentLoadSuccess = ({ numPages }) => {
+        this.setState({ numPages });
+    }
+
     renderPDF = () => {
         return (
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
@@ -225,7 +227,9 @@ class PageCardHtml extends React.Component {
                             <Paper id="paper" style={{ background: 'none', padding: '2%' }}></Paper>
                         </span >
                         :
-                        this.renderPDF()
+                        < span style={{ zoom: `${this.props.zoomPercent}%` }}>
+                            {this.renderPDF()}
+                        </span >
                 }
             </>
         )
