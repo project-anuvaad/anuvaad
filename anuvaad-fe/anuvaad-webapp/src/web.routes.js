@@ -145,7 +145,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename/:workflow`}
-              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR", "SCHOLAR"]}
               component={DocumentEditorV1}
               title="Translate file"
               authenticate={this.authenticateUser}
@@ -167,7 +167,7 @@ class AppRoutes extends React.Component {
 
             <PrivateRoute
               path={`${process.env.PUBLIC_URL}/document-upload/:type`}
-              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR", "SCHOLAR"]}
               component={FileUpload}
               title="Start Translate"
               authenticate={this.authenticateUser}
@@ -221,7 +221,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/view-document`}
               dontShowLoader
               title={"Document Translate"}
-              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR", "SCHOLAR"]}
               component={ViewDocument}
               authenticate={this.authenticateUser}
               currentMenu="view-document"
@@ -349,7 +349,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/assign-nmt-model`}
               dontShowLoader
               title={"Assign models"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "SCHOLAR"]}
               component={NmtModelAssign}
               authenticate={this.authenticateUser}
               currentMenu="assign-nmt-model"
@@ -391,7 +391,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/my-glossary`}
               dontShowLoader
               title={"My Glossary"}
-              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR", "SCHOLAR"]}
               component={ViewUserGlossary}
               authenticate={this.authenticateUser}
               currentMenu="my-glossary"
@@ -402,7 +402,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/user-glossary-upload`}
               dontShowLoader
               title={"User Glossary Upload"}
-              userRoles={["TRANSLATOR", "ANNOTATOR"]}
+              userRoles={["TRANSLATOR", "ANNOTATOR", "SCHOLAR"]}
               component={UserGlossaryUpload}
               authenticate={this.authenticateUser}
               currentMenu="user-glossary-upload"

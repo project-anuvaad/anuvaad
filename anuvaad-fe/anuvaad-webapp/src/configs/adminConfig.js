@@ -1,26 +1,31 @@
 const adminConfig = {
-    roles:[
+    roles: [
         {
-        
-            "roleCode":"TRANSLATOR",
-            "roleDesc":"Has access to translation related resources"
+
+            "roleCode": "TRANSLATOR",
+            "roleDesc": "Has access to translation related resources"
         },
-        
+
         {
-        
-            "roleCode":"ADMIN",
-            "roleDesc":"Has access to manage the users"
-        
+
+            "roleCode": "ADMIN",
+            "roleDesc": "Has access to manage the users"
+
         },
         {
-        
-            "roleCode":"ANNOTATOR",
-            "roleDesc":"Access to evaluate our model"
-        
+
+            "roleCode": "ANNOTATOR",
+            "roleDesc": "Access to evaluate our model"
+
+        },
+        {
+            "roleCode": "SCHOLAR",
+            "roleDesc": "Has access to translation or test models"
+
         }
-    
+
     ],
-    orgID : ["ANUVAAD"]
+    orgID: ["ANUVAAD"]
 }
 
 export default adminConfig;

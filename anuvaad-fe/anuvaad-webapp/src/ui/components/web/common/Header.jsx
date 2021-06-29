@@ -333,7 +333,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-                  {role && Array.isArray(role) && role.includes("ADMIN") && (
+                  {role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("SCHOLAR")) && (
                     <div>
                       <Divider className={classes.divider} />
 
@@ -377,7 +377,7 @@ class Header extends React.Component {
                             primary={
                               <Typography type="body2" style={{ color: currentMenu === "view-document" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
                                 Translate document
-                            </Typography>
+                              </Typography>
                             }
                           />
                         </ListItem>
@@ -399,7 +399,7 @@ class Header extends React.Component {
                             primary={
                               <Typography type="body2" style={{ color: currentMenu === "document-digitization" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
                                 Digitize Document
-                          </Typography>
+                              </Typography>
                             }
                           />
                         </ListItem>
@@ -422,7 +422,7 @@ class Header extends React.Component {
                         primary={
                           <Typography type="body2" style={{ color: currentMenu === "view-annotation-job" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
                             View Annotation Job
-                            </Typography>
+                          </Typography>
                         }
                       />
                     </ListItem>
@@ -446,7 +446,7 @@ class Header extends React.Component {
                             primary={
                               <Typography type="body2" style={{ color: currentMenu === "my-glossary" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
                                 My Glossary
-                        </Typography>
+                              </Typography>
                             }
                           />
                         </ListItem>
