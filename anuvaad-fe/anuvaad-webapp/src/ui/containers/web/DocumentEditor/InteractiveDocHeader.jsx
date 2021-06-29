@@ -33,7 +33,7 @@ import DirectDocxDownload from "../../../../flux/actions/apis/download/download_
 import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import SwitchView from '../../../../flux/actions/apis/document_translate/getViewOption';
 import clear_html_link from "../../../../flux/actions/apis/document_translate/clear_html_link";
-
+import clear_docx_view from "../../../../flux/actions/apis/document_translate/clear_docx_view";
 const StyledMenu = withStyles({
     paper: {
         border: '1px solid #d3d4d5',
@@ -395,6 +395,7 @@ class InteractiveDocHeader extends React.Component {
                                 <IconButton
                                     onClick={() => {
                                         this.props.clear_html_link()
+                                        this.props.clear_docx_view()
                                         history.push(`${process.env.PUBLIC_URL}/view-document`);
                                     }}
                                     className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
@@ -438,7 +439,8 @@ const mapDispatchToProps = dispatch => bindActionCreators(
         showPdf,
         showSidebar,
         SwitchView,
-        clear_html_link
+        clear_html_link,
+        clear_docx_view
     },
     dispatch
 );

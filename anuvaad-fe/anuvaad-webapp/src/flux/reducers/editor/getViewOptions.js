@@ -10,6 +10,10 @@ export default (state = initialState, action) => {
             return {
                 option: action.payload
             }
+        case C.CLEAR_DOCX_VIEW:
+            return {
+                ...initialState
+            }
         default:
             return {
                 ...state
