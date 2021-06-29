@@ -8,6 +8,15 @@ HOST = '0.0.0.0'
 PORT = 5001
 ENABLE_CORS = False
 
+# REDIS
+redis_server_host = os.environ.get('REDIS_URL', 'localhost')
+redis_server_port = os.environ.get('REDIS_PORT', 6379)
+redis_key_prefix = 'FT-'
+
+# MONGO DB
+mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
+
+
 # kafka
 consumer_grp_default = 'anuvaad-etl-file-translator-consumer-group'
 consumer_grp_identifier = 'KAFKA_ANUVAAD_ETL_FILE_TRANLATOR_CONSUMER_GRP'
