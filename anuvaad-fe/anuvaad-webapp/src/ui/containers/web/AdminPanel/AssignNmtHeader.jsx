@@ -25,6 +25,7 @@ class CreateUserHeader extends React.Component {
 
     render() {
         const { classes, open_sidebar } = this.props;
+        const roles = localStorage.getItem('roles')
         return (
             <AppBar position="fixed" color="secondary" className={classNames(classes.appBar, open_sidebar && classes.appBarShift)} style={{ height: '50px' }}>
                 <Toolbar disableGutters={!this.props.open_sidebar} style={{ minHeight: "50px" }}>
@@ -33,7 +34,9 @@ class CreateUserHeader extends React.Component {
                             <IconButton onClick={() => this.props.showSidebar()} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
                                 <CloseIcon />
                             </IconButton> :
-                            <div style={{display: "flex", flexDirection: "row"}}>
+                            <div style={{ display: "flex", flexDirection: "row" }}>
+                                {
+                                    roles !== 'SCHOLAR' &&
                                 <IconButton
                                     onClick={() => {
                                         history.push(`${process.env.PUBLIC_URL}/user-details`);
@@ -42,6 +45,7 @@ class CreateUserHeader extends React.Component {
                                 >
                                     <BackIcon />
                                 </IconButton>
+                                }
 
                                 <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "5px", marginTop: "5px" }} />
 

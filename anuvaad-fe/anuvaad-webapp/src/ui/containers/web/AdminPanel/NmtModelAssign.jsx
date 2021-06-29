@@ -42,33 +42,33 @@ const roles = ADMINCONFIG.roles;
 
 
 const theme = createMuiTheme({
-    overrides: {
-        MuiDropzoneArea: {
-            root: {
-                paddingTop: '15%',
-                top: "auto",
-                width: '100%',
-                minHeight: '380px',
-                height: "85%",
-                borderColor: '#1C9AB7',
-                backgroundColor: '#F5F9FA',
-                border: '1px dashed #1C9AB7',
-                fontColor: '#1C9AB7',
-                marginTop: "3%",
-                marginLeft: '1%',
-                "& svg": { color: '#1C9AB7', },
-                "& p": {
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    fontSize: "19px",
-                    color: '#1C9AB7',
-
-                }
-            },
+  overrides: {
+    MuiDropzoneArea: {
+      root: {
+        paddingTop: '15%',
+        top: "auto",
+        width: '100%',
+        minHeight: '380px',
+        height: "85%",
+        borderColor: '#1C9AB7',
+        backgroundColor: '#F5F9FA',
+        border: '1px dashed #1C9AB7',
+        fontColor: '#1C9AB7',
+        marginTop: "3%",
+        marginLeft: '1%',
+        "& svg": { color: '#1C9AB7', },
+        "& p": {
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          fontSize: "19px",
+          color: '#1C9AB7',
 
         }
+      },
+
     }
+  }
 });
 class CreateUser extends React.Component {
   constructor(props) {
@@ -85,12 +85,12 @@ class CreateUser extends React.Component {
       loading: false,
       source_languages: [],
       target_languages: [],
-      modelList :[],
-      source_language_code:'',
-      target_language_code:'',
-      model_selected:'',
-      array_of_users:[],
-      selectedUsers:[]
+      modelList: [],
+      source_language_code: '',
+      target_language_code: '',
+      model_selected: '',
+      array_of_users: [],
+      selectedUsers: []
     };
   }
 
@@ -138,45 +138,45 @@ class CreateUser extends React.Component {
   /**
    * life cycle methods
    */
-   componentDidMount() {
-
+  componentDidMount() {
+    const roles = localStorage.getItem('roles')
     const { APITransport } = this.props;
     const apiModel = new FetchModel();
     APITransport(apiModel);
     this.setState({ showLoader: true });
-    this.props.fetch_models.models.length==0 && this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+    this.props.fetch_models.models.length == 0 && roles !== 'SCHOLAR' && this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
 
-}
+  }
 
-componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
 
     if (prevProps.fetch_models.models != this.props.fetch_models.models) {
-        this.setState({
-            source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
-            target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
-            showLoader: false
-        })
+      this.setState({
+        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
+        target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, true),
+        showLoader: false
+      })
     }
-    
-}
 
- 
-
- 
-  
+  }
 
 
-  
 
- 
+
+
+
+
+
+
+
 
 
   processClearButton = () => {
     this.setState({
-    source_language_code :'',
-     target_language_code : '',
-     model_selected:[],
-     array_of_users:[]
+      source_language_code: '',
+      target_language_code: '',
+      model_selected: [],
+      array_of_users: []
 
 
     })
@@ -226,22 +226,22 @@ componentDidUpdate(prevProps) {
 
   processSourceLanguageSelected = (event) => {
     this.setState({ source_language_code: event.target.value })
-    
+
     const languages = LANG_MODEL.get_counterpart_languages(this.props.fetch_models.models, event.target.value, true)
-    this.state.target_language_code && this.getModelIDS(event.target.value , this.state.target_language_code)
+    this.state.target_language_code && this.getModelIDS(event.target.value, this.state.target_language_code)
     this.setState({
       target_languages: languages
     })
   }
 
   processTargetLanguageSelected = (event) => {
-    
-    this.setState({ target_language_code: event.target.value, selectedUsers:[] })
-    this.state.source_language_code && this.getModelIDS(this.state.source_language_code , event.target.value)
+
+    this.setState({ target_language_code: event.target.value, selectedUsers: [] })
+    this.state.source_language_code && this.getModelIDS(this.state.source_language_code, event.target.value)
   }
 
-  getModelIDS = (source_language_code,target_language_code ) =>{
-      
+  getModelIDS = (source_language_code, target_language_code) => {
+
     const models = LANG_MODEL.get_nmt_models(this.props.fetch_models.models, source_language_code, target_language_code)
 
     this.setState({
@@ -251,16 +251,16 @@ componentDidUpdate(prevProps) {
 
   processModelSelected = (event) => {
     const selectedUsers = LANG_MODEL.get_selected_users(this.props.userinfo.data, event.target.value.uuid)
-    this.setState({ model_selected : event.target.value, selectedUsers })
-    
-    
-    
+    this.setState({ model_selected: event.target.value, selectedUsers })
+
+
+
   }
 
-  addUser = (e,value) => {
+  addUser = (e, value) => {
 
     this.setState({ array_of_users: value })
-}
+  }
 
 
 
@@ -277,230 +277,238 @@ componentDidUpdate(prevProps) {
   renderSourceLanguagesItems = () => {
     const { classes } = this.props
     return (<Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
-        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-            <Typography value="" variant="h5">
-                {translate("common.page.label.sourceLang")}{" "}
-            </Typography>
-        </Grid>
+      <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
+        <Typography value="" variant="h5">
+          {translate("common.page.label.sourceLang")}{" "}
+        </Typography>
+      </Grid>
 
-        <Grid item xs={6} sm={6} lg={4} xl={4} >
-            <Select
-                labelId="demo-simple-select-outlined-label"
-                id="source-lang"
-                onChange={this.processSourceLanguageSelected}
-                value={this.state.source_language_code}
-                fullWidth
-                className={classes.Select}
-                style={{
-                    fullWidth: true,
-                    float: 'right',
-                    marginBottom: "15px"
-                }}
-                input={
-                    <OutlinedInput name="source" id="source" />
-                }
-            >
-                {
-                    this.state.source_languages.map(lang =>
-                        <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
-                }
-            </Select>
-        </Grid>
+      <Grid item xs={6} sm={6} lg={4} xl={4} >
+        <Select
+          labelId="demo-simple-select-outlined-label"
+          id="source-lang"
+          onChange={this.processSourceLanguageSelected}
+          value={this.state.source_language_code}
+          fullWidth
+          className={classes.Select}
+          style={{
+            fullWidth: true,
+            float: 'right',
+            marginBottom: "15px"
+          }}
+          input={
+            <OutlinedInput name="source" id="source" />
+          }
+        >
+          {
+            this.state.source_languages.map(lang =>
+              <MenuItem id={lang.language_name} key={lang.language_code} value={lang.language_code + ''}>{lang.language_name}</MenuItem>)
+          }
+        </Select>
+      </Grid>
     </Grid>
     )
-}
+  }
 
-renderTargetLanguagesItems = () => {
+  renderTargetLanguagesItems = () => {
     const { classes } = this.props
     return (<Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
-        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-            <Typography value="" variant="h5">
-                {translate("common.page.label.targetLang")}{" "}
-            </Typography>
-        </Grid>
+      <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
+        <Typography value="" variant="h5">
+          {translate("common.page.label.targetLang")}{" "}
+        </Typography>
+      </Grid>
 
-        <Grid item xs={6} sm={6} lg={4} xl={4} >
-            <Select
-                labelId="demo-simple-select-outlined-label"
-                id="source-lang"
-                onChange={this.processTargetLanguageSelected}
-                value={this.state.target_language_code}
-                fullWidth
-                className={classes.Select}
-                style={{
-                    fullWidth: true,
-                    float: 'right',
-                    marginBottom: "15px"
-                }}
-                input={
-                    <OutlinedInput name="source" id="source" />
-                }
-            >
-                {
-                    this.state.target_languages.map(lang =>
-                        <MenuItem key={lang.language_code} value={lang.language_code }>{lang.language_name}</MenuItem>)
-                }
-            </Select>
-        </Grid>
+      <Grid item xs={6} sm={6} lg={4} xl={4} >
+        <Select
+          labelId="demo-simple-select-outlined-label"
+          id="source-lang"
+          onChange={this.processTargetLanguageSelected}
+          value={this.state.target_language_code}
+          fullWidth
+          className={classes.Select}
+          style={{
+            fullWidth: true,
+            float: 'right',
+            marginBottom: "15px"
+          }}
+          input={
+            <OutlinedInput name="source" id="source" />
+          }
+        >
+          {
+            this.state.target_languages.map(lang =>
+              <MenuItem key={lang.language_code} value={lang.language_code}>{lang.language_name}</MenuItem>)
+          }
+        </Select>
+      </Grid>
     </Grid>
     )
-}
+  }
 
-renderModelList =() =>{
-    const { classes } = this.props  
-    return  (<Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
-        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-            <Typography value="" variant="h5">
-                Select model
-            </Typography>
-        </Grid>
+  renderModelList = () => {
+    const { classes } = this.props
+    return (<Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
+      <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
+        <Typography value="" variant="h5">
+          Select model
+        </Typography>
+      </Grid>
 
-        <Grid item xs={6} sm={6} lg={4} xl={4} >
-            <Select
-                labelId="demo-simple-select-outlined-label"
-                id="source-lang"
-                onChange={this.processModelSelected}
-                value={this.state.model_selected}
-                fullWidth
-                className={classes.Select}
-                style={{
-                    fullWidth: true,
-                    float: 'right',
-                    marginBottom: "15px"
-                }}
-                input={
-                    <OutlinedInput name="source" id="source" />
-                }
-            >
-                {
-                    
-                    this.state.modelList.map(model =>
-                        <MenuItem key={model.uuid} value={model}>{model.model_name}</MenuItem>)
-                }
-            </Select>
-        </Grid>
+      <Grid item xs={6} sm={6} lg={4} xl={4} >
+        <Select
+          labelId="demo-simple-select-outlined-label"
+          id="source-lang"
+          onChange={this.processModelSelected}
+          value={this.state.model_selected}
+          fullWidth
+          className={classes.Select}
+          style={{
+            fullWidth: true,
+            float: 'right',
+            marginBottom: "15px"
+          }}
+          input={
+            <OutlinedInput name="source" id="source" />
+          }
+        >
+          {
+
+            this.state.modelList.map(model =>
+              <MenuItem key={model.uuid} value={model}>{model.model_name}</MenuItem>)
+          }
+        </Select>
+      </Grid>
     </Grid>)
-}
+  }
 
-handleAssignModel = () =>{
-    let selected_users = this.state.array_of_users;
+  handleAssignModel = () => {
+    let roles = localStorage.getItem('roles');
+    let userID = JSON.parse(localStorage.getItem('userProfile'))
+    let selected_users = roles === 'SCHOLAR' ? [userID] : this.state.array_of_users;
+    console.log(selected_users)
 
     if (selected_users.length > 0 && this.state.source_language_code) {
-    selected_users.map((user , i)=>{
-        
+      selected_users.map((user, i) => {
+
         let models = LANG_MODEL.get_model_list(user, this.state.modelList, this.state.model_selected)
         user.models = models
-    })
+      })
 
-    const apiObj = new modelUpdate(
-            selected_users
-        );
-        this.informUserProgress('Adding nmt model to users')
-    const apiReq = fetch(apiObj.apiEndPoint(), {
-      method: 'post',
-      body: JSON.stringify(apiObj.getBody()),
-      headers: apiObj.getHeaders().headers
-    }).then(async response => {
-      const rsp_data = await response.json();
-      if (!response.ok) {
-        // TELEMETRY.log("tmx-upload", JSON.stringify(rsp_data))
-        if(Number(response.status)===401){
-          this.handleRedirect()
-        }
-        else{
-          this.informUserStatus(rsp_data.message ? "rsp_data.message": rsp_data.why ? rsp_data.why : "Upload failed", false)
-        }
-        
-        return Promise.reject('');
-      } else {
-        if(rsp_data.http.status== 200){
-            this.informUserStatus(rsp_data.message ? "rsp_data.message": rsp_data.why ? rsp_data.why :"Assigned nmt models to selected users.", true)
-            setTimeout(async () => {
-              history.push(`${process.env.PUBLIC_URL}/user-details`);
-            }, 3000)
-        }
-        else{
-            this.informUserStatus(rsp_data.message ? rsp_data.message : "Assigning nmt model to users failed.", false)
-        }
-        
-        
+      const apiObj = new modelUpdate(
+        selected_users
+      );
+      this.informUserProgress('Adding nmt model to users')
+      const apiReq = fetch(apiObj.apiEndPoint(), {
+        method: 'post',
+        body: JSON.stringify(apiObj.getBody()),
+        headers: apiObj.getHeaders().headers
+      }).then(async response => {
+        const rsp_data = await response.json();
+        if (!response.ok) {
+          // TELEMETRY.log("tmx-upload", JSON.stringify(rsp_data))
+          if (Number(response.status) === 401) {
+            this.handleRedirect()
+          }
+          else {
+            this.informUserStatus(rsp_data.message ? "rsp_data.message" : rsp_data.why ? rsp_data.why : "Upload failed", false)
+          }
 
-      }
-    }).catch((error) => {
-      this.informUserStatus("Assigning nmt model to users failed", false)
-    });
-        
-            
+          return Promise.reject('');
         } else {
-            alert("Field should not be empty!");
+          if (rsp_data.http.status == 200) {
+            this.informUserStatus(rsp_data.message ? "rsp_data.message" : rsp_data.why ? rsp_data.why : "Assigned nmt models to selected users.", true)
+            setTimeout(async () => {
+              roles !== 'SCHOLAR' ? history.push(`${process.env.PUBLIC_URL}/user-details`) : history.push(`${process.env.PUBLIC_URL}/view-document`);
+            }, 3000)
+          }
+          else {
+            this.informUserStatus(rsp_data.message ? rsp_data.message : "Assigning nmt model to users failed.", false)
+          }
+
+
+
         }
-    
-}
+      }).catch((error) => {
+        this.informUserStatus("Assigning nmt model to users failed", false)
+      });
 
-renderExistingUser = () =>{
-  return <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
-  <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
-      <Typography variant="h5">
-          Existing Users
-      </Typography>
-  </Grid>
-  <Grid item xs={6} sm={6} lg={4} xl={4} >
-  
-  
-  {this.state.selectedUsers.length>0 && this.state.selectedUsers.map((value, i) =>
-  <Chip key = {i} label={value.email} style={{margin:"1px"}}/>
-  )}
-  </Grid>
-  </Grid>
 
-}
+    } else {
+      alert("Field should not be empty!");
+    }
 
-renderUserList =() =>{
-    
-    return<Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
-    <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
+  }
+
+  renderExistingUser = () => {
+    return <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
+      <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
         <Typography variant="h5">
-            Assign Users
+          Existing Users
         </Typography>
-    </Grid>
-    <Grid item xs={6} sm={6} lg={4} xl={4} >
-    <Autocomplete
-        multiple
-        id="tags-outlined"
-        options={this.props.userinfo.data.filter(user => (user.is_active && (user.roles !== 'ADMIN')) )}
-        getOptionLabel={(option) => option.userName}
-        filterSelectedOptions
-        onChange={(e, value) => this.addUser(e,value)}
-        renderInput={(params) => (
-            <TextField
-                {...params}
-                variant="outlined"
-            />
+      </Grid>
+      <Grid item xs={6} sm={6} lg={4} xl={4} >
+
+
+        {this.state.selectedUsers.length > 0 && this.state.selectedUsers.map((value, i) =>
+          <Chip key={i} label={value.email} style={{ margin: "1px" }} />
         )}
-    />
+      </Grid>
     </Grid>
-</Grid>
-}
+
+  }
+
+  renderUserList = () => {
+    const roles = localStorage.getItem('roles')
+    return <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
+      {
+        roles !== 'SCHOLAR' &&
+        <>
+          <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
+            <Typography variant="h5">
+              Assign Users
+            </Typography>
+          </Grid>
+          <Grid item xs={6} sm={6} lg={4} xl={4} >
+            <Autocomplete
+              multiple
+              id="tags-outlined"
+              options={this.props.userinfo.data.filter(user => (user.is_active && (user.roles !== 'ADMIN')))}
+              getOptionLabel={(option) => option.userName}
+              filterSelectedOptions
+              onChange={(e, value) => this.addUser(e, value)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                />
+              )}
+            />
+          </Grid>
+        </>
+      }
+    </Grid>
+  }
 
 
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.root} style={{marginTop:'7%', marginBottom:'5%'}}>
+      <div className={classes.root} style={{ marginTop: '7%', marginBottom: '5%', height: window.innerHeight - 230 }}>
         <Toolbar />
         <Typography variant="h4" className={classes.typographyHeader}>
           Assign NMT Model
         </Typography>
         <Paper className={classes.paper}>
           <Grid container>
-             {this.renderSourceLanguagesItems()}
+            {this.renderSourceLanguagesItems()}
 
             {this.renderTargetLanguagesItems()}
             {this.renderModelList()}
-            {this.state.selectedUsers.length>0 && Object.keys(this.state.model_selected).length > 0 && this.renderExistingUser()}
+            {this.state.selectedUsers.length > 0 && Object.keys(this.state.model_selected).length > 0 && this.renderExistingUser()}
             {this.renderUserList()}
-            
-           
+
+
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
             </Grid>
