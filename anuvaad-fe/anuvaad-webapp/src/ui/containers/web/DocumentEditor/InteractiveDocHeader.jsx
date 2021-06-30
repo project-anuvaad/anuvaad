@@ -327,7 +327,7 @@ class InteractiveDocHeader extends React.Component {
                     open={openEl}
                     onClose={this.handleClose.bind(this)}
                 >
-                    {workflow !== 'WF_A_FTTKTR' &&
+                    {/* {workflow !== 'WF_A_FTTKTR' && */}
                         <>
                             <MenuItem
                                 style={{ borderTop: "1px solid #D6D6D6" }}
@@ -346,7 +346,7 @@ class InteractiveDocHeader extends React.Component {
                                 As XLSX
                             </MenuItem>
                         </>
-                    }
+                    {/* } */}
 
                     {!this.props.preview && workflow !== 'WF_A_FTTKTR' && <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
