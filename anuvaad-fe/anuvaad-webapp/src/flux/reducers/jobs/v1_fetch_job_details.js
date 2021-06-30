@@ -53,7 +53,7 @@ function get_document_details(input) {
         document['source_language_code'] = job['input']['files'][0]['model']['source_language_name'];
         document['target_language_code'] = job['input']['files'][0]['model']['target_language_name'];
         document['model_id'] = job['input']['files'][0]['model']['model_id'];
-
+        document['model_name'] = job['input']['files'][0]['model']['model_name'];
         document['created_on'] = job['startTime'];
         document['endTime'] = job['endTime'];
         document['status'] = job['status'];
