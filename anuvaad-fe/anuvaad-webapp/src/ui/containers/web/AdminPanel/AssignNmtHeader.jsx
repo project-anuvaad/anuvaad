@@ -37,14 +37,14 @@ class CreateUserHeader extends React.Component {
                             <div style={{ display: "flex", flexDirection: "row" }}>
                                 {
                                     roles !== 'SCHOLAR' &&
-                                <IconButton
-                                    onClick={() => {
-                                        history.push(`${process.env.PUBLIC_URL}/user-details`);
-                                    }}
-                                    className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
-                                >
-                                    <BackIcon />
-                                </IconButton>
+                                    <IconButton
+                                        onClick={() => {
+                                            roles !== 'TRANSLATOR' ? history.push(`${process.env.PUBLIC_URL}/user-details`) : history.push(`${process.env.PUBLIC_URL}/view-document`);
+                                        }}
+                                        className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
+                                    >
+                                        <BackIcon />
+                                    </IconButton>
                                 }
 
                                 <div style={{ borderLeft: "1px solid #D6D6D6", height: "40px", marginRight: "5px", marginTop: "5px" }} />

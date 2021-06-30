@@ -448,7 +448,7 @@ class ViewDocument extends React.Component {
       },
       {
         name: "model_name",
-        label: "Model description",
+        label: "Translation Model",
         options: {
           filter: false,
           sort: false,
@@ -456,7 +456,7 @@ class ViewDocument extends React.Component {
       },
       {
         name: "status",
-        label: translate("common.page.table.status"),
+        label: "Translation Status",
         options: {
           filter: true,
           sort: false,

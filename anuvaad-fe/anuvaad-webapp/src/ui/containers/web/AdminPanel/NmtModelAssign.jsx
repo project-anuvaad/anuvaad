@@ -144,7 +144,7 @@ class CreateUser extends React.Component {
     const apiModel = new FetchModel();
     APITransport(apiModel);
     this.setState({ showLoader: true });
-    this.props.fetch_models.models.length == 0 && roles !== 'SCHOLAR' && this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+    this.props.fetch_models.models.length == 0 && roles !== 'TRANSLATOR' && this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
 
   }
 
@@ -385,7 +385,7 @@ class CreateUser extends React.Component {
   handleAssignModel = () => {
     let roles = localStorage.getItem('roles');
     let userID = JSON.parse(localStorage.getItem('userProfile'))
-    let selected_users = roles === 'SCHOLAR' ? [userID] : this.state.array_of_users;
+    let selected_users = roles === 'TRANSLATOR' ? [userID] : this.state.array_of_users;
     console.log(selected_users)
 
     if (selected_users.length > 0 && this.state.source_language_code) {
@@ -419,7 +419,7 @@ class CreateUser extends React.Component {
           if (rsp_data.http.status == 200) {
             this.informUserStatus(rsp_data.message ? "rsp_data.message" : rsp_data.why ? rsp_data.why : "Assigned nmt models to selected users.", true)
             setTimeout(async () => {
-              roles !== 'SCHOLAR' ? history.push(`${process.env.PUBLIC_URL}/user-details`) : history.push(`${process.env.PUBLIC_URL}/view-document`);
+              roles !== 'TRANSLATOR' ? history.push(`${process.env.PUBLIC_URL}/user-details`) : history.push(`${process.env.PUBLIC_URL}/view-document`);
             }, 3000)
           }
           else {
@@ -462,7 +462,7 @@ class CreateUser extends React.Component {
     const roles = localStorage.getItem('roles')
     return <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData}>
       {
-        roles !== 'SCHOLAR' &&
+        roles !== 'TRANSLATOR' &&
         <>
           <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label} style={{ marginTop: '2%' }}>
             <Typography variant="h5">
@@ -491,8 +491,33 @@ class CreateUser extends React.Component {
   }
 
 
+  getModelName = () => {
+    let { userID } = JSON.parse(localStorage.getItem('userProfile'))
+    console.log(this.state.source_language_code, this.state.target_language_code, userID)
+  }
+
+  renderCurrentActiveModel = () => {
+    const { classes } = this.props
+    return (
+      <Grid container>
+        <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
+          <Typography value="" variant="h5">
+            {"Current Active Model"}{" "}
+          </Typography>
+        </Grid>
+
+        <Grid item xs={6} sm={6} lg={4} xl={4} >
+          <Typography variant="h5" className={this.props.classes.label}>
+            {this.getModelName()}
+          </Typography>
+        </Grid>
+      </Grid>
+    )
+  }
+
   render() {
     const { classes } = this.props;
+    let roles = localStorage.getItem('roles')
     return (
       <div className={classes.root} style={{ marginTop: '7%', marginBottom: '5%', height: window.innerHeight - 230 }}>
         <Toolbar />
@@ -507,8 +532,11 @@ class CreateUser extends React.Component {
             {this.renderModelList()}
             {this.state.selectedUsers.length > 0 && Object.keys(this.state.model_selected).length > 0 && this.renderExistingUser()}
             {this.renderUserList()}
-
-
+            {
+              roles === 'TRANSLATOR' && this.state.target_language_code && this.state.source_language_code ?
+                this.renderCurrentActiveModel() :
+                <div />
+            }
 
             <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
             </Grid>
