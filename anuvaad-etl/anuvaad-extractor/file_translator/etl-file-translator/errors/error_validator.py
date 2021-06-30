@@ -40,20 +40,20 @@ class ValidationResponse(object):
                     if input_filename == "" or input_filename is None:
                         raise FileErrors("FILENAME_ERROR", "Filename not found or its empty")
 
-                    elif not os.path.splitext(input_filename)[1] in config.ALLOWED_FILE_EXTENSION:
-                        raise FileErrors("FILE_TYPE_ERROR",
-                                         "This file type is not allowed. Currently, support docx files.")
+                    elif not os.path.splitext(input_filename)[1] in ['.' + ext for ext in config.ALLOWED_FILE_EXTENSION]:
+                        raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed.")
 
                     elif file_ops.check_file_extension(in_file_type) is False:
-                        raise FileErrors("FILE_TYPE_ERROR",
-                                         "This file type is not allowed. Currently, support only txt file.")
+                        raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed.")
+
+                    elif file_ops.check_file_mime_type(file_path=input_filepath) is False:
+                        raise FileErrors("FILE_MIME_TYPE_ERROR", "This file MIME type is not allowed.")
 
                     elif in_file_type not in ['json'] and file_ops.check_path_exists(input_filepath) is False:
-                        raise FileErrors("DIRECTORY_ERROR", "There is no file: ", input_filepath)
+                        raise FileErrors("DIRECTORY_ERROR", "There is no file: ")
 
                     elif file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:
-                        raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory: ",
-                                         self.DOWNLOAD_FOLDER)
+                        raise FileErrors("DIRECTORY_ERROR", "There is no input/output Directory: ")
 
                     elif in_locale == "" or in_locale is None:
                         raise FileErrors("LOCALE_ERROR", "No language input or None value.")

@@ -94,8 +94,8 @@ FLOW_DOCX_LIBREHTML_S3_ENABLED = False
 FLOW_DOCX_PYDOCXHTML_S3_ENABLED = False
 FLOW_DOCX_LIBREHTML_LIBREPDF_PDFTOHTML_HTML_S3_ENABLED = True
     # FLOWS: PPTX
-FLOW_PPTX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED = False
-FLOW_PPTX_LIBRE_PDF_S3_ENABLED = True
+FLOW_PPTX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED = True
+FLOW_PPTX_LIBRE_PDF_S3_ENABLED = False
 
 
 # PAGE LIMIT
@@ -136,10 +136,10 @@ aws_link_prefix = f'https://{aws_bucket_name}.s3.amazonaws.com/'
 
 
 
-ALLOWED_FILE_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+ALLOWED_MIME_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
                       'application/json']
-ALLOWED_FILE_EXTENSION = ['.docx', '.pptx', '.json']
+ALLOWED_FILE_EXTENSION = ['docx', 'pptx', 'json']
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),
