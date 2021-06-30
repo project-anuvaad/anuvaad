@@ -5,13 +5,6 @@ const adminConfig = {
             "roleCode": "TRANSLATOR",
             "roleDesc": "Has access to translation related resources"
         },
-
-        {
-
-            "roleCode": "ADMIN",
-            "roleDesc": "Has access to manage the users"
-
-        },
         {
 
             "roleCode": "ANNOTATOR",
@@ -19,8 +12,9 @@ const adminConfig = {
 
         },
         {
-            "roleCode": "SCHOLAR",
-            "roleDesc": "Has access to translation or test models"
+
+            "roleCode": "ADMIN",
+            "roleDesc": "Has access to manage the users"
 
         }
 
