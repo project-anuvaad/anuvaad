@@ -41,7 +41,9 @@ class FileOperation(object):
         else:
             return False
 
-    def check_file_mime_type(self, file_path):
+    def check_file_mime_type(self, file_path, in_file_type):
+        if in_file_type == 'json':
+            return True
         return magic.from_file(file_path, mime=True) in config.ALLOWED_MIME_TYPES
 
     # generating input filepath for input filename
