@@ -41,46 +41,49 @@ class PageCardHtml extends React.Component {
         let { link } = this.props.link
         let { filename } = this.props.match.params
         if (filename && filename.split('.').pop() === 'docx' && link) {
-            if (prevProps.link.count && prevProps.link.count !== this.props.link.count) {
-                if (filename && filename.split('.').pop() === 'docx' && link) {
-                    this.handleDocxView(link)
-                }
-            } else if (prevProps.link.count && prevProps.link.count === this.props.link.count && !this.state.loaded) {
-                this.handleDocxView(link)
-            }
-            if (this.props.link.count && this.props.option !== prevProps.option) {
-                this.handleDocxView(link)
-            }
-
-            if (this.page_no !== this.props.active_page && this.state.loaded) {
-                this.page_no = this.props.active_page
-                let source = this.getSource(this.props.fetchContent, this.page_no)
-                if (this.prev_sid) {
-                    this.removeFontTag();
-                }
-                if (source) {
-                    this.processScrollIntoView('none', source)
-                }
-                this.props.clearHighlighBlock();
-            }
-            if (this.page_no === this.props.active_page && !this.state.loaded) {
-                this.handleDocxView(link)
-            }
-
-            if (highlightBlock.block) {
-                let { src } = highlightBlock.block
-                if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
-                    this.removeFontTag();
-                    this.processScrollIntoView('orange', src)
-                } else if (highlightBlock.current_sid && !highlightBlock.prev_sid) {
-                    this.processScrollIntoView('orange', src)
-                }
-            }
-        } else if (filename && filename.split('.').pop() === 'pptx' && link && !this.state.loaded) {
-            this.fetchHtmlData(link['PDF']['LIBRE'])
+            this.handleComponentUpdate(prevProps, link, filename, this.handleDocxView, highlightBlock)
+        } else if (filename && filename.split('.').pop() === 'pptx' && link) {
+            this.handleComponentUpdate(prevProps, link, filename, this.handlePptxView, highlightBlock)
         }
     }
 
+    handleComponentUpdate = (prevProps, link, filename, handleView, highlightBlock) => {
+        if (prevProps.link.count && prevProps.link.count !== this.props.link.count) {
+            if (filename && filename.split('.').pop() === 'docx' || filename && filename.split('.').pop() === 'pptx' && link) {
+                handleView(link)
+            }
+        } else if (prevProps.link.count && prevProps.link.count === this.props.link.count && !this.state.loaded) {
+            handleView(link)
+        }
+        if (this.props.link.count && this.props.option !== prevProps.option) {
+            handleView(link)
+        }
+
+        if (this.page_no !== this.props.active_page && this.state.loaded) {
+            this.page_no = this.props.active_page
+            let source = this.getSource(this.props.fetchContent, this.page_no)
+            if (this.prev_sid) {
+                this.removeFontTag();
+            }
+            if (source) {
+                this.processScrollIntoView('none', source)
+            }
+            this.props.clearHighlighBlock();
+        }
+        if (this.page_no === this.props.active_page && !this.state.loaded) {
+            handleView(link)
+        }
+
+        if (highlightBlock.block) {
+            let { src } = highlightBlock.block
+            if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
+                this.removeFontTag();
+                this.processScrollIntoView('orange', src)
+            } else if (highlightBlock.current_sid && !highlightBlock.prev_sid) {
+                this.processScrollIntoView('orange', src)
+            }
+        }
+    }
 
     handleDocxView = (link) => {
         if (link) {
@@ -88,6 +91,16 @@ class PageCardHtml extends React.Component {
                 this.fetchHtmlData(link['HTML']['LIBRE'])
             } else if (this.props.option === 'View2') {
                 this.fetchHtmlData(link['HTML']['PDFTOHTML'])
+            }
+        }
+    }
+
+    handlePptxView = (link) => {
+        if (link) {
+            if (this.props.option === 'View1') {
+                this.fetchHtmlData(link['HTML']['PDFTOHTML'])
+            } else if (this.props.option === 'View2') {
+                this.fetchHtmlData(link['PDF']['LIBRE'])
             }
         }
     }
@@ -155,25 +168,18 @@ class PageCardHtml extends React.Component {
                 let { filename } = this.props.match.params
                 let type = filename && filename.split('.').pop()
                 if (res.status === 200) {
-                    if (type === 'docx') {
-                        let html = await res.text()
-                        $('#paper').html(html)
-                        let images = document.getElementsByTagName('img')
-                        let urls = document.getElementsByTagName('a')
-                        let baseUrl = link.substr(0, link.lastIndexOf('/') + 1)
-                        this.setTagAttrib(baseUrl, images, 'src')
-                        this.setTagAttrib(baseUrl, urls, 'href')
-                        $('body').css('width', '100%')
-                        this.setState({ loaded: true })
-                    }
-                    else if (type === 'pptx') {
-                        this.setState({ url: link, loaded: true })
-                    }
+                    let html = await res.text()
+                    $('#paper').html(html)
+                    let images = document.getElementsByTagName('img')
+                    let urls = document.getElementsByTagName('a')
+                    let baseUrl = link.substr(0, link.lastIndexOf('/') + 1)
+                    this.setTagAttrib(baseUrl, images, 'src')
+                    this.setTagAttrib(baseUrl, urls, 'href')
+                    $('body').css('width', '100%')
+                    this.setState({ loaded: true })
+                    this.setState({ url: link, loaded: true })
                 } else {
-                    if (type === 'docx')
-                        $('#paper').html('Failed to load...')
-                    else if (type === 'pptx')
-                        this.setState({ msg: 'Failed to load PDF...' })
+                    $('#paper').html('Failed to load...')
                 }
             })
     }
@@ -217,25 +223,44 @@ class PageCardHtml extends React.Component {
         )
     }
 
-    render() {
+    renderDocumentView = () => {
         let { filename } = this.props.match.params
         return (
-            <>
+            <div>
                 {
                     filename && filename.split('.').pop() === 'docx' ?
                         < span style={{ zoom: `${this.props.zoomPercent}%` }}>
-                            <Paper id="paper" style={{ background: 'none', padding: '2%' }}></Paper>
+                            <Paper
+                                elevation={0}
+                                id="paper"
+                                style={{ background: 'none', padding: '2%' }}
+                            >
+                            </Paper>
                         </span >
                         :
                         < span style={{ zoom: `${this.props.zoomPercent}%` }}>
-                            {this.renderPDF()}
+                            {
+                                this.props.option === 'View2' ?
+                                    this.renderPDF() :
+                                    <Paper
+                                        elevation={0}
+                                        id="paper"
+                                        style={{ background: 'none', padding: '2%' }}
+                                    >
+                                    </Paper>
+                            }
                         </span >
                 }
+            </div>
+        )
+    }
+
+    render() {
+        return (
+            <>
+                {this.renderDocumentView()}
             </>
         )
-
-
-
     }
 }
 
