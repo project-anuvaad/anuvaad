@@ -16,6 +16,7 @@ class FetchContent(object):
     def map_translated_text_with_blockid(self, page_id, page):
         if not page:
             log_info(f"map_translated_text_with_blockid: BLANK PAGE: {page_id}, so skipping the process", None)
+            return
         for idx, text_block in enumerate(page['text_blocks']):
             trans_para = ''
             try:
