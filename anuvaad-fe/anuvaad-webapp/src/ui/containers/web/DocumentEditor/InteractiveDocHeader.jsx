@@ -282,10 +282,10 @@ class InteractiveDocHeader extends React.Component {
                 {!this.props.show_pdf && !this.props.preview && workflow !== 'WF_A_FTTKTR' && <Button color="primary" variant="outlined" onClick={this.hideDocument.bind(this)}>{this.props.docView ? "Show Document" : " Hide document"}</Button>}
                 {!this.props.docView && !this.props.preview && workflow !== 'WF_A_FTTKTR' && <Button color="primary" variant="outlined" style={{ marginLeft: "10px" }} onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" : " Show PDF"}</Button>}
                 {
-                    workflow === 'WF_A_FTTKTR' && type === 'DOCX' &&
+                    workflow === 'WF_A_FTTKTR' &&
                     <>
                         <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleOptionsMenu.bind(this)}>
-                        Source Document View
+                            Source Document View
                             <DownIcon />
                         </Button>
                         <StyledMenu
@@ -310,7 +310,7 @@ class InteractiveDocHeader extends React.Component {
                                     this.setState({ optionsEl: false })
                                 }}
                             >
-                                Separator View
+                                {type === 'DOCX' ? "Separator View" : "PDF View"}
                             </MenuItem>
                         </StyledMenu>
                     </>
@@ -328,24 +328,24 @@ class InteractiveDocHeader extends React.Component {
                     onClose={this.handleClose.bind(this)}
                 >
                     {/* {workflow !== 'WF_A_FTTKTR' && */}
-                        <>
-                            <MenuItem
-                                style={{ borderTop: "1px solid #D6D6D6" }}
-                                onClick={() => {
-                                    this.fetchFile("txt")
-                                }}
-                            >
-                                As TXT
-                            </MenuItem>
-                            <MenuItem
-                                style={{ borderTop: "1px solid #D6D6D6" }}
-                                onClick={() => {
-                                    this.fetchFile("xlsx")
-                                }}
-                            >
-                                As XLSX
-                            </MenuItem>
-                        </>
+                    <>
+                        <MenuItem
+                            style={{ borderTop: "1px solid #D6D6D6" }}
+                            onClick={() => {
+                                this.fetchFile("txt")
+                            }}
+                        >
+                            As TXT
+                        </MenuItem>
+                        <MenuItem
+                            style={{ borderTop: "1px solid #D6D6D6" }}
+                            onClick={() => {
+                                this.fetchFile("xlsx")
+                            }}
+                        >
+                            As XLSX
+                        </MenuItem>
+                    </>
                     {/* } */}
 
                     {!this.props.preview && workflow !== 'WF_A_FTTKTR' && <MenuItem

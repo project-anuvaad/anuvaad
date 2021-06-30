@@ -151,7 +151,7 @@ class PdfUpload extends Component {
   handleSubmit(e) {
     if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code) {
       let type = this.state.files[0].name.split('.').pop()
-      if (type !== 'docx' || type !== 'pptx') {
+      if (type !== 'docx' && type !== 'pptx') {
         e.preventDefault();
         this.setState({ formatWarning: true })
       } else {
