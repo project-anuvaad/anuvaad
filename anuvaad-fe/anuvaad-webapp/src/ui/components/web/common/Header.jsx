@@ -203,7 +203,80 @@ class Header extends React.Component {
                       }
                     />
                   </ListItem>
+                  <div>
+                    <Divider className={classes.divider} />
 
+                    <ListItem
+                      id="profile"
+                      style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "profile" && themeAnuvaad.palette.primary.main }}
+                      button
+                      onClick={() => {
+                        this.handleDrawerClose(false);
+                        history.push(`${process.env.PUBLIC_URL}/profile`);
+                      }}
+                    >
+
+                      <ListItemText
+                        disableTypography
+                        primary={
+                          <Typography type="body2" style={{ color: currentMenu === "profile" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                            {translate('header.page.heading.MyProfile')}
+                          </Typography>
+                        }
+                      />
+                    </ListItem>
+                  </div>
+                  {JSON.parse(localStorage.getItem("userProfile")).orgID !== 'NONMT' && role && Array.isArray(role) && !role.includes("ADMIN") &&
+                    <> {role && Array.isArray(role) && !(role.includes("ANNOTATOR")) &&
+                      <div>
+                        <Divider className={classes.divider} />
+                        <ListItem
+                          id="my-glossary"
+                          style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "my-glossary" && themeAnuvaad.palette.primary.main }}
+                          button
+                          onClick={() => {
+                            this.handleDrawerClose(false);
+                            history.push(`${process.env.PUBLIC_URL}/my-glossary`);
+                          }}
+                        >
+
+                          <ListItemText
+                            disableTypography
+                            primary={
+                              <Typography type="body2" style={{ color: currentMenu === "my-glossary" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                                My Glossary
+                              </Typography>
+                            }
+                          />
+                        </ListItem>
+                      </div>
+                    }</>
+                  }
+                  {role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("TRANSLATOR")) && (
+                    <div>
+                      <Divider className={classes.divider} />
+
+                      <ListItem
+                        id="assign-nmt-model"
+                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "assign-nmt-model" && themeAnuvaad.palette.primary.main }}
+                        button
+                        onClick={() => {
+                          this.handleDrawerClose(false);
+                          history.push(`${process.env.PUBLIC_URL}/assign-nmt-model`);
+                        }}
+                      >
+
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography type="body2" style={{ color: currentMenu === "assign-nmt-model" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
+                              Assign nmt models
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  )}
                   {role && Array.isArray(role) && !role.includes("ADMIN") && (
                     <div>
                       <Divider className={classes.divider} />
@@ -333,31 +406,7 @@ class Header extends React.Component {
                     </div>
                   )}
 
-                  {role && Array.isArray(role) && (role.includes("ADMIN") || role.includes("SCHOLAR")) && (
-                    <div>
-                      <Divider className={classes.divider} />
-
-                      <ListItem
-                        id="assign-nmt-model"
-                        style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "assign-nmt-model" && themeAnuvaad.palette.primary.main }}
-                        button
-                        onClick={() => {
-                          this.handleDrawerClose(false);
-                          history.push(`${process.env.PUBLIC_URL}/assign-nmt-model`);
-                        }}
-                      >
-
-                        <ListItemText
-                          disableTypography
-                          primary={
-                            <Typography type="body2" style={{ color: currentMenu === "assign-nmt-model" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                              Assign nmt models
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                    </div>
-                  )}
+                  
                   {role && Array.isArray(role) && (role.includes("TRANSLATOR") || (role.includes("ANNOTATOR")) || (role.includes("SCHOLAR"))) && (
                     <>
                       <div>
@@ -429,56 +478,7 @@ class Header extends React.Component {
                       />
                     </ListItem>
                   </div>)}
-                  {JSON.parse(localStorage.getItem("userProfile")).orgID !== 'NONMT' && role && Array.isArray(role) && !role.includes("ADMIN") &&
-                    <> {role && Array.isArray(role) && !(role.includes("ANNOTATOR")) &&
-                      <div>
-                        <Divider className={classes.divider} />
-                        <ListItem
-                          id="my-glossary"
-                          style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "my-glossary" && themeAnuvaad.palette.primary.main }}
-                          button
-                          onClick={() => {
-                            this.handleDrawerClose(false);
-                            history.push(`${process.env.PUBLIC_URL}/my-glossary`);
-                          }}
-                        >
-
-                          <ListItemText
-                            disableTypography
-                            primary={
-                              <Typography type="body2" style={{ color: currentMenu === "my-glossary" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                                My Glossary
-                              </Typography>
-                            }
-                          />
-                        </ListItem>
-                      </div>
-                    }</>
-                  }
-                  <div>
-                    <Divider className={classes.divider} />
-
-                    <ListItem
-                      id="profile"
-                      style={{ paddingTop: "8%", paddingBottom: "8%", backgroundColor: currentMenu === "profile" && themeAnuvaad.palette.primary.main }}
-                      button
-                      onClick={() => {
-                        this.handleDrawerClose(false);
-                        history.push(`${process.env.PUBLIC_URL}/profile`);
-                      }}
-                    >
-
-                      <ListItemText
-                        disableTypography
-                        primary={
-                          <Typography type="body2" style={{ color: currentMenu === "profile" ? "#FFFFFF" : "#000000", marginLeft: '6%' }}>
-                            {translate('header.page.heading.MyProfile')}
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                  </div>
-
+                  
                   <div>
                     <Divider className={classes.divider} />
 
