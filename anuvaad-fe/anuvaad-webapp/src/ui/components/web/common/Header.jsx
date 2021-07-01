@@ -126,7 +126,6 @@ class Header extends React.Component {
 
   render() {
     const { classes, title, forDemo, dontShowHeader, currentMenu, open_sidebar } = this.props;
-
     var role = [localStorage.getItem("roles")];
     var useRole = [];
     role.map((item, value) => {
@@ -431,7 +430,9 @@ class Header extends React.Component {
                           />
                         </ListItem>
                       </div>
-                      <div>
+                      {
+                        process.env.REACT_APP_APIGW_BASE_URL === 'https://jud-auth.anuvaad.org/' &&
+                        <div>
                         <Divider className={classes.divider} />
                         <ListItem
                           id="document-digitization"
@@ -452,7 +453,7 @@ class Header extends React.Component {
                             }
                           />
                         </ListItem>
-                      </div>
+                      </div>}
                     </>)}
                   {JSON.parse(localStorage.getItem("userProfile")).orgID !== 'NONMT' && role && Array.isArray(role) && (role.includes("ANNOTATOR")) && (<div>
                     <Divider className={classes.divider} />

@@ -33,10 +33,9 @@ import FetchOrganizationList from "../../../../flux/actions/apis/organization/or
 import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import modelUpdate from "../../../../flux/actions/apis/user/update_user";
 import Chip from '@material-ui/core/Chip';
-
+import profileDetails from '../../../../flux/actions/apis/user/profile_details';
 const TELEMETRY = require("../../../../utils/TelemetryManager");
 const LANG_MODEL = require('../../../../utils/language.model');
-
 const roles = ADMINCONFIG.roles;
 
 
@@ -90,7 +89,8 @@ class CreateUser extends React.Component {
       target_language_code: '',
       model_selected: '',
       array_of_users: [],
-      selectedUsers: []
+      selectedUsers: [],
+      modelName: 'No model is currently assigned'
     };
   }
 
@@ -144,11 +144,11 @@ class CreateUser extends React.Component {
     const apiModel = new FetchModel();
     APITransport(apiModel);
     this.setState({ showLoader: true });
-    this.props.fetch_models.models.length == 0 && roles !== 'TRANSLATOR' && this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
+    this.props.fetch_models.models.length == 0 && this.processFetchBulkUserDetailAPI(this.state.offset, this.state.limit)
 
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
 
     if (prevProps.fetch_models.models != this.props.fetch_models.models) {
       this.setState({
@@ -157,7 +157,12 @@ class CreateUser extends React.Component {
         showLoader: false
       })
     }
-
+    if ((this.state.target_language_code !== prevState.target_language_code ||
+      this.state.source_language_code !== prevState.source_language_code)
+      && (this.state.source_language_code && this.state.target_language_code)
+    ) {
+      this.getModelName()
+    }
   }
 
 
@@ -406,7 +411,6 @@ class CreateUser extends React.Component {
       }).then(async response => {
         const rsp_data = await response.json();
         if (!response.ok) {
-          // TELEMETRY.log("tmx-upload", JSON.stringify(rsp_data))
           if (Number(response.status) === 401) {
             this.handleRedirect()
           }
@@ -419,7 +423,31 @@ class CreateUser extends React.Component {
           if (rsp_data.http.status == 200) {
             this.informUserStatus(rsp_data.message ? "rsp_data.message" : rsp_data.why ? rsp_data.why : "Assigned nmt models to selected users.", true)
             setTimeout(async () => {
-              roles !== 'TRANSLATOR' ? history.push(`${process.env.PUBLIC_URL}/user-details`) : history.push(`${process.env.PUBLIC_URL}/view-document`);
+              const token = localStorage.getItem('token')
+              const apiObj = new profileDetails(token);
+              const apiReq = fetch(apiObj.apiEndPoint(), {
+                method: 'post',
+                body: JSON.stringify(apiObj.getBody()),
+                headers: apiObj.getHeaders().headers
+              }).then(async response => {
+                const rsp_data = await response.json();
+                if (!response.ok) {
+                  return Promise.reject('');
+                } else {
+                  let resData = rsp_data && rsp_data.data
+                  localStorage.setItem("userProfile", JSON.stringify(resData));
+                  if (roles.includes('ADMIN')) {
+                    history.push(`${process.env.PUBLIC_URL}/user-details`);
+                  } else if (roles.includes('TRANSLATOR')) {
+                    history.push(`${process.env.PUBLIC_URL}/view-document`);
+                  }
+                  else {
+                    history.push(`${process.env.PUBLIC_URL}/view-document`);
+                  }
+                }
+              }).catch((error) => {
+                console.log('api failed because of server or network')
+              });
             }, 3000)
           }
           else {
@@ -492,14 +520,27 @@ class CreateUser extends React.Component {
 
 
   getModelName = () => {
-    let { userID } = JSON.parse(localStorage.getItem('userProfile'))
-    console.log(this.state.source_language_code, this.state.target_language_code, userID)
+    let userProfile = JSON.parse(localStorage.getItem('userProfile'))
+    if (userProfile.hasOwnProperty('models')) {
+      console.log(this.state.source_language_code, this.state.target_language_code)
+      let data = userProfile['models'].filter(model => model.src_lang === this.state.source_language_code && model.tgt_lang === this.state.target_language_code)
+      if (data.length) {
+        let model_info = this.props.fetch_models.models.filter(model => model.uuid === data[0]['uuid'])
+        if (model_info.length) {
+          this.setState({ modelName: model_info[0]['model_name'] })
+        }
+      } else {
+        this.setState({ modelName: "No model is assigned" })
+      }
+    } else {
+      this.setState({ modelName: "No model is assigned" })
+    }
   }
 
   renderCurrentActiveModel = () => {
     const { classes } = this.props
     return (
-      <Grid container>
+      <Grid container style={{ marginTop: '4%' }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
           <Typography value="" variant="h5">
             {"Current Active Model"}{" "}
@@ -508,7 +549,7 @@ class CreateUser extends React.Component {
 
         <Grid item xs={6} sm={6} lg={4} xl={4} >
           <Typography variant="h5" className={this.props.classes.label}>
-            {this.getModelName()}
+            {this.state.modelName}
           </Typography>
         </Grid>
       </Grid>
@@ -530,8 +571,8 @@ class CreateUser extends React.Component {
 
             {this.renderTargetLanguagesItems()}
             {this.renderModelList()}
-            {this.state.selectedUsers.length > 0 && Object.keys(this.state.model_selected).length > 0 && this.renderExistingUser()}
-            {this.renderUserList()}
+            {roles !== 'TRANSLATOR' && this.state.selectedUsers.length > 0 && Object.keys(this.state.model_selected).length > 0 && this.renderExistingUser()}
+            {roles !== 'TRANSLATOR' && this.renderUserList()}
             {
               roles === 'TRANSLATOR' && this.state.target_language_code && this.state.source_language_code ?
                 this.renderCurrentActiveModel() :
