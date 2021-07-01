@@ -60,6 +60,7 @@ def process_tokenization_kf():
         log_exception("process_tokenization_kf : response send to topic %s"%(config.output_topic), data, e)
 
 
+
 dictConfig({
     'version': 1,
     'formatters': {'default': {
