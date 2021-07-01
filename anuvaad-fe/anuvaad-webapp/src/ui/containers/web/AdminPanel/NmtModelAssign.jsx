@@ -391,8 +391,6 @@ class CreateUser extends React.Component {
     let roles = localStorage.getItem('roles');
     let userID = JSON.parse(localStorage.getItem('userProfile'))
     let selected_users = roles === 'TRANSLATOR' ? [userID] : this.state.array_of_users;
-    console.log(selected_users)
-
     if (selected_users.length > 0 && this.state.source_language_code) {
       selected_users.map((user, i) => {
 
@@ -522,7 +520,6 @@ class CreateUser extends React.Component {
   getModelName = () => {
     let userProfile = JSON.parse(localStorage.getItem('userProfile'))
     if (userProfile.hasOwnProperty('models')) {
-      console.log(this.state.source_language_code, this.state.target_language_code)
       let data = userProfile['models'].filter(model => model.src_lang === this.state.source_language_code && model.tgt_lang === this.state.target_language_code)
       if (data.length) {
         let model_info = this.props.fetch_models.models.filter(model => model.uuid === data[0]['uuid'])
@@ -530,10 +527,16 @@ class CreateUser extends React.Component {
           this.setState({ modelName: model_info[0]['model_name'] })
         }
       } else {
-        this.setState({ modelName: "No model is assigned" })
+        let model_info = this.props.fetch_models.models.filter(model => model.source_language_code === this.state.source_language_code && model.target_language_code === this.state.target_language_code && model.is_primary)
+        if (model_info.length) {
+          this.setState({ modelName: model_info[0]['model_name'] })
+        }
       }
     } else {
-      this.setState({ modelName: "No model is assigned" })
+      let model_info = this.props.fetch_models.models.filter(model => model.source_language_code === this.state.source_language_code && model.target_language_code === this.state.target_language_code && model.is_primary)
+      if (model_info.length) {
+        this.setState({ modelName: model_info[0]['model_name'] })
+      }
     }
   }
 
