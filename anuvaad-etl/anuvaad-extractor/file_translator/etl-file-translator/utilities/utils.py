@@ -4,10 +4,12 @@ import re
 import time
 from pathlib import Path
 
+import magic
 from anuvaad_auditor import log_info
 from anuvaad_auditor.errorhandler import post_error
 from anuvaad_auditor.errorhandler import post_error_wf
 
+import config
 from errors.errors_exception import FileEncodingError
 
 
@@ -33,11 +35,16 @@ class FileOperation(object):
 
     # checking file extension of received file type
     def check_file_extension(self, file_type):
-        allowed_extensions = ['docx', 'pptx', 'json']
+        allowed_extensions = config.ALLOWED_FILE_EXTENSION
         if file_type in allowed_extensions:
             return True
         else:
             return False
+
+    def check_file_mime_type(self, file_path, in_file_type):
+        if in_file_type == 'json':
+            return True
+        return magic.from_file(file_path, mime=True) in config.ALLOWED_MIME_TYPES
 
     # generating input filepath for input filename
     def input_path(self, input_filename):
