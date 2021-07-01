@@ -29,7 +29,11 @@ import { showPdf } from '../../../../flux/actions/apis/document_translate/showpd
 import { showSidebar } from '../../../../flux/actions/apis/common/showSidebar';
 import DownloadFile from "../../../../flux/actions/apis/download/download_zip_file";
 import DownloadDOCX from "../../../../flux/actions/apis/document_translate/download_docx";
-
+import DirectDocxDownload from "../../../../flux/actions/apis/download/download_direct_docx";
+import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
+import SwitchView from '../../../../flux/actions/apis/document_translate/getViewOption';
+import clear_html_link from "../../../../flux/actions/apis/document_translate/clear_html_link";
+import clear_docx_view from "../../../../flux/actions/apis/document_translate/clear_docx_view";
 const StyledMenu = withStyles({
     paper: {
         border: '1px solid #d3d4d5',
@@ -59,7 +63,8 @@ class InteractiveDocHeader extends React.Component {
             message: null,
             timeOut: 3000,
             variant: "info",
-            dialogMessage: null
+            dialogMessage: null,
+            optionsEl: null
         };
     }
 
@@ -67,8 +72,13 @@ class InteractiveDocHeader extends React.Component {
         this.setState({ anchorEl: event.currentTarget });
     };
 
+    handleOptionsMenu = event => {
+        this.setState({ optionsEl: event.currentTarget });
+    }
+
     handleClose = () => {
         this.setState({ anchorEl: null });
+        this.setState({ optionsEl: null });
     };
 
     renderProgressInformation = () => {
@@ -174,10 +184,63 @@ class InteractiveDocHeader extends React.Component {
         this.props.showPdf()
     };
 
+    getModel = async () => {
+        let { APITransport } = this.props
+        let apiObj = new FetchModel();
+        APITransport(apiObj);
+    }
+
+    fetchDigitalFile = async () => {
+        let { modelId, filename, jobid } = this.props.match.params
+        await this.getModel()
+        let model = this.props.fetch_models.models.filter(data => data.model_id === Number(modelId))
+        const apiObj = new DirectDocxDownload('WF_S_FT', encodeURI(jobid), filename, model[0].source_language_code, 'json', model[0], '')
+        this.setState({ anchorEl: null, showStatus: true, message: translate("common.page.label.download") });
+
+        fetch(apiObj.apiEndPoint(), {
+            method: 'post',
+            headers: apiObj.getHeaders().headers,
+            body: JSON.stringify(apiObj.getBody())
+        })
+            .then(async res => {
+                if (res.ok) {
+                    let output = await res.json()
+                    let fileName = output.output[0].outputFile
+                    if (fileName) {
+                        let obj = new DownloadFile(fileName)
+
+                        const apiReq1 = fetch(obj.apiEndPoint(), {
+                            method: 'get', dialogMessage: "Unable to download file", headers: obj.getHeaders().headers
+                        }).then(async response => {
+                            if (!response.ok) {
+                                this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
+                                console.log('api failed')
+                            } else {
+                                const buffer = new Uint8Array(await response.arrayBuffer());
+                                let res = Buffer.from(buffer).toString('base64')
+                                this.downloadFile(res, fileName)
+                            }
+
+                        }).catch((error) => {
+                            this.setState({ dialogMessage: "Unable to download file" })
+                            console.log('api failed because of server or network', error)
+                        });
+
+                    } else {
+                        this.setState({ dialogMessage: "Unable to download file", showStatus: false, message: null })
+                    }
+                } else {
+                    this.setState({ anchorEl: null, showStatus: true, message: 'Downloading failed...' });
+                }
+            })
+        setTimeout(() => {
+            this.setState({ showStatus: false })
+        }, 3000)
+    }
+
     fetchDocxFile = () => {
         let fname = this.props.match.params.jobid.replace('.json', '.docx');
         let jobId = encodeURI(this.props.match.params.jobid);
-        console.log(fname, jobId);
         const apiObj = new DownloadDOCX(jobId, fname)
         this.setState({ anchorEl: null, showStatus: true, message: translate("common.page.label.download") });
         fetch(apiObj.apiEndPoint(), {
@@ -209,13 +272,50 @@ class InteractiveDocHeader extends React.Component {
     }
 
     renderOptions() {
-        const { anchorEl } = this.state;
+        const { optionsEl, anchorEl } = this.state;
         const openEl = Boolean(anchorEl);
-
+        const openOptionsEl = Boolean(optionsEl);
+        let { workflow, filename } = this.props.match.params
+        let type = filename.split('.').pop().toUpperCase()
         return (
             <div style={{ display: "flex", flexDirection: "row" }}>
-                {!this.props.show_pdf && !this.props.preview && <Button color="primary" variant="outlined" onClick={this.hideDocument.bind(this)}>{this.props.docView ? "Show Document" : " Hide document"}</Button>}
-                {!this.props.docView && !this.props.preview && <Button color="primary" variant="outlined" style={{ marginLeft: "10px" }} onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" : " Show PDF"}</Button>}
+                {!this.props.show_pdf && !this.props.preview && workflow !== 'WF_A_FTTKTR' && <Button color="primary" variant="outlined" onClick={this.hideDocument.bind(this)}>{this.props.docView ? "Show Document" : " Hide document"}</Button>}
+                {!this.props.docView && !this.props.preview && workflow !== 'WF_A_FTTKTR' && <Button color="primary" variant="outlined" style={{ marginLeft: "10px" }} onClick={this.openPDF.bind(this)}>{this.props.show_pdf ? "Show Sentences" : " Show PDF"}</Button>}
+                {
+                    workflow === 'WF_A_FTTKTR' &&
+                    <>
+                        <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleOptionsMenu.bind(this)}>
+                            Source Document View
+                            <DownIcon />
+                        </Button>
+                        <StyledMenu
+                            id="menu-appbar"
+                            anchorEl={optionsEl}
+                            open={openOptionsEl}
+                            onClose={this.handleClose.bind(this)}
+                        >
+                            <MenuItem
+                                style={{ borderTop: "1px solid #D6D6D6" }}
+                                onClick={() => {
+                                    this.props.SwitchView('View1')
+                                    this.setState({ optionsEl: false })
+                                }}
+                            >
+                                Continuous View
+                            </MenuItem>
+                            <MenuItem
+                                style={{ borderTop: "1px solid #D6D6D6" }}
+                                onClick={(e) => {
+                                    this.props.SwitchView('View2')
+                                    this.setState({ optionsEl: false })
+                                }}
+                            >
+                                {type === 'DOCX' ? "Separator View" : "PDF View"}
+                            </MenuItem>
+                        </StyledMenu>
+                    </>
+                }
+
                 <Button variant="outlined" color="primary" style={{ marginLeft: "10px" }} onClick={this.handleMenu.bind(this)}>
                     Download
                     <DownIcon />
@@ -227,23 +327,28 @@ class InteractiveDocHeader extends React.Component {
                     open={openEl}
                     onClose={this.handleClose.bind(this)}
                 >
-                    <MenuItem
-                        style={{ borderTop: "1px solid #D6D6D6" }}
-                        onClick={() => {
-                            this.fetchFile("txt")
-                        }}
-                    >
-                        As TXT
-                    </MenuItem>
-                    <MenuItem
-                        style={{ borderTop: "1px solid #D6D6D6" }}
-                        onClick={() => {
-                            this.fetchFile("xlsx")
-                        }}
-                    >
-                        As XLSX
-                    </MenuItem>
-                    {!this.props.preview && <MenuItem
+                    {/* {workflow !== 'WF_A_FTTKTR' && */}
+                    <>
+                        <MenuItem
+                            style={{ borderTop: "1px solid #D6D6D6" }}
+                            onClick={() => {
+                                this.fetchFile("txt")
+                            }}
+                        >
+                            As TXT
+                        </MenuItem>
+                        <MenuItem
+                            style={{ borderTop: "1px solid #D6D6D6" }}
+                            onClick={() => {
+                                this.fetchFile("xlsx")
+                            }}
+                        >
+                            As XLSX
+                        </MenuItem>
+                    </>
+                    {/* } */}
+
+                    {/* {!this.props.preview && workflow !== 'WF_A_FTTKTR' && <MenuItem
                         style={{ borderTop: "1px solid #D6D6D6" }}
                         onClick={() => {
                             this.setState({ anchorEl: null })
@@ -251,15 +356,25 @@ class InteractiveDocHeader extends React.Component {
                         }}
                     >
                         As PDF
-                    </MenuItem>}
-                    <MenuItem
-                        style={{ borderTop: "1px solid #D6D6D6" }}
-                        onClick={this.fetchDocxFile}
-                    >
-                        As DOCX
-                    </MenuItem>
+                    </MenuItem>} */}
+                    {workflow !== 'WF_A_FTTKTR' ?
+                        <MenuItem
+                            style={{ borderTop: "1px solid #D6D6D6" }}
+                            onClick={this.fetchDocxFile}
+                        >
+                            As DOCX
+                        </MenuItem>
+                        :
+                        <MenuItem
+                            style={{ borderTop: "1px solid #D6D6D6" }}
+                            onClick={this.fetchDigitalFile}
+                        >
+                            As {type}
+                        </MenuItem>
+                    }
                 </StyledMenu>
-            </div>
+
+            </div >
         );
     }
 
@@ -279,6 +394,8 @@ class InteractiveDocHeader extends React.Component {
                             <div style={{ display: "flex", flexDirection: "row" }}>
                                 <IconButton
                                     onClick={() => {
+                                        this.props.clear_html_link()
+                                        this.props.clear_docx_view()
                                         history.push(`${process.env.PUBLIC_URL}/view-document`);
                                     }}
                                     className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}
@@ -312,14 +429,18 @@ class InteractiveDocHeader extends React.Component {
 
 const mapStateToProps = state => ({
     show_pdf: state.show_pdf.open,
-    open_sidebar: state.open_sidebar.open
+    open_sidebar: state.open_sidebar.open,
+    fetch_models: state.fetch_models
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         APITransport,
         showPdf,
-        showSidebar
+        showSidebar,
+        SwitchView,
+        clear_html_link,
+        clear_docx_view
     },
     dispatch
 );

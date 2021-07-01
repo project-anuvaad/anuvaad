@@ -110,7 +110,7 @@ class Response(object):
 
             output_json_data = Service(app_context=app_context)
             output_filename_json = file_ops.writing_json_file( 0,output_json_data, self.DOWNLOAD_FOLDER)
-            response_true        =   file_ops.one_filename_response( output_filename_json)
+            response_true        =   file_ops.one_filename_response( output_filename_json,[])
 
             log_info("non workflow_response successfully generated response for rest server", app_context.application_context)
             response_true = copy.deepcopy(response_true)

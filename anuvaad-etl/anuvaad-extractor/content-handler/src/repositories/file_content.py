@@ -4,7 +4,7 @@ import datetime
 import uuid
 from utilities import AppContext
 from anuvaad_auditor.loghandler import log_info, log_exception
-import json
+import time
 
 class FileContentRepositories:
     def __init__(self):
@@ -178,3 +178,23 @@ class FileContentRepositories:
                     saved_blocks.append(saved_block['data'][0])
                 log_info("FileContentUpdateRepo -updated blocks : {}".format(str(saved_blocks)),AppContext.getContext())
         return True, saved_blocks
+
+    def store_reference(self,records):
+        
+        for record in records:
+            if record.get("job_id") == None and record.get("file_link") == None:
+                return False
+            if(self.blockModel.store_s3_link({"job_id":record["job_id"],"file_link":record["file_link"],"timestamp":eval(str(time.time()))})) == False:
+                return False
+        return True
+            
+    def get_reference(self,records):
+        data=[]
+        for record in records:
+            result= self.blockModel.get_s3_link(record)
+            if not result:
+                return False
+            data.append(result)
+        return data
+            
+       

@@ -280,17 +280,17 @@ class ViewDocument extends React.Component {
     // this.makeAPICallJobDelete(jobId);
   };
 
-  processViewDocumentClick = (jobId, recordId, status) => {
+  processViewDocumentClick = (jobId, recordId, status, workflowCode) => {
     let role = localStorage.getItem("roles")
     let job = this.getJobIdDetail(jobId);
     if (status === "COMPLETED") {
-      
-        history.push(
-          `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}`,
-          this.state
-        );
-     
-      
+
+      history.push(
+        `${process.env.PUBLIC_URL}/interactive-document/${job.recordId}/${job.converted_filename}/${job.model_id}/${job.filename}/${workflowCode}`,
+        this.state
+      );
+
+
     } else if (status === "INPROGRESS") {
       this.setState({
         dialogMessage: "Please wait process is Inprogress!",
@@ -336,7 +336,7 @@ class ViewDocument extends React.Component {
     });
     let job = this.getJobIdDetail(jobId);
     let user_profile = JSON.parse(localStorage.getItem("userProfile"));
-
+    console.log(job.converted_filename,user_profile.userID)
     let obj = new DownloadFile(job.converted_filename, user_profile.userID);
 
     const apiReq1 = fetch(obj.apiEndPoint(), {
@@ -447,8 +447,16 @@ class ViewDocument extends React.Component {
         },
       },
       {
+        name: "model_name",
+        label: "Translation Model",
+        options: {
+          filter: false,
+          sort: false,
+        },
+      },
+      {
         name: "status",
-        label: translate("common.page.table.status"),
+        label: "Translation Status",
         options: {
           filter: true,
           sort: false,
@@ -473,14 +481,14 @@ class ViewDocument extends React.Component {
           empty: true,
         },
       },
-       {
+      {
         name: "description",
         label: "Description",
         options: {
           display: 'false',
           sort: false
         }
-      }, 
+      },
       {
         name: "spent_time",
         label: "Time Spent",
@@ -497,7 +505,7 @@ class ViewDocument extends React.Component {
       },
       {
         name: "Time Taken",
-        label: "Job Time",
+        label: "Translation Time",
         options: {
           filter: true,
           sort: true,
@@ -505,10 +513,10 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {tableMeta.rowData[5] === "COMPLETED" &&
+                  {tableMeta.rowData[6] === "COMPLETED" &&
                     this.getDateTimeDifference(
-                      tableMeta.rowData[10],
-                      tableMeta.rowData[12]
+                      tableMeta.rowData[11],
+                      tableMeta.rowData[13]
                     )}
                 </div>
               );
@@ -518,7 +526,7 @@ class ViewDocument extends React.Component {
       },
       {
         name: "created_on",
-        label: translate("common.page.label.timeStamp"),
+        label: "Translation Start Time",
         options: {
           filter: true,
           sort: true,
@@ -526,11 +534,18 @@ class ViewDocument extends React.Component {
             if (tableMeta.rowData) {
               return (
                 <div>
-                  {this.getDateTimeFromTimestamp(tableMeta.rowData[12])}
+                  {this.getDateTimeFromTimestamp(tableMeta.rowData[13])}
                 </div>
               );
             }
           },
+        },
+      },
+      {
+        name: "workflowCode",
+        label: "Workflow Code",
+        options: {
+          display: "excluded",
         },
       },
       {
@@ -567,7 +582,8 @@ class ViewDocument extends React.Component {
                         this.processViewDocumentClick(
                           tableMeta.rowData[1],
                           tableMeta.rowData[2],
-                          tableMeta.rowData[5]
+                          tableMeta.rowData[6],
+                          tableMeta.rowData[14]
                         )
                       }
                     >

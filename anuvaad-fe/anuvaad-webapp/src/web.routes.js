@@ -144,7 +144,7 @@ class AppRoutes extends React.Component {
             />
 
             <PrivateRoute
-              path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename`}
+              path={`${process.env.PUBLIC_URL}/interactive-document/:jobid/:inputfileid/:modelId/:filename/:workflow`}
               userRoles={["TRANSLATOR", "ANNOTATOR"]}
               component={DocumentEditorV1}
               title="Translate file"
@@ -349,7 +349,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/assign-nmt-model`}
               dontShowLoader
               title={"Assign models"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "TRANSLATOR"]}
               component={NmtModelAssign}
               authenticate={this.authenticateUser}
               currentMenu="assign-nmt-model"

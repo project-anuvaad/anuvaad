@@ -128,7 +128,6 @@ def add_line(line_coord, line_text,words_lis,page,font_info):
         #line_region["text"] = text
         line_region["class"] = 'LINE'
         word_region = get_words(words,page,font_info)
-        print(word_region)
         line_region["regions"] = word_region
         wors.extend(word_region)
         #print(word_region)

@@ -93,7 +93,7 @@ def get_polygon(region):
 
 def sort_regions(region_lines, sorted_lines=[]):
     check_y =region_lines[0]['boundingBox']['vertices'][0]['y']
-    spacing_threshold = abs(check_y - region_lines[0]['boundingBox']['vertices'][3]['y'])* 0.8  # *2 #*0.5
+    spacing_threshold = abs(check_y - region_lines[0]['boundingBox']['vertices'][3]['y'])* 0.6 #0.8  # *2 #*0.5
     same_line =  list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) <= spacing_threshold), region_lines))
     next_line =   list(filter(lambda x: (abs(x['boundingBox']['vertices'][0]['y']  - check_y) > spacing_threshold), region_lines))
     if len(same_line) >1 :
@@ -154,7 +154,6 @@ def collate_regions(regions, lines, child_class=None, grand_children=False,regio
                             if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
                                 region_lines.append(lines[intr_index])
                                 lines_intersected.append(intr_index)
-                    
                 region_lines.sort(key=lambda x:x['boundingBox']['vertices'][0]['y'])
                 
                 if len(region_lines) > 0:

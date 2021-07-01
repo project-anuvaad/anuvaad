@@ -25,6 +25,8 @@ import FetchModel from "../../../../flux/actions/apis/common/fetchmodel";
 import WorkFlow from "../../../../flux/actions/apis/common/fileupload";
 import DocumentUpload from "../../../../flux/actions/apis/document_upload/document_upload";
 import { createJobEntry } from '../../../../flux/actions/users/async_job_management';
+import Dialog from '@material-ui/core/Dialog';
+import { Container } from "@material-ui/core";
 
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 const LANG_MODEL = require('../../../../utils/language.model')
@@ -79,25 +81,83 @@ class PdfUpload extends Component {
       target_language_code: '',
       source_languages: [],
       target_languages: [],
-      jobDescription:''
+      jobDescription: '',
+      formatWarning: false
     };
   }
 
+  handleDialogClose = () => {
+    this.setState({ formatWarning: false })
+  }
 
+  renderDialog = () => {
+    const { classes } = this.props
+    const styles = {
+      marginTop: '10%'
+    }
+    return (
+      <Dialog maxWidth={'md'} onClose={this.handleDialogClose} aria-labelledby="simple-dialog-title" open={true}>
+        <Container className={classes.warningDialog}>
+          <Typography style={{ borderBottom: '1px solid #00000029' }} variant="h4">Translation File Alert</Typography>
+          <Typography style={styles} variant="h5">You are about to translate a file that is not in DOCX or PPTX format, you might face formatting issues when you export the translated file.</Typography>
+          <Grid container spacing={2} style={styles}>
+            <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
+              <Button
+                size="large"
+                className={classes.btnStyle}
+                fullWidth
+                color="primary"
+                variant="contained"
+                onClick={() => {
+                  this.handleDialogClose()
+                  this.makeDocumentUploadAPICall()
+                }}
+              >
+                I understand, proceed
+              </Button>
+            </Grid>
+            <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
+              <Button
+                size="large"
+                className={classes.btnStyle}
+                fullWidth
+                color="primary"
+                variant="contained"
+                onClick={() => {
+                  this.setState({ files: { workspaceName: '' } })
+                  this.handleDialogClose()
+                }}>
+                Cancel
+              </Button>
+            </Grid>
+          </Grid>
+        </Container>
+      </Dialog>
+    )
+  }
+
+  makeDocumentUploadAPICall = () => {
+    let userModel = JSON.parse(localStorage.getItem("userProfile"))
+    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code, userModel.models)
+    this.setState({ model: modelId })
+    const { APITransport } = this.props;
+    const apiObj = new DocumentUpload(
+      this.state.files, "docUplaod",
+      modelId,
+    );
+    APITransport(apiObj);
+  }
 
   handleSubmit(e) {
-   
-    let userModel = JSON.parse(localStorage.getItem("userProfile"))
-    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code,userModel.models )
-    e.preventDefault();
-    this.setState({ model: modelId })
     if (this.state.files.length > 0 && this.state.source_language_code && this.state.target_language_code) {
-      const { APITransport } = this.props;
-      const apiObj = new DocumentUpload(
-        this.state.files, "docUplaod",
-        modelId,
-      );
-      APITransport(apiObj);
+      let type = this.state.files[0].name.split('.').pop()
+      if (type !== 'docx' && type !== 'pptx') {
+        e.preventDefault();
+        this.setState({ formatWarning: true })
+      } else {
+        e.preventDefault();
+        this.makeDocumentUploadAPICall()
+      }
     } else {
       alert("Field should not be empty!");
     }
@@ -156,30 +216,33 @@ class PdfUpload extends Component {
     const { APITransport } = this.props;
     const apiModel = new FetchModel();
     APITransport(apiModel);
-    this.setState({ showLoader: true, uploadType: this.props.match.params.type ==="translate" ? true : false });
+    this.setState({ showLoader: true, uploadType: this.props.match.params.type === "translate" ? true : false });
 
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.fetch_models.models !== this.props.fetch_models.models) {
       this.setState({
-        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, this.state.uploadType, ),
+        source_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, this.state.uploadType,),
         target_languages: LANG_MODEL.get_supported_languages(this.props.fetch_models.models, this.state.uploadType)
       })
-      
+
     }
 
     if (prevProps.documentUplaod !== this.props.documentUplaod) {
       const { APITransport } = this.props;
-      const apiObj = new WorkFlow(this.state.workflow, this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
-        this.state.target_language_code, this.state.path, this.state.model,"","", this.state.workspaceName);
+      let path = this.state.files[0].name.split('.')
+      let fileType = path[path.length - 1]
+      const digitalDoc = (fileType === 'docx' || fileType === 'pptx') ? true : false
+      const apiObj = new WorkFlow(!digitalDoc ? this.state.workflow : "WF_A_FTTKTR", this.props.documentUplaod.data, this.state.fileName, this.state.source_language_code,
+        this.state.target_language_code, this.state.path, this.state.model, "", "", this.state.workspaceName);
       APITransport(apiObj);
     }
 
     if (prevProps.workflowStatus !== this.props.workflowStatus) {
       this.props.createJobEntry(this.props.workflowStatus)
 
-      var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, this.state.uploadType )
+      var sourceLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.source_language_code, this.state.uploadType)
       var targetLang = LANG_MODEL.get_language_name(this.props.fetch_models.models, this.state.target_language_code, this.state.uploadType)
 
       TELEMETRY.startWorkflow(sourceLang, targetLang, this.props.workflowStatus.input.jobName, this.props.workflowStatus.jobID)
@@ -221,7 +284,7 @@ class PdfUpload extends Component {
 
   handleDelete = () => {
     this.setState({
-      files: [],workspaceName :''
+      files: [], workspaceName: ''
     });
   };
   handleTextChange(key, event) {
@@ -341,7 +404,9 @@ class PdfUpload extends Component {
             {this.state.uploadType ? "Document Translate" : "Data Collection"}
           </Typography>
           <br />
-          <Typography className={classes.typographySubHeader}>{this.state.uploadType ?translate("pdf_upload.page.label.uploadMessage") : "Upload file that you want to collect data."}</Typography>
+          {this.state.uploadType ?
+            <Typography variant="h6" className={classes.note}>{translate("pdf_upload.page.label.uploadMessage")}</Typography> :
+            <Typography className={classes.typographySubHeader}>"Upload file that you want to collect data."</Typography>}
           <br />
           <Paper elevation={3} className={classes.paper}>
             <Grid container spacing={8}>
@@ -349,7 +414,7 @@ class PdfUpload extends Component {
               <Grid item xs={12} sm={6} lg={6} xl={6}>
                 <MuiThemeProvider theme={theme}>
                   <DropzoneArea className={classes.DropZoneArea}
-                    showPreviewsInDropzone
+                    showPreviewsInDropzone={this.state.files.length ? true : false}
                     dropZoneClass={classes.dropZoneArea}
                     acceptedFiles={[".txt,audio/*,.ods,.pptx,image/*,.psd,.pdf,.xlsm,.xltx,.xltm,.xla,.xltm,.docx,.rtf", ".txt", ".pdf", ".doc", ".ppt", ".excel", ".xlsx", ".xls", ".log", ".xlsb"]}
                     onChange={this.handleChange.bind(this)}
@@ -377,7 +442,7 @@ class PdfUpload extends Component {
                     <TextField
                       // className={classes.textfield}
                       value={this.state.workspaceName}
-                      placeholder = "Enter your own description here (optional)"
+                      placeholder="Enter your own description here (optional)"
                       id="outlined-name"
                       margin="normal"
                       onChange={event => {
@@ -395,15 +460,11 @@ class PdfUpload extends Component {
               <Grid item xs={12} sm={6} lg={6} xl={6} style={{ paddingTop: "25px" }}>
                 <Button
                   id="back"
-                  variant="contained" color="primary"
-                  size="large" onClick={this.handleBack.bind(this)}
-                  style={{
-                    width: "100%",
-                    backgroundColor: '#1C9AB7',
-                    borderRadius: "20px 20px 20px 20px",
-                    color: "#FFFFFF",
-                    height: '46px'
-                  }}
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  onClick={this.handleBack.bind(this)}
+                  className={classes.btnStyle}
                 >
                   {translate("common.page.button.back")}
                 </Button>
@@ -412,16 +473,11 @@ class PdfUpload extends Component {
                 <Grid item xs={12} sm={12} lg={12} xl={12}>
                   <Button
                     id="upload"
-                    variant="contained" color="primary"
-                    // className={classes.button1} 
-                    style={{
-                      width: "100%",
-                      backgroundColor: '#1C9AB7',
-                      borderRadius: "20px 20px 20px 20px",
-                      color: "#FFFFFF",
-                      height: '46px'
-                    }}
-                    size="large" onClick={this.handleSubmit.bind(this)}>
+                    variant="contained"
+                    color="primary"
+                    className={classes.btnStyle}
+                    size="large"
+                    onClick={this.handleSubmit.bind(this)}>
                     {translate("common.page.button.upload")}
                   </Button>
                 </Grid>
@@ -430,7 +486,7 @@ class PdfUpload extends Component {
 
             </Grid>
 
-
+            {this.state.formatWarning && this.renderDialog()}
             {this.state.open && (
               <Snackbar
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}

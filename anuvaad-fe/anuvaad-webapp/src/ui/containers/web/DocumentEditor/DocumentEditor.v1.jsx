@@ -37,13 +37,17 @@ import { Button } from "@material-ui/core";
 // import html2canvas from "html2canvas"
 // import { jsPDF } from "jspdf";
 import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
-
+import PageCardHtml from './PageCardHtml';
+import Split from 'react-split';
+import '../../../styles/web/InteractiveEditor.css';
 import Loader from "../../../components/web/common/CircularLoader";
 const LANG_MODEL = require('../../../../utils/language.model')
 const PAGE_OPS = require("../../../../utils/page.operations");
 const BLOCK_OPS = require("../../../../utils/block.operations");
 const TELEMETRY = require('../../../../utils/TelemetryManager')
 var jp = require('jsonpath')
+
+
 
 class DocumentEditor extends React.Component {
   constructor(props) {
@@ -270,7 +274,7 @@ class DocumentEditor extends React.Component {
     });
   }
 
-  async makeAPICallSaveSentence(sentence, pageNumber,score, eventArray) {
+  async makeAPICallSaveSentence(sentence, pageNumber, score, eventArray) {
 
     this.informUserProgress(translate('common.page.label.SENTENCE_SAVED'))
     let model = LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)
@@ -449,10 +453,10 @@ class DocumentEditor extends React.Component {
     setTimeout(() => { this.props.editorModeClear() }, 50)
   }
 
-  processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex , score, eventArray) => {
+  processSentenceAction = (action, pageNumber, sentences, startIndex, endIndex, score, eventArray) => {
     switch (action) {
       case SENTENCE_ACTION.SENTENCE_SAVED: {
-        this.makeAPICallSaveSentence(sentences[0], pageNumber,score, eventArray)
+        this.makeAPICallSaveSentence(sentences[0], pageNumber, score, eventArray)
         return;
       }
 
@@ -674,24 +678,27 @@ class DocumentEditor extends React.Component {
    */
   renderDocumentPages = () => {
     let pages = this.getPages();
-
+    let { workflow } = this.props.match.params
     if (pages.length < 1) {
       return (
         <div></div>
       )
     }
     return (
-      <Grid item xs={12} sm={6} lg={6} xl={6} style={{ marginRight: "5px" }}>
-
-        <InfiniteScroll height={window.innerHeight - 141} style={{
-          maxHeight: window.innerHeight - 141,
-          overflowY: "auto",
-        }}
-          dataLength={pages.length}
-        >
-          {pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)}
-        </InfiniteScroll>
-      </Grid>
+      <InfiniteScroll height={window.innerHeight - 141} style={{
+        maxHeight: window.innerHeight - 141,
+        overflowY: "auto",
+      }}
+        dataLength={pages.length}
+      >
+        {
+          workflow !== 'WF_A_FTTKTR'
+            ?
+            pages.map((page, index) => <PageCard zoomPercent={this.state.zoomPercent} key={index} page={page} onAction={this.processSentenceAction} />)
+            :
+            <PageCardHtml zoomPercent={this.state.zoomPercent} onAction={this.processSentenceAction} />
+        }
+      </InfiniteScroll>
     )
   }
   processZoomIn = () => {
@@ -734,32 +741,28 @@ class DocumentEditor extends React.Component {
     let recordId = this.props.match.params.jobid;
     let jobId = recordId ? recordId.split("|")[0] : ""
     return (
-      <Grid item xs={12} sm={12} lg={12} xl={12} style={{ marginLeft: "5px" }}>
-
-        <InfiniteScroll height={window.innerHeight - 141} style={{
-          maxHeight: window.innerHeight - 141,
-          overflowY: "auto",
-        }}
-          hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
-          dataLength={pages.length}
-        >
-          {
-            pages.map(page => page['translated_texts'].map((sentence, index) => {
-              sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
-              return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
-                pageNumber={page.page_no}
-                recordId={this.props.match.params.jobid}
-                model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)}
-                jobId={jobId}
-                sentence={sentence}
-                onAction={this.processSentenceAction} />
-              </div>
-            })
-            )
-          }
-        </InfiniteScroll>
-      </Grid >
-
+      <InfiniteScroll height={window.innerHeight - 141} style={{
+        maxHeight: window.innerHeight - 141,
+        overflowY: "auto",
+      }}
+        hasMore={(this.props.document_contents.count > this.props.document_contents.pages.length) ? true : false}
+        dataLength={pages.length}
+      >
+        {
+          pages.map(page => page['translated_texts'].map((sentence, index) => {
+            sentence.src = sentence.src.replace(/\s{2,}/g, ' ').trim()
+            return < div key={sentence.s_id} ref={sentence.s_id} > <SentenceCard key={sentence.s_id}
+              pageNumber={page.page_no}
+              recordId={this.props.match.params.jobid}
+              model={LANG_MODEL.fetchModel(parseInt(this.props.match.params.modelId), this.props.fetch_models)}
+              jobId={jobId}
+              sentence={sentence}
+              onAction={this.processSentenceAction} />
+            </div>
+          })
+          )
+        }
+      </InfiniteScroll>
     )
   }
 
@@ -775,7 +778,7 @@ class DocumentEditor extends React.Component {
           onClick={this.processZoomIn}
           disabled={this.state.zoomInDisabled} >
           +
-          </Button>
+        </Button>
         <input
           style={{
             backgroundColor: 'white',
@@ -795,7 +798,7 @@ class DocumentEditor extends React.Component {
           disabled={this.state.zoomOutDisabled}
         >
           -
-          </Button>
+        </Button>
       </div >);
   }
   render() {
@@ -803,12 +806,12 @@ class DocumentEditor extends React.Component {
       <div style={{ height: window.innerHeight }}>
         <div style={{ height: "50px", marginBottom: "13px" }}> <InteractiveDocToolBar docView={this.state.docView} onAction={this.handleDocumentView} onShowPreview={this.showPreview} preview={this.state.preview} /></div>
 
-        { !this.state.preview ?
+        {!this.state.preview ?
           <>
-            <div style={{ height: window.innerHeight - 141, maxHeight: window.innerHeight - 141, overflow: "hidden", padding: "0px 24px 0px 24px", display: "flex", flexDirection: "row" }}>
-              {!this.state.docView && this.renderDocumentPages()}
-              {!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}
-            </div>
+            <Split className='split'>
+              <div>{!this.state.docView && this.renderDocumentPages()}</div>
+              <div>{!this.props.show_pdf ? this.renderSentences() : this.renderPDFDocument()}</div>
+            </Split>
             <div style={{ height: "65px", marginTop: "13px", bottom: "0px", position: "absolute", width: "100%" }}>
               <InteractivePagination count={this.props.document_contents.count}
                 data={this.props.document_contents.pages}
@@ -827,7 +830,7 @@ class DocumentEditor extends React.Component {
         {this.state.apiInProgress ? this.renderProgressInformation() : <div />}
         {this.state.showStatus ? this.renderStatusInformation() : <div />}
         {this.state.apiFetchStatus && <Spinner />}
-        { !this.state.download && this.state.preview && <Loader value={this.state.loaderValue}></Loader>}
+        {!this.state.download && this.state.preview && <Loader value={this.state.loaderValue}></Loader>}
       </div>
     )
   }
