@@ -427,6 +427,47 @@ WorkflowConfigs:
 
 
 
+  - workflowCode: WF_A_FTTKTR
+    type: ASYNC
+    description: WF for translating docx/pptx
+    useCase: A_FTTTR
+    sequence:
+    - order: 0
+      tool:
+      - name: FILE-TRANSLATOR
+        description: WF for docx translation
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 1
+      tool:
+      - name: TOKENISER
+        description: Tokenises a given file with paragraphs
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 2
+      tool:
+      - name: TRANSLATOR
+        description: Translates sentences from a bm-tok processed json file.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_TOPIC
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TRANSLATOR_OUTPUT_TOPIC
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
   - workflowCode: WF_A_FCWDLDBSOTES
     type: ASYNC
     description: Document digitizarion wf.
@@ -655,6 +696,22 @@ WorkflowConfigs:
         description: Translates the sentences.
         api-details:
         - uri: http://user_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/sentences/workflow/translate
+      endState: true
+
+
+
+  - workflowCode: WF_S_FT
+    type: SYNC
+    translation: DOWNLOAD
+    description: Search WF for docx download
+    useCase: S_FT
+    sequence:
+    - order: 0
+      tool:
+      - name: FILE-TRANSLATOR
+        description: Search WF for docx download
+        api-details:
+        - uri: http://user_anuvaad-etl-file-translator:5001/anuvaad-etl/file-translator/v0/download-wf
       endState: true
 
 
