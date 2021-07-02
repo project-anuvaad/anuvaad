@@ -431,7 +431,7 @@ class Header extends React.Component {
                         </ListItem>
                       </div>
                       {
-                        process.env.REACT_APP_APIGW_BASE_URL === 'https://jud-auth.anuvaad.org/' || process.env.REACT_APP_APIGW_BASE_URL === 'https://auth.anuvaad.org/' &&
+                        process.env.REACT_APP_APIGW_BASE_URL === 'https://jud-auth.anuvaad.org' || process.env.REACT_APP_APIGW_BASE_URL === 'https://auth.anuvaad.org' &&
                         <div>
                         <Divider className={classes.divider} />
                         <ListItem
