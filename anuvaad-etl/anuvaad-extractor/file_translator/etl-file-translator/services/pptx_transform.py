@@ -2,7 +2,10 @@ import copy
 import os
 import uuid
 
+from anuvaad_auditor import log_info
 from pptx import Presentation
+from pptx.text.text import _Paragraph
+
 
 import config
 from errors.errors_exception import FileErrors
@@ -58,32 +61,39 @@ class PptxTransform(object):
 
         page_list.append(self.generate_json_for_page(page_number))
 
+        # NEW LOGIC TO GET ALL PARAGRAPHS
         if config.PPTX_PARAGRAPH_GEN:
-            for id_sld, slide in enumerate(document.slides):
-                for id_shp, shape in enumerate(slide.shapes):
-                    if not shape.has_text_frame:
-                        continue
-                    for idx, para in enumerate(shape.text_frame.paragraphs):
-                        para_count += 1
-                        json_para = self.generate_json_for_para(para=para,
-                                                                file_id=file_id,
-                                                                slide=str(id_sld),
-                                                                shape=str(id_shp),
-                                                                para_idx=str(idx))
-
-                        for idr, run in enumerate(para.runs):
-                            json_run = self.generate_json_for_run(run=run,
-                                                                  file_id=file_id,
-                                                                  slide=str(id_sld),
-                                                                  shape=str(id_shp),
-                                                                  para_idx=str(idx),
-                                                                  run_idx=str(idr))
-                            json_para['children'].append(json_run)
-
-                        page_list[page_number - 1]['text_blocks'].append(json_para)
-                page_number += 1
-                page_list.append(self.generate_json_for_page(page_number))
-
+            try:
+                for id_sld, slide in enumerate(document.slides):
+                    try:
+                        para_lis = slide._element.xpath('.//a:p')
+                        for idx, para_obj in enumerate(para_lis):
+                            try:
+                                para = _Paragraph(para_obj, slide)
+                                para_count += 1
+                                json_para = self.generate_json_for_para(para=para,
+                                                                        file_id=file_id,
+                                                                        slide=str(id_sld),
+                                                                        para_idx=str(idx))
+                                for idr, run in enumerate(para.runs):
+                                    json_run = self.generate_json_for_run(run=run,
+                                                                          file_id=file_id,
+                                                                          slide=str(id_sld),
+                                                                          para_idx=str(idx),
+                                                                          run_idx=str(idr))
+                                    json_para['children'].append(json_run)
+                                page_list[page_number - 1]['text_blocks'].append(json_para)
+                            except Exception as e:
+                                log_info(f"generate_json_structure :: PPTX Generate Json failed for Paragraph:{idx}, slide:{id_sld}, file:{file_id}"
+                                         f"ERROR:{str(e)}", None)
+                        page_number += 1
+                        page_list.append(self.generate_json_for_page(page_number))
+                    except Exception as e:
+                        log_info(f"generate_json_structure :: PPTX Generate Json failed for Slide:{id_sld}, file:{file_id}"
+                                 f"ERROR:{str(e)}", None)
+            except Exception as e:
+                log_info(f"generate_json_structure :: PPTX Generate Json failed for File:{file_id}"
+                         f"ERROR:{str(e)}", None)
         return base_json
 
     def write_json_file(self, transformed_obj):
@@ -97,21 +107,33 @@ class PptxTransform(object):
         file_id = self.file_name_without_ext
 
         if config.PPTX_PARAGRAPH_GEN and config.PPTX_PARAGRAPH_TRANS:
-            for id_sld, slide in enumerate(document.slides):
-                for id_shp, shape in enumerate(slide.shapes):
-                    if not shape.has_text_frame:
-                        continue
-                    for idx, para in enumerate(shape.text_frame.paragraphs):
-                        runs = common_obj.get_runs(para, para_obj=True, file_type=config.TYPE_PPTX)
-                        para_id = common_obj.generate_id(file_id=file_id,
-                                                         slide=str(id_sld),
-                                                         shape=str(id_shp),
-                                                         para=str(idx))
-                        if para_id in trans_map:
-                            self.distribute_over_runs(runs, trans_para=trans_map[para_id])
-                        else:
-                            raise FileErrors("translate_docx_file:",
-                                             "PARA ID :{} not found in fetch content".format(para_id))
+            try:
+                for id_sld, slide in enumerate(document.slides):
+                    # NEW LOGIC TO GET PARA FOR PPTX
+                    try:
+                        para_lis = slide._element.xpath('.//a:p')
+                        for idx, para_obj in enumerate(para_lis):
+                            try:
+                                para = _Paragraph(para_obj, slide)
+                                runs = common_obj.get_runs(para, para_obj=True, file_type=config.TYPE_PPTX)
+                                para_id = common_obj.generate_id(file_id=file_id,
+                                                                 slide=str(id_sld),
+                                                                 para=str(idx))
+                                if para_id in trans_map:
+                                    self.distribute_over_runs(runs, trans_para=trans_map[para_id])
+                                else:
+                                    raise FileErrors(f"translate_pptx_file:", f"PARA ID :{para_id} not found in fetch content")
+                            except Exception as e:
+                                log_info(f"translate_pptx_file :: Translation failed for Paragraph:{idx}, slide:{id_sld}, file:{file_id}"
+                                         f"ERROR:{str(e)}", None)
+                    except Exception as e:
+                        log_info(f"translate_pptx_file :: Translation failed for Slide:{id_sld}, file:{file_id}"
+                                 f"ERROR:{str(e)}", None)
+            except Exception as e:
+                log_info(f"translate_pptx_file :: Translation failed for File:{file_id}"
+                         f"ERROR:{str(e)}", None)
+
+
         return document
 
     def write_pptx_file(self, document):
