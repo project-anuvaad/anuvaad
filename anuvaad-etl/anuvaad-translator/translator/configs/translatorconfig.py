@@ -9,7 +9,7 @@ redis_server_host = os.environ.get('REDIS_URL', 'localhost')
 redis_server_port = os.environ.get('REDIS_PORT', 6379)
 tmx_redis_db = os.environ.get('ANUVAAD_TMX_REDIS_DB', 3)
 if isinstance(tmx_redis_db, str):
-    pt_redis_db = eval(tmx_redis_db)
+    tmx_redis_db = eval(tmx_redis_db)
 file_download_url = str(os.environ.get('USER_FILE_UPLOADER_HOST', 'http://gateway_anuvaad-user-fileuploader:5001')) \
                     + str(os.environ.get('USER_FILE_DOWNLOAD_ENDPOINT', '/anuvaad-api/file-uploader/v0/download-file'))
 save_content_url = str(os.environ.get('CONTENT_HANDLER_HOST', 'http://gateway_anuvaad-content-handler:5001')) \
