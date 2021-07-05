@@ -3,7 +3,7 @@ import json
 import redis
 from anuvaad_auditor import log_exception
 
-from config import redis_server_host, redis_server_port
+from config import redis_server_host, redis_server_port, redis_db
 
 redis_client = None
 
@@ -15,7 +15,7 @@ class JobRepository:
 
     # Initialises and fetches redis client
     def redis_instantiate(self):
-        redis_client = redis.Redis(host=redis_server_host, port=redis_server_port, db=3)
+        redis_client = redis.Redis(host=redis_server_host, port=redis_server_port, db=redis_db)
         return redis_client
 
 

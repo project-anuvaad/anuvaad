@@ -1,3 +1,4 @@
+import redis
 from utilities.model_response import CustomResponse
 from utilities.model_response import Status
 from utilities.utils import FileOperation
@@ -27,7 +28,6 @@ def process_tokenization_kf():
         log_info("process_tokenization_kf : trying to receive value from consumer ", None)
         for msg in consumer:
             data = Consumer.get_json_data(msg.value)
-            print(data,'hello')
             log_info("process_tokenization_kf : received input json from input topic consumer ", data)
             task_id = str("TOK-" + str(time.time()).replace('.', '')[0:13])
             task_starttime = eval(str(time.time()).replace('.', '')[0:13])

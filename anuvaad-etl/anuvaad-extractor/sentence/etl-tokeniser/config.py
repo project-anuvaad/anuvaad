@@ -12,6 +12,7 @@ ENABLE_CORS = False
 redis_server_host = os.environ.get('REDIS_URL', 'localhost')
 redis_server_port = os.environ.get('REDIS_PORT', 6379)
 redis_key_prefix = 'TK-'
+redis_db = os.environ.get('ANUVAAD_TK_REDIS_DB', 4)
 
 # MONGO DB
 mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
