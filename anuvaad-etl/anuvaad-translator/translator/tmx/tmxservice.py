@@ -336,7 +336,6 @@ class TMXService:
             if redis_records:
                 filtered = filter(lambda record: self.filter_user_records(record, user_id, org_id), redis_records)
                 if filtered:
-                    log_info(filtered, None)
                     redis_records = list(filtered)
                     log_info(f'No of tmx entries filtered by user & org: {len(redis_records)}', None)
                 else:
@@ -349,7 +348,6 @@ class TMXService:
                             return redis_records
                     filtered = filter(lambda record: self.filter_original_keys(record), redis_records)
                     if filtered:
-                        log_info(filtered, None)
                         redis_records = list(filtered)
                         log_info(f'No of tmx entries filtered by original key: {len(redis_records)}', None)
                     else:
@@ -363,36 +361,26 @@ class TMXService:
 
     def filter_user_records(self, record, user_id, org_id):
         try:
-            if record:
-                if isinstance(record, str):
-                    record = json.loads(record)
-                if "userID" in record.keys():
-                    return record["userID"] == user_id
-                elif "orgID" in record.keys():
-                    return record["orgID"] == org_id
-                else:
-                    return False
+            if "userID" in record.keys():
+                return record["userID"] == user_id
+            elif "orgID" in record.keys():
+                return record["orgID"] == org_id
             else:
                 return False
         except Exception as e:
-            log_exception(f'Exception while filtering on org and user: {e}', None, e)
             log_exception(f'RECORD: {record}', None, None)
+            log_exception(f'Exception while filtering on org and user: {e}', None, e)
             return False
 
     def filter_original_keys(self, record):
         try:
-            if record:
-                if isinstance(record, str):
-                    record = json.loads(record)
-                if "original" in record.keys():
-                    return record["original"]
-                else:
-                    return False
+            if "original" in record.keys():
+                return record["original"]
             else:
                 return False
         except Exception as e:
-            log_exception(f'Exception while filtering on original: {e}', None, e)
             log_exception(f'RECORD: {record}', None, None)
+            log_exception(f'Exception while filtering on original: {e}', None, e)
             return False
 
     # Creates a md5 hash values using userID, orgID, context, locale and src for inserting records.
