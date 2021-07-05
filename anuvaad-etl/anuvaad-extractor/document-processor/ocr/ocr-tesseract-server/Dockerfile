@@ -26,6 +26,8 @@ COPY / /app
 WORKDIR /app
 #RUN apt install -y libspatialindex-dev python-rtree
 RUN pip install -r requirements.txt
+RUN apt-get install -y tesseract-ocr \
+   && apt-get install -y curl
 
 COPY start.sh /usr/bin/start.sh
 RUN chmod +x /usr/bin/start.sh
