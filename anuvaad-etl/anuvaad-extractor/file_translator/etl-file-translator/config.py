@@ -12,10 +12,10 @@ ENABLE_CORS = False
 redis_server_host = os.environ.get('REDIS_URL', 'localhost')
 redis_server_port = os.environ.get('REDIS_PORT', 6379)
 redis_key_prefix = 'FT-'
+redis_db = os.environ.get('ANUVAAD_FT_REDIS_DB', 4)
 
 # MONGO DB
 mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
-
 
 # kafka
 consumer_grp_default = 'anuvaad-etl-file-translator-consumer-group'
@@ -52,7 +52,6 @@ CH_URL = os.environ.get(FETCH_CONTENT_URL_VAR, FETCH_CONTENT_URL_DEFAULT)
 FETCH_CONTENT_ENDPOINT = 'anuvaad/content-handler/v0/fetch-content'
 REF_LINK_STORE_ENDPOINT = 'anuvaad/content-handler/v0/ref-link/store'
 
-
 # ENV HOST
 ENV_HOST_URL = 'https://auth.anuvaad.org/'
 
@@ -88,15 +87,14 @@ TYPE_PDF = 'PDF'
 TYPE_HTML = 'HTML'
 
 # FLOWS
-    # FLOWS: DOCX
+# FLOWS: DOCX
 FLOW_DOCX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED = False
 FLOW_DOCX_LIBREHTML_S3_ENABLED = False
 FLOW_DOCX_PYDOCXHTML_S3_ENABLED = False
 FLOW_DOCX_LIBREHTML_LIBREPDF_PDFTOHTML_HTML_S3_ENABLED = True
-    # FLOWS: PPTX
+# FLOWS: PPTX
 FLOW_PPTX_LIBRE_PDF_PDFTOHTML_HTML_S3_ENABLED = True
 FLOW_PPTX_LIBRE_PDF_S3_ENABLED = False
-
 
 # PAGE LIMIT
 DOCX_PAGE_LIMIT_ENABLE = True
@@ -133,8 +131,6 @@ aws_access_key = os.environ.get('FT_AWS_S3_ACCESS_KEY', 'ACCESS_KEY')
 aws_secret_key = os.environ.get('FT_AWS_S3_SECRET_KEY', 'SECRET_KEY')
 aws_bucket_name = os.environ.get('FT_AWS_BUCKET_NAME', 'anuvaad1')
 aws_link_prefix = f'https://{aws_bucket_name}.s3.amazonaws.com/'
-
-
 
 ALLOWED_MIME_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
