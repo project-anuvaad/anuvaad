@@ -21,10 +21,12 @@ class TMXRepository:
 
     # Initialises and fetches redis client
     def redis_instantiate(self):
+        global redis_client
         redis_client = redis.Redis(host=redis_server_host, port=redis_server_port, db=tmx_redis_db)
         return redis_client
 
     def get_redis_instance(self):
+        global redis_client
         if not redis_client:
             return self.redis_instantiate()
         else:
