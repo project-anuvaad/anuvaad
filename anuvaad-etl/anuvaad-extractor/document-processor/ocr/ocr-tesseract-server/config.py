@@ -5,7 +5,7 @@ API_URL_PREFIX = "/anuvaad-etl/document-processor/tesseract-document-digitizatio
 HOST = '0.0.0.0'
 PORT = 5001
 BASE_DIR      = 'upload'
-#BASE_DIR      = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-tesseract-server/'
+#BASE_DIR      = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-tesseract-server/upload/'
 download_folder = 'upload'
 
 
@@ -44,7 +44,7 @@ SAVE_NO_PAGE = 1
 
 IS_DYNAMIC =True
 EXRACTION_RESOLUTION  =  300
-BATCH_SIZE  = 2
+BATCH_SIZE  = 1
 DYNAMIC_MARGINS= False
 PERSPECTIVE_TRANSFORM=False
 FALL_BACK_LANGUAGE=None

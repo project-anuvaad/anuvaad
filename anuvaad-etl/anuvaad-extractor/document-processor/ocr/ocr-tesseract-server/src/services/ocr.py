@@ -21,7 +21,7 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 
 def get_text(lang,page_c_lines,file,path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
     
-    #path = config.BASE_DIR+path
+    #path = config.BASE_DIR+path.split('upload/')[1]
     with io.open(path, 'rb') as image_file:
         content = image_file.read()
     image = vision.types.Image(content=content)

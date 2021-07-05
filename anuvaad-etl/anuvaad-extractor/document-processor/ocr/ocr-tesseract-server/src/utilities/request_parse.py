@@ -148,7 +148,9 @@ def get_files(application_context):
     files = copy.deepcopy(application_context['input']['inputs'])
     return files
 def get_json(base_dir,path):
+    
     path = os.path.join(base_dir, path)
+    
     with open (path, "r") as f:
         data = json.loads(f.read())
     json_data = data['outputs']

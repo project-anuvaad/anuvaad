@@ -17,11 +17,11 @@ merge_app = Flask(__name__)
 
 def start_kafka():
     try:
-        t1 = threading.Thread(target=process_vision_ocr_kf, name='tesseract_ocr-consumer-thread')
+        t1 = threading.Thread(target=process_tesseract_ocr_kf, name='tesseract_ocr-consumer-thread')
         t1.start()
         log_info("multithread Kafka running on multithread", LOG_WITHOUT_CONTEXT)
 
-        t2 = threading.Thread(target=vision_ocr_request_worker, name='tesseract_ocr-worker-thread')
+        t2 = threading.Thread(target=tesseract_ocr_request_worker, name='tesseract_ocr-worker-thread')
         t2.start()
         log_info("Starting tesseract_ocr_request_worker", LOG_WITHOUT_CONTEXT)
 
