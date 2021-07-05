@@ -31,7 +31,7 @@ class JobRepository:
             client.set(key, json.dumps(value), ex=86400)
             return 1
         except Exception as e:
-            log_exception("Exception in TMXREPO: upsert | Cause: " + str(e), None, e)
+            log_exception("Exception in FT REPO: upsert | Cause: " + str(e), None, e)
             return None
 
     def delete(self, key):
@@ -40,7 +40,7 @@ class JobRepository:
             client.delete(key)
             return 1
         except Exception as e:
-            log_exception("Exception in TMXREPO: delete | Cause: " + str(e), None, e)
+            log_exception("Exception in FT REPO: delete | Cause: " + str(e), None, e)
             return None
 
     def search(self, key_list):
@@ -53,7 +53,7 @@ class JobRepository:
                     result.append(json.loads(val))
             return result
         except Exception as e:
-            log_exception("Exception in TMXREPO: search | Cause: " + str(e), None, e)
+            log_exception("Exception in FT REPO: search | Cause: " + str(e), None, e)
             return None
 
 
