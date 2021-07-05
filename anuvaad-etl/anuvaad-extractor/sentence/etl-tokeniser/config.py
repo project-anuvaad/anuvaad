@@ -5,13 +5,13 @@ import os
 DEBUG = False
 context_path = '/anuvaad-etl/tokeniser'
 HOST = '0.0.0.0'
-PORT = 5001
+PORT = 5002
 ENABLE_CORS = False
 
 # REDIS
 redis_server_host = os.environ.get('REDIS_URL', 'localhost')
 redis_server_port = os.environ.get('REDIS_PORT', 6379)
-redis_key_prefix = 'FT-'
+redis_key_prefix = 'TK-'
 
 # MONGO DB
 mongo_server_host = os.environ.get('MONGO_CLUSTER_URL', 'mongodb://localhost:27017,localhost:27018/?replicaSet=foo')
