@@ -1,3 +1,5 @@
+from tools.image_ocr import ImageOCR
+from tools.ocr_dd20 import OCRDD20
 import json
 import logging
 import os
@@ -10,7 +12,7 @@ import yaml
 from configs.wfmconfig import config_file_url, tool_blockmerger, tool_tokeniser, tool_fileconverter, tool_aligner, tool_translator
 from configs.wfmconfig import tool_worddetector, tool_layoutdetector, tool_ch, tool_nmt, tool_ocrgooglevision, tool_ocrtesseract, tool_annotator
 from configs.wfmconfig import tool_blocksegmenter, tool_ocrdd10googlevision, tool_ocrdd15googlevision, \
-    jobid_random_str_length, tool_ocrtokeniser, tool_filetranslator, tool_ocrdd20tesseract
+    jobid_random_str_length, tool_ocrtokeniser, tool_filetranslator, tool_image, ocr, tool_ocrdd20tesseract
 from repository.wfmrepository import WFMRepository
 from anuvaad_auditor.loghandler import log_exception, log_error, log_info
 
@@ -31,7 +33,7 @@ from tools.block_segmenter import BlockSegmenter
 from tools.ocr_tokeniser import OCRTokeniser
 from tools.annotator import Annotator
 from tools.file_translator import FileTranslator
-from tools.ocr_dd20 import OCRDD20
+
 
 aligner = Aligner()
 tokeniser = Tokeniser()
@@ -51,6 +53,7 @@ block_segmenter = BlockSegmenter()
 ocr_tokeniser = OCRTokeniser()
 annotator = Annotator()
 file_translator = FileTranslator()
+image_ocr = ImageOCR()
 
 wfmrepo = WFMRepository()
 
@@ -196,6 +199,8 @@ class WFMUtils:
                     task_output, previous_tool)
             if current_tool == tool_filetranslator:
                 tool_input = file_translator.get_ft_input(task_output)
+            if current_tool == tool_imageocr:
+                tool_input = image_ocr.get_image_ocr_input(task_output)
             if current_tool in ocr_tools:
                 job_details = self.get_job_details(task_output["jobID"])[0]
                 for file in tool_input["input"]["inputs"]:
@@ -235,6 +240,8 @@ class WFMUtils:
                 tool_input = annotator.get_annotator_input_wf(wf_input)
             if current_tool == tool_filetranslator:
                 tool_input = file_translator.get_ft_input_wf(wf_input)
+            if current_tool == tool_imageocr:
+                tool_input = image_ocr.get_image_ocr_input_wf(wf_input)
         return tool_input
 
     # Returns the input required for the current tool to execute for the sync process.
