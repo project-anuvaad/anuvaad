@@ -8,7 +8,7 @@ from configs.translatorconfig import redis_server_port
 
 import pymongo
 from configs.translatorconfig import mongo_server_host, mongo_translator_db, mongo_tmx_collection
-from configs.translatorconfig import mongo_glossary_collection, tmx_org_enabled, tmx_user_enabled
+from configs.translatorconfig import mongo_glossary_collection, tmx_org_enabled, tmx_user_enabled, tmx_redis_db
 
 redis_client = None
 mongo_client = None
@@ -21,7 +21,7 @@ class TMXRepository:
 
     # Initialises and fetches redis client
     def redis_instantiate(self):
-        redis_client = redis.Redis(host=redis_server_host, port=redis_server_port, db=3)
+        redis_client = redis.Redis(host=redis_server_host, port=redis_server_port, db=tmx_redis_db)
         return redis_client
 
     def get_redis_instance(self):
