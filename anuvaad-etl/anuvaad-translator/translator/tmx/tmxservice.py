@@ -347,20 +347,26 @@ class TMXService:
             return []
 
     def filter_user_records(self, record, user_id, org_id):
-        if isinstance(record, str):
-            record = json.loads(record)
-        if "userID" in record.keys():
-            return record["userID"] == user_id
-        elif "orgID" in record.keys():
-            return record["orgID"] == org_id
+        if record:
+            if isinstance(record, str):
+                record = json.loads(record)
+            if "userID" in record.keys():
+                return record["userID"] == user_id
+            elif "orgID" in record.keys():
+                return record["orgID"] == org_id
+            else:
+                return False
         else:
             return False
 
     def filter_original_keys(self, record):
-        if isinstance(record, str):
-            record = json.loads(record)
-        if "original" in record.keys():
-            return record["original"]
+        if record:
+            if isinstance(record, str):
+                record = json.loads(record)
+            if "original" in record.keys():
+                return record["original"]
+            else:
+                return False
         else:
             return False
 
