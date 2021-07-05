@@ -1,6 +1,7 @@
 import C from '../../actions/constants';
 
 const initialState = {
+    count: -1,
     link: ''
 }
 
@@ -15,7 +16,13 @@ export default (state = initialState, action) => {
         case C.GET_HTML_LINK:
             let link = getHtmlData(action.payload)
             return {
-                link
+                ...state,
+                link,
+                count: link && 1
+            }
+        case C.CLEAR_HTML_LINK:
+            return {
+                ...initialState
             }
         default:
             return {

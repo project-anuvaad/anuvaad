@@ -97,6 +97,8 @@ const constants = {
     DOWNLOAD_FILE: 'DOWNLOAD_FILE',
     DOWNLOAD_DIRECT_DOCX: 'DOWNLOAD_DIRECT_DOCX',
     GET_HTML_LINK: 'GET_HTML_LINK',
+    CLEAR_HTML_LINK: 'CLEAR_HTML_LINK',
+    CLEAR_DOCX_VIEW: 'CLEAR_DOCX_VIEW',
     WORD_DICTIONARY: "WORD_DICTIONARY",
     SAVE_CONTENT: "SAVE_CONTENT",
     CREATE_GLOSARY: "CREATE_GLOSARY",
@@ -203,6 +205,11 @@ const constants = {
      * action for downloading docx
      */
 
-    DOWNLOAD_DOCX_FILE: 'DOWNLOAD_DOCX_FILE'
+    DOWNLOAD_DOCX_FILE: 'DOWNLOAD_DOCX_FILE',
+
+    /**
+     * action for switching docx view
+     */
+    SWITCH_DOCX_VIEW: 'SWITCH_DOCX_VIEW'
 }
 export default constants;

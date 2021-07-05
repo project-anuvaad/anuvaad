@@ -7,6 +7,10 @@ import { clearHighlighBlock } from '../../../../flux/actions/users/translator_ac
 import { bindActionCreators } from "redux";
 import APITransport from '../../../../flux/actions/apitransport/apitransport';
 import { highlightSource } from '../../../../utils/HtmlHighlightProcess';
+import { Paper } from '@material-ui/core';
+import SwitchView from '../../../../flux/actions/apis/document_translate/getViewOption';
+import { Document, Page } from "react-pdf/dist/entry.webpack";
+
 const $ = require('jquery');
 
 
@@ -16,20 +20,43 @@ class PageCardHtml extends React.Component {
         this.prev_sid = React.createRef()
         this.page_no = React.createRef()
         this.state = {
-            loaded: false
+            loaded: false,
+            url: '',
+            scale: 1.0,
+            pageScale: 0,
+            msg: 'Loading...'
         }
     }
 
     componentDidMount() {
-        $('#paper').html('Loading...')
-        this.getHTML()
+        if (this.props.link.count < 1) {
+            $('#paper').html('Loading...')
+            this.getHTML()
+        }
+        this.props.SwitchView(this.props.option)
     }
 
     componentDidUpdate(prevProps) {
         const { highlightBlock } = this.props
+        let { link } = this.props.link
+        let { filename } = this.props.match.params
+        if (filename && filename.split('.').pop() === 'docx' && link) {
+            this.handleComponentUpdate(prevProps, link, filename, this.handleDocxView, highlightBlock)
+        } else if (filename && filename.split('.').pop() === 'pptx' && link) {
+            this.handleComponentUpdate(prevProps, link, filename, this.handlePptxView, highlightBlock)
+        }
+    }
 
-        if (prevProps.link !== this.props.link) {
-            this.fetchHtmlData(this.props.link)
+    handleComponentUpdate = (prevProps, link, filename, handleView, highlightBlock) => {
+        if (prevProps.link.count && prevProps.link.count !== this.props.link.count) {
+            if (filename && filename.split('.').pop() === 'docx' || filename && filename.split('.').pop() === 'pptx' && link) {
+                handleView(link)
+            }
+        } else if (prevProps.link.count && prevProps.link.count === this.props.link.count && !this.state.loaded) {
+            handleView(link)
+        }
+        if (this.props.link.count && this.props.option !== prevProps.option) {
+            handleView(link)
         }
 
         if (this.page_no !== this.props.active_page && this.state.loaded) {
@@ -39,16 +66,41 @@ class PageCardHtml extends React.Component {
                 this.removeFontTag();
             }
             if (source) {
-                this.processScrollIntoView('white', source)
+                this.processScrollIntoView('none', source)
             }
             this.props.clearHighlighBlock();
-        } else if (highlightBlock.block) {
+        }
+        if (this.page_no === this.props.active_page && !this.state.loaded) {
+            handleView(link)
+        }
+
+        if (highlightBlock.block) {
             let { src } = highlightBlock.block
             if (highlightBlock.current_sid !== highlightBlock.prev_sid && highlightBlock.prev_sid) {
                 this.removeFontTag();
                 this.processScrollIntoView('orange', src)
             } else if (highlightBlock.current_sid && !highlightBlock.prev_sid) {
                 this.processScrollIntoView('orange', src)
+            }
+        }
+    }
+
+    handleDocxView = (link) => {
+        if (link) {
+            if (this.props.option === 'View1') {
+                this.fetchHtmlData(link['HTML']['LIBRE'])
+            } else if (this.props.option === 'View2') {
+                this.fetchHtmlData(link['HTML']['PDFTOHTML'])
+            }
+        }
+    }
+
+    handlePptxView = (link) => {
+        if (link) {
+            if (this.props.option === 'View1') {
+                this.fetchHtmlData(link['HTML']['PDFTOHTML'])
+            } else if (this.props.option === 'View2') {
+                this.fetchHtmlData(link['PDF']['LIBRE'])
             }
         }
     }
@@ -113,6 +165,8 @@ class PageCardHtml extends React.Component {
             }
         })
             .then(async res => {
+                let { filename } = this.props.match.params
+                let type = filename && filename.split('.').pop()
                 if (res.status === 200) {
                     let html = await res.text()
                     $('#paper').html(html)
@@ -123,6 +177,7 @@ class PageCardHtml extends React.Component {
                     this.setTagAttrib(baseUrl, urls, 'href')
                     $('body').css('width', '100%')
                     this.setState({ loaded: true })
+                    this.setState({ url: link, loaded: true })
                 } else {
                     $('#paper').html('Failed to load...')
                 }
@@ -143,11 +198,68 @@ class PageCardHtml extends React.Component {
             font[i].outerHTML = font[i].innerHTML;
         }
     }
+    onPageLoad = page => {
+        const parentDiv = document.querySelector("#pdfDocument");
+        let pageScale = parentDiv.clientHeight / page.originalHeight;
+        let pageScaleWidth = parentDiv.clientWidth / page.originalWidth;
+        if (this.state.scale !== pageScale) {
+            this.setState({ scale: pageScale, pageScaleWidth });
+        }
+    };
+
+
+
+    onDocumentLoadSuccess = ({ numPages }) => {
+        this.setState({ numPages });
+    }
+
+    renderPDF = () => {
+        return (
+            <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }} id="pdfDocument">
+                <Document loading={"Loading..."} noData={this.state.msg} file={this.state.url} onLoadSuccess={this.onDocumentLoadSuccess} style={{ align: "center", display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                    <Page scale={this.state.pageScaleWidth} pageNumber={Number(this.props.active_page)} onLoadSuccess={this.onPageLoad} />
+                </Document>
+            </div>
+        )
+    }
+
+    renderDocumentView = () => {
+        let { filename } = this.props.match.params
+        return (
+            <div>
+                {
+                    filename && filename.split('.').pop() === 'docx' ?
+                        < span style={{ zoom: `${this.props.zoomPercent}%` }}>
+                            <Paper
+                                elevation={0}
+                                id="paper"
+                                style={{ background: 'none', padding: '2%' }}
+                            >
+                            </Paper>
+                        </span >
+                        :
+                        < span style={{ zoom: `${this.props.zoomPercent}%` }}>
+                            {
+                                this.props.option === 'View2' ?
+                                    this.renderPDF() :
+                                    <Paper
+                                        elevation={0}
+                                        id="paper"
+                                        style={{ background: 'none', padding: '2%' }}
+                                    >
+                                    </Paper>
+                            }
+                        </span >
+                }
+            </div>
+        )
+    }
 
     render() {
         return (
-            <span id='paper' style={{ zoom: `${this.props.zoomPercent}%` }}></span>
-
+            <>
+                {this.renderDocumentView()}
+            </>
         )
     }
 }
@@ -157,13 +269,15 @@ const mapStateToProps = state => ({
     highlightBlock: state.block_highlight,
     active_page: state.active_page_number.page_number,
     fetchContent: state.fetchContent,
-    link: state.getHtmlLink.link
+    link: state.getHtmlLink,
+    option: state.getViewOptions.option
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(
     {
         clearHighlighBlock,
-        APITransport
+        APITransport,
+        SwitchView
     },
     dispatch
 );
