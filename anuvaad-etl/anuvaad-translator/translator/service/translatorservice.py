@@ -335,8 +335,6 @@ class TranslatorService:
     # Consumer record handler
     def process_nmt_output(self, nmt_output):
         nmt_output = nmt_output["out"]
-        '''nmt_trans_process = Process(target=self.process_translation, args=(nmt_output,))
-        nmt_trans_process.start()'''
         self.process_translation(nmt_output)
         return
 
@@ -365,7 +363,7 @@ class TranslatorService:
                               nmt_output["status"])
             if 'data' in nmt_output.keys():
                 if not nmt_output["data"]:
-                    log_error("NMT returned empty data[]!", translate_wf_input, None)
+                    log_error("NMT returned empty data!", translate_wf_input, None)
                     skip_count += batch_size
                 sentences_of_the_batch = []
                 for response in nmt_output["data"]:
