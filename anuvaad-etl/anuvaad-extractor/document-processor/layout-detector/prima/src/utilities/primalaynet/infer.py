@@ -314,6 +314,8 @@ class PRIMA(object):
 
 
 prima = PRIMA()
+
+
 def cell_layout(regions,image):
 	try:
 		#print(image,"iiiiiiiiiiiiiiiiiiiiiiiiii")
@@ -343,6 +345,7 @@ def cell_layout(regions,image):
 				bbox,tag,score = prima.prima_region(layout)
 				layouts  = prima.update_box_format(bbox,tag,score)
 				tab_layouts['regions']=layouts
+				#table_region_process.append(tab_layouts)
 				other_regions.append(tab_layouts)
 			return other_regions
 		else:

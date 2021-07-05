@@ -1,0 +1,8 @@
+Shapely==1.7.1
+kafka_python==2.0.1
+Rtree==0.9.4
+anuvaad_auditor==0.1.2
+Flask==1.1.2
+Flask_Cors==3.0.8
+Flask_RESTful==0.3.8
+numpy==1.19.2

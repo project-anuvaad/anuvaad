@@ -247,7 +247,6 @@ def coord_alignment(regions,top_flag):
 
 def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,idx):
     #regions = segment_regions(page_words,page_lines,page_regions)
-    
     width, height = file_properties.get_pageinfo(0)
     v_list, n_text_regions = region_unifier.region_unifier(idx,file,words,lines,regions,page_c_words,path)
     save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
@@ -256,8 +255,9 @@ def segment_regions(file,words, lines,regions,page_c_words,path,file_properties,
         v_list = verify__table_structure(v_list)
         return v_list,save_path
     else:
-        v_list = coord_alignment(v_list,True)
+        v_list = coord_alignment(v_list,False)
         v_list = verify__table_structure(v_list)
+        
         return v_list,save_path
     #print("v_lis",v_list)
     #v_list += n_text_regions
