@@ -330,17 +330,27 @@ class TMXService:
             if req["getAll"]:
                 return repo.get_all_records([])
         try:
-            user_id, org_id = req["metadata"]["userID"], req["metadata"]["orgID"]
             redis_records = repo.get_all_records([])
+            log_info(f'No of tmx entries fetched: {len(redis_records)}', None)
+            user_id, org_id = req["metadata"]["userID"], req["metadata"]["orgID"]
             if redis_records:
                 filtered = filter(lambda record: self.filter_user_records(record, user_id, org_id), redis_records)
-                redis_records = list(filtered)
-                if "allUserKeys" not in req.keys():
-                    filtered = filter(lambda record: self.filter_original_keys(record), redis_records)
+                if filtered:
                     redis_records = list(filtered)
-                elif not req["allUserKeys"]:
+                    log_info(f'No of tmx entries filtered by user & org: {len(redis_records)}', None)
+                else:
+                    redis_records = []
+                if redis_records:
+                    if "allUserKeys" in req.keys():
+                        if req["allUserKeys"]:
+                            return redis_records
                     filtered = filter(lambda record: self.filter_original_keys(record), redis_records)
-                    redis_records = list(filtered)
+                    if filtered:
+                        redis_records = list(filtered)
+                        log_info(f'No of tmx entries filtered by original key: {len(redis_records)}', None)
+                    else:
+                        redis_records = []
+            log_info(f'Count of final TMX to be returned: {len(redis_records)}', None)
             return redis_records
         except Exception as e:
             log_exception("Exception while returning TMX data: {}".format(e), None, None)
