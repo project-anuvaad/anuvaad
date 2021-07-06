@@ -76,7 +76,6 @@ def multi_processing_tesseract(page_regions,image_path,lang,width,height):
         print("tesseract queue size {}".format(tessract_queue.qsize()))
         print("file_writer_queue queue size {}".format(file_writer_queue.qsize()))
         while file_writer_queue.qsize()<total_lines:
-            print("processing ------")
             pass
         print("get queue words started ------")
         page_words = get_queue_words()
