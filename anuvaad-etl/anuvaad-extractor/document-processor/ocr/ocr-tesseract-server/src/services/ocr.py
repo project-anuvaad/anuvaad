@@ -22,11 +22,9 @@ breaks = vision.enums.TextAnnotation.DetectedBreak.BreakType
 def get_text(lang,page_c_lines,file,path,page_dict,page_regions,page_c_words,font_info,file_properties,idx):
     
     #path = config.BASE_DIR+path.split('upload/')[1]
-    print("pathhhhhhhhh",path)
     with io.open(path, 'rb') as image_file:
         content = image_file.read()
     image = vision.types.Image(content=content)
-    print("imageeeeeeeeeeeeeeeeeeeee",image)
     response = client.document_text_detection(image=image)
     page_output,page_words,save_path = get_document_bounds(lang,path,page_c_lines,file,response.full_text_annotation,page_dict,page_regions,page_c_words,font_info,file_properties,idx)
     return page_output,page_words,save_path
