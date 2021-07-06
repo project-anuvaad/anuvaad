@@ -42,7 +42,7 @@ SAVE_DEFAULT = "http://gateway_anuvaad-ocr-content-handler:5001//anuvaad/ocr-con
 SAVE_URL = os.environ.get(SAVE_VAR,SAVE_DEFAULT)
 SAVE_NO_PAGE = 1
 
-IS_DYNAMIC =True
+IS_DYNAMIC =False
 EXRACTION_RESOLUTION  =  300
 BATCH_SIZE  = 1
 DYNAMIC_MARGINS= False

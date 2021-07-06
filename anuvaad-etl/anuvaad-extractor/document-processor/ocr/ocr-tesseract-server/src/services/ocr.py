@@ -230,7 +230,9 @@ def segment_regions(lang,path,file,words, lines,regions,page_c_words,file_proper
     '''  
         tesseract at line level using google line crops
     '''
-    #v_list = multi_processing_tesseract(v_list,path,lang,width, height)
+    log_info("multiprocesing tesseract ocr started", None)
+    v_list = multi_processing_tesseract(v_list,path,lang,width, height)
+    log_info("multiprocesing tesseract ocr completed", None)
 
     save_path = mask_image_craft(path, v_list, idx, file_properties, width, height)
     if "top_correction" in file['config']["OCR"].keys() and file['config']["OCR"]["top_correction"]=="True":
