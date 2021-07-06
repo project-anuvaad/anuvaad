@@ -11,6 +11,8 @@ from src.utilities.model_response import set_bg_image
 from src.utilities.request_parse import MapKeys,UpdateKeys
 from src.utilities.tesseract.dynamic_adjustment import coord_adjustment
 from src.utilities.tesseract.multiprocess import  multi_processing_tesseract
+from anuvaad_auditor.loghandler import log_info
+from anuvaad_auditor.loghandler import log_exception
 
 region_unifier = Region_Unifier()
 keys = MapKeys()
