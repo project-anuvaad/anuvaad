@@ -1,4 +1,4 @@
-from configs.wfmconfig import tool_ocrdd10googlevision, tool_ocrdd15googlevision, tool_ocrtokeniser
+from configs.wfmconfig import tool_ocrdd10googlevision, tool_ocrdd15googlevision, tool_ocrtokeniser, tool_ocrdd20tesseract
 
 
 class OCRTokeniser:
@@ -31,7 +31,7 @@ class OCRTokeniser:
 
     # Returns a json of the format accepted by Tokeniser based on the predecessor.
     def get_ocr_tokeniser_input(self, task_output, predecessor):
-        predecessors = [tool_ocrdd10googlevision, tool_ocrdd15googlevision]
+        predecessors = [tool_ocrdd10googlevision, tool_ocrdd15googlevision, tool_ocrdd20tesseract]
         if predecessor in predecessors:
             files = []
             op_files = task_output["output"]

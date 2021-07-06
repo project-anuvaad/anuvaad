@@ -38,7 +38,8 @@ class OCRDD20:
     # Returns a json of the format accepted by OCR-GV based on a predecessor.
     def get_odd20_input(self, task_output, predecessor):
         files = []
-        if predecessor == tool_blocksegmenter:
+        predecessors = [tool_blocksegmenter]
+        if predecessor in predecessors:
             output = task_output["output"]
             for op_file in output:
                 obj = {

@@ -806,7 +806,7 @@ WorkflowConfigs:
   - workflowCode: WF_A_FCWDLDBSOD20TESOTK
     type: ASYNC
     description: Document digitization and tokenisation wf version 2.0
-    useCase: A_FWLBOD15GOT
+    useCase: A_FWLBOD20TESOT
     sequence:
     - order: 0
       tool:
@@ -847,7 +847,7 @@ WorkflowConfigs:
         description: block segmentation process
         kafka-input:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT
-          partitions: KAFKA_PARTITIONS_PER_TOPIC2
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
         kafka-output:
         - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT
           partitions: KAFKA_PARTITIONS_PER_TOPIC
