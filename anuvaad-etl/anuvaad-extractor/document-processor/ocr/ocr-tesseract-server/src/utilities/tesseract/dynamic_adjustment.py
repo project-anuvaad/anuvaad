@@ -62,7 +62,7 @@ def validate_region(region):
             if v[coord] < 0 :
                 return False
     #check for orientation:
-    if box[0]['y'] >= box[2]['y'] or box[0]['x'] >= box[1]['x']:
+    if box[0]['x'] >= box[1]['x']: # or box[0]['y'] >= box[2]['y']:
         return False
     else :
         return True
