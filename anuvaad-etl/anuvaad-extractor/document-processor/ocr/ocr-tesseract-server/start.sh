@@ -10,7 +10,7 @@ curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Telugu.traineddata https://git
 curl -L -o /usr/share/tesseract-ocr/4.00/tessdata/Bengali.traineddata https://github.com/tesseract-ocr/tessdata_best/raw/master/script/Bengali.traineddata
 
 tam_modelpath='/usr/share/tesseract-ocr/4.00/tessdata/anuvaad_tam.traineddata'
-url_tam='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata?AWSAccessKeyId=AKIAUAXLRTC3KS46AZTB&Signature=om9kxiP2McWH8bmk2IYn%2BfJgh9M%3D&Expires=1686122081'
+url_tam='https://anuvaad-pubnet-weights.s3.amazonaws.com/anuvaad_tam.traineddata?AWSAccessKeyId=AKIAUAXLRTC3KS46AZTB&Signature=LT98LFGms7xHChKtNZGMDw%2Fcpzw%3D&Expires=1686124970'
 if ! [ -f $tam_modelpath ]; then
   curl -o $tam_modelpath $url_tam
   echo downloading weight file
