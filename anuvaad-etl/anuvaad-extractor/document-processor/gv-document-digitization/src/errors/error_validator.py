@@ -26,10 +26,10 @@ class ValidationResponse(object):
                 input_filepath = file_ops.input_path(input_filename)
                 if input_filename == "" or input_filename is None:
                     raise FileErrors("FILENAME_ERROR", "Filename not found or its empty")
-                elif not input_filename.endswith('.pdf'):
-                    raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
-                elif in_file_type == "" or in_file_type is None or in_file_type not in ['PDF' ,'pdf'] :
-                    raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
+                #elif not input_filename.endswith('.pdf'):
+                #    raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
+                elif in_file_type == "" or in_file_type is None or in_file_type not in ['PDF' ,'pdf' ,'PNG', 'JPEG', 'BMP','jpg','png','bmp','jpeg' ] :
+                    raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf and png files.")
                 #elif file_ops.check_file_extension(in_file_type) is False:
                     #raise FileErrors("FILE_TYPE_ERROR", "This file type is not allowed. Currently, support only pdf file.")
                 elif file_ops.check_path_exists(input_filepath) is False or file_ops.check_path_exists(self.DOWNLOAD_FOLDER) is False:

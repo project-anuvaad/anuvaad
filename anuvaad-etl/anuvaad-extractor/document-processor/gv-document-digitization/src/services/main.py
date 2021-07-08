@@ -4,7 +4,8 @@ from anuvaad_auditor.loghandler import log_debug
 import src.utilities.app_context as app_context
 import config,copy
 from src.utilities.request_parse import get_files, File
-from src.utilities.pdf_to_image import doc_pre_processing
+#from src.utilities.pdf_to_image import doc_pre_processing
+from src.utilities.extract_images import get_images 
 from src.services.ocr import text_extraction
 
 
@@ -21,7 +22,9 @@ def process_input(app_context,base_dir) :
             if "page_info" in file.keys():
                 page_paths = file_properties.get_pages()
             else:
-                page_paths = doc_pre_processing(file['file']['name'],config.BASE_DIR)
+                #page_paths = doc_pre_processing(file['file']['name'],config.BASE_DIR)
+                page_paths = get_images(file_properties.get_name(),file_properties.get_format()  ,config.BASE_DIR)
+
             
             file_output = text_extraction(file_properties,page_paths,file)
             output_files.append(file_output)

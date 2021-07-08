@@ -127,7 +127,11 @@ class InteractivePagination extends React.Component {
   };
 
   handleTextValueChange = (event) => {
-    this.setState({ gotoValue: event.target.value })
+    if (event.target.value <= this.props.count) {
+      this.setState({ gotoValue: event.target.value })
+    } else if (event.target.value > this.props.count) {
+      this.setState({ gotoValue: this.props.count })
+    }
   }
 
   setConfPercentage = (event) => {
@@ -186,17 +190,17 @@ class InteractivePagination extends React.Component {
                 style={{ marginLeft: '6px' }}
                 variant="outlined"
                 color="primary"
-                disabled={this.state.offset === Number(this.state.gotoValue) && true}
+                disabled={(this.state.offset === Number(this.state.gotoValue) || !this.state.gotoValue) ? true : false}
               >
                 GO
-        </Button>
+              </Button>
               {(!this.props.show_pdf && !this.props.hideMergeBtn) &&
                 <>
                   {this.sentenceCount() && (
                     <div style={{ position: "absolute", marginLeft: "62%" }}>
                       <Typography variant="subtitle1" component="h2">
                         Page Sentences
-                        </Typography>
+                      </Typography>
 
                       <div style={{ textAlign: "center" }}>
                         {this.sentenceCount()}
@@ -207,7 +211,7 @@ class InteractivePagination extends React.Component {
                   {this.props.job_status && this.props.job_status.word_status && <div style={{ position: "absolute", marginLeft: "70%" }}>
                     <Typography variant="subtitle1" component="h2">
                       Total Word Count
-                      </Typography>
+                    </Typography>
 
                     <div style={{ textAlign: "center" }}>
                       {this.props.job_status.word_status && this.props.job_status.word_status}
@@ -249,7 +253,7 @@ class InteractivePagination extends React.Component {
                 <div style={{ display: 'grid', marginTop: '1%', width: '20%', gridTemplateColumns: 'repeat(1,40% 80%)' }}>
                   <Typography style={{ marginLeft: '15%', color: 'black' }} id="discrete-slider-always" gutterBottom>
                     Adjust Font
-                    </Typography>
+                  </Typography>
                   <Slider
                     ValueLabelComponent={ValueLabelComponent}
                     aria-label="custom thumb label"

@@ -30,7 +30,8 @@ class Login extends React.Component {
       email: "",
       password: "",
       error: false,
-      loading: false
+      loading: false,
+      errMessage: ""
     };
   }
 
@@ -79,14 +80,14 @@ class Login extends React.Component {
     }).then(async response => {
       const rsp_data = await response.json();
       if (!response.ok) {
-        return Promise.reject('');
+        return Promise.reject(rsp_data.message);
       } else {
         let resData = rsp_data && rsp_data.data
         localStorage.setItem("token", resData.token)
         this.fetchUserProfileDetails(resData.token)
       }
     }).catch((error) => {
-      this.setState({ error: true, loading: false })
+      this.setState({ error: true, loading: false, errMessage:error })
     });
   };
 
@@ -182,7 +183,7 @@ class Login extends React.Component {
               autoHideDuration={4000}
               onClose={this.handleClose}
               variant="error"
-              message={"Invalid Username/Password"}
+              message={this.state.errMessage}
             />
           )}
         </div>
