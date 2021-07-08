@@ -18,4 +18,5 @@ if ! [ -f $tam_modelpath ]; then
   echo downloading weight file
 fi
 
+
 python app.py

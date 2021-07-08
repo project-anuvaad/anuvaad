@@ -28,7 +28,7 @@ def process_input(app_context,base_dir):
             langs.append(file_properties.get_language())
 
         app_context.application_context["outputs"] = output_files
-        end_time=start_time+ time.time()
+        end_time= time.time()-start_time
         log_info("successfully completed tesseract ocr in {}".format(end_time), None)
 
     except Exception as e:
