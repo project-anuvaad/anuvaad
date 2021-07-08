@@ -1,6 +1,219 @@
 WorkflowConfigs:
 
 
+  - workflowCode: WF_A_AL
+    type: ASYNC
+    description: Aligns the input files. 
+    useCase: A_A
+    sequence:
+    - order: 0
+      tool:
+      - name: ALIGNER
+        description: Accepts 2 parallel files and alings them into parallel corp for training
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_ALIGNER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_ALIGNER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_FC
+    type: ASYNC
+    description: converts a file into pdf and other formats
+    useCase: A_F
+    sequence:
+    - order: 0
+      tool:
+      - name: FILE-CONVERTER
+        description: converts a file into pdf and other formats.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FC_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_BM
+    type: ASYNC
+    description: extracts different blocks from a pdf file.
+    useCase: A_B
+    sequence:
+    - order: 0
+      tool:
+      - name: BLOCK-MERGER
+        description: extracts different blocks from a pdf file.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_MERGER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+  - workflowCode: WF_A_TOK
+    type: ASYNC
+    description: tokenises a given txt file
+    useCase: A_TK
+    sequence:
+    - order: 0
+      tool:
+      - name: TOKENISER
+        description: Tokenises a given file with paragraphs
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_WD
+    type: ASYNC
+    description: word detection wf.
+    useCase: A_W
+    sequence:
+    - order: 0
+      tool:
+      - name: WORD-DETECTOR
+        description: detects word blocks from a given file
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_WORD_DETECTOR_CRAFT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_LD
+    type: ASYNC
+    description: layout detection wf.
+    useCase: A_L
+    sequence:
+    - order: 0
+      tool:
+      - name: LAYOUT-DETECTOR
+        description: detects layouts from a given file
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_LAYOUT_DETECTOR_PRIMA_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_OD10GV
+    type: ASYNC
+    description: gv-ocr wf for doc digitisation. ocr wf 1.0
+    useCase: A_OD10GV
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-DD10-GOOGLE-VISION
+        description: ocr using google vision for doc digitisation.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_GV_DOCUMENT_DIGITIZATION_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_GV_DOCUMENT_DIGITIZATION_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+
+  - workflowCode: WF_A_OD15GV
+    type: ASYNC
+    description: gv-ocr wf for doc digitisation. ocr wf 1.5
+    useCase: A_OD15GV
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-DD15-GOOGLE-VISION
+        description: ocr using google vision for doc digitisation.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_INPUT_V15
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_GOOGLE_VISION_OUTPUT_V15
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+      
+
+
+
+  - workflowCode: WF_A_OTES
+    type: ASYNC
+    description: tess-ocr wf.
+    useCase: A_OTES
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-TESSERACT
+        description: ocr using tesseract
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_TESSERACT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_OCR_TESSERACT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+
+  - workflowCode: WF_A_BS
+    type: ASYNC
+    description: block segmentation process
+    useCase: A_BS
+    sequence:
+    - order: 0
+      tool:
+      - name: BLOCK-SEGMENTER
+        description: block segmentation process
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC2
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_BLOCK_SEGMENTER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+
+  - workflowCode: WF_A_OTK
+    type: ASYNC
+    description: OCR Tokeniser process
+    useCase: A_OT
+    sequence:
+    - order: 0
+      tool:
+      - name: OCR-TOKENISER
+        description: OCR Tokeniser process
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OCR_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OCR_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+
   - workflowCode: WF_A_AN
     type: ASYNC
     description: WF for annotation
@@ -201,6 +414,47 @@ WorkflowConfigs:
           partitions: KAFKA_PARTITIONS_PER_TOPIC
       endState: false
     - order: 3
+      tool:
+      - name: TRANSLATOR
+        description: Translates sentences from a bm-tok processed json file.
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TRANSLATOR_INPUT_TOPIC
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TRANSLATOR_OUTPUT_TOPIC
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
+  - workflowCode: WF_A_FTTKTR
+    type: ASYNC
+    description: WF for translating docx/pptx
+    useCase: A_FTTTR
+    sequence:
+    - order: 0
+      tool:
+      - name: FILE-TRANSLATOR
+        description: WF for docx translation
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FT_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_FT_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 1
+      tool:
+      - name: TOKENISER
+        description: Tokenises a given file with paragraphs
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_TOKENISER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: false
+    - order: 2
       tool:
       - name: TRANSLATOR
         description: Translates sentences from a bm-tok processed json file.
@@ -417,6 +671,7 @@ WorkflowConfigs:
 
   - workflowCode: WF_S_TR
     type: SYNC
+    translation: BLOCK
     description: Translates the sentences.
     useCase: S_TR
     sequence:
@@ -429,9 +684,41 @@ WorkflowConfigs:
       endState: true
 
 
+  - workflowCode: WF_S_STR
+    type: SYNC
+    translation: SENTENCE
+    description: Translates the sentences.
+    useCase: S_STR
+    sequence:
+    - order: 0
+      tool:
+      - name: TRANSLATOR
+        description: Translates the sentences.
+        api-details:
+        - uri: http://anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/sentences/workflow/translate
+      endState: true
+
+
+
+  - workflowCode: WF_S_FT
+    type: SYNC
+    translation: DOWNLOAD
+    description: Search WF for docx download
+    useCase: S_FT
+    sequence:
+    - order: 0
+      tool:
+      - name: FILE-TRANSLATOR
+        description: Search WF for docx download
+        api-details:
+        - uri: http://anuvaad-etl-file-translator:5001/anuvaad-etl/file-translator/v0/download-wf
+      endState: true
+
+
 
   - workflowCode: WF_S_TKTR
     type: SYNC
+    translation: BLOCK
     description: Tokenises the text blocks to sentences and Translates them.
     useCase: S_TTR
     sequence:
