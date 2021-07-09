@@ -2,20 +2,40 @@
 <html>
 
 <head>
-  <link rel="stylesheet" href="button.css">
+    <link rel="stylesheet" href="anuvaad.css">
 </head>
 
 <body>
-  <div><img src="AnuvaadLogo.939ded69.svg" width="70" alt=""></div>
-  <button id="translate">Translate</button>
-  <button id="untranslate">Untranslate</button>
-  <!-- <select>
-    <option value="en"></option>
-    <option value="en">English</option>
-    <option value="hi">Hindi</option>
-    <option>Marathi</option>
-  </select> -->
-  <script src="popup.js"></script>
+    <div id="container">
+        <div id="logo">
+            <img src="AnuvaadLogo.939ded69.svg" width="70" alt="">
+        </div>
+        <div class="select">
+            <label class="label">Source Language:&nbsp;&nbsp;</label>
+            <select class="options" id="source">
+              <option value=""></option>
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
+              <option value="mr">Marathi</option>
+              <option value="gu">Gujrati</option>
+              <option value="pu">Punjabi</option>
+            </select>
+        </div>
+        <div class="select">
+            <label class="label">Target Language:&nbsp;&nbsp;</label>
+            <select id="tgt" class="options" id="target" onchange="window.target=event.target.value">
+              <option value=""></option>
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
+              <option value="mr">Marathi</option>
+              <option value="gu">Gujrati</option>
+              <option value="pu">Punjabi</option>
+            </select>
+        </div>
+        <button id="translate">Translate</button>
+        <button id="untranslate">Untranslate</button>
+    </div>
+    <script src="popup.js"></script>
 </body>
 
 </html>

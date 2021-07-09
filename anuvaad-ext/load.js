@@ -39,7 +39,8 @@ function uuidv4() {
 }
 
 
-document.body.childNodes.forEach(n => markAndExtractTextElements(n));
+// document.body.childNodes.forEach(n => markAndExtractTextElements(n));
+markAndExtractTextElements(document.body);
 
 fetch("https://auth.anuvaad.org/anuvaad-etl/wf-manager/v1/workflow/sync/initiate", {
     "headers": {
@@ -55,7 +56,7 @@ fetch("https://auth.anuvaad.org/anuvaad-etl/wf-manager/v1/workflow/sync/initiate
     },
     "referrer": "https://developers.anuvaad.org/",
     "referrerPolicy": "strict-origin-when-cross-origin",
-    "body": "{\"model_id\":103,\"source_language_code\":\"en\",\"target_language_code\":\"hi\",\"sentences\":" + JSON.stringify(texts.slice(0, 25)) +",\"workflowCode\":\"WF_S_STR\"}",
+    "body": "{\"model_id\":103,\"source_language_code\":\"en\",\"target_language_code\":\"hi\",\"sentences\":" + JSON.stringify(texts.slice(0, 25)) + ",\"workflowCode\":\"WF_S_STR\"}",
     "method": "POST",
     "mode": "cors"
 }).then(async response => {
@@ -76,5 +77,3 @@ localStorage.setItem("anuvaad-dev-text-mappings", JSON.stringify(textMappings));
 //     let storageKey = "anuvaad-dev"+tabs[0].id+tabs[0].url
 //     chrome.storage.local.set({ storageKey: textMappings });
 // });
-
-
