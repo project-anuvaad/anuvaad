@@ -39,7 +39,8 @@ class Dashboard extends React.Component {
       target_languages: [],
       showStatus: false,
       message: null,
-      dialogMessage: null
+      dialogMessage: null,
+      modelName: ''
     };
     this.processTranslateButtonPressed = this.processTranslateButtonPressed.bind(this);
     this.processClearButtonPressed = this.processClearButtonPressed.bind(this);
@@ -164,7 +165,6 @@ class Dashboard extends React.Component {
     let apiObj = new InstantTranslateAPI(v4(), '', text, "", false, text, "", modelId, this.state.source_language_code, this.state.target_language_code);
 
     this.setState({ anuvaadAPIInProgress: true })
-
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -176,14 +176,14 @@ class Dashboard extends React.Component {
         return Promise.reject('');
       } else {
         let filteredTexts = rsp_data && rsp_data.output && rsp_data.output.translations[0] && rsp_data.output.translations[0].tgt ? rsp_data.output.translations[0].tgt : ""
-
         if (filteredTexts) {
           this.setState({})
           this.setState({
             anuvaadText: filteredTexts,
             anuvaadAPIInProgress: false,
             showStatus: false,
-            message: null
+            message: null,
+            modelName: modelId.model_name
           })
         } else {
           this.setState({ showStatus: false, message: null, dialogMessage: "No translation available..." })
@@ -316,7 +316,7 @@ class Dashboard extends React.Component {
 
             {this.state.anuvaadText && (
               <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
-                <Typography variant="h4" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{translate("dashbord.page.title.anuvaadModel")}</Typography>
+                <Typography variant="h4" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{this.state.modelName}</Typography>
                 <Typography variant="h6" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{this.state.anuvaadText}</Typography>
               </Grid>
             )}
