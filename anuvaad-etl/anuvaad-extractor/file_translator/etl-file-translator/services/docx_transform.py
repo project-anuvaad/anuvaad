@@ -218,6 +218,7 @@ class DocxTransform(object):
         log_info("translate_docx_file :: Translation Docx Process started.", None)
 
         for parent_tag, para in self.iterate_paras(document=self.document):
+            self.sequence_para_index += 1
 
             if parent_tag in [DocxTag.SDTCONTENT.value]:
                 self.translate_run_stored_as_para_json(para=para)

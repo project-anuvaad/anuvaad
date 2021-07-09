@@ -41,7 +41,7 @@ class FetchContent(object):
         fetch_url = self.generate_url_for_fetch_content(record_id=record_id, start_page=start_page, end_page=end_page)
 
         # START:: TO TEST LOCALLY
-        # HEADERS = {'auth-token': 'AUTH'}
+        # HEADERS = {'content-type': 'application/json', 'auth-token': 'AUTH'}
         # rspn = requests.get(url=fetch_url, headers=HEADERS)
         # END :: TO TEST LOCALLY
         log_info('Fetch URL: %s' % fetch_url, None)
@@ -50,7 +50,7 @@ class FetchContent(object):
 
         log_info("fetch_content :: received response for recordId: %s" % record_id, None)
 
-        if rspn.status_code not in [200]:
+        if rspn.status_code not in [200, 201]:
             log_info('Response:: %s' % rspn.text, None)
             raise FormatError(400, "Fetch Content failed for recordId: %s" % record_id)
 
