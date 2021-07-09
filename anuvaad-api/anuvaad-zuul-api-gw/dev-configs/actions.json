@@ -631,6 +631,14 @@
             "active":true,
             "whiteList":false,
             "description":"ANUVAAD-CH-S3 URL FETCH"
+        },
+        {
+            "id":"c4cf7a7f-4749-4abd-9f15-8bbbfcc74dcf",
+            "uri":"/nmt-inference/health",
+            "module":"ANUVAAD-NMT",
+            "active":true,
+            "whiteList":true,
+            "description":"NMT GPU health API"
         }
     ]
 }
