@@ -30,7 +30,8 @@ class PageCard extends React.Component {
         super(props);
         this.state = {
             value: '',
-            text: ''
+            text: '',
+            page_width: this.props.page.page_width
         };
         this.handleTextChange = this.handleTextChange.bind(this);
         this.action = null
@@ -181,10 +182,12 @@ class PageCard extends React.Component {
         return (
             <div style={{
                 position: "absolute", top: block.text_top + 'px',
-                left: block.text_left + 'px',
+                left: (block.text_left > this.state.page_width || block.text_left < 0) ? 0 : block.text_left + 'px',
                 width: block.text_width + 'px',
                 height: block.text_height + 'px',
-                zIndex: 2,
+                margin: (block.text_left > this.state.page_width || block.text_left < 0) && 'auto',
+                right: (block.text_left > this.state.page_width || block.text_left < 0) && 0,
+                zIndex: (block.text_left > this.state.page_width || block.text_left < 0) ? 10000 : 2,
             }}
                 id={block.block_identifier}
                 key={block.block_identifier}
