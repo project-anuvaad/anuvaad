@@ -4,8 +4,8 @@
     "description": "",
     "main": "background.js",
     "scripts": {
-        "start": "webpack --watch --config webpack.dev.js",
-        "build": "webpack --config webpack.prod.js"
+        "start": "webpack --watch --config ./webpack-config/webpack.dev.js",
+        "build": "webpack --config ./webpack-config/webpack.prod.js"
     },
     "author": "",
     "license": "ISC",
@@ -19,5 +19,7 @@
         "webpack": "^5.44.0",
         "webpack-cli": "^4.7.2"
     },
-    "dependencies": {}
+    "dependencies": {
+        "html-loader": "^2.1.2"
+    }
 }
