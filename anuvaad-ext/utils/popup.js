@@ -20,7 +20,7 @@ translate.addEventListener("click", async() => {
 
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        files: ['load.js']
+        files: ['/utils/load.js']
     });
 });
 
@@ -29,7 +29,7 @@ untranslate.addEventListener("click", async() => {
 
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        files: ['unload.js']
+        files: ['/utils/unload.js']
     });
 });
 

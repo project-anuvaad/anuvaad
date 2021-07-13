@@ -54,7 +54,7 @@ async function makeSyncInitiateCall() {
         sentences: texts.slice(0, 25),
         workflowCode: 'WF_S_STR'
     }
-    authToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6InJvc2hhbi5zaGFoQHRhcmVudG8uY29tIiwicGFzc3dvcmQiOiJiJyQyYiQxMiQ3VE9HZVdmMzZNRVJGYk5mN3YwSmkudEFScWdTYzZaVTJuNW5vSk0wZUsvS3N0c3dQZnNhTyciLCJleHAiOjE2MjYxNTY1OTF9.obIzQuR8-v6Cgb1KXeza7lEpe85SBEDXMMQok9qTEn8"
+    authToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6InJvc2hhbi5zaGFoQHRhcmVudG8uY29tIiwicGFzc3dvcmQiOiJiJyQyYiQxMiRBMlRjNm0vMk82a0tOTVlyUTB5cFAuZEZCbk95UWdIWjF1Y09KQ2lpY0wuaDFhQ3V4ZEZ6LiciLCJleHAiOjE2MjYyNDQ3NzJ9.F026D9-n07Ncsz9KA0hncc_MiAEVhJeAJ5ToHHbOqh0"
     requestBody.source_language_code = await getObjectFromLocalStorage('s0_src')
     requestBody.target_language_code = await getObjectFromLocalStorage('s0_tgt')
     requestBody.model_id = await fetchModelAPICall(requestBody.source_language_code, requestBody.target_language_code, authToken)
