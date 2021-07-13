@@ -1,3 +1,5 @@
+require('regenerator-runtime')
+
 let translate = document.getElementById("translate");
 let untranslate = document.getElementById("untranslate");
 let source = document.getElementById('source');

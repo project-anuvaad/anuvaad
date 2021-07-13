@@ -1,3 +1,5 @@
+require('regenerator-runtime')
+
 var elementIndex = 0;
 var texts = [];
 var textMappings = {};
@@ -54,7 +56,7 @@ async function makeSyncInitiateCall() {
         sentences: texts.slice(0, 25),
         workflowCode: 'WF_S_STR'
     }
-    authToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6InJvc2hhbi5zaGFoQHRhcmVudG8uY29tIiwicGFzc3dvcmQiOiJiJyQyYiQxMiRBMlRjNm0vMk82a0tOTVlyUTB5cFAuZEZCbk95UWdIWjF1Y09KQ2lpY0wuaDFhQ3V4ZEZ6LiciLCJleHAiOjE2MjYyNDQ3NzJ9.F026D9-n07Ncsz9KA0hncc_MiAEVhJeAJ5ToHHbOqh0"
+    var authToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6InJvc2hhbi5zaGFoQHRhcmVudG8uY29tIiwicGFzc3dvcmQiOiJiJyQyYiQxMiRBMlRjNm0vMk82a0tOTVlyUTB5cFAuZEZCbk95UWdIWjF1Y09KQ2lpY0wuaDFhQ3V4ZEZ6LiciLCJleHAiOjE2MjYyNDQ3NzJ9.F026D9-n07Ncsz9KA0hncc_MiAEVhJeAJ5ToHHbOqh0"
     requestBody.source_language_code = await getObjectFromLocalStorage('s0_src')
     requestBody.target_language_code = await getObjectFromLocalStorage('s0_tgt')
     requestBody.model_id = await fetchModelAPICall(requestBody.source_language_code, requestBody.target_language_code, authToken)

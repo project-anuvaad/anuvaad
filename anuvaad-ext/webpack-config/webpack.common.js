@@ -5,7 +5,11 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 
 module.exports = {
-    entry: { background: path.resolve(__dirname, '../background.js') },
+    entry: {
+        popup: './utils/popup.js',
+        load: './utils/load.js',
+        unload: './utils/unload.js'
+    },
     module: {
         rules: [{
                 test: /\.m?js$/,
@@ -13,7 +17,9 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env'],
+                        presets: [
+                            '@babel/preset-env'
+                        ],
                         plugins: ['@babel/plugin-proposal-object-rest-spread']
                     }
                 }
@@ -38,11 +44,12 @@ module.exports = {
             patterns: [
                 { from: './manifest.json', to: './manifest.json' },
                 { from: './asset', to: './asset' },
-                { from: './utils', to: './utils' },
-                { from: './style', to: './style' },
-                { from: './src/options.html', to: './src/options.html' },
+                { from: './style', to: './style' }
             ],
         }),
     ],
-    output: { filename: '[name].js', path: path.resolve(__dirname, '../dist') }, // chrome will look for files under dist/* folder
+    output: {
+        filename: `./utils/[name].js`,
+        path: path.resolve(__dirname, '../dist')
+    }, // chrome will look for files under dist/* folder
 };
