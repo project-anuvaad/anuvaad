@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 def get_energy_density(image_path):
-    #image   = cv2.imread("/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/tesseract/"+image_path,0)
+    #image_path   = "/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-gv-server/"+image_path
     image   = cv2.imread(image_path,0)
     
     binary  = cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)

@@ -349,7 +349,7 @@ class AppRoutes extends React.Component {
               path={`${process.env.PUBLIC_URL}/assign-nmt-model`}
               dontShowLoader
               title={"Assign models"}
-              userRoles={["ADMIN"]}
+              userRoles={["ADMIN", "TRANSLATOR"]}
               component={NmtModelAssign}
               authenticate={this.authenticateUser}
               currentMenu="assign-nmt-model"

@@ -38,7 +38,7 @@ class FileUploadHeader extends React.Component {
                             <IconButton onClick={() => this.props.showSidebar()} className={classes.menuButton} color="inherit" aria-label="Menu" style={{ margin: "0px 5px" }}>
                                 <CloseIcon />
                             </IconButton> :
-                            <div style={{display: "flex", flexDirection: "row"}}>
+                            <div style={{ display: "flex", flexDirection: "row" }}>
                                 <IconButton
                                     onClick={() => {
                                         history.push(`${process.env.PUBLIC_URL}/view-document`);

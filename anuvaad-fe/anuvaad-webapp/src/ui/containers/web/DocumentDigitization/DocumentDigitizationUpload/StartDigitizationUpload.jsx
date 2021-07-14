@@ -75,6 +75,9 @@ class StartDigitizationUpload extends React.Component {
             }, {
                 code: 'WF_A_FCWDLDBSOD15GVOTK',
                 version: '1.5'
+            }, {
+                code: 'WF_A_FCWDLDBSOD20TESOTK',
+                version: '2.0'
             }],
             fileName: "",
             workspaceName: "",
