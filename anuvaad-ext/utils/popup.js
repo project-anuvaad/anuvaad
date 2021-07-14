@@ -5,18 +5,6 @@ let untranslate = document.getElementById("untranslate");
 let source = document.getElementById('source');
 let target = document.getElementById('target');
 
-const saveObjectInLocalStorage = async function(obj) {
-    return new Promise((resolve, reject) => {
-        try {
-            chrome.storage.local.set(obj, function() {
-                resolve();
-            });
-        } catch (ex) {
-            reject(ex);
-        }
-    });
-};
-
 translate.addEventListener("click", async() => {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
