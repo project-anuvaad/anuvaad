@@ -42,6 +42,8 @@ class Response(object):
                     if in_file_type == "docx" and transform_flow:
                         docx_transform_obj = DocxTransform(input_filename)
                         docx_obj = docx_transform_obj.read_docx_file(input_filename)
+                        if in_locale != config.LOCALE_ENGLISH and config.DOCX_FONT_VALIDATION_ENABLED:
+                            docx_transform_obj.check_if_valid_fonts_used()
                         transformed_obj = docx_transform_obj.generate_json_structure(docx_obj)
                         out_json_filepath = docx_transform_obj.write_json_file(transformed_obj)
                         output_filename = out_json_filepath

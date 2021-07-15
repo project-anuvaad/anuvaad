@@ -3,6 +3,7 @@ import os
 import uuid
 
 from anuvaad_auditor import log_info
+from lxml import etree
 
 import config
 from docx import Document
@@ -45,11 +46,15 @@ class DocxTransform(object):
         # Trans Map
         self.trans_map = None
 
+        # Fonts used in a DOCX Document
+        self.fonts_used = set()
+
     # reading content of docx file
     def read_docx_file(self, input_filename):
         log_info("read_docx_file :: started the reading docx file: %s" % input_filename, None)
         input_docx_filepath = common_obj.input_path(input_filename)
         input_docx = Document(input_docx_filepath)
+        self.document = input_docx
         return input_docx
 
     def write_json_file(self, transformed_obj):
@@ -89,6 +94,87 @@ class DocxTransform(object):
         new_page_template = copy.deepcopy(self.page_struct)
         new_page_template['page_no'] = page_number
         return new_page_template
+
+    def get_fonts_from_ct_font_obj(self, ct_font_obj):
+        try:
+            if ct_font_obj.ascii:
+                self.fonts_used.add(ct_font_obj.ascii)
+            if ct_font_obj.hAnsi:
+                self.fonts_used.add(ct_font_obj.hAnsi)
+            if ct_font_obj.cs:
+                self.fonts_used.add(ct_font_obj.cs)
+            if ct_font_obj.eastAsia:
+                self.fonts_used.add(ct_font_obj.eastAsia)
+
+        except Exception as e:
+            log_info(f"get_fonts_from_ct_font_obj :: GETTING FONTS FAILED"
+                     f"ERROR: {str(e)}", None)
+
+    def get_fonts_used_in_a_file(self, file_name):
+        used_font_set = set()
+        font_lis = []
+        try:
+            if file_name == config.DOCX_DOCUMENT_XML:
+                font_lis = self.document._element.xpath('.//w:rFonts')
+            elif file_name == config.DOCX_STYLE_XML:
+                font_lis = self.document.styles.element.xpath('.//w:rFonts')
+
+            for font_obj in font_lis:
+                self.get_fonts_from_ct_font_obj(ct_font_obj=font_obj)
+
+        except Exception as e:
+            log_info(f"get_fonts_used_in_a_file :: GETTING FONTS FAILED"
+                     f"ERROR: {str(e)}", None)
+
+    def get_fonts_used_in_theme_files(self):
+        try:
+            parts = self.document.part.package.parts
+            for part in parts:
+                if '/word/theme/theme' in str(part.partname):
+                    theme_file_blob = part.blob
+                    # getting the theme xml files (It is in byte format)
+                    xml_tree = etree.fromstring(theme_file_blob)
+                    for elt in xml_tree.iter():
+                        if elt.tag.endswith('}latin'):
+                            typeface = elt.attrib.get('typeface')
+                            if typeface:
+                                self.fonts_used.add(typeface)
+                        elif elt.tag.endswith('}ea'):
+                            typeface = elt.attrib.get('typeface')
+                            if typeface:
+                                self.fonts_used.add(typeface)
+                        elif elt.tag.endswith('}cs'):
+                            typeface = elt.attrib.get('typeface')
+                            if typeface:
+                                self.fonts_used.add(typeface)
+
+        except Exception as e:
+            log_info(f"get_fonts_used_in_theme_files :: GETTING FONTS FAILED"
+                     f"ERROR: {str(e)}", None)
+
+    def get_all_the_fonts_used(self):
+        # Fonts mentioned in style.xml, theme.xml and document.xml
+        try:
+            self.get_fonts_used_in_a_file(file_name=config.DOCX_DOCUMENT_XML)
+            self.get_fonts_used_in_a_file(file_name=config.DOCX_STYLE_XML)
+            self.get_fonts_used_in_theme_files()
+        except Exception as e:
+            log_info(f"get_all_the_fonts_used :: GETTING FONTS FAILED"
+                     f"ERROR: {str(e)}", None)
+
+    def check_if_valid_fonts_used(self):
+        self.get_all_the_fonts_used()
+        valid_fonts_used = True
+        invalid_fonts = []
+        for font in self.fonts_used:
+            if config.ALLOWED_FONTS and font not in config.ALLOWED_FONTS:
+                valid_fonts_used = False
+                invalid_fonts.append(font)
+
+        if valid_fonts_used is False:
+            raise FileErrors("FONTS_NOT_SUPPORTED", f"Fonts used in the file is not supported, unsupported fonts: {str(invalid_fonts)}")
+        else:
+            log_info(f"check_if_valid_fonts_used :: FONTS USED: {str(self.fonts_used)}", None)
 
     def add_new_page_on_limit_exceeded(self):
         if common_obj.is_page_size_exceeded(DOCX=True, para_count=self.para_count, run_count=self.run_count, word_count=self.word_count):
