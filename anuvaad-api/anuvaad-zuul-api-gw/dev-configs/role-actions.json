@@ -176,6 +176,11 @@
             "active":true
         },
         {
+            "role":"TRANSLATOR",
+            "actionID": "724f7f09-2d6a-43c3-8155-8acc779dc833",
+            "active":true
+        },
+        {
             "role":"ADMIN",
             "actionID": "8ef47a2a-0a85-4efe-865e-8c52b567bf74",
             "active":true
