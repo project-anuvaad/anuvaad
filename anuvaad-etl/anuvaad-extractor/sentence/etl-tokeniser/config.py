@@ -5,7 +5,7 @@ import os
 DEBUG = False
 context_path = '/anuvaad-etl/tokeniser'
 HOST = '0.0.0.0'
-PORT = 5002
+PORT = 5001
 ENABLE_CORS = False
 
 # REDIS
