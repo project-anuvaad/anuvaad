@@ -1,17 +1,19 @@
-from utilities.utils import FileOperation
-from utilities.model_response import CustomResponse
-from errors.errors_exception import WorkflowkeyError
-from errors.errors_exception import FileErrors
-from errors.errors_exception import FileEncodingError
-from errors.errors_exception import ServiceError
-from utilities.model_response import Status
-from errors.error_validator import ValidationResponse
-from services.service import Tokenisation
-from anuvaad_auditor.loghandler import log_info
-from anuvaad_auditor.loghandler import log_exception
-import time
 import copy
 import json
+import time
+
+from anuvaad_auditor.loghandler import log_exception
+from anuvaad_auditor.loghandler import log_info
+
+from errors.error_validator import ValidationResponse
+from errors.errors_exception import FileEncodingError
+from errors.errors_exception import FileErrors
+from errors.errors_exception import ServiceError
+from errors.errors_exception import WorkflowkeyError
+from services.service import Tokenisation
+from utilities.model_response import CustomResponse
+from utilities.model_response import Status
+from utilities.utils import FileOperation
 
 file_ops = FileOperation()
 
@@ -44,7 +46,6 @@ class Response(object):
                             input_jsonfile_data, file_write = file_ops.read_json_file(input_filename)
                             input_jsonfile_data['result'] = [tokenisation.adding_tokenised_text_blockmerger(item, in_locale, page_id) 
                                                                 for page_id, item in enumerate(input_jsonfile_data['result'])]
-                            #input_jsonfile_data['result'] = tokenisation.getting_incomplete_text_merging_blocks(input_jsonfile_data['result'])    
                             if workflow_id not in ['WF_A_FTTKTR']:
                                 input_jsonfile_data['result'] = tokenisation.getting_incomplete_text_merging_blocks(input_jsonfile_data['result'])
 
@@ -58,6 +59,19 @@ class Response(object):
                         file_req_obj = copy.deepcopy(item)
                         file_res = file_ops.add_aditional_fields(file_req_obj, file_res)
                         output_file_response.append(file_res)
+                elif 'paragraphs' in input_key.keys():
+                    output_file_response = list()
+                    input_locale = input_key['locale']
+                    error_validator.check_language(input_locale)
+                    for i, para in enumerate(input_key['paragraphs']):
+                        para_id = para['s_id']
+                        para_text = para['src']
+                        tokenised_text = tokenisation.tokenisation_core([para_text], input_locale)
+                        for i, text in enumerate(tokenised_text):
+                            sen_id = tokenisation.generate_id(para_id=para_id, sentence_seq=i)
+                            sen_obj = tokenisation.making_object_for_tokenised_text_for_a_given_id(text, sen_id)
+                            output_file_response.append(sen_obj)
+
             # input key is a list data of objects, object contain text and language code
             else:
                 output_file_response = []
@@ -128,8 +142,8 @@ class Response(object):
         error_validator = ValidationResponse(self.DOWNLOAD_FOLDER)
         tokenisation = Tokenisation(self.DOWNLOAD_FOLDER, self.json_data)
         try:
-            error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)    # Validating Workflow key-values
-            error_validator.inputfile_list_empty(input_key)                           # Validating Input key for text block input
+            error_validator.wf_keyerror(jobid, workflow_id, tool_name, step_order)  # Validating Workflow key-values
+            error_validator.inputfile_list_empty(input_key)  # Validating Input key for text block input
             blocks_list, record_id, model_id, in_locale = file_ops.get_input_values_for_block_tokenise(input_key)
             error_validator.check_language(in_locale)
             input_key = tokenisation.adding_tokenised_text_blockmerger(input_key, in_locale, 0)
@@ -175,7 +189,7 @@ class Response(object):
             log_exception("workflow_response : Any random exception", self.json_data, e)
             response = copy.deepcopy(response)
             return response
-        
+
     # generating response for api requests other than workflow
     def nonwf_response(self):
         log_info("non workflow response : started the response generation", None)
@@ -184,7 +198,7 @@ class Response(object):
         try:
             if 'files' in self.json_data.keys():
                 input_files = self.json_data['files']
-                error_validator.inputfile_list_empty(input_files)                      # Validation of input key data
+                error_validator.inputfile_list_empty(input_files)  # Validation of input key data
                 output_file_response = list()
                 for i, item in enumerate(input_files):
                     input_filename, in_file_type, in_locale = file_ops.accessing_files(item)
@@ -198,9 +212,9 @@ class Response(object):
                 input_paragraphs = self.json_data['text']
                 input_locale = self.json_data['locale']
                 error_validator.check_language(input_locale)
-                tokenised_sentences = [tokenisation.tokenisation_core([input_paragraph], input_locale) for input_paragraph in input_paragraphs]  
-                output_list_text = [{"inputText" : x, "tokenisedSentences" : y} for x, y in zip(input_paragraphs, tokenised_sentences)]
-                output_file_response = {'tokenisedText' : output_list_text, 'locale':input_locale}
+                tokenised_sentences = [tokenisation.tokenisation_core([input_paragraph], input_locale) for input_paragraph in input_paragraphs]
+                output_list_text = [{"inputText": x, "tokenisedSentences": y} for x, y in zip(input_paragraphs, tokenised_sentences)]
+                output_file_response = {'tokenisedText': output_list_text, 'locale': input_locale}
             response_true = Status.SUCCESS.value
             response_true['output'] = output_file_response
             log_info("non workflow_response : successfully generated response for rest server", None)

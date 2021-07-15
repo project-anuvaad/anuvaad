@@ -99,7 +99,16 @@ class Tokenisation(object):
             "word_count" : len(text.split())
         }
         return object_text
-    
+
+    # unit element of tokenised sentences output for block level text
+    def making_object_for_tokenised_text_for_a_given_id(self, text, para_id):
+        object_text = {
+            "src" : text,
+            "s_id" : para_id,
+        }
+        return object_text
+    def generate_id(self, para_id, sentence_seq):
+        return para_id + config.ID_SEPARATOR + str(sentence_seq)
     # precleaning before tokenisation
     def remove_extra_spaces(self,text):
         text = text.strip()

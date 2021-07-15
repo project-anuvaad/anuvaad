@@ -18,3 +18,8 @@ api_wf.add_resource(SenTokenisePostWF, "/v0/tokenisation-wf")
 TOK_BLOCK_BLUEPRINT_wf = Blueprint("block_text_sentence_extraction_wf", __name__)
 api_wf = Api(TOK_BLOCK_BLUEPRINT_wf)
 api_wf.add_resource(BlockTokenize, "/v0/blocks-tokenisation-wf")
+
+# end-point for independent blocks tokenisation
+TOK_PARAGRAPH_BLUEPRINT_wf = Blueprint("paragraphs_text_sentence_extraction_wf", __name__)
+api_wf = Api(TOK_PARAGRAPH_BLUEPRINT_wf)
+api_wf.add_resource(SenTokenisePostWF, "/v0/paragraphs-tokenisation-wf")
