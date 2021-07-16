@@ -147,7 +147,8 @@ aws_link_prefix = f'https://{aws_bucket_name}.s3.amazonaws.com/'
 
 ALLOWED_MIME_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                      'application/json']
+                      'application/json',
+                      'application/octet-stream']
 ALLOWED_FILE_EXTENSION = ['docx', 'pptx', 'json']
 
 # FONT
