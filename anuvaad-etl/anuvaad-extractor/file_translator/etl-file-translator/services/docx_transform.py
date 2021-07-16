@@ -162,12 +162,21 @@ class DocxTransform(object):
             log_info(f"get_all_the_fonts_used :: GETTING FONTS FAILED"
                      f"ERROR: {str(e)}", None)
 
-    def check_if_valid_fonts_used(self):
+    def get_valid_fonts_for_input_locale(self, in_locale):
+        valid_fonts = []
+        valid_locale_fonts = config.ALLOWED_FONTS[in_locale]
+        common_fonts = config.ALLOWED_FONTS['common']
+        valid_fonts.extend(valid_locale_fonts)
+        valid_fonts.extend(common_fonts)
+        return valid_fonts
+
+    def check_if_valid_fonts_used(self, in_locale):
         self.get_all_the_fonts_used()
+        valid_fonts = self.get_valid_fonts_for_input_locale(in_locale)
         valid_fonts_used = True
         invalid_fonts = []
         for font in self.fonts_used:
-            if config.ALLOWED_FONTS and font not in config.ALLOWED_FONTS:
+            if config.ALLOWED_FONTS and font not in valid_fonts:
                 valid_fonts_used = False
                 invalid_fonts.append(font)
 

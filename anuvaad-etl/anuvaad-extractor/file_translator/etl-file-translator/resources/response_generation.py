@@ -12,8 +12,8 @@ from errors.errors_exception import ServiceError
 from errors.errors_exception import WorkflowkeyError
 from services.docx_transform import DocxTransform
 from services.fetch_content import FetchContent
-from services.pptx_transform import PptxTransform
 from services.html_converter import HtmlConvert
+from services.pptx_transform import PptxTransform
 from utilities.model_response import CustomResponse
 from utilities.model_response import Status
 from utilities.utils import FileOperation
@@ -43,7 +43,7 @@ class Response(object):
                         docx_transform_obj = DocxTransform(input_filename)
                         docx_obj = docx_transform_obj.read_docx_file(input_filename)
                         if in_locale != config.LOCALE_ENGLISH and config.DOCX_FONT_VALIDATION_ENABLED:
-                            docx_transform_obj.check_if_valid_fonts_used()
+                            docx_transform_obj.check_if_valid_fonts_used(in_locale=in_locale)
                         transformed_obj = docx_transform_obj.generate_json_structure(docx_obj)
                         out_json_filepath = docx_transform_obj.write_json_file(transformed_obj)
                         output_filename = out_json_filepath
