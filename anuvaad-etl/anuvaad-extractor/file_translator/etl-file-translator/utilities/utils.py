@@ -133,6 +133,17 @@ class FileOperation(object):
             object_in['status'] = "FAILED"
             object_in['state'] = "FILE-TRANSLATED"
             error = post_error_wf(code, object_in['message'], object_in, None)
+            # TEMP CHANGES #TODO ADDED BECAUSE EVEN AFTER STATUS FAILED WF WAS NOT UPDATING THE STATUS
+            try:
+                error["stepOrder"] = object_in["stepOrder"]
+                error['tool'] = object_in['tool']
+                error['taskStarttime'] = None
+                error['taskEndTime'] = None
+                error['output'] = None
+                error['workflowCode'] = object_in['workflowCode']
+            except Exception as e:
+                pass
+            # TEMP CHANGES #TODO
             return error
         else:
             code = code
