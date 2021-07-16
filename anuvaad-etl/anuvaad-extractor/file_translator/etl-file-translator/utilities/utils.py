@@ -140,6 +140,7 @@ class FileOperation(object):
                 error['taskStarttime'] = None
                 error['taskEndTime'] = None
                 error['output'] = None
+                error['error'] = object_in['message']
                 error['workflowCode'] = object_in['workflowCode']
             except Exception as e:
                 pass
