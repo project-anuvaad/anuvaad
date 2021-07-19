@@ -1,28 +1,24 @@
 {
-  "name": "Anuvaad",
-  "description": "Anuvaad",
-  "version": "1.0",
-  "manifest_version": 3,
-  "action": {
-    "default_popup": "anuvaad.html",
-    "default_icon": "anuvaad.png"
-  },
-  "commands": {
-    "_execute_action": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+F",
-        "mac": "MacCtrl+Shift+F"
-      },
-      "description": "Translates the page"
-    }
-  },
-  "background": {
-    "service_worker": "background.js"
-  },
-  "permissions": [
-    "storage",
-    "scripting",
-    "activeTab"
-  ],
-  "options_page": "options.html"
+    "name": "Anuvaad",
+    "description": "Anuvaad",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "./src/anuvaad.html",
+        "default_icon": "./asset/anuvaad.png"
+    },
+    "commands": {
+        "_execute_action": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+F",
+                "mac": "MacCtrl+Shift+F"
+            },
+            "description": "Translates the page"
+        }
+    },
+    "permissions": [
+        "storage",
+        "scripting",
+        "activeTab"
+    ]
 }
