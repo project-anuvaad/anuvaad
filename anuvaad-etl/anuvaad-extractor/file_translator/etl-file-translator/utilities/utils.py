@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 import re
@@ -41,11 +42,11 @@ class FileOperation(object):
         else:
             return False
 
-    def check_file_mime_type(self, file_path, in_file_type):
+    def check_file_mime_type(self, file_path, in_file_type, json_data=None):
         if in_file_type == 'json':
             return True
         mime_type = magic.from_file(file_path, mime=True)
-        log_info(f"check_file_mime_type :: FILE: {file_path}  MIME TYPE: {mime_type}", None)
+        log_info(f"check_file_mime_type :: FILE: {file_path}  MIME TYPE: {mime_type}", json_data)
         return mime_type in config.ALLOWED_MIME_TYPES
 
     # generating input filepath for input filename
@@ -135,12 +136,25 @@ class FileOperation(object):
             error = post_error_wf(code, object_in['message'], object_in, None)
             # TEMP CHANGES #TODO ADDED BECAUSE EVEN AFTER STATUS FAILED WF WAS NOT UPDATING THE STATUS
             try:
+                error['error'] = copy.deepcopy(error)
+                if 'errorID' in error.keys():
+                    error.pop('errorID')
+                if 'metadata' in error.keys():
+                    error.pop('metadata')
+                if 'errorType' in error.keys():
+                    error.pop('errorType')
+                if 'code' in error.keys():
+                    error.pop('code')
+                if 'message' in error.keys():
+                    error.pop('message')
+                if 'errorType' in error.keys():
+                    error.pop('errorType')
+
                 error["stepOrder"] = object_in["stepOrder"]
                 error['tool'] = object_in['tool']
                 error['taskStarttime'] = None
                 error['taskEndTime'] = None
                 error['output'] = None
-                error['error'] = object_in['message']
                 error['workflowCode'] = object_in['workflowCode']
             except Exception as e:
                 pass

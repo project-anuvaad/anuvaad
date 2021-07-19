@@ -14,7 +14,8 @@ from services.service import common_obj
 
 
 class DocxTransform(object):
-    def __init__(self, input_filename):
+    def __init__(self, input_filename, json_data):
+        self.json_data = json_data
         self.file_name_without_ext = os.path.splitext(input_filename)[0]
         self.file_id = self.file_name_without_ext
 
@@ -51,7 +52,7 @@ class DocxTransform(object):
 
     # reading content of docx file
     def read_docx_file(self, input_filename):
-        log_info("read_docx_file :: started the reading docx file: %s" % input_filename, None)
+        log_info("read_docx_file :: started the reading docx file: %s" % input_filename, self.json_data)
         input_docx_filepath = common_obj.input_path(input_filename)
         input_docx = Document(input_docx_filepath)
         self.document = input_docx
@@ -108,7 +109,7 @@ class DocxTransform(object):
 
         except Exception as e:
             log_info(f"get_fonts_from_ct_font_obj :: GETTING FONTS FAILED"
-                     f"ERROR: {str(e)}", None)
+                     f"ERROR: {str(e)}", self.json_data)
 
     def get_fonts_used_in_a_file(self, file_name):
         used_font_set = set()
@@ -124,7 +125,7 @@ class DocxTransform(object):
 
         except Exception as e:
             log_info(f"get_fonts_used_in_a_file :: GETTING FONTS FAILED"
-                     f"ERROR: {str(e)}", None)
+                     f"ERROR: {str(e)}", self.json_data)
 
     def get_fonts_used_in_theme_files(self):
         try:
@@ -150,7 +151,7 @@ class DocxTransform(object):
 
         except Exception as e:
             log_info(f"get_fonts_used_in_theme_files :: GETTING FONTS FAILED"
-                     f"ERROR: {str(e)}", None)
+                     f"ERROR: {str(e)}", self.json_data)
 
     def get_all_the_fonts_used(self):
         # Fonts mentioned in style.xml, theme.xml and document.xml
@@ -160,7 +161,7 @@ class DocxTransform(object):
             self.get_fonts_used_in_theme_files()
         except Exception as e:
             log_info(f"get_all_the_fonts_used :: GETTING FONTS FAILED"
-                     f"ERROR: {str(e)}", None)
+                     f"ERROR: {str(e)}", self.json_data)
 
     def get_valid_fonts_for_input_locale(self, in_locale):
         valid_fonts = []
@@ -183,14 +184,14 @@ class DocxTransform(object):
         if valid_fonts_used is False:
             raise FileErrors("FONTS_NOT_SUPPORTED", f"Fonts used in the file is not supported, unsupported fonts: {str(invalid_fonts)}")
         else:
-            log_info(f"check_if_valid_fonts_used :: FONTS USED: {str(self.fonts_used)}", None)
+            log_info(f"check_if_valid_fonts_used :: FONTS USED: {str(self.fonts_used)}", self.json_data)
 
     def add_new_page_on_limit_exceeded(self):
         if common_obj.is_page_size_exceeded(DOCX=True, para_count=self.para_count, run_count=self.run_count, word_count=self.word_count):
             self.para_count, self.run_count, self.word_count = common_obj.reset_page_limit(para_count=self.para_count, run_count=self.run_count,
                                                                                            word_count=self.word_count)
             self.page_number += 1
-            log_info("generate_json_structure :: Page limit exceeded generating new page obj, new page index: %s" % self.page_number, None)
+            log_info("generate_json_structure :: Page limit exceeded generating new page obj, new page index: %s" % self.page_number, self.json_data)
             self.page_list.append(self.generate_json_for_page(self.page_number))
 
     def get_parent_tag_list(self, para):
@@ -239,7 +240,7 @@ class DocxTransform(object):
 
         except Exception as e:
             log_info(f"add_new_paragraph :: JSON CREATION FAILED FOR PARAGRAPH:{self.sequence_para_index}"
-                     f"ERROR:{str(e)}", None)
+                     f"ERROR:{str(e)}", self.json_data)
 
     def add_run_as_para_json(self, para):
         try:
@@ -257,7 +258,7 @@ class DocxTransform(object):
 
         except Exception as e:
             log_info(f"add_new_toc_to_json :: ADD NEW PARA JSON FAILED:{self.sequence_para_index}"
-                     f"ERROR: {str(e)}", None)
+                     f"ERROR: {str(e)}", self.json_data)
 
     def generate_json_structure(self, document):
         self.document = document
@@ -277,7 +278,7 @@ class DocxTransform(object):
                 # If page limit is exceeded add a new page_json, increment the page_number by 1
                 self.add_new_page_on_limit_exceeded()
 
-        log_info(f'Generated JSON FILE for file: {self.file_name_without_ext}', None)
+        log_info(f'Generated JSON FILE for file: {self.file_name_without_ext}', self.json_data)
         return self.base_json
 
     def translate_paragraphs(self, para):
@@ -290,7 +291,7 @@ class DocxTransform(object):
                 raise FileErrors("translate_docx_file:", "PARA ID :{} not found in fetch content".format(para_id))
         except Exception as e:
             log_info(f"translate_docx_file :: DISTRIBUTE OVER RUN FAILED FOR PARAGRAPH SEQ:{self.sequence_para_index}"
-                     f"ERROR: {str(e)}", None)
+                     f"ERROR: {str(e)}", self.json_data)
 
     def translate_run_stored_as_para_json(self, para):
         try:
@@ -302,15 +303,15 @@ class DocxTransform(object):
                 if run_id in self.trans_map:
                     self.distribute_over_runs(run, trans_para=self.trans_map[run_id])
                 else:
-                    log_info(f"translate_run_stored_as_para_json: RUN ID :{idr} not found in fetch content for SDT", None)
+                    log_info(f"translate_run_stored_as_para_json: RUN ID :{idr} not found in fetch content for SDT", self.json_data)
         except Exception as e:
             log_info(f"translate_run_stored_as_para_json :: DISTRIBUTE OVER RUN FAILED FOR :{self.sequence_para_index}"
-                     f"ERROR: {str(e)}", None)
+                     f"ERROR: {str(e)}", self.json_data)
 
     def translate_docx_file(self, document, trans_map):
         self.document = document
         self.trans_map = trans_map
-        log_info("translate_docx_file :: Translation Docx Process started.", None)
+        log_info("translate_docx_file :: Translation Docx Process started.", self.json_data)
 
         for parent_tag, para in self.iterate_paras(document=self.document):
             self.sequence_para_index += 1

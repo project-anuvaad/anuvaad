@@ -7,7 +7,8 @@ import config
 
 
 class PdfToHtmlConverter(object):
-    def __init__(self, input_filename):
+    def __init__(self, input_filename, json_data):
+        self.json_data = json_data
         self.file_name_without_ext = os.path.splitext(input_filename)[0]
 
     def get_new_html_file_name(self, file_name):
@@ -35,12 +36,12 @@ class PdfToHtmlConverter(object):
             html_file_path = os.path.join(html_output_dir, self.file_name_without_ext)
 
         args = ['pdftohtml', '-s', input_pdf_file_path, html_file_path]
-        log_info("convert_pdf_to_html:: PDF to HTML conversion process STARTED.", None)
+        log_info("convert_pdf_to_html:: PDF to HTML conversion process STARTED.", self.json_data)
         process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
-        log_info("convert_pdf_to_html:: PDF to HTML conversion process ENDED.", None)
+        log_info("convert_pdf_to_html:: PDF to HTML conversion process ENDED.", self.json_data)
 
         generated_html_file_name = self.get_new_html_file_name(file_name=file_name)
         generated_html_file_path = self.get_new_html_file_path(html_output_dir=html_output_dir,
                                                                generated_html_file_name=generated_html_file_name)
-        log_info(f"convert_pdf_to_html:: Generated html file path: {generated_html_file_path}", None)
+        log_info(f"convert_pdf_to_html:: Generated html file path: {generated_html_file_path}", self.json_data)
         return generated_html_file_path
