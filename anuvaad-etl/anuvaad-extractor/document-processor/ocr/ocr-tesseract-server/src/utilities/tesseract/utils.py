@@ -65,10 +65,10 @@ def check_text_df(temp_df,image_crop,lang, median_height,psm):
             temp_df['text'][0] = text
     return temp_df
 
-def get_tess_text(image_crop,lang, median_height,left,top):
+def get_tess_text(image_crop,org_lang, median_height,left,top):
 
     crop_height = image_crop.shape[0]
-    lang = config.LANG_MAPPING[lang][1]
+    lang = config.LANG_MAPPING[org_lang][1]
     if crop_height > median_height * 1.5 :
 
         #experiment with FALL_BACK_LANGUAGE as orignal and trained
@@ -77,12 +77,12 @@ def get_tess_text(image_crop,lang, median_height,left,top):
         else:
             fall_back_lang = lang
         dfs = pytesseract.image_to_data(image_crop,config='--psm 6', lang=fall_back_lang  ,output_type=Output.DATAFRAME)
-        dfs = check_text_df(dfs,image_crop,lang, median_height,6)
+        dfs = check_text_df(dfs,image_crop,org_lang, median_height,6)
         words  = process_dfs(dfs,left,top,lang)
         return words      
     else:
         dfs = pytesseract.image_to_data(image_crop,config='--psm '+str(config.PSM), lang=lang,output_type=Output.DATAFRAME)
-        dfs = check_text_df(dfs,image_crop,lang, median_height,config.PSM)
+        dfs = check_text_df(dfs,image_crop,org_lang, median_height,config.PSM)
         words  = process_dfs(dfs,left,top,lang)
 
     return words
