@@ -86,7 +86,7 @@ function get_document_details(input) {
                 document['recordId'] = task['output'][0]['outputFile'];
             }
             if (task['status'] === 'FAILED') {
-                timeline['errorMessage'] = task['error']
+                timeline['errorMessage'] = job['error']
             } else {
                 timeline['errorMessage'] = ''
             }
