@@ -47,6 +47,7 @@ export default class SimpleDialog extends React.Component {
                                                         <div>&nbsp;</div>
                                                         <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>State: </Typography><Typography>&nbsp; {task.module}</Typography></div>
                                                         <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Status: </Typography><Typography>&nbsp; {task.status}</Typography></div>
+                                                        { task.errorMessage && <div style={{ display: "flex", flexDirection: "row" }}><Typography style={{ fontWeight: "bold" }}>Error: </Typography><Typography>&nbsp; {task.errorMessage}</Typography></div>}
                                                     </div>
                                                 )
                                             })
