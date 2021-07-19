@@ -51,6 +51,19 @@ def crop_region(coord,image):
         log_exception("Error in region region  due to invalid coordinates",  app_context.application_context, e)
         return None
 
+def check_text_df(temp_df,image_crop,lang, median_height,psm):
+    temp_df = temp_df[temp_df.text.notnull()]
+    temp_df = temp_df.reset_index()
+    if temp_df is None or len(temp_df)==0:
+        temp_df = pytesseract.image_to_data(image_crop,config='--psm '+str(psm), lang=config.LANG_MAPPING[lang][0]  ,output_type=Output.DATAFRAME)
+    temp_df = temp_df[temp_df.text.notnull()]
+    temp_df = temp_df.reset_index()  
+    if temp_df is not None and len(temp_df)==1:
+        if 'text' in temp_df.keys() and isinstance(temp_df['text'][0], float):
+            temp_df["text"] = temp_df.text.astype(str)
+            text = pytesseract.image_to_string(image_crop,config='--psm '+str(psm), lang=config.LANG_MAPPING[lang][0])
+            temp_df['text'][0] = text
+    return temp_df
 
 def get_tess_text(image_crop,lang, median_height,left,top):
 
@@ -64,10 +77,12 @@ def get_tess_text(image_crop,lang, median_height,left,top):
         else:
             fall_back_lang = lang
         dfs = pytesseract.image_to_data(image_crop,config='--psm 6', lang=fall_back_lang  ,output_type=Output.DATAFRAME)
+        dfs = check_text_df(dfs,image_crop,lang, median_height,6)
         words  = process_dfs(dfs,left,top,lang)
         return words      
     else:
         dfs = pytesseract.image_to_data(image_crop,config='--psm '+str(config.PSM), lang=lang,output_type=Output.DATAFRAME)
+        dfs = check_text_df(dfs,image_crop,lang, median_height,config.PSM)
         words  = process_dfs(dfs,left,top,lang)
 
     return words
