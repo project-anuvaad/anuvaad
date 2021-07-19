@@ -90,7 +90,7 @@ function get_document_details(input) {
 
         document['timelines'] = timelines
         if (job['status'] === 'FAILED') {
-            document['errorMessage'] = job['error']
+            document['errorMessage'] = job['error']['message']
         } else {
             document['errorMessage'] = ''
         }
