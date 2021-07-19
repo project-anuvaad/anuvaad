@@ -5,31 +5,30 @@ const initialState = {
     count: 0,
     progress_updated: false,
     document_deleted: false,
-    documents:
-        [
-            /* 
-                {
-                    filename: null,
-                    filetype: null,
-                    active: false,
-                    source_language_code: null,
-                    target_language_code: null,
-                    created_on: null,
-                    jobID: null,
-                    status: null,
-                    recordId: null,
-                    progress: null,
-                    timelines: [
-                        {
-                            stepOrder: 0,
-                            module: null,
-                            status: null,
-                            outputFile: null
-                        }
-                    ]
-                }
-                */
-        ]
+    documents: [
+        /* 
+            {
+                filename: null,
+                filetype: null,
+                active: false,
+                source_language_code: null,
+                target_language_code: null,
+                created_on: null,
+                jobID: null,
+                status: null,
+                recordId: null,
+                progress: null,
+                timelines: [
+                    {
+                        stepOrder: 0,
+                        module: null,
+                        status: null,
+                        outputFile: null
+                    }
+                ]
+            }
+            */
+    ]
 }
 
 /**
@@ -75,7 +74,7 @@ function get_document_details(input) {
             timeline['stepOrder'] = task['stepOrder'];
             timeline['status'] = task['status'];
 
-            if (task['stepOrder'] === 0) {
+            if (task['stepOrder'] === 0 && task['status'] !== 'FAILED') {
                 document['converted_filename'] = task['output'][0]['outputFile'];
             }
 
@@ -150,106 +149,112 @@ function update_documents_after_delete(documents, deleted_jobIds) {
     return updated_documents
 }
 
-export default function (state = initialState, action) {
+export default function(state = initialState, action) {
 
     switch (action.type) {
-        case C.FETCHDOCUMENT: {
-            let data = action.payload;
-            let documents = get_document_details(data)
-            let newDocuments = []
-            newDocuments.push(...documents)
+        case C.FETCHDOCUMENT:
+            {
+                let data = action.payload;
+                let documents = get_document_details(data)
+                let newDocuments = []
+                newDocuments.push(...documents)
 
-            return {
-                ...state,
-                count: data.count,
-                progress_updated: false,
-                document_deleted: false,
-                documents: newDocuments
+                return {
+                    ...state,
+                    count: data.count,
+                    progress_updated: false,
+                    document_deleted: false,
+                    documents: newDocuments
+                }
             }
-        }
 
-        case C.FETCHDOCUMENT_NEXTPAGE: {
-            let data = action.payload;
-            let documents = get_document_details(data)
-            return {
-                ...state,
-                progress_updated: false,
-                document_deleted: false,
-                documents: [...state.documents, ...documents]
+        case C.FETCHDOCUMENT_NEXTPAGE:
+            {
+                let data = action.payload;
+                let documents = get_document_details(data)
+                return {
+                    ...state,
+                    progress_updated: false,
+                    document_deleted: false,
+                    documents: [...state.documents, ...documents]
+                }
             }
-        }
 
-        case C.FETCHDOCUMENT_NEWJOB: {
-            let data = action.payload;
-            let documents = get_document_details(data)
-            return {
-                ...state,
-                count: state.count + 1,
-                progress_updated: false,
-                document_deleted: false,
-                documents: [...state.documents, ...documents]
+        case C.FETCHDOCUMENT_NEWJOB:
+            {
+                let data = action.payload;
+                let documents = get_document_details(data)
+                return {
+                    ...state,
+                    count: state.count + 1,
+                    progress_updated: false,
+                    document_deleted: false,
+                    documents: [...state.documents, ...documents]
+                }
             }
-        }
 
-        case C.FETCHDOCUMENT_EXISTING: {
-            let data = action.payload;
-            let documents = get_document_details(data);
-            let existing_docs = [...state.documents];
-            let changedJob = {}
-            documents.forEach(document => {
-                existing_docs.forEach((existing_doc, index) => {
-                    if (existing_doc.jobID === document.jobID) {
+        case C.FETCHDOCUMENT_EXISTING:
+            {
+                let data = action.payload;
+                let documents = get_document_details(data);
+                let existing_docs = [...state.documents];
+                let changedJob = {}
+                documents.forEach(document => {
+                    existing_docs.forEach((existing_doc, index) => {
+                        if (existing_doc.jobID === document.jobID) {
 
-                        if (document.status !== "INPROGRESS") {
-                            changedJob = document
+                            if (document.status !== "INPROGRESS") {
+                                changedJob = document
 
+                            }
+                            existing_docs.splice(index, 1, document)
                         }
-                        existing_docs.splice(index, 1, document)
-                    }
+                    })
                 })
-            })
-            // console.log([...state.documents, ...documents].filter((v,i,a)=>a.findIndex(t=>(t.recordId === v.recordId))===i))
+                // console.log([...state.documents, ...documents].filter((v,i,a)=>a.findIndex(t=>(t.recordId === v.recordId))===i))
 
-            return {
-                ...state,
-                progress_updated: false,
-                document_deleted: false,
-                documents: existing_docs, //[...state.documents, ...documents].filter((v,i,a)=>a.findIndex(t=>(t.recordId === v.recordId))===i)
-                changedJob: changedJob
-            }
-        }
-
-        case C.MARK_INACTIVE: {
-            let data = action.payload.succeeded;
-            let documents = update_documents_after_delete(state.documents, data);
-            return {
-                ...state,
-                count: (state.count - 1),
-                document_deleted: true,
-                progress_updated: true,
-                documents: documents
+                return {
+                    ...state,
+                    progress_updated: false,
+                    document_deleted: false,
+                    documents: existing_docs, //[...state.documents, ...documents].filter((v,i,a)=>a.findIndex(t=>(t.recordId === v.recordId))===i)
+                    changedJob: changedJob
+                }
             }
 
-        }
+        case C.MARK_INACTIVE:
+            {
+                let data = action.payload.succeeded;
+                let documents = update_documents_after_delete(state.documents, data);
+                return {
+                    ...state,
+                    count: (state.count - 1),
+                    document_deleted: true,
+                    progress_updated: true,
+                    documents: documents
+                }
 
-        case C.JOBSTATUS: {
-            let data = action.payload;
-            let documents = update_documents_progress(state.documents, data)
-            return {
-                ...state,
-                progress_updated: true,
-                documents: documents
             }
-        }
 
-        case C.CLEAR_JOB_STATUS: {
-            return {
-                ...initialState
+        case C.JOBSTATUS:
+            {
+                let data = action.payload;
+                let documents = update_documents_progress(state.documents, data)
+                return {
+                    ...state,
+                    progress_updated: true,
+                    documents: documents
+                }
             }
-        }
+
+        case C.CLEAR_JOB_STATUS:
+            {
+                return {
+                    ...initialState
+                }
+            }
 
         default:
             return state;
     }
 }
-
