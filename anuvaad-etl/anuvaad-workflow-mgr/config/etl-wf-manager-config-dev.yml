@@ -947,6 +947,27 @@ WorkflowConfigs:
         - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/block/workflow/translate
       endState: true
 
+  - workflowCode: WF_S_STKTR
+    type: SYNC
+    translation: BLOCK
+    description: Tokenises the list of paragraph to sentences and Translates them.
+    useCase: S_TTR
+    sequence:
+    - order: 0
+      tool:
+      - name: TOKENISER
+        description: tokenises the text blocks.
+        api-details:
+        - uri: http://gateway_anuvaad-etl-tokeniser:5001/anuvaad-etl/tokeniser/v0/paragraphs-tokenisation-wf
+      endState: false
+    - order: 1
+      tool:
+      - name: TRANSLATOR
+        description: Translates the sentences.
+        api-details:
+        - uri: http://gateway_anuvaad-etl-translator:5001/anuvaad-etl/translator/v1/sentences/workflow/translate
+      endState: true
+
 
 # Conventions:
 # WF - prefix for Workflow
