@@ -85,15 +85,15 @@ function get_document_details(input) {
             if (task['stepOrder'] === 3) {
                 document['recordId'] = task['output'][0]['outputFile'];
             }
-            if (task['status'] === 'FAILED') {
-                timeline['errorMessage'] = job['error']['message']
-            } else {
-                timeline['errorMessage'] = ''
-            }
             timelines.push(timeline)
         })
 
         document['timelines'] = timelines
+        if (job['status'] === 'FAILED') {
+            document['errorMessage'] = job['error']['message']
+        } else {
+            document['errorMessage'] = ''
+        }
         documents.push(document);
     });
 
