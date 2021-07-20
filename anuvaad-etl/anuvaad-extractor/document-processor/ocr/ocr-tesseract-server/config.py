@@ -8,6 +8,7 @@ BASE_DIR      = 'upload'
 #BASE_DIR      = '/home/naresh/anuvaad/anuvaad-etl/anuvaad-extractor/document-processor/ocr/ocr-tesseract-server/upload/'
 download_folder = 'upload'
 
+#os.environ['OMP_THREAD_LIMIT']='1'
 
 ENABLE_CORS = False
 
@@ -50,6 +51,7 @@ PERSPECTIVE_TRANSFORM=False
 FALL_BACK_LANGUAGE=None
 PSM=7
 POST_PROCESSING_MODE=None
+MULTIPROCESS=False
 
 
 LANG_MAPPING       =  {
@@ -57,7 +59,7 @@ LANG_MAPPING       =  {
     "kn" : ['Kannada',"kan"],
     "gu": ["guj"],
     "or": ["ori"],
-    "hi" : ["Devanagari","hin"],
+    "hi" : ["Devanagari","anuvaad_hin"],
     "bn" : ["Bengali","ben"],
     "mr": ["Devanagari","hin"],
     "ta": ['Tamil',"anuvaad_tam"],
