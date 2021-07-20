@@ -39,7 +39,8 @@ class Dashboard extends React.Component {
       target_languages: [],
       showStatus: false,
       message: null,
-      dialogMessage: null
+      dialogMessage: null,
+      modelName: ''
     };
     this.processTranslateButtonPressed = this.processTranslateButtonPressed.bind(this);
     this.processClearButtonPressed = this.processClearButtonPressed.bind(this);
@@ -114,12 +115,12 @@ class Dashboard extends React.Component {
   }
 
   processTranslateButtonPressed() {
-      this.setState({ showStatus: true, message: "Fetching translation..." })
-      let userModel = JSON.parse(localStorage.getItem("userProfile"))
-      let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code, userModel.models)
+    this.setState({ showStatus: true, message: "Fetching translation..." })
+    let userModel = JSON.parse(localStorage.getItem("userProfile"))
+    let modelId = LANG_MODEL.get_model_details(this.props.fetch_models.models, this.state.source_language_code, this.state.target_language_code, userModel.models)
 
-      this.makeAPICallInteractiveTranslation(this.state.text, modelId)
-      // this.makeAPICallAutoML(this.state.text, this.state.source_language_code, this.state.target_language_code)
+    this.makeAPICallInteractiveTranslation(this.state.text, modelId)
+    // this.makeAPICallAutoML(this.state.text, this.state.source_language_code, this.state.target_language_code)
   }
 
   processSourceLanguageSelected = (event) => {
@@ -164,7 +165,6 @@ class Dashboard extends React.Component {
     let apiObj = new InstantTranslateAPI(v4(), '', text, "", false, text, "", modelId, this.state.source_language_code, this.state.target_language_code);
 
     this.setState({ anuvaadAPIInProgress: true })
-
     const apiReq = fetch(apiObj.apiEndPoint(), {
       method: 'post',
       body: JSON.stringify(apiObj.getBody()),
@@ -175,22 +175,19 @@ class Dashboard extends React.Component {
         this.setState({ anuvaadAPIInProgress: false, showStatus: false, message: null, dialogMessage: "Unable to fetch translation..." })
         return Promise.reject('');
       } else {
-        let filteredTexts = rsp_data && rsp_data.data && rsp_data.data[0] && rsp_data.data[0].tgt ? rsp_data.data[0].tgt : ""
-
+        let filteredTexts = rsp_data && rsp_data.output && rsp_data.output.translations[0] && rsp_data.output.translations[0].tgt ? rsp_data.output.translations[0].tgt : ""
         if (filteredTexts) {
           this.setState({})
           this.setState({
             anuvaadText: filteredTexts,
             anuvaadAPIInProgress: false,
             showStatus: false,
-            message: null
+            message: null,
+            modelName: modelId.model_name
           })
         } else {
           this.setState({ showStatus: false, message: null, dialogMessage: "No translation available..." })
         }
-
-
-
       }
     }).catch((error) => {
       this.setState({ anuvaadAPIInProgress: false, showStatus: false, message: null, dialogMessage: "Unable to fetch translation..." })
@@ -202,7 +199,7 @@ class Dashboard extends React.Component {
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ marginTop: "0%" }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
           <Typography value="" variant="h5">
-            {translate("common.page.label.sourceLang")}&nbsp;<span style={{color: "red"}}>*</span>
+            {translate("common.page.label.sourceLang")}&nbsp;<span style={{ color: "red" }}>*</span>
           </Typography>
         </Grid>
 
@@ -234,7 +231,7 @@ class Dashboard extends React.Component {
       <Grid item xs={12} sm={12} lg={12} xl={12} className={this.props.classes.rowData} style={{ paddingTop: "20px" }}>
         <Grid item xs={6} sm={6} lg={8} xl={8} className={this.props.classes.label}>
           <Typography value="" variant="h5">
-            {translate("common.page.label.targetLang")}&nbsp;<span style={{color: "red"}}>*</span>
+            {translate("common.page.label.targetLang")}&nbsp;<span style={{ color: "red" }}>*</span>
           </Typography>
         </Grid>
         <Grid item xs={6} sm={6} lg={4} xl={4}>
@@ -319,7 +316,7 @@ class Dashboard extends React.Component {
 
             {this.state.anuvaadText && (
               <Grid item xs={12} sm={12} lg={12} xl={12} className={classes.grid}>
-                <Typography variant="h4" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{translate("dashbord.page.title.anuvaadModel")}</Typography>
+                <Typography variant="h4" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{this.state.modelName}</Typography>
                 <Typography variant="h6" gutterBottom style={{ color: '#000000', marginLeft: "40px", textAlign: 'left' }} >{this.state.anuvaadText}</Typography>
               </Grid>
             )}
