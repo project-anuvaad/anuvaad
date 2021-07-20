@@ -46,7 +46,7 @@ def process_transform_file_kf():
             file_value_response = response_gen.workflow_response(task_id, task_starttime, transform_flow=True)
 
             producer = Producer()
-            producer.push_data_to_queue(config.download_output_topic, file_value_response, data, task_id)
+            producer.push_data_to_queue(config.transform_output_topic, file_value_response, data, task_id)
             log_info(f"RESPONSE for JOBID: {jobid}, RESPONSE: {file_value_response}", data)
             if file_value_response['status'] == 'FAILED':
                 log_error("process_transform_file_kf : error send to error handler", data, None)
