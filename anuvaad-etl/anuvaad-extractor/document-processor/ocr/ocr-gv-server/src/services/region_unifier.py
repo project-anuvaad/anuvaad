@@ -365,8 +365,10 @@ class Region_Unifier:
             if "craft_word" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_word"]=="True":
                 log_info('craft words are processing',  None )
                 page_words = collate_text(file,page_c_words, page_g_words)
+                page_words2 = page_words
             else:
                 page_words = copy.deepcopy(page_g_words)
+                page_words2 = page_words
             text_region,n_text_table_regions,tabel_region,image_region,head_foot_region = self.get_text_tabel_region(sorted_page_regions)
             tabel_region  = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(tabel_region))
             filtered_words = remvoe_regions(copy.deepcopy(image_region), copy.deepcopy(page_words))
