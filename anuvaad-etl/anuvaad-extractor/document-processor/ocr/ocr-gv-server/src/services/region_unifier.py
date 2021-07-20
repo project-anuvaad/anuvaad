@@ -363,6 +363,7 @@ class Region_Unifier:
 
 
             if "craft_word" in file['config']["OCR"].keys() and file['config']["OCR"]["craft_word"]=="True":
+                log_info('craft words are processing',  None )
                 page_words = collate_text(file,page_c_words, page_g_words)
             else:
                 page_words = copy.deepcopy(page_g_words)
