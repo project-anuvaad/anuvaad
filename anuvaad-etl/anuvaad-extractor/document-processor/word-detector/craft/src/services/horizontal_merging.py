@@ -77,11 +77,11 @@ def update_coord(reg1,reg2):
 def are_hlines(region1,region2):
 
     space = abs( region1['boundingBox']['vertices'][0]['y'] - region2['boundingBox']['vertices'][0]['y'])
-    sepration = region2['boundingBox']['vertices'][0]['x'] - region1['boundingBox']['vertices'][1]['x']
+    sepration = abs(region2['boundingBox']['vertices'][0]['x'] - region1['boundingBox']['vertices'][1]['x'])
     h1 = abs(region1['boundingBox']['vertices'][3]['y'] - region1['boundingBox']['vertices'][0]['y'])
     h2 = abs(region2['boundingBox']['vertices'][3]['y'] - region2['boundingBox']['vertices'][0]['y'])
     max_height = max( h1 , h2 ) #*0.5
-    diff_threshold = max_height * 0.8
+    diff_threshold = max_height * 0.5
 
     #return ((space <= diff_threshold ) or(sepration <= 3 *avg_height)) and  (sepration < 6 * avg_height) and (space <= diff_threshold *2.5 )
     return  sepration  < 5 * max_height  and space <= diff_threshold
