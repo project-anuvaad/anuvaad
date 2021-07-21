@@ -949,9 +949,9 @@ WorkflowConfigs:
 
   - workflowCode: WF_S_STKTR
     type: SYNC
-    translation: BLOCK
+    translation: SENTENCE
     description: Tokenises the list of paragraph to sentences and Translates them.
-    useCase: S_TTR
+    useCase: WF_S_STKTR
     sequence:
     - order: 0
       tool:
