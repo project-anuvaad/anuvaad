@@ -60,7 +60,7 @@ class Response(object):
                         file_res = file_ops.add_aditional_fields(file_req_obj, file_res)
                         output_file_response.append(file_res)
                 elif 'paragraphs' in input_key.keys():
-                    output_file_response = list()
+                    outer_response_body = list()
                     input_locale = input_key['locale']
                     error_validator.check_language(input_locale)
                     for i, para in enumerate(input_key['paragraphs']):
@@ -70,7 +70,13 @@ class Response(object):
                         for i, text in enumerate(tokenised_text):
                             sen_id = tokenisation.generate_id(para_id=para_id, sentence_seq=i)
                             sen_obj = tokenisation.making_object_for_tokenised_text_for_a_given_id(text, sen_id)
-                            output_file_response.append(sen_obj)
+                            outer_response_body.append(sen_obj)
+                    output_file_response = file_ops.one_obj_for_paragraphs_response(sentences= outer_response_body, in_locale= input_locale)
+                    file_req_obj = copy.deepcopy(input_key)
+                    file_res = file_ops.add_aditional_fields(input_file_obj=file_req_obj, output_file_obj=output_file_response[0])
+                    output_file_response[0].update(file_res)
+
+
 
             # input key is a list data of objects, object contain text and language code
             else:

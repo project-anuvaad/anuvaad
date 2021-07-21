@@ -100,9 +100,16 @@ class FileOperation(object):
         }
         return file_res
 
+    # output format for list of paragraphs
+    def one_obj_for_paragraphs_response(self, sentences, in_locale):
+        output_file_response = [{"sentences": []}]
+        output_file_response[0]["sentences"] = sentences
+        output_file_response[0]["in_locale"] = in_locale
+        return output_file_response
+
     def add_aditional_fields(self, input_file_obj, output_file_obj):
         for key, val in input_file_obj.items():
-            if key not in ['locale', 'path', 'type']:
+            if key not in ['locale', 'path', 'type', 'paragraphs']:
                 if val is None or val == "":
                     raise FileErrors("INPUT_VALUE_ERROR",
                                      "Value under files are missing. Make sure you are using the correct Value for files keys.")
