@@ -183,7 +183,14 @@ class AlignmentUtils:
 
     #methods for faiss based alignment
     def score(self, x, y, fwd_mean, bwd_mean, margin):
-        return margin(x.dot(y), (fwd_mean + bwd_mean) / 2)
+#         return margin(x.dot(y), (fwd_mean + bwd_mean) / 2)
+          vector_one = np.squeeze(x)
+          vector_two = np.squeeze(y)
+          dot = np.dot(vector_one, vector_two)
+          norma = np.linalg.norm(vector_one)
+          normb = np.linalg.norm(vector_two)
+          cos = dot / (norma * normb)
+          return(cos)
 
 
     def score_candidates(self, x, y, candidate_inds, fwd_mean, bwd_mean, margin):
