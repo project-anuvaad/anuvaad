@@ -281,10 +281,11 @@ class Region_Unifier:
         reg1['class'] = clss
         if add_word:
             if 'regions' in reg1.keys():
-                reg1['regions'].append(reg2)
+                if reg2['identifier'] not in [i['identifier'] for i in reg1]:
+                    reg1['regions'].extend(reg2)
             else:
                 reg1['regions']=[]
-                reg1['regions'].append(reg2)
+                reg1['regions'].extend(reg2)
         # except:
         #     pass
 
@@ -332,10 +333,10 @@ class Region_Unifier:
                         region_poly =get_polygon(word['boundingBox']); base_poly = get_polygon(cell['boundingBox'])
                         area=0
                         if region_poly and base_poly:
-                            area = base_poly.intersection(region_poly).area
+                            area = base_poly.intersection(region_poly)
                             flag=False
                             indx = index.Index()
-                            if area>0:
+                            if area:
                                 for idx3,tmp_cell in enumerate(tmp_cells):
                                     poly = get_polygon(tmp_cell['boundingBox'])
                                     indx.insert(idx3, poly.bounds)

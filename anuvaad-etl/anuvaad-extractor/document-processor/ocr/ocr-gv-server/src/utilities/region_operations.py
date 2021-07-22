@@ -244,10 +244,10 @@ def collate_cell_regions(regions, lines, child_class=None, grand_children=False,
                                 lines[intr_index][child_key] = [grand_child]
                         line_poly = get_polygon(lines[intr_index]['boundingBox'])
                         if line_poly:
-                            area = region_poly.intersection(line_poly).area
+                            area = region_poly.intersection(line_poly)
                             reg_area = region_poly.area
                             line_area = line_poly.area
-                            if reg_area>0 and line_area>0 and area/min(line_area,reg_area) >0.5 :
+                            if reg_area>0 and line_area>0 and area :
                                 region_lines.append(lines[intr_index])
                                 lines_intersected.append(intr_index)
                 if child_key in region.keys() and type(region[child_key]) is list:
