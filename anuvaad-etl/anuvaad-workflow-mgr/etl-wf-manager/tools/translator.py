@@ -6,6 +6,14 @@ class Translator:
     def __init__(self):
         pass
 
+    def is_contains_list_of_paragraphs(self, task_output):
+        if isinstance(task_output["output"], list):
+            if len(task_output["output"]) > 0 and isinstance(task_output["output"][0], dict) and 'sentences' in task_output["output"][0].keys():
+                return True
+
+        return False
+
+
     # Returns a json of the format accepted by Translator for SYNC and ASYNC
     def get_translator_input_wf(self, wf_input, sync):
         if not sync:
@@ -29,19 +37,16 @@ class Translator:
     def get_translator_input(self, task_output, predecessor, is_sync):
         if is_sync:
             if predecessor == tool_tokeniser:
-                if isinstance(task_output["output"], list):
-                    if len(task_output["output"]) > 0 and isinstance(task_output["output"][0], dict) and 'sentences' in task_output["output"][0].keys():
-                        tool_input = {
-                            "model_id": task_output["output"][0]["model_id"],
-                            "source_language_code": task_output["output"][0]["source_language_code"],
-                            "target_language_code": task_output["output"][0]["target_language_code"],
-                            "sentences": task_output["output"][0]["sentences"],
-                            "workflowCode": task_output["workflowCode"]
-                        }
-                        return tool_input
+                if self.is_contains_list_of_paragraphs(task_output=task_output):
+                    tool_input = {
+                        "model_id": task_output["output"][0]["model_id"],
+                        "source_language_code": task_output["output"][0]["source_language_code"],
+                        "target_language_code": task_output["output"][0]["target_language_code"],
+                        "sentences": task_output["output"][0]["sentences"],
+                        "workflowCode": task_output["workflowCode"]
+                    }
+                    return tool_input
 
-                    else:
-                        return None
                 else:
                     tool_input = {
                         "recordID": task_output["output"]["record_id"],
