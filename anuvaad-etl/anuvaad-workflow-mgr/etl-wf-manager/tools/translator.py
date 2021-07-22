@@ -45,8 +45,6 @@ class Translator:
                         "sentences": task_output["output"][0]["sentences"],
                         "workflowCode": task_output["workflowCode"]
                     }
-                    return tool_input
-
                 else:
                     tool_input = {
                         "recordID": task_output["output"]["record_id"],
