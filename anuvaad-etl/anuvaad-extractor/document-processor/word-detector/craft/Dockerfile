@@ -22,7 +22,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 # #
 RUN apt install -y libssl-dev libffi-dev libxml2-dev libxslt1-dev zlib1g-dev python3-dev
 
-RUN pip install --upgrade pip setuptools wheel && pip install scikit-build && pip install cmake && 
+RUN pip install --upgrade pip setuptools wheel && pip install scikit-build && pip install cmake 
 RUN apt install -y libopencv-dev python3-opencv
 
 # #RUN apt-get install -y make git
