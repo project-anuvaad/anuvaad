@@ -4,10 +4,9 @@ import uuid
 
 from anuvaad_auditor.loghandler import log_exception, log_info
 from anuvaad_auditor.errorhandler import post_error
-from configs.translatorconfig import nmt_it_url, sentence_fetch_url, nmt_translate_url, nmt_fetch_models_url
+from configs.translatorconfig import nmt_it_url, sentence_fetch_url, nmt_translate_url, \
+    nmt_fetch_models_url, nmt_max_batch_size
 from utilities.translatorutils import TranslatorUtils
-
-from translator.configs.translatorconfig import nmt_max_batch_size
 
 utils = TranslatorUtils()
 
