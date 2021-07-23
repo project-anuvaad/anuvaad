@@ -1,10 +1,13 @@
 import os
 import time
+import uuid
 
 from anuvaad_auditor.loghandler import log_exception, log_info
 from anuvaad_auditor.errorhandler import post_error
 from configs.translatorconfig import nmt_it_url, sentence_fetch_url, nmt_translate_url, nmt_fetch_models_url
 from utilities.translatorutils import TranslatorUtils
+
+from translator.configs.translatorconfig import nmt_max_batch_size
 
 utils = TranslatorUtils()
 
@@ -138,19 +141,21 @@ class TextTranslationService:
             log_info("Done!", sentence_translation_input)
             log_info("Fetching Translations.....", sentence_translation_input)
             nmt_url, nmt_body = self.get_nmt_data_sent_translation(sentence_translation_input, model)
-            nmt_response = utils.call_api(nmt_url, "POST", nmt_body, None, sentence_translation_input["metadata"]["userID"])
             translations = []
-            if nmt_response:
-                if 'status' in nmt_response.keys():
-                    if 'statusCode' in nmt_response["status"].keys():
-                        if nmt_response["status"]["statusCode"] != 200:
-                            error = post_error("TRANSLATION_FAILED", "Error while translating: {} ".format(nmt_response["status"]["message"]), None)
-                            output["status"], output["error"] = "FAILED", error
-                            return output
-                        else:
-                            translations = nmt_response["data"]
-                            if not translations:
-                                log_info("NMT returned zero translations!", sentence_translation_input)
+            for req in nmt_body:
+                nmt_response = utils.call_api(nmt_url, "POST", req, None, sentence_translation_input["metadata"]["userID"])
+                if nmt_response:
+                    if 'status' in nmt_response.keys():
+                        if 'statusCode' in nmt_response["status"].keys():
+                            if nmt_response["status"]["statusCode"] != 200:
+                                error = post_error("TRANSLATION_FAILED", "Error while translating: {} ".format(nmt_response["status"]["message"]), None)
+                                output["status"], output["error"] = "FAILED", error
+                                return output
+                            else:
+                                if not nmt_response["data"]:
+                                    log_info("NMT returned zero translations!", sentence_translation_input)
+                                else:
+                                    translations.append(nmt_response["data"])
             log_info("Done!", sentence_translation_input)
             output["status"], output["output"] = "SUCCESS", {"translations": translations}
             return output
@@ -162,11 +167,14 @@ class TextTranslationService:
 
     # Method to get body and url based on Model for sentence translation
     def get_nmt_data_sent_translation(self, sentence_translation_input, model):
-        text_nmt = []
+        text_nmt, nmt_list = [], []
         for text in sentence_translation_input["input"]["sentences"]:
             text_nmt.append({"s_id": text["s_id"], "src": text["src"]})
-        nmt_in = {"src_list": text_nmt, "source_language_code": model["source_language_code"],
-                  "target_language_code": model["target_language_code"], "model_id": model["model_id"]}
+        batches = self.fetch_batches(text_nmt)
+        for batch in batches.keys():
+            nmt_in = {"src_list": batches[batch], "source_language_code": model["source_language_code"],
+                      "target_language_code": model["target_language_code"], "model_id": model["model_id"]}
+            nmt_list.append(nmt_in)
         try:
             host = model["connection_details"]["translation"]["host"]
             api_host = os.environ.get(host, 'NA')
@@ -174,10 +182,24 @@ class TextTranslationService:
             api_endpoint = os.environ.get(endpoint, 'NA')
             if api_host == "NA" or api_endpoint == "NA":
                 log_info("Falling back to Anuvaad NMT translate URL....", sentence_translation_input)
-                return nmt_translate_url, nmt_in
+                return nmt_translate_url, nmt_list
             url = api_host + api_endpoint
-            return url, nmt_in
+            return url, nmt_list
         except Exception as e:
             log_exception("Exception while fetching API conn details: {}".format(str(e)), sentence_translation_input, None)
             log_info("Falling back to Anuvaad NMT translate URL....", sentence_translation_input)
-        return nmt_it_url, nmt_in
+        return nmt_it_url, nmt_list
+
+    def fetch_batches(self, sentences):
+        batch_id, tmx_count, computed, sentences_for_trans = str(uuid.uuid4()), 0, 0, {}
+        for sentence in sentences:
+            if batch_id in sentences_for_trans.keys():
+                sentence_list = sentences_for_trans[batch_id]
+                sentence_list.append(sentence)
+                sentences_for_trans[batch_id] = sentence_list
+            else:
+                sentence_list = [sentence]
+                sentences_for_trans[batch_id] = sentence_list
+            if len(sentences_for_trans[batch_id]) == nmt_max_batch_size:
+                batch_id = str(uuid.uuid4())
+        return sentences_for_trans
