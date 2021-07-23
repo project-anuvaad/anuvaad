@@ -20,6 +20,25 @@ WorkflowConfigs:
 
 
 
+  - workflowCode: WF_A_JAL
+    type: ASYNC
+    description: Aligns the input files. 
+    useCase: A_A
+    sequence:
+    - order: 0
+      tool:
+      - name: ALIGNER
+        description: Accepts 2 parallel files and alings them into parallel corp for training
+        kafka-input:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_JSON_ALIGNER_INPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+        kafka-output:
+        - topic: KAFKA_ANUVAAD_DP_TOOLS_JSON_ALIGNER_OUTPUT
+          partitions: KAFKA_PARTITIONS_PER_TOPIC
+      endState: true
+
+
+
   - workflowCode: WF_A_FC
     type: ASYNC
     description: converts a file into pdf and other formats
