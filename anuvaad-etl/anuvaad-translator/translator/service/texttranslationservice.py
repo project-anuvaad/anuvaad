@@ -154,7 +154,7 @@ class TextTranslationService:
                                 if not nmt_response["data"]:
                                     log_info("NMT returned zero translations!", sentence_translation_input)
                                 else:
-                                    translations.append(nmt_response["data"])
+                                    translations.extend(nmt_response["data"])
             log_info("Done!", sentence_translation_input)
             output["status"], output["output"] = "SUCCESS", {"translations": translations}
             return output
