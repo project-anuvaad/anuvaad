@@ -78,12 +78,18 @@ class WFMValidator:
     def validate_sync_sentence(self, data):
         if 'model_id' not in data.keys():
             return post_error("MODEL_ID_NOT_FOUND", "Model ID is mandatory.", None)
-        if 'sentences' not in data.keys():
+        if 'sentences' not in data.keys() and 'paragraphs' not in data.keys():
             return post_error("TEXT_NOT_FOUND", "Sentences are mandatory.", None)
         else:
-            if not data["sentences"]:
+            key = ''
+            if 'sentences' in data.keys():
+                key = 'sentences'
+            elif 'paragraphs' in data.keys():
+                key = 'paragraphs'
+
+            if not data[key]:
                 return post_error("TEXT_NOT_FOUND", "Sentences are mandatory.", None)
-            for sentence in data["sentences"]:
+            for sentence in data[key]:
                 if 's_id' not in sentence.keys():
                     return post_error("SENTENCE_ID_NOT_FOUND", "s_id is mandatory", None)
                 if 'src' not in sentence.keys():

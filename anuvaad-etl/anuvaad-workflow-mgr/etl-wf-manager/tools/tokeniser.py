@@ -12,12 +12,21 @@ class Tokeniser:
                 "files": wf_input["input"]["files"]
             }
         else:
-            tool_input = {
-                "record_id": wf_input["input"]["recordID"],
-                "model_id": wf_input["input"]["model"]["model_id"],
-                "locale": wf_input["input"]["locale"],
-                "text_blocks": wf_input["input"]["textBlocks"]
-            }
+            if 'paragraphs' in wf_input["input"].keys():
+                tool_input = {
+                    "model_id": wf_input["input"]["model_id"],
+                    "source_language_code":  wf_input["input"]["source_language_code"],
+                    "target_language_code": wf_input["input"]["target_language_code"],
+                    "locale": wf_input["input"]["locale"],
+                    "paragraphs": wf_input["input"]["paragraphs"]
+                }
+            else:
+                tool_input = {
+                    "record_id": wf_input["input"]["recordID"],
+                    "model_id": wf_input["input"]["model"]["model_id"],
+                    "locale": wf_input["input"]["locale"],
+                    "text_blocks": wf_input["input"]["textBlocks"]
+                }
         tok_input = {
             "jobID": wf_input["jobID"],
             "workflowCode": wf_input["workflowCode"],

@@ -39,7 +39,7 @@ service = AlignmentService()
 knn_neighbors = 2
 
 # Min score for text pairs. Note, score can be larger than 1
-min_threshold = 1
+min_threshold = 0.5
 
 #Do we want to use exact search of approximate nearest neighbor search (ANN)
 #Exact search: Slower, but we don't miss any parallel sentences

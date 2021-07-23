@@ -257,7 +257,10 @@ class WFMUtils:
                 tool_input = translator.get_translator_input(
                     task_output, previous_tool, True)
                 job_details = self.get_job_details(task_output["jobID"])[0]
-                tool_input["input"]["model"] = job_details["input"]["model"]
+
+                if translator.is_contains_list_of_paragraphs(task_output=task_output) is False:
+                    tool_input["input"]["model"] = job_details["input"]["model"]
+
                 if 'modifiedSentences' in job_details["input"].keys():
                     tool_input["input"]["modifiedSentences"] = job_details["input"]["modifiedSentences"]
                 if 'context' in job_details["input"].keys():
