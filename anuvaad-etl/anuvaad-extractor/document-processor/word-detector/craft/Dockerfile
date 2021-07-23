@@ -6,7 +6,7 @@ FROM ubuntu:20.04
 # #COPY Pipfile Pipfile.lock ./
 
 COPY / /app
-# WORKDIR /app
+WORKDIR /app
 
 ENV DEBIAN_FRONTEND="noninteractive"
 
